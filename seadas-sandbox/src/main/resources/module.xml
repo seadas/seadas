@@ -1,0 +1,39 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>seadas-sandbox</symbolicName>
+    <version>7.0</version>
+
+    <name>SeaDAS Sandbox</name>
+
+    <description>
+        SeaDAS sandbox module, which is used to explore and test various BEAM extension points.
+        This is not a production module.
+    </description>
+
+    <vendor>NASA Ocean Biology Processing Group</vendor>
+    <contactAddress>NASA GSFC, Code 614.2</contactAddress>
+    <copyright>(c) copyright - Not sure??</copyright>
+    <url>http://oceancolor.gsfc.nasa.gov/seadas</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+
+    <dependency>
+        <module>seadas-app</module>
+    </dependency>
+
+    <categories>System</categories>
+
+    <extension point="ceres-core:adapters">
+        <adapter>
+            <extensibleType>org.esa.beam.framework.datamodel.VectorDataNode</extensibleType>
+            <extensionFactory>gov.nasa.obpg.seadas.sandbox.VectorDataNodeToTextLayerTypeAdapter</extensionFactory>
+        </adapter>
+    </extension>
+
+    <extension point="beam-ui:layerEditors">
+        <layerEditor>
+            <layerType>gov.nasa.obpg.seadas.sandbox.TextLayer</layerType>
+            <editor>gov.nasa.obpg.seadas.sandbox.TextLayerEditor</editor>
+        </layerEditor>
+    </extension>
+
+</module>

@@ -47,6 +47,7 @@
 
         <module>seadas-app</module>
         <module>seadas-bootstrap</module>
+        <module>seadas-sandbox</module>
 
     </modules>
 
