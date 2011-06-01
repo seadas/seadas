@@ -1,0 +1,55 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>seadas-app</symbolicName>
+    <version>7.0</version>
+    <name>SeaDAS Application</name>
+
+    <description>
+        A desktop application used to open, browse, visualise,
+        analyse and manipulate data products of a number of EO sensors.
+    </description>
+
+
+   <extension point="beam-ui:applicationDescriptors">
+        <applicationDescriptor>
+            <applicationId>SeaDAS</applicationId>
+            <displayName>SeaDAS</displayName>
+            <version>7.0-SNAPSHOT</version>
+            <buildId>${beam.build.id}</buildId>
+            <buildDate>${beam.build.date}</buildDate>
+            <excludedToolViews>
+                <!-- place tool view IDs here you wish to exclude from your application -->
+                <!-- e.g. <id>org.esa.beam.visat.toolviews.lm.LayersToolView</id> -->
+            </excludedToolViews>
+        </applicationDescriptor>
+    </extension>
+
+    <changelog>
+        <![CDATA[
+        <p>Changes in 7.0:<br/>
+          [SEADAS-0] Adding a new SeaDAS app into beam<br/>
+        </p>
+        ]]>
+    </changelog>
+
+    <vendor>NASA Ocean Biology Processing Group</vendor>
+    <contactAddress>NASA GSFC, Code 614.2</contactAddress>
+    <copyright>(c) copyright - Not sure??</copyright>
+    <url>http://oceancolor.gsfc.nasa.gov/seadas</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+
+    <dependency>
+        <module>beam-visat-rcp</module>
+    </dependency>
+    <dependency>
+        <module>beam-help</module>
+        <optional>true</optional>
+    </dependency>
+
+    <categories>System,Application,VISAT</categories>
+
+    <extension point="ceres-core:applications">
+        <application id="SeaDAS" class="org.esa.beam.visat.VisatMain"/>
+    </extension>
+
+</module>

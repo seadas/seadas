@@ -15,10 +15,11 @@ Installation Guide
 
 2.  Add `$JAVA_HOME/bin`, `$MAVEN_HOME/bin` and `$GIT_HOME/bin` to your `PATH`. (Windows:  `%JAVA_HOME%\bin`, `%MAVEN_HOME%\bin` and `%GIT_HOME%\bin`)
 
-3.  Checkout Ceres using `git`:
+3.  Checkout Ceres, BEAM abd SeaDAS using `git`:
 
         git clone https://github.com/bcdev/ceres.git $SEADAS/ceres
-        git clone https://github.com/seadas/seadas7.git $SEADAS/beam
+	    git clone git://github.com/bcdev/beam.git $SEADAS/beam
+        git clone https://github.com/seadas/seadas.git $SEADAS/seadas
 
 4.  Build Ceres from source and install in local Maven repository: 
 
@@ -30,11 +31,18 @@ Installation Guide
         cd $SEADAS/beam
         mvn install
 
+6.  Build SeaDAS from source and install in local Maven repository:
+
+        cd $SEADAS/seadas
+        mvn install
+
 6.  Open up the project in your IDE:
     *   Netbeans:
         +   *Menu File* -> *Open Project* and select ceres
         +   Check the *Open Required Projects* box
-        +   *Menu File* -> *Open Project* and select beam.  
+        +   *Menu File* -> *Open Project* and select beam
+        +   Check the *Open Required Projects* box
+        +   *Menu File* -> *Open Project* and select seadas
         +   Check the *Open Required Projects* box
         +   Set the *SeaDAS Application* as the main project
     *   IntelliJ IDEA:
