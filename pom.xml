@@ -48,6 +48,7 @@
         <module>seadas-app</module>
         <module>seadas-bootstrap</module>
         <module>seadas-sandbox</module>
+        <module>seadas-obpg-reader</module>
         <module>seadas-obpgl3smi-reader</module>
 
     </modules>
