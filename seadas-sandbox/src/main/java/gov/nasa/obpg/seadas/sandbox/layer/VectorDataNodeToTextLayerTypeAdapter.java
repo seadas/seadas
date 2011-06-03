@@ -1,4 +1,4 @@
-package gov.nasa.obpg.seadas.sandbox;
+package gov.nasa.obpg.seadas.sandbox.layer;
 
 import com.bc.ceres.core.ExtensionFactory;
 import com.bc.ceres.glayer.LayerTypeRegistry;

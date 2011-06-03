@@ -25,15 +25,35 @@
     <extension point="ceres-core:adapters">
         <adapter>
             <extensibleType>org.esa.beam.framework.datamodel.VectorDataNode</extensibleType>
-            <extensionFactory>gov.nasa.obpg.seadas.sandbox.VectorDataNodeToTextLayerTypeAdapter</extensionFactory>
+            <extensionFactory>gov.nasa.obpg.seadas.sandbox.layer.VectorDataNodeToTextLayerTypeAdapter</extensionFactory>
         </adapter>
     </extension>
 
     <extension point="beam-ui:layerEditors">
         <layerEditor>
-            <layerType>gov.nasa.obpg.seadas.sandbox.TextLayer</layerType>
-            <editor>gov.nasa.obpg.seadas.sandbox.TextLayerEditor</editor>
+            <layerType>gov.nasa.obpg.seadas.sandbox.layer.TextLayer</layerType>
+            <editor>gov.nasa.obpg.seadas.sandbox.layer.TextLayerEditor</editor>
         </layerEditor>
     </extension>
+
+      <extension point="beam-ui:toolViews">
+
+        <toolView>
+            <id>gov.nasa.obpg.seadas.sandbox.toolwindow.AudioPlayerToolView</id>
+            <class>gov.nasa.obpg.seadas.sandbox.toolwindow.AudioPlayerToolView</class>
+            <title>Audio Player</title>
+            <tabTitle>Audio Player</tabTitle>
+            <!--<mnemonic>P</mnemonic>-->
+            <!--<accelerator>ctrl alt P</accelerator>-->
+            <!--<smallIcon>/org/esa/beam/resources/images/icons/RsProduct16.gif</smallIcon>-->
+            <!--<largeIcon>/org/esa/beam/resources/images/icons/RsProduct24.gif</largeIcon>-->
+            <!--<helpId>productBrowser</helpId>-->
+            <description>Produce audio noise for selected pixel.</description>
+            <initState>DOCKED</initState>
+            <initSide>WEST</initSide>
+            <initIndex>0</initIndex>
+        </toolView>
+
+     </extension>
 
 </module>

@@ -1,4 +1,4 @@
-package gov.nasa.obpg.seadas.sandbox;
+package gov.nasa.obpg.seadas.sandbox.layer;
 
 import org.esa.beam.framework.ui.layer.AbstractLayerEditor;
 

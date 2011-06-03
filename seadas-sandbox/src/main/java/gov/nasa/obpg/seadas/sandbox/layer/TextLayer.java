@@ -1,4 +1,4 @@
-package gov.nasa.obpg.seadas.sandbox;
+package gov.nasa.obpg.seadas.sandbox.layer;
 
 import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.grender.Rendering;
