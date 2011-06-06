@@ -33,6 +33,7 @@
         <beam.version>4.10-SNAPSHOT</beam.version>
         <ceres.version>0.13-SNAPSHOT</ceres.version>
         <seadas.version>7.0-SNAPSHOT</seadas.version>
+        <netcdf.version>4.2.20</netcdf.version>
     </properties>
 
 
@@ -141,9 +142,30 @@
             <!-- BEAM System Level Module ############################################# -->
             <dependency>
                 <groupId>org.esa.beam</groupId>
+                <artifactId>beam-core</artifactId>
+                <version>${beam.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-gpf</artifactId>
+                <version>${beam.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-ui</artifactId>
+                <version>${beam.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esa.beam</groupId>
                 <artifactId>beam-visat-rcp</artifactId>
                 <version>${beam.version}</version>
             </dependency>
+            <dependency>
+                <groupId>edu.ucar</groupId>
+                <artifactId>netcdf</artifactId>
+                <version>${netcdf.version}</version>
+            </dependency>
+
 
 
             <!-- Test Libraries ############################################# -->
