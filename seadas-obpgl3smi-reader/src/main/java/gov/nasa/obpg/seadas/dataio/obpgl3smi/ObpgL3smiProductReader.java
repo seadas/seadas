@@ -23,13 +23,11 @@ import org.esa.beam.framework.dataio.AbstractProductReader;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.BitmaskDef;
+import org.esa.beam.framework.datamodel.CrsGeoCoding;
+import org.esa.beam.framework.datamodel.GeoCoding;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
-import org.esa.beam.framework.datamodel.GeoCoding;
-import org.esa.beam.framework.datamodel.CrsGeoCoding;
-import org.esa.beam.framework.dataop.maptransf.Datum;
 import org.esa.beam.util.io.CsvReader;
-import org.geotools.data.shapefile.shp.xml.Metadata;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -39,18 +37,15 @@ import org.opengis.referencing.operation.TransformException;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Section;
-import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.SocketOptions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,7 +88,7 @@ public class ObpgL3smiProductReader extends AbstractProductReader {
             throw new ProductIOException(e.getMessage());
         }
     }
-    
+
     @Override
     public void close() throws IOException {
         if (ncfile != null) {
@@ -103,11 +98,11 @@ public class ObpgL3smiProductReader extends AbstractProductReader {
 
     @Override
     protected void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth,
-                                                       int sourceHeight,
-                                                       int sourceStepX, int sourceStepY, Band destBand, int destOffsetX,
-                                                       int destOffsetY, int destWidth, int destHeight,
-                                                       ProductData destBuffer,
-                                                       ProgressMonitor pm) throws IOException {
+                                          int sourceHeight,
+                                          int sourceStepX, int sourceStepY, Band destBand, int destOffsetX,
+                                          int destOffsetY, int destWidth, int destHeight,
+                                          ProductData destBuffer,
+                                          ProgressMonitor pm) throws IOException {
 
         if (mustFlip) {
             sourceOffsetY = destBand.getSceneRasterHeight() - (sourceOffsetY + sourceHeight);
@@ -125,14 +120,14 @@ public class ObpgL3smiProductReader extends AbstractProductReader {
             throw exception;
         }
     }
-    
+
     private void readBandData(Variable variable, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
                               int sourceHeight, ProductData destBuffer, ProgressMonitor pm) throws IOException,
-                                                                                                   InvalidRangeException {
+            InvalidRangeException {
 
-        final int[] start = new int[] {sourceOffsetY, sourceOffsetX};
-        final int[] stride = new int[] {1, 1};
-        final int[] count = new int[] {1, sourceWidth};
+        final int[] start = new int[]{sourceOffsetY, sourceOffsetX};
+        final int[] stride = new int[]{1, 1};
+        final int[] count = new int[]{1, sourceWidth};
         Object buffer = destBuffer.getElems();
 
         int targetIndex = 0;
