@@ -1,5 +1,5 @@
-SeaDAS
-======
+SeaDAS, version ${seadas.version}
+=================================
 
 Installation Guide
 ------------------
