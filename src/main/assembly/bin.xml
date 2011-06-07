@@ -102,9 +102,7 @@
     </fileSets>
 
     <moduleSets>
-        <!--
-            Man module-set that places all SeaDAS  Ceres Launcher in the SeaDAS "bin" folder.
-        -->
+
         <moduleSet>
 
             <excludes>
