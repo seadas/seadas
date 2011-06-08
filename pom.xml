@@ -34,6 +34,7 @@
         <ceres.version>0.13-SNAPSHOT</ceres.version>
         <seadas.version>7.0-SNAPSHOT</seadas.version>
         <netcdf.version>4.2.20</netcdf.version>
+        <install4j.project>seadas-installer/seadas.install4j</install4j.project>
     </properties>
 
 
