@@ -9,15 +9,15 @@ import javax.swing.*;
  *
  * @author Danny Knowles
  */
-public class PixelInfoToolView extends AbstractToolView {
+public class PixelTrackerToolView extends AbstractToolView {
 
-    public PixelInfoToolView() {
+    public PixelTrackerToolView() {
     }
 
     @Override
     protected JComponent createControl() {
-        PixelInfo pixelInfo = new PixelInfo();
-        return pixelInfo.getContentPane();
+        PixelTracker pixelTracker = new PixelTracker();
+        return pixelTracker.getContentPane();
     }
 
 }

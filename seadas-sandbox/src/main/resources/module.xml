@@ -55,8 +55,8 @@
         </toolView>
 
         <toolView>
-            <id>gov.nasa.obpg.seadas.sandbox.toolwindow.PixelInfoToolView</id>
-            <class>gov.nasa.obpg.seadas.sandbox.toolwindow.PixelInfoToolView</class>
+            <id>gov.nasa.obpg.seadas.sandbox.toolwindow.PixelTrackerToolView</id>
+            <class>gov.nasa.obpg.seadas.sandbox.toolwindow.PixelTrackerToolView</class>
             <title>Pixel Info</title>
             <tabTitle>Pixel Info</tabTitle>
             <!--<mnemonic>P</mnemonic>-->

@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class PixelInfo implements ActionListener {
+class PixelTracker implements ActionListener {
 
     private JTextField jtfPixelLat;
     private JTextField jtfPixelLon;
@@ -19,7 +19,7 @@ class PixelInfo implements ActionListener {
     private JPanel contentPane;
     private JLabel jlabCoord;
 
-    public PixelInfo() {
+    public PixelTracker() {
         JLabel jlabPixelLat = new JLabel("Lat: ");
         JLabel jlabPixelLon = new JLabel("Lon: ");
         JLabel jlabPixelVal = new JLabel("Val: ");
@@ -68,7 +68,7 @@ class PixelInfo implements ActionListener {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 
-                PixelInfo pixelInfo = new PixelInfo();
+                PixelTracker pixelTracker = new PixelTracker();
                 JFrame jfrm = new JFrame("Pixel Info");
 
                 jfrm.setLayout(new FlowLayout());
@@ -77,7 +77,7 @@ class PixelInfo implements ActionListener {
 
                 jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-                jfrm.setContentPane(pixelInfo.getContentPane());
+                jfrm.setContentPane(pixelTracker.getContentPane());
                 jfrm.setVisible(true);
             }
         });
