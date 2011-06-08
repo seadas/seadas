@@ -80,7 +80,6 @@ public class ObpgL3smiProductReader extends AbstractProductReader {
             variableMap = new HashMap<Band, Variable>();
 
             product = getL3SmiProduct(inFile);
-            System.out.println("At end of ObpgL3smiProductReader.readProductNodesImpl() GeoCoding = " + product.getGeoCoding().toString());
             return product;
         } catch (ProductIOException pe) {
             throw new ProductIOException(pe.getMessage());

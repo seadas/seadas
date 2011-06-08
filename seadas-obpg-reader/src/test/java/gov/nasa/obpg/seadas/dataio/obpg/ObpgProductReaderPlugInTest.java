@@ -21,6 +21,9 @@ import org.esa.beam.util.io.BeamFileFilter;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import static org.junit.Assert.*;
 
 public class ObpgProductReaderPlugInTest {
@@ -35,18 +38,17 @@ public class ObpgProductReaderPlugInTest {
     @Test
     public void testDefaultFileExtensions() {
         final String[] fileExtensions = plugIn.getDefaultFileExtensions();
-
         assertNotNull(fileExtensions);
         assertEquals(8, fileExtensions.length);
-
-        assertEquals(".hdf", fileExtensions[0]);
-        assertEquals(".L2", fileExtensions[1]);
-        assertEquals(".L2_LAC", fileExtensions[2]);
-        assertEquals(".L2_LAC_OC", fileExtensions[3]);
-        assertEquals(".L2_LAC_SST", fileExtensions[4]);
-        assertEquals(".L2_LAC_SST4", fileExtensions[5]);
-        assertEquals(".L2_MLAC", fileExtensions[6]);
-        assertEquals(".L2_MLAC_OC", fileExtensions[7]);
+        HashSet<String> extensionSet = new HashSet<String>(Arrays.asList(fileExtensions));
+        assertTrue("Could not find \".hdf\" in file extensions", extensionSet.contains(".hdf"));
+        assertTrue("Could not find \".L2\" in file extensions", extensionSet.contains(".L2"));
+        assertTrue("Could not find \".L2_LAC\" in file extensions", extensionSet.contains(".L2_LAC"));
+        assertTrue("Could not find \".L2_LAC_OC\" in file extensions", extensionSet.contains(".L2_LAC_OC"));
+        assertTrue("Could not find \".L2_LAC_SST\" in file extensions", extensionSet.contains(".L2_LAC_SST"));
+        assertTrue("Could not find \".L2_LAC_SST4\" in file extensions", extensionSet.contains(".L2_LAC_SST4"));
+        assertTrue("Could not find \".L2_MLAC\" in file extensions", extensionSet.contains(".L2_MLAC"));
+        assertTrue("Could not find \".L2_MLAC_OC\" in file extensions", extensionSet.contains(".L2_MLAC_OC"));
     }
 
     @Test
