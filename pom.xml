@@ -49,7 +49,6 @@
 
         <module>seadas-app</module>
         <module>seadas-obpg-reader</module>
-        <module>seadas-obpgl3smi-reader</module>
 
         <!--
             The following are supportive modules, they are not part of the distribution
