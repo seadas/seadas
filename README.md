@@ -56,7 +56,7 @@ Installation Guide
     *   Eclipse:
         +   Build Eclipse project files for BEAM:
 
-                cd $SEADAS/beam
+                cd $SEADAS/seadas
                 mvn eclipse:eclipse
         +   Delete the created `.project` file in the main project folder.
         +   Make sure that `M2_REPO` classpath variable is set:
@@ -65,15 +65,15 @@ Installation Guide
             -   Select *Folder...* and choose the location of your Maven local repository, e.g `~/.m2/repository`. On Windows Vista the default Maven repository is `C:\Users\<Username>\.m2\repository`
         +   Click *Main Menu* -> *File* -> *Import*
         +   Select *General* -> *Existing Project into Workspace*
-        +   Select *Root Directory* `$SEADAS/beam`
+        +   Select *Root Directory* `$SEADAS/seadas`
         +   Click *Finish*
         
 7. Use the following configuration to run BEAM/VISAT:
     *   Main class: `com.bc.ceres.launcher.Launcher`
-    *   VM parameters: `-Xmx1024M -Dceres.context=seadas`
+    *   VM parameters: `-Xmx2gM -Dceres.context=beam`
     *   Program parameters: `none`
-    *   Working directory: `$SEADAS/beam` (replace $SEADAS with your actual path)
-    *   Use classpath of module (project in Eclipse): `beam-bootstrap`
+    *   Working directory: `$SEADAS/seadas` (replace $SEADAS with your actual path)
+    *   Use classpath of module (project in Eclipse): `seadas-bootstrap`
 
 8. Once you have all the configuration done, hit *Make Project*. Let it rebuild and then *Run*
 
