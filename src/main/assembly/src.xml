@@ -1,0 +1,31 @@
+<!-- SeaDAS source distribution -->
+<assembly>
+    <id>src</id>
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <excludes>
+                <exclude>**/.cvsignore</exclude>
+                <exclude>**/.svnignore</exclude>
+                <exclude>**/.gitignore</exclude>
+                <exclude>**/*.idea</exclude>
+                <exclude>**/*.ipr</exclude>
+                <exclude>**/*.iml</exclude>
+                <exclude>**/*.iws</exclude>
+                <exclude>**/.project</exclude>
+                <exclude>**/.classpath</exclude>
+                <exclude>**/.settings</exclude>
+                <exclude>**/target/**</exclude>
+                <exclude>**/CVS/**</exclude>
+                <exclude>.git/**</exclude>
+                <exclude>modules/**</exclude>
+                <exclude>testdata/**</exclude>
+                <exclude>log/**</exclude>
+                <exclude>seadas-installer/**</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+</assembly>

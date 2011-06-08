@@ -1,0 +1,183 @@
+<!--
+
+    SeaDAS binary distribution\
+
+-->
+
+
+<assembly>
+    <id>bin</id>
+
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <formats>
+        <format>dir</format>
+    </formats>
+
+
+    <!--
+        The following are single files that will be copied to the output directory.
+     -->
+    <files>
+        <file>
+            <source>README.md</source>
+            <lineEnding>unix</lineEnding>
+            <filtered>true</filtered>
+        </file>
+        <file>
+            <source>CHANGELOG.txt</source>
+            <lineEnding>unix</lineEnding>
+            <filtered>true</filtered>
+        </file>
+        <file>
+            <source>VERSION.txt</source>
+            <lineEnding>unix</lineEnding>
+            <filtered>true</filtered>
+        </file>
+        <file>
+            <source>LICENSE.txt</source>
+            <lineEnding>unix</lineEnding>
+        </file>
+    </files>
+
+    <!--
+        The following are file-sets that will be copied to the output directory.
+     -->
+    <fileSets>
+
+        <fileSet>
+            <directory>src/main/config</directory>
+            <outputDirectory>config</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/main/licenses</directory>
+            <outputDirectory>licenses</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/main/bin/common</directory>
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+                <include>splash.png</include>
+            </includes>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/main/bin/win</directory>
+            <outputDirectory>bin</outputDirectory>
+            <lineEnding>dos</lineEnding>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <includes>
+                <include>*.bat</include>
+            </includes>
+            <filtered>true</filtered>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/main/bin/linux</directory>
+            <outputDirectory>bin</outputDirectory>
+            <lineEnding>unix</lineEnding>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <includes>
+                <include>*.sh</include>
+            </includes>
+            <filtered>true</filtered>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/main/bin/macosx</directory>
+            <outputDirectory>bin</outputDirectory>
+            <lineEnding>unix</lineEnding>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <includes>
+                <include>*.command</include>
+            </includes>
+            <filtered>true</filtered>
+        </fileSet>
+
+    </fileSets>
+
+    <moduleSets>
+
+        <moduleSet>
+
+            <excludes>
+                <!-- The following are excluded, because they are not required by the final build. -->
+                <exclude>gov.nasa.obpg.seadas:seadas-installer</exclude>
+                <exclude>gov.nasa.obpg.seadas:seadas-sandbox</exclude>
+                <exclude>gov.nasa.obpg.seadas:seadas-bootstrap</exclude>
+            </excludes>
+
+            <binaries>
+                <outputDirectory>modules</outputDirectory>
+                <unpack>false</unpack>
+                <outputFileNameMapping>${module.artifactId}-${module.version}.${module.extension}
+                </outputFileNameMapping>
+                <includeDependencies>false</includeDependencies>
+
+                <!--
+                   Each SeaDAS module has dependencies to other modules, in particular the Ceres and BEAM modules.
+                   These dependencies are handles here and depending on their type, decisions will be made in
+                   which output directory to place them..
+                -->
+                <dependencySets>
+
+                    <!--
+                        Dependency-set that places the Ceres Launcher in the SeaDAS "bin" folder.
+                    -->
+                    <dependencySet>
+                        <outputDirectory>bin</outputDirectory>
+                        <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+                        <includes>
+                            <include>com.bc.ceres:ceres-launcher</include>
+                        </includes>
+                    </dependencySet>
+
+                    <!--
+                        Dependency-set that selects 3rd-party JARs from declared dependencies
+                        and places them in the SeaDAS "lib" folder.
+                    -->
+                    <dependencySet>
+                        <outputDirectory>lib</outputDirectory>
+                        <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}
+                        </outputFileNameMapping>
+                        <excludes>
+                            <!-- Exclude all module JARs, because we already put them into "modules"-->
+                            <exclude>gov.nasa.obpg.seadas:seadas-*</exclude>
+                            <exclude>org.esa.beam:beam-*</exclude>
+                            <exclude>com.bc.ceres:ceres-*</exclude>
+                            <exclude>ncsa.hdf:*</exclude>
+                        </excludes>
+                    </dependencySet>
+
+                    <!--
+                        Dependency-set that selects module JARs from declared dependencies,
+                        namely Ceres and BEAM modules, and places them in the SeaDAS "modules" folder.
+                    -->
+                    <dependencySet>
+                        <outputDirectory>modules</outputDirectory>
+                        <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}
+                        </outputFileNameMapping>
+                        <includes>
+                            <!-- Include all Ceres and BEAM modules -->
+                            <include>org.esa.beam:*</include>
+                            <include>com.bc.ceres:*</include>
+                        </includes>
+                        <excludes>
+                            <!-- Excluded, because SeaDAS uses its own version of the OBPG reader -->
+                            <exclude>org.esa.beam:beam-obpg-reader</exclude>
+                            <!-- Excluded, because we have already ceres-launcher to "bin" -->
+                            <exclude>com.bc.ceres:ceres-launcher</exclude>
+                            <!-- TODO - add more BEAM modules that you don't want in SeaDAS -->
+                        </excludes>
+                    </dependencySet>
+                </dependencySets>
+            </binaries>
+        </moduleSet>
+    </moduleSets>
+
+</assembly>

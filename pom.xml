@@ -33,6 +33,8 @@
         <beam.version>4.10-SNAPSHOT</beam.version>
         <ceres.version>0.13-SNAPSHOT</ceres.version>
         <seadas.version>7.0-SNAPSHOT</seadas.version>
+        <netcdf.version>4.2.20</netcdf.version>
+        <install4j.project>seadas-installer/seadas.install4j</install4j.project>
     </properties>
 
 
@@ -46,6 +48,13 @@
     <modules>
 
         <module>seadas-app</module>
+        <module>seadas-obpg-reader</module>
+        <module>seadas-obpgl3smi-reader</module>
+
+        <!--
+            The following are supportive modules, they are not part of the distribution
+        -->
+        <module>seadas-installer</module>
         <module>seadas-bootstrap</module>
         <module>seadas-sandbox</module>
 
@@ -139,9 +148,30 @@
             <!-- BEAM System Level Module ############################################# -->
             <dependency>
                 <groupId>org.esa.beam</groupId>
+                <artifactId>beam-core</artifactId>
+                <version>${beam.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-gpf</artifactId>
+                <version>${beam.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-ui</artifactId>
+                <version>${beam.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esa.beam</groupId>
                 <artifactId>beam-visat-rcp</artifactId>
                 <version>${beam.version}</version>
             </dependency>
+            <dependency>
+                <groupId>edu.ucar</groupId>
+                <artifactId>netcdf</artifactId>
+                <version>${netcdf.version}</version>
+            </dependency>
+
 
 
             <!-- Test Libraries ############################################# -->
@@ -326,70 +356,27 @@
     </reporting>
 
     <developers>
+
         <developer>
-            <id>marcop</id>
-            <name>Marco Peters</name>
-            <email>marco.peters@brockmann-consult.de</email>
-            <organization>Brockmann Consult</organization>
+            <id>dshea</id>
+            <name>Don Shea</name>
+            <email>don.shea@nasa.gov</email>
+            <organization>NASA OBPG</organization>
             <roles>
                 <role>Java Developer</role>
             </roles>
         </developer>
+
         <developer>
-            <id>marcoz</id>
-            <name>Marco Zuehlke</name>
-            <email>marco.zuehlke@brockmann-consult.de</email>
-            <organization>Brockmann Consult</organization>
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>norman</id>
+            <id>forman</id>
             <name>Norman Fomferra</name>
             <email>norman.fomferra@brockmann-consult.de</email>
-            <organization>Brockmann Consult</organization>
-            <roles>
-                <role>Project Manager</role>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>ralf</id>
-            <name>Ralf Quast</name>
-            <email>ralf.quast@brockmann-consult.de</email>
-            <organization>Brockmann Consult</organization>
+            <organization>Brockmann Consult GmbH</organization>
             <roles>
                 <role>Java Developer</role>
             </roles>
         </developer>
-        <developer>
-            <id>sabine</id>
-            <name>Sabine Embacher</name>
-            <email>sabine.embacher@brockmann-consult.de</email>
-            <organization>Brockmann Consult</organization>
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>tom</id>
-            <name>Thomas Block</name>
-            <email>thomas.block@brockmann-consult.de</email>
-            <organization>Brockmann Consult</organization>
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>thomas</id>
-            <name>Thomas Storm</name>
-            <email>thomas.storm@brockmann-consult.de</email>
-            <organization>Brockmann Consult</organization>
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
+
     </developers>
 
 </project>
