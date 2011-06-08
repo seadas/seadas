@@ -113,19 +113,23 @@ public class SeadasOcsswTestDirRunner extends BlockJUnit4ClassRunner {
         try {
             final ArrayList<File> fileList = new ArrayList<File>();
             while (true) {
-                final String filePath = reader.readLine();
-                if (filePath == null) {
+                String line = reader.readLine();
+                if (line == null) {
                     break;
                 }
-                File file = new File(testDir, filePath.trim());
-                if (!file.exists()) {
-                    if (failFast) {
-                        throw new IOException("Test data file not found: " + file);
-                    } else {
-                        System.err.println("Test data file not found: " + file);
+                line = line.trim();
+                if (!line.isEmpty() && !line.startsWith("#")) {
+                    File file = new File(testDir, line);
+                    if (!file.exists()) {
+                        String message = "Test data file not found: " + file;
+                        if (failFast) {
+                            throw new IOException(message);
+                        } else {
+                            System.err.println(message);
+                        }
                     }
+                    fileList.add(file);
                 }
-                fileList.add(file);
             }
             return fileList;
         } finally {

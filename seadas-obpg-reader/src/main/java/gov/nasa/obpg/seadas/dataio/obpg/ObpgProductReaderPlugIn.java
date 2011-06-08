@@ -18,15 +18,16 @@ package gov.nasa.obpg.seadas.dataio.obpg;
 import org.esa.beam.framework.dataio.DecodeQualification;
 import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
-import org.esa.beam.util.StringUtils;
 import org.esa.beam.util.io.BeamFileFilter;
-import org.esa.beam.util.io.FileUtils;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
 
@@ -42,21 +43,40 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
     public static final String READER_DESCRIPTION = "NASA Ocean Color (OBPG) Products";
     public static final String FORMAT_NAME = "NASA-OBPG";
 
-    private static final String[] magicStrings = {
-            "MERIS Level-2 Data",
-            "MODISA Level-2 Data",
-            "MODIST Level-2 Data",
-            "SeaWiFS Level-2 Data",
+    private static final String[] supportedProductTypes = {
+            "Aquarius Level 1A Data",
+            "Aquarius Level 2 Data",
+            "Aquarius Level-3 Binned Data",
+            "CZCS Level-1A Data",
+            "CZCS Level-1B",          // todo: discuss the missing " Data"
             "CZCS Level-2 Data",
-            "OCTS Level-2 Data",
-            "SeaWIFS Level-3 Standard Mapped Image",
+            "CZCS Level-3 Standard Mapped Image",
+            "HMODISA Level-2 Data",                     // todo: discuss the "H"
             "HMODISA Level-3 Standard Mapped Image",
             "HMODIST Level-3 Standard Mapped Image",
-            "OCTS Level-3 Standard Mapped Image",
-            "CZCS Level-3 Standard Mapped Image",
+            "MERIS Level-2 Data",
+            "MODISA Level-1 Browse Data",
+            "MODISA Level-2 Data",
+            "MODIST Level-2 Data",
+            "MODISA Level-3 Binned Data",
+            "MOS Level-1B",                 // todo: discuss the missing " Data"
+            "MOS Level-2 Data",
+            "OSMI Level-1A Data",
+            "OSMI Level-1B",                // todo: discuss the missing " Data"
+            "OSMI Level-2 Data",
             "OCM2 Level-3 Standard Mapped Image",
-            "VIIRS Level-3 Standard Mapped Image"
+            "OCTS Level-1A GAC Data",
+            "OCTS Level-2 Data",
+            "OCTS Level-3 Standard Mapped Image",
+            "SeaWiFS Level-1B",                      // todo: discuss the missing " Data"
+            "SeaWiFS Level-1A Data",
+            "SeaWiFS Level-2 Data",
+            "SeaWiFS Level-3 Binned Data",
+            "SeaWiFS Level-3 Standard Mapped Image",
+            "VIIRS Level-3 Standard Mapped Image",
+            "Level-3 Standard Mapped Image",      // todo: discuss the blank in "Title" value of smigen/Q2007001_B1_1D.L3M_SCI!
     };
+    private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
     /**
      * Checks whether the given object is an acceptable input for this product reader and if so, the method checks if it
@@ -65,27 +85,46 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
     @Override
     public DecodeQualification getDecodeQualification(Object input) {
         final File file = getInputFile(input);
+        if (file == null) {
+            return DecodeQualification.UNABLE;
+        }
+        if (!file.exists()) {
+            // Leave for debugging:
+            // System.out.println("# File not found: " + file);
+            return DecodeQualification.UNABLE;
+        }
+        if (!file.isFile()) {
+            // Leave for debugging:
+            // System.out.println("# Not a file: " + file);
+            return DecodeQualification.UNABLE;
+        }
         NetcdfFile ncfile = null;
         try {
-            if (file == null || !file.isFile()) {
-                return DecodeQualification.UNABLE;
-            }
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
                 if (titleAttribute != null) {
                     final String value = titleAttribute.getStringValue();
                     if (value != null) {
-                        final String title = value.trim();
-                        for (String magicString : magicStrings) {
-                            if (title.contains(magicString)) {
-                                return DecodeQualification.INTENDED;
-                            }
+                        // Leave for debugging:
+                        // System.out.println(file);
+                        // System.out.println("Title = [" + value + "]");
+                        final String productType = value.trim();
+                        if (supportedProductTypeSet.contains(productType)) {
+                            return DecodeQualification.INTENDED;
                         }
                     }
+                } else {
+                    // Leave for debugging:
+                    // System.out.println("# Missing attribute 'Title': " + file);
                 }
+            } else {
+                // Leave for debugging:
+                // System.out.println("# Can't open as NetCDF: " + file);
             }
-        } catch (Exception ignore) {
+        } catch (IOException ignore) {
+            // Leave for debugging:
+            // System.out.println("# I/O exception caught: " + file);
         } finally {
             if (ncfile != null) {
                 try {
@@ -160,7 +199,6 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
      * <p> In a GUI, the description returned could be used as tool-tip text.
      *
      * @param locale the local for the given decription string, if <code>null</code> the default locale is used
-     *
      * @return a textual description of this product reader/writer
      */
     @Override
