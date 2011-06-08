@@ -49,7 +49,7 @@
             <!--<largeIcon>/org/esa/beam/resources/images/icons/RsProduct24.gif</largeIcon>-->
             <!--<helpId>productBrowser</helpId>-->
             <description>Produce audio noise for selected pixel.</description>
-            <initState>DOCKED</initState>
+            <initState>FLOATING</initState>
             <initSide>WEST</initSide>
             <initIndex>0</initIndex>
         </toolView>
@@ -65,7 +65,7 @@
             <!--<largeIcon>/org/esa/beam/resources/images/icons/RsProduct24.gif</largeIcon>-->
             <!--<helpId>productBrowser</helpId>-->
             <description>example for pixel tracker</description>
-            <initState>DOCKED</initState>
+            <initState>FLOATING</initState>
             <initSide>WEST</initSide>
             <initIndex>0</initIndex>
         </toolView>
@@ -83,7 +83,7 @@
               <!--<largeIcon>/org/esa/beam/resources/images/icons/RsProduct24.gif</largeIcon>-->
               <!--<helpId>productBrowser</helpId>-->
               <description>example for tabs</description>
-              <initState>DOCKED</initState>
+              <initState>FLOATING</initState>
               <initSide>WEST</initSide>
               <initIndex>0</initIndex>
           </toolView>
