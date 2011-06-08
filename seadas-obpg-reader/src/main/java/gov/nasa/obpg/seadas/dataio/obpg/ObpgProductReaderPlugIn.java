@@ -48,7 +48,14 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "MODIST Level-2 Data",
             "SeaWiFS Level-2 Data",
             "CZCS Level-2 Data",
-            "OCTS Level-2 Data"
+            "OCTS Level-2 Data",
+            "SeaWIFS Level-3 Standard Mapped Image",
+            "HMODISA Level-3 Standard Mapped Image",
+            "HMODIST Level-3 Standard Mapped Image",
+            "OCTS Level-3 Standard Mapped Image",
+            "CZCS Level-3 Standard Mapped Image",
+            "OCM2 Level-3 Standard Mapped Image",
+            "VIIRS Level-3 Standard Mapped Image"
     };
 
     /**
@@ -61,9 +68,6 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
         NetcdfFile ncfile = null;
         try {
             if (file == null || !file.isFile()) {
-                return DecodeQualification.UNABLE;
-            }
-            if (!StringUtils.contains(getDefaultFileExtensions(), FileUtils.getExtension(file))) {
                 return DecodeQualification.UNABLE;
             }
             if (NetcdfFile.canOpen(file.getPath())) {

@@ -17,14 +17,7 @@ package gov.nasa.obpg.seadas.dataio.obpg;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.BitmaskDef;
-import org.esa.beam.framework.datamodel.FlagCoding;
-import org.esa.beam.framework.datamodel.MetadataAttribute;
-import org.esa.beam.framework.datamodel.MetadataElement;
-import org.esa.beam.framework.datamodel.PixelGeoCoding;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.nc2.Attribute;
@@ -56,6 +49,9 @@ public class ObpgUtils {
     static final String SCAN_LINE_ATTRIBUTES = "Scan_Line_Attributes";
     static final String SCAN_LINE_ATTRIBUTES_GROUP = "Scan-Line Attributes";
 
+    static final String KEY_L3SMI_HEIGHT = "Number of Lines";
+    static final String KEY_L3SMI_WIDTH = "Number of Columns";
+
     MetadataAttribute attributeToMetadata(Attribute attribute) {
         final int productDataType = getProductDataType(attribute.getDataType(), false, false);
         if (productDataType != -1) {
@@ -73,11 +69,11 @@ public class ObpgUtils {
         }
         return null;
     }
-    
+
     public static int getProductDataType(Variable variable) {
         return getProductDataType(variable.getDataType(), variable.isUnsigned(), true);
     }
-    
+
     public static int getProductDataType(DataType dataType, boolean unsigned, boolean rasterDataOnly) {
         if (dataType == DataType.BYTE) {
             return unsigned ? ProductData.TYPE_UINT8 : ProductData.TYPE_INT8;
@@ -112,12 +108,21 @@ public class ObpgUtils {
     }
 
     public Product createProductBody(List<Attribute> globalAttributes) throws ProductIOException {
-        String productName = getStringAttribute(KEY_NAME, globalAttributes);
-        String productType = "OBPG " + getStringAttribute(KEY_TYPE, globalAttributes);
-        int sceneRasterWidth = getIntAttribute(KEY_WIDTH, globalAttributes);
-        int sceneRasterHeight = getIntAttribute(KEY_HEIGHT, globalAttributes);
+        return createProduct(globalAttributes, KEY_WIDTH, KEY_HEIGHT);
+    }
 
-        final Product product = new Product(productName, productType, sceneRasterWidth, sceneRasterHeight);
+    public Product createL3SmiProductBody(List<Attribute> globalAttributes) throws ProductIOException {
+        return createProduct(globalAttributes, KEY_L3SMI_WIDTH, KEY_L3SMI_HEIGHT);
+    }
+
+    private Product createProduct(List<Attribute> globalAttributes, String keyWidth, String keyHeight) throws ProductIOException {
+        String productName = getStringAttribute(KEY_NAME, globalAttributes);
+        String productType = getProductType(globalAttributes);
+
+        int sceneWidth = getIntAttribute(keyWidth, globalAttributes);
+        int sceneHeight = getIntAttribute(keyHeight, globalAttributes);
+
+        final Product product = new Product(productName, productType, sceneWidth, sceneHeight);
         product.setDescription(productName);
 
         ProductData.UTC utcStart = getUTCAttribute(KEY_START_TIME, globalAttributes);
@@ -131,21 +136,25 @@ public class ObpgUtils {
         return product;
     }
 
+    public String getProductType(List<Attribute> globalAttributes) throws ProductIOException {
+        return "OBPG " + getStringAttribute(KEY_TYPE, globalAttributes);
+    }
+
     private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
         Attribute attribute = findAttribute(key, globalAttributes);
         if (attribute != null) {
             String timeString = attribute.getStringValue().trim();
             final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
             try {
-                final Date date= dateFormat.parse(timeString);
-                String milliSeconds = timeString.substring(timeString.length()-3);
-                return ProductData.UTC.create(date, Long.parseLong(milliSeconds)*1000);
+                final Date date = dateFormat.parse(timeString);
+                String milliSeconds = timeString.substring(timeString.length() - 3);
+                return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
             } catch (ParseException e) {
             }
         }
         return null;
     }
-    
+
     private String getStringAttribute(String key, List<Attribute> globalAttributes) throws ProductIOException {
         Attribute attribute = findAttribute(key, globalAttributes);
         if (attribute == null || attribute.getLength() != 1) {
@@ -154,7 +163,7 @@ public class ObpgUtils {
             return attribute.getStringValue().trim();
         }
     }
-    
+
     private int getIntAttribute(String key, List<Attribute> globalAttributes) throws ProductIOException {
         Attribute attribute = findAttribute(key, globalAttributes);
         if (attribute == null) {
@@ -163,11 +172,11 @@ public class ObpgUtils {
             return attribute.getNumericValue(0).intValue();
         }
     }
-    
+
     private Attribute findAttribute(String name, List<Attribute> attributesList) {
         for (Attribute a : attributesList) {
             if (name.equals(a.getName()))
-            return a;
+                return a;
         }
         return null;
     }
@@ -183,7 +192,7 @@ public class ObpgUtils {
         if (endAttr != null) {
             endNodeAscending = "Ascending".equalsIgnoreCase(endAttr.getStringValue().trim());
         }
-        
+
         return (startNodeAscending && endNodeAscending);
     }
 
@@ -208,7 +217,16 @@ public class ObpgUtils {
             handleMetadataGroup(group, sensorBandParam);
         }
     }
-    
+
+    public void addL3SmiScientificMetadata(Product product, NetcdfFile ncFile) throws IOException {
+        Group root = ncFile.getRootGroup();
+        if (root != null) {
+            MetadataElement l3Data = getMetadataElementSave(product, "l3m_data");
+            handleMetadataGroup(root, l3Data);
+        }
+    }
+
+
     private void handleMetadataGroup(Group group, MetadataElement metadataElement) throws IOException {
         List<Variable> variables = group.getVariables();
         for (Variable variable : variables) {
@@ -217,11 +235,11 @@ public class ObpgUtils {
             Array array = variable.read();
             final ProductData data = ProductData.createInstance(dataType, array.getStorage());
             final MetadataAttribute attribute = new MetadataAttribute("data", data, true);
-            
+
             final MetadataElement sdsElement = new MetadataElement(name);
             sdsElement.addAttribute(attribute);
             metadataElement.addElement(sdsElement);
-            
+
             final List<Attribute> list = variable.getAttributes();
             for (Attribute hdfAttribute : list) {
                 final String attribName = hdfAttribute.getName();
@@ -235,8 +253,7 @@ public class ObpgUtils {
             }
         }
     }
-    
-    
+
 
     private MetadataElement getMetadataElementSave(Product product, String name) {
         final MetadataElement metadataElement = product.getMetadataRoot().getElement(name);
@@ -250,15 +267,14 @@ public class ObpgUtils {
         return namedElem;
     }
 
-    public Map<Band, Variable> addBands(final Product product,
-                                              final NetcdfFile ncFile,
-                                              HashMap<String, String> l2BandInfoMap,
-                                              HashMap<String, String> l2FlagsInfoMap) {
-        final HashMap<Band, Variable> readerMap = new HashMap<Band, Variable>();
+    public Map<Band, Variable> addBands(Product product,
+                                         List<Variable> variables,
+                                         Map<String, String> bandInfoMap,
+                                         Map<String, String> flagsInfoMap) {
+        final Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
         final int sceneRasterWidth = product.getSceneRasterWidth();
         final int sceneRasterHeight = product.getSceneRasterHeight();
         int spectralBandIndex = 0;
-        List<Variable> variables = ncFile.getVariables();
         for (Variable variable : variables) {
             if (variable.getRank() == 2) {
                 final int[] dimensions = variable.getShape();
@@ -268,7 +284,7 @@ public class ObpgUtils {
                     final String name = variable.getShortName();
                     final int dataType = getProductDataType(variable);
                     final Band band = new Band(name, dataType, width, height);
-                    final String validExpression = l2BandInfoMap.get(name);
+                    final String validExpression = bandInfoMap.get(name);
                     if (validExpression != null && !validExpression.equals("")) {
                         band.setValidPixelExpression(validExpression);
                     }
@@ -279,7 +295,7 @@ public class ObpgUtils {
                         band.setSpectralBandIndex(spectralBandIndex++);
                     }
 
-                    readerMap.put(band, variable);
+                    bandToVariableMap.put(band, variable);
                     final List<Attribute> list = variable.getAttributes();
                     FlagCoding flagCoding = null;
                     for (Attribute hdfAttribute : list) {
@@ -298,7 +314,7 @@ public class ObpgUtils {
                             }
                             final String flagName = hdfAttribute.getStringValue();
                             final int flagMask = convertToFlagMask(attribName);
-                            flagCoding.addFlag(flagName, flagMask, l2FlagsInfoMap.get(flagName));
+                            flagCoding.addFlag(flagName, flagMask, flagsInfoMap.get(flagName));
                         }
                     }
                     if (flagCoding != null) {
@@ -308,7 +324,7 @@ public class ObpgUtils {
                 }
             }
         }
-        return readerMap;
+        return bandToVariableMap;
     }
 
     public void addGeocoding(final Product product, NetcdfFile ncfile, boolean mustFlip) throws IOException {

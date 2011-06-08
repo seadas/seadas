@@ -18,14 +18,14 @@ package gov.nasa.obpg.seadas.dataio.obpg;
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.AbstractProductReader;
 import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.BitmaskDef;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.util.io.CsvReader;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.DOMBuilder;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Section;
@@ -45,7 +45,7 @@ import java.util.Map;
 
 public class ObpgProductReader extends AbstractProductReader {
 
-    ObpgUtils obpgUtils = new ObpgUtils();
+    private ObpgUtils obpgUtils = new ObpgUtils();
     private Map<Band, Variable> variableMap;
     private boolean mustFlip;
     private NetcdfFile ncfile;
@@ -62,21 +62,22 @@ public class ObpgProductReader extends AbstractProductReader {
 
     @Override
     protected Product readProductNodesImpl() throws IOException {
-
         try {
             final HashMap<String, String> l2BandInfoMap = getL2BandInfoMap();
             final HashMap<String, String> l2FlagsInfoMap = getL2FlagsInfoMap();
             final BitmaskDef[] defs = getDefaultBitmaskDefs(l2FlagsInfoMap);
-            
+
             final File inFile = ObpgUtils.getInputFile(getInput());
             final String path = inFile.getPath();
             ncfile = NetcdfFile.open(path);
-            
+
+            String productType = obpgUtils.getProductType(ncfile.getGlobalAttributes());
+
             final Product product = obpgUtils.createProductBody(ncfile.getGlobalAttributes());
             mustFlip = obpgUtils.mustFlip(ncfile);
             obpgUtils.addGlobalMetadata(product, ncfile.getGlobalAttributes());
             obpgUtils.addScientificMetadata(product, ncfile);
-            variableMap = obpgUtils.addBands(product, ncfile, l2BandInfoMap, l2FlagsInfoMap);
+            variableMap = obpgUtils.addBands(product, ncfile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
             product.setProductReader(this);
             obpgUtils.addGeocoding(product, ncfile, mustFlip);
             obpgUtils.addBitmaskDefinitions(product, defs);
@@ -86,7 +87,38 @@ public class ObpgProductReader extends AbstractProductReader {
             throw new ProductIOException(e.getMessage());
         }
     }
-    
+
+    protected Product readProductNodesImpl2() throws IOException {
+        try {
+            final File inFile = ObpgUtils.getInputFile(getInput());
+            final String path = inFile.getPath();
+            ncfile = NetcdfFile.open(path);
+            variableMap = new HashMap<Band, Variable>();
+
+            Product product = obpgUtils.createL3SmiProductBody(ncfile.getGlobalAttributes());
+            mustFlip = obpgUtils.mustFlip(ncfile);
+            obpgUtils.addGlobalMetadata(product, ncfile.getGlobalAttributes());
+            obpgUtils.addL3SmiScientificMetadata(product, ncfile);
+            Variable dataVar = ncfile.findVariable("l3m_data");
+            final Band band = new Band(dataVar.getShortName(),
+                                       ProductData.TYPE_FLOAT32,
+                                       product.getSceneRasterWidth(),
+                                       product.getSceneRasterHeight());
+            variableMap.put(band, dataVar);
+            GeoCoding geoCoding = createGeoCoding(product);
+            product.setGeoCoding(geoCoding);
+            product.addBand(band);
+            product.setProductReader(this);
+            product.setFileLocation(inFile);
+            return product;
+        } catch (ProductIOException pe) {
+            throw new ProductIOException(pe.getMessage());
+        } catch (IOException e) {
+            throw new ProductIOException(e.getMessage());
+        }
+    }
+
+
     @Override
     public void close() throws IOException {
         if (ncfile != null) {
@@ -96,11 +128,11 @@ public class ObpgProductReader extends AbstractProductReader {
 
     @Override
     protected void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth,
-                                                       int sourceHeight,
-                                                       int sourceStepX, int sourceStepY, Band destBand, int destOffsetX,
-                                                       int destOffsetY, int destWidth, int destHeight,
-                                                       ProductData destBuffer,
-                                                       ProgressMonitor pm) throws IOException {
+                                          int sourceHeight,
+                                          int sourceStepX, int sourceStepY, Band destBand, int destOffsetX,
+                                          int destOffsetY, int destWidth, int destHeight,
+                                          ProductData destBuffer,
+                                          ProgressMonitor pm) throws IOException {
 
         if (mustFlip) {
             sourceOffsetY = destBand.getSceneRasterHeight() - (sourceOffsetY + sourceHeight);
@@ -118,14 +150,14 @@ public class ObpgProductReader extends AbstractProductReader {
             throw exception;
         }
     }
-    
+
     private void readBandData(Variable variable, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
                               int sourceHeight, ProductData destBuffer, ProgressMonitor pm) throws IOException,
-                                                                                                   InvalidRangeException {
+            InvalidRangeException {
 
-        final int[] start = new int[] {sourceOffsetY, sourceOffsetX};
-        final int[] stride = new int[] {1, 1};
-        final int[] count = new int[] {1, sourceWidth};
+        final int[] start = new int[]{sourceOffsetY, sourceOffsetX};
+        final int[] stride = new int[]{1, 1};
+        final int[] count = new int[]{1, sourceWidth};
         Object buffer = destBuffer.getElems();
 
         int targetIndex = 0;
@@ -238,4 +270,31 @@ public class ObpgProductReader extends AbstractProductReader {
         return new HashMap<String, String>(0);
     }
 
+
+    private GeoCoding createGeoCoding(Product product) {
+        System.out.println("Entering createGeoCoding");
+
+        //float pixelX = 0.0f;
+        //float pixelY = 0.0f;
+        // Changed after conversation w/ Sean, Norman F., et al.
+        float pixelX = 0.5f;
+        float pixelY = 0.5f;
+
+        float easting = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Easternmost Longitude").getData().getElemDouble();
+        float northing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Northernmost Latitude").getData().getElemDouble();
+        float pixelSizeX = 360.0f / product.getSceneRasterWidth();
+        float pixelSizeY = 180.0f / product.getSceneRasterHeight();
+        try {
+            return new CrsGeoCoding(DefaultGeographicCRS.WGS84,
+                                    product.getSceneRasterWidth(),
+                                    product.getSceneRasterHeight(),
+                                    easting, northing,
+                                    pixelSizeX, pixelSizeY,
+                                    pixelX, pixelY);
+        } catch (FactoryException e) {
+            throw new IllegalStateException(e);
+        } catch (TransformException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 }

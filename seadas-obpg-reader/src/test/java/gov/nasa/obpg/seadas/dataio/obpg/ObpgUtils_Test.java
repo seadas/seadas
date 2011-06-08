@@ -15,29 +15,47 @@
  */
 package gov.nasa.obpg.seadas.dataio.obpg;
 
-import junit.framework.TestCase;
+import org.esa.beam.framework.dataio.ProductIOException;
+import org.esa.beam.framework.datamodel.MetadataElement;
+import org.esa.beam.framework.datamodel.Product;
+import org.junit.Test;
+import ucar.nc2.Attribute;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import gov.nasa.obpg.seadas.dataio.obpg.ObpgUtils;
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.MetadataElement;
+import static org.junit.Assert.*;
 
-import ucar.nc2.Attribute;
-
-public class ObpgUtils_Test extends TestCase {
-
+public class ObpgUtils_Test {
+    @Test
     public void testGetInputFile_UnsupportetSource() {
         try {
-            ObpgUtils.getInputFile(new Integer(3));
+            ObpgUtils.getInputFile(3);
         } catch (Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
             assertTrue(e.getMessage().startsWith("unsupported input source:"));
         }
     }
 
+    @Test
+    public void testGetProductTypeMissingTypeKey() throws Exception {
+        try {
+            ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
+            new ObpgUtils().getProductType(globalAttributes);
+            fail("ProductIOException expected");
+        } catch (ProductIOException e) {
+            // This is the expected behavior.
+        }
+    }
+
+    @Test
+    public void testGetProductType() throws Exception {
+        ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "MODISA Level-2 Data"));
+        assertEquals("OBPG MODISA Level-2 Data", new ObpgUtils().getProductType(globalAttributes));
+    }
+
+    @Test
     public void testGetInputFile_FileSource() {
         final File file = ObpgUtils.getInputFile(new File("someFile"));
 
@@ -45,6 +63,7 @@ public class ObpgUtils_Test extends TestCase {
         assertEquals("someFile", file.getPath());
     }
 
+    @Test
     public void testGetInputFile_StringSource() {
         final File file = ObpgUtils.getInputFile("someOtherFile");
 
@@ -52,6 +71,7 @@ public class ObpgUtils_Test extends TestCase {
         assertEquals("someOtherFile", file.getPath());
     }
 
+    @Test
     public void testAddGlobalMetadata_ok() throws ProductIOException {
         final ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
         globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "ProductName"));
@@ -74,6 +94,7 @@ public class ObpgUtils_Test extends TestCase {
         assertNotNull(globalElement.getAttribute(ObpgUtils.KEY_HEIGHT));
     }
 
+    @Test
     public void testConvertToFlagmask() {
         final ObpgUtils obpgUtils = new ObpgUtils();
         assertEquals(0x00000000, obpgUtils.convertToFlagMask("any_name"));
