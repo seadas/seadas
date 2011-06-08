@@ -72,52 +72,35 @@ public class ObpgProductReader extends AbstractProductReader {
             ncfile = NetcdfFile.open(path);
 
             String productType = obpgUtils.getProductType(ncfile.getGlobalAttributes());
-
-            final Product product = obpgUtils.createProductBody(ncfile.getGlobalAttributes());
+            final Product product;
+            if (productType.contains("Level-2")) {
+                product = obpgUtils.createProductBody(ncfile.getGlobalAttributes());
+            } else {
+                product = obpgUtils.createL3SmiProductBody(ncfile.getGlobalAttributes());
+            }
+            product.setFileLocation(inFile);
+            product.setProductReader(this);
             mustFlip = obpgUtils.mustFlip(ncfile);
             obpgUtils.addGlobalMetadata(product, ncfile.getGlobalAttributes());
-            obpgUtils.addScientificMetadata(product, ncfile);
+
+            if (productType.contains("Level-2")) {
+                obpgUtils.addScientificMetadata(product, ncfile);
+            } else {
+                obpgUtils.addL3SmiScientificMetadata(product, ncfile);
+            }
             variableMap = obpgUtils.addBands(product, ncfile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
-            product.setProductReader(this);
-            obpgUtils.addGeocoding(product, ncfile, mustFlip);
+            if (productType.contains("Level-2")) {
+                obpgUtils.addGeocoding(product, ncfile, mustFlip);
+            } else {
+                GeoCoding geoCoding = createGeoCoding(product);
+                product.setGeoCoding(geoCoding);
+            }
             obpgUtils.addBitmaskDefinitions(product, defs);
-            product.setFileLocation(inFile);
             return product;
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage());
         }
     }
-
-    protected Product readProductNodesImpl2() throws IOException {
-        try {
-            final File inFile = ObpgUtils.getInputFile(getInput());
-            final String path = inFile.getPath();
-            ncfile = NetcdfFile.open(path);
-            variableMap = new HashMap<Band, Variable>();
-
-            Product product = obpgUtils.createL3SmiProductBody(ncfile.getGlobalAttributes());
-            mustFlip = obpgUtils.mustFlip(ncfile);
-            obpgUtils.addGlobalMetadata(product, ncfile.getGlobalAttributes());
-            obpgUtils.addL3SmiScientificMetadata(product, ncfile);
-            Variable dataVar = ncfile.findVariable("l3m_data");
-            final Band band = new Band(dataVar.getShortName(),
-                                       ProductData.TYPE_FLOAT32,
-                                       product.getSceneRasterWidth(),
-                                       product.getSceneRasterHeight());
-            variableMap.put(band, dataVar);
-            GeoCoding geoCoding = createGeoCoding(product);
-            product.setGeoCoding(geoCoding);
-            product.addBand(band);
-            product.setProductReader(this);
-            product.setFileLocation(inFile);
-            return product;
-        } catch (ProductIOException pe) {
-            throw new ProductIOException(pe.getMessage());
-        } catch (IOException e) {
-            throw new ProductIOException(e.getMessage());
-        }
-    }
-
 
     @Override
     public void close() throws IOException {
