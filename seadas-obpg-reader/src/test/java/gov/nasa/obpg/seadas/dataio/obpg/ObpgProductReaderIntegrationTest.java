@@ -7,10 +7,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * A test that will test the OBPG product reader against a number (all?) of
@@ -29,27 +29,34 @@ public class ObpgProductReaderIntegrationTest {
         List<File> fileList = SeadasOcsswTestDirRunner.getFileList();
         ObpgProductReaderPlugIn plugIn = new ObpgProductReaderPlugIn();
         for (File file : fileList) {
-            System.out.println("ObpgProductReaderIntegrationTest: Now processing test file: " + file);
+            // Leave println for debugging:
+            // System.out.println("ObpgProductReaderIntegrationTest: Now processing test file: " + file);
             assertEquals("Failed to identify file " + file.getName() + ":",
                          DecodeQualification.INTENDED,
                          plugIn.getDecodeQualification(file));
         }
     }
-/*
+
     @Test
     public void testThatReaderCanReadAllProductTypes() throws Exception {
         List<File> fileList = SeadasOcsswTestDirRunner.getFileList();
         ObpgProductReaderPlugIn plugIn = new ObpgProductReaderPlugIn();
         for (File file : fileList) {
+            // Leave println for debugging:
+            // System.out.println("ObpgProductReaderIntegrationTest: Now processing test file: " + file);
             ProductReader reader = plugIn.createReaderInstance();
             try {
                 Product product = reader.readProductNodes(file, null);
                 assertNotNull(product);
                 assertNotNull(product.getName());
+                assertNotNull(product.getFileLocation());
+                assertNotNull(product.getGeoCoding());
+                assertTrue(product.getBandGroup().getNodeCount() > 0);
+            } catch (IOException e) {
+                System.err.println("Failed to open file " + file + ": IOException: " + e.getMessage());
             } finally {
                 reader.close();
             }
         }
     }
-    */
 }

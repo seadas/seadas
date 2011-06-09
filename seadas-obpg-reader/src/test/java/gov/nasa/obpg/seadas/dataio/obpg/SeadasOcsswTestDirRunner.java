@@ -17,9 +17,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A JUnit {@link org.junit.runner.Runner runner} that will only run annotated tests
- * if the system property {@code seadas.ocssw.test.dir} is set to a path that points
- * to the {@code $OCSSW_HOME/test} directory.
+ * A JUnit {@link org.junit.runner.Runner runner} that will only run annotated tests if
+ * <ol>
+ * <li>the system property {@code seadas.ocssw.test.dir} is set to a path that points to the OCSSW test data directory, or</li>
+ * <li>the environment variable {@code OCSSW_HOME} is set and the directory {@code $OCSSW_HOME/test} exists.</li>
+ * </ol>
  * <p/>
  * The OCSSW source can be changed out from its Subversion repository using
  * <pre>
@@ -27,6 +29,7 @@ import java.util.List;
  * </pre>
  *
  * @author Norman Fomferra
+ * @see ObpgProductReaderPlugInTest
  * @since SeaDAS 7.0
  */
 @Ignore
