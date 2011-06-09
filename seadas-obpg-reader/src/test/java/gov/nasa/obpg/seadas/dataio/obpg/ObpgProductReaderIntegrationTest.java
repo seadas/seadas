@@ -1,6 +1,8 @@
 package gov.nasa.obpg.seadas.dataio.obpg;
 
 import org.esa.beam.framework.dataio.DecodeQualification;
+import org.esa.beam.framework.dataio.ProductReader;
+import org.esa.beam.framework.datamodel.Product;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -8,6 +10,7 @@ import java.io.File;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * A test that will test the OBPG product reader against a number (all?) of
@@ -20,6 +23,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SeadasOcsswTestDirRunner.class)
 public class ObpgProductReaderIntegrationTest {
+
     @Test
     public void testThatPluginIdentifiesAllProductTypes() throws Exception {
         List<File> fileList = SeadasOcsswTestDirRunner.getFileList();
@@ -31,4 +35,21 @@ public class ObpgProductReaderIntegrationTest {
                          plugIn.getDecodeQualification(file));
         }
     }
+/*
+    @Test
+    public void testThatReaderCanReadAllProductTypes() throws Exception {
+        List<File> fileList = SeadasOcsswTestDirRunner.getFileList();
+        ObpgProductReaderPlugIn plugIn = new ObpgProductReaderPlugIn();
+        for (File file : fileList) {
+            ProductReader reader = plugIn.createReaderInstance();
+            try {
+                Product product = reader.readProductNodes(file, null);
+                assertNotNull(product);
+                assertNotNull(product.getName());
+            } finally {
+                reader.close();
+            }
+        }
+    }
+    */
 }

@@ -264,9 +264,11 @@ public class ObpgProductReader extends AbstractProductReader {
         float pixelY = 0.5f;
 
         float easting = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Easternmost Longitude").getData().getElemDouble();
+        float westing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Westernmost Longitude").getData().getElemDouble();
+        float pixelSizeX = (easting - westing) / product.getSceneRasterWidth();
         float northing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Northernmost Latitude").getData().getElemDouble();
-        float pixelSizeX = 360.0f / product.getSceneRasterWidth();
-        float pixelSizeY = 180.0f / product.getSceneRasterHeight();
+        float southing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Southernmost Latitude").getData().getElemDouble();
+        float pixelSizeY = (northing - southing) / product.getSceneRasterHeight();
         try {
             return new CrsGeoCoding(DefaultGeographicCRS.WGS84,
                                     product.getSceneRasterWidth(),

@@ -130,4 +130,4 @@ l3bin/A20090012009004.L3b_4D.main
 l3bin/A2009002.L3b_DAY.main
 l3bin/A2009003.L3b_DAY.main
 l3bin/A2009004.L3b_DAY.main
-smigen/Q2007001_B1_1D.L3M_SCI
+# Global attribute 'Number of Columns' is missing: smigen/Q2007001_B1_1D.L3M_SCI
