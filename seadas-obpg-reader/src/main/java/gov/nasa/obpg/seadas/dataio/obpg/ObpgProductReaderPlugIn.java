@@ -31,6 +31,11 @@ import java.util.Set;
 
 public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
 
+    // Set to "true" to output debugging information.
+    // Don't forget to setback to "false" in production code!
+    //
+    private static final boolean DEBUG = false;
+
     private static final String DEFAULT_FILE_EXTENSION = ".hdf";
     private static final String DEFAULT_FILE_EXTENSION_L2 = ".L2";
     private static final String DEFAULT_FILE_EXTENSION_L2_LAC = DEFAULT_FILE_EXTENSION_L2 + "_LAC";
@@ -48,10 +53,10 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "Aquarius Level 2 Data",
             "Aquarius Level-3 Binned Data",
             "CZCS Level-1A Data",
-            "CZCS Level-1B",          // todo: discuss the missing " Data"
+            "CZCS Level-1B",
             "CZCS Level-2 Data",
             "CZCS Level-3 Standard Mapped Image",
-            "HMODISA Level-2 Data",                     // todo: discuss the "H"
+            "HMODISA Level-2 Data",
             "HMODISA Level-3 Standard Mapped Image",
             "HMODIST Level-3 Standard Mapped Image",
             "MERIS Level-2 Data",
@@ -59,22 +64,23 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "MODISA Level-2 Data",
             "MODIST Level-2 Data",
             "MODISA Level-3 Binned Data",
-            "MOS Level-1B",                 // todo: discuss the missing " Data"
+            "MOS Level-1B",
             "MOS Level-2 Data",
             "OSMI Level-1A Data",
-            "OSMI Level-1B",                // todo: discuss the missing " Data"
+            "OSMI Level-1B",
             "OSMI Level-2 Data",
             "OCM2 Level-3 Standard Mapped Image",
             "OCTS Level-1A GAC Data",
             "OCTS Level-2 Data",
             "OCTS Level-3 Standard Mapped Image",
-            "SeaWiFS Level-1B",                      // todo: discuss the missing " Data"
+            "SeaWiFS Near Real-Time Ancillary Data",
+            "SeaWiFS Level-1B",
             "SeaWiFS Level-1A Data",
             "SeaWiFS Level-2 Data",
             "SeaWiFS Level-3 Binned Data",
             "SeaWiFS Level-3 Standard Mapped Image",
             "VIIRS Level-3 Standard Mapped Image",
-            "Level-3 Standard Mapped Image",      // todo: discuss the blank in "Title" value of smigen/Q2007001_B1_1D.L3M_SCI!
+            "Level-3 Standard Mapped Image",      // Generic Standard Mapped Image (from smigen)
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
@@ -89,13 +95,15 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             return DecodeQualification.UNABLE;
         }
         if (!file.exists()) {
-            // Leave for debugging:
-            // System.out.println("# File not found: " + file);
+            if (DEBUG) {
+                System.out.println("# File not found: " + file);
+            }
             return DecodeQualification.UNABLE;
         }
         if (!file.isFile()) {
-            // Leave for debugging:
-            // System.out.println("# Not a file: " + file);
+            if (DEBUG) {
+                System.out.println("# Not a file: " + file);
+            }
             return DecodeQualification.UNABLE;
         }
         NetcdfFile ncfile = null;
@@ -104,27 +112,33 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
                 if (titleAttribute != null) {
-                    final String value = titleAttribute.getStringValue();
-                    if (value != null) {
-                        // Leave for debugging:
-                        // System.out.println(file);
-                        // System.out.println("Title = [" + value + "]");
-                        final String productType = value.trim();
-                        if (supportedProductTypeSet.contains(productType)) {
+                    final String title = titleAttribute.getStringValue();
+                    if (title != null) {
+                        if (supportedProductTypeSet.contains(title.trim())) {
+                            if (DEBUG) {
+                                System.out.println(file);
+                            }
                             return DecodeQualification.INTENDED;
+                        } else {
+                            if (DEBUG) {
+                                System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
+                            }
                         }
                     }
                 } else {
-                    // Leave for debugging:
-                    // System.out.println("# Missing attribute 'Title': " + file);
+                    if (DEBUG) {
+                        System.out.println("# Missing attribute 'Title': " + file);
+                    }
                 }
             } else {
-                // Leave for debugging:
-                // System.out.println("# Can't open as NetCDF: " + file);
+                if (DEBUG) {
+                    System.out.println("# Can't open as NetCDF: " + file);
+                }
             }
         } catch (IOException ignore) {
-            // Leave for debugging:
-            // System.out.println("# I/O exception caught: " + file);
+            if (DEBUG) {
+                System.out.println("# I/O exception caught: " + file);
+            }
         } finally {
             if (ncfile != null) {
                 try {
