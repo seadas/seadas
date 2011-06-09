@@ -36,7 +36,16 @@
         </layerEditor>
     </extension>
 
-      <extension point="beam-ui:toolViews">
+    <extension point="beam-ui:actions">
+        <action>
+            <parent>tools</parent>
+            <id>selectionAction</id>
+            <class>gov.nasa.obpg.seadas.sandbox.l2gen.CallL2genAction</class>
+            <text>SeaDAS L2gen...</text>
+        </action>
+    </extension>
+
+    <extension point="beam-ui:toolViews">
 
         <toolView>
             <id>gov.nasa.obpg.seadas.sandbox.toolwindow.AudioPlayerToolView</id>
@@ -71,24 +80,23 @@
         </toolView>
 
 
+        <toolView>
+            <id>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</id>
+            <class>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</class>
+            <title>Tabbed Pane with Panels</title>
+            <tabTitle>Tabbed Pane with Panels</tabTitle>
+            <!--<mnemonic>P</mnemonic>-->
+            <!--<accelerator>ctrl alt P</accelerator>-->
+            <!--<smallIcon>/org/esa/beam/resources/images/icons/RsProduct16.gif</smallIcon>-->
+            <!--<largeIcon>/org/esa/beam/resources/images/icons/RsProduct24.gif</largeIcon>-->
+            <!--<helpId>productBrowser</helpId>-->
+            <description>example for tabs</description>
+            <initState>FLOATING</initState>
+            <initSide>WEST</initSide>
+            <initIndex>0</initIndex>
+        </toolView>
 
-          <toolView>
-              <id>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</id>
-              <class>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</class>
-              <title>Tabbed Pane with Panels</title>
-              <tabTitle>Tabbed Pane with Panels</tabTitle>
-              <!--<mnemonic>P</mnemonic>-->
-              <!--<accelerator>ctrl alt P</accelerator>-->
-              <!--<smallIcon>/org/esa/beam/resources/images/icons/RsProduct16.gif</smallIcon>-->
-              <!--<largeIcon>/org/esa/beam/resources/images/icons/RsProduct24.gif</largeIcon>-->
-              <!--<helpId>productBrowser</helpId>-->
-              <description>example for tabs</description>
-              <initState>FLOATING</initState>
-              <initSide>WEST</initSide>
-              <initIndex>0</initIndex>
-          </toolView>
 
-
-     </extension>
+    </extension>
 
 </module>
