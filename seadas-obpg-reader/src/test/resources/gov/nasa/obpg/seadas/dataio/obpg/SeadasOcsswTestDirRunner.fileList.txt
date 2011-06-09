@@ -1,9 +1,12 @@
 # Missing attribute 'Title': atm_tb_aquarius/N200431900_QATM_NCEP_6h.h5
 # Missing attribute 'Title': atm_tb_aquarius/N200431900_QMET_NCEP_6h
-# Can't open as NetCDF: l0gen_aquarius/20041114_090007.AQ_L0
-# Can't open as NetCDF: l1agen_seawifs/S2000011192121.L0_HNSG
+l2gen/anc/N199820000_O3_TOMSOMI_24h.hdf
+# Can't open as NetCDF: l2gen/anc/oisst.20051012
+l2gen/anc/S199710612_NCEP.MET
+l2gen/anc/S199710712_ADTOMS.OZONE
+l2gen/anc/S199726212_EPTOMS.OZONE
+l2gen/anc/S20061150011523_TOAST.OZONE
 l1agen_seawifs/S2000011192121.L1A_HNSG
-# Can't open as NetCDF: l1agen_seawifs/S2000016180835.L0_GAC
 l1agen_seawifs/S2000016180835.L1A_GAC
 # Missing attribute 'Title': l1bgen_modis/A2005244180500.GEO
 # Can't open as NetCDF: l1bgen_modis/A2005244180500.L0_LAC

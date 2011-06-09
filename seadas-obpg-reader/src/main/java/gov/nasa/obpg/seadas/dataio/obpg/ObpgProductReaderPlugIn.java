@@ -68,6 +68,7 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "OCTS Level-1A GAC Data",
             "OCTS Level-2 Data",
             "OCTS Level-3 Standard Mapped Image",
+            "SeaWiFS Near Real-Time Ancillary Data",
             "SeaWiFS Level-1B",
             "SeaWiFS Level-1A Data",
             "SeaWiFS Level-2 Data",
