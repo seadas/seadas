@@ -31,6 +31,11 @@ import java.util.Set;
 
 public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
 
+    // Set to "true" to output debugging information.
+    // Don't forget to setback to "false" in production code!
+    //
+    private static final boolean DEBUG = false;
+
     private static final String DEFAULT_FILE_EXTENSION = ".hdf";
     private static final String DEFAULT_FILE_EXTENSION_L2 = ".L2";
     private static final String DEFAULT_FILE_EXTENSION_L2_LAC = DEFAULT_FILE_EXTENSION_L2 + "_LAC";
@@ -90,13 +95,15 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             return DecodeQualification.UNABLE;
         }
         if (!file.exists()) {
-            // Leave for debugging:
-            // System.out.println("# File not found: " + file);
+            if (DEBUG) {
+                System.out.println("# File not found: " + file);
+            }
             return DecodeQualification.UNABLE;
         }
         if (!file.isFile()) {
-            // Leave for debugging:
-            // System.out.println("# Not a file: " + file);
+            if (DEBUG) {
+                System.out.println("# Not a file: " + file);
+            }
             return DecodeQualification.UNABLE;
         }
         NetcdfFile ncfile = null;
@@ -105,27 +112,33 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
                 if (titleAttribute != null) {
-                    final String value = titleAttribute.getStringValue();
-                    if (value != null) {
-                        // Leave for debugging:
-                        // System.out.println(file);
-                        // System.out.println("Title = [" + value + "]");
-                        final String productType = value.trim();
-                        if (supportedProductTypeSet.contains(productType)) {
+                    final String title = titleAttribute.getStringValue();
+                    if (title != null) {
+                        if (supportedProductTypeSet.contains(title.trim())) {
+                            if (DEBUG) {
+                                System.out.println(file);
+                            }
                             return DecodeQualification.INTENDED;
+                        } else {
+                            if (DEBUG) {
+                                System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
+                            }
                         }
                     }
                 } else {
-                    // Leave for debugging:
-                    // System.out.println("# Missing attribute 'Title': " + file);
+                    if (DEBUG) {
+                        System.out.println("# Missing attribute 'Title': " + file);
+                    }
                 }
             } else {
-                // Leave for debugging:
-                // System.out.println("# Can't open as NetCDF: " + file);
+                if (DEBUG) {
+                    System.out.println("# Can't open as NetCDF: " + file);
+                }
             }
         } catch (IOException ignore) {
-            // Leave for debugging:
-            // System.out.println("# I/O exception caught: " + file);
+            if (DEBUG) {
+                System.out.println("# I/O exception caught: " + file);
+            }
         } finally {
             if (ncfile != null) {
                 try {
