@@ -32,8 +32,9 @@ import java.util.List;
 @Ignore
 public class SeadasOcsswTestDirRunner extends BlockJUnit4ClassRunner {
 
-    public static final String SEADAS_OCSSW_TEST_DIR_PROPERTY_NAME = "seadas.ocssw.test.dir";
+    public static final String SEADAS_OCSSW_TEST_DIR = "seadas.ocssw.test.dir";
     private static List<File> fileList;
+    public static final String OCSSW_HOME = "OCSSW_HOME";
 
     /**
      * Constructor.
@@ -63,7 +64,7 @@ public class SeadasOcsswTestDirRunner extends BlockJUnit4ClassRunner {
             } else {
                 System.out.printf("Test '%s' is ignored, because system property '%s' is not set.\n",
                                   method.getName(),
-                                  SEADAS_OCSSW_TEST_DIR_PROPERTY_NAME);
+                                  SEADAS_OCSSW_TEST_DIR);
                 notifier.fireTestIgnored(createDescription(method));
             }
         } catch (IOException e) {
@@ -78,17 +79,35 @@ public class SeadasOcsswTestDirRunner extends BlockJUnit4ClassRunner {
      * @throws IOException If the system property is given, but the path is not valid.
      */
     public static File getTestDir() throws IOException {
-        String testDirPath = System.getProperty(SEADAS_OCSSW_TEST_DIR_PROPERTY_NAME);
-        if (testDirPath == null) {
-            return null;
-        }
-        File testDir = new File(testDirPath);
-        if (!testDir.exists()) {
-            throw new IOException(String.format("System property '%s' was set to '%s', but this seems not a valid path.\n",
-                                                SEADAS_OCSSW_TEST_DIR_PROPERTY_NAME,
+
+        // Try system property: -Dseadas.ocssw.test.dir=...
+        final String testDirPath = System.getProperty(SEADAS_OCSSW_TEST_DIR);
+        if (testDirPath != null) {
+            final File testDir = new File(testDirPath);
+            if (testDir.exists()) {
+                return testDir;
+            }
+            // This is an error, because we assume that SEADAS_OCSSW_TEST_DIR has been set by intention.
+            throw new IOException(String.format("System property '%s' is set to '%s', but this seems not a valid test data path.\n",
+                                                SEADAS_OCSSW_TEST_DIR,
                                                 testDirPath));
         }
-        return testDir;
+
+
+        // Try value of environment variable: export OCSSW_HOME=...
+        final String ocsswHome = System.getenv(OCSSW_HOME);
+        if (ocsswHome != null) {
+            final File testDir = new File(ocsswHome, "test");
+            if (testDir.exists()) {
+                return testDir;
+            }
+            // This is a warning only, because we can't assume that OCSSW_HOME has a "test" directory.
+            System.out.printf("Warning: Environment variable '%s' is set to '%s', but it does not contain a directory 'test'.\n",
+                              OCSSW_HOME,
+                              ocsswHome);
+        }
+
+        return null;
     }
 
     /**
