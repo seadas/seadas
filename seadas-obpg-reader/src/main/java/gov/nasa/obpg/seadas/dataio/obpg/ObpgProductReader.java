@@ -255,8 +255,6 @@ public class ObpgProductReader extends AbstractProductReader {
 
 
     private GeoCoding createGeoCoding(Product product) {
-        System.out.println("Entering createGeoCoding");
-
         //float pixelX = 0.0f;
         //float pixelY = 0.0f;
         // Changed after conversation w/ Sean, Norman F., et al.
@@ -273,7 +271,7 @@ public class ObpgProductReader extends AbstractProductReader {
             return new CrsGeoCoding(DefaultGeographicCRS.WGS84,
                                     product.getSceneRasterWidth(),
                                     product.getSceneRasterHeight(),
-                                    easting, northing,
+                                    westing, northing,
                                     pixelSizeX, pixelSizeY,
                                     pixelX, pixelY);
         } catch (FactoryException e) {
