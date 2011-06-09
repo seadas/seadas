@@ -48,10 +48,10 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "Aquarius Level 2 Data",
             "Aquarius Level-3 Binned Data",
             "CZCS Level-1A Data",
-            "CZCS Level-1B",          // todo: discuss the missing " Data"
+            "CZCS Level-1B",
             "CZCS Level-2 Data",
             "CZCS Level-3 Standard Mapped Image",
-            "HMODISA Level-2 Data",                     // todo: discuss the "H"
+            "HMODISA Level-2 Data",
             "HMODISA Level-3 Standard Mapped Image",
             "HMODIST Level-3 Standard Mapped Image",
             "MERIS Level-2 Data",
@@ -59,22 +59,22 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "MODISA Level-2 Data",
             "MODIST Level-2 Data",
             "MODISA Level-3 Binned Data",
-            "MOS Level-1B",                 // todo: discuss the missing " Data"
+            "MOS Level-1B",
             "MOS Level-2 Data",
             "OSMI Level-1A Data",
-            "OSMI Level-1B",                // todo: discuss the missing " Data"
+            "OSMI Level-1B",
             "OSMI Level-2 Data",
             "OCM2 Level-3 Standard Mapped Image",
             "OCTS Level-1A GAC Data",
             "OCTS Level-2 Data",
             "OCTS Level-3 Standard Mapped Image",
-            "SeaWiFS Level-1B",                      // todo: discuss the missing " Data"
+            "SeaWiFS Level-1B",
             "SeaWiFS Level-1A Data",
             "SeaWiFS Level-2 Data",
             "SeaWiFS Level-3 Binned Data",
             "SeaWiFS Level-3 Standard Mapped Image",
             "VIIRS Level-3 Standard Mapped Image",
-            "Level-3 Standard Mapped Image",      // todo: discuss the blank in "Title" value of smigen/Q2007001_B1_1D.L3M_SCI!
+            "Level-3 Standard Mapped Image",      // Generic Standard Mapped Image (from smigen)
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
