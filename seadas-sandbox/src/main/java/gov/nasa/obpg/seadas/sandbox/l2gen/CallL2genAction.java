@@ -38,22 +38,21 @@ public class CallL2genAction extends AbstractVisatAction {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
-                final Process process = Runtime.getRuntime().exec("/disk01/home/nfomferra/Applications/OCSSW/run/bin/l2gen \"ifile=" + ifile + "\" \"ofile=" + ofile + "\"",
-                                                                  new String[]{"OCDATAROOT=/home/nfomferra/Applications/OCSSW/run/data"});
+                final String[] cmdarray = {
+                        "/disk01/home/nfomferra/Applications/OCSSW/run/bin/l2gen",
+                        "ifile=" + ifile,
+                        "ofile=" + ofile,
+                };
+                final String[] envp = {
+                        "OCDATAROOT=/home/nfomferra/Applications/OCSSW/run/data",
+                };
+                final Process process = Runtime.getRuntime().exec(cmdarray, envp);
 
                 final Thread stdoutPrinter = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                            try {
-                                String line;
-                                while ((line = reader.readLine()) != null) {
-                                    System.out.println("l2gen: " + line);
-                                }
-                            } finally {
-                                reader.close();
-                            }
+                            printStdout(process);
                         } catch (IOException e) {
                             // cannot be handled
                         }
@@ -65,15 +64,7 @@ public class CallL2genAction extends AbstractVisatAction {
                     @Override
                     public void run() {
                         try {
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                            try {
-                                String line;
-                                while ((line = reader.readLine()) != null) {
-                                    System.err.println("l2gen: " + line);
-                                }
-                            } finally {
-                                reader.close();
-                            }
+                            printStderr(process);
                         } catch (IOException e) {
                             // cannot be handled
                         }
@@ -81,9 +72,11 @@ public class CallL2genAction extends AbstractVisatAction {
                 });
                 stderrPrinter.start();
 
+                pm.beginTask("l2gen", 100);
                 int exitCode = process.waitFor();
+                pm.done();
                 if (exitCode != 0) {
-                    throw new IOException("l2gen failed with exit code " + exitCode);
+                    throw new IOException("l2gen failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
 
                 appContext.getProductManager().addProduct(ProductIO.readProduct(ofile));
@@ -105,6 +98,30 @@ public class CallL2genAction extends AbstractVisatAction {
         };
 
         swingWorker.run();
+    }
+
+    private void printStderr(Process process) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.err.println("l2gen: " + line);
+            }
+        } finally {
+            reader.close();
+        }
+    }
+
+    private void printStdout(Process process) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("l2gen: " + line);
+            }
+        } finally {
+            reader.close();
+        }
     }
 
 
