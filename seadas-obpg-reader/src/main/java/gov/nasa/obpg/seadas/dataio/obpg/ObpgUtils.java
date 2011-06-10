@@ -108,11 +108,9 @@ public class ObpgUtils {
     }
 
     public Product createProductBody(List<Attribute> globalAttributes) throws ProductIOException {
-        return createProduct(globalAttributes, KEY_WIDTH, KEY_HEIGHT);
-    }
-
-    public Product createL3SmiProductBody(List<Attribute> globalAttributes) throws ProductIOException {
-        return createProduct(globalAttributes, KEY_L3SMI_WIDTH, KEY_L3SMI_HEIGHT);
+        return createProduct(globalAttributes,
+                             getWidthKey(getStringAttribute(KEY_TYPE, globalAttributes)),
+                             getHeightKey(getStringAttribute(KEY_TYPE, globalAttributes)));
     }
 
     private Product createProduct(List<Attribute> globalAttributes, String keyWidth, String keyHeight) throws ProductIOException {
@@ -134,6 +132,22 @@ public class ObpgUtils {
             product.setEndTime(utcEnd);
         }
         return product;
+    }
+
+    private String getHeightKey(String title) {
+        if (title.contains("Level-2")) {
+            return KEY_HEIGHT;
+        } else {
+            return KEY_L3SMI_HEIGHT;
+        }
+    }
+
+    private String getWidthKey(String title) {
+        if (title.contains("Level-2")) {
+            return KEY_WIDTH;
+        } else {
+            return KEY_L3SMI_WIDTH;
+        }
     }
 
     public String getProductType(List<Attribute> globalAttributes) throws ProductIOException {

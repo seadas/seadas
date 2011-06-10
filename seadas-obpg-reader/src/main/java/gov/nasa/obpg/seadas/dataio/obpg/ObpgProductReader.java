@@ -73,11 +73,7 @@ public class ObpgProductReader extends AbstractProductReader {
 
             String productType = obpgUtils.getProductType(ncfile.getGlobalAttributes());
             final Product product;
-            if (productType.contains("Level-2")) {
-                product = obpgUtils.createProductBody(ncfile.getGlobalAttributes());
-            } else {
-                product = obpgUtils.createL3SmiProductBody(ncfile.getGlobalAttributes());
-            }
+            product = obpgUtils.createProductBody(ncfile.getGlobalAttributes());
             product.setFileLocation(inFile);
             product.setProductReader(this);
             mustFlip = obpgUtils.mustFlip(ncfile);
