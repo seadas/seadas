@@ -20,7 +20,7 @@ import java.util.List;
  * A JUnit {@link org.junit.runner.Runner runner} that will only run annotated tests if
  * <ol>
  * <li>the system property {@code seadas.ocssw.test.dir} is set to a path that points to the OCSSW test data directory, or</li>
- * <li>the environment variable {@code OCSSW_HOME} is set and the directory {@code $OCSSW_HOME/test} exists.</li>
+ * <li>the environment variable {@code OCSSWROOT} is set and the directory {@code $OCSSWROOT/test} exists.</li>
  * </ol>
  * <p/>
  * The OCSSW source can be changed out from its Subversion repository using
@@ -37,7 +37,7 @@ public class SeadasOcsswTestDirRunner extends BlockJUnit4ClassRunner {
 
     public static final String SEADAS_OCSSW_TEST_DIR = "seadas.ocssw.test.dir";
     private static List<File> fileList;
-    public static final String OCSSW_HOME = "OCSSW_HOME";
+    public static final String OCSSWROOT = "OCSSWROOT";
 
     /**
      * Constructor.
@@ -97,16 +97,16 @@ public class SeadasOcsswTestDirRunner extends BlockJUnit4ClassRunner {
         }
 
 
-        // Try value of environment variable: export OCSSW_HOME=...
-        final String ocsswHome = System.getenv(OCSSW_HOME);
+        // Try value of environment variable: export OCSSWROOT=...
+        final String ocsswHome = System.getenv(OCSSWROOT);
         if (ocsswHome != null) {
             final File testDir = new File(ocsswHome, "test");
             if (testDir.exists()) {
                 return testDir;
             }
-            // This is a warning only, because we can't assume that OCSSW_HOME has a "test" directory.
+            // This is a warning only, because we can't assume that OCSSWROOT has a "test" directory.
             System.out.printf("Warning: Environment variable '%s' is set to '%s', but it does not contain a directory 'test'.\n",
-                              OCSSW_HOME,
+                              OCSSWROOT,
                               ocsswHome);
         }
 
