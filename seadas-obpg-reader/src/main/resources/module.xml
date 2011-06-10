@@ -2,7 +2,7 @@
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-obpg-reader</symbolicName>
     <version>1.2</version>
-    <name>NASA Ocean Color Product Reader</name>
+    <name>OBPG Ocean Color Product Reader</name>
     <description>A reader for NASA Ocean Color (HDF) Level-2 Data Products</description>
 
     <vendor>Brockmann Consult GmbH</vendor>

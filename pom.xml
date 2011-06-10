@@ -56,6 +56,7 @@
         <module>seadas-installer</module>
         <module>seadas-bootstrap</module>
         <module>seadas-sandbox</module>
+        <module>seadas-ocssw</module>
 
     </modules>
 
@@ -132,7 +133,6 @@
     </pluginRepositories>
 
 
-
     <dependencyManagement>
         <dependencies>
 
@@ -170,7 +170,6 @@
                 <artifactId>netcdf</artifactId>
                 <version>${netcdf.version}</version>
             </dependency>
-
 
 
             <!-- Test Libraries ############################################# -->
