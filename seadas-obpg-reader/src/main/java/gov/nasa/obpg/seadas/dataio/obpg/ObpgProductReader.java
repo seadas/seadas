@@ -82,7 +82,7 @@ public class ObpgProductReader extends AbstractProductReader {
             if (productType.contains("Level-2")) {
                 obpgUtils.addScientificMetadata(product, ncfile);
             } else {
-                obpgUtils.addL3SmiScientificMetadata(product, ncfile);
+                //obpgUtils.addL3SmiScientificMetadata(product, ncfile);
             }
             variableMap = obpgUtils.addBands(product, ncfile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
             if (productType.contains("Level-2")) {
