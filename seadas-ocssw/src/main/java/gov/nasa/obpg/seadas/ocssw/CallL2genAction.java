@@ -64,7 +64,7 @@ public class CallL2genAction extends AbstractVisatAction {
                 final ProcessObserver processObserver = new ProcessObserver(process, "l2gen", pm);
                 processObserver.addHandler(new ProgressHandler());
                 processObserver.addHandler(new ConsoleHandler());
-                processObserver.start();
+                processObserver.startAndWait();
 
                 int exitCode = process.exitValue();
 
@@ -103,7 +103,7 @@ public class CallL2genAction extends AbstractVisatAction {
         int lastScan = 0;
 
         @Override
-        public void handleStdoutSeen(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
 
             Matcher matcher = PROCESSING_SCAN_PATTERN.matcher(line);
             if (matcher.find()) {
@@ -124,19 +124,19 @@ public class CallL2genAction extends AbstractVisatAction {
         }
 
         @Override
-        public void handleStderrSeen(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
         }
     }
 
     private static class ConsoleHandler implements ProcessObserver.Handler {
 
         @Override
-        public void handleStdoutSeen(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
             System.out.println("l2gen: " + line);
         }
 
         @Override
-        public void handleStderrSeen(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
             System.err.println("l2gen: " + line);
         }
     }
@@ -144,14 +144,14 @@ public class CallL2genAction extends AbstractVisatAction {
     private static class TerminationHandler implements ProcessObserver.Handler {
 
         @Override
-        public void handleStdoutSeen(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
             if (pm.isCanceled()) {
                 process.destroy();
             }
         }
 
         @Override
-        public void handleStderrSeen(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
             if (pm.isCanceled()) {
                 process.destroy();
             }
