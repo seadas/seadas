@@ -50,10 +50,10 @@ public class ObpgUtils_createProductBody_Test extends TestCase {
         assertEquals(1354, product.getSceneRasterHeight());
     }
 
-    public void testWithoutNameAttribute() {
+    public void testL2WithoutNameAttribute() {
         final ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
         //globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "ProductName"));
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "ProductType"));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-2 ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_HEIGHT, 1354));
 
@@ -68,7 +68,7 @@ public class ObpgUtils_createProductBody_Test extends TestCase {
 
     public void testWithoutTypeAttribute() {
         final ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "ProductName"));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "Level-2 ProductName"));
         //globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_HEIGHT, 1354));
@@ -93,17 +93,17 @@ public class ObpgUtils_createProductBody_Test extends TestCase {
             obpgUtils.createProductBody(globalAttributes);
             fail("should not come here");
         } catch (ProductIOException e) {
-System.out.println("In testWithoutWidthAttribute, e.getMessage(): " + e.getMessage());
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_WIDTH));
             assertTrue(e.getMessage().contains("is missing"));
         }
-System.out.println("testWithoutWidthAttribute done");
     }
 
-    public void testWithoutHeightAttribute() {
+    public void testL2WithoutHeightAttribute() {
         final ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "ProductName"));
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "ProductType"));
+        //globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "ProductName"));
+        //globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "ProductType"));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "Level-2 ProductName"));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-2 ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_WIDTH, 2030));
         // Since this is a test without the height Attribute, don't put one in here.
 
@@ -111,7 +111,6 @@ System.out.println("testWithoutWidthAttribute done");
             obpgUtils.createProductBody(globalAttributes);
             fail("should not come here");
         } catch (ProductIOException e) {
-System.out.println("e.getMessage(): " + e.getMessage());
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_HEIGHT) || e.getMessage().contains(ObpgUtils.KEY_L3SMI_HEIGHT));
             assertTrue(e.getMessage().contains("is missing"));
         }
