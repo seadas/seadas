@@ -14,10 +14,6 @@ import java.net.URL;
  * @author Norman Fomferra
  */
 
-/**
- * ToDo: Figure out why the shell script that is created in this test isn't executable (and fix it)!
- */
-@Ignore
 public class ProcessObserverTest {
 
     private File shellExec;
@@ -28,6 +24,7 @@ public class ProcessObserverTest {
         String shellExt = osName.toLowerCase().contains("windows") ? ".bat" : ".sh";
         URL shellExecUrl = getClass().getResource(getClass().getSimpleName() + shellExt);
         shellExec = new File(shellExecUrl.toURI());
+        shellExec.setExecutable(true);
     }
 
     @Test
