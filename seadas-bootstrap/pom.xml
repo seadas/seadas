@@ -54,6 +54,12 @@
              <artifactId>blue-marble-worldmap</artifactId>
             <version>1.0.1</version>
         </dependency>
+        <dependency>
+            <artifactId>beam-examples</artifactId>
+            <groupId>org.esa.beam</groupId>
+            <version>1.0</version>
+        </dependency>
+
 
     </dependencies>
 

@@ -42,9 +42,11 @@ public class TabbedPaneWithPanels {
         jpnl.add(jrbNotebook);
         jpnl.add(jrbHandheld);
 
-        jcbDVD = new JCheckBox("DVD Burner");
+        jcbDVD = new JCheckBox();
         jcbScanner = new JCheckBox("Scanner");
         jcbNtwrkRdy = new JCheckBox("Network Ready");
+
+        jcbDVD.setText("DVD Burner");
 
         JPanel jpnl2 = new JPanel();
         jpnl2.setLayout(new GridLayout(3, 1));

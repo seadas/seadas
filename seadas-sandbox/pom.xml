@@ -20,7 +20,6 @@
         This is not a production module.
     </description>
 
-
     <dependencies>
         <dependency>
             <groupId>gov.nasa.obpg.seadas</groupId>

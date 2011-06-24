@@ -36,6 +36,22 @@
         </layerEditor>
     </extension>
 
+
+    <extension point="beam-ui:actions">
+        <action>
+            <id>l2genAction</id>
+            <class>gov.nasa.obpg.seadas.sandbox.l2gen.L2genAction</class>
+            <parent>tools</parent>
+            <placeAfter>flipping</placeAfter>
+            <placeBefore>orthorectificationAction</placeBefore>
+            <text>l2gen...</text>
+            <shortDescr>Danny will do this soon.</shortDescr>
+            <helpId>reprojectionAction</helpId>
+        </action>
+
+    </extension>
+
+
     <extension point="beam-ui:toolViews">
 
         <toolView>
@@ -57,8 +73,8 @@
         <toolView>
             <id>gov.nasa.obpg.seadas.sandbox.toolwindow.PixelTrackerToolView</id>
             <class>gov.nasa.obpg.seadas.sandbox.toolwindow.PixelTrackerToolView</class>
-            <title>Pixel Info</title>
-            <tabTitle>Pixel Info</tabTitle>
+            <title>Pixel Tracker</title>
+            <tabTitle>Pixel Tracker</tabTitle>
             <!--<mnemonic>P</mnemonic>-->
             <!--<accelerator>ctrl alt P</accelerator>-->
             <!--<smallIcon>/org/esa/beam/resources/images/icons/RsProduct16.gif</smallIcon>-->
@@ -87,6 +103,23 @@
         </toolView>
 
 
-    </extension>
+          <toolView>
+              <id>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</id>
+              <class>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</class>
+              <title>Tabbed Pane with Panels</title>
+              <tabTitle>Tabbed Pane with Panels</tabTitle>
+              <!--<mnemonic>P</mnemonic>-->
+              <!--<accelerator>ctrl alt P</accelerator>-->
+              <!--<smallIcon>/org/esa/beam/resources/images/icons/RsProduct16.gif</smallIcon>-->
+              <!--<largeIcon>/org/esa/beam/resources/images/icons/RsProduct24.gif</largeIcon>-->
+              <!--<helpId>productBrowser</helpId>-->
+              <description>example for tabs</description>
+              <initState>DOCKED</initState>
+              <initSide>WEST</initSide>
+              <initIndex>0</initIndex>
+          </toolView>
+
+
+     </extension>
 
 </module>
