@@ -62,12 +62,13 @@ class L2genForm extends JTabbedPane {
     private static final String[] RESAMPLING_IDENTIFIER = {"Nearest", "Bilinear", "Bicubic"};
 
     private final boolean orthoMode;
-    private final String targetProductSuffix;
+    private final String targetProductSuffix = "L2";
     private final AppContext appContext;
     private final SourceProductSelector sourceProductSelector;
     private final TargetProductSelector targetProductSelector;
     private final Model reprojectionModel;
     private final PropertyContainer reprojectionContainer;
+    private String geoFilename = "";
 
     private DemSelector demSelector;
     private CrsSelectionPanel crsSelectionPanel;
@@ -81,16 +82,16 @@ class L2genForm extends JTabbedPane {
     private CustomCrsForm customCrsUI;
 
 
+
+
     L2genForm(TargetProductSelector targetProductSelector, boolean orthorectify, AppContext appContext) {
         this.targetProductSelector = targetProductSelector;
         this.orthoMode = orthorectify;
         this.appContext = appContext;
         this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
         if (orthoMode) {
-            targetProductSuffix = "orthorectified";
             this.sourceProductSelector.setProductFilter(new OrthorectifyProductFilter());
         } else {
-            targetProductSuffix = "reprojected";
             this.sourceProductSelector.setProductFilter(new GeoCodingProductFilter());
         }
         this.reprojectionModel = new Model();
@@ -265,10 +266,6 @@ class L2genForm extends JTabbedPane {
     }
 
 
-
-
-
-
     private JPanel createPixlineTabPanel() {
 
         // Define all Swing controls used on this tab page
@@ -287,7 +284,6 @@ class L2genForm extends JTabbedPane {
         final JLabel dlineLabel = new JLabel("delta line");
 
 
-
         // Declare mainPanel and set it's attributes
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
@@ -296,8 +292,6 @@ class L2genForm extends JTabbedPane {
         final JPanel innerPanel1 = new JPanel();
         innerPanel1.setBorder(BorderFactory.createTitledBorder("Pixels"));
         innerPanel1.setLayout(new GridBagLayout());
-
-
 
 
         // Add Swing controls to mainPanel grid cells
@@ -347,12 +341,9 @@ class L2genForm extends JTabbedPane {
         }
 
 
-
-
-
         final JPanel innerPanel2 = new JPanel();
-                innerPanel2.setBorder(BorderFactory.createTitledBorder("Lines"));
-                innerPanel2.setLayout(new GridBagLayout());
+        innerPanel2.setBorder(BorderFactory.createTitledBorder("Lines"));
+        innerPanel2.setLayout(new GridBagLayout());
 
         {
             final GridBagConstraints c = new GridBagConstraints();
@@ -400,10 +391,6 @@ class L2genForm extends JTabbedPane {
         }
 
 
-
-
-
-
         {
             final GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;
@@ -417,7 +404,6 @@ class L2genForm extends JTabbedPane {
             c.gridy = 0;
             mainPanel.add(innerPanel2, c);
         }
-
 
 
         final JPanel finalMainPanel = new JPanel();
@@ -437,9 +423,6 @@ class L2genForm extends JTabbedPane {
 
         return finalMainPanel;
     }
-
-
-
 
 
     private JPanel createLatlonTabPanel() {
@@ -514,7 +497,6 @@ class L2genForm extends JTabbedPane {
         {
 
 
-
             final GridBagConstraints c = new GridBagConstraints();
             c.gridx = 4;
             c.gridy = 2;
@@ -547,12 +529,6 @@ class L2genForm extends JTabbedPane {
 
         return finalMainPanel;
     }
-
-
-
-
-
-
 
 
     private JPanel createParfileTabPanel() {
@@ -626,9 +602,6 @@ class L2genForm extends JTabbedPane {
 
         return myWrapperPanel;
     }
-
-
-
 
 
     private JPanel createIOPanel() {
@@ -936,7 +909,7 @@ class L2genForm extends JTabbedPane {
 
 
     private JPanel createGeolocationProductPanel() {
-       // final JPanel panel = sourceProductSelector.createDefaultPanel();
+        // final JPanel panel = sourceProductSelector.createDefaultPanel();
         final JPanel panel = createDefaultPanelNew();
 
 /*
@@ -1002,22 +975,23 @@ class L2genForm extends JTabbedPane {
         }
 
 
-
         return mainPanel;
     }
 
 
-
-
-
     private void updateTargetProductName(Product selectedProduct) {
+        String productName = "output." + targetProductSuffix;
         final TargetProductSelectorModel selectorModel = targetProductSelector.getModel();
         if (selectedProduct != null) {
-            final String productName = MessageFormat.format("{0}_" + targetProductSuffix, selectedProduct.getName());
-            selectorModel.setProductName(productName);
-        } else if (selectorModel.getProductName() == null) {
-            selectorModel.setProductName(targetProductSuffix);
-        }
+            int i = selectedProduct.getName().lastIndexOf('.');
+            if (i != -1) {
+                String baseName = selectedProduct.getName().substring(0, i);
+                productName = baseName + "." + targetProductSuffix;
+            } else {
+                  productName =  selectedProduct.getName() + "." + targetProductSuffix;
+            }
+       }
+        selectorModel.setProductName(productName);
     }
 
     private class OutputParamActionListener implements ActionListener {

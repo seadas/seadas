@@ -69,35 +69,6 @@ class L2genDialog extends SingleTargetProductDialog {
             return false;
         }
 
-        final CoordinateReferenceSystem crs = form.getSelectedCrs();
-        if (crs == null) {
-            showErrorDialog("No 'Coordinate Reference System' selected.");
-            return false;
-        }
-
-        String externalDemName = form.getExternalDemName();
-        if (externalDemName != null) {
-            final ElevationModelRegistry elevationModelRegistry = ElevationModelRegistry.getInstance();
-            final ElevationModelDescriptor demDescriptor = elevationModelRegistry.getDescriptor(externalDemName);
-            if (demDescriptor == null) {
-                showErrorDialog("The DEM '" + externalDemName + "' is not supported.");
-                close();
-                return false;
-            }
-            if (demDescriptor.isInstallingDem()) {
-                showErrorDialog("The DEM '" + externalDemName + "' is currently being installed.");
-                close();
-                return false;
-            }
-            if (!demDescriptor.isDemInstalled()) {
-                final boolean ok = demDescriptor.installDemFiles(getParent());
-                if (ok) {
-                    // close dialog becuase DEM will be installed first
-                    close();
-                }
-                return false;
-            }
-        }
         return true;
     }
 
