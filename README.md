@@ -75,7 +75,15 @@ Installation Guide
     *   Working directory: `$SEADAS/seadas` (replace $SEADAS with your actual path)
     *   Use classpath of module (project in Eclipse): `seadas-bootstrap`
 
-8. Once you have all the configuration done, hit *Make Project*. Let it rebuild and then *Run*
+8. Copy file $MY_PROJECTS/beam/src/main/config/beam.config to directory $MY_PROJECTS/beam/config/
+    and modify the following lines:
+    * Set beam.home = .
+    * Set beam.app = SeadasMain
+    * Set beam.logLevel = ALL
+    * Set beam.debug = true
+    * Set beam.splash.image = ./src/main/bin/common/splash.png
+
+9. Once you have all the configuration done, hit *Make Project*. Let it rebuild and then *Run*
 
 Original instructions from [Brockmann Consult][bc].
     
