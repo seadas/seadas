@@ -1,0 +1,2350 @@
+<productList>
+    <product name="logchl">
+        <algorithm>
+            <prefix>logchl</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>log(mg m^-3)</units>
+            <description>log(e) of Chlorophyll Concentration</description>
+        </algorithm>
+    </product>
+    <product name="chlor_a">
+        <algorithm name="oc2">
+            <prefix>chl_oc2</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, OC2 Algorithm</description>
+        </algorithm>
+        <algorithm name="oc3">
+            <prefix>chl_oc3</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, OC3 Algorithm</description>
+        </algorithm>
+        <algorithm name="oc3c">
+            <prefix>chl_oc3c</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, OC3c Algorithm</description>
+        </algorithm>
+        <algorithm name="oc4">
+            <prefix>chl_oc4</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, OC4 Algorithm</description>
+        </algorithm>
+        <algorithm name="hu">
+            <prefix>chl_hu</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, Hu Algorithm</description>
+        </algorithm>
+        <algorithm name="ci">
+            <prefix>chl_ci</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, CI Algorithm</description>
+        </algorithm>
+        <algorithm name="cdom_corr">
+            <prefix>chl_cdomcorr_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, OC4 Algorithm, CDOM-corrected via Morel</description>
+        </algorithm>
+        <algorithm name="carder">
+            <prefix>chl_carder</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, Carder model</description>
+        </algorithm>
+        <algorithm name="carder_emp">
+            <prefix>chl_carder_empirical</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, Carder empirical algorithm</description>
+        </algorithm>
+        <algorithm name="giop">
+            <prefix>chl_giop</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, GIOP model</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>chl_gsm</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, GSM model</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>chl_gsm01</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, GSM model</description>
+        </algorithm>
+        <algorithm name="soa">
+            <prefix>chl_soa</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, SOA model</description>
+        </algorithm>
+        <algorithm name="sma">
+            <prefix>chl_sma</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, G88/Oc4v4 model</description>
+        </algorithm>
+        <algorithm name="clark">
+            <prefix>chl_clark</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, D. Clark, 2003</description>
+        </algorithm>
+        <algorithm name="morel">
+            <prefix>chl_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^3</units>
+            <description>Chlorphyll concentration, Morel 2009 CDOM algorithm</description>
+        </algorithm>
+    </product>
+    <product name="Lt">
+        <algorithm>
+            <prefix>Lt_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Calibrated TOA radiance at   0 nm</description>
+        </algorithm>
+        <algorithm>
+            <prefix>Lt_</prefix>
+            <suffix></suffix>
+            <parameterType>IR</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Calibrated TOA radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="Lt_unc">
+        <algorithm>
+            <prefix>Lt_unc_</prefix>
+            <suffix></suffix>
+            <parameterType>All</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Uncertainty in TOA radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="BT">
+        <algorithm>
+            <prefix>BT_</prefix>
+            <suffix></suffix>
+            <parameterType>IR</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>degrees-C</units>
+            <description>Brightness temperature at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="a">
+        <algorithm>
+            <prefix>a_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total absorption at   0 nm</description>
+        </algorithm>
+        <algorithm name="las">
+            <prefix>a_</prefix>
+            <suffix>_las</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total absorption at   0 nm, Loisel and Stramski algorithm</description>
+        </algorithm>
+        <algorithm name="pml">
+            <prefix>a_</prefix>
+            <suffix>_pml</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total absorption at   0 nm, PML algorithm</description>
+        </algorithm>
+        <algorithm name="qaa">
+            <prefix>a_</prefix>
+            <suffix>_qaa</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total absorption at   0 nm, QAA algorithm</description>
+        </algorithm>
+        <algorithm name="carder">
+            <prefix>a_</prefix>
+            <suffix>_carder</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total absorption at   0 nm, Carder algorithm</description>
+        </algorithm>
+        <algorithm name="giop">
+            <prefix>a_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total absorption at   0 nm, GIOP model</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>a_</prefix>
+            <suffix>_gsm</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total absorption at   0 nm, GSM algorithm</description>
+        </algorithm>
+        <algorithm name="niwa">
+            <prefix>a_</prefix>
+            <suffix>_niwa</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total absorption - water at   0 nm, NIWA / UoP / Moore algorithm</description>
+        </algorithm>
+    </product>
+    <product name="bb">
+        <algorithm>
+            <prefix>bb_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total backscatter at   0 nm</description>
+        </algorithm>
+        <algorithm name="las">
+            <prefix>bb_</prefix>
+            <suffix>_las</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total backscatter at   0 nm, Loisel and Stramski algorithm</description>
+        </algorithm>
+        <algorithm name="pml">
+            <prefix>bb_</prefix>
+            <suffix>_pml</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total backscatter at   0 nm, PML algorithm</description>
+        </algorithm>
+        <algorithm name="qaa">
+            <prefix>bb_</prefix>
+            <suffix>_qaa</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total backscatter at   0 nm, QAA algorithm</description>
+        </algorithm>
+        <algorithm name="carder">
+            <prefix>bb_</prefix>
+            <suffix>_carder</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total backscatter at   0 nm, Carder algorithm</description>
+        </algorithm>
+        <algorithm name="giop">
+            <prefix>bb_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total backscatter at   0 nm, GIOP model</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>bb_</prefix>
+            <suffix>_gsm</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total backscatter at   0 nm, GSM algorithm</description>
+        </algorithm>
+        <algorithm name="niwa">
+            <prefix>bb_</prefix>
+            <suffix>_niwa</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total backscatter - water at   0 nm, NIWA / UoP / Moore algorithm</description>
+        </algorithm>
+    </product>
+    <product name="b">
+        <algorithm name="las">
+            <prefix>b_</prefix>
+            <suffix>_las</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total scatter at   0 nm, Loisel and Stramski algorithm</description>
+        </algorithm>
+        <algorithm name="qaa">
+            <prefix>b_</prefix>
+            <suffix>_qaa</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Total scattering at   0 nm, QAA algorithm</description>
+        </algorithm>
+    </product>
+    <product name="c">
+        <algorithm name="las">
+            <prefix>c_</prefix>
+            <suffix>_las</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Beam attenuation at   0 nm, Loisel and Stramski algorithm</description>
+        </algorithm>
+        <algorithm name="qaa">
+            <prefix>c_</prefix>
+            <suffix>_qaa</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Beam attenuation at   0 nm, QAA algorithm</description>
+        </algorithm>
+    </product>
+    <product name="bbp">
+        <algorithm name="las">
+            <prefix>bbp_</prefix>
+            <suffix>_las</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particle backscatter at   0 nm, Loisel and Stramski algorithm</description>
+        </algorithm>
+        <algorithm name="pml">
+            <prefix>bbp_</prefix>
+            <suffix>_pml</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particle backscatter at   0 nm, PML algorithm</description>
+        </algorithm>
+        <algorithm name="qaa">
+            <prefix>bbp_</prefix>
+            <suffix>_qaa</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particulate backscatter at   0 nm, QAA algorithm</description>
+        </algorithm>
+        <algorithm name="carder">
+            <prefix>bbp_</prefix>
+            <suffix>_carder</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particulate backscatter at   0 nm, Carder algorithm</description>
+        </algorithm>
+        <algorithm name="giop">
+            <prefix>bbp_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particulate backscatter at   0 nm, GIOP model</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>bbp_gsm</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particulate backscatter at 443 nm, GSM algorithm</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>bbp_gsm01</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particulate backscatter at 443 nm, GSM algorithm</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>bbp_</prefix>
+            <suffix>_gsm</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particulate backscatter at   0 nm, GSM algorithm</description>
+        </algorithm>
+        <algorithm name="soa">
+            <prefix>bbp_soa</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particulate backscatter at 443nm, SOA model</description>
+        </algorithm>
+        <algorithm name="sma">
+            <prefix>bbp_sma</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Particulate backscatter at 443nm, SMA model</description>
+        </algorithm>
+    </product>
+    <product name="bbp_s">
+        <algorithm name="las">
+            <prefix>bbp_s_las</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>bbp spectral parameter from LAS model</description>
+        </algorithm>
+        <algorithm name="giop">
+            <prefix>bbp_s_giop</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>bbp spectral parameter for GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="aph">
+        <algorithm name="pml">
+            <prefix>aph_</prefix>
+            <suffix>_pml</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to phytoplankton at   0 nm, PML algorithm</description>
+        </algorithm>
+        <algorithm name="qaa">
+            <prefix>aph_</prefix>
+            <suffix>_qaa</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to phytoplankton at   0 nm, QAA algorithm</description>
+        </algorithm>
+        <algorithm name="carder">
+            <prefix>aph_carder</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to phytoplankton at 400 nm, Carder algorithm</description>
+        </algorithm>
+        <algorithm name="carder">
+            <prefix>aph_</prefix>
+            <suffix>_carder</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to phytoplankton at   0 nm, Carder algorithm</description>
+        </algorithm>
+        <algorithm name="giop">
+            <prefix>aph_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to phytoplankton at   0 nm, GIOP model</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>aph_</prefix>
+            <suffix>_gsm</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to phytoplankton at   0 nm, GSM algorithm</description>
+        </algorithm>
+    </product>
+    <product name="adg">
+        <algorithm name="pml">
+            <prefix>adg_</prefix>
+            <suffix>_pml</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at   0 nm, PML algorithm</description>
+        </algorithm>
+        <algorithm name="qaa">
+            <prefix>adg_</prefix>
+            <suffix>_qaa</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at   0 nm, QAA algorithm</description>
+        </algorithm>
+        <algorithm name="carder">
+            <prefix>adg_carder</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at 675 nm, Carder algorithm</description>
+        </algorithm>
+        <algorithm name="carder">
+            <prefix>adg_</prefix>
+            <suffix>_carder</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at   0 nm, Carder algorithm</description>
+        </algorithm>
+        <algorithm name="giop">
+            <prefix>adg_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at   0 nm, GIOP model</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>adg_gsm</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at 443 nm, GSM algorithm</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>adg_gsm01</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at 443 nm, GSM algorithm</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>adg_</prefix>
+            <suffix>_gsm</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at 0 nm, GSM algorithm</description>
+        </algorithm>
+        <algorithm name="soa">
+            <prefix>adg_soa</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at 443nm, SOA model</description>
+        </algorithm>
+        <algorithm name="sma">
+            <prefix>adg_sma</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at 443nm, SMA model</description>
+        </algorithm>
+        <algorithm name="morel">
+            <prefix>adg_</prefix>
+            <suffix>_morel</suffix>
+            <parameterType>Integer</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>m^-1</units>
+            <description>Absorption due to gelbstof and detrital material at   0 nm, Morel 2009 CDOM algorithm</description>
+        </algorithm>
+    </product>
+    <product name="mod_rss">
+        <algorithm name="qaa">
+            <prefix>mod_rrs_qaa</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>sr-1</units>
+            <description>Modeled Rrs, Lee (2006)</description>
+        </algorithm>
+    </product>
+    <product name="flags">
+        <algorithm name="qaa">
+            <prefix>flags_qaa</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>Unknown</dataType>
+            <units>dimensionless</units>
+            <description>Product-specific flags, QAA model</description>
+        </algorithm>
+        <algorithm name="carder">
+            <prefix>flags_carder</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Product-specific flags, Carder model</description>
+        </algorithm>
+        <algorithm name="giop">
+            <prefix>flags_giop</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Product-specific flags for GIOP model</description>
+        </algorithm>
+        <algorithm name="niwa">
+            <prefix>flags_niwa</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Product-specific flags for NIWA/UoP/Moore IOP model</description>
+        </algorithm>
+        <algorithm name="sst">
+            <prefix>flags_sst</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Product-specific flags, Sea Surface Temperature</description>
+        </algorithm>
+        <algorithm name="sst4">
+            <prefix>flags_sst4</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Product-specific flags, 4um Sea Surface Temperature</description>
+        </algorithm>
+    </product>
+    <product name="chl_unc">
+        <algorithm name="giop">
+            <prefix>chl_unc_giop</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Uncertainty in Chlorophyll Concentration, GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="rrsdiff">
+        <algorithm name="giop">
+            <prefix>rrsdiff_giop</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Fractional mean Rrs difference, GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="aph_s">
+        <algorithm name="giop">
+            <prefix>aph_s_giop</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>aph spectral parameter for GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="adg_s">
+        <algorithm name="giop">
+            <prefix>adg_s_giop</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>adg spectral parameter for GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="chisqr">
+        <algorithm name="giop">
+            <prefix>chisqr_giop</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Chi-square per degree of freedom, GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="iter">
+        <algorithm name="giop">
+            <prefix>iter_giop</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Iteration count, GIOP model</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>iter_gsm</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Iteration count, GSM model</description>
+        </algorithm>
+        <algorithm name="gsm">
+            <prefix>iter_gsm01</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Iteration count, GSM model</description>
+        </algorithm>
+    </product>
+    <product name="mRrs">
+        <algorithm name="giop">
+            <prefix>mRrs_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>sr^-1</units>
+            <description>Modeled remote sensing reflectance at   0 nm, GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="adg_unc">
+        <algorithm name="giop">
+            <prefix>adg_unc_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Uncertainty in absorption due to gelbstof and detrital material at   0 nm, GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="bbp_unc">
+        <algorithm name="giop">
+            <prefix>bbp_unc_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Uncertainty in particulate backscatter at   0 nm, GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="aph_unc">
+        <algorithm name="giop">
+            <prefix>aph_unc_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Uncertainty in absorption due to phytoplankton at   0 nm, GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="a_unc">
+        <algorithm name="giop">
+            <prefix>a_unc_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Uncertainty in total absorption at   0 nm, GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="bb_unc">
+        <algorithm name="giop">
+            <prefix>bb_unc_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Uncertainty in total backscatter at   0 nm, GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="fit_par">
+        <algorithm name="giop">
+            <prefix>fit_par_</prefix>
+            <suffix>_giop</suffix>
+            <parameterType>Bands</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>Fitted parameter 0 of GIOP model</description>
+        </algorithm>
+    </product>
+    <product name="pcentcdm">
+        <algorithm name="soa">
+            <prefix>pcentcdm_soa</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Ratio of acdm to atot</description>
+        </algorithm>
+    </product>
+    <product name="w0">
+        <algorithm name="soa">
+            <prefix>w0_soa</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Single-Scattering Albedo, 865nm</description>
+        </algorithm>
+        <algorithm name="sma">
+            <prefix>w0_sma</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Single-Scattering Albedo, 865nm</description>
+        </algorithm>
+    </product>
+    <product name="v">
+        <algorithm name="soa">
+            <prefix>v_soa</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Junge Power Law V parameter</description>
+        </algorithm>
+    </product>
+    <product name="dom">
+        <algorithm name="sma">
+            <prefix>dom_sma</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol model number</description>
+        </algorithm>
+    </product>
+    <product name="tsm">
+        <algorithm name="clark">
+            <prefix>tsm_clark</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg l^-1</units>
+            <description>Total Suspended Matter, D. Clark, 2003</description>
+        </algorithm>
+    </product>
+    <product name="poc">
+        <algorithm name="clark">
+            <prefix>poc_clark</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mg m^-3</units>
+            <description>Particulate Organic Carbon, D. Clark, 2003</description>
+        </algorithm>
+        <algorithm>
+            <prefix>poc</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mg m^-3</units>
+            <description>Particulate Organic Carbon, D. Stramski, 2007 (443/555 version)</description>
+        </algorithm>
+        <algorithm name="stramski">
+            <prefix>poc_stramski</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mg m^-3</units>
+            <description>Particulate Organic Carbon, D. Stramski, 2007 (443/555 version)</description>
+        </algorithm>
+        <algorithm name="stramski">
+            <prefix>poc_stramski_443</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mg m^-3</units>
+            <description>Particulate Organic Carbon, D. Stramski, 2007 (443/555 version)</description>
+        </algorithm>
+        <algorithm name="stramski_490">
+            <prefix>poc_stramski_490</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mg m^-3</units>
+            <description>Particulate Organic Carbon, D. Stramski, 2007 (490/555 version)</description>
+        </algorithm>
+    </product>
+    <product name="l2_flags">
+        <algorithm>
+            <prefix>l2_flags</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT32</dataType>
+            <units>dimensionless</units>
+            <description>Level-2 Processing Flags</description>
+        </algorithm>
+    </product>
+    <product name="aer_num_iter">
+        <algorithm>
+            <prefix>num_iter</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT32</dataType>
+            <units>dimensionless</units>
+            <description>Number of Aerosol Iterations</description>
+        </algorithm>
+        <algorithm>
+            <prefix>aer_num_iter</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT32</dataType>
+            <units>dimensionless</units>
+            <description>Number of Aerosol Iterations</description>
+        </algorithm>
+    </product>
+    <product name="depth">
+        <algorithm>
+            <prefix>depth</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>meters</units>
+            <description>Water depth</description>
+        </algorithm>
+    </product>
+    <product name="flh">
+        <algorithm>
+            <prefix>flh</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Fluorescence Line Height</description>
+        </algorithm>
+    </product>
+    <product name="fsat">
+        <algorithm>
+            <prefix>fsat</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Normalized Fluorescence Line Height</description>
+        </algorithm>
+    </product>
+    <product name="nflh">
+        <algorithm>
+            <prefix>nflh</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Normalized Fluorescence Line Height</description>
+        </algorithm>
+    </product>
+    <product name="fdiff">
+        <algorithm>
+            <prefix>fdiff</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Normalized Fluorescence Line Height (simple)</description>
+        </algorithm>
+    </product>
+    <product name="fqy">
+        <algorithm>
+            <prefix>fqy</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Fluorescence Quantum Yield</description>
+        </algorithm>
+    </product>
+    <product name="fqy2">
+        <algorithm>
+            <prefix>fqy2</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Fluorescence Quantum Yield, A12</description>
+        </algorithm>
+    </product>
+    <product name="ipar">
+        <algorithm>
+            <prefix>ipar</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>Ein m^-2 s^-1</units>
+            <description>Instantaneous Photosynthetically Available Radiation</description>
+        </algorithm>
+    </product>
+    <product name="ipar2">
+        <algorithm>
+            <prefix>ipar2</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>Ein m^-2 s^-1</units>
+            <description>Instantaneous Photosynthetically Available Radiation</description>
+        </algorithm>
+    </product>
+    <product name="par">
+        <algorithm>
+            <prefix>par</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>Ein m^-2 day^-1</units>
+            <description>Photosynthetically Available Radiation, R. Frouin</description>
+        </algorithm>
+    </product>
+    <product name="Kd">
+        <algorithm name="KD2">
+            <prefix>Kd_490</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Diffuse attenuation coefficient at 490 nm, KD2 algorithm</description>
+        </algorithm>
+        <algorithm name="KD2">
+            <prefix>Kd_490_KD2</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Diffuse attenuation coefficient at 490 nm, KD2 algorithm</description>
+        </algorithm>
+        <algorithm name="OBPG">
+            <prefix>K_490</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Diffuse attenuation coefficient at 490 nm (OBPG)</description>
+        </algorithm>
+        <algorithm name="OBPG">
+            <prefix>Kd_490_obpg</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Diffuse attenuation coefficient at 490 nm (OBPG)</description>
+        </algorithm>
+        <algorithm name="mueller">
+            <prefix>Kd_490_mueller</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Diffuse attenuation coefficient at 490 nm</description>
+        </algorithm>
+        <algorithm name="532nm">
+            <prefix>Kd_532</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Diffuse attenuation coefficient at 532 nm</description>
+        </algorithm>
+        <algorithm name="lee">
+            <prefix>Kd_</prefix>
+            <suffix>_lee</suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Diffuse attenuation coefficient at   0 nm, Lee Algorithm</description>
+        </algorithm>
+        <algorithm name="morel">
+            <prefix>Kd_490_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>Kd(490) Morel Eq8</description>
+        </algorithm>
+    </product>
+    <product name="Kd_PAR">
+        <algorithm name="morel">
+            <prefix>Kd_PAR_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>K(PAR) Morel (1st optical depth)</description>
+        </algorithm>
+        <algorithm name="lee">
+            <prefix>Kd_PAR_lee</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m^-1</units>
+            <description>K(PAR) Lee (1st optical depth)</description>
+        </algorithm>
+    </product>
+    <product name="Zsd">
+        <algorithm name="gbr">
+            <prefix>Zsd_gbr</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m</units>
+            <description>Secchi depth, GBR algorithm</description>
+        </algorithm>
+        <algorithm name="lee">
+            <prefix>Zsd_lee</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m</units>
+            <description>Secchi depth, Lee algorithm</description>
+        </algorithm>
+        <algorithm name="morel">
+            <prefix>Zsd_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m</units>
+            <description>Secchi depth, Morel algorithm</description>
+        </algorithm>
+    </product>
+    <product name="Zeu">
+        <algorithm name="lee">
+            <prefix>Zeu_lee</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m</units>
+            <description>Euphotic depth, Lee algorithm</description>
+        </algorithm>
+        <algorithm name="morel">
+            <prefix>Zeu_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m</units>
+            <description>Euphotic depth, Morel algorithm</description>
+        </algorithm>
+    </product>
+    <product name="Zp">
+        <algorithm name="lee">
+            <prefix>Zp_</prefix>
+            <suffix>_lee</suffix>
+            <parameterType>Integer</parameterType>
+            <dataType>INT16</dataType>
+            <units>m</units>
+            <description>Photic depth at 0 percent light, Lee algorithm</description>
+        </algorithm>
+    </product>
+    <product name="Zhl">
+        <algorithm name="morel">
+            <prefix>Zhl_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>m</units>
+            <description>Heated layer depth, Morel algorithm</description>
+        </algorithm>
+    </product>
+    <product name="cdom_index">
+        <algorithm name="morel">
+            <prefix>cdom_index_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>CDOM index, Morel 2009 algorithm</description>
+        </algorithm>
+        <algorithm name="morel">
+            <prefix>cdom_index</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>CDOM index, Morel 2009 algorithm</description>
+        </algorithm>
+    </product>
+    <product name="cdom_percent">
+        <algorithm name="morel">
+            <prefix>cdom_percent_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>percent CDOM, Morel 2009 algorithm</description>
+        </algorithm>
+    </product>
+    <product name="chl_error">
+        <algorithm>
+            <prefix>chl_error</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>percent</units>
+            <description>Relative error in chlorophyll</description>
+        </algorithm>
+    </product>
+    <product name="owtd">
+        <algorithm>
+            <prefix>owtd</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Dominant optical water type</description>
+        </algorithm>
+    </product>
+    <product name="owt">
+        <algorithm>
+            <prefix>owt_</prefix>
+            <suffix></suffix>
+            <parameterType>Integer</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Optical water type 0</description>
+        </algorithm>
+    </product>
+    <product name="owtn">
+        <algorithm>
+            <prefix>owtn_</prefix>
+            <suffix></suffix>
+            <parameterType>Integer</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Normalized optical water type 0</description>
+        </algorithm>
+    </product>
+    <product name="ndvi">
+        <algorithm>
+            <prefix>ndvi</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Normalized Difference Vegetation Index</description>
+        </algorithm>
+    </product>
+    <product name="evi">
+        <algorithm>
+            <prefix>evi</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Enhanced Vegetation Index</description>
+        </algorithm>
+    </product>
+    <product name="smoke">
+        <algorithm>
+            <prefix>smoke</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Smoke Index</description>
+        </algorithm>
+    </product>
+    <product name="aer_model_min">
+        <algorithm>
+            <prefix>aer_model_min</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT32</dataType>
+            <units>dimensionless</units>
+            <description>Lower Bounding Aerosol Model Index</description>
+        </algorithm>
+    </product>
+    <product name="aer_model_max">
+        <algorithm>
+            <prefix>aer_model_max</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT32</dataType>
+            <units>dimensionless</units>
+            <description>Upper Bounding Aerosol Model Index</description>
+        </algorithm>
+    </product>
+    <product name="aer_model_ratio">
+        <algorithm>
+            <prefix>aer_model_ratio</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol Model Interpolation Ratio</description>
+        </algorithm>
+    </product>
+    <product name="epsilon">
+        <algorithm>
+            <prefix>epsilon</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Single-scattering aerosol epsilon</description>
+        </algorithm>
+    </product>
+    <product name="ms_epsilon">
+        <algorithm>
+            <prefix>ms_epsilon</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Observed (multi-scattering) aerosol epsilon</description>
+        </algorithm>
+    </product>
+    <product name="Lw">
+        <algorithm>
+            <prefix>Lw_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Water-leaving radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="nLw">
+        <algorithm>
+            <prefix>nLw_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Normalized water-leaving radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="nLw_unc">
+        <algorithm>
+            <prefix>nLw_unc_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Uncertainty in normalized water-leaving radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="rhos">
+        <algorithm>
+            <prefix>rhos_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Surface reflectance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="rhom">
+        <algorithm>
+            <prefix>rhom_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Water + aerosol reflectance at   0 nm (MUMM)</description>
+        </algorithm>
+    </product>
+    <product name="rhot">
+        <algorithm>
+            <prefix>rhot_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Top-of-atmosphere reflectance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="Rrs">
+        <algorithm>
+            <prefix>Rrs_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>sr^-1</units>
+            <description>Remote sensing reflectance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="Rrs_unc">
+        <algorithm>
+            <prefix>Rrs_unc_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>sr^-1</units>
+            <description>Uncertainty in remote sensing reflectance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="La">
+        <algorithm>
+            <prefix>La_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Aerosol radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="aot">
+        <algorithm>
+            <prefix>aot_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol optical thickness at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="taua">
+        <algorithm>
+            <prefix>taua_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol optical thickness at   0 nm</description>
+        </algorithm>
+        <algorithm>
+            <prefix>tau_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol optical thickness at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="angstrom">
+        <algorithm>
+            <prefix>angstrom</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol Angstrom exponent, 443 to 865 nm</description>
+        </algorithm>
+        <algorithm>
+            <prefix>angstrom_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol Angstrom exponent, 0 to 865 nm</description>
+        </algorithm>
+    </product>
+    <product name="TLg">
+        <algorithm>
+            <prefix>TLg_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>TOA glint radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="Lr">
+        <algorithm>
+            <prefix>Lr_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Rayleigh radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="L_q">
+        <algorithm>
+            <prefix>L_q_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Polarization radiance at   0 nm, q-component</description>
+        </algorithm>
+    </product>
+    <product name="L_u">
+        <algorithm>
+            <prefix>L_u_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>Polarization radiance at   0 nm, u-component</description>
+        </algorithm>
+    </product>
+    <product name="polcor">
+        <algorithm>
+            <prefix>polcor_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Polarization correction at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="Es">
+        <algorithm>
+            <prefix>Es_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1</units>
+            <description>Solar Irradiance at Surface at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="brdf">
+        <algorithm>
+            <prefix>brdf</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>BRDF correction</description>
+        </algorithm>
+        <algorithm>
+            <prefix>brdf_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>BRDF correction at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="tLf">
+        <algorithm>
+            <prefix>tLf_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mW cm^-2 um^-1 sr^-1</units>
+            <description>White-cap radiance at TOA at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="t_sol">
+        <algorithm>
+            <prefix>t_sol_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Rayleigh-Aerosol Diff. Trans., Sun to Surface, at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="t_sen">
+        <algorithm>
+            <prefix>t_sen_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Rayleigh-Aerosol Diff. Trans., Surface to Sensor, at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="tg_sol">
+        <algorithm>
+            <prefix>tg_sol_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Gaseous Transmittance, Sun to Surface, at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="tg_sen">
+        <algorithm>
+            <prefix>tg_sen_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Gaseous Transmittance, Surface to Sensor, at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="t_h2o">
+        <algorithm>
+            <prefix>t_h2o_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Total water vapor transmittance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="t_o2">
+        <algorithm>
+            <prefix>t_o2_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>INT16</dataType>
+            <units>dimensionless</units>
+            <description>Total oxygen transmittance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="dpol">
+        <algorithm>
+            <prefix>dpol_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Degree of Rayleigh Polarization at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="fsol">
+        <algorithm>
+            <prefix>fsol</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT64</dataType>
+            <units>dimensionless</units>
+            <description>'Solar distance correction factor (&lt;d&gt;/d)^2'</description>
+        </algorithm>
+    </product>
+    <product name="pixnum">
+        <algorithm>
+            <prefix>pixnum</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT32</dataType>
+            <units>dimensionless</units>
+            <description>Scan Pixel Number (zero-based)</description>
+        </algorithm>
+    </product>
+    <product name="detnum">
+        <algorithm>
+            <prefix>detnum</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT32</dataType>
+            <units>dimensionless</units>
+            <description>Detector Number (zero-based)</description>
+        </algorithm>
+    </product>
+    <product name="mside">
+        <algorithm>
+            <prefix>mside</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT32</dataType>
+            <units>dimensionless</units>
+            <description>Mirror Side (zero-based)</description>
+        </algorithm>
+    </product>
+    <product name="solz">
+        <algorithm>
+            <prefix>solz</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>degree</units>
+            <description>Solar Zenith Angle</description>
+        </algorithm>
+    </product>
+    <product name="sola">
+        <algorithm>
+            <prefix>sola</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>degree</units>
+            <description>Solar Azimuth Angle</description>
+        </algorithm>
+    </product>
+    <product name="senz">
+        <algorithm>
+            <prefix>senz</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>degree</units>
+            <description>Sensor Zenith Angle</description>
+        </algorithm>
+    </product>
+    <product name="sena">
+        <algorithm>
+            <prefix>sena</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>degree</units>
+            <description>Sensor Azimuth Angle</description>
+        </algorithm>
+    </product>
+    <product name="relaz">
+        <algorithm>
+            <prefix>relaz</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>degree</units>
+            <description>Relative Azimuth Angle</description>
+        </algorithm>
+    </product>
+    <product name="scattang">
+        <algorithm>
+            <prefix>scattang</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>degree</units>
+            <description>Scattering Angle</description>
+        </algorithm>
+    </product>
+    <product name="alpha">
+        <algorithm>
+            <prefix>alpha</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>degree</units>
+            <description>Polarization Rotation Angle</description>
+        </algorithm>
+    </product>
+    <product name="ozone">
+        <algorithm>
+            <prefix>ozone</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>cm</units>
+            <description>Ozone Concentration</description>
+        </algorithm>
+    </product>
+    <product name="pressure">
+        <algorithm>
+            <prefix>pressure</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>millibars</units>
+            <description>Surface Pressure</description>
+        </algorithm>
+    </product>
+    <product name="windspeed">
+        <algorithm>
+            <prefix>windspeed</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>m s^-1</units>
+            <description>Wind Speed at 10 meters</description>
+        </algorithm>
+    </product>
+    <product name="mwind">
+        <algorithm>
+            <prefix>mwind</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>m s^-1</units>
+            <description>Meridional Wind Speed at 10 meters</description>
+        </algorithm>
+    </product>
+    <product name="zwind">
+        <algorithm>
+            <prefix>zwind</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>m s^-1</units>
+            <description>Zonal Wind Speed at 10 meters</description>
+        </algorithm>
+    </product>
+    <product name="windangle">
+        <algorithm>
+            <prefix>windangle</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>degrees</units>
+            <description>Wind direction at 10 meters</description>
+        </algorithm>
+    </product>
+    <product name="water_vapor">
+        <algorithm>
+            <prefix>water_vapor</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>g cm^-2</units>
+            <description>Water Vapor</description>
+        </algorithm>
+    </product>
+    <product name="height">
+        <algorithm>
+            <prefix>height</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>meters</units>
+            <description>Terrain Height</description>
+        </algorithm>
+    </product>
+    <product name="humidity">
+        <algorithm>
+            <prefix>humidity</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>%</units>
+            <description>Relative Humidity</description>
+        </algorithm>
+    </product>
+    <product name="no2_tropo">
+        <algorithm>
+            <prefix>no2_tropo</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>molecules cm^-2</units>
+            <description>Tropospheric NO2</description>
+        </algorithm>
+    </product>
+    <product name="no2_strat">
+        <algorithm>
+            <prefix>no2_strat</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>molecules cm^-2</units>
+            <description>Stratospheric NO2</description>
+        </algorithm>
+    </product>
+    <product name="no2_frac">
+        <algorithm>
+            <prefix>no2_frac</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Fraction of tropospheric NO2 above 200 m</description>
+        </algorithm>
+    </product>
+    <product name="glint_coef">
+        <algorithm>
+            <prefix>glint_coef</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Cox-Munk normalized glint radiance</description>
+        </algorithm>
+    </product>
+    <product name="cloud_albedo">
+        <algorithm>
+            <prefix>cloud_albedo</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Cloud albedo used for thresholding</description>
+        </algorithm>
+    </product>
+    <product name="rho_cirrus">
+        <algorithm>
+            <prefix>rho_cirrus</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Cirrus reflectance (1380 nm)</description>
+        </algorithm>
+    </product>
+    <product name="aerindex">
+        <algorithm>
+            <prefix>aerindex</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol Index</description>
+        </algorithm>
+    </product>
+    <product name="tindx_morel">
+        <algorithm>
+            <prefix>tindx_morel</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Turbidity Index Morel</description>
+        </algorithm>
+    </product>
+    <product name="tindx_shi">
+        <algorithm>
+            <prefix>tindx_shi</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Turbidity Index Shi and Wang</description>
+        </algorithm>
+    </product>
+    <product name="BT_39">
+        <algorithm>
+            <prefix>BT_39</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>degrees-C</units>
+            <description>Brightness Temperature at 3.9 um</description>
+        </algorithm>
+    </product>
+    <product name="BT_40">
+        <algorithm>
+            <prefix>BT_40</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>degrees-C</units>
+            <description>Brightness Temperature at 4.0 um</description>
+        </algorithm>
+    </product>
+    <product name="BT_11">
+        <algorithm>
+            <prefix>BT_11</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>degrees-C</units>
+            <description>Brightness Temperature at 11 um</description>
+        </algorithm>
+    </product>
+    <product name="BT_12">
+        <algorithm>
+            <prefix>BT_12</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>degrees-C</units>
+            <description>Brightness Temperature at 12 um</description>
+        </algorithm>
+    </product>
+    <product name="sst">
+        <algorithm name="sst">
+            <prefix>sst</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>degrees-C</units>
+            <description>Sea Surface Temperature</description>
+        </algorithm>
+        <algorithm name="sst4">
+            <prefix>sst4</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>degrees-C</units>
+            <description>4um Sea Surface Temperature</description>
+        </algorithm>
+    </product>
+    <product name="qual">
+        <algorithm name="sst">
+            <prefix>qual_sst</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT8</dataType>
+            <units>dimensionless</units>
+            <description>Quality Levels, Sea Surface Temperature</description>
+        </algorithm>
+        <algorithm name="sst4">
+            <prefix>qual_sst4</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT8</dataType>
+            <units>dimensionless</units>
+            <description>Quality Levels, Sea Surface Temperature</description>
+        </algorithm>
+    </product>
+    <product name="bias">
+        <algorithm name="sst">
+            <prefix>bias_sst</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>Unknown</dataType>
+            <units>degrees-C</units>
+            <description>Sea Surface Temperature Bias</description>
+        </algorithm>
+        <algorithm name="sst4">
+            <prefix>bias_sst4</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>Unknown</dataType>
+            <units>degrees-C</units>
+            <description>4um Sea Surface Temperature Bias</description>
+        </algorithm>
+    </product>
+    <product name="stdv">
+        <algorithm name="sst">
+            <prefix>stdv_sst</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>Unknown</dataType>
+            <units>degrees-C</units>
+            <description>Sea Surface Temperature Standard Deviation</description>
+        </algorithm>
+        <algorithm name="sst4">
+            <prefix>stdv_sst4</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>Unknown</dataType>
+            <units>degrees-C</units>
+            <description>4um Sea Surface Temperature Standard Deviation</description>
+        </algorithm>
+    </product>
+    <product name="sstref">
+        <algorithm>
+            <prefix>sstref</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>degrees-C</units>
+            <description>Sea Surface Temperature Reference</description>
+        </algorithm>
+    </product>
+    <product name="sssref">
+        <algorithm>
+            <prefix>sssref</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>psu</units>
+            <description>Sea Surface Salinity Reference</description>
+        </algorithm>
+    </product>
+    <product name="pic">
+        <algorithm>
+            <prefix>pic</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mol m^-3</units>
+            <description>Calcite Concentration, Balch and Gordon</description>
+        </algorithm>
+    </product>
+    <product name="calcite">
+        <algorithm>
+            <prefix>calcite</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mol m^-3</units>
+            <description>Calcite Concentration, Balch and Gordon</description>
+        </algorithm>
+        <algorithm name="2band">
+            <prefix>calcite_2b</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mol m^-3</units>
+            <description>Calcite Concentration, 2-Band Algorithm, H. R. Gordon et al.</description>
+        </algorithm>
+        <algorithm name="3band">
+            <prefix>calcite_3b</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>INT16</dataType>
+            <units>mol m^-3</units>
+            <description>Calcite Concentration, 3-Band Algorithm, H. R. Gordon et al.</description>
+        </algorithm>
+    </product>
+    <product name="vgain">
+        <algorithm>
+            <prefix>vgain_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Vicarious gain at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="vLt">
+        <algorithm>
+            <prefix>vLt_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Vicarious TOA radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="vtLw">
+        <algorithm>
+            <prefix>vtLw_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Vicarious TOA water-leaving radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="vLw">
+        <algorithm>
+            <prefix>vLw_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Vicarious water-leaving radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="vnLw">
+        <algorithm>
+            <prefix>vnLw_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Vicarious normalized water-leaving radiance at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="vbsat">
+        <algorithm>
+            <prefix>vbsat_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Vicarious BRDF for satellite at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="vbtgt">
+        <algorithm>
+            <prefix>vbtgt_</prefix>
+            <suffix></suffix>
+            <parameterType>Visible</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Vicarious BRDF for target at   0 nm</description>
+        </algorithm>
+    </product>
+    <product name="myprod1">
+        <algorithm>
+            <prefix>myprod1</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 1</description>
+        </algorithm>
+    </product>
+    <product name="myprod2">
+        <algorithm>
+            <prefix>myprod2</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 2</description>
+        </algorithm>
+    </product>
+    <product name="myprod3">
+        <algorithm>
+            <prefix>myprod3</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 3</description>
+        </algorithm>
+    </product>
+    <product name="myprod4">
+        <algorithm>
+            <prefix>myprod4</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 4</description>
+        </algorithm>
+    </product>
+    <product name="myprod5">
+        <algorithm>
+            <prefix>myprod5</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 5</description>
+        </algorithm>
+    </product>
+    <product name="myprod6">
+        <algorithm>
+            <prefix>myprod6</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 6</description>
+        </algorithm>
+    </product>
+    <product name="myprod7">
+        <algorithm>
+            <prefix>myprod7</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 7</description>
+        </algorithm>
+    </product>
+    <product name="myprod8">
+        <algorithm>
+            <prefix>myprod8</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 8</description>
+        </algorithm>
+    </product>
+    <product name="myprod9">
+        <algorithm>
+            <prefix>myprod9</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 9</description>
+        </algorithm>
+    </product>
+    <product name="myprod10">
+        <algorithm>
+            <prefix>myprod10</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>unspecified</units>
+            <description>User-Defined Product 10</description>
+        </algorithm>
+    </product>
+    <product name="chl1_meris">
+        <algorithm>
+            <prefix>chl1_meris</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, MERIS L2 algal_1</description>
+        </algorithm>
+    </product>
+    <product name="chl2_meris">
+        <algorithm>
+            <prefix>chl2_meris</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll Concentration, MERIS L2 algal_2</description>
+        </algorithm>
+    </product>
+    <product name="adg_meris">
+        <algorithm>
+            <prefix>adg_meris</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>m^-1</units>
+            <description>Yellow Substance, MERIS L2 yellow_subs</description>
+        </algorithm>
+    </product>
+    <product name="tsm_meris">
+        <algorithm>
+            <prefix>tsm_meris</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>g m^-3</units>
+            <description>Total Suspended Matter, MERIS L2 total_susp</description>
+        </algorithm>
+    </product>
+    <product name="par_meris">
+        <algorithm>
+            <prefix>par_meris</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>uEinstein m^-2 s^-1</units>
+            <description>Photosynthetically Active Radiation, MERIS L2 photosyn_rad</description>
+        </algorithm>
+    </product>
+    <product name="angstrom_meris">
+        <algorithm>
+            <prefix>angstrom_meris</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol Angstrom Exponent, MERIS L2 aero_alpha</description>
+        </algorithm>
+    </product>
+    <product name="Taua_meris">
+        <algorithm>
+            <prefix>Taua_meris</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Aerosol Optical Thickness, MERIS L2 aero_opt_thick</description>
+        </algorithm>
+    </product>
+    <product name="ice_frac">
+        <algorithm>
+            <prefix>ice_frac</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>Ice Fraction, 0=no ice, 1=all ice</description>
+        </algorithm>
+    </product>
+    <product name="class_ward_owmc">
+        <algorithm>
+            <prefix>class_ward_owmc</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>OWMC Ward Classification</description>
+        </algorithm>
+    </product>
+    <product name="class_k_owmc">
+        <algorithm>
+            <prefix>class_k_owmc</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>OWMC K_means Classification</description>
+        </algorithm>
+    </product>
+    <product name="class_34k_w_owmc">
+        <algorithm>
+            <prefix>class_34k_w_owmc</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>dimensionless</units>
+            <description>OWMC merged Wards and K_means (34K+W) Classification</description>
+        </algorithm>
+    </product>
+</productList>
