@@ -47,7 +47,7 @@ public class ObpgProductReader extends AbstractProductReader {
 
     private ObpgUtils obpgUtils = new ObpgUtils();
     private Map<Band, Variable> variableMap;
-    private boolean mustFlip;
+    private boolean mustFlip; //TODO separate into horizontal and vertical flip - CZCS...
     private NetcdfFile ncfile;
 
     /**
@@ -78,12 +78,8 @@ public class ObpgProductReader extends AbstractProductReader {
             product.setProductReader(this);
             mustFlip = obpgUtils.mustFlip(ncfile);
             obpgUtils.addGlobalMetadata(product, ncfile.getGlobalAttributes());
+            obpgUtils.addScientificMetadata(product, ncfile);
 
-            if (productType.contains("Level-2")) {
-                obpgUtils.addScientificMetadata(product, ncfile);
-            } else {
-                //obpgUtils.addL3SmiScientificMetadata(product, ncfile);
-            }
             variableMap = obpgUtils.addBands(product, ncfile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
             if (productType.contains("Level-2")) {
                 obpgUtils.addGeocoding(product, ncfile, mustFlip);

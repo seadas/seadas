@@ -51,6 +51,8 @@ public class ObpgUtils {
 
     static final String KEY_L3SMI_HEIGHT = "Number of Lines";
     static final String KEY_L3SMI_WIDTH = "Number of Columns";
+    static final String SMI_PRODUCT_PARAMETERS = "SMI Product Parameters";
+    static final String SMI_PROD_PARAMETERS_GROUP = "l3m_data Attributes";
 
     MetadataAttribute attributeToMetadata(Attribute attribute) {
         final int productDataType = getProductDataType(attribute.getDataType(), false, false);
@@ -87,7 +89,7 @@ public class ObpgUtils {
             return ProductData.TYPE_FLOAT64;
         } else if (!rasterDataOnly) {
             if (dataType == DataType.CHAR) {
-                // return ProductData.TYPE_ASCII; todo - handle this case
+                // return ProductData.TYPE_ASCII; TODO - handle this case
             } else if (dataType == DataType.STRING) {
                 return ProductData.TYPE_ASCII;
             }
@@ -218,28 +220,34 @@ public class ObpgUtils {
         metadataRoot.addElement(globalElement);
     }
 
+    public void addSmiMetadata(final Product product, Variable variable ) {
+        List<Attribute> variableAttributes = variable.getAttributes();
+        final MetadataElement smiElement = new MetadataElement(SMI_PRODUCT_PARAMETERS);
+        addAttributesToElement(variableAttributes, smiElement);
+
+        final MetadataElement metadataRoot = product.getMetadataRoot();
+        metadataRoot.addElement(smiElement);
+    }
+
     public void addScientificMetadata(Product product, NetcdfFile ncFile) throws IOException {
-        final MetadataElement scanLineAttrib = getMetadataElementSave(product, SCAN_LINE_ATTRIBUTES);
+
         Group group = ncFile.findGroup(SCAN_LINE_ATTRIBUTES_GROUP);
         if (group != null) {
+            final MetadataElement scanLineAttrib = getMetadataElementSave(product, SCAN_LINE_ATTRIBUTES);
             handleMetadataGroup(group, scanLineAttrib);
         }
 
-        final MetadataElement sensorBandParam = getMetadataElementSave(product, SENSOR_BAND_PARAMETERS);
         group = ncFile.findGroup(SENSOR_BAND_PARAMETERS_GROUP);
         if (group != null) {
+            final MetadataElement sensorBandParam = getMetadataElementSave(product, SENSOR_BAND_PARAMETERS);
             handleMetadataGroup(group, sensorBandParam);
         }
-    }
 
-    public void addL3SmiScientificMetadata(Product product, NetcdfFile ncFile) throws IOException {
-        Group root = ncFile.getRootGroup();
-        if (root != null) {
-            MetadataElement l3Data = getMetadataElementSave(product, "l3m_data");
-            handleMetadataGroup(root, l3Data);
+        Variable l3mvar = ncFile.findVariable("l3m_data");
+        if (l3mvar != null) {
+            addSmiMetadata(product, l3mvar);
         }
     }
-
 
     private void handleMetadataGroup(Group group, MetadataElement metadataElement) throws IOException {
         List<Variable> variables = group.getVariables();
