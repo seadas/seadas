@@ -70,7 +70,7 @@ Installation Guide
         
 7. Use the following configuration to run BEAM/VISAT:
     *   Main class: `com.bc.ceres.launcher.Launcher`
-    *   VM parameters: `-Xmx2gM -Dceres.context=beam`
+    *   VM parameters: `-Xmx2G -Dceres.context=beam`
     *   Program parameters: `none`
     *   Working directory: `$SEADAS/seadas` (replace $SEADAS with your actual path)
     *   Use classpath of module (project in Eclipse): `seadas-bootstrap`
