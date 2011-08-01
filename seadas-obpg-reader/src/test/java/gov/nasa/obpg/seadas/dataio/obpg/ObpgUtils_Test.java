@@ -18,7 +18,7 @@ package gov.nasa.obpg.seadas.dataio.obpg;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.MetadataElement;
 import org.esa.beam.framework.datamodel.Product;
-import org.junit.Test;
+    import org.junit.Test;
 import ucar.nc2.Attribute;
 
 import java.io.File;

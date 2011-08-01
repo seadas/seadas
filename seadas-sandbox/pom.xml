@@ -26,5 +26,13 @@
             <artifactId>seadas-app</artifactId>
             <version>${seadas.version}</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>edu.ucar</groupId>
+            <artifactId>netcdf</artifactId>
+        </dependency>
     </dependencies>
 </project>
