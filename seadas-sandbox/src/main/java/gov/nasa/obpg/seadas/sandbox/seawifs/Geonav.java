@@ -41,6 +41,14 @@ public class Geonav {
     private static final int   GAC_PIXEL_INCREMENT = 4;
     private static final int   LAC_PIXEL_INCREMENT = 1;
 
+    /* The sensorOffsetMatrix corresponds to navctl%msensoff and tiltCosVector
+     * corresponds to navctl%tiltcos in the Fortan version.  Both variables are
+     * part of the navctl structure, which is read from the navctl.dat file in
+     * the Fortan.  According to email from F. Patt, the values never changed,
+     */
+    float[][] sensorOffsetMatrix = new float[3][3];
+    float[] tiltCosVector = new float[3];
+
     //private float      radeg = DEGREES_PER_RADIAN;  // radeg in the Fortran version
 
     enum DataType { GAC, LAC }
@@ -69,11 +77,21 @@ public class Geonav {
     double SINC = 0.00159;
 //345678901234567890123456789012345678901234567890123456789012345678901234567890
 
-    //public Geonav(float pos[], float[][] rm, float[] sun, float[] tilt,
-    public Geonav(float pos[], float[][] rm, float[] sun, 
+    public Geonav(float pos[], float[][] rm, float[] sun, float[] attAngle, float tilt,
                   NetcdfFile ncFile) {
-	//int nsta, int ninc, int npix) {
-System.out.println("Entering Geonav constructor");
+        sensorOffsetMatrix[0][0] = 1.0f;
+        sensorOffsetMatrix[0][1] = 0.0f;
+        sensorOffsetMatrix[0][2] = 0.0f;
+        sensorOffsetMatrix[1][0] = 0.0f;
+        sensorOffsetMatrix[1][1] = 0.99999905f;
+        sensorOffsetMatrix[1][2] = -0.00139626f;
+        sensorOffsetMatrix[2][0] = 0.0f;
+        sensorOffsetMatrix[2][1] = 0.00139626f;
+        sensorOffsetMatrix[2][2] = 0.99999905f;
+        tiltCosVector[0] = 0.0f;
+        tiltCosVector[1] = 0.0f;
+        tiltCosVector[2] = 1.0f;
+
         orbPos[0] = pos[0];
         orbPos[1] = pos[1];
         orbPos[2] = pos[2];
@@ -87,7 +105,7 @@ System.out.println("Entering Geonav constructor");
         sensorOrientation[2][1] = rm[2][1];
         sensorOrientation[2][2] = rm[2][2];
 
-        //scanPathCoefs = computeInterEllCoefs(,,,orbPos);
+        //scanPathCoefs = computeInterEllCoefs(,,tilt,orbPos);
 
         sunUnitVec[0] = sun[0];
         sunUnitVec[1] = sun[1];
@@ -113,7 +131,6 @@ System.out.println("Entering Geonav constructor");
          * partial adaptation of the ellxfm function in ellxfm.f
          */
 
-System.out.println("Entering computeInterEllCoefs");
         double rd = 1.0f / OMF2;
         float[] coef = new float[6];
 
@@ -124,46 +141,17 @@ System.out.println("Entering computeInterEllCoefs");
         sm1 = computeEulerTransformMatrix(attAngle);        
         sm2 = multiplyMatrices(sm1, attTransform);
 
-        /* The sensorOffsetMatrix corresponds to navctl%msensoff in the Fortan 
-         * code.  Also, tiltCosVector corresponds to navctl%msensoff in the 
-         * Fortan version.  Both variables are part of the navctl structure, 
-         * which is read from the navctl.dat file in the Fortan.  According 
-         * to email from F. Patt, the values never changed, so they are 
-         * being hard-coded here (at least initially).
-         */
-        float[][] sensorOffsetMatrix = new float[3][3];
-        float[] tiltCosVector = new float[3];
-        sensorOffsetMatrix[0][0] = 1.0f;
-        sensorOffsetMatrix[0][1] = 0.0f;
-        sensorOffsetMatrix[0][2] = 0.0f;
-        sensorOffsetMatrix[1][0] = 0.0f;
-        sensorOffsetMatrix[1][1] = 0.99999905f;
-        sensorOffsetMatrix[1][2] = -0.00139626f;
-        sensorOffsetMatrix[2][0] = 0.0f;
-        sensorOffsetMatrix[2][1] = 0.00139626f;
-        sensorOffsetMatrix[2][2] = 0.99999905f;
-        tiltCosVector[0] = 0.0f;
-        tiltCosVector[1] = 0.0f;
-        tiltCosVector[2] = 1.0f;
-
         // the next two lines need work
         sm1 = multiplyMatrices(sensorOffsetMatrix, sm2);
         sm2 = computeEulerAxisMatrix(tiltCosVector, tilt);
         sm3 = multiplyMatrices(sm2, sm1);
         
 	coef[1] = (float) (1.0f + (rd - 1.0f) * sm3[0][2] * sm3[0][2]);
-        coef[2] = (float) ((rd - 1.0f) * sm3[0][2] * sm3[2][2] * 2.0f);
+    coef[2] = (float) ((rd - 1.0f) * sm3[0][2] * sm3[2][2] * 2.0f);
 	coef[3] = (float) (1.0f + (rd - 1.0f) * sm3[2][2] * sm3[2][2]);
 	coef[4] = (float) ((sm3[0][0] * p[0] + sm3[0][1] * p[1] + sm3[0][2] * p[2] * rd) * 2.0f);
 	coef[5] = (float) ((sm3[2][0] * p[0] + sm3[2][1] * p[1] + sm3[2][2] * p[2] * rd) * 2.0f);
 	coef[6] = (float) (p[0] * p[0] + p[1] * p[1] + p[2] * p[2] * rd - EARTH_RADIUS * EARTH_RADIUS);
-System.out.print("coef[0] = " + coef[0]);
-System.out.print(", coef[1] = " + coef[1]);
-System.out.print(", coef[2] = " + coef[2]);
-System.out.print(", coef[3] = " + coef[3]);
-System.out.print(", coef[4] = " + coef[4]);
-System.out.print(", coef[5] = " + coef[5]);
-System.out.println();
         return coef;
     }
 
@@ -171,22 +159,21 @@ System.out.println();
         /**
          * An adaptation of the eaxis function in eaxis.f
          */
-System.out.println("Entering computEulerAxisMatrix");
-	float cp = (float) Math.cos(phi / DEGREES_PER_RADIAN);
-	float sp = (float) Math.sin(phi / DEGREES_PER_RADIAN);
+        float cp = (float) Math.cos(phi / DEGREES_PER_RADIAN);
+        float sp = (float) Math.sin(phi / DEGREES_PER_RADIAN);
         float omcp = 1.0f - cp;
 
         float[][] xm = new float[3][3];
 
-	xm[1][1] = cp + eulerAxisUnitVector[0] * eulerAxisUnitVector[0] * omcp;
-	xm[1][2] = eulerAxisUnitVector[0] * eulerAxisUnitVector[1] * omcp + eulerAxisUnitVector[2] * sp;
-	xm[1][3] = eulerAxisUnitVector[0] * eulerAxisUnitVector[2] * omcp - eulerAxisUnitVector[1] * sp;
-	xm[2][1] = eulerAxisUnitVector[0] * eulerAxisUnitVector[1] * omcp - eulerAxisUnitVector[2] * sp;
-	xm[2][2] = cp + eulerAxisUnitVector[1] * eulerAxisUnitVector[1] * omcp;
-	xm[2][3] = eulerAxisUnitVector[1] * eulerAxisUnitVector[2] * omcp + eulerAxisUnitVector[0] * sp;
-	xm[3][1] = eulerAxisUnitVector[0] * eulerAxisUnitVector[2] * omcp + eulerAxisUnitVector[1] * sp;
-	xm[3][2] = eulerAxisUnitVector[1] * eulerAxisUnitVector[2] * omcp - eulerAxisUnitVector[0] * sp;
-	xm[3][3] = cp + eulerAxisUnitVector[2] * eulerAxisUnitVector[2] * omcp;
+        xm[1][1] = cp + eulerAxisUnitVector[0] * eulerAxisUnitVector[0] * omcp;
+        xm[1][2] = eulerAxisUnitVector[0] * eulerAxisUnitVector[1] * omcp + eulerAxisUnitVector[2] * sp;
+        xm[1][3] = eulerAxisUnitVector[0] * eulerAxisUnitVector[2] * omcp - eulerAxisUnitVector[1] * sp;
+        xm[2][1] = eulerAxisUnitVector[0] * eulerAxisUnitVector[1] * omcp - eulerAxisUnitVector[2] * sp;
+        xm[2][2] = cp + eulerAxisUnitVector[1] * eulerAxisUnitVector[1] * omcp;
+        xm[2][3] = eulerAxisUnitVector[1] * eulerAxisUnitVector[2] * omcp + eulerAxisUnitVector[0] * sp;
+        xm[3][1] = eulerAxisUnitVector[0] * eulerAxisUnitVector[2] * omcp + eulerAxisUnitVector[1] * sp;
+        xm[3][2] = eulerAxisUnitVector[1] * eulerAxisUnitVector[2] * omcp - eulerAxisUnitVector[0] * sp;
+        xm[3][3] = cp + eulerAxisUnitVector[2] * eulerAxisUnitVector[2] * omcp;
         return xm;
     }
 
@@ -195,7 +182,6 @@ System.out.println("Entering computEulerAxisMatrix");
         /**
          * An adaptation of the euler function in euler.f
          */
-System.out.println("Entering computeEulerTransformMatrix");
         float[][] xm1 = new float[3][3];
         float[][] xm2 = new float[3][3];
         float[][] xm3 = new float[3][3];
@@ -209,39 +195,75 @@ System.out.println("Entering computeEulerTransformMatrix");
             }
         }
 
-	float c1 = (float) Math.cos(angles[1] / DEGREES_PER_RADIAN);
-	float s1 = (float) Math.sin(angles[1] / DEGREES_PER_RADIAN);
-	float c2 = (float) Math.cos(angles[2] / DEGREES_PER_RADIAN);
-	float s2 = (float) -Math.sin(angles[2] / DEGREES_PER_RADIAN);
-	float c3 = (float) Math.cos(angles[3] / DEGREES_PER_RADIAN);
-	float s3 = (float) -Math.sin(angles[3] / DEGREES_PER_RADIAN);
+        float c1 = (float) Math.cos(angles[1] / DEGREES_PER_RADIAN);
+        float s1 = (float) Math.sin(angles[1] / DEGREES_PER_RADIAN);
+        float c2 = (float) Math.cos(angles[2] / DEGREES_PER_RADIAN);
+        float s2 = (float) -Math.sin(angles[2] / DEGREES_PER_RADIAN);
+        float c3 = (float) Math.cos(angles[3] / DEGREES_PER_RADIAN);
+        float s3 = (float) -Math.sin(angles[3] / DEGREES_PER_RADIAN);
 
-	xm1[1][1] = 1.0f;
-	xm1[2][2] = c1;
-	xm1[3][3] = c1;
-	xm1[2][3] = s1;
-	xm1[3][2] = -s1;
-	xm2[2][2] = 1.0f;
-	xm2[1][1] = c2;
-	xm2[3][3] = c2;
-	xm2[3][1] = s2;
-	xm2[1][3] = -s2;
-	xm3[3][3] = 1.0f;
-	xm3[2][2] = c3;
-	xm3[1][1] = c3;
-	xm3[1][2] = s3;
-	xm3[2][1] = -s3;
+        xm1[1][1] = 1.0f;
+        xm1[2][2] = c1;
+        xm1[3][3] = c1;
+        xm1[2][3] = s1;
+        xm1[3][2] = -s1;
+        xm2[2][2] = 1.0f;
+        xm2[1][1] = c2;
+        xm2[3][3] = c2;
+        xm2[3][1] = s2;
+        xm2[1][3] = -s2;
+        xm3[3][3] = 1.0f;
+        xm3[2][2] = c3;
+        xm3[1][1] = c3;
+        xm3[1][2] = s3;
+        xm3[2][1] = -s3;
 	
         float[][] xmm = multiplyMatrices(xm2, xm3);
         transformationMatrix = multiplyMatrices(xm1, xmm);
         return transformationMatrix;
     }
 
+    private float[][] computeTransformMatrix(float tilt) {
+        /**
+         * Compute the ECEF-to-orbital tranformation matrix using the
+         * sensor transformation matrix.  Corresponds to the get_xfm
+         * function in the original Fortran.
+         */
+        float[][] xfmMatrix = new float[3][3];
+        xfmMatrix[0][0] = 0.0f;
+        xfmMatrix[0][1] = 0.0f;
+        xfmMatrix[0][2] = 0.0f;
+        xfmMatrix[1][0] = 0.0f;
+        xfmMatrix[1][1] = 0.0f;
+        xfmMatrix[1][2] = 0.0f;
+        xfmMatrix[2][0] = 0.0f;
+        xfmMatrix[2][1] = 0.0f;
+        xfmMatrix[2][2] = 0.0f;
+
+        float[][] sm1 = computeEulerAxisMatrix(tiltCosVector, tilt);
+        float[][] sm2 = transposeMatrix(sm1);
+        // ->float[][] sm3 = multiplyMatrices(sm2, );
 /*
-    public Geonav(String dfp) {
-        dataFilePath = dfp;
-    }
+c  Compute rotation matrix for tilt angle, transpose and apply
+X      call eaxis( navctl%tiltcos, tilt, sm1)
+X      call xpose( sm1, sm2)
+
+->      call matmpy( sm2, smat, sm3)
+
+c  Apply transpose of sensor offset matrix
+      call xpose( navctl%msenoff, sm1)
+      call matmpy( sm1, sm3, sm2)
+
+c  Convert Euler angles to matrix
+      call euler(att,sm3)
+      call xpose( sm3, sm1)
+
+c   Apply attitude offset matrix
+      call matmpy( sm1, sm2, attxfm)
 */
+        return xfmMatrix;
+    }
+
     public static float[] crossProduct(float[] v1, float[] v2) {
         /**
          * Compute cross product of two vectors (from crossp.f, also see
@@ -253,9 +275,9 @@ System.out.println("Entering computeEulerTransformMatrix");
         float[] v3;
         v3 = new float[3];
         /* */
-	v3[0] = v1[1] * v2[2] - v1[2] * v2[1];
-	v3[1] = v1[2] * v2[0] - v1[0] * v2[2];
-	v3[2] = v1[0] * v2[1] - v1[1] * v2[0];
+        v3[0] = v1[1] * v2[2] - v1[2] * v2[1];
+        v3[1] = v1[2] * v2[0] - v1[0] * v2[2];
+        v3[2] = v1[0] * v2[1] - v1[1] * v2[0];
         return v3;
     }
 
@@ -277,7 +299,6 @@ System.out.println("Entering computeEulerTransformMatrix");
         double   sv;
         float[]  up = new float[3];
 
-System.out.println("Entering doComputations");
         //  Compute elevation (out-of-plane) angle
         elev = SINC * 1.2;
         cosl = Math.cos(elev);
@@ -288,14 +309,14 @@ System.out.println("Entering doComputations");
         }
 
         //  Compute correction factor for out-of-plane angle
-	double h = (sensorOrientation[1][0] * orbPos[0] 
+        double h = (sensorOrientation[1][0] * orbPos[0]
                     + sensorOrientation[1][1] * orbPos[1]
                     + sensorOrientation[1][2] * orbPos[2] / OMF2) * 2.0;
 
         //  Compute sensor-to-surface vectors for all scan angles
         for (int i = 1; i <= pixPerScan; i ++) {
             int in = pixIncr * (i - 1) + scanStartPix - 1;
-	    double a = scanPathCoef[0] * cosa[in] * cosa[in]  +
+	        double a = scanPathCoef[0] * cosa[in] * cosa[in]  +
                        scanPathCoef[1] * cosa[in] * sina[in] + 
                        scanPathCoef[2] * sina[in] * sina[in];
             double b = scanPathCoef[3] * cosa[in]
@@ -304,14 +325,14 @@ System.out.println("Entering doComputations");
             double r = b * b - 4.0 * c * a;  // begin solve quadratic equation
 
             //  Check for scan past edge of Earth
-	    if (r < 0.0) {
+            if (r < 0.0) {
                 xlat[i - 1] = 999.0f;
                 xlon[i - 1] = 999.0f;
                 solz[i - 1] = 999.0f;
                 sola[i - 1] = 999.0f;
                 senz[i - 1] = 999.0f;
                 sena[i - 1] = 999.0f;
-	    } else {
+            } else {
                 //  Solve for magnitude of sensor-to-pixel vector and compute components
                 double q = (-b - Math.sqrt(r)) / (2.0 * a);
 
@@ -323,7 +344,7 @@ System.out.println("Entering doComputations");
                 double Qz = q * sina[in];
 
                 //  Transform vector from sensor to geocentric frame
-	        for (int j = 0; j < 3; j++) {
+                for (int j = 0; j < 3; j++) {
                     rmtq[j] = (float) (Qx * sensorOrientation[0][j]
                               + Qy * sensorOrientation[1][j]
                               + Qz * sensorOrientation[2][j]); 
@@ -370,23 +391,22 @@ System.out.println("Entering doComputations");
                 // Compute the sensor zenith and azimuth
                 senz[i] = (float) (DEGREES_PER_RADIAN * Math.atan2(Math.sqrt(sn*sn+se*se),sv));
                 // Check for zenith close to zero
-		if (senz[i] > 0.05f) {
+                if (senz[i] > 0.05f) {
                     sena[i] = (float) (DEGREES_PER_RADIAN * Math.atan2(se,sn));
-		} else {
+                } else {
                     sena[i] = 0.0f;
-		}
+                }
                 if (sena[i] < 0.0f) {
                     sena[i] = sena[i] + 360.0f;
                 }
             }  // close (else part of) if (r < 0.0)
-
             // Compute the solar zenith and azimuth
-	    solz[i] = (float) (DEGREES_PER_RADIAN * Math.atan2(Math.sqrt(sunn * sunn + sune * sune), sunv));
+            solz[i] = (float) (DEGREES_PER_RADIAN * Math.atan2(Math.sqrt(sunn * sunn + sune * sune), sunv));
 
             // Check for zenith close to zero
-	    if (solz[i] > 0.05f) {
+            if (solz[i] > 0.05f) {
                 sola[i] = (float) (DEGREES_PER_RADIAN * Math.atan2(sune, sunn));
-	    } else {
+	        } else {
                 sola[i] = 0.0f;
             }
             if (sola[i] < 0.0f) {
@@ -394,12 +414,6 @@ System.out.println("Entering doComputations");
             }
         } // close for (int i = 0; i < npix; i ++)
     } // close doComputations()
-
-/*
-    public String getDataFilePath() {
-        return dataFilePath;
-    }
-*/
 
     public float[] getSensorAzimuth() {
         return sena;

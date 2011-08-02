@@ -24,29 +24,32 @@ public class ReaderTest {
     private boolean debug = true;
     private static Logger errorLogger;
 
-
     //public ReaderTest() { }  // an explicit constructor may be needed ...
 
     private void dispVarDetails(Variable v) {
-	/* Display debugging data about a Netcdf Variable */
-        System.out.print(v.getShortName() + ":");
-        System.out.print("  rank: " + v.getRank());
-        System.out.print("; size: " + v.getSize());
-        //orbitVar.getShape(): ");
-        if (v.getRank() > 1) {
-            System.out.print(";  shape: ");
-            for (int i = 0; i < v.getShape().length; i++) {
-                System.out.print(" " + v.getShape()[i]);
-                if (i < (v.getShape().length - 1)) {
-                    System.out.print(" x");
+        /* Display debugging data about a Netcdf Variable */
+        if (v != null) {
+            System.out.print(v.getShortName() + ":");
+            System.out.print("  rank: " + v.getRank());
+            System.out.print("; size: " + v.getSize());
+            //orbitVar.getShape(): ");
+            if (v.getRank() > 1) {
+                System.out.print(";  shape: ");
+                for (int i = 0; i < v.getShape().length; i++) {
+                    System.out.print(" " + v.getShape()[i]);
+                    if (i < (v.getShape().length - 1)) {
+                        System.out.print(" x");
+                    }
                 }
             }
+            System.out.println();
+        } else {
+            System.out.println(" variable is null.");
         }
-        System.out.println();
     }
 
     public static boolean isHDF(File f) {
-        /**
+    /**
 	 *  Determine if file is an HDF file by seeing if the first 
 	 *  four characters of the file contain the HDF header.
 	 */
@@ -68,10 +71,8 @@ public class ReaderTest {
     private static boolean isInputFileOk(File theFile) 
                            throws FileNotHdfException, FileNotFoundException {
         /**
-         *
          * Verify that the file is suitable for processing by
          * checking that it exists and is an HDF.
-         *
          */
         boolean fGood = false;
         if (theFile.exists()) {
@@ -89,7 +90,6 @@ public class ReaderTest {
 
     public static void main(String[] args) {
         /**
-         *
          *  This main method:
          *   - redirects stderr to a logging file.
          *   - processes and checks the command line input.
@@ -98,7 +98,6 @@ public class ReaderTest {
          *     then calls processFile.
          *  If problems are found, an appropriate exception is thrown and the 
          *  program exits with an error.
-         *
          */
 
         redirectStderr();
@@ -156,8 +155,8 @@ public class ReaderTest {
 
     private static void printUsage() {
         /**
-	 *  Prints a usage message to wherever System.out is printing.
-	 */
+	     *  Prints a usage message to wherever System.out is printing.
+	     */
         System.out.println("usage:");
         System.out.println("   java ReaderTest -h");
         System.out.println("      help (this message)");
@@ -193,13 +192,22 @@ public class ReaderTest {
             Variable sunVar = navGroup.findVariable("sun_ref");
             ArrayFloat sunData = (ArrayFloat.D2) sunVar.read(startPts2, sunVar.getShape());
 
+            Variable attAngleVar = navGroup.findVariable("att_ang");
+            ArrayFloat attAngleData = (ArrayFloat) attAngleVar.read(startPts2, attAngleVar.getShape());
+
             Variable tiltVar = scanLineAttrGroup.findVariable("tilt");
             ArrayFloat tiltData = (ArrayFloat.D1) tiltVar.read();
 
 if (debug) {
+    System.out.print("orbitVar: ");
     dispVarDetails(orbitVar);
+    System.out.print("sensoVar: ");
     dispVarDetails(sensorVar);
+    System.out.print("sunVar: ");
     dispVarDetails(sunVar);
+    System.out.print("attAngleVar: ");
+    dispVarDetails(attAngleVar);
+    System.out.print("tiltVar: ");
     dispVarDetails(tiltVar);
 }
 
@@ -226,12 +234,15 @@ if (debug) {
                 sunUnitVect[1] = sunData.getFloat(3 * line + 1);
                 sunUnitVect[2] = sunData.getFloat(3 * line + 2);
 
+                float[] attAngleVect = new float[3];
+                attAngleVect[0] = attAngleData.getFloat(3 * line);
+                attAngleVect[1] = attAngleData.getFloat(3 * line + 1);
+                attAngleVect[2] = attAngleData.getFloat(3 * line + 2);
 
-                //Geonav geonavCalculator = new Geonav(orbVect, sensorMat, sunUnitVect, tiltVect, ncFile);
-                Geonav geonavCalculator = new Geonav(orbVect, sensorMat, sunUnitVect, ncFile);
-if (debug) {
-    System.out.println("geonavCalculator instantiated");
-}
+                float tilt = tiltData.getFloat(line);
+
+                Geonav geonavCalculator = new Geonav(orbVect, sensorMat, sunUnitVect, attAngleVect, tilt, ncFile);
+
                 float[] latitude = geonavCalculator.getLatitude();
        	        float[] longitude = geonavCalculator.getLongitude();
        	        float[] sensorAzimuth = geonavCalculator.getSensorAzimuth();
@@ -239,15 +250,6 @@ if (debug) {
        	        float[] solarAzimuth = geonavCalculator.getSolarAzimuth();
        	        float[] solarZenith = geonavCalculator.getSolarZenith();
 
-if (debug) {
-    System.out.println("line = " + line );
-    System.out.print("latitude.length: " + latitude.length);
-    System.out.println(", longitude.length: " + longitude.length);
-    System.out.print("sensorAzimuth.length: " + sensorAzimuth.length);
-    System.out.println(", sensorZenith.length: " + sensorZenith.length);
-    System.out.print("solarAzimuth.length: " + solarAzimuth.length);
-    System.out.println(", solarZenith.length: " + solarZenith.length);
-}
                 for (int pix = 0; pix < latitude.length; pix ++) {
                     String outLine = String.format("    %4d    %4d %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f", 
                                                    line, pix, latitude[pix], longitude[pix],
@@ -256,15 +258,6 @@ if (debug) {
                     System.out.println(outLine);
                 }
             }
-
-            //System.out.println("\nGot group: " + navGroup.toString());
-	    /*
-            processVariable(prefix, navGroup, "orb_vec");
-            processVariable(prefix, navGroup, "sen_mat");
-            processVariable(prefix, navGroup, "sun_ref");
-            double[] ellipseCoefficients = new double[6];
-	    */
-            //ArrayFloat.D2 positionData = readData();
 
             int i = 0;
             while (i < numScanLines) {
