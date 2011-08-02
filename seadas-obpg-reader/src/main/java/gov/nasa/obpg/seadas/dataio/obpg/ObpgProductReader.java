@@ -24,11 +24,13 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.DOMBuilder;
+import org.opengis.filter.spatial.Equals;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Section;
+import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -71,9 +73,9 @@ public class ObpgProductReader extends AbstractProductReader {
             final String path = inFile.getPath();
             ncfile = NetcdfFile.open(path);
 
-            String productType = obpgUtils.getProductType(ncfile.getGlobalAttributes());
+            String productType = obpgUtils.getProductType(ncfile);
             final Product product;
-            product = obpgUtils.createProductBody(ncfile.getGlobalAttributes());
+            product = obpgUtils.createProductBody(ncfile.getGlobalAttributes(),productType);
             product.setFileLocation(inFile);
             product.setProductReader(this);
             mustFlip = obpgUtils.mustFlip(ncfile);
@@ -81,11 +83,11 @@ public class ObpgProductReader extends AbstractProductReader {
             obpgUtils.addScientificMetadata(product, ncfile);
 
             variableMap = obpgUtils.addBands(product, ncfile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
-            if (productType.contains("Level-2")) {
-                obpgUtils.addGeocoding(product, ncfile, mustFlip);
-            } else {
+            if (productType.contains("Level-3")) {
                 GeoCoding geoCoding = createGeoCoding(product);
                 product.setGeoCoding(geoCoding);
+            } else {
+                obpgUtils.addGeocoding(product, ncfile, mustFlip);
             }
             obpgUtils.addBitmaskDefinitions(product, defs);
             return product;
@@ -110,8 +112,8 @@ public class ObpgProductReader extends AbstractProductReader {
                                           ProgressMonitor pm) throws IOException {
 
         if (mustFlip) {
-            sourceOffsetY = destBand.getSceneRasterHeight() - (sourceOffsetY + sourceHeight);
-            sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
+             sourceOffsetY = destBand.getSceneRasterHeight() - (sourceOffsetY + sourceHeight);
+             sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
         }
         Variable variable = variableMap.get(destBand);
         try {

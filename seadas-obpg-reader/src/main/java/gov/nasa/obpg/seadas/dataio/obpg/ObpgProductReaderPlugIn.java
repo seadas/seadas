@@ -20,6 +20,7 @@ import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
 import org.esa.beam.util.io.BeamFileFilter;
 import ucar.nc2.Attribute;
+import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 
 import java.io.File;
@@ -60,6 +61,7 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "HMODISA Level-3 Standard Mapped Image",
             "HMODIST Level-3 Standard Mapped Image",
             "MERIS Level-2 Data",
+            "MODIS_SWATH_Type_L1B",
             "MODISA Level-1 Browse Data",
             "MODISA Level-2 Data",
             "MODIST Level-2 Data",
@@ -111,17 +113,34 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
-                if (titleAttribute != null) {
-                    final String title = titleAttribute.getStringValue();
-                    if (title != null) {
-                        if (supportedProductTypeSet.contains(title.trim())) {
-                            if (DEBUG) {
-                                System.out.println(file);
+                Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
+                if (titleAttribute != null || modisl1bGroup != null) {
+                    if (titleAttribute != null){
+                        final String title = titleAttribute.getStringValue();
+                        if (title != null) {
+                            if (supportedProductTypeSet.contains(title.trim())) {
+                                if (DEBUG) {
+                                    System.out.println(file);
+                                }
+                                return DecodeQualification.INTENDED;
+                            } else {
+                                if (DEBUG) {
+                                    System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
+                                }
                             }
-                            return DecodeQualification.INTENDED;
-                        } else {
-                            if (DEBUG) {
-                                System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
+                        }
+                    } else {
+                        final String shortname = modisl1bGroup.getShortName();
+                        if (shortname != null) {
+                            if (supportedProductTypeSet.contains(shortname.trim())) {
+                                if (DEBUG) {
+                                    System.out.println(file);
+                                }
+                                return DecodeQualification.INTENDED;
+                            } else {
+                                if (DEBUG) {
+                                    System.out.println("# Unrecognized attribute group=[" + shortname + "]: " + file);
+                                }
                             }
                         }
                     }

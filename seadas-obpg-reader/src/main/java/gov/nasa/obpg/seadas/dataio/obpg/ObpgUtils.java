@@ -20,6 +20,7 @@ import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
+import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
@@ -27,6 +28,7 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.PrivateKey;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -36,10 +38,13 @@ import java.util.Map;
 
 public class ObpgUtils {
 
+    static final String MODIS_L1B_TYPE = "MODIS_SWATH_Type_L1B";
     static final String KEY_NAME = "Product Name";
     static final String KEY_TYPE = "Title";
     static final String KEY_WIDTH = "Pixels per Scan Line";
     static final String KEY_HEIGHT = "Number of Scan Lines";
+    static final String KEY_WIDTH_MODISL1 = "Max Earth View Frames";
+    static final String KEY_HEIGHT_MODISL1 = "Number of Scans";
     static final String KEY_START_NODE = "Start Node";
     static final String KEY_END_NODE = "End Node";
     static final String KEY_START_TIME = "Start Time";
@@ -52,7 +57,6 @@ public class ObpgUtils {
     static final String KEY_L3SMI_HEIGHT = "Number of Lines";
     static final String KEY_L3SMI_WIDTH = "Number of Columns";
     static final String SMI_PRODUCT_PARAMETERS = "SMI Product Parameters";
-    static final String SMI_PROD_PARAMETERS_GROUP = "l3m_data Attributes";
 
     MetadataAttribute attributeToMetadata(Attribute attribute) {
         final int productDataType = getProductDataType(attribute.getDataType(), false, false);
@@ -109,18 +113,33 @@ public class ObpgUtils {
         return inputFile;
     }
 
-    public Product createProductBody(List<Attribute> globalAttributes) throws ProductIOException {
-        return createProduct(globalAttributes,
-                             getWidthKey(getStringAttribute(KEY_TYPE, globalAttributes)),
-                             getHeightKey(getStringAttribute(KEY_TYPE, globalAttributes)));
+    public Product createProductBody(List<Attribute> globalAttributes, String productType) throws ProductIOException {
+        int sceneWidth;
+        int sceneHeight;
+        String keyWidth;
+        String keyHeight;
+        if (productType.contains(MODIS_L1B_TYPE)){
+            keyWidth = KEY_WIDTH_MODISL1;
+            keyHeight = KEY_HEIGHT_MODISL1;
+            sceneWidth = getIntAttribute(keyWidth, globalAttributes);
+            sceneHeight = getIntAttribute(keyHeight, globalAttributes) * 10;
+        } else {
+            keyWidth = getWidthKey(getStringAttribute(KEY_TYPE, globalAttributes));
+            keyHeight = getHeightKey(getStringAttribute(KEY_TYPE, globalAttributes));
+            sceneWidth = getIntAttribute(keyWidth, globalAttributes);
+            sceneHeight = getIntAttribute(keyHeight, globalAttributes);
+        }
+
+        return createProduct(productType, globalAttributes, sceneWidth, sceneHeight);
     }
 
-    private Product createProduct(List<Attribute> globalAttributes, String keyWidth, String keyHeight) throws ProductIOException {
-        String productName = getStringAttribute(KEY_NAME, globalAttributes);
-        String productType = getProductType(globalAttributes);
-
-        int sceneWidth = getIntAttribute(keyWidth, globalAttributes);
-        int sceneHeight = getIntAttribute(keyHeight, globalAttributes);
+    private Product createProduct(String productType, List<Attribute> globalAttributes, int sceneWidth, int sceneHeight) throws ProductIOException {
+        String productName;
+        if (productType.contains(MODIS_L1B_TYPE)){
+            productName = "MODIS L1B";
+        } else {
+            productName = getStringAttribute(KEY_NAME, globalAttributes);
+        }
 
         final Product product = new Product(productName, productType, sceneWidth, sceneHeight);
         product.setDescription(productName);
@@ -152,8 +171,19 @@ public class ObpgUtils {
         }
     }
 
-    public String getProductType(List<Attribute> globalAttributes) throws ProductIOException {
-        return "OBPG " + getStringAttribute(KEY_TYPE, globalAttributes);
+    public String getProductType(final NetcdfFile ncfile) throws ProductIOException {
+
+        Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
+        Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
+
+        if (titleAttribute != null){
+            List<Attribute> globalAttributes = ncfile.getGlobalAttributes();
+            return "OBPG " + getStringAttribute(KEY_TYPE, globalAttributes);
+        } else if (modisl1bGroup != null) {
+            return  modisl1bGroup.getShortName();
+        } else {
+            throw new ProductIOException("Unrecognized file!");
+        }
     }
 
     private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
@@ -311,8 +341,8 @@ public class ObpgUtils {
                         band.setValidPixelExpression(validExpression);
                     }
                     product.addBand(band);
-                    if (name.matches("nLw_\\d{3,}")) {
-                        final float wavelength = Float.parseFloat(name.substring(4));
+                    if (name.matches("\\w+_\\d{3,}")) {
+                        final float wavelength = Float.parseFloat(name.split("_")[1]);
                         band.setSpectralWavelength(wavelength);
                         band.setSpectralBandIndex(spectralBandIndex++);
                     }
@@ -345,6 +375,82 @@ public class ObpgUtils {
                     }
                 }
             }
+             if (variable.getRank() == 3) {
+                final int[] dimensions = variable.getShape();
+                final int bands = dimensions[0];
+                final int height = dimensions[1];
+                final int width = dimensions[2];
+
+                if (height == sceneRasterHeight && width == sceneRasterWidth) {
+                    final List<Attribute> list = variable.getAttributes();
+                    Attribute band_names = findAttribute("band_names", list);
+                    if (band_names != null){
+                        String bnames = band_names.getStringValue();
+                        String[] bname_array = bnames.split(",");
+                        String units = null;
+                        String description = null;
+                        Array slope = null;
+                        Array intercept = null;
+                        FlagCoding flagCoding = null;
+                        for (Attribute hdfAttribute : list) {
+                            final String attribName = hdfAttribute.getName();
+                            if ("units".equals(attribName)) {
+                                units = hdfAttribute.getStringValue();
+                            } else if ("long_name".equals(attribName)) {
+                                description = hdfAttribute.getStringValue();
+                            } else if ("reflectance_scales".equals(attribName)) {
+                                slope = hdfAttribute.getValues();
+                            } else if ("reflectance_offsets".equals(attribName)) {
+                                intercept = hdfAttribute.getValues();
+                            } else if (slope == null && "radiance_scales".equals(attribName)){
+                                slope = hdfAttribute.getValues();
+                            } else if (intercept == null && "radiance_offsets".equals(attribName)){
+                                intercept = hdfAttribute.getValues();
+                            }
+                        }
+                        int i = 0;
+                        for (String bandname: bname_array){
+                            final String shortname = variable.getShortName();
+                            StringBuilder longname = new StringBuilder(shortname);
+                            longname.append("_");
+                            longname.append(bandname);
+                            String name = longname.toString();
+                            final int dataType = getProductDataType(variable);
+                            final Band band = new Band(name, dataType, width, height);
+                            final String validExpression = bandInfoMap.get(name);
+                            if (validExpression != null && !validExpression.equals("")) {
+                                band.setValidPixelExpression(validExpression);
+                            }
+                            product.addBand(band);
+                            if (name.matches("\\w+_\\d{3,}")) {
+                                final float wavelength = Float.parseFloat(name.split("_")[1]);
+                                band.setSpectralWavelength(wavelength);
+                                band.setSpectralBandIndex(spectralBandIndex++);
+                            }
+                            Variable sliced = null;
+                            try {
+                                sliced = variable.slice(0, i);
+                            } catch (InvalidRangeException e) {
+                                e.printStackTrace();  //Todo change body of catch statement.
+                            }
+                            bandToVariableMap.put(band, sliced);
+                            band.setUnit(units);
+                            band.setDescription(description);
+                            if (slope != null){
+                                band.setScalingFactor(slope.getDouble(i));
+
+                                if (intercept != null)
+                                    band.setScalingOffset(intercept.getDouble(i)*slope.getDouble(i));
+                            }
+                            if (flagCoding != null) {
+                                band.setSampleCoding(flagCoding);
+                                product.getFlagCodingGroup().add(flagCoding);
+                            }
+                            i++;
+                        }
+                    }
+                }
+            }
         }
         return bandToVariableMap;
     }
@@ -363,7 +469,7 @@ public class ObpgUtils {
             Variable latVar = ncfile.findVariable(navGroup + "/" + latitude);
             Variable lonVar = ncfile.findVariable(navGroup + "/" + longitude);
             Variable cntlPointVar = ncfile.findVariable(navGroup + "/" + cntlPoints);
-            if (latVar != null && lonVar != null && cntlPoints != null) {
+            if (latVar != null && lonVar != null && cntlPointVar != null) {
                 final ProductData lonRawData = readData(lonVar);
                 final ProductData latRawData = readData(latVar);
                 latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);

@@ -40,8 +40,8 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-2 ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_HEIGHT, 1354));
-        
-        final Product product = obpgUtils.createProductBody(globalAttributes);
+        String productType = "OBPG Level-2 ProductType";
+        final Product product = obpgUtils.createProductBody(globalAttributes,productType);
 
         assertNotNull(product);
         assertEquals("Level-2 ProductName", product.getName());
@@ -56,9 +56,10 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-2 ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_WIDTH, 2030));
         // Since this is a test without the height Attribute, don't put one in here.
+        String productType = "SeaWiFS Level-2 Data";
 
         try {
-            obpgUtils.createProductBody(globalAttributes);
+            obpgUtils.createProductBody(globalAttributes,productType);
             fail("should not come here");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_HEIGHT));
@@ -72,9 +73,10 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-2 ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_HEIGHT, 1354));
+        String productType = "SeaWiFS Level-2 Data";
 
         try {
-            obpgUtils.createProductBody(globalAttributes);
+            obpgUtils.createProductBody(globalAttributes,productType);
             fail("should not come here");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_NAME));
@@ -88,9 +90,10 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         //globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_HEIGHT, 1354));
+        String productType = "SeaWiFS Level-2 Data";
 
         try {
-            obpgUtils.createProductBody(globalAttributes);
+            obpgUtils.createProductBody(globalAttributes,productType);
             fail("Should not get here");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_TYPE));
@@ -104,9 +107,10 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-2 ProductType"));
         // Since this is a test without the width Attribute, don't put one in here.
         globalAttributes.add(new Attribute(ObpgUtils.KEY_HEIGHT, 1354));
+        String productType = "SeaWiFS Level-2 Data";
 
         try {
-            obpgUtils.createProductBody(globalAttributes);
+            obpgUtils.createProductBody(globalAttributes,productType);
             fail("should not come here");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_WIDTH));
@@ -120,8 +124,9 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-3 ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_HEIGHT, 1354));
+        String productType = "OBPG Level-3 ProductType";
 
-        final Product product = obpgUtils.createProductBody(globalAttributes);
+        final Product product = obpgUtils.createProductBody(globalAttributes,productType);
 
         assertNotNull(product);
         assertEquals("Level-3 ProductName", product.getName());
@@ -136,9 +141,10 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-3 ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_WIDTH, 2030));
         // Since this is a test without the height Attribute, don't put one in here.
+        String productType = "SeaWiFS Level-3 Binned Data";
 
         try {
-            obpgUtils.createProductBody(globalAttributes);
+            obpgUtils.createProductBody(globalAttributes,productType);
             fail("should not come here");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_L3SMI_HEIGHT));
@@ -151,9 +157,10 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-3 ProductType"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_HEIGHT, 1354));
+        String productType = "SeaWiFS Level-3 Binned Data";
 
         try {
-            obpgUtils.createProductBody(globalAttributes);
+            obpgUtils.createProductBody(globalAttributes,productType);
             fail("should not come here");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_NAME));
@@ -166,9 +173,10 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "Level-3 ProductName"));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_HEIGHT, 1354));
+        String productType = "SeaWiFS Level-3 Binned Data";
 
         try {
-            obpgUtils.createProductBody(globalAttributes);
+            obpgUtils.createProductBody(globalAttributes,productType);
             fail("Should not get here");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_TYPE));
@@ -182,9 +190,10 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
         globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-3 ProductType"));
         // Since this is a test without the width Attribute, don't put one in here.
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_HEIGHT, 1354));
+        String productType = "SeaWiFS Level-3 Binned Data";
 
         try {
-            obpgUtils.createProductBody(globalAttributes);
+            obpgUtils.createProductBody(globalAttributes,productType);
             fail("should not come here");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_L3SMI_WIDTH));
