@@ -1,7 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 /**
- * A ...
+ * Need a decent description here...
  *
  * @author Danny Knowles
  * @since SeaDAS 7.0
