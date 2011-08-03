@@ -21,7 +21,7 @@ public class ReaderTest {
 
     int numScanLines = 0;
 
-    private boolean debug = true;
+    private boolean debug = false;
     private static Logger errorLogger;
 
     //public ReaderTest() { }  // an explicit constructor may be needed ...
@@ -100,7 +100,6 @@ public class ReaderTest {
          *  program exits with an error.
          */
 
-        redirectStderr();
 
         if (args.length > 0) {
             Options options = new Options();
@@ -113,8 +112,24 @@ public class ReaderTest {
     	        } else {
     		    File inFile = new File(args[0]);
                     if (isInputFileOk(inFile)) {
+                        System.out.println("Processing " + inFile.getName() + " ...");
+                        PrintStream oriOut = System.out;
+                        PrintStream oriErr = System.err;
+
+                        File outFile = new File("test_out.txt");
+                        File errFile = new File("test_err.txt");
+
+                        PrintStream outStr = new PrintStream(outFile);
+                        PrintStream errStr = new PrintStream(errFile);
+
+                        System.setOut(outStr);
+                        System.setErr(errStr);
+                        //redirectStderr();    // replaced by the setErr() method.
                         ReaderTest rt = new ReaderTest();
                         rt.processFile(inFile);
+                        System.setOut(oriOut);
+                        System.setErr(oriErr);
+                        System.out.println("Processing compleat.");
                     }
                 }
             } catch(FileNotHdfException fnhe) { 
