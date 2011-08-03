@@ -18,27 +18,29 @@ package gov.nasa.obpg.seadas.dataio.obpg;
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
+import org.esa.beam.framework.dataop.maptransf.Datum;
+import org.jdom.Element;
 import ucar.ma2.Array;
+import ucar.ma2.ArrayChar;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
+import ucar.nc2.iosp.hdf4.ODLparser;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.PrivateKey;
+// import java.security.PrivateKey;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ObpgUtils {
 
     static final String MODIS_L1B_TYPE = "MODIS_SWATH_Type_L1B";
+    static final String MODIS_PLATFORM = "MODIS Platform";
     static final String KEY_NAME = "Product Name";
     static final String KEY_TYPE = "Title";
     static final String KEY_WIDTH = "Pixels per Scan Line";
@@ -49,6 +51,7 @@ public class ObpgUtils {
     static final String KEY_END_NODE = "End Node";
     static final String KEY_START_TIME = "Start Time";
     static final String KEY_END_TIME = "End Time";
+    static final String KEY_DNF = "DayNightFlag";
     static final String SENSOR_BAND_PARAMETERS = "Sensor_Band_Parameters";
     static final String SENSOR_BAND_PARAMETERS_GROUP = "Sensor Band Parameters";
     static final String SCAN_LINE_ATTRIBUTES = "Scan_Line_Attributes";
@@ -57,6 +60,10 @@ public class ObpgUtils {
     static final String KEY_L3SMI_HEIGHT = "Number of Lines";
     static final String KEY_L3SMI_WIDTH = "Number of Columns";
     static final String SMI_PRODUCT_PARAMETERS = "SMI Product Parameters";
+
+    static final String STRUCT_METADATA = "StructMetadata";
+    static final String CORE_METADATA = "CoreMetadata";
+    static final String ARCHIVE_METADATA = "ArchiveMetadata";
 
     MetadataAttribute attributeToMetadata(Attribute attribute) {
         final int productDataType = getProductDataType(attribute.getDataType(), false, false);
@@ -118,11 +125,25 @@ public class ObpgUtils {
         int sceneHeight;
         String keyWidth;
         String keyHeight;
+        int pixelmultiplier = 1;
+        int scanmultiplier = 10;
         if (productType.contains(MODIS_L1B_TYPE)){
             keyWidth = KEY_WIDTH_MODISL1;
             keyHeight = KEY_HEIGHT_MODISL1;
-            sceneWidth = getIntAttribute(keyWidth, globalAttributes);
-            sceneHeight = getIntAttribute(keyHeight, globalAttributes) * 10;
+            for (Attribute attribute : globalAttributes) {
+                if (attribute.getName().contains("HDFEOS_FractionalOffset")){
+                    String[] parsedname = attribute.getName().split("_");
+                    if (parsedname[2].equals("20*nscans")){
+                        pixelmultiplier = 2;
+                        scanmultiplier = 20;
+                    } else if (parsedname[2].equals("40*nscans")){
+                        pixelmultiplier = 4;
+                        scanmultiplier = 40;
+                    }
+                }
+            }
+            sceneWidth = getIntAttribute(keyWidth, globalAttributes) * pixelmultiplier;
+            sceneHeight = getIntAttribute(keyHeight, globalAttributes) * scanmultiplier;
         } else {
             keyWidth = getWidthKey(getStringAttribute(KEY_TYPE, globalAttributes));
             keyHeight = getHeightKey(getStringAttribute(KEY_TYPE, globalAttributes));
@@ -135,11 +156,8 @@ public class ObpgUtils {
 
     private Product createProduct(String productType, List<Attribute> globalAttributes, int sceneWidth, int sceneHeight) throws ProductIOException {
         String productName;
-        if (productType.contains(MODIS_L1B_TYPE)){
-            productName = "MODIS L1B";
-        } else {
-            productName = getStringAttribute(KEY_NAME, globalAttributes);
-        }
+
+        productName = getStringAttribute(KEY_NAME, globalAttributes);
 
         final Product product = new Product(productName, productType, sceneWidth, sceneHeight);
         product.setDescription(productName);
@@ -186,6 +204,53 @@ public class ObpgUtils {
         }
     }
 
+    public void addGlobalAttribute (final NetcdfFile ncfile, List<Attribute> globalAttributes) {
+        Element eosElement = null;
+        try {
+          eosElement = getEosElement(CORE_METADATA, ncfile.getRootGroup());
+        } catch (IOException e) {
+          e.printStackTrace();  //Todo add a valid exception
+        }
+
+        //grab granuleID
+        Element inventoryMetadata = eosElement.getChild("INVENTORYMETADATA");
+        Element inventoryElem = (Element) inventoryMetadata.getChildren().get(0);
+        Element ecsdataElem = inventoryElem.getChild("ECSDATAGRANULE");
+        Element granIdElem = ecsdataElem.getChild("LOCALGRANULEID");
+        String granId = granIdElem.getValue().substring(1);
+        Attribute granIdAttribute = new Attribute(KEY_NAME,granId);
+        globalAttributes.add(granIdAttribute);
+        Element dnfElem = ecsdataElem.getChild("DAYNIGHTFLAG");
+        String daynightflag = dnfElem.getValue().substring(1);
+        Attribute dnfAttribute = new Attribute(KEY_DNF,daynightflag);
+        globalAttributes.add(dnfAttribute);
+
+
+        //grab granule date-time
+        Element timeElem = inventoryElem.getChild("RANGEDATETIME");
+        Element startTimeElem = timeElem.getChild("RANGEBEGINNINGTIME");
+        String startTime = startTimeElem.getValue().substring(1);
+        Element startDateElem = timeElem.getChild("RANGEBEGINNINGDATE");
+        String startDate = startDateElem.getValue().substring(1);
+        Attribute startTimeAttribute = new Attribute(KEY_START_TIME,startDate+' '+startTime);
+        globalAttributes.add(startTimeAttribute);
+
+        Element endTimeElem = timeElem.getChild("RANGEENDINGTIME");
+        String endTime = endTimeElem.getValue().substring(1);
+        Element endDateElem = timeElem.getChild("RANGEENDINGDATE");
+        String endDate = endDateElem.getValue().substring(1);
+        Attribute endTimeAttribute = new Attribute(KEY_END_TIME,endDate+' '+endTime);
+        globalAttributes.add(endTimeAttribute);
+
+        //grab Mission Name
+        Element platformElem = inventoryElem.getChild("ASSOCIATEDPLATFORMINSTRUMENTSENSOR");
+        Element containerElem = platformElem.getChild("ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER");
+        Element shortNameElem = containerElem.getChild("ASSOCIATEDPLATFORMSHORTNAME");
+        String shortName = shortNameElem.getValue().substring(2);
+        Attribute shortNameAttribute = new Attribute(MODIS_PLATFORM,shortName);
+        globalAttributes.add(shortNameAttribute);
+    }
+
     private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
         Attribute attribute = findAttribute(key, globalAttributes);
         if (attribute != null) {
@@ -201,7 +266,7 @@ public class ObpgUtils {
         return null;
     }
 
-    private String getStringAttribute(String key, List<Attribute> globalAttributes) throws ProductIOException {
+    public String getStringAttribute(String key, List<Attribute> globalAttributes) throws ProductIOException {
         Attribute attribute = findAttribute(key, globalAttributes);
         if (attribute == null || attribute.getLength() != 1) {
             throw new ProductIOException("Global attribute '" + key + "' is missing.");
@@ -237,6 +302,25 @@ public class ObpgUtils {
         boolean endNodeAscending = false;
         if (endAttr != null) {
             endNodeAscending = "Ascending".equalsIgnoreCase(endAttr.getStringValue().trim());
+        }
+
+        return (startNodeAscending && endNodeAscending);
+    }
+
+    public boolean mustFlipMODIS(String platform, String dnflag) {
+
+        boolean startNodeAscending = false;
+        boolean endNodeAscending = false;
+        if (platform.contains("Aqua")) {
+            if (dnflag.contains("Day")){
+                startNodeAscending = true;
+                endNodeAscending = true;
+            }
+        } else if (platform.contains("Terra")){
+             if (dnflag.contains("Night")){
+                startNodeAscending = true;
+                endNodeAscending = true;
+            }
         }
 
         return (startNodeAscending && endNodeAscending);
@@ -457,12 +541,51 @@ public class ObpgUtils {
 
     public void addGeocoding(final Product product, NetcdfFile ncfile, boolean mustFlip) throws IOException {
         final String navGroup = "Navigation Data";
+        final String navGroupMODIS = "MODIS_SWATH_Type_L1B/Geolocation Fields";
         final String longitude = "longitude";
         final String latitude = "latitude";
         String cntlPoints = "cntl_pt_cols";
+
         Band latBand = null;
         Band lonBand = null;
-        if (product.containsBand(latitude) && product.containsBand(longitude)) {
+        if (product.getProductType().contains(MODIS_L1B_TYPE)){
+
+            // read latitudes and longitudes
+            int cntl_lat_ix = 5;
+            int cntl_lon_ix = 5;
+            Variable lats = ncfile.findVariable(navGroupMODIS + "/" + "Latitude");
+            Variable lons = ncfile.findVariable(navGroupMODIS + "/" + "Longitude");
+            int[] dims = lats.getShape();
+
+            float[] latTiePoints;
+            latTiePoints = new float[dims[0]*dims[1]];
+            float[] lonTiePoints;
+            lonTiePoints = new float[dims[0]*dims[1]];
+
+            Array latarr = lats.read();
+            Array lonarr = lons.read();
+           if (mustFlip){
+                Array tmplat = latarr.flip(0);
+                Array tmplon = lonarr.flip(1);
+                latTiePoints = (float[]) tmplat.getStorage();
+                lonTiePoints = (float[]) tmplon.getStorage();
+            } else {
+                latTiePoints = (float[]) latarr.getStorage();
+                lonTiePoints = (float[]) lonarr.getStorage();
+           }
+
+            final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1],dims[0], 0, 0,
+                    cntl_lat_ix, cntl_lon_ix, latTiePoints);
+
+            product.addTiePointGrid(latGrid);
+
+            final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1],dims[0], 0, 0,
+                    cntl_lat_ix, cntl_lon_ix, lonTiePoints);
+
+            product.addTiePointGrid(lonGrid);
+
+            product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
+        } else if (product.containsBand(latitude) && product.containsBand(longitude)) {
             latBand = product.getBand(latitude);
             lonBand = product.getBand(longitude);
         } else {
@@ -480,6 +603,7 @@ public class ObpgUtils {
                 computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints, mustFlip);
             }
         }
+
         if (latBand != null && lonBand != null) {
             product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
         }
@@ -577,4 +701,80 @@ public class ObpgUtils {
         final MetadataAttribute metadataAttribute = attributeToMetadata(attribute);
         element.addAttribute(metadataAttribute);
     }
+
+    // COPIED FROM org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos:HdfEosUtils
+
+
+    static Element getEosElement(String name, Group eosGroup) throws IOException {
+        String smeta = getEosMetadata(name, eosGroup);
+        if (smeta == null) {
+            return null;
+        }
+        smeta = smeta.replaceAll("\\s+=\\s+", "=");
+        smeta = smeta.replaceAll("\\?", "_"); // XML names cannot contain the character "?".
+
+        StringBuilder sb = new StringBuilder(smeta.length());
+        StringTokenizer lineFinder = new StringTokenizer(smeta, "\t\n\r\f");
+        while (lineFinder.hasMoreTokens()) {
+            String line = lineFinder.nextToken().trim();
+            sb.append(line);
+            sb.append("\n");
+        }
+
+        ODLparser parser = new ODLparser();
+        return parser.parseFromString(sb.toString());// now we have the ODL in JDOM elements
+    }
+
+   public static String getEosMetadata(String name, Group eosGroup) throws IOException {
+      StringBuilder sbuff = null;
+      String structMetadata = null;
+
+      int n = 0;
+      while (true) {
+        Variable structMetadataVar = eosGroup.findVariable(name + "." + n);
+        if (structMetadataVar == null) {
+            break;
+        }
+        if ((structMetadata != null) && (sbuff == null)) { // more than 1 StructMetadata
+          sbuff = new StringBuilder(64000);
+          sbuff.append(structMetadata);
+        }
+
+        Array metadataArray = structMetadataVar.read();
+        structMetadata = ((ArrayChar) metadataArray).getString(); // common case only StructMetadata.0, avoid extra copy
+
+        if (sbuff != null) {
+          sbuff.append(structMetadata);
+        }
+        n++;
+      }
+      return (sbuff != null) ? sbuff.toString() : structMetadata;
+    }
+
+    // look for a group with the given name. recurse into subgroups if needed. breadth first
+    static Group findGroupNested(Group parent, String name) {
+
+      for (Group g : parent.getGroups()) {
+        if (g.getShortName().equals(name))
+          return g;
+      }
+      for (Group g : parent.getGroups()) {
+        Group result = findGroupNested(g, name);
+        if (result != null)
+          return result;
+      }
+      return null;
+    }
+
+    static String getValue(Element root, String... childs) {
+        Element element = root;
+        int index = 0;
+        while (element != null && index < childs.length) {
+            String childName = childs[index++];
+            element = element.getChild(childName);
+        }
+        return element != null ? element.getValue() : null;
+
+    }
+
 }

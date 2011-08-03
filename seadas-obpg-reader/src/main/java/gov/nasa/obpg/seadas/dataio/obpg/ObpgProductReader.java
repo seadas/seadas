@@ -24,7 +24,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.DOMBuilder;
-import org.opengis.filter.spatial.Equals;
+// import org.opengis.filter.spatial.Equals;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import ucar.ma2.Array;
@@ -74,11 +74,21 @@ public class ObpgProductReader extends AbstractProductReader {
             ncfile = NetcdfFile.open(path);
 
             String productType = obpgUtils.getProductType(ncfile);
+            mustFlip = obpgUtils.mustFlip(ncfile);
+
             final Product product;
-            product = obpgUtils.createProductBody(ncfile.getGlobalAttributes(),productType);
+
+            List<Attribute> globalAttributes = ncfile.getGlobalAttributes();
+            if (productType.contains("MODIS_SWATH_Type_L1B")){
+                obpgUtils.addGlobalAttribute(ncfile, globalAttributes);
+                mustFlip = obpgUtils.mustFlipMODIS(obpgUtils.getStringAttribute("MODIS Platform",globalAttributes),
+                        obpgUtils.getStringAttribute("DayNightFlag",globalAttributes));
+            }
+            product = obpgUtils.createProductBody(globalAttributes,productType);
+
             product.setFileLocation(inFile);
             product.setProductReader(this);
-            mustFlip = obpgUtils.mustFlip(ncfile);
+
             obpgUtils.addGlobalMetadata(product, ncfile.getGlobalAttributes());
             obpgUtils.addScientificMetadata(product, ncfile);
 
@@ -95,6 +105,7 @@ public class ObpgProductReader extends AbstractProductReader {
             throw new ProductIOException(e.getMessage());
         }
     }
+
 
     @Override
     public void close() throws IOException {
