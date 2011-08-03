@@ -8,7 +8,13 @@ import javax.swing.event.*;
 import java.text.*;
 import java.util.*;
 
+import org.jdesktop.swingx.*;
+import org.jdesktop.swingx.treetable.*;
+
 public class AudioPlayer implements ChangeListener {
+
+
+
 
     JLabel jlabBass;
     JLabel jlabMidrange;
@@ -103,6 +109,13 @@ public class AudioPlayer implements ChangeListener {
         contentPane.add(jbtnStore);
         contentPane.add(new JLabel(""));
         contentPane.add(jlabInfo);
+
+        TreeTableModel treeTableModel = new FileSystemModel(); // any TreeTableModel
+        JXTreeTable treeTable = new JXTreeTable(treeTableModel);
+        JScrollPane scrollpane = new JScrollPane(treeTable);
+
+        contentPane.add(scrollpane);
+
 
     }
 
@@ -255,12 +268,12 @@ public class AudioPlayer implements ChangeListener {
             public void run() {
                 AudioPlayer audioPlayer = new AudioPlayer();
                 JFrame jfrm = new JFrame(" A Simple Audio Player Interface");
-                 jfrm.setLayout(new FlowLayout());
-                 jfrm.setSize(340, 520);
-                 jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                 jfrm.setContentPane(audioPlayer.getContentPane());
-                 jfrm.setVisible(true);
-             }
+                jfrm.setLayout(new FlowLayout());
+                jfrm.setSize(340, 520);
+                jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                jfrm.setContentPane(audioPlayer.getContentPane());
+                jfrm.setVisible(true);
+            }
         });
     }
 
