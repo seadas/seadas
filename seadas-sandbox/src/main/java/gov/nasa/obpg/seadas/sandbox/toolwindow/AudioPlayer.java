@@ -8,8 +8,6 @@ import javax.swing.event.*;
 import java.text.*;
 import java.util.*;
 
-import org.jdesktop.swingx.*;
-import org.jdesktop.swingx.treetable.*;
 
 public class AudioPlayer implements ChangeListener {
 
@@ -109,12 +107,6 @@ public class AudioPlayer implements ChangeListener {
         contentPane.add(jbtnStore);
         contentPane.add(new JLabel(""));
         contentPane.add(jlabInfo);
-
-        TreeTableModel treeTableModel = new FileSystemModel(); // any TreeTableModel
-        JXTreeTable treeTable = new JXTreeTable(treeTableModel);
-        JScrollPane scrollpane = new JScrollPane(treeTable);
-
-        contentPane.add(scrollpane);
 
 
     }

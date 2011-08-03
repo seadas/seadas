@@ -41,16 +41,22 @@ import org.opengis.referencing.crs.ProjectedCRS;
 import org.opengis.referencing.datum.GeodeticDatum;
 import org.opengis.referencing.operation.OperationMethod;
 import org.opengis.referencing.operation.Projection;
+import org.w3c.dom.Document;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author Marco Zuehlke
@@ -68,7 +74,7 @@ class L2genForm extends JTabbedPane {
     private final TargetProductSelector targetProductSelector;
     private final Model reprojectionModel;
     private final PropertyContainer reprojectionContainer;
-    private String geoFilename = "";
+    private String geoFilenameSuffix = "GEO";
 
     private DemSelector demSelector;
     private CrsSelectionPanel crsSelectionPanel;
@@ -81,8 +87,8 @@ class L2genForm extends JTabbedPane {
     private CollocationCrsForm collocationCrsUI;
     private CustomCrsForm customCrsUI;
 
-
-
+    private Document dom;
+    public List productsList;
 
     L2genForm(TargetProductSelector targetProductSelector, boolean orthorectify, AppContext appContext) {
         this.targetProductSelector = targetProductSelector;
@@ -232,6 +238,7 @@ class L2genForm extends JTabbedPane {
         // addTab("Reprojection Parameters", createParametersPanel());
         addTab("Processing Parameters", createParfileTabPanel());
         addTab("Sub Sample", createSubsampleTabPanel());
+        addTab("Product Selector", createProductSelectorPanel());
 
     }
 
@@ -543,6 +550,33 @@ class L2genForm extends JTabbedPane {
         mainPanel.setBorder(BorderFactory.createTitledBorder("Parfile"));
         mainPanel.setLayout(new GridBagLayout());
 
+        sourceProductSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
+
+            @Override
+            public void selectionChanged(SelectionChangeEvent event) {
+
+                final Product sourceProduct = getSourceProduct();
+
+                String myProduct = sourceProduct.getName();
+                String myParfileLineIfile = "ifile=" + myProduct;
+
+                textArea.setText(myParfileLineIfile);
+
+//                sourceProductSelector.setSelectedProduct(sourceProduct);
+
+                updateTargetProductName(sourceProduct);
+/*                updateGeoFilename(sourceProduct);
+                GeoPos centerGeoPos = null;
+                if (sourceProduct != null) {
+                    centerGeoPos = ProductUtils.getCenterGeoPos(sourceProduct);
+                }
+                infoForm.setCenterPos(centerGeoPos);
+                if (outputGeometryModel != null) {
+                    outputGeometryModel.setSourceProduct(sourceProduct);
+                }
+                updateCRS(); */
+            }
+        });
 
         // Add openButton control to a mainPanel grid cell
         {
@@ -582,6 +616,370 @@ class L2genForm extends JTabbedPane {
     }
 
 
+    private JPanel createProductSelectorPanel() {
+
+        final JPanel wavelengthsPanel = new JPanel();
+        final JPanel productWavelengthIndependentPanel = new JPanel();
+        final JPanel productWavelengthDependentPanel = new JPanel();
+        final JPanel selectedProductsPanel = new JPanel();
+
+        ArrayList<ProductInfo> waveIndependentProductInfoArray;
+        ArrayList<ProductInfo> waveDependentProductInfoArray;
+
+        final String SEADAS_PRODUCTS_FILE = "/home/knowles/SeaDAS/seadas/seadas-sandbox/productList.xml";
+
+        L2genXmlReader l2genXmlReader = new L2genXmlReader();
+
+        l2genXmlReader.parseXmlFile(SEADAS_PRODUCTS_FILE);
+
+        waveDependentProductInfoArray = l2genXmlReader.getWaveDependentProductInfoArray();
+        waveIndependentProductInfoArray = l2genXmlReader.getWaveIndependentProductInfoArray();
+
+        Collections.sort(waveIndependentProductInfoArray, ProductInfo.CASE_INSENSITIVE_ORDER);
+        Collections.sort(waveDependentProductInfoArray, ProductInfo.CASE_INSENSITIVE_ORDER);
+
+
+//        for (ProductInfo productInfo : waveDependentProductInfoArray) {
+//            // productInfo.dump();
+//           System.out.println(productInfo.toString());
+//        }
+
+
+
+
+        final JTextArea selectedProductsJTextArea = new JTextArea();
+
+        selectedProductsJTextArea.setEditable(false);
+
+        selectedProductsJTextArea.setLineWrap(true);
+
+        selectedProductsJTextArea.setWrapStyleWord(true);
+
+        selectedProductsJTextArea.setColumns(20);
+
+        selectedProductsJTextArea.setRows(5);
+
+
+        final JList waveIndependentJList = new JList();
+        final JList waveDependentJList = new JList();
+
+        final JLabel waveIndependentSelectedProductsJLabel = new JLabel();
+        final JLabel waveDependentSelectedProductsJLabel = new JLabel();
+
+        waveIndependentSelectedProductsJLabel.setText("test");
+        waveDependentSelectedProductsJLabel.setText("test");
+
+
+        final JLabel mySelectedProductsJLabel = new JLabel();
+
+
+        mySelectedProductsJLabel.setText("test");
+        createProductSelectorProductListPanel(productWavelengthIndependentPanel, waveIndependentProductInfoArray, "Products (Wavelength Independent)", waveIndependentJList);
+
+        createProductSelectorWavelengthsPanel(wavelengthsPanel);
+
+        createProductSelectorProductListPanel(productWavelengthDependentPanel, waveDependentProductInfoArray, "Products (Wavelength Dependent)", waveDependentJList);
+
+
+        createSelectedProductsPanel(selectedProductsPanel, waveDependentJList, waveIndependentJList);
+
+
+        // Declare mainPanel and set it's attributes
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new
+
+                GridBagLayout()
+
+        );
+
+
+        // Add to mainPanel grid cell
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.NORTH;
+            c.weightx = 0;
+            c.weighty = 0;
+            mainPanel.add(wavelengthsPanel, c);
+        }
+
+
+        // Add to mainPanel grid cell
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 1;
+            c.fill = GridBagConstraints.BOTH;
+            c.anchor = GridBagConstraints.NORTH;
+            c.weightx = 0;
+            c.weighty = 0;
+            mainPanel.add(productWavelengthDependentPanel, c);
+        }
+
+
+        // Add to mainPanel grid cell
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 2;
+            c.fill = GridBagConstraints.BOTH;
+            c.anchor = GridBagConstraints.NORTH;
+            c.weightx = 0;
+            c.weighty = 0;
+            mainPanel.add(productWavelengthIndependentPanel, c);
+        }
+
+        // Add to mainPanel grid cell
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 3;
+            c.fill = GridBagConstraints.BOTH;
+            c.anchor = GridBagConstraints.NORTH;
+            c.weightx = 1;
+            c.weighty = 1;
+            mainPanel.add(selectedProductsPanel, c);
+        }
+
+
+        final JPanel finalMainPanel = new JPanel();
+        finalMainPanel.setLayout(new
+
+                GridBagLayout()
+
+        );
+
+        {
+            final GridBagConstraints c;
+            c = new GridBagConstraints();
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.insets = new Insets(3, 3, 3, 3);
+            c.fill = GridBagConstraints.BOTH;
+            c.weightx = 1;
+            c.weighty = 1;
+
+            finalMainPanel.add(mainPanel, c);
+        }
+
+
+        return finalMainPanel;
+    }
+
+
+    private void createProductSelectorProductListPanel(JPanel productPanel, ArrayList<ProductInfo> productInfoArrayList,
+                                                       String myTitle, JList myJList) {
+
+
+        // Create arrayList for all the algorithms
+
+        ArrayList<AlgorithmInfo> myJListArrayList = new ArrayList<AlgorithmInfo>();
+
+        for (ProductInfo currProductInfo : productInfoArrayList) {
+
+            for (AlgorithmInfo currAlgorithmInfo : currProductInfo.getAlgorithmInfoArrayList()) {
+                currAlgorithmInfo.setToStringShowProductName(true);
+                //currAlgorithmInfo.setToStringShowParameterType(true);
+                myJListArrayList.add(currAlgorithmInfo);
+            }
+
+        }
+
+        // Store the arrayList into an array which can be fed into a JList control
+
+        AlgorithmInfo[] myJListArray = new AlgorithmInfo[myJListArrayList.size()];
+        myJListArrayList.toArray(myJListArray);
+
+        // make and format the JList control
+        //myJList = new JList();
+        myJList.setListData(myJListArray);
+        JScrollPane scrollPane = new JScrollPane(myJList);
+        scrollPane.setMinimumSize(new Dimension(400, 100));
+
+        scrollPane.setMaximumSize(new Dimension(400, 100));
+        scrollPane.setPreferredSize(new Dimension(400, 100));
+
+        productPanel.setBorder(BorderFactory.createTitledBorder(myTitle));
+        productPanel.setLayout(new GridBagLayout());
+
+
+        // Add to productPanel grid cell
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.BOTH;
+            c.weightx = 1;
+            c.weighty = 1;
+            productPanel.add(scrollPane, c);
+        }
+
+    }
+
+
+    private void createSelectedProductsPanel(JPanel myPanel, final JList waveDependentJList, final JList waveIndependentJList) {
+        myPanel.setBorder(BorderFactory.createTitledBorder("Selected Products"));
+        myPanel.setLayout(new GridBagLayout());
+
+        final JTextArea selectedProductsJTextArea = new JTextArea();
+        selectedProductsJTextArea.setEditable(false);
+        selectedProductsJTextArea.setLineWrap(true);
+        selectedProductsJTextArea.setWrapStyleWord(true);
+        selectedProductsJTextArea.setColumns(20);
+        selectedProductsJTextArea.setRows(5);
+
+        final StringBuilder waveIndependentSelectedProductsString = new StringBuilder();
+        final StringBuilder waveDependentSelectedProductsString = new StringBuilder();
+
+        waveDependentJList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+
+            public void valueChanged(ListSelectionEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates
+                String what = "";
+
+                Object values[] = waveDependentJList.getSelectedValues();
+
+                for (int i = 0; i < values.length; i++) {
+                    what += values[i].toString() + " ";
+                }
+
+                int myEnd =  waveDependentSelectedProductsString.length();
+                waveDependentSelectedProductsString.delete(0,myEnd);
+                waveDependentSelectedProductsString.append(what);
+
+                String mySelectedProductsString = what + waveIndependentSelectedProductsString.toString();
+                selectedProductsJTextArea.setText(mySelectedProductsString);
+
+
+            }
+        });
+
+
+        waveIndependentJList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+
+            public void valueChanged(ListSelectionEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates
+                String what = "";
+
+                Object values[] = waveIndependentJList.getSelectedValues();
+
+                for (int i = 0; i < values.length; i++) {
+                    what += " " + values[i].toString();
+                }
+
+                int myEnd =  waveIndependentSelectedProductsString.length();
+                waveIndependentSelectedProductsString.delete(0,myEnd);
+                waveIndependentSelectedProductsString.append(what);
+
+                String mySelectedProductsString = waveDependentSelectedProductsString.toString() + what;
+
+                selectedProductsJTextArea.setText(mySelectedProductsString);
+            }
+        });
+
+
+        // Add openButton control to a mainPanel grid cell
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.weightx = 1;
+            myPanel.add(selectedProductsJTextArea, c);
+        }
+    }
+
+    public Properties getEnvironment() throws java.io.IOException {
+    Properties env = new Properties();
+    env.load(Runtime.getRuntime().exec("env").getInputStream());
+    return env;
+    }
+
+
+
+    private void createProductSelectorWavelengthsPanel(JPanel wavelengthsPanel) {
+        final JLabel myLabel = new JLabel("wavelengths are here");
+        wavelengthsPanel.setBorder(BorderFactory.createTitledBorder("Wavelengths"));
+        wavelengthsPanel.setLayout(new GridBagLayout());
+
+        String myEnvVar = System.getenv("HOME");
+
+        System.out.println("HOME=" + myEnvVar);
+
+/*
+        final String TEMP_DATA_FILE = "/home/knowles/SeaDAS/seadas/seadas-sandbox/dataTest.txt";
+        final ArrayList<String> myAsciiFileArrayList = myReadDataFile(TEMP_DATA_FILE);
+
+        for (String myLine : myAsciiFileArrayList) {
+            String splitLine[] = myLine.split("=");
+
+            if (splitLine.length == 2) {
+                System.out.println(splitLine[0] + " EQUALS " + splitLine[1] );
+            }
+            else
+            {
+                System.out.println("JUNK:" + myLine);
+            }
+        }
+*/
+
+
+
+        ArrayList<String> wavelengthsCheckboxArrayList = null;
+
+/*
+        for (int i=0; i < 5; i++) {
+            StringBuilder myString = new StringBuilder("Hello");
+            myString.append(i);
+
+            if (myString.toString() != null)
+            wavelengthsCheckboxArrayList.add("how");
+        }
+*/
+
+
+        if (wavelengthsCheckboxArrayList != null) {
+        for (int i=0; i < wavelengthsCheckboxArrayList.size(); i++) {
+            StringBuilder myString = new StringBuilder("Hello");
+            myString.append(i);
+
+            JCheckBox tmpCheckbox = new JCheckBox(myString.toString());
+
+    //        String myString = wavelengthsCheckboxArrayList.get(i);
+
+      //      JCheckBox tmpCheckbox = new JCheckBox(myString);
+
+
+            {
+                final GridBagConstraints c = new GridBagConstraints();
+                c.gridx = 0;
+                c.gridy = i;
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1;
+                wavelengthsPanel.add(tmpCheckbox, c);
+            }
+
+        }
+        }
+
+
+        // Add openButton control to a mainPanel grid cell
+/*
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.weightx = 1;
+            wavelengthsPanel.add(myLabel, c);
+        }
+*/
+    }
+
+
     private JPanel addPaddedWrapperPanel(JPanel myMainPanel, int pad) {
 
         JPanel myWrapperPanel = new JPanel();
@@ -592,7 +990,7 @@ class L2genForm extends JTabbedPane {
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.anchor = GridBagConstraints.WEST;
+        c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = new Insets(pad, pad, pad, pad);
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
@@ -604,6 +1002,29 @@ class L2genForm extends JTabbedPane {
     }
 
 
+    private ArrayList<String> myReadDataFile(String fileName) {
+                String lineData;
+                ArrayList<String> fileContents = new ArrayList<String>();
+                BufferedReader moFile=null;
+                try {
+                        moFile = new BufferedReader (new FileReader(new File( fileName)));
+                        while ((lineData = moFile.readLine()) != null)
+                        {
+
+                                fileContents.add(lineData);
+                        }
+                } catch(IOException e) {
+                       ;
+                }finally {
+                        try {
+                                moFile.close();
+                        }catch(Exception e) {
+                                //Ignore
+                        }
+                }
+                return fileContents;
+        }
+
     private JPanel createIOPanel() {
         final TableLayout tableLayout = new TableLayout(1);
         tableLayout.setTableWeightX(1.0);
@@ -613,7 +1034,7 @@ class L2genForm extends JTabbedPane {
 
         final JPanel ioPanel = new JPanel(tableLayout);
         ioPanel.add(createSourceProductPanel());
-        ioPanel.add(createGeolocationProductPanel());
+//        ioPanel.add(createGeolocationProductPanel());
         ioPanel.add(targetProductSelector.createDefaultPanel());
         ioPanel.add(tableLayout.createVerticalSpacer());
         return ioPanel;
@@ -893,6 +1314,7 @@ class L2genForm extends JTabbedPane {
             public void selectionChanged(SelectionChangeEvent event) {
                 final Product sourceProduct = getSourceProduct();
                 updateTargetProductName(sourceProduct);
+                updateGeoFilename(sourceProduct);
                 GeoPos centerGeoPos = null;
                 if (sourceProduct != null) {
                     centerGeoPos = ProductUtils.getCenterGeoPos(sourceProduct);
@@ -988,10 +1410,25 @@ class L2genForm extends JTabbedPane {
                 String baseName = selectedProduct.getName().substring(0, i);
                 productName = baseName + "." + targetProductSuffix;
             } else {
-                  productName =  selectedProduct.getName() + "." + targetProductSuffix;
+                productName = selectedProduct.getName() + "." + targetProductSuffix;
             }
-       }
+        }
         selectorModel.setProductName(productName);
+    }
+
+
+    private void updateGeoFilename(Product selectedProduct) {
+        String productName = "output." + geoFilenameSuffix;
+        if (selectedProduct != null) {
+            int i = selectedProduct.getName().lastIndexOf('.');
+            if (i != -1) {
+                String baseName = selectedProduct.getName().substring(0, i);
+                productName = baseName + "." + geoFilenameSuffix;
+            } else {
+                productName = selectedProduct.getName() + "." + geoFilenameSuffix;
+            }
+        }
+        //selectorModel.setProductName(productName);
     }
 
     private class OutputParamActionListener implements ActionListener {
