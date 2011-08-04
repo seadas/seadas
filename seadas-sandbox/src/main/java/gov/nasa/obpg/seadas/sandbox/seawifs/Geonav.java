@@ -14,7 +14,7 @@
  *
  * History:
  * What:                   Who:             When:
- * Original conversion     Matt Elliott     June - July, 2011
+ * Original conversion     Matt Elliott     June - August, 2011
  *    from Fortran
  */
 
@@ -54,7 +54,8 @@ public class Geonav {
     enum DataType { GAC, LAC }
 
     // The following are input parameters in the Fortran geonav.f function:
-    private float[]   scanPathCoef = new float [6];
+    private float[]   attAngle = new float[3];
+    private float[]   scanPathCoef = new float[6];
     private int       pixIncr;
     private int       pixPerScan;
     private int       scanStartPix;
@@ -75,10 +76,10 @@ public class Geonav {
     DataType dataType;
 
     double SINC = 0.00159;
-//345678901234567890123456789012345678901234567890123456789012345678901234567890
 
-    public Geonav(float pos[], float[][] rm, float[] sun, float[] attAngle, float tilt,
+    public Geonav(float pos[], float[][] rm, float[] sun, float[] aa, float tilt,
                   NetcdfFile ncFile) {
+
         sensorOffsetMatrix[0][0] = 1.0f;
         sensorOffsetMatrix[0][1] = 0.0f;
         sensorOffsetMatrix[0][2] = 0.0f;
@@ -88,9 +89,14 @@ public class Geonav {
         sensorOffsetMatrix[2][0] = 0.0f;
         sensorOffsetMatrix[2][1] = 0.00139626f;
         sensorOffsetMatrix[2][2] = 0.99999905f;
+
         tiltCosVector[0] = 0.0f;
         tiltCosVector[1] = 0.0f;
         tiltCosVector[2] = 1.0f;
+
+        attAngle[0] = aa[0];
+        attAngle[0] = aa[1];
+        attAngle[0] = aa[2];
 
         orbPos[0] = pos[0];
         orbPos[1] = pos[1];
@@ -105,7 +111,8 @@ public class Geonav {
         sensorOrientation[2][1] = rm[2][1];
         sensorOrientation[2][2] = rm[2][2];
 
-        //scanPathCoefs = computeInterEllCoefs(,,tilt,orbPos);
+        float[][] attXfm = computeTransformMatrix(tilt);
+        scanPathCoef = computeInterEllCoefs(attXfm, attAngle, tilt, orbPos);
 
         sunUnitVec[0] = sun[0];
         sunUnitVec[1] = sun[1];
@@ -146,12 +153,12 @@ public class Geonav {
         sm2 = computeEulerAxisMatrix(tiltCosVector, tilt);
         sm3 = multiplyMatrices(sm2, sm1);
         
-	coef[1] = (float) (1.0f + (rd - 1.0f) * sm3[0][2] * sm3[0][2]);
-    coef[2] = (float) ((rd - 1.0f) * sm3[0][2] * sm3[2][2] * 2.0f);
-	coef[3] = (float) (1.0f + (rd - 1.0f) * sm3[2][2] * sm3[2][2]);
-	coef[4] = (float) ((sm3[0][0] * p[0] + sm3[0][1] * p[1] + sm3[0][2] * p[2] * rd) * 2.0f);
-	coef[5] = (float) ((sm3[2][0] * p[0] + sm3[2][1] * p[1] + sm3[2][2] * p[2] * rd) * 2.0f);
-	coef[6] = (float) (p[0] * p[0] + p[1] * p[1] + p[2] * p[2] * rd - EARTH_RADIUS * EARTH_RADIUS);
+        coef[0] = (float) (1.0f + (rd - 1.0f) * sm3[0][2] * sm3[0][2]);
+        coef[1] = (float) ((rd - 1.0f) * sm3[0][2] * sm3[2][2] * 2.0f);
+        coef[2] = (float) (1.0f + (rd - 1.0f) * sm3[2][2] * sm3[2][2]);
+        coef[3] = (float) ((sm3[0][0] * p[0] + sm3[0][1] * p[1] + sm3[0][2] * p[2] * rd) * 2.0f);
+        coef[4] = (float) ((sm3[2][0] * p[0] + sm3[2][1] * p[1] + sm3[2][2] * p[2] * rd) * 2.0f);
+        coef[5] = (float) (p[0] * p[0] + p[1] * p[1] + p[2] * p[2] * rd - EARTH_RADIUS * EARTH_RADIUS);
         return coef;
     }
 
@@ -165,15 +172,15 @@ public class Geonav {
 
         float[][] xm = new float[3][3];
 
-        xm[1][1] = cp + eulerAxisUnitVector[0] * eulerAxisUnitVector[0] * omcp;
-        xm[1][2] = eulerAxisUnitVector[0] * eulerAxisUnitVector[1] * omcp + eulerAxisUnitVector[2] * sp;
-        xm[1][3] = eulerAxisUnitVector[0] * eulerAxisUnitVector[2] * omcp - eulerAxisUnitVector[1] * sp;
-        xm[2][1] = eulerAxisUnitVector[0] * eulerAxisUnitVector[1] * omcp - eulerAxisUnitVector[2] * sp;
-        xm[2][2] = cp + eulerAxisUnitVector[1] * eulerAxisUnitVector[1] * omcp;
-        xm[2][3] = eulerAxisUnitVector[1] * eulerAxisUnitVector[2] * omcp + eulerAxisUnitVector[0] * sp;
-        xm[3][1] = eulerAxisUnitVector[0] * eulerAxisUnitVector[2] * omcp + eulerAxisUnitVector[1] * sp;
-        xm[3][2] = eulerAxisUnitVector[1] * eulerAxisUnitVector[2] * omcp - eulerAxisUnitVector[0] * sp;
-        xm[3][3] = cp + eulerAxisUnitVector[2] * eulerAxisUnitVector[2] * omcp;
+        xm[0][0] = cp + eulerAxisUnitVector[0] * eulerAxisUnitVector[0] * omcp;
+        xm[0][1] = eulerAxisUnitVector[0] * eulerAxisUnitVector[1] * omcp + eulerAxisUnitVector[2] * sp;
+        xm[0][2] = eulerAxisUnitVector[0] * eulerAxisUnitVector[2] * omcp - eulerAxisUnitVector[1] * sp;
+        xm[1][0] = eulerAxisUnitVector[0] * eulerAxisUnitVector[1] * omcp - eulerAxisUnitVector[2] * sp;
+        xm[1][1] = cp + eulerAxisUnitVector[1] * eulerAxisUnitVector[1] * omcp;
+        xm[1][2] = eulerAxisUnitVector[1] * eulerAxisUnitVector[2] * omcp + eulerAxisUnitVector[0] * sp;
+        xm[2][0] = eulerAxisUnitVector[0] * eulerAxisUnitVector[2] * omcp + eulerAxisUnitVector[1] * sp;
+        xm[2][1] = eulerAxisUnitVector[1] * eulerAxisUnitVector[2] * omcp - eulerAxisUnitVector[0] * sp;
+        xm[2][2] = cp + eulerAxisUnitVector[2] * eulerAxisUnitVector[2] * omcp;
         return xm;
     }
 
@@ -195,29 +202,28 @@ public class Geonav {
             }
         }
 
-        float c1 = (float) Math.cos(angles[1] / DEGREES_PER_RADIAN);
-        float s1 = (float) Math.sin(angles[1] / DEGREES_PER_RADIAN);
-        float c2 = (float) Math.cos(angles[2] / DEGREES_PER_RADIAN);
-        float s2 = (float) -Math.sin(angles[2] / DEGREES_PER_RADIAN);
-        float c3 = (float) Math.cos(angles[3] / DEGREES_PER_RADIAN);
-        float s3 = (float) -Math.sin(angles[3] / DEGREES_PER_RADIAN);
+        float c1 = (float) Math.cos(angles[0] / DEGREES_PER_RADIAN);
+        float s1 = (float) Math.sin(angles[0] / DEGREES_PER_RADIAN);
+        float c2 = (float) Math.cos(angles[1] / DEGREES_PER_RADIAN);
+        float s2 = (float) -Math.sin(angles[1] / DEGREES_PER_RADIAN);
+        float c3 = (float) Math.cos(angles[2] / DEGREES_PER_RADIAN);
+        float s3 = (float) -Math.sin(angles[2] / DEGREES_PER_RADIAN);
 
-        xm1[1][1] = 1.0f;
+        xm1[0][0] = 1.0f;
+        xm1[1][1] = c1;
         xm1[2][2] = c1;
-        xm1[3][3] = c1;
-        xm1[2][3] = s1;
-        xm1[3][2] = -s1;
-        xm2[2][2] = 1.0f;
-        xm2[1][1] = c2;
-        xm2[3][3] = c2;
-        xm2[3][1] = s2;
-        xm2[1][3] = -s2;
-        xm3[3][3] = 1.0f;
-        xm3[2][2] = c3;
+        xm1[1][2] = s1;
+        xm1[2][1] = -s1;
+        xm2[1][1] = 1.0f;
+        xm2[0][0] = c2;
+        xm2[2][2] = c2;
+        xm2[2][0] = s2;
+        xm2[0][2] = -s2;
+        xm3[2][2] = 1.0f;
         xm3[1][1] = c3;
-        xm3[1][2] = s3;
-        xm3[2][1] = -s3;
-	
+        xm3[0][0] = c3;
+        xm3[0][1] = s3;
+
         float[][] xmm = multiplyMatrices(xm2, xm3);
         transformationMatrix = multiplyMatrices(xm1, xmm);
         return transformationMatrix;
@@ -242,35 +248,23 @@ public class Geonav {
 
         float[][] sm1 = computeEulerAxisMatrix(tiltCosVector, tilt);
         float[][] sm2 = transposeMatrix(sm1);
-        // ->float[][] sm3 = multiplyMatrices(sm2, );
-/*
-c  Compute rotation matrix for tilt angle, transpose and apply
-X      call eaxis( navctl%tiltcos, tilt, sm1)
-X      call xpose( sm1, sm2)
-
-->      call matmpy( sm2, smat, sm3)
-
-c  Apply transpose of sensor offset matrix
-      call xpose( navctl%msenoff, sm1)
-      call matmpy( sm1, sm3, sm2)
-
-c  Convert Euler angles to matrix
-      call euler(att,sm3)
-      call xpose( sm3, sm1)
-
-c   Apply attitude offset matrix
-      call matmpy( sm1, sm2, attxfm)
-*/
+        float[][] sm3 = multiplyMatrices(sm2, sensorOrientation);
+        sm1 = transposeMatrix(sensorOffsetMatrix);
+        sm2 = multiplyMatrices(sm1, sm3);
+        sm3 = computeEulerTransformMatrix(attAngle);
+        sm1 = transposeMatrix(sm3);
+        xfmMatrix = multiplyMatrices(sm1, sm2);
         return xfmMatrix;
     }
 
     public static float[] crossProduct(float[] v1, float[] v2) {
         /**
-         * Compute cross product of two vectors (from crossp.f, also see
-         * http://en.wikipedia.org/wiki/Cross_product or any standard linear 
-         * algebra text).  The array subscripts differ from the definitional
-         * subscripts due to Java using 0-based arrays, vs. the definition
-         * using 1-based arrays.
+         * Compute cross product of two (length 3) vectors (adapted from
+         * crossp.f; also see:
+         *     http://en.wikipedia.org/wiki/Cross_product
+         *  or a linear algebra text).  The array subscripts differ from the
+         * definitional/Fortran subscripts due to Java using 0-based arrays, vs.
+         * the definition/Fortran using 1-based arrays.
          */
         float[] v3;
         v3 = new float[3];
@@ -457,7 +451,7 @@ c   Apply attitude offset matrix
 
     public static float[][] multiplyMatrices(float[][] m1, float[][] m2) {
         /**
-         * Multiply two 3x3 matrices.
+         * Multiply two 3 x 3 matrices, adapted from matmpy.f.
          */
         float[][] p = new float[3][3];
         for (int i = 0; i < 3; i++) {
@@ -473,7 +467,8 @@ c   Apply attitude offset matrix
 
     public static float[][] transposeMatrix(float[][] matrix) {
         /**
-         * Create the transpose of the input matrix.
+         * Create the transpose of a 3 x 3 matrix, adapted from
+         * xpose.f.
          */
         float[][] transpose = new float[3][3];
         for (int i = 0; i < 3; i ++ ) {
