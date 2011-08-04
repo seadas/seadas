@@ -14,6 +14,8 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
+// Push test by Matt & Dan
+
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 import com.bc.ceres.binding.*;
@@ -50,6 +52,8 @@ import java.awt.*;
 import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
@@ -645,21 +649,6 @@ class L2genForm extends JTabbedPane {
 //        }
 
 
-
-
-        final JTextArea selectedProductsJTextArea = new JTextArea();
-
-        selectedProductsJTextArea.setEditable(false);
-
-        selectedProductsJTextArea.setLineWrap(true);
-
-        selectedProductsJTextArea.setWrapStyleWord(true);
-
-        selectedProductsJTextArea.setColumns(20);
-
-        selectedProductsJTextArea.setRows(5);
-
-
         final JList waveIndependentJList = new JList();
         final JList waveDependentJList = new JList();
 
@@ -676,12 +665,14 @@ class L2genForm extends JTabbedPane {
         mySelectedProductsJLabel.setText("test");
         createProductSelectorProductListPanel(productWavelengthIndependentPanel, waveIndependentProductInfoArray, "Products (Wavelength Independent)", waveIndependentJList);
 
-        createProductSelectorWavelengthsPanel(wavelengthsPanel);
+        ArrayList<JCheckBox> wavelengthsCheckboxArrayList = new ArrayList<JCheckBox>();
+
+        createProductSelectorWavelengthsPanel(wavelengthsPanel, wavelengthsCheckboxArrayList);
 
         createProductSelectorProductListPanel(productWavelengthDependentPanel, waveDependentProductInfoArray, "Products (Wavelength Dependent)", waveDependentJList);
 
 
-        createSelectedProductsPanel(selectedProductsPanel, waveDependentJList, waveIndependentJList);
+        createSelectedProductsPanel(selectedProductsPanel, waveDependentJList, waveIndependentJList, wavelengthsCheckboxArrayList);
 
 
         // Declare mainPanel and set it's attributes
@@ -818,7 +809,7 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createSelectedProductsPanel(JPanel myPanel, final JList waveDependentJList, final JList waveIndependentJList) {
+    private void createSelectedProductsPanel(JPanel myPanel, final JList waveDependentJList, final JList waveIndependentJList, final ArrayList<JCheckBox> wavelengthsCheckboxArrayList) {
         myPanel.setBorder(BorderFactory.createTitledBorder("Selected Products"));
         myPanel.setLayout(new GridBagLayout());
 
@@ -831,6 +822,56 @@ class L2genForm extends JTabbedPane {
 
         final StringBuilder waveIndependentSelectedProductsString = new StringBuilder();
         final StringBuilder waveDependentSelectedProductsString = new StringBuilder();
+        final StringBuilder selectedWavelengthsStringBuilder = new StringBuilder();
+        final Hashtable myHashtable = new Hashtable();
+
+        if (wavelengthsCheckboxArrayList != null) {
+
+
+            for (final JCheckBox currCheckbox : wavelengthsCheckboxArrayList) {
+                currCheckbox.addItemListener(new ItemListener() {
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+                        String myCheckboxName = currCheckbox.getName();
+
+                        if (currCheckbox.isSelected()) {
+                            myHashtable.put(myCheckboxName, true);
+
+                            int myEnd = selectedWavelengthsStringBuilder.length();
+                            selectedWavelengthsStringBuilder.delete(0, myEnd);
+
+                            Iterator it = myHashtable.keySet().iterator();
+                            while (it.hasNext()) {
+                                String element = (String) it.next();
+                                selectedWavelengthsStringBuilder.append(element);
+                            }
+
+                            String mySelectedProductsString = waveDependentSelectedProductsString.toString() + waveIndependentSelectedProductsString.toString() + selectedWavelengthsStringBuilder.toString();
+                            selectedProductsJTextArea.setText(mySelectedProductsString);
+
+
+                        } else {
+                            myHashtable.remove(myCheckboxName);
+                            int myEnd = selectedWavelengthsStringBuilder.length();
+                            selectedWavelengthsStringBuilder.delete(0, myEnd);
+
+                            Iterator it = myHashtable.keySet().iterator();
+                            while (it.hasNext()) {
+                                String element = (String) it.next();
+                                selectedWavelengthsStringBuilder.append(element);
+                            }
+
+                            String mySelectedProductsString = waveDependentSelectedProductsString.toString() + waveIndependentSelectedProductsString.toString() + selectedWavelengthsStringBuilder.toString();
+                            selectedProductsJTextArea.setText(mySelectedProductsString);
+
+                        }
+
+
+                    }
+                });
+
+            }
+        }
 
         waveDependentJList.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -845,11 +886,11 @@ class L2genForm extends JTabbedPane {
                     what += values[i].toString() + " ";
                 }
 
-                int myEnd =  waveDependentSelectedProductsString.length();
-                waveDependentSelectedProductsString.delete(0,myEnd);
+                int myEnd = waveDependentSelectedProductsString.length();
+                waveDependentSelectedProductsString.delete(0, myEnd);
                 waveDependentSelectedProductsString.append(what);
 
-                String mySelectedProductsString = what + waveIndependentSelectedProductsString.toString();
+                String mySelectedProductsString = waveDependentSelectedProductsString.toString() + waveIndependentSelectedProductsString.toString() + selectedWavelengthsStringBuilder.toString();
                 selectedProductsJTextArea.setText(mySelectedProductsString);
 
 
@@ -870,11 +911,11 @@ class L2genForm extends JTabbedPane {
                     what += " " + values[i].toString();
                 }
 
-                int myEnd =  waveIndependentSelectedProductsString.length();
-                waveIndependentSelectedProductsString.delete(0,myEnd);
+                int myEnd = waveIndependentSelectedProductsString.length();
+                waveIndependentSelectedProductsString.delete(0, myEnd);
                 waveIndependentSelectedProductsString.append(what);
 
-                String mySelectedProductsString = waveDependentSelectedProductsString.toString() + what;
+                String mySelectedProductsString = waveDependentSelectedProductsString.toString() + waveIndependentSelectedProductsString.toString() + selectedWavelengthsStringBuilder.toString();
 
                 selectedProductsJTextArea.setText(mySelectedProductsString);
             }
@@ -893,14 +934,13 @@ class L2genForm extends JTabbedPane {
     }
 
     public Properties getEnvironment() throws java.io.IOException {
-    Properties env = new Properties();
-    env.load(Runtime.getRuntime().exec("env").getInputStream());
-    return env;
+        Properties env = new Properties();
+        env.load(Runtime.getRuntime().exec("env").getInputStream());
+        return env;
     }
 
 
-
-    private void createProductSelectorWavelengthsPanel(JPanel wavelengthsPanel) {
+    private void createProductSelectorWavelengthsPanel(JPanel wavelengthsPanel, ArrayList<JCheckBox> wavelengthsCheckboxArrayList) {
         final JLabel myLabel = new JLabel("wavelengths are here");
         wavelengthsPanel.setBorder(BorderFactory.createTitledBorder("Wavelengths"));
         wavelengthsPanel.setLayout(new GridBagLayout());
@@ -909,26 +949,57 @@ class L2genForm extends JTabbedPane {
 
         System.out.println("HOME=" + myEnvVar);
 
-/*
         final String TEMP_DATA_FILE = "/home/knowles/SeaDAS/seadas/seadas-sandbox/dataTest.txt";
         final ArrayList<String> myAsciiFileArrayList = myReadDataFile(TEMP_DATA_FILE);
+
+        int gridyCnt = 0;
+        int gridxCnt = 0;
+        int gridxColumns = 4;
+
 
         for (String myLine : myAsciiFileArrayList) {
             String splitLine[] = myLine.split("=");
 
             if (splitLine.length == 2) {
-                System.out.println(splitLine[0] + " EQUALS " + splitLine[1] );
-            }
-            else
-            {
+                StringBuilder myString = new StringBuilder("");
+                myString.append(splitLine[1]);
+
+                JCheckBox tmpCheckbox = new JCheckBox(myString.toString());
+                tmpCheckbox.setName(myString.toString());
+                if (wavelengthsCheckboxArrayList != null) {
+                    wavelengthsCheckboxArrayList.add(tmpCheckbox);
+                }
+
+                //        String myString = wavelengthsCheckboxArrayList.get(i);
+
+                //      JCheckBox tmpCheckbox = new JCheckBox(myString);
+
+
+                {
+                    final GridBagConstraints c = new GridBagConstraints();
+                    c.gridx = gridxCnt;
+                    c.gridy = gridyCnt;
+                    c.fill = GridBagConstraints.HORIZONTAL;
+                    c.weightx = 1;
+                    wavelengthsPanel.add(tmpCheckbox, c);
+                }
+
+                if (gridxCnt < (gridxColumns - 1)) {
+                    gridxCnt++;
+                } else {
+                    gridxCnt = 0;
+                    gridyCnt++;
+                }
+
+
+                System.out.println(splitLine[0] + " EQUALS " + splitLine[1]);
+            } else {
                 System.out.println("JUNK:" + myLine);
             }
         }
-*/
 
 
-
-        ArrayList<String> wavelengthsCheckboxArrayList = null;
+        //       ArrayList<String> wavelengthsCheckboxArrayList = null;
 
 /*
         for (int i=0; i < 5; i++) {
@@ -941,29 +1012,29 @@ class L2genForm extends JTabbedPane {
 */
 
 
-        if (wavelengthsCheckboxArrayList != null) {
-        for (int i=0; i < wavelengthsCheckboxArrayList.size(); i++) {
-            StringBuilder myString = new StringBuilder("Hello");
-            myString.append(i);
+/*        if (wavelengthsCheckboxArrayList != null) {
+            for (int i = 0; i < wavelengthsCheckboxArrayList.size(); i++) {
+                StringBuilder myString = new StringBuilder("Hello");
+                myString.append(i);
 
-            JCheckBox tmpCheckbox = new JCheckBox(myString.toString());
+                JCheckBox tmpCheckbox = new JCheckBox(myString.toString());
 
-    //        String myString = wavelengthsCheckboxArrayList.get(i);
+                //        String myString = wavelengthsCheckboxArrayList.get(i);
 
-      //      JCheckBox tmpCheckbox = new JCheckBox(myString);
+                //      JCheckBox tmpCheckbox = new JCheckBox(myString);
 
 
-            {
-                final GridBagConstraints c = new GridBagConstraints();
-                c.gridx = 0;
-                c.gridy = i;
-                c.fill = GridBagConstraints.HORIZONTAL;
-                c.weightx = 1;
-                wavelengthsPanel.add(tmpCheckbox, c);
+                {
+                    final GridBagConstraints c = new GridBagConstraints();
+                    c.gridx = 0;
+                    c.gridy = i;
+                    c.fill = GridBagConstraints.HORIZONTAL;
+                    c.weightx = 1;
+                    wavelengthsPanel.add(tmpCheckbox, c);
+                }
+
             }
-
-        }
-        }
+        }*/
 
 
         // Add openButton control to a mainPanel grid cell
@@ -1003,27 +1074,26 @@ class L2genForm extends JTabbedPane {
 
 
     private ArrayList<String> myReadDataFile(String fileName) {
-                String lineData;
-                ArrayList<String> fileContents = new ArrayList<String>();
-                BufferedReader moFile=null;
-                try {
-                        moFile = new BufferedReader (new FileReader(new File( fileName)));
-                        while ((lineData = moFile.readLine()) != null)
-                        {
+        String lineData;
+        ArrayList<String> fileContents = new ArrayList<String>();
+        BufferedReader moFile = null;
+        try {
+            moFile = new BufferedReader(new FileReader(new File(fileName)));
+            while ((lineData = moFile.readLine()) != null) {
 
-                                fileContents.add(lineData);
-                        }
-                } catch(IOException e) {
-                       ;
-                }finally {
-                        try {
-                                moFile.close();
-                        }catch(Exception e) {
-                                //Ignore
-                        }
-                }
-                return fileContents;
+                fileContents.add(lineData);
+            }
+        } catch (IOException e) {
+            ;
+        } finally {
+            try {
+                moFile.close();
+            } catch (Exception e) {
+                //Ignore
+            }
         }
+        return fileContents;
+    }
 
     private JPanel createIOPanel() {
         final TableLayout tableLayout = new TableLayout(1);
