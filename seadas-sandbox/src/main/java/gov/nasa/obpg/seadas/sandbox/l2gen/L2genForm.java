@@ -23,6 +23,7 @@ import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
+import com.sun.xml.internal.ws.api.model.Parameter;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
@@ -79,6 +80,8 @@ class L2genForm extends JTabbedPane {
     private final Model reprojectionModel;
     private final PropertyContainer reprojectionContainer;
     private String geoFilenameSuffix = "GEO";
+    private String OCDATAROOT = System.getenv("OCDATAROOT");
+    private ArrayList<JCheckBox> wavelengthsCheckboxArrayList = null;
 
     private DemSelector demSelector;
     private CrsSelectionPanel crsSelectionPanel;
@@ -665,14 +668,14 @@ class L2genForm extends JTabbedPane {
         mySelectedProductsJLabel.setText("test");
         createProductSelectorProductListPanel(productWavelengthIndependentPanel, waveIndependentProductInfoArray, "Products (Wavelength Independent)", waveIndependentJList);
 
-        ArrayList<JCheckBox> wavelengthsCheckboxArrayList = new ArrayList<JCheckBox>();
+        wavelengthsCheckboxArrayList = new ArrayList<JCheckBox>();
 
-        createProductSelectorWavelengthsPanel(wavelengthsPanel, wavelengthsCheckboxArrayList);
+        createProductSelectorWavelengthsPanel(wavelengthsPanel);
 
         createProductSelectorProductListPanel(productWavelengthDependentPanel, waveDependentProductInfoArray, "Products (Wavelength Dependent)", waveDependentJList);
 
 
-        createSelectedProductsPanel(selectedProductsPanel, waveDependentJList, waveIndependentJList, wavelengthsCheckboxArrayList);
+        createSelectedProductsPanel(selectedProductsPanel, waveDependentJList, waveIndependentJList);
 
 
         // Declare mainPanel and set it's attributes
@@ -809,7 +812,7 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createSelectedProductsPanel(JPanel myPanel, final JList waveDependentJList, final JList waveIndependentJList, final ArrayList<JCheckBox> wavelengthsCheckboxArrayList) {
+    private void createSelectedProductsPanel(JPanel myPanel, final JList waveDependentJList, final JList waveIndependentJList) {
         myPanel.setBorder(BorderFactory.createTitledBorder("Selected Products"));
         myPanel.setLayout(new GridBagLayout());
 
@@ -822,54 +825,36 @@ class L2genForm extends JTabbedPane {
 
         final StringBuilder waveIndependentSelectedProductsString = new StringBuilder();
         final StringBuilder waveDependentSelectedProductsString = new StringBuilder();
-        final StringBuilder selectedWavelengthsStringBuilder = new StringBuilder();
-        final Hashtable myHashtable = new Hashtable();
+        final HashMap selectedWavelengthsHashMap = new HashMap();
+
 
         if (wavelengthsCheckboxArrayList != null) {
 
-
+            // loop through arrayList
             for (final JCheckBox currCheckbox : wavelengthsCheckboxArrayList) {
+
+                // add listener for current checkbox
                 currCheckbox.addItemListener(new ItemListener() {
                     @Override
                     public void itemStateChanged(ItemEvent e) {
+
+                        // add/remove checkbox selected name to/from hash
                         String myCheckboxName = currCheckbox.getName();
-
                         if (currCheckbox.isSelected()) {
-                            myHashtable.put(myCheckboxName, true);
-
-                            int myEnd = selectedWavelengthsStringBuilder.length();
-                            selectedWavelengthsStringBuilder.delete(0, myEnd);
-
-                            Iterator it = myHashtable.keySet().iterator();
-                            while (it.hasNext()) {
-                                String element = (String) it.next();
-                                selectedWavelengthsStringBuilder.append(element);
-                            }
-
-                            String mySelectedProductsString = waveDependentSelectedProductsString.toString() + waveIndependentSelectedProductsString.toString() + selectedWavelengthsStringBuilder.toString();
-                            selectedProductsJTextArea.setText(mySelectedProductsString);
-
-
+                            selectedWavelengthsHashMap.put(myCheckboxName, true);
                         } else {
-                            myHashtable.remove(myCheckboxName);
-                            int myEnd = selectedWavelengthsStringBuilder.length();
-                            selectedWavelengthsStringBuilder.delete(0, myEnd);
-
-                            Iterator it = myHashtable.keySet().iterator();
-                            while (it.hasNext()) {
-                                String element = (String) it.next();
-                                selectedWavelengthsStringBuilder.append(element);
-                            }
-
-                            String mySelectedProductsString = waveDependentSelectedProductsString.toString() + waveIndependentSelectedProductsString.toString() + selectedWavelengthsStringBuilder.toString();
-                            selectedProductsJTextArea.setText(mySelectedProductsString);
-
+                            selectedWavelengthsHashMap.remove(myCheckboxName);
                         }
 
+                        buildWaveDependentSelectedProductsString(waveDependentSelectedProductsString, waveDependentJList, selectedWavelengthsHashMap);
 
+
+                        String mySelectedProductsString = waveDependentSelectedProductsString.toString()
+                                + waveIndependentSelectedProductsString.toString();
+
+                        selectedProductsJTextArea.setText(mySelectedProductsString);
                     }
                 });
-
             }
         }
 
@@ -877,20 +862,11 @@ class L2genForm extends JTabbedPane {
             @Override
 
             public void valueChanged(ListSelectionEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates
-                String what = "";
 
-                Object values[] = waveDependentJList.getSelectedValues();
+                buildWaveDependentSelectedProductsString(waveDependentSelectedProductsString, waveDependentJList, selectedWavelengthsHashMap);
 
-                for (int i = 0; i < values.length; i++) {
-                    what += values[i].toString() + " ";
-                }
-
-                int myEnd = waveDependentSelectedProductsString.length();
-                waveDependentSelectedProductsString.delete(0, myEnd);
-                waveDependentSelectedProductsString.append(what);
-
-                String mySelectedProductsString = waveDependentSelectedProductsString.toString() + waveIndependentSelectedProductsString.toString() + selectedWavelengthsStringBuilder.toString();
+                String mySelectedProductsString = waveDependentSelectedProductsString.toString()
+                        + waveIndependentSelectedProductsString.toString();
                 selectedProductsJTextArea.setText(mySelectedProductsString);
 
 
@@ -902,20 +878,18 @@ class L2genForm extends JTabbedPane {
             @Override
 
             public void valueChanged(ListSelectionEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates
-                String what = "";
+
+                waveIndependentSelectedProductsString.delete(0, waveIndependentSelectedProductsString.length());
 
                 Object values[] = waveIndependentJList.getSelectedValues();
 
                 for (int i = 0; i < values.length; i++) {
-                    what += " " + values[i].toString();
+                    waveIndependentSelectedProductsString.append(values[i].toString());
+                    waveIndependentSelectedProductsString.append(" ");
                 }
 
-                int myEnd = waveIndependentSelectedProductsString.length();
-                waveIndependentSelectedProductsString.delete(0, myEnd);
-                waveIndependentSelectedProductsString.append(what);
-
-                String mySelectedProductsString = waveDependentSelectedProductsString.toString() + waveIndependentSelectedProductsString.toString() + selectedWavelengthsStringBuilder.toString();
+                String mySelectedProductsString = waveDependentSelectedProductsString.toString()
+                        + waveIndependentSelectedProductsString.toString();
 
                 selectedProductsJTextArea.setText(mySelectedProductsString);
             }
@@ -933,6 +907,47 @@ class L2genForm extends JTabbedPane {
         }
     }
 
+    private void buildWaveDependentSelectedProductsString(StringBuilder waveDependentSelectedProductsString, JList waveDependentJList, HashMap selectedWavelengthsHashMap) {
+
+        waveDependentSelectedProductsString.delete(0, waveDependentSelectedProductsString.length());
+
+        final int VISIBLE_LOWER_LIMIT = 390;
+        final int VISIBLE_UPPER_LIMIT = 750;
+
+        String currWaveDependentProduct = null;
+
+//        AlgorithmInfo values[] = (AlgorithmInfo[]) waveDependentJList.getSelectedValues();
+        Object values[] = waveDependentJList.getSelectedValues();  //TEST
+
+        for (int i = 0; i < values.length; i++) {
+
+
+//            if (values[i].getParameterType() == AlgorithmInfo.ParameterType.VISIBLE) {
+            if (1 == 1) {                               //TEST
+                Iterator it = selectedWavelengthsHashMap.keySet().iterator();
+                while (it.hasNext()) {
+                    String element = (String) it.next();
+//                    int wavelengthInteger = Integer.getInteger(element);
+                    int wavelengthInteger = 400; // TEST
+
+                    if (wavelengthInteger > VISIBLE_LOWER_LIMIT && wavelengthInteger < VISIBLE_UPPER_LIMIT) {
+                        currWaveDependentProduct = values[i].toString() + "_VISIBLE_" + element + " ";
+                        waveDependentSelectedProductsString.append(currWaveDependentProduct);
+
+                    } else {
+                        currWaveDependentProduct = values[i].toString() + " ";
+                        waveDependentSelectedProductsString.append(currWaveDependentProduct);
+                    }
+                }
+
+            } else {
+                currWaveDependentProduct = values[i].toString() + " ";
+                waveDependentSelectedProductsString.append(currWaveDependentProduct);
+            }
+        }
+    }
+
+
     public Properties getEnvironment() throws java.io.IOException {
         Properties env = new Properties();
         env.load(Runtime.getRuntime().exec("env").getInputStream());
@@ -940,115 +955,101 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createProductSelectorWavelengthsPanel(JPanel wavelengthsPanel, ArrayList<JCheckBox> wavelengthsCheckboxArrayList) {
-        final JLabel myLabel = new JLabel("wavelengths are here");
+    private void createProductSelectorWavelengthsPanel(final JPanel wavelengthsPanel) {
+
+        // config panel
         wavelengthsPanel.setBorder(BorderFactory.createTitledBorder("Wavelengths"));
         wavelengthsPanel.setLayout(new GridBagLayout());
 
-        String myEnvVar = System.getenv("HOME");
+        // lookup hash relating mission letter with mission directory name
+        final HashMap myMissionLetterHashMap = new HashMap();
+        myMissionLetterHashMap.put("S", "seawifs");
+        myMissionLetterHashMap.put("A", "modisa");
+        myMissionLetterHashMap.put("T", "modist");
 
-        System.out.println("HOME=" + myEnvVar);
 
-        final String TEMP_DATA_FILE = "/home/knowles/SeaDAS/seadas/seadas-sandbox/dataTest.txt";
-        final ArrayList<String> myAsciiFileArrayList = myReadDataFile(TEMP_DATA_FILE);
+        // add listener to the input file selector
+//        sourceProductSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
 
+//            @Override
+//           public void selectionChanged(SelectionChangeEvent event) {
+
+        // determine the mission letter and mission name from the selected product
+//                final Product sourceProduct = getSourceProduct();
+//                final String missionLetter = sourceProduct.getName().substring(0, 1);
+//                final String missionDirectoryName = (String) myMissionLetterHashMap.get(missionLetter);
+
+        // determine the filename which contains the wavelengths
+        final StringBuilder myFilename = new StringBuilder("");
+        myFilename.append(OCDATAROOT);
+        myFilename.append("/");
+//                myFilename.append(missionDirectoryName);
+        myFilename.append("seawifs");
+        myFilename.append("/");
+        myFilename.append("msl12_sensor_info.dat");
+        System.out.println("TEMP_DATA_FILE=" + myFilename.toString());
+
+        // read in the mission's datafile which contains the wavelengths
+        final ArrayList<String> myAsciiFileArrayList = myReadDataFile(myFilename.toString());
+
+        // some GridBagLayout formatting variables
         int gridyCnt = 0;
         int gridxCnt = 0;
         int gridxColumns = 4;
 
+        // clear this because we dynamically rebuild it when input file selection is made or changed
+        wavelengthsCheckboxArrayList.clear();
 
+        // loop through datafile
         for (String myLine : myAsciiFileArrayList) {
-            String splitLine[] = myLine.split("=");
 
-            if (splitLine.length == 2) {
-                StringBuilder myString = new StringBuilder("");
-                myString.append(splitLine[1]);
+            // skip the comment lines in file
+            if (!myLine.trim().startsWith("#")) {
 
-                JCheckBox tmpCheckbox = new JCheckBox(myString.toString());
-                tmpCheckbox.setName(myString.toString());
-                if (wavelengthsCheckboxArrayList != null) {
-                    wavelengthsCheckboxArrayList.add(tmpCheckbox);
-                }
+                // just look at value pairs of the form Lambda(#) = #
+                String splitLine[] = myLine.split("=");
+                if (splitLine.length == 2 &&
+                        splitLine[0].trim().startsWith("Lambda(") &&
+                        splitLine[0].trim().endsWith(")")
+                        ) {
 
-                //        String myString = wavelengthsCheckboxArrayList.get(i);
+                    // get current wavelength and add into in a JCheckBox
+                    String currWavelength = splitLine[1].trim();
+                    JCheckBox currJCheckBox = new JCheckBox(currWavelength);
+                    currJCheckBox.setName(currWavelength);
 
-                //      JCheckBox tmpCheckbox = new JCheckBox(myString);
+                    // add current JCheckBox to the externally accessible arrayList
+                    wavelengthsCheckboxArrayList.add(currJCheckBox);
 
+                    // add current JCheckBox to the panel
+                    {
+                        final GridBagConstraints c = new GridBagConstraints();
+                        c.gridx = gridxCnt;
+                        c.gridy = gridyCnt;
+                        c.fill = GridBagConstraints.NONE;
+                        c.weightx = 1;
+                        wavelengthsPanel.add(currJCheckBox, c);
+                    }
 
-                {
-                    final GridBagConstraints c = new GridBagConstraints();
-                    c.gridx = gridxCnt;
-                    c.gridy = gridyCnt;
-                    c.fill = GridBagConstraints.HORIZONTAL;
-                    c.weightx = 1;
-                    wavelengthsPanel.add(tmpCheckbox, c);
-                }
+                    // increment GridBag coordinates
+                    if (gridxCnt < (gridxColumns - 1)) {
+                        gridxCnt++;
+                    } else {
+                        gridxCnt = 0;
+                        gridyCnt++;
+                    }
 
-                if (gridxCnt < (gridxColumns - 1)) {
-                    gridxCnt++;
-                } else {
-                    gridxCnt = 0;
-                    gridyCnt++;
-                }
+                }  //end if on value pairs of the form Lambda(#) = #
 
+            }  // end if skipping comments lines
 
-                System.out.println(splitLine[0] + " EQUALS " + splitLine[1]);
-            } else {
-                System.out.println("JUNK:" + myLine);
-            }
-        }
+        }  // end for (String myLine : myAsciiFileArrayList)
 
+//            }  // public void selectionChanged(SelectionChangeEvent event)
 
-        //       ArrayList<String> wavelengthsCheckboxArrayList = null;
+//        });  // sourceProductSelector.addSelectionChangeListener
 
-/*
-        for (int i=0; i < 5; i++) {
-            StringBuilder myString = new StringBuilder("Hello");
-            myString.append(i);
-
-            if (myString.toString() != null)
-            wavelengthsCheckboxArrayList.add("how");
-        }
-*/
-
-
-/*        if (wavelengthsCheckboxArrayList != null) {
-            for (int i = 0; i < wavelengthsCheckboxArrayList.size(); i++) {
-                StringBuilder myString = new StringBuilder("Hello");
-                myString.append(i);
-
-                JCheckBox tmpCheckbox = new JCheckBox(myString.toString());
-
-                //        String myString = wavelengthsCheckboxArrayList.get(i);
-
-                //      JCheckBox tmpCheckbox = new JCheckBox(myString);
-
-
-                {
-                    final GridBagConstraints c = new GridBagConstraints();
-                    c.gridx = 0;
-                    c.gridy = i;
-                    c.fill = GridBagConstraints.HORIZONTAL;
-                    c.weightx = 1;
-                    wavelengthsPanel.add(tmpCheckbox, c);
-                }
-
-            }
-        }*/
-
-
-        // Add openButton control to a mainPanel grid cell
-/*
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.weightx = 1;
-            wavelengthsPanel.add(myLabel, c);
-        }
-*/
-    }
+    } // private void createProductSelectorWavelengthsPanel
 
 
     private JPanel addPaddedWrapperPanel(JPanel myMainPanel, int pad) {
