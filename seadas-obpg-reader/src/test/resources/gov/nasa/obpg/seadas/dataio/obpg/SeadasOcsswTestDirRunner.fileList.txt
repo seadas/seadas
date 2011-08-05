@@ -1,13 +1,13 @@
 # Missing attribute 'Title': atm_tb_aquarius/N200431900_QATM_NCEP_6h.h5
 # Missing attribute 'Title': atm_tb_aquarius/N200431900_QMET_NCEP_6h
-l2gen/anc/N199820000_O3_TOMSOMI_24h.hdf
+#l2gen/anc/N199820000_O3_TOMSOMI_24h.hdf
 # Can't open as NetCDF: l2gen/anc/oisst.20051012
-l2gen/anc/S199710612_NCEP.MET
-l2gen/anc/S199710712_ADTOMS.OZONE
-l2gen/anc/S199726212_EPTOMS.OZONE
-l2gen/anc/S20061150011523_TOAST.OZONE
-l1agen_seawifs/S2000011192121.L1A_HNSG
-l1agen_seawifs/S2000016180835.L1A_GAC
+#l2gen/anc/S199710612_NCEP.MET
+#l2gen/anc/S199710712_ADTOMS.OZONE
+#l2gen/anc/S199726212_EPTOMS.OZONE
+#l2gen/anc/S20061150011523_TOAST.OZONE
+#l1agen_seawifs/S2000011192121.L1A_HNSG
+#l1agen_seawifs/S2000016180835.L1A_GAC
 # Missing attribute 'Title': l1bgen_modis/A2005244180500.GEO
 # Can't open as NetCDF: l1bgen_modis/A2005244180500.L0_LAC
 # Missing attribute 'Title': l1bgen_modis/A2005244180500.L1A_LAC
@@ -20,7 +20,7 @@ l1agen_seawifs/S2000016180835.L1A_GAC
 # File not found: l1bgen_modis/T2007064160001.L1B_HKM
 # File not found: l1bgen_modis/T2007064160001.L1B_LAC
 # File not found: l1bgen_modis/T2007064160001.L1B_QKM
-l1brsgen/A2002365234500.L1B_BRS.hdf
+#l1brsgen/A2002365234500.L1B_BRS.hdf
 # Can't open as NetCDF: l1brsgen/A2002365234500.L1B_MAP.ppm
 l2bin/l2/S2005266013048.L2_GAC
 l2bin/l2/S2005266030931.L2_GAC
@@ -37,25 +37,10 @@ l2bin/l2/S2005266180908.L2_GAC
 l2bin/l2/S2005266193638.L2_GAC
 l2bin/l2/S2005266211521.L2_GAC
 l2bin/l2/S2005266225403.L2_GAC
-l2bin/S2005266.L3b_DAY
+#l2bin/S2005266.L3b_DAY
 l2bin/S2005266.L3b_DAY.smi
 l2bin_aquarius/Q2007001011100.L2_SCI
-l2bin_aquarius/Q2007001024800.L2_SCI
-l2bin_aquarius/Q2007001042600.L2_SCI
-l2bin_aquarius/Q2007001060400.L2_SCI
-l2bin_aquarius/Q2007001074200.L2_SCI
-l2bin_aquarius/Q2007001092000.L2_SCI
-l2bin_aquarius/Q2007001105800.L2_SCI
-l2bin_aquarius/Q2007001123600.L2_SCI
-l2bin_aquarius/Q2007001141300.L2_SCI
-l2bin_aquarius/Q2007001155100.L2_SCI
-l2bin_aquarius/Q2007001172900.L2_SCI
-l2bin_aquarius/Q2007001190700.L2_SCI
-l2bin_aquarius/Q2007001204500.L2_SCI
-l2bin_aquarius/Q2007001222300.L2_SCI
-l2bin_aquarius/Q2007001_B1_1D.L3B_SCI
-l2bin_aquarius/Q2007001_B2_1D.L3B_SCI
-l2bin_aquarius/Q2007001_B3_1D.L3B_SCI
+#l2bin_aquarius/Q2007001_B1_1D.L3B_SCI
 # Missing attribute 'Title': l2gen/A2002365234500.GEO
 # Missing attribute 'Title': l2gen/A2002365234500.L1A_LAC
 # File not found: l2gen/A2002365234500.L1B_HKM
@@ -98,13 +83,13 @@ l2gen/M2009258160532.L2_FRS
 # File not found: l2gen/N2002365_SST_OIV2AVAM_24h.nc
 # File not found: l2gen/N200300100_MET_NCEPN_6h.hdf
 # File not found: l2gen/N200300100_O3_TOMSOMI_24h.hdf
-l2gen/O1997106160417.L1A_GAC
+#l2gen/O1997106160417.L1A_GAC
 l2gen/O1997106160417.L2_GAC
 # Can't open as NetCDF: l2gen/oisst.20050406
 # File not found: l2gen/S198100118_NCEP.MET
 # File not found: l2gen/S198100200_NCEP.MET
-l2gen/S1997262224952.L1A_LAC
-l2gen/S1997262224952.L1B_LAC
+#l2gen/S1997262224952.L1A_LAC
+#l2gen/S1997262224952.L1B_LAC
 l2gen/S1997262224952.L2_LAC
 l2gen/S1998199173926.L1A_GAC
 l2gen/S1998199173926.L1B_GAC
@@ -124,7 +109,7 @@ l2gen/S2004258230818.L2_VCAL
 # Missing attribute 'Title': l2gen/T2005288185000.L1B_LAC
 l2gen/T2005288185000.L2_GHRSST
 l2gen/T2005288185000.L2_LAC
-l2gen_aquarius/Q2004319010100.L1A_SCI
+#l2gen_aquarius/Q2004319010100.L1A_SCI
 l2gen_aquarius/Q2004319010100.L2_RAD
 # Missing attribute 'Title': l2gen_aquarius/y2004111400.h5
 # Missing attribute 'Title': l2gen_aquarius/y2004111406.h5

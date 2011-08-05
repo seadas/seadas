@@ -71,12 +71,12 @@ public class ObpgProductReader extends AbstractProductReader {
 
             final File inFile = ObpgUtils.getInputFile(getInput());
             final String path = inFile.getPath();
+            final Product product;
+
             ncfile = NetcdfFile.open(path);
 
             String productType = obpgUtils.getProductType(ncfile);
             mustFlip = obpgUtils.mustFlip(ncfile);
-
-            final Product product;
 
             List<Attribute> globalAttributes = ncfile.getGlobalAttributes();
             if (productType.contains("MODIS_SWATH_Type_L1B")){
@@ -89,7 +89,8 @@ public class ObpgProductReader extends AbstractProductReader {
             product.setFileLocation(inFile);
             product.setProductReader(this);
 
-            obpgUtils.addGlobalMetadata(product, ncfile.getGlobalAttributes());
+            // obpgUtils.addGlobalMetadata(product, ncfile.getGlobalAttributes());
+            obpgUtils.addGlobalMetadata(product, globalAttributes);
             obpgUtils.addScientificMetadata(product, ncfile);
 
             variableMap = obpgUtils.addBands(product, ncfile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);

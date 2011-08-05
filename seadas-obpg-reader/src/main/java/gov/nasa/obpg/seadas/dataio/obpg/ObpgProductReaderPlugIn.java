@@ -52,7 +52,6 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
     private static final String[] supportedProductTypes = {
             "Aquarius Level 1A Data",
             "Aquarius Level 2 Data",
-            "Aquarius Level-3 Binned Data",
             "CZCS Level-1A Data",
             "CZCS Level-1B",
             "CZCS Level-2 Data",
@@ -83,6 +82,8 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "SeaWiFS Level-3 Standard Mapped Image",
             "VIIRS Level-3 Standard Mapped Image",
             "Level-3 Standard Mapped Image",      // Generic Standard Mapped Image (from smigen)
+            "Level-3 Binned Data",
+
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 

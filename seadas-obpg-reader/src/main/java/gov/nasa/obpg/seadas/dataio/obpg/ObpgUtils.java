@@ -32,21 +32,30 @@ import ucar.nc2.iosp.hdf4.ODLparser;
 
 import java.io.File;
 import java.io.IOException;
-// import java.security.PrivateKey;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
+
+// import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.HdfEosUtils;
+
+// import java.security.PrivateKey;
 
 public class ObpgUtils {
 
     static final String MODIS_L1B_TYPE = "MODIS_SWATH_Type_L1B";
     static final String MODIS_PLATFORM = "MODIS Platform";
+    static final String MODIS_L1B_PARAM = "MODIS Resolution";
+
     static final String KEY_NAME = "Product Name";
     static final String KEY_TYPE = "Title";
+
     static final String KEY_WIDTH = "Pixels per Scan Line";
     static final String KEY_HEIGHT = "Number of Scan Lines";
     static final String KEY_WIDTH_MODISL1 = "Max Earth View Frames";
     static final String KEY_HEIGHT_MODISL1 = "Number of Scans";
+    static final String KEY_WIDTH_AQUARIUS ="Number of Beams";
+    static final String KEY_HEIGHT_AQUARIUS = "Number of Blocks";
+
     static final String KEY_START_NODE = "Start Node";
     static final String KEY_END_NODE = "End Node";
     static final String KEY_START_TIME = "Start Time";
@@ -64,6 +73,10 @@ public class ObpgUtils {
     static final String STRUCT_METADATA = "StructMetadata";
     static final String CORE_METADATA = "CoreMetadata";
     static final String ARCHIVE_METADATA = "ArchiveMetadata";
+
+    static final int[] MODIS_WVL = new int[]{645, 859, 469, 555, 1240, 1640, 2130, 412, 443, 488, 531, 547, 667, 678,
+            748, 869, 905, 936, 940, 3750, 3959, 3959, 4050, 4465, 4515, 1375, 6715, 7325, 8550, 9730, 11030, 12020,
+            13335, 13635, 13935, 14235};
 
     MetadataAttribute attributeToMetadata(Attribute attribute) {
         final int productDataType = getProductDataType(attribute.getDataType(), false, false);
@@ -131,12 +144,12 @@ public class ObpgUtils {
             keyWidth = KEY_WIDTH_MODISL1;
             keyHeight = KEY_HEIGHT_MODISL1;
             for (Attribute attribute : globalAttributes) {
-                if (attribute.getName().contains("HDFEOS_FractionalOffset")){
-                    String[] parsedname = attribute.getName().split("_");
-                    if (parsedname[2].equals("20*nscans")){
+                if (attribute.getName().equals(MODIS_L1B_PARAM)){
+                    String resolution = attribute.getStringValue();
+                    if (resolution.equals("500M")){
                         pixelmultiplier = 2;
                         scanmultiplier = 20;
-                    } else if (parsedname[2].equals("40*nscans")){
+                    } else if (resolution.equals("250M")){
                         pixelmultiplier = 4;
                         scanmultiplier = 40;
                     }
@@ -174,19 +187,28 @@ public class ObpgUtils {
     }
 
     private String getHeightKey(String title) {
-        if (title.contains("Level-2")) {
+        if (title.contains("Aquarius")){
+            return KEY_HEIGHT_AQUARIUS;
+        } else if (title.contains("Level-2")) {
             return KEY_HEIGHT;
+        } else if (title.contains("Level-3 Mapped")) {
+            return KEY_L3SMI_HEIGHT;
         } else {
             return KEY_L3SMI_HEIGHT;
         }
     }
 
     private String getWidthKey(String title) {
-        if (title.contains("Level-2")) {
+        if (title.contains("Aquarius")){
+            return KEY_WIDTH_AQUARIUS;
+        } else if (title.contains("Level-2")) {
             return KEY_WIDTH;
+        } else if (title.contains("Level-3 Mapped")){
+            return KEY_L3SMI_WIDTH;
         } else {
             return KEY_L3SMI_WIDTH;
         }
+
     }
 
     public String getProductType(final NetcdfFile ncfile) throws ProductIOException {
@@ -208,8 +230,10 @@ public class ObpgUtils {
         Element eosElement = null;
         try {
           eosElement = getEosElement(CORE_METADATA, ncfile.getRootGroup());
+          //  eosElement = HdfEosUtils.getEosElement(CORE_METADATA, ncfile.getRootGroup());
         } catch (IOException e) {
           e.printStackTrace();  //Todo add a valid exception
+          System.out.print("Whoops...");
         }
 
         //grab granuleID
@@ -242,6 +266,19 @@ public class ObpgUtils {
         Attribute endTimeAttribute = new Attribute(KEY_END_TIME,endDate+' '+endTime);
         globalAttributes.add(endTimeAttribute);
 
+        Element measuredParamElem = inventoryElem.getChild("MEASUREDPARAMETER");
+        Element measuredContainerElem = measuredParamElem.getChild("MEASUREDPARAMETERCONTAINER");
+        Element paramElem = measuredContainerElem.getChild("PARAMETERNAME");
+        String param = paramElem.getValue().substring(1);
+        String resolution = "1km";
+        if (param.contains("EV_500")){
+            resolution = "500m";
+        } else if (param.contains("EV_250")){
+            resolution = "250m";
+        }
+        Attribute paramAttribute = new Attribute(MODIS_L1B_PARAM,resolution);
+        globalAttributes.add(paramAttribute);
+
         //grab Mission Name
         Element platformElem = inventoryElem.getChild("ASSOCIATEDPLATFORMINSTRUMENTSENSOR");
         Element containerElem = platformElem.getChild("ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER");
@@ -249,6 +286,9 @@ public class ObpgUtils {
         String shortName = shortNameElem.getValue().substring(2);
         Attribute shortNameAttribute = new Attribute(MODIS_PLATFORM,shortName);
         globalAttributes.add(shortNameAttribute);
+
+
+
     }
 
     private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
@@ -468,7 +508,7 @@ public class ObpgUtils {
                 if (height == sceneRasterHeight && width == sceneRasterWidth) {
                     final List<Attribute> list = variable.getAttributes();
                     Attribute band_names = findAttribute("band_names", list);
-                    if (band_names != null){
+                    if (band_names != null){ // Then treat as a MODIS L1B...
                         String bnames = band_names.getStringValue();
                         String[] bname_array = bnames.split(",");
                         String units = null;
@@ -492,12 +532,13 @@ public class ObpgUtils {
                                 intercept = hdfAttribute.getValues();
                             }
                         }
-                        int i = 0;
-                        for (String bandname: bname_array){
+                        //int i;
+                        //for (String bandname: bname_array){
+                        for (int i=0;i<bands;i++){
                             final String shortname = variable.getShortName();
                             StringBuilder longname = new StringBuilder(shortname);
                             longname.append("_");
-                            longname.append(bandname);
+                            longname.append(bname_array[i]);
                             String name = longname.toString();
                             final int dataType = getProductDataType(variable);
                             final Band band = new Band(name, dataType, width, height);
@@ -506,11 +547,19 @@ public class ObpgUtils {
                                 band.setValidPixelExpression(validExpression);
                             }
                             product.addBand(band);
-                            if (name.matches("\\w+_\\d{3,}")) {
-                                final float wavelength = Float.parseFloat(name.split("_")[1]);
-                                band.setSpectralWavelength(wavelength);
-                                band.setSpectralBandIndex(spectralBandIndex++);
+
+                            int wvlidx;
+
+                            if (bname_array[i].contains("lo") || bname_array[i].contains("hi")){
+                                wvlidx = Integer.parseInt(bname_array[i].substring(0,1)) - 1;
+                            } else {
+                                wvlidx = Integer.parseInt(bname_array[i]) -1;
                             }
+
+                            final float wavelength = Float.valueOf(MODIS_WVL[wvlidx]);
+                            band.setSpectralWavelength(wavelength);
+                            band.setSpectralBandIndex(spectralBandIndex++);
+
                             Variable sliced = null;
                             try {
                                 sliced = variable.slice(0, i);
@@ -530,12 +579,13 @@ public class ObpgUtils {
                                 band.setSampleCoding(flagCoding);
                                 product.getFlagCodingGroup().add(flagCoding);
                             }
-                            i++;
+
+                            }
                         }
                     }
                 }
             }
-        }
+
         return bandToVariableMap;
     }
 
@@ -544,6 +594,8 @@ public class ObpgUtils {
         final String navGroupMODIS = "MODIS_SWATH_Type_L1B/Geolocation Fields";
         final String longitude = "longitude";
         final String latitude = "latitude";
+        final String beam_longitude = "beam_clon";
+        final String beam_latitude = "beam_clat";
         String cntlPoints = "cntl_pt_cols";
 
         Band latBand = null;
@@ -553,6 +605,18 @@ public class ObpgUtils {
             // read latitudes and longitudes
             int cntl_lat_ix = 5;
             int cntl_lon_ix = 5;
+           String resolution = product.getMetadataRoot().getElement("Global_Attributes").getAttribute(MODIS_L1B_PARAM).getData().getElemString();
+            if (resolution.equals("500m")){
+                cntl_lat_ix = 2;
+                cntl_lon_ix = 2;
+            } else if (resolution.equals("250m")){
+                cntl_lat_ix = 4;
+                cntl_lon_ix = 4;
+            } else {
+                cntl_lat_ix = 5;
+                cntl_lon_ix = 5;
+            }
+
             Variable lats = ncfile.findVariable(navGroupMODIS + "/" + "Latitude");
             Variable lons = ncfile.findVariable(navGroupMODIS + "/" + "Longitude");
             int[] dims = lats.getShape();
@@ -564,15 +628,13 @@ public class ObpgUtils {
 
             Array latarr = lats.read();
             Array lonarr = lons.read();
-           if (mustFlip){
-                Array tmplat = latarr.flip(0);
-                Array tmplon = lonarr.flip(1);
-                latTiePoints = (float[]) tmplat.getStorage();
-                lonTiePoints = (float[]) tmplon.getStorage();
+            if (mustFlip){
+                latTiePoints = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
+                lonTiePoints = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
             } else {
                 latTiePoints = (float[]) latarr.getStorage();
                 lonTiePoints = (float[]) lonarr.getStorage();
-           }
+            }
 
             final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1],dims[0], 0, 0,
                     cntl_lat_ix, cntl_lon_ix, latTiePoints);
@@ -588,6 +650,9 @@ public class ObpgUtils {
         } else if (product.containsBand(latitude) && product.containsBand(longitude)) {
             latBand = product.getBand(latitude);
             lonBand = product.getBand(longitude);
+        } else if (product.containsBand(beam_latitude) && product.containsBand(beam_longitude)) {
+            latBand = product.getBand(beam_latitude);
+            lonBand = product.getBand(beam_longitude);
         } else {
             Variable latVar = ncfile.findVariable(navGroup + "/" + latitude);
             Variable lonVar = ncfile.findVariable(navGroup + "/" + longitude);
@@ -693,6 +758,9 @@ public class ObpgUtils {
 
     private void addAttributesToElement(List<Attribute> globalAttributes, final MetadataElement element) {
         for (Attribute attribute : globalAttributes) {
+            if (attribute.getName().matches("\\w*.(EV|Value|Bad|Noise|Dead)")) {
+                continue;
+            }
             addAttributeToElement(element, attribute);
         }
     }
@@ -703,7 +771,6 @@ public class ObpgUtils {
     }
 
     // COPIED FROM org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos:HdfEosUtils
-
 
     static Element getEosElement(String name, Group eosGroup) throws IOException {
         String smeta = getEosMetadata(name, eosGroup);
@@ -723,6 +790,8 @@ public class ObpgUtils {
 
         ODLparser parser = new ODLparser();
         return parser.parseFromString(sb.toString());// now we have the ODL in JDOM elements
+
+
     }
 
    public static String getEosMetadata(String name, Group eosGroup) throws IOException {
