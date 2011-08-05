@@ -146,10 +146,10 @@ public class ObpgUtils {
             for (Attribute attribute : globalAttributes) {
                 if (attribute.getName().equals(MODIS_L1B_PARAM)){
                     String resolution = attribute.getStringValue();
-                    if (resolution.equals("500M")){
+                    if (resolution.equals("500m")){
                         pixelmultiplier = 2;
                         scanmultiplier = 20;
-                    } else if (resolution.equals("250M")){
+                    } else if (resolution.equals("250m")){
                         pixelmultiplier = 4;
                         scanmultiplier = 40;
                     }
