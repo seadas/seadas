@@ -189,7 +189,7 @@ public class ObpgUtils {
     private String getHeightKey(String title) {
         if (title.contains("Aquarius")){
             return KEY_HEIGHT_AQUARIUS;
-        } else if (title.contains("Level-2")) {
+        } else if (title.contains("Level-2") || title.contains("Level-1B")) {
             return KEY_HEIGHT;
         } else if (title.contains("Level-3 Mapped")) {
             return KEY_L3SMI_HEIGHT;
@@ -201,7 +201,7 @@ public class ObpgUtils {
     private String getWidthKey(String title) {
         if (title.contains("Aquarius")){
             return KEY_WIDTH_AQUARIUS;
-        } else if (title.contains("Level-2")) {
+        } else if (title.contains("Level-2") || title.contains("Level-1B")) {
             return KEY_WIDTH;
         } else if (title.contains("Level-3 Mapped")){
             return KEY_L3SMI_WIDTH;
@@ -293,13 +293,23 @@ public class ObpgUtils {
 
     private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
         Attribute attribute = findAttribute(key, globalAttributes);
+        Boolean isModis = false;
+        isModis = findAttribute("MODIS Resolution",globalAttributes).isString();
         if (attribute != null) {
             String timeString = attribute.getStringValue().trim();
             final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
+            final DateFormat dateFormatModis = ProductData.UTC.createDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
             try {
-                final Date date = dateFormat.parse(timeString);
-                String milliSeconds = timeString.substring(timeString.length() - 3);
-                return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
+                if (isModis){
+                    final Date date = dateFormatModis.parse(timeString);
+                    String milliSeconds = timeString.substring(timeString.length() - 3);
+                    return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
+                } else {
+                    final Date date = dateFormat.parse(timeString);
+                    String milliSeconds = timeString.substring(timeString.length() - 3);
+
+                    return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
+                }
             } catch (ParseException e) {
             }
         }
@@ -758,10 +768,12 @@ public class ObpgUtils {
 
     private void addAttributesToElement(List<Attribute> globalAttributes, final MetadataElement element) {
         for (Attribute attribute : globalAttributes) {
-            if (attribute.getName().matches("\\w*.(EV|Value|Bad|Noise|Dead)")) {
+            //if (attribute.getName().contains("EV")) {
+            if (attribute.getName().matches(".*(EV|Value|Bad|Nois|Electronics|Dead|Detector).*")) {
                 continue;
+            } else {
+                addAttributeToElement(element, attribute);
             }
-            addAttributeToElement(element, attribute);
         }
     }
 
