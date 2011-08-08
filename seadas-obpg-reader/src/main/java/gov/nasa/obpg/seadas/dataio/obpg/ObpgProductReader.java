@@ -89,7 +89,6 @@ public class ObpgProductReader extends AbstractProductReader {
             product.setFileLocation(inFile);
             product.setProductReader(this);
 
-            // obpgUtils.addGlobalMetadata(product, ncfile.getGlobalAttributes());
             obpgUtils.addGlobalMetadata(product, globalAttributes);
             obpgUtils.addScientificMetadata(product, ncfile);
 

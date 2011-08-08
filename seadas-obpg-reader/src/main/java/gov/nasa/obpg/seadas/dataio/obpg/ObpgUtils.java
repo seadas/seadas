@@ -294,7 +294,10 @@ public class ObpgUtils {
     private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
         Attribute attribute = findAttribute(key, globalAttributes);
         Boolean isModis = false;
-        isModis = findAttribute("MODIS Resolution",globalAttributes).isString();
+        try {
+            isModis = findAttribute("MODIS Resolution",globalAttributes).isString();
+        } catch (Exception e) {
+        }
         if (attribute != null) {
             String timeString = attribute.getStringValue().trim();
             final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
