@@ -33,7 +33,7 @@ public class L2genAction extends AbstractVisatAction {
     @Override
     public void actionPerformed(CommandEvent event) {
         if (dialog == null) {
-            dialog = new L2genDialog(false, "l2gen", event.getCommand().getHelpId(), getAppContext());
+            dialog = new L2genDialog("l2gen", event.getCommand().getHelpId(), getAppContext());
         }
         dialog.show();
     }

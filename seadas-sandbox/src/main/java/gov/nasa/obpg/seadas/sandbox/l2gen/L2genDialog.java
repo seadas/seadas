@@ -32,34 +32,18 @@ import java.util.Map;
 
 class L2genDialog extends SingleTargetProductDialog {
 
-    private static final String OPERATOR_NAME = "Reproject";
     private final L2genForm form;
 
     public static void main(String[] args) {
         final DefaultAppContext context = new DefaultAppContext("L2gen");
-        final L2genDialog dialog = new L2genDialog(true, "L2genTestDialog", null, context);
+        final L2genDialog dialog = new L2genDialog("L2genTestDialog", null, context);
         dialog.show();
 
     }
 
-    L2genDialog(boolean orthorectify, final String title, final String helpID, AppContext appContext) {
+    L2genDialog(final String title, final String helpID, AppContext appContext) {
         super(appContext, title, ID_APPLY_CLOSE, helpID);
-        form = new L2genForm(getTargetProductSelector(), orthorectify, appContext);
-
-        final OperatorSpi operatorSpi = GPF.getDefaultInstance().getOperatorSpiRegistry().getOperatorSpi(OPERATOR_NAME);
-
-        ParameterUpdater parameterUpdater = new ReprojectionParameterUpdater();
-
-        OperatorParameterSupport parameterSupport = new OperatorParameterSupport(operatorSpi.getOperatorClass(),
-                                                                                 null,
-                                                                                 null,
-                                                                                 parameterUpdater);
-        OperatorMenu operatorMenu = new OperatorMenu(this.getJDialog(),
-                                                     operatorSpi.getOperatorClass(),
-                                                     parameterSupport,
-                                                     helpID);
-
-        getJDialog().setJMenuBar(operatorMenu.createDefaultMenu());
+        form = new L2genForm(getTargetProductSelector(), appContext);
     }
 
     @Override
@@ -74,10 +58,8 @@ class L2genDialog extends SingleTargetProductDialog {
 
     @Override
     protected Product createTargetProduct() throws Exception {
-        final Map<String, Product> productMap = form.getProductMap();
-        final Map<String, Object> parameterMap = new HashMap<String, Object>();
-        form.updateParameterMap(parameterMap);
-        return GPF.createProduct(OPERATOR_NAME, parameterMap, productMap);
+
+        return null;
     }
 
     @Override
@@ -93,16 +75,5 @@ class L2genDialog extends SingleTargetProductDialog {
         super.hide();
     }
 
-    private class ReprojectionParameterUpdater implements ParameterUpdater {
 
-        @Override
-        public void handleParameterSaveRequest(Map<String, Object> parameterMap) {
-            form.updateParameterMap(parameterMap);
-        }
-
-        @Override
-        public void handleParameterLoadRequest(Map<String, Object> parameterMap) throws ValidationException, ConversionException {
-            form.updateFormModel(parameterMap);
-        }
-    }
 }
