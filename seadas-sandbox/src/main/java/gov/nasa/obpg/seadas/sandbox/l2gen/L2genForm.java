@@ -12,9 +12,7 @@ import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelectorModel;
-
 import org.esa.beam.framework.ui.AppContext;
-
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -27,6 +25,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+
 
 
 class L2genForm extends JTabbedPane {
@@ -49,6 +48,9 @@ class L2genForm extends JTabbedPane {
     private JTextArea selectedProductsJTextArea;
 
     private String SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT = "No products currently selected";
+    private String WAVELENGTHS_PANEL_MESSAGE_DEFAULT = "Wavelengths can be specified here once an input file is selected";
+
+    private String SEADAS_PRODUCTS_FILE = "/home/knowles/SeaDAS/seadas/seadas-sandbox/productList.xml";
 
 
     L2genForm(TargetProductSelector targetProductSelector, AppContext appContext) {
@@ -74,18 +76,19 @@ class L2genForm extends JTabbedPane {
     }
 
     private void createUI() {
-        addTab("I/O Parameters", createIOPanel());
-        addTab("Processing Parameters", createParfileTabPanel());
-        addTab("Sub Sample", createSubsampleTabPanel());
-        addTab("Product Selector", createProductSelectorPanel());
+        createIOParametersTab("I/O Parameters");
+        createParfileTab("Processing Parameters");
+        createSubsampleTab("Sub Sample");
+        createProductSelectorTab("Product Selector");
     }
 
 
-    private JPanel createSubsampleTabPanel() {
+    private void createSubsampleTab(String tabnameSubsample) {
 
         final JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Lat-Lon", createLatlonTabPanel());
-        tabbedPane.addTab("Pix-Line", createPixlineTabPanel());
+        createLatLonSubTab(tabbedPane, "Lat-Lon");
+        createPixlineSubTab(tabbedPane, "Pix-Line");
+
 
         // Declare mainPanel and set it's attributes
         final JPanel mainPanel = new JPanel();
@@ -105,14 +108,14 @@ class L2genForm extends JTabbedPane {
         }
 
 
-        final JPanel finalMainPanel;
-        finalMainPanel = addPaddedWrapperPanel(mainPanel, 6);
+        final JPanel paddedMainPanel;
+        paddedMainPanel = addPaddedWrapperPanel(mainPanel, 6);
 
-        return finalMainPanel;
+        addTab(tabnameSubsample, paddedMainPanel);
     }
 
 
-    private JPanel createPixlineTabPanel() {
+    private void createPixlineSubTab(JTabbedPane tabbedPane, String myTabname) {
 
         // Define all Swing controls used on this tab page
         final JTextField spixTextfield = new JTextField(5);
@@ -267,11 +270,11 @@ class L2genForm extends JTabbedPane {
             finalMainPanel.add(mainPanel, c);
         }
 
-        return finalMainPanel;
+        tabbedPane.addTab(myTabname, finalMainPanel);
     }
 
 
-    private JPanel createLatlonTabPanel() {
+    private void createLatLonSubTab(JTabbedPane tabbedPane, String myTabname) {
 
         // Define all Swing controls used on this tab page
         final JTextField northTextfield = new JTextField(5);
@@ -373,11 +376,13 @@ class L2genForm extends JTabbedPane {
             finalMainPanel.add(mainPanel, c);
         }
 
-        return finalMainPanel;
+//        return finalMainPanel;
+
+        tabbedPane.addTab(myTabname, finalMainPanel);
     }
 
 
-    private JPanel createParfileTabPanel() {
+    private void createParfileTab(String myTabname) {
 
         // Define all Swing controls used on this tab page
         final JButton openButton = new JButton("Open");
@@ -442,23 +447,20 @@ class L2genForm extends JTabbedPane {
         final JPanel finalMainPanel;
         finalMainPanel = addPaddedWrapperPanel(mainPanel, 3);
 
-        return finalMainPanel;
+
+        addTab(myTabname, finalMainPanel);
     }
 
 
-    private JPanel createProductSelectorPanel() {
-
+    private void createProductSelectorTab(String myTabname) {
 
         wavelengthsPanel = new JPanel();
         final JPanel productWavelengthIndependentPanel = new JPanel();
         final JPanel productWavelengthDependentPanel = new JPanel();
         final JPanel selectedProductsPanel = new JPanel();
 
-
         ArrayList<ProductInfo> waveIndependentProductInfoArray;
         ArrayList<ProductInfo> waveDependentProductInfoArray;
-
-        final String SEADAS_PRODUCTS_FILE = "/home/knowles/SeaDAS/seadas/seadas-sandbox/productList.xml";
 
         L2genXmlReader l2genXmlReader = new L2genXmlReader();
 
@@ -472,20 +474,6 @@ class L2genForm extends JTabbedPane {
 
         waveIndependentJList = new JList();
         waveDependentJList = new JList();
-
-
-        final JLabel waveIndependentSelectedProductsJLabel = new JLabel();
-        final JLabel waveDependentSelectedProductsJLabel = new JLabel();
-
-        waveIndependentSelectedProductsJLabel.setText("test");
-        waveDependentSelectedProductsJLabel.setText("test");
-
-
-        final JLabel mySelectedProductsJLabel = new JLabel();
-
-
-        mySelectedProductsJLabel.setText("test");
-
 
         createProductSelectorWavelengthsPanel();
 
@@ -596,45 +584,38 @@ class L2genForm extends JTabbedPane {
         }
 
 
-        return finalMainPanel;
+        addTab(myTabname, finalMainPanel);
     }
 
 
     private void createProductSelectorProductListPanel(JPanel productPanel, ArrayList<ProductInfo> productInfoArrayList,
-                                                       String myTitle, JList myJList) {
+                                                       String myTitle, JList algorithmInfoJList) {
 
+        // Create arrayList for all the algorithmInfo objects
+        ArrayList<AlgorithmInfo> algorithmInfoArrayList = new ArrayList<AlgorithmInfo>();
 
-        // Create arrayList for all the algorithms
+        for (ProductInfo productInfo : productInfoArrayList) {
 
-        ArrayList<AlgorithmInfo> myJListArrayList = new ArrayList<AlgorithmInfo>();
-
-        for (ProductInfo currProductInfo : productInfoArrayList) {
-
-            for (AlgorithmInfo currAlgorithmInfo : currProductInfo.getAlgorithmInfoArrayList()) {
-                currAlgorithmInfo.setToStringShowProductName(true);
-                //currAlgorithmInfo.setToStringShowParameterType(true);
-                myJListArrayList.add(currAlgorithmInfo);
+            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                algorithmInfo.setToStringShowProductName(true);
+                algorithmInfoArrayList.add(algorithmInfo);
             }
 
         }
 
-        // Store the arrayList into an array which can be fed into a JList control
+        // Store the arrayList into an array which can then be fed into a JList control
+        AlgorithmInfo[] algorithmInfoArray = new AlgorithmInfo[algorithmInfoArrayList.size()];
+        algorithmInfoArrayList.toArray(algorithmInfoArray);
 
-        AlgorithmInfo[] myJListArray = new AlgorithmInfo[myJListArrayList.size()];
-        myJListArrayList.toArray(myJListArray);
-
-        // make and format the JList control
-        //myJList = new JList();
-        myJList.setListData(myJListArray);
-        JScrollPane scrollPane = new JScrollPane(myJList);
-        scrollPane.setMinimumSize(new Dimension(400, 100));
-
-        scrollPane.setMaximumSize(new Dimension(400, 100));
-        scrollPane.setPreferredSize(new Dimension(400, 100));
+        // format the JList control
+        algorithmInfoJList.setListData(algorithmInfoArray);
+        JScrollPane algorithmInfoJListScrollPane = new JScrollPane(algorithmInfoJList);
+        algorithmInfoJListScrollPane.setMinimumSize(new Dimension(400, 100));
+        algorithmInfoJListScrollPane.setMaximumSize(new Dimension(400, 100));
+        algorithmInfoJListScrollPane.setPreferredSize(new Dimension(400, 100));
 
         productPanel.setBorder(BorderFactory.createTitledBorder(myTitle));
         productPanel.setLayout(new GridBagLayout());
-
 
         // Add to productPanel grid cell
         {
@@ -644,7 +625,7 @@ class L2genForm extends JTabbedPane {
             c.fill = GridBagConstraints.BOTH;
             c.weightx = 1;
             c.weighty = 1;
-            productPanel.add(scrollPane, c);
+            productPanel.add(algorithmInfoJListScrollPane, c);
         }
 
     }
@@ -763,19 +744,25 @@ class L2genForm extends JTabbedPane {
         wavelengthsPanel.setBorder(BorderFactory.createTitledBorder("Wavelengths"));
         wavelengthsPanel.setLayout(new GridBagLayout());
 
+        JLabel defaultMessageJLabel = new JLabel(WAVELENGTHS_PANEL_MESSAGE_DEFAULT);
+
+        // add default message to the panel
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.NONE;
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.weightx = 1;
+            wavelengthsPanel.add(defaultMessageJLabel, c);
+        }
+
     }
 
 
     private void updateProductSelectorWavelengthsPanel() {
 
-        // wavelengthsCheckboxArrayList = new ArrayList<JCheckBox>();
-
-
         wavelengthsPanel.removeAll();
-
-        // config panel
-//        wavelengthsPanel.setBorder(BorderFactory.createTitledBorder("Wavelengths"));
-//        wavelengthsPanel.setLayout(new GridBagLayout());
 
         // lookup hash relating mission letter with mission directory name
         final HashMap myMissionLetterHashMap = new HashMap();
@@ -783,21 +770,18 @@ class L2genForm extends JTabbedPane {
         myMissionLetterHashMap.put("A", "modisa");
         myMissionLetterHashMap.put("T", "modist");
 
-
         // determine the mission letter and mission name from the selected product
-        final Product sourceProduct = getSourceProduct();
-        final String missionLetter = sourceProduct.getName().substring(0, 1);
-        final String missionDirectoryName = (String) myMissionLetterHashMap.get(missionLetter);
+        Product sourceProduct = getSourceProduct();
+        String missionLetter = sourceProduct.getName().substring(0, 1);
+        String missionDirectoryName = (String) myMissionLetterHashMap.get(missionLetter);
 
         // determine the filename which contains the wavelengths
         final StringBuilder myFilename = new StringBuilder("");
         myFilename.append(OCDATAROOT);
         myFilename.append("/");
         myFilename.append(missionDirectoryName);
-//                myFilename.append("seawifs");
         myFilename.append("/");
         myFilename.append("msl12_sensor_info.dat");
-        System.out.println("TEMP_DATA_FILE=" + myFilename.toString());
 
         // read in the mission's datafile which contains the wavelengths
         final ArrayList<String> myAsciiFileArrayList = myReadDataFile(myFilename.toString());
@@ -848,6 +832,7 @@ class L2genForm extends JTabbedPane {
                         c.gridx = gridxCnt;
                         c.gridy = gridyCnt;
                         c.fill = GridBagConstraints.NONE;
+                        c.anchor = GridBagConstraints.NORTHWEST;
                         c.weightx = 1;
                         wavelengthsPanel.add(currJCheckBox, c);
                     }
@@ -914,7 +899,7 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private JPanel createIOPanel() {
+    private void createIOParametersTab(String myTabname) {
         final TableLayout tableLayout = new TableLayout(1);
         tableLayout.setTableWeightX(1.0);
         tableLayout.setTableWeightY(0);
@@ -925,7 +910,9 @@ class L2genForm extends JTabbedPane {
         ioPanel.add(createSourceProductPanel());
         ioPanel.add(targetProductSelector.createDefaultPanel());
         ioPanel.add(tableLayout.createVerticalSpacer());
-        return ioPanel;
+
+        addTab(myTabname, ioPanel);
+
     }
 
 
@@ -938,7 +925,7 @@ class L2genForm extends JTabbedPane {
         sourceProductSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
             @Override
             public void selectionChanged(SelectionChangeEvent event) {
-                final Product sourceProduct = getSourceProduct();
+                Product sourceProduct = getSourceProduct();
                 updateTargetProductName(sourceProduct);
                 updateProductSelectorWavelengthsPanel();
                 updateSelectedProductsJTextArea();
@@ -949,8 +936,11 @@ class L2genForm extends JTabbedPane {
 
 
     private void updateTargetProductName(Product selectedProduct) {
+
         String productName = "output." + targetProductSuffix;
+
         final TargetProductSelectorModel selectorModel = targetProductSelector.getModel();
+
         if (selectedProduct != null) {
             int i = selectedProduct.getName().lastIndexOf('.');
             if (i != -1) {
@@ -960,8 +950,9 @@ class L2genForm extends JTabbedPane {
                 productName = selectedProduct.getName() + "." + targetProductSuffix;
             }
         }
+
         selectorModel.setProductName(productName);
-    }
+   }
 
 
 }
