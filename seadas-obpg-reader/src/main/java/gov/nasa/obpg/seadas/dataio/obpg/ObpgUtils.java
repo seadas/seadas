@@ -55,6 +55,9 @@ public class ObpgUtils {
     static final String KEY_HEIGHT_MODISL1 = "Number of Scans";
     static final String KEY_WIDTH_AQUARIUS ="Number of Beams";
     static final String KEY_HEIGHT_AQUARIUS = "Number of Blocks";
+    static final String KEY_SEADAS_MAPPED_WIDTH =  "Scene Pixels";
+    static final String KEY_SEADAS_MAPPED_HEIGHT =  "Scene Lines";
+
 
     static final String KEY_START_NODE = "Start Node";
     static final String KEY_END_NODE = "End Node";
@@ -157,6 +160,9 @@ public class ObpgUtils {
             }
             sceneWidth = getIntAttribute(keyWidth, globalAttributes) * pixelmultiplier;
             sceneHeight = getIntAttribute(keyHeight, globalAttributes) * scanmultiplier;
+        } if (productType.equalsIgnoreCase("SeaDAS Mapped")){
+            sceneWidth = getIntAttribute(KEY_SEADAS_MAPPED_WIDTH, globalAttributes);
+            sceneHeight = getIntAttribute(KEY_SEADAS_MAPPED_HEIGHT, globalAttributes);
         } else {
             keyWidth = getWidthKey(getStringAttribute(KEY_TYPE, globalAttributes));
             keyHeight = getHeightKey(getStringAttribute(KEY_TYPE, globalAttributes));
@@ -189,7 +195,7 @@ public class ObpgUtils {
     private String getHeightKey(String title) {
         if (title.contains("Aquarius")){
             return KEY_HEIGHT_AQUARIUS;
-        } else if (title.contains("Level-2") || title.contains("Level-1B")) {
+        } else if (title.contains("Level-2") || title.contains("Level-1B") || title.contains("Browse")) {
             return KEY_HEIGHT;
         } else if (title.contains("Level-3 Mapped")) {
             return KEY_L3SMI_HEIGHT;
@@ -201,7 +207,7 @@ public class ObpgUtils {
     private String getWidthKey(String title) {
         if (title.contains("Aquarius")){
             return KEY_WIDTH_AQUARIUS;
-        } else if (title.contains("Level-2") || title.contains("Level-1B")) {
+        } else if (title.contains("Level-2") || title.contains("Level-1B") || title.contains("Browse")) {
             return KEY_WIDTH;
         } else if (title.contains("Level-3 Mapped")){
             return KEY_L3SMI_WIDTH;
@@ -222,11 +228,46 @@ public class ObpgUtils {
         } else if (modisl1bGroup != null) {
             return  modisl1bGroup.getShortName();
         } else {
-            throw new ProductIOException("Unrecognized file!");
+            try {
+                List<Variable> seadasMappedVariables = ncfile.getVariables();
+                Boolean isSeadasMapped = false;
+
+                isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
+            } catch (Exception e) {
+                throw new ProductIOException("Unrecognized file!");
+            }
+            return "SeaDAS Mapped";
         }
     }
+    public void addGlobalAttributeSeadasMapped(final NetcdfFile ncfile, List<Attribute> globalAttributes){
+        int [] dims = ncfile.getVariables().get(0).getShape();
+        String [] prodname = ncfile.getLocation().split("/");
+        String projname = ncfile.getVariables().get(0).findAttribute("Projection Name").getStringValue();
+        Array projlimits = ncfile.getVariables().get(0).findAttribute("Limit").getValues();
+        double north = projlimits.getDouble(2);
+        double south = projlimits.getDouble(0);
+        double east = projlimits.getDouble(3);
+        double west = projlimits.getDouble(1);
 
-    public void addGlobalAttribute (final NetcdfFile ncfile, List<Attribute> globalAttributes) {
+        Attribute rasterWidth = new Attribute(KEY_SEADAS_MAPPED_WIDTH,dims[1]);
+        Attribute rasterHeight = new Attribute(KEY_SEADAS_MAPPED_HEIGHT,dims[0]);
+        Attribute productName = new Attribute(KEY_NAME,prodname[prodname.length-1]);
+        Attribute projection = new Attribute("Projection Name",projname);
+        Attribute northing = new Attribute("Northernmost Latitude",north);
+        Attribute southing = new Attribute("Southernmost Latitude",south);
+        Attribute easting = new Attribute("Easternmost Longitude",east);
+        Attribute westing = new Attribute("Westernmost Longitude",west);
+        globalAttributes.add(rasterHeight);
+        globalAttributes.add(rasterWidth);
+        globalAttributes.add(productName);
+        globalAttributes.add(projection);
+        globalAttributes.add(northing);
+        globalAttributes.add(southing);
+        globalAttributes.add(easting);
+        globalAttributes.add(westing);
+    }
+
+    public void addGlobalAttributeModisL1B(final NetcdfFile ncfile, List<Attribute> globalAttributes) {
         Element eosElement = null;
         try {
           eosElement = getEosElement(CORE_METADATA, ncfile.getRootGroup());
@@ -785,7 +826,7 @@ public class ObpgUtils {
         element.addAttribute(metadataAttribute);
     }
 
-    // COPIED FROM org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos:HdfEosUtils
+    /* COPIED FROM org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos:HdfEosUtils */
 
     static Element getEosElement(String name, Group eosGroup) throws IOException {
         String smeta = getEosMetadata(name, eosGroup);

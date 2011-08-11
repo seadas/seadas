@@ -80,9 +80,12 @@ public class ObpgProductReader extends AbstractProductReader {
 
             List<Attribute> globalAttributes = ncfile.getGlobalAttributes();
             if (productType.contains("MODIS_SWATH_Type_L1B")){
-                obpgUtils.addGlobalAttribute(ncfile, globalAttributes);
+                obpgUtils.addGlobalAttributeModisL1B(ncfile, globalAttributes);
                 mustFlip = obpgUtils.mustFlipMODIS(obpgUtils.getStringAttribute("MODIS Platform",globalAttributes),
                         obpgUtils.getStringAttribute("DayNightFlag",globalAttributes));
+            }
+            if (productType.contains("SeaDAS Mapped")){
+                 obpgUtils.addGlobalAttributeSeadasMapped(ncfile, globalAttributes);
             }
             product = obpgUtils.createProductBody(globalAttributes,productType);
 
@@ -94,7 +97,10 @@ public class ObpgProductReader extends AbstractProductReader {
 
             variableMap = obpgUtils.addBands(product, ncfile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
             if (productType.contains("Level-3")) {
-                GeoCoding geoCoding = createGeoCoding(product);
+                GeoCoding geoCoding = createGeoCoding(product, productType);
+                product.setGeoCoding(geoCoding);
+            } else if (productType.contains("SeaDAS Mapped")){
+                GeoCoding geoCoding = createGeoCoding(product, productType);  //TODO Check on various IDL projections
                 product.setGeoCoding(geoCoding);
             } else {
                 obpgUtils.addGeocoding(product, ncfile, mustFlip);
@@ -259,7 +265,7 @@ public class ObpgProductReader extends AbstractProductReader {
     }
 
 
-    private GeoCoding createGeoCoding(Product product) {
+    private GeoCoding createGeoCoding(Product product, String productType) {
         //float pixelX = 0.0f;
         //float pixelY = 0.0f;
         // Changed after conversation w/ Sean, Norman F., et al.
@@ -272,6 +278,7 @@ public class ObpgProductReader extends AbstractProductReader {
         float northing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Northernmost Latitude").getData().getElemDouble();
         float southing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Southernmost Latitude").getData().getElemDouble();
         float pixelSizeY = (northing - southing) / product.getSceneRasterHeight();
+
         try {
             return new CrsGeoCoding(DefaultGeographicCRS.WGS84,
                                     product.getSceneRasterWidth(),

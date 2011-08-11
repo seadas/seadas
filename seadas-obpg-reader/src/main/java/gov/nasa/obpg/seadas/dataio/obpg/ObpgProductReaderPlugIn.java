@@ -22,13 +22,11 @@ import org.esa.beam.util.io.BeamFileFilter;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
 
@@ -60,8 +58,13 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "HMODISA Level-3 Standard Mapped Image",
             "HMODIST Level-3 Standard Mapped Image",
             "MERIS Level-2 Data",
+            "MERIS Level-1 Browse Data",
+            "MERIS Level-2 Browse Data",
             "MODIS_SWATH_Type_L1B",
             "MODISA Level-1 Browse Data",
+            "HMODISA Level-1 Browse Data",
+            "MODISA Level-2 Browse Data",
+            "HMODISA Level-2 Browse Data",
             "MODISA Level-2 Data",
             "MODIST Level-2 Data",
             "MODISA Level-3 Binned Data",
@@ -114,6 +117,12 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
+                List<Variable> seadasMappedVariables = ncfile.getVariables();
+                Boolean isSeadasMapped = false;
+                try {
+                    isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
+                } catch (Exception e) {
+                }
                 Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
                 if (titleAttribute != null || modisl1bGroup != null) {
                     if (titleAttribute != null){
@@ -145,6 +154,8 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
                             }
                         }
                     }
+                } else if (isSeadasMapped) {
+                    return DecodeQualification.INTENDED;
                 } else {
                     if (DEBUG) {
                         System.out.println("# Missing attribute 'Title': " + file);
