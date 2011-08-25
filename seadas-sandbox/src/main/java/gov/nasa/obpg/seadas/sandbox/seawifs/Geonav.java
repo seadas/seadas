@@ -54,14 +54,13 @@ public class Geonav {
     enum DataType { GAC, LAC }
 
     // The following are input parameters in the Fortran geonav.f function:
-    private float[]   attAngle = new float[3];
-    private float[]   scanPathCoef = new float[6];
-    private int       pixIncr;
-    private int       pixPerScan;
-    private int       scanStartPix;
-    private float[]   orbPos = new float[3];
-    private float[][] sensorOrientation = new float[3][3];
-    private float[]   sunUnitVec = new float[3];
+    private float[]   scanPathCoef = new float[6];           // in Fortran version
+    private int       pixIncr;                               // ninc in Fortran version
+    private int       pixPerScan;                            // npix in Fortran version
+    private int       scanStartPix;                          // nsta in Fortran version
+    private float[]   orbPos = new float[3];                 // pos in Fortran version
+    private float[][] sensorOrientation = new float[3][3];   // rm in Fortran version
+    private float[]   sunUnitVec = new float[3];             // sun in Fortran version
 
     // Output parameters in Fortran version:
     float[] sena = new float[1285];
@@ -71,15 +70,32 @@ public class Geonav {
     float[] xlat = new float[1285];
     float[] xlon = new float[1285];
 
+    private float[]   attAngle = new float[3];
+
     String dataFilePath = null;
 
     DataType dataType;
 
-    double SINC = 0.00159;
+    double SINC = 0.0015911;
 
-    public Geonav(float pos[], float[][] rm, float[] sun, float[] aa, float tilt,
+    static int instantiationCount = 0;
+
+    public Geonav(float[] pos, float[][] rm, float[] coef, float[] sun, float[] aa, float tilt,
+                  NetcdfFile ncFile) {
+        this(pos, rm, sun, aa, tilt, ncFile);
+        scanPathCoef[0] = coef[0];
+        scanPathCoef[1] = coef[1];
+        scanPathCoef[2] = coef[2];
+        scanPathCoef[3] = coef[3];
+        scanPathCoef[4] = coef[4];
+        scanPathCoef[5] = coef[5];
+    }
+
+    public Geonav(float[] pos, float[][] rm, float[] sun, float[] aa, float tilt,
                   NetcdfFile ncFile) {
 
+        ++ instantiationCount;
+        // The sensorOffsetMatrix values were copied from the navctl.dat file.
         sensorOffsetMatrix[0][0] = 1.0f;
         sensorOffsetMatrix[0][1] = 0.0f;
         sensorOffsetMatrix[0][2] = 0.0f;
@@ -90,6 +106,7 @@ public class Geonav {
         sensorOffsetMatrix[2][1] = 0.00139626f;
         sensorOffsetMatrix[2][2] = 0.99999905f;
 
+        // The tiltCosVector values were copied from the navctl.dat file.
         tiltCosVector[0] = 0.0f;
         tiltCosVector[1] = 0.0f;
         tiltCosVector[2] = 1.0f;
@@ -127,10 +144,9 @@ public class Geonav {
             pixPerScan = LAC_PIXELS_PER_SCAN;
             pixIncr = LAC_PIXEL_INCREMENT;
         }
-        doComputations();
     }
 
-    private float[] computeInterEllCoefs(float[][] attTransform, 
+    private float[] computeInterEllCoefs(float[][] attTransform,
                                          float[] attAngle, float tilt, 
                                          float[]p) {
         /**
@@ -295,8 +311,8 @@ public class Geonav {
 
         //  Compute elevation (out-of-plane) angle
         elev = SINC * 1.2;
-        cosl = Math.cos(elev);
         sinl = Math.sin(elev);
+        cosl = Math.cos(elev);
         for (int i = 0; i < 1285; i ++) {
             sina[i] = Math.sin((i - 642) * SINC) * cosl;
             cosa[i] = Math.cos((i - 642) * SINC)* cosl;

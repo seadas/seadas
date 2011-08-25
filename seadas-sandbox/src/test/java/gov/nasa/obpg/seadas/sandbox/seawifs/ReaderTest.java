@@ -210,6 +210,9 @@ public class ReaderTest {
             Variable attAngleVar = navGroup.findVariable("att_ang");
             ArrayFloat attAngleData = (ArrayFloat) attAngleVar.read(startPts2, attAngleVar.getShape());
 
+            Variable scanTrackEllipseCoefVar = navGroup.findVariable("scan_ell");
+            ArrayFloat scanTrackEllipseCoefData = (ArrayFloat) scanTrackEllipseCoefVar.read(startPts2, scanTrackEllipseCoefVar.getShape());
+
             Variable tiltVar = scanLineAttrGroup.findVariable("tilt");
             ArrayFloat tiltData = (ArrayFloat.D1) tiltVar.read();
 
@@ -222,6 +225,8 @@ if (debug) {
     dispVarDetails(sunVar);
     System.out.print("attAngleVar: ");
     dispVarDetails(attAngleVar);
+    System.out.print("scanTrackEllipseCoefVar: ");
+    dispVarDetails(scanTrackEllipseCoefVar);
     System.out.print("tiltVar: ");
     dispVarDetails(tiltVar);
 }
@@ -254,9 +259,20 @@ if (debug) {
                 attAngleVect[1] = attAngleData.getFloat(3 * line + 1);
                 attAngleVect[2] = attAngleData.getFloat(3 * line + 2);
 
+                float[] scanTrackEllipseCoef = new float[6];
+                scanTrackEllipseCoef[0] = scanTrackEllipseCoefData.getFloat(6 * line);
+                scanTrackEllipseCoef[1] = scanTrackEllipseCoefData.getFloat(6 * line + 1);
+                scanTrackEllipseCoef[2] = scanTrackEllipseCoefData.getFloat(6 * line + 2);
+                scanTrackEllipseCoef[3] = scanTrackEllipseCoefData.getFloat(6 * line + 3);
+                scanTrackEllipseCoef[4] = scanTrackEllipseCoefData.getFloat(6 * line + 4);
+                scanTrackEllipseCoef[5] = scanTrackEllipseCoefData.getFloat(6 * line + 5);
+
                 float tilt = tiltData.getFloat(line);
 
-                Geonav geonavCalculator = new Geonav(orbVect, sensorMat, sunUnitVect, attAngleVect, tilt, ncFile);
+                //Geonav geonavCalculator = new Geonav(orbVect, sensorMat, sunUnitVect, attAngleVect, tilt, ncFile);
+                Geonav geonavCalculator = new Geonav(orbVect, sensorMat, scanTrackEllipseCoef, sunUnitVect,
+                                                     attAngleVect, tilt, ncFile);
+                geonavCalculator.doComputations();
 
                 float[] latitude = geonavCalculator.getLatitude();
        	        float[] longitude = geonavCalculator.getLongitude();
