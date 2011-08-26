@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
+import org.esa.beam.util.math.DoubleList;
 import ucar.ma2.*;
 import ucar.nc2.*;
 
@@ -91,7 +92,7 @@ public class ReaderTest {
     public static void main(String[] args) {
         /**
          *  This main method:
-         *   - redirects stderr to a logging file.
+         *   - redirects stdout and stderr to files.
          *   - processes and checks the command line input.
          *   - provides help if requested and then ends execution.
          *   - instantiates a ReaderTest object if help is not requested and
@@ -145,12 +146,6 @@ public class ReaderTest {
             } catch(ParseException pe) {
                 System.out.println("Caught ParseException: " + pe.getMessage());
                 System.exit(93);
-/*
-            } catch(Exception e) {
-                System.out.println("Caught Exception: " + e.getMessage());
-                System.out.println(e.getStackTrace());
-                System.exit(96);
-*/
             }
         } else {
             System.out.println("No input file given.");
@@ -159,10 +154,10 @@ public class ReaderTest {
     }
 
     private void outputHeader() {
-        /*
-         * Output header to match what Fred provided
+        /**
+         * Print header to match what the sample file from Fortran output contains.
          */
-        //String header = String.format();
+        // Output a header like what Fred provided.
         System.out.println("     Line   Pixel  Latitude   Longitude           Solar                  Sensor");
         System.out.println("                                            Zenith     Azimuth      Zenith     Azimuth");
     }
@@ -179,7 +174,6 @@ public class ReaderTest {
     }
 
     private void processFile(File inFile) throws IOException {
-        //System.out.println("Processing " + inFile.getPath());
         NetcdfFile ncFile = null;
         try {
             String prefix = "  ";
@@ -194,41 +188,12 @@ public class ReaderTest {
 
             outputHeader();
 
-            int[] startPts1 = new int[1];
-            int[] startPts2 = new int[2];
-            int[] startPts3 = new int[3];
-            Variable orbitVar = navGroup.findVariable("orb_vec");
-            ArrayFloat orbitData = (ArrayFloat.D2) orbitVar.read(startPts2, orbitVar.getShape());
-
-            Variable sensorVar = navGroup.findVariable("sen_mat");
-            ArrayFloat sensorData = (ArrayFloat.D3) sensorVar.read(startPts3, sensorVar.getShape());
-
-            Variable sunVar = navGroup.findVariable("sun_ref");
-            ArrayFloat sunData = (ArrayFloat.D2) sunVar.read(startPts2, sunVar.getShape());
-
-            Variable attAngleVar = navGroup.findVariable("att_ang");
-            ArrayFloat attAngleData = (ArrayFloat) attAngleVar.read(startPts2, attAngleVar.getShape());
-
-            Variable scanTrackEllipseCoefVar = navGroup.findVariable("scan_ell");
-            ArrayFloat scanTrackEllipseCoefData = (ArrayFloat) scanTrackEllipseCoefVar.read(startPts2, scanTrackEllipseCoefVar.getShape());
-
-            Variable tiltVar = scanLineAttrGroup.findVariable("tilt");
-            ArrayFloat tiltData = (ArrayFloat.D1) tiltVar.read();
-
-if (debug) {
-    System.out.print("orbitVar: ");
-    dispVarDetails(orbitVar);
-    System.out.print("sensoVar: ");
-    dispVarDetails(sensorVar);
-    System.out.print("sunVar: ");
-    dispVarDetails(sunVar);
-    System.out.print("attAngleVar: ");
-    dispVarDetails(attAngleVar);
-    System.out.print("scanTrackEllipseCoefVar: ");
-    dispVarDetails(scanTrackEllipseCoefVar);
-    System.out.print("tiltVar: ");
-    dispVarDetails(tiltVar);
-}
+            ArrayFloat orbitData = readData("orb_vec", navGroup);
+            ArrayFloat sensorData = readData("sen_mat", navGroup);
+            ArrayFloat sunData = readData("sun_ref", navGroup);
+            ArrayFloat attAngleData = readData("att_ang", navGroup);
+            ArrayFloat scanTrackEllipseCoefData = readData("scan_ell", navGroup);
+            ArrayFloat tiltData = readData("tilt", scanLineAttrGroup);
 
             for (int line = 0; line < numScanLines; line ++) {
                 float[] orbVect = new float[3];
@@ -299,59 +264,69 @@ if (debug) {
                 orbPos[2] = orbitData.getFloat(i+2);
                 i += 3;
             }
+/*
         } catch(InvalidRangeException ire) {
             System.out.println("Encountered InvalidRangeException reading a data array.");
             System.out.println(ire.getMessage());
             ire.printStackTrace();
             System.out.println();
             System.exit(-43);
+*/
         } finally {
             ncFile.close();
         }
     }
 
-    private ArrayFloat.D2 readRank2Data(Variable varToRead) {
-        int [] startPts = {0, 0};
-        ArrayFloat.D2 dataArray = null;
-        try {
-            dataArray = (ArrayFloat.D2) varToRead.read(startPts, varToRead.getShape());
-        } catch(IOException ioe) {
-            System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
-            System.out.println(ioe.getMessage());
-            ioe.printStackTrace();
-            System.out.println();
-            System.exit(-42);
-        } catch(InvalidRangeException ire) {
-            System.out.println("Encountered InvalidRangeException reading the data array: " + varToRead.getShortName());
-            System.out.println(ire.getMessage());
-            ire.printStackTrace();
-            System.out.println();
-            System.exit(-43);
+    private ArrayFloat readData(String varName, Group group) {
+        ArrayFloat dataArray = null;
+        int[] startPts;
+        Variable varToRead = group.findVariable(varName);
+if (debug) {
+    System.out.print(varName + ": ");
+    dispVarDetails(varToRead);
+}
+        if (varToRead.getRank() == 1) {
+            try {
+                dataArray = (ArrayFloat) varToRead.read();
+            } catch(IOException ioe) {
+                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
+                System.out.println(ioe.getMessage());
+                ioe.printStackTrace();
+                System.out.println();
+                System.exit(-43);
+            }
+        } else {
+            if (varToRead.getRank() == 2) {
+                startPts = new int[2];
+                startPts[0] = 0;
+                startPts[1] = 0;
+            } else {
+                // Assuming nothing with more than rank 3.
+                startPts = new int[3];
+                startPts[0] = 0;
+                startPts[1] = 0;
+                startPts[2] = 0;
+            }
+            try {
+                dataArray = (ArrayFloat) varToRead.read(startPts, varToRead.getShape());
+                return dataArray;
+            } catch(IOException ioe) {
+                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
+                System.out.println(ioe.getMessage());
+                ioe.printStackTrace();
+                System.out.println();
+                System.exit(-44);
+            } catch(InvalidRangeException ire) {
+                System.out.println("Encountered InvalidRangeException reading the data array: " + varToRead.getShortName());
+                System.out.println(ire.getMessage());
+                ire.printStackTrace();
+                System.out.println();
+                System.exit(-45);
+            }
         }
         return dataArray;
     }
 
-    private ArrayFloat.D3 readRank3Data(Variable varToRead) {
-        int []startPts = {0, 0, 0};
-        ArrayFloat.D3 dataArray = null;
-        try {
-            dataArray = (ArrayFloat.D3) varToRead.read(startPts, varToRead.getShape());
-            return dataArray;
-        } catch(IOException ioe) {
-            System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
-            System.out.println(ioe.getMessage());
-            ioe.printStackTrace();
-            System.out.println();
-            System.exit(-44);
-        } catch(InvalidRangeException ire) {
-            System.out.println("Encountered InvalidRangeException reading the data array: " + varToRead.getShortName());
-            System.out.println(ire.getMessage());
-            ire.printStackTrace();
-            System.out.println();
-            System.exit(-45);
-        }
-        return dataArray;
-    }
 }
 
 class FileNotHdfException extends Exception {
