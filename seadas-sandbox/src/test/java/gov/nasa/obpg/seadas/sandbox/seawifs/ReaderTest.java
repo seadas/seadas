@@ -124,7 +124,6 @@ public class ReaderTest {
 
                         System.setOut(outStr);
                         System.setErr(errStr);
-                        //redirectStderr();    // replaced by the setErr() method.
                         ReaderTest rt = new ReaderTest();
                         rt.processFile(inFile);
                         System.setOut(oriOut);
@@ -311,45 +310,6 @@ if (debug) {
         }
     }
 
-    private void processVariable(String prefix, Group parentGroup, String varName) {
-        Variable theVar = parentGroup.findVariable(varName);
-        int rank = theVar.getRank();
-        int[] shape = theVar.getShape();
-        System.out.println(prefix + "Variable: " + theVar.getShortName() 
-                           + ", Type: " + theVar.getDataType()
-                           + ", Rank: " + rank
-                           + ", Size: " + theVar.getSize()
-                           + ", Shape: " + shape[0] + " x "
-                           + shape[1] + "\n"
-                          );
-        int[] startPts = new int[rank];
-        ArrayFloat dataArray = null;
-        switch (rank) {
-            case 2:
-                dataArray = readRank2Data(theVar);
-                break;
-            case 3:
-                dataArray = readRank3Data(theVar);
-                break;
-            default:
-                System.out.println("Error! Encountered unexpected rank " + rank +
-                                   " reading " + theVar.getShortName());
-        }
-
-        double[] dataIn = new double[(int) theVar.getSize()];
-        for (int i = 0; i < theVar.getSize(); i ++) {
-            dataIn[i] = dataArray.getDouble(i);
-        }
-/*
-        for (int i = 0; i < dataIn.length; i ++) {
-            System.out.println(theVar.getShortName() + "[" + i + "] = " + dataIn[i]);
-        }
-*/
-    }
-
-    private void readData() {
-    }
-
     private ArrayFloat.D2 readRank2Data(Variable varToRead) {
         int [] startPts = {0, 0};
         ArrayFloat.D2 dataArray = null;
@@ -391,31 +351,6 @@ if (debug) {
             System.exit(-45);
         }
         return dataArray;
-    }
-
-    private static void redirectStderr() {
-        GregorianCalendar cal = new GregorianCalendar();  // Calendar.getInstance() didn't work
-        String timeStamp = String.format("%04d-%02d-%02d_%02d%02d%02d", cal.get(Calendar.YEAR),
-                                         cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH),
-                                         cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),
-                                         cal.get(Calendar.SECOND));
-        /*
-         * Code (selected snippets) for redirecting of stderr stolen from: 
-         *     http://blogs.oracle.com/nickstephen/entry/java_redirecting_system_out_and
-         */
-        Handler fileHandler;
-        LogManager logManager;
-        try {
-            logManager = LogManager.getLogManager();
-            logManager.reset();
-            fileHandler = new FileHandler("reader_error_log" + "_" + timeStamp, 10000, 3, true);
-            fileHandler.setFormatter(new SimpleFormatter());
-            Logger.getLogger("").addHandler(fileHandler);
-        } catch(IOException ioe) {
-            System.out.println("Encountered IOException setting up logging:\n" +
-                               ioe.getMessage() + "\n");
-            ioe.printStackTrace();
-        } 
     }
 }
 
