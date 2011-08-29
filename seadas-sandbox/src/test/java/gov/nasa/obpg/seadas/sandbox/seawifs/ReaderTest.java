@@ -3,10 +3,8 @@ package gov.nasa.obpg.seadas.sandbox.seawifs;
 //package geonav;
 
 import java.io.*;
-import java.util.*;
 import java.util.logging.*;
 
-import org.esa.beam.util.math.DoubleList;
 import ucar.ma2.*;
 import ucar.nc2.*;
 
@@ -49,12 +47,63 @@ public class ReaderTest {
         }
     }
 
+    private ArrayFloat getData(String varName, Group group) {
+        ArrayFloat dataArray = null;
+        int[] startPts;
+        Variable varToRead = group.findVariable(varName);
+if (debug) {
+    System.out.print(varName + ": ");
+    dispVarDetails(varToRead);
+}
+        if (varToRead.getRank() == 1) {
+            try {
+                dataArray = (ArrayFloat) varToRead.read();
+            } catch(IOException ioe) {
+                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
+                System.out.println(ioe.getMessage());
+                ioe.printStackTrace();
+                System.out.println();
+                System.exit(-43);
+            }
+        } else {
+            if (varToRead.getRank() == 2) {
+                startPts = new int[2];
+                startPts[0] = 0;
+                startPts[1] = 0;
+            } else {
+                // Assuming nothing with more than rank 3.
+                startPts = new int[3];
+                startPts[0] = 0;
+                startPts[1] = 0;
+                startPts[2] = 0;
+            }
+            try {
+                dataArray = (ArrayFloat) varToRead.read(startPts, varToRead.getShape());
+                return dataArray;
+            } catch(IOException ioe) {
+                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
+                System.out.println(ioe.getMessage());
+                ioe.printStackTrace();
+                System.out.println();
+                System.exit(-44);
+            } catch(InvalidRangeException ire) {
+                System.out.println("Encountered InvalidRangeException reading the data array: " + varToRead.getShortName());
+                System.out.println(ire.getMessage());
+                ire.printStackTrace();
+                System.out.println();
+                System.exit(-45);
+            }
+        }
+        return dataArray;
+    }
+
     public static boolean isHDF(File f) {
-    /**
-	 *  Determine if file is an HDF file by seeing if the first 
-	 *  four characters of the file contain the HDF header.
-	 */
-        // Header for HDF files: Ctrl-N Ctrl-C Ctrl-S Ctrl-A (no spaces)
+        /**
+         *  Determine if file is an HDF file by seeing if the first
+         *  four characters of the file contain the HDF header:
+         *       Ctrl-N Ctrl-C Ctrl-S Ctrl-A (no spaces).
+         *
+         */
         String fileHeader;
         try {
             DataInputStream inStr = new DataInputStream(new FileInputStream(f));
@@ -75,7 +124,7 @@ public class ReaderTest {
          * Verify that the file is suitable for processing by
          * checking that it exists and is an HDF.
          */
-        boolean fGood = false;
+        boolean fGood;// = false;
         if (theFile.exists()) {
             if (isHDF(theFile)) {
                 fGood = true;
@@ -157,9 +206,17 @@ public class ReaderTest {
         /**
          * Print header to match what the sample file from Fortran output contains.
          */
-        // Output a header like what Fred provided.
+        // Output a header identical to the output from Fred's Fortran.
         System.out.println("     Line   Pixel  Latitude   Longitude           Solar                  Sensor");
         System.out.println("                                            Zenith     Azimuth      Zenith     Azimuth");
+    }
+
+    private float[] populateVector(ArrayFloat sourceData, int size, int lineNum) {
+        float[] newVect = new float[size];
+        for(int i = 0; i < size; i ++) {
+            newVect[i] = sourceData.getFloat(size * lineNum + i);
+        }
+        return newVect;
     }
 
     private static void printUsage() {
@@ -188,18 +245,15 @@ public class ReaderTest {
 
             outputHeader();
 
-            ArrayFloat orbitData = readData("orb_vec", navGroup);
-            ArrayFloat sensorData = readData("sen_mat", navGroup);
-            ArrayFloat sunData = readData("sun_ref", navGroup);
-            ArrayFloat attAngleData = readData("att_ang", navGroup);
-            ArrayFloat scanTrackEllipseCoefData = readData("scan_ell", navGroup);
-            ArrayFloat tiltData = readData("tilt", scanLineAttrGroup);
+            ArrayFloat orbitData = getData("orb_vec", navGroup);
+            ArrayFloat sensorData = getData("sen_mat", navGroup);
+            ArrayFloat sunData = getData("sun_ref", navGroup);
+            ArrayFloat attAngleData = getData("att_ang", navGroup);
+            ArrayFloat scanTrackEllipseCoefData = getData("scan_ell", navGroup);
+            ArrayFloat tiltData = getData("tilt", scanLineAttrGroup);
 
             for (int line = 0; line < numScanLines; line ++) {
-                float[] orbVect = new float[3];
-                orbVect[0] = orbitData.getFloat(3 * line);
-                orbVect[1] = orbitData.getFloat(3 * line + 1);
-                orbVect[2] = orbitData.getFloat(3 * line + 2);
+                float[] orbVect = populateVector(orbitData, 3, line);
 
                 // Re-visit this if the results come out wrong:
                 float[][] sensorMat = new float[3][3];
@@ -213,24 +267,9 @@ public class ReaderTest {
                 sensorMat[2][1] = sensorData.getFloat(3 * line + 7);
                 sensorMat[2][2] = sensorData.getFloat(3 * line + 8);
 
-                float[] sunUnitVect = new float[3];
-                sunUnitVect[0] = sunData.getFloat(3 * line);
-                sunUnitVect[1] = sunData.getFloat(3 * line + 1);
-                sunUnitVect[2] = sunData.getFloat(3 * line + 2);
-
-                float[] attAngleVect = new float[3];
-                attAngleVect[0] = attAngleData.getFloat(3 * line);
-                attAngleVect[1] = attAngleData.getFloat(3 * line + 1);
-                attAngleVect[2] = attAngleData.getFloat(3 * line + 2);
-
-                float[] scanTrackEllipseCoef = new float[6];
-                scanTrackEllipseCoef[0] = scanTrackEllipseCoefData.getFloat(6 * line);
-                scanTrackEllipseCoef[1] = scanTrackEllipseCoefData.getFloat(6 * line + 1);
-                scanTrackEllipseCoef[2] = scanTrackEllipseCoefData.getFloat(6 * line + 2);
-                scanTrackEllipseCoef[3] = scanTrackEllipseCoefData.getFloat(6 * line + 3);
-                scanTrackEllipseCoef[4] = scanTrackEllipseCoefData.getFloat(6 * line + 4);
-                scanTrackEllipseCoef[5] = scanTrackEllipseCoefData.getFloat(6 * line + 5);
-
+                float[] sunUnitVect = populateVector(sunData, 3, line);
+                float[] attAngleVect = populateVector(attAngleData, 3, line);
+                float[] scanTrackEllipseCoef = populateVector(scanTrackEllipseCoefData, 6, line);
                 float tilt = tiltData.getFloat(line);
 
                 //Geonav geonavCalculator = new Geonav(orbVect, sensorMat, sunUnitVect, attAngleVect, tilt, ncFile);
@@ -276,57 +315,6 @@ public class ReaderTest {
             ncFile.close();
         }
     }
-
-    private ArrayFloat readData(String varName, Group group) {
-        ArrayFloat dataArray = null;
-        int[] startPts;
-        Variable varToRead = group.findVariable(varName);
-if (debug) {
-    System.out.print(varName + ": ");
-    dispVarDetails(varToRead);
-}
-        if (varToRead.getRank() == 1) {
-            try {
-                dataArray = (ArrayFloat) varToRead.read();
-            } catch(IOException ioe) {
-                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
-                System.out.println(ioe.getMessage());
-                ioe.printStackTrace();
-                System.out.println();
-                System.exit(-43);
-            }
-        } else {
-            if (varToRead.getRank() == 2) {
-                startPts = new int[2];
-                startPts[0] = 0;
-                startPts[1] = 0;
-            } else {
-                // Assuming nothing with more than rank 3.
-                startPts = new int[3];
-                startPts[0] = 0;
-                startPts[1] = 0;
-                startPts[2] = 0;
-            }
-            try {
-                dataArray = (ArrayFloat) varToRead.read(startPts, varToRead.getShape());
-                return dataArray;
-            } catch(IOException ioe) {
-                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
-                System.out.println(ioe.getMessage());
-                ioe.printStackTrace();
-                System.out.println();
-                System.exit(-44);
-            } catch(InvalidRangeException ire) {
-                System.out.println("Encountered InvalidRangeException reading the data array: " + varToRead.getShortName());
-                System.out.println(ire.getMessage());
-                ire.printStackTrace();
-                System.out.println();
-                System.exit(-45);
-            }
-        }
-        return dataArray;
-    }
-
 }
 
 class FileNotHdfException extends Exception {
