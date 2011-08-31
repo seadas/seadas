@@ -150,7 +150,6 @@ if (debug) {
          *  program exits with an error.
          */
 
-
         if (args.length > 0) {
             Options options = new Options();
             options.addOption("h", false, "help message");
@@ -241,9 +240,6 @@ if (debug) {
             Group rootGroup = ncFile.getRootGroup();
             Group navGroup = ncFile.findGroup("Navigation");
             Group scanLineAttrGroup = ncFile.findGroup("Scan-Line Attributes");
-            //Group tiltGroup = ncFile.findGroup("Sensor Tilt");
-
-            outputHeader();
 
             ArrayFloat orbitData = getData("orb_vec", navGroup);
             ArrayFloat sensorData = getData("sen_mat", navGroup);
@@ -252,6 +248,7 @@ if (debug) {
             ArrayFloat scanTrackEllipseCoefData = getData("scan_ell", navGroup);
             ArrayFloat tiltData = getData("tilt", scanLineAttrGroup);
 
+            outputHeader();
             for (int line = 0; line < numScanLines; line ++) {
                 float[] orbVect = populateVector(orbitData, 3, line);
 

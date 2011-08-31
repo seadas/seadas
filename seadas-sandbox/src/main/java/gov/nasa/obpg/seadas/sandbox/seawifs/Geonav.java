@@ -319,9 +319,11 @@ public class Geonav {
         }
 
         //  Compute correction factor for out-of-plane angle
-        double h = (sensorOrientation[1][0] * orbPos[0]
-                    + sensorOrientation[1][1] * orbPos[1]
-                    + sensorOrientation[1][2] * orbPos[2] / OMF2) * 2.0;
+        double h;
+        h = (sensorOrientation[0][1] * orbPos[0]);
+        h += sensorOrientation[1][1] * orbPos[1];
+        h += sensorOrientation[2][1] * orbPos[2] / OMF2;
+        h *= 2.0;
 
         //  Compute sensor-to-surface vectors for all scan angles
         for (int i = 1; i <= pixPerScan; i ++) {
