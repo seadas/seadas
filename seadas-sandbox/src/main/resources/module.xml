@@ -45,8 +45,8 @@
             <placeAfter>flipping</placeAfter>
             <placeBefore>orthorectificationAction</placeBefore>
             <text>l2gen...</text>
-            <shortDescr>Danny will do this soon.</shortDescr>
-            <helpId>reprojectionAction</helpId>
+            <shortDescr>L2 File Generation</shortDescr>
+            <!--<helpId>reprojectionAction</helpId>-->
         </action>
 
     </extension>
