@@ -1,5 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import org.omg.PortableInterceptor.ServerRequestInterceptor;
+
 import java.security.PrivateKey;
 import java.util.HashMap;
 
@@ -149,6 +151,38 @@ public class L2genDataStructure {
     }
 
 
+    public void parseParfile(String inParfile) {
+
+        boolean somethingChanged = false;
+
+        String parfileLines[] = inParfile.split("\n");
+
+        for (String myLine : parfileLines) {
+
+            System.out.println(myLine);
+            // skip the comment lines in file
+            if (!myLine.trim().startsWith("#")) {
+
+                String splitLine[] = myLine.split("=");
+                if (splitLine.length == 2) {
+
+                    final String currKey = splitLine[0].toString().trim();
+                    final String currValue = splitLine[1].toString().trim();
+
+                    if (!paramValueHashMap.containsKey(currKey) ||
+                            (paramValueHashMap.containsKey(currKey) &&
+                                    !paramValueHashMap.get(currKey).equals(currValue))) {
+                        paramValueHashMap.put(currKey, currValue);
+                        somethingChanged = true;
+                    }
+                }
+            }
+        }
+
+        if (somethingChanged = true) {
+            updateParfile();
+        }
+    }
 
 
     public L2genDataStructure() {
@@ -165,7 +199,7 @@ public class L2genDataStructure {
             paramValueHashMap.put(currKey, "");
         }
 
-                updateParfile();
+        updateParfile();
     }
 
 
@@ -191,17 +225,29 @@ public class L2genDataStructure {
         return this.paramValueHashMap.get(paramKey).toString();
     }
 
-    public void setParamValue(String paramKey, String value) {
-        this.paramValueHashMap.put(paramKey.trim(), value.trim());
-        checkCoordinates(paramKey);
-        updateParfile();
+    public void setParamValue(String inKey, String inValue) {
+
+        inKey = inKey.trim();
+        inValue = inValue.trim();
+
+        if (!paramValueHashMap.containsKey(inKey) ||
+                (paramValueHashMap.containsKey(inKey) &&
+                        !paramValueHashMap.get(inKey).equals(inValue))) {
+            paramValueHashMap.put(inKey, inValue);
+
+            checkCoordinates(inKey);
+            updateParfile();
+        }
     }
 
     public String getParfile() {
         return parfile;
     }
 
-    public void setParfile(String parfile) {
-        this.parfile = parfile;
+    public void setParfile(String inParfile) {
+
+        if (!parfile.equals(inParfile)) {
+            parseParfile(inParfile);
+        }
     }
 }

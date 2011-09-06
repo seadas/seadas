@@ -19,15 +19,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.FileChooserUI;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.awt.event.*;
+import java.io.*;
 import java.util.*;
 
 
@@ -45,11 +40,14 @@ class L2genForm extends JTabbedPane {
     private JList waveIndependentJList;
     private JTextArea selectedProductsJTextArea;
 
+
+    private JTextArea parfileTextEntryName;
+    private JTextArea parfileTextEntryValue;
+    private JButton parfileTextEntrySubmit;
+
     public JTextField spixlJTextField;
-
-
-    public JTextField epixlJTextField;
-    public JTextField dpixlJTextField;
+    private JTextField epixlJTextField;
+    private JTextField dpixlJTextField;
     private JTextField slineJTextField;
     private JTextField elineJTextField;
     private JTextField dlineJTextField;
@@ -61,6 +59,8 @@ class L2genForm extends JTabbedPane {
 
     private JTextArea parfileJTextArea;
 
+
+    private JFileChooser parfileChooser = new JFileChooser();
 
     private String OCDATAROOT = System.getenv("OCDATAROOT");
     private final int VISIBLE_UPPER_LIMIT = 3000;
@@ -90,13 +90,10 @@ class L2genForm extends JTabbedPane {
         createUI();
 
 
-    //    loadDefaults();
-updateGUI();
+        //    loadDefaults();
+        updateGUI();
 
     }
-
-
-
 
 
     private void loadDefaults() {
@@ -186,17 +183,17 @@ updateGUI();
     private void updateGUI() {
         if (!l2genDataStructure.getParamValue(l2genDataStructure.SPIXL_PARAM_KEY).equals(spixlJTextField.getText())) {
             spixlJTextField.setText(l2genDataStructure.getParamValue(l2genDataStructure.SPIXL_PARAM_KEY));
-                    System.out.println("l2genDataStructure.getParamValue(l2genDataStructure.SPIXL_PARAM_KEY)=" + l2genDataStructure.getParamValue(l2genDataStructure.SPIXL_PARAM_KEY));
+            System.out.println("l2genDataStructure.getParamValue(l2genDataStructure.SPIXL_PARAM_KEY)=" + l2genDataStructure.getParamValue(l2genDataStructure.SPIXL_PARAM_KEY));
         }
 
         if (!l2genDataStructure.getParamValue(l2genDataStructure.EPIXL_PARAM_KEY).equals(epixlJTextField.getText())) {
             epixlJTextField.setText(l2genDataStructure.getParamValue(l2genDataStructure.EPIXL_PARAM_KEY));
-                    System.out.println("l2genDataStructure.getParamValue(l2genDataStructure.EPIXL_PARAM_KEY)=" + l2genDataStructure.getParamValue(l2genDataStructure.EPIXL_PARAM_KEY));
+            System.out.println("l2genDataStructure.getParamValue(l2genDataStructure.EPIXL_PARAM_KEY)=" + l2genDataStructure.getParamValue(l2genDataStructure.EPIXL_PARAM_KEY));
         }
 
         if (!l2genDataStructure.getParamValue(l2genDataStructure.DPIXL_PARAM_KEY).equals(dpixlJTextField.getText())) {
             dpixlJTextField.setText(l2genDataStructure.getParamValue(l2genDataStructure.DPIXL_PARAM_KEY));
-                            System.out.println("l2genDataStructure.getParamValue(l2genDataStructure.DPIXL_PARAM_KEY)=" + l2genDataStructure.getParamValue(l2genDataStructure.DPIXL_PARAM_KEY));
+            System.out.println("l2genDataStructure.getParamValue(l2genDataStructure.DPIXL_PARAM_KEY)=" + l2genDataStructure.getParamValue(l2genDataStructure.DPIXL_PARAM_KEY));
         }
 
         if (!l2genDataStructure.getParamValue(l2genDataStructure.SLINE_PARAM_KEY).equals(slineJTextField.getText())) {
@@ -237,19 +234,16 @@ updateGUI();
 
     private void spixlLostFocus() {
         l2genDataStructure.setParamValue(l2genDataStructure.SPIXL_PARAM_KEY, spixlJTextField.getText().toString());
-System.out.println("spixlJTextField.getText().toString()=" + spixlJTextField.getText().toString());
         updateGUI();
     }
 
     private void epixlLostFocus() {
         l2genDataStructure.setParamValue(l2genDataStructure.EPIXL_PARAM_KEY, epixlJTextField.getText().toString());
-        System.out.println("epixlJTextField.getText().toString()=" + epixlJTextField.getText().toString());
         updateGUI();
     }
 
     private void dpixlLostFocus() {
         l2genDataStructure.setParamValue(l2genDataStructure.DPIXL_PARAM_KEY, dpixlJTextField.getText().toString());
-        System.out.println("dpixlJTextField.getText().toString()=" + dpixlJTextField.getText().toString());
         updateGUI();
     }
 
@@ -287,6 +281,12 @@ System.out.println("spixlJTextField.getText().toString()=" + spixlJTextField.get
         l2genDataStructure.setParamValue(l2genDataStructure.EAST_PARAM_KEY, eastJTextField.getText().toString());
         updateGUI();
     }
+
+    private void parfileLostFocus() {
+        l2genDataStructure.setParfile(parfileJTextArea.getText().toString());
+        updateGUI();
+    }
+
 
     private void createPixlineSubTab(JTabbedPane tabbedPane, String myTabname) {
 
@@ -386,18 +386,17 @@ System.out.println("spixlJTextField.getText().toString()=" + spixlJTextField.get
 
         // Add Swing controls to mainPanel grid cells
 
-            GridBagConstraints c1 = new GridBagConstraints();
-            c1.gridx = 0;
-            c1.gridy = 0;
-            c1.anchor = GridBagConstraints.EAST;
-            innerPanel1.add(spixLabel, c1);
+        GridBagConstraints c1 = new GridBagConstraints();
+        c1.gridx = 0;
+        c1.gridy = 0;
+        c1.anchor = GridBagConstraints.EAST;
+        innerPanel1.add(spixLabel, c1);
 
 
-
-            c1 = new GridBagConstraints();
-            c1.gridx = 1;
-            c1.gridy = 0;
-            innerPanel1.add(spixlJTextField, c1);
+        c1 = new GridBagConstraints();
+        c1.gridx = 1;
+        c1.gridy = 0;
+        innerPanel1.add(spixlJTextField, c1);
 
 
         {
@@ -568,7 +567,6 @@ System.out.println("spixlJTextField.getText().toString()=" + spixlJTextField.get
         });
 
 
-
         final JLabel northLabel = new JLabel("N");
         final JLabel southLabel = new JLabel("S");
         final JLabel westLabel = new JLabel("W");
@@ -667,12 +665,115 @@ System.out.println("spixlJTextField.getText().toString()=" + spixlJTextField.get
     }
 
 
+    public void loadParfileEntry() {
+        l2genDataStructure.setParamValue(parfileTextEntryName.getText(), parfileTextEntryValue.getText());
+
+        updateGUI();
+    }
+
+    public void uploadParfile() {
+
+        final ArrayList<String> parfileTextLines = myReadDataFile(parfileChooser.getSelectedFile().toString());
+
+        StringBuilder parfileText = new StringBuilder();
+
+        for (String currLine : parfileTextLines) {
+            parfileText.append(currLine);
+            parfileText.append("\n");
+        }
+
+        l2genDataStructure.setParfile(parfileText.toString());
+        parfileJTextArea.setEditable(true);
+        updateGUI();
+        parfileJTextArea.setEditable(false);
+        //  parfileJTextArea.setText(parfileText.toString());
+    }
+
+    public void writeParfile() {
+
+        try {
+            // Create file
+            FileWriter fstream = new FileWriter(parfileChooser.getSelectedFile().toString());
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write(l2genDataStructure.getParfile());
+            //Close the output stream
+            out.close();
+        } catch (Exception e) {//Catch exception if any
+            System.err.println("Error: " + e.getMessage());
+        }
+
+    }
+
+
     private void createParfileTab(String myTabname) {
 
+
         // Define all Swing controls used on this tab page
-        final JButton openButton = new JButton("Open");
-        final JButton saveButton = new JButton("Save");
+        final JButton loadParfileButton = new JButton("Open");
+        final JButton saveParfileButton = new JButton("Save");
+
+        saveParfileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int result = parfileChooser.showSaveDialog(null);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    writeParfile();
+                }
+
+            }
+        });
+
+        loadParfileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int result = parfileChooser.showOpenDialog(null);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    uploadParfile();
+                }
+
+            }
+        });
+
         parfileJTextArea = new JTextArea();
+        parfileJTextArea.setEditable(false);
+        parfileJTextArea.setBackground(Color.decode("#dddddd"));
+
+        parfileJTextArea.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                parfileLostFocus();
+            }
+        });
+
+
+        parfileTextEntryName = new JTextArea();
+        parfileTextEntryName.setColumns(20);
+        parfileTextEntryValue = new JTextArea();
+        parfileTextEntryValue.setColumns(20);
+        parfileTextEntrySubmit = new JButton("Load This Entry");
+        JLabel equalsSign = new JLabel("=");
+
+
+        parfileTextEntrySubmit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadParfileEntry();
+
+            }
+        });
+
+        final JPanel parfileTextEntryPanel = new JPanel();
+        parfileTextEntryPanel.setLayout(new FlowLayout());
+        parfileTextEntryPanel.add(parfileTextEntryName);
+        parfileTextEntryPanel.add(equalsSign);
+        parfileTextEntryPanel.add(parfileTextEntryValue);
+        parfileTextEntryPanel.add(parfileTextEntrySubmit);
 
         // Declare mainPanel and set it's attributes
         final JPanel mainPanel = new JPanel();
@@ -684,7 +785,8 @@ System.out.println("spixlJTextField.getText().toString()=" + spixlJTextField.get
             final GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;
             c.gridy = 0;
-            mainPanel.add(openButton, c);
+            c.anchor = GridBagConstraints.WEST;
+            mainPanel.add(loadParfileButton, c);
         }
 
         // Add saveButton control to a mainPanel grid cell
@@ -693,7 +795,7 @@ System.out.println("spixlJTextField.getText().toString()=" + spixlJTextField.get
             c.gridx = 1;
             c.gridy = 0;
             c.anchor = GridBagConstraints.EAST;
-            mainPanel.add(saveButton, c);
+            mainPanel.add(saveParfileButton, c);
         }
 
         // Add textArea control to a mainPanel grid cell
@@ -709,6 +811,15 @@ System.out.println("spixlJTextField.getText().toString()=" + spixlJTextField.get
             c.weighty = 1;
             mainPanel.add(scrollTextArea, c);
         }
+
+        // Add saveButton control to a mainPanel grid cell
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 2;
+            mainPanel.add(parfileTextEntryPanel, c);
+        }
+
 
         final JPanel finalMainPanel;
         finalMainPanel = addPaddedWrapperPanel(mainPanel, 3);
