@@ -290,21 +290,32 @@ class L2genForm extends JTabbedPane {
 
     private void createPixlineSubTab(JTabbedPane tabbedPane, String myTabname) {
 
-        // Define all Swing controls used on this tab page
-        spixlJTextField = new JTextField(5);
-        epixlJTextField = new JTextField(5);
-        dpixlJTextField = new JTextField(5);
-        slineJTextField = new JTextField(5);
-        elineJTextField = new JTextField(5);
-        dlineJTextField = new JTextField(5);
+        int PIXEL_JTEXTFIELD_LENGTH = 5;
+        int LINES_JTEXTFIELD_LENGTH = 5;
+
+        // Create all Swing controls to be used on this tab page
+
+        spixlJTextField = new JTextField(PIXEL_JTEXTFIELD_LENGTH);
+        epixlJTextField = new JTextField(PIXEL_JTEXTFIELD_LENGTH);
+        dpixlJTextField = new JTextField(PIXEL_JTEXTFIELD_LENGTH);
+
+        slineJTextField = new JTextField(LINES_JTEXTFIELD_LENGTH);
+        elineJTextField = new JTextField(LINES_JTEXTFIELD_LENGTH);
+        dlineJTextField = new JTextField(LINES_JTEXTFIELD_LENGTH);
+
+
+        //
 
         final JLabel spixLabel = new JLabel("start pix");
         final JLabel epixLabel = new JLabel("end pix");
         final JLabel dpixLabel = new JLabel("delta pix");
+
         final JLabel slineLabel = new JLabel("start line");
         final JLabel elineLabel = new JLabel("end line");
         final JLabel dlineLabel = new JLabel("delta line");
 
+
+        // Add lose focus listeners to all JTextField components
 
         spixlJTextField.addFocusListener(new FocusListener() {
             @Override
@@ -386,48 +397,47 @@ class L2genForm extends JTabbedPane {
 
         // Add Swing controls to mainPanel grid cells
 
-        GridBagConstraints c1 = new GridBagConstraints();
-        c1.gridx = 0;
-        c1.gridy = 0;
-        c1.anchor = GridBagConstraints.EAST;
-        innerPanel1.add(spixLabel, c1);
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.EAST;
+        innerPanel1.add(spixLabel, c);
 
 
-        c1 = new GridBagConstraints();
-        c1.gridx = 1;
-        c1.gridy = 0;
-        innerPanel1.add(spixlJTextField, c1);
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 0;
+        innerPanel1.add(spixlJTextField, c);
 
 
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 1;
-            c.anchor = GridBagConstraints.EAST;
-            innerPanel1.add(epixLabel, c);
-        }
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 1;
+        c.anchor = GridBagConstraints.EAST;
+        innerPanel1.add(epixLabel, c);
 
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 1;
-            c.gridy = 1;
-            innerPanel1.add(epixlJTextField, c);
-        }
 
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 2;
-            c.anchor = GridBagConstraints.EAST;
-            innerPanel1.add(dpixLabel, c);
-        }
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 1;
+        innerPanel1.add(epixlJTextField, c);
 
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 1;
-            c.gridy = 2;
-            innerPanel1.add(dpixlJTextField, c);
-        }
+
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 2;
+        c.anchor = GridBagConstraints.EAST;
+        innerPanel1.add(dpixLabel, c);
+
+
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 2;
+        innerPanel1.add(dpixlJTextField, c);
+
+
+
+
 
 
         final JPanel innerPanel2 = new JPanel();
@@ -435,7 +445,7 @@ class L2genForm extends JTabbedPane {
         innerPanel2.setLayout(new GridBagLayout());
 
         {
-            final GridBagConstraints c = new GridBagConstraints();
+            c = new GridBagConstraints();
             c.gridx = 0;
             c.gridy = 0;
             c.anchor = GridBagConstraints.EAST;
@@ -443,14 +453,14 @@ class L2genForm extends JTabbedPane {
         }
 
         {
-            final GridBagConstraints c = new GridBagConstraints();
+            c = new GridBagConstraints();
             c.gridx = 1;
             c.gridy = 0;
             innerPanel2.add(slineJTextField, c);
         }
 
         {
-            final GridBagConstraints c = new GridBagConstraints();
+            c = new GridBagConstraints();
             c.gridx = 0;
             c.gridy = 1;
             c.anchor = GridBagConstraints.EAST;
@@ -458,14 +468,14 @@ class L2genForm extends JTabbedPane {
         }
 
         {
-            final GridBagConstraints c = new GridBagConstraints();
+            c = new GridBagConstraints();
             c.gridx = 1;
             c.gridy = 1;
             innerPanel2.add(elineJTextField, c);
         }
 
         {
-            final GridBagConstraints c = new GridBagConstraints();
+            c = new GridBagConstraints();
             c.gridx = 0;
             c.gridy = 2;
             c.anchor = GridBagConstraints.EAST;
@@ -473,7 +483,7 @@ class L2genForm extends JTabbedPane {
         }
 
         {
-            final GridBagConstraints c = new GridBagConstraints();
+            c = new GridBagConstraints();
             c.gridx = 1;
             c.gridy = 2;
             innerPanel2.add(dlineJTextField, c);
@@ -481,14 +491,14 @@ class L2genForm extends JTabbedPane {
 
 
         {
-            final GridBagConstraints c = new GridBagConstraints();
+            c = new GridBagConstraints();
             c.gridx = 0;
             c.gridy = 0;
             mainPanel.add(innerPanel1, c);
         }
 
         {
-            final GridBagConstraints c = new GridBagConstraints();
+            c = new GridBagConstraints();
             c.gridx = 1;
             c.gridy = 0;
             mainPanel.add(innerPanel2, c);
@@ -499,7 +509,7 @@ class L2genForm extends JTabbedPane {
         finalMainPanel.setLayout(new GridBagLayout());
 
         {
-            final GridBagConstraints c;
+
             c = new GridBagConstraints();
             c.anchor = GridBagConstraints.NORTHWEST;
             c.insets = new Insets(3, 3, 3, 3);
