@@ -281,9 +281,9 @@ if (debug) {
        	        float[] solarAzimuth = geonavCalculator.getSolarAzimuth();
        	        float[] solarZenith = geonavCalculator.getSolarZenith();
 
-                for (int pix = 0; pix < latitude.length; pix ++) {
+                for (int pix = 146; pix < latitude.length; pix += 4) {
                     String outLine = String.format("    %4d    %4d %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f", 
-                                                   line, pix, latitude[pix], longitude[pix],
+                                                   line, (pix - 146) / 4, latitude[pix], longitude[pix],
                                                    solarZenith[pix], solarAzimuth[pix],
                                                    sensorZenith[pix], sensorAzimuth[pix]);
                     System.out.println(outLine);

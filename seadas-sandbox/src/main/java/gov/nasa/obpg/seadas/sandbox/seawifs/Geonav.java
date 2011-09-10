@@ -139,6 +139,11 @@ public class Geonav {
             scanStartPix = GAC_START_SCAN_PIXEL;
             pixPerScan = GAC_PIXELS_PER_SCAN;
             pixIncr = GAC_PIXEL_INCREMENT;
+
+            /* !!!Temporary override for testing/debugging!!! */
+            scanStartPix = LAC_START_SCAN_PIXEL;
+            pixPerScan = LAC_PIXELS_PER_SCAN;
+            pixIncr = LAC_PIXEL_INCREMENT;
         } else {
             scanStartPix = LAC_START_SCAN_PIXEL;
             pixPerScan = LAC_PIXELS_PER_SCAN;
@@ -315,19 +320,17 @@ public class Geonav {
         cosl = Math.cos(elev);
         for (int i = 0; i < 1285; i ++) {
             sina[i] = Math.sin((i - 642) * SINC) * cosl;
-            cosa[i] = Math.cos((i - 642) * SINC)* cosl;
+            cosa[i] = Math.cos((i - 642) * SINC) * cosl;
         }
 
         //  Compute correction factor for out-of-plane angle
-        double h;
-        h = (sensorOrientation[0][1] * orbPos[0]);
-        h += sensorOrientation[1][1] * orbPos[1];
-        h += sensorOrientation[2][1] * orbPos[2] / OMF2;
-        h *= 2.0;
+        double h = (sensorOrientation[0][1] * orbPos[0]
+                    + sensorOrientation[1][1] * orbPos[1]
+                    + sensorOrientation[2][1] * orbPos[2] / OMF2) * 2.0;
 
         //  Compute sensor-to-surface vectors for all scan angles
-        for (int i = 1; i <= pixPerScan; i ++) {
-            int in = pixIncr * (i - 1) + scanStartPix - 1;
+        for (int i = 0; i < pixPerScan; i ++) {
+            int in = pixIncr * (i) + scanStartPix - 1;
 	        double a = scanPathCoef[0] * cosa[in] * cosa[in]  +
                        scanPathCoef[1] * cosa[in] * sina[in] + 
                        scanPathCoef[2] * sina[in] * sina[in];
@@ -338,12 +341,12 @@ public class Geonav {
 
             //  Check for scan past edge of Earth
             if (r < 0.0) {
-                xlat[i - 1] = 999.0f;
-                xlon[i - 1] = 999.0f;
-                solz[i - 1] = 999.0f;
-                sola[i - 1] = 999.0f;
-                senz[i - 1] = 999.0f;
-                sena[i - 1] = 999.0f;
+                xlat[i] = 999.0f;
+                xlon[i] = 999.0f;
+                solz[i] = 999.0f;
+                sola[i] = 999.0f;
+                senz[i] = 999.0f;
+                sena[i] = 999.0f;
             } else {
                 //  Solve for magnitude of sensor-to-pixel vector and compute components
                 double q = (-b - Math.sqrt(r)) / (2.0 * a);
@@ -357,9 +360,9 @@ public class Geonav {
 
                 //  Transform vector from sensor to geocentric frame
                 for (int j = 0; j < 3; j++) {
-                    rmtq[j] = (float) (Qx * sensorOrientation[0][j]
-                              + Qy * sensorOrientation[1][j]
-                              + Qz * sensorOrientation[2][j]); 
+                    rmtq[j] = (float) (Qx * sensorOrientation[j][0]
+                              + Qy * sensorOrientation[j][1]
+                              + Qz * sensorOrientation[j][2]);
                     geovec[j] = rmtq[j] + orbPos[j];
                 }
 
