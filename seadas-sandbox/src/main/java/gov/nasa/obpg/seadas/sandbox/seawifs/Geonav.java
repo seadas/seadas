@@ -153,6 +153,13 @@ public class Geonav {
         }
     }
 
+    private float [] computeEastVector(float[] up, float upxy) {
+        float[] eastVector = new float[3];
+        eastVector[0] = -up[1] / upxy;
+        eastVector[1] = up[0] / upxy;
+        return eastVector;
+    }
+
     private float[] computeInterEllCoefs(float[][] attTransform,
                                          float[] attAngle, float tilt, 
                                          float[]p) {
@@ -252,6 +259,24 @@ public class Geonav {
         return transformationMatrix;
     }
 
+    private float computeLatitude(float[] geovec) {
+        float tmp = (float) (Math.sqrt(geovec[0] * geovec[0] +
+                    geovec[1] * geovec[1]) * OMF2);
+        float xlat = DEGREES_PER_RADIAN * (float) Math.atan2(geovec[2], tmp);
+        return xlat;
+    }
+
+    /*private float computeLongitude() {
+    }*/
+
+    private double computeQ(double a, double b, double h, double r, double sinl) {
+        //  Solve for magnitude of sensor-to-pixel vector and compute components
+        double q = (-b - Math.sqrt(r)) / (2.0 * a);
+        //  Add out-of-plane correction
+        q = q * (1.0 + sinl * h / Math.sqrt(r));;
+        return q;
+    }
+
     float computeSensorAzimuth(float senz, double sn, double se) {
         float sena;
         // Check for zenith close to zero
@@ -314,6 +339,16 @@ public class Geonav {
         sm1 = transposeMatrix(sm3);
         xfmMatrix = multiplyMatrices(sm1, sm2);
         return xfmMatrix;
+    }
+
+    private float [] computeVerticalUnitVector(float[] geovec) {
+        float [] up = new float[3];
+        float uxy = geovec[0] * geovec[0] + geovec[1] * geovec[1];
+        float temp = (float) Math.sqrt(geovec[2] * geovec[2] + OMF2 * OMF2 * uxy);
+        up[0] = (float) (OMF2 * geovec[0] / temp);
+        up[1] = (float) (OMF2 * geovec[1] / temp);
+        up[2] = geovec[2] / temp;
+        return up;
     }
 
     public static float[] crossProduct(float[] v1, float[] v2) {
@@ -386,12 +421,7 @@ public class Geonav {
                 senz[i] = 999.0f;
                 sena[i] = 999.0f;
             } else {
-                //  Solve for magnitude of sensor-to-pixel vector and compute components
-                double q = (-b - Math.sqrt(r)) / (2.0 * a);
-
-                //  Add out-of-plane correction 
-                q = q * (1.0 + sinl * h / Math.sqrt(r));
-
+                double q = computeQ(a, b, h, r, sinl);
                 double Qx = q * cosa[in];
                 double Qy = q * sinl;
                 double Qz = q * sina[in];
@@ -405,22 +435,13 @@ public class Geonav {
                 }
 
                 // Compute geodetic latitude and longitude
-                float tmp = (float) (Math.sqrt(geovec[0] * geovec[0] + 
-					       geovec[1] * geovec[1]) * OMF2);
-                xlat[i] = DEGREES_PER_RADIAN * (float) Math.atan2(geovec[2], tmp);
+                xlat[i] = computeLatitude(geovec);
                 xlon[i] = DEGREES_PER_RADIAN * (float) Math.atan2(geovec[1], geovec[0]);
 
-                //    Compute the local vertical, East and North unit vectors  
-                float uxy = geovec[0] * geovec[0] + geovec[1] * geovec[1];
-                float temp = (float) Math.sqrt(geovec[2] * geovec[2] + OMF2 * OMF2 * uxy);
-
-                up[0] = (float) (OMF2 * geovec[0] / temp);
-                up[1] = (float) (OMF2 * geovec[1] / temp);
-                up[2] = geovec[2] / temp;
+                // Compute the local vertical, East and North unit vectors
+                up = computeVerticalUnitVector(geovec);
                 float upxy = (float) (Math.sqrt(up[0] * up[0] + up[1] * up[1]));
-                ea[0] = -up[1] / upxy;
-                ea[1] = up[0] / upxy;
-                //double[] no = new double[3];
+                ea = computeEastVector(up, upxy);
                 no = crossProduct(up,ea);
 
                 // Compute components of spacecraft and sun vector in the
