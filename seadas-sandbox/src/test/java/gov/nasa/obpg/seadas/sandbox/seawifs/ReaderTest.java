@@ -3,8 +3,10 @@ package gov.nasa.obpg.seadas.sandbox.seawifs;
 //package geonav;
 
 import java.io.*;
+import java.util.*;
 import java.util.logging.*;
 
+import sun.util.calendar.Gregorian;
 import ucar.ma2.*;
 import ucar.nc2.*;
 
@@ -161,7 +163,15 @@ if (debug) {
     	        } else {
     		    File inFile = new File(args[0]);
                     if (isInputFileOk(inFile)) {
-                        System.out.println("Processing " + inFile.getName() + " ...");
+                        Calendar now = GregorianCalendar.getInstance();
+                        String startingMessage = String.format("Processing of %s started at: %04d-%02d-%02dT%02d:%02d:%02d",
+                                                               inFile.getName(), now.get(Calendar.YEAR),
+                                                               now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH),
+                                                               now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE),
+                                                               now.get(Calendar.SECOND)
+                                                              );
+                        System.out.println(startingMessage);
+
                         PrintStream oriOut = System.out;
                         PrintStream oriErr = System.err;
 

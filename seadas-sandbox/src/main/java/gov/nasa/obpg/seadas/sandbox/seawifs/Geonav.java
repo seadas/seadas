@@ -21,6 +21,8 @@
 package gov.nasa.obpg.seadas.sandbox.seawifs;
 
 import java.math.*;
+
+import com.sun.imageio.plugins.common.BogusColorSpace;
 import ucar.ma2.*;
 import ucar.nc2.*;
 
@@ -44,7 +46,7 @@ public class Geonav {
     /* The sensorOffsetMatrix corresponds to navctl%msensoff and tiltCosVector
      * corresponds to navctl%tiltcos in the Fortan version.  Both variables are
      * part of the navctl structure, which is read from the navctl.dat file in
-     * the Fortan.  According to email from F. Patt, the values never changed,
+     * the Fortan.
      */
     float[][] sensorOffsetMatrix = new float[3][3];
     float[] tiltCosVector = new float[3];
@@ -78,8 +80,6 @@ public class Geonav {
 
     double SINC = 0.0015911;
 
-    static int instantiationCount = 0;
-
     public Geonav(float[] pos, float[][] rm, float[] coef, float[] sun, float[] aa, float tilt,
                   NetcdfFile ncFile) {
         this(pos, rm, sun, aa, tilt, ncFile);
@@ -94,8 +94,10 @@ public class Geonav {
     public Geonav(float[] pos, float[][] rm, float[] sun, float[] aa, float tilt,
                   NetcdfFile ncFile) {
 
-        ++ instantiationCount;
-        // The sensorOffsetMatrix values were copied from the navctl.dat file.
+        /* The sensorOffsetMatrix values were copied from the navctl.dat file.
+         * According to email from F. Patt, the values never changed during the
+         * SeaWiFS mission, thus they are hard-coded here.
+         */
         sensorOffsetMatrix[0][0] = 1.0f;
         sensorOffsetMatrix[0][1] = 0.0f;
         sensorOffsetMatrix[0][2] = 0.0f;
@@ -250,6 +252,42 @@ public class Geonav {
         return transformationMatrix;
     }
 
+    float computeSensorAzimuth(float senz, double sn, double se) {
+        float sena;
+        // Check for zenith close to zero
+        if (senz > 0.05f) {
+            sena = (float) (DEGREES_PER_RADIAN * Math.atan2(se,sn));
+        } else {
+            sena = 0.0f;
+        }
+        if (sena < 0.0f) {
+            sena = sena + 360.0f;
+        }
+        return sena;
+    }
+
+    float computeSensorZenith(double sn, double se, double sv) {
+        return (float) (DEGREES_PER_RADIAN * Math.atan2(Math.sqrt(sn*sn+se*se),sv));
+    }
+
+    float computeSolarAzimuth(float solz, double sunn, double sune) {
+        float sola;
+        // Check for zenith close to zero
+        if (solz > 0.05f) {
+            sola = (float) (DEGREES_PER_RADIAN * Math.atan2(sune, sunn));
+        } else {
+            sola = 0.0f;
+        }
+        if (sola < 0.0f) {
+            sola = sola + 360.0f;
+        }
+        return sola;
+    }
+
+    float computeSolarZenith(double sunn, double sune, double sunv) {
+        return (float) (DEGREES_PER_RADIAN * Math.atan2(Math.sqrt(sunn * sunn + sune * sune), sunv));
+    }
+
     private float[][] computeTransformMatrix(float tilt) {
         /**
          * Compute the ECEF-to-orbital tranformation matrix using the
@@ -283,7 +321,7 @@ public class Geonav {
          * Compute cross product of two (length 3) vectors (adapted from
          * crossp.f; also see:
          *     http://en.wikipedia.org/wiki/Cross_product
-         *  or a linear algebra text).  The array subscripts differ from the
+         * or a linear algebra text).  The array subscripts differ from the
          * definitional/Fortran subscripts due to Java using 0-based arrays, vs.
          * the definition/Fortran using 1-based arrays.
          */
@@ -366,7 +404,7 @@ public class Geonav {
                     geovec[j] = rmtq[j] + orbPos[j];
                 }
 
-                //    Compute geodetic latitude and longitude
+                // Compute geodetic latitude and longitude
                 float tmp = (float) (Math.sqrt(geovec[0] * geovec[0] + 
 					       geovec[1] * geovec[1]) * OMF2);
                 xlat[i] = DEGREES_PER_RADIAN * (float) Math.atan2(geovec[2], tmp);
@@ -404,29 +442,13 @@ public class Geonav {
                 }
 
                 // Compute the sensor zenith and azimuth
-                senz[i] = (float) (DEGREES_PER_RADIAN * Math.atan2(Math.sqrt(sn*sn+se*se),sv));
-                // Check for zenith close to zero
-                if (senz[i] > 0.05f) {
-                    sena[i] = (float) (DEGREES_PER_RADIAN * Math.atan2(se,sn));
-                } else {
-                    sena[i] = 0.0f;
-                }
-                if (sena[i] < 0.0f) {
-                    sena[i] = sena[i] + 360.0f;
-                }
+                senz[i] = computeSensorZenith(sn, se, sv);
+                sena[i] = computeSensorAzimuth(senz[i], sn, se);
             }  // close (else part of) if (r < 0.0)
-            // Compute the solar zenith and azimuth
-            solz[i] = (float) (DEGREES_PER_RADIAN * Math.atan2(Math.sqrt(sunn * sunn + sune * sune), sunv));
 
-            // Check for zenith close to zero
-            if (solz[i] > 0.05f) {
-                sola[i] = (float) (DEGREES_PER_RADIAN * Math.atan2(sune, sunn));
-	        } else {
-                sola[i] = 0.0f;
-            }
-            if (sola[i] < 0.0f) {
-                sola[i] = sola[i] + 360.0f;
-            }
+            // Compute the solar zenith and azimuth
+            solz[i] = computeSolarZenith(sunn, sune, sunv);
+            sola[i] = computeSolarAzimuth(solz[i], sunn, sune);
         } // close for (int i = 0; i < npix; i ++)
     } // close doComputations()
 
