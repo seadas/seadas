@@ -1,5 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import com.bc.ceres.glayer.tools.PrintTiffInfo;
+
 /**
  * A ...
  *
@@ -14,11 +16,7 @@ public class AlgorithmInfo {
     private static String PARAMTYPE_NONE = "NONE";
 
     public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
+        return productInfo.getName();
     }
 
     public boolean isToStringShowProductName() {
@@ -37,13 +35,37 @@ public class AlgorithmInfo {
         this.toStringShowParameterType = toStringShowParameterType;
     }
 
+    public ProductInfo getProductInfo() {
+        return productInfo;
+    }
+
+    public void setProductInfo(ProductInfo productInfo) {
+        this.productInfo = productInfo;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public boolean isWavelengthDependent() {
+        return wavelengthDependent;
+    }
+
+    public void setWavelengthDependent(boolean wavelengthDependent) {
+        this.wavelengthDependent = wavelengthDependent;
+    }
+
 
     public static enum ParameterType {
         VISIBLE, IR, ALL, NONE
     }
 
+    // These fields are populated according to productList.xml
     private String name = null;
-    private String productName = null;
     private boolean toStringShowProductName = false;
     private boolean toStringShowParameterType = false;
     private String description = null;
@@ -52,6 +74,11 @@ public class AlgorithmInfo {
     private String suffix = null;
     private String units = null;
     private ParameterType parameterType = null;
+    private ProductInfo productInfo = null;
+
+    // This field is associated with the current selection state of the GUI control
+    private boolean isSelected = false;
+    private boolean wavelengthDependent = false;
 
 
     public String getDataType() {
@@ -103,7 +130,6 @@ public class AlgorithmInfo {
     }
 
 
-
     public String getName() {
         return name;
     }
@@ -111,7 +137,6 @@ public class AlgorithmInfo {
     public void setName(String name) {
         this.name = name;
     }
-
 
 
     public AlgorithmInfo(String name, String description, ParameterType parameterType) {
@@ -146,29 +171,33 @@ public class AlgorithmInfo {
         }
     }
 
-        public void dump() {
+    public void dump() {
         System.out.println("  " + name);
+    }
+
+    public String toString() {
+
+        StringBuilder myStringBuilder = new StringBuilder("");
+
+        if (toStringShowProductName == true) {
+            myStringBuilder.append(productInfo.getName());
+            myStringBuilder.append("_");
+
+            if (wavelengthDependent == true) {
+                myStringBuilder.append("{WAV}_");
+            }
         }
 
-        public String toString() {
+        myStringBuilder.append(name);
 
-            StringBuilder myStringBuilder = new StringBuilder("");
-
-            if (toStringShowProductName == true) {
-                myStringBuilder.append(productName);
-                myStringBuilder.append(':');
-            }
-
-            myStringBuilder.append(name);
-
-            if (toStringShowParameterType == true) {
-                myStringBuilder.append(':');
-                myStringBuilder.append(parameterType);
-            }
-
-
-            return myStringBuilder.toString();
+        if (toStringShowParameterType == true) {
+            myStringBuilder.append(":");
+            myStringBuilder.append(parameterType);
         }
+
+
+        return myStringBuilder.toString();
+    }
 
     public int compareTo(AlgorithmInfo p) {
         return name.compareToIgnoreCase(p.name);

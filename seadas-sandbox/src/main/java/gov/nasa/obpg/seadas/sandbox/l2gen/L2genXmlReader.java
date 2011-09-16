@@ -70,7 +70,7 @@ public class L2genXmlReader {
 
                         AlgorithmInfo algorithmInfo = new AlgorithmInfo();
 
-                        algorithmInfo.setProductName(prodName);
+                    //    algorithmInfo.setProductName(prodName);
 
                         if (algElement.hasAttribute(ATTRIBNAME_ALG_NAME)) {
                             String algorithmName = algElement.getAttribute(ATTRIBNAME_ALG_NAME);
@@ -106,7 +106,11 @@ public class L2genXmlReader {
                             if (waveDependentProductInfo == null) {
                                 waveDependentProductInfo = new ProductInfo(prodName);
                             }
+
                             waveDependentProductInfo.addAlgorithmInfo(algorithmInfo);
+                            waveDependentProductInfo.setName(prodName);
+                            algorithmInfo.setProductInfo(waveDependentProductInfo);
+                            algorithmInfo.setWavelengthDependent(true);
 //                            waveDependentProductInfoArray.add(productInfo);
 
                         } else {
@@ -114,7 +118,9 @@ public class L2genXmlReader {
                                 waveIndependentProductInfo = new ProductInfo(prodName);
                             }
                             waveIndependentProductInfo.addAlgorithmInfo(algorithmInfo);
-
+                            waveIndependentProductInfo.setName(prodName);
+                            algorithmInfo.setProductInfo(waveIndependentProductInfo);
+                            algorithmInfo.setWavelengthDependent(false);
 //                            waveIndependentProductInfoArray.add(productInfo);
                         }
 
