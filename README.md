@@ -78,7 +78,7 @@ Installation Guide
 8. Copy file $MY_PROJECTS/beam/src/main/config/beam.config to directory $MY_PROJECTS/beam/config/
     and modify the following lines:
     * Set beam.home = .
-    * Set beam.app = SeadasMain
+    * Set beam.app = VisatMain
     * Set beam.logLevel = ALL
     * Set beam.debug = true
     * Set beam.splash.image = ./src/main/bin/common/splash.png
