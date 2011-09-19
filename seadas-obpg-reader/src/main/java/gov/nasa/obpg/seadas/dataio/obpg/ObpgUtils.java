@@ -57,7 +57,7 @@ public class ObpgUtils {
     static final String KEY_HEIGHT_AQUARIUS = "Number of Blocks";
     static final String KEY_SEADAS_MAPPED_WIDTH =  "Scene Pixels";
     static final String KEY_SEADAS_MAPPED_HEIGHT =  "Scene Lines";
-
+    //static final String KEY_SEAWIFS_L1A_WIDTH = "Pixels per Scan Line";
 
     static final String KEY_START_NODE = "Start Node";
     static final String KEY_END_NODE = "End Node";
@@ -195,7 +195,8 @@ public class ObpgUtils {
     private String getHeightKey(String title) {
         if (title.contains("Aquarius")){
             return KEY_HEIGHT_AQUARIUS;
-        } else if (title.contains("Level-2") || title.contains("Level-1B") || title.contains("Browse")) {
+        } else if (title.contains("Level-2") || title.contains("Level-1B") || title.contains("Browse")
+                   || title.contains("SeaWiFS Level-1A Data")) {
             return KEY_HEIGHT;
         } else if (title.contains("Level-3 Mapped")) {
             return KEY_L3SMI_HEIGHT;
@@ -207,7 +208,8 @@ public class ObpgUtils {
     private String getWidthKey(String title) {
         if (title.contains("Aquarius")){
             return KEY_WIDTH_AQUARIUS;
-        } else if (title.contains("Level-2") || title.contains("Level-1B") || title.contains("Browse")) {
+        } else if (title.contains("Level-2") || title.contains("Level-1B") || title.contains("Browse")
+                   || title.contains("SeaWiFS Level-1A Data")) {
             return KEY_WIDTH;
         } else if (title.contains("Level-3 Mapped")){
             return KEY_L3SMI_WIDTH;

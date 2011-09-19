@@ -36,6 +36,10 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
     private static final boolean DEBUG = false;
 
     private static final String DEFAULT_FILE_EXTENSION = ".hdf";
+    /*
+    private static final String DEFAULT_FILE_EXTENSION_L1A_GAC = ".L1A_GAC";
+    private static final String DEFAULT_FILE_EXTENSION_L1A_HNSG = ".L1A_HNSG";
+     */
     private static final String DEFAULT_FILE_EXTENSION_L2 = ".L2";
     private static final String DEFAULT_FILE_EXTENSION_L2_LAC = DEFAULT_FILE_EXTENSION_L2 + "_LAC";
     private static final String DEFAULT_FILE_EXTENSION_L2_LAC_OC = DEFAULT_FILE_EXTENSION_L2_LAC + "_OC";
