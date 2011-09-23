@@ -202,6 +202,7 @@ public class ObpgUtils {
             return KEY_L3SMI_HEIGHT;
         } else {
             return KEY_L3SMI_HEIGHT;
+            // TODO: Throw exception or default to KEY_HEIGHT (or a different) return value.
         }
     }
 
@@ -215,6 +216,7 @@ public class ObpgUtils {
             return KEY_L3SMI_WIDTH;
         } else {
             return KEY_L3SMI_WIDTH;
+            // TODO: Throw exception or default to KEY_WIDTH (or a different) return value.
         }
 
     }

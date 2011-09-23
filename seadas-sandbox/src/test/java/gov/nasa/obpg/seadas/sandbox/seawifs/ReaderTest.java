@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
-import sun.util.calendar.Gregorian;
 import ucar.ma2.*;
 import ucar.nc2.*;
 
@@ -49,7 +48,7 @@ public class ReaderTest {
         }
     }
 
-    private ArrayFloat getData(String varName, Group group) {
+    private ArrayFloat readNetcdfDataArray(String varName, Group group) {
         ArrayFloat dataArray = null;
         int[] startPts;
         Variable varToRead = group.findVariable(varName);
@@ -251,12 +250,12 @@ if (debug) {
             Group navGroup = ncFile.findGroup("Navigation");
             Group scanLineAttrGroup = ncFile.findGroup("Scan-Line Attributes");
 
-            ArrayFloat orbitData = getData("orb_vec", navGroup);
-            ArrayFloat sensorData = getData("sen_mat", navGroup);
-            ArrayFloat sunData = getData("sun_ref", navGroup);
-            ArrayFloat attAngleData = getData("att_ang", navGroup);
-            ArrayFloat scanTrackEllipseCoefData = getData("scan_ell", navGroup);
-            ArrayFloat tiltData = getData("tilt", scanLineAttrGroup);
+            ArrayFloat orbitData = readNetcdfDataArray("orb_vec", navGroup);
+            ArrayFloat sensorData = readNetcdfDataArray("sen_mat", navGroup);
+            ArrayFloat sunData = readNetcdfDataArray("sun_ref", navGroup);
+            ArrayFloat attAngleData = readNetcdfDataArray("att_ang", navGroup);
+            ArrayFloat scanTrackEllipseCoefData = readNetcdfDataArray("scan_ell", navGroup);
+            ArrayFloat tiltData = readNetcdfDataArray("tilt", scanLineAttrGroup);
 
             outputHeader();
             for (int line = 0; line < numScanLines; line ++) {

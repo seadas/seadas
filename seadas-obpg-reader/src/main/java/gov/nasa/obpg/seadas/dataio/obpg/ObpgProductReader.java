@@ -28,9 +28,11 @@ import org.jdom.input.DOMBuilder;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import ucar.ma2.Array;
+import ucar.ma2.ArrayFloat;
 import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Section;
 import ucar.nc2.Attribute;
+import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -102,6 +104,11 @@ public class ObpgProductReader extends AbstractProductReader {
             } else if (productType.contains("SeaDAS Mapped")){
                 GeoCoding geoCoding = createGeoCoding(product, productType);  //TODO Check on various IDL projections
                 product.setGeoCoding(geoCoding);
+            } else if (productType.contains("SeaWiFS  Level-1A Data")){
+                // ToDo add SeaWiFS geocoding stuff, using Geonav results here
+                ObpgGeonav geonavCalculator = readSeawifsGeonavData(path);
+                float[] latitude = geonavCalculator.getLatitude();
+       	        float[] longitude = geonavCalculator.getLongitude();
             } else {
                 obpgUtils.addGeocoding(product, ncfile, mustFlip);
             }
@@ -264,7 +271,6 @@ public class ObpgProductReader extends AbstractProductReader {
         return new HashMap<String, String>(0);
     }
 
-
     private GeoCoding createGeoCoding(Product product, String productType) {
         //float pixelX = 0.0f;
         //float pixelY = 0.0f;
@@ -291,5 +297,122 @@ public class ObpgProductReader extends AbstractProductReader {
         } catch (TransformException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private float[] populateVector(ArrayFloat sourceData, int size, int lineNum) {
+        float[] newVect = new float[size];
+        for(int i = 0; i < size; i ++) {
+            newVect[i] = sourceData.getFloat(size * lineNum + i);
+        }
+        return newVect;
+    }
+
+    private ArrayFloat readNetcdfDataArray(String varName, Group group) {
+        ArrayFloat dataArray = null;
+        int[] startPts;
+        Variable varToRead = group.findVariable(varName);
+        if (varToRead.getRank() == 1) {
+            try {
+                dataArray = (ArrayFloat) varToRead.read();
+            } catch(IOException ioe) {
+                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
+                System.out.println(ioe.getMessage());
+                ioe.printStackTrace();
+                System.out.println();
+                System.exit(-43);
+            }
+        } else {
+            if (varToRead.getRank() == 2) {
+                startPts = new int[2];
+                startPts[0] = 0;
+                startPts[1] = 0;
+            } else {
+                // Assuming nothing with more than rank 3.
+                startPts = new int[3];
+                startPts[0] = 0;
+                startPts[1] = 0;
+                startPts[2] = 0;
+            }
+            try {
+                dataArray = (ArrayFloat) varToRead.read(startPts, varToRead.getShape());
+                return dataArray;
+            } catch(IOException ioe) {
+                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
+                System.out.println(ioe.getMessage());
+                ioe.printStackTrace();
+                System.out.println();
+                System.exit(-44);
+            } catch(InvalidRangeException ire) {
+                System.out.println("Encountered InvalidRangeException reading the data array: " + varToRead.getShortName());
+                System.out.println(ire.getMessage());
+                ire.printStackTrace();
+                System.out.println();
+                System.exit(-45);
+            }
+        }
+        return dataArray;
+    }
+
+    private ObpgGeonav readSeawifsGeonavData(String path) throws IOException {
+        NetcdfFile ncFile = null;
+        ObpgGeonav geonavCalculator = null;
+        try {
+            String prefix = "  ";
+            ncFile = NetcdfFile.open(path);
+            ObpgGeonav.DataType dataType = ObpgGeonav.getSeawifsDataType(ncFile);
+            int numScanLines = ObpgGeonav.getNumberScanLines(ncFile);
+
+            //Group rootGroup = ncFile.getRootGroup();
+            Group navGroup = ncFile.findGroup("Navigation");
+            Group scanLineAttrGroup = ncFile.findGroup("Scan-Line Attributes");
+
+            ArrayFloat orbitData = readNetcdfDataArray("orb_vec", navGroup);
+            ArrayFloat sensorData = readNetcdfDataArray("sen_mat", navGroup);
+            ArrayFloat sunData = readNetcdfDataArray("sun_ref", navGroup);
+            ArrayFloat attAngleData = readNetcdfDataArray("att_ang", navGroup);
+            ArrayFloat scanTrackEllipseCoefData = readNetcdfDataArray("scan_ell", navGroup);
+            ArrayFloat tiltData = readNetcdfDataArray("tilt", scanLineAttrGroup);
+
+            for (int line = 0; line < numScanLines; line ++) {
+                float[] orbVect = populateVector(orbitData, 3, line);
+                float[][] sensorMat = new float[3][3];
+                sensorMat[0][0] = sensorData.getFloat(3 * line);
+                sensorMat[0][1] = sensorData.getFloat(3 * line + 1);
+                sensorMat[0][2] = sensorData.getFloat(3 * line + 2);
+                sensorMat[1][0] = sensorData.getFloat(3 * line + 3);
+                sensorMat[1][1] = sensorData.getFloat(3 * line + 4);
+                sensorMat[1][2] = sensorData.getFloat(3 * line + 5);
+                sensorMat[2][0] = sensorData.getFloat(3 * line + 6);
+                sensorMat[2][1] = sensorData.getFloat(3 * line + 7);
+                sensorMat[2][2] = sensorData.getFloat(3 * line + 8);
+                float[] sunUnitVect = populateVector(sunData, 3, line);
+                float[] attAngleVect = populateVector(attAngleData, 3, line);
+                float[] scanTrackEllipseCoef = populateVector(scanTrackEllipseCoefData, 6, line);
+                float tilt = tiltData.getFloat(line);
+
+                geonavCalculator = new ObpgGeonav(orbVect, sensorMat, scanTrackEllipseCoef, sunUnitVect,
+                                                     attAngleVect, tilt, ncFile);
+                geonavCalculator.doComputations();
+
+       	        //float[] sensorAzimuth = geonavCalculator.getSensorAzimuth();
+       	        //float[] sensorZenith = geonavCalculator.getSensorZenith();
+       	        //float[] solarAzimuth = geonavCalculator.getSolarAzimuth();
+       	        //float[] solarZenith = geonavCalculator.getSolarZenith();
+            }
+
+            int i = 0;
+            while (i < numScanLines) {
+                float[] orbPos = new float[3];
+                float[][] sensorMatrix = new float[3][3];
+                float[] sunRef = new float[3];
+                orbPos[0] = orbitData.getFloat(i);
+                orbPos[1] = orbitData.getFloat(i+1);
+                orbPos[2] = orbitData.getFloat(i+2);
+                i += 3;
+            }
+        } finally {
+            ncFile.close();
+        }
+        return geonavCalculator;
     }
 }
