@@ -1,7 +1,7 @@
 
 /**
  *
- * SeawifsGeonav - navigational functions for SeaWiFS (needed for SeaDAS to
+ * ObpgGeonav - navigational functions for SeaWiFS (needed for SeaDAS to
  *    work with SeaWiFS Level1 files).  This code was converted from 
  *    Fortran code in the OCSSW library (specifically the interpnav_seawifs
  *    program), mostly geonav.f.  For explanation, see the journal article:
@@ -9,7 +9,7 @@
  *       by Patt, F.S. and W.W. Gregg
  *       International Journal of Remote Sensing
  *       1994, Volume 15, No. 18, pp. 3719-3734
- *    Hardcopies might be available locally, or it may be downloaded from:
+ *    Within OBPG, hardcopies might be available locally.  It was found online at:
  *       http://www.informaworld.com/smpp/content~db=all~content=a778242783~frm=titlelink
  *
  * History:
@@ -43,7 +43,7 @@ public class ObpgGeonav {
     /* The sensorOffsetMatrix corresponds to navctl%msensoff and tiltCosVector
      * corresponds to navctl%tiltcos in the Fortan version.  Both variables are
      * part of the navctl structure, which is read from the navctl.dat file in
-     * the Fortan.
+     * the Fortran.
      */
     float[][] sensorOffsetMatrix = new float[3][3];
     float[] tiltCosVector = new float[3];

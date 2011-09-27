@@ -160,7 +160,7 @@ public class ObpgUtils {
             }
             sceneWidth = getIntAttribute(keyWidth, globalAttributes) * pixelmultiplier;
             sceneHeight = getIntAttribute(keyHeight, globalAttributes) * scanmultiplier;
-        } if (productType.equalsIgnoreCase("SeaDAS Mapped")){
+        } else if (productType.equalsIgnoreCase("SeaDAS Mapped")){
             sceneWidth = getIntAttribute(KEY_SEADAS_MAPPED_WIDTH, globalAttributes);
             sceneHeight = getIntAttribute(KEY_SEADAS_MAPPED_HEIGHT, globalAttributes);
         } else {
