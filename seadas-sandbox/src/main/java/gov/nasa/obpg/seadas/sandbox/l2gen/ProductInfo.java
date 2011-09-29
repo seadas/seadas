@@ -16,6 +16,12 @@ public class ProductInfo implements Comparable<ProductInfo> {
     private String name = "";
     private ArrayList<AlgorithmInfo> algorithmInfoArrayList = new ArrayList<AlgorithmInfo>();
 
+    // some new ones
+    private boolean isPartiallySelected = false;
+    private boolean isSelected = false;
+
+
+
 
     public static final Comparator<ProductInfo> CASE_SENSITIVE_ORDER
             = new CaseSensitiveComparator();

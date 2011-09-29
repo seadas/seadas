@@ -3,20 +3,13 @@ package gov.nasa.obpg.seadas.sandbox.l2gen;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 /**
  * A ...
  *
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class L2genXmlReader {
-
-    private ArrayList<ProductInfo> waveIndependentProductInfoArray;
-    private ArrayList<ProductInfo> waveDependentProductInfoArray;
+public class L2genReader {
 
     private static String ELEMNAME_PROD = "product";
     private static String ATTRIBNAME_PROD_NAME = "name";
@@ -31,18 +24,19 @@ public class L2genXmlReader {
     private static String ELEMNAME_DATATYPE = "dataType";
     private static String ELEMNAME_UNITS = "units";
 
+    private L2genData l2genData;
 
-    public L2genXmlReader() {
-        waveIndependentProductInfoArray = new ArrayList<ProductInfo>();
-        waveDependentProductInfoArray = new ArrayList<ProductInfo>();
+    public L2genReader(L2genData l2genData)  {
+        this.l2genData = l2genData;
     }
 
-    public void parseXmlFile(String filename) {
+
+    public void readProductsXmlFile(String filename) {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(filename);
 
-        waveIndependentProductInfoArray.clear();
-        waveDependentProductInfoArray.clear();
+        l2genData.clearWaveDependentProductInfoArray();
+        l2genData.clearWaveIndependentProductInfoArray();
 
 
         NodeList prodNodelist = rootElement.getElementsByTagName(ELEMNAME_PROD);
@@ -50,16 +44,12 @@ public class L2genXmlReader {
         if (prodNodelist != null && prodNodelist.getLength() > 0) {
             for (int i = 0; i < prodNodelist.getLength(); i++) {
 
-
                 Element prodElement = (Element) prodNodelist.item(i);
 
                 String prodName = prodElement.getAttribute(ATTRIBNAME_PROD_NAME);
 
-                //System.out.println("product=" + prodName);
-
                 ProductInfo waveDependentProductInfo = null;
                 ProductInfo waveIndependentProductInfo = null;
-                // Boolean waveDependant = false;
 
                 NodeList algNodelist = prodElement.getElementsByTagName(ELEMNAME_ALG);
 
@@ -70,16 +60,11 @@ public class L2genXmlReader {
 
                         AlgorithmInfo algorithmInfo = new AlgorithmInfo();
 
-                    //    algorithmInfo.setProductName(prodName);
 
                         if (algElement.hasAttribute(ATTRIBNAME_ALG_NAME)) {
                             String algorithmName = algElement.getAttribute(ATTRIBNAME_ALG_NAME);
                             algorithmInfo.setName(algorithmName);
-                        //    System.out.println("   algorithm=" + algorithmName);
-                        } //                   else {
-                          //  System.out.println("   algorithm=null");
-
-                       // }
+                        }
 
                         String description = XmlReader.getTextValue(algElement, ELEMNAME_DESC);
                         algorithmInfo.setDescription(description);
@@ -99,9 +84,6 @@ public class L2genXmlReader {
                         String dataType = XmlReader.getTextValue(algElement, ELEMNAME_DATATYPE);
                         algorithmInfo.setDataType(dataType);
 
-//                        productInfo.addAlgorithmInfo(algorithmInfo);
-
-
                         if (algorithmInfo.getParameterType() != AlgorithmInfo.ParameterType.NONE) {
                             if (waveDependentProductInfo == null) {
                                 waveDependentProductInfo = new ProductInfo(prodName);
@@ -111,7 +93,6 @@ public class L2genXmlReader {
                             waveDependentProductInfo.setName(prodName);
                             algorithmInfo.setProductInfo(waveDependentProductInfo);
                             algorithmInfo.setWavelengthDependent(true);
-//                            waveDependentProductInfoArray.add(productInfo);
 
                         } else {
                             if (waveIndependentProductInfo == null) {
@@ -121,38 +102,21 @@ public class L2genXmlReader {
                             waveIndependentProductInfo.setName(prodName);
                             algorithmInfo.setProductInfo(waveIndependentProductInfo);
                             algorithmInfo.setWavelengthDependent(false);
-//                            waveIndependentProductInfoArray.add(productInfo);
                         }
 
                     } // for algorithms
 
                     if (waveDependentProductInfo != null) {
-                            waveDependentProductInfoArray.add(waveDependentProductInfo);
+                         l2genData.addWaveDependentProductInfoArray(waveDependentProductInfo);
                     }
                     if (waveIndependentProductInfo != null) {
-                            waveIndependentProductInfoArray.add(waveIndependentProductInfo);
+                        l2genData.addWaveIndependentProductInfoArray(waveIndependentProductInfo);
                     }
-
                 }
-
-
             } // for products
         }
 
-        Collections.sort(waveDependentProductInfoArray, ProductInfo.CASE_SENSITIVE_ORDER);
-        Collections.sort(waveIndependentProductInfoArray);
-
-
-
+        l2genData.sortWaveDependentProductInfoArray(ProductInfo.CASE_INSENSITIVE_ORDER);
+        l2genData.sortWaveIndependentProductInfoArray(ProductInfo.CASE_INSENSITIVE_ORDER);
     }
-
-    public ArrayList<ProductInfo> getWaveIndependentProductInfoArray() {
-        return waveIndependentProductInfoArray;
-    }
-
-    public ArrayList<ProductInfo> getWaveDependentProductInfoArray() {
-        return waveDependentProductInfoArray;
-    }
-
-
 }

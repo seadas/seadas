@@ -2,6 +2,8 @@ package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 import com.bc.ceres.glayer.tools.PrintTiffInfo;
 
+import java.util.ArrayList;
+
 /**
  * A ...
  *
@@ -14,6 +16,29 @@ public class AlgorithmInfo {
     private static String PARAMTYPE_IR = "IR";
     private static String PARAMTYPE_ALL = "ALL";
     private static String PARAMTYPE_NONE = "NONE";
+
+    // These fields are populated according to productList.xml
+    private String name = null;
+    private boolean toStringShowProductName = false;
+    private boolean toStringShowParameterType = false;
+    private String description = null;
+    private String dataType = null;
+    private String prefix = null;
+    private String suffix = null;
+    private String units = null;
+    private ParameterType parameterType = null;
+    private ProductInfo productInfo = null;
+
+    // This is the more advanced feature enable product specific selection of wavelengths
+    private ArrayList<WavelengthInfo> wavelengthInfoArray = new ArrayList<WavelengthInfo>();
+
+    //
+    private boolean isPartiallySelected = false;
+
+    // This field is associated with the current selection state of the GUI control
+    private boolean isSelected = false;
+    private boolean wavelengthDependent = false;
+    // todo make method to make   wavelengthDependent from   parameterType
 
     public String getProductName() {
         return productInfo.getName();
@@ -63,22 +88,6 @@ public class AlgorithmInfo {
     public static enum ParameterType {
         VISIBLE, IR, ALL, NONE
     }
-
-    // These fields are populated according to productList.xml
-    private String name = null;
-    private boolean toStringShowProductName = false;
-    private boolean toStringShowParameterType = false;
-    private String description = null;
-    private String dataType = null;
-    private String prefix = null;
-    private String suffix = null;
-    private String units = null;
-    private ParameterType parameterType = null;
-    private ProductInfo productInfo = null;
-
-    // This field is associated with the current selection state of the GUI control
-    private boolean isSelected = false;
-    private boolean wavelengthDependent = false;
 
 
     public String getDataType() {
@@ -181,14 +190,24 @@ public class AlgorithmInfo {
 
         if (toStringShowProductName == true) {
             myStringBuilder.append(productInfo.getName());
-            myStringBuilder.append("_");
 
-            if (wavelengthDependent == true) {
-                myStringBuilder.append("{WAV}_");
-            }
+
+
+                if (parameterType == ParameterType.VISIBLE) {
+                    myStringBuilder.append("_vvv");
+                } else if (parameterType == ParameterType.IR) {
+                    myStringBuilder.append("_iii");
+
+                } else if (parameterType == ParameterType.ALL) {
+                    myStringBuilder.append("_nnn");
+                }
+
         }
 
+        if (name != null) {
+                    myStringBuilder.append("_");
         myStringBuilder.append(name);
+        }
 
         if (toStringShowParameterType == true) {
             myStringBuilder.append(":");
