@@ -11,10 +11,20 @@ public class WavelengthInfo {
     public static final int VISIBLE_UPPER_LIMIT = 3000;
     private int wavelength = -1;
     private boolean isSelected = false;
+    private AlgorithmInfo algorithmInfo = null;
+    private boolean toStringShowProductName = false;
 
     // applicable only to the global wavelengths not the product specific ones
     private boolean isPartiallySelected = false;
 
+    public WavelengthInfo(int wavelength, AlgorithmInfo algorithmInfo) {
+        this.wavelength = wavelength;
+        this.algorithmInfo = algorithmInfo;
+    }
+
+    public WavelengthInfo() {
+
+    }
 
     public WavelengthInfo(int wavelength) {
         this.wavelength = wavelength;
@@ -42,9 +52,6 @@ public class WavelengthInfo {
         isSelected = selected;
     }
 
-    public String toString() {
-        return Integer.toString(wavelength);
-    }
 
     public boolean isVisible() {
         if (wavelength < VISIBLE_UPPER_LIMIT) {
@@ -59,5 +66,45 @@ public class WavelengthInfo {
             return true;
         }
         return false;
+    }
+
+    public AlgorithmInfo getAlgorithmInfo() {
+        return algorithmInfo;
+    }
+
+    public void setAlgorithmInfo(AlgorithmInfo algorithmInfo) {
+        this.algorithmInfo = algorithmInfo;
+    }
+
+
+    public String toString() {
+
+        if (toStringShowProductName == true) {
+            StringBuilder myStringBuilder = new StringBuilder("");
+
+            myStringBuilder.append(algorithmInfo.getProductName());
+            myStringBuilder.append("_");
+            myStringBuilder.append(Integer.toString(wavelength));
+
+            if (algorithmInfo.getName() != null) {
+                myStringBuilder.append("_");
+                myStringBuilder.append(algorithmInfo.getName());
+            }
+
+            return myStringBuilder.toString();
+
+        } else {
+            return Integer.toString(wavelength);
+        }
+
+
+    }
+
+    public boolean isToStringShowProductName() {
+        return toStringShowProductName;
+    }
+
+    public void setToStringShowProductName(boolean toStringShowProductName) {
+        this.toStringShowProductName = toStringShowProductName;
     }
 }

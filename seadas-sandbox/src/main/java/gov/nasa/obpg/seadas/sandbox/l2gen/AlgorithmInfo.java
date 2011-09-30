@@ -40,6 +40,15 @@ public class AlgorithmInfo {
     private boolean wavelengthDependent = false;
     // todo make method to make   wavelengthDependent from   parameterType
 
+
+    public void clearWavelengthInfoArray() {
+        wavelengthInfoArray.clear();
+    }
+
+    public void addWavelengthInfoArray(WavelengthInfo wavelengthInfo) {
+        wavelengthInfoArray.add(wavelengthInfo);
+    }
+
     public String getProductName() {
         return productInfo.getName();
     }
@@ -82,6 +91,14 @@ public class AlgorithmInfo {
 
     public void setWavelengthDependent(boolean wavelengthDependent) {
         this.wavelengthDependent = wavelengthDependent;
+    }
+
+    public ArrayList<WavelengthInfo> getWavelengthInfoArray() {
+        return wavelengthInfoArray;
+    }
+
+    public void setWavelengthInfoArray(ArrayList<WavelengthInfo> wavelengthInfoArray) {
+        this.wavelengthInfoArray = wavelengthInfoArray;
     }
 
 

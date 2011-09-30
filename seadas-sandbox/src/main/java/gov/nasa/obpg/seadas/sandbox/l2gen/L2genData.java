@@ -100,7 +100,6 @@ public class L2genData {
     }
 
 
-
     public L2genData() {
     }
 
@@ -168,7 +167,6 @@ public class L2genData {
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_III_CHECKBOX_STATES_EVENT, null, null));
             }
         }
-
 
 
         // Determine whether isSelectedWavelengthTypeVvv boolean needs to be changed
@@ -239,7 +237,7 @@ public class L2genData {
         if (regionType == RegionType.Coordinates) {
             // Since Coordinates are being used purge PixelLine fields
             for (String currKey : pixelLineParamKeys) {
-                                                        paramValueHashMap.remove(currKey);
+                paramValueHashMap.remove(currKey);
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(
 
                         this, currKey, null, ""));
@@ -249,7 +247,7 @@ public class L2genData {
         } else if (regionType == RegionType.PixelLines) {
             // Since PixelLines are being used purge Coordinate fields
             for (String currKey : coordinateParamKeys) {
-                                                        paramValueHashMap.remove(currKey);
+                paramValueHashMap.remove(currKey);
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(
 
                         this, currKey, null, ""));
@@ -257,12 +255,6 @@ public class L2genData {
             }
         }
     }
-
-
-
-
-
-
 
 
     //    For any given paramValue assemble it formatted parfile 'name=value' entry
@@ -729,15 +721,48 @@ public class L2genData {
 //                                    WavelengthInfo visibleWavelengthInfo = new WavelengthInfo(null, "vvv");
 //                        wavelengthInfoArray.add(visibleWavelengthInfo);
 //
-            setIsSelectedWavelengthInfoArrayWithProdHash();
+            //      setIsSelectedWavelengthInfoArrayWithProdHash();
 
             for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
                 System.out.println("wave=" + wavelengthInfo.getWavelength());
             }
 
+            resetAlgorithmInfoWavelengthInfo();
+
             propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_STRING_CHANGE_EVENT_NAME, null, missionString));
+
         }
     }
+
+
+    public void resetAlgorithmInfoWavelengthInfo() {
+        for (ProductInfo productInfo : waveDependentProductInfoArray) {
+            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                algorithmInfo.clearWavelengthInfoArray();
+
+                for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+
+                    if (wavelengthInfo.getWavelength() < WavelengthInfo.VISIBLE_UPPER_LIMIT) {
+                        if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE ||
+                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+                            WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
+                            newWavelengthInfo.setAlgorithmInfo(algorithmInfo);
+                            algorithmInfo.addWavelengthInfoArray(newWavelengthInfo);
+                        }
+                    } else {
+                        if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR ||
+                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+                            WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
+                            newWavelengthInfo.setAlgorithmInfo(algorithmInfo);
+                            algorithmInfo.addWavelengthInfoArray(newWavelengthInfo);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
 
     public void setIsSelectedWavelengthInfoArray(String wavelength, boolean isSelected) {

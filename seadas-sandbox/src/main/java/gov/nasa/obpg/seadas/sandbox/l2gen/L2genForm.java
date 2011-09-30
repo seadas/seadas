@@ -270,8 +270,9 @@ class L2genForm extends JTabbedPane {
         this.setEnabledAt(SUB_SAMPLE_TAB_INDEX, true);
         updateProductSelectorWavelengthsPanel();
 
+        updateWaveDependentJList();
         updateWavelengthCheckboxSelectionStateEvent();
-        updateSelectedProductsJTextArea();
+      //  updateSelectedProductsJTextArea();
 
     }
 
@@ -364,10 +365,10 @@ class L2genForm extends JTabbedPane {
     private void createUI() {
         createIOParametersTab("Input/Output");
         createParfileTab("Parameters");
-//        createSubsampleTab("Sub Sampling");
-//        createNewSubsampleTab("Sub Sampling");
+//        createOldSubsampleTab("Sub Sampling");
+        createSubsampleTab("Sub Sampling");
         //   createOldProductSelectorTab("Old Product Selector");
-//        createProductTab("Product");
+        createProductTab("Product");
 
 
         this.setEnabledAt(PRODUCT_SELECTOR_TAB_INDEX, false);
@@ -376,7 +377,7 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createSubsampleTab(String tabnameSubsample) {
+    private void createOldSubsampleTab(String tabnameSubsample) {
 
         final JTabbedPane tabbedPane = new JTabbedPane();
         createLatLonSubTab(tabbedPane, "Lat-Lon");
@@ -408,7 +409,7 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createNewSubsampleTab(String tabnameSubsample) {
+    private void createSubsampleTab(String tabnameSubsample) {
 
         final JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -872,7 +873,7 @@ class L2genForm extends JTabbedPane {
         // ---------------------------------------------------------------------------------------- 
 
         final JPanel pixelsPanel = new JPanel();
-   //     pixelsPanel.setBorder(BorderFactory.createTitledBorder(PIXELS_PANEL_TITLE));
+        //     pixelsPanel.setBorder(BorderFactory.createTitledBorder(PIXELS_PANEL_TITLE));
         pixelsPanel.setLayout(new GridBagLayout());
 
         pixelsPanel.add(spixlJLabel,
@@ -896,7 +897,7 @@ class L2genForm extends JTabbedPane {
         // ----------------------------------------------------------------------------------------         
 
         final JPanel linesPanel = new JPanel();
-     //   linesPanel.setBorder(BorderFactory.createTitledBorder(LINES_PANEL_TITLE));
+        //   linesPanel.setBorder(BorderFactory.createTitledBorder(LINES_PANEL_TITLE));
         linesPanel.setLayout(new GridBagLayout());
 
         linesPanel.add(slineJLabel,
@@ -1102,16 +1103,16 @@ class L2genForm extends JTabbedPane {
 
         createProductSelectorWavelengthsPanel();
 
-        createProductSelectorProductListPanel(productWavelengthIndependentPanel, l2genData.getWaveIndependentProductInfoArray(), "Products (Wavelength Independent)", waveIndependentJList);
+        createProductSelectorWaveIndependentProductListPanel(productWavelengthIndependentPanel);
 
-        createProductSelectorProductListPanel(productWavelengthDependentPanel, l2genData.getWaveDependentProductInfoArray(), "Products (Wavelength Dependent)", waveDependentJList);
+        createProductSelectorWaveDependentProductListPanel(productWavelengthDependentPanel);
 
 
         waveDependentJList.addListSelectionListener(new ListSelectionListener() {
             @Override
 
             public void valueChanged(ListSelectionEvent e) {
-                updateSelectedProductsJTextArea();
+           //     updateSelectedProductsJTextArea();
 
 
             }
@@ -1121,7 +1122,7 @@ class L2genForm extends JTabbedPane {
             @Override
 
             public void valueChanged(ListSelectionEvent e) {
-                updateSelectedProductsJTextArea();
+                // updateSelectedProductsJTextArea();
 
 
             }
@@ -1536,6 +1537,7 @@ class L2genForm extends JTabbedPane {
         final JButton loadParfileButton = new JButton("Open");
         final JButton saveParfileButton = new JButton("Save");
 
+
         saveParfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1671,16 +1673,16 @@ class L2genForm extends JTabbedPane {
 
         createProductSelectorWavelengthsPanel();
 
-        createProductSelectorProductListPanel(productWavelengthIndependentPanel, l2genData.getWaveIndependentProductInfoArray(), "Products (Wavelength Independent)", waveIndependentJList);
+        createProductSelectorWaveIndependentProductListPanel(productWavelengthIndependentPanel);
 
-        createProductSelectorProductListPanel(productWavelengthDependentPanel, l2genData.getWaveDependentProductInfoArray(), "Products (Wavelength Dependent)", waveDependentJList);
+        createProductSelectorWaveDependentProductListPanel(productWavelengthDependentPanel);
 
 
         waveDependentJList.addListSelectionListener(new ListSelectionListener() {
             @Override
 
             public void valueChanged(ListSelectionEvent e) {
-                updateSelectedProductsJTextArea();
+           //     updateSelectedProductsJTextArea();
 
 
             }
@@ -1690,7 +1692,7 @@ class L2genForm extends JTabbedPane {
             @Override
 
             public void valueChanged(ListSelectionEvent e) {
-                updateSelectedProductsJTextArea();
+              //  updateSelectedProductsJTextArea();
 
 
             }
@@ -1784,13 +1786,15 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createProductSelectorProductListPanel(JPanel productPanel, ArrayList<ProductInfo> productInfoArrayList,
-                                                       String myTitle, JList algorithmInfoJList) {
+    private void createProductSelectorWaveIndependentProductListPanel(JPanel productPanel) {
+
+        String myTitle = "Products (Wavelength Independent)";
+
 
         // Create arrayList for all the algorithmInfo objects
         ArrayList<AlgorithmInfo> algorithmInfoArrayList = new ArrayList<AlgorithmInfo>();
 
-        for (ProductInfo productInfo : productInfoArrayList) {
+        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
 
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 algorithmInfo.setToStringShowProductName(true);
@@ -1804,8 +1808,8 @@ class L2genForm extends JTabbedPane {
         algorithmInfoArrayList.toArray(algorithmInfoArray);
 
         // format the JList control
-        algorithmInfoJList.setListData(algorithmInfoArray);
-        JScrollPane algorithmInfoJListScrollPane = new JScrollPane(algorithmInfoJList);
+        waveIndependentJList.setListData(algorithmInfoArray);
+        JScrollPane algorithmInfoJListScrollPane = new JScrollPane(waveIndependentJList);
         algorithmInfoJListScrollPane.setMinimumSize(new Dimension(400, 400));
         algorithmInfoJListScrollPane.setMaximumSize(new Dimension(400, 400));
         algorithmInfoJListScrollPane.setPreferredSize(new Dimension(400, 400));
@@ -1826,8 +1830,64 @@ class L2genForm extends JTabbedPane {
 
     }
 
+    private void updateWaveDependentJList() {
 
-    private void updateSelectedProductsJTextArea() {
+      //  waveDependentJList.removeAll();
+
+        ArrayList<WavelengthInfo> wavelengthInfoArrayList = new ArrayList<WavelengthInfo>();
+
+        for (ProductInfo productInfo : l2genData.getWaveDependentProductInfoArray()) {
+            System.out.println(productInfo.toString());
+            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                System.out.println(algorithmInfo.toString());
+                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
+                    wavelengthInfo.setToStringShowProductName(true);
+                    System.out.println(wavelengthInfo.toString());
+                    wavelengthInfoArrayList.add(wavelengthInfo);
+                }
+            }
+        }
+
+        // Store the arrayList into an array which can then be fed into a JList control
+        WavelengthInfo[] wavelengthInfoArray = new WavelengthInfo[wavelengthInfoArrayList.size()];
+        wavelengthInfoArrayList.toArray(wavelengthInfoArray);
+
+        // format the JList control
+        waveDependentJList.setListData(wavelengthInfoArray);
+    }
+
+
+
+    private void createProductSelectorWaveDependentProductListPanel(JPanel productPanel) {
+
+        String myTitle = "Products (Wavelength Dependent)";
+
+         updateWaveDependentJList();
+
+
+        JScrollPane waveDependentJListJScrollPane = new JScrollPane(waveDependentJList);
+        waveDependentJListJScrollPane.setMinimumSize(new Dimension(400, 400));
+        waveDependentJListJScrollPane.setMaximumSize(new Dimension(400, 400));
+        waveDependentJListJScrollPane.setPreferredSize(new Dimension(400, 400));
+
+        productPanel.setBorder(BorderFactory.createTitledBorder(myTitle));
+        productPanel.setLayout(new GridBagLayout());
+
+        // Add to productPanel grid cell
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.BOTH;
+            c.weightx = 1;
+            c.weighty = 1;
+            productPanel.add(waveDependentJListJScrollPane, c);
+        }
+
+    }
+
+
+    private void updateSelectedProductsJTextAre() {
 
         final StringBuilder selectedProductListStringBuilder = new StringBuilder("");
         final StringBuilder currentSelectedProductStringBuilder = new StringBuilder("");
@@ -1945,7 +2005,7 @@ class L2genForm extends JTabbedPane {
         selectedProductsJTextArea.setColumns(20);
         selectedProductsJTextArea.setRows(5);
 
-        updateSelectedProductsJTextArea();
+       // updateSelectedProductsJTextArea();
 
         // Add openButton control to a mainPanel grid cell
         {
@@ -2161,7 +2221,7 @@ class L2genForm extends JTabbedPane {
                 Product sourceProduct = getSourceProduct();
                 updateTargetProductName(sourceProduct);
                 updateProductSelectorWavelengthsPanel();
-                updateSelectedProductsJTextArea();
+               // updateSelectedProductsJTextArea();
 //                updateParfileJTextArea();
             }
         });
