@@ -1,5 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import com.sun.org.apache.xml.internal.security.algorithms.Algorithm;
+
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -28,6 +30,14 @@ public class L2genData {
     private boolean isSelectedWavelengthTypeIii = false;
     private boolean isSelectedWavelengthTypeVvv = false;
 
+
+
+
+
+    private HashMap<String, Object> disabledEvents = new HashMap<String, Object>();
+    private HashMap<String, Object> disabledEventsChangeOccurred = new HashMap<String, Object>();
+
+
     private String missionString = "";
 
     private String parfile;
@@ -49,6 +59,10 @@ public class L2genData {
 
     private String OCDATAROOT = System.getenv("OCDATAROOT");
 
+
+    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
+
+
     public enum RegionType {Coordinates, PixelLines}
 
 
@@ -65,6 +79,93 @@ public class L2genData {
     private final String[] pixelLineParamKeys = {SPIXL, EPIXL, DPIXL, SLINE, ELINE, DLINE};
     private final String[] fileIOParamKeys = {IFILE, OFILE};
     private final String[] remainingGUIParamKeys = {};
+
+
+    public EventInfo[] eventInfos = {
+            new EventInfo(UPDATE_WAVE_DEPENDENT_JLIST_EVENT, this),
+            new EventInfo(UPDATE_WAVE_INDEPENDENT_JLIST_EVENT, this)
+    };
+
+    
+
+    public L2genData() {
+    }
+
+    
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+    }
+
+    public SwingPropertyChangeSupport getPropertyChangeSupport() {
+        return propertyChangeSupport;
+    }
+
+    
+    
+    public void disableEvent(String eventName) {
+        for (EventInfo eventInfo : eventInfos) {
+            if (eventName.equals(eventInfo.toString())) {
+                eventInfo.setEnabled(false);
+            }
+        }
+    }
+
+    public void enableEvent(String eventName) {
+        for (EventInfo eventInfo : eventInfos) {
+            if (eventName.equals(eventInfo.toString())) {
+                eventInfo.setEnabled(true);
+            }
+        }
+    }
+
+    public void fireEvent(String eventName) {
+        for (EventInfo eventInfo : eventInfos) {
+            if (eventName.equals(eventInfo.toString())) {
+                eventInfo.fire();
+            }
+        }
+    }
+
+
+
+
+
+    public void setWaveDependentProductInfoArray(WavelengthInfo inWavelengthInfo, boolean isSelected) {
+
+        for (ProductInfo productInfo : waveDependentProductInfoArray) {
+            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
+                    if (inWavelengthInfo == wavelengthInfo) {
+                        if (inWavelengthInfo.isSelected() != wavelengthInfo.isSelected()) {
+                            wavelengthInfo.setSelected(isSelected);
+
+                            fireEvent(UPDATE_WAVE_DEPENDENT_JLIST_EVENT);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    public void setWaveIndependentProductInfoArray(AlgorithmInfo inAlgorithmInfo, boolean isSelected) {
+
+        for (ProductInfo productInfo : waveDependentProductInfoArray) {
+            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                if (inAlgorithmInfo == algorithmInfo) {
+                    if (inAlgorithmInfo.isSelected() != algorithmInfo.isSelected()) {
+                        algorithmInfo.setSelected(isSelected);
+
+                        fireEvent(UPDATE_WAVE_INDEPENDENT_JLIST_EVENT);
+                    }
+                }
+            }
+        }
+    }
 
 
     public boolean isSelectedWavelengthTypeIii() {
@@ -97,10 +198,6 @@ public class L2genData {
         }
 
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT, null, null));
-    }
-
-
-    public L2genData() {
     }
 
 
@@ -192,17 +289,6 @@ public class L2genData {
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_VVV_CHECKBOX_STATES_EVENT, null, null));
             }
         }
-    }
-
-
-    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
-
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
-    }
-
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
     }
 
 
@@ -761,8 +847,6 @@ public class L2genData {
             }
         }
     }
-
-
 
 
     public void setIsSelectedWavelengthInfoArray(String wavelength, boolean isSelected) {

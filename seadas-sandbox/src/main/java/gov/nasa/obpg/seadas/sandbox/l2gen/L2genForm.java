@@ -272,7 +272,7 @@ class L2genForm extends JTabbedPane {
 
         updateWaveDependentJList();
         updateWavelengthCheckboxSelectionStateEvent();
-      //  updateSelectedProductsJTextArea();
+        //  updateSelectedProductsJTextArea();
 
     }
 
@@ -331,11 +331,13 @@ class L2genForm extends JTabbedPane {
         for (ProductInfo productInfo : l2genData.getWaveDependentProductInfoArray()) {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
 
-                if (algorithmInfo.isSelected() == true) {
-                    waveDependentJList.setSelectedIndex(idx);
-                }
+                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
+                    if (wavelengthInfo.isSelected() == true) {
+                        waveDependentJList.setSelectedIndex(idx);
+                    }
 
-                idx++;
+                    idx++;
+                }
             }
         }
     }
@@ -1112,7 +1114,7 @@ class L2genForm extends JTabbedPane {
             @Override
 
             public void valueChanged(ListSelectionEvent e) {
-           //     updateSelectedProductsJTextArea();
+                //     updateSelectedProductsJTextArea();
 
 
             }
@@ -1682,8 +1684,8 @@ class L2genForm extends JTabbedPane {
             @Override
 
             public void valueChanged(ListSelectionEvent e) {
-           //     updateSelectedProductsJTextArea();
-
+                //    updateSelectedProductsJTextAre();
+                updateWaveDependentProductInfo();
 
             }
         });
@@ -1692,7 +1694,8 @@ class L2genForm extends JTabbedPane {
             @Override
 
             public void valueChanged(ListSelectionEvent e) {
-              //  updateSelectedProductsJTextArea();
+                //  updateSelectedProductsJTextArea();
+                updateWaveIndependentProductInfo();
 
 
             }
@@ -1832,7 +1835,7 @@ class L2genForm extends JTabbedPane {
 
     private void updateWaveDependentJList() {
 
-      //  waveDependentJList.removeAll();
+        //  waveDependentJList.removeAll();
 
         ArrayList<WavelengthInfo> wavelengthInfoArrayList = new ArrayList<WavelengthInfo>();
 
@@ -1857,12 +1860,11 @@ class L2genForm extends JTabbedPane {
     }
 
 
-
     private void createProductSelectorWaveDependentProductListPanel(JPanel productPanel) {
 
         String myTitle = "Products (Wavelength Dependent)";
 
-         updateWaveDependentJList();
+        updateWaveDependentJList();
 
 
         JScrollPane waveDependentJListJScrollPane = new JScrollPane(waveDependentJList);
@@ -1884,6 +1886,38 @@ class L2genForm extends JTabbedPane {
             productPanel.add(waveDependentJListJScrollPane, c);
         }
 
+    }
+
+
+    private void updateWaveIndependentProductInfo() {
+
+        l2genData.disableEvent(l2genData.UPDATE_WAVE_INDEPENDENT_JLIST_EVENT);
+
+        for (int i = 0; i < waveIndependentJList.getModel().getSize(); i++) {
+            AlgorithmInfo algorithmInfo = (AlgorithmInfo) waveIndependentJList.getModel().getElementAt(i);
+
+            if (waveIndependentJList.isSelectedIndex(i) != algorithmInfo.isSelected()) {
+                l2genData.setWaveIndependentProductInfoArray(algorithmInfo, waveIndependentJList.isSelectedIndex(i));
+            }
+        }
+
+        l2genData.enableEvent(l2genData.UPDATE_WAVE_INDEPENDENT_JLIST_EVENT);
+    }
+
+
+    private void updateWaveDependentProductInfo() {
+
+        l2genData.disableEvent(l2genData.UPDATE_WAVE_DEPENDENT_JLIST_EVENT);
+
+        for (int i = 0; i < waveDependentJList.getModel().getSize(); i++) {
+            WavelengthInfo wavelengthInfo = (WavelengthInfo) waveDependentJList.getModel().getElementAt(i);
+
+            if (waveDependentJList.isSelectedIndex(i) != wavelengthInfo.isSelected()) {
+                l2genData.setWaveDependentProductInfoArray(wavelengthInfo, waveDependentJList.isSelectedIndex(i));
+            }
+        }
+
+        l2genData.enableEvent(l2genData.UPDATE_WAVE_DEPENDENT_JLIST_EVENT);
     }
 
 
@@ -2005,7 +2039,7 @@ class L2genForm extends JTabbedPane {
         selectedProductsJTextArea.setColumns(20);
         selectedProductsJTextArea.setRows(5);
 
-       // updateSelectedProductsJTextArea();
+        // updateSelectedProductsJTextArea();
 
         // Add openButton control to a mainPanel grid cell
         {
@@ -2221,7 +2255,7 @@ class L2genForm extends JTabbedPane {
                 Product sourceProduct = getSourceProduct();
                 updateTargetProductName(sourceProduct);
                 updateProductSelectorWavelengthsPanel();
-               // updateSelectedProductsJTextArea();
+                // updateSelectedProductsJTextArea();
 //                updateParfileJTextArea();
             }
         });
