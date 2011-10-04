@@ -1,6 +1,8 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * A ...
@@ -13,16 +15,15 @@ public class EventInfo {
     private String name;
     private boolean enabled = false;
     private boolean pending = false;
-    L2genData l2genData;
+    Object sourceObject;
+    private SwingPropertyChangeSupport propertyChangeSupport;
 
-    public EventInfo(String name, L2genData l2genData) {
+    public EventInfo(String name, Object sourceObject) {
         this.name = name;
-        this.l2genData = l2genData;
+        this.sourceObject = sourceObject;
+        propertyChangeSupport = new SwingPropertyChangeSupport(sourceObject);
     }
 
-    public String toString() {
-        return name;
-    }
 
     public boolean isEnabled() {
         return enabled;
@@ -30,6 +31,10 @@ public class EventInfo {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+
+        if (enabled && pending) {
+            fireEvent();
+        }
     }
 
     public boolean isPending() {
@@ -44,17 +49,38 @@ public class EventInfo {
         return name;
     }
 
-    public void fire() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    public void fireEvent(Object oldValue, Object newValue) {
         if (enabled != true) {
             pending = true;
         } else {
             pending = false;
-            l2genData.getPropertyChangeSupport().firePropertyChange(new PropertyChangeEvent(l2genData, name, null, null));
+            System.out.println("Firing event" + name);
+            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(sourceObject, name, oldValue, newValue));
         }
     }
 
-
-    public void setName(String name) {
-        this.name = name;
+    public void fireEvent() {
+        fireEvent(null, null);
     }
+
+
+
+
+    public String toString() {
+        return name;
+    }
+
 }

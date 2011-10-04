@@ -242,18 +242,18 @@ class L2genForm extends JTabbedPane {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.UPDATE_WAVE_DEPENDENT_JLIST_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                updateWaveDependentJListEvent();
+                waveDependentProductChangedHandler();
 
             }
         });
 
-        l2genData.addPropertyChangeListener(l2genData.UPDATE_WAVE_INDEPENDENT_JLIST_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                updateWaveIndependentJListEvent();
+                waveIndependentProductChangedHandler();
 
             }
         });
@@ -303,7 +303,10 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void updateWaveIndependentJListEvent() {
+    private void waveIndependentProductChangedHandler() {
+
+        System.out.println("waveIndependentProductChangedHandler invoked");
+        selectedProductsJTextArea.setText(l2genData.getProdlist());
 
         waveIndependentJList.clearSelection();
 
@@ -322,7 +325,10 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void updateWaveDependentJListEvent() {
+    private void waveDependentProductChangedHandler() {
+
+        System.out.println("waveDependentProductChangedHandler invoked");
+        selectedProductsJTextArea.setText(l2genData.getProdlist());
 
         waveDependentJList.clearSelection();
 
@@ -1116,7 +1122,7 @@ class L2genForm extends JTabbedPane {
             public void valueChanged(ListSelectionEvent e) {
                 //     updateSelectedProductsJTextArea();
 
-
+                updateWaveDependentProductInfo();
             }
         });
 
@@ -1125,7 +1131,7 @@ class L2genForm extends JTabbedPane {
 
             public void valueChanged(ListSelectionEvent e) {
                 // updateSelectedProductsJTextArea();
-
+                updateWaveIndependentProductInfo();
 
             }
         });
@@ -1657,138 +1663,6 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createOldProductSelectorTab(String myTabname) {
-
-        wavelengthsJPanel = new JPanel();
-        final JPanel productWavelengthIndependentPanel = new JPanel();
-        final JPanel productWavelengthDependentPanel = new JPanel();
-        final JPanel selectedProductsPanel = new JPanel();
-
-        L2genReader l2genReader = new L2genReader(l2genData);
-
-        l2genReader.readProductsXmlFile(SEADAS_PRODUCTS_FILE);
-
-        //    l2genData.initProductInfoArrays(SEADAS_PRODUCTS_FILE);
-
-        waveIndependentJList = new JList();
-        waveDependentJList = new JList();
-
-        createProductSelectorWavelengthsPanel();
-
-        createProductSelectorWaveIndependentProductListPanel(productWavelengthIndependentPanel);
-
-        createProductSelectorWaveDependentProductListPanel(productWavelengthDependentPanel);
-
-
-        waveDependentJList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-
-            public void valueChanged(ListSelectionEvent e) {
-                //    updateSelectedProductsJTextAre();
-                updateWaveDependentProductInfo();
-
-            }
-        });
-
-        waveIndependentJList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-
-            public void valueChanged(ListSelectionEvent e) {
-                //  updateSelectedProductsJTextArea();
-                updateWaveIndependentProductInfo();
-
-
-            }
-        });
-
-
-        createSelectedProductsPanel(selectedProductsPanel);
-
-
-        // Declare mainPanel and set it's attributes
-        final JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new
-
-                GridBagLayout()
-
-        );
-
-
-        // Add to mainPanel grid cell
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.anchor = GridBagConstraints.NORTH;
-            c.weightx = 0;
-            c.weighty = 0;
-            mainPanel.add(wavelengthsJPanel, c);
-        }
-
-
-        // Add to mainPanel grid cell
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 1;
-            c.fill = GridBagConstraints.BOTH;
-            c.anchor = GridBagConstraints.NORTH;
-            c.weightx = 0;
-            c.weighty = 0;
-            mainPanel.add(productWavelengthDependentPanel, c);
-        }
-
-
-        // Add to mainPanel grid cell
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 2;
-            c.fill = GridBagConstraints.BOTH;
-            c.anchor = GridBagConstraints.NORTH;
-            c.weightx = 0;
-            c.weighty = 0;
-            mainPanel.add(productWavelengthIndependentPanel, c);
-        }
-
-        // Add to mainPanel grid cell
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 3;
-            c.fill = GridBagConstraints.BOTH;
-            c.anchor = GridBagConstraints.NORTH;
-            c.weightx = 1;
-            c.weighty = 1;
-            mainPanel.add(selectedProductsPanel, c);
-        }
-
-
-        final JPanel finalMainPanel = new JPanel();
-        finalMainPanel.setLayout(new
-
-                GridBagLayout()
-
-        );
-
-        {
-            final GridBagConstraints c;
-            c = new GridBagConstraints();
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.insets = new Insets(3, 3, 3, 3);
-            c.fill = GridBagConstraints.BOTH;
-            c.weightx = 1;
-            c.weighty = 1;
-
-            finalMainPanel.add(mainPanel, c);
-        }
-
-
-        addTab(myTabname, finalMainPanel);
-    }
-
-
     private void createProductSelectorWaveIndependentProductListPanel(JPanel productPanel) {
 
         String myTitle = "Products (Wavelength Independent)";
@@ -1891,7 +1765,7 @@ class L2genForm extends JTabbedPane {
 
     private void updateWaveIndependentProductInfo() {
 
-        l2genData.disableEvent(l2genData.UPDATE_WAVE_INDEPENDENT_JLIST_EVENT);
+        l2genData.disableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
 
         for (int i = 0; i < waveIndependentJList.getModel().getSize(); i++) {
             AlgorithmInfo algorithmInfo = (AlgorithmInfo) waveIndependentJList.getModel().getElementAt(i);
@@ -1901,13 +1775,13 @@ class L2genForm extends JTabbedPane {
             }
         }
 
-        l2genData.enableEvent(l2genData.UPDATE_WAVE_INDEPENDENT_JLIST_EVENT);
+        l2genData.enableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
     }
 
 
     private void updateWaveDependentProductInfo() {
 
-        l2genData.disableEvent(l2genData.UPDATE_WAVE_DEPENDENT_JLIST_EVENT);
+        l2genData.disableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
 
         for (int i = 0; i < waveDependentJList.getModel().getSize(); i++) {
             WavelengthInfo wavelengthInfo = (WavelengthInfo) waveDependentJList.getModel().getElementAt(i);
@@ -1917,8 +1791,11 @@ class L2genForm extends JTabbedPane {
             }
         }
 
-        l2genData.enableEvent(l2genData.UPDATE_WAVE_DEPENDENT_JLIST_EVENT);
+        l2genData.enableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
     }
+
+
+
 
 
     private void updateSelectedProductsJTextAre() {

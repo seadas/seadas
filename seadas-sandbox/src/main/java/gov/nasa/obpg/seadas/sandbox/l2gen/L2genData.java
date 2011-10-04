@@ -1,7 +1,5 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
-import com.sun.org.apache.xml.internal.security.algorithms.Algorithm;
-
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -19,29 +17,6 @@ import java.util.*;
  */
 public class L2genData {
 
-    private HashMap<String, String> paramValueHashMap = new HashMap();
-    private HashMap<String, String> defaultParamValueHashMap = new HashMap();
-    private TreeSet<String> l2prodlist = new TreeSet<String>();
-    private ArrayList<ProductInfo> waveIndependentProductInfoArray = new ArrayList<ProductInfo>();
-
-    private ArrayList<ProductInfo> waveDependentProductInfoArray = new ArrayList<ProductInfo>();
-
-    private ArrayList<WavelengthInfo> wavelengthInfoArray = new ArrayList<WavelengthInfo>();
-    private boolean isSelectedWavelengthTypeIii = false;
-    private boolean isSelectedWavelengthTypeVvv = false;
-
-
-
-
-
-    private HashMap<String, Object> disabledEvents = new HashMap<String, Object>();
-    private HashMap<String, Object> disabledEventsChangeOccurred = new HashMap<String, Object>();
-
-
-    private String missionString = "";
-
-    private String parfile;
-
     public final String SPIXL = "spixl";
     public final String EPIXL = "epixl";
     public final String DPIXL = "dpixl";
@@ -56,23 +31,14 @@ public class L2genData {
     public final String OFILE = "ofile";
     public final String PROD = "prod";
 
-
-    private String OCDATAROOT = System.getenv("OCDATAROOT");
-
-
-    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
-
-
-    public enum RegionType {Coordinates, PixelLines}
-
-
     public final String PARFILE_TEXT_CHANGE_EVENT_NAME = "parfileTextChangeEvent";
     public final String MISSION_STRING_CHANGE_EVENT_NAME = "missionStringChangeEvent";
     public final String UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT = "updateWavelengthCheckboxStatesEvent";
     public final String UPDATE_WAVELENGTH_III_CHECKBOX_STATES_EVENT = "updateWavelengthIiiCheckboxStatesEvent";
     public final String UPDATE_WAVELENGTH_VVV_CHECKBOX_STATES_EVENT = "updateWavelengthVvvCheckboxStatesEvent";
-    public final String UPDATE_WAVE_DEPENDENT_JLIST_EVENT = "updateWaveDependentJListEvent";
-    public final String UPDATE_WAVE_INDEPENDENT_JLIST_EVENT = "updateWaveIndependentJListEvent";
+    public final String WAVE_DEPENDENT_PRODUCT_CHANGED = "waveDependentJListEvent";
+    public final String WAVE_INDEPENDENT_PRODUCT_CHANGED = "waveIndependentJListEvent";
+
 
     // Groupings of Parameter Keys
     private final String[] coordinateParamKeys = {NORTH, SOUTH, WEST, EAST};
@@ -81,31 +47,66 @@ public class L2genData {
     private final String[] remainingGUIParamKeys = {};
 
 
+    private String OCDATAROOT = System.getenv("OCDATAROOT");
+    private HashMap<String, String> paramValueHashMap = new HashMap();
+    private HashMap<String, String> defaultParamValueHashMap = new HashMap();
+    private TreeSet<String> l2prodlist = new TreeSet<String>();
+    private ArrayList<ProductInfo> waveIndependentProductInfoArray = new ArrayList<ProductInfo>();
+    private ArrayList<ProductInfo> waveDependentProductInfoArray = new ArrayList<ProductInfo>();
+
+    private ArrayList<WavelengthInfo> wavelengthInfoArray = new ArrayList<WavelengthInfo>();
+    private boolean isSelectedWavelengthTypeIii = false;
+    private boolean isSelectedWavelengthTypeVvv = false;
+
+    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
+
+    private String missionString = "";
+    private String parfile;
+
+    public enum RegionType {Coordinates, PixelLines}
+
+
     public EventInfo[] eventInfos = {
-            new EventInfo(UPDATE_WAVE_DEPENDENT_JLIST_EVENT, this),
-            new EventInfo(UPDATE_WAVE_INDEPENDENT_JLIST_EVENT, this)
+            new EventInfo(WAVE_DEPENDENT_PRODUCT_CHANGED, this),
+            new EventInfo(WAVE_INDEPENDENT_PRODUCT_CHANGED, this)
     };
 
-    
 
     public L2genData() {
     }
 
-    
+
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+        boolean found = false;
+
+        for (EventInfo eventInfo : eventInfos) {
+            if (propertyName.equals(eventInfo.getName())) {
+                eventInfo.addPropertyChangeListener(listener);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+        }
     }
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+        boolean found = false;
+
+        for (EventInfo eventInfo : eventInfos) {
+            if (propertyName.equals(eventInfo.getName())) {
+                eventInfo.removePropertyChangeListener(listener);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+        }
     }
 
-    public SwingPropertyChangeSupport getPropertyChangeSupport() {
-        return propertyChangeSupport;
-    }
 
-    
-    
     public void disableEvent(String eventName) {
         for (EventInfo eventInfo : eventInfos) {
             if (eventName.equals(eventInfo.toString())) {
@@ -117,33 +118,37 @@ public class L2genData {
     public void enableEvent(String eventName) {
         for (EventInfo eventInfo : eventInfos) {
             if (eventName.equals(eventInfo.toString())) {
+
+                System.out.println("Enabling event" + eventName);
                 eventInfo.setEnabled(true);
             }
         }
     }
 
-    public void fireEvent(String eventName) {
+    private void fireEvent(String eventName) {
+        fireEvent(eventName, null, null);
+    }
+
+
+    private void fireEvent(String eventName, Object oldValue, Object newValue) {
         for (EventInfo eventInfo : eventInfos) {
             if (eventName.equals(eventInfo.toString())) {
-                eventInfo.fire();
+                eventInfo.fireEvent(oldValue, newValue);
             }
         }
     }
 
 
 
-
-
     public void setWaveDependentProductInfoArray(WavelengthInfo inWavelengthInfo, boolean isSelected) {
-
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
                     if (inWavelengthInfo == wavelengthInfo) {
-                        if (inWavelengthInfo.isSelected() != wavelengthInfo.isSelected()) {
+                        if (wavelengthInfo.isSelected() != isSelected) {
                             wavelengthInfo.setSelected(isSelected);
-
-                            fireEvent(UPDATE_WAVE_DEPENDENT_JLIST_EVENT);
+                            System.out.println(wavelengthInfo.toString());
+                            fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
                         }
                     }
                 }
@@ -153,18 +158,76 @@ public class L2genData {
 
 
     public void setWaveIndependentProductInfoArray(AlgorithmInfo inAlgorithmInfo, boolean isSelected) {
-
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 if (inAlgorithmInfo == algorithmInfo) {
-                    if (inAlgorithmInfo.isSelected() != algorithmInfo.isSelected()) {
+                    if (inAlgorithmInfo.isSelected() != isSelected) {
                         algorithmInfo.setSelected(isSelected);
-
-                        fireEvent(UPDATE_WAVE_INDEPENDENT_JLIST_EVENT);
+                        fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
                     }
                 }
             }
         }
+    }
+
+
+    public String getProdlist() {
+        String prodlist = makeProdlist();
+
+        return prodlist;
+    }
+
+
+    private String makeProdlist() {
+        StringBuilder prodlist = new StringBuilder("");
+
+        for (ProductInfo productInfo : waveDependentProductInfoArray) {
+            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                if (algorithmInfo.isSelected()) {
+                    StringBuilder product = new StringBuilder();
+
+                    product.append(productInfo.getName());
+
+                    if (algorithmInfo.getName() != null) {
+                        product.append("_");
+                        product.append(algorithmInfo.getName());
+                    }
+
+                    if (prodlist.length() > 0) {
+                        prodlist.append(" ");
+                    }
+
+                    prodlist.append(product);
+                }
+            }
+        }
+
+        for (ProductInfo productInfo : waveIndependentProductInfoArray) {
+            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
+                    if (wavelengthInfo.isSelected()) {
+                        StringBuilder product = new StringBuilder();
+
+                        product.append(productInfo.getName());
+                        product.append("_");
+                        product.append(wavelengthInfo.toString());
+
+                        if (algorithmInfo.getName() != null) {
+                            product.append("_");
+                            product.append(algorithmInfo.getName());
+                        }
+
+                        if (prodlist.length() > 0) {
+                            prodlist.append(" ");
+                        }
+
+                        prodlist.append(product);
+                    }
+                }
+            }
+        }
+
+        return prodlist.toString();
     }
 
 
@@ -182,6 +245,7 @@ public class L2genData {
         }
 
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT, null, null));
+
     }
 
     public boolean isSelectedWavelengthTypeVvv() {
@@ -196,7 +260,6 @@ public class L2genData {
                 wavelengthInfo.setSelected(selectedWavelengthTypeVvv);
             }
         }
-
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT, null, null));
     }
 
@@ -242,7 +305,7 @@ public class L2genData {
         this.wavelengthInfoArray = wavelengthInfoArray;
 
         // Determine whether isSelectedWavelengthTypeIii boolean needs to be changed
-        // if so then change and fire event so GUI can effect the change as well
+        // if so then change and fireEvent event so GUI can effect the change as well
         int selectionCountIii = 0;
         int countIii = 0;
 
@@ -257,6 +320,7 @@ public class L2genData {
             if (isSelectedWavelengthTypeIii != true) {
                 isSelectedWavelengthTypeIii = true;
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_III_CHECKBOX_STATES_EVENT, null, null));
+
             }
         } else {
             if (isSelectedWavelengthTypeIii != false) {
@@ -267,7 +331,7 @@ public class L2genData {
 
 
         // Determine whether isSelectedWavelengthTypeVvv boolean needs to be changed
-        // if so then change and fire event so GUI can effect the change as well
+        // if so then change and fireEvent event so GUI can effect the change as well
         int selectionCountVvv = 0;
         int countVvv = 0;
 
@@ -282,11 +346,13 @@ public class L2genData {
             if (isSelectedWavelengthTypeVvv != true) {
                 isSelectedWavelengthTypeVvv = true;
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_VVV_CHECKBOX_STATES_EVENT, null, null));
+
             }
         } else {
             if (isSelectedWavelengthTypeVvv != false) {
                 isSelectedWavelengthTypeVvv = false;
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_VVV_CHECKBOX_STATES_EVENT, null, null));
+
             }
         }
     }
@@ -332,6 +398,7 @@ public class L2genData {
 
         } else if (regionType == RegionType.PixelLines) {
             // Since PixelLines are being used purge Coordinate fields
+
             for (String currKey : coordinateParamKeys) {
                 paramValueHashMap.remove(currKey);
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(
@@ -339,6 +406,7 @@ public class L2genData {
                         this, currKey, null, ""));
 
             }
+
         }
     }
 
@@ -366,6 +434,12 @@ public class L2genData {
             stringBuilder.append(paramValueHashMap.get(currKey));
             stringBuilder.append("\n");
         }
+    }
+
+
+    public String getParfile() {
+
+        return parfile;
     }
 
 
@@ -441,9 +515,7 @@ public class L2genData {
         parfile = parfileStringBuilder.toString();
 
         System.out.println("firing PARFILE_TEXT_CHANGE_EVENT_NAME with parfile:" + parfile);
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(
-                this, PARFILE_TEXT_CHANGE_EVENT_NAME, null, parfile));
-
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, PARFILE_TEXT_CHANGE_EVENT_NAME, null, null));
     }
 
 
@@ -524,14 +596,19 @@ public class L2genData {
     public void setParamValue(String inKey, String inValue) {
 
         inKey = inKey.trim();
-        inValue = inValue.trim();
+
+        if (inValue == null) {
+            inValue = "";
+        } else {
+            inValue = inValue.trim();
+        }
 
         System.out.println("setParam " + inKey + "=" + inValue);
 
         String currentVal = paramValueHashMap.get(inKey);
 
         if (currentVal == null || !currentVal.equals(inValue)) {
-            if (inValue == null || inValue.length() == 0) {
+            if (inValue.length() == 0) {
                 paramValueHashMap.remove(inKey);
             } else {
                 paramValueHashMap.put(inKey, inValue);
@@ -712,10 +789,6 @@ public class L2genData {
     }
 
 
-    public String getParfile() {
-        return parfile;
-    }
-
     public void setParfile(String inParfile) {
 
         if (!parfile.equals(inParfile)) {
@@ -732,7 +805,6 @@ public class L2genData {
             String oldValue = this.missionString;
             this.missionString = missionString;
             propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_STRING_CHANGE_EVENT_NAME, oldValue, missionString));
-
         }
     }
 
@@ -814,9 +886,7 @@ public class L2genData {
             }
 
             resetAlgorithmInfoWavelengthInfo();
-
             propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_STRING_CHANGE_EVENT_NAME, null, missionString));
-
         }
     }
 
