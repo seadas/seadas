@@ -40,8 +40,16 @@ public class WavelengthInfo {
         return wavelength;
     }
 
+
+
+
+
     public void setWavelength(int wavelength) {
         this.wavelength = wavelength;
+    }
+
+    public String getWavelengthString() {
+        return Integer.toString(wavelength);
     }
 
     public boolean isSelected() {

@@ -34,8 +34,6 @@ public class L2genData {
     public final String PARFILE_TEXT_CHANGE_EVENT_NAME = "parfileTextChangeEvent";
     public final String MISSION_STRING_CHANGE_EVENT_NAME = "missionStringChangeEvent";
     public final String UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT = "updateWavelengthCheckboxStatesEvent";
-    public final String UPDATE_WAVELENGTH_III_CHECKBOX_STATES_EVENT = "updateWavelengthIiiCheckboxStatesEvent";
-    public final String UPDATE_WAVELENGTH_VVV_CHECKBOX_STATES_EVENT = "updateWavelengthVvvCheckboxStatesEvent";
     public final String WAVE_DEPENDENT_PRODUCT_CHANGED = "waveDependentJListEvent";
     public final String WAVE_INDEPENDENT_PRODUCT_CHANGED = "waveIndependentJListEvent";
 
@@ -55,8 +53,7 @@ public class L2genData {
     private ArrayList<ProductInfo> waveDependentProductInfoArray = new ArrayList<ProductInfo>();
 
     private ArrayList<WavelengthInfo> wavelengthInfoArray = new ArrayList<WavelengthInfo>();
-    private boolean isSelectedWavelengthTypeIii = false;
-    private boolean isSelectedWavelengthTypeVvv = false;
+
 
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -110,6 +107,7 @@ public class L2genData {
     public void disableEvent(String eventName) {
         for (EventInfo eventInfo : eventInfos) {
             if (eventName.equals(eventInfo.toString())) {
+                System.out.println("Disabling event" + eventName);
                 eventInfo.setEnabled(false);
             }
         }
@@ -133,6 +131,7 @@ public class L2genData {
     private void fireEvent(String eventName, Object oldValue, Object newValue) {
         for (EventInfo eventInfo : eventInfos) {
             if (eventName.equals(eventInfo.toString())) {
+                System.out.println("Firing event" + eventName);
                 eventInfo.fireEvent(oldValue, newValue);
             }
         }
@@ -146,9 +145,12 @@ public class L2genData {
                 for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
                     if (inWavelengthInfo == wavelengthInfo) {
                         if (wavelengthInfo.isSelected() != isSelected) {
+                            boolean oldValue = wavelengthInfo.isSelected();
                             wavelengthInfo.setSelected(isSelected);
-                            System.out.println(wavelengthInfo.toString());
+
+                            System.out.println("in setWaveDependentProductInfoArray" + wavelengthInfo.toString() + oldValue + wavelengthInfo.isSelected());
                             fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+                            return;
                         }
                     }
                 }
@@ -174,6 +176,7 @@ public class L2genData {
     public String getProdlist() {
         String prodlist = makeProdlist();
 
+        System.out.println("prodlist=" +prodlist);
         return prodlist;
     }
 
@@ -181,7 +184,7 @@ public class L2genData {
     private String makeProdlist() {
         StringBuilder prodlist = new StringBuilder("");
 
-        for (ProductInfo productInfo : waveDependentProductInfoArray) {
+        for (ProductInfo productInfo : waveIndependentProductInfoArray) {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 if (algorithmInfo.isSelected()) {
                     StringBuilder product = new StringBuilder();
@@ -202,7 +205,7 @@ public class L2genData {
             }
         }
 
-        for (ProductInfo productInfo : waveIndependentProductInfoArray) {
+        for (ProductInfo productInfo : waveDependentProductInfoArray) {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
                     if (wavelengthInfo.isSelected()) {
@@ -210,7 +213,7 @@ public class L2genData {
 
                         product.append(productInfo.getName());
                         product.append("_");
-                        product.append(wavelengthInfo.toString());
+                        product.append(wavelengthInfo.getWavelengthString());
 
                         if (algorithmInfo.getName() != null) {
                             product.append("_");
@@ -221,7 +224,7 @@ public class L2genData {
                             prodlist.append(" ");
                         }
 
-                        prodlist.append(product);
+                        prodlist.append(product.toString());
                     }
                 }
             }
@@ -231,12 +234,44 @@ public class L2genData {
     }
 
 
-    public boolean isSelectedWavelengthTypeIii() {
-        return isSelectedWavelengthTypeIii;
+
+    public void setIsSelectedWavelengthInfoArray(String wavelength, boolean isSelected) {
+
+        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+            if (wavelength.equals(wavelengthInfo.getWavelengthString())) {
+                System.out.println(wavelength+":"+wavelengthInfo.isSelected()+":"+isSelected);
+                if (isSelected != wavelengthInfo.isSelected()) {
+                    wavelengthInfo.setSelected(isSelected);
+                    propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT, null, null));
+                }
+            }
+        }
+
+
     }
 
+
+
+    public boolean isSelectedWavelengthTypeIii() {
+
+        boolean infraredNotSelectedFound = false;
+
+        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+            if (wavelengthInfo.isIR() && !wavelengthInfo.isSelected()) {
+                infraredNotSelectedFound = true;
+            }
+        }
+
+        if (infraredNotSelectedFound) {
+            return false;
+        } else {
+            return  true;
+        }
+    }
+
+
+
     public void setSelectedWavelengthTypeIii(boolean selectedWavelengthTypeIii) {
-        isSelectedWavelengthTypeIii = selectedWavelengthTypeIii;
 
         for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
             if (wavelengthInfo.isIR()) {
@@ -249,17 +284,29 @@ public class L2genData {
     }
 
     public boolean isSelectedWavelengthTypeVvv() {
-        return isSelectedWavelengthTypeVvv;
+        boolean visibleNotSelectedFound = false;
+
+        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+            if (wavelengthInfo.isVisible() && !wavelengthInfo.isSelected()) {
+                visibleNotSelectedFound = true;
+            }
+        }
+
+        if (visibleNotSelectedFound) {
+            return false;
+        } else {
+            return  true;
+        }
     }
 
     public void setSelectedWavelengthTypeVvv(boolean selectedWavelengthTypeVvv) {
-        isSelectedWavelengthTypeVvv = selectedWavelengthTypeVvv;
 
         for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
             if (wavelengthInfo.isVisible()) {
                 wavelengthInfo.setSelected(selectedWavelengthTypeVvv);
             }
         }
+
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT, null, null));
     }
 
@@ -299,62 +346,6 @@ public class L2genData {
 
     public ArrayList<WavelengthInfo> getWavelengthInfoArray() {
         return wavelengthInfoArray;
-    }
-
-    public void setWavelengthInfoArray(ArrayList<WavelengthInfo> wavelengthInfoArray) {
-        this.wavelengthInfoArray = wavelengthInfoArray;
-
-        // Determine whether isSelectedWavelengthTypeIii boolean needs to be changed
-        // if so then change and fireEvent event so GUI can effect the change as well
-        int selectionCountIii = 0;
-        int countIii = 0;
-
-        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
-            if (wavelengthInfo.isIR() && wavelengthInfo.isSelected()) {
-                selectionCountIii++;
-                countIii++;
-            }
-        }
-
-        if (selectionCountIii == countIii) {
-            if (isSelectedWavelengthTypeIii != true) {
-                isSelectedWavelengthTypeIii = true;
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_III_CHECKBOX_STATES_EVENT, null, null));
-
-            }
-        } else {
-            if (isSelectedWavelengthTypeIii != false) {
-                isSelectedWavelengthTypeIii = false;
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_III_CHECKBOX_STATES_EVENT, null, null));
-            }
-        }
-
-
-        // Determine whether isSelectedWavelengthTypeVvv boolean needs to be changed
-        // if so then change and fireEvent event so GUI can effect the change as well
-        int selectionCountVvv = 0;
-        int countVvv = 0;
-
-        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
-            if (wavelengthInfo.isVisible() && wavelengthInfo.isSelected()) {
-                selectionCountVvv++;
-                countVvv++;
-            }
-        }
-
-        if (selectionCountVvv == countVvv) {
-            if (isSelectedWavelengthTypeVvv != true) {
-                isSelectedWavelengthTypeVvv = true;
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_VVV_CHECKBOX_STATES_EVENT, null, null));
-
-            }
-        } else {
-            if (isSelectedWavelengthTypeVvv != false) {
-                isSelectedWavelengthTypeVvv = false;
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, UPDATE_WAVELENGTH_VVV_CHECKBOX_STATES_EVENT, null, null));
-
-            }
-        }
     }
 
 
@@ -918,17 +909,6 @@ public class L2genData {
         }
     }
 
-
-    public void setIsSelectedWavelengthInfoArray(String wavelength, boolean isSelected) {
-
-        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
-            if (wavelength.equals(wavelengthInfo.getWavelength())) {
-                if (isSelected != wavelengthInfo.isSelected()) {
-                    wavelengthInfo.setSelected(isSelected);
-                }
-            }
-        }
-    }
 
     // apply all entries in l2prodHash to wavelengthInfoArray
     private void setIsSelectedWavelengthInfoArrayWithProdHash() {

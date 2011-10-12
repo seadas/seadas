@@ -13,7 +13,7 @@ import java.beans.PropertyChangeListener;
 public class EventInfo {
 
     private String name;
-    private boolean enabled = false;
+    private boolean enabled = true;
     private boolean pending = false;
     Object sourceObject;
     private SwingPropertyChangeSupport propertyChangeSupport;
@@ -25,33 +25,19 @@ public class EventInfo {
     }
 
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
 
-        if (enabled && pending) {
+        if (pending) {
             fireEvent();
         }
     }
 
-    public boolean isPending() {
-        return pending;
-    }
-
-    public void setPending(boolean pending) {
-        this.pending = pending;
-    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -63,7 +49,7 @@ public class EventInfo {
     }
 
     public void fireEvent(Object oldValue, Object newValue) {
-        if (enabled != true) {
+        if (!enabled) {
             pending = true;
         } else {
             pending = false;
