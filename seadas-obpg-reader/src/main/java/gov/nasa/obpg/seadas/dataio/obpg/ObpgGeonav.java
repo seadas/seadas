@@ -41,7 +41,7 @@ public class ObpgGeonav {
     private static final int   LAC_PIXEL_INCREMENT = 1;
 
     /* The sensorOffsetMatrix corresponds to navctl%msensoff and tiltCosVector
-     * corresponds to navctl%tiltcos in the Fortan version.  Both variables are
+     * corresponds to navctl%tiltcos in the Fortran version.  Both variables are
      * part of the navctl structure, which is read from the navctl.dat file in
      * the Fortran.
      */

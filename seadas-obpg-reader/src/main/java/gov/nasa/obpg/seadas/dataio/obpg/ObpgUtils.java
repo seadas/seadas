@@ -30,6 +30,7 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.nc2.iosp.hdf4.ODLparser;
 
+import javax.swing.tree.FixedHeightLayoutCache;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -45,6 +46,8 @@ public class ObpgUtils {
     static final String MODIS_L1B_TYPE = "MODIS_SWATH_Type_L1B";
     static final String MODIS_PLATFORM = "MODIS Platform";
     static final String MODIS_L1B_PARAM = "MODIS Resolution";
+
+    static final String SEAWIFS_L1A_TYPE = "SeaWiFS Level-1A Data";
 
     static final String KEY_NAME = "Product Name";
     static final String KEY_TYPE = "Title";
@@ -80,6 +83,8 @@ public class ObpgUtils {
     static final int[] MODIS_WVL = new int[]{645, 859, 469, 555, 1240, 1640, 2130, 412, 443, 488, 531, 547, 667, 678,
             748, 869, 905, 936, 940, 3750, 3959, 3959, 4050, 4465, 4515, 1375, 6715, 7325, 8550, 9730, 11030, 12020,
             13335, 13635, 13935, 14235};
+
+    static final int[] SEAWIFS_WVL = new int[]{412, 443, 490, 510, 555, 670, 765, 865};
 
     MetadataAttribute attributeToMetadata(Attribute attribute) {
         final int productDataType = getProductDataType(attribute.getDataType(), false, false);
@@ -196,7 +201,7 @@ public class ObpgUtils {
         if (title.contains("Aquarius")){
             return KEY_HEIGHT_AQUARIUS;
         } else if (title.contains("Level-2") || title.contains("Level-1B") || title.contains("Browse")
-                   || title.contains("SeaWiFS Level-1A Data")) {
+                   || title.contains(SEAWIFS_L1A_TYPE)) {
             return KEY_HEIGHT;
         } else if (title.contains("Level-3 Mapped")) {
             return KEY_L3SMI_HEIGHT;
@@ -243,6 +248,7 @@ public class ObpgUtils {
             return "SeaDAS Mapped";
         }
     }
+    
     public void addGlobalAttributeSeadasMapped(final NetcdfFile ncfile, List<Attribute> globalAttributes){
         int [] dims = ncfile.getVariables().get(0).getShape();
         String [] prodname = ncfile.getLocation().split("/");
@@ -293,7 +299,6 @@ public class ObpgUtils {
         String daynightflag = dnfElem.getValue().substring(1);
         Attribute dnfAttribute = new Attribute(KEY_DNF,daynightflag);
         globalAttributes.add(dnfAttribute);
-
 
         //grab granule date-time
         Element timeElem = inventoryElem.getChild("RANGEDATETIME");
@@ -488,7 +493,6 @@ public class ObpgUtils {
         }
     }
 
-
     private MetadataElement getMetadataElementSave(Product product, String name) {
         final MetadataElement metadataElement = product.getMetadataRoot().getElement(name);
         final MetadataElement namedElem;
@@ -510,7 +514,8 @@ public class ObpgUtils {
         final int sceneRasterHeight = product.getSceneRasterHeight();
         int spectralBandIndex = 0;
         for (Variable variable : variables) {
-            if (variable.getRank() == 2) {
+            int variableRank = variable.getRank();
+            if (variableRank == 2) {
                 final int[] dimensions = variable.getShape();
                 final int height = dimensions[0];
                 final int width = dimensions[1];
@@ -557,94 +562,161 @@ public class ObpgUtils {
                     }
                 }
             }
-             if (variable.getRank() == 3) {
-                final int[] dimensions = variable.getShape();
-                final int bands = dimensions[0];
-                final int height = dimensions[1];
-                final int width = dimensions[2];
+            if (variableRank == 3) {
+                if (product.getProductType().contains(MODIS_L1B_TYPE)) {
+                    spectralBandIndex = addModisBands(product, bandInfoMap, bandToVariableMap, sceneRasterWidth, sceneRasterHeight, spectralBandIndex, variable);
+                } else if (product.getProductType().contains(SEAWIFS_L1A_TYPE)) {
+                    spectralBandIndex = addSeawifsBands(product, bandInfoMap, bandToVariableMap, sceneRasterWidth, sceneRasterHeight, spectralBandIndex, variable);
+                }
+            }
+        }
 
-                if (height == sceneRasterHeight && width == sceneRasterWidth) {
-                    final List<Attribute> list = variable.getAttributes();
-                    Attribute band_names = findAttribute("band_names", list);
-                    if (band_names != null){ // Then treat as a MODIS L1B...
-                        String bnames = band_names.getStringValue();
-                        String[] bname_array = bnames.split(",");
-                        String units = null;
-                        String description = null;
-                        Array slope = null;
-                        Array intercept = null;
-                        FlagCoding flagCoding = null;
-                        for (Attribute hdfAttribute : list) {
-                            final String attribName = hdfAttribute.getName();
-                            if ("units".equals(attribName)) {
-                                units = hdfAttribute.getStringValue();
-                            } else if ("long_name".equals(attribName)) {
-                                description = hdfAttribute.getStringValue();
-                            } else if ("reflectance_scales".equals(attribName)) {
-                                slope = hdfAttribute.getValues();
-                            } else if ("reflectance_offsets".equals(attribName)) {
-                                intercept = hdfAttribute.getValues();
-                            } else if (slope == null && "radiance_scales".equals(attribName)){
-                                slope = hdfAttribute.getValues();
-                            } else if (intercept == null && "radiance_offsets".equals(attribName)){
-                                intercept = hdfAttribute.getValues();
-                            }
-                        }
-                        //int i;
-                        //for (String bandname: bname_array){
-                        for (int i=0;i<bands;i++){
-                            final String shortname = variable.getShortName();
-                            StringBuilder longname = new StringBuilder(shortname);
-                            longname.append("_");
-                            longname.append(bname_array[i]);
-                            String name = longname.toString();
-                            final int dataType = getProductDataType(variable);
-                            final Band band = new Band(name, dataType, width, height);
-                            final String validExpression = bandInfoMap.get(name);
-                            if (validExpression != null && !validExpression.equals("")) {
-                                band.setValidPixelExpression(validExpression);
-                            }
-                            product.addBand(band);
+        return bandToVariableMap;
+    }
 
-                            int wvlidx;
+    private int addSeawifsBands(Product product, Map<String, String> bandInfoMap, Map<Band, Variable> bandToVariableMap, int sceneRasterWidth, int sceneRasterHeight, int spectralBandIndex, Variable variable) {
+        final int[] dimensions = variable.getShape();
+        final int bands = dimensions[2];
+        final int height = dimensions[0];
+        final int width = dimensions[1];
 
-                            if (bname_array[i].contains("lo") || bname_array[i].contains("hi")){
-                                wvlidx = Integer.parseInt(bname_array[i].substring(0,1)) - 1;
-                            } else {
-                                wvlidx = Integer.parseInt(bname_array[i]) -1;
-                            }
+        if (height == sceneRasterHeight && width == sceneRasterWidth) {
+            final List<Attribute> list = variable.getAttributes();
 
-                            final float wavelength = Float.valueOf(MODIS_WVL[wvlidx]);
-                            band.setSpectralWavelength(wavelength);
-                            band.setSpectralBandIndex(spectralBandIndex++);
+            String units = "radiance counts";
+            String description = "Level-1A data";
 
-                            Variable sliced = null;
-                            try {
-                                sliced = variable.slice(0, i);
-                            } catch (InvalidRangeException e) {
-                                e.printStackTrace();  //Todo change body of catch statement.
-                            }
-                            bandToVariableMap.put(band, sliced);
-                            band.setUnit(units);
-                            band.setDescription(description);
-                            if (slope != null){
-                                band.setScalingFactor(slope.getDouble(i));
+            FlagCoding flagCoding = null;
 
-                                if (intercept != null)
-                                    band.setScalingOffset(intercept.getDouble(i)*slope.getDouble(i));
-                            }
-                            if (flagCoding != null) {
-                                band.setSampleCoding(flagCoding);
-                                product.getFlagCodingGroup().add(flagCoding);
-                            }
+            //int i;
+            //for (String bandname: bname_array){
+            for (int i=0;i<bands;i++){
+                final String shortname = "L1A";
+                StringBuilder longname = new StringBuilder(shortname);
+                longname.append("_");
+                longname.append(SEAWIFS_WVL[i]);
+                String name = longname.toString();
+                final int dataType = getProductDataType(variable);
+                final Band band = new Band(name, dataType, width, height);
+                final String validExpression = bandInfoMap.get(name);
+                if (validExpression != null && !validExpression.equals("")) {
+                    band.setValidPixelExpression(validExpression);
+                }
+                product.addBand(band);
 
-                            }
-                        }
+                final float wavelength = Float.valueOf(SEAWIFS_WVL[i]);
+                band.setSpectralWavelength(wavelength);
+                band.setSpectralBandIndex(spectralBandIndex++);
+
+                Variable sliced = null;
+                try {
+                    sliced = variable.slice(2, i);
+                } catch (InvalidRangeException e) {
+                    e.printStackTrace();  //Todo change body of catch statement.
+                }
+                bandToVariableMap.put(band, sliced);
+                band.setUnit(units);
+                band.setDescription(description);
+
+                if (flagCoding != null) {
+                    band.setSampleCoding(flagCoding);
+                    product.getFlagCodingGroup().add(flagCoding);
+                }
+                addSeawifsGeonav(product);
+            }
+        }
+        return spectralBandIndex;
+    }
+
+    void addSeawifsGeonav(Product product) {
+        ObpgGeonav geonavData;
+        //geonavData = new ObpgGeonav(product.get);
+    }
+
+    private int addModisBands(Product product, Map<String, String> bandInfoMap, Map<Band, Variable> bandToVariableMap, int sceneRasterWidth, int sceneRasterHeight, int spectralBandIndex, Variable variable) {
+        final int[] dimensions = variable.getShape();
+        final int bands = dimensions[0];
+        final int height = dimensions[1];
+        final int width = dimensions[2];
+
+        if (height == sceneRasterHeight && width == sceneRasterWidth) {
+            final List<Attribute> list = variable.getAttributes();
+            Attribute band_names = findAttribute("band_names", list);
+            if (band_names != null){ // Then treat as a MODIS L1B...
+                String bnames = band_names.getStringValue();
+                String[] bname_array = bnames.split(",");
+                String units = null;
+                String description = null;
+                Array slope = null;
+                Array intercept = null;
+                FlagCoding flagCoding = null;
+                for (Attribute hdfAttribute : list) {
+                    final String attribName = hdfAttribute.getName();
+                    if ("units".equals(attribName)) {
+                        units = hdfAttribute.getStringValue();
+                    } else if ("long_name".equals(attribName)) {
+                        description = hdfAttribute.getStringValue();
+                    } else if ("reflectance_scales".equals(attribName)) {
+                        slope = hdfAttribute.getValues();
+                    } else if ("reflectance_offsets".equals(attribName)) {
+                        intercept = hdfAttribute.getValues();
+                    } else if (slope == null && "radiance_scales".equals(attribName)){
+                        slope = hdfAttribute.getValues();
+                    } else if (intercept == null && "radiance_offsets".equals(attribName)){
+                        intercept = hdfAttribute.getValues();
+                    }
+                }
+                //int i;
+                //for (String bandname: bname_array){
+                for (int i=0;i<bands;i++){
+                    final String shortname = variable.getShortName();
+                    StringBuilder longname = new StringBuilder(shortname);
+                    longname.append("_");
+                    longname.append(bname_array[i]);
+                    String name = longname.toString();
+                    final int dataType = getProductDataType(variable);
+                    final Band band = new Band(name, dataType, width, height);
+                    final String validExpression = bandInfoMap.get(name);
+                    if (validExpression != null && !validExpression.equals("")) {
+                        band.setValidPixelExpression(validExpression);
+                    }
+                    product.addBand(band);
+
+                    int wvlidx;
+
+                    if (bname_array[i].contains("lo") || bname_array[i].contains("hi")){
+                        wvlidx = Integer.parseInt(bname_array[i].substring(0,1)) - 1;
+                    } else {
+                        wvlidx = Integer.parseInt(bname_array[i]) -1;
+                    }
+
+                    final float wavelength = Float.valueOf(MODIS_WVL[wvlidx]);
+                    band.setSpectralWavelength(wavelength);
+                    band.setSpectralBandIndex(spectralBandIndex++);
+
+                    Variable sliced = null;
+                    try {
+                        sliced = variable.slice(0, i);
+                    } catch (InvalidRangeException e) {
+                        e.printStackTrace();  //Todo change body of catch statement.
+                    }
+                    bandToVariableMap.put(band, sliced);
+                    band.setUnit(units);
+                    band.setDescription(description);
+                    if (slope != null){
+                        band.setScalingFactor(slope.getDouble(i));
+
+                        if (intercept != null)
+                            band.setScalingOffset(intercept.getDouble(i)*slope.getDouble(i));
+                    }
+                    if (flagCoding != null) {
+                        band.setSampleCoding(flagCoding);
+                        product.getFlagCodingGroup().add(flagCoding);
                     }
                 }
             }
-
-        return bandToVariableMap;
+        }
+        return spectralBandIndex;
     }
 
     public void addGeocoding(final Product product, NetcdfFile ncfile, boolean mustFlip) throws IOException {

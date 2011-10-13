@@ -48,56 +48,6 @@ public class ReaderTest {
         }
     }
 
-    private ArrayFloat readNetcdfDataArray(String varName, Group group) {
-        ArrayFloat dataArray = null;
-        int[] startPts;
-        Variable varToRead = group.findVariable(varName);
-if (debug) {
-    System.out.print(varName + ": ");
-    dispVarDetails(varToRead);
-}
-        if (varToRead.getRank() == 1) {
-            try {
-                dataArray = (ArrayFloat) varToRead.read();
-            } catch(IOException ioe) {
-                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
-                System.out.println(ioe.getMessage());
-                ioe.printStackTrace();
-                System.out.println();
-                System.exit(-43);
-            }
-        } else {
-            if (varToRead.getRank() == 2) {
-                startPts = new int[2];
-                startPts[0] = 0;
-                startPts[1] = 0;
-            } else {
-                // Assuming nothing with more than rank 3.
-                startPts = new int[3];
-                startPts[0] = 0;
-                startPts[1] = 0;
-                startPts[2] = 0;
-            }
-            try {
-                dataArray = (ArrayFloat) varToRead.read(startPts, varToRead.getShape());
-                return dataArray;
-            } catch(IOException ioe) {
-                System.out.println("Encountered IOException reading the data array: " + varToRead.getShortName());
-                System.out.println(ioe.getMessage());
-                ioe.printStackTrace();
-                System.out.println();
-                System.exit(-44);
-            } catch(InvalidRangeException ire) {
-                System.out.println("Encountered InvalidRangeException reading the data array: " + varToRead.getShortName());
-                System.out.println(ire.getMessage());
-                ire.printStackTrace();
-                System.out.println();
-                System.exit(-45);
-            }
-        }
-        return dataArray;
-    }
-
     public static boolean isHDF(File f) {
         /**
          *  Determine if file is an HDF file by seeing if the first
@@ -219,14 +169,6 @@ if (debug) {
         System.out.println("                                            Zenith     Azimuth      Zenith     Azimuth");
     }
 
-    private float[] populateVector(ArrayFloat sourceData, int size, int lineNum) {
-        float[] newVect = new float[size];
-        for(int i = 0; i < size; i ++) {
-            newVect[i] = sourceData.getFloat(size * lineNum + i);
-        }
-        return newVect;
-    }
-
     private static void printUsage() {
         /**
 	     *  Prints a usage message to wherever System.out is printing.
@@ -239,84 +181,33 @@ if (debug) {
     }
 
     private void processFile(File inFile) throws IOException {
+
         NetcdfFile ncFile = null;
         try {
             String prefix = "  ";
             ncFile = NetcdfFile.open(inFile.getPath());
-            Geonav.DataType dataType = Geonav.getSeawifsDataType(ncFile);
-            numScanLines = Geonav.getNumberScanLines(ncFile);
+            ObpgGeonav geonavCalculator = new ObpgGeonav(ncFile);
+            int numLines = geonavCalculator.getNumberScanLines();
+            int numPixels = geonavCalculator.getNumberPixels();
+            float[][] latitudes = geonavCalculator.getLatitudes();
+            float[][] longitudes = geonavCalculator.getLongitudes();
+            float[][] solarAzimuths = geonavCalculator.getSolarAzimuths();
+            float[][] solarZeniths = geonavCalculator.getSolarZeniths();
+            float[][] sensorAzimuths = geonavCalculator.getSensorAzimuths();
+            float[][] sensorZeniths = geonavCalculator.getSensorZeniths();
 
-            Group rootGroup = ncFile.getRootGroup();
-            Group navGroup = ncFile.findGroup("Navigation");
-            Group scanLineAttrGroup = ncFile.findGroup("Scan-Line Attributes");
-
-            ArrayFloat orbitData = readNetcdfDataArray("orb_vec", navGroup);
-            ArrayFloat sensorData = readNetcdfDataArray("sen_mat", navGroup);
-            ArrayFloat sunData = readNetcdfDataArray("sun_ref", navGroup);
-            ArrayFloat attAngleData = readNetcdfDataArray("att_ang", navGroup);
-            ArrayFloat scanTrackEllipseCoefData = readNetcdfDataArray("scan_ell", navGroup);
-            ArrayFloat tiltData = readNetcdfDataArray("tilt", scanLineAttrGroup);
-
+            System.out.println("numLines = " + numLines + ", numPixels = " + numPixels);
             outputHeader();
-            for (int line = 0; line < numScanLines; line ++) {
-                float[] orbVect = populateVector(orbitData, 3, line);
-
-                // Re-visit this if the results come out wrong:
-                float[][] sensorMat = new float[3][3];
-                sensorMat[0][0] = sensorData.getFloat(3 * line);
-                sensorMat[0][1] = sensorData.getFloat(3 * line + 1);
-                sensorMat[0][2] = sensorData.getFloat(3 * line + 2);
-                sensorMat[1][0] = sensorData.getFloat(3 * line + 3);
-                sensorMat[1][1] = sensorData.getFloat(3 * line + 4);
-                sensorMat[1][2] = sensorData.getFloat(3 * line + 5);
-                sensorMat[2][0] = sensorData.getFloat(3 * line + 6);
-                sensorMat[2][1] = sensorData.getFloat(3 * line + 7);
-                sensorMat[2][2] = sensorData.getFloat(3 * line + 8);
-
-                float[] sunUnitVect = populateVector(sunData, 3, line);
-                float[] attAngleVect = populateVector(attAngleData, 3, line);
-                float[] scanTrackEllipseCoef = populateVector(scanTrackEllipseCoefData, 6, line);
-                float tilt = tiltData.getFloat(line);
-
-                //Geonav geonavCalculator = new Geonav(orbVect, sensorMat, sunUnitVect, attAngleVect, tilt, ncFile);
-                Geonav geonavCalculator = new Geonav(orbVect, sensorMat, scanTrackEllipseCoef, sunUnitVect,
-                                                     attAngleVect, tilt, ncFile);
-                geonavCalculator.doComputations();
-
-                float[] latitude = geonavCalculator.getLatitude();
-       	        float[] longitude = geonavCalculator.getLongitude();
-       	        float[] sensorAzimuth = geonavCalculator.getSensorAzimuth();
-       	        float[] sensorZenith = geonavCalculator.getSensorZenith();
-       	        float[] solarAzimuth = geonavCalculator.getSolarAzimuth();
-       	        float[] solarZenith = geonavCalculator.getSolarZenith();
-
-                for (int pix = 146; pix < latitude.length; pix += 4) {
-                    String outLine = String.format("    %4d    %4d %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f", 
-                                                   line, (pix - 146) / 4, latitude[pix], longitude[pix],
-                                                   solarZenith[pix], solarAzimuth[pix],
-                                                   sensorZenith[pix], sensorAzimuth[pix]);
+            for (int line = 0; line < numLines; line ++) {
+                for (int pix = 0; pix < numPixels; pix ++) {
+                    String outLine = String.format("    %4d    %4d %11.6f %11.6f%11.6f %11.6f %11.6f %11.6f",
+                                                   line, pix,
+                                                   latitudes[line][pix], longitudes[line][pix],
+                                                   solarZeniths[line][pix], solarAzimuths[line][pix],
+                                                   sensorZeniths[line][pix], sensorAzimuths[line][pix]);
                     System.out.println(outLine);
                 }
             }
-
-            int i = 0;
-            while (i < numScanLines) {
-                float[] orbPos = new float[3];
-                float[][] sensorMatrix = new float[3][3];
-                float[] sunRef = new float[3];
-                orbPos[0] = orbitData.getFloat(i);
-                orbPos[1] = orbitData.getFloat(i+1);
-                orbPos[2] = orbitData.getFloat(i+2);
-                i += 3;
-            }
-/*
-        } catch(InvalidRangeException ire) {
-            System.out.println("Encountered InvalidRangeException reading a data array.");
-            System.out.println(ire.getMessage());
-            ire.printStackTrace();
-            System.out.println();
-            System.exit(-43);
-*/
         } finally {
             ncFile.close();
         }

@@ -23,7 +23,7 @@ import ucar.nc2.*;
 //import org.junit.runner.*;
 
 public class TestGeonav {
-
+    private static String cwd = System.getProperty("user.dir");
     private static String windowsDir = "data/";
     //private static String linuxDir = "/home/melliott/old_home/Src/SeaDAS_sandbox/experiment/sources/test/data/";
     private static String linuxDir = "src/test/resources/data/";
@@ -52,9 +52,9 @@ public class TestGeonav {
         }     String os = System.getProperty("os.name");
 
         if (os.contains("Windows")) {
-            dataDir = windowsDir;
+            dataDir = cwd + "/" +windowsDir;
         } else {
-            dataDir = linuxDir;
+            dataDir = cwd + "/" + linuxDir;
         }
 //System.out.println("dataDir: " + dataDir);
         //org.junit.runner.JUnitCore.main("gov.nasa.obpg.seadas.sandbox.seawifs.TestGeonav");
@@ -62,11 +62,11 @@ public class TestGeonav {
 
     @Test
     public void testConstants() {
-        assertEquals(6378.137, Geonav.EARTH_RADIUS, 0.0);
-        assertEquals(0.003352813, Geonav.EARTH_FLATTENING_FACTOR, 0.00000001);
-        assertEquals(6371.0, Geonav.EARTH_MEAN_RADIUS, 0.0);
-        assertEquals(0.000072912, Geonav.EARTH_ROTATION_RATE, 0.00000001);
-        assertEquals(0.993305615, Geonav.OMF2, 0.00000001);
+        assertEquals(6378.137, ObpgGeonav.EARTH_RADIUS, 0.0);
+        assertEquals(0.003352813, ObpgGeonav.EARTH_FLATTENING_FACTOR, 0.00000001);
+        assertEquals(6371.0, ObpgGeonav.EARTH_MEAN_RADIUS, 0.0);
+        assertEquals(0.000072912, ObpgGeonav.EARTH_ROTATION_RATE, 0.00000001);
+        assertEquals(0.993305615, ObpgGeonav.OMF2, 0.00000001);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class TestGeonav {
         float[] v2 = new float[3]; 
         v2[0] = 1.0f; v2[1] = 1.0f; v2[2] = 1.0f;
         float[] result = new float[3];
-        result = Geonav.crossProduct(v1, v2);
+        result = ObpgGeonav.crossProduct(v1, v2);
         assertEquals(1.0f, result[0], 0.0f);
         assertEquals(-2.0f, result[1], 0.0f);
         assertEquals(1.0f, result[2], 0.0f);
@@ -96,7 +96,7 @@ public class TestGeonav {
 //System.out.println("dataDir: " + dataDir + ", ncPath: " + ncPath);
         try {
             NetcdfFile ncFile = NetcdfFile.open(ncPath);
-            int numScanLines = Geonav.getNumberScanLines(ncFile);
+            int numScanLines = ObpgGeonav.getNumberScanLines(ncFile);
             ncFile.close();
             assertEquals(3930, numScanLines);
         } catch(IOException ioe) {
@@ -114,8 +114,8 @@ public class TestGeonav {
 
         try {
             NetcdfFile ncFile = NetcdfFile.open(gacPath);
-            Geonav.DataType seawifsDataType = Geonav.getSeawifsDataType(ncFile);
-            assertEquals(Geonav.DataType.GAC, seawifsDataType);
+            ObpgGeonav.DataType seawifsDataType = ObpgGeonav.getSeawifsDataType(ncFile);
+            assertEquals(ObpgGeonav.DataType.GAC, seawifsDataType);
             ncFile.close();
             //Geonav testObj = new Geonav(gacPath);
         } catch(IOException ioe) {
@@ -124,18 +124,18 @@ public class TestGeonav {
         try {
             //Geonav testObj = new Geonav(lacPath);
             NetcdfFile ncFile = NetcdfFile.open(lacPath);
-            Geonav.DataType seawifsDataType = Geonav.getSeawifsDataType(ncFile);
+            ObpgGeonav.DataType seawifsDataType = ObpgGeonav.getSeawifsDataType(ncFile);
             ncFile.close();
-            assertEquals(Geonav.DataType.LAC, seawifsDataType);
+            assertEquals(ObpgGeonav.DataType.LAC, seawifsDataType);
         } catch(IOException ioe) {
             fail("Could not open test LAC file:\n   " + lacPath);
         }
         try {
             //Geonav testObj = new Geonav(lacPath);
             NetcdfFile ncFile = NetcdfFile.open(hrptPath);
-            Geonav.DataType seawifsDataType = Geonav.getSeawifsDataType(ncFile);
+            ObpgGeonav.DataType seawifsDataType = ObpgGeonav.getSeawifsDataType(ncFile);
             ncFile.close();
-            assertEquals(Geonav.DataType.LAC, seawifsDataType);
+            assertEquals(ObpgGeonav.DataType.LAC, seawifsDataType);
         } catch(IOException ioe) {
             fail("Could not open test HRPT file:\n   " + gacPath);
         }
@@ -165,7 +165,7 @@ public class TestGeonav {
         m2[2][1] = 2.0f;
         m2[2][2] = 3.0f;
 
-        float[][] p = Geonav.multiplyMatrices(m1, m2);
+        float[][] p = ObpgGeonav.multiplyMatrices(m1, m2);
 
         assertEquals(3.0f, p[0][0], 0.0f);
         assertEquals(6.0f, p[0][1], 0.0f);

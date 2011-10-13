@@ -60,13 +60,13 @@ l2gen/A2005100070500.L2_LAC
 l2gen/A2006115032511.L2_1KM
 l2gen/A2006115032511.L2_LAC
 l2gen/A2006115032511.L2_QKM
-l2gen/C1981001215550.L1A_LAC
-l2gen/C1981001215550.L1B_LAC
-l2gen/C1981001215550.L2_LAC
-l2gen/C1984257163702.L1A_LAC
-l2gen/K2000336205149.L1A_LAC
-l2gen/K2000336205149.L1B_LAC
-l2gen/K2000336205149.L2_LAC
+#l2gen/C1981001215550.L1A_LAC
+#l2gen/C1981001215550.L1B_LAC
+#l2gen/C1981001215550.L2_LAC
+#l2gen/C19842057163702.L1A_LAC
+#l2gen/K2000336205149.L1A_LAC
+#l2gen/K2000336205149.L1B_LAC
+#l2gen/K2000336205149.L2_LAC
 l2gen/M1998059110129.L1B_HWFF
 # Missing attribute 'Title': l2gen/M1998059110129.L1B_HWFF_00023B23
 l2gen/M1998059110129.L2_HWFF
@@ -90,21 +90,21 @@ l2gen/O1997106160417.L2_GAC
 # File not found: l2gen/S198100200_NCEP.MET
 #l2gen/S1997262224952.L1A_LAC
 #l2gen/S1997262224952.L1B_LAC
-l2gen/S1997262224952.L2_LAC
-l2gen/S1998199173926.L1A_GAC
-l2gen/S1998199173926.L1B_GAC
-l2gen/S1998199173926.L2_GAC
-l2gen/S1998199173926.L2_GIOP
-l2gen/S1998199173926.L2_IOP
-l2gen/S1998199173926.L2_LND
-l2gen/S1998199173926.L2_PAR
-l2gen/S2002032172026.L1A_GAC
-l2gen/S2003147125430.L1A_MLAC
-l2gen/S2003147125430.L2_CLCT
-l2gen/S2004091194418.L1A_MLAC.x.hdf
-l2gen/S2004091194418.L2_NCAL
-l2gen/S2004258230818.L1A_MLAC.moby_228
-l2gen/S2004258230818.L2_VCAL
+#pending geocoding: l2gen/S1997262224952.L2_LAC
+#pending geocoding: l2gen/S1998199173926.L1A_GAC
+#pending geocoding: l2gen/S1998199173926.L1B_GAC
+#pending geocoding: l2gen/S1998199173926.L2_GAC
+#pending geocoding: l2gen/S1998199173926.L2_GIOP
+#pending geocoding: l2gen/S1998199173926.L2_IOP
+#pending geocoding: l2gen/S1998199173926.L2_LND
+#pending geocoding: l2gen/S1998199173926.L2_PAR
+#pending geocoding: l2gen/S2002032172026.L1A_GAC
+#pending geocoding: l2gen/S2003147125430.L1A_MLAC
+#pending geocoding: l2gen/S2003147125430.L2_CLCT
+#pending geocoding: l2gen/S2004091194418.L1A_MLAC.x.hdf
+#pending geocoding: l2gen/S2004091194418.L2_NCAL
+#pending geocoding: l2gen/S2004258230818.L1A_MLAC.moby_228
+#pending geocoding: l2gen/S2004258230818.L2_VCAL
 # Missing attribute 'Title': l2gen/T2005288185000.GEO
 # Missing attribute 'Title': l2gen/T2005288185000.L1B_LAC
 l2gen/T2005288185000.L2_GHRSST
@@ -113,9 +113,9 @@ l2gen/T2005288185000.L2_LAC
 l2gen_aquarius/Q2004319010100.L2_RAD
 # Missing attribute 'Title': l2gen_aquarius/y2004111400.h5
 # Missing attribute 'Title': l2gen_aquarius/y2004111406.h5
-l3bin/A2009001.L3b_DAY.main
-l3bin/A20090012009004.L3b_4D.main
-l3bin/A2009002.L3b_DAY.main
-l3bin/A2009003.L3b_DAY.main
-l3bin/A2009004.L3b_DAY.main
+#Global attribute 'Number of Columns' is missing.: l3bin/A2009001.L3b_DAY.main
+#Global attribute 'Number of Columns' is missing.: l3bin/A20090012009004.L3b_4D.main
+#Global attribute 'Number of Columns' is missing.: l3bin/A2009002.L3b_DAY.main
+#Global attribute 'Number of Columns' is missing.: l3bin/A2009003.L3b_DAY.main
+#Global attribute 'Number of Columns' is missing.: l3bin/A2009004.L3b_DAY.main
 # Global attribute 'Number of Columns' is missing: smigen/Q2007001_B1_1D.L3M_SCI
