@@ -1,5 +1,6 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -30,4 +31,33 @@ public class SeadasGuiUtils {
 
         return c;
     }
+
+    public static JPanel addPaddedWrapperPanel(JPanel myMainPanel) {
+        final int PADDING_DEFAULT = 6;
+
+        return  addPaddedWrapperPanel(myMainPanel, PADDING_DEFAULT);
+    }
+
+
+    public static JPanel addPaddedWrapperPanel(JPanel myMainPanel, int pad) {
+
+        JPanel myWrapperPanel = new JPanel();
+
+        myWrapperPanel.setLayout(new GridBagLayout());
+
+        final GridBagConstraints c;
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.insets = new Insets(pad, pad, pad, pad);
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.weighty = 1;
+
+        myWrapperPanel.add(myMainPanel, c);
+
+        return myWrapperPanel;
+    }
+
 }
