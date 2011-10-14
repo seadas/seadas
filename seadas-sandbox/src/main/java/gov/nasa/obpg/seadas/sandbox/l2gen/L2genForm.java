@@ -97,7 +97,7 @@ class L2genForm extends JTabbedPane {
         this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
 
         // add event listener
-        addL2genDataListeners();
+       // addL2genDataListeners();
         createUI();
         //    loadDefaults();
     }
@@ -170,8 +170,8 @@ class L2genForm extends JTabbedPane {
         });
 
         parfileJTextArea = new JTextArea();
-        parfileJTextArea.setEditable(false);
-        parfileJTextArea.setBackground(Color.decode("#dddddd"));
+        parfileJTextArea.setEditable(true);
+        parfileJTextArea.setBackground(Color.decode("#ffffff"));
 
         parfileJTextArea.addFocusListener(new FocusListener() {
             @Override
@@ -185,28 +185,6 @@ class L2genForm extends JTabbedPane {
         });
 
 
-        parfileTextEntryName = new JTextArea();
-        parfileTextEntryName.setColumns(20);
-        parfileTextEntryValue = new JTextArea();
-        parfileTextEntryValue.setColumns(20);
-        parfileTextEntrySubmit = new JButton("Load This Entry");
-        JLabel equalsSign = new JLabel("=");
-
-
-        parfileTextEntrySubmit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loadParfileEntry();
-
-            }
-        });
-
-        final JPanel parfileTextEntryPanel = new JPanel();
-        parfileTextEntryPanel.setLayout(new FlowLayout());
-        parfileTextEntryPanel.add(parfileTextEntryName);
-        parfileTextEntryPanel.add(equalsSign);
-        parfileTextEntryPanel.add(parfileTextEntryValue);
-        parfileTextEntryPanel.add(parfileTextEntrySubmit);
 
         // Declare mainPanel and set it's attributes
         final JPanel mainPanel = new JPanel();
@@ -245,13 +223,6 @@ class L2genForm extends JTabbedPane {
             mainPanel.add(scrollTextArea, c);
         }
 
-        // Add saveButton control to a mainPanel grid cell
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 2;
-            mainPanel.add(parfileTextEntryPanel, c);
-        }
 
 
         final JPanel finalMainPanel;
@@ -1086,26 +1057,26 @@ class L2genForm extends JTabbedPane {
         // format the JList control
         waveIndependentProductsJList.setListData(algorithmInfoArray);
 
-        setSelectionStatesWaveIndependentProductsJList();
+        //     setSelectionStatesWaveIndependentProductsJList();
     }
 
 
-    private void setSelectionStatesWaveIndependentProductsJList() {
-        waveIndependentProductsJList.clearSelection();
-
-        int idx = 0;
-
-        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-
-                if (algorithmInfo.isSelected() == true) {
-                    waveIndependentProductsJList.setSelectedIndex(idx);
-                }
-
-                idx++;
-            }
-        }
-    }
+//    private void setSelectionStatesWaveIndependentProductsJList() {
+//        waveIndependentProductsJList.clearSelection();
+//
+//        int idx = 0;
+//
+//        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
+//            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+//
+//                if (algorithmInfo.isSelected() == true) {
+//                    waveIndependentProductsJList.setSelectedIndex(idx);
+//                }
+//
+//                idx++;
+//            }
+//        }
+//    }
 
 
     private void createWaveDependentProductsJPanel(JPanel waveDependentProductsJPanel) {
@@ -1156,10 +1127,19 @@ class L2genForm extends JTabbedPane {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
                     wavelengthInfo.setToStringShowProductName(true);
-                    wavelengthInfoArrayList.add(wavelengthInfo);
+                    for (WavelengthInfo wavelengthInfoLimiter : l2genData.getWavelengthInfoArray()) {
+                        if (wavelengthInfo.getWavelength() == wavelengthInfoLimiter.getWavelength()) {
+                            if (wavelengthInfoLimiter.isSelected()) {
+
+                                wavelengthInfoArrayList.add(wavelengthInfo);
+                            }
+                        }
+                    }
+
                 }
             }
         }
+
 
         // Store the arrayList into an array which can then be fed into a JList control
         WavelengthInfo[] wavelengthInfoArray = new WavelengthInfo[wavelengthInfoArrayList.size()];
@@ -1168,27 +1148,27 @@ class L2genForm extends JTabbedPane {
         // format the JList control
         waveDependentProductsJList.setListData(wavelengthInfoArray);
 
-        setSelectionStatesWaveDependentProductsJList();
+        //    setSelectionStatesWaveDependentProductsJList();
     }
 
-
-    private void setSelectionStatesWaveDependentProductsJList() {
-        waveDependentProductsJList.clearSelection();
-
-        int idx = 0;
-
-        for (ProductInfo productInfo : l2genData.getWaveDependentProductInfoArray()) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
-                    if (wavelengthInfo.isSelected() == true) {
-                        waveDependentProductsJList.setSelectedIndex(idx);
-                    }
-
-                    idx++;
-                }
-            }
-        }
-    }
+//
+//    private void setSelectionStatesWaveDependentProductsJList() {
+//        waveDependentProductsJList.clearSelection();
+//
+//        int idx = 0;
+//
+//        for (ProductInfo productInfo : l2genData.getWaveDependentProductInfoArray()) {
+//            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+//                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
+//                    if (wavelengthInfo.isSelected() == true) {
+//                        waveDependentProductsJList.setSelectedIndex(idx);
+//                    }
+//
+//                    idx++;
+//                }
+//            }
+//        }
+//    }
 
 
     private void createSelectedProductsJPanel(JPanel selectedProductsPanel) {
@@ -1198,37 +1178,57 @@ class L2genForm extends JTabbedPane {
         selectedProductsPanel.setLayout(new GridBagLayout());
 
         final JButton editButton = new JButton("Edit");
+        final JButton loadButton = new JButton("Load");
+        final JButton cancelButton = new JButton("Cancel");
+
 
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedProductsJTextArea.setEditable(true);
+                selectedProductsJTextArea.setBackground(Color.decode("#ffffff"));
+                waveDependentProductsJList.clearSelection();
+                waveIndependentProductsJList.clearSelection();
+                editButton.setVisible(false);
+                loadButton.setVisible(true);
+                cancelButton.setVisible(true);
             }
         });
 
-        final JButton loadButton = new JButton("Load");
 
         loadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedProductsJTextArea.setEditable(false);
+                selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
                 l2genData.setParamValue(l2genData.PROD, selectedProductsJTextArea.getText());
+                selectedProductsJTextArea.setText(l2genData.getProdlist());
+                editButton.setVisible(true);
+                loadButton.setVisible(false);
+                cancelButton.setVisible(false);
             }
         });
 
-        final JButton cancelButton = new JButton("Cancel");
 
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedProductsJTextArea.setEditable(false);
+                selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
                 selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.PROD));
+                editButton.setVisible(true);
+                loadButton.setVisible(false);
+                cancelButton.setVisible(false);
             }
         });
 
 
+        editButton.setVisible(true);
+        loadButton.setVisible(false);
+        cancelButton.setVisible(false);
         selectedProductsJTextArea = new JTextArea(SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT);
         selectedProductsJTextArea.setEditable(false);
+        selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
         selectedProductsJTextArea.setLineWrap(true);
         selectedProductsJTextArea.setWrapStyleWord(true);
         selectedProductsJTextArea.setColumns(20);
@@ -1386,47 +1386,38 @@ class L2genForm extends JTabbedPane {
 
     private void handleWaveIndependentProductsJList() {
 
-        if (handleWaveIndependentProductsJListEnabled) {
-            setWaveIndependentProductsJListEnabled = false;
-            handleWaveIndependentProductsJListEnabled = false;
-            l2genData.disableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
+        l2genData.disableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
 
-            for (int i = 0; i < waveIndependentProductsJList.getModel().getSize(); i++) {
-                AlgorithmInfo algorithmInfo = (AlgorithmInfo) waveIndependentProductsJList.getModel().getElementAt(i);
+        Object[] selectedElements = waveIndependentProductsJList.getSelectedValues();
 
-                if (waveIndependentProductsJList.isSelectedIndex(i) != algorithmInfo.isSelected()) {
-                    l2genData.setWaveIndependentProductInfoArray(algorithmInfo, waveIndependentProductsJList.isSelectedIndex(i));
-                }
+        for (Object object : selectedElements) {
+            AlgorithmInfo algorithmInfo = (AlgorithmInfo) object;
+
+            if (!algorithmInfo.isSelected()) {
+                l2genData.setSelectedWaveIndependentProduct(algorithmInfo, true);
             }
-
-            l2genData.enableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
-            handleWaveIndependentProductsJListEnabled = true;
-            setWaveIndependentProductsJListEnabled = true;
         }
 
-
+        waveIndependentProductsJList.clearSelection();
+        l2genData.enableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
     }
 
 
     private void handleWaveDependentProductsJList() {
 
-        if (handleWaveDependentProductsJListEnabled) {
-            setWaveDependentProductsJListEnabled = false;
-            handleWaveDependentProductsJListEnabled = false;
-            l2genData.disableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
+        l2genData.disableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
 
-            for (int i = 0; i < waveDependentProductsJList.getModel().getSize(); i++) {
-                WavelengthInfo wavelengthInfo = (WavelengthInfo) waveDependentProductsJList.getModel().getElementAt(i);
+        Object[] selectedElements = waveDependentProductsJList.getSelectedValues();
 
-                if (waveDependentProductsJList.isSelectedIndex(i) != wavelengthInfo.isSelected()) {
-                    l2genData.setWaveDependentProductInfoArray(wavelengthInfo, waveDependentProductsJList.isSelectedIndex(i));
-                }
+        for (Object object : selectedElements) {
+            WavelengthInfo wavelengthInfo = (WavelengthInfo) object;
+            if (!wavelengthInfo.isSelected()) {
+                l2genData.setSelectedWaveDependentProduct(wavelengthInfo, true);
             }
-
-            l2genData.enableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
-            handleWaveDependentProductsJListEnabled = true;
-            setWaveDependentProductsJListEnabled = true;
         }
+
+        waveDependentProductsJList.clearSelection();
+        l2genData.enableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
     }
 
 
@@ -1450,6 +1441,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 spixlJTextField.setText(l2genData.getParamValue(l2genData.SPIXL));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1458,6 +1450,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 epixlJTextField.setText(l2genData.getParamValue(l2genData.EPIXL));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1466,6 +1459,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 dpixlJTextField.setText(l2genData.getParamValue(l2genData.DPIXL));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1474,6 +1468,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 slineJTextField.setText(l2genData.getParamValue(l2genData.SLINE));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1482,6 +1477,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 elineJTextField.setText(l2genData.getParamValue(l2genData.ELINE));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1490,6 +1486,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 dlineJTextField.setText(l2genData.getParamValue(l2genData.DLINE));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1499,6 +1496,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 northJTextField.setText(l2genData.getParamValue(l2genData.NORTH));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1508,6 +1506,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 southJTextField.setText(l2genData.getParamValue(l2genData.SOUTH));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1517,6 +1516,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 westJTextField.setText(l2genData.getParamValue(l2genData.WEST));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1526,6 +1526,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 eastJTextField.setText(l2genData.getParamValue(l2genData.EAST));
+                 parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1544,6 +1545,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println("UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT fired");
                 updateWavelengthCheckboxSelectionStateEvent();
+                setWaveDependentProductsJList();
             }
         });
 
@@ -1599,6 +1601,7 @@ class L2genForm extends JTabbedPane {
 
         setWaveDependentProductsJList();
         updateWavelengthCheckboxSelectionStateEvent();
+        parfileJTextArea.setText(l2genData.getParfile());
         //  updateSelectedProductsJTextArea();
 
     }
@@ -1634,20 +1637,22 @@ class L2genForm extends JTabbedPane {
 
         System.out.println("waveIndependentProductChangedHandler invoked");
         selectedProductsJTextArea.setText(l2genData.getProdlist());
+        parfileJTextArea.setText(l2genData.getParfile());
 
-        if (setWaveIndependentProductsJListEnabled) {
-            setSelectionStatesWaveIndependentProductsJList();
-        }
+//        if (setWaveIndependentProductsJListEnabled) {
+//            setSelectionStatesWaveIndependentProductsJList();
+//        }
     }
 
     private void waveDependentProductChangedHandler() {
 
         System.out.println("waveDependentProductChangedHandler invoked");
         selectedProductsJTextArea.setText(l2genData.getProdlist());
+        parfileJTextArea.setText(l2genData.getParfile());
 
-        if (setWaveDependentProductsJListEnabled) {
-            setSelectionStatesWaveDependentProductsJList();
-        }
+//        if (setWaveDependentProductsJListEnabled) {
+//           setSelectionStatesWaveDependentProductsJList();
+//        }
     }
 
 

@@ -60,7 +60,6 @@ public class L2genData {
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
     private String missionString = "";
-    private String parfile;
 
     public enum RegionType {Coordinates, PixelLines}
 
@@ -140,16 +139,13 @@ public class L2genData {
     }
 
 
-    public void setWaveDependentProductInfoArray(WavelengthInfo inWavelengthInfo, boolean isSelected) {
+    public void setSelectedWaveDependentProduct(WavelengthInfo inWavelengthInfo, boolean isSelected) {
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
                     if (inWavelengthInfo == wavelengthInfo) {
                         if (wavelengthInfo.isSelected() != isSelected) {
-                            boolean oldValue = wavelengthInfo.isSelected();
                             wavelengthInfo.setSelected(isSelected);
-
-                            System.out.println("in setWaveDependentProductInfoArray" + wavelengthInfo.toString() + oldValue + wavelengthInfo.isSelected());
                             fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
                             return;
                         }
@@ -160,11 +156,12 @@ public class L2genData {
     }
 
 
-    public void setWaveIndependentProductInfoArray(AlgorithmInfo inAlgorithmInfo, boolean isSelected) {
-        for (ProductInfo productInfo : waveDependentProductInfoArray) {
+    public void setSelectedWaveIndependentProduct(AlgorithmInfo inAlgorithmInfo, boolean isSelected) {
+
+        for (ProductInfo productInfo : waveIndependentProductInfoArray) {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 if (inAlgorithmInfo == algorithmInfo) {
-                    if (inAlgorithmInfo.isSelected() != isSelected) {
+                    if (algorithmInfo.isSelected() != isSelected) {
                         algorithmInfo.setSelected(isSelected);
                         fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
                     }
@@ -426,13 +423,10 @@ public class L2genData {
     }
 
 
+
+
+
     public String getParfile() {
-
-        return parfile;
-    }
-
-
-    private void updateParfile() {
 
         HashMap<String, Object> paramValueCopyHashMap = new HashMap();
 
@@ -458,10 +452,12 @@ public class L2genData {
 
         StringBuilder productBlockStringBuilder = new StringBuilder("");
 
-        if (paramValueCopyHashMap.containsKey(PROD)) {
-            makeParfileKeyValueEntry(productBlockStringBuilder, PROD);
-            paramValueCopyHashMap.remove(PROD);
-        }
+        paramValueHashMap.put(PROD, getProdlist());
+
+        makeParfileKeyValueEntry(productBlockStringBuilder, PROD);
+        paramValueHashMap.remove(PROD);
+
+
 
         if (productBlockStringBuilder.length() > 0) {
             parfileStringBuilder.append("# PRODUCT PARAM\n");
@@ -501,10 +497,10 @@ public class L2genData {
         }
 
 
-        parfile = parfileStringBuilder.toString();
+        return parfileStringBuilder.toString();
 
-        System.out.println("firing PARFILE_TEXT_CHANGE_EVENT_NAME with parfile:" + parfile);
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, PARFILE_TEXT_CHANGE_EVENT_NAME, null, null));
+  //      System.out.println("firing PARFILE_TEXT_CHANGE_EVENT_NAME with parfile:" + parfile);
+  //      propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, PARFILE_TEXT_CHANGE_EVENT_NAME, null, null));
     }
 
 
@@ -549,9 +545,9 @@ public class L2genData {
             }
         }
 
-        if (somethingChanged = true) {
-            updateParfile();
-        }
+   //     if (somethingChanged = true) {
+   //         updateParfile();
+   //     }
     }
 
 
@@ -612,7 +608,7 @@ public class L2genData {
                 handleProdKeyChange();
             }
 
-            updateParfile();
+            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, inKey, null, null));
         }
     }
 
@@ -778,12 +774,11 @@ public class L2genData {
 
     public void handleProdKeyChange() {
 
+        if (!paramValueHashMap.containsKey(PROD)) {
+             paramValueHashMap.put(PROD, "");
+        }
 
-        System.out.println("HELLO");
-        // l2prodlist.clear();
-
-
-        String prodEntries[] = paramValueHashMap.get(PROD).split(" ");
+        String prodEntries[]= paramValueHashMap.get(PROD).split(" ");
 
         TreeSet<String> l2prodlistNew = new TreeSet<String>();
 
@@ -878,6 +873,8 @@ public class L2genData {
             }
 
         }
+
+        paramValueHashMap.remove(PROD);
         // setProdWithProdlist();
 
         //     setIsSelectedWavelengthInfoArrayWithProdHash();
@@ -894,9 +891,9 @@ public class L2genData {
 
     public void setParfile(String inParfile) {
 
-        if (!parfile.equals(inParfile)) {
+      //  if (!parfile.equals(inParfile)) {
             parseParfile(inParfile);
-        }
+      //  }
     }
 
     public String getMissionString() {
