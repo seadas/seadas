@@ -97,7 +97,7 @@ class L2genForm extends JTabbedPane {
         this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
 
         // add event listener
-       // addL2genDataListeners();
+        addL2genDataListeners();
         createUI();
         //    loadDefaults();
     }
@@ -1215,7 +1215,7 @@ class L2genForm extends JTabbedPane {
             public void actionPerformed(ActionEvent e) {
                 selectedProductsJTextArea.setEditable(false);
                 selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
-                selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.PROD));
+                selectedProductsJTextArea.setText(l2genData.getProdlist());
                 editButton.setVisible(true);
                 loadButton.setVisible(false);
                 cancelButton.setVisible(false);
@@ -1430,6 +1430,7 @@ class L2genForm extends JTabbedPane {
         l2genData.addPropertyChangeListener(l2genData.MISSION_STRING_CHANGE_EVENT_NAME, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
+                System.out.println(l2genData.MISSION_STRING_CHANGE_EVENT_NAME +" being handled");
                 missionStringChangeEvent((String) evt.getNewValue());
 
             }
