@@ -1,5 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import ucar.ma2.ArrayDouble;
+
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -44,7 +46,7 @@ public class L2genData {
     private final String[] fileIOParamKeys = {IFILE, OFILE};
     private final String[] remainingGUIParamKeys = {};
 
-
+    private L2genReader l2genReader = new L2genReader(this);
     private String OCDATAROOT = System.getenv("OCDATAROOT");
     private HashMap<String, String> paramValueHashMap = new HashMap();
     private HashMap<String, String> defaultParamValueHashMap = new HashMap();
@@ -52,7 +54,7 @@ public class L2genData {
     private ArrayList<ProductInfo> waveIndependentProductInfoArray = new ArrayList<ProductInfo>();
     private ArrayList<ProductInfo> waveDependentProductInfoArray = new ArrayList<ProductInfo>();
 
-    private ArrayList<WavelengthInfo> wavelengthInfoArray = new ArrayList<WavelengthInfo>();
+    private ArrayList<WavelengthInfo> wavelengthLimiterArray = new ArrayList<WavelengthInfo>();
 
 
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
@@ -69,6 +71,7 @@ public class L2genData {
 
 
     public L2genData() {
+
     }
 
 
@@ -224,7 +227,7 @@ public class L2genData {
 
     public void setIsSelectedWavelengthInfoArray(String wavelength, boolean isSelected) {
 
-        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+        for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelength.equals(wavelengthInfo.getWavelengthString())) {
                 System.out.println(wavelength + ":" + wavelengthInfo.isSelected() + ":" + isSelected);
                 if (isSelected != wavelengthInfo.isSelected()) {
@@ -242,7 +245,7 @@ public class L2genData {
 
         boolean infraredNotSelectedFound = false;
 
-        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+        for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelengthInfo.isIR() && !wavelengthInfo.isSelected()) {
                 infraredNotSelectedFound = true;
             }
@@ -258,7 +261,7 @@ public class L2genData {
 
     public void setSelectedWavelengthTypeIii(boolean selectedWavelengthTypeIii) {
 
-        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+        for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelengthInfo.isIR()) {
                 wavelengthInfo.setSelected(selectedWavelengthTypeIii);
             }
@@ -271,7 +274,7 @@ public class L2genData {
     public boolean isSelectedWavelengthTypeVvv() {
         boolean visibleNotSelectedFound = false;
 
-        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+        for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelengthInfo.isVisible() && !wavelengthInfo.isSelected()) {
                 visibleNotSelectedFound = true;
             }
@@ -286,7 +289,7 @@ public class L2genData {
 
     public void setSelectedWavelengthTypeVvv(boolean selectedWavelengthTypeVvv) {
 
-        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+        for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelengthInfo.isVisible()) {
                 wavelengthInfo.setSelected(selectedWavelengthTypeVvv);
             }
@@ -329,8 +332,8 @@ public class L2genData {
     }
 
 
-    public ArrayList<WavelengthInfo> getWavelengthInfoArray() {
-        return wavelengthInfoArray;
+    public ArrayList<WavelengthInfo> getWavelengthLimiterArray() {
+        return wavelengthLimiterArray;
     }
 
 
@@ -394,15 +397,19 @@ public class L2genData {
 
         boolean makeEntry = false;
 
+
         if (paramValueHashMap.containsKey(currKey)) {
             if (defaultParamValueHashMap.containsKey(currKey)) {
-                if (defaultParamValueHashMap.get(currKey) != paramValueHashMap.get(currKey)) {
+                if (!defaultParamValueHashMap.get(currKey).equals(paramValueHashMap.get(currKey))) {
                     makeEntry = true;
+                    debug("LATER currKey=" + currKey + ":main=" + paramValueHashMap.get(currKey) + ":default=" + defaultParamValueHashMap.get(currKey) + ":makeEntry=" + makeEntry);
                 }
             } else {
                 makeEntry = true;
             }
         }
+
+        //      debug("LATER currKey="+currKey+":main="+paramValueHashMap.get(currKey)+":default="+defaultParamValueHashMap.get(currKey)+":makeEntry="+makeEntry);
 
         if (makeEntry == true) {
             stringBuilder.append(currKey);
@@ -499,14 +506,13 @@ public class L2genData {
 
     public void setParfile(String inParfile) {
 
-        // todo have to figure out how to get rid of old setting
-//        for (String key: defaultParamValueHashMap.keySet()) {
-//
-//        }
-        if (inParfile != null) {
-            String parfileLines[] = inParfile.split("\n");
+        HashMap<String, String> inParfileHashMap = new HashMap<String, String>();
+        HashMap<String, String> tmpParfileHashMap = new HashMap<String, String>();
+        HashMap<String, String> copyParamValueHashMap = new HashMap<String, String>();
 
-            boolean prodlistFound = false;
+        if (inParfile != null) {
+
+            String parfileLines[] = inParfile.split("\n");
 
             for (String myLine : parfileLines) {
 
@@ -518,21 +524,42 @@ public class L2genData {
 
                         final String currKey = splitLine[0].toString().trim();
                         final String currValue = splitLine[1].toString().trim();
-
-                        if (currKey.equals(PROD)) {
-                            prodlistFound = true;
-                        }
-                        // Note: setParamValue handle all change events
-                        setParamValue(currKey, currValue);
+                        inParfileHashMap.put(currKey, currValue);
                     }
                 }
             }
+        }
 
-            if (!prodlistFound) {
-                if (getProdlist().length() > 0) {
-                    setParamValue(PROD, "");
-                }
+
+        for (String key : paramValueHashMap.keySet()) {
+            copyParamValueHashMap.put(key, paramValueHashMap.get(key));
+        }
+
+        // Initialize tmpParfileHashMap with defaultParamValueHashMap
+        for (String key : defaultParamValueHashMap.keySet()) {
+            tmpParfileHashMap.put(key, defaultParamValueHashMap.get(key));
+        }
+
+        // Update  tmpParfileHashMap  with  inParfileHashMap.
+        for (String key : inParfileHashMap.keySet()) {
+            tmpParfileHashMap.put(key, inParfileHashMap.get(key));
+        }
+
+        // Remove any keys in paramValueHashMap which are not in tmpParfileHashMap
+        for (String key : copyParamValueHashMap.keySet()) {
+
+            if (!key.equals(IFILE) && !tmpParfileHashMap.containsKey(key)) {
+                 deleteParam(key);
             }
+        }
+
+        if (tmpParfileHashMap.containsKey(IFILE)) {
+            setParamValue(IFILE, tmpParfileHashMap.get(IFILE));
+            tmpParfileHashMap.remove(IFILE);
+        }
+
+        for (String key : tmpParfileHashMap.keySet()) {
+            setParamValue(key, tmpParfileHashMap.get(key));
         }
     }
 
@@ -542,7 +569,10 @@ public class L2genData {
         defaultParamValueHashMap.clear();
 
         for (String currKey : paramValueHashMap.keySet()) {
-            defaultParamValueHashMap.put(currKey, paramValueHashMap.get(currKey));
+            if (!currKey.equals(IFILE)) {
+                defaultParamValueHashMap.put(currKey, paramValueHashMap.get(currKey));
+                debug("setDefaults currKey=" + currKey + ":main=" + paramValueHashMap.get(currKey) + ":default=" + defaultParamValueHashMap.get(currKey));
+            }
         }
     }
 
@@ -559,6 +589,21 @@ public class L2genData {
         }
     }
 
+    public void deleteParam(String inKey) {
+
+        if (inKey != null && inKey.length() > 0) {
+            inKey = inKey.trim();
+            if (paramValueHashMap.containsKey(inKey)) {
+                if (defaultParamValueHashMap.containsKey(inKey)) {
+                    paramValueHashMap.put(inKey, defaultParamValueHashMap.get(inKey));
+                } else {
+                    paramValueHashMap.remove(inKey);
+                }
+
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, inKey, null, null));
+            }
+        }
+    }
 
     public void setParamValue(String inKey, String inValue) {
 
@@ -584,15 +629,7 @@ public class L2genData {
 
                     }
                 } else {
-                    if (paramValueHashMap.containsKey(inKey)) {
-                        if (defaultParamValueHashMap.containsKey(inKey)) {
-                            paramValueHashMap.put(inKey, defaultParamValueHashMap.get(inKey));
-                        } else {
-                            paramValueHashMap.remove(inKey);
-                        }
-
-                        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, inKey, null, null));
-                    }
+                    deleteParam(inKey);
                 }
             }
         }
@@ -612,7 +649,7 @@ public class L2genData {
 
             for (ProductInfo productInfo : waveDependentProductInfoArray) {
                 for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                    for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+                    for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
                         if (singleL2prodEntry.equals(getProductNameForSingleEntry(productInfo, algorithmInfo, wavelengthInfo))) {
                             return true;
                         }
@@ -749,7 +786,7 @@ public class L2genData {
         if (!newMissionString.equals(missionString)) {
 
             missionString = newMissionString;
-            wavelengthInfoArray.clear();
+            wavelengthLimiterArray.clear();
 
 
             // lookup hash relating mission letter with mission directory name
@@ -772,7 +809,8 @@ public class L2genData {
             myFilename.append("msl12_sensor_info.dat");
 
             // read in the mission's datafile which contains the wavelengths
-            final ArrayList<String> myAsciiFileArrayList = myReadDataFile(myFilename.toString());
+            //  final ArrayList<String> myAsciiFileArrayList = myReadDataFile(myFilename.toString());
+            final ArrayList<String> myAsciiFileArrayList = l2genReader.readFileIntoArrayList(myFilename.toString());
 
 
             // loop through datafile
@@ -792,7 +830,7 @@ public class L2genData {
                         final String currWavelength = splitLine[1].trim();
 
                         WavelengthInfo wavelengthInfo = new WavelengthInfo(currWavelength);
-                        wavelengthInfoArray.add(wavelengthInfo);
+                        wavelengthLimiterArray.add(wavelengthInfo);
                     }
                 }
             }
@@ -814,7 +852,7 @@ public class L2genData {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 algorithmInfo.clearWavelengthInfoArray();
 
-                for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
+                for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
 
                     if (wavelengthInfo.getWavelength() < WavelengthInfo.VISIBLE_UPPER_LIMIT) {
                         if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE ||
@@ -837,201 +875,201 @@ public class L2genData {
     }
 
 
-    private ArrayList<String> myReadDataFile(String fileName) {
-        String lineData;
-        ArrayList<String> fileContents = new ArrayList<String>();
-        BufferedReader moFile = null;
-        try {
-            moFile = new BufferedReader(new FileReader(new File(fileName)));
-            while ((lineData = moFile.readLine()) != null) {
-
-                fileContents.add(lineData);
-            }
-        } catch (IOException e) {
-            ;
-        } finally {
-            try {
-                moFile.close();
-            } catch (Exception e) {
-                //Ignore
-            }
-        }
-        return fileContents;
-    }
-
-
     //  The below lines are not currently in use
 
-
-    public String getMissionString() {
-        return missionString;
-    }
-
-    public void setMissionString(String missionString) {
-        if (!missionString.equals(this.missionString)) {
-            String oldValue = this.missionString;
-            this.missionString = missionString;
-            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_STRING_CHANGE_EVENT_NAME, oldValue, missionString));
-        }
-    }
-
-
-    // apply all entries in l2prodHash to wavelengthInfoArray
-    private void setIsSelectedWavelengthInfoArrayWithProdHash() {
-
-
-        for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
-            wavelengthInfo.setSelected(false);
-        }
-
-
-        for (String l2prodEntry : l2prodlist) {
-
-            WavelengthInfo wavelengthInfo = getWavelengthFromL2prod(l2prodEntry);
-
-            if (wavelengthInfo != null) {
-
-                for (WavelengthInfo currwavelengthInfo : wavelengthInfoArray) {
-                    if (currwavelengthInfo.getWavelength() == wavelengthInfo.getWavelength()) {
-                        wavelengthInfo.setSelected(true);
-                    }
-                }
-            }
-        }
-    }
-
-
-    private AlgorithmInfo getAlgorithmInfoFromL2prod(String L2prodEntry) {
-
-        for (ProductInfo currProductInfo : waveIndependentProductInfoArray) {
-            for (AlgorithmInfo currAlgorithmInfo : currProductInfo.getAlgorithmInfoArrayList()) {
-
-                String algorithm = currAlgorithmInfo.getName();
-                String product = currAlgorithmInfo.getProductName();
-
-                if (L2prodEntry.equals(assembleL2productName(product, null, algorithm))) {
-                    return currAlgorithmInfo;
-                }
-            }
-        }
-
-
-        for (ProductInfo currProductInfo : waveDependentProductInfoArray) {
-            for (AlgorithmInfo currAlgorithmInfo : currProductInfo.getAlgorithmInfoArrayList()) {
-
-                String algorithm = currAlgorithmInfo.getName();
-                String product = currAlgorithmInfo.getProductName();
-
-                for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
-
-                    String wavelength = wavelengthInfo.toString();
-
-                    if (L2prodEntry.equals(assembleL2productName(product, wavelength, algorithm))) {
-                        return currAlgorithmInfo;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-
-    private void setIsSelectedWaveIndependentProductInfoArrayWithProdHash() {
-
-
-        for (ProductInfo productInfo : waveIndependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                algorithmInfo.setSelected(false);
-            }
-        }
-
-
-        for (String l2prodEntry : l2prodlist) {
-            AlgorithmInfo algorithmInfo = getAlgorithmInfoFromL2prod(l2prodEntry);
-            if (algorithmInfo != null) {
-                algorithmInfo.setSelected(true);
-            } else {
-                // todo do something with this like send to log file or something
-            }
-        }
-    }
-
-
-    private void setIsSelectedWaveDependentProductInfoArrayWithProdHash() {
-
-
-        for (ProductInfo productInfo : waveDependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                algorithmInfo.setSelected(false);
-            }
-        }
-
-
-        for (String l2prodEntry : l2prodlist) {
-            AlgorithmInfo algorithmInfo = getAlgorithmInfoFromL2prod(l2prodEntry);
-            if (algorithmInfo != null) {
-                algorithmInfo.setSelected(true);
-            } else {
-                // todo do something with this like send to log file or something
-            }
-        }
-    }
-
-
-    private void setProdWithProdlist() {
-
-        StringBuilder newProdList = new StringBuilder();
-
-        for (String prodEntry : l2prodlist) {
-            newProdList.append(prodEntry);
-            newProdList.append(" ");
-        }
-        paramValueHashMap.put(PROD, newProdList.toString().trim());
-    }
-
-
-    private WavelengthInfo getWavelengthFromL2prod(String L2prodEntry) {
-        for (ProductInfo currProductInfo : waveDependentProductInfoArray) {
-            for (AlgorithmInfo currAlgorithmInfo : currProductInfo.getAlgorithmInfoArrayList()) {
-
-                String algorithm = currAlgorithmInfo.getName();
-                String product = currAlgorithmInfo.getProductName();
-
-                for (WavelengthInfo wavelengthInfo : wavelengthInfoArray) {
-
-                    String wavelength = wavelengthInfo.toString();
-
-
-                    if (L2prodEntry.equals(assembleL2productName(product, wavelength, algorithm))) {
-                        return wavelengthInfo;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-
-    private String assembleL2productName(String product, String wavelength, String algorithm) {
-
-        StringBuilder l2prod = new StringBuilder();
-
-        l2prod.append(product);
-
-        if (wavelength != null) {
-            l2prod.append("_");
-            l2prod.append(wavelength);
-        }
-
-        if (algorithm != null) {
-            l2prod.append("_");
-            l2prod.append(algorithm);
-        }
-
-        return l2prod.toString();
-    }
+//
+//    private ArrayList<String> myReadDataFile(String fileName) {
+//        String lineData;
+//        ArrayList<String> fileContents = new ArrayList<String>();
+//        BufferedReader moFile = null;
+//        try {
+//            moFile = new BufferedReader(new FileReader(new File(fileName)));
+//            while ((lineData = moFile.readLine()) != null) {
+//
+//                fileContents.add(lineData);
+//            }
+//        } catch (IOException e) {
+//            ;
+//        } finally {
+//            try {
+//                moFile.close();
+//            } catch (Exception e) {
+//                //Ignore
+//            }
+//        }
+//        return fileContents;
+//    }
+//
+//
+//    public String getMissionString() {
+//        return missionString;
+//    }
+//
+//    public void setMissionString(String missionString) {
+//        if (!missionString.equals(this.missionString)) {
+//            String oldValue = this.missionString;
+//            this.missionString = missionString;
+//            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_STRING_CHANGE_EVENT_NAME, oldValue, missionString));
+//        }
+//    }
+//
+//
+//    // apply all entries in l2prodHash to wavelengthInfoArray
+//    private void setIsSelectedWavelengthInfoArrayWithProdHash() {
+//
+//
+//        for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
+//            wavelengthInfo.setSelected(false);
+//        }
+//
+//
+//        for (String l2prodEntry : l2prodlist) {
+//
+//            WavelengthInfo wavelengthInfo = getWavelengthFromL2prod(l2prodEntry);
+//
+//            if (wavelengthInfo != null) {
+//
+//                for (WavelengthInfo currwavelengthInfo : wavelengthLimiterArray) {
+//                    if (currwavelengthInfo.getWavelength() == wavelengthInfo.getWavelength()) {
+//                        wavelengthInfo.setSelected(true);
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//
+//    private AlgorithmInfo getAlgorithmInfoFromL2prod(String L2prodEntry) {
+//
+//        for (ProductInfo currProductInfo : waveIndependentProductInfoArray) {
+//            for (AlgorithmInfo currAlgorithmInfo : currProductInfo.getAlgorithmInfoArrayList()) {
+//
+//                String algorithm = currAlgorithmInfo.getName();
+//                String product = currAlgorithmInfo.getProductName();
+//
+//                if (L2prodEntry.equals(assembleL2productName(product, null, algorithm))) {
+//                    return currAlgorithmInfo;
+//                }
+//            }
+//        }
+//
+//
+//        for (ProductInfo currProductInfo : waveDependentProductInfoArray) {
+//            for (AlgorithmInfo currAlgorithmInfo : currProductInfo.getAlgorithmInfoArrayList()) {
+//
+//                String algorithm = currAlgorithmInfo.getName();
+//                String product = currAlgorithmInfo.getProductName();
+//
+//                for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
+//
+//                    String wavelength = wavelengthInfo.toString();
+//
+//                    if (L2prodEntry.equals(assembleL2productName(product, wavelength, algorithm))) {
+//                        return currAlgorithmInfo;
+//                    }
+//                }
+//            }
+//        }
+//
+//        return null;
+//    }
+//
+//
+//    private void setIsSelectedWaveIndependentProductInfoArrayWithProdHash() {
+//
+//
+//        for (ProductInfo productInfo : waveIndependentProductInfoArray) {
+//            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+//                algorithmInfo.setSelected(false);
+//            }
+//        }
+//
+//
+//        for (String l2prodEntry : l2prodlist) {
+//            AlgorithmInfo algorithmInfo = getAlgorithmInfoFromL2prod(l2prodEntry);
+//            if (algorithmInfo != null) {
+//                algorithmInfo.setSelected(true);
+//            } else {
+//                // todo do something with this like send to log file or something
+//            }
+//        }
+//    }
+//
+//
+//    private void setIsSelectedWaveDependentProductInfoArrayWithProdHash() {
+//
+//
+//        for (ProductInfo productInfo : waveDependentProductInfoArray) {
+//            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+//                algorithmInfo.setSelected(false);
+//            }
+//        }
+//
+//
+//        for (String l2prodEntry : l2prodlist) {
+//            AlgorithmInfo algorithmInfo = getAlgorithmInfoFromL2prod(l2prodEntry);
+//            if (algorithmInfo != null) {
+//                algorithmInfo.setSelected(true);
+//            } else {
+//                // todo do something with this like send to log file or something
+//            }
+//        }
+//    }
+//
+//
+//    private void setProdWithProdlist() {
+//
+//        StringBuilder newProdList = new StringBuilder();
+//
+//        for (String prodEntry : l2prodlist) {
+//            newProdList.append(prodEntry);
+//            newProdList.append(" ");
+//        }
+//        paramValueHashMap.put(PROD, newProdList.toString().trim());
+//    }
+//
+//
+//    private WavelengthInfo getWavelengthFromL2prod(String L2prodEntry) {
+//        for (ProductInfo currProductInfo : waveDependentProductInfoArray) {
+//            for (AlgorithmInfo currAlgorithmInfo : currProductInfo.getAlgorithmInfoArrayList()) {
+//
+//                String algorithm = currAlgorithmInfo.getName();
+//                String product = currAlgorithmInfo.getProductName();
+//
+//                for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
+//
+//                    String wavelength = wavelengthInfo.toString();
+//
+//
+//                    if (L2prodEntry.equals(assembleL2productName(product, wavelength, algorithm))) {
+//                        return wavelengthInfo;
+//                    }
+//                }
+//            }
+//        }
+//
+//        return null;
+//    }
+//
+//
+//    private String assembleL2productName(String product, String wavelength, String algorithm) {
+//
+//        StringBuilder l2prod = new StringBuilder();
+//
+//        l2prod.append(product);
+//
+//        if (wavelength != null) {
+//            l2prod.append("_");
+//            l2prod.append(wavelength);
+//        }
+//
+//        if (algorithm != null) {
+//            l2prod.append("_");
+//            l2prod.append(algorithm);
+//        }
+//
+//        return l2prod.toString();
+//    }
 
 }
 

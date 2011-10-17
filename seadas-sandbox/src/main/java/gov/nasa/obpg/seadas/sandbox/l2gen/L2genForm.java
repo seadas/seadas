@@ -36,6 +36,7 @@ class L2genForm extends JTabbedPane {
 
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
     private JPanel wavelengthsJPanel;
+    private JPanel productsLimiterJPanel;
     private JList waveDependentProductsJList;
     private JList waveIndependentProductsJList;
 
@@ -89,6 +90,7 @@ class L2genForm extends JTabbedPane {
 
 
     private L2genData l2genData = new L2genData();
+    private L2genReader l2genReader = new L2genReader(l2genData);
 
 
     L2genForm(TargetProductSelector targetProductSelector, AppContext appContext) {
@@ -185,7 +187,6 @@ class L2genForm extends JTabbedPane {
         });
 
 
-
         // Declare mainPanel and set it's attributes
         final JPanel mainPanel = new JPanel();
         mainPanel.setBorder(BorderFactory.createTitledBorder("Parfile"));
@@ -222,7 +223,6 @@ class L2genForm extends JTabbedPane {
             c.weighty = 1;
             mainPanel.add(scrollTextArea, c);
         }
-
 
 
         final JPanel finalMainPanel;
@@ -339,13 +339,18 @@ class L2genForm extends JTabbedPane {
             @Override
             public void selectionChanged(SelectionChangeEvent event) {
                 Product sourceProduct = getSourceProduct();
-                updateTargetProductName(sourceProduct);
+
+                if (handleIfileJComboBoxEnabled) {
+                    updateTargetProductName(sourceProduct);
+                }
 
 
-                if (sourceProduct != null) {
+                if (sourceProduct != null && sourceProductSelector.getSelectedProduct() != null
+                        && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
                     //               l2genData.setParamValue(l2genData.IFILE, sourceProduct.getName());
                     if (handleIfileJComboBoxEnabled) {
-                        l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getName());
+                        //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getName());
+                        l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
                     }
                 }
 
@@ -359,21 +364,46 @@ class L2genForm extends JTabbedPane {
 
     private void updateTargetProductName(Product selectedProduct) {
 
-        String productName = "output." + TARGET_PRODUCT_SUFFIX;
+        String outputProduct;
+        String ofile = "";
 
         final TargetProductSelectorModel selectorModel = targetProductSelector.getModel();
 
         if (selectedProduct != null) {
+            String productBasename;
+
             int i = selectedProduct.getName().lastIndexOf('.');
             if (i != -1) {
-                String baseName = selectedProduct.getName().substring(0, i);
-                productName = baseName + "." + TARGET_PRODUCT_SUFFIX;
+                productBasename = selectedProduct.getName().substring(0, i);
             } else {
-                productName = selectedProduct.getName() + "." + TARGET_PRODUCT_SUFFIX;
+                productBasename = selectedProduct.getName();
             }
+
+            outputProduct = productBasename + "." + TARGET_PRODUCT_SUFFIX;
+
+
+            int j = selectedProduct.getFileLocation().toString().lastIndexOf('.');
+
+            String ofileBasename;
+            if (j != -1) {
+                ofileBasename = selectedProduct.getFileLocation().toString().substring(0, j);
+            } else {
+                ofileBasename = selectedProduct.getFileLocation().toString();
+            }
+
+            ofile = ofileBasename + "." + TARGET_PRODUCT_SUFFIX;
+
+            selectorModel.setProductName(outputProduct);
+
+        } else {
+            outputProduct = null;
+            ofile = "";
         }
 
-        selectorModel.setProductName(productName);
+        debug("DEBUG ofile=" + ofile);
+        l2genData.setParamValue(l2genData.OFILE, ofile);
+
+
     }
 
 
@@ -844,12 +874,10 @@ class L2genForm extends JTabbedPane {
         explanationJTextArea.setLineWrap(true);
         explanationJTextArea.setColumns(50);
         explanationJTextArea.setBackground(Color.decode("#dddddd"));
-        wavelengthsJPanel = new JPanel();
 
 
         wavelengthTypeIiiCheckbox = new JCheckBox(WAVELENGTH_TYPE_INFRARED);
         wavelengthTypeIiiCheckbox.setName(WAVELENGTH_TYPE_INFRARED);
-        // add listener for current checkbox
         wavelengthTypeIiiCheckbox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -862,7 +890,6 @@ class L2genForm extends JTabbedPane {
 
         wavelengthTypeVvvCheckbox = new JCheckBox(WAVELENGTH_TYPE_VISIBLE);
         wavelengthTypeVvvCheckbox.setName(WAVELENGTH_TYPE_VISIBLE);
-
         wavelengthTypeVvvCheckbox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -872,9 +899,14 @@ class L2genForm extends JTabbedPane {
             }
         });
 
-
+        wavelengthsJPanel = new JPanel();
         wavelengthsJPanel.setBorder(BorderFactory.createTitledBorder("Wavelengths"));
         wavelengthsJPanel.setLayout(new GridBagLayout());
+
+
+        productsLimiterJPanel = new JPanel();
+        productsLimiterJPanel.setBorder(BorderFactory.createTitledBorder("Products"));
+        productsLimiterJPanel.setLayout(new GridBagLayout());
 
 
         // ----------------------------------------------------------------------------------------
@@ -886,43 +918,27 @@ class L2genForm extends JTabbedPane {
         mainPanel.setLayout(new GridBagLayout());
 
         // Add to mainPanel grid cell
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.anchor = GridBagConstraints.NORTH;
-            c.weightx = 0;
-            c.weighty = 0;
-            mainPanel.add(wavelengthsJPanel, c);
-        }
 
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 1;
-            c.fill = GridBagConstraints.BOTH;
-            c.anchor = GridBagConstraints.NORTH;
-            c.weightx = 1;
-            c.weighty = 1;
-            mainPanel.add(explanationJTextArea, c);
-        }
+        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.NORTH;
+        c.weightx = 0;
+        c.weighty = 0;
+        mainPanel.add(wavelengthsJPanel, c);
+
+        c = SeadasGuiUtils.makeConstraints(0, 1);
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTH;
+        c.weightx = 1;
+        c.weighty = 1;
+        mainPanel.add(productsLimiterJPanel, c);
+
 
         // ----------------------------------------------------------------------------------------
         // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
         // ----------------------------------------------------------------------------------------
 
-        final JPanel wrappedMainPanel = new JPanel();
-        wrappedMainPanel.setLayout(new GridBagLayout());
-
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.insets = new Insets(3, 3, 3, 3);
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.weighty = 1;
-
-        wrappedMainPanel.add(mainPanel, c);
+        JPanel wrappedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel);
 
 
         // ----------------------------------------------------------------------------------------
@@ -934,7 +950,7 @@ class L2genForm extends JTabbedPane {
 
     private void createProductSelectorSubTab(JTabbedPane tabbedPane, String myTabname) {
 
-        L2genReader l2genReader = new L2genReader(l2genData);
+        //   L2genReader l2genReader = new L2genReader(l2genData);
         l2genReader.readProductsXmlFile(SEADAS_PRODUCTS_FILE);
 
         JPanel wavelengthIndependentProductsJPanel = new JPanel();
@@ -1127,7 +1143,7 @@ class L2genForm extends JTabbedPane {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
                     wavelengthInfo.setToStringShowProductName(true);
-                    for (WavelengthInfo wavelengthInfoLimiter : l2genData.getWavelengthInfoArray()) {
+                    for (WavelengthInfo wavelengthInfoLimiter : l2genData.getWavelengthLimiterArray()) {
                         if (wavelengthInfo.getWavelength() == wavelengthInfoLimiter.getWavelength()) {
                             if (wavelengthInfoLimiter.isSelected()) {
 
@@ -1265,7 +1281,7 @@ class L2genForm extends JTabbedPane {
         ArrayList<JCheckBox> wavelengthGroupCheckboxes = new ArrayList<JCheckBox>();
 
 
-        for (WavelengthInfo wavelengthInfo : l2genData.getWavelengthInfoArray()) {
+        for (WavelengthInfo wavelengthInfo : l2genData.getWavelengthLimiterArray()) {
 
             final String currWavelength = wavelengthInfo.toString();
             final JCheckBox currJCheckBox = new JCheckBox(currWavelength);
@@ -1306,7 +1322,7 @@ class L2genForm extends JTabbedPane {
         // some GridBagLayout formatting variables
         int gridyCnt = 0;
         int gridxCnt = 0;
-        int gridxColumns = 4;
+        int NUMBER_OF_COLUMNS = 5;
 
 
         for (JCheckBox wavelengthGroupCheckbox : wavelengthGroupCheckboxes) {
@@ -1322,7 +1338,7 @@ class L2genForm extends JTabbedPane {
             }
 
             // increment GridBag coordinates
-            if (gridxCnt < (gridxColumns - 1)) {
+            if (gridxCnt < (NUMBER_OF_COLUMNS - 1)) {
                 gridxCnt++;
             } else {
                 gridxCnt = 0;
@@ -1332,6 +1348,17 @@ class L2genForm extends JTabbedPane {
         }
 
         // updateWavelengthCheckboxSelectionStateEvent();
+    }
+
+
+    private String getDefaultsFilename() {
+        String SEADAS_SEAWIFS_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
+        String SEADAS_AQUA_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
+        String SEADAS_TERRA_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
+
+        // todo add logic to get correct defaults file
+
+        return SEADAS_AQUA_DEFAULTS_FILENAME;
     }
 
 
@@ -1430,7 +1457,7 @@ class L2genForm extends JTabbedPane {
         l2genData.addPropertyChangeListener(l2genData.MISSION_STRING_CHANGE_EVENT_NAME, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println(l2genData.MISSION_STRING_CHANGE_EVENT_NAME +" being handled");
+                System.out.println(l2genData.MISSION_STRING_CHANGE_EVENT_NAME + " being handled");
                 missionStringChangeEvent((String) evt.getNewValue());
 
             }
@@ -1442,7 +1469,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 spixlJTextField.setText(l2genData.getParamValue(l2genData.SPIXL));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1451,7 +1478,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 epixlJTextField.setText(l2genData.getParamValue(l2genData.EPIXL));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1460,7 +1487,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 dpixlJTextField.setText(l2genData.getParamValue(l2genData.DPIXL));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1469,7 +1496,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 slineJTextField.setText(l2genData.getParamValue(l2genData.SLINE));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1478,7 +1505,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 elineJTextField.setText(l2genData.getParamValue(l2genData.ELINE));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1487,7 +1514,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 dlineJTextField.setText(l2genData.getParamValue(l2genData.DLINE));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1497,7 +1524,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 northJTextField.setText(l2genData.getParamValue(l2genData.NORTH));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1507,7 +1534,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 southJTextField.setText(l2genData.getParamValue(l2genData.SOUTH));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1517,7 +1544,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 westJTextField.setText(l2genData.getParamValue(l2genData.WEST));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1527,7 +1554,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 eastJTextField.setText(l2genData.getParamValue(l2genData.EAST));
-                 parfileJTextArea.setText(l2genData.getParfile());
+                parfileJTextArea.setText(l2genData.getParfile());
             }
         });
 
@@ -1577,15 +1604,37 @@ class L2genForm extends JTabbedPane {
             }
 
         });
+
+        l2genData.addPropertyChangeListener(l2genData.OFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                debug("EVENT RECEIVED ofile");
+                parfileJTextArea.setText(l2genData.getParfile());
+            }
+        });
     }
 
 
     private void ifileChangedEventHandler() {
 
         if (sourceProductSelector != null) {
-            if (!l2genData.getParamValue(l2genData.IFILE).equals(sourceProductSelector.getSelectedProduct().getName())) {
+            boolean setSourceProductSelector = false;
+
+            if (l2genData.getParamValue(l2genData.IFILE) != null) {
+                if (!l2genData.getParamValue(l2genData.IFILE).equals(sourceProductSelector.getSelectedProduct().getFileLocation().toString())) {
+                    setSourceProductSelector = true;
+                }
+            } else {
+                setSourceProductSelector = true;
+            }
+
+            if (setSourceProductSelector == true) {
                 handleIfileJComboBoxEnabled = false;
                 sourceProductSelector.setSelectedProduct(null);
+
+//                final TargetProductSelectorModel selectorModel = targetProductSelector.getModel();
+//                selectorModel.setProductName(null);
+
                 handleIfileJComboBoxEnabled = true;
             }
         }
@@ -1602,6 +1651,13 @@ class L2genForm extends JTabbedPane {
 
         setWaveDependentProductsJList();
         updateWavelengthCheckboxSelectionStateEvent();
+
+
+        String defaults = l2genReader.readFileIntoString(getDefaultsFilename());
+
+        //   debug(defaults);
+        l2genData.setParfile(defaults);
+        l2genData.setDefaults();
         parfileJTextArea.setText(l2genData.getParfile());
         //  updateSelectedProductsJTextArea();
 
@@ -1612,7 +1668,7 @@ class L2genForm extends JTabbedPane {
 
         wavelengthCheckboxControlHandlersEnabled = false;
 
-        for (WavelengthInfo wavelengthInfo : l2genData.getWavelengthInfoArray()) {
+        for (WavelengthInfo wavelengthInfo : l2genData.getWavelengthLimiterArray()) {
             for (JCheckBox currJCheckbox : wavelengthsJCheckboxArrayList) {
                 if (wavelengthInfo.toString().equals(currJCheckbox.getName())) {
                     if (wavelengthInfo.isSelected() != currJCheckbox.isSelected()) {
@@ -1699,6 +1755,11 @@ class L2genForm extends JTabbedPane {
 
     void prepareHide() {
         sourceProductSelector.releaseProducts();
+    }
+
+
+    private void debug(String string) {
+        System.out.println(string);
     }
 
 

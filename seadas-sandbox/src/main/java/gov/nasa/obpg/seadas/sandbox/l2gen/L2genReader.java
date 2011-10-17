@@ -3,6 +3,12 @@ package gov.nasa.obpg.seadas.sandbox.l2gen;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
 /**
  * A ...
  *
@@ -26,7 +32,7 @@ public class L2genReader {
 
     private L2genData l2genData;
 
-    public L2genReader(L2genData l2genData)  {
+    public L2genReader(L2genData l2genData) {
         this.l2genData = l2genData;
     }
 
@@ -107,7 +113,7 @@ public class L2genReader {
                     } // for algorithms
 
                     if (waveDependentProductInfo != null) {
-                         l2genData.addWaveDependentProductInfoArray(waveDependentProductInfo);
+                        l2genData.addWaveDependentProductInfoArray(waveDependentProductInfo);
                     }
                     if (waveIndependentProductInfo != null) {
                         l2genData.addWaveIndependentProductInfoArray(waveIndependentProductInfo);
@@ -119,4 +125,45 @@ public class L2genReader {
         l2genData.sortWaveDependentProductInfoArray(ProductInfo.CASE_INSENSITIVE_ORDER);
         l2genData.sortWaveIndependentProductInfoArray(ProductInfo.CASE_INSENSITIVE_ORDER);
     }
+
+
+
+
+    public String readFileIntoString (String filename){
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        ArrayList<String> fileContentsInArrayList = readFileIntoArrayList(filename);
+
+        for (String line : fileContentsInArrayList) {
+            stringBuilder.append(line);
+            stringBuilder.append("\n");
+        }
+
+        return  stringBuilder.toString();
+    }
+
+
+    public ArrayList<String> readFileIntoArrayList(String filename) {
+        String lineData;
+        ArrayList<String> fileContents = new ArrayList<String>();
+        BufferedReader moFile = null;
+        try {
+            moFile = new BufferedReader(new FileReader(new File(filename)));
+            while ((lineData = moFile.readLine()) != null) {
+
+                fileContents.add(lineData);
+            }
+        } catch (IOException e) {
+            ;
+        } finally {
+            try {
+                moFile.close();
+            } catch (Exception e) {
+                //Ignore
+            }
+        }
+        return fileContents;
+    }
+
 }
