@@ -1,14 +1,9 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
-import ucar.ma2.ArrayDouble;
-
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -31,14 +26,14 @@ public class L2genData {
     public final String EAST = "east";
     public final String IFILE = "ifile";
     public final String OFILE = "ofile";
-    public final String PROD = "prod";
+    public final String PROD = "l2prod";
 
-    public final String PARFILE_TEXT_CHANGE_EVENT_NAME = "parfileTextChangeEvent";
-    public final String MISSION_STRING_CHANGE_EVENT_NAME = "missionStringChangeEvent";
-    public final String UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT = "updateWavelengthCheckboxStatesEvent";
-    public final String WAVE_DEPENDENT_PRODUCT_CHANGED = "waveDependentJListEvent";
-    public final String WAVE_INDEPENDENT_PRODUCT_CHANGED = "waveIndependentJListEvent";
-
+    public final String PARFILE_TEXT_CHANGE_EVENT_NAME = "PARFILE_TEXT_CHANGE_EVENT_NAME";
+    public final String MISSION_STRING_CHANGE_EVENT_NAME = "MISSION_STRING_CHANGE_EVENT_NAME";
+    public final String UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT = "UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT";
+    public final String WAVE_DEPENDENT_PRODUCT_CHANGED = "WAVE_DEPENDENT_PRODUCT_CHANGED";
+    public final String WAVE_INDEPENDENT_PRODUCT_CHANGED = "WAVE_INDEPENDENT_PRODUCT_CHANGED";
+    public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
 
     // Groupings of Parameter Keys
     private final String[] coordinateParamKeys = {NORTH, SOUTH, WEST, EAST};
@@ -48,8 +43,8 @@ public class L2genData {
 
     private L2genReader l2genReader = new L2genReader(this);
     private String OCDATAROOT = System.getenv("OCDATAROOT");
-    private HashMap<String, String> paramValueHashMap = new HashMap();
-    private HashMap<String, String> defaultParamValueHashMap = new HashMap();
+    private HashMap<String, String> parfileHashMap = new HashMap();
+    private HashMap<String, String> defaultParfileHashMap = new HashMap();
     private TreeSet<String> l2prodlist = new TreeSet<String>();
     private ArrayList<ProductInfo> waveIndependentProductInfoArray = new ArrayList<ProductInfo>();
     private ArrayList<ProductInfo> waveDependentProductInfoArray = new ArrayList<ProductInfo>();
@@ -59,7 +54,6 @@ public class L2genData {
 
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
-    private String missionString = "";
 
     public enum RegionType {Coordinates, PixelLines}
 
@@ -368,7 +362,7 @@ public class L2genData {
         if (regionType == RegionType.Coordinates) {
             // Since Coordinates are being used purge PixelLine fields
             for (String currKey : pixelLineParamKeys) {
-                paramValueHashMap.remove(currKey);
+                parfileHashMap.remove(currKey);
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(
 
                         this, currKey, null, ""));
@@ -379,7 +373,7 @@ public class L2genData {
             // Since PixelLines are being used purge Coordinate fields
 
             for (String currKey : coordinateParamKeys) {
-                paramValueHashMap.remove(currKey);
+                parfileHashMap.remove(currKey);
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(
 
                         this, currKey, null, ""));
@@ -398,11 +392,11 @@ public class L2genData {
         boolean makeEntry = false;
 
 
-        if (paramValueHashMap.containsKey(currKey)) {
-            if (defaultParamValueHashMap.containsKey(currKey)) {
-                if (!defaultParamValueHashMap.get(currKey).equals(paramValueHashMap.get(currKey))) {
+        if (parfileHashMap.containsKey(currKey)) {
+            if (defaultParfileHashMap.containsKey(currKey)) {
+                if (!defaultParfileHashMap.get(currKey).equals(parfileHashMap.get(currKey))) {
                     makeEntry = true;
-                    debug("LATER currKey=" + currKey + ":main=" + paramValueHashMap.get(currKey) + ":default=" + defaultParamValueHashMap.get(currKey) + ":makeEntry=" + makeEntry);
+                    debug("LATER currKey=" + currKey + ":main=" + parfileHashMap.get(currKey) + ":default=" + defaultParfileHashMap.get(currKey) + ":makeEntry=" + makeEntry);
                 }
             } else {
                 makeEntry = true;
@@ -414,7 +408,7 @@ public class L2genData {
         if (makeEntry == true) {
             stringBuilder.append(currKey);
             stringBuilder.append("=");
-            stringBuilder.append(paramValueHashMap.get(currKey));
+            stringBuilder.append(parfileHashMap.get(currKey));
             stringBuilder.append("\n");
         }
     }
@@ -438,14 +432,14 @@ public class L2genData {
 
         // Remove prod entry because we do not store it here.
         // This is just a precaution it should never have been stored.
-        if (paramValueHashMap.containsKey(PROD)) {
-            paramValueHashMap.remove(PROD);
+        if (parfileHashMap.containsKey(PROD)) {
+            parfileHashMap.remove(PROD);
         }
 
         HashMap<String, Object> paramValueCopyHashMap = new HashMap();
 
-        for (String currKey : paramValueHashMap.keySet()) {
-            paramValueCopyHashMap.put(currKey, paramValueHashMap.get(currKey));
+        for (String currKey : parfileHashMap.keySet()) {
+            paramValueCopyHashMap.put(currKey, parfileHashMap.get(currKey));
         }
 
         StringBuilder parfileStringBuilder = new StringBuilder("");
@@ -504,85 +498,162 @@ public class L2genData {
     }
 
 
-    public void setParfile(String inParfile) {
+    private HashMap<String, String> parseParfile(String parfileString) {
 
-        HashMap<String, String> inParfileHashMap = new HashMap<String, String>();
-        HashMap<String, String> tmpParfileHashMap = new HashMap<String, String>();
-        HashMap<String, String> copyParamValueHashMap = new HashMap<String, String>();
+        HashMap<String, String> thisParfileHashMap = null;
 
-        if (inParfile != null) {
+        if (parfileString != null) {
 
-            String parfileLines[] = inParfile.split("\n");
+            thisParfileHashMap = new HashMap<String, String>();
 
-            for (String myLine : parfileLines) {
+            String parfileLines[] = parfileString.split("\n");
+
+            for (String parfileLine : parfileLines) {
 
                 // skip the comment lines in file
-                if (!myLine.trim().startsWith("#")) {
+                if (!parfileLine.trim().startsWith("#")) {
 
-                    String splitLine[] = myLine.split("=");
+                    String splitLine[] = parfileLine.split("=");
                     if (splitLine.length == 2) {
 
-                        final String currKey = splitLine[0].toString().trim();
-                        final String currValue = splitLine[1].toString().trim();
-                        inParfileHashMap.put(currKey, currValue);
+                        final String key = splitLine[0].toString().trim();
+                        final String value = splitLine[1].toString().trim();
+                        thisParfileHashMap.put(key, value);
+                    }
+                }
+            }
+        }
+
+        return thisParfileHashMap;
+    }
+
+
+    public void setParfile(String inParfile) {
+
+        HashMap<String, String> inParfileHashMap = parseParfile(inParfile);
+
+        if (inParfileHashMap != null && inParfileHashMap.size() > 0) {
+
+            HashMap<String, String> tmpParamValueHashMap = new HashMap<String, String>();
+            HashMap<String, String> copyParamValueHashMap = new HashMap<String, String>();
+
+            for (String key : parfileHashMap.keySet()) {
+                copyParamValueHashMap.put(key, parfileHashMap.get(key));
+            }
+
+            // Initialize tmpParamValueHashMap with defaultParamValueHashMap
+            for (String key : defaultParfileHashMap.keySet()) {
+                tmpParamValueHashMap.put(key, defaultParfileHashMap.get(key));
+            }
+
+            // Update  tmpParamValueHashMap  with  inParfileHashMap.
+            for (String key : inParfileHashMap.keySet()) {
+                tmpParamValueHashMap.put(key, inParfileHashMap.get(key));
+            }
+
+            // Remove any keys in paramValueHashMap which are not in tmpParamValueHashMap
+            for (String key : copyParamValueHashMap.keySet()) {
+
+                if (!key.equals(IFILE) && !tmpParamValueHashMap.containsKey(key)) {
+                    deleteParam(key);
+                }
+            }
+
+            // Do ifile first
+            if (tmpParamValueHashMap.containsKey(IFILE)) {
+                setParamValue(IFILE, tmpParamValueHashMap.get(IFILE));
+
+                tmpParamValueHashMap.remove(IFILE);
+            }
+
+            for (String key : tmpParamValueHashMap.keySet()) {
+                setParamValue(key, tmpParamValueHashMap.get(key));
+            }
+        }
+    }
+
+
+    public void setDefaultParfile(String defaultParfile) {
+
+        HashMap<String, String> defaultParfileHashMap = parseParfile(defaultParfile);
+
+        if (defaultParfileHashMap != null && defaultParfileHashMap.size() > 0) {
+            for (String key : defaultParfileHashMap.keySet()) {
+                setDefaultParamValue(key, defaultParfileHashMap.get(key));
+            }
+        }
+    }
+
+
+    public void applyProductDefaults() {
+
+        boolean waveIndependentProductInfoChanged = false;
+
+        for (ProductInfo productInfo : waveIndependentProductInfoArray) {
+            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                if (algorithmInfo.isSelected() != algorithmInfo.isDefaultSelected()) {
+                    algorithmInfo.setSelected(algorithmInfo.isDefaultSelected());
+                    waveIndependentProductInfoChanged = true;
+                }
+            }
+        }
+
+        boolean waveDependentProductInfoChanged = false;
+
+
+        for (ProductInfo productInfo : waveDependentProductInfoArray) {
+            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
+                    if (wavelengthInfo.isSelected() != wavelengthInfo.isDefaultSelected()) {
+                        wavelengthInfo.setSelected(wavelengthInfo.isDefaultSelected());
+                        waveDependentProductInfoChanged = true;
                     }
                 }
             }
         }
 
 
-        for (String key : paramValueHashMap.keySet()) {
-            copyParamValueHashMap.put(key, paramValueHashMap.get(key));
+        if (waveDependentProductInfoChanged == true) {
+            fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
         }
 
-        // Initialize tmpParfileHashMap with defaultParamValueHashMap
-        for (String key : defaultParamValueHashMap.keySet()) {
-            tmpParfileHashMap.put(key, defaultParamValueHashMap.get(key));
+        if (waveIndependentProductInfoChanged == true) {
+            fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+        }
+    }
+
+    public void applyParfileDefaults() {
+
+        HashMap<String, String> copyParamValueHashMap = new HashMap<String, String>();
+
+        for (String key : parfileHashMap.keySet()) {
+            copyParamValueHashMap.put(key, parfileHashMap.get(key));
         }
 
-        // Update  tmpParfileHashMap  with  inParfileHashMap.
-        for (String key : inParfileHashMap.keySet()) {
-            tmpParfileHashMap.put(key, inParfileHashMap.get(key));
-        }
-
-        // Remove any keys in paramValueHashMap which are not in tmpParfileHashMap
+        // remove any params which are not in defaultParamValueHashMap
         for (String key : copyParamValueHashMap.keySet()) {
-
-            if (!key.equals(IFILE) && !tmpParfileHashMap.containsKey(key)) {
-                 deleteParam(key);
+            if (!key.equals(IFILE) && !defaultParfileHashMap.containsKey(key)) {
+                deleteParam(key);
             }
         }
 
-        if (tmpParfileHashMap.containsKey(IFILE)) {
-            setParamValue(IFILE, tmpParfileHashMap.get(IFILE));
-            tmpParfileHashMap.remove(IFILE);
-        }
-
-        for (String key : tmpParfileHashMap.keySet()) {
-            setParamValue(key, tmpParfileHashMap.get(key));
+        // Set all  paramValueHashMap with  defaultParamValueHashMap
+        for (String key : defaultParfileHashMap.keySet()) {
+            setParamValue(key, defaultParfileHashMap.get(key));
         }
     }
 
 
-    public void setDefaults() {
 
-        defaultParamValueHashMap.clear();
 
-        for (String currKey : paramValueHashMap.keySet()) {
-            if (!currKey.equals(IFILE)) {
-                defaultParamValueHashMap.put(currKey, paramValueHashMap.get(currKey));
-                debug("setDefaults currKey=" + currKey + ":main=" + paramValueHashMap.get(currKey) + ":default=" + defaultParamValueHashMap.get(currKey));
-            }
-        }
-    }
 
 
     public String getParamValue(String key) {
-        if (key != null && paramValueHashMap.get(key) != null) {
+        if (key != null && parfileHashMap.get(key) != null) {
             if (key.equals(PROD)) {
                 return getProdlist();
             } else {
-                return paramValueHashMap.get(key);
+                return parfileHashMap.get(key);
             }
         } else {
             return "";
@@ -593,11 +664,11 @@ public class L2genData {
 
         if (inKey != null && inKey.length() > 0) {
             inKey = inKey.trim();
-            if (paramValueHashMap.containsKey(inKey)) {
-                if (defaultParamValueHashMap.containsKey(inKey)) {
-                    paramValueHashMap.put(inKey, defaultParamValueHashMap.get(inKey));
+            if (parfileHashMap.containsKey(inKey)) {
+                if (defaultParfileHashMap.containsKey(inKey)) {
+                    parfileHashMap.put(inKey, defaultParfileHashMap.get(inKey));
                 } else {
-                    paramValueHashMap.remove(inKey);
+                    parfileHashMap.remove(inKey);
                 }
 
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, inKey, null, null));
@@ -611,22 +682,21 @@ public class L2genData {
             inKey = inKey.trim();
 
             if (inKey.equals(PROD)) {
-                handleProdKeyChange(inValue);
+                handleProdKeyChange(inValue, false);
             } else {
                 if (inValue != null && inValue.length() > 0) {
                     inValue = inValue.trim();
                     debug("new Param" + inKey + "=" + inValue);
 
-                    if (!inValue.equals(paramValueHashMap.get(inKey))) {
-                        paramValueHashMap.put(inKey, inValue);
-                        specifyRegionType(inKey);
-
+                    if (!inValue.equals(parfileHashMap.get(inKey))) {
                         if (inKey.equals(IFILE)) {
-                            handleIfileKeyChange();
+                            handleIfileChange(inValue);
+                        } else {
+                            parfileHashMap.put(inKey, inValue);
+                            specifyRegionType(inKey);
                         }
 
                         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, inKey, null, null));
-
                     }
                 } else {
                     deleteParam(inKey);
@@ -635,6 +705,35 @@ public class L2genData {
         }
     }
 
+
+    public void setDefaultParamValue(String inKey, String inValue) {
+
+        if (inKey != null && inKey.length() > 0) {
+            inKey = inKey.trim();
+
+            boolean defaultsChanged = false;
+
+            if (inKey.equals(PROD)) {
+                debug("PROD="+inValue);
+                handleProdKeyChange(inValue, true);
+            } else {
+                if (inValue != null && inValue.length() > 0) {
+                    inValue = inValue.trim();
+
+                    if (!inValue.equals(defaultParfileHashMap.get(inKey))) {
+                        defaultParfileHashMap.put(inKey, inValue);
+                    }
+                } else {
+                    defaultParfileHashMap.remove(inKey);
+                }
+            }
+
+
+            if (defaultsChanged) {
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, DEFAULTS_CHANGED_EVENT, null, null));
+            }
+        }
+    }
 
     private boolean isValidL2prod(String singleL2prodEntry) {
 
@@ -689,7 +788,7 @@ public class L2genData {
     }
 
 
-    public void handleProdKeyChange(String newProd) {
+    private void handleProdKeyChange(String newProd, boolean setDefaults) {
 
         //----------------------------------------------------------------------------------------------------
         // Put newProd into newProdTreeSet
@@ -697,22 +796,25 @@ public class L2genData {
 
         TreeSet<String> newProdTreeSet = new TreeSet<String>();
 
+        debug("newProd="+newProd);
         if (newProd != null) {
             for (String prodEntry : newProd.split(" ")) {
                 prodEntry.trim();
 
                 if (isValidL2prod(prodEntry)) {
                     newProdTreeSet.add(prodEntry);
+                    debug("prodEntry="+prodEntry);
                 }
             }
         }
 
-
+        boolean waveDependentProductInfoArrayChanged = false;
+        boolean waveIndependentProductInfoArrayChanged = false;
+        boolean defaultsChanged = false;
         //----------------------------------------------------------------------------------------------------
         // For every product in waveDependentProductInfoArray set selected to agree with newProdTreeSet
         //----------------------------------------------------------------------------------------------------
 
-        boolean waveDependentProductInfoArrayChanged = false;
 
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
@@ -720,16 +822,33 @@ public class L2genData {
                     String currL2genDataProductName = getProductNameForSingleEntry(productInfo, algorithmInfo, wavelengthInfo);
 
                     if (newProdTreeSet.contains(currL2genDataProductName)) {
-                        if (!wavelengthInfo.isSelected()) {
-                            wavelengthInfo.setSelected(true);
-                            waveDependentProductInfoArrayChanged = true;
+                        debug("TEMP default "+wavelengthInfo.toString());
+                        if (setDefaults == true) {
+                            if (!wavelengthInfo.isDefaultSelected()) {
+                                wavelengthInfo.setDefaultSelected(true);
+                                debug("setting default "+wavelengthInfo.toString());
+                                defaultsChanged = true;
+                            }
+                        } else {
+                            if (!wavelengthInfo.isSelected()) {
+                                wavelengthInfo.setSelected(true);
+                                waveDependentProductInfoArrayChanged = true;
+                            }
                         }
 
                         newProdTreeSet.remove(currL2genDataProductName);
                     } else {
-                        if (wavelengthInfo.isSelected()) {
-                            wavelengthInfo.setSelected(false);
-                            waveDependentProductInfoArrayChanged = true;
+                        if (setDefaults == true) {
+                            if (wavelengthInfo.isDefaultSelected()) {
+                                wavelengthInfo.setDefaultSelected(false);
+                                debug("setting default "+wavelengthInfo.toString());
+                                defaultsChanged = true;
+                            }
+                        } else {
+                            if (wavelengthInfo.isSelected()) {
+                                wavelengthInfo.setSelected(false);
+                                waveDependentProductInfoArrayChanged = true;
+                            }
                         }
                     }
                 }
@@ -741,107 +860,171 @@ public class L2genData {
         // For every product in waveIndependentProductInfoArray set selected to agree with newProdTreeSet
         //----------------------------------------------------------------------------------------------------
 
-        boolean waveIndependentProductInfoArrayChanged = false;
 
         for (ProductInfo productInfo : waveIndependentProductInfoArray) {
             for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
                 String currL2genDataProductName = getProductNameForSingleEntry(productInfo, algorithmInfo);
 
                 if (newProdTreeSet.contains(currL2genDataProductName)) {
-                    if (!algorithmInfo.isSelected()) {
-                        algorithmInfo.setSelected(true);
-                        waveIndependentProductInfoArrayChanged = true;
+                    if (setDefaults == true) {
+                        if (!algorithmInfo.isDefaultSelected()) {
+                            algorithmInfo.setDefaultSelected(true);
+                            debug("setting default "+algorithmInfo.toString());
+                            defaultsChanged = true;
+                        }
+
+                    } else {
+                        if (!algorithmInfo.isSelected()) {
+                            algorithmInfo.setSelected(true);
+                            waveIndependentProductInfoArrayChanged = true;
+                        }
                     }
 
                     newProdTreeSet.remove(currL2genDataProductName);
                 } else {
-                    if (algorithmInfo.isSelected()) {
-                        algorithmInfo.setSelected(false);
-                        waveIndependentProductInfoArrayChanged = true;
+                    if (setDefaults == true) {
+                        if (algorithmInfo.isSelected()) {
+                            algorithmInfo.setSelected(false);
+                            debug("setting default "+algorithmInfo.toString());
+                            defaultsChanged = true;
+                        }
+                    } else {
+                        if (algorithmInfo.isDefaultSelected()) {
+                            algorithmInfo.setDefaultSelected(false);
+                            waveIndependentProductInfoArrayChanged = true;
+                        }
+
                     }
                 }
             }
         }
 
         debug("prod=" + getProdlist());
-        if (waveDependentProductInfoArrayChanged) {
-            debug("waveDependentProductInfoArrayChanged");
-            fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
-        }
+        if (setDefaults == true) {
+            if (waveDependentProductInfoArrayChanged) {
+                debug("waveDependentProductInfoArrayChanged");
+                fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+            }
 
-        if (waveIndependentProductInfoArrayChanged) {
-            debug("waveIndependentProductInfoArrayChanged");
-            fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+            if (waveIndependentProductInfoArrayChanged) {
+                debug("waveIndependentProductInfoArrayChanged");
+                fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+            }
+        } else {
+            if (defaultsChanged) {
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, DEFAULTS_CHANGED_EVENT, null, null));
+            }
         }
     }
 
+    public String getMissionString() {
+
+        String missionString = "";
+
+        if (parfileHashMap.containsKey(IFILE) && parfileHashMap.get(IFILE) != null) {
+            File file = new File(parfileHashMap.get(IFILE));
+
+            if (file != null && file.getName() != null) {
+                missionString = file.getName().substring(0, 1);
+            }
+        }
+
+        return missionString;
+    }
+
+
+    private String getSensorInfoFilename() {
+
+        // lookup hash relating mission letter with mission directory name
+        final HashMap<String, String> missionDirectoryNameHashMap = new HashMap();
+        missionDirectoryNameHashMap.put("S", "seawifs");
+        missionDirectoryNameHashMap.put("A", "modisa");
+        missionDirectoryNameHashMap.put("T", "modist");
+
+        String missionDirectoryName = missionDirectoryNameHashMap.get(getMissionString());
+
+        // determine the filename which contains the wavelengths
+        final StringBuilder sensorInfoFilenameStringBuilder = new StringBuilder("");
+        sensorInfoFilenameStringBuilder.append(OCDATAROOT);
+        sensorInfoFilenameStringBuilder.append("/");
+        sensorInfoFilenameStringBuilder.append(missionDirectoryName);
+        sensorInfoFilenameStringBuilder.append("/");
+        sensorInfoFilenameStringBuilder.append("msl12_sensor_info.dat");
+
+        return sensorInfoFilenameStringBuilder.toString();
+    }
 
     // runs this if IFILE changes
     // it will reset missionString
     // it will reset and make new wavelengthInfoArray
-    private void handleIfileKeyChange() {
+    private void handleIfileChange(String newIfile) {
 
-        String newMissionString = paramValueHashMap.get(IFILE).substring(0, 1);
+        String previousMissionString = getMissionString();
+        parfileHashMap.put(IFILE, newIfile);
 
-        if (!newMissionString.equals(missionString)) {
+        debug("new missionString=" + getMissionString());
+        if (getMissionString() != null) {
+            if (previousMissionString == null || !previousMissionString.equals(getMissionString())) {
 
-            missionString = newMissionString;
-            wavelengthLimiterArray.clear();
+                wavelengthLimiterArray.clear();
 
+                // determine the filename which contains the wavelengths
+                String sensorInfoFilename = getSensorInfoFilename();
 
-            // lookup hash relating mission letter with mission directory name
-            final HashMap myMissionLetterHashMap = new HashMap();
-            myMissionLetterHashMap.put("S", "seawifs");
-            myMissionLetterHashMap.put("A", "modisa");
-            myMissionLetterHashMap.put("T", "modist");
-
-
-            //           setMissionString(missionLetter);
-            String missionDirectoryName = (String) myMissionLetterHashMap.get(missionString);
-            System.out.println("missionString=" + missionString);
-
-            // determine the filename which contains the wavelengths
-            final StringBuilder myFilename = new StringBuilder("");
-            myFilename.append(OCDATAROOT);
-            myFilename.append("/");
-            myFilename.append(missionDirectoryName);
-            myFilename.append("/");
-            myFilename.append("msl12_sensor_info.dat");
-
-            // read in the mission's datafile which contains the wavelengths
-            //  final ArrayList<String> myAsciiFileArrayList = myReadDataFile(myFilename.toString());
-            final ArrayList<String> myAsciiFileArrayList = l2genReader.readFileIntoArrayList(myFilename.toString());
+                // read in the mission's datafile which contains the wavelengths
+                //  final ArrayList<String> SensorInfoArrayList = myReadDataFile(sensorInfoFilename.toString());
+                final ArrayList<String> SensorInfoArrayList = l2genReader.readFileIntoArrayList(sensorInfoFilename);
+                debug("sensorInfoFilename=" + sensorInfoFilename);
 
 
-            // loop through datafile
-            for (String myLine : myAsciiFileArrayList) {
+                // loop through datafile
+                for (String myLine : SensorInfoArrayList) {
 
-                // skip the comment lines in file
-                if (!myLine.trim().startsWith("#")) {
+                    // skip the comment lines in file
+                    if (!myLine.trim().startsWith("#")) {
 
-                    // just look at value pairs of the form Lambda(#) = #
-                    String splitLine[] = myLine.split("=");
-                    if (splitLine.length == 2 &&
-                            splitLine[0].trim().startsWith("Lambda(") &&
-                            splitLine[0].trim().endsWith(")")
-                            ) {
+                        // just look at value pairs of the form Lambda(#) = #
+                        String splitLine[] = myLine.split("=");
+                        if (splitLine.length == 2 &&
+                                splitLine[0].trim().startsWith("Lambda(") &&
+                                splitLine[0].trim().endsWith(")")
+                                ) {
 
-                        // get current wavelength and add into in a JCheckBox
-                        final String currWavelength = splitLine[1].trim();
+                            // get current wavelength and add into in a JCheckBox
+                            final String currWavelength = splitLine[1].trim();
 
-                        WavelengthInfo wavelengthInfo = new WavelengthInfo(currWavelength);
-                        wavelengthLimiterArray.add(wavelengthInfo);
+                            WavelengthInfo wavelengthInfo = new WavelengthInfo(currWavelength);
+                            wavelengthLimiterArray.add(wavelengthInfo);
+                            debug("wavelengthLimiterArray adding wave=" + wavelengthInfo.getWavelengthString());
+                        }
                     }
                 }
+
+                debug("resetWavelengthInfosInWaveDependentProductInfoArray");
+                resetWavelengthInfosInWaveDependentProductInfoArray();
+
+
+                String defaultsParfile = l2genReader.readFileIntoString(getDefaultsFilename());
+
+                setDefaultParfile(defaultsParfile);
+                applyParfileDefaults();
+
+                debug(MISSION_STRING_CHANGE_EVENT_NAME.toString() + "being fired");
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_STRING_CHANGE_EVENT_NAME, null, getMissionString()));
             }
-
-            resetWavelengthInfosInWaveDependentProductInfoArray();
-
-            debug(MISSION_STRING_CHANGE_EVENT_NAME.toString() + "being fired");
-            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_STRING_CHANGE_EVENT_NAME, null, missionString));
         }
     }
 
+
+    private String getDefaultsFilename() {
+        String SEADAS_SEAWIFS_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
+        String SEADAS_AQUA_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
+        String SEADAS_TERRA_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
+
+        // todo add logic to get correct defaults file
+
+        return SEADAS_AQUA_DEFAULTS_FILENAME;
+    }
 
     private void debug(String string) {
         System.out.println(string);

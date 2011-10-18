@@ -1189,39 +1189,82 @@ class L2genForm extends JTabbedPane {
 
     private void createSelectedProductsJPanel(JPanel selectedProductsPanel) {
 
+        final Color BACKGROUND_COLOR_EDIT_MODE = Color.decode("#ffffff");
+        final Color BACKGROUND_COLOR_STANDARD_MODE = Color.decode("#dddddd");
+        final boolean PRODUCT_SELECTORS_ENABLED_STANDARD_MODE = true;
+        final boolean PRODUCT_SELECTORS_ENABLED_EDIT_MODE = false;
+        final String EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE = "Edit";
+        final String EDIT_LOAD_BUTTON_TEXT_EDIT_MODE = "Load";
+        final boolean CANCEL_BUTTON_VISIBLE_STANDARD_MODE = false;
+        final boolean CANCEL_BUTTON_VISIBLE_EDIT_MODE = true;
+        final boolean DEFAULTS_BUTTON_VISIBLE_STANDARD_MODE = true;
+        final boolean DEFAULTS_BUTTON_VISIBLE_EDIT_MODE = false;
+        final boolean SELECTED_PRODUCTS_EDITABLE_STANDARD_MODE = false;
+        final boolean SELECTED_PRODUCTS_EDITABLE_EDIT_MODE = true;
+
 
         selectedProductsPanel.setBorder(BorderFactory.createTitledBorder("Selected Products"));
         selectedProductsPanel.setLayout(new GridBagLayout());
 
-        final JButton editButton = new JButton("Edit");
-        final JButton loadButton = new JButton("Load");
+        final JButton defaultsButton = new JButton("Apply Defaults");
+        final JButton editLoadButton = new JButton();
         final JButton cancelButton = new JButton("Cancel");
 
 
-        editButton.addActionListener(new ActionListener() {
+
+        selectedProductsJTextArea = new JTextArea(SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT);
+        selectedProductsJTextArea.setLineWrap(true);
+        selectedProductsJTextArea.setWrapStyleWord(true);
+        selectedProductsJTextArea.setColumns(20);
+        selectedProductsJTextArea.setRows(5);
+
+        selectedProductsJTextArea.setEditable(SELECTED_PRODUCTS_EDITABLE_STANDARD_MODE);
+        selectedProductsJTextArea.setBackground(BACKGROUND_COLOR_STANDARD_MODE);
+        waveIndependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
+        waveDependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
+        editLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE);
+        defaultsButton.setEnabled(DEFAULTS_BUTTON_VISIBLE_STANDARD_MODE);
+        cancelButton.setVisible(CANCEL_BUTTON_VISIBLE_STANDARD_MODE);
+
+        JPanel panel1 = SeadasGuiUtils.addPaddedWrapperPanel(defaultsButton, 0);
+        JPanel panel2 = SeadasGuiUtils.addPaddedWrapperPanel(editLoadButton, 0);
+        JPanel panel3 = SeadasGuiUtils.addPaddedWrapperPanel(cancelButton, 0);
+
+        defaultsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectedProductsJTextArea.setEditable(true);
-                selectedProductsJTextArea.setBackground(Color.decode("#ffffff"));
-                waveDependentProductsJList.clearSelection();
-                waveIndependentProductsJList.clearSelection();
-                editButton.setVisible(false);
-                loadButton.setVisible(true);
-                cancelButton.setVisible(true);
+                l2genData.applyProductDefaults();
             }
         });
 
 
-        loadButton.addActionListener(new ActionListener() {
+        editLoadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectedProductsJTextArea.setEditable(false);
-                selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
-                l2genData.setParamValue(l2genData.PROD, selectedProductsJTextArea.getText());
-                selectedProductsJTextArea.setText(l2genData.getProdlist());
-                editButton.setVisible(true);
-                loadButton.setVisible(false);
-                cancelButton.setVisible(false);
+                if (EDIT_LOAD_BUTTON_TEXT_EDIT_MODE.equals(editLoadButton.getText())) {
+                    l2genData.setParamValue(l2genData.PROD, selectedProductsJTextArea.getText());
+                    selectedProductsJTextArea.setText(l2genData.getProdlist());
+
+                    // Adjust to STANDARD (non EDIT_MODE) settings
+                    selectedProductsJTextArea.setEditable(SELECTED_PRODUCTS_EDITABLE_STANDARD_MODE);
+                    selectedProductsJTextArea.setBackground(BACKGROUND_COLOR_STANDARD_MODE);
+                    waveIndependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
+                    waveDependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
+                    editLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE);
+                    defaultsButton.setEnabled(DEFAULTS_BUTTON_VISIBLE_STANDARD_MODE);
+                    cancelButton.setVisible(CANCEL_BUTTON_VISIBLE_STANDARD_MODE);
+                } else {
+                    // Adjust to EDIT_MODE settings
+                    selectedProductsJTextArea.setEditable(SELECTED_PRODUCTS_EDITABLE_EDIT_MODE);
+                    selectedProductsJTextArea.setBackground(BACKGROUND_COLOR_EDIT_MODE);
+                    waveDependentProductsJList.clearSelection();
+                    waveIndependentProductsJList.clearSelection();
+                    waveDependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_EDIT_MODE);
+                    waveIndependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_EDIT_MODE);
+                    editLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_EDIT_MODE);
+                    defaultsButton.setEnabled(DEFAULTS_BUTTON_VISIBLE_EDIT_MODE);
+                    cancelButton.setVisible(CANCEL_BUTTON_VISIBLE_EDIT_MODE);
+                }
             }
         });
 
@@ -1229,26 +1272,19 @@ class L2genForm extends JTabbedPane {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectedProductsJTextArea.setEditable(false);
-                selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
                 selectedProductsJTextArea.setText(l2genData.getProdlist());
-                editButton.setVisible(true);
-                loadButton.setVisible(false);
-                cancelButton.setVisible(false);
+
+                // Adjust to STANDARD_MODE settings
+                selectedProductsJTextArea.setEditable(SELECTED_PRODUCTS_EDITABLE_STANDARD_MODE);
+                selectedProductsJTextArea.setBackground(BACKGROUND_COLOR_STANDARD_MODE);
+                waveIndependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
+                waveDependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
+                editLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE);
+                cancelButton.setVisible(CANCEL_BUTTON_VISIBLE_STANDARD_MODE);
+                defaultsButton.setEnabled(DEFAULTS_BUTTON_VISIBLE_STANDARD_MODE);
             }
         });
 
-
-        editButton.setVisible(true);
-        loadButton.setVisible(false);
-        cancelButton.setVisible(false);
-        selectedProductsJTextArea = new JTextArea(SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT);
-        selectedProductsJTextArea.setEditable(false);
-        selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
-        selectedProductsJTextArea.setLineWrap(true);
-        selectedProductsJTextArea.setWrapStyleWord(true);
-        selectedProductsJTextArea.setColumns(20);
-        selectedProductsJTextArea.setRows(5);
 
         // updateSelectedProductsJTextArea();
 
@@ -1256,12 +1292,27 @@ class L2genForm extends JTabbedPane {
         GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
+        c.gridwidth = 3;
         selectedProductsPanel.add(selectedProductsJTextArea, c);
 
 
-        selectedProductsPanel.add(editButton, SeadasGuiUtils.makeConstraints(0, 1));
-        selectedProductsPanel.add(loadButton, SeadasGuiUtils.makeConstraints(1, 1));
-        selectedProductsPanel.add(cancelButton, SeadasGuiUtils.makeConstraints(2, 1));
+        c = SeadasGuiUtils.makeConstraints(0, 1);
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.WEST;
+        selectedProductsPanel.add(panel1, c);
+
+        c = SeadasGuiUtils.makeConstraints(1, 1);
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.CENTER;
+        selectedProductsPanel.add(panel2, c);
+
+        c = SeadasGuiUtils.makeConstraints(2, 1);
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.EAST;
+        selectedProductsPanel.add(panel3, c);
 
 
     }
@@ -1348,17 +1399,6 @@ class L2genForm extends JTabbedPane {
         }
 
         // updateWavelengthCheckboxSelectionStateEvent();
-    }
-
-
-    private String getDefaultsFilename() {
-        String SEADAS_SEAWIFS_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
-        String SEADAS_AQUA_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
-        String SEADAS_TERRA_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
-
-        // todo add logic to get correct defaults file
-
-        return SEADAS_AQUA_DEFAULTS_FILENAME;
     }
 
 
@@ -1605,6 +1645,14 @@ class L2genForm extends JTabbedPane {
 
         });
 
+        l2genData.addPropertyChangeListener(l2genData.DEFAULTS_CHANGED_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                parfileJTextArea.setText(l2genData.getParfile());
+            }
+        });
+
+
         l2genData.addPropertyChangeListener(l2genData.OFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -1620,7 +1668,9 @@ class L2genForm extends JTabbedPane {
         if (sourceProductSelector != null) {
             boolean setSourceProductSelector = false;
 
-            if (l2genData.getParamValue(l2genData.IFILE) != null) {
+            if (l2genData.getParamValue(l2genData.IFILE) != null &&
+                    sourceProductSelector.getSelectedProduct() != null &&
+                    sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
                 if (!l2genData.getParamValue(l2genData.IFILE).equals(sourceProductSelector.getSelectedProduct().getFileLocation().toString())) {
                     setSourceProductSelector = true;
                 }
@@ -1653,14 +1703,7 @@ class L2genForm extends JTabbedPane {
         updateWavelengthCheckboxSelectionStateEvent();
 
 
-        String defaults = l2genReader.readFileIntoString(getDefaultsFilename());
-
-        //   debug(defaults);
-        l2genData.setParfile(defaults);
-        l2genData.setDefaults();
         parfileJTextArea.setText(l2genData.getParfile());
-        //  updateSelectedProductsJTextArea();
-
     }
 
 

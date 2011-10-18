@@ -1,7 +1,5 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
-import com.bc.ceres.glayer.tools.PrintTiffInfo;
-
 import java.util.ArrayList;
 
 /**
@@ -33,10 +31,11 @@ public class AlgorithmInfo {
     private ArrayList<WavelengthInfo> wavelengthInfoArray = new ArrayList<WavelengthInfo>();
 
     //
-    private boolean isPartiallySelected = false;
+
 
     // This field is associated with the current selection state of the GUI control
     private boolean isSelected = false;
+    private boolean defaultSelected = false;
     private boolean wavelengthDependent = false;
     // todo make method to make   wavelengthDependent from   parameterType
 
@@ -99,6 +98,14 @@ public class AlgorithmInfo {
 
     public void setWavelengthInfoArray(ArrayList<WavelengthInfo> wavelengthInfoArray) {
         this.wavelengthInfoArray = wavelengthInfoArray;
+    }
+
+    public boolean isDefaultSelected() {
+        return defaultSelected;
+    }
+
+    public void setDefaultSelected(boolean defaultSelected) {
+        this.defaultSelected = defaultSelected;
     }
 
 

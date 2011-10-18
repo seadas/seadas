@@ -11,6 +11,7 @@ public class WavelengthInfo {
     public static final int VISIBLE_UPPER_LIMIT = 3000;
     private int wavelength = -1;
     private boolean isSelected = false;
+    private boolean defaultSelected = false;
     private AlgorithmInfo algorithmInfo = null;
     private boolean toStringShowProductName = false;
 
@@ -114,5 +115,13 @@ public class WavelengthInfo {
 
     public void setToStringShowProductName(boolean toStringShowProductName) {
         this.toStringShowProductName = toStringShowProductName;
+    }
+
+    public boolean isDefaultSelected() {
+        return defaultSelected;
+    }
+
+    public void setDefaultSelected(boolean defaultSelected) {
+        this.defaultSelected = defaultSelected;
     }
 }

@@ -32,14 +32,14 @@ public class SeadasGuiUtils {
         return c;
     }
 
-    public static JPanel addPaddedWrapperPanel(JPanel myMainPanel) {
+    public static JPanel addPaddedWrapperPanel(Object myMainPanel) {
         final int PADDING_DEFAULT = 6;
 
         return  addPaddedWrapperPanel(myMainPanel, PADDING_DEFAULT);
     }
 
 
-    public static JPanel addPaddedWrapperPanel(JPanel myMainPanel, int pad) {
+    public static JPanel addPaddedWrapperPanel(Object myMainPanel, int pad) {
 
         JPanel myWrapperPanel = new JPanel();
 
@@ -55,7 +55,7 @@ public class SeadasGuiUtils {
         c.weightx = 1;
         c.weighty = 1;
 
-        myWrapperPanel.add(myMainPanel, c);
+        myWrapperPanel.add((Component) myMainPanel, c);
 
         return myWrapperPanel;
     }
