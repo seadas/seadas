@@ -822,7 +822,7 @@ public class L2genData {
                     String currL2genDataProductName = getProductNameForSingleEntry(productInfo, algorithmInfo, wavelengthInfo);
 
                     if (newProdTreeSet.contains(currL2genDataProductName)) {
-                        debug("TEMP default "+wavelengthInfo.toString());
+                        debug("TEMP "+wavelengthInfo.toString());
                         if (setDefaults == true) {
                             if (!wavelengthInfo.isDefaultSelected()) {
                                 wavelengthInfo.setDefaultSelected(true);
@@ -832,6 +832,8 @@ public class L2genData {
                         } else {
                             if (!wavelengthInfo.isSelected()) {
                                 wavelengthInfo.setSelected(true);
+                                debug("setting regular "+wavelengthInfo.toString());
+
                                 waveDependentProductInfoArrayChanged = true;
                             }
                         }
@@ -900,15 +902,17 @@ public class L2genData {
         }
 
         debug("prod=" + getProdlist());
-        if (setDefaults == true) {
+        if (setDefaults != true) {
             if (waveDependentProductInfoArrayChanged) {
                 debug("waveDependentProductInfoArrayChanged");
                 fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, PROD, null, null));
             }
 
             if (waveIndependentProductInfoArrayChanged) {
                 debug("waveIndependentProductInfoArrayChanged");
                 fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, PROD, null, null));
             }
         } else {
             if (defaultsChanged) {

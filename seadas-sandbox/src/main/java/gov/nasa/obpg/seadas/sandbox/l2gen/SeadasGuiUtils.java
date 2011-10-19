@@ -38,6 +38,26 @@ public class SeadasGuiUtils {
         return  addPaddedWrapperPanel(myMainPanel, PADDING_DEFAULT);
     }
 
+    public static JPanel addPaddedWrapperPanel(Object myMainPanel, int pad, int anchor) {
+
+        JPanel myWrapperPanel = new JPanel();
+         myWrapperPanel.setBorder(BorderFactory.createTitledBorder(""));
+        myWrapperPanel.setLayout(new GridBagLayout());
+
+        final GridBagConstraints c;
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = anchor;
+        c.insets = new Insets(pad, pad, pad, pad);
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1;
+        c.weighty = 1;
+
+        myWrapperPanel.add((Component) myMainPanel, c);
+
+        return myWrapperPanel;
+    }
 
     public static JPanel addPaddedWrapperPanel(Object myMainPanel, int pad) {
 

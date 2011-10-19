@@ -8,15 +8,18 @@ package gov.nasa.obpg.seadas.sandbox.l2gen;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelectorModel;
 import org.esa.beam.framework.ui.AppContext;
+import org.esa.beam.util.math.Array;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
@@ -39,6 +42,10 @@ class L2genForm extends JTabbedPane {
     private JPanel productsLimiterJPanel;
     private JList waveDependentProductsJList;
     private JList waveIndependentProductsJList;
+
+    private JTable jtable;
+    private MyTableModel myTableModel;
+    private JPanel panelTest;
 
     private boolean setWaveIndependentProductsJListEnabled = true;
     private boolean setWaveDependentProductsJListEnabled = true;
@@ -88,9 +95,19 @@ class L2genForm extends JTabbedPane {
     private String WAVE_INDEPENDENT_PRODUCTS_JPANEL_TITLE = "Products (Wavelength Independent)";
     private String WAVE_DEPENDENT_PRODUCTS_JPANEL_TITLE = "Products (Wavelength Dependent)";
 
+    private JButton selectedProductsDefaultsButton;
+    private JButton selectedProductsEditLoadButton;
+    private JButton selectedProductsCancelButton;
+
 
     private L2genData l2genData = new L2genData();
     private L2genReader l2genReader = new L2genReader(l2genData);
+
+    enum DisplayMode {STANDARD_MODE, EDIT_MODE}
+
+
+    private String EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE = "Edit";
+    private String EDIT_LOAD_BUTTON_TEXT_EDIT_MODE = "Load";
 
 
     L2genForm(TargetProductSelector targetProductSelector, AppContext appContext) {
@@ -172,8 +189,8 @@ class L2genForm extends JTabbedPane {
         });
 
         parfileJTextArea = new JTextArea();
-        parfileJTextArea.setEditable(true);
-        parfileJTextArea.setBackground(Color.decode("#ffffff"));
+        parfileJTextArea.setEditable(false);
+        parfileJTextArea.setBackground(Color.decode("#dddddd"));
 
         parfileJTextArea.addFocusListener(new FocusListener() {
             @Override
@@ -292,7 +309,7 @@ class L2genForm extends JTabbedPane {
         createGenericSubTab(tabbedPane, "Products Cart");
 
         //    tabbedPane.setEnabledAt(0, false);
-        tabbedPane.setEnabledAt(2, false);
+        //  tabbedPane.setEnabledAt(2, false);
 
         tabbedPane.setSelectedIndex(1);
 
@@ -807,6 +824,44 @@ class L2genForm extends JTabbedPane {
     //----------------------------------------------------------------------------------------
     // Methods involved with the Product Tab
     //----------------------------------------------------------------------------------------
+    private void handleJTable() {
+        int selectedRow = jtable.getSelectedRow();
+        int selectedColumn = jtable.getSelectedColumn();
+
+        debug("JTable clicked");
+        debug("Selected row=" + jtable.getSelectedRow());
+
+        if (jtable.getSelectedRowCount() > 0) {
+            debug("Selected value=" + jtable.getValueAt(jtable.getSelectedRow(), 0));
+            debug("Selected checkbox=" + jtable.getValueAt(jtable.getSelectedRow(), 1));
+
+            Object isSelectedObject = jtable.getValueAt(jtable.getSelectedRow(), jtable.getSelectedColumn());
+
+
+            debug("isSelectedObject=" + isSelectedObject);
+            if (isSelectedObject.equals(true)) {
+                debug("its true");
+                jtable.setValueAt(false, jtable.getSelectedRow(), jtable.getSelectedColumn());
+                jtable.clearSelection();
+            } else {
+                debug("its false");
+                jtable.setValueAt(true, jtable.getSelectedRow(), jtable.getSelectedColumn());
+                jtable.clearSelection();
+            }
+
+        }
+
+
+    }
+
+    private class RowListener implements ListSelectionListener {
+        public void valueChanged(ListSelectionEvent event) {
+            if (event.getValueIsAdjusting()) {
+                return;
+            }
+            handleJTable();
+        }
+    }
 
 
     private void createGenericSubTab(JTabbedPane tabbedPane, String myTabname) {
@@ -815,7 +870,7 @@ class L2genForm extends JTabbedPane {
         // Set all constants for this tabbed pane
         // ----------------------------------------------------------------------------------------
 
-        final String COORDINATES_PANEL_TITLE = "My Title";
+        final String COORDINATES_PANEL_TITLE = "Selected Products";
 
 
         // ----------------------------------------------------------------------------------------
@@ -831,7 +886,27 @@ class L2genForm extends JTabbedPane {
         mainPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
         mainPanel.setLayout(new GridBagLayout());
 
+        String[] test = {"initial", "initial2"};
+        myTableModel = new MyTableModel(null);
+        jtable = new JTable(myTableModel);
 
+//        jtable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//            public void valueChanged(ListSelectionEvent e) {
+//
+//                handleJTable();
+//
+//            }
+//        });
+
+        jtable.getSelectionModel().addListSelectionListener(new RowListener());
+
+        panelTest = SeadasGuiUtils.addPaddedWrapperPanel(jtable);
+
+        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 1);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        mainPanel.add(panelTest, c);
         // ----------------------------------------------------------------------------------------
         // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
         // ----------------------------------------------------------------------------------------
@@ -839,7 +914,7 @@ class L2genForm extends JTabbedPane {
         final JPanel wrappedMainPanel = new JPanel();
         wrappedMainPanel.setLayout(new GridBagLayout());
 
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+        c = SeadasGuiUtils.makeConstraints(0, 0);
         c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = new Insets(3, 3, 3, 3);
         c.fill = GridBagConstraints.NONE;
@@ -1186,30 +1261,148 @@ class L2genForm extends JTabbedPane {
 //        }
 //    }
 
+    private void setDisplayModeSelectedProducts(DisplayMode displayMode) {
+
+        if (displayMode == DisplayMode.STANDARD_MODE) {
+            selectedProductsJTextArea.setEditable(false);
+            selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
+
+            waveIndependentProductsJList.setEnabled(true);
+            waveDependentProductsJList.setEnabled(true);
+
+            selectedProductsEditLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE);
+            selectedProductsDefaultsButton.setEnabled(true);
+            selectedProductsCancelButton.setVisible(false);
+        } else if (displayMode == DisplayMode.EDIT_MODE) {
+            selectedProductsJTextArea.setEditable(true);
+            selectedProductsJTextArea.setBackground(Color.decode("#ffffff"));
+
+            waveDependentProductsJList.clearSelection();
+            waveIndependentProductsJList.clearSelection();
+            waveDependentProductsJList.setEnabled(false);
+            waveIndependentProductsJList.setEnabled(false);
+
+            selectedProductsEditLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_EDIT_MODE);
+            selectedProductsDefaultsButton.setEnabled(false);
+            selectedProductsCancelButton.setVisible(true);
+        }
+    }
+
+    class MyTableModel extends AbstractTableModel {
+
+
+//        String[] columnNames = {"Product", "Selected"};
+//        Object[][] data;
+
+        String[] columnNames = {"Product", "Selected"};
+
+//        Object[][] data = {
+//                {"product1", new Boolean(false)},
+//                {"product2", new Boolean(true)},
+//                {"product3", new Boolean(false)},
+//                {"product4", new Boolean(true)},
+//                {"product5", new Boolean(false)}
+//        };
+
+        Object[][] data = null;
+
+
+        public MyTableModel(String[] prodlistArray) {
+
+            debug("INSIDE TABLE");
+
+            //         data = new Object[5][2];
+//
+//            data[0][0] = "product1";
+//            data[0][1] = new Boolean(true);
+//            data[1][0] = "product2";
+//            data[1][1] = new Boolean(false);
+//            if (prodlistArray != null && prodlistArray.length > 1) {
+//                 data[1][1] = "HELLO BIGGER THAN ONE";
+//            }
+
+
+            if (prodlistArray != null) {
+                data = new Object[prodlistArray.length][2];
+
+                int idx = 0;
+                for (String prodEntry : prodlistArray) {
+                    data[idx][0] = prodEntry;
+                    debug("prodEntry=" + prodEntry);
+                    data[idx][1] = new Boolean(true);
+
+                    idx++;
+                }
+            } else {
+                data = new Object[1][2];
+                data[0][0] = " ";
+                data[0][1] = " ";
+            }
+        }
+
+
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        public int getRowCount() {
+            return data.length;
+        }
+
+        public String getColumnName(int col) {
+            return (String) columnNames[col];
+        }
+
+        public Object getValueAt(int row, int col) {
+            return data[row][col];
+        }
+
+
+        /*
+        * JTable uses this method to determine the default renderer/
+        * editor for each cell.  If we didn't implement this method,
+        * then the last column would contain text ("true"/"false"),
+        * rather than a check box.
+        */
+        public Class getColumnClass(int c) {
+            return getValueAt(0, c).getClass();
+        }
+
+        /*
+        * Don't need to implement this method unless your table's
+        * editable.
+        */
+        public boolean isCellEditable(int row, int col) {
+            //Note that the data/cell address is constant,
+            //no matter where the cell appears onscreen.
+            if (col < 2) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        /*
+        * Don't need to implement this method unless your table's
+        * data can change.
+        */
+        public void setValueAt(Object value, int row, int col) {
+            data[row][col] = value;
+            fireTableCellUpdated(row, col);
+        }
+
+    }
+
 
     private void createSelectedProductsJPanel(JPanel selectedProductsPanel) {
-
-        final Color BACKGROUND_COLOR_EDIT_MODE = Color.decode("#ffffff");
-        final Color BACKGROUND_COLOR_STANDARD_MODE = Color.decode("#dddddd");
-        final boolean PRODUCT_SELECTORS_ENABLED_STANDARD_MODE = true;
-        final boolean PRODUCT_SELECTORS_ENABLED_EDIT_MODE = false;
-        final String EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE = "Edit";
-        final String EDIT_LOAD_BUTTON_TEXT_EDIT_MODE = "Load";
-        final boolean CANCEL_BUTTON_VISIBLE_STANDARD_MODE = false;
-        final boolean CANCEL_BUTTON_VISIBLE_EDIT_MODE = true;
-        final boolean DEFAULTS_BUTTON_VISIBLE_STANDARD_MODE = true;
-        final boolean DEFAULTS_BUTTON_VISIBLE_EDIT_MODE = false;
-        final boolean SELECTED_PRODUCTS_EDITABLE_STANDARD_MODE = false;
-        final boolean SELECTED_PRODUCTS_EDITABLE_EDIT_MODE = true;
 
 
         selectedProductsPanel.setBorder(BorderFactory.createTitledBorder("Selected Products"));
         selectedProductsPanel.setLayout(new GridBagLayout());
 
-        final JButton defaultsButton = new JButton("Apply Defaults");
-        final JButton editLoadButton = new JButton();
-        final JButton cancelButton = new JButton("Cancel");
-
+        selectedProductsDefaultsButton = new JButton("Apply Defaults");
+        selectedProductsEditLoadButton = new JButton();
+        selectedProductsCancelButton = new JButton("Cancel");
 
 
         selectedProductsJTextArea = new JTextArea(SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT);
@@ -1218,19 +1411,18 @@ class L2genForm extends JTabbedPane {
         selectedProductsJTextArea.setColumns(20);
         selectedProductsJTextArea.setRows(5);
 
-        selectedProductsJTextArea.setEditable(SELECTED_PRODUCTS_EDITABLE_STANDARD_MODE);
-        selectedProductsJTextArea.setBackground(BACKGROUND_COLOR_STANDARD_MODE);
-        waveIndependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
-        waveDependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
-        editLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE);
-        defaultsButton.setEnabled(DEFAULTS_BUTTON_VISIBLE_STANDARD_MODE);
-        cancelButton.setVisible(CANCEL_BUTTON_VISIBLE_STANDARD_MODE);
+        setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
 
-        JPanel panel1 = SeadasGuiUtils.addPaddedWrapperPanel(defaultsButton, 0);
-        JPanel panel2 = SeadasGuiUtils.addPaddedWrapperPanel(editLoadButton, 0);
-        JPanel panel3 = SeadasGuiUtils.addPaddedWrapperPanel(cancelButton, 0);
+        JPanel panel1 = SeadasGuiUtils.addPaddedWrapperPanel(selectedProductsDefaultsButton, 3, GridBagConstraints.WEST);
+        JPanel panel2 = SeadasGuiUtils.addPaddedWrapperPanel(selectedProductsEditLoadButton, 3, GridBagConstraints.CENTER);
+        JPanel panel3 = SeadasGuiUtils.addPaddedWrapperPanel(selectedProductsCancelButton, 3, GridBagConstraints.EAST);
 
-        defaultsButton.addActionListener(new ActionListener() {
+
+//        String[] test = {""};
+//        myTableModel = new MyTableModel(test);
+//        jtable = new JTable(myTableModel);
+
+        selectedProductsDefaultsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 l2genData.applyProductDefaults();
@@ -1238,83 +1430,59 @@ class L2genForm extends JTabbedPane {
         });
 
 
-        editLoadButton.addActionListener(new ActionListener() {
+        selectedProductsEditLoadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (EDIT_LOAD_BUTTON_TEXT_EDIT_MODE.equals(editLoadButton.getText())) {
+                if (EDIT_LOAD_BUTTON_TEXT_EDIT_MODE.equals(selectedProductsEditLoadButton.getText())) {
                     l2genData.setParamValue(l2genData.PROD, selectedProductsJTextArea.getText());
                     selectedProductsJTextArea.setText(l2genData.getProdlist());
 
-                    // Adjust to STANDARD (non EDIT_MODE) settings
-                    selectedProductsJTextArea.setEditable(SELECTED_PRODUCTS_EDITABLE_STANDARD_MODE);
-                    selectedProductsJTextArea.setBackground(BACKGROUND_COLOR_STANDARD_MODE);
-                    waveIndependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
-                    waveDependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
-                    editLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE);
-                    defaultsButton.setEnabled(DEFAULTS_BUTTON_VISIBLE_STANDARD_MODE);
-                    cancelButton.setVisible(CANCEL_BUTTON_VISIBLE_STANDARD_MODE);
+                    setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
+
                 } else {
-                    // Adjust to EDIT_MODE settings
-                    selectedProductsJTextArea.setEditable(SELECTED_PRODUCTS_EDITABLE_EDIT_MODE);
-                    selectedProductsJTextArea.setBackground(BACKGROUND_COLOR_EDIT_MODE);
-                    waveDependentProductsJList.clearSelection();
-                    waveIndependentProductsJList.clearSelection();
-                    waveDependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_EDIT_MODE);
-                    waveIndependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_EDIT_MODE);
-                    editLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_EDIT_MODE);
-                    defaultsButton.setEnabled(DEFAULTS_BUTTON_VISIBLE_EDIT_MODE);
-                    cancelButton.setVisible(CANCEL_BUTTON_VISIBLE_EDIT_MODE);
+                    setDisplayModeSelectedProducts(DisplayMode.EDIT_MODE);
                 }
             }
         });
 
 
-        cancelButton.addActionListener(new ActionListener() {
+        selectedProductsCancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedProductsJTextArea.setText(l2genData.getProdlist());
 
-                // Adjust to STANDARD_MODE settings
-                selectedProductsJTextArea.setEditable(SELECTED_PRODUCTS_EDITABLE_STANDARD_MODE);
-                selectedProductsJTextArea.setBackground(BACKGROUND_COLOR_STANDARD_MODE);
-                waveIndependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
-                waveDependentProductsJList.setEnabled(PRODUCT_SELECTORS_ENABLED_STANDARD_MODE);
-                editLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE);
-                cancelButton.setVisible(CANCEL_BUTTON_VISIBLE_STANDARD_MODE);
-                defaultsButton.setEnabled(DEFAULTS_BUTTON_VISIBLE_STANDARD_MODE);
+                setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
             }
         });
 
 
-        // updateSelectedProductsJTextArea();
-
-        // Add openButton control to a mainPanel grid cell
         GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         c.gridwidth = 3;
         selectedProductsPanel.add(selectedProductsJTextArea, c);
 
+//        panelTest = SeadasGuiUtils.addPaddedWrapperPanel(jtable, 3);
+//
+//        c = SeadasGuiUtils.makeConstraints(0, 1);
+//        c.fill = GridBagConstraints.HORIZONTAL;
+//        c.weightx = 1;
+//        selectedProductsPanel.add(panelTest, c);
 
-        c = SeadasGuiUtils.makeConstraints(0, 1);
-        c.fill = GridBagConstraints.NONE;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.WEST;
-        selectedProductsPanel.add(panel1, c);
-
-        c = SeadasGuiUtils.makeConstraints(1, 1);
-        c.fill = GridBagConstraints.NONE;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.CENTER;
-        selectedProductsPanel.add(panel2, c);
-
-        c = SeadasGuiUtils.makeConstraints(2, 1);
-        c.fill = GridBagConstraints.NONE;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.EAST;
-        selectedProductsPanel.add(panel3, c);
-
-
+//        c = SeadasGuiUtils.makeConstraints(0, 1);
+//        c.fill = GridBagConstraints.HORIZONTAL;
+//        c.weightx = 1;
+//        selectedProductsPanel.add(panel1, c);
+//
+//        c = SeadasGuiUtils.makeConstraints(1, 1);
+//        c.fill = GridBagConstraints.HORIZONTAL;
+//        c.weightx = 1;
+//        selectedProductsPanel.add(panel2, c);
+//
+//        c = SeadasGuiUtils.makeConstraints(2, 1);
+//        c.fill = GridBagConstraints.HORIZONTAL;
+//        c.weightx = 1;
+//        selectedProductsPanel.add(panel3, c);
     }
 
 
@@ -1483,7 +1651,7 @@ class L2genForm extends JTabbedPane {
             }
         }
 
-        waveDependentProductsJList.clearSelection();
+//        waveDependentProductsJList.clearSelection();
         l2genData.enableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
     }
 
@@ -1645,6 +1813,18 @@ class L2genForm extends JTabbedPane {
 
         });
 
+        l2genData.addPropertyChangeListener(l2genData.PROD, new PropertyChangeListener() {
+            @Override
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                debug("RECEIVING PROD EVENT FIRE");
+                waveDependentProductChangedHandler();
+                waveIndependentProductChangedHandler();
+            }
+
+        });
+
+
         l2genData.addPropertyChangeListener(l2genData.DEFAULTS_CHANGED_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -1748,6 +1928,32 @@ class L2genForm extends JTabbedPane {
 
         System.out.println("waveDependentProductChangedHandler invoked");
         selectedProductsJTextArea.setText(l2genData.getProdlist());
+
+
+        if (l2genData.getProdlist().length() > 0) {
+            //    newMyTabelModel = new MyTableModel(l2genData.getProdlist().split(" "));
+            //  String[] test = {"test1", "test2"};
+            String[] test = l2genData.getProdlist().split(" ");
+            debug("MAKING TABLE with values");
+            myTableModel = new MyTableModel(test);
+
+        } else {
+            String[] test = {"test1", "test2"};
+            debug("MAKING TABLE with values");
+            myTableModel = new MyTableModel(test);
+        }
+
+
+        jtable = new JTable(myTableModel);
+        jtable.setCellSelectionEnabled(true);
+        jtable.setSelectionBackground(Color.decode("#ffffff"));
+        jtable.setSelectionForeground(Color.decode("#ffffff"));
+
+        jtable.getSelectionModel().addListSelectionListener(new RowListener());
+        panelTest.removeAll();
+        panelTest.add(jtable);
+
+
         parfileJTextArea.setText(l2genData.getParfile());
 
 //        if (setWaveDependentProductsJListEnabled) {
@@ -1760,7 +1966,9 @@ class L2genForm extends JTabbedPane {
     // Some Generic stuff
     //----------------------------------------------------------------------------------------
 
-    private ArrayList<String> myReadDataFile(String fileName) {
+    private ArrayList<String> myReadDataFile
+            (String
+                     fileName) {
         String lineData;
         ArrayList<String> fileContents = new ArrayList<String>();
         BufferedReader moFile = null;
