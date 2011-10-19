@@ -730,12 +730,35 @@ public class ObpgUtils {
 
         Band latBand = null;
         Band lonBand = null;
-        if (product.getProductType().contains(MODIS_L1B_TYPE)){
+
+        if (product.getProductType().contains(SEAWIFS_L1A_TYPE)) {
+            ObpgGeonav geonavCalculator = new ObpgGeonav(ncfile);
+            float[][] latitudes = geonavCalculator.getLatitudes();
+            float[][] longitudes = geonavCalculator.getLongitudes();
+
+            float[] flatLats = flattenArray(latitudes);
+            float[] flatLons = flattenArray(longitudes);
+
+/*
+            final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1],dims[0], 0, 0,
+                    cntl_lat_ix, cntl_lon_ix, latTiePoints);
+*/
+            final TiePointGrid latGrid = new TiePointGrid("latitude", latitudes[0].length,
+                                                          latitudes.length, 0, 0,
+                                                          1, 1, flatLats);
+            product.addTiePointGrid(latGrid);
+            final TiePointGrid lonGrid = new TiePointGrid("longitude", longitudes[0].length,
+                                                          longitudes.length, 0, 0,
+                                                          1, 1, flatLons);
+            product.addTiePointGrid(lonGrid);
+            product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
+
+        } else if (product.getProductType().contains(MODIS_L1B_TYPE)){
 
             // read latitudes and longitudes
             int cntl_lat_ix = 5;
             int cntl_lon_ix = 5;
-           String resolution = product.getMetadataRoot().getElement("Global_Attributes").getAttribute(MODIS_L1B_PARAM).getData().getElemString();
+            String resolution = product.getMetadataRoot().getElement("Global_Attributes").getAttribute(MODIS_L1B_PARAM).getData().getElemString();
             if (resolution.equals("500m")){
                 cntl_lat_ix = 2;
                 cntl_lon_ix = 2;
@@ -926,7 +949,7 @@ public class ObpgUtils {
 
     }
 
-   public static String getEosMetadata(String name, Group eosGroup) throws IOException {
+    public static String getEosMetadata(String name, Group eosGroup) throws IOException {
       StringBuilder sbuff = null;
       String structMetadata = null;
 
@@ -954,17 +977,30 @@ public class ObpgUtils {
 
     // look for a group with the given name. recurse into subgroups if needed. breadth first
     static Group findGroupNested(Group parent, String name) {
-
-      for (Group g : parent.getGroups()) {
+        for (Group g : parent.getGroups()) {
         if (g.getShortName().equals(name))
           return g;
-      }
-      for (Group g : parent.getGroups()) {
+        }
+        for (Group g : parent.getGroups()) {
         Group result = findGroupNested(g, name);
         if (result != null)
           return result;
-      }
-      return null;
+        }
+        return null;
+    }
+
+    private float[] flattenArray(float[][] multiDimArray) {
+        float[] flatArray = new float[multiDimArray.length * multiDimArray[0].length];
+        for (int row = 0; row < multiDimArray.length; row ++) {
+            int offset = row * multiDimArray[0].length;
+            System.arraycopy(multiDimArray[row], 0, flatArray, offset, multiDimArray[row].length);
+/*
+            for (int col = 0; col < multiDimArray[0].length; col ++) {
+                flatArray[offset + col] = multiDimArray[row][col];
+            }
+*/
+        }
+        return flatArray;
     }
 
     static String getValue(Element root, String... childs) {

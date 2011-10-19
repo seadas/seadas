@@ -8,21 +8,19 @@
  *
  */
 
-package gov.nasa.obpg.seadas.sandbox.seawifs;
+package gov.nasa.obpg.seadas.dataio.obpg;
 
 import java.io.*;
-import java.math.*;
 import java.util.logging.*;
 
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import ucar.ma2.*;
 import ucar.nc2.*;
 
 //import org.junit.runner.*;
 
-public class TestGeonav {
+public class ObpgGeonavTest {
     private static String cwd = System.getProperty("user.dir");
     private static String windowsDir = "data/";
     //private static String linuxDir = "/home/melliott/old_home/Src/SeaDAS_sandbox/experiment/sources/test/data/";
@@ -57,7 +55,7 @@ public class TestGeonav {
             dataDir = cwd + "/" + linuxDir;
         }
 //System.out.println("dataDir: " + dataDir);
-        //org.junit.runner.JUnitCore.main("gov.nasa.obpg.seadas.sandbox.seawifs.TestGeonav");
+        //org.junit.runner.JUnitCore.main("gov.nasa.obpg.seadas.dataio.obpg.ObpgGeonavTest");
     }
 
     @Test
@@ -75,8 +73,7 @@ public class TestGeonav {
         v1[0] = 2.0f; v1[1] = 1.0f; v1[2] = 0.0f;
         float[] v2 = new float[3]; 
         v2[0] = 1.0f; v2[1] = 1.0f; v2[2] = 1.0f;
-        float[] result = new float[3];
-        result = ObpgGeonav.crossProduct(v1, v2);
+        float[] result = ObpgGeonav.crossProduct(v1, v2);
         assertEquals(1.0f, result[0], 0.0f);
         assertEquals(-2.0f, result[1], 0.0f);
         assertEquals(1.0f, result[2], 0.0f);
@@ -91,12 +88,12 @@ public class TestGeonav {
     }
 
     @Test
-    public void testGetNumberScanLines() {
+    public void testDetermineNumberScanLines() {
         String ncPath = dataDir + "S2007005135838.L1A_GAC";
-//System.out.println("dataDir: " + dataDir + ", ncPath: " + ncPath);
+System.out.println("dataDir: " + dataDir + ", ncPath: " + ncPath);
         try {
             NetcdfFile ncFile = NetcdfFile.open(ncPath);
-            int numScanLines = ObpgGeonav.getNumberScanLines(ncFile);
+            int numScanLines = ObpgGeonav.determineNumberScanLines(ncFile);
             ncFile.close();
             assertEquals(3930, numScanLines);
         } catch(IOException ioe) {
@@ -105,7 +102,7 @@ public class TestGeonav {
     }
 
     @Test
-    public void testGetSeawifsDataType() {
+    public void testDetermineSeawifsDataType() {
         //NetcdfFileWritable ncFile = NetcdfFileWriteable.createNew("test.nc");
         //Attribute testAttr = new Attribute("Data Type", "GAC");
         String gacPath = dataDir + "S2007005135838.L1A_GAC";
@@ -114,7 +111,7 @@ public class TestGeonav {
 
         try {
             NetcdfFile ncFile = NetcdfFile.open(gacPath);
-            ObpgGeonav.DataType seawifsDataType = ObpgGeonav.getSeawifsDataType(ncFile);
+            ObpgGeonav.DataType seawifsDataType = ObpgGeonav.determineSeawifsDataType(ncFile);
             assertEquals(ObpgGeonav.DataType.GAC, seawifsDataType);
             ncFile.close();
             //Geonav testObj = new Geonav(gacPath);
@@ -124,7 +121,7 @@ public class TestGeonav {
         try {
             //Geonav testObj = new Geonav(lacPath);
             NetcdfFile ncFile = NetcdfFile.open(lacPath);
-            ObpgGeonav.DataType seawifsDataType = ObpgGeonav.getSeawifsDataType(ncFile);
+            ObpgGeonav.DataType seawifsDataType = ObpgGeonav.determineSeawifsDataType(ncFile);
             ncFile.close();
             assertEquals(ObpgGeonav.DataType.LAC, seawifsDataType);
         } catch(IOException ioe) {
@@ -133,7 +130,7 @@ public class TestGeonav {
         try {
             //Geonav testObj = new Geonav(lacPath);
             NetcdfFile ncFile = NetcdfFile.open(hrptPath);
-            ObpgGeonav.DataType seawifsDataType = ObpgGeonav.getSeawifsDataType(ncFile);
+            ObpgGeonav.DataType seawifsDataType = ObpgGeonav.determineSeawifsDataType(ncFile);
             ncFile.close();
             assertEquals(ObpgGeonav.DataType.LAC, seawifsDataType);
         } catch(IOException ioe) {

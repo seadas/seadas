@@ -11,6 +11,8 @@ import ucar.nc2.*;
 
 import org.apache.commons.cli.*;
 
+import gov.nasa.obpg.seadas.dataio.obpg.*;
+
 public class ReaderTest {
 
     // Constants:

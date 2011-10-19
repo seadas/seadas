@@ -104,11 +104,22 @@ public class ObpgProductReader extends AbstractProductReader {
             } else if (productType.contains("SeaDAS Mapped")){
                 GeoCoding geoCoding = createGeoCoding(product, productType);  //TODO Check on various IDL projections
                 product.setGeoCoding(geoCoding);
-            } else if (productType.contains("SeaWiFS  Level-1A Data")){
+/*
+            } else if (productType.contains(obpgUtils.SEAWIFS_L1A_TYPE)){
                 // ToDo add SeaWiFS geocoding stuff, using Geonav results here
-                ObpgGeonav geonavCalculator = readSeawifsGeonavData(path);
-                float[] latitude = geonavCalculator.getLatitude();
-       	        float[] longitude = geonavCalculator.getLongitude();
+                //ncfile = NetcdfFile.open(path);
+                ObpgGeonav geonavCalculator = new ObpgGeonav(ncfile);
+                float[][] latitudes = geonavCalculator.getLatitudes();
+       	        float[][] longitudes = geonavCalculator.getLongitudes();
+                Band latBand = new Band("latitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(),
+                                        product.getSceneRasterHeight());
+                Band longBand = new Band("longitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(),
+                                        product.getSceneRasterHeight());
+                product.addBand(latBand);
+                product.addBand(longBand);
+                GeoCoding geoCoding = new PixelGeoCoding(latBand, longBand, null, 17);
+                // product.setGeoCoding(geoCoding);
+ */
             } else {
                 obpgUtils.addGeocoding(product, ncfile, mustFlip);
             }
@@ -359,8 +370,8 @@ public class ObpgProductReader extends AbstractProductReader {
         try {
             String prefix = "  ";
             ncFile = NetcdfFile.open(path);
-            ObpgGeonav.DataType dataType = ObpgGeonav.getSeawifsDataType(ncFile);
-            int numScanLines = ObpgGeonav.getNumberScanLines(ncFile);
+            ObpgGeonav.DataType dataType = ObpgGeonav.determineSeawifsDataType(ncFile);
+            int numScanLines = ObpgGeonav.determineNumberScanLines(ncFile);
 
             //Group rootGroup = ncFile.getRootGroup();
             Group navGroup = ncFile.findGroup("Navigation");
@@ -390,9 +401,7 @@ public class ObpgProductReader extends AbstractProductReader {
                 float[] scanTrackEllipseCoef = populateVector(scanTrackEllipseCoefData, 6, line);
                 float tilt = tiltData.getFloat(line);
 
-                geonavCalculator = new ObpgGeonav(orbVect, sensorMat, scanTrackEllipseCoef, sunUnitVect,
-                                                     attAngleVect, tilt, ncFile);
-                geonavCalculator.doComputations();
+                geonavCalculator = new ObpgGeonav(ncFile);
 
        	        //float[] sensorAzimuth = geonavCalculator.getSensorAzimuth();
        	        //float[] sensorZenith = geonavCalculator.getSensorZenith();
