@@ -43,6 +43,8 @@ class L2genForm extends JTabbedPane {
     private JList waveDependentProductsJList;
     private JList waveIndependentProductsJList;
 
+    boolean StrangeBoolean = true;
+
     private JTable jtable;
     private JTable newJTable;
     private MyTableModel myTableModel;
@@ -861,6 +863,34 @@ class L2genForm extends JTabbedPane {
 
     }
 
+
+    private void handleSelectedProductsDelete() {
+
+        ArrayList<Object> productsToDeleteArrayList = new ArrayList<Object>();
+
+
+        for (int row = 0; row < newJTable.getRowCount(); row++) {
+
+            if (newJTable.getValueAt(row, 0).equals(true)) {
+
+                Object product = newJTable.getValueAt(row, 1);
+
+                productsToDeleteArrayList.add(product);
+
+            }
+        }
+
+
+        for (Object productToDelete : productsToDeleteArrayList) {
+            if (productToDelete instanceof AlgorithmInfo) {
+                l2genData.setSelectedWaveIndependentProduct((AlgorithmInfo) productToDelete, false);
+            } else if (productToDelete instanceof WavelengthInfo) {
+                l2genData.setSelectedWaveDependentProduct((WavelengthInfo) productToDelete, false);
+            }
+        }
+    }
+
+
     private void handleNewJTable() {
 
 
@@ -875,14 +905,14 @@ class L2genForm extends JTabbedPane {
 
             debug("isSelectedObject=" + isSelectedObject);
             if (newJTable.getSelectedColumn() == 0) {
-                if (isSelectedObject.equals(true)) {
 
-                    debug("its true");
+
+                if (isSelectedObject.equals(true)) {
                     newJTable.setValueAt(false, newJTable.getSelectedRow(), newJTable.getSelectedColumn());
                 } else {
-                    debug("its false");
                     newJTable.setValueAt(true, newJTable.getSelectedRow(), newJTable.getSelectedColumn());
                 }
+                newJTable.clearSelection();
 //                if (clickedProduct instanceof AlgorithmInfo) {
 //                    l2genData.setSelectedWaveIndependentProduct((AlgorithmInfo) clickedProduct, false);
 //                } else if (clickedProduct instanceof WavelengthInfo) {
@@ -892,7 +922,6 @@ class L2genForm extends JTabbedPane {
 
             }
 
-            newJTable.clearSelection();
         }
 
 
@@ -936,12 +965,34 @@ class L2genForm extends JTabbedPane {
 //        panelTest = SeadasGuiUtils.addWrapperPanel(jtable);
         panelTest = new JPanel();
 
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 1);
+        newJTable = new JTable();
+        panelTest.add(newJTable);
+        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1;
         c.weighty = 1;
         mainPanel.add(panelTest, c);
+
+
+        JButton selectedProductsDeleteButton = new JButton("Delete");
+
+        selectedProductsDeleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleSelectedProductsDelete();
+            }
+        });
+
+
+        c = SeadasGuiUtils.makeConstraints(0, 1);
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = 1;
+        c.weighty = 1;
+        mainPanel.add(selectedProductsDeleteButton, c);
+
+
         // ----------------------------------------------------------------------------------------
         // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
         // ----------------------------------------------------------------------------------------
@@ -1341,7 +1392,7 @@ class L2genForm extends JTabbedPane {
             } else {
                 data = new Object[1][2];
                 data[0][0] = " ";
-                data[0][1] = " ";
+                data[0][1] = "No Products Selected";
             }
         }
 
@@ -2016,48 +2067,44 @@ class L2genForm extends JTabbedPane {
 
     private void productChangedHandler() {
 
-        panelTest.removeAll();
+//        panelTest.removeAll();
 
-        if (l2genData.getProdlist().length() > 0) {
-
-            String[] test = l2genData.getProdlist().split(" ");
-
-            myTableModel = new MyTableModel(test);
-
-            jtable = new JTable(myTableModel);
-            jtable.setCellSelectionEnabled(true);
-            jtable.setSelectionBackground(Color.decode("#ffffff"));
-            jtable.setSelectionForeground(Color.decode("#ffffff"));
-            jtable.doLayout();
-            //    jtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            jtable.getColumnModel().getColumn(0).setPreferredWidth(20);
-            jtable.getColumnModel().getColumn(1).setPreferredWidth(200);
-
-        //    panelTest.add(jtable);
-
-            //   jtable.getSelectionModel().addListSelectionListener(new RowListener());
-            jtable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-                    handleJTable();
-                }
-            });
-        }
+//        if (l2genData.getProdlist().length() > 0) {
+//
+//            String[] test = l2genData.getProdlist().split(" ");
+//
+//            myTableModel = new MyTableModel(test);
+//
+//            jtable = new JTable(myTableModel);
+//            jtable.setCellSelectionEnabled(true);
+//            jtable.setSelectionBackground(Color.decode("#ffffff"));
+//            jtable.setSelectionForeground(Color.decode("#ffffff"));
+//            jtable.doLayout();
+//            //    jtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//            jtable.getColumnModel().getColumn(0).setPreferredWidth(20);
+//            jtable.getColumnModel().getColumn(1).setPreferredWidth(200);
+//
+//        //    panelTest.add(jtable);
+//
+//            //   jtable.getSelectionModel().addListSelectionListener(new RowListener());
+//            jtable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//                @Override
+//                public void valueChanged(ListSelectionEvent e) {
+//                    handleJTable();
+//                }
+//            });
+//        }
 
 
         if (l2genData.getSelectedProducts().size() > 0) {
 
             myNewTableModel = new MyNewTableModel(l2genData.getSelectedProducts());
 
-          //  newJTable = new JTable();
-          //  newJTable.setModel(myNewTableModel);
-           // newJTable = new JTable(myNewTableModel);
+            //  newJTable = new JTable();
+            //  newJTable.setModel(myNewTableModel);
+            // newJTable = new JTable(myNewTableModel);
             newJTable.setModel(myNewTableModel);
 
-            newJTable.setVisible(true);
-            newJTable.getColumnModel().getColumn(0).setPreferredWidth(20);
-            newJTable.getColumnModel().getColumn(1).setPreferredWidth(200);
-            panelTest.add(newJTable);
 
             newJTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
                 @Override
@@ -2066,10 +2113,16 @@ class L2genForm extends JTabbedPane {
                 }
             });
         } else {
-            panelTest.add(new JLabel("No product currently selected"));
+            myNewTableModel = new MyNewTableModel(null);
+            newJTable.setModel(myNewTableModel);
         }
 
+//        newJTable.setVisible(true);
+        newJTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+        newJTable.getColumnModel().getColumn(1).setPreferredWidth(200);
 
+
+        panelTest.add(newJTable);
     }
 
 
