@@ -1,0 +1,56 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>seadas-obpg-l3bin-reader</symbolicName>
+    <version>1.0</version>
+    <name>OBPG Ocean Color Level-3 Binned Product Reader</name>
+    <description>A reader for NASA Ocean Color (HDF) Level-3 Data Products</description>
+
+    <vendor>Brockmann Consult GmbH</vendor>
+    <contactAddress>Max Planck Str.2, 21502 Geesthacht (Germany)</contactAddress>
+    <copyright>(C) 2007 by Brockmann Consult GmbH</copyright>
+    <url>http://oceancolor.gsfc.nasa.gov/</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+
+    <changelog>
+        <![CDATA[
+        Initial development
+        ]]>
+    </changelog>
+
+    <dependency>
+        <module>beam-core</module>
+    </dependency>
+    <dependency>
+        <module>beam-visat-rcp</module>
+        <optional>true</optional>
+    </dependency>
+    <dependency>
+        <module>seadas-obpg-reader</module>
+    </dependency>
+    <dependency>
+        <module>beam-netcdf</module>
+    </dependency>
+    <dependency>
+        <module>beam-merisl3-reader</module>
+    </dependency>
+
+    <categories>Reader,OBPG,MODIS,HDF,VISAT</categories>
+
+    <extension point="beam-ui:actions">
+        <action>
+            <id>importObpgL3BinProduct</id>
+            <class>org.esa.beam.visat.actions.ProductImportAction</class>
+            <formatName>NASA-OBPG-L3</formatName>
+            <useAllFileFilter>true</useAllFileFilter>
+            <mnemonic>Z</mnemonic>
+            <text>Import NASA Ocean Color L3b Product...</text>
+            <shortDescr>Import a NASA Ocean Color Level-3 Binned data product.</shortDescr>
+            <description>Import a NASA Ocean Color Level-3 Binned data product.</description>
+            <helpId>importObpgL3BinProduct</helpId>
+            <placeAfter>importObpgProduct</placeAfter>
+        </action>
+    </extension>
+
+
+
+</module>
