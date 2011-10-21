@@ -15,6 +15,8 @@ public class WavelengthInfo {
     private AlgorithmInfo algorithmInfo = null;
     private boolean toStringShowProductName = false;
 
+    public static final int NULL_WAVELENGTH = -1;
+
     // applicable only to the global wavelengths not the product specific ones
     private boolean isPartiallySelected = false;
 
@@ -32,7 +34,9 @@ public class WavelengthInfo {
     }
 
     public WavelengthInfo(String wavelength) {
-        if (wavelength != null) {
+        if (wavelength == null) {
+            this.wavelength = NULL_WAVELENGTH;
+        } else {
             this.wavelength = Integer.parseInt(wavelength);
         }
     }
@@ -40,9 +44,6 @@ public class WavelengthInfo {
     public int getWavelength() {
         return wavelength;
     }
-
-
-
 
 
     public void setWavelength(int wavelength) {
@@ -63,7 +64,7 @@ public class WavelengthInfo {
 
 
     public boolean isVisible() {
-        if (wavelength < VISIBLE_UPPER_LIMIT) {
+        if (wavelength >= 0 && wavelength < VISIBLE_UPPER_LIMIT) {
             return true;
         }
 
@@ -92,8 +93,11 @@ public class WavelengthInfo {
             StringBuilder myStringBuilder = new StringBuilder("");
 
             myStringBuilder.append(algorithmInfo.getProductName());
-            myStringBuilder.append("_");
-            myStringBuilder.append(Integer.toString(wavelength));
+
+            if (wavelength != NULL_WAVELENGTH) {
+                myStringBuilder.append("_");
+                myStringBuilder.append(Integer.toString(wavelength));
+            }
 
             if (algorithmInfo.getName() != null) {
                 myStringBuilder.append("_");

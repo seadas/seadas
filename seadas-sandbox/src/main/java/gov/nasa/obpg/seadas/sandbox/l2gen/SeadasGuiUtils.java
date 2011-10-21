@@ -15,7 +15,7 @@ public class SeadasGuiUtils {
     }
 
 
-    public static GridBagConstraints makeConstraints (int gridx, int gridy) {
+    public static GridBagConstraints makeConstraints(int gridx, int gridy) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = gridx;
         c.gridy = gridy;
@@ -23,7 +23,7 @@ public class SeadasGuiUtils {
         return c;
     }
 
-    public static GridBagConstraints makeConstraints (int gridx, int gridy, int anchor) {
+    public static GridBagConstraints makeConstraints(int gridx, int gridy, int anchor) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = gridx;
         c.gridy = gridy;
@@ -32,16 +32,28 @@ public class SeadasGuiUtils {
         return c;
     }
 
-    public static JPanel addPaddedWrapperPanel(Object myMainPanel) {
-        final int PADDING_DEFAULT = 6;
+    public static JPanel addWrapperPanel(Object myMainPanel) {
+        JPanel myWrapperPanel = new JPanel();
+        myWrapperPanel.setLayout(new GridBagLayout());
 
-        return  addPaddedWrapperPanel(myMainPanel, PADDING_DEFAULT);
+        final GridBagConstraints c;
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1;
+        c.weighty = 1;
+
+        myWrapperPanel.add((Component) myMainPanel, c);
+
+        return myWrapperPanel;
     }
+
 
     public static JPanel addPaddedWrapperPanel(Object myMainPanel, int pad, int anchor) {
 
         JPanel myWrapperPanel = new JPanel();
-         myWrapperPanel.setBorder(BorderFactory.createTitledBorder(""));
+     //   myWrapperPanel.setBorder(BorderFactory.createTitledBorder(""));
         myWrapperPanel.setLayout(new GridBagLayout());
 
         final GridBagConstraints c;
@@ -58,6 +70,32 @@ public class SeadasGuiUtils {
 
         return myWrapperPanel;
     }
+
+
+    public static JPanel addPaddedWrapperPanel(Object myMainPanel, int pad, int anchor, int fill) {
+
+        JPanel myWrapperPanel = new JPanel();
+        myWrapperPanel.setBorder(BorderFactory.createTitledBorder(""));
+        myWrapperPanel.setLayout(new GridBagLayout());
+
+        final GridBagConstraints c;
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = anchor;
+        c.insets = new Insets(pad, pad, pad, pad);
+        c.fill = fill;
+        c.weightx = 1;
+        c.weighty = 1;
+
+        myWrapperPanel.add((Component) myMainPanel, c);
+
+        return myWrapperPanel;
+    }
+
+
+
+
 
     public static JPanel addPaddedWrapperPanel(Object myMainPanel, int pad) {
 
