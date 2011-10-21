@@ -83,12 +83,20 @@ public class ObpgGeonav {
     private float[] xlat = new float[MAX_SEAWIFS_PIXELS];
     private float[] xlon = new float[MAX_SEAWIFS_PIXELS];
 
+    // Intermediate values for calculations:
     private float[]   attAngle = new float[3];
+    private double    cosa[] = new double[1285];
+    private double    cosl;
     private DataType  dataType;
-    private float[][] latitudes;
-    private float[][] longitudes;
+    private double    elev;
     private int       numPixels = LAC_PIXELS_PER_SCAN;
     private int       numScanLines;
+    private double    sina[] = new double[MAX_SEAWIFS_PIXELS];
+    private double    sinl;
+
+    // Final values for "output":
+    private float[][] latitudes;
+    private float[][] longitudes;
     private float[][] sensorAzimuths;
     private float[][] sensorZeniths;
     private float[][] solarAzimuths;
@@ -143,18 +151,27 @@ public class ObpgGeonav {
         ArrayFloat scanTrackEllipseCoefData = readNetcdfDataArray("scan_ell", navGroup);
         ArrayFloat tiltData = readNetcdfDataArray("tilt", scanLineAttrGroup);
 
+        //  Compute elevation (out-of-plane) angle
+        elev = SINC * 1.2;
+        sinl = Math.sin(elev);
+        cosl = Math.cos(elev);
+        for (int i = 0; i < MAX_SEAWIFS_PIXELS; i ++) {
+            sina[i] = Math.sin((i - 642) * SINC) * cosl;
+            cosa[i] = Math.cos((i - 642) * SINC) * cosl;
+        }
+
         for (int line = 0; line < numScanLines; line ++) {
             attAngle = populateVector(attAngleData, 3, line);
             orbPos = populateVector(orbitData, 3, line);
-            sensorOrientation[0][0] = sensorData.getFloat(3 * line);
-            sensorOrientation[0][1] = sensorData.getFloat(3 * line + 1);
-            sensorOrientation[0][2] = sensorData.getFloat(3 * line + 2);
-            sensorOrientation[1][0] = sensorData.getFloat(3 * line + 3);
-            sensorOrientation[1][1] = sensorData.getFloat(3 * line + 4);
-            sensorOrientation[1][2] = sensorData.getFloat(3 * line + 5);
-            sensorOrientation[2][0] = sensorData.getFloat(3 * line + 6);
-            sensorOrientation[2][1] = sensorData.getFloat(3 * line + 7);
-            sensorOrientation[2][2] = sensorData.getFloat(3 * line + 8);
+            sensorOrientation[0][0] = sensorData.getFloat(line * 9);
+            sensorOrientation[0][1] = sensorData.getFloat(line * 9 + 1);
+            sensorOrientation[0][2] = sensorData.getFloat(line * 9 + 2);
+            sensorOrientation[1][0] = sensorData.getFloat(line * 9 + 3);
+            sensorOrientation[1][1] = sensorData.getFloat(line * 9 + 4);
+            sensorOrientation[1][2] = sensorData.getFloat(line * 9 + 5);
+            sensorOrientation[2][0] = sensorData.getFloat(line * 9 + 6);
+            sensorOrientation[2][1] = sensorData.getFloat(line * 9 + 7);
+            sensorOrientation[2][2] = sensorData.getFloat(line * 9 + 8);
             float tilt = tiltData.getFloat(line);
             float[][] attXfm = computeTransformMatrix(tilt);
             scanPathCoef = populateVector(scanTrackEllipseCoefData, 6, line);
@@ -395,31 +412,17 @@ public class ObpgGeonav {
     }
 
     public void doComputations() {
-        double   cosa[] = new double[1285];
-        double   cosl;
         float[]  ea = new float[3];
-        double   elev;
         float[]  geovec = new float[3];
         float[]  no = new float[3];
         float[]  rmtq = new float[3];
         double   se;
-        double   sina[] = new double[1285];
-        double   sinl;
         double   sn;
         double   sune = 0.0;
         double   sunn = 0.0;
         double   sunv = 0.0;
         double   sv;
         float[]  up = new float[3];
-
-        //  Compute elevation (out-of-plane) angle
-        elev = SINC * 1.2;
-        sinl = Math.sin(elev);
-        cosl = Math.cos(elev);
-        for (int i = 0; i < 1285; i ++) {
-            sina[i] = Math.sin((i - 642) * SINC) * cosl;
-            cosa[i] = Math.cos((i - 642) * SINC) * cosl;
-        }
 
         //  Compute correction factor for out-of-plane angle
         double h = (sensorOrientation[0][1] * orbPos[0]

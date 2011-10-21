@@ -30,9 +30,7 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.nc2.iosp.hdf4.ODLparser;
 
-import javax.swing.tree.FixedHeightLayoutCache;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
@@ -736,8 +734,66 @@ public class ObpgUtils {
             float[][] latitudes = geonavCalculator.getLatitudes();
             float[][] longitudes = geonavCalculator.getLongitudes();
 
-            float[] flatLats = flattenArray(latitudes);
-            float[] flatLons = flattenArray(longitudes);
+            float[] flatLats = flatten2DimArray(latitudes);
+            float[] flatLons = flatten2DimArray(longitudes);
+
+PrintWriter latf = new PrintWriter(new FileWriter("latitudes.txt"));
+latf.println("latitudes: ");
+int colsPrinted = 0;
+for (int i = 0; i < latitudes.length; i ++ ) {
+    for (int j = 0; j < latitudes[0].length; j ++) {
+        latf.print(latitudes[i][j] + " ");
+        ++ colsPrinted;
+        if (colsPrinted >= 8) {
+            latf.println();
+            colsPrinted = 0;
+        }
+    }
+}
+latf.close();
+
+PrintWriter flatf = new PrintWriter(new FileWriter("flat_lats.txt"));
+flatf.println("flatLats: ");
+colsPrinted = 0;
+for (int i = 0; i < flatLats.length; i ++ ) {
+    flatf.print(flatLats[i] + " ");
+    ++ colsPrinted;
+    if (colsPrinted >= 8) {
+        flatf.println();
+        colsPrinted = 0;
+    }
+}
+flatf.close();
+
+PrintWriter lonf = new PrintWriter(new FileWriter("longitudes.txt"));
+lonf.println("longitudes: ");
+colsPrinted = 0;
+for (int i = 0; i < longitudes.length; i ++ ) {
+    for (int j = 0; j < longitudes[0].length; j ++) {
+        lonf.print(longitudes[i][j] + " ");
+        ++ colsPrinted;
+        if (colsPrinted >= 8) {
+            lonf.println();
+            colsPrinted = 0;
+        }
+    }
+}
+lonf.println();
+lonf.close();
+
+PrintWriter flonf = new PrintWriter(new FileWriter("flat_lons.txt"));
+flonf.println("flatLons: ");
+colsPrinted = 0;
+for (int i = 0; i < flatLons.length; i ++ ) {
+    flonf.print(flatLons[i] + " ");
+        ++ colsPrinted;
+    if (colsPrinted >= 8) {
+        flonf.println();
+        colsPrinted = 0;
+    }
+}
+flonf.println();
+flonf.close();
 
 /*
             final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1],dims[0], 0, 0,
@@ -989,16 +1045,11 @@ public class ObpgUtils {
         return null;
     }
 
-    private float[] flattenArray(float[][] multiDimArray) {
-        float[] flatArray = new float[multiDimArray.length * multiDimArray[0].length];
-        for (int row = 0; row < multiDimArray.length; row ++) {
-            int offset = row * multiDimArray[0].length;
-            System.arraycopy(multiDimArray[row], 0, flatArray, offset, multiDimArray[row].length);
-/*
-            for (int col = 0; col < multiDimArray[0].length; col ++) {
-                flatArray[offset + col] = multiDimArray[row][col];
-            }
-*/
+    private float[] flatten2DimArray(float[][] twoDimArray) {
+        float[] flatArray = new float[twoDimArray.length * twoDimArray[0].length];
+        for (int row = 0; row < twoDimArray.length; row ++) {
+            int offset = row * twoDimArray[row].length;
+            System.arraycopy(twoDimArray[row], 0, flatArray, offset, twoDimArray[row].length);
         }
         return flatArray;
     }
