@@ -49,6 +49,7 @@
 
         <module>seadas-app</module>
         <module>seadas-obpg-reader</module>
+        <module>seadas-obpg-l3bin-reader</module>
 
         <!--
             The following are supportive modules, they are not part of the distribution
@@ -175,6 +176,17 @@
                 <artifactId>beam-visat-rcp</artifactId>
                 <version>${beam.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-netcdf</artifactId>
+                <version>1.1-SNAPSHOT</version>
+            </dependency>
+             <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-merisl3-reader</artifactId>
+                <version>1.1</version>
+            </dependency>
+
             <dependency>
                 <groupId>edu.ucar</groupId>
                 <artifactId>netcdf</artifactId>
