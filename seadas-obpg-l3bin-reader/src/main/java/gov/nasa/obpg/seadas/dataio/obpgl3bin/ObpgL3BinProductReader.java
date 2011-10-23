@@ -28,8 +28,7 @@ import org.esa.beam.framework.datamodel.ProductData;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
-import ucar.ma2.Array;
-import ucar.ma2.InvalidRangeException;
+import ucar.ma2.*;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Structure;
@@ -38,6 +37,7 @@ import ucar.nc2.Variable;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -176,8 +176,20 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
                           int sourceWidth, int sourceHeight, ProductData destBuffer, ProgressMonitor pm)
                               throws IOException, InvalidRangeException {
 
+        DataType prodtype = variable.getDataType();
+        float [] fbuffer;
+        int [] ibuffer;
+        Object buffer;
 
-        Object buffer = destBuffer.getElems();
+        if (prodtype == DataType.FLOAT){
+            fbuffer = (float []) destBuffer.getElems();
+            Arrays.fill(fbuffer, Float.NaN);
+            buffer = fbuffer;
+        } else {
+            ibuffer = (int []) destBuffer.getElems();
+            Arrays.fill(ibuffer, -9999);
+            buffer = ibuffer;
+        }
 
         if (rowInfo == null) {
             rowInfo = createRowInfos();
@@ -190,12 +202,16 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
         final int height = sceneRasterHeight;
         final int width = sceneRasterWidth;
         final ISINGrid grid = this.grid;
-        pm.beginTask("Reading band '" + variable.getShortName() + "'...", sourceHeight);
-//        Array bob =    idxVariable.read();
+
+
         // loop over lines
         try {
             int[] lineOffsets = new int[1];
             int[] lineLengths = new int[1];
+            int[] stride = new int[1];
+            stride[0] =1;
+
+
             for (int y = sourceOffsetY; y < sourceOffsetY + sourceHeight; y++) {
                 if (pm.isCanceled()) {
                     break;
@@ -207,34 +223,35 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
                     final int lineOffset = rowInfo.offset;
                     final int lineLength = rowInfo.length;
 
+
                     lineOffsets[0] = lineOffset;
                     lineLengths[0] = lineLength;
-                    final Array bindata = variable.read().section(lineOffsets, lineLengths);
-//                    final Object bindata = variable.section() //(lineOffset,lineLength).read().getStorage();
-//                    final int [] binidx;
+                    final Object bindata ;
 
-//                    synchronized (ncfile) {
-////                        bindata = variable.read().copyTo1DJavaArray();
-////                            bindata = variable.read(lineOffsets, lineLengths).getStorage();
-////                            bindata = variable.readStructure(lineOffset, lineLength).extractMemberArray(prodMember).getStorage();
-//                    }
+                    synchronized (ncfile) {
+
+                        bindata = variable.read().section(lineOffsets,lineLengths,stride).copyTo1DJavaArray();
+                    }
                     int lineIndex0 = 0;
                     for (int x = sourceOffsetX; x < sourceOffsetX + sourceWidth; x++) {
                         final double lon = x * 360.0 / width;
                         final int binIndex = grid.getBinIndex(rowIndex, lon);
                         int lineIndex = -1;
                         for (int i = lineIndex0; i < lineLength; i++) {
-                            if (bins[lineOffset + i] >= binIndex) {
-                                if (bins[lineOffset + i] == binIndex) {
+                            int binidx = bins[lineOffset+i];
+                            if (binidx >= binIndex) {
+                                if (binidx == binIndex) {
                                     lineIndex = i;
                                 }
                                 lineIndex0 = i;
                                 break;
                             }
                         }
+
                         if (lineIndex >= 0) {
                             final int rasterIndex = sourceWidth * (y - sourceOffsetY) + (x - sourceOffsetX);
-                            System.arraycopy(bindata.getStorage(), lineIndex, buffer, rasterIndex, 1);
+
+                            System.arraycopy(bindata, lineIndex, buffer, rasterIndex, 1);
                         }
                     }
                     pm.worked(1);
