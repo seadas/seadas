@@ -1376,6 +1376,7 @@ class L2genForm extends JTabbedPane {
         String[] columnNames = {"Selected", "Product"};
         Object[][] data = null;
 
+        //
 
         public MyNewTableModel(ArrayList<Object> selectedProductObjects) {
 
