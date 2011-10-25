@@ -62,7 +62,6 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
     private int sceneRasterHeight;
     private RowInfo[] rowInfo;
     private int [] bins;
-    private Object data;
 
     /**
      * Constructs a new MERIS Binned Level-3 product reader.
@@ -156,15 +155,15 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
             throw new IllegalStateException("sourceWidth != destWidth || sourceHeight != destHeight");
         }
 
-        final Variable idxVariableParent = ncfile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("BinList");
-        final Structure idxStructure = (Structure) idxVariableParent;
-        final Variable idxVariable = idxStructure.findVariable("bin_num");
+//        final Variable idxVariableParent = ncfile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("BinList");
+//        final Structure idxStructure = (Structure) idxVariableParent;
+//        final Variable idxVariable = idxStructure.findVariable("bin_num");
         final Variable variable = variableMap.get(destBand);
 
 
         pm.beginTask("Reading band '" + destBand.getName() + "'...", sourceHeight);
         try {
-            readBand(variable, idxVariable, sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight, destBuffer, pm);
+            readBand(variable, sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight, destBuffer, pm);
         } catch (Exception e) {
             final ProductIOException exception = new ProductIOException(e.getMessage());
             exception.setStackTrace(e.getStackTrace());
@@ -172,13 +171,13 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
         }
     }
 
-    private void readBand(Variable variable, Variable idxVariable, int sourceOffsetX, int sourceOffsetY,
+    private void readBand(Variable variable, int sourceOffsetX, int sourceOffsetY,
                           int sourceWidth, int sourceHeight, ProductData destBuffer, ProgressMonitor pm)
                               throws IOException, InvalidRangeException {
 
         DataType prodtype = variable.getDataType();
         float [] fbuffer;
-        int [] ibuffer;
+        short [] ibuffer;
         Object buffer;
 
         if (prodtype == DataType.FLOAT){
@@ -186,17 +185,15 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
             Arrays.fill(fbuffer, Float.NaN);
             buffer = fbuffer;
         } else {
-            ibuffer = (int []) destBuffer.getElems();
-            Arrays.fill(ibuffer, -9999);
+            ibuffer = (short []) destBuffer.getElems();
+            Arrays.fill(ibuffer, (short) -999);
             buffer = ibuffer;
         }
 
         if (rowInfo == null) {
             rowInfo = createRowInfos();
         }
-        if (bins == null) {
-            bins = (int[]) idxVariable.read().copyTo1DJavaArray();
-        }
+
 
 
         final int height = sceneRasterHeight;
@@ -332,6 +329,9 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
         final int[] idxValues;
         synchronized (ncfile) {
             idxValues = (int[]) idx.read().getStorage();
+        }
+        if (bins == null) {
+            bins = idxValues;//(int[]) idxVariable.read().copyTo1DJavaArray();
         }
         final Point gridPoint = new Point();
         int lastBinIndex = -1;

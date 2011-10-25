@@ -124,6 +124,7 @@ public class ObpgProductReader extends AbstractProductReader {
                 obpgUtils.addGeocoding(product, ncfile, mustFlip);
             }
             obpgUtils.addBitmaskDefinitions(product, defs);
+            product.setAutoGrouping("Rrs:nLw:Lt:La:Lr:Lw:Es:TLg:rhom:rhos:rhot:Taua:Kd:aot:adg:aph:bbp:vgain:BT:RefSB:Emissive");
             return product;
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage());

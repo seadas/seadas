@@ -71,7 +71,6 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "HMODISA Level-2 Browse Data",
             "MODISA Level-2 Data",
             "MODIST Level-2 Data",
-            "MODISA Level-3 Binned Data",
             "MOS Level-1B",
             "MOS Level-2 Data",
             "OSMI Level-1A Data",
@@ -85,11 +84,9 @@ public class ObpgProductReaderPlugIn implements ProductReaderPlugIn {
             "SeaWiFS Level-1B",
             "SeaWiFS Level-1A Data",
             "SeaWiFS Level-2 Data",
-            "SeaWiFS Level-3 Binned Data",
             "SeaWiFS Level-3 Standard Mapped Image",
             "VIIRS Level-3 Standard Mapped Image",
             "Level-3 Standard Mapped Image",      // Generic Standard Mapped Image (from smigen)
-            "Level-3 Binned Data",
 
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));

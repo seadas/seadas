@@ -27,7 +27,7 @@ public class ObpgL3BinUtils {
         bandToVariableMap.put(addBand(product,"weights",ProductData.TYPE_FLOAT32), binListStruc.select("weights").findVariable("weights"));
         bandToVariableMap.put(addBand(product,"nobs",ProductData.TYPE_UINT16),binListStruc.select("nobs").findVariable("nobs"));
         bandToVariableMap.put(addBand(product,"nscenes",ProductData.TYPE_UINT16), binListStruc.select("nscenes").findVariable("nscenes"));
-
+        String groupnames = "";
         for (Variable l3Var: l3ProdVars){
             String varName = l3Var.getShortName();
             final int dataType = ProductData.TYPE_FLOAT32;
@@ -36,8 +36,15 @@ public class ObpgL3BinUtils {
             if (!varName.contains("Bin") && (!varName.equalsIgnoreCase("SEAGrid")) &&
                     (!varName.equalsIgnoreCase("Input Files"))) {
                 final Structure binStruc = (Structure) l3Var;
+                if (groupnames.length() == 0) {
+                    groupnames = varName;
+                } else {
+                    groupnames = groupnames + ":" + varName;
+                }
+
                 List<String> vnames = binStruc.getVariableNames();
                 for (String bandvar : vnames){
+//                    String bname = varName + '/' + bandvar;
                     bandToVariableMap.put(addBand(product,bandvar,dataType), binStruc.select(bandvar).findVariable(bandvar));
                 }
                 // Add virtual band for product mean
@@ -61,6 +68,7 @@ public class ObpgL3BinUtils {
                 product.addBand(varstdev);
             }
         }
+        product.setAutoGrouping(groupnames);
         return bandToVariableMap;
     }
 
@@ -83,14 +91,32 @@ public class ObpgL3BinUtils {
     }
 
     private String ComputeBinVariances(String prodname){
-        StringBuilder bin_stdev = new StringBuilder("(((");
+        StringBuilder bin_stdev = new StringBuilder("weights^2 < nscenes ? 0.0 : sqrt((((");
         bin_stdev.append(prodname);
         bin_stdev.append("_sum_sq/weights) - (");
         bin_stdev.append(prodname);
-        bin_stdev.append("_mean * ");
-        bin_stdev.append(prodname);
-        bin_stdev.append("_mean) * (weights * weights)) / ((weights * weights) - nscenes))");
+        bin_stdev.append("_sum /weights)^2) ");
+        bin_stdev.append("* weights^2) / (weights^2 - nscenes))");
         return bin_stdev.toString();
     }
 
 }
+
+// ((chlor_a_sum_sq/weights) - ((chlor_a_sum /weights)^2 * weights^2) / (weights^2 - nscenes)
+//      mean = par_sum[i] / weight[i];
+//
+//     /* calculate variance */
+//     wsqr = weight[i] * weight[i];
+//     ftmp = (par_sumsq[i] / weight[i]) - (mean * mean);
+//     if (wsqr <= (float) segment[i])
+//     {
+//       par_prod[i] = 0.0;
+//     }
+//     else
+//     {
+//       par_prod[i] = (ftmp * wsqr) / (wsqr - segment[i]);
+//      ((sumsq/weight) - (sum/weight)^2) * weight^2) / (weight^2 - nscenes)
+//       if (par_prod[i] <= 1e-15)  /* assigned to 0, if value too small */
+//         par_prod[i] = 0.0;
+//     }
+//(chlor_a_sum_sq/weights - (chlor_a_sum /weights)^2 * (weights^2)) / (weights ^ 2 - nscenes)

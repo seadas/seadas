@@ -68,8 +68,8 @@ public class ObpgL3BinProductReaderPlugIn implements ProductReaderPlugIn {
         Attribute titleAttribute = netcdfFile.findGlobalAttribute("Data Bins");
 
         try {
-            if (titleAttribute.toString() == null) {
-                return DecodeQualification.UNABLE;
+            if (titleAttribute.toString() != null) {
+                return DecodeQualification.INTENDED;
             }
         } finally {
             try {
@@ -78,7 +78,7 @@ public class ObpgL3BinProductReaderPlugIn implements ProductReaderPlugIn {
                 // ok
             }
         }
-        return DecodeQualification.INTENDED;
+        return DecodeQualification.UNABLE;
     }
 
     /**
