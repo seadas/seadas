@@ -75,7 +75,7 @@ Installation Guide
     *   Working directory: `$SEADAS/seadas` (replace $SEADAS with your actual path)
     *   Use classpath of module (project in Eclipse): `seadas-bootstrap`
 
-8. Copy file $SEADAS/beam/src/main/config/beam.config to directory $SEADAS/beam/config/
+8. Copy file $SEADAS/seadas/src/main/config/beam.config to directory $SEADAS/seadas/config/
     and modify the following lines:
     * Set beam.home = .
     * Set beam.app = VisatMain
