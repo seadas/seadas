@@ -92,9 +92,11 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
 
             File productFile = new File(path);
             String productName = ncfile.findGlobalAttribute("Product Name").toString();
+            String [] pnamearray = productName.split("\"");
+            String pname = pnamearray[1];
             List<Attribute> globalAttributes = ncfile.getGlobalAttributes();
 
-            product = new Product(productName, "NASA-OBPG-L3", sceneRasterWidth, sceneRasterHeight, this);
+            product = new Product(pname, "NASA-OBPG-L3", sceneRasterWidth, sceneRasterHeight, this);
             product.setFileLocation(productFile);
             obpgUtils.addGlobalMetadata(product, globalAttributes);
 
@@ -226,7 +228,6 @@ public class ObpgL3BinProductReader extends AbstractProductReader {
                     final Object bindata ;
 
                     synchronized (ncfile) {
-
                         bindata = variable.read().section(lineOffsets,lineLengths,stride).copyTo1DJavaArray();
                     }
                     int lineIndex0 = 0;
