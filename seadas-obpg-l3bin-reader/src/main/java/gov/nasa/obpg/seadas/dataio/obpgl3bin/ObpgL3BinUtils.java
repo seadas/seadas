@@ -44,7 +44,6 @@ public class ObpgL3BinUtils {
 
                 List<String> vnames = binStruc.getVariableNames();
                 for (String bandvar : vnames){
-//                    String bname = varName + '/' + bandvar;
                     bandToVariableMap.put(addBand(product,bandvar,dataType), binStruc.select(bandvar).findVariable(bandvar));
                 }
                 // Add virtual band for product mean
@@ -54,6 +53,7 @@ public class ObpgL3BinUtils {
                 String calcmean = ComputeBinMeans(varName);
                 Band varmean = new VirtualBand(prodname.toString(), ProductData.TYPE_FLOAT32,product.getSceneRasterWidth(),
                         product.getSceneRasterHeight(),calcmean);
+                varmean.setNoDataValue(Double.NaN);
                 product.addBand(varmean);
 
                 // Add virtual band for product stdev
@@ -65,6 +65,8 @@ public class ObpgL3BinUtils {
 
                 Band varstdev = new VirtualBand(prodname.toString(), ProductData.TYPE_FLOAT32,product.getSceneRasterWidth(),
                         product.getSceneRasterHeight(),calcstdev);
+                varstdev.setNoDataValue(Double.NaN);
+
                 product.addBand(varstdev);
             }
         }
@@ -78,6 +80,11 @@ public class ObpgL3BinUtils {
         band.setScalingOffset(0.0);
         band.setScalingFactor(1.0);
         band.setLog10Scaled(false);
+        if (productType == ProductData.TYPE_FLOAT32) {
+            band.setNoDataValue(Double.NaN);
+        }   else {
+            band.setNoDataValue(-999);
+        }
         product.addBand(band);
         return band;
     }
@@ -91,32 +98,15 @@ public class ObpgL3BinUtils {
     }
 
     private String ComputeBinVariances(String prodname){
-        StringBuilder bin_stdev = new StringBuilder("weights^2 < nscenes ? 0.0 : sqrt((((");
+        StringBuilder bin_stdev = new StringBuilder("weights * weights <= nscenes ? 0.0 : sqrt((((");
         bin_stdev.append(prodname);
         bin_stdev.append("_sum_sq/weights) - (");
         bin_stdev.append(prodname);
-        bin_stdev.append("_sum /weights)^2) ");
-        bin_stdev.append("* weights^2) / (weights^2 - nscenes))");
+        bin_stdev.append("_sum /weights)*(");
+        bin_stdev.append(prodname);
+        bin_stdev.append("_sum /weights))");
+        bin_stdev.append("* weights * weights) / (weights * weights - nscenes))");
         return bin_stdev.toString();
     }
 
 }
-
-// ((chlor_a_sum_sq/weights) - ((chlor_a_sum /weights)^2 * weights^2) / (weights^2 - nscenes)
-//      mean = par_sum[i] / weight[i];
-//
-//     /* calculate variance */
-//     wsqr = weight[i] * weight[i];
-//     ftmp = (par_sumsq[i] / weight[i]) - (mean * mean);
-//     if (wsqr <= (float) segment[i])
-//     {
-//       par_prod[i] = 0.0;
-//     }
-//     else
-//     {
-//       par_prod[i] = (ftmp * wsqr) / (wsqr - segment[i]);
-//      ((sumsq/weight) - (sum/weight)^2) * weight^2) / (weight^2 - nscenes)
-//       if (par_prod[i] <= 1e-15)  /* assigned to 0, if value too small */
-//         par_prod[i] = 0.0;
-//     }
-//(chlor_a_sum_sq/weights - (chlor_a_sum /weights)^2 * (weights^2)) / (weights ^ 2 - nscenes)
