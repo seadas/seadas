@@ -397,6 +397,7 @@ class L2genForm extends JTabbedPane {
             }
         });
 
+        //
         c = SeadasGuiUtils.makeConstraints(0, 1);
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.NORTHWEST;
