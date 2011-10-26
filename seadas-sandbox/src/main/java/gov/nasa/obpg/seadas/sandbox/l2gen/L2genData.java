@@ -1,12 +1,10 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
-import com.sun.corba.se.spi.ior.ObjectKey;
-import ucar.ma2.Array;
-
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
+import java.io.*;
+
 import java.util.*;
 
 /**
@@ -926,7 +924,7 @@ public class L2genData {
 
                     } else {
                         if (!algorithmInfo.isSelected()) {
-                            debug("setting "+algorithmInfo.toString()+" to true");
+                            debug("setting " + algorithmInfo.toString() + " to true");
                             algorithmInfo.setSelected(true);
                             waveIndependentProductInfoArrayChanged = true;
                         }
@@ -943,7 +941,7 @@ public class L2genData {
                     } else {
                         if (algorithmInfo.isSelected()) {
                             algorithmInfo.setSelected(false);
-                            debug("setting "+algorithmInfo.toString()+" to false");
+                            debug("setting " + algorithmInfo.toString() + " to false");
                             waveIndependentProductInfoArrayChanged = true;
                         }
 
@@ -1056,10 +1054,9 @@ public class L2genData {
                 debug("resetWavelengthInfosInWaveDependentProductInfoArray");
                 resetWavelengthInfosInWaveDependentProductInfoArray();
 
+                //    defaultsParfile = l2genReader.readFileIntoString(getL2genDefaults());
 
-                String defaultsParfile = l2genReader.readFileIntoString(getDefaultsFilename());
-
-                setDefaultParfile(defaultsParfile);
+                setDefaultParfile(getL2genDefaults());
                 applyParfileDefaults();
 
                 debug(MISSION_STRING_CHANGE_EVENT_NAME.toString() + "being fired");
@@ -1069,14 +1066,30 @@ public class L2genData {
     }
 
 
-    private String getDefaultsFilename() {
-        String SEADAS_SEAWIFS_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
-        String SEADAS_AQUA_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
-        String SEADAS_TERRA_DEFAULTS_FILENAME = "/home/knowles/SeaDAS/seadas/seadas-sandbox/SampleParFile.txt";
+    private String getL2genDefaults() {
 
-        // todo add logic to get correct defaults file
+        //todo add logic to create defaults file
 
-        return SEADAS_AQUA_DEFAULTS_FILENAME;
+        String L2GEN_DEFAULTS_FILENAME = "l2genDefaults.par";
+
+
+        InputStream stream = L2genData.class.getResourceAsStream(L2GEN_DEFAULTS_FILENAME);
+
+        // Get the object of DataInputStream
+        DataInputStream in = new DataInputStream(stream);
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        String strLine;
+        StringBuilder stringBuilder = new StringBuilder();
+        //Read File Line By Line
+        try {
+            while ((strLine = br.readLine()) != null) {
+                stringBuilder.append(strLine);
+                stringBuilder.append("\n");
+            }
+        } catch (IOException e) {
+        }
+
+        return stringBuilder.toString();
     }
 
     private void debug(String string) {

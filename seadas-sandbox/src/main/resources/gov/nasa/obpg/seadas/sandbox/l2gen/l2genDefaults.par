@@ -1,0 +1,25 @@
+
+# line and pixel sampling
+# -----------------------
+spixl=1
+epixl=-1
+dpixl=1
+sline=1
+eline=-1
+dline=1
+
+north=
+south=
+west=
+east=
+
+#
+# MSL12 OC Suite default parameters for MODIS
+#
+
+l2prod=adg_carder alpha aph_carder a_510_las a_765_las a_412_pml
+
+
+#ifile=A2011033165000.L2_LAC_OC
+#ofile=A2011033165000.L2
+#geofile=
