@@ -19,7 +19,7 @@ Installation Guide
 
         git clone https://github.com/bcdev/ceres.git $SEADAS/ceres
 	    git clone git://github.com/bcdev/beam.git $SEADAS/beam
-        git clone https://github.com/seadas/seadas.git $SEADAS/seadas
+        git clone git@github.com:seadas/seadas.git $SEADAS/seadas
 
 4.  Build Ceres from source and install in local Maven repository: 
 
