@@ -71,6 +71,8 @@ public class ObpgL3BinProductReaderPlugIn implements ProductReaderPlugIn {
             if (titleAttribute.toString() != null) {
                 return DecodeQualification.INTENDED;
             }
+        } catch (NullPointerException e) {
+            // ok
         } finally {
             try {
                 netcdfFile.close();

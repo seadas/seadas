@@ -28,9 +28,6 @@ import java.util.*;
 
 class L2genForm extends JTabbedPane {
 
-//    private ArrayList<ProductInfo> waveIndependentProductInfoArray;
-//    private ArrayList<ProductInfo> waveDependentProductInfoArray;
-
     private final AppContext appContext;
     private final SourceProductSelector sourceProductSelector;
     private final TargetProductSelector targetProductSelector;
@@ -346,6 +343,35 @@ class L2genForm extends JTabbedPane {
 
         selectedProductsJPanel = new JPanel();
         selectedProductsJTable = new JTable();
+
+        selectedProductsJTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                selectedProductsJTableMouseClickedHandler(e);
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
         JButton selectedProductsRemoveButton = new JButton("Remove");
 
         // ----------------------------------------------------------------------------------------
@@ -395,6 +421,21 @@ class L2genForm extends JTabbedPane {
         // ----------------------------------------------------------------------------------------
 
         tabbedPane.addTab(myTabname, wrappedMainPanel);
+    }
+
+    private void selectedProductsJTableMouseClickedHandler(MouseEvent e) {
+        int row = selectedProductsJTable.rowAtPoint(e.getPoint());
+        int col = selectedProductsJTable.columnAtPoint(e.getPoint());
+
+
+        if (col == 0) {
+            if (selectedProductsJTable.getValueAt(row, col).equals(true)) {
+                selectedProductsJTable.setValueAt(new Boolean(false), row, col);
+            } else {
+                selectedProductsJTable.setValueAt(new Boolean(true), row, col);
+            }
+        }
+
     }
 
 
@@ -1030,7 +1071,6 @@ class L2genForm extends JTabbedPane {
     }
 
 
-
     private void createSelectedProductsJPanel(JPanel selectedProductsPanel) {
 
 
@@ -1054,10 +1094,6 @@ class L2genForm extends JTabbedPane {
         JPanel panel2 = SeadasGuiUtils.addPaddedWrapperPanel(selectedProductsEditLoadButton, 3, GridBagConstraints.CENTER);
         JPanel panel3 = SeadasGuiUtils.addPaddedWrapperPanel(selectedProductsCancelButton, 3, GridBagConstraints.EAST);
 
-
-//        String[] test = {""};
-//        myTableModel = new MyTableModel(test);
-//        jtable = new JTable(myTableModel);
 
         selectedProductsDefaultsButton.addActionListener(new ActionListener() {
             @Override
@@ -1123,7 +1159,6 @@ class L2genForm extends JTabbedPane {
     }
 
 
-
     //----------------------------------------------------------------------------------------
     // Methods involved with the Parfile Tab
     //----------------------------------------------------------------------------------------
@@ -1138,8 +1173,6 @@ class L2genForm extends JTabbedPane {
     //----------------------------------------------------------------------------------------
     // Methods involved with the Product Tab
     //----------------------------------------------------------------------------------------
-
-
 
 
     private void createWaveIndependentProductsJList() {
@@ -1180,9 +1213,6 @@ class L2genForm extends JTabbedPane {
 
         //     setSelectionStatesWaveIndependentProductsJList();
     }
-
-
-
 
 
     private void createWaveDependentProductsJList() {
@@ -1345,8 +1375,6 @@ class L2genForm extends JTabbedPane {
     }
 
 
-
-
     //----------------------------------------------------------------------------------------
     // Swing Control Handlers
     //----------------------------------------------------------------------------------------
@@ -1463,6 +1491,8 @@ class L2genForm extends JTabbedPane {
 
         final int CHECKBOX_COLUMN_INDEX = 0;
 
+        selectedProductsJTable.clearSelection();
+
         if (selectedProductsJTable.getSelectedRowCount() > 0) {
             if (selectedProductsJTable.getSelectedColumn() == CHECKBOX_COLUMN_INDEX) {
                 Object checkboxValue = selectedProductsJTable.getValueAt(selectedProductsJTable.getSelectedRow(),
@@ -1478,7 +1508,7 @@ class L2genForm extends JTabbedPane {
                             selectedProductsJTable.getSelectedColumn());
                 }
 
-                selectedProductsJTable.clearSelection();
+
             }
         }
     }
@@ -1514,7 +1544,6 @@ class L2genForm extends JTabbedPane {
         }
 
     }
-
 
 
     //----------------------------------------------------------------------------------------
@@ -1740,9 +1769,6 @@ class L2genForm extends JTabbedPane {
                     if (wavelengthCheckboxControlHandlersEnabled) {
                         l2genData.setIsSelectedWavelengthInfoArray(currWavelength, currJCheckBox.isSelected());
                     }
-
-                    // updateSelectedProductsJTextArea();
-
                 }
             });
 
@@ -1874,61 +1900,24 @@ class L2genForm extends JTabbedPane {
 
     private void productChangedHandler() {
 
-//        panelTest.removeAll();
-
-//        if (l2genData.getProdlist().length() > 0) {
-//
-//            String[] test = l2genData.getProdlist().split(" ");
-//
-//            myTableModel = new MyTableModel(test);
-//
-//            jtable = new JTable(myTableModel);
-//            jtable.setCellSelectionEnabled(true);
-//            jtable.setSelectionBackground(Color.decode("#ffffff"));
-//            jtable.setSelectionForeground(Color.decode("#ffffff"));
-//            jtable.doLayout();
-//            //    jtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-//            jtable.getColumnModel().getColumn(0).setPreferredWidth(20);
-//            jtable.getColumnModel().getColumn(1).setPreferredWidth(200);
-//
-//        //    panelTest.add(jtable);
-//
-//            //   jtable.getSelectionModel().addListSelectionListener(new RowListener());
-//            jtable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-//                @Override
-//                public void valueChanged(ListSelectionEvent e) {
-//                    handleJTable();
-//                }
-//            });
-//        }
-
-
         if (l2genData.getSelectedProducts().size() > 0) {
 
             selectedProductsTableModel = new SelectedProductsTableModel(l2genData.getSelectedProducts());
 
-            //  newJTable = new JTable();
-            //  newJTable.setModel(myNewTableModel);
-            // newJTable = new JTable(myNewTableModel);
             selectedProductsJTable.setModel(selectedProductsTableModel);
 
-
-            selectedProductsJTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-                    handleSelectedProductsJTable();
-                }
-            });
         } else {
             selectedProductsTableModel = new SelectedProductsTableModel(null);
             selectedProductsJTable.setModel(selectedProductsTableModel);
         }
 
-//        newJTable.setVisible(true);
         selectedProductsJTable.getColumnModel().getColumn(0).setPreferredWidth(20);
         selectedProductsJTable.getColumnModel().getColumn(1).setPreferredWidth(200);
 
 
+        selectedProductsJTable.setRowSelectionAllowed(false);
+        selectedProductsJTable.setColumnSelectionAllowed(false);
+        selectedProductsJTable.setCellSelectionEnabled(false);
         selectedProductsJPanel.add(selectedProductsJTable);
     }
 
