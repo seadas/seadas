@@ -41,6 +41,7 @@ class L2genForm extends JTabbedPane {
     private JTable selectedProductsJTable;
     private SelectedProductsTableModel selectedProductsTableModel;
     private JPanel selectedProductsJPanel;
+    private JComboBox ofileJComboBox;
 
     private boolean setWaveIndependentProductsJListEnabled = true;
     private boolean setWaveDependentProductsJListEnabled = true;
@@ -77,7 +78,7 @@ class L2genForm extends JTabbedPane {
 
     private JFileChooser parfileChooser = new JFileChooser();
 
-    private final String TARGET_PRODUCT_SUFFIX = "L2";
+
     private String SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT = "No products currently selected";
     private String SEADAS_PRODUCTS_FILE = "/home/knowles/SeaDAS/seadas/seadas-sandbox/productList.xml";
 
@@ -146,6 +147,7 @@ class L2genForm extends JTabbedPane {
 
         final JPanel ioPanel = new JPanel(tableLayout);
         ioPanel.add(createSourceProductPanel());
+        ioPanel.add(createOfileJPanel());
         ioPanel.add(targetProductSelector.createDefaultPanel());
         ioPanel.add(tableLayout.createVerticalSpacer());
 
@@ -399,7 +401,7 @@ class L2genForm extends JTabbedPane {
 
         //
         //
-        
+
         c = SeadasGuiUtils.makeConstraints(0, 1);
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -618,70 +620,65 @@ class L2genForm extends JTabbedPane {
                 Product sourceProduct = getSourceProduct();
 
                 if (handleIfileJComboBoxEnabled) {
-                    updateTargetProductName(sourceProduct);
+                    //   updateTargetProductName(sourceProduct);
                 }
 
 
                 if (sourceProduct != null && sourceProductSelector.getSelectedProduct() != null
                         && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
-                    //               l2genData.setParamValue(l2genData.IFILE, sourceProduct.getName());
                     if (handleIfileJComboBoxEnabled) {
                         //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getName());
                         l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
                     }
                 }
-
-                //     updateProductSelectorWavelengthsPanel();
-                // updateSelectedProductsJTextArea();
-//                updateParfileJTextArea();
             }
         });
         return panel;
     }
 
-    private void updateTargetProductName(Product selectedProduct) {
-
-        String outputProduct;
-        String ofile = "";
-
-        final TargetProductSelectorModel selectorModel = targetProductSelector.getModel();
-
-        if (selectedProduct != null) {
-            String productBasename;
-
-            int i = selectedProduct.getName().lastIndexOf('.');
-            if (i != -1) {
-                productBasename = selectedProduct.getName().substring(0, i);
-            } else {
-                productBasename = selectedProduct.getName();
-            }
-
-            outputProduct = productBasename + "." + TARGET_PRODUCT_SUFFIX;
-
-
-            int j = selectedProduct.getFileLocation().toString().lastIndexOf('.');
-
-            String ofileBasename;
-            if (j != -1) {
-                ofileBasename = selectedProduct.getFileLocation().toString().substring(0, j);
-            } else {
-                ofileBasename = selectedProduct.getFileLocation().toString();
-            }
-
-            ofile = ofileBasename + "." + TARGET_PRODUCT_SUFFIX;
-
-            selectorModel.setProductName(outputProduct);
-
-        } else {
-            outputProduct = null;
-            ofile = "";
-        }
-
-        debug("DEBUG ofile=" + ofile);
-        l2genData.setParamValue(l2genData.OFILE, ofile);
-
-
-    }
+//    private void updateTargetProductName(Product selectedProduct) {
+//
+//        String outputProduct;
+//        String ofile = "";
+//
+//        final TargetProductSelectorModel selectorModel = targetProductSelector.getModel();
+//
+//        if (selectedProduct != null) {
+//            String productBasename;
+//
+//            int i = selectedProduct.getName().lastIndexOf('.');
+//            if (i != -1) {
+//                productBasename = selectedProduct.getName().substring(0, i);
+//            } else {
+//                productBasename = selectedProduct.getName();
+//            }
+//
+//            outputProduct = productBasename + "." + TARGET_PRODUCT_SUFFIX;
+//
+//
+//            int j = selectedProduct.getFileLocation().toString().lastIndexOf('.');
+//
+//            String ofileBasename;
+//            if (j != -1) {
+//                ofileBasename = selectedProduct.getFileLocation().toString().substring(0, j);
+//            } else {
+//                ofileBasename = selectedProduct.getFileLocation().toString();
+//            }
+//
+//            ofile = ofileBasename + "." + TARGET_PRODUCT_SUFFIX;
+//
+//            selectorModel.setProductName(outputProduct);
+//
+//        } else {
+//            outputProduct = null;
+//            ofile = "";
+//        }
+//
+//        debug("DEBUG ofile=" + ofile);
+//        l2genData.setParamValue(l2genData.OFILE, ofile);
+//
+//
+//    }
 
 
     private void createLatLonPane(JPanel inPanel) {
@@ -1073,7 +1070,6 @@ class L2genForm extends JTabbedPane {
         waveDependentProductsJPanel.add(waveDependentProductsJScrollPane, c);
     }
 
-
     private void createSelectedProductsJPanel(JPanel selectedProductsPanel) {
 
 
@@ -1159,6 +1155,23 @@ class L2genForm extends JTabbedPane {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         selectedProductsPanel.add(panel3, c);
+    }
+
+    private JPanel createOfileJPanel() {
+
+        JPanel selectedProductsPanel = new JPanel();
+        selectedProductsPanel.setBorder(BorderFactory.createTitledBorder("Output File"));
+        selectedProductsPanel.setLayout(new GridBagLayout());
+
+        ofileJComboBox = new JComboBox();
+// todo add listener to this
+
+        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        selectedProductsPanel.add(ofileJComboBox, c);
+
+        return selectedProductsPanel;
     }
 
 
@@ -1734,7 +1747,9 @@ class L2genForm extends JTabbedPane {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 debug("EVENT RECEIVED ofile");
+                debug(l2genData.getParamValue("ofile=" + l2genData.OFILE));
                 parfileJTextArea.setText(l2genData.getParfile());
+                updateOfileHandler();
             }
         });
     }
@@ -1936,6 +1951,11 @@ class L2genForm extends JTabbedPane {
 //        if (setWaveDependentProductsJListEnabled) {
 //           setSelectionStatesWaveDependentProductsJList();
 //        }
+    }
+
+    private void updateOfileHandler() {
+        
+        //todo
     }
 
 

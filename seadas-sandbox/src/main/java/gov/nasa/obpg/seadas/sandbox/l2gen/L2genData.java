@@ -35,6 +35,7 @@ public class L2genData {
     public final String WAVE_DEPENDENT_PRODUCT_CHANGED = "WAVE_DEPENDENT_PRODUCT_CHANGED";
     public final String WAVE_INDEPENDENT_PRODUCT_CHANGED = "WAVE_INDEPENDENT_PRODUCT_CHANGED";
     public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
+    private final String TARGET_PRODUCT_SUFFIX = "L2";
 
     // Groupings of Parameter Keys
     private final String[] coordinateParamKeys = {NORTH, SOUTH, WEST, EAST};
@@ -683,7 +684,7 @@ public class L2genData {
 
         // remove any params which are not in defaultParamValueHashMap
         for (String key : copyParamValueHashMap.keySet()) {
-            if (!key.equals(IFILE) && !defaultParfileHashMap.containsKey(key)) {
+            if (!key.equals(IFILE) && !key.equals(OFILE) && !defaultParfileHashMap.containsKey(key)) {
                 deleteParam(key);
             }
         }
@@ -1013,6 +1014,8 @@ public class L2genData {
         String previousMissionString = getMissionString();
         parfileHashMap.put(IFILE, newIfile);
 
+        setOfile();
+
         debug("new missionString=" + getMissionString());
         if (getMissionString() != null) {
             if (previousMissionString == null || !previousMissionString.equals(getMissionString())) {
@@ -1063,6 +1066,34 @@ public class L2genData {
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_STRING_CHANGE_EVENT_NAME, null, getMissionString()));
             }
         }
+    }
+
+    private void setOfile() {
+
+        String ifile = parfileHashMap.get(IFILE);
+        String ofile;
+
+        if (ifile != null) {
+            String ifileSuffixTrimmedOff;
+
+            int i = ifile.lastIndexOf('.');
+            if (i != -1) {
+                ifileSuffixTrimmedOff = ifile.substring(0, i);
+            } else {
+                ifileSuffixTrimmedOff = ifile;
+            }
+
+            ofile = ifileSuffixTrimmedOff + "." + TARGET_PRODUCT_SUFFIX;
+
+        } else {
+            ofile = "";
+        }
+
+        debug("DEBUG ofile=" + ofile);
+        parfileHashMap.put(OFILE, ofile);
+
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, OFILE, null, null));
+
     }
 
 
