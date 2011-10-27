@@ -22,40 +22,20 @@ import ucar.nc2.*;
 
 public class ObpgGeonavTest {
     private static String cwd = System.getProperty("user.dir");
-    private static String windowsDir = "data/";
-    //private static String linuxDir = "/home/melliott/old_home/Src/SeaDAS_sandbox/experiment/sources/test/data/";
-    private static String linuxDir = "src/test/resources/data/";
-    private static String dataDir;
+    private static String dataDir = "src/test/resources/data/";
+    PrintStream errorFile = null;
+    private PrintStream oriErr = System.err;
 
+    @After
+    public void after() throws Exception {
+        System.setErr(oriErr);
+        errorFile.close();
+    }
+    
     @Before
     public void before() throws Exception {
-    //public static void main(String[] args) {
-
-        /*
-         * Code (selected snippets) for redirecting of stderr stolen from: 
-         *     http://blogs.oracle.com/nickstephen/entry/java_redirecting_system_out_and
-         */
-        Handler fileHandler;
-        LogManager logManager;
-        try {
-            logManager = LogManager.getLogManager();
-            logManager.reset();
-            fileHandler = new FileHandler("unit_test_error_log", 10000, 3, true);
-            fileHandler.setFormatter(new SimpleFormatter());
-            Logger.getLogger("").addHandler(fileHandler);
-        } catch(IOException ioe) {
-            System.out.println("Encountered IOException setting up logging:\n" +
-                               ioe.getMessage() + "\n");
-            ioe.printStackTrace();
-        }     String os = System.getProperty("os.name");
-
-        if (os.contains("Windows")) {
-            dataDir = cwd + "/" +windowsDir;
-        } else {
-            dataDir = cwd + "/" + linuxDir;
-        }
-//System.out.println("dataDir: " + dataDir);
-        //org.junit.runner.JUnitCore.main("gov.nasa.obpg.seadas.dataio.obpg.ObpgGeonavTest");
+        errorFile = new PrintStream(new FileOutputStream("obpgGeonavUnitTestErrors.txt"));
+        System.setErr(errorFile);
     }
 
     @Test
@@ -79,18 +59,13 @@ public class ObpgGeonavTest {
         assertEquals(1.0f, result[2], 0.0f);
     }
 
-    @Test
+    @Ignore
     public void testDoComputations() {
-        //Geonav testObj = new Geonav();
-        //testObj.doComputations();
-        //double elevAng = testObj.doComputations();
-        //assertEquals(0.001908, elevAng, 0.0000001);
     }
 
     @Test
     public void testDetermineNumberScanLines() {
         String ncPath = dataDir + "S2007005135838.L1A_GAC";
-System.out.println("dataDir: " + dataDir + ", ncPath: " + ncPath);
         try {
             NetcdfFile ncFile = NetcdfFile.open(ncPath);
             int numScanLines = ObpgGeonav.determineNumberScanLines(ncFile);
@@ -103,11 +78,9 @@ System.out.println("dataDir: " + dataDir + ", ncPath: " + ncPath);
 
     @Test
     public void testDetermineSeawifsDataType() {
-        //NetcdfFileWritable ncFile = NetcdfFileWriteable.createNew("test.nc");
-        //Attribute testAttr = new Attribute("Data Type", "GAC");
-        String gacPath = dataDir + "S2007005135838.L1A_GAC";
-        String hrptPath = dataDir + "S2007005135838.L1A_MLAC";
-        String lacPath = dataDir + "S2007005122319.L1A_LAC";
+        String gacPath = cwd + "/" + dataDir + "Test.L1A_GAC";
+        String hrptPath = dataDir + "Test.L1A_MLAC";
+        String lacPath = dataDir + "Test.L1A_LAC";
 
         try {
             NetcdfFile ncFile = NetcdfFile.open(gacPath);
