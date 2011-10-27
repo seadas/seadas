@@ -1,7 +1,9 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,7 +22,7 @@ public class XmlReader {
     public XmlReader() {
     }
 
-    public Document parseXmlFile(String filename) {
+    public Document parseXmlFile(InputStream inputStream) {
         //get the factory
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
@@ -29,7 +31,7 @@ public class XmlReader {
             DocumentBuilder db = dbf.newDocumentBuilder();
 
             //parse using builder to get DOM representation of the XML file
-            dom = db.parse(filename);
+            dom = db.parse(inputStream);
 
 
         } catch (ParserConfigurationException pce) {
@@ -43,8 +45,8 @@ public class XmlReader {
         return dom;
     }
 
-    public Element parseAndGetRootElement(String filename) {
-        parseXmlFile(filename);
+    public Element parseAndGetRootElement(InputStream inputStream) {
+        parseXmlFile(inputStream);
         return dom.getDocumentElement();
     }
 

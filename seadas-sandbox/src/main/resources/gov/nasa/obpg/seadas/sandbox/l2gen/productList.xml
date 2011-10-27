@@ -146,7 +146,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Calibrated TOA radiance at   0 nm</description>
+            <description>Calibrated TOA radiance at 0 nm</description>
         </algorithm>
         <algorithm>
             <prefix>Lt_</prefix>
@@ -154,7 +154,7 @@
             <parameterType>IR</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Calibrated TOA radiance at   0 nm</description>
+            <description>Calibrated TOA radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="Lt_unc">
@@ -164,7 +164,7 @@
             <parameterType>All</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Uncertainty in TOA radiance at   0 nm</description>
+            <description>Uncertainty in TOA radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="BT">
@@ -174,7 +174,7 @@
             <parameterType>IR</parameterType>
             <dataType>FLOAT32</dataType>
             <units>degrees-C</units>
-            <description>Brightness temperature at   0 nm</description>
+            <description>Brightness temperature at 0 nm</description>
         </algorithm>
     </product>
     <product name="a">
@@ -184,7 +184,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total absorption at   0 nm</description>
+            <description>Total absorption at 0 nm</description>
         </algorithm>
         <algorithm name="las">
             <prefix>a_</prefix>
@@ -192,7 +192,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total absorption at   0 nm, Loisel and Stramski algorithm</description>
+            <description>Total absorption at 0 nm, Loisel and Stramski algorithm</description>
         </algorithm>
         <algorithm name="pml">
             <prefix>a_</prefix>
@@ -200,7 +200,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total absorption at   0 nm, PML algorithm</description>
+            <description>Total absorption at 0 nm, PML algorithm</description>
         </algorithm>
         <algorithm name="qaa">
             <prefix>a_</prefix>
@@ -208,7 +208,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total absorption at   0 nm, QAA algorithm</description>
+            <description>Total absorption at 0 nm, QAA algorithm</description>
         </algorithm>
         <algorithm name="carder">
             <prefix>a_</prefix>
@@ -216,7 +216,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total absorption at   0 nm, Carder algorithm</description>
+            <description>Total absorption at 0 nm, Carder algorithm</description>
         </algorithm>
         <algorithm name="giop">
             <prefix>a_</prefix>
@@ -224,7 +224,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total absorption at   0 nm, GIOP model</description>
+            <description>Total absorption at 0 nm, GIOP model</description>
         </algorithm>
         <algorithm name="gsm">
             <prefix>a_</prefix>
@@ -232,7 +232,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total absorption at   0 nm, GSM algorithm</description>
+            <description>Total absorption at 0 nm, GSM algorithm</description>
         </algorithm>
         <algorithm name="niwa">
             <prefix>a_</prefix>
@@ -240,7 +240,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total absorption - water at   0 nm, NIWA / UoP / Moore algorithm</description>
+            <description>Total absorption - water at 0 nm, NIWA / UoP / Moore algorithm</description>
         </algorithm>
     </product>
     <product name="bb">
@@ -250,7 +250,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total backscatter at   0 nm</description>
+            <description>Total backscatter at 0 nm</description>
         </algorithm>
         <algorithm name="las">
             <prefix>bb_</prefix>
@@ -258,7 +258,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total backscatter at   0 nm, Loisel and Stramski algorithm</description>
+            <description>Total backscatter at 0 nm, Loisel and Stramski algorithm</description>
         </algorithm>
         <algorithm name="pml">
             <prefix>bb_</prefix>
@@ -266,7 +266,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total backscatter at   0 nm, PML algorithm</description>
+            <description>Total backscatter at 0 nm, PML algorithm</description>
         </algorithm>
         <algorithm name="qaa">
             <prefix>bb_</prefix>
@@ -274,7 +274,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total backscatter at   0 nm, QAA algorithm</description>
+            <description>Total backscatter at 0 nm, QAA algorithm</description>
         </algorithm>
         <algorithm name="carder">
             <prefix>bb_</prefix>
@@ -282,7 +282,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total backscatter at   0 nm, Carder algorithm</description>
+            <description>Total backscatter at 0 nm, Carder algorithm</description>
         </algorithm>
         <algorithm name="giop">
             <prefix>bb_</prefix>
@@ -290,7 +290,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total backscatter at   0 nm, GIOP model</description>
+            <description>Total backscatter at 0 nm, GIOP model</description>
         </algorithm>
         <algorithm name="gsm">
             <prefix>bb_</prefix>
@@ -298,7 +298,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total backscatter at   0 nm, GSM algorithm</description>
+            <description>Total backscatter at 0 nm, GSM algorithm</description>
         </algorithm>
         <algorithm name="niwa">
             <prefix>bb_</prefix>
@@ -306,7 +306,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total backscatter - water at   0 nm, NIWA / UoP / Moore algorithm</description>
+            <description>Total backscatter - water at 0 nm, NIWA / UoP / Moore algorithm</description>
         </algorithm>
     </product>
     <product name="b">
@@ -316,7 +316,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total scatter at   0 nm, Loisel and Stramski algorithm</description>
+            <description>Total scatter at 0 nm, Loisel and Stramski algorithm</description>
         </algorithm>
         <algorithm name="qaa">
             <prefix>b_</prefix>
@@ -324,7 +324,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Total scattering at   0 nm, QAA algorithm</description>
+            <description>Total scattering at 0 nm, QAA algorithm</description>
         </algorithm>
     </product>
     <product name="c">
@@ -334,7 +334,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Beam attenuation at   0 nm, Loisel and Stramski algorithm</description>
+            <description>Beam attenuation at 0 nm, Loisel and Stramski algorithm</description>
         </algorithm>
         <algorithm name="qaa">
             <prefix>c_</prefix>
@@ -342,7 +342,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Beam attenuation at   0 nm, QAA algorithm</description>
+            <description>Beam attenuation at 0 nm, QAA algorithm</description>
         </algorithm>
     </product>
     <product name="bbp">
@@ -352,7 +352,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Particle backscatter at   0 nm, Loisel and Stramski algorithm</description>
+            <description>Particle backscatter at 0 nm, Loisel and Stramski algorithm</description>
         </algorithm>
         <algorithm name="pml">
             <prefix>bbp_</prefix>
@@ -360,7 +360,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Particle backscatter at   0 nm, PML algorithm</description>
+            <description>Particle backscatter at 0 nm, PML algorithm</description>
         </algorithm>
         <algorithm name="qaa">
             <prefix>bbp_</prefix>
@@ -368,7 +368,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Particulate backscatter at   0 nm, QAA algorithm</description>
+            <description>Particulate backscatter at 0 nm, QAA algorithm</description>
         </algorithm>
         <algorithm name="carder">
             <prefix>bbp_</prefix>
@@ -376,7 +376,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Particulate backscatter at   0 nm, Carder algorithm</description>
+            <description>Particulate backscatter at 0 nm, Carder algorithm</description>
         </algorithm>
         <algorithm name="giop">
             <prefix>bbp_</prefix>
@@ -384,7 +384,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Particulate backscatter at   0 nm, GIOP model</description>
+            <description>Particulate backscatter at 0 nm, GIOP model</description>
         </algorithm>
         <algorithm name="gsm">
             <prefix>bbp_gsm</prefix>
@@ -408,7 +408,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Particulate backscatter at   0 nm, GSM algorithm</description>
+            <description>Particulate backscatter at 0 nm, GSM algorithm</description>
         </algorithm>
         <algorithm name="soa">
             <prefix>bbp_soa</prefix>
@@ -452,7 +452,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Absorption due to phytoplankton at   0 nm, PML algorithm</description>
+            <description>Absorption due to phytoplankton at 0 nm, PML algorithm</description>
         </algorithm>
         <algorithm name="qaa">
             <prefix>aph_</prefix>
@@ -460,7 +460,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Absorption due to phytoplankton at   0 nm, QAA algorithm</description>
+            <description>Absorption due to phytoplankton at 0 nm, QAA algorithm</description>
         </algorithm>
         <algorithm name="carder">
             <prefix>aph_carder</prefix>
@@ -476,7 +476,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Absorption due to phytoplankton at   0 nm, Carder algorithm</description>
+            <description>Absorption due to phytoplankton at 0 nm, Carder algorithm</description>
         </algorithm>
         <algorithm name="giop">
             <prefix>aph_</prefix>
@@ -484,7 +484,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Absorption due to phytoplankton at   0 nm, GIOP model</description>
+            <description>Absorption due to phytoplankton at 0 nm, GIOP model</description>
         </algorithm>
         <algorithm name="gsm">
             <prefix>aph_</prefix>
@@ -492,7 +492,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Absorption due to phytoplankton at   0 nm, GSM algorithm</description>
+            <description>Absorption due to phytoplankton at 0 nm, GSM algorithm</description>
         </algorithm>
     </product>
     <product name="adg">
@@ -502,7 +502,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Absorption due to gelbstof and detrital material at   0 nm, PML algorithm</description>
+            <description>Absorption due to gelbstof and detrital material at 0 nm, PML algorithm</description>
         </algorithm>
         <algorithm name="qaa">
             <prefix>adg_</prefix>
@@ -510,7 +510,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Absorption due to gelbstof and detrital material at   0 nm, QAA algorithm</description>
+            <description>Absorption due to gelbstof and detrital material at 0 nm, QAA algorithm</description>
         </algorithm>
         <algorithm name="carder">
             <prefix>adg_carder</prefix>
@@ -526,7 +526,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Absorption due to gelbstof and detrital material at   0 nm, Carder algorithm</description>
+            <description>Absorption due to gelbstof and detrital material at 0 nm, Carder algorithm</description>
         </algorithm>
         <algorithm name="giop">
             <prefix>adg_</prefix>
@@ -534,7 +534,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Absorption due to gelbstof and detrital material at   0 nm, GIOP model</description>
+            <description>Absorption due to gelbstof and detrital material at 0 nm, GIOP model</description>
         </algorithm>
         <algorithm name="gsm">
             <prefix>adg_gsm</prefix>
@@ -582,7 +582,8 @@
             <parameterType>Integer</parameterType>
             <dataType>FLOAT32</dataType>
             <units>m^-1</units>
-            <description>Absorption due to gelbstof and detrital material at   0 nm, Morel 2009 CDOM algorithm</description>
+            <description>Absorption due to gelbstof and detrital material at 0 nm, Morel 2009 CDOM algorithm
+            </description>
         </algorithm>
     </product>
     <product name="mod_rss">
@@ -728,7 +729,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>sr^-1</units>
-            <description>Modeled remote sensing reflectance at   0 nm, GIOP model</description>
+            <description>Modeled remote sensing reflectance at 0 nm, GIOP model</description>
         </algorithm>
     </product>
     <product name="adg_unc">
@@ -738,7 +739,8 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Uncertainty in absorption due to gelbstof and detrital material at   0 nm, GIOP model</description>
+            <description>Uncertainty in absorption due to gelbstof and detrital material at 0 nm, GIOP model
+            </description>
         </algorithm>
     </product>
     <product name="bbp_unc">
@@ -748,7 +750,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Uncertainty in particulate backscatter at   0 nm, GIOP model</description>
+            <description>Uncertainty in particulate backscatter at 0 nm, GIOP model</description>
         </algorithm>
     </product>
     <product name="aph_unc">
@@ -758,7 +760,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Uncertainty in absorption due to phytoplankton at   0 nm, GIOP model</description>
+            <description>Uncertainty in absorption due to phytoplankton at 0 nm, GIOP model</description>
         </algorithm>
     </product>
     <product name="a_unc">
@@ -768,7 +770,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Uncertainty in total absorption at   0 nm, GIOP model</description>
+            <description>Uncertainty in total absorption at 0 nm, GIOP model</description>
         </algorithm>
     </product>
     <product name="bb_unc">
@@ -778,7 +780,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Uncertainty in total backscatter at   0 nm, GIOP model</description>
+            <description>Uncertainty in total backscatter at 0 nm, GIOP model</description>
         </algorithm>
     </product>
     <product name="fit_par">
@@ -1074,7 +1076,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>m^-1</units>
-            <description>Diffuse attenuation coefficient at   0 nm, Lee Algorithm</description>
+            <description>Diffuse attenuation coefficient at 0 nm, Lee Algorithm</description>
         </algorithm>
         <algorithm name="morel">
             <prefix>Kd_490_morel</prefix>
@@ -1322,7 +1324,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Water-leaving radiance at   0 nm</description>
+            <description>Water-leaving radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="nLw">
@@ -1332,7 +1334,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Normalized water-leaving radiance at   0 nm</description>
+            <description>Normalized water-leaving radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="nLw_unc">
@@ -1342,7 +1344,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Uncertainty in normalized water-leaving radiance at   0 nm</description>
+            <description>Uncertainty in normalized water-leaving radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="rhos">
@@ -1352,7 +1354,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Surface reflectance at   0 nm</description>
+            <description>Surface reflectance at 0 nm</description>
         </algorithm>
     </product>
     <product name="rhom">
@@ -1362,7 +1364,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Water + aerosol reflectance at   0 nm (MUMM)</description>
+            <description>Water + aerosol reflectance at 0 nm (MUMM)</description>
         </algorithm>
     </product>
     <product name="rhot">
@@ -1372,7 +1374,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Top-of-atmosphere reflectance at   0 nm</description>
+            <description>Top-of-atmosphere reflectance at 0 nm</description>
         </algorithm>
     </product>
     <product name="Rrs">
@@ -1382,7 +1384,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>sr^-1</units>
-            <description>Remote sensing reflectance at   0 nm</description>
+            <description>Remote sensing reflectance at 0 nm</description>
         </algorithm>
     </product>
     <product name="Rrs_unc">
@@ -1392,7 +1394,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>sr^-1</units>
-            <description>Uncertainty in remote sensing reflectance at   0 nm</description>
+            <description>Uncertainty in remote sensing reflectance at 0 nm</description>
         </algorithm>
     </product>
     <product name="La">
@@ -1402,7 +1404,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Aerosol radiance at   0 nm</description>
+            <description>Aerosol radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="aot">
@@ -1412,7 +1414,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Aerosol optical thickness at   0 nm</description>
+            <description>Aerosol optical thickness at 0 nm</description>
         </algorithm>
     </product>
     <product name="taua">
@@ -1422,7 +1424,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Aerosol optical thickness at   0 nm</description>
+            <description>Aerosol optical thickness at 0 nm</description>
         </algorithm>
         <algorithm>
             <prefix>tau_</prefix>
@@ -1430,7 +1432,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Aerosol optical thickness at   0 nm</description>
+            <description>Aerosol optical thickness at 0 nm</description>
         </algorithm>
     </product>
     <product name="angstrom">
@@ -1458,7 +1460,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>TOA glint radiance at   0 nm</description>
+            <description>TOA glint radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="Lr">
@@ -1468,7 +1470,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Rayleigh radiance at   0 nm</description>
+            <description>Rayleigh radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="L_q">
@@ -1478,7 +1480,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Polarization radiance at   0 nm, q-component</description>
+            <description>Polarization radiance at 0 nm, q-component</description>
         </algorithm>
     </product>
     <product name="L_u">
@@ -1488,7 +1490,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Polarization radiance at   0 nm, u-component</description>
+            <description>Polarization radiance at 0 nm, u-component</description>
         </algorithm>
     </product>
     <product name="polcor">
@@ -1498,7 +1500,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Polarization correction at   0 nm</description>
+            <description>Polarization correction at 0 nm</description>
         </algorithm>
     </product>
     <product name="Es">
@@ -1508,7 +1510,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1</units>
-            <description>Solar Irradiance at Surface at   0 nm</description>
+            <description>Solar Irradiance at Surface at 0 nm</description>
         </algorithm>
     </product>
     <product name="brdf">
@@ -1526,7 +1528,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>BRDF correction at   0 nm</description>
+            <description>BRDF correction at 0 nm</description>
         </algorithm>
     </product>
     <product name="tLf">
@@ -1536,7 +1538,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>White-cap radiance at TOA at   0 nm</description>
+            <description>White-cap radiance at TOA at 0 nm</description>
         </algorithm>
     </product>
     <product name="t_sol">
@@ -1546,7 +1548,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Rayleigh-Aerosol Diff. Trans., Sun to Surface, at   0 nm</description>
+            <description>Rayleigh-Aerosol Diff. Trans., Sun to Surface, at 0 nm</description>
         </algorithm>
     </product>
     <product name="t_sen">
@@ -1556,7 +1558,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Rayleigh-Aerosol Diff. Trans., Surface to Sensor, at   0 nm</description>
+            <description>Rayleigh-Aerosol Diff. Trans., Surface to Sensor, at 0 nm</description>
         </algorithm>
     </product>
     <product name="tg_sol">
@@ -1566,7 +1568,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Gaseous Transmittance, Sun to Surface, at   0 nm</description>
+            <description>Gaseous Transmittance, Sun to Surface, at 0 nm</description>
         </algorithm>
     </product>
     <product name="tg_sen">
@@ -1576,7 +1578,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Gaseous Transmittance, Surface to Sensor, at   0 nm</description>
+            <description>Gaseous Transmittance, Surface to Sensor, at 0 nm</description>
         </algorithm>
     </product>
     <product name="t_h2o">
@@ -1586,7 +1588,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Total water vapor transmittance at   0 nm</description>
+            <description>Total water vapor transmittance at 0 nm</description>
         </algorithm>
     </product>
     <product name="t_o2">
@@ -1596,7 +1598,7 @@
             <parameterType>Visible</parameterType>
             <dataType>INT16</dataType>
             <units>dimensionless</units>
-            <description>Total oxygen transmittance at   0 nm</description>
+            <description>Total oxygen transmittance at 0 nm</description>
         </algorithm>
     </product>
     <product name="dpol">
@@ -1606,7 +1608,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Degree of Rayleigh Polarization at   0 nm</description>
+            <description>Degree of Rayleigh Polarization at 0 nm</description>
         </algorithm>
     </product>
     <product name="fsol">
@@ -1616,7 +1618,7 @@
             <parameterType>None</parameterType>
             <dataType>FLOAT64</dataType>
             <units>dimensionless</units>
-            <description>Solar distance correction factor (<d>/d)^2</description>
+            <description>Solar distance correction factor ([d]/d)^2</description>
         </algorithm>
     </product>
     <product name="pixnum">
@@ -2074,7 +2076,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Vicarious gain at   0 nm</description>
+            <description>Vicarious gain at 0 nm</description>
         </algorithm>
     </product>
     <product name="vLt">
@@ -2084,7 +2086,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Vicarious TOA radiance at   0 nm</description>
+            <description>Vicarious TOA radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="vtLw">
@@ -2094,7 +2096,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Vicarious TOA water-leaving radiance at   0 nm</description>
+            <description>Vicarious TOA water-leaving radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="vLw">
@@ -2104,7 +2106,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Vicarious water-leaving radiance at   0 nm</description>
+            <description>Vicarious water-leaving radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="vnLw">
@@ -2114,7 +2116,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Vicarious normalized water-leaving radiance at   0 nm</description>
+            <description>Vicarious normalized water-leaving radiance at 0 nm</description>
         </algorithm>
     </product>
     <product name="vbsat">
@@ -2124,7 +2126,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Vicarious BRDF for satellite at   0 nm</description>
+            <description>Vicarious BRDF for satellite at 0 nm</description>
         </algorithm>
     </product>
     <product name="vbtgt">
@@ -2134,7 +2136,7 @@
             <parameterType>Visible</parameterType>
             <dataType>FLOAT32</dataType>
             <units>dimensionless</units>
-            <description>Vicarious BRDF for target at   0 nm</description>
+            <description>Vicarious BRDF for target at 0 nm</description>
         </algorithm>
     </product>
     <product name="myprod1">

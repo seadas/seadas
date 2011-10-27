@@ -3,10 +3,7 @@ package gov.nasa.obpg.seadas.sandbox.l2gen;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -37,9 +34,9 @@ public class L2genReader {
     }
 
 
-    public void readProductsXmlFile(String filename) {
+    public void readProductsXmlFile(InputStream stream) {
         XmlReader reader = new XmlReader();
-        Element rootElement = reader.parseAndGetRootElement(filename);
+        Element rootElement = reader.parseAndGetRootElement(stream);
 
         l2genData.clearWaveDependentProductInfoArray();
         l2genData.clearWaveIndependentProductInfoArray();

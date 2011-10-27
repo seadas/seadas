@@ -80,7 +80,7 @@ class L2genForm extends JTabbedPane {
 
 
     private String SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT = "No products currently selected";
-    private String SEADAS_PRODUCTS_FILE = "/home/knowles/SeaDAS/seadas/seadas-sandbox/productList.xml";
+    private String SEADAS_PRODUCTS_FILE = "productList.xml";
 
     private static final int PRODUCT_SELECTOR_TAB_INDEX = 3;
     private static final int SUB_SAMPLE_TAB_INDEX = 2;
@@ -538,7 +538,22 @@ class L2genForm extends JTabbedPane {
     private void createProductSelectorSubTab(JTabbedPane tabbedPane, String myTabname) {
 
         //   L2genReader l2genReader = new L2genReader(l2genData);
-        l2genReader.readProductsXmlFile(SEADAS_PRODUCTS_FILE);
+
+        InputStream stream = L2genForm.class.getResourceAsStream(SEADAS_PRODUCTS_FILE);
+
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+//        String line;
+//
+//        try {
+//            while((line = reader.readLine()) != null) {
+//                  System.out.println(line + "\n");
+//            }
+//        } catch (IOException e) {
+//            // ok
+//        }
+
+
+        l2genReader.readProductsXmlFile(stream);
 
         JPanel wavelengthIndependentProductsJPanel = new JPanel();
         createWaveIndependentProductsJPanel(wavelengthIndependentProductsJPanel);
