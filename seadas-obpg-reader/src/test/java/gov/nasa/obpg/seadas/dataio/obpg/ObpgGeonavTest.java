@@ -65,12 +65,12 @@ public class ObpgGeonavTest {
 
     @Test
     public void testDetermineNumberScanLines() {
-        String ncPath = dataDir + "S2007005135838.L1A_GAC";
+        String ncPath = cwd + "/" + dataDir + "Test.L1A_GAC";
         try {
             NetcdfFile ncFile = NetcdfFile.open(ncPath);
             int numScanLines = ObpgGeonav.determineNumberScanLines(ncFile);
             ncFile.close();
-            assertEquals(3930, numScanLines);
+            assertEquals(50, numScanLines);
         } catch(IOException ioe) {
             fail("Could not open test file:\n   " + ncPath);
         }
@@ -79,8 +79,8 @@ public class ObpgGeonavTest {
     @Test
     public void testDetermineSeawifsDataType() {
         String gacPath = cwd + "/" + dataDir + "Test.L1A_GAC";
-        String hrptPath = dataDir + "Test.L1A_MLAC";
-        String lacPath = dataDir + "Test.L1A_LAC";
+        String hrptPath = cwd + "/" + dataDir + "Test.L1A_MLAC";
+        String lacPath = cwd + "/" + dataDir + "Test.L1A_LAC";
 
         try {
             NetcdfFile ncFile = NetcdfFile.open(gacPath);
