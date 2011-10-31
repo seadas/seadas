@@ -53,7 +53,7 @@ public class ObpgGeonav {
     private static final int   MAX_SEAWIFS_PIXELS = (LAC_PIXELS_PER_SCAN > GAC_PIXELS_PER_SCAN) ?
                                                     LAC_PIXELS_PER_SCAN : GAC_PIXELS_PER_SCAN;
 
-    private double SINC = 0.0015911;
+    private double SINC = 0.0015897; //0.0015911;
 
     /* The sensorOffsetMatrix corresponds to navctl%msensoff and tiltCosVector
      * corresponds to navctl%tiltcos in the Fortran version.  Both variables are
@@ -162,6 +162,7 @@ public class ObpgGeonav {
 
         for (int line = 0; line < numScanLines; line ++) {
             attAngle = populateVector(attAngleData, 3, line);
+
             orbPos = populateVector(orbitData, 3, line);
             sensorOrientation[0][0] = sensorData.getFloat(line * 9);
             sensorOrientation[0][1] = sensorData.getFloat(line * 9 + 1);

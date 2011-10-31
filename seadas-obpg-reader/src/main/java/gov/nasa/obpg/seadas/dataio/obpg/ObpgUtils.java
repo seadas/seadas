@@ -58,6 +58,7 @@ public class ObpgUtils {
     static final String KEY_HEIGHT_AQUARIUS = "Number of Blocks";
     static final String KEY_SEADAS_MAPPED_WIDTH =  "Scene Pixels";
     static final String KEY_SEADAS_MAPPED_HEIGHT =  "Scene Lines";
+    //static final String KEY_SEAWIFS_L1A_WIDTH = "Pixels per Scan Line";
 
     static final String KEY_START_NODE = "Start Node";
     static final String KEY_END_NODE = "End Node";
@@ -73,13 +74,17 @@ public class ObpgUtils {
     static final String KEY_L3SMI_WIDTH = "Number of Columns";
     static final String SMI_PRODUCT_PARAMETERS = "SMI Product Parameters";
 
+    static final String STRUCT_METADATA = "StructMetadata";
     static final String CORE_METADATA = "CoreMetadata";
+    static final String ARCHIVE_METADATA = "ArchiveMetadata";
 
     static final int[] MODIS_WVL = new int[]{645, 859, 469, 555, 1240, 1640, 2130, 412, 443, 488, 531, 547, 667, 678,
             748, 869, 905, 936, 940, 3750, 3959, 3959, 4050, 4465, 4515, 1375, 6715, 7325, 8550, 9730, 11030, 12020,
             13335, 13635, 13935, 14235};
 
     static final int[] SEAWIFS_WVL = new int[]{412, 443, 490, 510, 555, 670, 765, 865};
+
+    static final boolean DEBUG = true;
 
     MetadataAttribute attributeToMetadata(Attribute attribute) {
         final int productDataType = getProductDataType(attribute.getDataType(), false, false);
@@ -234,14 +239,13 @@ public class ObpgUtils {
         } else {
             try {
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
-                Boolean isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
-                if (isSeadasMapped){
-                    return "SeaDAS Mapped";
-                }
+                Boolean isSeadasMapped = false;
+
+                isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
             } catch (Exception e) {
                 throw new ProductIOException("Unrecognized file!");
             }
-            return null;
+            return "SeaDAS Mapped";
         }
     }
     
@@ -284,98 +288,38 @@ public class ObpgUtils {
         }
 
         //grab granuleID
-        Element inventoryMetadata = null;
-        if (eosElement != null) {
-            inventoryMetadata = eosElement.getChild("INVENTORYMETADATA");
-        }
-        Element inventoryElem = null;
-        if (inventoryMetadata != null) {
-            inventoryElem = (Element) inventoryMetadata.getChildren().get(0);
-        }
-        Element ecsdataElem = null;
-        if (inventoryElem != null) {
-            ecsdataElem = inventoryElem.getChild("ECSDATAGRANULE");
-        }
-        Element granIdElem = null;
-        if (ecsdataElem != null) {
-            granIdElem = ecsdataElem.getChild("LOCALGRANULEID");
-        }
-        String granId = null;
-        if (granIdElem != null) {
-            granId = granIdElem.getValue().substring(1);
-        }
+        Element inventoryMetadata = eosElement.getChild("INVENTORYMETADATA");
+        Element inventoryElem = (Element) inventoryMetadata.getChildren().get(0);
+        Element ecsdataElem = inventoryElem.getChild("ECSDATAGRANULE");
+        Element granIdElem = ecsdataElem.getChild("LOCALGRANULEID");
+        String granId = granIdElem.getValue().substring(1);
         Attribute granIdAttribute = new Attribute(KEY_NAME,granId);
         globalAttributes.add(granIdAttribute);
-        Element dnfElem = null;
-        if (ecsdataElem != null) {
-            dnfElem = ecsdataElem.getChild("DAYNIGHTFLAG");
-        }
-        String daynightflag = null;
-        if (dnfElem != null) {
-            daynightflag = dnfElem.getValue().substring(1);
-        }
+        Element dnfElem = ecsdataElem.getChild("DAYNIGHTFLAG");
+        String daynightflag = dnfElem.getValue().substring(1);
         Attribute dnfAttribute = new Attribute(KEY_DNF,daynightflag);
         globalAttributes.add(dnfAttribute);
 
         //grab granule date-time
-        Element timeElem = null;
-        if (inventoryElem != null) {
-            timeElem = inventoryElem.getChild("RANGEDATETIME");
-        }
-        Element startTimeElem = null;
-        if (timeElem != null) {
-            startTimeElem = timeElem.getChild("RANGEBEGINNINGTIME");
-        }
-        String startTime = null;
-        if (startTimeElem != null) {
-            startTime = startTimeElem.getValue().substring(1);
-        }
-        Element startDateElem = null;
-        if (timeElem != null) {
-            startDateElem = timeElem.getChild("RANGEBEGINNINGDATE");
-        }
-        String startDate = null;
-        if (startDateElem != null) {
-            startDate = startDateElem.getValue().substring(1);
-        }
+        Element timeElem = inventoryElem.getChild("RANGEDATETIME");
+        Element startTimeElem = timeElem.getChild("RANGEBEGINNINGTIME");
+        String startTime = startTimeElem.getValue().substring(1);
+        Element startDateElem = timeElem.getChild("RANGEBEGINNINGDATE");
+        String startDate = startDateElem.getValue().substring(1);
         Attribute startTimeAttribute = new Attribute(KEY_START_TIME,startDate+' '+startTime);
         globalAttributes.add(startTimeAttribute);
 
-        Element endTimeElem = null;
-        if (timeElem != null) {
-            endTimeElem = timeElem.getChild("RANGEENDINGTIME");
-        }
-        String endTime = null;
-        if (endTimeElem != null) {
-            endTime = endTimeElem.getValue().substring(1);
-        }
-        Element endDateElem = null;
-        if (timeElem != null) {
-            endDateElem = timeElem.getChild("RANGEENDINGDATE");
-        }
-        String endDate = null;
-        if (endDateElem != null) {
-            endDate = endDateElem.getValue().substring(1);
-        }
+        Element endTimeElem = timeElem.getChild("RANGEENDINGTIME");
+        String endTime = endTimeElem.getValue().substring(1);
+        Element endDateElem = timeElem.getChild("RANGEENDINGDATE");
+        String endDate = endDateElem.getValue().substring(1);
         Attribute endTimeAttribute = new Attribute(KEY_END_TIME,endDate+' '+endTime);
         globalAttributes.add(endTimeAttribute);
 
-        Element measuredParamElem = null;
-        if (inventoryElem != null) {
-            measuredParamElem = inventoryElem.getChild("MEASUREDPARAMETER");
-        }
-        Element measuredContainerElem = null;
-        if (measuredParamElem != null) {
-            measuredContainerElem = measuredParamElem.getChild("MEASUREDPARAMETERCONTAINER");
-        }
-        Element paramElem = null;
-        if (measuredContainerElem != null) {
-            paramElem = measuredContainerElem.getChild("PARAMETERNAME");
-        }
-        String param = null;
-        if (paramElem != null) {
-            param = paramElem.getValue().substring(1);
-        }
+        Element measuredParamElem = inventoryElem.getChild("MEASUREDPARAMETER");
+        Element measuredContainerElem = measuredParamElem.getChild("MEASUREDPARAMETERCONTAINER");
+        Element paramElem = measuredContainerElem.getChild("PARAMETERNAME");
+        String param = paramElem.getValue().substring(1);
         String resolution = "1km";
         if (param.contains("EV_500")){
             resolution = "500m";
@@ -402,7 +346,7 @@ public class ObpgUtils {
         Boolean isModis = false;
         try {
             isModis = findAttribute("MODIS Resolution",globalAttributes).isString();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
         }
         if (attribute != null) {
             String timeString = attribute.getStringValue().trim();
@@ -637,11 +581,15 @@ public class ObpgUtils {
         final int width = dimensions[1];
 
         if (height == sceneRasterHeight && width == sceneRasterWidth) {
-//            final List<Attribute> list = variable.getAttributes();
+            final List<Attribute> list = variable.getAttributes();
 
             String units = "radiance counts";
             String description = "Level-1A data";
 
+            FlagCoding flagCoding = null;
+
+            //int i;
+            //for (String bandname: bname_array){
             for (int i=0;i<bands;i++){
                 final String shortname = "L1A";
                 StringBuilder longname = new StringBuilder(shortname);
@@ -656,7 +604,7 @@ public class ObpgUtils {
                 }
                 product.addBand(band);
 
-                final float wavelength = (float) SEAWIFS_WVL[i];
+                final float wavelength = Float.valueOf(SEAWIFS_WVL[i]);
                 band.setSpectralWavelength(wavelength);
                 band.setSpectralBandIndex(spectralBandIndex++);
 
@@ -670,6 +618,10 @@ public class ObpgUtils {
                 band.setUnit(units);
                 band.setDescription(description);
 
+                if (flagCoding != null) {
+                    band.setSampleCoding(flagCoding);
+                    product.getFlagCodingGroup().add(flagCoding);
+                }
                 addSeawifsGeonav(product);
             }
         }
@@ -738,7 +690,7 @@ public class ObpgUtils {
                         wvlidx = Integer.parseInt(bname_array[i]) -1;
                     }
 
-                    final float wavelength = (float) MODIS_WVL[wvlidx];
+                    final float wavelength = Float.valueOf(MODIS_WVL[wvlidx]);
                     band.setSpectralWavelength(wavelength);
                     band.setSpectralBandIndex(spectralBandIndex++);
 
@@ -767,6 +719,43 @@ public class ObpgUtils {
         return spectralBandIndex;
     }
 
+private void myDumpToFile(float[][] data, String fName) throws IOException {
+    PrintWriter printWriter = new PrintWriter(new FileWriter(fName));
+    //printWriter.println("latitudes: ");    <--- will require extra parameter if re-incorporated
+    //int colsPrinted = 0;
+    for (int i = 0; i < data.length; i ++ ) {
+        for (int j = 0; j < data[i].length; j ++) {
+            printWriter.println(String.format("%9.6f", data[i][j]));
+    /*
+            ++ colsPrinted;
+            if (colsPrinted >= 8) {
+                printWriter.println();
+                colsPrinted = 0;
+            }
+    */
+        }
+    }
+    printWriter.close();
+    System.out.println("2D floats written to: " + fName);
+}
+
+private void myDumpToFile(float[] data, String fName) throws IOException {
+    PrintWriter printWriter = new PrintWriter(new FileWriter(fName));
+    //f.println("flatLats: ");   <--- will require extra parameter if re-incorporated
+    //int colsPrinted = 0;
+    for (int i = 0; i < data.length; i ++ ) {
+        printWriter.println(String.format("%9.6f", data[i]));
+        /* ++ colsPrinted;
+        if (colsPrinted >= 8) {
+            printWriter.println();
+            colsPrinted = 0;
+
+        } */
+    }
+    printWriter.close();
+    System.out.println("1D floats written to: " + fName);
+}
+
     public void addGeocoding(final Product product, NetcdfFile ncfile, boolean mustFlip) throws IOException {
         final String navGroup = "Navigation Data";
         final String navGroupMODIS = "MODIS_SWATH_Type_L1B/Geolocation Fields";
@@ -779,7 +768,33 @@ public class ObpgUtils {
         Band latBand = null;
         Band lonBand = null;
 
-        if (product.getProductType().contains(MODIS_L1B_TYPE)){
+        if (product.getProductType().contains(SEAWIFS_L1A_TYPE)) {
+            ObpgGeonav geonavCalculator = new ObpgGeonav(ncfile);
+            float[][] latitudes = geonavCalculator.getLatitudes();
+            float[][] longitudes = geonavCalculator.getLongitudes();
+
+            float[] flatLats = flatten2DimArray(latitudes);
+            float[] flatLons = flatten2DimArray(longitudes);
+
+// *** ### &&& DEBUGGING STUFF !!! ### %%%
+if (DEBUG) {
+System.out.println("Got lats & lons.");
+myDumpToFile(latitudes, "seadas_latitudes.txt");
+myDumpToFile(longitudes, "seadas_longitudes.txt");
+myDumpToFile(flatLats, "seadas_flat_lats.txt");
+myDumpToFile(flatLons, "seadas_flat_lons.txt");
+}
+            final TiePointGrid latGrid = new TiePointGrid("latitude", latitudes[0].length,
+                                                          latitudes.length, 0, 0,
+                                                          1, 1, flatLats);
+            product.addTiePointGrid(latGrid);
+            final TiePointGrid lonGrid = new TiePointGrid("longitude", longitudes[0].length,
+                                                          longitudes.length, 0, 0,
+                                                          1, 1, flatLons);
+            product.addTiePointGrid(lonGrid);
+            product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
+
+        } else if (product.getProductType().contains(MODIS_L1B_TYPE)){
 
             // read latitudes and longitudes
             int cntl_lat_ix = 5;
@@ -791,6 +806,9 @@ public class ObpgUtils {
             } else if (resolution.equals("250m")){
                 cntl_lat_ix = 4;
                 cntl_lon_ix = 4;
+            } else {
+                cntl_lat_ix = 5;
+                cntl_lon_ix = 5;
             }
 
             Variable lats = ncfile.findVariable(navGroupMODIS + "/" + "Latitude");
@@ -798,9 +816,9 @@ public class ObpgUtils {
             int[] dims = lats.getShape();
 
             float[] latTiePoints;
-//            latTiePoints = new float[dims[0]*dims[1]];
+            latTiePoints = new float[dims[0]*dims[1]];
             float[] lonTiePoints;
-//            lonTiePoints = new float[dims[0]*dims[1]];
+            lonTiePoints = new float[dims[0]*dims[1]];
 
             Array latarr = lats.read();
             Array lonarr = lons.read();
@@ -934,7 +952,10 @@ public class ObpgUtils {
 
     private void addAttributesToElement(List<Attribute> globalAttributes, final MetadataElement element) {
         for (Attribute attribute : globalAttributes) {
-            if (!attribute.getName().matches(".*(EV|Value|Bad|Nois|Electronics|Dead|Detector).*")) {
+            //if (attribute.getName().contains("EV")) {
+            if (attribute.getName().matches(".*(EV|Value|Bad|Nois|Electronics|Dead|Detector).*")) {
+                continue;
+            } else {
                 addAttributeToElement(element, attribute);
             }
         }
@@ -1009,7 +1030,7 @@ public class ObpgUtils {
         return null;
     }
 
-    public float[] flatten2DimArray(float[][] twoDimArray) {
+    private float[] flatten2DimArray(float[][] twoDimArray) {
         float[] flatArray = new float[twoDimArray.length * twoDimArray[0].length];
         for (int row = 0; row < twoDimArray.length; row ++) {
             int offset = row * twoDimArray[row].length;

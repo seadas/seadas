@@ -49,8 +49,11 @@
 
         <module>seadas-app</module>
         <module>seadas-obpg-reader</module>
+        <!-- Temporarily commented out to avoid problems/conflicts with seadas-obpg-reader
+             Put back into place for production or when bugs in the l3bin reader plugin
+             module are fixed.
+         -->
         <module>seadas-obpg-l3bin-reader</module>
-
         <!--
             The following are supportive modules, they are not part of the distribution
         -->
