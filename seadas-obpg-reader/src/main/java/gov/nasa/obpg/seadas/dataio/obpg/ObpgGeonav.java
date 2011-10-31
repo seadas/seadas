@@ -68,7 +68,7 @@ public class ObpgGeonav {
     // The following are input parameters in the Fortran geonav.f function:
     private float[]   scanPathCoef = new float[6];           // coef in Fortran version
     private int       pixIncr = LAC_PIXEL_INCREMENT;         // ninc in Fortran version
-    private int       pixPerScan = LAC_PIXELS_PER_SCAN;      // npix in Fortran version
+    private int       pixPerScanLine = LAC_PIXELS_PER_SCAN;  // npix in Fortran version
     private int       scanStartPix = LAC_START_SCAN_PIXEL;   // nsta in Fortran version
     private float[]   orbPos = new float[3];                 // pos in Fortran version
     private float[][] sensorOrientation = new float[3][3];   // rm in Fortran version
@@ -89,7 +89,6 @@ public class ObpgGeonav {
     private double    cosl;
     private DataType  dataType;
     private double    elev;
-    private int       numPixels = LAC_PIXELS_PER_SCAN;
     private int       numScanLines;
     private double    sina[] = new double[MAX_SEAWIFS_PIXELS];
     private double    sinl;
@@ -102,24 +101,25 @@ public class ObpgGeonav {
     private float[][] solarAzimuths;
     private float[][] solarZeniths;
 
-    public ObpgGeonav(NetcdfFile ncFile) {
+    private NetcdfFile ncFile;
+
+    public ObpgGeonav(NetcdfFile netcdfFile) {
+        ncFile = netcdfFile;
+
         dataType = determineSeawifsDataType(ncFile);
-        if (dataType == DataType.GAC) {
-            // Override LAC defaults
-            numPixels = GAC_PIXELS_PER_SCAN;
-            scanStartPix = GAC_START_SCAN_PIXEL;
-            pixPerScan = GAC_PIXELS_PER_SCAN;
-            pixIncr = GAC_PIXEL_INCREMENT;
-        }
+
+        pixPerScanLine = determinePixelsPerScanLine();
+        scanStartPix  = determineStartPixel();
+        pixIncr = determinePixelIncrement();
 
         numScanLines = determineNumberScanLines(ncFile);
 
-        latitudes = new float[numScanLines][numPixels];
-        longitudes = new float[numScanLines][numPixels];
-        sensorAzimuths = new float[numScanLines][numPixels];
-        sensorZeniths = new float[numScanLines][numPixels];
-        solarAzimuths = new float[numScanLines][numPixels];
-        solarZeniths = new float[numScanLines][numPixels];
+        latitudes = new float[numScanLines][pixPerScanLine];
+        longitudes = new float[numScanLines][pixPerScanLine];
+        sensorAzimuths = new float[numScanLines][pixPerScanLine];
+        sensorZeniths = new float[numScanLines][pixPerScanLine];
+        solarAzimuths = new float[numScanLines][pixPerScanLine];
+        solarZeniths = new float[numScanLines][pixPerScanLine];
 
         /* The sensorOffsetMatrix values were copied from the navctl.dat file.
          * According to email from F. Patt, the values never changed during the
@@ -179,12 +179,12 @@ public class ObpgGeonav {
             sunUnitVec = populateVector(sunData, 3, line);
 
             doComputations();
-            System.arraycopy(xlat, 0, latitudes[line], 0, numPixels);
-            System.arraycopy(xlon, 0, longitudes[line], 0, numPixels);
-            System.arraycopy(sena, 0, sensorAzimuths[line], 0, numPixels);
-            System.arraycopy(senz, 0, sensorZeniths[line], 0, numPixels);
-            System.arraycopy(sola, 0, solarAzimuths[line], 0, numPixels);
-            System.arraycopy(solz, 0, solarZeniths[line], 0, numPixels);
+            System.arraycopy(xlat, 0, latitudes[line], 0, pixPerScanLine);
+            System.arraycopy(xlon, 0, longitudes[line], 0, pixPerScanLine);
+            System.arraycopy(sena, 0, sensorAzimuths[line], 0, pixPerScanLine);
+            System.arraycopy(senz, 0, sensorZeniths[line], 0, pixPerScanLine);
+            System.arraycopy(sola, 0, solarAzimuths[line], 0, pixPerScanLine);
+            System.arraycopy(solz, 0, solarZeniths[line], 0, pixPerScanLine);
         }
     }
 
@@ -400,6 +400,14 @@ public class ObpgGeonav {
         return numScanLinesAttr.getNumericValue().intValue();
     }
 
+    private int determinePixelIncrement() {
+        return ncFile.findGlobalAttribute("LAC Pixel Subsampling").getNumericValue().intValue();
+    }
+
+    private int determinePixelsPerScanLine() {
+        return ncFile.findGlobalAttribute("Pixels per Scan Line").getNumericValue().intValue();
+    }
+
     public static ObpgGeonav.DataType determineSeawifsDataType(NetcdfFile ncFile) {
         ObpgGeonav.DataType dataType = ObpgGeonav.DataType.LAC;
         Attribute dataTypeAttr = ncFile.findGlobalAttribute("Data Type");
@@ -408,6 +416,10 @@ public class ObpgGeonav {
             dataType = ObpgGeonav.DataType.GAC;
         }
         return dataType;
+    }
+
+    private int determineStartPixel() {
+        return ncFile.findGlobalAttribute("LAC Pixel Start Number").getNumericValue().intValue();
     }
 
     public void doComputations() {
@@ -424,13 +436,12 @@ public class ObpgGeonav {
         float[]  up = new float[3];
 
         //  Compute correction factor for out-of-plane angle
-//
         double h = (sensorOrientation[0][1] * orbPos[0]
                     + sensorOrientation[1][1] * orbPos[1]
                     + sensorOrientation[2][1] * orbPos[2] / OMF2) * 2.0;
 
         //  Compute sensor-to-surface vectors for all scan angles
-        for (int i = 0; i < pixPerScan; i ++) {
+        for (int i = 0; i < pixPerScanLine; i ++) {
             int in = pixIncr * (i) + scanStartPix - 1;
 	        double a = scanPathCoef[0] * cosa[in] * cosa[in]  +
                        scanPathCoef[1] * cosa[in] * sina[in] +
@@ -534,7 +545,7 @@ public class ObpgGeonav {
     }
 
     public int getNumberPixels() {
-        return numPixels;
+        return pixPerScanLine;
     }
 
     public int getNumberScanLines() {

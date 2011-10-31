@@ -768,33 +768,7 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
         Band latBand = null;
         Band lonBand = null;
 
-        if (product.getProductType().contains(SEAWIFS_L1A_TYPE)) {
-            ObpgGeonav geonavCalculator = new ObpgGeonav(ncfile);
-            float[][] latitudes = geonavCalculator.getLatitudes();
-            float[][] longitudes = geonavCalculator.getLongitudes();
-
-            float[] flatLats = flatten2DimArray(latitudes);
-            float[] flatLons = flatten2DimArray(longitudes);
-
-// *** ### &&& DEBUGGING STUFF !!! ### %%%
-if (DEBUG) {
-System.out.println("Got lats & lons.");
-myDumpToFile(latitudes, "seadas_latitudes.txt");
-myDumpToFile(longitudes, "seadas_longitudes.txt");
-myDumpToFile(flatLats, "seadas_flat_lats.txt");
-myDumpToFile(flatLons, "seadas_flat_lons.txt");
-}
-            final TiePointGrid latGrid = new TiePointGrid("latitude", latitudes[0].length,
-                                                          latitudes.length, 0, 0,
-                                                          1, 1, flatLats);
-            product.addTiePointGrid(latGrid);
-            final TiePointGrid lonGrid = new TiePointGrid("longitude", longitudes[0].length,
-                                                          longitudes.length, 0, 0,
-                                                          1, 1, flatLons);
-            product.addTiePointGrid(lonGrid);
-            product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
-
-        } else if (product.getProductType().contains(MODIS_L1B_TYPE)){
+        if (product.getProductType().contains(MODIS_L1B_TYPE)){
 
             // read latitudes and longitudes
             int cntl_lat_ix = 5;
@@ -1030,7 +1004,7 @@ myDumpToFile(flatLons, "seadas_flat_lons.txt");
         return null;
     }
 
-    private float[] flatten2DimArray(float[][] twoDimArray) {
+    float[] flatten2DimArray(float[][] twoDimArray) {
         float[] flatArray = new float[twoDimArray.length * twoDimArray[0].length];
         for (int row = 0; row < twoDimArray.length; row ++) {
             int offset = row * twoDimArray[row].length;
