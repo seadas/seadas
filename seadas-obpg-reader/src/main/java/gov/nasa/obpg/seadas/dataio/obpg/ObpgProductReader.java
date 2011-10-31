@@ -104,22 +104,22 @@ public class ObpgProductReader extends AbstractProductReader {
             } else if (productType.contains("SeaDAS Mapped")){
                 GeoCoding geoCoding = createGeoCoding(product, productType);  //TODO Check on various IDL projections
                 product.setGeoCoding(geoCoding);
-/*
+
             } else if (productType.contains(obpgUtils.SEAWIFS_L1A_TYPE)){
-                // ToDo add SeaWiFS geocoding stuff, using Geonav results here
-                //ncfile = NetcdfFile.open(path);
                 ObpgGeonav geonavCalculator = new ObpgGeonav(ncfile);
-                float[][] latitudes = geonavCalculator.getLatitudes();
-       	        float[][] longitudes = geonavCalculator.getLongitudes();
+                float[] latitudes = obpgUtils.flatten2DimArray(geonavCalculator.getLatitudes());
+       	        float[] longitudes = obpgUtils.flatten2DimArray(geonavCalculator.getLongitudes());
                 Band latBand = new Band("latitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(),
                                         product.getSceneRasterHeight());
-                Band longBand = new Band("longitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(),
+                Band lonBand = new Band("longitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(),
                                         product.getSceneRasterHeight());
                 product.addBand(latBand);
-                product.addBand(longBand);
-                GeoCoding geoCoding = new PixelGeoCoding(latBand, longBand, null, 17);
-                // product.setGeoCoding(geoCoding);
- */
+                product.addBand(lonBand);
+                ProductData lats = ProductData.createInstance(latitudes);
+                latBand.setData(lats);
+                ProductData lons = ProductData.createInstance(longitudes);
+                lonBand.setData(lons);
+                product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 10, ProgressMonitor.NULL));
             } else {
                 obpgUtils.addGeocoding(product, ncfile, mustFlip);
             }

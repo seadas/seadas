@@ -58,7 +58,6 @@ public class ObpgUtils {
     static final String KEY_HEIGHT_AQUARIUS = "Number of Blocks";
     static final String KEY_SEADAS_MAPPED_WIDTH =  "Scene Pixels";
     static final String KEY_SEADAS_MAPPED_HEIGHT =  "Scene Lines";
-    //static final String KEY_SEAWIFS_L1A_WIDTH = "Pixels per Scan Line";
 
     static final String KEY_START_NODE = "Start Node";
     static final String KEY_END_NODE = "End Node";
@@ -74,9 +73,7 @@ public class ObpgUtils {
     static final String KEY_L3SMI_WIDTH = "Number of Columns";
     static final String SMI_PRODUCT_PARAMETERS = "SMI Product Parameters";
 
-    static final String STRUCT_METADATA = "StructMetadata";
     static final String CORE_METADATA = "CoreMetadata";
-    static final String ARCHIVE_METADATA = "ArchiveMetadata";
 
     static final int[] MODIS_WVL = new int[]{645, 859, 469, 555, 1240, 1640, 2130, 412, 443, 488, 531, 547, 667, 678,
             748, 869, 905, 936, 940, 3750, 3959, 3959, 4050, 4465, 4515, 1375, 6715, 7325, 8550, 9730, 11030, 12020,
@@ -237,13 +234,14 @@ public class ObpgUtils {
         } else {
             try {
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
-                Boolean isSeadasMapped = false;
-
-                isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
+                Boolean isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
+                if (isSeadasMapped){
+                    return "SeaDAS Mapped";
+                }
             } catch (Exception e) {
                 throw new ProductIOException("Unrecognized file!");
             }
-            return "SeaDAS Mapped";
+            return null;
         }
     }
     
@@ -286,38 +284,98 @@ public class ObpgUtils {
         }
 
         //grab granuleID
-        Element inventoryMetadata = eosElement.getChild("INVENTORYMETADATA");
-        Element inventoryElem = (Element) inventoryMetadata.getChildren().get(0);
-        Element ecsdataElem = inventoryElem.getChild("ECSDATAGRANULE");
-        Element granIdElem = ecsdataElem.getChild("LOCALGRANULEID");
-        String granId = granIdElem.getValue().substring(1);
+        Element inventoryMetadata = null;
+        if (eosElement != null) {
+            inventoryMetadata = eosElement.getChild("INVENTORYMETADATA");
+        }
+        Element inventoryElem = null;
+        if (inventoryMetadata != null) {
+            inventoryElem = (Element) inventoryMetadata.getChildren().get(0);
+        }
+        Element ecsdataElem = null;
+        if (inventoryElem != null) {
+            ecsdataElem = inventoryElem.getChild("ECSDATAGRANULE");
+        }
+        Element granIdElem = null;
+        if (ecsdataElem != null) {
+            granIdElem = ecsdataElem.getChild("LOCALGRANULEID");
+        }
+        String granId = null;
+        if (granIdElem != null) {
+            granId = granIdElem.getValue().substring(1);
+        }
         Attribute granIdAttribute = new Attribute(KEY_NAME,granId);
         globalAttributes.add(granIdAttribute);
-        Element dnfElem = ecsdataElem.getChild("DAYNIGHTFLAG");
-        String daynightflag = dnfElem.getValue().substring(1);
+        Element dnfElem = null;
+        if (ecsdataElem != null) {
+            dnfElem = ecsdataElem.getChild("DAYNIGHTFLAG");
+        }
+        String daynightflag = null;
+        if (dnfElem != null) {
+            daynightflag = dnfElem.getValue().substring(1);
+        }
         Attribute dnfAttribute = new Attribute(KEY_DNF,daynightflag);
         globalAttributes.add(dnfAttribute);
 
         //grab granule date-time
-        Element timeElem = inventoryElem.getChild("RANGEDATETIME");
-        Element startTimeElem = timeElem.getChild("RANGEBEGINNINGTIME");
-        String startTime = startTimeElem.getValue().substring(1);
-        Element startDateElem = timeElem.getChild("RANGEBEGINNINGDATE");
-        String startDate = startDateElem.getValue().substring(1);
+        Element timeElem = null;
+        if (inventoryElem != null) {
+            timeElem = inventoryElem.getChild("RANGEDATETIME");
+        }
+        Element startTimeElem = null;
+        if (timeElem != null) {
+            startTimeElem = timeElem.getChild("RANGEBEGINNINGTIME");
+        }
+        String startTime = null;
+        if (startTimeElem != null) {
+            startTime = startTimeElem.getValue().substring(1);
+        }
+        Element startDateElem = null;
+        if (timeElem != null) {
+            startDateElem = timeElem.getChild("RANGEBEGINNINGDATE");
+        }
+        String startDate = null;
+        if (startDateElem != null) {
+            startDate = startDateElem.getValue().substring(1);
+        }
         Attribute startTimeAttribute = new Attribute(KEY_START_TIME,startDate+' '+startTime);
         globalAttributes.add(startTimeAttribute);
 
-        Element endTimeElem = timeElem.getChild("RANGEENDINGTIME");
-        String endTime = endTimeElem.getValue().substring(1);
-        Element endDateElem = timeElem.getChild("RANGEENDINGDATE");
-        String endDate = endDateElem.getValue().substring(1);
+        Element endTimeElem = null;
+        if (timeElem != null) {
+            endTimeElem = timeElem.getChild("RANGEENDINGTIME");
+        }
+        String endTime = null;
+        if (endTimeElem != null) {
+            endTime = endTimeElem.getValue().substring(1);
+        }
+        Element endDateElem = null;
+        if (timeElem != null) {
+            endDateElem = timeElem.getChild("RANGEENDINGDATE");
+        }
+        String endDate = null;
+        if (endDateElem != null) {
+            endDate = endDateElem.getValue().substring(1);
+        }
         Attribute endTimeAttribute = new Attribute(KEY_END_TIME,endDate+' '+endTime);
         globalAttributes.add(endTimeAttribute);
 
-        Element measuredParamElem = inventoryElem.getChild("MEASUREDPARAMETER");
-        Element measuredContainerElem = measuredParamElem.getChild("MEASUREDPARAMETERCONTAINER");
-        Element paramElem = measuredContainerElem.getChild("PARAMETERNAME");
-        String param = paramElem.getValue().substring(1);
+        Element measuredParamElem = null;
+        if (inventoryElem != null) {
+            measuredParamElem = inventoryElem.getChild("MEASUREDPARAMETER");
+        }
+        Element measuredContainerElem = null;
+        if (measuredParamElem != null) {
+            measuredContainerElem = measuredParamElem.getChild("MEASUREDPARAMETERCONTAINER");
+        }
+        Element paramElem = null;
+        if (measuredContainerElem != null) {
+            paramElem = measuredContainerElem.getChild("PARAMETERNAME");
+        }
+        String param = null;
+        if (paramElem != null) {
+            param = paramElem.getValue().substring(1);
+        }
         String resolution = "1km";
         if (param.contains("EV_500")){
             resolution = "500m";
@@ -344,7 +402,7 @@ public class ObpgUtils {
         Boolean isModis = false;
         try {
             isModis = findAttribute("MODIS Resolution",globalAttributes).isString();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         if (attribute != null) {
             String timeString = attribute.getStringValue().trim();
@@ -579,15 +637,11 @@ public class ObpgUtils {
         final int width = dimensions[1];
 
         if (height == sceneRasterHeight && width == sceneRasterWidth) {
-            final List<Attribute> list = variable.getAttributes();
+//            final List<Attribute> list = variable.getAttributes();
 
             String units = "radiance counts";
             String description = "Level-1A data";
 
-            FlagCoding flagCoding = null;
-
-            //int i;
-            //for (String bandname: bname_array){
             for (int i=0;i<bands;i++){
                 final String shortname = "L1A";
                 StringBuilder longname = new StringBuilder(shortname);
@@ -602,7 +656,7 @@ public class ObpgUtils {
                 }
                 product.addBand(band);
 
-                final float wavelength = Float.valueOf(SEAWIFS_WVL[i]);
+                final float wavelength = (float) SEAWIFS_WVL[i];
                 band.setSpectralWavelength(wavelength);
                 band.setSpectralBandIndex(spectralBandIndex++);
 
@@ -616,10 +670,6 @@ public class ObpgUtils {
                 band.setUnit(units);
                 band.setDescription(description);
 
-                if (flagCoding != null) {
-                    band.setSampleCoding(flagCoding);
-                    product.getFlagCodingGroup().add(flagCoding);
-                }
                 addSeawifsGeonav(product);
             }
         }
@@ -688,7 +738,7 @@ public class ObpgUtils {
                         wvlidx = Integer.parseInt(bname_array[i]) -1;
                     }
 
-                    final float wavelength = Float.valueOf(MODIS_WVL[wvlidx]);
+                    final float wavelength = (float) MODIS_WVL[wvlidx];
                     band.setSpectralWavelength(wavelength);
                     band.setSpectralBandIndex(spectralBandIndex++);
 
@@ -729,87 +779,7 @@ public class ObpgUtils {
         Band latBand = null;
         Band lonBand = null;
 
-        if (product.getProductType().contains(SEAWIFS_L1A_TYPE)) {
-            ObpgGeonav geonavCalculator = new ObpgGeonav(ncfile);
-            float[][] latitudes = geonavCalculator.getLatitudes();
-            float[][] longitudes = geonavCalculator.getLongitudes();
-
-            float[] flatLats = flatten2DimArray(latitudes);
-            float[] flatLons = flatten2DimArray(longitudes);
-
-PrintWriter latf = new PrintWriter(new FileWriter("latitudes.txt"));
-latf.println("latitudes: ");
-int colsPrinted = 0;
-for (int i = 0; i < latitudes.length; i ++ ) {
-    for (int j = 0; j < latitudes[0].length; j ++) {
-        latf.print(latitudes[i][j] + " ");
-        ++ colsPrinted;
-        if (colsPrinted >= 8) {
-            latf.println();
-            colsPrinted = 0;
-        }
-    }
-}
-latf.close();
-
-PrintWriter flatf = new PrintWriter(new FileWriter("flat_lats.txt"));
-flatf.println("flatLats: ");
-colsPrinted = 0;
-for (int i = 0; i < flatLats.length; i ++ ) {
-    flatf.print(flatLats[i] + " ");
-    ++ colsPrinted;
-    if (colsPrinted >= 8) {
-        flatf.println();
-        colsPrinted = 0;
-    }
-}
-flatf.close();
-
-PrintWriter lonf = new PrintWriter(new FileWriter("longitudes.txt"));
-lonf.println("longitudes: ");
-colsPrinted = 0;
-for (int i = 0; i < longitudes.length; i ++ ) {
-    for (int j = 0; j < longitudes[0].length; j ++) {
-        lonf.print(longitudes[i][j] + " ");
-        ++ colsPrinted;
-        if (colsPrinted >= 8) {
-            lonf.println();
-            colsPrinted = 0;
-        }
-    }
-}
-lonf.println();
-lonf.close();
-
-PrintWriter flonf = new PrintWriter(new FileWriter("flat_lons.txt"));
-flonf.println("flatLons: ");
-colsPrinted = 0;
-for (int i = 0; i < flatLons.length; i ++ ) {
-    flonf.print(flatLons[i] + " ");
-        ++ colsPrinted;
-    if (colsPrinted >= 8) {
-        flonf.println();
-        colsPrinted = 0;
-    }
-}
-flonf.println();
-flonf.close();
-
-/*
-            final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1],dims[0], 0, 0,
-                    cntl_lat_ix, cntl_lon_ix, latTiePoints);
-*/
-            final TiePointGrid latGrid = new TiePointGrid("latitude", latitudes[0].length,
-                                                          latitudes.length, 0, 0,
-                                                          1, 1, flatLats);
-            product.addTiePointGrid(latGrid);
-            final TiePointGrid lonGrid = new TiePointGrid("longitude", longitudes[0].length,
-                                                          longitudes.length, 0, 0,
-                                                          1, 1, flatLons);
-            product.addTiePointGrid(lonGrid);
-            product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
-
-        } else if (product.getProductType().contains(MODIS_L1B_TYPE)){
+        if (product.getProductType().contains(MODIS_L1B_TYPE)){
 
             // read latitudes and longitudes
             int cntl_lat_ix = 5;
@@ -821,9 +791,6 @@ flonf.close();
             } else if (resolution.equals("250m")){
                 cntl_lat_ix = 4;
                 cntl_lon_ix = 4;
-            } else {
-                cntl_lat_ix = 5;
-                cntl_lon_ix = 5;
             }
 
             Variable lats = ncfile.findVariable(navGroupMODIS + "/" + "Latitude");
@@ -831,9 +798,9 @@ flonf.close();
             int[] dims = lats.getShape();
 
             float[] latTiePoints;
-            latTiePoints = new float[dims[0]*dims[1]];
+//            latTiePoints = new float[dims[0]*dims[1]];
             float[] lonTiePoints;
-            lonTiePoints = new float[dims[0]*dims[1]];
+//            lonTiePoints = new float[dims[0]*dims[1]];
 
             Array latarr = lats.read();
             Array lonarr = lons.read();
@@ -967,10 +934,7 @@ flonf.close();
 
     private void addAttributesToElement(List<Attribute> globalAttributes, final MetadataElement element) {
         for (Attribute attribute : globalAttributes) {
-            //if (attribute.getName().contains("EV")) {
-            if (attribute.getName().matches(".*(EV|Value|Bad|Nois|Electronics|Dead|Detector).*")) {
-                continue;
-            } else {
+            if (!attribute.getName().matches(".*(EV|Value|Bad|Nois|Electronics|Dead|Detector).*")) {
                 addAttributeToElement(element, attribute);
             }
         }
@@ -1045,7 +1009,7 @@ flonf.close();
         return null;
     }
 
-    private float[] flatten2DimArray(float[][] twoDimArray) {
+    public float[] flatten2DimArray(float[][] twoDimArray) {
         float[] flatArray = new float[twoDimArray.length * twoDimArray[0].length];
         for (int row = 0; row < twoDimArray.length; row ++) {
             int offset = row * twoDimArray[row].length;

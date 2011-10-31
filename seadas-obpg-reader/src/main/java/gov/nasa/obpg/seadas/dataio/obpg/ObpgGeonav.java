@@ -43,7 +43,7 @@ public class ObpgGeonav {
     public static final double OMF2 = Math.pow((1.0 - EARTH_FLATTENING_FACTOR),
                                                2.0);          // Convenience constant
 
-    private static final int   GAC_START_SCAN_PIXEL = 146;
+    private static final int   GAC_START_SCAN_PIXEL = 147;
     private static final int   LAC_START_SCAN_PIXEL = 1;
     private static final int   GAC_PIXELS_PER_SCAN = 248;
     private static final int   LAC_PIXELS_PER_SCAN = 1285;
@@ -173,7 +173,7 @@ public class ObpgGeonav {
             sensorOrientation[2][1] = sensorData.getFloat(line * 9 + 7);
             sensorOrientation[2][2] = sensorData.getFloat(line * 9 + 8);
             float tilt = tiltData.getFloat(line);
-            float[][] attXfm = computeTransformMatrix(tilt);
+//            float[][] attXfm = computeTransformMatrix(tilt);
             scanPathCoef = populateVector(scanTrackEllipseCoefData, 6, line);
             sunUnitVec = populateVector(sunData, 3, line);
 
@@ -291,15 +291,14 @@ public class ObpgGeonav {
     private float computeLatitude(float[] geovec) {
         float tmp = (float) (Math.sqrt(geovec[0] * geovec[0] +
                     geovec[1] * geovec[1]) * OMF2);
-        float xlat = DEGREES_PER_RADIAN * (float) Math.atan2(geovec[2], tmp);
-        return xlat;
+        return DEGREES_PER_RADIAN * (float) Math.atan2(geovec[2], tmp);
     }
 
     private double computeQ(double a, double b, double h, double r, double sinl) {
         //  Solve for magnitude of sensor-to-pixel vector and compute components
         double q = (-b - Math.sqrt(r)) / (2.0 * a);
         //  Add out-of-plane correction
-        q = q * (1.0 + sinl * h / Math.sqrt(r));;
+        q = q * (1.0 + sinl * h / Math.sqrt(r));
         return q;
     }
 
@@ -397,8 +396,7 @@ public class ObpgGeonav {
 
     public static int determineNumberScanLines(NetcdfFile ncFile) {
         Attribute numScanLinesAttr = ncFile.findGlobalAttribute("Number of Scan Lines");
-        int numScanLines = numScanLinesAttr.getNumericValue().intValue();
-        return numScanLines;
+        return numScanLinesAttr.getNumericValue().intValue();
     }
 
     public static ObpgGeonav.DataType determineSeawifsDataType(NetcdfFile ncFile) {
@@ -425,6 +423,7 @@ public class ObpgGeonav {
         float[]  up = new float[3];
 
         //  Compute correction factor for out-of-plane angle
+//
         double h = (sensorOrientation[0][1] * orbPos[0]
                     + sensorOrientation[1][1] * orbPos[1]
                     + sensorOrientation[2][1] * orbPos[2] / OMF2) * 2.0;
