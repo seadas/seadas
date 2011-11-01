@@ -82,6 +82,8 @@ Installation Guide
     * Set beam.logLevel = ALL
     * Set beam.debug = true
     * Set beam.splash.image = ./src/main/bin/common/splash.png
+    * Set seadas.ocssw.root = <OCSSW root dirctory>
+    * Set seadas.ocssw.arch = <linux, linux_64 or macosx_intel>
 
 9. Once you have all the configuration done, hit *Make Project*. Let it rebuild and then *Run*
 

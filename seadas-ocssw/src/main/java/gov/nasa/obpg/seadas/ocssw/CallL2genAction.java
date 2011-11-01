@@ -31,6 +31,7 @@ public class CallL2genAction extends AbstractVisatAction {
         final AppContext appContext = getAppContext();
         final Product selectedProduct = appContext.getSelectedProduct();
         if (selectedProduct == null) {
+            VisatApp.getApp().showErrorDialog("l2gen", "No product selected.");
             return;
         }
         final File ocsswRoot;
@@ -40,7 +41,13 @@ public class CallL2genAction extends AbstractVisatAction {
             VisatApp.getApp().showErrorDialog("l2gen", e.getMessage());
             return;
         }
-
+        final String ocsswArch;
+        try {
+            ocsswArch = OCSSW.getOcsswArch();
+        } catch (IOException e) {
+            VisatApp.getApp().showErrorDialog("l2gen", e.getMessage());
+            return;
+        }
 
         final File inputFile = selectedProduct.getFileLocation();
         final File outputFile = new File(selectedProduct.getFileLocation().getParentFile(), "l2gen-out-" + Long.toHexString(System.nanoTime()));
@@ -50,12 +57,13 @@ public class CallL2genAction extends AbstractVisatAction {
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
                 final String[] cmdarray = {
-                        "${OCSSWROOT}/run/bin/l2gen".replace("${OCSSWROOT}", ocsswRoot.getPath()),
+                        "${OCSSWROOT}/run/bin/${OCSSW_ARCH}/l2gen".replace("${OCSSWROOT}", ocsswRoot.getPath()).replace("${OCSSW_ARCH}", ocsswArch),
                         "ifile=" + inputFile,
                         "ofile=" + outputFile,
                 };
                 final String[] envp = {
                         "OCSSWROOT=${OCSSWROOT}".replace("${OCSSWROOT}", ocsswRoot.getPath()),
+                        "OCSSW_ARCH=${OCSSW_ARCH}".replace("${OCSSW_ARCH}", ocsswArch),
                         "OCDATAROOT=${OCSSWROOT}/run/data".replace("${OCSSWROOT}", ocsswRoot.getPath()),
                 };
 
@@ -137,7 +145,7 @@ public class CallL2genAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-            System.err.println("l2gen: " + line);
+            System.err.println("l2gen stderr: " + line);
         }
     }
 
