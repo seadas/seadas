@@ -19,10 +19,15 @@
     <packaging>jar</packaging>
 
     <dependencies>
-       <dependency>
+        <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat-rcp</artifactId>
-       </dependency>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-help</artifactId>
+            <version>4.10-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
