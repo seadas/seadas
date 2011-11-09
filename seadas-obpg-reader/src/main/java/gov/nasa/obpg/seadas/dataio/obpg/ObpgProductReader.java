@@ -148,13 +148,15 @@ public class ObpgProductReader extends AbstractProductReader {
                                           ProgressMonitor pm) throws IOException {
 
         if (mustFlip) {
-             sourceOffsetY = destBand.getSceneRasterHeight() - (sourceOffsetY + sourceHeight);
-             sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
+            sourceOffsetY = destBand.getSceneRasterHeight() - (sourceOffsetY + sourceHeight);
+            if (!obpgUtils.getProductType(ncfile).contains(ObpgUtils.CZCS_L1A_TYPE)) {
+                sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
+            }
         }
         Variable variable = variableMap.get(destBand);
         try {
             readBandData(variable, sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight, destBuffer, pm);
-            if (mustFlip) {
+            if (mustFlip && !obpgUtils.getProductType(ncfile).contains(ObpgUtils.CZCS_L1A_TYPE)) {
                 reverse(destBuffer);
             }
         } catch (Exception e) {
@@ -186,7 +188,9 @@ public class ObpgProductReader extends AbstractProductReader {
                 synchronized (ncfile) {
                     array = variable.read(section);
                 }
+//                Array flippedArray = array.flip(1);
                 final Object storage = array.getStorage();
+//                final Object storage = flippedArray.getStorage();
                 System.arraycopy(storage, 0, buffer, targetIndex, sourceWidth);
                 start[0]++;
                 targetIndex += sourceWidth;
@@ -217,6 +221,7 @@ public class ObpgProductReader extends AbstractProductReader {
             data[i1] = data[i2];
             data[i2] = temp;
         }
+        return;
     }
 
     private static BitmaskDef[] getDefaultBitmaskDefs(HashMap<String, String> l2FlagsInfoMap) {

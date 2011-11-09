@@ -41,6 +41,8 @@ import java.util.*;
 
 public class ObpgUtils {
 
+    static final String CZCS_L1A_TYPE = "CZCS Level-1A Data";
+
     static final String MODIS_L1B_TYPE = "MODIS_SWATH_Type_L1B";
     static final String MODIS_PLATFORM = "MODIS Platform";
     static final String MODIS_L1B_PARAM = "MODIS Resolution";
@@ -168,6 +170,7 @@ public class ObpgUtils {
         } else if (productType.equalsIgnoreCase("SeaDAS Mapped")){
             sceneWidth = getIntAttribute(KEY_SEADAS_MAPPED_WIDTH, globalAttributes);
             sceneHeight = getIntAttribute(KEY_SEADAS_MAPPED_HEIGHT, globalAttributes);
+        // } else if (productType.equalsIgnoreCase()) {
         } else {
             keyWidth = getWidthKey(getStringAttribute(KEY_TYPE, globalAttributes));
             keyHeight = getHeightKey(getStringAttribute(KEY_TYPE, globalAttributes));
@@ -206,7 +209,7 @@ public class ObpgUtils {
         } else if (title.contains("Level-3 Mapped")) {
             return KEY_L3SMI_HEIGHT;
         } else {
-            return KEY_L3SMI_HEIGHT;
+            return KEY_HEIGHT;
             // TODO: Throw exception or default to KEY_HEIGHT (or a different) return value.
         }
     }
@@ -220,7 +223,7 @@ public class ObpgUtils {
         } else if (title.contains("Level-3 Mapped")){
             return KEY_L3SMI_WIDTH;
         } else {
-            return KEY_L3SMI_WIDTH;
+            return KEY_WIDTH;
             // TODO: Throw exception or default to KEY_WIDTH (or a different) return value.
         }
 
@@ -336,9 +339,6 @@ public class ObpgUtils {
         String shortName = shortNameElem.getValue().substring(2);
         Attribute shortNameAttribute = new Attribute(MODIS_PLATFORM,shortName);
         globalAttributes.add(shortNameAttribute);
-
-
-
     }
 
     private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
@@ -757,7 +757,8 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
 }
 
     public void addGeocoding(final Product product, NetcdfFile ncfile, boolean mustFlip) throws IOException {
-        final String navGroup = "Navigation Data";
+        //final String navGroup = "Navigation Data";
+        String navGroup = "Navigation Data";
         final String navGroupMODIS = "MODIS_SWATH_Type_L1B/Geolocation Fields";
         final String longitude = "longitude";
         final String latitude = "latitude";
@@ -765,6 +766,11 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
         final String beam_latitude = "beam_clat";
         String cntlPoints = "cntl_pt_cols";
 
+        if (ncfile.findGroup(navGroup) == null) {
+            if (ncfile.findGroup("Navigation") != null) {
+                navGroup  = "Navigation";
+            }
+        }
         Band latBand = null;
         Band lonBand = null;
 
@@ -828,6 +834,9 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
             if (latVar != null && lonVar != null && cntlPointVar != null) {
                 final ProductData lonRawData = readData(lonVar);
                 final ProductData latRawData = readData(latVar);
+                if (product.getProductType().contains(ObpgUtils.CZCS_L1A_TYPE)) {
+                    ObpgProductReader.reverse(lonRawData);
+                }
                 latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
                 lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
 
@@ -883,6 +892,7 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
         }
 
         if (mustFlip) {
+            //if (product.
             ObpgProductReader.reverse(latFloats);
             ObpgProductReader.reverse(lonFloats);
         }
@@ -1005,6 +1015,7 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
     }
 
     float[] flatten2DimArray(float[][] twoDimArray) {
+        // Converts an array of two dimensions into a single dimension array row by row.
         float[] flatArray = new float[twoDimArray.length * twoDimArray[0].length];
         for (int row = 0; row < twoDimArray.length; row ++) {
             int offset = row * twoDimArray[row].length;
