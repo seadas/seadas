@@ -17,6 +17,14 @@
             <version>7.0-SNAPSHOT</version>
             <buildId>${beam.build.id}</buildId>
             <buildDate>${beam.build.date}</buildDate>
+            <excludedActions>
+                <!-- place action IDs here you wish to exclude from your application -->
+                <!-- e.g. <id>helpTopics</id> -->
+                <!--<id>helpTopics</id>-->
+                <!--<id>showHomePage</id>-->
+                <!--<id>showDataSources</id>-->
+                <!--<id>about</id>-->
+            </excludedActions>
             <excludedToolViews>
                 <!-- place tool view IDs here you wish to exclude from your application -->
                 <!-- e.g. <id>org.esa.beam.visat.toolviews.lm.LayersToolView</id> -->
