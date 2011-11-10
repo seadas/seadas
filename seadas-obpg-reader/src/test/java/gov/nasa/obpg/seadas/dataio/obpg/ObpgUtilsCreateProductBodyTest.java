@@ -120,17 +120,16 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
 
     public void testAcceptableL3SmiProduct() throws ProductIOException {
         final ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "Level-3 ProductName"));
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-3 ProductType"));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, ObpgUtils.L3_SMI_TYPE));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, ObpgUtils.L3_SMI_TYPE));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_HEIGHT, 1354));
-        String productType = "OBPG Level-3 ProductType";
-
+        String productType = ObpgUtils.L3_SMI_TYPE;
         final Product product = obpgUtils.createProductBody(globalAttributes,productType);
 
         assertNotNull(product);
-        assertEquals("Level-3 ProductName", product.getName());
-        assertEquals("OBPG Level-3 ProductType", product.getProductType());
+        assertEquals(ObpgUtils.L3_SMI_TYPE, product.getName());
+        assertEquals(ObpgUtils.L3_SMI_TYPE, product.getProductType());
         assertEquals(2030, product.getSceneRasterWidth());
         assertEquals(1354, product.getSceneRasterHeight());
     }

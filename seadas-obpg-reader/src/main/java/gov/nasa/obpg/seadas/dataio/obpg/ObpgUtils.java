@@ -43,6 +43,8 @@ public class ObpgUtils {
 
     static final String CZCS_L1A_TYPE = "CZCS Level-1A Data";
 
+    static final String L3_SMI_TYPE = "Level-3 Standard Mapped Image";
+
     static final String MODIS_L1B_TYPE = "MODIS_SWATH_Type_L1B";
     static final String MODIS_PLATFORM = "MODIS Platform";
     static final String MODIS_L1B_PARAM = "MODIS Resolution";
@@ -206,7 +208,7 @@ public class ObpgUtils {
         } else if (title.contains("Level-2") || title.contains("Level-1B") || title.contains("Browse")
                    || title.contains(SEAWIFS_L1A_TYPE)) {
             return KEY_HEIGHT;
-        } else if (title.contains("Level-3 Mapped")) {
+        } else if (title.contains("Level-3 Mapped") || title.contains(L3_SMI_TYPE)) {
             return KEY_L3SMI_HEIGHT;
         } else {
             return KEY_HEIGHT;
@@ -218,9 +220,9 @@ public class ObpgUtils {
         if (title.contains("Aquarius")){
             return KEY_WIDTH_AQUARIUS;
         } else if (title.contains("Level-2") || title.contains("Level-1B") || title.contains("Browse")
-                   || title.contains("SeaWiFS Level-1A Data")) {
+                   || title.contains("SeaWiFS Level-1A Data") || title.contains(CZCS_L1A_TYPE)) {
             return KEY_WIDTH;
-        } else if (title.contains("Level-3 Mapped")){
+        } else if (title.contains("Level-3 Mapped") || title.contains(L3_SMI_TYPE)){
             return KEY_L3SMI_WIDTH;
         } else {
             return KEY_WIDTH;
