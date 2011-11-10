@@ -60,7 +60,7 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
 
         try {
             obpgUtils.createProductBody(globalAttributes,productType);
-            fail("should not come here");
+            fail("A statement was executed which should have been unreachable.");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_HEIGHT));
             assertTrue(e.getMessage().contains("is missing"));
@@ -77,7 +77,7 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
 
         try {
             obpgUtils.createProductBody(globalAttributes,productType);
-            fail("should not come here");
+            fail("A statement was executed which should have been unreachable.");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_NAME));
             assertTrue(e.getMessage().contains("is missing"));
@@ -94,7 +94,7 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
 
         try {
             obpgUtils.createProductBody(globalAttributes,productType);
-            fail("Should not get here");
+            fail("A statement was executed which should have been unreachable.");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_TYPE));
             assertTrue(e.getMessage().contains("is missing"));
@@ -111,7 +111,7 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
 
         try {
             obpgUtils.createProductBody(globalAttributes,productType);
-            fail("should not come here");
+            fail("A statement was executed which should have been unreachable.");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_WIDTH));
             assertTrue(e.getMessage().contains("is missing"));
@@ -136,15 +136,15 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
 
     public void testL3SmiWithoutHeightAttribute() {
         final ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "Level-3 ProductName"));
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-3 ProductType"));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, ObpgUtils.L3_SMI_TYPE));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, ObpgUtils.L3_SMI_TYPE));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_WIDTH, 2030));
         // Since this is a test without the height Attribute, don't put one in here.
         String productType = "SeaWiFS Level-3 Binned Data";
 
         try {
             obpgUtils.createProductBody(globalAttributes,productType);
-            fail("should not come here");
+            fail("A statement was executed which should have been unreachable.");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_L3SMI_HEIGHT));
             assertTrue(e.getMessage().contains("is missing"));
@@ -153,14 +153,14 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
 
     public void testL3SmiWithoutNameAttribute() {
         final ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-3 ProductType"));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, ObpgUtils.L3_SMI_TYPE));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_WIDTH, 2030));
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_HEIGHT, 1354));
-        String productType = "SeaWiFS Level-3 Binned Data";
+        String productType = ObpgUtils.L3_SMI_TYPE;
 
         try {
             obpgUtils.createProductBody(globalAttributes,productType);
-            fail("should not come here");
+            fail("A statement was executed which should have been unreachable.");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_NAME));
             assertTrue(e.getMessage().contains("is missing"));
@@ -176,7 +176,7 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
 
         try {
             obpgUtils.createProductBody(globalAttributes,productType);
-            fail("Should not get here");
+            fail("A statement was executed which should have been unreachable.");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_TYPE));
             assertTrue(e.getMessage().contains("is missing"));
@@ -185,15 +185,15 @@ public class ObpgUtilsCreateProductBodyTest extends TestCase {
 
     public void testL3SmiWithoutWidthAttribute() {
         final ArrayList<Attribute> globalAttributes = new ArrayList<Attribute>();
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, "Level-3 ProductName"));
-        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, "Level-3 ProductType"));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_NAME, ObpgUtils.L3_SMI_TYPE));
+        globalAttributes.add(new Attribute(ObpgUtils.KEY_TYPE, ObpgUtils.L3_SMI_TYPE));
         // Since this is a test without the width Attribute, don't put one in here.
         globalAttributes.add(new Attribute(ObpgUtils.KEY_L3SMI_HEIGHT, 1354));
-        String productType = "SeaWiFS Level-3 Binned Data";
+        String productType = ObpgUtils.L3_SMI_TYPE;
 
         try {
             obpgUtils.createProductBody(globalAttributes,productType);
-            fail("should not come here");
+            fail("A statement was executed which should have been unreachable.");
         } catch (ProductIOException e) {
             assertTrue(e.getMessage().contains(ObpgUtils.KEY_L3SMI_WIDTH));
             assertTrue(e.getMessage().contains("is missing"));
