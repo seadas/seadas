@@ -47,11 +47,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static gov.nasa.obpg.seadas.dataio.obpg.ObpgUtils.*;
+
 public class ObpgProductReader extends AbstractProductReader {
 
     private ObpgUtils obpgUtils = new ObpgUtils();
     private Map<Band, Variable> variableMap;
-    private boolean mustFlip; //TODO separate into horizontal and vertical flip - CZCS...
+    private boolean mustFlipX;
+    private boolean mustFlipY;
     private NetcdfFile ncfile;
 
     /**
@@ -71,20 +74,22 @@ public class ObpgProductReader extends AbstractProductReader {
             final HashMap<String, String> l2FlagsInfoMap = getL2FlagsInfoMap();
             final BitmaskDef[] defs = getDefaultBitmaskDefs(l2FlagsInfoMap);
 
-            final File inFile = ObpgUtils.getInputFile(getInput());
+            final File inFile = getInputFile(getInput());
             final String path = inFile.getPath();
             final Product product;
 
             ncfile = NetcdfFile.open(path);
 
             String productType = obpgUtils.getProductType(ncfile);
-            mustFlip = obpgUtils.mustFlip(ncfile);
+            mustFlipX = mustFlipY = obpgUtils.mustFlip(ncfile);
+
+            if (productType.contains("CZCS")) mustFlipX = false;
 
             List<Attribute> globalAttributes = ncfile.getGlobalAttributes();
             if (productType.contains("MODIS_SWATH_Type_L1B")){
                 obpgUtils.addGlobalAttributeModisL1B(ncfile, globalAttributes);
-                mustFlip = obpgUtils.mustFlipMODIS(obpgUtils.getStringAttribute("MODIS Platform",globalAttributes),
-                        obpgUtils.getStringAttribute("DayNightFlag",globalAttributes));
+                mustFlipX = mustFlipY = obpgUtils.mustFlipMODIS(obpgUtils.getStringAttribute("MODIS Platform", globalAttributes),
+                        obpgUtils.getStringAttribute("DayNightFlag", globalAttributes));
             }
             if (productType.contains("SeaDAS Mapped")){
                  obpgUtils.addGlobalAttributeSeadasMapped(ncfile, globalAttributes);
@@ -99,13 +104,13 @@ public class ObpgProductReader extends AbstractProductReader {
 
             variableMap = obpgUtils.addBands(product, ncfile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
             if (productType.contains("Level-3")) {
-                GeoCoding geoCoding = createGeoCoding(product, productType);
+                GeoCoding geoCoding = createGeoCoding(product);
                 product.setGeoCoding(geoCoding);
             } else if (productType.contains("SeaDAS Mapped")){
-                GeoCoding geoCoding = createGeoCoding(product, productType);  //TODO Check on various IDL projections
+                GeoCoding geoCoding = createGeoCoding(product);  //TODO Check on various IDL projections
                 product.setGeoCoding(geoCoding);
 
-            } else if (productType.contains(obpgUtils.SEAWIFS_L1A_TYPE)){
+            } else if (productType.contains(SEAWIFS_L1A_TYPE)){
                 ObpgGeonav geonavCalculator = new ObpgGeonav(ncfile);
                 float[] latitudes = obpgUtils.flatten2DimArray(geonavCalculator.getLatitudes());
        	        float[] longitudes = obpgUtils.flatten2DimArray(geonavCalculator.getLongitudes());
@@ -121,7 +126,7 @@ public class ObpgProductReader extends AbstractProductReader {
                 lonBand.setData(lons);
                 product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 10, ProgressMonitor.NULL));
             } else {
-                obpgUtils.addGeocoding(product, ncfile, mustFlip);
+                obpgUtils.addGeocoding(product, ncfile, mustFlipX, mustFlipY);
             }
             obpgUtils.addBitmaskDefinitions(product, defs);
             product.setAutoGrouping("Rrs:nLw:Lt:La:Lr:Lw:Es:TLg:rhom:rhos:rhot:Taua:Kd:aot:adg:aph:bbp:vgain:BT:RefSB:Emissive");
@@ -147,18 +152,16 @@ public class ObpgProductReader extends AbstractProductReader {
                                           ProductData destBuffer,
                                           ProgressMonitor pm) throws IOException {
 
-        if (mustFlip) {
+        if (mustFlipY) {
             sourceOffsetY = destBand.getSceneRasterHeight() - (sourceOffsetY + sourceHeight);
-            if (!obpgUtils.getProductType(ncfile).contains(ObpgUtils.CZCS_L1A_TYPE)) {
-                sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
-            }
+        }
+        if (mustFlipX) {
+            sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
         }
         Variable variable = variableMap.get(destBand);
         try {
-            readBandData(variable, sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight, destBuffer, pm);
-            if (mustFlip && !obpgUtils.getProductType(ncfile).contains(ObpgUtils.CZCS_L1A_TYPE)) {
-                reverse(destBuffer);
-            }
+            readBandData(variable, sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight, destBuffer,
+                    mustFlipX, mustFlipY, pm);
         } catch (Exception e) {
             final ProductIOException exception = new ProductIOException(e.getMessage());
             exception.setStackTrace(e.getStackTrace());
@@ -167,8 +170,8 @@ public class ObpgProductReader extends AbstractProductReader {
     }
 
     private void readBandData(Variable variable, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
-                              int sourceHeight, ProductData destBuffer, ProgressMonitor pm) throws IOException,
-            InvalidRangeException {
+                              int sourceHeight, ProductData destBuffer, boolean mustFlipX, boolean mustFlipY,
+                              ProgressMonitor pm) throws IOException, InvalidRangeException {
 
         final int[] start = new int[]{sourceOffsetY, sourceOffsetX};
         final int[] stride = new int[]{1, 1};
@@ -178,39 +181,78 @@ public class ObpgProductReader extends AbstractProductReader {
         int targetIndex = 0;
         pm.beginTask("Reading band '" + variable.getShortName() + "'...", sourceHeight);
         // loop over lines
-        try {
-            for (int y = 0; y < sourceHeight; y++) {
-                if (pm.isCanceled()) {
-                    break;
+
+        if (mustFlipY) {
+            start[0] += sourceHeight-1;
+            try {
+                for (int y = sourceHeight-1; y >= 0; y--) {
+                    if (pm.isCanceled()) {
+                        break;
+                    }
+                    Section section = new Section(start, count, stride);
+                    Array array;
+                    synchronized (ncfile) {
+                        array = variable.read(section);
+                    }
+
+                    Object storage;
+
+                    if (mustFlipX){
+                        storage = array.flip(1).copyTo1DJavaArray();
+                    } else {
+                        storage = array.copyTo1DJavaArray();
+                    }
+
+                    System.arraycopy(storage, 0, buffer, targetIndex, sourceWidth);
+                    start[0]--;
+                    targetIndex += sourceWidth;
+                    pm.worked(1);
                 }
-                Section section = new Section(start, count, stride);
-                Array array;
-                synchronized (ncfile) {
-                    array = variable.read(section);
-                }
-//                Array flippedArray = array.flip(1);
-                final Object storage = array.getStorage();
-//                final Object storage = flippedArray.getStorage();
-                System.arraycopy(storage, 0, buffer, targetIndex, sourceWidth);
-                start[0]++;
-                targetIndex += sourceWidth;
-                pm.worked(1);
+            } finally {
+                pm.done();
             }
-        } finally {
-            pm.done();
+        } else {
+            try {
+                for (int y = 0; y < sourceHeight; y++) {
+                    if (pm.isCanceled()) {
+                        break;
+                    }
+                    Section section = new Section(start, count, stride);
+                    Array array;
+                    synchronized (ncfile) {
+                        array = variable.read(section);
+                    }
+
+                    Object storage;
+
+                    if (mustFlipX){
+                        storage = array.flip(1).copyTo1DJavaArray();
+                    } else {
+                        storage = array.copyTo1DJavaArray();
+                    }
+
+                    System.arraycopy(storage, 0, buffer, targetIndex, sourceWidth);
+                    start[0]++;
+                    targetIndex += sourceWidth;
+                    pm.worked(1);
+                }
+            } finally {
+                pm.done();
+            }
         }
+
     }
 
-    public static void reverse(ProductData data) {
-        final int n = data.getNumElems();
-        final int nc = n / 2;
-        for (int i1 = 0; i1 < nc; i1++) {
-            int i2 = n - 1 - i1;
-            double temp = data.getElemDoubleAt(i1);
-            data.setElemDoubleAt(i1, data.getElemDoubleAt(i2));
-            data.setElemDoubleAt(i2, temp);
-        }
-    }
+//    public static void reverse(ProductData data) {
+//        final int n = data.getNumElems();
+//        final int nc = n / 2;
+//        for (int i1 = 0; i1 < nc; i1++) {
+//            int i2 = n - 1 - i1;
+//            double temp = data.getElemDoubleAt(i1);
+//            data.setElemDoubleAt(i1, data.getElemDoubleAt(i2));
+//            data.setElemDoubleAt(i2, temp);
+//        }
+//    }
 
     public static void reverse(float[] data) {
         final int n = data.length;
@@ -221,7 +263,6 @@ public class ObpgProductReader extends AbstractProductReader {
             data[i1] = data[i2];
             data[i2] = temp;
         }
-        return;
     }
 
     private static BitmaskDef[] getDefaultBitmaskDefs(HashMap<String, String> l2FlagsInfoMap) {
@@ -288,7 +329,7 @@ public class ObpgProductReader extends AbstractProductReader {
         return new HashMap<String, String>(0);
     }
 
-    private GeoCoding createGeoCoding(Product product, String productType) {
+    private GeoCoding createGeoCoding(Product product) {
         //float pixelX = 0.0f;
         //float pixelY = 0.0f;
         // Changed after conversation w/ Sean, Norman F., et al.

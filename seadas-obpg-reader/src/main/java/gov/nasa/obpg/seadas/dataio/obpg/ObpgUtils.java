@@ -692,7 +692,7 @@ public class ObpgUtils {
                         wvlidx = Integer.parseInt(bname_array[i]) -1;
                     }
 
-                    final float wavelength = Float.valueOf(MODIS_WVL[wvlidx]);
+                    final float wavelength = (float) MODIS_WVL[wvlidx];
                     band.setSpectralWavelength(wavelength);
                     band.setSpectralBandIndex(spectralBandIndex++);
 
@@ -758,7 +758,7 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
     System.out.println("1D floats written to: " + fName);
 }
 
-    public void addGeocoding(final Product product, NetcdfFile ncfile, boolean mustFlip) throws IOException {
+    public void addGeocoding(final Product product, NetcdfFile ncfile, boolean mustFlipX, boolean mustFlipY) throws IOException {
         //final String navGroup = "Navigation Data";
         String navGroup = "Navigation Data";
         final String navGroupMODIS = "MODIS_SWATH_Type_L1B/Geolocation Fields";
@@ -779,8 +779,8 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
         if (product.getProductType().contains(MODIS_L1B_TYPE)){
 
             // read latitudes and longitudes
-            int cntl_lat_ix = 5;
-            int cntl_lon_ix = 5;
+            int cntl_lat_ix;
+            int cntl_lon_ix;
             String resolution = product.getMetadataRoot().getElement("Global_Attributes").getAttribute(MODIS_L1B_PARAM).getData().getElemString();
             if (resolution.equals("500m")){
                 cntl_lat_ix = 2;
@@ -804,7 +804,7 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
 
             Array latarr = lats.read();
             Array lonarr = lons.read();
-            if (mustFlip){
+            if (mustFlipX && mustFlipY){
                 latTiePoints = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
                 lonTiePoints = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
             } else {
@@ -836,15 +836,13 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
             if (latVar != null && lonVar != null && cntlPointVar != null) {
                 final ProductData lonRawData = readData(lonVar);
                 final ProductData latRawData = readData(latVar);
-                if (product.getProductType().contains(ObpgUtils.CZCS_L1A_TYPE)) {
-                    ObpgProductReader.reverse(lonRawData);
-                }
+
                 latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
                 lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
 
                 Array cntArray = cntlPointVar.read();
                 int[] colPoints = (int[]) cntArray.getStorage();
-                computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints, mustFlip);
+                computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints, mustFlipX, mustFlipY);
             }
         }
 
@@ -861,7 +859,7 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
 
     private void computeLatLonBandData(final Band latBand, final Band lonBand,
                                        final ProductData latRawData, final ProductData lonRawData,
-                                       final int[] colPoints, boolean mustFlip) {
+                                       final int[] colPoints, boolean mustFlipX, boolean mustFlipY) {
         latBand.ensureRasterData();
         lonBand.ensureRasterData();
 
@@ -893,9 +891,10 @@ private void myDumpToFile(float[] data, String fName) throws IOException {
             }
         }
 
-        if (mustFlip) {
-            //if (product.
+        if (mustFlipY) {
             ObpgProductReader.reverse(latFloats);
+        }
+        if (mustFlipX) {
             ObpgProductReader.reverse(lonFloats);
         }
 
