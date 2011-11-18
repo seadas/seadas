@@ -82,10 +82,13 @@ public abstract class SeadasFileReader {
                     }
                     Section section = new Section(start, count, stride);
                     Array array;
+                    int [] newshape= {sourceHeight,sourceWidth};
                     synchronized (ncFile) {
                         array = variable.read(section);
                     }
-
+                    if (array.getRank() == 3){
+                        array = array.reshapeNoCopy(newshape);
+                    }
                     Object storage;
 
                     if (mustFlipX) {
@@ -110,10 +113,14 @@ public abstract class SeadasFileReader {
                     }
                     Section section = new Section(start, count, stride);
                     Array array;
+                    int [] newshape= {sourceHeight,sourceWidth};
+
                     synchronized (ncFile) {
                         array = variable.read(section);
                     }
-
+                    if (array.getRank() == 3){
+                        array = array.reshapeNoCopy(newshape);
+                    }
                     Object storage;
 
                     if (mustFlipX) {
@@ -605,7 +612,7 @@ public abstract class SeadasFileReader {
 
     public ProductData readData(Variable variable) throws ProductIOException {
         final int dataType = getProductDataType(variable);
-        Array array = null;
+        Array array;
         try {
             array = variable.read();
         } catch (IOException e) {
@@ -624,14 +631,5 @@ public abstract class SeadasFileReader {
         }
         return flatArray;
     }
-    public static void reverse(ProductData data) {
-        final int n = data.getNumElems();
-        final int nc = n / 2;
-        for (int i1 = 0; i1 < nc; i1++) {
-            int i2 = n - 1 - i1;
-            double temp = data.getElemDoubleAt(i1);
-            data.setElemDoubleAt(i1, data.getElemDoubleAt(i2));
-            data.setElemDoubleAt(i2, temp);
-        }
-    }
+
 }
