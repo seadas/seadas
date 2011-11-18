@@ -86,8 +86,18 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
             "SeaWiFS Level-2 Data",
             "SeaWiFS Level-3 Standard Mapped Image",
             "VIIRS Level-3 Standard Mapped Image",
-            "Level-3 Standard Mapped Image",      // Generic Standard Mapped Image (from smigen)
-
+            "Level-3 Standard Mapped Image",
+            "SeaWiFS Level-3 Binned Data",
+            "CZCS Level-3 Binned Data",
+            "OCTS Level-3 Binned Data",
+            "HMODISA Level-3 Binned Data",
+            "HMODIST Level-3 Binned Data",
+            "MERIS Level-3 Binned Data",
+            "MODIS Level-3 Binned Data",
+            "OSMI Level-3 Binned Data",
+            "OCM2 Level-3 Binned Data",
+            "Aquarius Level-3 Binned Data",
+            "VIIRS Level-3 Binned Data",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 

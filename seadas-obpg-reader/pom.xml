@@ -48,6 +48,16 @@
             <groupId>edu.ucar</groupId>
             <artifactId>netcdf</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-merisl3-reader</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-netcdf</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

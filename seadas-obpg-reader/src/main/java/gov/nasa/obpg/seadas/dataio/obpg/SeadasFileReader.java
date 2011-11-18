@@ -50,7 +50,7 @@ public abstract class SeadasFileReader {
         return readTwoColumnTable("l2-flags-info.csv");
     }
 
-    public abstract Product createProduct() throws ProductIOException;
+    public abstract Product createProduct() throws IOException;
 
     public void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
                              int sourceHeight, ProductData destBuffer,
