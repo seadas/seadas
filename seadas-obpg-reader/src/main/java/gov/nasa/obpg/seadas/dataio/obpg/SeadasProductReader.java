@@ -48,6 +48,7 @@ public class SeadasProductReader extends AbstractProductReader {
 
     enum ProductType {
         Level1A_CZCS("CZCS Level 1A"),
+        Level2_CZCS("Level 2"),
         Level1A_Seawifs("SeaWiFS Level 1A"),
         Level1B("Generic Level 1B"),
         Level1B_Modis("MODIS Level 1B"),
@@ -93,6 +94,7 @@ public class SeadasProductReader extends AbstractProductReader {
                 case Level2:
                 case Level1B:
                 case Level1A_CZCS:
+                case Level2_CZCS:
                     seadasFileReader = new L2FileReader(this);
                     break;
                 case Level1A_Seawifs:
@@ -183,12 +185,14 @@ public class SeadasProductReader extends AbstractProductReader {
             title = titleAttr.getStringValue().trim();
         }
 
-        if (title.contains("Level-2")) {
-            return ProductType.Level2;
+        if (title.equals("CZCS Level-2 Data")) {
+            return ProductType.Level2_CZCS;
         } else if (title.contains("Level-1B")) {
             return ProductType.Level1B;
-        } else if (title.equals("CZCS Level-1A Data")) {
+        } else if (title.equals("CZCS Level-1A Data")){
             return ProductType.Level1A_CZCS;
+        } else if (title.contains("Level-2")) {
+            return ProductType.Level2;
         } else if (title.equals("SeaWiFS Level-1A Data")) {
             return ProductType.Level1A_Seawifs;
         } else if (title.contains("Level-3 Standard Mapped Image")) {

@@ -34,7 +34,8 @@ public class L2FileReader extends SeadasFileReader {
 
         mustFlipX = mustFlipY = getDefaultFlip();
         SeadasProductReader.ProductType productType = productReader.getProductType();
-        if (productType == SeadasProductReader.ProductType.Level1A_CZCS)
+        if (productType == SeadasProductReader.ProductType.Level1A_CZCS ||
+                productType == SeadasProductReader.ProductType.Level2_CZCS)
             mustFlipX = false;
 
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
@@ -70,8 +71,8 @@ public class L2FileReader extends SeadasFileReader {
         final String longitude = "longitude";
         final String latitude = "latitude";
         final String cntlPoints = "cntl_pt_cols";
-        Band latBand;
-        Band lonBand;
+        Band latBand = null;
+        Band lonBand = null;
 
         if (ncFile.findGroup(navGroup) == null) {
             if (ncFile.findGroup("Navigation") != null) {
@@ -79,26 +80,37 @@ public class L2FileReader extends SeadasFileReader {
             }
         }
 
-        Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
-        Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
-        Variable cntlPointVar = ncFile.findVariable(navGroup + "/" + cntlPoints);
-        if (latVar != null && lonVar != null && cntlPointVar != null) {
-            final ProductData lonRawData = readData(lonVar);
-            final ProductData latRawData = readData(latVar);
+        if (product.containsBand(latitude) && product.containsBand(longitude)) {
+            latBand = product.getBand(latitude);
+            lonBand = product.getBand(longitude);
+        } else {
+            Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
+            Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
+            Variable cntlPointVar = ncFile.findVariable(navGroup + "/" + cntlPoints);
+            if (latVar != null && lonVar != null && cntlPointVar != null) {
+                final ProductData lonRawData = readData(lonVar);
+                final ProductData latRawData = readData(latVar);
 
-            latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
-            lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
+                latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
+                lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
 
-            try {
-                Array cntArray = cntlPointVar.read();
-                int[] colPoints = (int[]) cntArray.getStorage();
-                computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints);
-                if (latBand != null && lonBand != null) {
-                    product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
+
+                Array cntArray;
+                try {
+                    cntArray = cntlPointVar.read();
+                    int[] colPoints = (int[]) cntArray.getStorage();
+                    computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints);
+                } catch (IOException e) {
+                   throw new ProductIOException(e.getMessage());
                 }
-            } catch (IOException e) {
-                throw new ProductIOException(e.getMessage());
             }
+        }
+        try {
+            if (latBand != null && lonBand != null) {
+                product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
+            }
+        } catch (IOException e) {
+            throw new ProductIOException(e.getMessage());
         }
 
     }
