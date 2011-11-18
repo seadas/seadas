@@ -9,8 +9,6 @@ import ucar.nc2.Variable;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static gov.nasa.obpg.seadas.dataio.obpg.ObpgUtils.getInputFile;
-
 /**
  * Created by IntelliJ IDEA.
  * User: seadas
@@ -51,7 +49,7 @@ public class L2FileReader extends SeadasFileReader {
             product.setEndTime(utcEnd);
         }
 
-        product.setFileLocation(getInputFile(productReader.getInput()));
+        product.setFileLocation(productReader.getInputFile());
         product.setProductReader(productReader);
 
         addGlobalMetadata(product);
@@ -103,14 +101,6 @@ public class L2FileReader extends SeadasFileReader {
             }
         }
 
-    }
-
-    private synchronized static HashMap<String, String> getL2BandInfoMap() {
-        return readTwoColumnTable("l2-band-info.csv");
-    }
-
-    private synchronized static HashMap<String, String> getL2FlagsInfoMap() {
-        return readTwoColumnTable("l2-flags-info.csv");
     }
 
 }

@@ -263,12 +263,18 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
         return new String[]{FORMAT_NAME};
     }
 
-    private File getInputFile(Object input) {
-        try {
-            return ObpgUtils.getInputFile(input);
-        } catch (IllegalArgumentException ignored) {
-            //ignore
+    public File getInputFile(Object input) {
+        File inputFile;
+        if (input instanceof File) {
+            inputFile = (File) input;
+        } else if (input instanceof String) {
+            inputFile = new File((String) input);
+        } else {
+            return null;
         }
-        return null;
+        return inputFile;
     }
+
+
+
 }

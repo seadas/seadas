@@ -42,6 +42,14 @@ public abstract class SeadasFileReader {
         globalAttributes = ncFile.getGlobalAttributes();
     }
 
+    protected synchronized static HashMap<String, String> getL2BandInfoMap() {
+        return readTwoColumnTable("l2-band-info.csv");
+    }
+
+    protected synchronized static HashMap<String, String> getL2FlagsInfoMap() {
+        return readTwoColumnTable("l2-flags-info.csv");
+    }
+
     public abstract Product createProduct() throws ProductIOException;
 
     public void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
@@ -213,6 +221,11 @@ public abstract class SeadasFileReader {
                         final float wavelength = Float.parseFloat(name.split("_")[1]);
                         band.setSpectralWavelength(wavelength);
                         band.setSpectralBandIndex(spectralBandIndex++);
+                    }
+                    try {
+                        band.setNoDataValue((double) variable.findAttribute("bad_value_unscaled").getNumericValue().floatValue());
+                    } catch (Exception e) {
+
                     }
 
                     bandToVariableMap.put(band, variable);
@@ -393,7 +406,7 @@ public abstract class SeadasFileReader {
         }
     }
 
-    private Attribute findAttribute(String name, List<Attribute> attributesList) {
+    public Attribute findAttribute(String name, List<Attribute> attributesList) {
         for (Attribute a : attributesList) {
             if (name.equals(a.getName()))
                 return a;
@@ -401,7 +414,7 @@ public abstract class SeadasFileReader {
         return null;
     }
 
-    private Attribute findAttribute(String name) {
+    public Attribute findAttribute(String name) {
         return findAttribute(name, globalAttributes);
     }
 
@@ -428,6 +441,19 @@ public abstract class SeadasFileReader {
     }
 
     public int getIntAttribute(String key) throws ProductIOException {
+        return getIntAttribute(key, globalAttributes);
+    }
+
+    public float getFloatAttribute(String key, List<Attribute> globalAttributes) throws ProductIOException {
+        Attribute attribute = findAttribute(key, globalAttributes);
+        if (attribute == null) {
+            throw new ProductIOException("Global attribute '" + key + "' is missing.");
+        } else {
+            return attribute.getNumericValue(0).floatValue();
+        }
+    }
+
+    public float getFloatAttribute(String key) throws ProductIOException {
         return getIntAttribute(key, globalAttributes);
     }
 
@@ -589,4 +615,23 @@ public abstract class SeadasFileReader {
     }
 
 
+    float[] flatten2DimArray(float[][] twoDimArray) {
+        // Converts an array of two dimensions into a single dimension array row by row.
+        float[] flatArray = new float[twoDimArray.length * twoDimArray[0].length];
+        for (int row = 0; row < twoDimArray.length; row++) {
+            int offset = row * twoDimArray[row].length;
+            System.arraycopy(twoDimArray[row], 0, flatArray, offset, twoDimArray[row].length);
+        }
+        return flatArray;
+    }
+    public static void reverse(ProductData data) {
+        final int n = data.getNumElems();
+        final int nc = n / 2;
+        for (int i1 = 0; i1 < nc; i1++) {
+            int i2 = n - 1 - i1;
+            double temp = data.getElemDoubleAt(i1);
+            data.setElemDoubleAt(i1, data.getElemDoubleAt(i2));
+            data.setElemDoubleAt(i2, temp);
+        }
+    }
 }

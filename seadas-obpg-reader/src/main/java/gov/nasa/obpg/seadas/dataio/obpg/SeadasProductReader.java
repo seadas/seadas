@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static gov.nasa.obpg.seadas.dataio.obpg.ObpgUtils.getInputFile;
 
 // import org.opengis.filter.spatial.Equals;
 
@@ -48,23 +47,25 @@ public class SeadasProductReader extends AbstractProductReader {
 
 
     enum ProductType {
-         Level1A_CZCS("CZCS Level 1A"),
-         Level1A_Seawifs("SeaWiFS Level 1A"),
-         Level1B("Generic Level 1B"),
-         Level1B_Modis("MODIS Level 1B"),
-         Level2("Level 2"),
-         Level3_Bin("Level 3 Binned"),
-         SMI("Level 3 Mapped"),
-         SeadasMapped("SeaDAS Mapped");
+        Level1A_CZCS("CZCS Level 1A"),
+        Level1A_Seawifs("SeaWiFS Level 1A"),
+        Level1B("Generic Level 1B"),
+        Level1B_Modis("MODIS Level 1B"),
+        Level2("Level 2"),
+        Level3_Bin("Level 3 Binned"),
+        SMI("Level 3 Mapped"),
+        SeadasMapped("SeaDAS Mapped");
 
-         private String name;
-         private ProductType(String nm) {
-             name = nm;
-         }
-         public String toString() {
-             return name;
-         }
-     }
+        private String name;
+
+        private ProductType(String nm) {
+            name = nm;
+        }
+
+        public String toString() {
+            return name;
+        }
+    }
 
 
     /**
@@ -82,13 +83,13 @@ public class SeadasProductReader extends AbstractProductReader {
 
         try {
             Product product;
-            final File inFile = getInputFile(getInput());
+            final File inFile = getInputFile();
             final String path = inFile.getPath();
 
             ncfile = NetcdfFile.open(path);
             productType = findProductType();
 
-            switch(productType) {
+            switch (productType) {
                 case Level2:
                 case Level1B:
                 case Level1A_CZCS:
@@ -145,6 +146,9 @@ public class SeadasProductReader extends AbstractProductReader {
         }
     }
 
+    public File getInputFile() {
+        return ((SeadasProductReaderPlugIn) getReaderPlugIn()).getInputFile(getInput());
+    }
 
     public NetcdfFile getNcfile() {
         return ncfile;
@@ -164,13 +168,9 @@ public class SeadasProductReader extends AbstractProductReader {
     }
 
     public boolean checkModisL1B() {
-        try {
-            Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
-            String shortName = modisl1bGroup.getShortName();
-            if (shortName.contains("Aqua") || shortName.contains("Terra")){
-                return true;
-            }
-        } catch (Exception e) {
+        Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
+        if (modisl1bGroup != null) {
+            return true;
         }
         return false;
     }
@@ -178,10 +178,10 @@ public class SeadasProductReader extends AbstractProductReader {
     public ProductType findProductType() throws ProductIOException {
 
         Attribute titleAttr = ncfile.findGlobalAttribute("Title");
-        if(titleAttr == null) {
-            throw new ProductIOException("Global Attribute \"Title\" not found");
+        String title = " ";
+        if (titleAttr != null) {
+            title = titleAttr.getStringValue().trim();
         }
-        String title = titleAttr.getStringValue().trim();
 
         if (title.contains("Level-2")) {
             return ProductType.Level2;
@@ -195,10 +195,10 @@ public class SeadasProductReader extends AbstractProductReader {
             return ProductType.SMI;
         } else if (title.contains("Level-3 Binned Data")) {
             return ProductType.Level3_Bin;
-        } else if (checkSeadasMapped()){
+        } else if (checkSeadasMapped()) {
             return ProductType.SeadasMapped;
         } else if (checkModisL1B()) {
-            return  ProductType.Level1B_Modis;
+            return ProductType.Level1B_Modis;
         } else {
             throw new ProductIOException("Unrecognized product type");
         }
