@@ -79,7 +79,6 @@ public class L1ASeawifsFileReader extends SeadasFileReader {
         }
 
         addBitmaskDefinitions(product, defs);
-        product.setAutoGrouping("Rrs:nLw:Lt:La:Lr:Lw:Es:TLg:rhom:rhos:rhot:Taua:Kd:aot:adg:aph:bbp:vgain:BT:RefSB:Emissive");
 
         return product;
 

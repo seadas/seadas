@@ -142,33 +142,7 @@ public abstract class SeadasFileReader {
     }
 
 
-    protected GeoCoding createGeoCoding(Product product) {
-        //float pixelX = 0.0f;
-        //float pixelY = 0.0f;
-        // Changed after conversation w/ Sean, Norman F., et al.
-        float pixelX = 0.5f;
-        float pixelY = 0.5f;
 
-        float easting = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Easternmost Longitude").getData().getElemDouble();
-        float westing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Westernmost Longitude").getData().getElemDouble();
-        float pixelSizeX = (easting - westing) / product.getSceneRasterWidth();
-        float northing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Northernmost Latitude").getData().getElemDouble();
-        float southing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Southernmost Latitude").getData().getElemDouble();
-        float pixelSizeY = (northing - southing) / product.getSceneRasterHeight();
-
-        try {
-            return new CrsGeoCoding(DefaultGeographicCRS.WGS84,
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(),
-                    westing, northing,
-                    pixelSizeX, pixelSizeY,
-                    pixelX, pixelY);
-        } catch (FactoryException e) {
-            throw new IllegalStateException(e);
-        } catch (TransformException e) {
-            throw new IllegalStateException(e);
-        }
-    }
 
 
     protected static BitmaskDef[] getDefaultBitmaskDefs(HashMap<String, String> l2FlagsInfoMap) {
@@ -540,7 +514,7 @@ public abstract class SeadasFileReader {
         }
     }
 
-    private void addAttributesToElement(List<Attribute> globalAttributes, final MetadataElement element) {
+    protected void addAttributesToElement(List<Attribute> globalAttributes, final MetadataElement element) {
         for (Attribute attribute : globalAttributes) {
             //if (attribute.getName().contains("EV")) {
             if (attribute.getName().matches(".*(EV|Value|Bad|Nois|Electronics|Dead|Detector).*")) {

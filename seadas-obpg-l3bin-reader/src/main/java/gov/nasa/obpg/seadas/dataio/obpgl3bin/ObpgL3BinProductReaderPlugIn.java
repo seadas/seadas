@@ -69,7 +69,7 @@ public class ObpgL3BinProductReaderPlugIn implements ProductReaderPlugIn {
 
         try {
             if (titleAttribute.toString() != null) {
-                return DecodeQualification.INTENDED;
+                return DecodeQualification.UNABLE;//todo reset to INTENDED once we fix the identifier (Data Bins isn't good)
             }
         } catch (NullPointerException e) {
             // ok
