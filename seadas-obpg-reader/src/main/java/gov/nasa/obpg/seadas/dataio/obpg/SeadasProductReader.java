@@ -55,7 +55,8 @@ public class SeadasProductReader extends AbstractProductReader {
         Level2("Level 2"),
         Level3_Bin("Level 3 Binned"),
         SMI("Level 3 Mapped"),
-        SeadasMapped("SeaDAS Mapped");
+        SeadasMapped("SeaDAS Mapped"),
+        VIIRS_EDR("VIIRS EDR");
 
         private String name;
 
@@ -111,6 +112,9 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case SeadasMapped:
                     seadasFileReader = new SeadasMappedFileReader(this);
+                    break;
+                case VIIRS_EDR:
+                    seadasFileReader = new ViirsEDRFileReader(this);
                     break;
                 default:
                     throw new IOException("Unrecognized product type");
@@ -177,35 +181,53 @@ public class SeadasProductReader extends AbstractProductReader {
         return false;
     }
 
+    public boolean checkViirsEDR() {
+        Attribute platformShortName = ncfile.findGlobalAttribute("Platform_Short_Name");
+        try {
+            if(platformShortName.getStringValue().equals("NPP")) {
+                Group dataProduct = ncfile.findGroup("Data_Products");
+                if(dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*EDR")) {
+                    return true;
+                }
+            }
+
+        } catch (Exception e) {}
+        return false;
+    }
+
+
     public ProductType findProductType() throws ProductIOException {
 
         Attribute titleAttr = ncfile.findGlobalAttribute("Title");
         String title = " ";
         if (titleAttr != null) {
             title = titleAttr.getStringValue().trim();
-        }
+            if (title.equals("CZCS Level-2 Data")) {
+                return ProductType.Level2_CZCS;
+            } else if (title.contains("Level-1B")) {
+                return ProductType.Level1B;
+            } else if (title.equals("CZCS Level-1A Data")){
+                return ProductType.Level1A_CZCS;
+            } else if (title.contains("Level-2")) {
+                return ProductType.Level2;
+            } else if (title.equals("SeaWiFS Level-1A Data")) {
+                return ProductType.Level1A_Seawifs;
+            } else if (title.contains("Level-3 Standard Mapped Image")) {
+                return ProductType.SMI;
+            } else if (title.contains("Level-3 Binned Data")) {
+                return ProductType.Level3_Bin;
+            }
 
-        if (title.equals("CZCS Level-2 Data")) {
-            return ProductType.Level2_CZCS;
-        } else if (title.contains("Level-1B")) {
-            return ProductType.Level1B;
-        } else if (title.equals("CZCS Level-1A Data")){
-            return ProductType.Level1A_CZCS;
-        } else if (title.contains("Level-2")) {
-            return ProductType.Level2;
-        } else if (title.equals("SeaWiFS Level-1A Data")) {
-            return ProductType.Level1A_Seawifs;
-        } else if (title.contains("Level-3 Standard Mapped Image")) {
-            return ProductType.SMI;
-        } else if (title.contains("Level-3 Binned Data")) {
-            return ProductType.Level3_Bin;
-        } else if (checkSeadasMapped()) {
-            return ProductType.SeadasMapped;
         } else if (checkModisL1B()) {
             return ProductType.Level1B_Modis;
-        } else {
-            throw new ProductIOException("Unrecognized product type");
+        } else if (checkViirsEDR()) {
+            return ProductType.VIIRS_EDR;
+        } else if (checkSeadasMapped()) {
+            return ProductType.SeadasMapped;
         }
+
+        throw new ProductIOException("Unrecognized product type");
+
     }
 
 }

@@ -98,6 +98,7 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
             "OCM2 Level-3 Binned Data",
             "Aquarius Level-3 Binned Data",
             "VIIRS Level-3 Binned Data",
+            "VIIRSN Level-2 Data",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
@@ -128,14 +129,17 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
+                Attribute platformShortName = ncfile.findGlobalAttribute("Platform_Short_Name");
+
+                Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
                 Boolean isSeadasMapped = false;
                 try {
                     isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
                 } catch (Exception e) {
                 }
-                Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
-                if (titleAttribute != null || modisl1bGroup != null) {
+
+                if (titleAttribute != null || modisl1bGroup != null || platformShortName != null) {
                     if (titleAttribute != null){
                         final String title = titleAttribute.getStringValue();
                         if (title != null) {
@@ -150,7 +154,7 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
                                 }
                             }
                         }
-                    } else {
+                    } else if (modisl1bGroup != null) {
                         final String shortname = modisl1bGroup.getShortName();
                         if (shortname != null) {
                             if (supportedProductTypeSet.contains(shortname.trim())) {
@@ -164,6 +168,21 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
                                 }
                             }
                         }
+                    } else {
+//                        must be NPP
+                        String platformName = platformShortName.getStringValue();
+                        if (platformName.equals("NPP")){
+                            Group dataProduct = ncfile.findGroup("Data_Products");
+                            String dataProductList0 = dataProduct.getGroups().get(0).getShortName();
+                            if (dataProductList0.matches("VIIRS.*EDR")) {
+                                return DecodeQualification.INTENDED;
+                            }
+                        }else {
+                            if (DEBUG) {
+                                    System.out.println("# Unrecognized platform=[" + platformName + "]: " + file);
+                                }
+                        }
+
                     }
                 } else if (isSeadasMapped) {
                     return DecodeQualification.INTENDED;

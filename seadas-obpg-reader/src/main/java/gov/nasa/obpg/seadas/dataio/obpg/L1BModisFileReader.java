@@ -69,11 +69,19 @@ public class L1BModisFileReader extends SeadasFileReader {
 
         ProductData.UTC utcStart = getUTCAttribute("Start Time");
         if (utcStart != null) {
-            product.setStartTime(utcStart);
+            if (mustFlipY){
+                product.setEndTime(utcStart);
+            } else {
+                product.setStartTime(utcStart);
+            }
         }
         ProductData.UTC utcEnd = getUTCAttribute("End Time");
         if (utcEnd != null) {
-            product.setEndTime(utcEnd);
+            if (mustFlipY) {
+                product.setStartTime(utcEnd);
+            } else {
+                product.setEndTime(utcStart);
+            }
         }
 
         product.setFileLocation(productReader.getInputFile());
