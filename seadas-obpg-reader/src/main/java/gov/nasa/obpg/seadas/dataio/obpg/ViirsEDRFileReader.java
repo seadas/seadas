@@ -5,11 +5,9 @@ import com.bc.jexp.EvalException;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
-import ucar.nc2.Attribute;
-import ucar.nc2.Variable;
-import ucar.nc2.Group;
-import ucar.nc2.Dimension;
+import ucar.nc2.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -25,6 +23,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ViirsEDRFileReader extends SeadasFileReader {
+    private NetcdfFile geofile;
 
     ViirsEDRFileReader(SeadasProductReader productReader) {
         super(productReader);
@@ -60,7 +59,7 @@ public class ViirsEDRFileReader extends SeadasFileReader {
 
             variableMap = addBands(product, ncFile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
 
-//            addGeocoding(product);
+            addGeocoding(product);
 
             addBitmaskDefinitions(product, defs);
             product.setAutoGrouping("IOP:QF:nLw");
@@ -74,55 +73,42 @@ public class ViirsEDRFileReader extends SeadasFileReader {
     public void addGeocoding(final Product product) throws ProductIOException {
         try {
             String geoFileName = getStringAttribute("N_GEO_Ref");
+            //todo: put fix in for the fact that ODPS chops off the create date portion of the filename...
+            File inputFile = productReader.getInputFile();
+            String path = inputFile.getParent();
+            String geopath = (new File(path,geoFileName)).getPath();
+            geofile = NetcdfFile.open(geopath);
+
+            final String longitude = "Longitude";
+            final String latitude = "Latitude";
+            String navGroup = "All_Data/VIIRS-MOD-GEO-TC_All";
+            Band latBand = new Band("latitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
+            Band lonBand = new Band("longitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
+            product.addBand(latBand);
+            product.addBand(lonBand);
 
 
-            String navGroup = "Navigation Data";
-            final String longitude = "longitude";
-            final String latitude = "latitude";
-            final String cntlPoints = "cntl_pt_cols";
-            Band latBand = null;
-            Band lonBand = null;
+            Array latarr = geofile.findVariable(navGroup + "/" + latitude).read();
 
-            if (ncFile.findGroup(navGroup) == null) {
-                if (ncFile.findGroup("Navigation") != null) {
-                    navGroup = "Navigation";
-                }
-            }
-
-            if (product.containsBand(latitude) && product.containsBand(longitude)) {
-                latBand = product.getBand(latitude);
-                lonBand = product.getBand(longitude);
+            Array lonarr = geofile.findVariable(navGroup + "/" + longitude).read();
+            float [] latitudes;
+            float [] longitudes;
+            if (mustFlipX && mustFlipY) {
+                latitudes = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
+                longitudes = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
             } else {
-                Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
-                Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
-                Variable cntlPointVar = ncFile.findVariable(navGroup + "/" + cntlPoints);
-                if (latVar != null && lonVar != null && cntlPointVar != null) {
-                    final ProductData lonRawData = readData(lonVar);
-                    final ProductData latRawData = readData(latVar);
-
-                    latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
-                    lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
-
-
-                    Array cntArray;
-                    try {
-                        cntArray = cntlPointVar.read();
-                        int[] colPoints = (int[]) cntArray.getStorage();
-                        computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints);
-                    } catch (IOException e) {
-                        throw new ProductIOException(e.getMessage());
-                    }
-                }
+                latitudes = (float[]) latarr.getStorage();
+                longitudes = (float[]) lonarr.getStorage();
             }
-            try {
-                if (latBand != null && lonBand != null) {
-                    product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-                }
-            } catch (IOException e) {
-                throw new ProductIOException(e.getMessage());
-            }
+
+            ProductData lats = ProductData.createInstance(latitudes);
+            latBand.setData(lats);
+            ProductData lons = ProductData.createInstance(longitudes);
+            lonBand.setData(lons);
+            product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
 
         } catch (Exception e) {
+            throw new ProductIOException(e.getMessage());
         }
     }
 
