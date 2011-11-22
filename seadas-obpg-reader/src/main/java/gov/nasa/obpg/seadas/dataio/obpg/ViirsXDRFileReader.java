@@ -22,10 +22,10 @@ import java.util.List;
  * Time: 2:23 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ViirsEDRFileReader extends SeadasFileReader {
+public class ViirsXDRFileReader extends SeadasFileReader {
     private NetcdfFile geofile;
 
-    ViirsEDRFileReader(SeadasProductReader productReader) {
+    ViirsXDRFileReader(SeadasProductReader productReader) {
         super(productReader);
     }
 
@@ -37,7 +37,13 @@ public class ViirsEDRFileReader extends SeadasFileReader {
 
         try {
             Group allData = ncFile.findGroup("All_Data");
-            List<Dimension> dims = allData.getGroups().get(0).getVariables().get(0).getDimensions();
+            List<Dimension> dims;
+            if (productReader.getProductType() == SeadasProductReader.ProductType.VIIRS_EDR){
+                 dims= allData.getGroups().get(0).getVariables().get(0).getDimensions();
+            } else {
+                dims = allData.getGroups().get(0).getVariables().get(14).getDimensions();
+            }
+
             int sceneHeight = dims.get(0).getLength();
             int sceneWidth = dims.get(1).getLength();
 
@@ -57,7 +63,7 @@ public class ViirsEDRFileReader extends SeadasFileReader {
             addGlobalMetadata(product);
 //            addScientificMetadata(product);
 
-            variableMap = addBands(product, ncFile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
+            variableMap = addBands(product, ncFile.getVariables());
 
             addGeocoding(product);
 
@@ -72,19 +78,31 @@ public class ViirsEDRFileReader extends SeadasFileReader {
 
     public void addGeocoding(final Product product) throws ProductIOException {
         try {
-            String geoFileName = getStringAttribute("N_GEO_Ref");
-            //todo: put fix in for the fact that ODPS chops off the create date portion of the filename...
+            //todo: refine logic to get correct navGroup
             File inputFile = productReader.getInputFile();
-            if (!inputFile.getName().matches("_c\\d{20}_")){
-                geoFileName = geoFileName.replaceFirst("_c\\d{20}_","_");
-            }
+            String navGroup = "All_Data/VIIRS-MOD-GEO-TC_All";
+            String geoFileName = getStringAttribute("N_GEO_Ref");
             String path = inputFile.getParent();
-            String geopath = (new File(path,geoFileName)).getPath();
-            geofile = NetcdfFile.open(geopath);
+            File geocheck = new File(path,geoFileName);
+            if (!geocheck.exists()) {
+                geoFileName = geoFileName.replaceFirst("GMODO", "GMTCO");
+                geocheck = new File(path,geoFileName);
+                if (!geocheck.exists()){
+                    if (!inputFile.getName().matches("_c\\d{20}_")){
+                        geoFileName = geoFileName.replaceFirst("_c\\d{20}_", "_");
+                    }
+                    geocheck = new File(path,geoFileName);
+                    if (!geocheck.exists()){
+                        return;
+                    }
+                }
+            }
+
+            geofile = NetcdfFile.open(geocheck.getPath());
 
             final String longitude = "Longitude";
             final String latitude = "Latitude";
-            String navGroup = "All_Data/VIIRS-MOD-GEO-TC_All";
+
             Band latBand = new Band("latitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
             Band lonBand = new Band("longitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
             product.addBand(latBand);
@@ -118,7 +136,7 @@ public class ViirsEDRFileReader extends SeadasFileReader {
     public boolean mustFlipVIIRS() throws ProductIOException {
         List<Variable> vars = ncFile.getVariables();
         for (Variable var : vars) {
-            if (var.getShortName().contains("EDR_Gran_")) {
+            if (var.getShortName().contains("DR_Gran_")) {
                 List<Attribute> attrs = var.getAttributes();
                 for (Attribute attr : attrs) {
                     if (attr.getName().equals("Ascending/Descending_Indicator")) {
@@ -138,7 +156,7 @@ public class ViirsEDRFileReader extends SeadasFileReader {
     private void setStartEndTime(Product product) throws ProductIOException {
         List<Variable> dataProductList = ncFile.getRootGroup().findGroup("Data_Products").getGroups().get(0).getVariables();
         for (Variable var : dataProductList) {
-            if (var.getShortName().contains("EDR_Aggr")) {
+            if (var.getShortName().contains("DR_Aggr")) {
                 String startDate = var.findAttribute("AggregateBeginningDate").getStringValue().trim();
                 String startTime = var.findAttribute("AggregateBeginningTime").getStringValue().trim();
                 String endDate = var.findAttribute("AggregateEndingDate").getStringValue().trim();

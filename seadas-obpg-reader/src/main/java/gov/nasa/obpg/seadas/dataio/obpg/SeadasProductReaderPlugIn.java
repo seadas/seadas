@@ -174,7 +174,7 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
                         if (platformName.equals("NPP")){
                             Group dataProduct = ncfile.findGroup("Data_Products");
                             String dataProductList0 = dataProduct.getGroups().get(0).getShortName();
-                            if (dataProductList0.matches("VIIRS.*EDR")) {
+                            if (dataProductList0.matches("VIIRS.*DR")) {
                                 return DecodeQualification.INTENDED;
                             }
                         }else {

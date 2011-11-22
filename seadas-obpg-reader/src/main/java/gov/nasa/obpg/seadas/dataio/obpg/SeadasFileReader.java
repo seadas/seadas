@@ -35,11 +35,14 @@ public abstract class SeadasFileReader {
     protected Map<Band, Variable> variableMap;
     protected NetcdfFile ncFile;
     protected SeadasProductReader productReader;
+    protected Map<String, String> bandInfoMap = getL2BandInfoMap();
+    protected Map<String, String> flagsInfoMap = getL2FlagsInfoMap();
 
     public SeadasFileReader(SeadasProductReader productReader) {
         this.productReader = productReader;
         ncFile = productReader.getNcfile();
         globalAttributes = ncFile.getGlobalAttributes();
+
     }
 
     protected synchronized static HashMap<String, String> getL2BandInfoMap() {
@@ -141,10 +144,6 @@ public abstract class SeadasFileReader {
 
     }
 
-
-
-
-
     protected static BitmaskDef[] getDefaultBitmaskDefs(HashMap<String, String> l2FlagsInfoMap) {
         final InputStream stream = SeadasProductReader.class.getResourceAsStream("l2-bitmask-definitions.xml");
         if (stream != null) {
@@ -176,15 +175,37 @@ public abstract class SeadasFileReader {
     }
 //todo: separate individual band addition from the addBands method.
     public Map<Band, Variable> addBands(Product product,
-                                        List<Variable> variables,
-                                        Map<String, String> bandInfoMap,
-                                        Map<String, String> flagsInfoMap) {
+                                        List<Variable> variables) {
         final Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
+        for (Variable variable : variables) {
+            Band band = addNewBand(product, variable);
+            if(band != null){
+                bandToVariableMap.put(band, variable);
+            }
+        }
+        setSpectralBand(product);
+
+        return bandToVariableMap;
+    }
+
+    private void setSpectralBand(Product product) {
+        int spectralBandIndex = 0;
+        for (String name: product.getBandNames()){
+            Band band = product.getBandAt(product.getBandIndex(name));
+            if (name.matches("\\w+_\\d{3,}")) {
+                        final float wavelength = Float.parseFloat(name.split("_")[1]);
+                        band.setSpectralWavelength(wavelength);
+                        band.setSpectralBandIndex(spectralBandIndex++);
+            }
+        }
+    }
+
+    private Band addNewBand(Product product, Variable variable) {
         final int sceneRasterWidth = product.getSceneRasterWidth();
         final int sceneRasterHeight = product.getSceneRasterHeight();
-        int spectralBandIndex = 0;
-        for (Variable variable : variables) {
-            int variableRank = variable.getRank();
+        Band band = null;
+
+        int variableRank = variable.getRank();
             if (variableRank == 2) {
                 final int[] dimensions = variable.getShape();
                 final int height = dimensions[0];
@@ -192,24 +213,19 @@ public abstract class SeadasFileReader {
                 if (height == sceneRasterHeight && width == sceneRasterWidth) {
                     final String name = variable.getShortName();
                     final int dataType = getProductDataType(variable);
-                    final Band band = new Band(name, dataType, width, height);
+                    band = new Band(name, dataType, width, height);
                     final String validExpression = bandInfoMap.get(name);
                     if (validExpression != null && !validExpression.equals("")) {
                         band.setValidPixelExpression(validExpression);
                     }
                     product.addBand(band);
-                    if (name.matches("\\w+_\\d{3,}")) {
-                        final float wavelength = Float.parseFloat(name.split("_")[1]);
-                        band.setSpectralWavelength(wavelength);
-                        band.setSpectralBandIndex(spectralBandIndex++);
-                    }
+
                     try {
                         band.setNoDataValue((double) variable.findAttribute("bad_value_unscaled").getNumericValue().floatValue());
                     } catch (Exception e) {
 
                     }
-
-                    bandToVariableMap.put(band, variable);
+                    
                     final List<Attribute> list = variable.getAttributes();
                     FlagCoding flagCoding = null;
                     for (Attribute hdfAttribute : list) {
@@ -237,9 +253,7 @@ public abstract class SeadasFileReader {
                     }
                 }
             }
-        }
-
-        return bandToVariableMap;
+        return band;
     }
 
     public void addGlobalMetadata(Product product) {

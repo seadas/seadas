@@ -19,10 +19,6 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.AbstractProductReader;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
-import ucar.ma2.Array;
-import ucar.ma2.DataType;
-import ucar.ma2.InvalidRangeException;
-import ucar.ma2.Section;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
@@ -30,11 +26,7 @@ import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 
 // import org.opengis.filter.spatial.Equals;
@@ -56,7 +48,10 @@ public class SeadasProductReader extends AbstractProductReader {
         Level3_Bin("Level 3 Binned"),
         SMI("Level 3 Mapped"),
         SeadasMapped("SeaDAS Mapped"),
-        VIIRS_EDR("VIIRS EDR");
+        VIIRS_SDR("VIIRS SDR"),
+        VIIRS_EDR("VIIRS EDR"),
+        UNKNOWN("WHATUTALKINBOUTWILLIS");
+
 
         private String name;
 
@@ -84,7 +79,7 @@ public class SeadasProductReader extends AbstractProductReader {
     protected Product readProductNodesImpl() throws IOException {
 
         try {
-            Product product;
+//            Product product;
             final File inFile = getInputFile();
             final String path = inFile.getPath();
 
@@ -113,9 +108,11 @@ public class SeadasProductReader extends AbstractProductReader {
                 case SeadasMapped:
                     seadasFileReader = new SeadasMappedFileReader(this);
                     break;
+                case VIIRS_SDR:
                 case VIIRS_EDR:
-                    seadasFileReader = new ViirsEDRFileReader(this);
+                    seadasFileReader = new ViirsXDRFileReader(this);
                     break;
+
                 default:
                     throw new IOException("Unrecognized product type");
             }
@@ -181,25 +178,29 @@ public class SeadasProductReader extends AbstractProductReader {
         return false;
     }
 
-    public boolean checkViirsEDR() {
+    public ProductType checkViirsXDR() {
         Attribute platformShortName = ncfile.findGlobalAttribute("Platform_Short_Name");
         try {
             if(platformShortName.getStringValue().equals("NPP")) {
                 Group dataProduct = ncfile.findGroup("Data_Products");
-                if(dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*EDR")) {
-                    return true;
+                if(dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*SDR")) {
+                    return ProductType.VIIRS_SDR;
                 }
+                if(dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*EDR")) {
+                    return ProductType.VIIRS_EDR;
+                }
+
             }
 
         } catch (Exception e) {}
-        return false;
+        return ProductType.UNKNOWN;
     }
-
 
     public ProductType findProductType() throws ProductIOException {
 
         Attribute titleAttr = ncfile.findGlobalAttribute("Title");
-        String title = " ";
+        String title;
+        ProductType tmp;
         if (titleAttr != null) {
             title = titleAttr.getStringValue().trim();
             if (title.equals("CZCS Level-2 Data")) {
@@ -220,9 +221,9 @@ public class SeadasProductReader extends AbstractProductReader {
 
         } else if (checkModisL1B()) {
             return ProductType.Level1B_Modis;
-        } else if (checkViirsEDR()) {
-            return ProductType.VIIRS_EDR;
-        } else if (checkSeadasMapped()) {
+        } else if ((tmp = checkViirsXDR()) != ProductType.UNKNOWN) {
+            return tmp;
+        }  else if (checkSeadasMapped()) {
             return ProductType.SeadasMapped;
         }
 
