@@ -75,6 +75,9 @@ public class ViirsEDRFileReader extends SeadasFileReader {
             String geoFileName = getStringAttribute("N_GEO_Ref");
             //todo: put fix in for the fact that ODPS chops off the create date portion of the filename...
             File inputFile = productReader.getInputFile();
+            if (!inputFile.getName().matches("_c\\d{20}_")){
+                geoFileName = geoFileName.replaceFirst("_c\\d{20}_","_");
+            }
             String path = inputFile.getParent();
             String geopath = (new File(path,geoFileName)).getPath();
             geofile = NetcdfFile.open(geopath);

@@ -174,7 +174,7 @@ public abstract class SeadasFileReader {
         }
         return new BitmaskDef[0];
     }
-
+//todo: separate individual band addition from the addBands method.
     public Map<Band, Variable> addBands(Product product,
                                         List<Variable> variables,
                                         Map<String, String> bandInfoMap,
