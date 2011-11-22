@@ -41,7 +41,7 @@
     </changelog>
 
     <vendor>NASA Ocean Biology Processing Group</vendor>
-    <contactAddress>NASA GSFC, Code 614.2</contactAddress>
+    <contactAddress>NASA GSFC, Code 616</contactAddress>
     <copyright>(c) copyright - Not sure??</copyright>
     <url>http://oceancolor.gsfc.nasa.gov/seadas</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
