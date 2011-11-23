@@ -64,7 +64,7 @@ public class L2FileReader extends SeadasFileReader {
         addGlobalMetadata(product);
         addScientificMetadata(product);
 
-        variableMap = addBands(product, ncFile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
+        variableMap = addBands(product, ncFile.getVariables());
 
         addGeocoding(product);
 

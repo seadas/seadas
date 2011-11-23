@@ -50,7 +50,7 @@ public class SeadasMappedFileReader extends SeadasFileReader {
         product.setProductReader(productReader);
 
         addGlobalMetadata(product);
-        variableMap = addBands(product, ncFile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
+        variableMap = addBands(product, ncFile.getVariables());
 
         addGeocoding(product);
         return product;

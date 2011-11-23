@@ -200,7 +200,7 @@ public abstract class SeadasFileReader {
         }
     }
 
-    private Band addNewBand(Product product, Variable variable) {
+    protected Band addNewBand(Product product, Variable variable) {
         final int sceneRasterWidth = product.getSceneRasterWidth();
         final int sceneRasterHeight = product.getSceneRasterHeight();
         Band band = null;

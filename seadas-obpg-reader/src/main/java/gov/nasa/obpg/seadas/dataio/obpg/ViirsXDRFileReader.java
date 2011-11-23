@@ -1,14 +1,12 @@
 package gov.nasa.obpg.seadas.dataio.obpg;
 
 import com.bc.ceres.core.ProgressMonitor;
-import com.bc.jexp.EvalException;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
 import ucar.nc2.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -38,8 +36,8 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         try {
             Group allData = ncFile.findGroup("All_Data");
             List<Dimension> dims;
-            if (productReader.getProductType() == SeadasProductReader.ProductType.VIIRS_EDR){
-                 dims= allData.getGroups().get(0).getVariables().get(0).getDimensions();
+            if (productReader.getProductType() == SeadasProductReader.ProductType.VIIRS_EDR) {
+                dims = allData.getGroups().get(0).getVariables().get(0).getDimensions();
             } else {
                 dims = allData.getGroups().get(0).getVariables().get(14).getDimensions();
             }
@@ -60,8 +58,8 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.setFileLocation(productReader.getInputFile());
             product.setProductReader(productReader);
 
+            addGlobalAttributeVIIRS();
             addGlobalMetadata(product);
-//            addScientificMetadata(product);
 
             variableMap = addBands(product, ncFile.getVariables());
 
@@ -76,6 +74,65 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         }
     }
 
+    @Override
+    protected Band addNewBand(Product product, Variable variable) {
+        final int sceneRasterWidth = product.getSceneRasterWidth();
+        final int sceneRasterHeight = product.getSceneRasterHeight();
+        Band band = null;
+        String[] factors = {"Radiance", "Reflectance", "BulkSST", "SkinSST"};
+        int variableRank = variable.getRank();
+        if (variableRank == 2) {
+            final int[] dimensions = variable.getShape();
+            final int height = dimensions[0];
+            final int width = dimensions[1];
+            if (height == sceneRasterHeight && width == sceneRasterWidth) {
+                final String name = variable.getShortName();
+                final int dataType = getProductDataType(variable);
+                band = new Band(name, dataType, width, height);
+
+                product.addBand(band);
+
+                try {
+                    String varname = variable.getShortName();
+
+                    for (String v : factors) {
+                        if (v.equals(varname)) {
+                            String facvar = v + "Factors";
+                            Group group = ncFile.getRootGroup().findGroup("All_Data").getGroups().get(0);
+                            Variable factor = group.findVariable(facvar);
+
+                            Array slpoff = factor.read();
+                            float slope = slpoff.getFloat(0);
+
+                            float intercept = slpoff.getFloat(1);
+
+                            band.setScalingFactor((double) slope);
+                            band.setScalingOffset((double) intercept);
+                        }
+                    }
+                    band.setNoDataValue((double) variable.findAttribute("_FillValue").getNumericValue().floatValue());
+                } catch (Exception e) {
+
+                }
+//todo: think about interpreting QF fields for flag coding
+
+//                    FlagCoding flagCoding = null;
+//
+//                    if (flagCoding == null) {
+//                        flagCoding = new FlagCoding(name);
+//                    }
+//                    final int flagMask = convertToFlagMask(attribName);
+//                    flagCoding.addFlag(flagName, flagMask, flagsInfoMap.get(flagName));
+//
+//                    if (flagCoding != null) {
+//                        band.setSampleCoding(flagCoding);
+//                        product.getFlagCodingGroup().add(flagCoding);
+//                    }
+            }
+        }
+        return band;
+    }
+
     public void addGeocoding(final Product product) throws ProductIOException {
         try {
             //todo: refine logic to get correct navGroup
@@ -83,16 +140,16 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             String navGroup = "All_Data/VIIRS-MOD-GEO-TC_All";
             String geoFileName = getStringAttribute("N_GEO_Ref");
             String path = inputFile.getParent();
-            File geocheck = new File(path,geoFileName);
+            File geocheck = new File(path, geoFileName);
             if (!geocheck.exists()) {
                 geoFileName = geoFileName.replaceFirst("GMODO", "GMTCO");
-                geocheck = new File(path,geoFileName);
-                if (!geocheck.exists()){
-                    if (!inputFile.getName().matches("_c\\d{20}_")){
+                geocheck = new File(path, geoFileName);
+                if (!geocheck.exists()) {
+                    if (!inputFile.getName().matches("_c\\d{20}_")) {
                         geoFileName = geoFileName.replaceFirst("_c\\d{20}_", "_");
                     }
-                    geocheck = new File(path,geoFileName);
-                    if (!geocheck.exists()){
+                    geocheck = new File(path, geoFileName);
+                    if (!geocheck.exists()) {
                         return;
                     }
                 }
@@ -112,8 +169,8 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             Array latarr = geofile.findVariable(navGroup + "/" + latitude).read();
 
             Array lonarr = geofile.findVariable(navGroup + "/" + longitude).read();
-            float [] latitudes;
-            float [] longitudes;
+            float[] latitudes;
+            float[] longitudes;
             if (mustFlipX && mustFlipY) {
                 latitudes = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
                 longitudes = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
@@ -185,6 +242,29 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 }
 
             }
+        }
+    }
+
+    public void addGlobalAttributeVIIRS() {
+        List<Group> DataProductGroups = ncFile.getRootGroup().findGroup("Data_Products").getGroups();
+
+        for (Group dpgroup : DataProductGroups) {
+            String groupname = dpgroup.getShortName();
+            if (groupname.matches("VIIRS-.*DR$")) {
+                List<Variable> vars = dpgroup.getVariables();
+                for (Variable var : vars) {
+                    String varname = var.getShortName();
+                    if (varname.matches(".*_(Aggr|Gran_0)$")) {
+                        List<Attribute> attrs = var.getAttributes();
+                        for (Attribute attr : attrs) {
+                            globalAttributes.add(attr);
+
+                        }
+                    }
+
+                }
+            }
+
         }
     }
 }

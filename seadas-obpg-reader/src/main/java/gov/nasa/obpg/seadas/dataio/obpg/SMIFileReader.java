@@ -46,7 +46,7 @@ public class SMIFileReader extends SeadasFileReader {
 
         addGlobalMetadata(product);
         addSmiMetadata(product);
-         variableMap = addBands(product, ncFile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
+         variableMap = addBands(product, ncFile.getVariables());
 
         addGeocoding(product);
         return product;
