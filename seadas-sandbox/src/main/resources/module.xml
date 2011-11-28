@@ -38,16 +38,31 @@
 
 
     <extension point="beam-ui:actions">
+
+
+         <action>
+            <id>l1genAction</id>
+            <class>gov.nasa.obpg.seadas.sandbox.l1gen.L1genAction</class>
+            <parent>tools</parent>
+            <placeAfter>flipping</placeAfter>
+            <!--<placeBefore>orthorectificationAction</placeBefore>-->
+            <text>l1gen...</text>
+            <shortDescr>L1 File Generation</shortDescr>
+            <!--<helpId>reprojectionAction</helpId>-->
+        </action>
+
+
         <action>
             <id>l2genAction</id>
             <class>gov.nasa.obpg.seadas.sandbox.l2gen.L2genAction</class>
             <parent>tools</parent>
-            <placeAfter>flipping</placeAfter>
-            <placeBefore>orthorectificationAction</placeBefore>
+            <placeAfter>l1genAction</placeAfter>
+            <!--<placeBefore>orthorectificationAction</placeBefore>-->
             <text>l2gen...</text>
             <shortDescr>L2 File Generation</shortDescr>
             <!--<helpId>reprojectionAction</helpId>-->
         </action>
+
 
     </extension>
 
