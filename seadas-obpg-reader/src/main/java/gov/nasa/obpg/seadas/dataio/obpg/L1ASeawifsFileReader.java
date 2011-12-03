@@ -29,9 +29,6 @@ public class L1ASeawifsFileReader extends SeadasFileReader {
 
     @Override
     public Product createProduct() throws ProductIOException {
-        final HashMap<String, String> l2FlagsInfoMap = getL2FlagsInfoMap();
-        final BitmaskDef[] defs = getDefaultBitmaskDefs(l2FlagsInfoMap);
-
 
         int sceneWidth = getIntAttribute("Pixels per Scan Line");
         int sceneHeight = getIntAttribute("Number of Scan Lines");
@@ -58,7 +55,6 @@ public class L1ASeawifsFileReader extends SeadasFileReader {
         addGlobalMetadata(product);
         addScientificMetadata(product);
 
-        //variableMap = addBands(product, ncFile.getVariables(), l2BandInfoMap, l2FlagsInfoMap);
         variableMap = addSeawifsBands(product, ncFile.getVariables());
 
         ObpgGeonav geonavCalculator = new ObpgGeonav(ncFile);
@@ -78,7 +74,7 @@ public class L1ASeawifsFileReader extends SeadasFileReader {
             throw new ProductIOException(e.getMessage());
         }
 
-        addBitmaskDefinitions(product, defs);
+        addFlagsAndMasks(product);
 
         return product;
 

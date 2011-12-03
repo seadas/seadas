@@ -4,12 +4,6 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.util.io.CsvReader;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.DOMBuilder;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
@@ -19,14 +13,16 @@ import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class SeadasFileReader {
     protected boolean mustFlipX;
@@ -143,35 +139,177 @@ public abstract class SeadasFileReader {
         }
 
     }
+    final static Color LandBrown = new Color (100, 49, 12);
+    final static Color LightBrown = new Color (137,99,31);
+    final static Color FailRed = new Color(255,0,26);
+    final static Color DeepBlue = new Color(0,16,143);
+    final static Color BrightPink = new Color(255,61,245);
+    final static Color LightCyan = new Color(193,255,254);
+    final static Color NewGreen = new Color(132,199,101);
+    final static Color Mustard = new Color(206,204,70);
+    final static Color MediumGray = new Color(160,160,160);
+    final static Color Purple = new Color(141,11,134);
+    final static Color Coral = new Color(255,0,95);
+    final static Color DarkGreen = new Color(0,101,28);
+    final static Color TealGreen = new Color(0,80,79);
+    final static Color LightPink = new Color(255,208,241);
+    final static Color LightPurple = new Color(191,143,247);
+    final static Color BurntUmber = new Color(165,0,11);
+    final static Color TealBlue = new Color(0,103,144);
+    final static Color Cornflower = new Color(38,115,245);
 
-    protected static BitmaskDef[] getDefaultBitmaskDefs(HashMap<String, String> l2FlagsInfoMap) {
-        final InputStream stream = SeadasProductReader.class.getResourceAsStream("l2-bitmask-definitions.xml");
-        if (stream != null) {
-            try {
-                final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                final DocumentBuilder builder = factory.newDocumentBuilder();
-                final org.w3c.dom.Document w3cDocument = builder.parse(stream);
-                final Document document = new DOMBuilder().build(w3cDocument);
-                final List<Element> children = document.getRootElement().getChildren("Bitmask_Definition");
-                final ArrayList<BitmaskDef> bitmaskDefList = new ArrayList<BitmaskDef>(children.size());
-                for (Element element : children) {
-                    final BitmaskDef bitmaskDef = BitmaskDef.createBitmaskDef(element);
-                    final String description = l2FlagsInfoMap.get(bitmaskDef.getName());
-                    bitmaskDef.setDescription(description);
-                    bitmaskDefList.add(bitmaskDef);
-                }
-                return bitmaskDefList.toArray(new BitmaskDef[bitmaskDefList.size()]);
-            } catch (Exception e) {
-                // ?
-            } finally {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    // ?
-                }
-            }
+    protected void addFlagsAndMasks(Product product) {
+        Band QFBand = product.getBand("l2_flags");
+        if (QFBand != null) {
+            FlagCoding flagCoding = new FlagCoding("L2Flags");
+            flagCoding.addFlag("ATMFAIL", 0x01, "Atmospheric correction failure");
+            flagCoding.addFlag("LAND", 0x02, "Land");
+            flagCoding.addFlag("PRODWARN", 0x04, "One (or more) product algorithms generated a warning");
+            flagCoding.addFlag("HIGLINT", 0x08, "High glint determined");
+            flagCoding.addFlag("HILT", 0x10, "High (or saturating) TOA radiance");
+            flagCoding.addFlag("HISATZEN", 0x20, "Large satellite zenith angle");
+            flagCoding.addFlag("COASTZ", 0x40, "Shallow water (<30m)");
+            flagCoding.addFlag("SPARE8", 0x80, "Unused");
+            flagCoding.addFlag("STRAYLIGHT", 0x100, "Straylight determined");
+            flagCoding.addFlag("CLDICE", 0x200, "Cloud/Ice determined");
+            flagCoding.addFlag("COCCOLITH", 0x400, "Coccolithophores detected");
+            flagCoding.addFlag("TURBIDW", 0x800, "Turbid water determined");
+            flagCoding.addFlag("HISOLZEN", 0x1000, "High solar zenith angle");
+            flagCoding.addFlag("SPARE14", 0x2000, "Unused");
+            flagCoding.addFlag("LOWLW", 0x4000, "Low Lw @ 555nm (possible cloud shadow)");
+            flagCoding.addFlag("CHLFAIL", 0x8000, "Chlorophyll algorithm failure");
+            flagCoding.addFlag("NAVWARN", 0x10000, "Navigation suspect");
+            flagCoding.addFlag("ABSAER", 0x20000, "Absorbing Aerosols determined");
+            flagCoding.addFlag("SPARE19", 0x40000, "Unused");
+            flagCoding.addFlag("MAXAERITER", 0x80000, "Maximum iterations reached for NIR iteration");
+            flagCoding.addFlag("MODGLINT", 0x100000, "Moderate glint determined");
+            flagCoding.addFlag("CHLWARN", 0x200000, "Chlorophyll out-of-bounds (<0.01 or >100 mg m^-3)");
+            flagCoding.addFlag("ATMWARN", 0x400000, "Atmospheric correction warning; Epsilon out-of-bounds");
+            flagCoding.addFlag("SPARE24", 0x800000, "Unused");
+            flagCoding.addFlag("SEAICE", 0x1000000, "Sea ice determined");
+            flagCoding.addFlag("NAVFAIL", 0x2000000, "Navigation failure");
+            flagCoding.addFlag("FILTER", 0x4000000, "Insufficient data for smoothing filter");
+            flagCoding.addFlag("SSTWARN", 0x8000000, "Sea surface temperature suspect");
+            flagCoding.addFlag("SSTFAIL", 0x10000000, "Sea surface temperature algorithm failure");
+            flagCoding.addFlag("HIPOL", 0x20000000, "High degree of polariztion determined");
+            flagCoding.addFlag("PRODFAIL", 0x40000000, "One (or more) product algorithms produced a failure");
+            flagCoding.addFlag("SPARE32", 0x80000000, "Unused");
+
+
+            product.getFlagCodingGroup().add(flagCoding);
+            QFBand.setSampleCoding(flagCoding);
+
+
+            product.getMaskGroup().add(Mask.BandMathsType.create("ATMFAIL", "Atmospheric correction failure",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.ATMFAIL",
+                                                                 FailRed, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("LAND", "Land",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.LAND",
+                                                                 LandBrown, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("PRODWARN", "One (or more) product algorithms generated a warning",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.PRODWARN",
+                                                                 DeepBlue, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("HILT", "High (or saturating) TOA radiance",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.HILT",
+                                                                 Color.GRAY, 0.2));
+            product.getMaskGroup().add(Mask.BandMathsType.create("HIGLINT", "High glint determined",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.HIGLINT",
+                                                                 BrightPink, 0.2));
+            product.getMaskGroup().add(Mask.BandMathsType.create("HISATZEN", "Large satellite zenith angle",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.HISATZEN",
+                                                                 LightCyan, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("COASTZ", "Shallow water (<30m)",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.COASTZ",
+                                                                 BurntUmber, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("STRAYLIGHT", "Straylight determined",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.STRAYLIGHT",
+                                                                 Color.YELLOW, 0.2));
+            product.getMaskGroup().add(Mask.BandMathsType.create("CLDICE", "Cloud/Ice determined",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.CLDICE",
+                                                                 Color.WHITE, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("COCCOLITH", "Coccolithophores detected",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.COCCOLITH",
+                                                                 Color.CYAN, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("TURBIDW", "Turbid water determined",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.TURBIDW",
+                                                                 LightBrown, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("HISOLZEN", "High solar zenith angle",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.HISOLZEN",
+                                                                 Purple, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("LOWLW", "Low Lw @ 555nm (possible cloud shadow)",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.LOWLW",
+                                                                 Cornflower, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("CHLFAIL", "Chlorophyll algorithm failure",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.CHLFAIL",
+                                                                 FailRed, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("NAVWARN", "Navigation suspect",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.NAVWARN",
+                                                                 Color.MAGENTA, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("ABSAER", "Absorbing Aerosols determined",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.ABSAER",
+                                                                 Color.ORANGE, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("MAXAERITER", "Maximum iterations reached for NIR correction",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.MAXAERITER",
+                                                                 MediumGray, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("MODGLINT", "Moderate glint determined",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.MODGLINT",
+                                                                 LightPurple, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("CHLWARN", "Chlorophyll out-of-bounds (<0.01 or >100 mg m^-3)",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.CHLWARN",
+                                                                 Color.LIGHT_GRAY, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("ATMWARN", "Atmospheric correction warning; Epsilon out-of-bounds",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.ATMWARN",
+                                                                 Color.MAGENTA, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SEAICE", "Sea ice determined",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.SEAICE",
+                                                                 Color.DARK_GRAY, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("NAVFAIL", "Navigation failure",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.NAVFAIL",
+                                                                 FailRed, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("FILTER", "Insufficient data for smoothing filter",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.FILTER",
+                                                                 Color.LIGHT_GRAY, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SSTWARN", "Sea surface temperature suspect",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.SSTWARN",
+                                                                 Color.MAGENTA, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SSTFAIL", "Sea surface temperature algorithm failure",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.SSTFAIL",
+                                                                 FailRed, 0.1));
+            product.getMaskGroup().add(Mask.BandMathsType.create("HIPOL", "High degree of polariztion determined",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.HIPOL",
+                                                                 Color.PINK, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("PRODFAIL", "One (or more) product algorithms produced a failure",
+                                                                 product.getSceneRasterWidth(),
+                                                                 product.getSceneRasterHeight(), "l2_flags.PRODFAIL",
+                                                                 FailRed, 0.1));
+
         }
-        return new BitmaskDef[0];
     }
 //todo: separate individual band addition from the addBands method.
     public Map<Band, Variable> addBands(Product product,
@@ -276,12 +414,6 @@ public abstract class SeadasFileReader {
         if (group != null) {
             final MetadataElement sensorBandParam = getMetadataElementSave(product, "Sensor_Band_Parameters");
             handleMetadataGroup(group, sensorBandParam);
-        }
-    }
-
-    public void addBitmaskDefinitions(Product product, BitmaskDef[] defaultBitmaskDefs) {
-        for (BitmaskDef defaultBitmaskDef : defaultBitmaskDefs) {
-            product.addBitmaskDef(defaultBitmaskDef);
         }
     }
 

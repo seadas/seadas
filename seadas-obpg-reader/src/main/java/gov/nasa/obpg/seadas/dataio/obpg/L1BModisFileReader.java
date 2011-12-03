@@ -1,9 +1,7 @@
 package gov.nasa.obpg.seadas.dataio.obpg;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
-//import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.H;
 import org.esa.beam.framework.dataop.maptransf.Datum;
 import org.jdom.Element;
 import ucar.ma2.Array;
@@ -11,7 +9,6 @@ import ucar.ma2.ArrayChar;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
-import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.nc2.iosp.hdf4.ODLparser;
 
@@ -21,8 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-
-import static gov.nasa.obpg.seadas.dataio.obpg.ObpgUtils.SEAWIFS_L1A_TYPE;
+//import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.H;
 
 /**
  * Created by IntelliJ IDEA.
@@ -94,7 +90,7 @@ public class L1BModisFileReader extends SeadasFileReader {
         addGeocoding(product);
 
         // todo - think about maybe possibly sometime creating a flag for questionable data
-//        addBitmaskDefinitions(product, defs);
+//        addFlagsAndMasks(product);
         product.setAutoGrouping("RefSB:Emissive");
 
         return product;
