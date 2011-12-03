@@ -32,7 +32,7 @@ public abstract class SeadasFileReader {
     protected NetcdfFile ncFile;
     protected SeadasProductReader productReader;
     protected Map<String, String> bandInfoMap = getL2BandInfoMap();
-    protected Map<String, String> flagsInfoMap = getL2FlagsInfoMap();
+//    protected Map<String, String> flagsInfoMap = getL2FlagsInfoMap();
 
     public SeadasFileReader(SeadasProductReader productReader) {
         this.productReader = productReader;
@@ -44,10 +44,10 @@ public abstract class SeadasFileReader {
     protected synchronized static HashMap<String, String> getL2BandInfoMap() {
         return readTwoColumnTable("l2-band-info.csv");
     }
-
-    protected synchronized static HashMap<String, String> getL2FlagsInfoMap() {
-        return readTwoColumnTable("l2-flags-info.csv");
-    }
+//
+//    protected synchronized static HashMap<String, String> getL2FlagsInfoMap() {
+//        return readTwoColumnTable("l2-flags-info.csv");
+//    }
 
     public abstract Product createProduct() throws IOException;
 
@@ -365,7 +365,6 @@ public abstract class SeadasFileReader {
                     }
                     
                     final List<Attribute> list = variable.getAttributes();
-                    FlagCoding flagCoding = null;
                     for (Attribute hdfAttribute : list) {
                         final String attribName = hdfAttribute.getName();
                         if ("units".equals(attribName)) {
@@ -376,18 +375,7 @@ public abstract class SeadasFileReader {
                             band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
                         } else if ("intercept".equals(attribName)) {
                             band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
-                        } else if (attribName.matches("f\\d\\d_name")) {
-                            if (flagCoding == null) {
-                                flagCoding = new FlagCoding(name);
-                            }
-                            final String flagName = hdfAttribute.getStringValue();
-                            final int flagMask = convertToFlagMask(attribName);
-                            flagCoding.addFlag(flagName, flagMask, flagsInfoMap.get(flagName));
                         }
-                    }
-                    if (flagCoding != null) {
-                        band.setSampleCoding(flagCoding);
-                        product.getFlagCodingGroup().add(flagCoding);
                     }
                 }
             }

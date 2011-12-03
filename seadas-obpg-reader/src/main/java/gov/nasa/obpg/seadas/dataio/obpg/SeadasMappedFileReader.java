@@ -1,19 +1,13 @@
 package gov.nasa.obpg.seadas.dataio.obpg;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.*;
+import org.esa.beam.framework.datamodel.CrsGeoCoding;
+import org.esa.beam.framework.datamodel.Product;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import ucar.ma2.Array;
 import ucar.nc2.Attribute;
-import ucar.nc2.NetcdfFile;
-
-import java.util.HashMap;
-import java.util.List;
-
-import static gov.nasa.obpg.seadas.dataio.obpg.ObpgUtils.SEAWIFS_L1A_TYPE;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,8 +27,6 @@ public class SeadasMappedFileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
         //todo figure out if we even need these...
-        final HashMap<String, String> l2BandInfoMap = getL2BandInfoMap();
-        final HashMap<String, String> l2FlagsInfoMap = getL2FlagsInfoMap();
         addGlobalAttributeSeadasMapped();
 
         int sceneWidth = getIntAttribute("Scene Pixels");

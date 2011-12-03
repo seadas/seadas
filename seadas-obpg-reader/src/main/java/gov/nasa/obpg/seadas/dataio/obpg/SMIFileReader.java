@@ -1,18 +1,16 @@
 package gov.nasa.obpg.seadas.dataio.obpg;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.*;
+import org.esa.beam.framework.datamodel.CrsGeoCoding;
+import org.esa.beam.framework.datamodel.MetadataElement;
+import org.esa.beam.framework.datamodel.Product;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 
-import java.util.HashMap;
 import java.util.List;
-
-import static gov.nasa.obpg.seadas.dataio.obpg.ObpgUtils.SEAWIFS_L1A_TYPE;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,8 +28,6 @@ public class SMIFileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
         //todo incoroprate the SMI product table info to replace the getL2BandInfoMap stuff.
-        final HashMap<String, String> l2BandInfoMap = getL2BandInfoMap();
-        final HashMap<String, String> l2FlagsInfoMap = getL2FlagsInfoMap();
         int sceneWidth = getIntAttribute("Number of Columns");
         int sceneHeight = getIntAttribute("Number of Lines");
         String productName = getStringAttribute("Product Name");

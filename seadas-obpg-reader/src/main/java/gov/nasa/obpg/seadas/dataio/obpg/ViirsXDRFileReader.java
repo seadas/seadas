@@ -258,6 +258,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 
     @Override
     protected void addFlagsAndMasks(Product product) {
+        //todo: modify colors - use some of the new definitions in SeadasFileReader :)
         Band QFBand = product.getBand("QF1_VIIRSOCCEDR");
         if (QFBand != null) {
             FlagCoding flagCoding = new FlagCoding("QF1");
