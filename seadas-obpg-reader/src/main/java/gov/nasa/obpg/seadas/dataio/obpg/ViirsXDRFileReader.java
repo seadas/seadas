@@ -32,12 +32,17 @@ public class ViirsXDRFileReader extends SeadasFileReader {
     public Product createProduct() throws ProductIOException {
 
         try {
-            Group allData = ncFile.findGroup("All_Data");
             List<Dimension> dims;
+            String CollectionShortName = getCollectionShortName();
+
             if (productReader.getProductType() == SeadasProductReader.ProductType.VIIRS_EDR) {
-                dims = allData.getGroups().get(0).getVariables().get(0).getDimensions();
+                String groupName = "All_Data/"+CollectionShortName + "_All";
+                Group edrGroup = ncFile.findGroup(groupName);
+                dims = edrGroup.getVariables().get(0).getDimensions();
             } else {
-                dims = allData.getGroups().get(0).getVariables().get(14).getDimensions();
+                String varName = "All_Data/"+CollectionShortName + "_All/Radiance";
+                Variable exampleRadiance = ncFile.findVariable(varName);
+                dims =exampleRadiance.getDimensions();
             }
 
             int sceneHeight = dims.get(0).getLength();
@@ -226,6 +231,16 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 
             }
         }
+    }
+
+    private String getCollectionShortName() throws ProductIOException{
+        List<Attribute> gattr = ncFile.getGlobalAttributes();
+        for (Attribute attr: gattr){
+            if (attr.getName().endsWith("Collection_Short_Name")){
+                return  attr.getStringValue();
+            }
+        }
+        throw new  ProductIOException("Cannot find collection short name");
     }
 
     public void addGlobalAttributeVIIRS() {
