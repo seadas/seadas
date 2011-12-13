@@ -62,8 +62,16 @@
             <shortDescr>L2 File Generation</shortDescr>
             <!--<helpId>reprojectionAction</helpId>-->
         </action>
-
-
+        <action>
+            <id>OBPGProcessorAction</id>
+            <class>gov.nasa.obpg.seadas.sandbox.processor.SeadasProcessorAction</class>
+            <parent>tools</parent>
+            <placeAfter>l2genAction</placeAfter>
+            <placeBefore>orthorectificationAction</placeBefore>
+            <text>SeaDAS Processor...</text>
+            <shortDescr>Process SeaDAS Files</shortDescr>
+            <!--<helpId>reprojectionAction</helpId>-->
+        </action>
     </extension>
 
 
