@@ -326,7 +326,7 @@ public abstract class SeadasFileReader {
         return bandToVariableMap;
     }
 
-    private void setSpectralBand(Product product) {
+    protected void setSpectralBand(Product product) {
         int spectralBandIndex = 0;
         for (String name: product.getBandNames()){
             Band band = product.getBandAt(product.getBandIndex(name));

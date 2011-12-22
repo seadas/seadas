@@ -70,12 +70,33 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 
             product.setAutoGrouping("IOP:QF:nLw");
             addFlagsAndMasks(product);
+
+            setSpectralBand(product);
             return product;
         } catch (Exception e) {
             throw new ProductIOException(e.getMessage());
         }
     }
 
+    @Override
+    protected void setSpectralBand(Product product) {
+        //todo Add units
+        int spectralBandIndex = 0;
+        for (String name: product.getBandNames()){
+            Band band = product.getBandAt(product.getBandIndex(name));
+            if (name.matches(".*\\w+_\\d+.*")) {
+                String wvlstr = "";
+                if (name.matches("IOP.*_\\d+.*")) {
+                    wvlstr = name.split("_")[2].split("nm")[0];
+                } else if (name.matches("nLw_\\d+nm")){
+                    wvlstr = name.split("_")[1].split("nm")[0];
+                }
+                final float wavelength = Float.parseFloat(wvlstr);
+                band.setSpectralWavelength(wavelength);
+                band.setSpectralBandIndex(spectralBandIndex++);
+            }
+        }
+    }
     @Override
     protected Band addNewBand(Product product, Variable variable) {
         final int sceneRasterWidth = product.getSceneRasterWidth();
@@ -93,7 +114,6 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 band = new Band(name, dataType, width, height);
 
                 product.addBand(band);
-
                 try {
                     String varname = variable.getShortName();
 
@@ -112,6 +132,8 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                             band.setScalingOffset((double) intercept);
                         }
                     }
+                //todo Add valid expression - _FillValue is not working properly
+
                     band.setNoDataValue((double) variable.findAttribute("_FillValue").getNumericValue().floatValue());
                 } catch (Exception e) {
 
