@@ -352,6 +352,13 @@
             </include>
             <dependencies />
           </component>
+          <component name="Source" id="5290" customizedId="source" displayDescription="true" hideHelpButton="true" selected="false" changeable="true" downloadable="true" hidden="false">
+            <description>Source code for processing binaries</description>
+            <include all="false">
+              <entry location=".i4j_fileset_5285" fileType="regular" />
+            </include>
+            <dependencies />
+          </component>
           <folder name="Sensor Data Files" id="5151" customizedId="" displayDescription="true" hideHelpButton="true" expanded="false">
             <description>Sensor-specific data files
 NOTE: At least one is needed if data processing is selected.
@@ -484,18 +491,6 @@ You need only select the data files for the sensors for which processing is desi
               </component>
             </components>
           </folder>
-        </components>
-      </folder>
-      <folder name="Source Files" id="5289" customizedId="" displayDescription="false" hideHelpButton="false" expanded="false">
-        <description>Source code for processing binaries</description>
-        <components>
-          <component name="Source" id="5290" customizedId="source" displayDescription="false" hideHelpButton="false" selected="false" changeable="true" downloadable="true" hidden="false">
-            <description />
-            <include all="false">
-              <entry location=".i4j_fileset_5285" fileType="regular" />
-            </include>
-            <dependencies />
-          </component>
         </components>
       </folder>
     </components>
