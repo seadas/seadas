@@ -1029,7 +1029,7 @@ You need only select the data files for the sensors for which processing is desi
             <object class="com.install4j.runtime.beans.applications.UninstallerApplication">
               <void property="customHeaderImage">
                 <object class="com.install4j.api.beans.ExternalFile">
-                  <string>./src/main/resources/images/beam-installer.png</string>
+                  <string>./src/main/resources/images/seadas-installer.png</string>
                 </object>
               </void>
               <void property="executableDirectory">
@@ -1151,7 +1151,7 @@ You need only select the data files for the sensors for which processing is desi
             <preActivation />
             <postActivation />
             <actions>
-              <action name="" id="4177" customizedId="" beanClass="com.install4j.runtime.beans.actions.files.DeleteFileAction" enabled="true" commentSet="false" comment="" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage=" Failed to remove BEAM application data.">
+              <action name="" id="4177" customizedId="" beanClass="com.install4j.runtime.beans.actions.files.DeleteFileAction" enabled="true" commentSet="false" comment="" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage=" Failed to remove SeaDAS application data.">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.actions.files.DeleteFileAction">
@@ -1159,7 +1159,7 @@ You need only select the data files for the sensors for which processing is desi
                         <array class="java.io.File" length="1">
                           <void index="0">
                             <object class="java.io.File">
-                              <string>${installer:sys.userHome}/.beam</string>
+                              <string>${installer:sys.userHome}/.seadas</string>
                             </object>
                           </void>
                         </array>
