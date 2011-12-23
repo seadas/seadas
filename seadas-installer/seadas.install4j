@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="5.0.10" transformSequenceNumber="3">
-  <directoryPresets config="./src/main/resources/images" />
+  <directoryPresets config="../../../OCSSW/build/Makefile" />
   <application name="SeaDAS" distributionSourceDir="" applicationId="0750-9059-9532-8589" mediaDir="../../installers" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.version}_${compiler:sys.platform}_installer" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="true" createMd5Sums="true" shrinkRuntime="true" shortName="seadas" publisher="NASA Ocean Biogeochemical Processing Group" publisherWeb="http://seadas.gsfc.nasa.gov/" version="7.0" allPathsRelative="true" backupOnSave="true" autoSave="true" convertDotsToUnderscores="false" macSignature="????" installerName="" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="true" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
@@ -17,9 +17,11 @@
   <files keepModificationTimes="true" missingFilesStrategy="warn" globalExcludeSuffixes=".svn" defaultOverwriteMode="4" defaultUninstallMode="0" launcherOverwriteMode="3" defaultFileMode="644" defaultDirMode="755">
     <filesets>
       <fileset name="Data Processing" id="5130" customizedId="" />
+      <fileset name="Source Files" id="5285" customizedId="" />
     </filesets>
     <roots>
       <root id="5131" fileset="5130" location="" />
+      <root id="5286" fileset="5285" location="" />
     </roots>
     <mountPoints>
       <mountPoint id="17" root="" location="" mode="755" />
@@ -30,6 +32,8 @@
       <mountPoint id="5136" root="5131" location="Processing/run/data" mode="755" />
       <mountPoint id="5137" root="5131" location="Processing/run/scripts" mode="755" />
       <mountPoint id="5138" root="5131" location="Processing/run/var" mode="755" />
+      <mountPoint id="5287" root="5286" location="build" mode="755" />
+      <mountPoint id="5288" root="5286" location="build/lib3" mode="755" />
     </mountPoints>
     <entries>
       <dirEntry mountPoint="17" file="./src/main/resources" overwriteMode="4" shared="false" fileMode="644" uninstallMode="2" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="" excludeSuffixes="" dirMode="755" overrideDirMode="true">
@@ -131,7 +135,8 @@
           <entry location="aquarius" fileType="regular" />
           <entry location="czcs/nav.tar" fileType="regular" />
           <entry location="eval/.svn" fileType="regular" />
-          <entry location="eval/viirsn" fileType="regular" />
+          <entry location="seawifs/.svn" fileType="regular" />
+          <entry location="seawifs/aerosol/.svn" fileType="regular" />
           <entry location="seawifs/aerosol/seawifs_hzc_v20_r133_i000_z20_s00.dat" fileType="regular" />
           <entry location="seawifs/aerosol/seawifs_hzc_v20_r133_i001_z20_s00.dat" fileType="regular" />
           <entry location="seawifs/aerosol/seawifs_hzc_v20_r133_i003_z20_s00.dat" fileType="regular" />
@@ -204,10 +209,9 @@
           <entry location="seawifs/aerosol/seawifs_hzc_v45_r150_i010_z20_s00.dat" fileType="regular" />
           <entry location="seawifs/aerosol/seawifs_hzc_v45_r150_i030_z20_s00.dat" fileType="regular" />
           <entry location="seawifs/aerosol/seawifs_hzc_v45_r150_i040_z20_s00.dat" fileType="regular" />
-          <entry location="viirsn" fileType="regular" />
         </exclude>
       </dirEntry>
-      <dirEntry mountPoint="5137" file="../../../OCSSW/run/scripts" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="scripts" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="5137" file="../../../OCSSW/run/scripts" overwriteMode="4" shared="false" fileMode="755" uninstallMode="0" overrideFileMode="true" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="scripts" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="check_eph_times.csh" fileType="regular" />
@@ -256,6 +260,47 @@
           <entry location="aquarius" fileType="regular" />
         </exclude>
       </dirEntry>
+      <dirEntry mountPoint="5287" file="../../../OCSSW/build/inc" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="subdir" subDirectory="inc" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+        <exclude>
+          <entry location=".svn" fileType="regular" />
+        </exclude>
+      </dirEntry>
+      <dirEntry mountPoint="5288" file="../../../OCSSW/build/lib3/src" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="subdir" subDirectory="src" excludeSuffixes="" dirMode="755" overrideDirMode="false">
+        <exclude>
+          <entry location=".svn" fileType="regular" />
+          <entry location="zlib" fileType="regular" />
+        </exclude>
+      </dirEntry>
+      <dirEntry mountPoint="5287" file="../../../OCSSW/build/src" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="subdir" subDirectory="src" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+        <exclude>
+          <entry location=".svn" fileType="regular" />
+          <entry location="afocn" fileType="regular" />
+          <entry location="afphs" fileType="regular" />
+          <entry location="afrt1" fileType="regular" />
+          <entry location="afrt2" fileType="regular" />
+          <entry location="atm_tb_aquarius" fileType="regular" />
+          <entry location="cnvgrib" fileType="regular" />
+          <entry location="l0gen_aquarius" fileType="regular" />
+          <entry location="l1agen_aquarius" fileType="regular" />
+          <entry location="l1amerge_aquarius" fileType="regular" />
+          <entry location="l1info_aquarius" fileType="regular" />
+          <entry location="l2bin_aquarius" fileType="regular" />
+          <entry location="l2gen_aquarius" fileType="regular" />
+          <entry location="libaqgeo" fileType="regular" />
+          <entry location="libaqscatter" fileType="regular" />
+          <entry location="libaqsss" fileType="regular" />
+          <entry location="libaquarius" fileType="regular" />
+          <entry location="libscatterutils" fileType="regular" />
+          <entry location="mk_aquarius_ancillary_data" fileType="regular" />
+          <entry location="modis_timestamp" fileType="regular" />
+          <entry location="orbgen_aquarius" fileType="regular" />
+          <entry location="viirs_sim_sdr" fileType="regular" />
+          <entry location="wgrib" fileType="regular" />
+          <entry location="wgrib2" fileType="regular" />
+        </exclude>
+      </dirEntry>
+      <fileEntry mountPoint="5287" file="../../../OCSSW/build/CMakeLists.txt" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
+      <fileEntry mountPoint="5287" file="../../../OCSSW/build/Makefile" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
     </entries>
     <components>
       <component name="SeaDAS GUI" id="5147" customizedId="GUI" displayDescription="true" hideHelpButton="true" selected="true" changeable="false" downloadable="false" hidden="false">
@@ -427,8 +472,30 @@ You need only select the data files for the sensors for which processing is desi
                   <component id="4974" />
                 </dependencies>
               </component>
+              <component name="VIIRS" id="5291" customizedId="data-viirs" displayDescription="false" hideHelpButton="false" selected="false" changeable="true" downloadable="true" hidden="false">
+                <description />
+                <include all="false">
+                  <entry location=".i4j_external_5131/Processing/run/data/eval/viirsn" fileType="regular" />
+                  <entry location=".i4j_external_5131/Processing/run/data/viirsn" fileType="regular" />
+                </include>
+                <dependencies>
+                  <component id="4974" />
+                </dependencies>
+              </component>
             </components>
           </folder>
+        </components>
+      </folder>
+      <folder name="Source Files" id="5289" customizedId="" displayDescription="false" hideHelpButton="false" expanded="false">
+        <description>Source code for processing binaries</description>
+        <components>
+          <component name="Source" id="5290" customizedId="source" displayDescription="false" hideHelpButton="false" selected="false" changeable="true" downloadable="true" hidden="false">
+            <description />
+            <include all="false">
+              <entry location=".i4j_fileset_5285" fileType="regular" />
+            </include>
+            <dependencies />
+          </component>
         </components>
       </folder>
     </components>
@@ -480,7 +547,7 @@ You need only select the data files for the sensors for which processing is desi
             <object class="com.install4j.runtime.beans.applications.InstallerApplication">
               <void property="customHeaderImage">
                 <object class="com.install4j.api.beans.ExternalFile">
-                  <string>./src/main/resources/images/beam-installer.png</string>
+                  <string>./src/main/resources/images/seadas-installer.png</string>
                 </object>
               </void>
               <void property="frameSizeClientArea">
@@ -1957,19 +2024,23 @@ if (wizardContext != null) {
         <customAttributes />
       </autoUpdate>
       <excludedComponents>
+        <component id="5150" />
+        <component id="5000" />
+        <component id="4999" />
         <component id="4973" />
         <component id="4974" />
         <component id="4991" />
         <component id="4992" />
         <component id="4993" />
+        <component id="5139" />
         <component id="4994" />
         <component id="4995" />
         <component id="4996" />
         <component id="4997" />
         <component id="4998" />
-        <component id="4999" />
-        <component id="5000" />
-        <component id="5139" />
+        <component id="5154" />
+        <component id="5291" />
+        <component id="5289" />
       </excludedComponents>
       <includedDownloadableComponents />
     </windows>
@@ -1984,19 +2055,21 @@ if (wizardContext != null) {
         <customAttributes />
       </autoUpdate>
       <excludedComponents>
+        <component id="5150" />
+        <component id="5000" />
+        <component id="4999" />
         <component id="4973" />
         <component id="4974" />
         <component id="4991" />
         <component id="4992" />
         <component id="4993" />
+        <component id="5139" />
         <component id="4994" />
         <component id="4995" />
         <component id="4996" />
         <component id="4997" />
         <component id="4998" />
-        <component id="4999" />
-        <component id="5000" />
-        <component id="5139" />
+        <component id="5289" />
       </excludedComponents>
       <includedDownloadableComponents />
     </windows>
@@ -2013,6 +2086,7 @@ if (wizardContext != null) {
       <excludedComponents>
         <component id="5000" />
         <component id="4999" />
+        <component id="5291" />
       </excludedComponents>
       <includedDownloadableComponents />
     </macosFolder>
@@ -2027,8 +2101,9 @@ if (wizardContext != null) {
         <customAttributes />
       </autoUpdate>
       <excludedComponents>
-        <component id="4973" />
         <component id="5000" />
+        <component id="4973" />
+        <component id="5291" />
       </excludedComponents>
       <includedDownloadableComponents />
       <installerScript mode="1" file="">
@@ -2046,73 +2121,21 @@ if (wizardContext != null) {
         <customAttributes />
       </autoUpdate>
       <excludedComponents>
-        <component id="4973" />
         <component id="4999" />
+        <component id="4973" />
+        <component id="5291" />
       </excludedComponents>
       <includedDownloadableComponents />
       <installerScript mode="1" file="">
         <content />
       </installerScript>
     </unixInstaller>
-    <linuxRPM name="Linux RPM" id="4853" customizedId="" mediaFileName="${compiler:sys.shortName}_${compiler:sys.version}_linux64_installer" installDir="/opt/seadas" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="" manualJREEntry="false" os="linux" arch="i386">
-      <excludedLaunchers />
-      <excludedBeans />
-      <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude>
-        <entry location="Processing/run/bin/linux" fileType="regular" />
-        <entry location="Processing/run/bin/macosx_intel" fileType="regular" />
-        <entry location="Processing/run/bin3/linux" fileType="regular" />
-        <entry location="Processing/run/bin3/macosx_intel" fileType="regular" />
-      </exclude>
-      <variables />
-      <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
-        <commentFiles />
-        <customAttributes />
-      </autoUpdate>
-      <preInstallScript mode="1" file="">
-        <content />
-      </preInstallScript>
-      <postInstallScript mode="1" file="">
-        <content />
-      </postInstallScript>
-      <preUninstallScript mode="1" file="">
-        <content />
-      </preUninstallScript>
-      <postUninstallScript mode="1" file="">
-        <content />
-      </postUninstallScript>
-    </linuxRPM>
-    <linuxRPM name="Linux32 RPM" id="5009" customizedId="" mediaFileName="${compiler:sys.shortName}_${compiler:sys.version}_linux32_installer" installDir="/opt/seadas" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="" manualJREEntry="false" os="linux" arch="i386">
-      <excludedLaunchers />
-      <excludedBeans />
-      <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude>
-        <entry location="Processing/run/bin/linux_64" fileType="regular" />
-        <entry location="Processing/run/bin/macosx_intel" fileType="regular" />
-        <entry location="Processing/run/bin3/linux_64" fileType="regular" />
-        <entry location="Processing/run/bin3/macosx_intel" fileType="regular" />
-      </exclude>
-      <variables />
-      <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
-        <commentFiles />
-        <customAttributes />
-      </autoUpdate>
-      <preInstallScript mode="1" file="">
-        <content />
-      </preInstallScript>
-      <postInstallScript mode="1" file="">
-        <content />
-      </postInstallScript>
-      <preUninstallScript mode="1" file="">
-        <content />
-      </preUninstallScript>
-      <postUninstallScript mode="1" file="">
-        <content />
-      </postUninstallScript>
-    </linuxRPM>
   </mediaSets>
-  <buildIds buildAll="false">
+  <buildIds buildAll="true">
+    <mediaSet refId="20" />
+    <mediaSet refId="4707" />
     <mediaSet refId="126" />
+    <mediaSet refId="4713" />
     <mediaSet refId="128" />
   </buildIds>
   <buildOptions verbose="false" faster="false" debug="false" />
