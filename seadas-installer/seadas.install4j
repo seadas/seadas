@@ -2068,7 +2068,7 @@ if (wizardContext != null) {
       </excludedComponents>
       <includedDownloadableComponents />
     </windows>
-    <macosFolder name="Mac OS X Folder" id="126" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}-${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" customInstallBaseDir="" contentFilesType="3" downloadURL="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/data/">
+    <macosFolder name="Mac OS X Folder" id="126" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}-${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" customInstallBaseDir="" contentFilesType="3" downloadURL="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/data/${compiler:sys.version}">
       <excludedLaunchers />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
@@ -2085,7 +2085,7 @@ if (wizardContext != null) {
       </excludedComponents>
       <includedDownloadableComponents />
     </macosFolder>
-    <unixInstaller name="Linux32 JRE" id="4713" customizedId="" mediaFileName="${compiler:sys.shortName}_${compiler:sys.version}_linux32_installer" installDir="${compiler:sys.shortName}-${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" directDownload="false" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="3" downloadURL="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/data/">
+    <unixInstaller name="Linux32 JRE" id="4713" customizedId="" mediaFileName="${compiler:sys.shortName}_${compiler:sys.version}_linux32_installer" installDir="${compiler:sys.shortName}-${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" directDownload="false" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="3" downloadURL="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/data/${compiler:sys.version}">
       <excludedLaunchers />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
@@ -2105,7 +2105,7 @@ if (wizardContext != null) {
         <content />
       </installerScript>
     </unixInstaller>
-    <unixInstaller name="Linux JRE" id="128" customizedId="" mediaFileName="${compiler:sys.shortName}_${compiler:sys.version}_linux64_installer" installDir="${compiler:sys.shortName}-${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" directDownload="false" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="3" downloadURL="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/data/">
+    <unixInstaller name="Linux JRE" id="128" customizedId="" mediaFileName="${compiler:sys.shortName}_${compiler:sys.version}_linux64_installer" installDir="${compiler:sys.shortName}-${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" directDownload="false" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="3" downloadURL="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/data/${compiler:sys.version}">
       <excludedLaunchers />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
