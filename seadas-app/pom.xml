@@ -1,14 +1,12 @@
-<project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-      <groupId>gov.nasa.obpg.seadas</groupId>
-      <artifactId>seadas</artifactId>
-      <version>7.0-SNAPSHOT</version>
+        <groupId>gov.nasa.obpg.seadas</groupId>
+        <artifactId>seadas</artifactId>
+        <version>7.0-SNAPSHOT</version>
     </parent>
 
     <name>SeaDAS Application</name>
@@ -29,10 +27,69 @@
             <version>4.10-SNAPSHOT</version>
         </dependency>
         <dependency>
-             <groupId>org.esa.beam</groupId>
-             <artifactId>blue-marble-worldmap</artifactId>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>blue-marble-worldmap</artifactId>
             <version>1.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>globcover-worldmap</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-pixel-extraction</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-hdf5-writer</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-mosaic</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-scripting</artifactId>
+            <version>4.10-SNAPSHOT</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-binning</artifactId>-->
+            <!--<version>2.1</version>-->
+        <!--</dependency>-->
+
+        <!--Beam readers to import-->
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-merisl3-reader</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-modis-reader</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-envisat-reader</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-landsat-reader</artifactId>
+            <version>1.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-avhrr-reader</artifactId>
+            <version>1.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

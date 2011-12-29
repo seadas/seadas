@@ -40,5 +40,10 @@
             <artifactId>commons-cli</artifactId>
             <version>1.2</version>
         </dependency>
-        </dependencies>
+        <dependency>
+            <groupId>com.bc.ceres</groupId>
+            <artifactId>ceres-glayer</artifactId>
+            <version>0.13-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -49,16 +49,7 @@
             <artifactId>beam-help</artifactId>
             <version>4.10-SNAPSHOT</version>
         </dependency>
-        <dependency>
-             <groupId>org.esa.beam</groupId>
-             <artifactId>beam-envisat-reader</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-             <groupId>org.esa.beam</groupId>
-             <artifactId>beam-merisl3-reader</artifactId>
-            <version>1.1</version>
-        </dependency>
+
         <dependency>
              <groupId>org.esa.beam</groupId>
              <artifactId>beam-netcdf</artifactId>
@@ -75,7 +66,64 @@
             <groupId>org.esa.beam</groupId>
             <version>1.0</version>
         </dependency>
+       <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>globcover-worldmap</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-pixel-extraction</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-hdf5-writer</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-mosaic</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-scripting</artifactId>
+            <version>4.10-SNAPSHOT</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-binning</artifactId>-->
+            <!--<version>2.1</version>-->
+        <!--</dependency>-->
 
+        <!--Beam readers to import-->
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-merisl3-reader</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-modis-reader</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-envisat-reader</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-landsat-reader</artifactId>
+            <version>1.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-avhrr-reader</artifactId>
+            <version>1.1</version>
+        </dependency>
 
     </dependencies>
 
