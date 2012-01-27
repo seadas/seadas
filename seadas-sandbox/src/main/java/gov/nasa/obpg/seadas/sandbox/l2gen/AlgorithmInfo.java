@@ -8,7 +8,10 @@ import java.util.ArrayList;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class AlgorithmInfo {
+public class AlgorithmInfo extends BaseInfo {
+    public static enum ParameterType {
+        VISIBLE, IR, ALL, NONE
+    }
 
     private static String PARAMTYPE_VISIBLE = "VISIBLE";
     private static String PARAMTYPE_IR = "IR";
@@ -16,7 +19,6 @@ public class AlgorithmInfo {
     private static String PARAMTYPE_NONE = "NONE";
 
     // These fields are populated according to productList.xml
-    private String name = null;
     private boolean toStringShowProductName = false;
     private boolean toStringShowParameterType = false;
     private String description = null;
@@ -25,31 +27,35 @@ public class AlgorithmInfo {
     private String suffix = null;
     private String units = null;
     private ParameterType parameterType = null;
-    private ProductInfo productInfo = null;
 
-    // This is the more advanced feature enable product specific selection of wavelengths
-    private ArrayList<WavelengthInfo> wavelengthInfoArray = new ArrayList<WavelengthInfo>();
-
-    //
-
-
-    // This field is associated with the current selection state of the GUI control
-    private boolean isSelected = false;
     private boolean defaultSelected = false;
     private boolean wavelengthDependent = false;
     // todo make method to make   wavelengthDependent from   parameterType
 
 
-    public void clearWavelengthInfoArray() {
-        wavelengthInfoArray.clear();
+    public AlgorithmInfo(String name, String description, ParameterType parameterType) {
+        super(name);
+        this.description = description;
+        this.parameterType = parameterType;
     }
 
-    public void addWavelengthInfoArray(WavelengthInfo wavelengthInfo) {
-        wavelengthInfoArray.add(wavelengthInfo);
+    public AlgorithmInfo(String name, String description, String waveTypeStr) {
+        this(name, description, convertWavetype(waveTypeStr));
+    }
+
+    public AlgorithmInfo(String name, String description) {
+        this(name, description, ParameterType.NONE);
+    }
+
+    public AlgorithmInfo() {
+        this("", "", ParameterType.NONE);
     }
 
     public String getProductName() {
-        return productInfo.getName();
+        if (getParent() == null) {
+            return null;
+        }
+        return getParent().getName();
     }
 
     public boolean isToStringShowProductName() {
@@ -69,35 +75,20 @@ public class AlgorithmInfo {
     }
 
     public ProductInfo getProductInfo() {
-        return productInfo;
+        return (ProductInfo) getParent();
     }
 
     public void setProductInfo(ProductInfo productInfo) {
-        this.productInfo = productInfo;
+        setParent(productInfo);
     }
 
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
-
+    @Override
     public boolean isWavelengthDependent() {
         return wavelengthDependent;
     }
 
     public void setWavelengthDependent(boolean wavelengthDependent) {
         this.wavelengthDependent = wavelengthDependent;
-    }
-
-    public ArrayList<WavelengthInfo> getWavelengthInfoArray() {
-        return wavelengthInfoArray;
-    }
-
-    public void setWavelengthInfoArray(ArrayList<WavelengthInfo> wavelengthInfoArray) {
-        this.wavelengthInfoArray = wavelengthInfoArray;
     }
 
     public boolean isDefaultSelected() {
@@ -107,12 +98,6 @@ public class AlgorithmInfo {
     public void setDefaultSelected(boolean defaultSelected) {
         this.defaultSelected = defaultSelected;
     }
-
-
-    public static enum ParameterType {
-        VISIBLE, IR, ALL, NONE
-    }
-
 
     public String getDataType() {
         return dataType;
@@ -162,33 +147,21 @@ public class AlgorithmInfo {
         this.parameterType = convertWavetype(parameterTypeStr);
     }
 
+    @Override
+    public String getFullName() {
+        if (prefix != null && !prefix.isEmpty()) {
+            StringBuilder result = new StringBuilder(prefix);
+            if (suffix != null && !suffix.isEmpty()) {
+                result.append("_");
+                result.append(suffix);
+            }
+            return result.toString();
+        } else if (suffix != null && !suffix.isEmpty()) {
+            return suffix;
+        }
 
-    public String getName() {
-        return name;
+        return getName();
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public AlgorithmInfo(String name, String description, ParameterType parameterType) {
-        this.name = name;
-        this.description = description;
-        this.parameterType = parameterType;
-    }
-
-    public AlgorithmInfo(String name, String description) {
-        this(name, description, ParameterType.NONE);
-    }
-
-    public AlgorithmInfo() {
-    }
-
-    public AlgorithmInfo(String name, String description, String waveTypeStr) {
-        this(name, description, convertWavetype(waveTypeStr));
-    }
-
 
     private static ParameterType convertWavetype(String str) {
         if (str.compareToIgnoreCase(PARAMTYPE_VISIBLE) == 0) {
@@ -204,33 +177,31 @@ public class AlgorithmInfo {
         }
     }
 
-    public void dump() {
-        System.out.println("  " + name);
-    }
-
+    @Override
     public String toString() {
 
         StringBuilder myStringBuilder = new StringBuilder("");
 
         if (toStringShowProductName == true) {
-            myStringBuilder.append(productInfo.getName());
-
-
-
-                if (parameterType == ParameterType.VISIBLE) {
-                    myStringBuilder.append("_vvv");
-                } else if (parameterType == ParameterType.IR) {
-                    myStringBuilder.append("_iii");
-
-                } else if (parameterType == ParameterType.ALL) {
-                    myStringBuilder.append("_nnn");
+            if (getParent() != null) {
+                if (getParent().getName() != null && !getParent().getName().isEmpty()) {
+                    myStringBuilder.append(getParent().getName());
                 }
+            }
+
+            if (parameterType == ParameterType.VISIBLE) {
+                myStringBuilder.append("_vvv");
+            } else if (parameterType == ParameterType.IR) {
+                myStringBuilder.append("_iii");
+            } else if (parameterType == ParameterType.ALL) {
+                myStringBuilder.append("_nnn");
+            }
 
         }
 
-        if (name != null) {
-                    myStringBuilder.append("_");
-        myStringBuilder.append(name);
+        if (getName() != null && !getName().isEmpty()) {
+            myStringBuilder.append("_");
+            myStringBuilder.append(getName());
         }
 
         if (toStringShowParameterType == true) {
@@ -238,12 +209,7 @@ public class AlgorithmInfo {
             myStringBuilder.append(parameterType);
         }
 
-
         return myStringBuilder.toString();
-    }
-
-    public int compareTo(AlgorithmInfo p) {
-        return name.compareToIgnoreCase(p.name);
     }
 
 }

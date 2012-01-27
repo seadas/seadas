@@ -1,43 +1,37 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import java.util.ArrayList;
+
 /**
  * A ...
  *
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class WavelengthInfo {
+public class WavelengthInfo extends BaseInfo {
 
     public static final int VISIBLE_UPPER_LIMIT = 3000;
-    private int wavelength = -1;
-    private boolean isSelected = false;
-    private boolean defaultSelected = false;
-    private AlgorithmInfo algorithmInfo = null;
-    private boolean toStringShowProductName = false;
-
     public static final int NULL_WAVELENGTH = -1;
 
-    // applicable only to the global wavelengths not the product specific ones
-    private boolean isPartiallySelected = false;
+    private int wavelength = NULL_WAVELENGTH;
+    private boolean defaultSelected = false;
+    private boolean toStringShowProductName = false;
 
     public WavelengthInfo(int wavelength, AlgorithmInfo algorithmInfo) {
+        super(Integer.toString(wavelength), algorithmInfo);
         this.wavelength = wavelength;
-        this.algorithmInfo = algorithmInfo;
-    }
-
-    public WavelengthInfo() {
-
     }
 
     public WavelengthInfo(int wavelength) {
-        this.wavelength = wavelength;
+        this(wavelength, null);
     }
 
-    public WavelengthInfo(String wavelength) {
-        if (wavelength == null) {
+    public WavelengthInfo(String wavelengthStr) {
+        super(wavelengthStr);
+        try {
+            this.wavelength = Integer.parseInt(wavelengthStr);
+        } catch (Exception e) {
             this.wavelength = NULL_WAVELENGTH;
-        } else {
-            this.wavelength = Integer.parseInt(wavelength);
         }
     }
 
@@ -45,29 +39,78 @@ public class WavelengthInfo {
         return wavelength;
     }
 
-
     public void setWavelength(int wavelength) {
         this.wavelength = wavelength;
+        setName(Integer.toString(wavelength));
     }
 
     public String getWavelengthString() {
         return Integer.toString(wavelength);
     }
 
-    public boolean isSelected() {
-        return isSelected;
+    // override so we never have a partial state for a wavelength
+    @Override
+    public void setState(State state) {
+        if (state == State.PARTIAL) {
+            state = State.SELECTED;
+        }
+        super.setState(state);
     }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
+    @Override
+    public String getFullName() {
+        String productStr = "";
+        String algorithmStr = "";
+        String wavelengthStr = "";
 
+        BaseInfo algorithmInfo = getParent();
+        if (algorithmInfo == null) {
+            return getName();
+        }
+        algorithmStr = algorithmInfo.getName();
+        if (algorithmStr == null) {
+            algorithmStr = "";
+        }
+        if (wavelength == NULL_WAVELENGTH) {
+            wavelengthStr = null;
+        } else {
+            wavelengthStr = getName();
+        }
+        if (wavelengthStr == null) {
+            return algorithmInfo.getFullName();
+        }
+
+        BaseInfo productInfo = algorithmInfo.getParent();
+        if (productInfo != null) {
+            productStr = productInfo.getName();
+            if (productStr == null) {
+                productStr = "";
+            }
+        }
+
+        StringBuilder result = new StringBuilder();
+        if (!productStr.isEmpty()) {
+            result.append(productStr);
+        }
+        if (!wavelengthStr.isEmpty()) {
+            if (result.length() > 0) {
+                result.append("_");
+            }
+            result.append(wavelengthStr);
+        }
+        if (!algorithmStr.isEmpty()) {
+            if (result.length() > 0) {
+                result.append("_");
+            }
+            result.append(algorithmStr);
+        }
+        return result.toString();
+    }
 
     public boolean isVisible() {
         if (wavelength >= 0 && wavelength < VISIBLE_UPPER_LIMIT) {
             return true;
         }
-
         return false;
     }
 
@@ -79,38 +122,16 @@ public class WavelengthInfo {
     }
 
     public AlgorithmInfo getAlgorithmInfo() {
-        return algorithmInfo;
+        return (AlgorithmInfo) getParent();
     }
 
-    public void setAlgorithmInfo(AlgorithmInfo algorithmInfo) {
-        this.algorithmInfo = algorithmInfo;
-    }
-
-
+    @Override
     public String toString() {
-
         if (toStringShowProductName == true) {
-            StringBuilder myStringBuilder = new StringBuilder("");
-
-            myStringBuilder.append(algorithmInfo.getProductName());
-
-            if (wavelength != NULL_WAVELENGTH) {
-                myStringBuilder.append("_");
-                myStringBuilder.append(Integer.toString(wavelength));
-            }
-
-            if (algorithmInfo.getName() != null) {
-                myStringBuilder.append("_");
-                myStringBuilder.append(algorithmInfo.getName());
-            }
-
-            return myStringBuilder.toString();
-
+            return getFullName();
         } else {
-            return Integer.toString(wavelength);
+            return getName();
         }
-
-
     }
 
     public boolean isToStringShowProductName() {
@@ -128,4 +149,14 @@ public class WavelengthInfo {
     public void setDefaultSelected(boolean defaultSelected) {
         this.defaultSelected = defaultSelected;
     }
+
+    @Override
+    public boolean isWavelengthDependent() {
+        if(wavelength != NULL_WAVELENGTH) {
+            return true;
+        }
+        return false;
+    }
+
+
 }

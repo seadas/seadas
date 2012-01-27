@@ -8,22 +8,24 @@ package gov.nasa.obpg.seadas.sandbox.l2gen;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
-import org.esa.beam.framework.datamodel.*;
+import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
-import org.esa.beam.framework.gpf.ui.TargetProductSelectorModel;
 import org.esa.beam.framework.ui.AppContext;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EventObject;
 
 
 class L2genForm extends JTabbedPane {
@@ -95,6 +97,7 @@ class L2genForm extends JTabbedPane {
     private JButton selectedProductsEditLoadButton;
     private JButton selectedProductsCancelButton;
 
+    private JTree productJTree;
 
     private L2genData l2genData = new L2genData();
     private L2genReader l2genReader = new L2genReader(l2genData);
@@ -305,6 +308,7 @@ class L2genForm extends JTabbedPane {
         createWavelengthsSubTab(tabbedPane, "Wavelength Grouping Tool");
         createProductSelectorSubTab(tabbedPane, "Product Selector");
         createSelectedProductsSubTab(tabbedPane, "Selected Products Cart");
+        createTreeSubTab(tabbedPane, "Tree");
 
         //    tabbedPane.setEnabledAt(0, false);
         //  tabbedPane.setEnabledAt(2, false);
@@ -541,18 +545,6 @@ class L2genForm extends JTabbedPane {
 
         InputStream stream = L2genForm.class.getResourceAsStream(SEADAS_PRODUCTS_FILE);
 
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-//        String line;
-//
-//        try {
-//            while((line = reader.readLine()) != null) {
-//                  System.out.println(line + "\n");
-//            }
-//        } catch (IOException e) {
-//            // ok
-//        }
-
-
         l2genReader.readProductsXmlFile(stream);
 
         JPanel wavelengthIndependentProductsJPanel = new JPanel();
@@ -617,6 +609,262 @@ class L2genForm extends JTabbedPane {
 
     }
 
+    private TristateCheckBox.State getCheckboxState(BaseInfo.State state) {
+        switch (state) {
+            case SELECTED:
+                return TristateCheckBox.SELECTED;
+            case PARTIAL:
+                return TristateCheckBox.PARTIAL;
+            default:
+                return TristateCheckBox.NOT_SELECTED;
+        }
+    }
+
+    private BaseInfo.State getInfoState(TristateCheckBox.State state) {
+        if (state == TristateCheckBox.SELECTED) {
+            return BaseInfo.State.SELECTED;
+        }
+        if (state == TristateCheckBox.PARTIAL) {
+            return BaseInfo.State.PARTIAL;
+        }
+        return BaseInfo.State.NOT_SELECTED;
+
+    }
+
+    class CheckBoxNodeRenderer implements TreeCellRenderer {
+        private JPanel nodeRenderer = new JPanel();
+        private JLabel label = new JLabel();
+        private TristateCheckBox check = new TristateCheckBox();
+
+        Color selectionBorderColor, selectionForeground, selectionBackground,
+                textForeground, textBackground;
+
+        protected TristateCheckBox getJCheckBox() {
+            return check;
+        }
+
+        public CheckBoxNodeRenderer() {
+            Insets inset0 = new Insets(0, 0, 0, 0);
+            check.setMargin(inset0);
+            nodeRenderer.setLayout(new BorderLayout());
+            nodeRenderer.add(check, BorderLayout.WEST);
+            nodeRenderer.add(label, BorderLayout.CENTER);
+
+            Font fontValue;
+            fontValue = UIManager.getFont("Tree.font");
+            if (fontValue != null) {
+                check.setFont(fontValue);
+                label.setFont(fontValue);
+            }
+            Boolean booleanValue = (Boolean) UIManager
+                    .get("Tree.drawsFocusBorderAroundIcon");
+            check.setFocusPainted((booleanValue != null)
+                    && (booleanValue.booleanValue()));
+
+            selectionBorderColor = UIManager.getColor("Tree.selectionBorderColor");
+            selectionForeground = UIManager.getColor("Tree.selectionForeground");
+            selectionBackground = UIManager.getColor("Tree.selectionBackground");
+            textForeground = UIManager.getColor("Tree.textForeground");
+            textBackground = UIManager.getColor("Tree.textBackground");
+        }
+
+        public Component getTreeCellRendererComponent(JTree tree, Object value,
+                                                      boolean selected, boolean expanded, boolean leaf, int row,
+                                                      boolean hasFocus) {
+
+            System.out.print("getTreeCellRendererComponent (" + Integer.toString(row) + ") ");
+
+
+            String stringValue = null;
+            BaseInfo.State state = BaseInfo.State.NOT_SELECTED;
+
+            if ((value != null) && (value instanceof DefaultMutableTreeNode)) {
+                Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
+                if (userObject instanceof BaseInfo) {
+                    BaseInfo node = (BaseInfo) userObject;
+                    state = node.getState();
+                    stringValue = node.getFullName();
+
+
+                    System.out.print(node.getFullName() + " - " + state.toString());
+
+
+                }
+            }
+
+
+            System.out.print("\n");
+
+
+            if (stringValue == null) {
+                stringValue = tree.convertValueToText(value, selected, expanded, leaf, row, false);
+            }
+
+            label.setText(stringValue);
+            check.setState(getCheckboxState(state));
+            check.setEnabled(tree.isEnabled());
+
+            if (selected) {
+                label.setForeground(selectionForeground);
+                check.setForeground(selectionForeground);
+                nodeRenderer.setForeground(selectionForeground);
+                label.setBackground(selectionBackground);
+                check.setBackground(selectionBackground);
+                nodeRenderer.setBackground(selectionBackground);
+            } else {
+                label.setForeground(textForeground);
+                check.setForeground(textForeground);
+                nodeRenderer.setForeground(textForeground);
+                label.setBackground(textBackground);
+                check.setBackground(textBackground);
+                nodeRenderer.setBackground(textBackground);
+            }
+
+            return nodeRenderer;
+        }
+    }
+
+    class CheckBoxNodeEditor extends AbstractCellEditor implements TreeCellEditor {
+
+        CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
+        JTree tree;
+        BaseInfo currentValue;
+
+        public CheckBoxNodeEditor(JTree tree) {
+            this.tree = tree;
+
+            // add a listener fo the check box
+            ItemListener itemListener = new ItemListener() {
+                public void itemStateChanged(ItemEvent itemEvent) {
+                    TristateCheckBox.State state = renderer.getJCheckBox().getState();
+
+                    System.out.print("checkbox - " + renderer.label.getText() + " - " + state.toString() + "\n");
+                    System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
+
+                    if (stopCellEditing()) {
+                        fireEditingStopped();
+                    }
+                }
+            };
+            renderer.getJCheckBox().addItemListener(itemListener);
+        }
+
+        public Object getCellEditorValue() {
+
+            TristateCheckBox.State state = renderer.getJCheckBox().getState();
+
+            System.out.print("getCellEditorValue - " + renderer.label.getText() + " - " + state.toString() + "\n");
+            System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
+            l2genData.setSelectedInfo(currentValue, getInfoState(state));
+            System.out.print("   aval - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
+
+
+            return currentValue;
+        }
+
+        public boolean isCellEditable(EventObject event) {
+
+            return true;
+
+        }
+
+        public Component getTreeCellEditorComponent(JTree tree, Object value,
+                                                    boolean selected, boolean expanded, boolean leaf, int row) {
+
+            System.out.print("getTreeCellEditorComponent (" + Integer.toString(row) + ") " +
+                    ((BaseInfo) ((DefaultMutableTreeNode) value).getUserObject()).getFullName() + "\n");
+
+            if (value instanceof DefaultMutableTreeNode) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+                Object obj = node.getUserObject();
+                if (obj instanceof BaseInfo) {
+                    currentValue = (BaseInfo) obj;
+                    System.out.print("     " + currentValue.getFullName() + " - " + Boolean.toString(currentValue.isSelected()) + "\n");
+                }
+            }
+            Component editor = renderer.getTreeCellRendererComponent(tree, value,
+                    true, expanded, leaf, row, true);
+
+            return editor;
+        }
+    }
+
+
+    private TreeNode createTree() {
+        DefaultMutableTreeNode root, product, algorithm, wavelength;
+
+        root = new DefaultMutableTreeNode();
+        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
+            product = new DefaultMutableTreeNode(productInfo);
+            root.add(product);
+            if (productInfo.getChildren().size() > 1) {
+                for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                    algorithm = new DefaultMutableTreeNode(algorithmInfo);
+                    product.add(algorithm);
+                }
+            }
+        }
+
+        for (ProductInfo productInfo : l2genData.getWaveDependentProductInfoArray()) {
+            product = new DefaultMutableTreeNode(productInfo);
+            root.add(product);
+            for (BaseInfo aInfo : productInfo.getChildren()) {
+                AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+
+                if (algorithmInfo.getSuffix() == null || algorithmInfo.getSuffix().isEmpty()) {
+                    algorithm = product;
+                } else {
+                    algorithm = new DefaultMutableTreeNode(algorithmInfo);
+                    product.add(algorithm);
+                }
+                for (BaseInfo wavelengthInfo : algorithmInfo.getChildren()) {
+                    wavelength = new DefaultMutableTreeNode(wavelengthInfo);
+                    algorithm.add(wavelength);
+                }
+            }
+        }
+
+        return root;
+    }
+
+    private void updateProductTreePanel() {
+
+        TreeNode rootNode = createTree();
+        productJTree.setModel(new DefaultTreeModel(rootNode, false));
+
+    }
+
+
+    private void createTreeSubTab(JTabbedPane tabbedPane, String myTabname) {
+
+        TreeNode rootNode = createTree();
+        productJTree = new JTree(rootNode);
+
+        CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
+        productJTree.setCellRenderer(renderer);
+
+        productJTree.setCellEditor(new CheckBoxNodeEditor(productJTree));
+        productJTree.setEditable(true);
+
+        productJTree.setRootVisible(false);
+
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridBagLayout());
+
+        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+        c.anchor = GridBagConstraints.NORTHWEST;
+        // c.insets = new Insets(3, 3, 3, 3);
+        //c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.weighty = 1;
+
+//        mainPanel.add(new JScrollPane(treeTable), c);
+        mainPanel.add(new JScrollPane(productJTree), c);
+
+        tabbedPane.addTab(myTabname, mainPanel);
+
+    }
+
 
     //----------------------------------------------------------------------------------------
     // Methods involving Panels
@@ -651,49 +899,6 @@ class L2genForm extends JTabbedPane {
         return panel;
     }
 
-//    private void updateTargetProductName(Product selectedProduct) {
-//
-//        String outputProduct;
-//        String ofile = "";
-//
-//        final TargetProductSelectorModel selectorModel = targetProductSelector.getModel();
-//
-//        if (selectedProduct != null) {
-//            String productBasename;
-//
-//            int i = selectedProduct.getName().lastIndexOf('.');
-//            if (i != -1) {
-//                productBasename = selectedProduct.getName().substring(0, i);
-//            } else {
-//                productBasename = selectedProduct.getName();
-//            }
-//
-//            outputProduct = productBasename + "." + TARGET_PRODUCT_SUFFIX;
-//
-//
-//            int j = selectedProduct.getFileLocation().toString().lastIndexOf('.');
-//
-//            String ofileBasename;
-//            if (j != -1) {
-//                ofileBasename = selectedProduct.getFileLocation().toString().substring(0, j);
-//            } else {
-//                ofileBasename = selectedProduct.getFileLocation().toString();
-//            }
-//
-//            ofile = ofileBasename + "." + TARGET_PRODUCT_SUFFIX;
-//
-//            selectorModel.setProductName(outputProduct);
-//
-//        } else {
-//            outputProduct = null;
-//            ofile = "";
-//        }
-//
-//        debug("DEBUG ofile=" + ofile);
-//        l2genData.setParamValue(l2genData.OFILE, ofile);
-//
-//
-//    }
 
 
     private void createLatLonPane(JPanel inPanel) {
@@ -1229,9 +1434,9 @@ class L2genForm extends JTabbedPane {
         ArrayList<AlgorithmInfo> algorithmInfoArrayList = new ArrayList<AlgorithmInfo>();
 
         for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                algorithmInfo.setToStringShowProductName(true);
-                algorithmInfoArrayList.add(algorithmInfo);
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                ((AlgorithmInfo)algorithmInfo).setToStringShowProductName(true);
+                algorithmInfoArrayList.add((AlgorithmInfo)algorithmInfo);
             }
         }
 
@@ -1270,8 +1475,9 @@ class L2genForm extends JTabbedPane {
         ArrayList<WavelengthInfo> wavelengthInfoArrayList = new ArrayList<WavelengthInfo>();
 
         for (ProductInfo productInfo : l2genData.getWaveDependentProductInfoArray()) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                for (BaseInfo wInfo : algorithmInfo.getChildren()) {
+                    WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
                     wavelengthInfo.setToStringShowProductName(true);
                     for (WavelengthInfo wavelengthInfoLimiter : l2genData.getWavelengthLimiterArray()) {
                         if (wavelengthInfo.getWavelength() == wavelengthInfoLimiter.getWavelength()) {
@@ -1885,6 +2091,7 @@ class L2genForm extends JTabbedPane {
         this.setEnabledAt(SUB_SAMPLE_TAB_INDEX, true);
         //   createProductSelectorWavelengthsPanel();
         updateProductSelectorWavelengthsPanel();
+        updateProductTreePanel();
 
         setWaveDependentProductsJList();
         updateWavelengthCheckboxSelectionStateEvent();
@@ -1952,6 +2159,13 @@ class L2genForm extends JTabbedPane {
         selectedProductsJTable.setColumnSelectionAllowed(false);
         selectedProductsJTable.setCellSelectionEnabled(false);
         selectedProductsJPanel.add(selectedProductsJTable);
+
+
+        // just reload the model to update the tree
+
+        productJTree.treeDidChange();
+
+
     }
 
 
@@ -1969,7 +2183,7 @@ class L2genForm extends JTabbedPane {
     }
 
     private void updateOfileHandler() {
-        
+
         //todo
     }
 

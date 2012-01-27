@@ -92,7 +92,7 @@ public class L2genReader {
                                 waveDependentProductInfo = new ProductInfo(prodName);
                             }
 
-                            waveDependentProductInfo.addAlgorithmInfo(algorithmInfo);
+                            waveDependentProductInfo.addChild(algorithmInfo);
                             waveDependentProductInfo.setName(prodName);
                             algorithmInfo.setProductInfo(waveDependentProductInfo);
                             algorithmInfo.setWavelengthDependent(true);
@@ -101,7 +101,7 @@ public class L2genReader {
                             if (waveIndependentProductInfo == null) {
                                 waveIndependentProductInfo = new ProductInfo(prodName);
                             }
-                            waveIndependentProductInfo.addAlgorithmInfo(algorithmInfo);
+                            waveIndependentProductInfo.addChild(algorithmInfo);
                             waveIndependentProductInfo.setName(prodName);
                             algorithmInfo.setProductInfo(waveIndependentProductInfo);
                             algorithmInfo.setWavelengthDependent(false);

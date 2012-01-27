@@ -1,5 +1,8 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import com.sun.org.apache.xml.internal.security.algorithms.Algorithm;
+import ucar.units.Base;
+
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -53,23 +56,18 @@ public class L2genData {
 
     private ArrayList<WavelengthInfo> wavelengthLimiterArray = new ArrayList<WavelengthInfo>();
 
-
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
-
     public enum RegionType {Coordinates, PixelLines}
-
 
     public EventInfo[] eventInfos = {
             new EventInfo(WAVE_DEPENDENT_PRODUCT_CHANGED, this),
             new EventInfo(WAVE_INDEPENDENT_PRODUCT_CHANGED, this)
     };
 
-
     public L2genData() {
 
     }
-
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         boolean found = false;
@@ -129,41 +127,71 @@ public class L2genData {
     private void fireEvent(String eventName, Object oldValue, Object newValue) {
         for (EventInfo eventInfo : eventInfos) {
             if (eventName.equals(eventInfo.toString())) {
-                System.out.println("Firing event" + eventName);
+                System.out.println("Firing event - " + eventName);
                 eventInfo.fireEvent(oldValue, newValue);
             }
         }
     }
 
 
-    public void setSelectedWaveDependentProduct(WavelengthInfo inWavelengthInfo, boolean isSelected) {
-        for (ProductInfo productInfo : waveDependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
-                    if (inWavelengthInfo == wavelengthInfo) {
-                        if (wavelengthInfo.isSelected() != isSelected) {
-                            wavelengthInfo.setSelected(isSelected);
-                            fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
-                            return;
-                        }
-                    }
-                }
-            }
+    public void setSelectedWaveDependentProduct(WavelengthInfo wavelengthInfo, boolean isSelected) {
+        if (wavelengthInfo.isSelected() != isSelected) {
+            wavelengthInfo.setSelected(isSelected);
+            fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+            return;
         }
     }
 
 
-    public void setSelectedWaveIndependentProduct(AlgorithmInfo inAlgorithmInfo, boolean isSelected) {
+    public void setSelectedWaveIndependentProduct(AlgorithmInfo algorithmInfo, boolean isSelected) {
 
-        for (ProductInfo productInfo : waveIndependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                if (inAlgorithmInfo == algorithmInfo) {
-                    if (algorithmInfo.isSelected() != isSelected) {
-                        algorithmInfo.setSelected(isSelected);
-                        fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
-                    }
-                }
+        if (algorithmInfo.isSelected() != isSelected) {
+            algorithmInfo.setSelected(isSelected);
+            fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+        }
+    }
+
+    public void setSelectedProduct(ProductInfo productInfo, BaseInfo.State state) {
+        if(productInfo.getState() != state) {
+            productInfo.setState(state);
+            if(productInfo.isWavelengthDependent()) {
+                fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
             }
+            if(productInfo.isWavelengthIndependent()) {
+                fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+            }
+        }
+    }
+
+    public void setSelectedAlgorithm(AlgorithmInfo algorithmInfo, BaseInfo.State state) {
+        if(algorithmInfo.getState() != state) {
+            algorithmInfo.setState(state);
+            if(algorithmInfo.isWavelengthDependent()) {
+                fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+            } else {
+                fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+            }
+        }
+    }
+
+    public void setSelectedWavelength(WavelengthInfo wavelengthInfo, BaseInfo.State state) {
+        if(wavelengthInfo.getState() != state) {
+            wavelengthInfo.setState(state);
+            if(wavelengthInfo.isWavelengthDependent()) {
+                fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+            } else {
+                fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+            }
+        }
+    }
+
+    public void setSelectedInfo(BaseInfo info, BaseInfo.State state) {
+        if (info instanceof ProductInfo) {
+            setSelectedProduct((ProductInfo) info, state);
+        } else if (info instanceof AlgorithmInfo) {
+            setSelectedAlgorithm((AlgorithmInfo) info, state);
+        } else if (info instanceof WavelengthInfo) {
+            setSelectedWavelength((WavelengthInfo) info, state);
         }
     }
 
@@ -172,7 +200,7 @@ public class L2genData {
         ArrayList<Object> selectedProducts = new ArrayList<Object>();
 
         for (ProductInfo productInfo : waveIndependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
                 if (algorithmInfo.isSelected()) {
                     selectedProducts.add(algorithmInfo);
                 }
@@ -180,8 +208,8 @@ public class L2genData {
         }
 
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                for (BaseInfo wavelengthInfo : algorithmInfo.getChildren()) {
                     if (wavelengthInfo.isSelected()) {
                         selectedProducts.add(wavelengthInfo);
                     }
@@ -222,7 +250,7 @@ public class L2genData {
         StringBuilder prodlist = new StringBuilder("");
 
         for (ProductInfo productInfo : waveIndependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
                 if (algorithmInfo.isSelected()) {
                     StringBuilder product = new StringBuilder();
 
@@ -243,14 +271,14 @@ public class L2genData {
         }
 
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                for (BaseInfo wavelengthInfo : algorithmInfo.getChildren()) {
                     if (wavelengthInfo.isSelected()) {
                         StringBuilder product = new StringBuilder();
 
                         product.append(productInfo.getName());
                         product.append("_");
-                        product.append(wavelengthInfo.getWavelengthString());
+                        product.append(((WavelengthInfo) wavelengthInfo).getWavelengthString());
 
                         if (algorithmInfo.getName() != null) {
                             product.append("_");
@@ -642,9 +670,9 @@ public class L2genData {
         boolean waveIndependentProductInfoChanged = false;
 
         for (ProductInfo productInfo : waveIndependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                if (algorithmInfo.isSelected() != algorithmInfo.isDefaultSelected()) {
-                    algorithmInfo.setSelected(algorithmInfo.isDefaultSelected());
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                if (algorithmInfo.isSelected() != ((AlgorithmInfo)algorithmInfo).isDefaultSelected()) {
+                    algorithmInfo.setSelected(((AlgorithmInfo)algorithmInfo).isDefaultSelected());
                     waveIndependentProductInfoChanged = true;
                 }
             }
@@ -654,10 +682,10 @@ public class L2genData {
 
 
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
-                    if (wavelengthInfo.isSelected() != wavelengthInfo.isDefaultSelected()) {
-                        wavelengthInfo.setSelected(wavelengthInfo.isDefaultSelected());
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                for (BaseInfo wavelengthInfo : algorithmInfo.getChildren()) {
+                    if (wavelengthInfo.isSelected() != ((WavelengthInfo)wavelengthInfo).isDefaultSelected()) {
+                        wavelengthInfo.setSelected(((WavelengthInfo)wavelengthInfo).isDefaultSelected());
                         waveDependentProductInfoChanged = true;
                     }
                 }
@@ -787,17 +815,17 @@ public class L2genData {
 
         if (singleL2prodEntry != null) {
             for (ProductInfo productInfo : waveIndependentProductInfoArray) {
-                for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                    if (singleL2prodEntry.equals(getProductNameForSingleEntry(productInfo, algorithmInfo))) {
+                for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                    if (singleL2prodEntry.equals(getProductNameForSingleEntry(productInfo, (AlgorithmInfo)algorithmInfo))) {
                         return true;
                     }
                 }
             }
 
             for (ProductInfo productInfo : waveDependentProductInfoArray) {
-                for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+                for (BaseInfo algorithmInfo : productInfo.getChildren()) {
                     for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
-                        if (singleL2prodEntry.equals(getProductNameForSingleEntry(productInfo, algorithmInfo, wavelengthInfo))) {
+                        if (singleL2prodEntry.equals(getProductNameForSingleEntry(productInfo, (AlgorithmInfo)algorithmInfo, wavelengthInfo))) {
                             return true;
                         }
                     }
@@ -865,9 +893,10 @@ public class L2genData {
 
 
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                for (WavelengthInfo wavelengthInfo : algorithmInfo.getWavelengthInfoArray()) {
-                    String currL2genDataProductName = getProductNameForSingleEntry(productInfo, algorithmInfo, wavelengthInfo);
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                for (BaseInfo wInfo : algorithmInfo.getChildren()) {
+                    WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+                    String currL2genDataProductName = getProductNameForSingleEntry(productInfo, (AlgorithmInfo)algorithmInfo, wavelengthInfo);
 
                     if (newProdTreeSet.contains(currL2genDataProductName)) {
                         debug("TEMP " + wavelengthInfo.toString());
@@ -912,7 +941,8 @@ public class L2genData {
 
 
         for (ProductInfo productInfo : waveIndependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+            for (BaseInfo aInfo : productInfo.getChildren()) {
+                AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
                 String currL2genDataProductName = getProductNameForSingleEntry(productInfo, algorithmInfo);
 
                 if (newProdTreeSet.contains(currL2genDataProductName)) {
@@ -1129,8 +1159,9 @@ public class L2genData {
 
     public void resetWavelengthInfosInWaveDependentProductInfoArray() {
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                algorithmInfo.clearWavelengthInfoArray();
+            for (BaseInfo aInfo : productInfo.getChildren()) {
+                AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+                algorithmInfo.clearChildren();
 
                 for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
 
@@ -1138,15 +1169,15 @@ public class L2genData {
                         if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE ||
                                 algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
                             WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
-                            newWavelengthInfo.setAlgorithmInfo(algorithmInfo);
-                            algorithmInfo.addWavelengthInfoArray(newWavelengthInfo);
+                            newWavelengthInfo.setParent(algorithmInfo);
+                            algorithmInfo.addChild(newWavelengthInfo);
                         }
                     } else {
                         if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR ||
                                 algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
                             WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
-                            newWavelengthInfo.setAlgorithmInfo(algorithmInfo);
-                            algorithmInfo.addWavelengthInfoArray(newWavelengthInfo);
+                            newWavelengthInfo.setParent(algorithmInfo);
+                            algorithmInfo.addChild(newWavelengthInfo);
                         }
                     }
                 }
@@ -1154,11 +1185,11 @@ public class L2genData {
         }
 
         for (ProductInfo productInfo : waveIndependentProductInfoArray) {
-            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
-                algorithmInfo.clearWavelengthInfoArray();
+            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+                algorithmInfo.clearChildren();
                 WavelengthInfo newWavelengthInfo = new WavelengthInfo(null);
-                newWavelengthInfo.setAlgorithmInfo(algorithmInfo);
-                algorithmInfo.addWavelengthInfoArray(newWavelengthInfo);
+                newWavelengthInfo.setParent(algorithmInfo);
+                algorithmInfo.addChild(newWavelengthInfo);
             }
         }
     }

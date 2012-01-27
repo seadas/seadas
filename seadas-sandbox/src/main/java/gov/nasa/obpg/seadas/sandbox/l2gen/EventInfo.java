@@ -33,6 +33,9 @@ public class EventInfo {
         }
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     public String getName() {
         return name;
@@ -53,7 +56,7 @@ public class EventInfo {
             pending = true;
         } else {
             pending = false;
-            System.out.println("Firing event" + name);
+            System.out.println("Firing event - " + name);
             propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(sourceObject, name, oldValue, newValue));
         }
     }
