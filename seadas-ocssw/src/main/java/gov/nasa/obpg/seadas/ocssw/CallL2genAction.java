@@ -5,11 +5,15 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
+import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractVisatAction;
 
+import javax.swing.JOptionPane;
+import java.awt.Window;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -28,8 +32,21 @@ public class CallL2genAction extends AbstractVisatAction {
 
     @Override
     public void actionPerformed(CommandEvent event) {
+
         final AppContext appContext = getAppContext();
-        final Product selectedProduct = appContext.getSelectedProduct();
+        // UI Ã¶ffnen
+        final L2genGiopUI l2genGiopUI = new L2genGiopUI();
+
+        final String title = event.getCommand().getText();
+        final Window parent = appContext.getApplicationWindow();
+        final ModalDialog modalDialog = new ModalDialog(parent, title, l2genGiopUI, ModalDialog.ID_OK_CANCEL, null);
+        modalDialog.getButton(ModalDialog.ID_OK).setText("Run");
+        final int dialogResult = modalDialog.show();
+        if (dialogResult != ModalDialog.ID_OK) {
+            return;
+        }
+
+        final Product selectedProduct = l2genGiopUI.getSelectedSourceProduct();
         if (selectedProduct == null) {
             VisatApp.getApp().showErrorDialog("l2gen", "No product selected.");
             return;
@@ -50,9 +67,18 @@ public class CallL2genAction extends AbstractVisatAction {
         }
 
         final File inputFile = selectedProduct.getFileLocation();
-        final File outputFile = new File(selectedProduct.getFileLocation().getParentFile(), "l2gen-out-" + Long.toHexString(System.nanoTime()));
+        final File outputDir = inputFile.getParentFile();
+        final File parameterFile = createParameterFile(outputDir, l2genGiopUI.getProcessingParameters());
+        if (parameterFile == null) {
+            JOptionPane.showMessageDialog(parent,
+                                          "Unable to create parameter file '" + parameterFile + "'.",
+                                          "Error",
+                                          JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        final File outputFile = new File(outputDir, "l2gen-out-" + Long.toHexString(System.nanoTime()));
 
-        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(appContext.getApplicationWindow(), "Running l2gen...") {
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(parent, "Running l2gen...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
@@ -60,6 +86,7 @@ public class CallL2genAction extends AbstractVisatAction {
                         "${OCSSWROOT}/run/bin/${OCSSW_ARCH}/l2gen".replace("${OCSSWROOT}", ocsswRoot.getPath()).replace("${OCSSW_ARCH}", ocsswArch),
                         "ifile=" + inputFile,
                         "ofile=" + outputFile,
+                        "par=" + parameterFile
                 };
                 final String[] envp = {
                         "OCSSWROOT=${OCSSWROOT}".replace("${OCSSWROOT}", ocsswRoot.getPath()),
@@ -103,10 +130,30 @@ public class CallL2genAction extends AbstractVisatAction {
         swingWorker.execute();
     }
 
+    private File createParameterFile(File outputDir, final String parameterText) {
+        try {
+            final File tempFile = File.createTempFile("l2gen", ".par", outputDir);
+            tempFile.deleteOnExit();
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter(tempFile);
+                fileWriter.write(parameterText);
+            } finally {
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            }
+            return tempFile;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     /**
      * Handler that tries to extract progress from stdout of l2gen
      */
     private static class ProgressHandler implements ProcessObserver.Handler {
+
         boolean progressSeen;
         int lastScan = 0;
 
