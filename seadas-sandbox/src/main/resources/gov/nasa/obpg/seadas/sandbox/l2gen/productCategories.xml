@@ -146,7 +146,7 @@
     </category>
 
     <category name="Calibration Parameters (Inverse mode)">
-        <makeVisible>1</makeVisible>
+        <makeVisible>0</makeVisible>
         <product>vbsat</product>
         <product>vbtgt</product>
         <product>vgain</product>
