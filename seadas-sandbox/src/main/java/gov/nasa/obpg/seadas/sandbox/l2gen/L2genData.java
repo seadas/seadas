@@ -58,6 +58,9 @@ public class L2genData {
 
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
+    private boolean ignoreProductStateCheck = false;
+    private boolean ignoreAlgorithmStateCheck = false;
+
     public enum RegionType {Coordinates, PixelLines}
 
     public EventInfo[] eventInfos = {
@@ -151,39 +154,243 @@ public class L2genData {
         }
     }
 
-    public void setSelectedProduct(ProductInfo productInfo, BaseInfo.State state) {
-        if(productInfo.getState() != state) {
-            productInfo.setState(state);
-            if(productInfo.isWavelengthDependent()) {
+
+    private void checkProductState(ProductInfo productInfo) {
+        if (ignoreProductStateCheck) {
+            return;
+        }
+
+        BaseInfo.State newState = productInfo.getState();
+        int childCount = 0;
+
+        if (productInfo.hasChildren()) {
+            System.out.println("in checkProductState has chidren");
+            boolean selectedFound = false;
+            boolean notSelectedFound = false;
+
+            for (BaseInfo aInfo : productInfo.getChildren()) {
+                switch (aInfo.getState()) {
+                    case SELECTED:
+                        selectedFound = true;
+                        break;
+                    case PARTIAL:
+                        selectedFound = true;
+                        notSelectedFound = true;
+                        break;
+                    case NOT_SELECTED:
+                        notSelectedFound = true;
+                        break;
+                }
+            }
+            System.out.println("childCount="+childCount);
+
+            if (selectedFound && !notSelectedFound) {
+                newState = BaseInfo.State.SELECTED;
+            } else if (!selectedFound && notSelectedFound) {
+                newState = BaseInfo.State.NOT_SELECTED;
+            } else if (selectedFound && notSelectedFound) {
+                newState = BaseInfo.State.PARTIAL;
+            }
+
+        } else if (productInfo.getState() == BaseInfo.State.PARTIAL) {
+            newState = BaseInfo.State.SELECTED;
+        }
+
+        if (newState != productInfo.getState()) {
+            System.out.println("in checkProductState newState found =" + newState);
+            productInfo.setState(newState);
+
+            if (productInfo.isWavelengthDependent()) {
                 fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
             }
-            if(productInfo.isWavelengthIndependent()) {
+
+            if (productInfo.isWavelengthIndependent()) {
                 fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
             }
         }
+
     }
+
+
+    private void checkAlgorithmState(AlgorithmInfo algorithmInfo) {
+
+        if (ignoreAlgorithmStateCheck) {
+            return;
+        }
+
+        BaseInfo.State newState = algorithmInfo.getState();
+
+        if (algorithmInfo.isWavelengthDependent()) {
+            System.out.println("this algorithm has children");
+            boolean selectedFound = false;
+            boolean notSelectedFound = false;
+            int childCount = 0;
+
+            for (BaseInfo wInfo : algorithmInfo.getChildren()) {
+                switch (wInfo.getState()) {
+                    case SELECTED:
+                        selectedFound = true;
+                        break;
+                    case PARTIAL:
+                        selectedFound = true;
+                        notSelectedFound = true;
+                        break;
+                    case NOT_SELECTED:
+                        notSelectedFound = true;
+                        break;
+                }
+
+                childCount++;
+            }
+
+            System.out.println("childCount=" + childCount);
+
+            if (selectedFound && !notSelectedFound) {
+                newState = BaseInfo.State.SELECTED;
+            } else if (!selectedFound && notSelectedFound) {
+                newState = BaseInfo.State.NOT_SELECTED;
+            } else if (selectedFound && notSelectedFound) {
+                newState = BaseInfo.State.PARTIAL;
+            }
+        } else if (newState == BaseInfo.State.PARTIAL) {
+            System.out.println("in checkAlgorithmState converting newState to SELECTED");
+            newState = BaseInfo.State.SELECTED;
+        }
+
+        disableEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+        disableEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+
+        if (newState != algorithmInfo.getState()) {
+            System.out.println("in checkAlgorithmState newState found =" + newState);
+            algorithmInfo.setState(newState);
+
+            if (algorithmInfo.isWavelengthDependent()) {
+                fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+            }
+
+            if (algorithmInfo.isWavelengthIndependent()) {
+                fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+            }
+        }
+
+        checkProductState(algorithmInfo.getProductInfo());
+
+        enableEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+        enableEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+
+    }
+
+
+    public void setSelectedProduct(ProductInfo productInfo, BaseInfo.State state) {
+
+        System.out.println("setSelectedProduct called with state =" + state);
+        if (productInfo.getState() == state)
+            return;
+
+        disableEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+        disableEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+
+        productInfo.setState(state);
+
+        ignoreProductStateCheck = true;
+
+        for (BaseInfo aInfo : productInfo.getChildren()) {
+            setSelectedAlgorithm((AlgorithmInfo) aInfo, state);
+        }
+
+        ignoreProductStateCheck = false;
+
+        checkProductState(productInfo);
+
+        if (productInfo.isWavelengthDependent()) {
+            fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+        }
+        if (productInfo.isWavelengthIndependent()) {
+            fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+        }
+
+        enableEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+        enableEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+    }
+
 
     public void setSelectedAlgorithm(AlgorithmInfo algorithmInfo, BaseInfo.State state) {
-        if(algorithmInfo.getState() != state) {
+        System.out.println("setSelectedAlgorithm called with state =" + state);
+        if (algorithmInfo.getState() == state)
+            return;
+
+        disableEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+        disableEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+
+
+        if (algorithmInfo.isWavelengthDependent()) {
+
             algorithmInfo.setState(state);
-            if(algorithmInfo.isWavelengthDependent()) {
+            ignoreAlgorithmStateCheck = true;
+
+            // handle children
+            for (BaseInfo wInfo : algorithmInfo.getChildren()) {
+                if (state == BaseInfo.State.PARTIAL) {
+                    for (WavelengthInfo wavelengthLimitorInfo : wavelengthLimiterArray) {
+                        if (wavelengthLimitorInfo.getWavelength() == ((WavelengthInfo) wInfo).getWavelength()) {
+                            setSelectedWavelength((WavelengthInfo) wInfo, wavelengthLimitorInfo.getState());
+                        }
+                    }
+                } else {
+                    setSelectedWavelength((WavelengthInfo) wInfo, state);
+                }
+            }
+
+            ignoreAlgorithmStateCheck = false;
+
+        } else {
+            if (state == BaseInfo.State.PARTIAL) {
+                algorithmInfo.setState(BaseInfo.State.SELECTED);
+            } else {
+                algorithmInfo.setState(state);
+            }
+        }
+
+        checkAlgorithmState(algorithmInfo);
+
+        if (algorithmInfo.isWavelengthDependent()) {
+            fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+        }
+
+        if (algorithmInfo.isWavelengthIndependent()) {
+            fireEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+        }
+
+        enableEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+        enableEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+    }
+
+
+    public void setSelectedWavelength(WavelengthInfo wavelengthInfo, BaseInfo.State state) {
+        System.out.println("setSelectedWavelength called with state =" + state);
+        if (state == BaseInfo.State.PARTIAL) {
+            state = BaseInfo.State.SELECTED;
+        }
+
+        if (wavelengthInfo.getState() != state) {
+            disableEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+            disableEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
+
+            wavelengthInfo.setState(state);
+
+            checkAlgorithmState(wavelengthInfo.getAlgorithmInfo());
+
+            if (wavelengthInfo.isWavelengthDependent()) {
                 fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
             } else {
                 fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
             }
+
+            enableEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
+            enableEvent(WAVE_INDEPENDENT_PRODUCT_CHANGED);
         }
     }
 
-    public void setSelectedWavelength(WavelengthInfo wavelengthInfo, BaseInfo.State state) {
-        if(wavelengthInfo.getState() != state) {
-            wavelengthInfo.setState(state);
-            if(wavelengthInfo.isWavelengthDependent()) {
-                fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
-            } else {
-                fireEvent(WAVE_DEPENDENT_PRODUCT_CHANGED);
-            }
-        }
-    }
 
     public void setSelectedInfo(BaseInfo info, BaseInfo.State state) {
         if (info instanceof ProductInfo) {
@@ -671,8 +878,8 @@ public class L2genData {
 
         for (ProductInfo productInfo : waveIndependentProductInfoArray) {
             for (BaseInfo algorithmInfo : productInfo.getChildren()) {
-                if (algorithmInfo.isSelected() != ((AlgorithmInfo)algorithmInfo).isDefaultSelected()) {
-                    algorithmInfo.setSelected(((AlgorithmInfo)algorithmInfo).isDefaultSelected());
+                if (algorithmInfo.isSelected() != ((AlgorithmInfo) algorithmInfo).isDefaultSelected()) {
+                    algorithmInfo.setSelected(((AlgorithmInfo) algorithmInfo).isDefaultSelected());
                     waveIndependentProductInfoChanged = true;
                 }
             }
@@ -684,8 +891,8 @@ public class L2genData {
         for (ProductInfo productInfo : waveDependentProductInfoArray) {
             for (BaseInfo algorithmInfo : productInfo.getChildren()) {
                 for (BaseInfo wavelengthInfo : algorithmInfo.getChildren()) {
-                    if (wavelengthInfo.isSelected() != ((WavelengthInfo)wavelengthInfo).isDefaultSelected()) {
-                        wavelengthInfo.setSelected(((WavelengthInfo)wavelengthInfo).isDefaultSelected());
+                    if (wavelengthInfo.isSelected() != ((WavelengthInfo) wavelengthInfo).isDefaultSelected()) {
+                        wavelengthInfo.setSelected(((WavelengthInfo) wavelengthInfo).isDefaultSelected());
                         waveDependentProductInfoChanged = true;
                     }
                 }
@@ -816,7 +1023,7 @@ public class L2genData {
         if (singleL2prodEntry != null) {
             for (ProductInfo productInfo : waveIndependentProductInfoArray) {
                 for (BaseInfo algorithmInfo : productInfo.getChildren()) {
-                    if (singleL2prodEntry.equals(getProductNameForSingleEntry(productInfo, (AlgorithmInfo)algorithmInfo))) {
+                    if (singleL2prodEntry.equals(getProductNameForSingleEntry(productInfo, (AlgorithmInfo) algorithmInfo))) {
                         return true;
                     }
                 }
@@ -825,7 +1032,7 @@ public class L2genData {
             for (ProductInfo productInfo : waveDependentProductInfoArray) {
                 for (BaseInfo algorithmInfo : productInfo.getChildren()) {
                     for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
-                        if (singleL2prodEntry.equals(getProductNameForSingleEntry(productInfo, (AlgorithmInfo)algorithmInfo, wavelengthInfo))) {
+                        if (singleL2prodEntry.equals(getProductNameForSingleEntry(productInfo, (AlgorithmInfo) algorithmInfo, wavelengthInfo))) {
                             return true;
                         }
                     }
@@ -896,7 +1103,7 @@ public class L2genData {
             for (BaseInfo algorithmInfo : productInfo.getChildren()) {
                 for (BaseInfo wInfo : algorithmInfo.getChildren()) {
                     WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                    String currL2genDataProductName = getProductNameForSingleEntry(productInfo, (AlgorithmInfo)algorithmInfo, wavelengthInfo);
+                    String currL2genDataProductName = getProductNameForSingleEntry(productInfo, (AlgorithmInfo) algorithmInfo, wavelengthInfo);
 
                     if (newProdTreeSet.contains(currL2genDataProductName)) {
                         debug("TEMP " + wavelengthInfo.toString());

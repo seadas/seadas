@@ -194,5 +194,10 @@
         <product>myprod9</product>
     </category>
 
+    <category name="Uncategorized">
+        <makeVisible>0</makeVisible>
+    </category>
+
+
 </categoryList>
 

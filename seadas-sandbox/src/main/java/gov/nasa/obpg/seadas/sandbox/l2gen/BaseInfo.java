@@ -45,7 +45,6 @@ public class BaseInfo implements Comparable<BaseInfo> {
     private State state = State.NOT_SELECTED;
     private BaseInfo parent = null;
     private ArrayList<BaseInfo> children = new ArrayList<BaseInfo>();
-    private boolean ignoreCheckPartial;
 
     public BaseInfo() {
         this("", null);
@@ -89,23 +88,7 @@ public class BaseInfo implements Comparable<BaseInfo> {
     }
 
     public void setState(State state) {
-        if (this.state == state)
-            return;
-
         this.state = state;
-
-        if (state != State.PARTIAL) {
-            ignoreCheckPartial = true;
-            for (BaseInfo info : children) {
-                info.setState(state);
-            }
-            ignoreCheckPartial = false;
-        }
-
-        // set the partial state of the parent
-        if (parent != null) {
-            parent.checkPartialState();
-        }
     }
 
     public void nextState() {
@@ -122,37 +105,6 @@ public class BaseInfo implements Comparable<BaseInfo> {
         return state;
     }
 
-    public void checkPartialState() {
-        if (ignoreCheckPartial)
-            return;
-
-        boolean foundSelected = false;
-        boolean foundNotSelected = false;
-        for (BaseInfo info : children) {
-            if (info.isSelected()) {
-                foundSelected = true;
-            } else {
-                foundNotSelected = true;
-            }
-        }
-
-        State newState = state;
-        if (foundSelected && !foundNotSelected) {
-            newState = State.SELECTED;
-        } else if (!foundSelected && foundNotSelected) {
-            newState = State.NOT_SELECTED;
-        } else if (foundSelected && foundNotSelected) {
-            newState = State.PARTIAL;
-        }
-
-        if (newState != state) {
-            state = newState;
-            if (parent != null) {
-                parent.checkPartialState();
-            }
-        }
-
-    }
 
     public void setParent(BaseInfo parent) {
         this.parent = parent;

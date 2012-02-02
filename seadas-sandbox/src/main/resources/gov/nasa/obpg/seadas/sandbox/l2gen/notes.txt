@@ -1,0 +1,24 @@
+L2gen design notes:
+
+//todo Bug: Some events external to the tree are not being fully registering within the tree.
+when "adg" product is SELECTED which means all children are selected
+subsequent deselection of "adg_carder" via the "Selected Products Cart" results in
+the expected deselection of "adg_carder" in the tree but the "adg" product is not set as expected to PARTIAL.
+This because checkProductState and checkAlgorithmState need to be called.
+
+//todo New: Categorization
+We want to add a new layer of categorization as defined in the xml file productCategories.xml.
+We want to combined the waveDependent and waveIndependent products together within this list.
+
+//todo New: Product Tab Rearrangement
+put the cart, wavelength selector, selected products list and tree all on one page.
+
+//todo Bug: l2_prod entry is wrong
+When waveDependent product a_412 is selected via the tree or Jlist it appears as a_412_ in the l2_prod parameter.
+
+
+// todo ifile ofile stuff
+
+// make run button do something
+
+

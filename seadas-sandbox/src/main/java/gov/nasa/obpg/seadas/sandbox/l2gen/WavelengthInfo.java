@@ -48,15 +48,6 @@ public class WavelengthInfo extends BaseInfo {
         return Integer.toString(wavelength);
     }
 
-    // override so we never have a partial state for a wavelength
-    @Override
-    public void setState(State state) {
-        if (state == State.PARTIAL) {
-            state = State.SELECTED;
-        }
-        super.setState(state);
-    }
-
     @Override
     public String getFullName() {
         String productStr = "";
@@ -153,6 +144,14 @@ public class WavelengthInfo extends BaseInfo {
     @Override
     public boolean isWavelengthDependent() {
         if(wavelength != NULL_WAVELENGTH) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isWavelengthIndependent() {
+        if(wavelength == NULL_WAVELENGTH) {
             return true;
         }
         return false;

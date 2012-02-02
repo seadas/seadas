@@ -13,7 +13,8 @@ import java.beans.PropertyChangeListener;
 public class EventInfo {
 
     private String name;
-    private boolean enabled = true;
+    private int enabledCount = 0;
+
     private boolean pending = false;
     Object sourceObject;
     private SwingPropertyChangeSupport propertyChangeSupport;
@@ -26,7 +27,11 @@ public class EventInfo {
 
 
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        if (enabled) {
+            enabledCount++;
+        } else {
+            enabledCount--;
+        }
 
         if (pending) {
             fireEvent();
@@ -34,7 +39,12 @@ public class EventInfo {
     }
 
     public boolean isEnabled() {
-        return enabled;
+
+        if (enabledCount == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String getName() {
@@ -52,7 +62,7 @@ public class EventInfo {
     }
 
     public void fireEvent(Object oldValue, Object newValue) {
-        if (!enabled) {
+        if (!isEnabled()) {
             pending = true;
         } else {
             pending = false;

@@ -14,6 +14,8 @@ import org.esa.beam.framework.gpf.ui.TargetProductSelector;
 import org.esa.beam.framework.ui.AppContext;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
@@ -305,7 +307,7 @@ class L2genForm extends JTabbedPane {
         final JTabbedPane tabbedPane = new JTabbedPane();
 
 
-        createWavelengthsSubTab(tabbedPane, "Wavelength Grouping Tool");
+    //    createWavelengthsSubTab(tabbedPane, "Wavelength Grouping Tool");
         createProductSelectorSubTab(tabbedPane, "Product Selector");
         createSelectedProductsSubTab(tabbedPane, "Selected Products Cart");
         createTreeSubTab(tabbedPane, "Tree");
@@ -313,7 +315,7 @@ class L2genForm extends JTabbedPane {
         //    tabbedPane.setEnabledAt(0, false);
         //  tabbedPane.setEnabledAt(2, false);
 
-        tabbedPane.setSelectedIndex(1);
+        tabbedPane.setSelectedIndex(2);
 
 
         // Declare mainPanel and set it's attributes
@@ -388,13 +390,15 @@ class L2genForm extends JTabbedPane {
         mainPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
         mainPanel.setLayout(new GridBagLayout());
 
-        selectedProductsJPanel.add(selectedProductsJTable);
+        selectedProductsJPanel.add(new JScrollPane(selectedProductsJTable));
         GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1;
         c.weighty = 1;
         mainPanel.add(selectedProductsJPanel, c);
+
+
 
         selectedProductsRemoveButton.addActionListener(new ActionListener() {
             @Override
@@ -432,6 +436,193 @@ class L2genForm extends JTabbedPane {
         tabbedPane.addTab(myTabname, wrappedMainPanel);
     }
 
+    private void createSelectedProductsCartJPanelNew(JPanel inJPanel) {
+
+        final String COORDINATES_PANEL_TITLE = "Selected Products";
+
+        selectedProductsJPanel = new JPanel();
+        selectedProductsJTable = new JTable();
+
+        selectedProductsJTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                selectedProductsJTableMouseClickedHandler(e);
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+        JButton selectedProductsRemoveButton = new JButton("Remove");
+
+        // ----------------------------------------------------------------------------------------
+        // Create mainPanel to hold all controls
+        // ----------------------------------------------------------------------------------------
+
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
+        mainPanel.setLayout(new GridBagLayout());
+
+        selectedProductsJPanel.add(new JScrollPane(selectedProductsJTable));
+        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = 1;
+        c.weighty = 1;
+        mainPanel.add(selectedProductsJPanel, c);
+
+
+
+        selectedProductsRemoveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleSelectedProductsDelete();
+            }
+        });
+
+        //
+        //
+
+        c = SeadasGuiUtils.makeConstraints(0, 1);
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = 1;
+        c.weighty = 1;
+        mainPanel.add(selectedProductsRemoveButton, c);
+
+
+        // ----------------------------------------------------------------------------------------
+        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
+        // ----------------------------------------------------------------------------------------
+
+        final JPanel wrappedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(
+                mainPanel,
+                3,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE);
+
+
+        // ----------------------------------------------------------------------------------------
+        // Add wrappedMainPanel to tabbedPane
+        // ----------------------------------------------------------------------------------------
+
+        //tabbedPane.addTab(myTabname, wrappedMainPanel);
+        inJPanel.add(mainPanel);
+    }
+
+    
+    
+    
+    private JPanel createSelectedProductsCartJPanel() {
+
+        final String COORDINATES_PANEL_TITLE = "Selected Products";
+
+        selectedProductsJPanel = new JPanel();
+        selectedProductsJTable = new JTable();
+
+        selectedProductsJTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                selectedProductsJTableMouseClickedHandler(e);
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+        JButton selectedProductsRemoveButton = new JButton("Remove");
+
+        // ----------------------------------------------------------------------------------------
+        // Create mainPanel to hold all controls
+        // ----------------------------------------------------------------------------------------
+
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
+        mainPanel.setLayout(new GridBagLayout());
+
+        selectedProductsJPanel.add(new JScrollPane(selectedProductsJTable));
+        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = 1;
+        c.weighty = 1;
+        mainPanel.add(selectedProductsJPanel, c);
+
+
+
+        selectedProductsRemoveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleSelectedProductsDelete();
+            }
+        });
+
+        //
+        //
+
+        c = SeadasGuiUtils.makeConstraints(0, 1);
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = 1;
+        c.weighty = 1;
+        mainPanel.add(selectedProductsRemoveButton, c);
+
+
+        // ----------------------------------------------------------------------------------------
+        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
+        // ----------------------------------------------------------------------------------------
+
+        final JPanel wrappedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(
+                mainPanel,
+                3,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE);
+
+
+        // ----------------------------------------------------------------------------------------
+        // Add wrappedMainPanel to tabbedPane
+        // ----------------------------------------------------------------------------------------
+
+       // tabbedPane.addTab(myTabname, wrappedMainPanel);
+        return wrappedMainPanel;
+    }
+
     private void selectedProductsJTableMouseClickedHandler(MouseEvent e) {
         int row = selectedProductsJTable.rowAtPoint(e.getPoint());
         int col = selectedProductsJTable.columnAtPoint(e.getPoint());
@@ -446,6 +637,99 @@ class L2genForm extends JTabbedPane {
         }
 
     }
+
+
+
+    private JPanel createWavelengthsJPanel() {
+
+        // ----------------------------------------------------------------------------------------
+        // Create all Swing controls used on this tabbed panel
+        // ----------------------------------------------------------------------------------------
+
+
+        JTextArea explanationJTextArea = new JTextArea("Here is where we tell you all about this tool Here is where we tell you all about this tool Here is where we tell you all about this tool Here is where we tell you all about this tool Here is where we tell you all about this tool Here is where we tell you all about this tool");
+        explanationJTextArea.setEditable(false);
+        explanationJTextArea.setLineWrap(true);
+        explanationJTextArea.setColumns(50);
+        explanationJTextArea.setBackground(Color.decode("#dddddd"));
+
+
+        wavelengthTypeIiiCheckbox = new JCheckBox(WAVELENGTH_TYPE_INFRARED);
+        wavelengthTypeIiiCheckbox.setName(WAVELENGTH_TYPE_INFRARED);
+        wavelengthTypeIiiCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (wavelengthCheckboxControlHandlersEnabled) {
+                    l2genData.setSelectedWavelengthTypeIii(wavelengthTypeIiiCheckbox.isSelected());
+                }
+            }
+        });
+
+
+        wavelengthTypeVvvCheckbox = new JCheckBox(WAVELENGTH_TYPE_VISIBLE);
+        wavelengthTypeVvvCheckbox.setName(WAVELENGTH_TYPE_VISIBLE);
+        wavelengthTypeVvvCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (wavelengthCheckboxControlHandlersEnabled) {
+                    l2genData.setSelectedWavelengthTypeVvv(wavelengthTypeVvvCheckbox.isSelected());
+                }
+            }
+        });
+
+        wavelengthsJPanel = new JPanel();
+        wavelengthsJPanel.setBorder(BorderFactory.createTitledBorder("Wavelength Limiter"));
+        wavelengthsJPanel.setLayout(new GridBagLayout());
+
+
+        productsLimiterJPanel = new JPanel();
+        productsLimiterJPanel.setBorder(BorderFactory.createTitledBorder("Products"));
+        productsLimiterJPanel.setLayout(new GridBagLayout());
+
+
+        // ----------------------------------------------------------------------------------------
+        // Create mainPanel to hold all controls
+        // ----------------------------------------------------------------------------------------
+
+        final JPanel mainPanel = new JPanel();
+
+        mainPanel.setLayout(new GridBagLayout());
+
+        // Add to mainPanel grid cell
+
+        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.NORTH;
+        c.weightx = 1;
+        c.weighty = 1;
+        mainPanel.add(wavelengthsJPanel, c);
+
+//        c = SeadasGuiUtils.makeConstraints(0, 1);
+//        c.fill = GridBagConstraints.BOTH;
+//        c.anchor = GridBagConstraints.NORTH;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        mainPanel.add(productsLimiterJPanel, c);
+
+
+        // ----------------------------------------------------------------------------------------
+        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
+        // ----------------------------------------------------------------------------------------
+
+        JPanel wrappedMainPanel = SeadasGuiUtils.addWrapperPanel(mainPanel);
+
+
+        // ----------------------------------------------------------------------------------------
+        // Add wrappedMainPanel to tabbedPane
+        // ----------------------------------------------------------------------------------------
+
+       // tabbedPane.addTab(myTabname, wrappedMainPanel);
+        return mainPanel;
+
+    }
+
+
+
 
 
     private void createWavelengthsSubTab(JTabbedPane tabbedPane, String myTabname) {
@@ -672,7 +956,7 @@ class L2genForm extends JTabbedPane {
                                                       boolean selected, boolean expanded, boolean leaf, int row,
                                                       boolean hasFocus) {
 
-            System.out.print("getTreeCellRendererComponent (" + Integer.toString(row) + ") ");
+            // System.out.print("getTreeCellRendererComponent (" + Integer.toString(row) + ") ");
 
 
             String stringValue = null;
@@ -686,14 +970,14 @@ class L2genForm extends JTabbedPane {
                     stringValue = node.getFullName();
 
 
-                    System.out.print(node.getFullName() + " - " + state.toString());
+                    //  System.out.print(node.getFullName() + " - " + state.toString());
 
 
                 }
             }
 
 
-            System.out.print("\n");
+            //System.out.print("\n");
 
 
             if (stringValue == null) {
@@ -738,6 +1022,7 @@ class L2genForm extends JTabbedPane {
                 public void itemStateChanged(ItemEvent itemEvent) {
                     TristateCheckBox.State state = renderer.getJCheckBox().getState();
 
+                    System.out.print("********** listener ***********\n");
                     System.out.print("checkbox - " + renderer.label.getText() + " - " + state.toString() + "\n");
                     System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
 
@@ -746,14 +1031,31 @@ class L2genForm extends JTabbedPane {
                     }
                 }
             };
-            renderer.getJCheckBox().addItemListener(itemListener);
+            //renderer.getJCheckBox().addItemListener(itemListener);
+            renderer.getJCheckBox().addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    System.out.print("--changeListener\n");
+                    if (stopCellEditing()) {
+                        fireEditingStopped();
+                    }
+                }
+            });
+            renderer.getJCheckBox().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.print("--actionListener\n");
+                }
+            });
+
+
         }
 
         public Object getCellEditorValue() {
 
             TristateCheckBox.State state = renderer.getJCheckBox().getState();
 
-            System.out.print("getCellEditorValue - " + renderer.label.getText() + " - " + state.toString() + "\n");
+            System.out.print("-----getCellEditorValue - " + renderer.label.getText() + " - " + state.toString() + "\n");
             System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
             l2genData.setSelectedInfo(currentValue, getInfoState(state));
             System.out.print("   aval - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
@@ -779,7 +1081,7 @@ class L2genForm extends JTabbedPane {
                 Object obj = node.getUserObject();
                 if (obj instanceof BaseInfo) {
                     currentValue = (BaseInfo) obj;
-                    System.out.print("     " + currentValue.getFullName() + " - " + Boolean.toString(currentValue.isSelected()) + "\n");
+                    //System.out.print("     " + currentValue.getFullName() + " - " + Boolean.toString(currentValue.isSelected()) + "\n");
                 }
             }
             Component editor = renderer.getTreeCellRendererComponent(tree, value,
@@ -807,19 +1109,33 @@ class L2genForm extends JTabbedPane {
 
         for (ProductInfo productInfo : l2genData.getWaveDependentProductInfoArray()) {
             product = new DefaultMutableTreeNode(productInfo);
-            root.add(product);
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
 
-                if (algorithmInfo.getSuffix() == null || algorithmInfo.getSuffix().isEmpty()) {
-                    algorithm = product;
-                } else {
-                    algorithm = new DefaultMutableTreeNode(algorithmInfo);
-                    product.add(algorithm);
+            boolean wavelengthFound = false;
+
+            for (BaseInfo aInfo : productInfo.getChildren()) {
+                for (BaseInfo wInfo : aInfo.getChildren()) {
+                    if (((WavelengthInfo) wInfo).getWavelength() != WavelengthInfo.NULL_WAVELENGTH) {
+                        wavelengthFound = true;
+                    }
                 }
-                for (BaseInfo wavelengthInfo : algorithmInfo.getChildren()) {
-                    wavelength = new DefaultMutableTreeNode(wavelengthInfo);
-                    algorithm.add(wavelength);
+            }
+
+            if (wavelengthFound) {
+
+                root.add(product);
+                for (BaseInfo aInfo : productInfo.getChildren()) {
+                    AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+
+                    if (algorithmInfo.getSuffix() == null || algorithmInfo.getSuffix().isEmpty()) {
+                        algorithm = product;
+                    } else {
+                        algorithm = new DefaultMutableTreeNode(algorithmInfo);
+                        product.add(algorithm);
+                    }
+                    for (BaseInfo wavelengthInfo : algorithmInfo.getChildren()) {
+                        wavelength = new DefaultMutableTreeNode(wavelengthInfo);
+                        algorithm.add(wavelength);
+                    }
                 }
             }
         }
@@ -837,6 +1153,10 @@ class L2genForm extends JTabbedPane {
 
     private void createTreeSubTab(JTabbedPane tabbedPane, String myTabname) {
 
+        JPanel wavelengthsLimitorJPanel = createWavelengthsJPanel();
+    //    JPanel selectedProductsCartJPanel = new JPanel();
+     //   createSelectedProductsCartJPanelNew(selectedProductsCartJPanel);
+
         TreeNode rootNode = createTree();
         productJTree = new JTree(rootNode);
 
@@ -848,18 +1168,56 @@ class L2genForm extends JTabbedPane {
 
         productJTree.setRootVisible(false);
 
+
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
 
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+        GridBagConstraints c;
+
+
+        JPanel treeBorderJPanel = new JPanel();
+        treeBorderJPanel.setBorder(BorderFactory.createTitledBorder("Product Selector"));
+        treeBorderJPanel.setLayout(new GridBagLayout());
+
+        c = SeadasGuiUtils.makeConstraints(0, 0);
         c.anchor = GridBagConstraints.NORTHWEST;
-        // c.insets = new Insets(3, 3, 3, 3);
-        //c.fill = GridBagConstraints.BOTH;
+        c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
         c.weighty = 1;
+        treeBorderJPanel.add(new JScrollPane(productJTree), c);
 
+        c = SeadasGuiUtils.makeConstraints(0, 0);
+        c.anchor = GridBagConstraints.NORTHWEST;
+        // c.insets = new Insets(3, 3, 3, 3);
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.weighty = 1;
 //        mainPanel.add(new JScrollPane(treeTable), c);
-        mainPanel.add(new JScrollPane(productJTree), c);
+        mainPanel.add(treeBorderJPanel, c);
+
+
+
+        c = SeadasGuiUtils.makeConstraints(1, 0);
+        c.anchor = GridBagConstraints.NORTHEAST;
+        // c.insets = new Insets(3, 3, 3, 3);
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.weighty = 1;
+//        mainPanel.add(new JScrollPane(treeTable), c);
+        mainPanel.add(wavelengthsLimitorJPanel, c);
+        
+
+//        c = SeadasGuiUtils.makeConstraints(1, 0);
+//        c.anchor = GridBagConstraints.NORTHEAST;
+//        // c.insets = new Insets(3, 3, 3, 3);
+//        c.fill = GridBagConstraints.BOTH;
+//        c.weightx = 1;
+//        c.weighty = 1;
+////        mainPanel.add(new JScrollPane(treeTable), c);
+//        mainPanel.add(selectedProductsCartJPanel, c);
+//
+
+
 
         tabbedPane.addTab(myTabname, mainPanel);
 
@@ -898,7 +1256,6 @@ class L2genForm extends JTabbedPane {
         });
         return panel;
     }
-
 
 
     private void createLatLonPane(JPanel inPanel) {
@@ -1435,8 +1792,8 @@ class L2genForm extends JTabbedPane {
 
         for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
             for (BaseInfo algorithmInfo : productInfo.getChildren()) {
-                ((AlgorithmInfo)algorithmInfo).setToStringShowProductName(true);
-                algorithmInfoArrayList.add((AlgorithmInfo)algorithmInfo);
+                ((AlgorithmInfo) algorithmInfo).setToStringShowProductName(true);
+                algorithmInfoArrayList.add((AlgorithmInfo) algorithmInfo);
             }
         }
 
@@ -2028,7 +2385,7 @@ class L2genForm extends JTabbedPane {
         // some GridBagLayout formatting variables
         int gridyCnt = 0;
         int gridxCnt = 0;
-        int NUMBER_OF_COLUMNS = 5;
+        int NUMBER_OF_COLUMNS = 1;
 
 
         for (JCheckBox wavelengthGroupCheckbox : wavelengthGroupCheckboxes) {
@@ -2158,7 +2515,7 @@ class L2genForm extends JTabbedPane {
         selectedProductsJTable.setRowSelectionAllowed(false);
         selectedProductsJTable.setColumnSelectionAllowed(false);
         selectedProductsJTable.setCellSelectionEnabled(false);
-        selectedProductsJPanel.add(selectedProductsJTable);
+        selectedProductsJPanel.add(new JScrollPane(selectedProductsJTable));
 
 
         // just reload the model to update the tree

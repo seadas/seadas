@@ -124,7 +124,7 @@ public class TristateCheckBox extends JCheckBox {
                 private final ButtonModel other;
         private State state;
         private Color normalBG;
-        private Color partialBG = Color.green;
+        private Color partialBG = Color.black;
 
         private TristateDecorator(ButtonModel other) {
             this.other = other;
@@ -140,14 +140,14 @@ public class TristateCheckBox extends JCheckBox {
                 setSelected(false);
             } else if (state == SELECTED) {
                 setBackground(normalBG);
-                other.setArmed(false);
-                setPressed(false);
+                other.setArmed(true); // was false
+                setPressed(true); // was true
                 setSelected(true);
             } else { // either "null" or PARTIAL
                 setBackground(partialBG);
-                other.setArmed(true);
-                setPressed(true);
-                setSelected(false);
+                other.setArmed(false); // was true
+                setPressed(true);// was false
+                setSelected(true);
             }
         }
 
