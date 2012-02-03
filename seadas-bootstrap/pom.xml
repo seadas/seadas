@@ -44,11 +44,11 @@
             <artifactId>beam-visat-rcp</artifactId>
             <version>4.10-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-help</artifactId>
-            <version>4.10-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-help</artifactId>-->
+            <!--<version>4.10-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
         <dependency>
              <groupId>org.esa.beam</groupId>

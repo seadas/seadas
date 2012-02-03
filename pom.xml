@@ -50,6 +50,7 @@
 
         <module>seadas-app</module>
         <module>seadas-obpg-reader</module>
+        <module>seadas-help</module>
 
         <!--
             The following are supportive modules, they are not part of the distribution
@@ -176,74 +177,45 @@
                 <artifactId>beam-visat-rcp</artifactId>
                 <version>${beam.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-netcdf</artifactId>
-                <version>1.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>globcover-worldmap</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>blue-marble-worldmap</artifactId>
-                <version>1.0.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-pixel-extraction</artifactId>
-                <version>1.0.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-hdf5-writer</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-mosaic</artifactId>
-                <version>2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-scripting</artifactId>
-                <version>4.10-SNAPSHOT</version>
-            </dependency>
             <!--<dependency>-->
-            <!--<groupId>org.esa.beam</groupId>-->
-            <!--<artifactId>beam-binning</artifactId>-->
-            <!--<version>2.1</version>-->
+                <!--<groupId>org.esa.beam</groupId>-->
+                <!--<artifactId>beam-netcdf</artifactId>-->
+                <!--<version>1.1-SNAPSHOT</version>-->
             <!--</dependency>-->
-            <!--Beam readers to import-->
 
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-merisl3-reader</artifactId>
-                <version>1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-envisat-reader</artifactId>
-                <version>1.4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-modis-reader</artifactId>
-                <version>1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-landsat-reader</artifactId>
-                <version>1.3-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-avhrr-reader</artifactId>
-                <version>1.1</version>
-            </dependency>
+
+            <!--<dependency>-->
+                <!--<groupId>org.esa.beam</groupId>-->
+                <!--<artifactId>blue-marble-worldmap</artifactId>-->
+                <!--<version>1.0.1</version>-->
+            <!--</dependency>-->
+
+            <!--<dependency>-->
+                <!--<groupId>org.esa.beam</groupId>-->
+                <!--<artifactId>beam-pixel-extraction</artifactId>-->
+                <!--<version>1.0.1-SNAPSHOT</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.esa.beam</groupId>-->
+                <!--<artifactId>beam-hdf5-writer</artifactId>-->
+                <!--<version>1.0</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.esa.beam</groupId>-->
+                <!--<artifactId>beam-mosaic</artifactId>-->
+                <!--<version>2.3</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.esa.beam</groupId>-->
+                <!--<artifactId>beam-scripting</artifactId>-->
+                <!--<version>4.10-SNAPSHOT</version>-->
+            <!--</dependency>-->
+            <!--&lt;!&ndash;<dependency>&ndash;&gt;-->
+            <!--&lt;!&ndash;<groupId>org.esa.beam</groupId>&ndash;&gt;-->
+            <!--&lt;!&ndash;<artifactId>beam-binning</artifactId>&ndash;&gt;-->
+            <!--&lt;!&ndash;<version>2.1</version>&ndash;&gt;-->
+            <!--&lt;!&ndash;</dependency>&ndash;&gt;-->
+            <!--&lt;!&ndash;Beam readers to import&ndash;&gt;-->
 
             <dependency>
                 <groupId>edu.ucar</groupId>

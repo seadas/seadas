@@ -10,7 +10,7 @@
     </description>
 
 
-   <extension point="beam-ui:applicationDescriptors">
+    <extension point="beam-ui:applicationDescriptors">
         <applicationDescriptor>
             <applicationId>SeaDAS</applicationId>
             <displayName>SeaDAS</displayName>
@@ -49,15 +49,30 @@
     <dependency>
         <module>beam-visat-rcp</module>
     </dependency>
-    <dependency>
-        <module>beam-help</module>
-        <optional>true</optional>
-    </dependency>
+
+    <!--<dependency>-->
+        <!--<module>beam-help</module>-->
+        <!--<optional>true</optional>-->
+    <!--</dependency>-->
+
 
     <categories>System,Application,VISAT</categories>
 
     <extension point="ceres-core:applications">
         <application id="SeaDAS" class="org.esa.beam.visat.VisatMain"/>
+    </extension>
+
+    <extension point="beam-ui:actions">
+
+        <action>
+            <id>showObpgHomePage</id>
+            <parent>help</parent>
+            <class>gov.nasa.obpg.seadas.actions.ShowObpgHomePageAction</class>
+            <text>SeaDAS Home Page</text>
+            <description>Opens the SeaDAS home page.</description>
+            <placeAfter>helpTopics</placeAfter>
+        </action>
+
     </extension>
 
 </module>

@@ -1,0 +1,196 @@
+<!--
+  ~ Copyright (C) 2011 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>SeaDAS Help</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header" width="100%">
+    <tr class="header">
+        <td class="header">&nbsp;
+            SeaDAS Overview
+        </td>
+        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                                     border=0></a></td>
+    </tr>
+</table>
+
+<h3>SeaDAS Version 7.0</h3>
+
+
+<h4>Overview</h4>
+
+<p>SeaDAS is a visualization, analysis and data processing package.  The core components of the SeaDAS visualization and analysis
+    applications are based on BEAM, the Basic ENVISAT Toolbox for (A)ATSR and MERIS.  BEAM is a collection of executable tools and Application
+    Programming Interfaces (APIs) which have been developed to facilitate the utilisation, viewing and
+    processing of ENVISAT MERIS, AATSR and ASAR data. SeaDAS extends BEAM to include support for the data products produced
+    by NASA's Ocean Biology Processing Group.  This support includes  data processing capabilities to allow users to process
+these data between the various processing levels (i.e. Level 0 through Level 3)</p>
+
+<p>The main components of the SeaDAS are:</p>
+<ul>
+    <li>VISAT - A desktop application used for EO data visualisation, analysing and processing.</li>
+    <li>A set of scientific data processors running either from the command line or invoked by VISAT</li>
+    <li>A data product converter tool allowing a user to convert raw data products to the
+        <a href="BeamDimapFormat.html">BEAM-DIMAP</a> standard format,
+        to <a href="../geotiff/ExportGeoTIFF.html">GeoTIFF</a>,
+        to <a href="../visat/ExportHDF.html">HDF-5</a> or to RGB images.
+
+    </li>
+    <li>A Java&#153; API which provides ready-to-use components for remote sensing related application
+        development and plug-in points for new BEAM extension modules.
+    </li>
+</ul>
+
+<h4>Supported Product Formats</h4>
+
+<p>This following table lists the data product formats which are supported by BEAM
+    using the reader modules provided in the standard installation.
+    Information about access to these products
+    is given on the <a href="BeamDataSources.html">Data Sources page</a>.</p>
+
+<table align="center">
+    <tr valign="top">
+        <td><b><u>Instrument</u></b></td>
+        <td><b><u>Platform</u></b></td>
+        <td><b><u>Format</u></b></td>
+    </tr>
+    <tr valign="top">
+        <td>MERIS</td>
+        <td>Envisat</td>
+        <td>Envisat N1</td>
+    </tr>
+    <tr valign="top">
+        <td>MERIS Binned Level-3</td>
+        <td>Envisat</td>
+        <td>netCDF</td>
+    </tr>
+    <tr valign="top">
+        <td>AATSR</td>
+        <td>Envisat</td>
+        <td>Envisat N1</td>
+    </tr>
+    <tr valign="top">
+        <td>ASAR</td>
+        <td>Envisat</td>
+        <td>Envisat N1</td>
+    </tr>
+    <tr valign="top">
+        <td>ATSR</td>
+        <td>ERS</td>
+        <td>ERS</td>
+    </tr>
+    <tr valign="top">
+        <td>ATSR</td>
+        <td>ERS</td>
+        <td>Envisat N1</td>
+    </tr>
+    <tr valign="top">
+        <td>SAR</td>
+        <td>ERS</td>
+        <td>Envisat N1</td>
+    </tr>
+    <tr valign="top">
+        <td>Chris</td>
+        <td>Proba</td>
+        <td>HDF4</td>
+    </tr>
+    <tr valign="top">
+        <td>AVNIR-2</td>
+        <td>ALOS</td>
+        <td>CEOS</td>
+    </tr>
+    <tr valign="top">
+        <td>PRISM</td>
+        <td>ALOS</td>
+        <td>CEOS</td>
+    </tr>
+    <tr valign="top">
+        <td>MODIS</td>
+        <td>Aqua, Terra</td>
+        <td>HDF</td>
+    </tr>
+    <tr valign="top">
+        <td>AVHRR/3</td>
+        <td>NOAA-KLM</td>
+        <td>NOAA<br>METOP</td>
+    </tr>
+    <tr valign="top">
+        <td>TM Thematic Mapper</td>
+        <td>Landsat 5</td>
+        <td>Fast Format<br>GeoTIFF</td>
+    </tr>
+    <tr valign="top">
+        <td>NASA Ocean Color (OBPG)</td>
+        <td>MODIS A/T, SeaWiFS, OCTS, CZCS</td>
+        <td>HDF</td>
+    </tr>
+    <tr valign="top">
+        <td>GETASSE DEM</td>
+        <td>N/A</td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr valign="top">
+        <td>SPOT VEGETATION</td>
+        <td>SPOT</td>
+        <td>HDF</td>
+    </tr>
+    <tr valign="top">
+        <td>Generic NetCDF/CF-products</td>
+        <td>N/A</td>
+        <td>NetCDF/CF</td>
+    </tr>
+    <tr valign="top">
+        <td>HDF-EOS gridded products</td>
+        <td>N/A</td>
+        <td>HDF</td>
+    </tr>
+</table>
+
+<h4>Standard Product Format</h4>
+
+<p>VISAT and the scientific data processors use a simple data input/output format,
+    which makes it easy to import ENVISAT data in other imaging applications. The
+    format is called <a href="http://www.spotimage.fr/dimap/spec/dimap.htm">DIMAP<sup>&reg;</sup></a>
+    and has been developed by SPOT-Image, France. The BEAM software uses a special
+    DIMAP profile called <a href="BeamDimapFormat.html">BEAM-DIMAP</a>, which has
+    the following characteristics:</p>
+<ul>
+    <li>A single product header (XML) containing the product meta-data</li>
+    <li>An associated data directory containing ENVI<sup>&reg;</sup>-compatible images for each band.</li>
+    <li>Each image in the directory is composed of a header file (ASCII text) and an image data file (flat binary)</li>
+</ul>
+
+<h4>Source Code</h4>
+
+<p>The complete BEAM software has been developed under the GNU public license
+    and comes with full source code (Java<sup>TM</sup>).</p>
+
+<h4>Supported Platforms</h4>
+
+<p>BEAM is programmed in pure Java&#153; to allow a maximum portability. The
+    BEAM software has been successfully tested under MS Windows&#153;&nbsp;XP<sup>&reg;</sup>,
+    Windows&#153;&nbsp;Vista, Windows&#153;&nbsp;7 and also Mac&nbsp;OS&nbsp;X and
+    as well as under Linux and Solaris<sup>&reg;</sup> operating systems.</p>
+
+<hr>
+
+</body>
+</html>

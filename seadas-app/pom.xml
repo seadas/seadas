@@ -21,20 +21,16 @@
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat-rcp</artifactId>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-help</artifactId>-->
+            <!--<version>4.10-SNAPSHOT</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-help</artifactId>
-            <version>4.10-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>blue-marble-worldmap</artifactId>
+             <groupId>org.esa.beam</groupId>
+             <artifactId>blue-marble-worldmap</artifactId>
             <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>globcover-worldmap</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
