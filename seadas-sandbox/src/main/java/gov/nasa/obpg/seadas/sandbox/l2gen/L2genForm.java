@@ -39,19 +39,19 @@ class L2genForm extends JTabbedPane {
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
     private JPanel wavelengthsJPanel;
     private JPanel productsLimiterJPanel;
-    private JList waveDependentProductsJList;
-    private JList waveIndependentProductsJList;
+//    private JList waveDependentProductsJList;
+//    private JList waveIndependentProductsJList;
 
     private JTable selectedProductsJTable;
     private SelectedProductsTableModel selectedProductsTableModel;
     private JPanel selectedProductsJPanel;
     private JComboBox ofileJComboBox;
 
-    private boolean setWaveIndependentProductsJListEnabled = true;
-    private boolean setWaveDependentProductsJListEnabled = true;
+//    private boolean setWaveIndependentProductsJListEnabled = true;
+//    private boolean setWaveDependentProductsJListEnabled = true;
 
-    private boolean handleWaveIndependentProductsJListEnabled = true;
-    private boolean handleWaveDependentProductsJListEnabled = true;
+//    private boolean handleWaveIndependentProductsJListEnabled = true;
+//    private boolean handleWaveDependentProductsJListEnabled = true;
 
     private boolean wavelengthCheckboxControlHandlersEnabled = true;
 
@@ -132,7 +132,12 @@ class L2genForm extends JTabbedPane {
         createIOParametersTab("Input/Output");
         createParfileTab("Parameters");
         createSubsampleTab("Sub Sampling");
-        createProductTab("Product");
+        //    createProductTab("Product");
+      //  createProductSelectorSubTab("OLD Product Selector");
+
+        createTreeSubTab("Products");
+        createSelectedProductsSubTab("Selected Products Cart");
+
 
         this.setEnabledAt(PRODUCT_SELECTOR_TAB_INDEX, false);
         this.setEnabledAt(SUB_SAMPLE_TAB_INDEX, false);
@@ -307,10 +312,10 @@ class L2genForm extends JTabbedPane {
         final JTabbedPane tabbedPane = new JTabbedPane();
 
 
-    //    createWavelengthsSubTab(tabbedPane, "Wavelength Grouping Tool");
-        createProductSelectorSubTab(tabbedPane, "Product Selector");
-        createSelectedProductsSubTab(tabbedPane, "Selected Products Cart");
-        createTreeSubTab(tabbedPane, "Tree");
+        //    createWavelengthsSubTab(tabbedPane, "Wavelength Grouping Tool");
+//        createProductSelectorSubTab(tabbedPane, "Product Selector");
+        //       createSelectedProductsSubTab(tabbedPane, "Selected Products Cart");
+        //       createTreeSubTab(tabbedPane, "Tree");
 
         //    tabbedPane.setEnabledAt(0, false);
         //  tabbedPane.setEnabledAt(2, false);
@@ -345,7 +350,8 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createSelectedProductsSubTab(JTabbedPane tabbedPane, String myTabname) {
+    // private void createSelectedProductsSubTab(JTabbedPane tabbedPane, String myTabname) {
+    private void createSelectedProductsSubTab(String myTabname) {
 
         final String COORDINATES_PANEL_TITLE = "Selected Products";
 
@@ -399,7 +405,6 @@ class L2genForm extends JTabbedPane {
         mainPanel.add(selectedProductsJPanel, c);
 
 
-
         selectedProductsRemoveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -433,7 +438,7 @@ class L2genForm extends JTabbedPane {
         // Add wrappedMainPanel to tabbedPane
         // ----------------------------------------------------------------------------------------
 
-        tabbedPane.addTab(myTabname, wrappedMainPanel);
+        addTab(myTabname, wrappedMainPanel);
     }
 
     private void createSelectedProductsCartJPanelNew(JPanel inJPanel) {
@@ -490,7 +495,6 @@ class L2genForm extends JTabbedPane {
         mainPanel.add(selectedProductsJPanel, c);
 
 
-
         selectedProductsRemoveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -528,9 +532,7 @@ class L2genForm extends JTabbedPane {
         inJPanel.add(mainPanel);
     }
 
-    
-    
-    
+
     private JPanel createSelectedProductsCartJPanel() {
 
         final String COORDINATES_PANEL_TITLE = "Selected Products";
@@ -585,7 +587,6 @@ class L2genForm extends JTabbedPane {
         mainPanel.add(selectedProductsJPanel, c);
 
 
-
         selectedProductsRemoveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -619,7 +620,7 @@ class L2genForm extends JTabbedPane {
         // Add wrappedMainPanel to tabbedPane
         // ----------------------------------------------------------------------------------------
 
-       // tabbedPane.addTab(myTabname, wrappedMainPanel);
+        // tabbedPane.addTab(myTabname, wrappedMainPanel);
         return wrappedMainPanel;
     }
 
@@ -637,7 +638,6 @@ class L2genForm extends JTabbedPane {
         }
 
     }
-
 
 
     private JPanel createWavelengthsJPanel() {
@@ -723,13 +723,10 @@ class L2genForm extends JTabbedPane {
         // Add wrappedMainPanel to tabbedPane
         // ----------------------------------------------------------------------------------------
 
-       // tabbedPane.addTab(myTabname, wrappedMainPanel);
+        // tabbedPane.addTab(myTabname, wrappedMainPanel);
         return mainPanel;
 
     }
-
-
-
 
 
     private void createWavelengthsSubTab(JTabbedPane tabbedPane, String myTabname) {
@@ -823,75 +820,76 @@ class L2genForm extends JTabbedPane {
         tabbedPane.addTab(myTabname, wrappedMainPanel);
     }
 
-    private void createProductSelectorSubTab(JTabbedPane tabbedPane, String myTabname) {
-
-        //   L2genReader l2genReader = new L2genReader(l2genData);
-
-        InputStream stream = L2genForm.class.getResourceAsStream(SEADAS_PRODUCTS_FILE);
-
-        l2genReader.readProductsXmlFile(stream);
-
-        JPanel wavelengthIndependentProductsJPanel = new JPanel();
-        createWaveIndependentProductsJPanel(wavelengthIndependentProductsJPanel);
-
-        JPanel wavelengthDependentProductsJPanel = new JPanel();
-        createWaveDependentProductsJPanel(wavelengthDependentProductsJPanel);
-
-        final JPanel selectedProductsJPanel = new JPanel();
-        createSelectedProductsJPanel(selectedProductsJPanel);
-
-
-        // Declare mainPanel and set it's attributes
-        final JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
-
-
-        // Add to mainPanel grid cell
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTH;
-        c.weightx = 1;
-        c.weighty = 1;
-        mainPanel.add(wavelengthIndependentProductsJPanel, c);
-
-
-        // Add to mainPanel grid cell
-
-        c = SeadasGuiUtils.makeConstraints(1, 0);
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTH;
-        c.weightx = 1;
-        c.weighty = 1;
-        mainPanel.add(wavelengthDependentProductsJPanel, c);
-
-
-        // Add to mainPanel grid cell
-
-        c = SeadasGuiUtils.makeConstraints(0, 1);
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTH;
-        c.weightx = 0;
-        c.weighty = 0;
-        c.gridwidth = 2;
-        mainPanel.add(selectedProductsJPanel, c);
-
-
-        final JPanel finalMainPanel = new JPanel();
-        finalMainPanel.setLayout(new GridBagLayout());
-
-        c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.insets = new Insets(3, 3, 3, 3);
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.weighty = 1;
-
-        finalMainPanel.add(mainPanel, c);
-
-
-        tabbedPane.addTab(myTabname, finalMainPanel);
-
-    }
+    //  private void createProductSelectorSubTab(JTabbedPane tabbedPane, String myTabname) {
+//    private void createProductSelectorSubTab(String myTabname) {
+//
+//        //   L2genReader l2genReader = new L2genReader(l2genData);
+////
+////        InputStream stream = L2genForm.class.getResourceAsStream(SEADAS_PRODUCTS_FILE);
+////
+////        l2genReader.readProductsXmlFile(stream);
+//
+//        JPanel wavelengthIndependentProductsJPanel = new JPanel();
+//        createWaveIndependentProductsJPanel(wavelengthIndependentProductsJPanel);
+//
+//        JPanel wavelengthDependentProductsJPanel = new JPanel();
+//        createWaveDependentProductsJPanel(wavelengthDependentProductsJPanel);
+////
+////        final JPanel selectedProductsJPanel = new JPanel();
+////        createSelectedProductsJPanel(selectedProductsJPanel);
+//
+//
+//        // Declare mainPanel and set it's attributes
+//        final JPanel mainPanel = new JPanel();
+//        mainPanel.setLayout(new GridBagLayout());
+//
+//
+//        // Add to mainPanel grid cell
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.fill = GridBagConstraints.BOTH;
+//        c.anchor = GridBagConstraints.NORTH;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        mainPanel.add(wavelengthIndependentProductsJPanel, c);
+//
+//
+//        // Add to mainPanel grid cell
+//
+//        c = SeadasGuiUtils.makeConstraints(1, 0);
+//        c.fill = GridBagConstraints.BOTH;
+//        c.anchor = GridBagConstraints.NORTH;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        mainPanel.add(wavelengthDependentProductsJPanel, c);
+//
+//
+//        // Add to mainPanel grid cell
+//
+////        c = SeadasGuiUtils.makeConstraints(0, 1);
+////        c.fill = GridBagConstraints.BOTH;
+////        c.anchor = GridBagConstraints.NORTH;
+////        c.weightx = 0;
+////        c.weighty = 0;
+////        c.gridwidth = 2;
+////        mainPanel.add(selectedProductsJPanel, c);
+//
+//
+//        final JPanel finalMainPanel = new JPanel();
+//        finalMainPanel.setLayout(new GridBagLayout());
+//
+//        c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        c.insets = new Insets(3, 3, 3, 3);
+//        c.fill = GridBagConstraints.BOTH;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//
+//        finalMainPanel.add(mainPanel, c);
+//
+//
+////        addTab(myTabname, finalMainPanel);
+//
+//    }
 
     private TristateCheckBox.State getCheckboxState(BaseInfo.State state) {
         switch (state) {
@@ -1151,11 +1149,19 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createTreeSubTab(JTabbedPane tabbedPane, String myTabname) {
+    //    private void createTreeSubTab(JTabbedPane tabbedPane, String myTabname) {
+    private void createTreeSubTab(String myTabname) {
+
+
+        InputStream stream = L2genForm.class.getResourceAsStream(SEADAS_PRODUCTS_FILE);
+
+        l2genReader.readProductsXmlFile(stream);
+
+
 
         JPanel wavelengthsLimitorJPanel = createWavelengthsJPanel();
-    //    JPanel selectedProductsCartJPanel = new JPanel();
-     //   createSelectedProductsCartJPanelNew(selectedProductsCartJPanel);
+        //    JPanel selectedProductsCartJPanel = new JPanel();
+        //   createSelectedProductsCartJPanelNew(selectedProductsCartJPanel);
 
         TreeNode rootNode = createTree();
         productJTree = new JTree(rootNode);
@@ -1167,6 +1173,21 @@ class L2genForm extends JTabbedPane {
         productJTree.setEditable(true);
 
         productJTree.setRootVisible(false);
+
+
+
+        final JPanel selectedProductsJPanel = new JPanel();
+              createSelectedProductsJPanel(selectedProductsJPanel);
+
+
+
+
+
+
+
+
+
+
 
 
         final JPanel mainPanel = new JPanel();
@@ -1196,7 +1217,6 @@ class L2genForm extends JTabbedPane {
         mainPanel.add(treeBorderJPanel, c);
 
 
-
         c = SeadasGuiUtils.makeConstraints(1, 0);
         c.anchor = GridBagConstraints.NORTHEAST;
         // c.insets = new Insets(3, 3, 3, 3);
@@ -1205,7 +1225,23 @@ class L2genForm extends JTabbedPane {
         c.weighty = 1;
 //        mainPanel.add(new JScrollPane(treeTable), c);
         mainPanel.add(wavelengthsLimitorJPanel, c);
-        
+
+
+
+
+
+              // Add to mainPanel grid cell
+
+              c = SeadasGuiUtils.makeConstraints(0, 1);
+              c.fill = GridBagConstraints.BOTH;
+              c.anchor = GridBagConstraints.NORTH;
+              c.weightx = 0;
+              c.weighty = 0;
+              c.gridwidth = 2;
+              mainPanel.add(selectedProductsJPanel, c);
+
+
+
 
 //        c = SeadasGuiUtils.makeConstraints(1, 0);
 //        c.anchor = GridBagConstraints.NORTHEAST;
@@ -1218,8 +1254,7 @@ class L2genForm extends JTabbedPane {
 //
 
 
-
-        tabbedPane.addTab(myTabname, mainPanel);
+        addTab(myTabname, mainPanel);
 
     }
 
@@ -1607,45 +1642,45 @@ class L2genForm extends JTabbedPane {
 
     }
 
-    private void createWaveIndependentProductsJPanel(JPanel waveIndependentProductsJPanel) {
+//    private void createWaveIndependentProductsJPanel(JPanel waveIndependentProductsJPanel) {
+//
+//        createWaveIndependentProductsJList();
+//
+//        JScrollPane waveIndependentProductsJScrollPane = new JScrollPane(waveIndependentProductsJList);
+//        waveIndependentProductsJScrollPane.setMinimumSize(new Dimension(400, 400));
+//        waveIndependentProductsJScrollPane.setMaximumSize(new Dimension(400, 400));
+//        waveIndependentProductsJScrollPane.setPreferredSize(new Dimension(400, 400));
+//
+//        waveIndependentProductsJPanel.setBorder(BorderFactory.createTitledBorder(WAVE_INDEPENDENT_PRODUCTS_JPANEL_TITLE));
+//        waveIndependentProductsJPanel.setLayout(new GridBagLayout());
+//
+//        // Add to waveIndependentProductsJPanel grid cell
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.fill = GridBagConstraints.BOTH;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        waveIndependentProductsJPanel.add(waveIndependentProductsJScrollPane, c);
+//    }
 
-        createWaveIndependentProductsJList();
-
-        JScrollPane waveIndependentProductsJScrollPane = new JScrollPane(waveIndependentProductsJList);
-        waveIndependentProductsJScrollPane.setMinimumSize(new Dimension(400, 400));
-        waveIndependentProductsJScrollPane.setMaximumSize(new Dimension(400, 400));
-        waveIndependentProductsJScrollPane.setPreferredSize(new Dimension(400, 400));
-
-        waveIndependentProductsJPanel.setBorder(BorderFactory.createTitledBorder(WAVE_INDEPENDENT_PRODUCTS_JPANEL_TITLE));
-        waveIndependentProductsJPanel.setLayout(new GridBagLayout());
-
-        // Add to waveIndependentProductsJPanel grid cell
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.weighty = 1;
-        waveIndependentProductsJPanel.add(waveIndependentProductsJScrollPane, c);
-    }
-
-    private void createWaveDependentProductsJPanel(JPanel waveDependentProductsJPanel) {
-
-        createWaveDependentProductsJList();
-
-        JScrollPane waveDependentProductsJScrollPane = new JScrollPane(waveDependentProductsJList);
-        waveDependentProductsJScrollPane.setMinimumSize(new Dimension(400, 400));
-        waveDependentProductsJScrollPane.setMaximumSize(new Dimension(400, 400));
-        waveDependentProductsJScrollPane.setPreferredSize(new Dimension(400, 400));
-
-        waveDependentProductsJPanel.setBorder(BorderFactory.createTitledBorder(WAVE_DEPENDENT_PRODUCTS_JPANEL_TITLE));
-        waveDependentProductsJPanel.setLayout(new GridBagLayout());
-
-        // Add to waveDependentProductsJPanel grid cell
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.weighty = 1;
-        waveDependentProductsJPanel.add(waveDependentProductsJScrollPane, c);
-    }
+//    private void createWaveDependentProductsJPanel(JPanel waveDependentProductsJPanel) {
+//
+//        createWaveDependentProductsJList();
+//
+//        JScrollPane waveDependentProductsJScrollPane = new JScrollPane(waveDependentProductsJList);
+//        waveDependentProductsJScrollPane.setMinimumSize(new Dimension(400, 400));
+//        waveDependentProductsJScrollPane.setMaximumSize(new Dimension(400, 400));
+//        waveDependentProductsJScrollPane.setPreferredSize(new Dimension(400, 400));
+//
+//        waveDependentProductsJPanel.setBorder(BorderFactory.createTitledBorder(WAVE_DEPENDENT_PRODUCTS_JPANEL_TITLE));
+//        waveDependentProductsJPanel.setLayout(new GridBagLayout());
+//
+//        // Add to waveDependentProductsJPanel grid cell
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.fill = GridBagConstraints.BOTH;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        waveDependentProductsJPanel.add(waveDependentProductsJScrollPane, c);
+//    }
 
     private void createSelectedProductsJPanel(JPanel selectedProductsPanel) {
 
@@ -1768,97 +1803,97 @@ class L2genForm extends JTabbedPane {
     //----------------------------------------------------------------------------------------
 
 
-    private void createWaveIndependentProductsJList() {
-
-        waveIndependentProductsJList = new JList();
-
-        setWaveIndependentProductsJList();
-
-        // add listener to control
-        waveIndependentProductsJList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (handleWaveIndependentProductsJListEnabled) {
-                    handleWaveIndependentProductsJList();
-                }
-            }
-        });
-    }
-
-
-    private void setWaveIndependentProductsJList() {
-        // Create arrayList for all the algorithmInfo objects
-        ArrayList<AlgorithmInfo> algorithmInfoArrayList = new ArrayList<AlgorithmInfo>();
-
-        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
-            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
-                ((AlgorithmInfo) algorithmInfo).setToStringShowProductName(true);
-                algorithmInfoArrayList.add((AlgorithmInfo) algorithmInfo);
-            }
-        }
-
-        // Store the arrayList into an array which can then be fed into a JList control
-        AlgorithmInfo[] algorithmInfoArray = new AlgorithmInfo[algorithmInfoArrayList.size()];
-        algorithmInfoArrayList.toArray(algorithmInfoArray);
-
-        // format the JList control
-        waveIndependentProductsJList.setListData(algorithmInfoArray);
-
-        //     setSelectionStatesWaveIndependentProductsJList();
-    }
+//    private void createWaveIndependentProductsJList() {
+//
+//        waveIndependentProductsJList = new JList();
+//
+//        setWaveIndependentProductsJList();
+//
+//        // add listener to control
+//        waveIndependentProductsJList.addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//            public void valueChanged(ListSelectionEvent e) {
+//                if (handleWaveIndependentProductsJListEnabled) {
+//                    handleWaveIndependentProductsJList();
+//                }
+//            }
+//        });
+//    }
 
 
-    private void createWaveDependentProductsJList() {
-
-        waveDependentProductsJList = new JList();
-
-        setWaveDependentProductsJList();
-
-        // add listener to control
-        waveDependentProductsJList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-
-            public void valueChanged(ListSelectionEvent e) {
-                if (handleWaveDependentProductsJListEnabled) {
-                    handleWaveDependentProductsJList();
-                }
-            }
-        });
-    }
-
-
-    private void setWaveDependentProductsJList() {
-        // Create arrayList for all the wavelengthInfo objects
-        ArrayList<WavelengthInfo> wavelengthInfoArrayList = new ArrayList<WavelengthInfo>();
-
-        for (ProductInfo productInfo : l2genData.getWaveDependentProductInfoArray()) {
-            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
-                for (BaseInfo wInfo : algorithmInfo.getChildren()) {
-                    WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                    wavelengthInfo.setToStringShowProductName(true);
-                    for (WavelengthInfo wavelengthInfoLimiter : l2genData.getWavelengthLimiterArray()) {
-                        if (wavelengthInfo.getWavelength() == wavelengthInfoLimiter.getWavelength()) {
-                            if (wavelengthInfoLimiter.isSelected()) {
-
-                                wavelengthInfoArrayList.add(wavelengthInfo);
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
+//    private void setWaveIndependentProductsJList() {
+//        // Create arrayList for all the algorithmInfo objects
+//        ArrayList<AlgorithmInfo> algorithmInfoArrayList = new ArrayList<AlgorithmInfo>();
+//
+//        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
+//            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+//                ((AlgorithmInfo) algorithmInfo).setToStringShowProductName(true);
+//                algorithmInfoArrayList.add((AlgorithmInfo) algorithmInfo);
+//            }
+//        }
+//
+//        // Store the arrayList into an array which can then be fed into a JList control
+//        AlgorithmInfo[] algorithmInfoArray = new AlgorithmInfo[algorithmInfoArrayList.size()];
+//        algorithmInfoArrayList.toArray(algorithmInfoArray);
+//
+//        // format the JList control
+//        waveIndependentProductsJList.setListData(algorithmInfoArray);
+//
+//        //     setSelectionStatesWaveIndependentProductsJList();
+//    }
 
 
-        // Store the arrayList into an array which can then be fed into a JList control
-        WavelengthInfo[] wavelengthInfoArray = new WavelengthInfo[wavelengthInfoArrayList.size()];
-        wavelengthInfoArrayList.toArray(wavelengthInfoArray);
+//    private void createWaveDependentProductsJList() {
+//
+//        waveDependentProductsJList = new JList();
+//
+//        setWaveDependentProductsJList();
+//
+//        // add listener to control
+//        waveDependentProductsJList.addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//
+//            public void valueChanged(ListSelectionEvent e) {
+//                if (handleWaveDependentProductsJListEnabled) {
+//                    handleWaveDependentProductsJList();
+//                }
+//            }
+//        });
+//    }
 
-        // format the JList control
-        waveDependentProductsJList.setListData(wavelengthInfoArray);
-
-        //    setSelectionStatesWaveDependentProductsJList();
-    }
+//
+//    private void setWaveDependentProductsJList() {
+//        // Create arrayList for all the wavelengthInfo objects
+//        ArrayList<WavelengthInfo> wavelengthInfoArrayList = new ArrayList<WavelengthInfo>();
+//
+//        for (ProductInfo productInfo : l2genData.getWaveDependentProductInfoArray()) {
+//            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+//                for (BaseInfo wInfo : algorithmInfo.getChildren()) {
+//                    WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+//                    wavelengthInfo.setToStringShowProductName(true);
+//                    for (WavelengthInfo wavelengthInfoLimiter : l2genData.getWavelengthLimiterArray()) {
+//                        if (wavelengthInfo.getWavelength() == wavelengthInfoLimiter.getWavelength()) {
+//                            if (wavelengthInfoLimiter.isSelected()) {
+//
+//                                wavelengthInfoArrayList.add(wavelengthInfo);
+//                            }
+//                        }
+//                    }
+//
+//                }
+//            }
+//        }
+//
+//
+//        // Store the arrayList into an array which can then be fed into a JList control
+//        WavelengthInfo[] wavelengthInfoArray = new WavelengthInfo[wavelengthInfoArrayList.size()];
+//        wavelengthInfoArrayList.toArray(wavelengthInfoArray);
+//
+//        // format the JList control
+//        waveDependentProductsJList.setListData(wavelengthInfoArray);
+//
+//        //    setSelectionStatesWaveDependentProductsJList();
+//    }
 
 
     private void setDisplayModeSelectedProducts(DisplayMode displayMode) {
@@ -1866,9 +1901,9 @@ class L2genForm extends JTabbedPane {
         if (displayMode == DisplayMode.STANDARD_MODE) {
             selectedProductsJTextArea.setEditable(false);
             selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
-
-            waveIndependentProductsJList.setEnabled(true);
-            waveDependentProductsJList.setEnabled(true);
+//
+//            waveIndependentProductsJList.setEnabled(true);
+//            waveDependentProductsJList.setEnabled(true);
 
             selectedProductsEditLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE);
             selectedProductsDefaultsButton.setEnabled(true);
@@ -1877,10 +1912,10 @@ class L2genForm extends JTabbedPane {
             selectedProductsJTextArea.setEditable(true);
             selectedProductsJTextArea.setBackground(Color.decode("#ffffff"));
 
-            waveDependentProductsJList.clearSelection();
-            waveIndependentProductsJList.clearSelection();
-            waveDependentProductsJList.setEnabled(false);
-            waveIndependentProductsJList.setEnabled(false);
+//            waveDependentProductsJList.clearSelection();
+//            waveIndependentProductsJList.clearSelection();
+//            waveDependentProductsJList.setEnabled(false);
+//            waveIndependentProductsJList.setEnabled(false);
 
             selectedProductsEditLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_EDIT_MODE);
             selectedProductsDefaultsButton.setEnabled(false);
@@ -2018,41 +2053,41 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void handleWaveIndependentProductsJList() {
+//    private void handleWaveIndependentProductsJList() {
+//
+//        l2genData.disableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
+//
+//        Object[] selectedElements = waveIndependentProductsJList.getSelectedValues();
+//
+//        for (Object object : selectedElements) {
+//            AlgorithmInfo algorithmInfo = (AlgorithmInfo) object;
+//
+//            if (!algorithmInfo.isSelected()) {
+//                l2genData.setSelectedWaveIndependentProduct(algorithmInfo, true);
+//            }
+//        }
+//
+//        waveIndependentProductsJList.clearSelection();
+//        l2genData.enableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
+//    }
 
-        l2genData.disableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
 
-        Object[] selectedElements = waveIndependentProductsJList.getSelectedValues();
-
-        for (Object object : selectedElements) {
-            AlgorithmInfo algorithmInfo = (AlgorithmInfo) object;
-
-            if (!algorithmInfo.isSelected()) {
-                l2genData.setSelectedWaveIndependentProduct(algorithmInfo, true);
-            }
-        }
-
-        waveIndependentProductsJList.clearSelection();
-        l2genData.enableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
-    }
-
-
-    private void handleWaveDependentProductsJList() {
-
-        l2genData.disableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
-
-        Object[] selectedElements = waveDependentProductsJList.getSelectedValues();
-
-        for (Object object : selectedElements) {
-            WavelengthInfo wavelengthInfo = (WavelengthInfo) object;
-            if (!wavelengthInfo.isSelected()) {
-                l2genData.setSelectedWaveDependentProduct(wavelengthInfo, true);
-            }
-        }
-
-//        waveDependentProductsJList.clearSelection();
-        l2genData.enableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
-    }
+//    private void handleWaveDependentProductsJList() {
+//
+//        l2genData.disableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
+//
+//        Object[] selectedElements = waveDependentProductsJList.getSelectedValues();
+//
+//        for (Object object : selectedElements) {
+//            WavelengthInfo wavelengthInfo = (WavelengthInfo) object;
+//            if (!wavelengthInfo.isSelected()) {
+//                l2genData.setSelectedWaveDependentProduct(wavelengthInfo, true);
+//            }
+//        }
+//
+////        waveDependentProductsJList.clearSelection();
+//        l2genData.enableEvent(l2genData.WAVE_DEPENDENT_PRODUCT_CHANGED);
+//    }
 
     private void handleSelectedProductsDelete() {
 
@@ -2265,7 +2300,7 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println("UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT fired");
                 updateWavelengthCheckboxSelectionStateEvent();
-                setWaveDependentProductsJList();
+                // setWaveDependentProductsJList();
             }
         });
 
@@ -2450,7 +2485,7 @@ class L2genForm extends JTabbedPane {
         updateProductSelectorWavelengthsPanel();
         updateProductTreePanel();
 
-        setWaveDependentProductsJList();
+        // setWaveDependentProductsJList();
         updateWavelengthCheckboxSelectionStateEvent();
 
 
@@ -2597,109 +2632,109 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void updateSelectedProductsJTextAre() {
-
-        final StringBuilder selectedProductListStringBuilder = new StringBuilder("");
-        final StringBuilder currentSelectedProductStringBuilder = new StringBuilder("");
-        final String PRODUCT_LIST_DELIMITER = " ";
-
-        if (wavelengthsJCheckboxArrayList != null) {
-            for (final JCheckBox currWavelengthCheckBox : wavelengthsJCheckboxArrayList) {
-
-                if (currWavelengthCheckBox.isSelected()) {
-
-                    String selectedWavelengthString = currWavelengthCheckBox.getName().toString();
-
-                    int wavelengthInteger = Integer.parseInt(selectedWavelengthString);
-
-                    Object values[] = waveDependentProductsJList.getSelectedValues();
-
-                    for (int i = 0; i < values.length; i++) {
-                        AlgorithmInfo algorithmInfo = (AlgorithmInfo) values[i];
-
-                        if (wavelengthInteger < WavelengthInfo.VISIBLE_UPPER_LIMIT) {
-                            if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE ||
-                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
-                                currentSelectedProductStringBuilder.delete(0, currentSelectedProductStringBuilder.length());
-
-                                currentSelectedProductStringBuilder.append(algorithmInfo.getProductName());
-                                currentSelectedProductStringBuilder.append("_");
-                                currentSelectedProductStringBuilder.append(selectedWavelengthString);
-
-                                if (algorithmInfo.getName() != null) {
-                                    currentSelectedProductStringBuilder.append("_");
-                                    currentSelectedProductStringBuilder.append(algorithmInfo.getName());
-                                }
-
-                                //   currentSelectedProductStringBuilder.append(algorithmInfo.getParameterType());
-                                //    currentSelectedProductStringBuilder.append("VISIBLE");
-
-                                if (selectedProductListStringBuilder.length() > 0) {
-                                    selectedProductListStringBuilder.append(PRODUCT_LIST_DELIMITER);
-                                }
-                                selectedProductListStringBuilder.append(currentSelectedProductStringBuilder);
-                            }
-
-                        } else {
-                            if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR ||
-                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
-                                currentSelectedProductStringBuilder.delete(0, currentSelectedProductStringBuilder.length());
-
-                                currentSelectedProductStringBuilder.append(algorithmInfo.getProductName());
-                                currentSelectedProductStringBuilder.append("_");
-                                currentSelectedProductStringBuilder.append(selectedWavelengthString);
-
-                                if (algorithmInfo.getName() != null) {
-                                    currentSelectedProductStringBuilder.append("_");
-                                    currentSelectedProductStringBuilder.append(algorithmInfo.getName());
-                                }
-
-                                //    currentSelectedProductStringBuilder.append(algorithmInfo.getParameterType());
-                                //    currentSelectedProductStringBuilder.append("IR");
-
-                                if (selectedProductListStringBuilder.length() > 0) {
-                                    selectedProductListStringBuilder.append(PRODUCT_LIST_DELIMITER);
-                                }
-                                selectedProductListStringBuilder.append(currentSelectedProductStringBuilder);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-        Object values[] = waveIndependentProductsJList.getSelectedValues();
-
-        for (int i = 0; i < values.length; i++) {
-            AlgorithmInfo algorithmInfo = (AlgorithmInfo) values[i];
-
-            if (selectedProductListStringBuilder.length() > 0) {
-                selectedProductListStringBuilder.append(PRODUCT_LIST_DELIMITER);
-            }
-
-
-            selectedProductListStringBuilder.append(algorithmInfo.getProductName());
-
-            if (algorithmInfo.getName() != null) {
-                selectedProductListStringBuilder.append("_");
-                selectedProductListStringBuilder.append(algorithmInfo.getName());
-            }
-
-        }
-
-
-        if (selectedProductListStringBuilder.length() > 0) {
-            if (!l2genData.getParamValue(l2genData.PROD).equals(selectedProductListStringBuilder.toString())) {
-                l2genData.setParamValue(l2genData.PROD, selectedProductListStringBuilder.toString());
-                selectedProductsJTextArea.setText(selectedProductListStringBuilder.toString());
-            }
-        } else {
-            selectedProductsJTextArea.setText(SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT);
-        }
-
-
-    }
+//    private void updateSelectedProductsJTextAre() {
+//
+//        final StringBuilder selectedProductListStringBuilder = new StringBuilder("");
+//        final StringBuilder currentSelectedProductStringBuilder = new StringBuilder("");
+//        final String PRODUCT_LIST_DELIMITER = " ";
+//
+//        if (wavelengthsJCheckboxArrayList != null) {
+//            for (final JCheckBox currWavelengthCheckBox : wavelengthsJCheckboxArrayList) {
+//
+//                if (currWavelengthCheckBox.isSelected()) {
+//
+//                    String selectedWavelengthString = currWavelengthCheckBox.getName().toString();
+//
+//                    int wavelengthInteger = Integer.parseInt(selectedWavelengthString);
+//
+//                    Object values[] = waveDependentProductsJList.getSelectedValues();
+//
+//                    for (int i = 0; i < values.length; i++) {
+//                        AlgorithmInfo algorithmInfo = (AlgorithmInfo) values[i];
+//
+//                        if (wavelengthInteger < WavelengthInfo.VISIBLE_UPPER_LIMIT) {
+//                            if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE ||
+//                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+//                                currentSelectedProductStringBuilder.delete(0, currentSelectedProductStringBuilder.length());
+//
+//                                currentSelectedProductStringBuilder.append(algorithmInfo.getProductName());
+//                                currentSelectedProductStringBuilder.append("_");
+//                                currentSelectedProductStringBuilder.append(selectedWavelengthString);
+//
+//                                if (algorithmInfo.getName() != null) {
+//                                    currentSelectedProductStringBuilder.append("_");
+//                                    currentSelectedProductStringBuilder.append(algorithmInfo.getName());
+//                                }
+//
+//                                //   currentSelectedProductStringBuilder.append(algorithmInfo.getParameterType());
+//                                //    currentSelectedProductStringBuilder.append("VISIBLE");
+//
+//                                if (selectedProductListStringBuilder.length() > 0) {
+//                                    selectedProductListStringBuilder.append(PRODUCT_LIST_DELIMITER);
+//                                }
+//                                selectedProductListStringBuilder.append(currentSelectedProductStringBuilder);
+//                            }
+//
+//                        } else {
+//                            if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR ||
+//                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+//                                currentSelectedProductStringBuilder.delete(0, currentSelectedProductStringBuilder.length());
+//
+//                                currentSelectedProductStringBuilder.append(algorithmInfo.getProductName());
+//                                currentSelectedProductStringBuilder.append("_");
+//                                currentSelectedProductStringBuilder.append(selectedWavelengthString);
+//
+//                                if (algorithmInfo.getName() != null) {
+//                                    currentSelectedProductStringBuilder.append("_");
+//                                    currentSelectedProductStringBuilder.append(algorithmInfo.getName());
+//                                }
+//
+//                                //    currentSelectedProductStringBuilder.append(algorithmInfo.getParameterType());
+//                                //    currentSelectedProductStringBuilder.append("IR");
+//
+//                                if (selectedProductListStringBuilder.length() > 0) {
+//                                    selectedProductListStringBuilder.append(PRODUCT_LIST_DELIMITER);
+//                                }
+//                                selectedProductListStringBuilder.append(currentSelectedProductStringBuilder);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//
+//        Object values[] = waveIndependentProductsJList.getSelectedValues();
+//
+//        for (int i = 0; i < values.length; i++) {
+//            AlgorithmInfo algorithmInfo = (AlgorithmInfo) values[i];
+//
+//            if (selectedProductListStringBuilder.length() > 0) {
+//                selectedProductListStringBuilder.append(PRODUCT_LIST_DELIMITER);
+//            }
+//
+//
+//            selectedProductListStringBuilder.append(algorithmInfo.getProductName());
+//
+//            if (algorithmInfo.getName() != null) {
+//                selectedProductListStringBuilder.append("_");
+//                selectedProductListStringBuilder.append(algorithmInfo.getName());
+//            }
+//
+//        }
+//
+//
+//        if (selectedProductListStringBuilder.length() > 0) {
+//            if (!l2genData.getParamValue(l2genData.PROD).equals(selectedProductListStringBuilder.toString())) {
+//                l2genData.setParamValue(l2genData.PROD, selectedProductListStringBuilder.toString());
+//                selectedProductsJTextArea.setText(selectedProductListStringBuilder.toString());
+//            }
+//        } else {
+//            selectedProductsJTextArea.setText(SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT);
+//        }
+//
+//
+//    }
 
 //    private void setSelectionStatesWaveIndependentProductsJList() {
 //        waveIndependentProductsJList.clearSelection();

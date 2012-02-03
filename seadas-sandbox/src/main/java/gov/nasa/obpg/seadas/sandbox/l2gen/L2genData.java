@@ -463,7 +463,7 @@ public class L2genData {
 
                     product.append(productInfo.getName());
 
-                    if (algorithmInfo.getName() != null) {
+                    if (algorithmInfo.getName() != null && algorithmInfo.getName().length() > 0) {
                         product.append("_");
                         product.append(algorithmInfo.getName());
                     }
@@ -487,7 +487,7 @@ public class L2genData {
                         product.append("_");
                         product.append(((WavelengthInfo) wavelengthInfo).getWavelengthString());
 
-                        if (algorithmInfo.getName() != null) {
+                        if (algorithmInfo.getName() != null && algorithmInfo.getName().length() > 0) {
                             product.append("_");
                             product.append(algorithmInfo.getName());
                         }

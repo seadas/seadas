@@ -16,9 +16,10 @@ put the cart, wavelength selector, selected products list and tree all on one pa
 //todo Bug: l2_prod entry is wrong
 When waveDependent product a_412 is selected via the tree or Jlist it appears as a_412_ in the l2_prod parameter.
 
+// todo wavelength selecter should not display iii checkbox if no IR bands available for current mission
 
 // todo ifile ofile stuff
 
-// make run button do something
+// todo make run button do something
 
 

@@ -1,5 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import com.sun.servicetag.SystemEnvironment;
+
 import java.util.ArrayList;
 
 /**
@@ -150,9 +152,11 @@ public class AlgorithmInfo extends BaseInfo {
     @Override
     public String getFullName() {
         if (prefix != null && !prefix.isEmpty()) {
+            System.out.println("prefix="+prefix);
             StringBuilder result = new StringBuilder(prefix);
             if (suffix != null && !suffix.isEmpty()) {
-                result.append("_");
+                System.out.println("suffix="+suffix);
+              //  result.append("_");
                 result.append(suffix);
             }
             return result.toString();

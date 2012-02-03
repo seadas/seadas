@@ -53,6 +53,11 @@ public class WavelengthInfo extends BaseInfo {
         String productStr = "";
         String algorithmStr = "";
         String wavelengthStr = "";
+// todo use prefix and suffix to make name
+
+  //      this.getAlgorithmInfo().getPrefix()
+
+
 
         BaseInfo algorithmInfo = getParent();
         if (algorithmInfo == null) {
@@ -84,15 +89,15 @@ public class WavelengthInfo extends BaseInfo {
             result.append(productStr);
         }
         if (!wavelengthStr.isEmpty()) {
-            if (result.length() > 0) {
-                result.append("_");
-            }
+//            if (result.length() > 0) {
+//                result.append("_");
+//            }
             result.append(wavelengthStr);
         }
         if (!algorithmStr.isEmpty()) {
-            if (result.length() > 0) {
-                result.append("_");
-            }
+//            if (result.length() > 0) {
+//                result.append("_");
+//            }
             result.append(algorithmStr);
         }
         return result.toString();
