@@ -1,13 +1,9 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
-import com.sun.org.apache.xml.internal.security.algorithms.Algorithm;
-import ucar.units.Base;
-
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-
 import java.util.*;
 
 /**
