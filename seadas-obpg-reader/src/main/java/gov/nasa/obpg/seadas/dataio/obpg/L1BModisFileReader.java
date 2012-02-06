@@ -1,37 +1,32 @@
 package gov.nasa.obpg.seadas.dataio.obpg;
 
 import com.bc.ceres.core.ProgressMonitor;
+import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.HdfEosUtils;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.dataop.maptransf.Datum;
 import org.jdom.Element;
 import ucar.ma2.Array;
-import ucar.ma2.ArrayChar;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
-import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
-import ucar.nc2.iosp.hdf4.ODLparser;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
-//import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.H;
+import static ucar.nc2.NetcdfFile.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: seadas
  * Date: 11/14/11
  * Time: 2:23 PM
- * To change this template use File | Settings | File Templates.
- */
+  */
 public class L1BModisFileReader extends SeadasFileReader {
-    private NetcdfFile geofile;
     L1BModisFileReader(SeadasProductReader productReader) {
         super(productReader);
     }
@@ -133,7 +128,7 @@ public class L1BModisFileReader extends SeadasFileReader {
                         Array intercept = null;
                         for (Attribute hdfAttribute : list) {
                             final String attribName = hdfAttribute.getName();
-                            if ("units".equals(attribName)) {
+                           if ("units".equals(attribName)) {
                                 units = hdfAttribute.getStringValue();
                             } else if ("long_name".equals(attribName)) {
                                 description = hdfAttribute.getStringValue();
@@ -202,7 +197,7 @@ public class L1BModisFileReader extends SeadasFileReader {
         int cntl_lat_ix;
         int cntl_lon_ix;
         boolean externalGeo = false;
-        String resolution = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("MODIS Resolution").getData().getElemString();
+        String resolution = getStringAttribute("MODIS Resolution");
         if (resolution.equals("500m")) {
             cntl_lat_ix = 2;
             cntl_lon_ix = 2;
@@ -221,7 +216,8 @@ public class L1BModisFileReader extends SeadasFileReader {
                 externalGeo = true;
                 //Use external lat/lon with PixelGeoCoding
                 try {
-                    geofile = ncFile.open(geocheck.getPath());
+                    NetcdfFile geofile;
+                    geofile = open(geocheck.getPath());
                     navGroupMODIS = "MODIS_Swath_Type_GEO/Geolocation Fields";
                     final String longitude = "Longitude";
                     final String latitude = "Latitude";
@@ -231,8 +227,8 @@ public class L1BModisFileReader extends SeadasFileReader {
                     product.addBand(latBand);
                     product.addBand(lonBand);
 
-                    Array latarr = geofile.findVariable(navGroupMODIS + "/" +latitude).read();
-                    Array lonarr = geofile.findVariable(navGroupMODIS + "/" +longitude).read();
+                    Array latarr = geofile.findVariable(navGroupMODIS + "/" + latitude).read();
+                    Array lonarr = geofile.findVariable(navGroupMODIS + "/" + longitude).read();
                     float[] latitudes;
                     float[] longitudes;
                     if (mustFlipX && mustFlipY) {
@@ -316,8 +312,7 @@ public class L1BModisFileReader extends SeadasFileReader {
     public void addGlobalAttributeModisL1B() {
         Element eosElement = null;
         try {
-            eosElement = getEosElement("CoreMetadata", ncFile.getRootGroup());
-            //  eosElement = HdfEosUtils.getEosElement(CORE_METADATA, ncfile.getRootGroup());
+            eosElement = HdfEosUtils.getEosElement("CoreMetadata", ncFile.getRootGroup());
         } catch (IOException e) {
             e.printStackTrace();  //Todo add a valid exception
             System.out.print("Whoops...");
@@ -381,58 +376,8 @@ public class L1BModisFileReader extends SeadasFileReader {
             String shortName = shortNameElem.getValue().substring(2);
             Attribute shortNameAttribute = new Attribute("MODIS Platform", shortName);
             globalAttributes.add(shortNameAttribute);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-    }
-
-    /* COPIED FROM org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos:HdfEosUtils */
-
-    static Element getEosElement(String name, Group eosGroup) throws IOException {
-        String smeta = getEosMetadata(name, eosGroup);
-        if (smeta == null) {
-            return null;
-        }
-        smeta = smeta.replaceAll("\\s+=\\s+", "=");
-        smeta = smeta.replaceAll("\\?", "_"); // XML names cannot contain the character "?".
-
-        StringBuilder sb = new StringBuilder(smeta.length());
-        StringTokenizer lineFinder = new StringTokenizer(smeta, "\t\n\r\f");
-        while (lineFinder.hasMoreTokens()) {
-            String line = lineFinder.nextToken().trim();
-            sb.append(line);
-            sb.append("\n");
-        }
-
-        ODLparser parser = new ODLparser();
-        return parser.parseFromString(sb.toString());// now we have the ODL in JDOM elements
-
-
-    }
-
-    public static String getEosMetadata(String name, Group eosGroup) throws IOException {
-        StringBuilder sbuff = null;
-        String structMetadata = null;
-
-        int n = 0;
-        while (true) {
-            Variable structMetadataVar = eosGroup.findVariable(name + "." + n);
-            if (structMetadataVar == null) {
-                break;
-            }
-            if ((structMetadata != null) && (sbuff == null)) { // more than 1 StructMetadata
-                sbuff = new StringBuilder(64000);
-                sbuff.append(structMetadata);
-            }
-
-            Array metadataArray = structMetadataVar.read();
-            structMetadata = ((ArrayChar) metadataArray).getString(); // common case only StructMetadata.0, avoid extra copy
-
-            if (sbuff != null) {
-                sbuff.append(structMetadata);
-            }
-            n++;
-        }
-        return (sbuff != null) ? sbuff.toString() : structMetadata;
     }
 }
