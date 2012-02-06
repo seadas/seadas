@@ -78,7 +78,7 @@ Installation Guide
 8. Copy file $SEADAS/seadas/src/main/config/beam.config to directory $SEADAS/seadas/config/
     and modify the following lines:
     * Set beam.home = .
-    * Set beam.app = VisatMain
+    * Set beam.app = SeaDAS
     * Set beam.logLevel = ALL
     * Set beam.debug = true
     * Set beam.splash.image = ./src/main/bin/common/splash.png
