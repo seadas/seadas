@@ -455,20 +455,22 @@ public class L2genData {
         for (ProductInfo productInfo : waveIndependentProductInfoArray) {
             for (BaseInfo algorithmInfo : productInfo.getChildren()) {
                 if (algorithmInfo.isSelected()) {
-                    StringBuilder product = new StringBuilder();
-
-                    product.append(productInfo.getName());
-
-                    if (algorithmInfo.getName() != null && algorithmInfo.getName().length() > 0) {
-                        product.append("_");
-                        product.append(algorithmInfo.getName());
-                    }
-
-                    if (prodlist.length() > 0) {
-                        prodlist.append(" ");
-                    }
-
-                    prodlist.append(product);
+                    prodlist.append(algorithmInfo.getFullName()).append(" ");
+//
+//                    StringBuilder product = new StringBuilder();
+//
+//                    product.append(productInfo.getName());
+//
+//                    if (algorithmInfo.getName() != null && algorithmInfo.getName().length() > 0) {
+//                        product.append("_");
+//                        product.append(algorithmInfo.getName());
+//                    }
+//
+//                    if (prodlist.length() > 0) {
+//                        prodlist.append(" ");
+//                    }
+//
+//                    prodlist.append(product);
                 }
             }
         }
@@ -477,22 +479,23 @@ public class L2genData {
             for (BaseInfo algorithmInfo : productInfo.getChildren()) {
                 for (BaseInfo wavelengthInfo : algorithmInfo.getChildren()) {
                     if (wavelengthInfo.isSelected()) {
-                        StringBuilder product = new StringBuilder();
-
-                        product.append(productInfo.getName());
-                        product.append("_");
-                        product.append(((WavelengthInfo) wavelengthInfo).getWavelengthString());
-
-                        if (algorithmInfo.getName() != null && algorithmInfo.getName().length() > 0) {
-                            product.append("_");
-                            product.append(algorithmInfo.getName());
-                        }
-
-                        if (prodlist.length() > 0) {
-                            prodlist.append(" ");
-                        }
-
-                        prodlist.append(product.toString());
+                        prodlist.append(wavelengthInfo.getFullName()).append(" ");
+//                        StringBuilder product = new StringBuilder();
+//
+//                        product.append(productInfo.getName());
+//                        product.append("_");
+//                        product.append(((WavelengthInfo) wavelengthInfo).getWavelengthString());
+//
+//                        if (algorithmInfo.getName() != null && algorithmInfo.getName().length() > 0) {
+//                            product.append("_");
+//                            product.append(algorithmInfo.getName());
+//                        }
+//
+//                        if (prodlist.length() > 0) {
+//                            prodlist.append(" ");
+//                        }
+//
+//                        prodlist.append(product.toString());
                     }
                 }
             }

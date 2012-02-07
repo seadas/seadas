@@ -50,58 +50,31 @@ public class WavelengthInfo extends BaseInfo {
 
     @Override
     public String getFullName() {
-        String productStr = "";
-        String algorithmStr = "";
-        String wavelengthStr = "";
-// todo use prefix and suffix to make name
 
-  //      this.getAlgorithmInfo().getPrefix()
+        StringBuilder result = new StringBuilder();
 
+        BaseInfo aInfo = getParent();
 
+        if (aInfo != null) {
+            String prefix = ((AlgorithmInfo) aInfo).getPrefix();
+            String suffix = ((AlgorithmInfo) aInfo).getSuffix();
 
-        BaseInfo algorithmInfo = getParent();
-        if (algorithmInfo == null) {
-            return getName();
-        }
-        algorithmStr = algorithmInfo.getName();
-        if (algorithmStr == null) {
-            algorithmStr = "";
-        }
-        if (wavelength == NULL_WAVELENGTH) {
-            wavelengthStr = null;
-        } else {
-            wavelengthStr = getName();
-        }
-        if (wavelengthStr == null) {
-            return algorithmInfo.getFullName();
-        }
+            if (prefix != null && !prefix.isEmpty()) {
+                result.append(prefix);
+            }
 
-        BaseInfo productInfo = algorithmInfo.getParent();
-        if (productInfo != null) {
-            productStr = productInfo.getName();
-            if (productStr == null) {
-                productStr = "";
+            if (wavelength != NULL_WAVELENGTH) {
+                result.append(getName());
+            }
+
+            if (suffix != null && !suffix.isEmpty()) {
+                result.append(suffix);
             }
         }
 
-        StringBuilder result = new StringBuilder();
-        if (!productStr.isEmpty()) {
-            result.append(productStr);
-        }
-        if (!wavelengthStr.isEmpty()) {
-//            if (result.length() > 0) {
-//                result.append("_");
-//            }
-            result.append(wavelengthStr);
-        }
-        if (!algorithmStr.isEmpty()) {
-//            if (result.length() > 0) {
-//                result.append("_");
-//            }
-            result.append(algorithmStr);
-        }
-        return result.toString();
+        return result.toString().replaceAll("[_]+", "_");
     }
+
 
     public boolean isVisible() {
         if (wavelength >= 0 && wavelength < VISIBLE_UPPER_LIMIT) {
@@ -148,7 +121,7 @@ public class WavelengthInfo extends BaseInfo {
 
     @Override
     public boolean isWavelengthDependent() {
-        if(wavelength != NULL_WAVELENGTH) {
+        if (wavelength != NULL_WAVELENGTH) {
             return true;
         }
         return false;
@@ -156,7 +129,7 @@ public class WavelengthInfo extends BaseInfo {
 
     @Override
     public boolean isWavelengthIndependent() {
-        if(wavelength == NULL_WAVELENGTH) {
+        if (wavelength == NULL_WAVELENGTH) {
             return true;
         }
         return false;

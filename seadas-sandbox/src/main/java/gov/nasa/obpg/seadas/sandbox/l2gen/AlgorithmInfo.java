@@ -151,21 +151,20 @@ public class AlgorithmInfo extends BaseInfo {
 
     @Override
     public String getFullName() {
+
+        StringBuilder result = new StringBuilder();
+
         if (prefix != null && !prefix.isEmpty()) {
-            System.out.println("prefix="+prefix);
-            StringBuilder result = new StringBuilder(prefix);
-            if (suffix != null && !suffix.isEmpty()) {
-                System.out.println("suffix="+suffix);
-              //  result.append("_");
-                result.append(suffix);
-            }
-            return result.toString();
-        } else if (suffix != null && !suffix.isEmpty()) {
-            return suffix;
+            result.append(prefix);
         }
 
-        return getName();
+        if (suffix != null && !suffix.isEmpty()) {
+            result.append(suffix);
+        }
+
+        return result.toString().replaceAll("[_]+", "_");
     }
+
 
     private static ParameterType convertWavetype(String str) {
         if (str.compareToIgnoreCase(PARAMTYPE_VISIBLE) == 0) {
