@@ -31,8 +31,6 @@ public class AlgorithmInfo extends BaseInfo {
     private ParameterType parameterType = null;
 
     private boolean defaultSelected = false;
-    private boolean wavelengthDependent = false;
-    // todo make method to make   wavelengthDependent from   parameterType
 
 
     public AlgorithmInfo(String name, String description, ParameterType parameterType) {
@@ -84,14 +82,7 @@ public class AlgorithmInfo extends BaseInfo {
         setParent(productInfo);
     }
 
-    @Override
-    public boolean isWavelengthDependent() {
-        return wavelengthDependent;
-    }
 
-    public void setWavelengthDependent(boolean wavelengthDependent) {
-        this.wavelengthDependent = wavelengthDependent;
-    }
 
     public boolean isDefaultSelected() {
         return defaultSelected;

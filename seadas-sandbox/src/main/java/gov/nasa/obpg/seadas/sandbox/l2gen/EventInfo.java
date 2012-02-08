@@ -63,10 +63,11 @@ public class EventInfo {
 
     public void fireEvent(Object oldValue, Object newValue) {
         if (!isEnabled()) {
+            System.out.println("Setting pending event fire - " + name);
             pending = true;
         } else {
             pending = false;
-            System.out.println("Firing event - " + name);
+            System.out.println("Actually Firing event - " + name);
             propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(sourceObject, name, oldValue, newValue));
         }
     }
@@ -82,4 +83,7 @@ public class EventInfo {
         return name;
     }
 
+    public int getEnabledCount() {
+        return enabledCount;
+    }
 }

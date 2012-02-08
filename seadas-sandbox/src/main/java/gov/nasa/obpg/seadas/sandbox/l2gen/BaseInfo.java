@@ -147,6 +147,9 @@ public class BaseInfo implements Comparable<BaseInfo> {
     }
 
     public boolean isWavelengthDependent() {
+
+        boolean result = false;
+
         for(BaseInfo info : getChildren()) {
             if(info.isWavelengthDependent()) {
                 return true;
