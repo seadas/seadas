@@ -1,6 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class BaseInfo implements Comparable<BaseInfo> {
             implements Comparator<ProductInfo> {
 
         public int compare(ProductInfo s1, ProductInfo s2) {
-            return s1.getName().compareTo(s2.getName());
+            return s1.getFullName().compareTo(s2.getFullName());
         }
     }
 
@@ -36,7 +37,7 @@ public class BaseInfo implements Comparable<BaseInfo> {
             implements Comparator<ProductInfo> {
 
         public int compare(ProductInfo s1, ProductInfo s2) {
-            return s1.getName().compareToIgnoreCase(s2.getName());
+            return s1.getFullName().compareToIgnoreCase(s2.getFullName());
         }
     }
 
@@ -142,8 +143,12 @@ public class BaseInfo implements Comparable<BaseInfo> {
         }
     }
 
+
+    public void sortChildren() {
+        Collections.sort(children);
+    }
     public String toString() {
-        return getName();
+        return getFullName();
     }
 
     public boolean isWavelengthDependent() {

@@ -2,6 +2,7 @@ package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 
 import org.esa.beam.util.StringUtils;
+import org.esa.beam.util.math.Array;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
@@ -46,7 +47,6 @@ public class L2genData {
     private final String[] coordinateParamKeys = {NORTH, SOUTH, WEST, EAST};
     private final String[] pixelLineParamKeys = {SPIXL, EPIXL, DPIXL, SLINE, ELINE, DLINE};
     private final String[] fileIOParamKeys = {IFILE, OFILE};
-    private final String[] remainingGUIParamKeys = {};
 
     private L2genReader l2genReader = new L2genReader(this);
 
@@ -121,7 +121,7 @@ public class L2genData {
         }
     }
 
-    private void fireEvent(String eventName) {
+    public void fireEvent(String eventName) {
         fireEvent(eventName, null, null);
     }
 
@@ -502,8 +502,6 @@ public class L2genData {
     }
 
 
-    // DANNY IS REVIEWING CODE AND LEFT OFF HERE
-
     private void specifyRegionType(String paramKey) {
 
         //---------------------------------------------------------------------------------------
@@ -535,24 +533,20 @@ public class L2genData {
         if (regionType == RegionType.Coordinates) {
             // Since Coordinates are being used purge PixelLine fields
             for (String currKey : pixelLineParamKeys) {
-                parfileHashMap.remove(currKey);
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(
-
-                        this, currKey, null, ""));
-
+                if (parfileHashMap.containsKey(currKey)) {
+                    parfileHashMap.remove(currKey);
+                    propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, currKey, null, ""));
+                }
             }
 
         } else if (regionType == RegionType.PixelLines) {
             // Since PixelLines are being used purge Coordinate fields
-
             for (String currKey : coordinateParamKeys) {
-                parfileHashMap.remove(currKey);
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(
-
-                        this, currKey, null, ""));
-
+                if (parfileHashMap.containsKey(currKey)) {
+                    parfileHashMap.remove(currKey);
+                    propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, currKey, null, ""));
+                }
             }
-
         }
     }
 
@@ -560,10 +554,9 @@ public class L2genData {
     //    For any given paramValue assemble it formatted parfile 'name=value' entry
     //    Do not make an entry if it matches the default value
 
-    private void makeParfileKeyValueEntry(StringBuilder stringBuilder, String currKey) {
+    private void makeOptionalParfileEntry(StringBuilder stringBuilder, String currKey) {
 
         boolean makeEntry = false;
-
 
         if (parfileHashMap.containsKey(currKey)) {
             if (defaultParfileHashMap.containsKey(currKey)) {
@@ -579,18 +572,14 @@ public class L2genData {
         //      debug("LATER currKey="+currKey+":main="+paramValueHashMap.get(currKey)+":default="+defaultParamValueHashMap.get(currKey)+":makeEntry="+makeEntry);
 
         if (makeEntry == true) {
-            stringBuilder.append(currKey);
-            stringBuilder.append("=");
-            stringBuilder.append(parfileHashMap.get(currKey));
-            stringBuilder.append("\n");
+            stringBuilder.append(makeParfileEntry(currKey, parfileHashMap.get(currKey)));
         }
     }
 
 
-    private String makeRequiredParfileKeyValueEntry(String name, String value) {
+    private String makeParfileEntry(String name, String value) {
 
         StringBuilder stringBuilder = new StringBuilder("");
-
 
         stringBuilder.append(name);
         stringBuilder.append("=");
@@ -601,7 +590,24 @@ public class L2genData {
     }
 
 
+    public void makeParfileSubSection(String title, String[] paramKeys, HashMap<String, Object> paramValueHashMap, StringBuilder parfileText) {
+        StringBuilder parfileSubText = new StringBuilder("");
+
+        for (String key : paramKeys) {
+            makeOptionalParfileEntry(parfileSubText, key);
+            paramValueHashMap.remove(key);
+        }
+        if (parfileSubText.length() != 0) {
+            parfileSubText.insert(0, title);
+            parfileText.append(parfileSubText.toString());
+        }
+    }
+
+
     public String getParfile() {
+
+        StringBuilder parfileStringBuilder = new StringBuilder("");
+        HashMap<String, Object> paramValueHashMapCopy = new HashMap();
 
         // Remove prod entry because we do not store it here.
         // This is just a precaution it should never have been stored.
@@ -609,66 +615,50 @@ public class L2genData {
             parfileHashMap.remove(PROD);
         }
 
-        HashMap<String, Object> paramValueCopyHashMap = new HashMap();
-
         for (String currKey : parfileHashMap.keySet()) {
-            paramValueCopyHashMap.put(currKey, parfileHashMap.get(currKey));
+            paramValueHashMapCopy.put(currKey, parfileHashMap.get(currKey));
         }
 
-        StringBuilder parfileStringBuilder = new StringBuilder("");
+        makeParfileSubSection("# FILE IO PARAMS\n",
+                fileIOParamKeys,
+                paramValueHashMapCopy,
+                parfileStringBuilder
+        );
 
-
-        StringBuilder fileIOBlockStringBuilder = new StringBuilder("");
-
-        for (String currKey : fileIOParamKeys) {
-            makeParfileKeyValueEntry(fileIOBlockStringBuilder, currKey);
-            paramValueCopyHashMap.remove(currKey);
-        }
-
-        if (fileIOBlockStringBuilder.length() > 0) {
-            parfileStringBuilder.append("# FILE IO PARAMS\n");
-            parfileStringBuilder.append(fileIOBlockStringBuilder.toString());
-        }
-
-
-        String productEntry = makeRequiredParfileKeyValueEntry(PROD, getProd());
         parfileStringBuilder.append("# PRODUCT PARAM\n");
-        parfileStringBuilder.append(productEntry);
+        parfileStringBuilder.append(makeParfileEntry(PROD, getProd()));
 
+        makeParfileSubSection("# COORDINATE PARAMS\n",
+                coordinateParamKeys,
+                paramValueHashMapCopy,
+                parfileStringBuilder
+        );
 
-        StringBuilder coordinateBlockStringBuilder = new StringBuilder("");
+        makeParfileSubSection("# PIXEL-LINE PARAMS\n",
+                pixelLineParamKeys,
+                paramValueHashMapCopy,
+                parfileStringBuilder
+        );
 
-        for (String currKey : coordinateParamKeys) {
-            makeParfileKeyValueEntry(coordinateBlockStringBuilder, currKey);
+        String additionalParamKeys[] = new String[paramValueHashMapCopy.size()];
 
-            paramValueCopyHashMap.remove(currKey);
+        int i = 0;
+        for (String currKey : paramValueHashMapCopy.keySet()) {
+            additionalParamKeys[i] = currKey;
+            i++;
         }
 
-
-        for (String currKey : pixelLineParamKeys) {
-            makeParfileKeyValueEntry(coordinateBlockStringBuilder, currKey);
-            paramValueCopyHashMap.remove(currKey);
-        }
-
-        if (coordinateBlockStringBuilder.length() > 0) {
-            parfileStringBuilder.append("# COORDINATE PARAMS\n");
-            parfileStringBuilder.append(coordinateBlockStringBuilder.toString());
-        }
-
-
-        StringBuilder userBlockStringBuilder = new StringBuilder("");
-
-        for (String currKey : paramValueCopyHashMap.keySet()) {
-            makeParfileKeyValueEntry(userBlockStringBuilder, currKey);
-        }
-
-        if (userBlockStringBuilder.length() > 0) {
-            parfileStringBuilder.append("# ADDITIONAL USER PARAMS\n");
-            parfileStringBuilder.append(userBlockStringBuilder.toString());
-        }
+        makeParfileSubSection("# ADDITIONAL USER PARAMS\n",
+                additionalParamKeys,
+                paramValueHashMapCopy,
+                parfileStringBuilder
+        );
 
         return parfileStringBuilder.toString();
     }
+
+
+
 
 
     private HashMap<String, String> parseParfile(String parfileString) {
@@ -700,6 +690,7 @@ public class L2genData {
         return thisParfileHashMap;
     }
 
+// DANNY IS REVIEWING CODE AND LEFT OFF HERE
 
     public void setParfile(String inParfile) {
 
@@ -1179,9 +1170,9 @@ public class L2genData {
                 algorithmInfo.clearChildren();
 
                 if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.NONE) {
-                    WavelengthInfo newWavelengthInfo = new WavelengthInfo(null);
-                    newWavelengthInfo.setParent(algorithmInfo);
-                    algorithmInfo.addChild(newWavelengthInfo);
+                //    WavelengthInfo newWavelengthInfo = new WavelengthInfo(null);
+                //    newWavelengthInfo.setParent(algorithmInfo);
+                //    algorithmInfo.addChild(newWavelengthInfo);
                 } else {
                     for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
 

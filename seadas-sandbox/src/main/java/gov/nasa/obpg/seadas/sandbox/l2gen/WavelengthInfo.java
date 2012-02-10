@@ -15,7 +15,6 @@ public class WavelengthInfo extends BaseInfo {
 
     private int wavelength = NULL_WAVELENGTH;
     private boolean defaultSelected = false;
-    private boolean toStringShowProductName = false;
 
     public WavelengthInfo(int wavelength, AlgorithmInfo algorithmInfo) {
         super(Integer.toString(wavelength), algorithmInfo);
@@ -94,22 +93,7 @@ public class WavelengthInfo extends BaseInfo {
         return (AlgorithmInfo) getParent();
     }
 
-    @Override
-    public String toString() {
-        if (toStringShowProductName == true) {
-            return getFullName();
-        } else {
-            return getName();
-        }
-    }
 
-    public boolean isToStringShowProductName() {
-        return toStringShowProductName;
-    }
-
-    public void setToStringShowProductName(boolean toStringShowProductName) {
-        this.toStringShowProductName = toStringShowProductName;
-    }
 
     public boolean isDefaultSelected() {
         return defaultSelected;

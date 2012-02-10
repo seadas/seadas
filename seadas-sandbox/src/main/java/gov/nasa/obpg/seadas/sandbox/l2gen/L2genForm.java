@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.EventObject;
 
 
@@ -79,6 +80,7 @@ class L2genForm extends JTabbedPane {
 
     private JFileChooser parfileChooser = new JFileChooser();
 
+    private DefaultMutableTreeNode rootNode;
 
     private String SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT = "No products currently selected";
     private String SEADAS_PRODUCTS_FILE = "productList.xml";
@@ -1007,7 +1009,7 @@ class L2genForm extends JTabbedPane {
 
         CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
         JTree tree;
-        BaseInfo currentValue;
+        DefaultMutableTreeNode currentNode;
 
         public CheckBoxNodeEditor(JTree tree) {
             this.tree = tree;
@@ -1019,7 +1021,7 @@ class L2genForm extends JTabbedPane {
 
                     System.out.print("********** listener ***********\n");
                     System.out.print("checkbox - " + renderer.label.getText() + " - " + state.toString() + "\n");
-                    System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
+               //     System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
 
                     if (stopCellEditing()) {
                         fireEditingStopped();
@@ -1049,14 +1051,15 @@ class L2genForm extends JTabbedPane {
         public Object getCellEditorValue() {
 
             TristateCheckBox.State state = renderer.getJCheckBox().getState();
+//
+//            System.out.print("-----getCellEditorValue - " + renderer.label.getText() + " - " + state.toString() + "\n");
+//            System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
+//            l2genData.setSelectedInfo(currentValue, getInfoState(state));
+//            System.out.print("   aval - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
 
-            System.out.print("-----getCellEditorValue - " + renderer.label.getText() + " - " + state.toString() + "\n");
-            System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
-            l2genData.setSelectedInfo(currentValue, getInfoState(state));
-            System.out.print("   aval - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
+            setNodeState(currentNode,getInfoState(state));
 
-
-            return currentValue;
+            return currentNode.getUserObject();
         }
 
         public boolean isCellEditable(EventObject event) {
@@ -1072,12 +1075,7 @@ class L2genForm extends JTabbedPane {
                     ((BaseInfo) ((DefaultMutableTreeNode) value).getUserObject()).getFullName() + "\n");
 
             if (value instanceof DefaultMutableTreeNode) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-                Object obj = node.getUserObject();
-                if (obj instanceof BaseInfo) {
-                    currentValue = (BaseInfo) obj;
-                    //System.out.print("     " + currentValue.getFullName() + " - " + Boolean.toString(currentValue.isSelected()) + "\n");
-                }
+                currentNode = (DefaultMutableTreeNode) value;
             }
             Component editor = renderer.getTreeCellRendererComponent(tree, value,
                     true, expanded, leaf, row, true);
@@ -1089,29 +1087,133 @@ class L2genForm extends JTabbedPane {
 
     private TreeNode createTree() {
 
-        DefaultMutableTreeNode root, product, algorithm, wavelength;
-        root = new DefaultMutableTreeNode();
+        DefaultMutableTreeNode product, oldAlgorithm, algorithm = null, wavelength;
+
+        oldAlgorithm = new DefaultMutableTreeNode();
+        rootNode = new DefaultMutableTreeNode(new BaseInfo());
 
         for (ProductInfo productInfo : l2genData.getProductInfoArray()) {
             product = new DefaultMutableTreeNode(productInfo);
-            root.add(product);
-
-            if (productInfo.getChildren().size() > 1) {
-                for (BaseInfo aInfo : productInfo.getChildren()) {
-                    algorithm = new DefaultMutableTreeNode(aInfo);
-                    product.add(algorithm);
-
-                    if (aInfo.getChildren().size() > 1) {
-                        for (BaseInfo wInfo : aInfo.getChildren()) {
-                            wavelength = new DefaultMutableTreeNode(wInfo);
-                            algorithm.add(wavelength);
-                        }
-                    }
+            for (BaseInfo aInfo : productInfo.getChildren()) {
+                algorithm = new DefaultMutableTreeNode(aInfo);
+//                if (algorithm.toString().equals(oldAlgorithm.toString())) {
+//                    algorithm = oldAlgorithm;
+//                }
+                for (BaseInfo wInfo : aInfo.getChildren()) {
+                    wavelength = new DefaultMutableTreeNode(wInfo);
+                    algorithm.add(wavelength);
                 }
+                product.add(algorithm);
+                oldAlgorithm = algorithm;
+            }
+            if (productInfo.getChildren().size() == 1) {
+                rootNode.add(algorithm);
+            } else {
+                rootNode.add(product);
             }
         }
 
-        return root;
+
+        //if (productInfo.getChildren().size() > 0) {
+
+
+        return rootNode;
+    }
+
+
+    public void checkTreeState(DefaultMutableTreeNode node) {
+
+        l2genData.disableEvent(l2genData.PRODUCT_CHANGED_EVENT);
+        BaseInfo info = (BaseInfo) node.getUserObject();
+        BaseInfo.State newState = info.getState();
+
+        if (node.getChildCount() > 0) {
+            Enumeration<DefaultMutableTreeNode> enumeration = node.children();
+            DefaultMutableTreeNode kid;
+            boolean selectedFound = false;
+            boolean notSelectedFound = false;
+            while (enumeration.hasMoreElements()) {
+                kid = enumeration.nextElement();
+                checkTreeState(kid);
+
+                BaseInfo childInfo = (BaseInfo) kid.getUserObject();
+
+                switch (childInfo.getState()) {
+                    case SELECTED:
+                        selectedFound = true;
+                        break;
+                    case PARTIAL:
+                        selectedFound = true;
+                        notSelectedFound = true;
+                        break;
+                    case NOT_SELECTED:
+                        notSelectedFound = true;
+                        break;
+                }
+
+                if (selectedFound && !notSelectedFound) {
+                    newState = BaseInfo.State.SELECTED;
+                } else if (!selectedFound && notSelectedFound) {
+                    newState = BaseInfo.State.NOT_SELECTED;
+                } else if (selectedFound && notSelectedFound) {
+                    newState = BaseInfo.State.PARTIAL;
+                }
+            }
+        } else {
+            if (newState == BaseInfo.State.PARTIAL) {
+                newState = BaseInfo.State.SELECTED;
+                debug("in checkAlgorithmState converted newState to " + newState);
+            }
+        }
+
+        if (newState != info.getState()) {
+            l2genData.setSelectedInfo(info, newState);
+
+        }
+
+        l2genData.enableEvent(l2genData.PRODUCT_CHANGED_EVENT);
+    }
+
+
+
+    public void setNodeState(DefaultMutableTreeNode node, BaseInfo.State state) {
+
+        debug("setNodeState called with state = " + state);
+
+        if (node == null) {
+            return;
+        }
+        
+        BaseInfo info = (BaseInfo) node.getUserObject();
+        // BaseInfo.State newState = info.getState();
+
+        if (state == info.getState()) {
+            return;
+        }
+
+        l2genData.disableEvent(l2genData.PRODUCT_CHANGED_EVENT);
+
+        if (node.getChildCount() > 0) {
+            l2genData.setSelectedInfo(info, state);
+
+            Enumeration<DefaultMutableTreeNode> enumeration = node.children();
+            DefaultMutableTreeNode childNode;
+
+            while (enumeration.hasMoreElements()) {
+                childNode = enumeration.nextElement();
+                setNodeState(childNode, state);
+            }
+        } else {
+            if (state == BaseInfo.State.PARTIAL) {
+                l2genData.setSelectedInfo(info, BaseInfo.State.SELECTED);
+            } else {
+                l2genData.setSelectedInfo(info, state);
+            }
+        }
+
+        checkTreeState(rootNode);
+
+        l2genData.enableEvent(l2genData.PRODUCT_CHANGED_EVENT);
     }
 
 
@@ -2383,10 +2485,10 @@ class L2genForm extends JTabbedPane {
 
         for (WavelengthInfo wavelengthInfo : l2genData.getWavelengthLimiterArray()) {
 
-            final String currWavelength = wavelengthInfo.toString();
+            final String currWavelength = wavelengthInfo.getWavelengthString();
             final JCheckBox currJCheckBox = new JCheckBox(currWavelength);
 
-            currJCheckBox.setName(currWavelength);
+            //  currJCheckBox.setName(currWavelength);
 
             // add current JCheckBox to the externally accessible arrayList
             wavelengthsJCheckboxArrayList.add(currJCheckBox);
@@ -2500,7 +2602,7 @@ class L2genForm extends JTabbedPane {
 
         for (WavelengthInfo wavelengthInfo : l2genData.getWavelengthLimiterArray()) {
             for (JCheckBox currJCheckbox : wavelengthsJCheckboxArrayList) {
-                if (wavelengthInfo.toString().equals(currJCheckbox.getName())) {
+                if (wavelengthInfo.toString().equals(currJCheckbox.getText())) {
                     if (wavelengthInfo.isSelected() != currJCheckbox.isSelected()) {
                         currJCheckbox.setSelected(wavelengthInfo.isSelected());
                     }

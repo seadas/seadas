@@ -89,6 +89,8 @@ public class L2genReader {
 
                     } // for algorithms
 
+
+                    productInfo.sortChildren();
                     l2genData.addProductInfoArray(productInfo);
                 }
             } // for products

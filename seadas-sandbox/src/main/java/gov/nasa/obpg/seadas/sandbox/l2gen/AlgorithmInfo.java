@@ -21,8 +21,7 @@ public class AlgorithmInfo extends BaseInfo {
     private static String PARAMTYPE_NONE = "NONE";
 
     // These fields are populated according to productList.xml
-    private boolean toStringShowProductName = false;
-    private boolean toStringShowParameterType = false;
+
     private String description = null;
     private String dataType = null;
     private String prefix = null;
@@ -58,21 +57,7 @@ public class AlgorithmInfo extends BaseInfo {
         return getParent().getName();
     }
 
-    public boolean isToStringShowProductName() {
-        return toStringShowProductName;
-    }
 
-    public void setToStringShowProductName(boolean toStringShowProductName) {
-        this.toStringShowProductName = toStringShowProductName;
-    }
-
-    public boolean isToStringShowParameterType() {
-        return toStringShowParameterType;
-    }
-
-    public void setToStringShowParameterType(boolean toStringShowParameterType) {
-        this.toStringShowParameterType = toStringShowParameterType;
-    }
 
     public ProductInfo getProductInfo() {
         return (ProductInfo) getParent();
@@ -153,7 +138,8 @@ public class AlgorithmInfo extends BaseInfo {
             result.append(suffix);
         }
 
-        return result.toString().replaceAll("[_]+", "_");
+
+        return result.toString().replaceAll("[_]+", "_").replaceAll("[_]$", "");
     }
 
 
@@ -171,39 +157,5 @@ public class AlgorithmInfo extends BaseInfo {
         }
     }
 
-    @Override
-    public String toString() {
-
-        StringBuilder myStringBuilder = new StringBuilder("");
-
-        if (toStringShowProductName == true) {
-            if (getParent() != null) {
-                if (getParent().getName() != null && !getParent().getName().isEmpty()) {
-                    myStringBuilder.append(getParent().getName());
-                }
-            }
-
-            if (parameterType == ParameterType.VISIBLE) {
-                myStringBuilder.append("_vvv");
-            } else if (parameterType == ParameterType.IR) {
-                myStringBuilder.append("_iii");
-            } else if (parameterType == ParameterType.ALL) {
-                myStringBuilder.append("_nnn");
-            }
-
-        }
-
-        if (getName() != null && !getName().isEmpty()) {
-            myStringBuilder.append("_");
-            myStringBuilder.append(getName());
-        }
-
-        if (toStringShowParameterType == true) {
-            myStringBuilder.append(":");
-            myStringBuilder.append(parameterType);
-        }
-
-        return myStringBuilder.toString();
-    }
 
 }
