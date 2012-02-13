@@ -18,6 +18,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.*;
+import javax.xml.crypto.dsig.DigestMethod;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
@@ -196,7 +197,7 @@ class L2genForm extends JTabbedPane {
         });
 
         parfileJTextArea = new JTextArea();
-        parfileJTextArea.setEditable(false);
+        parfileJTextArea.setEditable(true);
         parfileJTextArea.setBackground(Color.decode("#dddddd"));
 
         parfileJTextArea.addFocusListener(new FocusListener() {
@@ -237,6 +238,9 @@ class L2genForm extends JTabbedPane {
         // Add textArea control to a mainPanel grid cell
         {
             JScrollPane scrollTextArea = new JScrollPane(parfileJTextArea);
+
+            scrollTextArea.createHorizontalScrollBar();
+            scrollTextArea.setMaximumSize(new Dimension(400, 400));
 
             final GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;
@@ -962,9 +966,12 @@ class L2genForm extends JTabbedPane {
             if ((value != null) && (value instanceof DefaultMutableTreeNode)) {
                 Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
                 if (userObject instanceof BaseInfo) {
-                    BaseInfo node = (BaseInfo) userObject;
-                    state = node.getState();
-                    stringValue = node.getFullName();
+                    BaseInfo info = (BaseInfo) userObject;
+                    state = info.getState();
+                    stringValue = info.getFullName();
+
+
+                    tree.setToolTipText(info.getDescription());
 
 
                     //  System.out.print(node.getFullName() + " - " + state.toString());
@@ -1021,7 +1028,7 @@ class L2genForm extends JTabbedPane {
 
                     System.out.print("********** listener ***********\n");
                     System.out.print("checkbox - " + renderer.label.getText() + " - " + state.toString() + "\n");
-               //     System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
+                    //     System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
 
                     if (stopCellEditing()) {
                         fireEditingStopped();
@@ -1057,7 +1064,7 @@ class L2genForm extends JTabbedPane {
 //            l2genData.setSelectedInfo(currentValue, getInfoState(state));
 //            System.out.print("   aval - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
 
-            setNodeState(currentNode,getInfoState(state));
+            setNodeState(currentNode, getInfoState(state));
 
             return currentNode.getUserObject();
         }
@@ -1090,20 +1097,42 @@ class L2genForm extends JTabbedPane {
         DefaultMutableTreeNode product, oldAlgorithm, algorithm = null, wavelength;
 
         oldAlgorithm = new DefaultMutableTreeNode();
+        BaseInfo oldAInfo = null;
+
         rootNode = new DefaultMutableTreeNode(new BaseInfo());
 
         for (ProductInfo productInfo : l2genData.getProductInfoArray()) {
             product = new DefaultMutableTreeNode(productInfo);
             for (BaseInfo aInfo : productInfo.getChildren()) {
                 algorithm = new DefaultMutableTreeNode(aInfo);
+
+                
+                product.add(algorithm);
+
 //                if (algorithm.toString().equals(oldAlgorithm.toString())) {
-//                    algorithm = oldAlgorithm;
+//                    if (oldAInfo.hasChildren()) {
+//                        if (aInfo.hasChildren()) {
+//                            algorithm = oldAlgorithm;
+//                        } else {
+//                            oldAlgorithm.add(algorithm);
+//                        }
+//                    } else {
+//                        if (aInfo.hasChildren()) {
+//                            product.remove(oldAlgorithm);
+//                            algorithm.add(oldAlgorithm);
+//                            product.add(algorithm);
+//                        }
+//                    }
+//                } else {
+//                    product.add(algorithm);
 //                }
+
                 for (BaseInfo wInfo : aInfo.getChildren()) {
                     wavelength = new DefaultMutableTreeNode(wInfo);
                     algorithm.add(wavelength);
                 }
-                product.add(algorithm);
+
+                oldAInfo = aInfo;
                 oldAlgorithm = algorithm;
             }
             if (productInfo.getChildren().size() == 1) {
@@ -1175,7 +1204,6 @@ class L2genForm extends JTabbedPane {
     }
 
 
-
     public void setNodeState(DefaultMutableTreeNode node, BaseInfo.State state) {
 
         debug("setNodeState called with state = " + state);
@@ -1183,9 +1211,8 @@ class L2genForm extends JTabbedPane {
         if (node == null) {
             return;
         }
-        
+
         BaseInfo info = (BaseInfo) node.getUserObject();
-        // BaseInfo.State newState = info.getState();
 
         if (state == info.getState()) {
             return;
@@ -1201,8 +1228,22 @@ class L2genForm extends JTabbedPane {
 
             while (enumeration.hasMoreElements()) {
                 childNode = enumeration.nextElement();
-                setNodeState(childNode, state);
+
+                BaseInfo childInfo = (BaseInfo) childNode.getUserObject();
+
+                if (childInfo instanceof WavelengthInfo) {
+                    if (state == BaseInfo.State.PARTIAL) {
+                        if (l2genData.compareWavelengthLimiter((WavelengthInfo) childInfo)) {
+                            setNodeState(childNode, BaseInfo.State.SELECTED);
+                        } else {
+                            setNodeState(childNode, BaseInfo.State.NOT_SELECTED);
+                        }
+                    } else {
+                        setNodeState(childNode, state);
+                    }
+                }
             }
+
         } else {
             if (state == BaseInfo.State.PARTIAL) {
                 l2genData.setSelectedInfo(info, BaseInfo.State.SELECTED);
@@ -1211,64 +1252,21 @@ class L2genForm extends JTabbedPane {
             }
         }
 
-        checkTreeState(rootNode);
+//todo target node stuff
+        DefaultMutableTreeNode ancestorNode;
+        DefaultMutableTreeNode targetNode = node;
+        ancestorNode = (DefaultMutableTreeNode) node.getParent();
+
+        while (ancestorNode.getParent() != null) {
+            targetNode = ancestorNode;
+            ancestorNode = (DefaultMutableTreeNode) ancestorNode.getParent();
+        }
+
+        checkTreeState(targetNode);
 
         l2genData.enableEvent(l2genData.PRODUCT_CHANGED_EVENT);
     }
 
-
-    private TreeNode createOldTree() {
-        DefaultMutableTreeNode root, product, algorithm, wavelength;
-
-        root = new DefaultMutableTreeNode();
-//        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
-//            product = new DefaultMutableTreeNode(productInfo);
-//            root.add(product);
-//            if (productInfo.getChildren().size() > 1) {
-//                for (BaseInfo algorithmInfo : productInfo.getChildren()) {
-//                    algorithm = new DefaultMutableTreeNode(algorithmInfo);
-//                    product.add(algorithm);
-//                }
-//            }
-//        }
-
-        for (ProductInfo productInfo : l2genData.getProductInfoArray()) {
-            product = new DefaultMutableTreeNode(productInfo);
-
-
-            boolean wavelengthFound = false;
-
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                for (BaseInfo wInfo : aInfo.getChildren()) {
-                    if (((WavelengthInfo) wInfo).getWavelength() != WavelengthInfo.NULL_WAVELENGTH) {
-                        wavelengthFound = true;
-                    }
-                }
-            }
-
-            if (wavelengthFound) {
-
-                root.add(product);
-                for (BaseInfo aInfo : productInfo.getChildren()) {
-                    AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
-
-                    if (algorithmInfo.getSuffix() == null || algorithmInfo.getSuffix().isEmpty()) {
-                        algorithm = product;
-                    } else {
-                        algorithm = new DefaultMutableTreeNode(algorithmInfo);
-                        product.add(algorithm);
-                    }
-                    for (BaseInfo wavelengthInfo : algorithmInfo.getChildren()) {
-                        wavelength = new DefaultMutableTreeNode(wavelengthInfo);
-                        algorithm.add(wavelength);
-                    }
-                }
-            }
-
-        }
-
-        return root;
-    }
 
     private void updateProductTreePanel() {
 
@@ -2410,7 +2408,7 @@ class L2genForm extends JTabbedPane {
         l2genData.addPropertyChangeListener(l2genData.WAVELENGTH_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println("UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT fired");
+                System.out.println("WAVELENGTH_LIMITER_CHANGE_EVENT fired");
                 updateWavelengthCheckboxSelectionStateEvent();
                 // setWaveDependentProductsJList();
             }
@@ -2488,7 +2486,7 @@ class L2genForm extends JTabbedPane {
             final String currWavelength = wavelengthInfo.getWavelengthString();
             final JCheckBox currJCheckBox = new JCheckBox(currWavelength);
 
-            //  currJCheckBox.setName(currWavelength);
+            currJCheckBox.setName(currWavelength);
 
             // add current JCheckBox to the externally accessible arrayList
             wavelengthsJCheckboxArrayList.add(currJCheckBox);
@@ -2602,7 +2600,8 @@ class L2genForm extends JTabbedPane {
 
         for (WavelengthInfo wavelengthInfo : l2genData.getWavelengthLimiterArray()) {
             for (JCheckBox currJCheckbox : wavelengthsJCheckboxArrayList) {
-                if (wavelengthInfo.toString().equals(currJCheckbox.getText())) {
+                debug("wave=" + wavelengthInfo.getWavelengthString() + " getName=" + currJCheckbox.getName());
+                if (wavelengthInfo.getWavelengthString().equals(currJCheckbox.getName())) {
                     if (wavelengthInfo.isSelected() != currJCheckbox.isSelected()) {
                         currJCheckbox.setSelected(wavelengthInfo.isSelected());
                     }

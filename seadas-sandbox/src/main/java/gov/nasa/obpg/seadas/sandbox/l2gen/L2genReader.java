@@ -20,7 +20,7 @@ public class L2genReader {
     private static String ELEMNAME_ALG = "algorithm";
     private static String ATTRIBNAME_ALG_NAME = "name";
 
-    private static String ELEMNAME_DESC = "description";
+    private static String ELEMNAME_DESCRIPTION = "description";
     private static String ELEMNAME_PARAMTYPE = "parameterType";
     private static String ELEMNAME_PREFIX = "prefix";
     private static String ELEMNAME_SUFFIX = "suffix";
@@ -66,14 +66,15 @@ public class L2genReader {
                             algorithmInfo.setName(algorithmName);
                         }
 
-                        String description = XmlReader.getTextValue(algElement, ELEMNAME_DESC);
-                        algorithmInfo.setDescription(description);
-
                         String parameterTypeStr = XmlReader.getTextValue(algElement, ELEMNAME_PARAMTYPE);
                         algorithmInfo.setParameterType(parameterTypeStr);
 
                         String suffix = XmlReader.getTextValue(algElement, ELEMNAME_SUFFIX);
                         algorithmInfo.setSuffix(suffix);
+
+
+                        String description = XmlReader.getTextValue(algElement, ELEMNAME_DESCRIPTION);
+                        algorithmInfo.setDescription(description);
 
                         String prefix = XmlReader.getTextValue(algElement, ELEMNAME_PREFIX);
                         algorithmInfo.setPrefix(prefix);

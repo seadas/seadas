@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class BaseInfo implements Comparable<BaseInfo> {
 
+
     public enum State {
         NOT_SELECTED, PARTIAL, SELECTED
     }
@@ -44,6 +45,7 @@ public class BaseInfo implements Comparable<BaseInfo> {
 
     private String name;
     private State state = State.NOT_SELECTED;
+    private String description = null;
     private BaseInfo parent = null;
     private ArrayList<BaseInfo> children = new ArrayList<BaseInfo>();
 
@@ -147,9 +149,7 @@ public class BaseInfo implements Comparable<BaseInfo> {
     public void sortChildren() {
         Collections.sort(children);
     }
-    public String toString() {
-        return getFullName();
-    }
+
 
     public boolean isWavelengthDependent() {
 
@@ -171,6 +171,16 @@ public class BaseInfo implements Comparable<BaseInfo> {
         }
         return false;
     }
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String toString() {
+        return getFullName();
+    }
 
 }

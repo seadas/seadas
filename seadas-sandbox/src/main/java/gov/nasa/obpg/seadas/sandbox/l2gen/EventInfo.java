@@ -28,9 +28,9 @@ public class EventInfo {
 
     public void setEnabled(boolean enabled) {
         if (enabled) {
-            enabledCount++;
-        } else {
             enabledCount--;
+        } else {
+            enabledCount++;
         }
 
         if (pending) {

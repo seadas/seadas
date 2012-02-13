@@ -22,7 +22,7 @@ public class AlgorithmInfo extends BaseInfo {
 
     // These fields are populated according to productList.xml
 
-    private String description = null;
+
     private String dataType = null;
     private String prefix = null;
     private String suffix = null;
@@ -34,7 +34,7 @@ public class AlgorithmInfo extends BaseInfo {
 
     public AlgorithmInfo(String name, String description, ParameterType parameterType) {
         super(name);
-        this.description = description;
+        setDescription(description);
         this.parameterType = parameterType;
     }
 
@@ -109,13 +109,7 @@ public class AlgorithmInfo extends BaseInfo {
         this.units = units;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public ParameterType getParameterType() {
         return parameterType;
