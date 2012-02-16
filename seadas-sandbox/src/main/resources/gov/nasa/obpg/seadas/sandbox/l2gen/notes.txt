@@ -1,25 +1,119 @@
 L2gen design notes:
 
-//todo Bug: Some events external to the tree are not being fully registering within the tree.
-when "adg" product is SELECTED which means all children are selected
-subsequent deselection of "adg_carder" via the "Selected Products Cart" results in
-the expected deselection of "adg_carder" in the tree but the "adg" product is not set as expected to PARTIAL.
-This because checkProductState and checkAlgorithmState need to be called.
+
 
 //todo New: Categorization
 We want to add a new layer of categorization as defined in the xml file productCategories.xml.
 We want to combined the waveDependent and waveIndependent products together within this list.
 
-//todo New: Product Tab Rearrangement
-put the cart, wavelength selector, selected products list and tree all on one page.
-
-//todo Bug: l2_prod entry is wrong
-When waveDependent product a_412 is selected via the tree or Jlist it appears as a_412_ in the l2_prod parameter.
-
-// todo wavelength selecter should not display iii checkbox if no IR bands available for current mission
 
 // todo ifile ofile stuff
 
 // todo make run button do something
 
 
+
+
+
+
+
+
+
+//    private void createWaveIndependentProductsJPanel(JPanel waveIndependentProductsJPanel) {
+//
+//        createWaveIndependentProductsJList();
+//
+//        JScrollPane waveIndependentProductsJScrollPane = new JScrollPane(waveIndependentProductsJList);
+//        waveIndependentProductsJScrollPane.setMinimumSize(new Dimension(400, 400));
+//        waveIndependentProductsJScrollPane.setMaximumSize(new Dimension(400, 400));
+//        waveIndependentProductsJScrollPane.setPreferredSize(new Dimension(400, 400));
+//
+//        waveIndependentProductsJPanel.setBorder(BorderFactory.createTitledBorder(WAVE_INDEPENDENT_PRODUCTS_JPANEL_TITLE));
+//        waveIndependentProductsJPanel.setLayout(new GridBagLayout());
+//
+//        // Add to waveIndependentProductsJPanel grid cell
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.fill = GridBagConstraints.BOTH;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        waveIndependentProductsJPanel.add(waveIndependentProductsJScrollPane, c);
+//    }
+
+
+//    private void createWaveIndependentProductsJList() {
+//
+//        waveIndependentProductsJList = new JList();
+//
+//        setWaveIndependentProductsJList();
+//
+//        // add listener to control
+//        waveIndependentProductsJList.addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//            public void valueChanged(ListSelectionEvent e) {
+//                if (handleWaveIndependentProductsJListEnabled) {
+//                    handleWaveIndependentProductsJList();
+//                }
+//            }
+//        });
+//    }
+
+
+//    private void setWaveIndependentProductsJList() {
+//        // Create arrayList for all the algorithmInfo objects
+//        ArrayList<AlgorithmInfo> algorithmInfoArrayList = new ArrayList<AlgorithmInfo>();
+//
+//        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
+//            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+//                ((AlgorithmInfo) algorithmInfo).setToStringShowProductName(true);
+//                algorithmInfoArrayList.add((AlgorithmInfo) algorithmInfo);
+//            }
+//        }
+//
+//        // Store the arrayList into an array which can then be fed into a JList control
+//        AlgorithmInfo[] algorithmInfoArray = new AlgorithmInfo[algorithmInfoArrayList.size()];
+//        algorithmInfoArrayList.toArray(algorithmInfoArray);
+//
+//        // format the JList control
+//        waveIndependentProductsJList.setListData(algorithmInfoArray);
+//
+//        //     setSelectionStatesWaveIndependentProductsJList();
+//    }
+
+
+
+
+//    private void handleWaveIndependentProductsJList() {
+//
+//        l2genData.disableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
+//
+//        Object[] selectedElements = waveIndependentProductsJList.getSelectedValues();
+//
+//        for (Object object : selectedElements) {
+//            AlgorithmInfo algorithmInfo = (AlgorithmInfo) object;
+//
+//            if (!algorithmInfo.isSelected()) {
+//                l2genData.setSelectedWaveIndependentProduct(algorithmInfo, true);
+//            }
+//        }
+//
+//        waveIndependentProductsJList.clearSelection();
+//        l2genData.enableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
+//    }
+
+
+//    private void setSelectionStatesWaveIndependentProductsJList() {
+//        waveIndependentProductsJList.clearSelection();
+//
+//        int idx = 0;
+//
+//        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
+//            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+//
+//                if (algorithmInfo.isSelected() == true) {
+//                    waveIndependentProductsJList.setSelectedIndex(idx);
+//                }
+//
+//                idx++;
+//            }
+//        }
+//    }

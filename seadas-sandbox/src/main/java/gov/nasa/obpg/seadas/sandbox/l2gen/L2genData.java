@@ -109,7 +109,7 @@ public class L2genData {
         for (EventInfo eventInfo : eventInfos) {
             if (eventName.equals(eventInfo.toString())) {
                 eventInfo.setEnabled(false);
-              //  debug("Disabled event " + eventName + " current enabled count = " + eventInfo.getEnabledCount());
+                //  debug("Disabled event " + eventName + " current enabled count = " + eventInfo.getEnabledCount());
             }
         }
     }
@@ -118,7 +118,7 @@ public class L2genData {
         for (EventInfo eventInfo : eventInfos) {
             if (eventName.equals(eventInfo.toString())) {
                 eventInfo.setEnabled(true);
-             //   debug("Enabled event " + eventName + " current enabled count = " + eventInfo.getEnabledCount());
+                //   debug("Enabled event " + eventName + " current enabled count = " + eventInfo.getEnabledCount());
             }
         }
     }
@@ -135,106 +135,6 @@ public class L2genData {
                 return;
             }
         }
-    }
-
-
-    private void checkProductState(ProductInfo productInfo) {
-        if (ignoreProductStateCheck) {
-            return;
-        }
-
-        BaseInfo.State newState = productInfo.getState();
-
-        if (productInfo.hasChildren()) {
-            boolean selectedFound = false;
-            boolean notSelectedFound = false;
-
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                switch (aInfo.getState()) {
-                    case SELECTED:
-                        selectedFound = true;
-                        break;
-                    case PARTIAL:
-                        selectedFound = true;
-                        notSelectedFound = true;
-                        break;
-                    case NOT_SELECTED:
-                        notSelectedFound = true;
-                        break;
-                }
-            }
-
-            if (selectedFound && !notSelectedFound) {
-                newState = BaseInfo.State.SELECTED;
-            } else if (!selectedFound && notSelectedFound) {
-                newState = BaseInfo.State.NOT_SELECTED;
-            } else if (selectedFound && notSelectedFound) {
-                newState = BaseInfo.State.PARTIAL;
-            }
-
-        } else if (productInfo.getState() == BaseInfo.State.PARTIAL) {
-            newState = BaseInfo.State.SELECTED;
-            debug("in checkProductState converted newState to " + newState);
-        }
-
-        if (newState != productInfo.getState()) {
-            productInfo.setState(newState);
-            debug("in checkProductState newState changed to = " + newState);
-            fireEvent(PRODUCT_CHANGED_EVENT);
-        }
-    }
-
-
-    private void checkAlgorithmState(AlgorithmInfo algorithmInfo) {
-
-        if (ignoreAlgorithmStateCheck) {
-            return;
-        }
-
-        BaseInfo.State newState = algorithmInfo.getState();
-
-        if (algorithmInfo.hasChildren()) {
-            boolean selectedFound = false;
-            boolean notSelectedFound = false;
-
-            for (BaseInfo wInfo : algorithmInfo.getChildren()) {
-                switch (wInfo.getState()) {
-                    case SELECTED:
-                        selectedFound = true;
-                        break;
-                    case PARTIAL:
-                        selectedFound = true;
-                        notSelectedFound = true;
-                        break;
-                    case NOT_SELECTED:
-                        notSelectedFound = true;
-                        break;
-                }
-            }
-
-            if (selectedFound && !notSelectedFound) {
-                newState = BaseInfo.State.SELECTED;
-            } else if (!selectedFound && notSelectedFound) {
-                newState = BaseInfo.State.NOT_SELECTED;
-            } else if (selectedFound && notSelectedFound) {
-                newState = BaseInfo.State.PARTIAL;
-            }
-        } else if (newState == BaseInfo.State.PARTIAL) {
-            newState = BaseInfo.State.SELECTED;
-            debug("in checkAlgorithmState converted newState to " + newState);
-        }
-
-        disableEvent(PRODUCT_CHANGED_EVENT);
-
-        if (newState != algorithmInfo.getState()) {
-            debug("in checkAlgorithmState newState found =" + newState);
-            algorithmInfo.setState(newState);
-            fireEvent(PRODUCT_CHANGED_EVENT);
-        }
-
-        checkProductState(algorithmInfo.getProductInfo());
-
-        enableEvent(PRODUCT_CHANGED_EVENT);
     }
 
 
@@ -303,7 +203,7 @@ public class L2genData {
         }
     }
 
-    public boolean hasWavelengthLimiterTypeIii() {
+    public boolean missionHasInfrared() {
 
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelengthInfo.isIR()) {
@@ -314,7 +214,7 @@ public class L2genData {
         return false;
     }
 
-    public boolean hasWavelengthLimiterTypeVvv() {
+    public boolean missionHasVisible() {
 
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelengthInfo.isVisible()) {
@@ -325,31 +225,33 @@ public class L2genData {
         return false;
     }
 
-    public boolean isSelectedWavelengthLimiterTypeIii() {
+    public boolean isSelectAllInfrared() {
 
-        int count = 0;
+        int InfraredCount = 0;
         int selectedCount = 0;
 
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
-            if (wavelengthInfo.isIR() && wavelengthInfo.isSelected()) {
-                selectedCount++;
-                count++;
+            if (wavelengthInfo.isIR()) {
+                InfraredCount++;
+                if (wavelengthInfo.isSelected()) {
+                    selectedCount++;
+                }
             }
         }
 
-        if (count > 0 && selectedCount == count) {
-            debug("iii is selected" + count + " " + selectedCount);
+        if (InfraredCount > 0 && selectedCount == InfraredCount) {
+            debug("iii is selected" + InfraredCount + " " + selectedCount);
             return true;
         } else {
-            debug("iii is NOT selected" + count + " " + selectedCount);
+            debug("iii is NOT selected" + InfraredCount + " " + selectedCount);
             return false;
         }
     }
 
 
-    public void setSelectedWavelengthTypeIii(boolean selected) {
+    public void setSelectAllInfrared(boolean selected) {
 
-        debug("setSelectedWavelengthTypeIii called with selected=" + selected);
+        debug("setSelectAllInfrared called with selected=" + selected);
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelengthInfo.isIR()) {
                 debug("setting  IR wave=" + wavelengthInfo.getWavelengthString() + " to selected=" + selected);
@@ -362,19 +264,22 @@ public class L2genData {
     }
 
 
-    public boolean isSelectedWavelengthLimiterTypeVvv() {
+    public boolean isSelectAllVisible() {
 
-        int count = 0;
+        int visibleCount = 0;
         int selectedCount = 0;
 
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
-            if (wavelengthInfo.isVisible() && wavelengthInfo.isSelected()) {
-                selectedCount++;
-                count++;
+            if (wavelengthInfo.isVisible()) {
+                visibleCount++;
+                if (wavelengthInfo.isSelected()) {
+                    selectedCount++;
+                }
             }
         }
 
-        if (count > 0 && selectedCount == count) {
+        debug("selectedCount=" + selectedCount + " visibleCount=" + visibleCount);
+        if (visibleCount > 0 && selectedCount == visibleCount) {
             return true;
         } else {
             return false;
@@ -382,7 +287,7 @@ public class L2genData {
     }
 
 
-    public void setSelectedWavelengthTypeVvv(boolean selected) {
+    public void setSelectAllVisible(boolean selected) {
 
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelengthInfo.isVisible()) {
@@ -591,10 +496,14 @@ public class L2genData {
 
                     String splitLine[] = parfileLine.split("=");
                     if (splitLine.length == 2) {
-
                         final String key = splitLine[0].toString().trim();
                         final String value = splitLine[1].toString().trim();
                         thisParfileHashMap.put(key, value);
+                    } else if (splitLine.length == 1) {
+                        final String key = splitLine[0].toString().trim();
+                        if (PROD.equals(key)) {
+                            thisParfileHashMap.put(key, "");
+                        }
                     }
                 }
             }
@@ -611,40 +520,35 @@ public class L2genData {
 
         if (inParfileHashMap != null && inParfileHashMap.size() > 0) {
 
-            HashMap<String, String> tmpParamValueHashMap = new HashMap<String, String>();
-            HashMap<String, String> copyParamValueHashMap = new HashMap<String, String>();
+            HashMap<String, String> copyOfParamValueHashMap = new HashMap<String, String>();
 
             for (String key : parfileHashMap.keySet()) {
-                copyParamValueHashMap.put(key, parfileHashMap.get(key));
+                copyOfParamValueHashMap.put(key, parfileHashMap.get(key));
             }
 
-            // Initialize tmpParamValueHashMap with defaultParamValueHashMap
-            for (String key : defaultParfileHashMap.keySet()) {
-                tmpParamValueHashMap.put(key, defaultParfileHashMap.get(key));
-            }
-
-            // Update  tmpParamValueHashMap  with  inParfileHashMap.
-            for (String key : inParfileHashMap.keySet()) {
-                tmpParamValueHashMap.put(key, inParfileHashMap.get(key));
-            }
-
-            // Remove any keys in paramValueHashMap which are not in tmpParamValueHashMap
-            for (String key : copyParamValueHashMap.keySet()) {
-
-                if (!key.equals(IFILE) && !tmpParamValueHashMap.containsKey(key)) {
+            // Remove any keys in paramValueHashMap which are not in inParfileHashMap
+            for (String key : copyOfParamValueHashMap.keySet()) {
+                if (!key.equals(IFILE) && !inParfileHashMap.containsKey(key)) {
                     deleteParam(key);
                 }
             }
 
             // Do ifile first
-            if (tmpParamValueHashMap.containsKey(IFILE)) {
-                setParamValue(IFILE, tmpParamValueHashMap.get(IFILE));
+            if (inParfileHashMap.containsKey(IFILE)) {
+                setParamValue(IFILE, inParfileHashMap.get(IFILE));
 
-                tmpParamValueHashMap.remove(IFILE);
+                inParfileHashMap.remove(IFILE);
             }
 
-            for (String key : tmpParamValueHashMap.keySet()) {
-                setParamValue(key, tmpParamValueHashMap.get(key));
+            // Initialize with defaultParamValueHashMap
+            for (String key : defaultParfileHashMap.keySet()) {
+                 setParamValue(key, defaultParfileHashMap.get(key));
+                 applyProductDefaults();
+            }
+
+            for (String key : inParfileHashMap.keySet()) {
+                debug("Setting parfile entry " + key + "=" + inParfileHashMap.get(key));
+                setParamValue(key, inParfileHashMap.get(key));
             }
         }
     }
@@ -660,8 +564,6 @@ public class L2genData {
             }
         }
     }
-
-
 
 
     public void applyProductDefaults() {
@@ -699,7 +601,7 @@ public class L2genData {
         HashMap<String, String> copyParamValueHashMap = new HashMap<String, String>();
 
         for (String key : parfileHashMap.keySet()) {
-            debug("key="+key+"value="+parfileHashMap.get(key));
+            debug("key=" + key + "value=" + parfileHashMap.get(key));
             copyParamValueHashMap.put(key, parfileHashMap.get(key));
         }
 
@@ -749,7 +651,7 @@ public class L2genData {
 
     public void setParamValue(String inKey, String inValue) {
 
-        debug("setParamValue inKey="+inKey+" inValue="+inValue);
+        debug("setParamValue inKey=" + inKey + " inValue=" + inValue);
         if (inKey != null && inKey.length() > 0) {
             inKey = inKey.trim();
 
@@ -873,12 +775,7 @@ public class L2genData {
                         newState = AlgorithmInfo.State.NOT_SELECTED;
                     }
 
-                    if (algorithmInfo.getFullName().equals("adg_carder")) {
-                        debug("adg_carder TEST newState="+newState+" getState="+algorithmInfo.getState());
-                    }
-
                     if (algorithmInfo.getState() != newState) {
-                        debug("calling getState="+newState+" name="+algorithmInfo.getFullName());
                         algorithmInfo.setState(newState);
                         productInfoArrayChanged = true;
                     }
@@ -892,7 +789,6 @@ public class L2genData {
                             newState = WavelengthInfo.State.NOT_SELECTED;
                         }
                         if (wavelengthInfo.getState() != newState) {
-                            debug("calling getState="+newState+" name="+wavelengthInfo.getFullName());
                             wavelengthInfo.setState(newState);
                             productInfoArrayChanged = true;
                         }
