@@ -63,7 +63,7 @@ public class EventInfo {
 
     public void fireEvent(Object oldValue, Object newValue) {
         if (!isEnabled()) {
-            System.out.println("Setting pending event fire - " + name);
+          //  System.out.println("Setting pending event fire - " + name);
             pending = true;
         } else {
             pending = false;

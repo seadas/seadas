@@ -1,10 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 
-import com.sun.org.apache.xml.internal.security.algorithms.Algorithm;
-import com.sun.xml.internal.rngom.parse.host.Base;
 import org.esa.beam.util.StringUtils;
-import org.esa.beam.util.math.Array;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
@@ -42,6 +39,7 @@ public class L2genData {
     public final String WAVELENGTH_LIMITER_CHANGE_EVENT = "UPDATE_WAVELENGTH_CHECKBOX_STATES_EVENT";
     public final String PRODUCT_CHANGED_EVENT = "PRODUCT_CHANGED_EVENT";
     public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
+
 
     private final String TARGET_PRODUCT_SUFFIX = "L2";
 
@@ -172,8 +170,53 @@ public class L2genData {
         return selectedProducts;
     }
 
-
     public String getProd() {
+        ArrayList<String> prodArrayList = new ArrayList<String>();
+
+        for (ProductInfo productInfo : productInfoArray) {
+            for (BaseInfo aInfo : productInfo.getChildren()) {
+                if (aInfo.hasChildren()) {
+                    AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+
+                    if (algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.ALL)) {
+                        prodArrayList.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.ALL));
+                    } else {
+                        if (algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
+                            prodArrayList.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.IR));
+                        }
+                        if (algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
+                            prodArrayList.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
+                        }
+
+                        for (BaseInfo wInfo : aInfo.getChildren()) {
+                            WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+
+                            if (wavelengthInfo.isVisible() && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
+                                if (wInfo.isSelected()) {
+                                    prodArrayList.add(wavelengthInfo.getFullName());
+                                }
+                            }
+
+                            if (wavelengthInfo.isIR() && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
+                                if (wInfo.isSelected()) {
+                                    prodArrayList.add(wavelengthInfo.getFullName());
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (aInfo.isSelected()) {
+                        prodArrayList.add(aInfo.getFullName());
+                    }
+                }
+            }
+        }
+
+        return StringUtils.join(prodArrayList, " ");
+    }
+
+
+    public String getProdOld() {
         ArrayList<String> prodArrayList = new ArrayList<String>();
 
         for (Object selectedProduct : getSelectedProducts()) {
@@ -542,8 +585,8 @@ public class L2genData {
 
             // Initialize with defaultParamValueHashMap
             for (String key : defaultParfileHashMap.keySet()) {
-                 setParamValue(key, defaultParfileHashMap.get(key));
-                 applyProductDefaults();
+                setParamValue(key, defaultParfileHashMap.get(key));
+                copyFromProductDefaults();
             }
 
             for (String key : inParfileHashMap.keySet()) {
@@ -554,19 +597,24 @@ public class L2genData {
     }
 
 
-    public void setDefaultParfile(String defaultParfile) {
 
-        HashMap<String, String> defaultParfileHashMap = parseParfile(defaultParfile);
 
-        if (defaultParfileHashMap != null && defaultParfileHashMap.size() > 0) {
-            for (String key : defaultParfileHashMap.keySet()) {
-                setDefaultParamValue(key, defaultParfileHashMap.get(key));
+    public void clearSelected() {
+        for (ProductInfo productInfo : productInfoArray) {
+            productInfo.setSelected(false);
+            for (BaseInfo aInfo : productInfo.getChildren()) {
+                aInfo.setSelected(false);
+                for (BaseInfo wInfo : aInfo.getChildren()) {
+                    wInfo.setSelected(false);
+                }
             }
         }
     }
 
 
-    public void applyProductDefaults() {
+
+
+    public void copyFromProductDefaults() {
         // This method loops through the entire productInfoArray setting all the states to the default state
 
         boolean productChanged = false;
@@ -594,6 +642,21 @@ public class L2genData {
         }
     }
 
+    public void copyToProductDefaults() {
+
+        for (ProductInfo productInfo : productInfoArray) {
+            for (BaseInfo aInfo : productInfo.getChildren()) {
+                if (aInfo.hasChildren()) {
+                    for (BaseInfo wInfo : aInfo.getChildren()) {
+                        ((WavelengthInfo) wInfo).setDefaultSelected(wInfo.isSelected());
+                    }
+                } else {
+                    ((AlgorithmInfo) aInfo).setDefaultSelected(aInfo.isSelected());
+                }
+            }
+        }
+    }
+
 
     public void applyParfileDefaults() {
 
@@ -617,7 +680,7 @@ public class L2genData {
             setParamValue(key, defaultParfileHashMap.get(key));
         }
 
-        applyProductDefaults();
+        copyFromProductDefaults();
     }
 
 
@@ -680,35 +743,6 @@ public class L2genData {
     }
 
 
-    public void setDefaultParamValue(String inKey, String inValue) {
-
-        if (inKey != null && inKey.length() > 0) {
-            inKey = inKey.trim();
-
-            boolean defaultsChanged = false;
-
-            if (inKey.equals(PROD)) {
-                debug("DEFAULT   PROD=" + inValue);
-                handleDefaultsProdKeyChange(inValue);
-            } else {
-                if (inValue != null && inValue.length() > 0) {
-                    inValue = inValue.trim();
-
-                    if (!inValue.equals(defaultParfileHashMap.get(inKey))) {
-                        defaultParfileHashMap.put(inKey, inValue);
-                    }
-                } else {
-                    defaultParfileHashMap.remove(inKey);
-                }
-            }
-
-
-            if (defaultsChanged) {
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, DEFAULTS_CHANGED_EVENT, null, null));
-            }
-        }
-    }
-
     private boolean isValidL2prod(String inProductFullName) {
 
         if (inProductFullName != null) {
@@ -750,10 +784,10 @@ public class L2genData {
             for (String prodEntry : newProd.split(" ")) {
                 prodEntry.trim();
 
-                if (isValidL2prod(prodEntry)) {
-                    newProdTreeSet.add(prodEntry);
-                    debug("prodEntry=" + prodEntry);
-                }
+//                if (isValidL2prod(prodEntry)) {
+                newProdTreeSet.add(prodEntry);
+                debug("prodEntry=" + prodEntry);
+//                }
             }
         }
 
@@ -793,6 +827,24 @@ public class L2genData {
                             productInfoArrayChanged = true;
                         }
                     }
+
+                    // todo check shortcuts
+
+
+                    debug("getShortcutFullname(Visible)=" + algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
+                    if (newProdTreeSet.contains(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE))) {
+                        algorithmInfo.setStateShortcut(AlgorithmInfo.ShortcutType.VISIBLE, AlgorithmInfo.State.SELECTED);
+                    }
+
+                    if (newProdTreeSet.contains(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.IR))) {
+                        algorithmInfo.setStateShortcut(AlgorithmInfo.ShortcutType.IR, AlgorithmInfo.State.SELECTED);
+                    }
+
+                    if (newProdTreeSet.contains(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.ALL))) {
+                        algorithmInfo.setStateShortcut(AlgorithmInfo.ShortcutType.ALL, AlgorithmInfo.State.SELECTED);
+                    }
+
+                    productInfoArrayChanged = true;
                 }
             }
         }
@@ -800,72 +852,6 @@ public class L2genData {
         if (productInfoArrayChanged) {
             debug(" productInfoArrayChanged");
             fireEvent(PRODUCT_CHANGED_EVENT);
-        }
-    }
-
-
-    private void handleDefaultsProdKeyChange(String newProd) {
-
-        //----------------------------------------------------------------------------------------------------
-        // Put newProd into newProdTreeSet
-        //----------------------------------------------------------------------------------------------------
-
-        TreeSet<String> newProdTreeSet = new TreeSet<String>();
-
-        debug("newDefaultProd=" + newProd);
-        if (newProd != null) {
-            for (String prodEntry : newProd.split(" ")) {
-                prodEntry.trim();
-
-                if (isValidL2prod(prodEntry)) {
-                    newProdTreeSet.add(prodEntry);
-                    debug("defaultProdEntry=" + prodEntry);
-                }
-            }
-        }
-
-        //----------------------------------------------------------------------------------------------------
-        // For every product in ProductInfoArray set selected to agree with newProdTreeSet
-        //----------------------------------------------------------------------------------------------------
-
-        boolean defaultsChanged = false;
-        boolean newDefaultSelected;
-
-        for (ProductInfo productInfo : productInfoArray) {
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
-
-                if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.NONE) {
-                    if (newProdTreeSet.contains(algorithmInfo.getFullName())) {
-                        newDefaultSelected = true;
-                    } else {
-                        newDefaultSelected = false;
-                    }
-                    if (algorithmInfo.isDefaultSelected() != newDefaultSelected) {
-                        algorithmInfo.setDefaultSelected(newDefaultSelected);
-                        defaultsChanged = true;
-                    }
-                } else {
-
-                    for (BaseInfo wInfo : aInfo.getChildren()) {
-                        WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-
-                        if (newProdTreeSet.contains(wavelengthInfo.getFullName())) {
-                            newDefaultSelected = true;
-                        } else {
-                            newDefaultSelected = false;
-                        }
-                        if (wavelengthInfo.isDefaultSelected() != newDefaultSelected) {
-                            wavelengthInfo.setDefaultSelected(newDefaultSelected);
-                            defaultsChanged = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (defaultsChanged) {
-            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, DEFAULTS_CHANGED_EVENT, null, null));
         }
     }
 
@@ -964,8 +950,9 @@ public class L2genData {
             }
         }
 
-        setDefaultParfile(getL2genDefaults());
-        applyParfileDefaults();
+        clearSelected();
+        setParfile(getL2genDefaults());
+        copyToProductDefaults();
 
         debug(MISSION_CHANGE_EVENT.toString() + "being fired");
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_CHANGE_EVENT, null, getMissionString()));

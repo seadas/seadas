@@ -1279,7 +1279,7 @@ class L2genForm extends JTabbedPane {
         selectedProductsDefaultsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                l2genData.applyProductDefaults();
+                l2genData.copyFromProductDefaults();
             }
         });
 
@@ -1290,9 +1290,7 @@ class L2genForm extends JTabbedPane {
                 if (EDIT_LOAD_BUTTON_TEXT_EDIT_MODE.equals(selectedProductsEditLoadButton.getText())) {
                     l2genData.setParamValue(l2genData.PROD, selectedProductsJTextArea.getText());
                     selectedProductsJTextArea.setText(l2genData.getProd());
-
                     setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
-
                 } else {
                     setDisplayModeSelectedProducts(DisplayMode.EDIT_MODE);
                 }
@@ -1816,6 +1814,7 @@ class L2genForm extends JTabbedPane {
         selectedProductsJTextArea.setText(l2genData.getProd());
         parfileJTextArea.setText(l2genData.getParfile());
         productJTree.treeDidChange();
+        checkTreeState(rootNode);
     }
 
 

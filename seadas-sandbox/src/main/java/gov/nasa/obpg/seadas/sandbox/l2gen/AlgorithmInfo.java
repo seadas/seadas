@@ -1,6 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 import com.sun.servicetag.SystemEnvironment;
+import org.python.antlr.ast.Str;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,14 @@ public class AlgorithmInfo extends BaseInfo {
     public static enum ParameterType {
         VISIBLE, IR, ALL, NONE
     }
+
+    public static enum ShortcutType {
+        VISIBLE, IR, ALL
+    }
+
+    private static String SHORTCUT_NAMEPART_VISIBLE = "vvv";
+    private static String SHORTCUT_NAMEPART_IR = "iii";
+    private static String SHORTCUT_NAMEPART_ALL = "nnn";
 
     private static String PARAMTYPE_VISIBLE = "VISIBLE";
     private static String PARAMTYPE_IR = "IR";
@@ -58,7 +67,6 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
 
-
     public ProductInfo getProductInfo() {
         return (ProductInfo) getParent();
     }
@@ -66,7 +74,6 @@ public class AlgorithmInfo extends BaseInfo {
     public void setProductInfo(ProductInfo productInfo) {
         setParent(productInfo);
     }
-
 
 
     public boolean isDefaultSelected() {
@@ -110,7 +117,6 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
 
-
     public ParameterType getParameterType() {
         return parameterType;
     }
@@ -136,7 +142,6 @@ public class AlgorithmInfo extends BaseInfo {
         return result.toString().replaceAll("[_]+", "_").replaceAll("[_]$", "");
     }
 
-
     private static ParameterType convertWavetype(String str) {
         if (str.compareToIgnoreCase(PARAMTYPE_VISIBLE) == 0) {
             return ParameterType.VISIBLE;
@@ -148,6 +153,99 @@ public class AlgorithmInfo extends BaseInfo {
             return ParameterType.NONE;
         } else {
             return null;
+        }
+    }
+
+
+    private static String convertShortcutType(ShortcutType shortcutType) {
+        if (shortcutType == ShortcutType.ALL) {
+            return SHORTCUT_NAMEPART_ALL;
+        } else if (shortcutType == ShortcutType.IR) {
+            return SHORTCUT_NAMEPART_IR;
+        } else if (shortcutType == ShortcutType.VISIBLE) {
+            return SHORTCUT_NAMEPART_VISIBLE;
+        } else {
+            return null;
+        }
+    }
+
+    public String getShortcutFullname(ShortcutType shortcutType) {
+
+        StringBuilder result = new StringBuilder();
+
+        if (prefix != null && !prefix.isEmpty()) {
+            result.append(prefix);
+        }
+
+        result.append(convertShortcutType(shortcutType));
+
+        if (suffix != null && !suffix.isEmpty()) {
+            result.append(suffix);
+        }
+
+        return result.toString().replaceAll("[_]+", "_").replaceAll("[_]$", "");
+    }
+
+
+    public boolean isSelectedShortcut(ShortcutType shortcutType) {
+        boolean found = false;
+
+        if (shortcutType == ShortcutType.ALL) {
+            for (BaseInfo wInfo : getChildren()) {
+                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+                if (wavelengthInfo.isSelected()) {
+                    found = true;
+                } else {
+                    return false;
+                }
+            }
+            return found;
+
+        } else if (shortcutType == ShortcutType.VISIBLE) {
+            for (BaseInfo wInfo : getChildren()) {
+                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+                if (wavelengthInfo.isVisible()) {
+                    if (wavelengthInfo.isSelected()) {
+                        found = true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return found;
+
+        } else if (shortcutType == ShortcutType.IR) {
+            for (BaseInfo wInfo : getChildren()) {
+                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+                if (wavelengthInfo.isIR()) {
+                    if (wavelengthInfo.isSelected()) {
+                        found = true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return found;
+        }
+        return false;
+    }
+
+    public void setStateShortcut(ShortcutType shortcutType, State state) {
+        System.out.println("setStateShortcut" + shortcutType + " ---- " + state);
+        for (BaseInfo wInfo : getChildren()) {
+            WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+
+            if (wavelengthInfo.isVisible()) {
+                if (shortcutType == ShortcutType.ALL || shortcutType == ShortcutType.VISIBLE) {
+                    wavelengthInfo.setState(state);
+                }
+            }
+
+            if (wavelengthInfo.isIR()) {
+                if (shortcutType == ShortcutType.ALL || shortcutType == ShortcutType.IR) {
+                    wavelengthInfo.setState(state);
+                }
+            }
         }
     }
 
