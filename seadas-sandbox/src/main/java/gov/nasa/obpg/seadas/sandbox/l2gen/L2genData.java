@@ -145,6 +145,9 @@ public class L2genData {
     }
 
 
+    /**
+     * @return
+     */
     public ArrayList<Object> getSelectedProducts() {
 
         ArrayList<Object> selectedProducts = new ArrayList<Object>();
@@ -232,7 +235,10 @@ public class L2genData {
         return StringUtils.join(prodArrayList, " ");
     }
 
-
+    /**
+     * @param wavelength
+     * @param selected
+     */
     public void setSelectedWavelengthLimiterArray(String wavelength, boolean selected) {
 
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
@@ -268,30 +274,107 @@ public class L2genData {
         return false;
     }
 
-    public boolean isSelectAllInfrared() {
+        public boolean missionHasWavetype(WavelengthInfo.WaveType waveType) {
 
-        int InfraredCount = 0;
+        for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
+            if (wavelengthInfo.isWaveType(waveType)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines if all wavelengths for a given wavelength type within the wavelength limiter array are selected
+     * <p/>
+     * This is used to determine whether the toggle button in the wavelength limiter GUI needs
+     * to be in: 'Select All Infrared' mode, 'Deselect All Infrared' mode,
+     * 'Select All Visible' mode, or 'Deselect All Visible' mode
+     *
+     * @return true if all of given wavelength type selected, otherwise false
+     */
+
+    public boolean isSelectedAllWaveLimiter(WavelengthInfo.WaveType waveType) {
+
         int selectedCount = 0;
 
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
-            if (wavelengthInfo.isIR()) {
-                InfraredCount++;
+            if (wavelengthInfo.isWaveType(waveType)) {
                 if (wavelengthInfo.isSelected()) {
                     selectedCount++;
+                } else {
+                    return false;
                 }
             }
         }
 
-        if (InfraredCount > 0 && selectedCount == InfraredCount) {
-            debug("iii is selected" + InfraredCount + " " + selectedCount);
+        if (selectedCount > 0) {
             return true;
         } else {
-            debug("iii is NOT selected" + InfraredCount + " " + selectedCount);
             return false;
         }
     }
 
 
+        /**
+     * Sets all wavelengths of a given wavelength type within the wavelength limiter array to selected
+     * <p/>
+     * This is called by the wavelength limiter GUI toggle buttons and is also used for initializing defaults.
+     *
+     * @param selected
+     */
+    public void setSelectedAllWaveLimiter(WavelengthInfo.WaveType waveType, boolean selected) {
+
+        for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
+            if (wavelengthInfo.isWaveType(waveType)) {
+                wavelengthInfo.setSelected(selected);
+            }
+        }
+
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, WAVELENGTH_LIMITER_CHANGE_EVENT, null, null));
+
+    }
+
+
+
+
+    /**
+     * Determines if all infrared wavelengths within the wavelength limiter array are selected
+     * <p/>
+     * This is used to determine whether the toggle button in the wavelength limiter GUI needs
+     * to be in 'Select All Infrared' mode or 'Deselect All Infrared' mode
+     *
+     * @return true if all infrared selected, otherwise false
+     */
+    public boolean isSelectedAllInfrared() {
+
+        int totalInfraredCount = 0;
+        int selectedInfraredCount = 0;
+
+        for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
+            if (wavelengthInfo.isIR()) {
+                if (wavelengthInfo.isSelected()) {
+                    selectedInfraredCount++;
+                }
+                totalInfraredCount++;
+            }
+        }
+
+        if (totalInfraredCount > 0 && selectedInfraredCount == totalInfraredCount) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Sets all infrared wavelength within the wavelength limiter array to selected
+     * <p/>
+     * This
+     *
+     * @param selected
+     */
     public void setSelectAllInfrared(boolean selected) {
 
         debug("setSelectAllInfrared called with selected=" + selected);
@@ -307,29 +390,34 @@ public class L2genData {
     }
 
 
+    /**
+     * Determines if all visible wavelengths within the wavelength limiter array are selected
+     * <p/>
+     * This is used to determine whether the toggle button in the wavelength limiter GUI needs
+     * to be in 'Select All Visible' mode or 'Deselect All Visible' mode
+     *
+     * @return true if all visible selected, otherwise false
+     */
     public boolean isSelectAllVisible() {
 
-        int visibleCount = 0;
-        int selectedCount = 0;
+        int totalVisibleCount = 0;
+        int selectedVisibleCount = 0;
 
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
             if (wavelengthInfo.isVisible()) {
-                visibleCount++;
                 if (wavelengthInfo.isSelected()) {
-                    selectedCount++;
+                    selectedVisibleCount++;
                 }
+                totalVisibleCount++;
             }
         }
 
-        debug("selectedCount=" + selectedCount + " visibleCount=" + visibleCount);
-        if (visibleCount > 0 && selectedCount == visibleCount) {
+        if (totalVisibleCount > 0 && selectedVisibleCount == totalVisibleCount) {
             return true;
         } else {
             return false;
         }
     }
-
-
     public void setSelectAllVisible(boolean selected) {
 
         for (WavelengthInfo wavelengthInfo : wavelengthLimiterArray) {
@@ -597,8 +685,6 @@ public class L2genData {
     }
 
 
-
-
     public void clearSelected() {
         for (ProductInfo productInfo : productInfoArray) {
             productInfo.setSelected(false);
@@ -610,8 +696,6 @@ public class L2genData {
             }
         }
     }
-
-
 
 
     public void copyFromProductDefaults() {

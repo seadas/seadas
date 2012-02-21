@@ -16,6 +16,10 @@ public class WavelengthInfo extends BaseInfo {
     private int wavelength = NULL_WAVELENGTH;
     private boolean defaultSelected = false;
 
+    public static enum WaveType {
+        VISIBLE, IR
+    }
+
     public WavelengthInfo(int wavelength, AlgorithmInfo algorithmInfo) {
         super(Integer.toString(wavelength), algorithmInfo);
         this.wavelength = wavelength;
@@ -75,6 +79,19 @@ public class WavelengthInfo extends BaseInfo {
     }
 
 
+    public boolean isWaveType(WaveType waveType) {
+        if (waveType == WaveType.IR
+                && wavelength >= VISIBLE_UPPER_LIMIT) {
+            return true;
+
+        } else if (waveType == WaveType.VISIBLE
+                && wavelength >= 0 && wavelength < VISIBLE_UPPER_LIMIT) {
+            return true;
+        } else  {
+            return false;
+        }
+    }
+
     public boolean isVisible() {
         if (wavelength >= 0 && wavelength < VISIBLE_UPPER_LIMIT) {
             return true;
@@ -92,7 +109,6 @@ public class WavelengthInfo extends BaseInfo {
     public AlgorithmInfo getAlgorithmInfo() {
         return (AlgorithmInfo) getParent();
     }
-
 
 
     public boolean isDefaultSelected() {

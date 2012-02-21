@@ -72,8 +72,29 @@ class L2genForm extends JTabbedPane {
     private String SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT = "No products currently selected";
     private String SEADAS_PRODUCTS_FILE = "productList.xml";
 
-    private static final int PRODUCT_SELECTOR_TAB_INDEX = 3;
+
+    private static final int INPUT_OUTPUT_FILE_TAB_INDEX = 0;
+    private static final int PARFILE_TAB_INDEX = 1;
     private static final int SUB_SAMPLE_TAB_INDEX = 2;
+    private static final int PRODUCT_SELECTOR_TAB_INDEX = 3;
+    private static final int PROCESSING_OPTIONS_TAB_INDEX = 4;
+    private static final int THRESHOLD_PARAMETERS_TAB_INDEX = 5;
+    private static final int GIOP_OPTIONS_TAB_INDEX = 6;
+    private static final int ANCILLARY_FILES_TAB_INDEX = 7;
+
+
+    private static final String INPUT_OUTPUT_FILE_TAB_NAME = "Input/Output";
+    private static final String PARFILE_TAB_NAME = "Parameters";
+    private static final String SUB_SAMPLING_TAB_NAME = "Sub Sampling";
+    private static final String PRODUCTS_TAB_NAME = "Products";
+    private static final String PROCESSING_OPTIONS_TAB_NAME = "Processing Options";
+    private static final String THRESHOLD_PARAMETERS_TAB_NAME = "Thresholds";
+    private static final String GIOP_OPTIONS_TAB_NAME = "GIOP Options";
+    private static final String ANCILLARY_FILES_TAB_NAME = "Ancillary Files";
+
+
+
+
 
     private String WAVE_LIMITER_SELECT_ALL_INFRARED = "Select All Infrared";
     private String WAVE_LIMITER_DESELECT_ALL_INFRARED = "Deselect All Infrared";
@@ -105,7 +126,7 @@ class L2genForm extends JTabbedPane {
         this.appContext = appContext;
         this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
 
-        // add event listener
+
         addL2genDataListeners();
         createUserInterface();
     }
@@ -116,14 +137,27 @@ class L2genForm extends JTabbedPane {
     //----------------------------------------------------------------------------------------
 
     private void createUserInterface() {
-        createIOParametersTab("Input/Output");
-        createParfileTab("Parameters");
-        createSubsampleTab("Sub Sampling");
-        createProductsTab("Products");
+
+
+        createIOParametersTab(INPUT_OUTPUT_FILE_TAB_NAME);
+        createParfileTab(PARFILE_TAB_NAME);
+        createSubsampleTab(SUB_SAMPLING_TAB_NAME);
+        createProductsTab(PRODUCTS_TAB_NAME);
+        createProcessionOptionsTab(PROCESSING_OPTIONS_TAB_NAME);
+        createThresholdParametersTab(THRESHOLD_PARAMETERS_TAB_NAME);
+        createGIOPOptionsTab(GIOP_OPTIONS_TAB_NAME);
+        createAncillaryFilesTab(ANCILLARY_FILES_TAB_NAME);
+
 //        createProductsCartTab("Selected Products Cart");
 
+        this.setEnabledAt(INPUT_OUTPUT_FILE_TAB_INDEX, true);
+        this.setEnabledAt(PARFILE_TAB_INDEX, true);
         this.setEnabledAt(PRODUCT_SELECTOR_TAB_INDEX, false);
         this.setEnabledAt(SUB_SAMPLE_TAB_INDEX, false);
+        this.setEnabledAt(PROCESSING_OPTIONS_TAB_INDEX, false);
+        this.setEnabledAt(THRESHOLD_PARAMETERS_TAB_INDEX, false);
+        this.setEnabledAt(GIOP_OPTIONS_TAB_INDEX, false);
+        this.setEnabledAt(ANCILLARY_FILES_TAB_INDEX, false);
     }
 
 
@@ -245,6 +279,142 @@ class L2genForm extends JTabbedPane {
         addTab(myTabname, finalMainPanel);
     }
 
+    private void createProcessionOptionsTab(String tabTitle) {
+
+
+        final JPanel myInnerPanel = new JPanel();
+        myInnerPanel.setBorder(BorderFactory.createTitledBorder("TBD"));
+
+
+        // Declare mainPanel and set it's attributes
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
+        mainPanel.setLayout(new GridBagLayout());
+
+
+        // Add Swing controls to mainPanel grid cells
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.NONE;
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.weightx = 1;
+            c.weighty = 1;
+            mainPanel.add(myInnerPanel, c);
+        }
+
+
+        final JPanel paddedMainPanel;
+        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
+
+        addTab(tabTitle, paddedMainPanel);
+    }
+
+
+
+    private void createThresholdParametersTab(String tabTitle) {
+
+
+        final JPanel myInnerPanel = new JPanel();
+        myInnerPanel.setBorder(BorderFactory.createTitledBorder("TBD"));
+
+
+        // Declare mainPanel and set it's attributes
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
+        mainPanel.setLayout(new GridBagLayout());
+
+
+        // Add Swing controls to mainPanel grid cells
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.NONE;
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.weightx = 1;
+            c.weighty = 1;
+            mainPanel.add(myInnerPanel, c);
+        }
+
+
+        final JPanel paddedMainPanel;
+        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
+
+        addTab(tabTitle, paddedMainPanel);
+    }
+
+
+    private void createGIOPOptionsTab(String tabTitle) {
+
+
+        final JPanel myInnerPanel = new JPanel();
+        myInnerPanel.setBorder(BorderFactory.createTitledBorder("TBD"));
+
+
+        // Declare mainPanel and set it's attributes
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
+        mainPanel.setLayout(new GridBagLayout());
+
+
+        // Add Swing controls to mainPanel grid cells
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.NONE;
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.weightx = 1;
+            c.weighty = 1;
+            mainPanel.add(myInnerPanel, c);
+        }
+
+
+        final JPanel paddedMainPanel;
+        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
+
+        addTab(tabTitle, paddedMainPanel);
+    }
+
+
+    private void createAncillaryFilesTab(String tabTitle) {
+
+
+        final JPanel myInnerPanel = new JPanel();
+        myInnerPanel.setBorder(BorderFactory.createTitledBorder("TBD"));
+
+
+        // Declare mainPanel and set it's attributes
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
+        mainPanel.setLayout(new GridBagLayout());
+
+
+        // Add Swing controls to mainPanel grid cells
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.fill = GridBagConstraints.NONE;
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.weightx = 1;
+            c.weighty = 1;
+            mainPanel.add(myInnerPanel, c);
+        }
+
+
+        final JPanel paddedMainPanel;
+        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
+
+        addTab(tabTitle, paddedMainPanel);
+    }
+
+
+
+
+
 
     private void createSubsampleTab(String tabnameSubsample) {
 
@@ -314,9 +484,9 @@ class L2genForm extends JTabbedPane {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
-                    l2genData.setSelectAllInfrared(true);
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR, true);
                 } else if (waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
-                    l2genData.setSelectAllInfrared(false);
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR, false);
                 }
             }
         });
@@ -328,9 +498,9 @@ class L2genForm extends JTabbedPane {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_SELECT_ALL_VISIBLE)) {
-                    l2genData.setSelectAllVisible(true);
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, true);
                 } else if (waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_DESELECT_ALL_VISIBLE)) {
-                    l2genData.setSelectAllVisible(false);
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, false);
                 }
             }
         });
@@ -413,6 +583,7 @@ class L2genForm extends JTabbedPane {
         return BaseInfo.State.NOT_SELECTED;
 
     }
+
 
     class CheckBoxNodeRenderer implements TreeCellRenderer {
         private JPanel nodeRenderer = new JPanel();
@@ -1680,17 +1851,17 @@ class L2genForm extends JTabbedPane {
         waveLimiterSelectAllIR.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
         waveLimiterSelectAllVisible.setText(WAVE_LIMITER_SELECT_ALL_VISIBLE);
 
-        if (l2genData.missionHasInfrared()) {
+        if (l2genData.missionHasWavetype(WavelengthInfo.WaveType.IR)) {
             waveLimiterSelectAllIR.setEnabled(true);
-            l2genData.setSelectAllInfrared(true);
+            l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR, true);
         } else {
             waveLimiterSelectAllIR.setEnabled(false);
         }
 
-        if (l2genData.missionHasVisible()) {
+        if (l2genData.missionHasWavetype(WavelengthInfo.WaveType.VISIBLE)) {
             waveLimiterSelectAllVisible.setEnabled(true);
 
-            l2genData.setSelectAllVisible(true);
+            l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, true);
         } else {
             waveLimiterSelectAllVisible.setEnabled(false);
         }
@@ -1760,6 +1931,10 @@ class L2genForm extends JTabbedPane {
 
         this.setEnabledAt(PRODUCT_SELECTOR_TAB_INDEX, true);
         this.setEnabledAt(SUB_SAMPLE_TAB_INDEX, true);
+        this.setEnabledAt(PROCESSING_OPTIONS_TAB_INDEX, true);
+        this.setEnabledAt(THRESHOLD_PARAMETERS_TAB_INDEX, true);
+        this.setEnabledAt(GIOP_OPTIONS_TAB_INDEX, true);
+        this.setEnabledAt(ANCILLARY_FILES_TAB_INDEX, true);
         //       createProductSelectorWavelengthsPanel();
 
         updateWavelengthLimiterPanel();
@@ -1789,18 +1964,18 @@ class L2genForm extends JTabbedPane {
             }
         }
 
-        if (l2genData.missionHasInfrared()) {
-            if (l2genData.isSelectAllInfrared() && waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
+        if (l2genData.missionHasWavetype(WavelengthInfo.WaveType.IR)) {
+            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR) && waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
                 waveLimiterSelectAllIR.setText(WAVE_LIMITER_DESELECT_ALL_INFRARED);
-            } else if (!l2genData.isSelectAllInfrared() && waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
+            } else if (!l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR) && waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
                 waveLimiterSelectAllIR.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
             }
         }
 
-        if (l2genData.missionHasVisible()) {
-            if (l2genData.isSelectAllVisible() && waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_SELECT_ALL_VISIBLE)) {
+        if (l2genData.missionHasWavetype(WavelengthInfo.WaveType.VISIBLE)) {
+            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE) && waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_SELECT_ALL_VISIBLE)) {
                 waveLimiterSelectAllVisible.setText(WAVE_LIMITER_DESELECT_ALL_VISIBLE);
-            } else if (!l2genData.isSelectAllVisible() && waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_DESELECT_ALL_VISIBLE)) {
+            } else if (!l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE) && waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_DESELECT_ALL_VISIBLE)) {
                 waveLimiterSelectAllVisible.setText(WAVE_LIMITER_SELECT_ALL_VISIBLE);
             }
         }
