@@ -38,7 +38,7 @@ public class L2genReader {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
-        l2genData.clearProductInfoArray();
+        l2genData.clearProductInfos();
 
         NodeList prodNodelist = rootElement.getElementsByTagName(ELEMNAME_PROD);
 
@@ -92,12 +92,12 @@ public class L2genReader {
 
 
                     productInfo.sortChildren();
-                    l2genData.addProductInfoArray(productInfo);
+                    l2genData.addProductInfo(productInfo);
                 }
             } // for products
         }
 
-        l2genData.sortProductInfoArray(ProductInfo.CASE_INSENSITIVE_ORDER);
+        l2genData.sortProductInfos(ProductInfo.CASE_INSENSITIVE_ORDER);
     }
 
 

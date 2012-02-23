@@ -34,14 +34,14 @@ class L2genForm extends JTabbedPane {
     private final TargetProductSelector targetProductSelector;
 
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
-    private JPanel wavelengthsJPanel;
+    private JPanel waveLimiterJPanel;
 
     //private JTable productsCartJTable;
     //   private SelectedProductsTableModel productsCartTableModel;
     //private JPanel productsCartJPanel;
     private JComboBox ofileJComboBox;
 
-    private boolean wavelengthCheckboxControlHandlersEnabled = true;
+    private boolean waveLimiterControlHandlersEnabled = true;
 
     private boolean handleIfileJComboBoxEnabled = true;
 
@@ -92,10 +92,6 @@ class L2genForm extends JTabbedPane {
     private static final String GIOP_OPTIONS_TAB_NAME = "GIOP Options";
     private static final String ANCILLARY_FILES_TAB_NAME = "Ancillary Files";
 
-
-
-
-
     private String WAVE_LIMITER_SELECT_ALL_INFRARED = "Select All Infrared";
     private String WAVE_LIMITER_DESELECT_ALL_INFRARED = "Deselect All Infrared";
     private String WAVE_LIMITER_SELECT_ALL_VISIBLE = "Select All Visible";
@@ -105,17 +101,15 @@ class L2genForm extends JTabbedPane {
     private JButton selectedProductsDefaultsButton;
     private JButton selectedProductsEditLoadButton;
     private JButton selectedProductsCancelButton;
-    private JButton waveLimiterSelectAllIR;
+    private JButton waveLimiterSelectAllInfrared;
     private JButton waveLimiterSelectAllVisible;
 
     private JTree productJTree;
-    private boolean ignoreTreeCheck = false;
 
     private L2genData l2genData = new L2genData();
     private L2genReader l2genReader = new L2genReader(l2genData);
 
     enum DisplayMode {STANDARD_MODE, EDIT_MODE}
-
 
     private String EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE = "Edit";
     private String EDIT_LOAD_BUTTON_TEXT_EDIT_MODE = "Load";
@@ -125,7 +119,6 @@ class L2genForm extends JTabbedPane {
         this.targetProductSelector = targetProductSelector;
         this.appContext = appContext;
         this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
-
 
         addL2genDataListeners();
         createUserInterface();
@@ -312,7 +305,6 @@ class L2genForm extends JTabbedPane {
     }
 
 
-
     private void createThresholdParametersTab(String tabTitle) {
 
 
@@ -412,10 +404,6 @@ class L2genForm extends JTabbedPane {
     }
 
 
-
-
-
-
     private void createSubsampleTab(String tabnameSubsample) {
 
         final JTabbedPane tabbedPane = new JTabbedPane();
@@ -465,28 +453,21 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private JPanel createWavelengthsJPanel() {
+    private JPanel createWaveLimiterJPanel() {
 
         // ----------------------------------------------------------------------------------------
         // Create all Swing controls used on this tabbed panel
         // ----------------------------------------------------------------------------------------
 
+        waveLimiterSelectAllInfrared = new JButton(WAVE_LIMITER_SELECT_ALL_INFRARED);
 
-        JTextArea explanationJTextArea = new JTextArea("Here is where we tell you all about this tool Here is where we tell you all about this tool Here is where we tell you all about this tool Here is where we tell you all about this tool Here is where we tell you all about this tool Here is where we tell you all about this tool");
-        explanationJTextArea.setEditable(false);
-        explanationJTextArea.setLineWrap(true);
-        explanationJTextArea.setColumns(50);
-        explanationJTextArea.setBackground(Color.decode("#dddddd"));
-
-        waveLimiterSelectAllIR = new JButton(WAVE_LIMITER_SELECT_ALL_INFRARED);
-
-        waveLimiterSelectAllIR.addActionListener(new ActionListener() {
+        waveLimiterSelectAllInfrared.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
-                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR, true);
-                } else if (waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
-                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR, false);
+                if (waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, true);
+                } else if (waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, false);
                 }
             }
         });
@@ -506,9 +487,9 @@ class L2genForm extends JTabbedPane {
         });
 
 
-        wavelengthsJPanel = new JPanel();
+        waveLimiterJPanel = new JPanel();
         // wavelengthsJPanel.setBorder(BorderFactory.createTitledBorder("Wavelength Limiter"));
-        wavelengthsJPanel.setLayout(new GridBagLayout());
+        waveLimiterJPanel.setLayout(new GridBagLayout());
 
 
         // ----------------------------------------------------------------------------------------
@@ -534,7 +515,7 @@ class L2genForm extends JTabbedPane {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1;
         c.weighty = 1;
-        mainPanel.add(waveLimiterSelectAllIR, c);
+        mainPanel.add(waveLimiterSelectAllInfrared, c);
 
         c = SeadasGuiUtils.makeConstraints(0, 2);
         c.fill = GridBagConstraints.BOTH;
@@ -542,7 +523,7 @@ class L2genForm extends JTabbedPane {
         c.gridwidth = 2;
         c.weightx = 1;
         c.weighty = 1;
-        mainPanel.add(wavelengthsJPanel, c);
+        mainPanel.add(waveLimiterJPanel, c);
 
 
         // ----------------------------------------------------------------------------------------
@@ -626,9 +607,6 @@ class L2genForm extends JTabbedPane {
                                                       boolean selected, boolean expanded, boolean leaf, int row,
                                                       boolean hasFocus) {
 
-            // System.out.print("getTreeCellRendererComponent (" + Integer.toString(row) + ") ");
-
-
             String stringValue = null;
             BaseInfo.State state = BaseInfo.State.NOT_SELECTED;
 
@@ -639,19 +617,9 @@ class L2genForm extends JTabbedPane {
                     state = info.getState();
                     stringValue = info.getFullName();
 
-
                     tree.setToolTipText(info.getDescription());
-
-
-                    //  System.out.print(node.getFullName() + " - " + state.toString());
-
-
                 }
             }
-
-
-            //System.out.print("\n");
-
 
             if (stringValue == null) {
                 stringValue = tree.convertValueToText(value, selected, expanded, leaf, row, false);
@@ -770,13 +738,10 @@ class L2genForm extends JTabbedPane {
 
         rootNode = new DefaultMutableTreeNode(new BaseInfo());
 
-        for (ProductInfo productInfo : l2genData.getProductInfoArray()) {
+        for (ProductInfo productInfo : l2genData.getProductInfos()) {
             product = new DefaultMutableTreeNode(productInfo);
             for (BaseInfo aInfo : productInfo.getChildren()) {
                 algorithm = new DefaultMutableTreeNode(aInfo);
-
-//
-//                product.add(algorithm);
 
                 if (algorithm.toString().equals(oldAlgorithm.toString())) {
                     if (oldAInfo.hasChildren()) {
@@ -810,10 +775,6 @@ class L2genForm extends JTabbedPane {
                 rootNode.add(product);
             }
         }
-
-
-        //if (productInfo.getChildren().size() > 0) {
-
 
         return rootNode;
     }
@@ -955,7 +916,7 @@ class L2genForm extends JTabbedPane {
         l2genReader.readProductsXmlFile(stream);
 
 
-        JPanel wavelengthsLimitorJPanel = createWavelengthsJPanel();
+        JPanel wavelengthsLimitorJPanel = createWaveLimiterJPanel();
         //    JPanel selectedProductsCartJPanel = new JPanel();
         //   createSelectedProductsCartJPanelNew(selectedProductsCartJPanel);
 
@@ -1460,7 +1421,7 @@ class L2genForm extends JTabbedPane {
             public void actionPerformed(ActionEvent e) {
                 if (EDIT_LOAD_BUTTON_TEXT_EDIT_MODE.equals(selectedProductsEditLoadButton.getText())) {
                     l2genData.setParamValue(l2genData.PROD, selectedProductsJTextArea.getText());
-                    selectedProductsJTextArea.setText(l2genData.getProd());
+                    selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.PROD));
                     setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
                 } else {
                     setDisplayModeSelectedProducts(DisplayMode.EDIT_MODE);
@@ -1472,7 +1433,7 @@ class L2genForm extends JTabbedPane {
         selectedProductsCancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectedProductsJTextArea.setText(l2genData.getProd());
+                selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.PROD));
 
                 setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
             }
@@ -1485,12 +1446,6 @@ class L2genForm extends JTabbedPane {
         c.gridwidth = 3;
         selectedProductsPanel.add(selectedProductsJTextArea, c);
 
-//        panelTest = SeadasGuiUtils.addWrapperPanel(jtable, 3);
-//
-//        c = SeadasGuiUtils.makeConstraints(0, 1);
-//        c.fill = GridBagConstraints.HORIZONTAL;
-//        c.weightx = 1;
-//        selectedProductsPanel.add(panelTest, c);
 
         c = SeadasGuiUtils.makeConstraints(0, 1);
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -1762,11 +1717,11 @@ class L2genForm extends JTabbedPane {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.WAVELENGTH_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(l2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println("WAVELENGTH_LIMITER_CHANGE_EVENT fired");
-                updateWavelengthCheckboxSelectionStateEvent();
+                updateWaveLimiterSelectionStates();
                 // setWaveDependentProductsJList();
             }
         });
@@ -1818,14 +1773,14 @@ class L2genForm extends JTabbedPane {
 
         wavelengthsJCheckboxArrayList = new ArrayList<JCheckBox>();
 
-        wavelengthsJPanel.removeAll();
+        waveLimiterJPanel.removeAll();
 
         // clear this because we dynamically rebuild it when input file selection is made or changed
         wavelengthsJCheckboxArrayList.clear();
 
         ArrayList<JCheckBox> wavelengthGroupCheckboxes = new ArrayList<JCheckBox>();
 
-        for (WavelengthInfo wavelengthInfo : l2genData.getWavelengthLimiterArray()) {
+        for (WavelengthInfo wavelengthInfo : l2genData.getWaveLimiter()) {
 
             final String currWavelength = wavelengthInfo.getWavelengthString();
             final JCheckBox currJCheckBox = new JCheckBox(currWavelength);
@@ -1839,8 +1794,8 @@ class L2genForm extends JTabbedPane {
             currJCheckBox.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
-                    if (wavelengthCheckboxControlHandlersEnabled) {
-                        l2genData.setSelectedWavelengthLimiterArray(currWavelength, currJCheckBox.isSelected());
+                    if (waveLimiterControlHandlersEnabled) {
+                        l2genData.setSelectedWaveLimiter(currWavelength, currJCheckBox.isSelected());
                     }
                 }
             });
@@ -1848,17 +1803,17 @@ class L2genForm extends JTabbedPane {
             wavelengthGroupCheckboxes.add(currJCheckBox);
         }
 
-        waveLimiterSelectAllIR.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
+        waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
         waveLimiterSelectAllVisible.setText(WAVE_LIMITER_SELECT_ALL_VISIBLE);
 
-        if (l2genData.missionHasWavetype(WavelengthInfo.WaveType.IR)) {
-            waveLimiterSelectAllIR.setEnabled(true);
-            l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR, true);
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
+            waveLimiterSelectAllInfrared.setEnabled(true);
+            l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, true);
         } else {
-            waveLimiterSelectAllIR.setEnabled(false);
+            waveLimiterSelectAllInfrared.setEnabled(false);
         }
 
-        if (l2genData.missionHasWavetype(WavelengthInfo.WaveType.VISIBLE)) {
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.VISIBLE)) {
             waveLimiterSelectAllVisible.setEnabled(true);
 
             l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, true);
@@ -1882,7 +1837,7 @@ class L2genForm extends JTabbedPane {
                 c.fill = GridBagConstraints.NONE;
                 c.anchor = GridBagConstraints.NORTHWEST;
                 c.weightx = 1;
-                wavelengthsJPanel.add(wavelengthGroupCheckbox, c);
+                waveLimiterJPanel.add(wavelengthGroupCheckbox, c);
             }
 
             // increment GridBag coordinates
@@ -1895,7 +1850,7 @@ class L2genForm extends JTabbedPane {
 
         }
 
-        // updateWavelengthCheckboxSelectionStateEvent();
+        // updateWaveLimiterSelectionStates();
     }
 
     private void ifileChangedEventHandler() {
@@ -1925,6 +1880,7 @@ class L2genForm extends JTabbedPane {
         }
     }
 
+
     private void missionStringChangeEvent(String newMissionString) {
 
         ifileChangedEventHandler();
@@ -1938,24 +1894,28 @@ class L2genForm extends JTabbedPane {
         //       createProductSelectorWavelengthsPanel();
 
         updateWavelengthLimiterPanel();
-        l2genData.applyParfileDefaults();
+     //   l2genData.applyParfileDefaults();
         updateProductTreePanel();
 
         // setWaveDependentProductsJList();
-        updateWavelengthCheckboxSelectionStateEvent();
+        updateWaveLimiterSelectionStates();
 
 
         parfileJTextArea.setText(l2genData.getParfile());
     }
 
 
-    private void updateWavelengthCheckboxSelectionStateEvent() {
+    /**
+     * Set all waveLimiter controls to agree with l2genData
+     */
+    private void updateWaveLimiterSelectionStates() {
 
-        wavelengthCheckboxControlHandlersEnabled = false;
+        // Turn off control handlers until all controls are set
+        waveLimiterControlHandlersEnabled = false;
 
-        for (WavelengthInfo wavelengthInfo : l2genData.getWavelengthLimiterArray()) {
+        // Set all checkboxes to agree with l2genData
+        for (WavelengthInfo wavelengthInfo : l2genData.getWaveLimiter()) {
             for (JCheckBox currJCheckbox : wavelengthsJCheckboxArrayList) {
-                //  debug("wave=" + wavelengthInfo.getWavelengthString() + " getName=" + currJCheckbox.getName());
                 if (wavelengthInfo.getWavelengthString().equals(currJCheckbox.getName())) {
                     if (wavelengthInfo.isSelected() != currJCheckbox.isSelected()) {
                         currJCheckbox.setSelected(wavelengthInfo.isSelected());
@@ -1964,15 +1924,17 @@ class L2genForm extends JTabbedPane {
             }
         }
 
-        if (l2genData.missionHasWavetype(WavelengthInfo.WaveType.IR)) {
-            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR) && waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
-                waveLimiterSelectAllIR.setText(WAVE_LIMITER_DESELECT_ALL_INFRARED);
-            } else if (!l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.IR) && waveLimiterSelectAllIR.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
-                waveLimiterSelectAllIR.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
+        // Set INFRARED 'Select All' toggle to appropriate text
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
+            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED) && waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
+                waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_DESELECT_ALL_INFRARED);
+            } else if (!l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED) && waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
+                waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
             }
         }
 
-        if (l2genData.missionHasWavetype(WavelengthInfo.WaveType.VISIBLE)) {
+        // Set INFRARED 'Select All' toggle to appropriate text
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.VISIBLE)) {
             if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE) && waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_SELECT_ALL_VISIBLE)) {
                 waveLimiterSelectAllVisible.setText(WAVE_LIMITER_DESELECT_ALL_VISIBLE);
             } else if (!l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE) && waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_DESELECT_ALL_VISIBLE)) {
@@ -1980,13 +1942,14 @@ class L2genForm extends JTabbedPane {
             }
         }
 
-        wavelengthCheckboxControlHandlersEnabled = true;
+        // Turn on control handlers now that all controls are set
+        waveLimiterControlHandlersEnabled = true;
     }
 
 
     private void productChangedHandler() {
 
-        selectedProductsJTextArea.setText(l2genData.getProd());
+        selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.PROD));
         parfileJTextArea.setText(l2genData.getParfile());
         productJTree.treeDidChange();
         checkTreeState(rootNode);
@@ -2036,7 +1999,8 @@ class L2genForm extends JTabbedPane {
         return sourceProductSelector.getSelectedProduct();
     }
 
-
+    /*
+    */
     void prepareShow() {
         sourceProductSelector.initProducts();
     }
@@ -2049,262 +2013,6 @@ class L2genForm extends JTabbedPane {
     private void debug(String string) {
         System.out.println(string);
     }
-
-
-//
-//    class SelectedProductsTableModel extends AbstractTableModel {
-//
-//
-//        String[] columnNames = {"Selected", "Product"};
-//        Object[][] data = null;
-//
-//
-//        public SelectedProductsTableModel(ArrayList<Object> selectedProductObjects) {
-//
-//            if (selectedProductObjects != null) {
-//                data = new Object[selectedProductObjects.size()][2];
-//
-//                int idx = 0;
-//                for (Object selectedProductObject : selectedProductObjects) {
-//                    data[idx][0] = new Boolean(false);
-//                    data[idx][1] = selectedProductObject;
-//
-//                    idx++;
-//                }
-//            } else {
-//                data = new Object[1][2];
-//                data[0][0] = " ";
-//                data[0][1] = "No Products Selected";
-//            }
-//        }
-//
-//
-//        public int getColumnCount() {
-//            return columnNames.length;
-//        }
-//
-//        public int getRowCount() {
-//            return data.length;
-//        }
-//
-//        public String getColumnName(int col) {
-//            return (String) columnNames[col];
-//        }
-//
-//        public Object getValueAt(int row, int col) {
-//            return data[row][col];
-//        }
-//
-//
-//        /*
-//        * JTable uses this method to determine the default renderer/
-//        * editor for each cell.  If we didn't implement this method,
-//        * then the last column would contain text ("true"/"false"),
-//        * rather than a check box.
-//        */
-//        public Class getColumnClass(int c) {
-//            return getValueAt(0, c).getClass();
-//        }
-//
-//        /*
-//        * Don't need to implement this method unless your table's
-//        * editable.
-//        */
-//        public boolean isCellEditable(int row, int col) {
-//            //Note that the data/cell address is constant,
-//            //no matter where the cell appears onscreen.
-//            if (col < 2) {
-//                return false;
-//            } else {
-//                return true;
-//            }
-//        }
-//
-//        /*
-//        * Don't need to implement this method unless your table's
-//        * data can change.
-//        */
-//        public void setValueAt(Object value, int row, int col) {
-//            data[row][col] = value;
-//            fireTableCellUpdated(row, col);
-//        }
-//
-//    }
-//
-//
-//    private void createProductsCartTab(String myTabname) {
-//
-//        final String COORDINATES_PANEL_TITLE = "Selected Products";
-//
-//        productsCartJPanel = new JPanel();
-//        productsCartJTable = new JTable();
-//
-//        productsCartJTable.addMouseListener(new MouseListener() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                selectedProductsJTableMouseClickedHandler(e);
-//                //To change body of implemented methods use File | Settings | File Templates.
-//            }
-//
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//                //To change body of implemented methods use File | Settings | File Templates.
-//            }
-//
-//            @Override
-//            public void mouseReleased(MouseEvent e) {
-//                //To change body of implemented methods use File | Settings | File Templates.
-//            }
-//
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//                //To change body of implemented methods use File | Settings | File Templates.
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//                //To change body of implemented methods use File | Settings | File Templates.
-//            }
-//        });
-//
-//        JButton selectedProductsRemoveButton = new JButton("Remove");
-//
-//        // ----------------------------------------------------------------------------------------
-//        // Create mainPanel to hold all controls
-//        // ----------------------------------------------------------------------------------------
-//
-//        final JPanel mainPanel = new JPanel();
-//        mainPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
-//        mainPanel.setLayout(new GridBagLayout());
-//
-//        productsCartJPanel.add(new JScrollPane(productsCartJTable));
-//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
-//        c.fill = GridBagConstraints.NONE;
-//        c.anchor = GridBagConstraints.NORTHWEST;
-//        c.weightx = 1;
-//        c.weighty = 1;
-//        mainPanel.add(productsCartJPanel, c);
-//
-//
-//        selectedProductsRemoveButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                handleSelectedProductsDelete();
-//            }
-//        });
-//
-//        //
-//        //
-//
-//        c = SeadasGuiUtils.makeConstraints(0, 1);
-//        c.fill = GridBagConstraints.NONE;
-//        c.anchor = GridBagConstraints.NORTHWEST;
-//        c.weightx = 1;
-//        c.weighty = 1;
-//        mainPanel.add(selectedProductsRemoveButton, c);
-//
-//
-//        // ----------------------------------------------------------------------------------------
-//        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
-//        // ----------------------------------------------------------------------------------------
-//
-//        final JPanel wrappedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(
-//                mainPanel,
-//                3,
-//                GridBagConstraints.NORTHWEST,
-//                GridBagConstraints.NONE);
-//
-//
-//        // ----------------------------------------------------------------------------------------
-//        // Add wrappedMainPanel to tabbedPane
-//        // ----------------------------------------------------------------------------------------
-//
-//        addTab(myTabname, wrappedMainPanel);
-//    }
-//
-//
-//    private void selectedProductsJTableMouseClickedHandler(MouseEvent e) {
-//        int row = productsCartJTable.rowAtPoint(e.getPoint());
-//        int col = productsCartJTable.columnAtPoint(e.getPoint());
-//
-//
-//        if (col == 0) {
-//            if (productsCartJTable.getValueAt(row, col).equals(true)) {
-//                productsCartJTable.setValueAt(new Boolean(false), row, col);
-//            } else {
-//                productsCartJTable.setValueAt(new Boolean(true), row, col);
-//            }
-//        }
-//
-//    }
-//
-//
-//
-//    private void handleSelectedProductsDelete() {
-//
-//        ArrayList<Object> productsToDeleteArrayList = new ArrayList<Object>();
-//
-//
-//        for (int row = 0; row < productsCartJTable.getRowCount(); row++) {
-//
-//            if (productsCartJTable.getValueAt(row, 0).equals(true)) {
-//
-//                Object product = productsCartJTable.getValueAt(row, 1);
-//
-//                productsToDeleteArrayList.add(product);
-//
-//            }
-//        }
-//
-//
-//        for (Object productToDelete : productsToDeleteArrayList) {
-//            if (productToDelete instanceof AlgorithmInfo) {
-//                l2genData.setSelectedInfo((AlgorithmInfo) productToDelete, BaseInfo.State.NOT_SELECTED);
-//            } else if (productToDelete instanceof WavelengthInfo) {
-//                l2genData.setSelectedInfo((WavelengthInfo) productToDelete, BaseInfo.State.NOT_SELECTED);
-//            }
-//        }
-//    }
-//
-//
-//        private void productChangedHandler() {
-//
-//        selectedProductsJTextArea.setText(l2genData.getProd());
-//        parfileJTextArea.setText(l2genData.getParfile());
-//        productJTree.treeDidChange();
-//
-//        if (l2genData.getSelectedProducts().size() > 0) {
-//            System.out.println("make new selectedProductsTableModel with data");
-//            productsCartTableModel = new SelectedProductsTableModel(l2genData.getSelectedProducts());
-//
-//            productsCartJTable.setModel(productsCartTableModel);
-//
-//        } else {
-//            System.out.println("make new selectedProductsTableModel WITH NO data");
-//            productsCartTableModel = new SelectedProductsTableModel(null);
-//            productsCartJTable.setModel(productsCartTableModel);
-//        }
-//
-//        productsCartJTable.getColumnModel().getColumn(0).setPreferredWidth(20);
-//        productsCartJTable.getColumnModel().getColumn(1).setPreferredWidth(200);
-//
-//
-//        productsCartJTable.setRowSelectionAllowed(false);
-//        productsCartJTable.setColumnSelectionAllowed(false);
-//        productsCartJTable.setCellSelectionEnabled(false);
-//        productsCartJPanel.add(new JScrollPane(productsCartJTable));
-//
-//    }
-
-//        l2genData.addPropertyChangeListener(l2genData.PROD, new PropertyChangeListener() {
-//            @Override
-//
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                debug("RECEIVING PROD EVENT FIRE");
-//                productChangedHandler();
-//            }
-//
-//        });
 
 
 }

@@ -1,7 +1,5 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
-import java.util.ArrayList;
-
 /**
  * A ...
  *
@@ -17,7 +15,7 @@ public class WavelengthInfo extends BaseInfo {
     private boolean defaultSelected = false;
 
     public static enum WaveType {
-        VISIBLE, IR
+        VISIBLE, INFRARED
     }
 
     public WavelengthInfo(int wavelength, AlgorithmInfo algorithmInfo) {
@@ -80,31 +78,18 @@ public class WavelengthInfo extends BaseInfo {
 
 
     public boolean isWaveType(WaveType waveType) {
-        if (waveType == WaveType.IR
+        if (waveType == WaveType.INFRARED
                 && wavelength >= VISIBLE_UPPER_LIMIT) {
             return true;
 
         } else if (waveType == WaveType.VISIBLE
                 && wavelength >= 0 && wavelength < VISIBLE_UPPER_LIMIT) {
             return true;
-        } else  {
+        } else {
             return false;
         }
     }
 
-    public boolean isVisible() {
-        if (wavelength >= 0 && wavelength < VISIBLE_UPPER_LIMIT) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isIR() {
-        if (wavelength >= VISIBLE_UPPER_LIMIT) {
-            return true;
-        }
-        return false;
-    }
 
     public AlgorithmInfo getAlgorithmInfo() {
         return (AlgorithmInfo) getParent();

@@ -117,3 +117,292 @@ We want to combined the waveDependent and waveIndependent products together with
 //            }
 //        }
 //    }
+
+
+
+
+    private boolean isValidL2prod(String inProductFullName) {
+
+        if (inProductFullName != null) {
+            for (ProductInfo productInfo : productInfoArray) {
+                for (BaseInfo aInfo : productInfo.getChildren()) {
+                    AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+
+                    if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.NONE) {
+                        if (inProductFullName.equals(algorithmInfo.getFullName())) {
+                            return true;
+                        }
+                    } else {
+                        for (BaseInfo wInfo : aInfo.getChildren()) {
+                            WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+
+                            if (inProductFullName.equals(wavelengthInfo.getFullName())) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+
+
+
+//
+//    class SelectedProductsTableModel extends AbstractTableModel {
+//
+//
+//        String[] columnNames = {"Selected", "Product"};
+//        Object[][] data = null;
+//
+//
+//        public SelectedProductsTableModel(ArrayList<Object> selectedProductObjects) {
+//
+//            if (selectedProductObjects != null) {
+//                data = new Object[selectedProductObjects.size()][2];
+//
+//                int idx = 0;
+//                for (Object selectedProductObject : selectedProductObjects) {
+//                    data[idx][0] = new Boolean(false);
+//                    data[idx][1] = selectedProductObject;
+//
+//                    idx++;
+//                }
+//            } else {
+//                data = new Object[1][2];
+//                data[0][0] = " ";
+//                data[0][1] = "No Products Selected";
+//            }
+//        }
+//
+//
+//        public int getColumnCount() {
+//            return columnNames.length;
+//        }
+//
+//        public int getRowCount() {
+//            return data.length;
+//        }
+//
+//        public String getColumnName(int col) {
+//            return (String) columnNames[col];
+//        }
+//
+//        public Object getValueAt(int row, int col) {
+//            return data[row][col];
+//        }
+//
+//
+//        /*
+//        * JTable uses this method to determine the default renderer/
+//        * editor for each cell.  If we didn't implement this method,
+//        * then the last column would contain text ("true"/"false"),
+//        * rather than a check box.
+//        */
+//        public Class getColumnClass(int c) {
+//            return getValueAt(0, c).getClass();
+//        }
+//
+//        /*
+//        * Don't need to implement this method unless your table's
+//        * editable.
+//        */
+//        public boolean isCellEditable(int row, int col) {
+//            //Note that the data/cell address is constant,
+//            //no matter where the cell appears onscreen.
+//            if (col < 2) {
+//                return false;
+//            } else {
+//                return true;
+//            }
+//        }
+//
+//        /*
+//        * Don't need to implement this method unless your table's
+//        * data can change.
+//        */
+//        public void setValueAt(Object value, int row, int col) {
+//            data[row][col] = value;
+//            fireTableCellUpdated(row, col);
+//        }
+//
+//    }
+//
+//
+//    private void createProductsCartTab(String myTabname) {
+//
+//        final String COORDINATES_PANEL_TITLE = "Selected Products";
+//
+//        productsCartJPanel = new JPanel();
+//        productsCartJTable = new JTable();
+//
+//        productsCartJTable.addMouseListener(new MouseListener() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                selectedProductsJTableMouseClickedHandler(e);
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//        });
+//
+//        JButton selectedProductsRemoveButton = new JButton("Remove");
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create mainPanel to hold all controls
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel mainPanel = new JPanel();
+//        mainPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
+//        mainPanel.setLayout(new GridBagLayout());
+//
+//        productsCartJPanel.add(new JScrollPane(productsCartJTable));
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.fill = GridBagConstraints.NONE;
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        mainPanel.add(productsCartJPanel, c);
+//
+//
+//        selectedProductsRemoveButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                handleSelectedProductsDelete();
+//            }
+//        });
+//
+//        //
+//        //
+//
+//        c = SeadasGuiUtils.makeConstraints(0, 1);
+//        c.fill = GridBagConstraints.NONE;
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        mainPanel.add(selectedProductsRemoveButton, c);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel wrappedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(
+//                mainPanel,
+//                3,
+//                GridBagConstraints.NORTHWEST,
+//                GridBagConstraints.NONE);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add wrappedMainPanel to tabbedPane
+//        // ----------------------------------------------------------------------------------------
+//
+//        addTab(myTabname, wrappedMainPanel);
+//    }
+//
+//
+//    private void selectedProductsJTableMouseClickedHandler(MouseEvent e) {
+//        int row = productsCartJTable.rowAtPoint(e.getPoint());
+//        int col = productsCartJTable.columnAtPoint(e.getPoint());
+//
+//
+//        if (col == 0) {
+//            if (productsCartJTable.getValueAt(row, col).equals(true)) {
+//                productsCartJTable.setValueAt(new Boolean(false), row, col);
+//            } else {
+//                productsCartJTable.setValueAt(new Boolean(true), row, col);
+//            }
+//        }
+//
+//    }
+//
+//
+//
+//    private void handleSelectedProductsDelete() {
+//
+//        ArrayList<Object> productsToDeleteArrayList = new ArrayList<Object>();
+//
+//
+//        for (int row = 0; row < productsCartJTable.getRowCount(); row++) {
+//
+//            if (productsCartJTable.getValueAt(row, 0).equals(true)) {
+//
+//                Object product = productsCartJTable.getValueAt(row, 1);
+//
+//                productsToDeleteArrayList.add(product);
+//
+//            }
+//        }
+//
+//
+//        for (Object productToDelete : productsToDeleteArrayList) {
+//            if (productToDelete instanceof AlgorithmInfo) {
+//                l2genData.setSelectedInfo((AlgorithmInfo) productToDelete, BaseInfo.State.NOT_SELECTED);
+//            } else if (productToDelete instanceof WavelengthInfo) {
+//                l2genData.setSelectedInfo((WavelengthInfo) productToDelete, BaseInfo.State.NOT_SELECTED);
+//            }
+//        }
+//    }
+//
+//
+//        private void productChangedHandler() {
+//
+//        selectedProductsJTextArea.setText(l2genData.getProdParamValue());
+//        parfileJTextArea.setText(l2genData.getParfile());
+//        productJTree.treeDidChange();
+//
+//        if (l2genData.getSelectedProducts().size() > 0) {
+//            System.out.println("make new selectedProductsTableModel with data");
+//            productsCartTableModel = new SelectedProductsTableModel(l2genData.getSelectedProducts());
+//
+//            productsCartJTable.setModel(productsCartTableModel);
+//
+//        } else {
+//            System.out.println("make new selectedProductsTableModel WITH NO data");
+//            productsCartTableModel = new SelectedProductsTableModel(null);
+//            productsCartJTable.setModel(productsCartTableModel);
+//        }
+//
+//        productsCartJTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+//        productsCartJTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+//
+//
+//        productsCartJTable.setRowSelectionAllowed(false);
+//        productsCartJTable.setColumnSelectionAllowed(false);
+//        productsCartJTable.setCellSelectionEnabled(false);
+//        productsCartJPanel.add(new JScrollPane(productsCartJTable));
+//
+//    }
+
+//        l2genData.addPropertyChangeListener(l2genData.PROD, new PropertyChangeListener() {
+//            @Override
+//
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                debug("RECEIVING PROD EVENT FIRE");
+//                productChangedHandler();
+//            }
+//
+//        });

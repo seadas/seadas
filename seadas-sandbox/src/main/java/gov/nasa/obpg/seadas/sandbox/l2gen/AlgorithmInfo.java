@@ -204,7 +204,7 @@ public class AlgorithmInfo extends BaseInfo {
         } else if (shortcutType == ShortcutType.VISIBLE) {
             for (BaseInfo wInfo : getChildren()) {
                 WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                if (wavelengthInfo.isVisible()) {
+                if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE)) {
                     if (wavelengthInfo.isSelected()) {
                         found = true;
                     } else {
@@ -217,7 +217,7 @@ public class AlgorithmInfo extends BaseInfo {
         } else if (shortcutType == ShortcutType.IR) {
             for (BaseInfo wInfo : getChildren()) {
                 WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                if (wavelengthInfo.isIR()) {
+                if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED)) {
                     if (wavelengthInfo.isSelected()) {
                         found = true;
                     } else {
@@ -235,13 +235,13 @@ public class AlgorithmInfo extends BaseInfo {
         for (BaseInfo wInfo : getChildren()) {
             WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
 
-            if (wavelengthInfo.isVisible()) {
+            if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE)) {
                 if (shortcutType == ShortcutType.ALL || shortcutType == ShortcutType.VISIBLE) {
                     wavelengthInfo.setState(state);
                 }
             }
 
-            if (wavelengthInfo.isIR()) {
+            if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED)) {
                 if (shortcutType == ShortcutType.ALL || shortcutType == ShortcutType.IR) {
                     wavelengthInfo.setState(state);
                 }
