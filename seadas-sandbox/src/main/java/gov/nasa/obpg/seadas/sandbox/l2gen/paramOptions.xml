@@ -1682,7 +1682,7 @@
         <type>float</type>
         <default>0.04</default>
         <description>minimum % of samples filled in target
-         file to allow target file creation, if < 0,
+         file to allow target file creation, if DAN WAS HERE 0,
         create target, aerosol files regardless</description>
         <source>default</source>
     </option>

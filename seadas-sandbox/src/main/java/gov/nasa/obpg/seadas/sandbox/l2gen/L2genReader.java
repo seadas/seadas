@@ -1,5 +1,6 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
+import com.kenai.jffi.Type;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -14,18 +15,6 @@ import java.util.ArrayList;
  */
 public class L2genReader {
 
-    private static String ELEMNAME_PROD = "product";
-    private static String ATTRIBNAME_PROD_NAME = "name";
-
-    private static String ELEMNAME_ALG = "algorithm";
-    private static String ATTRIBNAME_ALG_NAME = "name";
-
-    private static String ELEMNAME_DESCRIPTION = "description";
-    private static String ELEMNAME_PARAMTYPE = "parameterType";
-    private static String ELEMNAME_PREFIX = "prefix";
-    private static String ELEMNAME_SUFFIX = "suffix";
-    private static String ELEMNAME_DATATYPE = "dataType";
-    private static String ELEMNAME_UNITS = "units";
 
     private L2genData l2genData;
 
@@ -34,24 +23,92 @@ public class L2genReader {
     }
 
 
-    public void readProductsXmlFile(InputStream stream) {
+    public void readParamOptionsXml(InputStream stream) {
+        XmlReader reader = new XmlReader();
+        Element rootElement = reader.parseAndGetRootElement(stream);
+
+        l2genData.clearParamOptionsInfos();
+
+        NodeList optionNodelist = rootElement.getElementsByTagName("option");
+
+        if (optionNodelist != null && optionNodelist.getLength() > 0) {
+            for (int i = 0; i < optionNodelist.getLength(); i++) {
+
+                Element optionElement = (Element) optionNodelist.item(i);
+
+                String name = XmlReader.getTextValue(optionElement, "name");
+                String value = XmlReader.getTextValue(optionElement, "value");
+                String tmpType = XmlReader.getTextValue(optionElement, "type");
+                String defaultValue = XmlReader.getTextValue(optionElement, "defaultValue");
+                String description = XmlReader.getTextValue(optionElement, "description");
+                String source = XmlReader.getTextValue(optionElement, "source");
+
+                ParamOptionsInfo.Type type = null;
+
+                if (tmpType != null) {
+                    if (tmpType.toLowerCase().equals("bool")) {
+                        type = ParamOptionsInfo.Type.BOOLEAN;
+                    } else if (tmpType.toLowerCase().equals("int")) {
+                        type = ParamOptionsInfo.Type.INT;
+                    } else if (tmpType.toLowerCase().equals("float")) {
+                        type = ParamOptionsInfo.Type.FLOAT;
+                    } else if (tmpType.toLowerCase().equals("string")) {
+                        type = ParamOptionsInfo.Type.STRING;
+                    }
+                }
+
+                ParamOptionsInfo paramOptionsInfo = new ParamOptionsInfo(name, value, type);
+
+                paramOptionsInfo.setDescription(description);
+                paramOptionsInfo.setDefaultValue(defaultValue);
+                paramOptionsInfo.setSource(source);
+
+                NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
+
+                if (validValueNodelist != null && validValueNodelist.getLength() > 0) {
+                    for (int j = 0; j < validValueNodelist.getLength(); j++) {
+
+                        Element validValueElement = (Element) validValueNodelist.item(j);
+
+                        String validValueValue = XmlReader.getTextValue(validValueElement, "value");
+                        String validValueDescription = XmlReader.getTextValue(validValueElement, "description");
+
+                        ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(validValueValue);
+
+                        paramValidValueInfo.setDescription(validValueDescription);
+                        paramValidValueInfo.setParent(paramOptionsInfo);
+                        paramOptionsInfo.addValidValueInfo(paramValidValueInfo);
+                    }
+
+                    paramOptionsInfo.sortValidValueInfos(ParamValidValueInfo.CASE_INSENSITIVE_ORDER);
+                    l2genData.addParamOptionsInfo(paramOptionsInfo);
+                }
+            }
+        }
+
+        l2genData.sortParamOptionsInfos(ParamOptionsInfo.CASE_INSENSITIVE_ORDER);
+    }
+
+
+    public void readProductsXml(InputStream stream) {
+
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
         l2genData.clearProductInfos();
 
-        NodeList prodNodelist = rootElement.getElementsByTagName(ELEMNAME_PROD);
+        NodeList prodNodelist = rootElement.getElementsByTagName("product");
 
         if (prodNodelist != null && prodNodelist.getLength() > 0) {
             for (int i = 0; i < prodNodelist.getLength(); i++) {
 
                 Element prodElement = (Element) prodNodelist.item(i);
 
-                String prodName = prodElement.getAttribute(ATTRIBNAME_PROD_NAME);
+                String prodName = prodElement.getAttribute("name");
                 ProductInfo productInfo = new ProductInfo(prodName);
                 productInfo.setName(prodName);
 
-                NodeList algNodelist = prodElement.getElementsByTagName(ELEMNAME_ALG);
+                NodeList algNodelist = prodElement.getElementsByTagName("algorithm");
 
                 if (algNodelist != null && algNodelist.getLength() > 0) {
                     for (int j = 0; j < algNodelist.getLength(); j++) {
@@ -60,29 +117,28 @@ public class L2genReader {
 
                         AlgorithmInfo algorithmInfo = new AlgorithmInfo();
 
-
-                        if (algElement.hasAttribute(ATTRIBNAME_ALG_NAME)) {
-                            String algorithmName = algElement.getAttribute(ATTRIBNAME_ALG_NAME);
+                        if (algElement.hasAttribute("name")) {
+                            String algorithmName = algElement.getAttribute("name");
                             algorithmInfo.setName(algorithmName);
                         }
 
-                        String parameterTypeStr = XmlReader.getTextValue(algElement, ELEMNAME_PARAMTYPE);
+                        String parameterTypeStr = XmlReader.getTextValue(algElement, "parameterType");
                         algorithmInfo.setParameterType(parameterTypeStr);
 
-                        String suffix = XmlReader.getTextValue(algElement, ELEMNAME_SUFFIX);
+                        String suffix = XmlReader.getTextValue(algElement, "suffix");
                         algorithmInfo.setSuffix(suffix);
 
 
-                        String description = XmlReader.getTextValue(algElement, ELEMNAME_DESCRIPTION);
+                        String description = XmlReader.getTextValue(algElement, "description");
                         algorithmInfo.setDescription(description);
 
-                        String prefix = XmlReader.getTextValue(algElement, ELEMNAME_PREFIX);
+                        String prefix = XmlReader.getTextValue(algElement, "prefix");
                         algorithmInfo.setPrefix(prefix);
 
-                        String units = XmlReader.getTextValue(algElement, ELEMNAME_UNITS);
+                        String units = XmlReader.getTextValue(algElement, "units");
                         algorithmInfo.setUnits(units);
 
-                        String dataType = XmlReader.getTextValue(algElement, ELEMNAME_DATATYPE);
+                        String dataType = XmlReader.getTextValue(algElement, "dataType");
                         algorithmInfo.setDataType(dataType);
 
                         productInfo.addChild(algorithmInfo);

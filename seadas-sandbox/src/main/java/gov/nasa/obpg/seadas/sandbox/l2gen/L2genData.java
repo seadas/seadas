@@ -53,6 +53,7 @@ public class L2genData {
     private HashMap<String, String> defaultParamValues = new HashMap();
 
     private ArrayList<ProductInfo> productInfos = new ArrayList<ProductInfo>();
+    private ArrayList<ParamOptionsInfo> paramOptionsInfos = new ArrayList<ParamOptionsInfo>();
 
     private ArrayList<WavelengthInfo> waveLimiter = new ArrayList<WavelengthInfo>();
 
@@ -279,6 +280,17 @@ public class L2genData {
 
     }
 
+    public void addParamOptionsInfo(ParamOptionsInfo paramOptionsInfo) {
+        paramOptionsInfos.add(paramOptionsInfo);
+    }
+
+    public void clearParamOptionsInfo() {
+        paramOptionsInfos.clear();
+    }
+
+    public ArrayList<ParamOptionsInfo> getParamOptionsInfos() {
+        return paramOptionsInfos;
+    }
 
     public void addProductInfo(ProductInfo productInfo) {
         productInfos.add(productInfo);
@@ -287,6 +299,15 @@ public class L2genData {
 
     public void clearProductInfos() {
         productInfos.clear();
+    }
+
+    public void clearParamOptionsInfos() {
+        paramOptionsInfos.clear();
+    }
+
+
+    public void sortParamOptionsInfos(Comparator<ParamOptionsInfo> comparator) {
+        Collections.sort(paramOptionsInfos, comparator);
     }
 
     public void sortProductInfos(Comparator<ProductInfo> comparator) {

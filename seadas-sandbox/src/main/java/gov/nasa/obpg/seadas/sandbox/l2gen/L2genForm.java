@@ -70,7 +70,8 @@ class L2genForm extends JTabbedPane {
     private DefaultMutableTreeNode rootNode;
 
     private String SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT = "No products currently selected";
-    private String SEADAS_PRODUCTS_FILE = "productList.xml";
+    private String PRODUCTS_FILE = "productList.xml";
+    private String PARAM_OPTIONS_FILE = "paramOptions.xml";
 
 
     private static final int INPUT_OUTPUT_FILE_TAB_INDEX = 0;
@@ -911,9 +912,9 @@ class L2genForm extends JTabbedPane {
     private void createProductsTab(String myTabname) {
 
 
-        InputStream stream = L2genForm.class.getResourceAsStream(SEADAS_PRODUCTS_FILE);
+        InputStream stream = L2genForm.class.getResourceAsStream(PRODUCTS_FILE);
 
-        l2genReader.readProductsXmlFile(stream);
+        l2genReader.readProductsXml(stream);
 
 
         JPanel wavelengthsLimitorJPanel = createWaveLimiterJPanel();
@@ -1608,7 +1609,6 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println(l2genData.MISSION_CHANGE_EVENT + " being handled");
                 missionStringChangeEvent((String) evt.getNewValue());
-
             }
         });
 
@@ -1882,6 +1882,20 @@ class L2genForm extends JTabbedPane {
 
 
     private void missionStringChangeEvent(String newMissionString) {
+
+//        InputStream productsStream = L2genForm.class.getResourceAsStream(SEADAS_PRODUCTS_FILE);
+//        l2genReader.readProductsXml(productsStream);
+
+        InputStream paramOptionsStream = L2genForm.class.getResourceAsStream(PARAM_OPTIONS_FILE);
+        l2genReader.readParamOptionsXml(paramOptionsStream);
+
+        for (ParamOptionsInfo paramOptionsInfo : l2genData.getParamOptionsInfos()) {
+            debug("name="+paramOptionsInfo.getName()+" value="+paramOptionsInfo.getValue());
+            for (ParamValidValueInfo paramValidValueInfo : paramOptionsInfo.getValidValueInfos()) {
+                debug("validValue="+paramValidValueInfo.getValue());
+            }
+        }
+
 
         ifileChangedEventHandler();
 
