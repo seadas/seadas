@@ -1420,8 +1420,8 @@ class L2genForm extends JTabbedPane {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (EDIT_LOAD_BUTTON_TEXT_EDIT_MODE.equals(selectedProductsEditLoadButton.getText())) {
-                    l2genData.setParamValue(l2genData.PROD, selectedProductsJTextArea.getText());
-                    selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.PROD));
+                    l2genData.setParamValue(l2genData.L2PROD, selectedProductsJTextArea.getText());
+                    selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
                     setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
                 } else {
                     setDisplayModeSelectedProducts(DisplayMode.EDIT_MODE);
@@ -1433,7 +1433,7 @@ class L2genForm extends JTabbedPane {
         selectedProductsCancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.PROD));
+                selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
 
                 setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
             }
@@ -1949,7 +1949,7 @@ class L2genForm extends JTabbedPane {
 
     private void productChangedHandler() {
 
-        selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.PROD));
+        selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
         parfileJTextArea.setText(l2genData.getParfile());
         productJTree.treeDidChange();
         checkTreeState(rootNode);

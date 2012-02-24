@@ -32,7 +32,7 @@ public class L2genData {
     public final String EAST = "east";
     public final String IFILE = "ifile";
     public final String OFILE = "ofile";
-    public final String PROD = "l2prod";
+    public final String L2PROD = "l2prod";
 
     public final String PARFILE_CHANGE_EVENT = "PARFILE_TEXT_CHANGE_EVENT";
     public final String MISSION_CHANGE_EVENT = "MISSION_STRING_CHANGE_EVENT";
@@ -429,8 +429,8 @@ public class L2genData {
 
         // Remove prod entry because we do not store it here.
         // This is just a precaution it should never have been stored.
-        if (paramValues.containsKey(PROD)) {
-            paramValues.remove(PROD);
+        if (paramValues.containsKey(L2PROD)) {
+            paramValues.remove(L2PROD);
         }
 
         // make a copy of paramValues so the keys can be deleted as they as used
@@ -447,7 +447,7 @@ public class L2genData {
 
 
         parfileStringBuilder.append("# PRODUCT PARAM").append("\n");
-        parfileStringBuilder.append(getParamValueEntry(PROD)).append("\n\n");
+        parfileStringBuilder.append(getParamValueEntry(L2PROD)).append("\n\n");
 
         parfileStringBuilder.append(
                 getParfileSection("# COORDINATE PARAMS",
@@ -500,7 +500,7 @@ public class L2genData {
                         thisParfileHashMap.put(key, value);
                     } else if (splitLine.length == 1) {
                         final String key = splitLine[0].toString().trim();
-                        if (PROD.equals(key)) {
+                        if (L2PROD.equals(key)) {
                             thisParfileHashMap.put(key, "");
                         }
                     }
@@ -513,30 +513,102 @@ public class L2genData {
 
 // DANNY IS REVIEWING CODE AND LEFT OFF HERE
 
+    /**
+     *
+     */
+    public void resetAll(boolean missionChanged) {
 
-    public void setDefaults() {
+        if (missionChanged) {
+            resetWaveLimiter();
+        }
+
+        resetProductInfos(missionChanged);
 
         String inParfile = getL2genDefaults();
 
         defaultParamValues.clear();
         defaultParamValues = parseParfile(inParfile);
 
-        String prod = defaultParamValues.get(PROD);
-        defaultParamValues.remove(PROD);
-
-        for (String key : defaultParamValues.keySet()) {
-            setParamValue(key, defaultParamValues.get(key));
-        }
+        String prod = defaultParamValues.get(L2PROD);
+        defaultParamValues.remove(L2PROD);
 
         if (prod != null) {
-            setParamValue(PROD, prod);
+            setParamValue(L2PROD, prod);
         }
 
         copyToProductDefaults();
+
+        /**
+         * Update to main any default params with different values
+         */
+        for (String defaultParam : defaultParamValues.keySet()) {
+            setParamValue(defaultParam, defaultParamValues.get(defaultParam));
+        }
+
+        /**
+         * Remove from main any params not in the defaults 
+         */
+
+        HashMap<String, String> tmpParamValues = new HashMap<String, String>();
+        for (String key : paramValues.keySet()) {
+            tmpParamValues.put(key, paramValues.get(key));
+        }
+        for (String param : tmpParamValues.keySet()) {
+            if (!param.equals(IFILE) && !defaultParamValues.containsKey(param)) {
+                deleteParamValue(param);
+            }
+        }
+
+        if (!paramValues.containsKey(OFILE)) {
+            setCustomOfile();
+        }
     }
 
 
-    public void setParfile(String inParfile) {
+    public void setParfile(String newParfile) {
+
+        HashMap<String, String> newParamValues = parseParfile(newParfile);
+
+        if (newParamValues != null && newParamValues.size() > 0) {
+
+            /*
+               It present, do the ifile first because it will alter and reset everything
+            */
+            if (newParamValues.containsKey(IFILE)) {
+                setParamValue(IFILE, newParamValues.get(IFILE));
+                newParamValues.remove(IFILE);
+            }
+
+            /*
+               Make a copy of paramValues to serve as a source to loop through
+               because the actual paramValues will be altered during the looping
+            */
+            HashMap<String, String> tmpParamValues = new HashMap<String, String>();
+            for (String key : paramValues.keySet()) {
+                tmpParamValues.put(key, paramValues.get(key));
+            }
+
+            // Remove any keys in paramValues which are not present in newParamValues
+            for (String key : tmpParamValues.keySet()) {
+                if (!key.equals(IFILE) && !newParamValues.containsKey(key)) {
+                    deleteParamValue(key);
+                }
+            }
+
+            // Set l2prod to defaults if newParamValues does not contain l2prod
+            if (!newParamValues.containsKey(L2PROD)) {
+                copyFromProductDefaults();
+            }
+
+            // Set a paramValues to newParamValues
+            for (String key : newParamValues.keySet()) {
+                setParamValue(key, newParamValues.get(key));
+            }
+        }
+    }
+
+
+    public void setParfileOld(String inParfile) {
 
         HashMap<String, String> inParfileHashMap = parseParfile(inParfile);
 
@@ -561,9 +633,9 @@ public class L2genData {
                 inParfileHashMap.remove(IFILE);
             }
 
-            if (!inParfileHashMap.containsKey(PROD)) {
+            if (!inParfileHashMap.containsKey(L2PROD)) {
                 copyFromProductDefaults();
-                inParfileHashMap.remove(PROD);
+                inParfileHashMap.remove(L2PROD);
             }
             // Initialize with defaultParamValueHashMap
 //            for (String key : defaultParamValues.keySet()) {
@@ -654,7 +726,7 @@ public class L2genData {
             return "";
         }
 
-        if (key.equals(PROD)) {
+        if (key.equals(L2PROD)) {
             return getProdParamValue();
         }
 
@@ -688,7 +760,7 @@ public class L2genData {
         if (inKey != null && inKey.length() > 0) {
             inKey = inKey.trim();
 
-            if (inKey.equals(PROD)) {
+            if (inKey.equals(L2PROD)) {
                 setProdParamValue(inValue);
             } else {
                 if (inValue != null && inValue.length() > 0) {
@@ -697,7 +769,7 @@ public class L2genData {
 
                     if (!inValue.equals(paramValues.get(inKey))) {
                         if (inKey.equals(IFILE)) {
-                            handleIfileChange(inValue);
+                            setIfileParamValue(inValue);
                         } else {
                             paramValues.put(inKey, inValue);
                             specifyRegionType(inKey);
@@ -720,7 +792,7 @@ public class L2genData {
         }
 
         // if product changed
-        if (!inProd.equals(getParamValue(PROD))) {
+        if (!inProd.equals(getParamValue(L2PROD))) {
             TreeSet<String> inProducts = new TreeSet<String>();
             for (String prodEntry : inProd.split(" ")) {
                 prodEntry.trim();
@@ -863,27 +935,32 @@ public class L2genData {
             for (BaseInfo aInfo : productInfo.getChildren()) {
                 aInfo.setSelected(false);
                 AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
-                algorithmInfo.clearChildren();
 
-                if (missionChanged &&
-                        algorithmInfo.getParameterType() != AlgorithmInfo.ParameterType.NONE) {
-                    for (WavelengthInfo wavelengthInfo : waveLimiter) {
-                        if (wavelengthInfo.getWavelength() < WavelengthInfo.VISIBLE_UPPER_LIMIT) {
-                            if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE ||
-                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
-                                WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
-                                newWavelengthInfo.setParent(algorithmInfo);
-                                newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
-                                algorithmInfo.addChild(newWavelengthInfo);
+                if (algorithmInfo.getParameterType() != AlgorithmInfo.ParameterType.NONE) {
+                    if (missionChanged) {
+                        algorithmInfo.clearChildren();
+                        for (WavelengthInfo wavelengthInfo : waveLimiter) {
+                            if (wavelengthInfo.getWavelength() < WavelengthInfo.VISIBLE_UPPER_LIMIT) {
+                                if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE ||
+                                        algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+                                    WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
+                                    newWavelengthInfo.setParent(algorithmInfo);
+                                    newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
+                                    algorithmInfo.addChild(newWavelengthInfo);
+                                }
+                            } else {
+                                if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR ||
+                                        algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+                                    WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
+                                    newWavelengthInfo.setParent(algorithmInfo);
+                                    newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
+                                    algorithmInfo.addChild(newWavelengthInfo);
+                                }
                             }
-                        } else {
-                            if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR ||
-                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
-                                WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
-                                newWavelengthInfo.setParent(algorithmInfo);
-                                newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
-                                algorithmInfo.addChild(newWavelengthInfo);
-                            }
+                        }
+                    } else {
+                        for (BaseInfo wInfo : algorithmInfo.getChildren()) {
+                            wInfo.setSelected(false);
                         }
                     }
                 }
@@ -894,7 +971,7 @@ public class L2genData {
     // runs this if IFILE changes
     // it will reset missionString
     // it will reset and make new wavelengthInfoArray
-    private void handleIfileChange(String newIfile) {
+    private void setIfileParamValue(String newIfile) {
 
         boolean missionChanged = false;
         String previousMissionString = getMissionString();
@@ -904,25 +981,14 @@ public class L2genData {
             missionChanged = true;
         }
 
-        if (missionChanged) {
-            resetWaveLimiter();
-            resetProductInfos(missionChanged);
-        } else {
-            resetProductInfos(missionChanged);
-        }
-
-        setDefaults();
-        //   setParfile(getL2genDefaults());
-        //   copyToProductDefaults();
-
-        setOfile();
+        resetAll(missionChanged);
 
         debug(MISSION_CHANGE_EVENT.toString() + "being fired");
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_CHANGE_EVENT, null, getMissionString()));
     }
 
 
-    private void setOfile() {
+    private void setCustomOfile() {
 
         String ifile = paramValues.get(IFILE);
         String ofile;
@@ -947,7 +1013,6 @@ public class L2genData {
         paramValues.put(OFILE, ofile);
 
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, OFILE, null, null));
-
     }
 
 
