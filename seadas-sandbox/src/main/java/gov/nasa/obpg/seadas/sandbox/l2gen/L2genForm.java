@@ -929,7 +929,7 @@ class L2genForm extends JTabbedPane {
 
         productJTree.setCellEditor(new CheckBoxNodeEditor(productJTree));
         productJTree.setEditable(true);
-
+        productJTree.setShowsRootHandles(true);
         productJTree.setRootVisible(false);
 
 
@@ -1890,9 +1890,9 @@ class L2genForm extends JTabbedPane {
         l2genReader.readParamOptionsXml(paramOptionsStream);
 
         for (ParamOptionsInfo paramOptionsInfo : l2genData.getParamOptionsInfos()) {
-            debug("name="+paramOptionsInfo.getName()+" value="+paramOptionsInfo.getValue());
+            debug("name=" + paramOptionsInfo.getName() + " value=" + paramOptionsInfo.getValue());
             for (ParamValidValueInfo paramValidValueInfo : paramOptionsInfo.getValidValueInfos()) {
-                debug("validValue="+paramValidValueInfo.getValue());
+                debug("validValue=" + paramValidValueInfo.getValue());
             }
         }
 
@@ -1908,7 +1908,7 @@ class L2genForm extends JTabbedPane {
         //       createProductSelectorWavelengthsPanel();
 
         updateWavelengthLimiterPanel();
-     //   l2genData.applyParfileDefaults();
+        //   l2genData.applyParfileDefaults();
         updateProductTreePanel();
 
         // setWaveDependentProductsJList();
