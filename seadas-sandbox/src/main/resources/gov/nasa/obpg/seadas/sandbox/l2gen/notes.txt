@@ -13,7 +13,24 @@ We want to combined the waveDependent and waveIndependent products together with
 
 
 
-
+        <param>pversion</param>
+        <param>suite</param>
+        <param>il2file</param>
+        <param>metafile</param>
+        <param>resolution</param>
+        <param>chloc2_wave</param>
+        <param>chloc2_coef</param>
+        <param>chloc3_wave</param>
+        <param>chloc3_coef</param>
+        <param>chloc4_wave</param>
+        <param>chloc4_coef</param>
+        <param>chlclark_wave</param>
+        <param>chlclark_coef</param>
+        <param>kd2_wave</param>
+        <param>kd2_coef</param>
+        <param>coccolith</param>
+        <param>ctl_pt_incr</param>
+        <param>prodxmlfile</param>
 
 
 

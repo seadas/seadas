@@ -8,7 +8,7 @@ import java.util.Comparator;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class ParamValidValueInfo {
+public class ParamValidValueInfo implements Comparable  {
 
     private String value = null;
     private String description = null;
@@ -43,23 +43,16 @@ public class ParamValidValueInfo {
     }
 
 
-    public static final Comparator<ParamValidValueInfo> CASE_SENSITIVE_ORDER
-            = new CaseSensitiveComparator();
-
-    public static final Comparator<ParamValidValueInfo> CASE_INSENSITIVE_ORDER
-            = new CaseInsensitiveComparator();
+    public static final Comparator<ParamValidValueInfo> SORT_BY_VALUE
+            = new ValueComparator();
 
 
-    private static class CaseSensitiveComparator
-            implements Comparator<ParamValidValueInfo> {
-
-        public int compare(ParamValidValueInfo s1, ParamValidValueInfo s2) {
-            return s1.getValue().compareTo(s2.getValue());
-        }
+    @Override
+    public int compareTo(Object o) {
+        return getValue().compareToIgnoreCase(((ParamValidValueInfo)o).getValue());
     }
 
-    private static class CaseInsensitiveComparator
-            implements Comparator<ParamValidValueInfo> {
+    public static class ValueComparator implements Comparator<ParamValidValueInfo> {
 
         public int compare(ParamValidValueInfo s1, ParamValidValueInfo s2) {
             return s1.getValue().compareToIgnoreCase(s2.getValue());

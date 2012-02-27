@@ -72,6 +72,7 @@ class L2genForm extends JTabbedPane {
     private String SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT = "No products currently selected";
     private String PRODUCTS_FILE = "productList.xml";
     private String PARAM_OPTIONS_FILE = "paramOptions.xml";
+    private String PARAM_CATEGORIES_FILE = "paramCategories.xml";
 
 
     private static final int INPUT_OUTPUT_FILE_TAB_INDEX = 0;
@@ -1889,12 +1890,28 @@ class L2genForm extends JTabbedPane {
         InputStream paramOptionsStream = L2genForm.class.getResourceAsStream(PARAM_OPTIONS_FILE);
         l2genReader.readParamOptionsXml(paramOptionsStream);
 
-        for (ParamOptionsInfo paramOptionsInfo : l2genData.getParamOptionsInfos()) {
-            debug("name=" + paramOptionsInfo.getName() + " value=" + paramOptionsInfo.getValue());
-            for (ParamValidValueInfo paramValidValueInfo : paramOptionsInfo.getValidValueInfos()) {
-                debug("validValue=" + paramValidValueInfo.getValue());
+//        for (ParamOptionsInfo paramOptionsInfo : l2genData.getParamOptionsInfos()) {
+//            debug("name=" + paramOptionsInfo.getName() + " value=" + paramOptionsInfo.getValue());
+//            for (ParamValidValueInfo paramValidValueInfo : paramOptionsInfo.getValidValueInfos()) {
+//                debug("validValue=" + paramValidValueInfo.getValue());
+//            }
+//        }
+
+
+        InputStream paramCategoriesStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORIES_FILE);
+        l2genReader.readParamCategoriesXml(paramCategoriesStream);
+
+
+
+        l2genData.setParamCategoriesInfos();
+
+        for (ParamCategoriesInfo paramCategoriesInfo : l2genData.getParamCategoriesInfos()) {
+            debug("name="+paramCategoriesInfo.getName());
+            for (ParamOptionsInfo paramOptionsInfo : paramCategoriesInfo.getParamOptionsInfos()) {
+                debug("    param="+paramOptionsInfo.getName());
             }
         }
+
 
 
         ifileChangedEventHandler();

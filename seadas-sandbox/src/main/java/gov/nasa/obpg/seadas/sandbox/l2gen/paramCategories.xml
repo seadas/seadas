@@ -1,4 +1,11 @@
 <categoryList>
+    <category name="Used Elsewhere">
+        <makeVisible>0</makeVisible>
+        <param>ifile</param>
+        <param>l2prod</param>
+        ...
+    </category>
+
     <category name="Subsetting Options">
         <makeVisible>1</makeVisible>
         <param>spixl</param>
@@ -150,6 +157,7 @@
 
     <category name="Miscellaneous">
         <makeVisible>1</makeVisible>
+        <defaultBucket>0</defaultBucket>
         <param>pversion</param>
         <param>suite</param>
         <param>il2file</param>
@@ -169,6 +177,12 @@
         <param>ctl_pt_incr</param>
         <param>prodxmlfile</param>
     </category>
+
+    <category name="Dump Bucket">
+        <makeVisible>0</makeVisible>
+        <defaultBucket>1</defaultBucket>
+    </category>
+
 
     <category name="Calibration Options">
         <makeVisible>0</makeVisible>

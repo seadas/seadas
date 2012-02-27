@@ -54,10 +54,14 @@ public class L2genData {
 
     private ArrayList<ProductInfo> productInfos = new ArrayList<ProductInfo>();
     private ArrayList<ParamOptionsInfo> paramOptionsInfos = new ArrayList<ParamOptionsInfo>();
+    private ArrayList<ParamCategoriesInfo> paramCategoriesInfos = new ArrayList<ParamCategoriesInfo>();
+
 
     private ArrayList<WavelengthInfo> waveLimiter = new ArrayList<WavelengthInfo>();
 
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
+
+    private L2genPrint l2genPrint = new L2genPrint();
 
     public enum RegionType {Coordinates, PixelLines}
 
@@ -303,6 +307,16 @@ public class L2genData {
 
     public void clearParamOptionsInfos() {
         paramOptionsInfos.clear();
+    }
+
+
+    public void sortParamCategoriesInfos(Comparator<ParamCategoriesInfo> comparator) {
+            Collections.sort(paramCategoriesInfos, comparator);
+    }
+
+
+    public void sortParamCategoriesInfos() {
+            Collections.sort(paramCategoriesInfos);
     }
 
 
@@ -1068,6 +1082,39 @@ public class L2genData {
     }
 
 
+    /**
+     * resets paramOptionsInfos within paramCategoriesInfos to link to appropriate entry in paramOptionsInfos
+     */
+    public void setParamCategoriesInfos() {
+
+        for (ParamCategoriesInfo paramCategoriesInfo : paramCategoriesInfos) {
+            paramCategoriesInfo.clearParamOptionsInfos();
+        }
+
+        for (ParamOptionsInfo paramOptionsInfo : paramOptionsInfos) {
+            boolean found = false;
+
+            for (ParamCategoriesInfo paramCategoriesInfo : paramCategoriesInfos) {
+                for (String categorizedParamName : paramCategoriesInfo.getParamNames()) {
+                    if (categorizedParamName.equals(paramOptionsInfo.getName())) {
+                        paramCategoriesInfo.addParamOptionsInfos(paramOptionsInfo);
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) {
+                for (ParamCategoriesInfo paramCategoriesInfo : paramCategoriesInfos) {
+                    if (paramCategoriesInfo.isDefaultBucket()) {
+                        paramCategoriesInfo.addParamOptionsInfos(paramOptionsInfo);
+                        l2genPrint.adminlog("Dropping uncategorized param '" + paramOptionsInfo.getName() + "' into the defaultBucket");
+                    }
+                }
+            }
+        }
+    }
+
+
     public boolean compareWavelengthLimiter(WavelengthInfo wavelengthInfo) {
         for (WavelengthInfo wavelengthLimitorInfo : getWaveLimiter()) {
             if (wavelengthLimitorInfo.getWavelength() == wavelengthInfo.getWavelength()) {
@@ -1080,6 +1127,22 @@ public class L2genData {
         }
 
         return false;
+    }
+
+    public ArrayList<ParamCategoriesInfo> getParamCategoriesInfos() {
+        return paramCategoriesInfos;
+    }
+
+    public void setParamCategoriesInfos(ArrayList<ParamCategoriesInfo> paramCategoriesInfos) {
+        this.paramCategoriesInfos = paramCategoriesInfos;
+    }
+
+    public void addParamCategoriesInfo(ParamCategoriesInfo paramCategoriesInfo) {
+        paramCategoriesInfos.add(paramCategoriesInfo);
+    }
+
+    public void clearParamCategoriesInfos() {
+        paramCategoriesInfos.clear();
     }
 
 

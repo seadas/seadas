@@ -1,6 +1,7 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 import com.kenai.jffi.Type;
+import org.python.antlr.ast.Str;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -20,6 +21,61 @@ public class L2genReader {
 
     public L2genReader(L2genData l2genData) {
         this.l2genData = l2genData;
+    }
+
+
+    public void readParamCategoriesXml(InputStream stream) {
+        XmlReader reader = new XmlReader();
+        Element rootElement = reader.parseAndGetRootElement(stream);
+
+        l2genData.clearParamCategoriesInfos();
+
+        NodeList categoryNodelist = rootElement.getElementsByTagName("category");
+
+        if (categoryNodelist != null && categoryNodelist.getLength() > 0) {
+            for (int i = 0; i < categoryNodelist.getLength(); i++) {
+
+                Element categoryElement = (Element) categoryNodelist.item(i);
+
+                String name = categoryElement.getAttribute("name");
+                String visible = XmlReader.getTextValue(categoryElement, "makeVisible");
+                String defaultBucketString = XmlReader.getTextValue(categoryElement, "defaultBucket");
+
+                ParamCategoriesInfo paramCategoriesInfo = new ParamCategoriesInfo(name);
+
+                if (visible != null && visible.equals("1")) {
+                    paramCategoriesInfo.setVisible(true);
+                } else {
+                    paramCategoriesInfo.setVisible(false);
+                }
+
+                if (defaultBucketString != null && defaultBucketString.equals("1")) {
+                    paramCategoriesInfo.setDefaultBucket(true);
+                } else {
+                    paramCategoriesInfo.setDefaultBucket(false);
+                }
+
+
+                NodeList paramNodelist = categoryElement.getElementsByTagName("param");
+
+                if (paramNodelist != null && paramNodelist.getLength() > 0) {
+                    for (int j = 0; j < paramNodelist.getLength(); j++) {
+
+                        Element paramElement = (Element) paramNodelist.item(j);
+
+                        String param = paramElement.getTextContent();
+
+                        paramCategoriesInfo.addParamName(param);
+                    }
+
+                    paramCategoriesInfo.sortParamNameInfos();
+                }
+
+                l2genData.addParamCategoriesInfo(paramCategoriesInfo);
+            }
+        }
+
+        l2genData.sortParamCategoriesInfos();
     }
 
 
@@ -80,13 +136,14 @@ public class L2genReader {
                         paramOptionsInfo.addValidValueInfo(paramValidValueInfo);
                     }
 
-                    paramOptionsInfo.sortValidValueInfos(ParamValidValueInfo.CASE_INSENSITIVE_ORDER);
-                    l2genData.addParamOptionsInfo(paramOptionsInfo);
+                    paramOptionsInfo.sortValidValueInfos();
                 }
+
+                l2genData.addParamOptionsInfo(paramOptionsInfo);
             }
         }
 
-        l2genData.sortParamOptionsInfos(ParamOptionsInfo.CASE_INSENSITIVE_ORDER);
+        l2genData.sortParamOptionsInfos(ParamOptionsInfo.SORT_BY_NAME);
     }
 
 
