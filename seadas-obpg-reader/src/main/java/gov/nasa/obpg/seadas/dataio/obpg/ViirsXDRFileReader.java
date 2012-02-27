@@ -133,6 +133,9 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                         }
                     }
                 //todo Add valid expression - _FillValue is not working properly
+                    if (varname.equals("Chlorophyll_a")){
+                        band.setValidPixelExpression("Chlorophyll_a > 0.0 && Chlorophyll_a < 100.0");
+                    }
 
                     band.setNoDataValue((double) variable.findAttribute("_FillValue").getNumericValue().floatValue());
                 } catch (Exception e) {
