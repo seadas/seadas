@@ -97,6 +97,7 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
             "OSMI Level-3 Binned Data",
             "OCM2 Level-3 Binned Data",
             "Aquarius Level-3 Binned Data",
+            "Level-3 Binned Data",
             "VIIRS Level-3 Binned Data",
             "VIIRSN Level-2 Data",
     };
