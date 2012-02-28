@@ -29,7 +29,7 @@ public class AlgorithmInfo extends BaseInfo {
     private static String PARAMTYPE_ALL = "ALL";
     private static String PARAMTYPE_NONE = "NONE";
 
-    // These fields are populated according to productList.xml
+    // These fields are populated according to productInfo.xml
 
 
     private String dataType = null;

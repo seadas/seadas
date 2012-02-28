@@ -70,9 +70,10 @@ class L2genForm extends JTabbedPane {
     private DefaultMutableTreeNode rootNode;
 
     private String SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT = "No products currently selected";
-    private String PRODUCTS_FILE = "productList.xml";
-    private String PARAM_OPTIONS_FILE = "paramOptions.xml";
-    private String PARAM_CATEGORIES_FILE = "paramCategories.xml";
+    private String PRODUCT_INFO_XML = "productInfo.xml";
+    private String PARAM_INFO_XML = "paramInfo.xml";
+    private String PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml";
+    private String PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml";
 
 
     private static final int INPUT_OUTPUT_FILE_TAB_INDEX = 0;
@@ -913,7 +914,7 @@ class L2genForm extends JTabbedPane {
     private void createProductsTab(String myTabname) {
 
 
-        InputStream stream = L2genForm.class.getResourceAsStream(PRODUCTS_FILE);
+        InputStream stream = L2genForm.class.getResourceAsStream(PRODUCT_INFO_XML);
 
         l2genReader.readProductsXml(stream);
 
@@ -1887,32 +1888,38 @@ class L2genForm extends JTabbedPane {
 //        InputStream productsStream = L2genForm.class.getResourceAsStream(SEADAS_PRODUCTS_FILE);
 //        l2genReader.readProductsXml(productsStream);
 
-        InputStream paramOptionsStream = L2genForm.class.getResourceAsStream(PARAM_OPTIONS_FILE);
-        l2genReader.readParamOptionsXml(paramOptionsStream);
+        InputStream paramOptionsStream = L2genForm.class.getResourceAsStream(PARAM_INFO_XML);
+        l2genReader.readParamInfoXml(paramOptionsStream);
 
-//        for (ParamOptionsInfo paramOptionsInfo : l2genData.getParamOptionsInfos()) {
+//        for (ParamInfo paramOptionsInfo : l2genData.getParamInfos()) {
 //            debug("name=" + paramOptionsInfo.getName() + " value=" + paramOptionsInfo.getValue());
 //            for (ParamValidValueInfo paramValidValueInfo : paramOptionsInfo.getValidValueInfos()) {
-//                debug("validValue=" + paramValidValueInfo.getValue());
+//                debug("     validValue=" + paramValidValueInfo.getValue());
 //            }
 //        }
 
 
-        InputStream paramCategoriesStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORIES_FILE);
-        l2genReader.readParamCategoriesXml(paramCategoriesStream);
+        InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
+        l2genReader.readParamCategoryXml(paramCategoryInfoStream);
+        l2genData.setParamCategoryInfos();
 
-
-
-        l2genData.setParamCategoriesInfos();
-
-        for (ParamCategoriesInfo paramCategoriesInfo : l2genData.getParamCategoriesInfos()) {
-            debug("name="+paramCategoriesInfo.getName());
-            for (ParamOptionsInfo paramOptionsInfo : paramCategoriesInfo.getParamOptionsInfos()) {
-                debug("    param="+paramOptionsInfo.getName());
+        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
+            debug("name=" + paramCategoryInfo.getName());
+            for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+                debug("    param=" + paramInfo.getName());
             }
         }
 
+        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
+        l2genReader.readProductCategoryXml(productCategoryInfoStream);
+        l2genData.setProductCategoryInfos();
 
+        for (ProductCategoryInfo productCategoryInfo : l2genData.getProductCategoryInfos()) {
+            debug("name=" + productCategoryInfo.getName());
+            for (ProductInfo productInfo : productCategoryInfo.getProductInfos()) {
+                debug("    product=" + productInfo.getName());
+            }
+        }
 
         ifileChangedEventHandler();
 

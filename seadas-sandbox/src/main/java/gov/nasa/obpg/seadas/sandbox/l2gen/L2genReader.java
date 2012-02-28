@@ -1,7 +1,5 @@
 package gov.nasa.obpg.seadas.sandbox.l2gen;
 
-import com.kenai.jffi.Type;
-import org.python.antlr.ast.Str;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -24,11 +22,11 @@ public class L2genReader {
     }
 
 
-    public void readParamCategoriesXml(InputStream stream) {
+    public void readProductCategoryXml(InputStream stream) {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
-        l2genData.clearParamCategoriesInfos();
+        l2genData.clearProductCategoryInfos();
 
         NodeList categoryNodelist = rootElement.getElementsByTagName("category");
 
@@ -41,18 +39,73 @@ public class L2genReader {
                 String visible = XmlReader.getTextValue(categoryElement, "makeVisible");
                 String defaultBucketString = XmlReader.getTextValue(categoryElement, "defaultBucket");
 
-                ParamCategoriesInfo paramCategoriesInfo = new ParamCategoriesInfo(name);
+                ProductCategoryInfo productCategoryInfo = new ProductCategoryInfo(name);
 
                 if (visible != null && visible.equals("1")) {
-                    paramCategoriesInfo.setVisible(true);
+                    productCategoryInfo.setVisible(true);
                 } else {
-                    paramCategoriesInfo.setVisible(false);
+                    productCategoryInfo.setVisible(false);
                 }
 
                 if (defaultBucketString != null && defaultBucketString.equals("1")) {
-                    paramCategoriesInfo.setDefaultBucket(true);
+                    productCategoryInfo.setDefaultBucket(true);
                 } else {
-                    paramCategoriesInfo.setDefaultBucket(false);
+                    productCategoryInfo.setDefaultBucket(false);
+                }
+
+
+                NodeList productNodelist = categoryElement.getElementsByTagName("product");
+
+                if (productNodelist != null && productNodelist.getLength() > 0) {
+                    for (int j = 0; j < productNodelist.getLength(); j++) {
+
+                        Element productElement = (Element) productNodelist.item(j);
+
+                        String product = productElement.getTextContent();
+
+                        productCategoryInfo.addProductName(product);
+                    }
+
+                    productCategoryInfo.sortProductNames();
+                }
+
+                l2genData.addProductCategoryInfo(productCategoryInfo);
+            }
+        }
+
+        l2genData.sortProductCategoryInfos();
+    }
+
+
+    public void readParamCategoryXml(InputStream stream) {
+        XmlReader reader = new XmlReader();
+        Element rootElement = reader.parseAndGetRootElement(stream);
+
+        l2genData.clearParamCategoryInfos();
+
+        NodeList categoryNodelist = rootElement.getElementsByTagName("category");
+
+        if (categoryNodelist != null && categoryNodelist.getLength() > 0) {
+            for (int i = 0; i < categoryNodelist.getLength(); i++) {
+
+                Element categoryElement = (Element) categoryNodelist.item(i);
+
+                String name = categoryElement.getAttribute("name");
+                String visible = XmlReader.getTextValue(categoryElement, "makeVisible");
+                String defaultBucketString = XmlReader.getTextValue(categoryElement, "defaultBucket");
+
+                ParamCategoryInfo paramCategoryInfo = new ParamCategoryInfo(name);
+
+                if (visible != null && visible.equals("1")) {
+                    paramCategoryInfo.setVisible(true);
+                } else {
+                    paramCategoryInfo.setVisible(false);
+                }
+
+                if (defaultBucketString != null && defaultBucketString.equals("1")) {
+                    paramCategoryInfo.setDefaultBucket(true);
+                } else {
+                    paramCategoryInfo.setDefaultBucket(false);
                 }
 
 
@@ -65,21 +118,21 @@ public class L2genReader {
 
                         String param = paramElement.getTextContent();
 
-                        paramCategoriesInfo.addParamName(param);
+                        paramCategoryInfo.addParamName(param);
                     }
 
-                    paramCategoriesInfo.sortParamNameInfos();
+                    paramCategoryInfo.sortParamNameInfos();
                 }
 
-                l2genData.addParamCategoriesInfo(paramCategoriesInfo);
+                l2genData.addParamCategoryInfo(paramCategoryInfo);
             }
         }
 
-        l2genData.sortParamCategoriesInfos();
+        l2genData.sortParamCategoryInfos();
     }
 
 
-    public void readParamOptionsXml(InputStream stream) {
+    public void readParamInfoXml(InputStream stream) {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
@@ -99,25 +152,25 @@ public class L2genReader {
                 String description = XmlReader.getTextValue(optionElement, "description");
                 String source = XmlReader.getTextValue(optionElement, "source");
 
-                ParamOptionsInfo.Type type = null;
+                ParamInfo.Type type = null;
 
                 if (tmpType != null) {
                     if (tmpType.toLowerCase().equals("bool")) {
-                        type = ParamOptionsInfo.Type.BOOLEAN;
+                        type = ParamInfo.Type.BOOLEAN;
                     } else if (tmpType.toLowerCase().equals("int")) {
-                        type = ParamOptionsInfo.Type.INT;
+                        type = ParamInfo.Type.INT;
                     } else if (tmpType.toLowerCase().equals("float")) {
-                        type = ParamOptionsInfo.Type.FLOAT;
+                        type = ParamInfo.Type.FLOAT;
                     } else if (tmpType.toLowerCase().equals("string")) {
-                        type = ParamOptionsInfo.Type.STRING;
+                        type = ParamInfo.Type.STRING;
                     }
                 }
 
-                ParamOptionsInfo paramOptionsInfo = new ParamOptionsInfo(name, value, type);
+                ParamInfo paramInfo = new ParamInfo(name, value, type);
 
-                paramOptionsInfo.setDescription(description);
-                paramOptionsInfo.setDefaultValue(defaultValue);
-                paramOptionsInfo.setSource(source);
+                paramInfo.setDescription(description);
+                paramInfo.setDefaultValue(defaultValue);
+                paramInfo.setSource(source);
 
                 NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
 
@@ -132,18 +185,18 @@ public class L2genReader {
                         ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(validValueValue);
 
                         paramValidValueInfo.setDescription(validValueDescription);
-                        paramValidValueInfo.setParent(paramOptionsInfo);
-                        paramOptionsInfo.addValidValueInfo(paramValidValueInfo);
+                        paramValidValueInfo.setParent(paramInfo);
+                        paramInfo.addValidValueInfo(paramValidValueInfo);
                     }
 
-                    paramOptionsInfo.sortValidValueInfos();
+                    paramInfo.sortValidValueInfos();
                 }
 
-                l2genData.addParamOptionsInfo(paramOptionsInfo);
+                l2genData.addParamOptionsInfo(paramInfo);
             }
         }
 
-        l2genData.sortParamOptionsInfos(ParamOptionsInfo.SORT_BY_NAME);
+        l2genData.sortParamInfos();
     }
 
 

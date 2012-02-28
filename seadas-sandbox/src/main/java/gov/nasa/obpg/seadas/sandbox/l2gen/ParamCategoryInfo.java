@@ -2,7 +2,6 @@ package gov.nasa.obpg.seadas.sandbox.l2gen;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * A ...
@@ -10,21 +9,21 @@ import java.util.Comparator;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class ParamCategoriesInfo implements Comparable {
+public class ParamCategoryInfo implements Comparable {
 
     private String name = null;
     private boolean visible = false;
     private boolean defaultBucket = false;
 
     private ArrayList<String> paramNames = new ArrayList<String>();
-    private ArrayList<ParamOptionsInfo> paramOptionsInfos = new ArrayList<ParamOptionsInfo>();
+    private ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
 
-    public ParamCategoriesInfo(String name, boolean visible) {
+    public ParamCategoryInfo(String name, boolean visible) {
         this.name = name;
         this.visible = visible;
     }
 
-    public ParamCategoriesInfo(String name) {
+    public ParamCategoryInfo(String name) {
         this.name = name;
     }
 
@@ -52,8 +51,8 @@ public class ParamCategoriesInfo implements Comparable {
         this.paramNames = paramNames;
     }
 
-    public ArrayList<ParamOptionsInfo> getParamOptionsInfos() {
-        return paramOptionsInfos;
+    public ArrayList<ParamInfo> getParamInfos() {
+        return paramInfos;
     }
 
 
@@ -65,12 +64,12 @@ public class ParamCategoriesInfo implements Comparable {
         paramNames.clear();
     }
 
-    public void addParamOptionsInfos(ParamOptionsInfo paramOptionsInfo) {
-        paramOptionsInfos.add(paramOptionsInfo);
+    public void addParamOptionsInfos(ParamInfo paramInfo) {
+        paramInfos.add(paramInfo);
     }
 
     public void clearParamOptionsInfos() {
-        paramOptionsInfos.clear();
+        paramInfos.clear();
     }
 
     public boolean isDefaultBucket() {
@@ -86,24 +85,12 @@ public class ParamCategoriesInfo implements Comparable {
     }
 
     public void sortParamOptionsInfos() {
-        // Collections.sort(paramOptionsInfos, new ParamOptionsInfo.NameComparator());
-        Collections.sort(paramOptionsInfos, ParamOptionsInfo.SORT_BY_NAME);
+        Collections.sort(paramInfos);
     }
 
-
-    public static final Comparator<ParamCategoriesInfo> SORT_BY_NAME
-            = new NameComparator();
-
-
-    public static class NameComparator implements Comparator<ParamCategoriesInfo> {
-
-        public int compare(ParamCategoriesInfo s1, ParamCategoriesInfo s2) {
-            return s1.getName().compareToIgnoreCase(s2.getName());
-        }
-    }
 
     @Override
     public int compareTo(Object o) {
-        return getName().compareToIgnoreCase(((ParamCategoriesInfo) o).getName());
+        return getName().compareToIgnoreCase(((ParamCategoryInfo) o).getName());
     }
 }

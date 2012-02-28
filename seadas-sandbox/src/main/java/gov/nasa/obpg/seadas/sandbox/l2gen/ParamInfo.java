@@ -10,7 +10,7 @@ import java.util.Comparator;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class ParamOptionsInfo implements Comparable {
+public class ParamInfo implements Comparable {
 
     private String name = null;
     private String value = null;
@@ -25,7 +25,7 @@ public class ParamOptionsInfo implements Comparable {
         BOOLEAN, STRING, INT, FLOAT
     }
 
-    public ParamOptionsInfo(String name, String value, Type type) {
+    public ParamInfo(String name, String value, Type type) {
         this.name = name;
         this.value = value;
         this.type = type;
@@ -92,48 +92,13 @@ public class ParamOptionsInfo implements Comparable {
     }
 
 
-
     public void sortValidValueInfos() {
       //  Collections.sort(validValueInfos, new ParamValidValueInfo.ValueComparator());
-        Collections.sort(validValueInfos, ParamValidValueInfo.SORT_BY_VALUE);
+        Collections.sort(validValueInfos);
     }
-
-
-//    public static final Comparator<ParamOptionsInfo> CASE_SENSITIVE_ORDER
-//            = new CaseSensitiveComparator();
-//
-//    public static final Comparator<ParamOptionsInfo> CASE_INSENSITIVE_ORDER
-//            = new CaseInsensitiveComparator();
-//
-//
-//    private static class CaseSensitiveComparator
-//            implements Comparator<ParamOptionsInfo> {
-//
-//        public int compare(ParamOptionsInfo s1, ParamOptionsInfo s2) {
-//            return s1.getName().compareTo(s2.getName());
-//        }
-//    }
-//
-//    private static class CaseInsensitiveComparator
-//            implements Comparator<ParamOptionsInfo> {
-//
-//        public int compare(ParamOptionsInfo s1, ParamOptionsInfo s2) {
-//            return s1.getName().compareToIgnoreCase(s2.getName());
-//        }
-//    }
-
-    public static final Comparator<ParamOptionsInfo> SORT_BY_NAME
-            = new NameComparator();
 
         @Override
     public int compareTo(Object o) {
-        return getName().compareToIgnoreCase(((ParamOptionsInfo)o).getName());
-    }
-
-    public static class NameComparator implements Comparator<ParamOptionsInfo> {
-
-        public int compare(ParamOptionsInfo s1, ParamOptionsInfo s2) {
-            return s1.getName().compareToIgnoreCase(s2.getName());
-        }
+        return getName().compareToIgnoreCase(((ParamInfo)o).getName());
     }
 }

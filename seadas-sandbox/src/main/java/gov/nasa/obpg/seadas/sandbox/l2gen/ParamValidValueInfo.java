@@ -12,7 +12,7 @@ public class ParamValidValueInfo implements Comparable  {
 
     private String value = null;
     private String description = null;
-    private ParamOptionsInfo parent = null;
+    private ParamInfo parent = null;
 
     public ParamValidValueInfo(String value) {
         this.value = value;
@@ -34,28 +34,28 @@ public class ParamValidValueInfo implements Comparable  {
         this.description = description;
     }
 
-    public ParamOptionsInfo getParent() {
+    public ParamInfo getParent() {
         return parent;
     }
 
-    public void setParent(ParamOptionsInfo parent) {
+    public void setParent(ParamInfo parent) {
         this.parent = parent;
     }
 
-
-    public static final Comparator<ParamValidValueInfo> SORT_BY_VALUE
-            = new ValueComparator();
-
-
-    @Override
-    public int compareTo(Object o) {
-        return getValue().compareToIgnoreCase(((ParamValidValueInfo)o).getValue());
+        @Override
+    public int compareTo(Object object) {
+        return getValue().compareToIgnoreCase(((ParamValidValueInfo) object).getValue());
     }
 
-    public static class ValueComparator implements Comparator<ParamValidValueInfo> {
 
-        public int compare(ParamValidValueInfo s1, ParamValidValueInfo s2) {
-            return s1.getValue().compareToIgnoreCase(s2.getValue());
-        }
-    }
+//    public static final Comparator<ParamValidValueInfo> SORT_BY_VALUE
+//            = new ValueComparator();
+//
+//
+//    public static class ValueComparator implements Comparator<ParamValidValueInfo> {
+//
+//        public int compare(ParamValidValueInfo s1, ParamValidValueInfo s2) {
+//            return s1.getValue().compareToIgnoreCase(s2.getValue());
+//        }
+//    }
 }

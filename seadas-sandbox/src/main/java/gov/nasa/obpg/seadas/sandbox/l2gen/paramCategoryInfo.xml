@@ -3,7 +3,20 @@
         <makeVisible>0</makeVisible>
         <param>ifile</param>
         <param>l2prod</param>
-        ...
+        <param>ofile</param>
+        <param>geofile</param>
+        <param>ilist</param>
+        <param>par</param>
+        <param>-dump_options</param>
+        <param>-dump_options_paramfile</param>
+        <param>-dump_options_xmlfile</param>
+        <param>-help</param>
+        <param>-version</param>
+        <param>vct_fill_pct</param>
+        <param>vct_min_nbin</param>
+        <param>vct_msk_water</param>
+        <param>vct_water</param>
+        <param>maxpointdist</param>
     </category>
 
     <category name="Subsetting Options">
@@ -42,6 +55,7 @@
         <param>nLwmin</param>
         <param>wsmax</param>
         <param>flh_offset</param>
+        <param>threshold</param>
     </category>
 
     <category name="IOP Options">
@@ -69,6 +83,8 @@
         <param>gsm_aphs</param>
         <param>qaa_adg_s</param>
         <param>qaa_wave</param>
+        <param>giop_rrs_unc</param>
+        <param>giop_ts_opt</param>
     </category>
 
     <category name="Processing Options">
@@ -122,6 +138,7 @@
 
     <category name="Ancillary Inputs">
         <makeVisible>1</makeVisible>
+        <param>btfile</param>
         <param>met1</param>
         <param>met2</param>
         <param>met3</param>
@@ -145,6 +162,7 @@
         <param>demfile</param>
         <param>icefile</param>
         <param>degc</param>
+        <param>sssfile</param>
         <param>sstcoeffile</param>
         <param>sstssesfile</param>
         <param>sstmirrfile</param>
@@ -176,6 +194,13 @@
         <param>coccolith</param>
         <param>ctl_pt_incr</param>
         <param>prodxmlfile</param>
+        <param>datamax</param>
+        <param>datamin</param>
+        <param>gain_unc</param>
+        <param>outmode</param>
+        <param>rgb</param>
+        <param>stype</param>
+        <param>width</param>
     </category>
 
     <category name="Dump Bucket">

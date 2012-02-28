@@ -194,10 +194,11 @@
         <product>myprod9</product>
     </category>
 
-    <category name="Uncategorized">
-        <makeVisible>0</makeVisible>
-    </category>
 
+    <category name="Dump Bucket">
+        <makeVisible>0</makeVisible>
+        <defaultBucket>1</defaultBucket>
+    </category>
 
 </categoryList>
 

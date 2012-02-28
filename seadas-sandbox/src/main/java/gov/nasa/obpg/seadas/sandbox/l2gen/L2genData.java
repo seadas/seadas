@@ -53,8 +53,9 @@ public class L2genData {
     private HashMap<String, String> defaultParamValues = new HashMap();
 
     private ArrayList<ProductInfo> productInfos = new ArrayList<ProductInfo>();
-    private ArrayList<ParamOptionsInfo> paramOptionsInfos = new ArrayList<ParamOptionsInfo>();
-    private ArrayList<ParamCategoriesInfo> paramCategoriesInfos = new ArrayList<ParamCategoriesInfo>();
+    private ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
+    private ArrayList<ParamCategoryInfo> paramCategoryInfos = new ArrayList<ParamCategoryInfo>();
+    private ArrayList<ProductCategoryInfo> productCategoryInfos = new ArrayList<ProductCategoryInfo>();
 
 
     private ArrayList<WavelengthInfo> waveLimiter = new ArrayList<WavelengthInfo>();
@@ -284,16 +285,16 @@ public class L2genData {
 
     }
 
-    public void addParamOptionsInfo(ParamOptionsInfo paramOptionsInfo) {
-        paramOptionsInfos.add(paramOptionsInfo);
+    public void addParamOptionsInfo(ParamInfo paramInfo) {
+        paramInfos.add(paramInfo);
     }
 
     public void clearParamOptionsInfo() {
-        paramOptionsInfos.clear();
+        paramInfos.clear();
     }
 
-    public ArrayList<ParamOptionsInfo> getParamOptionsInfos() {
-        return paramOptionsInfos;
+    public ArrayList<ParamInfo> getParamInfos() {
+        return paramInfos;
     }
 
     public void addProductInfo(ProductInfo productInfo) {
@@ -306,22 +307,22 @@ public class L2genData {
     }
 
     public void clearParamOptionsInfos() {
-        paramOptionsInfos.clear();
+        paramInfos.clear();
     }
 
 
-    public void sortParamCategoriesInfos(Comparator<ParamCategoriesInfo> comparator) {
-            Collections.sort(paramCategoriesInfos, comparator);
+    public void sortParamCategoryInfos() {
+        Collections.sort(paramCategoryInfos);
     }
 
 
-    public void sortParamCategoriesInfos() {
-            Collections.sort(paramCategoriesInfos);
+    public void sortProductCategoryInfos() {
+        Collections.sort(productCategoryInfos);
     }
 
 
-    public void sortParamOptionsInfos(Comparator<ParamOptionsInfo> comparator) {
-        Collections.sort(paramOptionsInfos, comparator);
+    public void sortParamInfos() {
+        Collections.sort(paramInfos);
     }
 
     public void sortProductInfos(Comparator<ProductInfo> comparator) {
@@ -1083,31 +1084,64 @@ public class L2genData {
 
 
     /**
-     * resets paramOptionsInfos within paramCategoriesInfos to link to appropriate entry in paramOptionsInfos
+     * resets productInfos within productCategoryInfos to link to appropriate entry in productInfos
      */
-    public void setParamCategoriesInfos() {
+    public void setProductCategoryInfos() {
 
-        for (ParamCategoriesInfo paramCategoriesInfo : paramCategoriesInfos) {
-            paramCategoriesInfo.clearParamOptionsInfos();
+        for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+            productCategoryInfo.clearProductInfos();
         }
 
-        for (ParamOptionsInfo paramOptionsInfo : paramOptionsInfos) {
+        for (ProductInfo productInfo : productInfos) {
             boolean found = false;
 
-            for (ParamCategoriesInfo paramCategoriesInfo : paramCategoriesInfos) {
-                for (String categorizedParamName : paramCategoriesInfo.getParamNames()) {
-                    if (categorizedParamName.equals(paramOptionsInfo.getName())) {
-                        paramCategoriesInfo.addParamOptionsInfos(paramOptionsInfo);
+            for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+                for (String categorizedProductName : productCategoryInfo.getProductNames()) {
+                    if (categorizedProductName.equals(productInfo.getName())) {
+                        productCategoryInfo.addProductInfo(productInfo);
                         found = true;
                     }
                 }
             }
 
             if (!found) {
-                for (ParamCategoriesInfo paramCategoriesInfo : paramCategoriesInfos) {
-                    if (paramCategoriesInfo.isDefaultBucket()) {
-                        paramCategoriesInfo.addParamOptionsInfos(paramOptionsInfo);
-                        l2genPrint.adminlog("Dropping uncategorized param '" + paramOptionsInfo.getName() + "' into the defaultBucket");
+                for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+                    if (productCategoryInfo.isDefaultBucket()) {
+                        productCategoryInfo.addProductInfo(productInfo);
+                        l2genPrint.adminlog("Dropping uncategorized product '" + productInfo.getName() + "' into the defaultBucket");
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * resets paramInfos within paramCategoryInfos to link to appropriate entry in paramInfos
+     */
+    public void setParamCategoryInfos() {
+
+        for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+            paramCategoryInfo.clearParamOptionsInfos();
+        }
+
+        for (ParamInfo paramInfo : paramInfos) {
+            boolean found = false;
+
+            for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+                for (String categorizedParamName : paramCategoryInfo.getParamNames()) {
+                    if (categorizedParamName.equals(paramInfo.getName())) {
+                        paramCategoryInfo.addParamOptionsInfos(paramInfo);
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) {
+                for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+                    if (paramCategoryInfo.isDefaultBucket()) {
+                        paramCategoryInfo.addParamOptionsInfos(paramInfo);
+                        l2genPrint.adminlog("Dropping uncategorized param '" + paramInfo.getName() + "' into the defaultBucket");
                     }
                 }
             }
@@ -1129,22 +1163,33 @@ public class L2genData {
         return false;
     }
 
-    public ArrayList<ParamCategoriesInfo> getParamCategoriesInfos() {
-        return paramCategoriesInfos;
+    public ArrayList<ParamCategoryInfo> getParamCategoryInfos() {
+        return paramCategoryInfos;
     }
 
-    public void setParamCategoriesInfos(ArrayList<ParamCategoriesInfo> paramCategoriesInfos) {
-        this.paramCategoriesInfos = paramCategoriesInfos;
+    public void setParamCategoryInfos(ArrayList<ParamCategoryInfo> paramCategoryInfos) {
+        this.paramCategoryInfos = paramCategoryInfos;
     }
 
-    public void addParamCategoriesInfo(ParamCategoriesInfo paramCategoriesInfo) {
-        paramCategoriesInfos.add(paramCategoriesInfo);
+    public void addParamCategoryInfo(ParamCategoryInfo paramCategoryInfo) {
+        paramCategoryInfos.add(paramCategoryInfo);
     }
 
-    public void clearParamCategoriesInfos() {
-        paramCategoriesInfos.clear();
+    public void clearParamCategoryInfos() {
+        paramCategoryInfos.clear();
     }
 
+   public ArrayList<ProductCategoryInfo> getProductCategoryInfos() {
+        return productCategoryInfos;
+    }
+
+    public void addProductCategoryInfo(ProductCategoryInfo productCategoryInfo) {
+        productCategoryInfos.add(productCategoryInfo);
+    }
+
+    public void clearProductCategoryInfos() {
+        productCategoryInfos.clear();
+    }
 
     //  The below lines are not currently in use
 
