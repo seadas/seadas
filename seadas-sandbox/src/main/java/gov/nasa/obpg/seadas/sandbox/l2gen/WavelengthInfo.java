@@ -104,21 +104,21 @@ public class WavelengthInfo extends BaseInfo {
         this.defaultSelected = defaultSelected;
     }
 
-    @Override
-    public boolean isWavelengthDependent() {
-        if (wavelength != NULL_WAVELENGTH) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isWavelengthIndependent() {
-        if (wavelength == NULL_WAVELENGTH) {
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean isWavelengthDependent() {
+//        if (wavelength != NULL_WAVELENGTH) {
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean isWavelengthIndependent() {
+//        if (wavelength == NULL_WAVELENGTH) {
+//            return true;
+//        }
+//        return false;
+//    }
 
 
 }

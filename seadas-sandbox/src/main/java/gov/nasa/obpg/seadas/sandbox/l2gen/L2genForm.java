@@ -34,6 +34,7 @@ class L2genForm extends JTabbedPane {
     private final TargetProductSelector targetProductSelector;
 
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
+    private ArrayList<JCheckBox> paramJCheckboxes = null;
     private JPanel waveLimiterJPanel;
 
     //private JTable productsCartJTable;
@@ -78,22 +79,15 @@ class L2genForm extends JTabbedPane {
 
     private static final int INPUT_OUTPUT_FILE_TAB_INDEX = 0;
     private static final int PARFILE_TAB_INDEX = 1;
-    private static final int SUB_SAMPLE_TAB_INDEX = 2;
-    private static final int PRODUCT_SELECTOR_TAB_INDEX = 3;
-    private static final int PROCESSING_OPTIONS_TAB_INDEX = 4;
-    private static final int THRESHOLD_PARAMETERS_TAB_INDEX = 5;
-    private static final int GIOP_OPTIONS_TAB_INDEX = 6;
-    private static final int ANCILLARY_FILES_TAB_INDEX = 7;
+    private static final int SUB_SETTING_TAB_INDEX = 2;
+    private static final int PRODUCTS_TAB_INDEX = 3;
 
 
     private static final String INPUT_OUTPUT_FILE_TAB_NAME = "Input/Output";
     private static final String PARFILE_TAB_NAME = "Parameters";
-    private static final String SUB_SAMPLING_TAB_NAME = "Sub Sampling";
+    private static final String SUB_SETTING_TAB_NAME = "Subsetting Options";
     private static final String PRODUCTS_TAB_NAME = "Products";
-    private static final String PROCESSING_OPTIONS_TAB_NAME = "Processing Options";
-    private static final String THRESHOLD_PARAMETERS_TAB_NAME = "Thresholds";
-    private static final String GIOP_OPTIONS_TAB_NAME = "GIOP Options";
-    private static final String ANCILLARY_FILES_TAB_NAME = "Ancillary Files";
+
 
     private String WAVE_LIMITER_SELECT_ALL_INFRARED = "Select All Infrared";
     private String WAVE_LIMITER_DESELECT_ALL_INFRARED = "Deselect All Infrared";
@@ -123,8 +117,11 @@ class L2genForm extends JTabbedPane {
         this.appContext = appContext;
         this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
 
-        addL2genDataListeners();
+        paramJCheckboxes = new ArrayList<JCheckBox>();
+        
+        initXmlBasedObjects();
         createUserInterface();
+        addL2genDataListeners();
     }
 
 
@@ -134,29 +131,74 @@ class L2genForm extends JTabbedPane {
 
     private void createUserInterface() {
 
-
         createIOParametersTab(INPUT_OUTPUT_FILE_TAB_NAME);
+        this.setEnabledAt(INPUT_OUTPUT_FILE_TAB_INDEX, true);
+
         createParfileTab(PARFILE_TAB_NAME);
-        createSubsampleTab(SUB_SAMPLING_TAB_NAME);
+        this.setEnabledAt(PARFILE_TAB_INDEX, true);
+
+        createSubsampleTab(SUB_SETTING_TAB_NAME);
+        this.setEnabledAt(SUB_SETTING_TAB_INDEX, false);
+
         createProductsTab(PRODUCTS_TAB_NAME);
-        createProcessionOptionsTab(PROCESSING_OPTIONS_TAB_NAME);
-        createThresholdParametersTab(THRESHOLD_PARAMETERS_TAB_NAME);
-        createGIOPOptionsTab(GIOP_OPTIONS_TAB_NAME);
-        createAncillaryFilesTab(ANCILLARY_FILES_TAB_NAME);
+        this.setEnabledAt(PRODUCTS_TAB_INDEX, false);
+
+
+        int currTabIndex = 4;
+
+        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
+            if (paramCategoryInfo.isVisible()) {
+                createParamsTab(paramCategoryInfo);
+                paramCategoryInfo.setTabIndex(currTabIndex);
+                this.setEnabledAt(currTabIndex, false);
+                currTabIndex++;
+            }
+        }
 
 //        createProductsCartTab("Selected Products Cart");
 
-        this.setEnabledAt(INPUT_OUTPUT_FILE_TAB_INDEX, true);
-        this.setEnabledAt(PARFILE_TAB_INDEX, true);
-        this.setEnabledAt(PRODUCT_SELECTOR_TAB_INDEX, false);
-        this.setEnabledAt(SUB_SAMPLE_TAB_INDEX, false);
-        this.setEnabledAt(PROCESSING_OPTIONS_TAB_INDEX, false);
-        this.setEnabledAt(THRESHOLD_PARAMETERS_TAB_INDEX, false);
-        this.setEnabledAt(GIOP_OPTIONS_TAB_INDEX, false);
-        this.setEnabledAt(ANCILLARY_FILES_TAB_INDEX, false);
     }
 
 
+    private void initXmlBasedObjects() {
+
+        InputStream stream = L2genForm.class.getResourceAsStream(PRODUCT_INFO_XML);
+        l2genReader.readProductsXml(stream);
+
+
+        InputStream paramOptionsStream = L2genForm.class.getResourceAsStream(PARAM_INFO_XML);
+        l2genReader.readParamInfoXml(paramOptionsStream);
+
+//        for (ParamInfo paramOptionsInfo : l2genData.getParamInfos()) {
+//            debug("name=" + paramOptionsInfo.getName() + " value=" + paramOptionsInfo.getValue());
+//            for (ParamValidValueInfo paramValidValueInfo : paramOptionsInfo.getValidValueInfos()) {
+//                debug("     validValue=" + paramValidValueInfo.getValue());
+//            }
+//        }
+
+
+        InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
+        l2genReader.readParamCategoryXml(paramCategoryInfoStream);
+        l2genData.setParamCategoryInfos();
+
+//        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
+//            debug("name=" + paramCategoryInfo.getName());
+//            for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+//                debug("    param=" + paramInfo.getName());
+//            }
+//        }
+
+        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
+        l2genReader.readProductCategoryXml(productCategoryInfoStream);
+        l2genData.setProductCategoryInfos();
+
+//        for (ProductCategoryInfo productCategoryInfo : l2genData.getProductCategoryInfos()) {
+//            debug("name=" + productCategoryInfo.getName());
+//            for (ProductInfo productInfo : productCategoryInfo.getProductInfos()) {
+//                debug("    product=" + productInfo.getName());
+//            }
+//        }
+    }
     //----------------------------------------------------------------------------------------
     // Methods to create each of the main  and sub tabs
     //----------------------------------------------------------------------------------------
@@ -275,12 +317,18 @@ class L2genForm extends JTabbedPane {
         addTab(myTabname, finalMainPanel);
     }
 
-    private void createProcessionOptionsTab(String tabTitle) {
+    private void createParamsTab(ParamCategoryInfo paramCategoryInfo) {
 
 
         final JPanel myInnerPanel = new JPanel();
-        myInnerPanel.setBorder(BorderFactory.createTitledBorder("TBD"));
+        myInnerPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
 
+        for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+            if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
+                JCheckBox checkBox = createParamCheckBox(paramInfo);
+                myInnerPanel.add(checkBox);
+            }
+        }
 
         // Declare mainPanel and set it's attributes
         final JPanel mainPanel = new JPanel();
@@ -304,106 +352,26 @@ class L2genForm extends JTabbedPane {
         final JPanel paddedMainPanel;
         paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
 
-        addTab(tabTitle, paddedMainPanel);
+        addTab(paramCategoryInfo.getName(), paddedMainPanel);
     }
 
 
-    private void createThresholdParametersTab(String tabTitle) {
+    private JCheckBox createParamCheckBox(ParamInfo paramInfo) {
+        final JCheckBox paramCheckbox = new JCheckBox(paramInfo.getName());
+        final String paramName = paramInfo.getName();
 
+        paramCheckbox.setName(paramInfo.getName());
+        paramJCheckboxes.add(paramCheckbox);
 
-        final JPanel myInnerPanel = new JPanel();
-        myInnerPanel.setBorder(BorderFactory.createTitledBorder("TBD"));
+        // add listener for current checkbox
+        paramCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                l2genData.setParamValue(paramName, paramCheckbox.isSelected());
+            }
+        });
 
-
-        // Declare mainPanel and set it's attributes
-        final JPanel mainPanel = new JPanel();
-        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
-        mainPanel.setLayout(new GridBagLayout());
-
-
-        // Add Swing controls to mainPanel grid cells
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.fill = GridBagConstraints.NONE;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.weightx = 1;
-            c.weighty = 1;
-            mainPanel.add(myInnerPanel, c);
-        }
-
-
-        final JPanel paddedMainPanel;
-        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
-
-        addTab(tabTitle, paddedMainPanel);
-    }
-
-
-    private void createGIOPOptionsTab(String tabTitle) {
-
-
-        final JPanel myInnerPanel = new JPanel();
-        myInnerPanel.setBorder(BorderFactory.createTitledBorder("TBD"));
-
-
-        // Declare mainPanel and set it's attributes
-        final JPanel mainPanel = new JPanel();
-        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
-        mainPanel.setLayout(new GridBagLayout());
-
-
-        // Add Swing controls to mainPanel grid cells
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.fill = GridBagConstraints.NONE;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.weightx = 1;
-            c.weighty = 1;
-            mainPanel.add(myInnerPanel, c);
-        }
-
-
-        final JPanel paddedMainPanel;
-        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
-
-        addTab(tabTitle, paddedMainPanel);
-    }
-
-
-    private void createAncillaryFilesTab(String tabTitle) {
-
-
-        final JPanel myInnerPanel = new JPanel();
-        myInnerPanel.setBorder(BorderFactory.createTitledBorder("TBD"));
-
-
-        // Declare mainPanel and set it's attributes
-        final JPanel mainPanel = new JPanel();
-        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
-        mainPanel.setLayout(new GridBagLayout());
-
-
-        // Add Swing controls to mainPanel grid cells
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.fill = GridBagConstraints.NONE;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.weightx = 1;
-            c.weighty = 1;
-            mainPanel.add(myInnerPanel, c);
-        }
-
-
-        final JPanel paddedMainPanel;
-        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
-
-        addTab(tabTitle, paddedMainPanel);
+        return paramCheckbox;
     }
 
 
@@ -912,11 +880,6 @@ class L2genForm extends JTabbedPane {
 
 
     private void createProductsTab(String myTabname) {
-
-
-        InputStream stream = L2genForm.class.getResourceAsStream(PRODUCT_INFO_XML);
-
-        l2genReader.readProductsXml(stream);
 
 
         JPanel wavelengthsLimitorJPanel = createWaveLimiterJPanel();
@@ -1606,6 +1569,29 @@ class L2genForm extends JTabbedPane {
 
     private void addL2genDataListeners() {
 
+        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
+            if (paramCategoryInfo.isVisible()) {
+                for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+                    final String eventName = paramInfo.getName();
+
+                    debug("Making listener for " + eventName);
+                    l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
+                        @Override
+                        public void propertyChange(PropertyChangeEvent evt) {
+                            debug("receiving eventName " + eventName);
+                            parfileJTextArea.setText(l2genData.getParfile());
+                            for (JCheckBox jCheckBox : paramJCheckboxes) {
+                                if (jCheckBox.getName().equals(eventName)) {
+                                    jCheckBox.setSelected(l2genData.getBooleanParamValue(eventName));
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+
         l2genData.addPropertyChangeListener(l2genData.MISSION_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -1885,50 +1871,18 @@ class L2genForm extends JTabbedPane {
 
     private void missionStringChangeEvent(String newMissionString) {
 
-//        InputStream productsStream = L2genForm.class.getResourceAsStream(SEADAS_PRODUCTS_FILE);
-//        l2genReader.readProductsXml(productsStream);
-
-        InputStream paramOptionsStream = L2genForm.class.getResourceAsStream(PARAM_INFO_XML);
-        l2genReader.readParamInfoXml(paramOptionsStream);
-
-//        for (ParamInfo paramOptionsInfo : l2genData.getParamInfos()) {
-//            debug("name=" + paramOptionsInfo.getName() + " value=" + paramOptionsInfo.getValue());
-//            for (ParamValidValueInfo paramValidValueInfo : paramOptionsInfo.getValidValueInfos()) {
-//                debug("     validValue=" + paramValidValueInfo.getValue());
-//            }
-//        }
-
-
-        InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
-        l2genReader.readParamCategoryXml(paramCategoryInfoStream);
-        l2genData.setParamCategoryInfos();
-
-        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
-            debug("name=" + paramCategoryInfo.getName());
-            for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
-                debug("    param=" + paramInfo.getName());
-            }
-        }
-
-        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
-        l2genReader.readProductCategoryXml(productCategoryInfoStream);
-        l2genData.setProductCategoryInfos();
-
-        for (ProductCategoryInfo productCategoryInfo : l2genData.getProductCategoryInfos()) {
-            debug("name=" + productCategoryInfo.getName());
-            for (ProductInfo productInfo : productCategoryInfo.getProductInfos()) {
-                debug("    product=" + productInfo.getName());
-            }
-        }
 
         ifileChangedEventHandler();
 
-        this.setEnabledAt(PRODUCT_SELECTOR_TAB_INDEX, true);
-        this.setEnabledAt(SUB_SAMPLE_TAB_INDEX, true);
-        this.setEnabledAt(PROCESSING_OPTIONS_TAB_INDEX, true);
-        this.setEnabledAt(THRESHOLD_PARAMETERS_TAB_INDEX, true);
-        this.setEnabledAt(GIOP_OPTIONS_TAB_INDEX, true);
-        this.setEnabledAt(ANCILLARY_FILES_TAB_INDEX, true);
+        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
+            if (paramCategoryInfo.getTabIndex() != ParamCategoryInfo.NULL_TAB_INDEX) {
+                this.setEnabledAt(paramCategoryInfo.getTabIndex(), true);
+            }
+        }
+
+        this.setEnabledAt(PRODUCTS_TAB_INDEX, true);
+        this.setEnabledAt(SUB_SETTING_TAB_INDEX, true);
+
         //       createProductSelectorWavelengthsPanel();
 
         updateWavelengthLimiterPanel();

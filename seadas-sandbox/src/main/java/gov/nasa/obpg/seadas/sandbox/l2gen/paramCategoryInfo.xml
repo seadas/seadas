@@ -20,7 +20,7 @@
     </category>
 
     <category name="Subsetting Options">
-        <makeVisible>1</makeVisible>
+        <makeVisible>0</makeVisible>
         <param>spixl</param>
         <param>epixl</param>
         <param>dpixl</param>

@@ -11,9 +11,13 @@ import java.util.Collections;
  */
 public class ParamCategoryInfo implements Comparable {
 
+    public static int NULL_TAB_INDEX = -1;
+
     private String name = null;
     private boolean visible = false;
     private boolean defaultBucket = false;
+    private int tabIndex = ParamCategoryInfo.NULL_TAB_INDEX;
+
 
     private ArrayList<String> paramNames = new ArrayList<String>();
     private ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
@@ -92,5 +96,13 @@ public class ParamCategoryInfo implements Comparable {
     @Override
     public int compareTo(Object o) {
         return getName().compareToIgnoreCase(((ParamCategoryInfo) o).getName());
+    }
+
+    public int getTabIndex() {
+        return tabIndex;
+    }
+
+    public void setTabIndex(int tabIndex) {
+        this.tabIndex = tabIndex;
     }
 }

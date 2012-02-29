@@ -146,11 +146,7 @@ public class L2genReader {
                 Element optionElement = (Element) optionNodelist.item(i);
 
                 String name = XmlReader.getTextValue(optionElement, "name");
-                String value = XmlReader.getTextValue(optionElement, "value");
                 String tmpType = XmlReader.getTextValue(optionElement, "type");
-                String defaultValue = XmlReader.getTextValue(optionElement, "defaultValue");
-                String description = XmlReader.getTextValue(optionElement, "description");
-                String source = XmlReader.getTextValue(optionElement, "source");
 
                 ParamInfo.Type type = null;
 
@@ -165,6 +161,22 @@ public class L2genReader {
                         type = ParamInfo.Type.STRING;
                     }
                 }
+
+                String value = XmlReader.getTextValue(optionElement, "value");
+                if (type == ParamInfo.Type.BOOLEAN && value != null) {
+                    if (value.toLowerCase().equals("false")) {
+                        value = "0";
+                    } else if (value.toLowerCase().equals("true")) {
+                        value = "1";
+                    }
+                }
+                String defaultValue = value;
+                // String defaultValue = XmlReader.getTextValue(optionElement, "defaultValue");
+
+
+                String description = XmlReader.getTextValue(optionElement, "description");
+                String source = XmlReader.getTextValue(optionElement, "source");
+
 
                 ParamInfo paramInfo = new ParamInfo(name, value, type);
 

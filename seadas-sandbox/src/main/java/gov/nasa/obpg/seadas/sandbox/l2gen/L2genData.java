@@ -471,6 +471,7 @@ public class L2genData {
 
         // make a copy of paramValues so the keys can be deleted as they as used
         for (String currKey : paramValues.keySet()) {
+            debug("TEST "+currKey+"="+paramValues.get(currKey));
             paramValuesCopy.put(currKey, paramValues.get(currKey));
         }
 
@@ -773,6 +774,15 @@ public class L2genData {
         }
     }
 
+    public boolean getBooleanParamValue(String key) {
+        String value = getParamValue(key);
+
+        if (value != null && value.equals("1")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void deleteParamValue(String inKey) {
 
@@ -790,9 +800,18 @@ public class L2genData {
         }
     }
 
+
+    public void setParamValue(String param, boolean selected) {
+        if (selected) {
+            setParamValue(param, "1");
+        } else {
+            setParamValue(param, "0");
+        }
+    }
+
     public void setParamValue(String inKey, String inValue) {
 
-        debug("setParamValue inKey=" + inKey + " inValue=" + inValue);
+   //     debug("setParamValue inKey=" + inKey + " inValue=" + inValue);
         if (inKey != null && inKey.length() > 0) {
             inKey = inKey.trim();
 
@@ -801,16 +820,18 @@ public class L2genData {
             } else {
                 if (inValue != null && inValue.length() > 0) {
                     inValue = inValue.trim();
-                    debug("new Param" + inKey + "=" + inValue);
+               //     debug("new Param" + inKey + "=" + inValue);
 
                     if (!inValue.equals(paramValues.get(inKey))) {
                         if (inKey.equals(IFILE)) {
                             setIfileParamValue(inValue);
                         } else {
+                            debug("adding "+inKey+"="+inValue+" to paramValues");
                             paramValues.put(inKey, inValue);
                             specifyRegionType(inKey);
                         }
 
+                        debug("Firing Event with eventName="+inKey);
                         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, inKey, null, null));
                     }
                 } else {

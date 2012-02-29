@@ -150,27 +150,27 @@ public class BaseInfo implements Comparable<BaseInfo> {
         Collections.sort(children);
     }
 
-
-    public boolean isWavelengthDependent() {
-
-        boolean result = false;
-
-        for(BaseInfo info : getChildren()) {
-            if(info.isWavelengthDependent()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isWavelengthIndependent() {
-        for(BaseInfo info : getChildren()) {
-            if(info.isWavelengthIndependent()) {
-                return true;
-            }
-        }
-        return false;
-    }
+//
+//    public boolean isWavelengthDependent() {
+//
+//        boolean result = false;
+//
+//        for(BaseInfo info : getChildren()) {
+//            if(info.isWavelengthDependent()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    public boolean isWavelengthIndependent() {
+//        for(BaseInfo info : getChildren()) {
+//            if(info.isWavelengthIndependent()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     public String getDescription() {
         return description;
     }
