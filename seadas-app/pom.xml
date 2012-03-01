@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>gov.nasa.obpg.seadas</groupId>
+        <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas</artifactId>
         <version>7.0-SNAPSHOT</version>
     </parent>
 
     <name>SeaDAS Application</name>
-    <groupId>gov.nasa.obpg.seadas</groupId>
+    <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas-app</artifactId>
     <version>${seadas.version}</version>
 

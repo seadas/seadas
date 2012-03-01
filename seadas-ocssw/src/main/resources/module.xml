@@ -24,8 +24,8 @@
     <extension point="beam-ui:actions">
         <action>
             <parent>tools</parent>
-            <id>gov.nasa.obpg.seadas.ocssw.CallL2genAction</id>
-            <class>gov.nasa.obpg.seadas.ocssw.CallL2genAction</class>
+            <id>gov.nasa.gsfc.seadas.ocssw.CallL2genAction</id>
+            <class>gov.nasa.gsfc.seadas.ocssw.CallL2genAction</class>
             <text>SeaDAS OCSSW l2gen...</text>
         </action>
     </extension>

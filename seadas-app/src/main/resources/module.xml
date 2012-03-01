@@ -67,7 +67,7 @@
         <!--<action>-->
             <!--<id>showObpgHomePage</id>-->
             <!--<parent>help</parent>-->
-            <!--<class>gov.nasa.obpg.seadas.actions.ShowObpgHomePageAction</class>-->
+            <!--<class>gov.nasa..seadas.actions.ShowObpgHomePageAction</class>-->
             <!--<text>SeaDAS Home Page</text>-->
             <!--<description>Opens the SeaDAS home page.</description>-->
             <!--<placeAfter>helpTopics</placeAfter>-->

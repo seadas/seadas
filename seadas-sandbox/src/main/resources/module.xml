@@ -25,14 +25,14 @@
     <extension point="ceres-core:adapters">
         <adapter>
             <extensibleType>org.esa.beam.framework.datamodel.VectorDataNode</extensibleType>
-            <extensionFactory>gov.nasa.obpg.seadas.sandbox.layer.VectorDataNodeToTextLayerTypeAdapter</extensionFactory>
+            <extensionFactory>gov.nasa.gsfc.seadas.sandbox.layer.VectorDataNodeToTextLayerTypeAdapter</extensionFactory>
         </adapter>
     </extension>
 
     <extension point="beam-ui:layerEditors">
         <layerEditor>
-            <layerType>gov.nasa.obpg.seadas.sandbox.layer.TextLayer</layerType>
-            <editor>gov.nasa.obpg.seadas.sandbox.layer.TextLayerEditor</editor>
+            <layerType>gov.nasa.gsfc.seadas.sandbox.layer.TextLayer</layerType>
+            <editor>gov.nasa.gsfc.seadas.sandbox.layer.TextLayerEditor</editor>
         </layerEditor>
     </extension>
 
@@ -42,7 +42,7 @@
 
          <action>
             <id>l1genAction</id>
-            <class>gov.nasa.obpg.seadas.sandbox.l1gen.L1genAction</class>
+            <class>gov.nasa.gsfc.seadas.sandbox.l1gen.L1genAction</class>
             <parent>tools</parent>
             <placeAfter>flipping</placeAfter>
             <!--<placeBefore>orthorectificationAction</placeBefore>-->
@@ -54,7 +54,7 @@
 
         <action>
             <id>l2genAction</id>
-            <class>gov.nasa.obpg.seadas.sandbox.l2gen.L2genAction</class>
+            <class>gov.nasa.gsfc.seadas.sandbox.l2gen.L2genAction</class>
             <parent>tools</parent>
             <placeAfter>l1genAction</placeAfter>
             <!--<placeBefore>orthorectificationAction</placeBefore>-->
@@ -64,7 +64,7 @@
         </action>
         <action>
             <id>OBPGProcessorAction</id>
-            <class>gov.nasa.obpg.seadas.sandbox.processor.SeadasProcessorAction</class>
+            <class>gov.nasa.gsfc.seadas.sandbox.processor.SeadasProcessorAction</class>
             <parent>tools</parent>
             <placeAfter>l2genAction</placeAfter>
             <placeBefore>orthorectificationAction</placeBefore>
@@ -78,8 +78,8 @@
     <extension point="beam-ui:toolViews">
 
         <toolView>
-            <id>gov.nasa.obpg.seadas.sandbox.toolwindow.AudioPlayerToolView</id>
-            <class>gov.nasa.obpg.seadas.sandbox.toolwindow.AudioPlayerToolView</class>
+            <id>gov.nasa.gsfc.seadas.sandbox.toolwindow.AudioPlayerToolView</id>
+            <class>gov.nasa.gsfc.seadas.sandbox.toolwindow.AudioPlayerToolView</class>
             <title>Audio Player</title>
             <tabTitle>Audio Player</tabTitle>
             <!--<mnemonic>P</mnemonic>-->
@@ -94,8 +94,8 @@
         </toolView>
 
         <toolView>
-            <id>gov.nasa.obpg.seadas.sandbox.toolwindow.PixelTrackerToolView</id>
-            <class>gov.nasa.obpg.seadas.sandbox.toolwindow.PixelTrackerToolView</class>
+            <id>gov.nasa.gsfc.seadas.sandbox.toolwindow.PixelTrackerToolView</id>
+            <class>gov.nasa.gsfc.seadas.sandbox.toolwindow.PixelTrackerToolView</class>
             <title>Pixel Tracker</title>
             <tabTitle>Pixel Tracker</tabTitle>
             <!--<mnemonic>P</mnemonic>-->
@@ -110,8 +110,8 @@
         </toolView>
 
         <toolView>
-            <id>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</id>
-            <class>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</class>
+            <id>gov.nasa.gsfc.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</id>
+            <class>gov.nasa.gsfc.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</class>
             <title>Tabbed Pane with Panels</title>
             <tabTitle>Tabbed Pane with Panels</tabTitle>
             <!--<mnemonic>P</mnemonic>-->
@@ -127,8 +127,8 @@
 
 
           <toolView>
-              <id>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</id>
-              <class>gov.nasa.obpg.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</class>
+              <id>gov.nasa.gsfc.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</id>
+              <class>gov.nasa.gsfc.seadas.sandbox.toolwindow.TabbedPaneWithPanelsToolView</class>
               <title>Tabbed Pane with Panels</title>
               <tabTitle>Tabbed Pane with Panels</tabTitle>
               <!--<mnemonic>P</mnemonic>-->

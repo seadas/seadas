@@ -107,9 +107,9 @@
 
             <excludes>
                 <!-- The following are excluded, because they are not required by the final build. -->
-                <exclude>gov.nasa.obpg.seadas:seadas-installer</exclude>
-                <exclude>gov.nasa.obpg.seadas:seadas-sandbox</exclude>
-                <exclude>gov.nasa.obpg.seadas:seadas-bootstrap</exclude>
+                <exclude>gov.nasa.gsfc.seadas:seadas-installer</exclude>
+                <exclude>gov.nasa.gsfc.seadas:seadas-sandbox</exclude>
+                <exclude>gov.nasa.gsfc.seadas:seadas-bootstrap</exclude>
             </excludes>
 
             <binaries>
@@ -147,7 +147,7 @@
                         </outputFileNameMapping>
                         <excludes>
                             <!-- Exclude all module JARs, because we already put them into "modules"-->
-                            <exclude>gov.nasa.obpg.seadas:seadas-*</exclude>
+                            <exclude>gov.nasa.gsfc.seadas:seadas-*</exclude>
                             <exclude>org.esa.beam:beam-*</exclude>
                             <exclude>com.bc.ceres:ceres-*</exclude>
                             <exclude>ncsa.hdf:*</exclude>
