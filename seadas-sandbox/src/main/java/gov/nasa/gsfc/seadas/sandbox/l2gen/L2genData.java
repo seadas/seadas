@@ -340,178 +340,59 @@ public class L2genData {
     }
 
 
-    private void specifyRegionType(String paramKey) {
+    private void purgeConflictingParams(String param) {
 
-        //---------------------------------------------------------------------------------------
-        // Determine the regionType for paramKey
-        //---------------------------------------------------------------------------------------
-        RegionType regionType = null;
+        final String[] coordParams = {NORTH, SOUTH, WEST, EAST};
+        final String[] pixelParams = {SPIXL, EPIXL, DPIXL, SLINE, ELINE, DLINE};
 
-        // Look for paramKey in coordinateParamKeys
-        for (String currKey : coordParams) {
-            if (currKey.equals(paramKey)) {
-                regionType = RegionType.Coordinates;
-            }
-        }
-
-        // Look for paramKey in pixelLineParamKeys
-        if (regionType == null) {
-            for (String currKey : pixelParams) {
-                if (currKey.equals(paramKey)) {
-                    regionType = RegionType.PixelLines;
-                }
-            }
-        }
-
-        //---------------------------------------------------------------------------------------
-        // Perform actions based on the regionType:
-        // - if Coordinates are being used purge PixelLine fields
-        // - if PixelLines are being used purge Coordinate fields
-        //---------------------------------------------------------------------------------------
-        if (regionType == RegionType.Coordinates) {
-            // Since Coordinates are being used purge PixelLine fields
-            for (String currKey : pixelParams) {
-                if (paramValues.containsKey(currKey)) {
-                    paramValues.remove(currKey);
-                    propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, currKey, null, ""));
-                }
-            }
-
-        } else if (regionType == RegionType.PixelLines) {
-            // Since PixelLines are being used purge Coordinate fields
-            for (String currKey : coordParams) {
-                if (paramValues.containsKey(currKey)) {
-                    paramValues.remove(currKey);
-                    propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, currKey, null, ""));
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns a single formatted key-value pair of the form 'key=value' used in the parfile
-     *
-     * @param name
-     * @return
-     */
-    private String getParamValueEntry(String name) {
-
-        StringBuilder stringBuilder = new StringBuilder("");
-
-        stringBuilder.append(name);
-        stringBuilder.append("=");
-        stringBuilder.append(getParamValue(name));
-
-        return stringBuilder.toString();
-    }
-
-
-    /**
-     * Returns a categorized section of the parfile
-     * <p/>
-     * Creates a paramValue entry for every param in the inParams Array.
-     * Removes that param from the inParamValues HashMap
-     * Adds the sectionTitle if there is at least one entry
-     *
-     * @param sectionTitle
-     * @param inParams
-     * @param inParamValues
-     * @return
-     */
-    private String getParfileSection(String sectionTitle, String[] inParams, HashMap<String, Object> inParamValues) {
-
-        StringBuilder parfileSection = new StringBuilder("");
-
-        // Add paramValue entries to parfileSection, removing them from paramValues as they are found
-        // Do not make an entry if it matches the default value
-        for (String param : inParams) {
-            boolean makeEntry = false;
-            if (inParamValues.containsKey(param)) {
-                if (defaultParamValues.containsKey(param)) {
-                    if (!defaultParamValues.get(param).equals(inParamValues.get(param))) {
-                        makeEntry = true;
+        for (String coordParam : coordParams) {
+            if (param.equals(coordParam)) {
+                for (String pixelParam : pixelParams) {
+                    for (ParamInfo paramInfo : paramInfos) {
+                        if (pixelParam.equals(paramInfo.getName()) && paramInfo.getValue() != null) {
+                            paramInfo.setValue(null);
+                            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, param, null, ""));
+                            return;
+                        }
                     }
-                } else {
-                    makeEntry = true;
                 }
             }
-
-            if (makeEntry == true) {
-                parfileSection.append(getParamValueEntry(param)).append("\n");
-            }
-
-            inParamValues.remove(param);
         }
 
-        if (parfileSection.length() > 0) {
-            // Only insert sectionTitle if there are entries
-            if (sectionTitle != null) {
-                parfileSection.insert(0, "\n");
-                parfileSection.insert(0, sectionTitle);
-
+        for (String pixelParam : pixelParams) {
+            if (param.equals(pixelParam)) {
+                for (String coordParam : coordParams) {
+                    for (ParamInfo paramInfo : paramInfos) {
+                        if (coordParam.equals(paramInfo.getName()) && paramInfo.getValue() != null) {
+                            paramInfo.setValue(null);
+                            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, param, null, ""));
+                            return;
+                        }
+                    }
+                }
             }
-
-            parfileSection.append("\n");
         }
-
-        return parfileSection.toString();
     }
 
 
     public String getParfile() {
 
-        StringBuilder parfileStringBuilder = new StringBuilder("");
-        HashMap<String, Object> paramValuesCopy = new HashMap();
+        StringBuilder par = new StringBuilder("");
 
-        // Remove prod entry because we do not store it here.
-        // This is just a precaution it should never have been stored.
-        if (paramValues.containsKey(L2PROD)) {
-            paramValues.remove(L2PROD);
+        for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+            par.append("# " + paramCategoryInfo.getName() + "\n");
+
+            for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+                if (paramInfo.getName().equals(L2PROD)) {
+                    getProdParamValue();
+                } else if (paramInfo.getValue() != paramInfo.getDefaultValue()) {
+                    par.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                }
+            }
+            par.append("\n");
         }
 
-        // make a copy of paramValues so the keys can be deleted as they as used
-        for (String currKey : paramValues.keySet()) {
-            debug("TEST "+currKey+"="+paramValues.get(currKey));
-            paramValuesCopy.put(currKey, paramValues.get(currKey));
-        }
-
-        parfileStringBuilder.append(
-                getParfileSection(
-                        "# FILE IO PARAMS",
-                        fileIOParams,
-                        paramValuesCopy
-                ));
-
-
-        parfileStringBuilder.append("# PRODUCT PARAM").append("\n");
-        parfileStringBuilder.append(getParamValueEntry(L2PROD)).append("\n\n");
-
-        parfileStringBuilder.append(
-                getParfileSection("# COORDINATE PARAMS",
-                        coordParams,
-                        paramValuesCopy
-                ));
-
-        parfileStringBuilder.append(
-                getParfileSection("# PIXEL-LINE PARAMS",
-                        pixelParams,
-                        paramValuesCopy
-                ));
-
-        String additionalParamKeys[] = new String[paramValuesCopy.size()];
-        int i = 0;
-        for (String currKey : paramValuesCopy.keySet()) {
-            additionalParamKeys[i] = currKey;
-            i++;
-        }
-
-        parfileStringBuilder.append(
-                getParfileSection("# ADDITIONAL USER PARAMS",
-                        additionalParamKeys,
-                        paramValuesCopy
-                ));
-
-        return parfileStringBuilder.toString();
+        return par.toString();
     }
 
 
@@ -549,57 +430,6 @@ public class L2genData {
     }
 
 // DANNY IS REVIEWING CODE AND LEFT OFF HERE
-
-    /**
-     *
-     */
-    public void resetAll(boolean missionChanged) {
-
-        if (missionChanged) {
-            resetWaveLimiter();
-        }
-
-        resetProductInfos(missionChanged);
-
-        String inParfile = getL2genDefaults();
-
-        defaultParamValues.clear();
-        defaultParamValues = parseParfile(inParfile);
-
-        String prod = defaultParamValues.get(L2PROD);
-        defaultParamValues.remove(L2PROD);
-
-        if (prod != null) {
-            setParamValue(L2PROD, prod);
-        }
-
-        copyToProductDefaults();
-
-        /**
-         * Update to main any default params with different values
-         */
-        for (String defaultParam : defaultParamValues.keySet()) {
-            setParamValue(defaultParam, defaultParamValues.get(defaultParam));
-        }
-
-        /**
-         * Remove from main any params not in the defaults 
-         */
-
-        HashMap<String, String> tmpParamValues = new HashMap<String, String>();
-        for (String key : paramValues.keySet()) {
-            tmpParamValues.put(key, paramValues.get(key));
-        }
-        for (String param : tmpParamValues.keySet()) {
-            if (!param.equals(IFILE) && !defaultParamValues.containsKey(param)) {
-                deleteParamValue(param);
-            }
-        }
-
-        if (!paramValues.containsKey(OFILE)) {
-            setCustomOfile();
-        }
-    }
 
 
     public void setParfile(String newParfile) {
@@ -645,48 +475,6 @@ public class L2genData {
     }
 
 
-    public void setParfileOld(String inParfile) {
-
-        HashMap<String, String> inParfileHashMap = parseParfile(inParfile);
-
-        if (inParfileHashMap != null && inParfileHashMap.size() > 0) {
-
-            HashMap<String, String> copyOfParamValues = new HashMap<String, String>();
-
-            for (String key : paramValues.keySet()) {
-                copyOfParamValues.put(key, paramValues.get(key));
-            }
-
-            // Remove any keys in paramValueHashMap which are not in inParfileHashMap
-            for (String key : copyOfParamValues.keySet()) {
-                if (!key.equals(IFILE) && !inParfileHashMap.containsKey(key)) {
-                    deleteParamValue(key);
-                }
-            }
-
-            // Do ifile first
-            if (inParfileHashMap.containsKey(IFILE)) {
-                setParamValue(IFILE, inParfileHashMap.get(IFILE));
-                inParfileHashMap.remove(IFILE);
-            }
-
-            if (!inParfileHashMap.containsKey(L2PROD)) {
-                copyFromProductDefaults();
-                inParfileHashMap.remove(L2PROD);
-            }
-            // Initialize with defaultParamValueHashMap
-//            for (String key : defaultParamValues.keySet()) {
-//                setParamValue(key, defaultParamValues.get(key));
-//            }
-
-
-            for (String key : inParfileHashMap.keySet()) {
-                debug("Setting parfile entry " + key + "=" + inParfileHashMap.get(key));
-                setParamValue(key, inParfileHashMap.get(key));
-            }
-        }
-    }
-
     public void copyFromProductDefaults() {
         // This method loops through the entire productInfoArray setting all the states to the default state
 
@@ -730,49 +518,26 @@ public class L2genData {
         }
     }
 
-//
-//    public void applyParfileDefaults() {
-//
-//
-//        HashMap<String, String> copyParamValueHashMap = new HashMap<String, String>();
-//
-//        for (String key : paramValues.keySet()) {
-//            debug("key=" + key + "value=" + paramValues.get(key));
-//            copyParamValueHashMap.put(key, paramValues.get(key));
-//        }
-//
-//        // remove any params which are not in defaultParamValueHashMap
-//        for (String key : copyParamValueHashMap.keySet()) {
-//            if (!key.equals(IFILE) && !key.equals(OFILE) && !defaultParamValues.containsKey(key)) {
-//                deleteParamValue(key);
-//            }
-//        }
-//
-//        // Set all  paramValueHashMap with  defaultParamValueHashMap
-//        for (String key : defaultParamValues.keySet()) {
-//            setParamValue(key, defaultParamValues.get(key));
-//        }
-//
-//        copyFromProductDefaults();
-//    }
 
+    public String getParamValue(String param) {
 
-    public String getParamValue(String key) {
-
-        if (key == null) {
+        if (param == null) {
             return "";
         }
 
-        if (key.equals(L2PROD)) {
+        if (param.equals(L2PROD)) {
             return getProdParamValue();
         }
 
-        if (paramValues.get(key) != null) {
-            return paramValues.get(key);
-        } else {
-            return "";
+        for (ParamInfo paramInfo : paramInfos) {
+            if (paramInfo.getName().equals(param)) {
+                return paramInfo.getValue();
+            }
         }
+
+        return "";
     }
+
 
     public boolean getBooleanParamValue(String key) {
         String value = getParamValue(key);
@@ -784,17 +549,20 @@ public class L2genData {
         }
     }
 
-    public void deleteParamValue(String inKey) {
 
-        if (inKey != null && inKey.length() > 0) {
-            inKey = inKey.trim();
-            if (paramValues.containsKey(inKey)) {
-                if (defaultParamValues.containsKey(inKey)) {
-                    setParamValue(inKey, defaultParamValues.get(inKey));
-                } else {
-                    String oldParamValue = paramValues.get(inKey);
-                    paramValues.remove(inKey);
-                    propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, inKey, oldParamValue, null));
+    public void deleteParamValue(String param) {
+
+        if (param != null && param.length() > 0) {
+            param = param.trim();
+            for (ParamInfo paramInfo : paramInfos) {
+                if (paramInfo.getName().equals(param)) {
+                    if (paramInfo.getValue() != paramInfo.getDefaultValue()) {
+                        String oldValue = paramInfo.getValue();
+                        String newValue = paramInfo.getDefaultValue();
+                        setParamValue(param, newValue);
+                        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, param, oldValue, newValue));
+                    }
+                    return;
                 }
             }
         }
@@ -809,34 +577,41 @@ public class L2genData {
         }
     }
 
-    public void setParamValue(String inKey, String inValue) {
+    public void setParamValue(String param, String value) {
 
-   //     debug("setParamValue inKey=" + inKey + " inValue=" + inValue);
-        if (inKey != null && inKey.length() > 0) {
-            inKey = inKey.trim();
+        if (param == null || param.length() == 0) {
+            return;
+        }
 
-            if (inKey.equals(L2PROD)) {
-                setProdParamValue(inValue);
-            } else {
-                if (inValue != null && inValue.length() > 0) {
-                    inValue = inValue.trim();
-               //     debug("new Param" + inKey + "=" + inValue);
+        param = param.trim();
 
-                    if (!inValue.equals(paramValues.get(inKey))) {
-                        if (inKey.equals(IFILE)) {
-                            setIfileParamValue(inValue);
-                        } else {
-                            debug("adding "+inKey+"="+inValue+" to paramValues");
-                            paramValues.put(inKey, inValue);
-                            specifyRegionType(inKey);
+        if (param.equals(L2PROD)) {
+            setProdParamValue(value);
+        } else {
+            if (value != null && value.length() > 0) {
+                value = value.trim();
+
+                for (ParamInfo paramInfo : paramInfos) {
+                    if (paramInfo.getName().equals(param)) {
+                        if (!value.equals(paramInfo.getValue())) {
+                            if (param.equals(IFILE)) {
+                                setIfileParamValue(value);
+                            } else {
+                                debug("adding " + param + "=" + value + " to paramValues");
+                                paramInfo.setValue(value);
+
+                                purgeConflictingParams(param);
+                            }
+
+                            debug("Firing Event with eventName=" + param);
+                            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, param, null, null));
                         }
 
-                        debug("Firing Event with eventName="+inKey);
-                        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, inKey, null, null));
+                        return;
                     }
-                } else {
-                    deleteParamValue(inKey);
                 }
+            } else {
+                deleteParamValue(param);
             }
         }
     }
@@ -914,11 +689,16 @@ public class L2genData {
 
         String missionString = "";
 
-        if (paramValues.containsKey(IFILE) && paramValues.get(IFILE) != null) {
-            File file = new File(paramValues.get(IFILE));
+        for (ParamInfo paramInfo : paramInfos) {
+            if (paramInfo.getName().equals(IFILE)) {
+                if (paramInfo.getValue() != null) {
+                    File file = new File(paramInfo.getValue());
 
-            if (file != null && file.getName() != null) {
-                missionString = file.getName().substring(0, 1);
+                    if (file != null && file.getName() != null) {
+                        missionString = file.getName().substring(0, 1);
+                    }
+                }
+                return missionString;
             }
         }
 
@@ -1030,46 +810,91 @@ public class L2genData {
     // it will reset and make new wavelengthInfoArray
     private void setIfileParamValue(String newIfile) {
 
-        boolean missionChanged = false;
-        String previousMissionString = getMissionString();
-        paramValues.put(IFILE, newIfile);
-        if (getMissionString() != null
-                && (previousMissionString == null || !previousMissionString.equals(getMissionString()))) {
-            missionChanged = true;
+        for (ParamInfo paramInfo : paramInfos) {
+            if (IFILE.equals(paramInfo.getName())) {
+                paramInfo.setValue(newIfile);
+
+                if (true) {
+                    resetWaveLimiter();
+                }
+
+                resetProductInfos(true);
+
+                String inParfile = getL2genDefaults();
+
+                defaultParamValues.clear();
+                defaultParamValues = parseParfile(inParfile);
+
+                String prod = defaultParamValues.get(L2PROD);
+                defaultParamValues.remove(L2PROD);
+
+                if (prod != null) {
+                    setParamValue(L2PROD, prod);
+                }
+
+                copyToProductDefaults();
+
+                /**
+                 * Update to main any default params with different values
+                 */
+                for (String defaultParam : defaultParamValues.keySet()) {
+                    setParamValue(defaultParam, defaultParamValues.get(defaultParam));
+                }
+
+                /**
+                 * Remove from main any params not in the defaults
+                 */
+
+                HashMap<String, String> tmpParamValues = new HashMap<String, String>();
+                for (String key : paramValues.keySet()) {
+                    tmpParamValues.put(key, paramValues.get(key));
+                }
+                for (String param : tmpParamValues.keySet()) {
+                    if (!param.equals(IFILE) && !defaultParamValues.containsKey(param)) {
+                        deleteParamValue(param);
+                    }
+                }
+
+                if (!paramValues.containsKey(OFILE)) {
+                    setCustomOfile(newIfile);
+                }
+
+                debug(MISSION_CHANGE_EVENT.toString() + "being fired");
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_CHANGE_EVENT, null, getMissionString()));
+            }
         }
 
-        resetAll(missionChanged);
-
-        debug(MISSION_CHANGE_EVENT.toString() + "being fired");
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, MISSION_CHANGE_EVENT, null, getMissionString()));
     }
 
 
-    private void setCustomOfile() {
+    private void setCustomOfile(String ifile) {
 
-        String ifile = paramValues.get(IFILE);
-        String ofile;
+        for (ParamInfo paramInfo : paramInfos) {
+            if (paramInfo.getName().equals(OFILE)) {
 
-        if (ifile != null) {
-            String ifileSuffixTrimmedOff;
+                String ofile;
+                if (ifile != null) {
+                    String ifileSuffixTrimmedOff;
 
-            int i = ifile.lastIndexOf('.');
-            if (i != -1) {
-                ifileSuffixTrimmedOff = ifile.substring(0, i);
-            } else {
-                ifileSuffixTrimmedOff = ifile;
+                    int i = ifile.lastIndexOf('.');
+                    if (i != -1) {
+                        ifileSuffixTrimmedOff = ifile.substring(0, i);
+                    } else {
+                        ifileSuffixTrimmedOff = ifile;
+                    }
+
+                    ofile = ifileSuffixTrimmedOff + "." + TARGET_PRODUCT_SUFFIX;
+
+                } else {
+                    ofile = "";
+                }
+
+                paramInfo.setValue(ofile);
+
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, OFILE, null, null));
+                return;
             }
-
-            ofile = ifileSuffixTrimmedOff + "." + TARGET_PRODUCT_SUFFIX;
-
-        } else {
-            ofile = "";
         }
-
-        debug("DEBUG ofile=" + ofile);
-        paramValues.put(OFILE, ofile);
-
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, OFILE, null, null));
     }
 
 
@@ -1200,7 +1025,7 @@ public class L2genData {
         paramCategoryInfos.clear();
     }
 
-   public ArrayList<ProductCategoryInfo> getProductCategoryInfos() {
+    public ArrayList<ProductCategoryInfo> getProductCategoryInfos() {
         return productCategoryInfos;
     }
 
