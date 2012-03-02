@@ -945,16 +945,18 @@ public class L2genData {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String strLine;
         StringBuilder stringBuilder = new StringBuilder();
-        //Read File Line By Line
-        try {
-            while ((strLine = br.readLine()) != null) {
-                stringBuilder.append(strLine);
-                stringBuilder.append("\n");
-            }
-        } catch (IOException e) {
-        }
 
         return stringBuilder.toString();
+        //Read File Line By Line
+//        try {
+//            while ((strLine = br.readLine()) != null) {
+//                stringBuilder.append(strLine);
+//                stringBuilder.append("\n");
+//            }
+//        } catch (IOException e) {
+//        }
+//
+//        return stringBuilder.toString();
     }
 
     private void debug(String string) {
