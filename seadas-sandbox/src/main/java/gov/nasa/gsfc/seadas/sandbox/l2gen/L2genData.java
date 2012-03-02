@@ -20,6 +20,7 @@ public class L2genData {
 
     private String OCDATAROOT = System.getenv("OCDATAROOT");
 
+    public final String PAR = "par";
     public final String SPIXL = "spixl";
     public final String EPIXL = "epixl";
     public final String DPIXL = "dpixl";
@@ -396,7 +397,42 @@ public class L2genData {
     }
 
 
-    private HashMap<String, String> parseParfile(String parfileString) {
+    private ArrayList<ParamInfo> parseParfile(String parfileContents) {
+
+        ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
+
+        if (parfileContents != null) {
+
+            String parfileLines[] = parfileContents.split("\n");
+
+            for (String parfileLine : parfileLines) {
+
+                // skip the comment lines in file
+                if (!parfileLine.trim().startsWith("#")) {
+
+                    String splitLine[] = parfileLine.split("=");
+                    if (splitLine.length == 1 || splitLine.length == 2) {
+                        String name = splitLine[0].toString().trim();
+                        String value = null;
+
+                        if (splitLine.length == 1) {
+                            value = splitLine[1].toString().trim();
+                        } else if (splitLine.length == 2) {
+                            value = "";
+                        }
+
+                        ParamInfo paramInfo = new ParamInfo(name, value);
+                        paramInfos.add(paramInfo);
+                    }
+                }
+            }
+        }
+
+        return paramInfos;
+    }
+
+
+    private HashMap<String, String> parseParfileOld(String parfileString) {
 
         HashMap<String, String> thisParfileHashMap = null;
 
@@ -434,42 +470,38 @@ public class L2genData {
 
     public void setParfile(String newParfile) {
 
-        HashMap<String, String> newParamValues = parseParfile(newParfile);
+        ArrayList<ParamInfo> newParamInfos = parseParfile(newParfile);
 
-        if (newParamValues != null && newParamValues.size() > 0) {
-
-            /*
-               It present, do the ifile first because it will alter and reset everything
-            */
-            if (newParamValues.containsKey(IFILE)) {
-                setParamValue(IFILE, newParamValues.get(IFILE));
-                newParamValues.remove(IFILE);
+        for (ParamInfo paramInfo : newParamInfos) {
+            if (paramInfo.getName().equals(IFILE)) {
+                setParamValue(IFILE, paramInfo.getValue());
             }
+        }
 
-            /*
-               Make a copy of paramValues to serve as a source to loop through
-               because the actual paramValues will be altered during the looping
-            */
-            HashMap<String, String> tmpParamValues = new HashMap<String, String>();
-            for (String key : paramValues.keySet()) {
-                tmpParamValues.put(key, paramValues.get(key));
-            }
+        ArrayList<String> paramsSet = new ArrayList<String>();
 
-            // Remove any keys in paramValues which are not present in newParamValues
-            for (String key : tmpParamValues.keySet()) {
-                if (!key.equals(IFILE) && !newParamValues.containsKey(key)) {
-                    deleteParamValue(key);
+        if (newParamInfos != null && newParamInfos.size() > 0) {
+
+            for (ParamInfo newParamInfo : newParamInfos) {
+                if (!newParamInfo.getName().equals(IFILE) && !newParamInfo.getName().equals(PAR)) {
+                    setParamValue(newParamInfo.getName(), newParamInfo.getValue());
+                    paramsSet.add(newParamInfo.getName());
                 }
             }
 
-            // Set l2prod to defaults if newParamValues does not contain l2prod
-            if (!newParamValues.containsKey(L2PROD)) {
-                copyFromProductDefaults();
-            }
+            for (ParamInfo paramInfo : paramInfos) {
+                if (!paramInfo.getName().equals(L2PROD)) {
+                    boolean paramSet = false;
+                    for (String param : paramsSet) {
+                        if (paramInfo.getName().equals(param)) {
+                            paramSet = true;
+                        }
+                    }
 
-            // Set a paramValues to newParamValues
-            for (String key : newParamValues.keySet()) {
-                setParamValue(key, newParamValues.get(key));
+                    if (paramSet != true && (paramInfo.getValue() != paramInfo.getDefaultValue())) {
+                        deleteParamValue(paramInfo.getName());
+                    }
+                }
             }
         }
     }
@@ -823,7 +855,8 @@ public class L2genData {
                 String inParfile = getL2genDefaults();
 
                 defaultParamValues.clear();
-                defaultParamValues = parseParfile(inParfile);
+                //todo use parseParfile
+                defaultParamValues = parseParfileOld(inParfile);
 
                 String prod = defaultParamValues.get(L2PROD);
                 defaultParamValues.remove(L2PROD);

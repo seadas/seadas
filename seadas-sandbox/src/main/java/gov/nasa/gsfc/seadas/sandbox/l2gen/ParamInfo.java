@@ -31,6 +31,11 @@ public class ParamInfo implements Comparable {
         this.type = type;
     }
 
+    public ParamInfo(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
+
     public String getName() {
         return name;
     }
@@ -46,6 +51,7 @@ public class ParamInfo implements Comparable {
     public void setValue(String value) {
         this.value = value;
     }
+
 
     public Type getType() {
         return type;
@@ -93,12 +99,12 @@ public class ParamInfo implements Comparable {
 
 
     public void sortValidValueInfos() {
-      //  Collections.sort(validValueInfos, new ParamValidValueInfo.ValueComparator());
+        //  Collections.sort(validValueInfos, new ParamValidValueInfo.ValueComparator());
         Collections.sort(validValueInfos);
     }
 
-        @Override
+    @Override
     public int compareTo(Object o) {
-        return getName().compareToIgnoreCase(((ParamInfo)o).getName());
+        return getName().compareToIgnoreCase(((ParamInfo) o).getName());
     }
 }
