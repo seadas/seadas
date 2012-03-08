@@ -1,0 +1,69 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>seadas-processing</symbolicName>
+    <version>7.0</version>
+
+    <name>SeaDAS Processing</name>
+
+    <description>
+        Integrates the OBPG OCSSW processing software into SeaDAS.
+    </description>
+
+    <vendor>NASA Ocean Biology Processing Group</vendor>
+    <contactAddress>NASA GSFC, Code 614.2</contactAddress>
+    <copyright>(c) copyright - Not sure??</copyright>
+    <url>http://oceancolor.gsfc.nasa.gov/seadas</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+
+    <dependency>
+        <module>seadas-app</module>
+    </dependency>
+
+    <categories>System</categories>
+
+    <extension point="beam-ui:actions">
+        <action>
+            <parent>tools</parent>
+            <!--<placeAfter>openSession</placeAfter>-->
+            <id>seadasProcessing</id>
+            <class>org.esa.beam.visat.actions.ActionGroup</class>
+            <text>OCSSW Processing</text>
+            <mnemonic>P</mnemonic>
+            <shortDescr>SeaDAS Processing Programs.</shortDescr>
+            <longDescr>SeaDAS Processing Programs.</longDescr>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
+            <id>l1mapgen</id>
+            <class>gov.nasa.gsfc.seadas.processing.CallCloProgramAction</class>
+            <text>l1mapgen...</text>
+            <programName>l1mapgen</programName>
+            <dialogTitle>l1mapgen Processor</dialogTitle>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
+            <id>l1brsgen</id>
+            <class>gov.nasa.gsfc.seadas.processing.CallCloProgramAction</class>
+            <text>l1brsgen...</text>
+            <programName>l1brsgen</programName>
+            <dialogTitle>l1brsgen Processor</dialogTitle>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
+            <id>l2mapgen</id>
+            <class>gov.nasa.gsfc.seadas.processing.CallCloProgramAction</class>
+            <text>l2mapgen...</text>
+            <programName>l2mapgen</programName>
+            <dialogTitle>l2mapgen Processor</dialogTitle>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
+            <id>l2genSimple</id>
+            <class>gov.nasa.gsfc.seadas.processing.CallCloProgramAction</class>
+            <text>l2gen Simple...</text>
+            <programName>l2gen</programName>
+            <dialogTitle>Simple l2gen Processor</dialogTitle>
+        </action>
+    </extension>
+
+</module>
