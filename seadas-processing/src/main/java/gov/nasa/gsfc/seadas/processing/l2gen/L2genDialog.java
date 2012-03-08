@@ -14,21 +14,11 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
-package gov.nasa.gsfc.seadas.sandbox.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen;
 
-import com.bc.ceres.binding.ConversionException;
-import com.bc.ceres.binding.ValidationException;
 import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.dataop.dem.ElevationModelDescriptor;
-import org.esa.beam.framework.dataop.dem.ElevationModelRegistry;
-import org.esa.beam.framework.gpf.GPF;
-import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.ui.*;
 import org.esa.beam.framework.ui.AppContext;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import java.util.HashMap;
-import java.util.Map;
 
 class L2genDialog extends SingleTargetProductDialog {
 

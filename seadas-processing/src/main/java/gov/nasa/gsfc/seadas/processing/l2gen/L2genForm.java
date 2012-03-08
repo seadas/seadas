@@ -3,7 +3,7 @@ Author: Danny Knowles
     Don Shea
 */
 
-package gov.nasa.gsfc.seadas.sandbox.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;

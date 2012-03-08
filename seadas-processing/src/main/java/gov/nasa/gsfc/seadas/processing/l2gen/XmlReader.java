@@ -1,10 +1,8 @@
-package gov.nasa.gsfc.seadas.sandbox.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen;
 
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

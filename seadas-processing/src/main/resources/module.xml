@@ -34,6 +34,13 @@
         </action>
         <action>
             <parent>seadasProcessing</parent>
+            <id>l2gen</id>
+            <class>gov.nasa.gsfc.seadas.processing.l2gen.L2genAction</class>
+            <text>l2gen..</text>
+            <shortDescr>L2 File Generation</shortDescr>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
             <id>l1mapgen</id>
             <class>gov.nasa.gsfc.seadas.processing.CallCloProgramAction</class>
             <text>l1mapgen...</text>

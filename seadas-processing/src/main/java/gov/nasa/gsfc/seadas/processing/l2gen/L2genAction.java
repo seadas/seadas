@@ -14,7 +14,7 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
-package gov.nasa.gsfc.seadas.sandbox.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import org.esa.beam.framework.ui.ModelessDialog;
 import org.esa.beam.framework.ui.command.CommandEvent;

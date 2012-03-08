@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.sandbox.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import javax.swing.*;
 import java.awt.*;

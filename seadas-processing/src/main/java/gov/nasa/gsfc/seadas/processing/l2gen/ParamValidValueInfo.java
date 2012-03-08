@@ -1,6 +1,4 @@
-package gov.nasa.gsfc.seadas.sandbox.l2gen;
-
-import java.util.Comparator;
+package gov.nasa.gsfc.seadas.processing.l2gen;
 
 /**
  * A ...

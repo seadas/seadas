@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.sandbox.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

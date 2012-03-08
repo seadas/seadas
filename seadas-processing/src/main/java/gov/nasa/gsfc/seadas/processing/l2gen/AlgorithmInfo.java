@@ -1,9 +1,4 @@
-package gov.nasa.gsfc.seadas.sandbox.l2gen;
-
-import com.sun.servicetag.SystemEnvironment;
-import org.python.antlr.ast.Str;
-
-import java.util.ArrayList;
+package gov.nasa.gsfc.seadas.processing.l2gen;
 
 /**
  * A ...
