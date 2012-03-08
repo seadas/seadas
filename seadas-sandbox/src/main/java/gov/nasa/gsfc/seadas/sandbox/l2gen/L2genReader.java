@@ -132,6 +132,26 @@ public class L2genReader {
     }
 
 
+    public void updateParamInfosWithXml(InputStream stream) {
+        XmlReader reader = new XmlReader();
+        Element rootElement = reader.parseAndGetRootElement(stream);
+
+        NodeList optionNodelist = rootElement.getElementsByTagName("option");
+
+        if (optionNodelist != null && optionNodelist.getLength() > 0) {
+            for (int i = 0; i < optionNodelist.getLength(); i++) {
+
+                Element optionElement = (Element) optionNodelist.item(i);
+
+                String name = XmlReader.getTextValue(optionElement, "name");
+                String value = XmlReader.getTextValue(optionElement, "value");
+                l2genData.setParamDefaultValue(name, value);
+                l2genData.setParamValue(name, value);
+            }
+        }
+    }
+
+
     public void readParamInfoXml(InputStream stream) {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);

@@ -1,9 +1,14 @@
 <categoryList>
-    <category name="Used Elsewhere">
+        <category name="Required Fields">
         <makeVisible>0</makeVisible>
         <param>ifile</param>
         <param>l2prod</param>
         <param>ofile</param>
+
+    </category>
+
+    <category name="Used Elsewhere">
+        <makeVisible>0</makeVisible>
         <param>geofile</param>
         <param>ilist</param>
         <param>par</param>

@@ -35,7 +35,12 @@ class L2genForm extends JTabbedPane {
 
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
     private ArrayList<JCheckBox> paramJCheckboxes = null;
+    private ArrayList<JPanel> paramOptionsJPanels = new ArrayList<JPanel>();
+
     private JPanel waveLimiterJPanel;
+
+    final int PARAM_TEXT_LENGTH = 15;
+    final int PARAM_FILE_TEXT_LENGTH = 45;
 
     //private JTable productsCartJTable;
     //   private SelectedProductsTableModel productsCartTableModel;
@@ -118,7 +123,7 @@ class L2genForm extends JTabbedPane {
         this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
 
         paramJCheckboxes = new ArrayList<JCheckBox>();
-        
+
         initXmlBasedObjects();
         createUserInterface();
         addL2genDataListeners();
@@ -146,9 +151,13 @@ class L2genForm extends JTabbedPane {
 
         int currTabIndex = 4;
 
+
         for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
             if (paramCategoryInfo.isVisible()) {
-                createParamsTab(paramCategoryInfo);
+                JPanel currJPanel = new JPanel();
+                paramOptionsJPanels.add(currJPanel);
+                createParamsTab(paramCategoryInfo, currJPanel);
+
                 paramCategoryInfo.setTabIndex(currTabIndex);
                 this.setEnabledAt(currTabIndex, false);
                 currTabIndex++;
@@ -199,6 +208,8 @@ class L2genForm extends JTabbedPane {
 //            }
 //        }
     }
+
+
     //----------------------------------------------------------------------------------------
     // Methods to create each of the main  and sub tabs
     //----------------------------------------------------------------------------------------
@@ -317,61 +328,146 @@ class L2genForm extends JTabbedPane {
         addTab(myTabname, finalMainPanel);
     }
 
-    private void createParamsTab(ParamCategoryInfo paramCategoryInfo) {
 
+    private void createParamsTab(ParamCategoryInfo paramCategoryInfo, JPanel paddedMainPanel) {
 
-        final JPanel myInnerPanel = new JPanel();
-        myInnerPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
-
-        for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
-            if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
-                JCheckBox checkBox = createParamCheckBox(paramInfo);
-                myInnerPanel.add(checkBox);
-            }
-        }
-
-        // Declare mainPanel and set it's attributes
         final JPanel mainPanel = new JPanel();
-        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
+        mainPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
         mainPanel.setLayout(new GridBagLayout());
 
+        int gridy = 0;
+        for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+            Component component = null;
+            switch (paramInfo.getType()) {
 
-        // Add Swing controls to mainPanel grid cells
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.fill = GridBagConstraints.NONE;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.weightx = 1;
-            c.weighty = 1;
-            mainPanel.add(myInnerPanel, c);
+                case BOOLEAN:
+                    JCheckBox jCheckBox = createParamCheckBox(paramInfo);
+                    if (jCheckBox != null) {
+                        final GridBagConstraints constraints = new GridBagConstraints();
+                        constraints.gridx = 0;
+                        constraints.fill = GridBagConstraints.NONE;
+                        constraints.anchor = GridBagConstraints.NORTHWEST;
+                        constraints.weightx = 1;
+                        constraints.gridy = gridy;
+                        mainPanel.add(jCheckBox, constraints);
+                        gridy++;
+                    }
+                    break;
+                case STRING:
+                    JPanel jPanel = createParamTextfield(paramInfo);
+                    if (jPanel != null) {
+                        final GridBagConstraints constraints = new GridBagConstraints();
+                        constraints.gridx = 0;
+                        constraints.fill = GridBagConstraints.NONE;
+                        constraints.anchor = GridBagConstraints.NORTHWEST;
+                        constraints.weightx = 1;
+                        constraints.gridy = gridy;
+                        mainPanel.add(jPanel, constraints);
+                        gridy++;
+                    }
+                    break;
+                case INT:
+                    break;
+                case FLOAT:
+                    break;
+            }
+
+
+//
+//
+//            if (component != null) {
+//                final GridBagConstraints constraints = new GridBagConstraints();
+//                constraints.gridx = 0;
+//                constraints.fill = GridBagConstraints.NONE;
+//                constraints.anchor = GridBagConstraints.NORTHWEST;
+//                constraints.weightx = 1;
+//                constraints.gridy = gridy;
+//                mainPanel.add(component, constraints);
+//                gridy++;
+//            }
         }
 
-
-        final JPanel paddedMainPanel;
         paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
-
         addTab(paramCategoryInfo.getName(), paddedMainPanel);
     }
 
 
     private JCheckBox createParamCheckBox(ParamInfo paramInfo) {
-        final JCheckBox paramCheckbox = new JCheckBox(paramInfo.getName());
+        final JCheckBox jCheckBox = new JCheckBox(paramInfo.getName());
         final String paramName = paramInfo.getName();
 
-        paramCheckbox.setName(paramInfo.getName());
-        paramJCheckboxes.add(paramCheckbox);
+        jCheckBox.setName(paramInfo.getName());
+        //   paramJCheckboxes.add(jCheckBox);
+
+        if (paramInfo.getValue().equals(ParamInfo.BOOLEAN_TRUE)) {
+            jCheckBox.setSelected(true);
+        } else {
+            jCheckBox.setSelected(false);
+        }
 
         // add listener for current checkbox
-        paramCheckbox.addItemListener(new ItemListener() {
+        jCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                l2genData.setParamValue(paramName, paramCheckbox.isSelected());
+                l2genData.setParamValue(paramName, jCheckBox.isSelected());
             }
         });
 
-        return paramCheckbox;
+        l2genData.addPropertyChangeListener(paramName, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                debug("receiving eventName " + paramName);
+                jCheckBox.setSelected(l2genData.getBooleanParamValue(paramName));
+            }
+        });
+
+        return jCheckBox;
+    }
+
+
+    private JPanel createParamTextfield(ParamInfo paramInfo) {
+
+
+        final String param = paramInfo.getName();
+        JTextField jTextField;
+
+        if (paramInfo.getName().contains("file")) {
+            jTextField = new JTextField(PARAM_FILE_TEXT_LENGTH);
+        } else {
+
+            jTextField = new JTextField(PARAM_TEXT_LENGTH);
+        }
+
+        final JTextField finalJTextField = jTextField;
+
+        jTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                l2genData.setParamValue(param, finalJTextField.getText().toString());
+            }
+        });
+
+        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                finalJTextField.setText(l2genData.getParamValue(param));
+            }
+        });
+
+
+        final JLabel jLabel = new JLabel(paramInfo.getName());
+        final JPanel jPanel = new JPanel();
+        jPanel.setLayout(new GridBagLayout());
+        jPanel.add(jLabel,
+                SeadasGuiUtils.makeConstraints(0, 0, GridBagConstraints.EAST));
+        jPanel.add(jTextField,
+                SeadasGuiUtils.makeConstraints(1, 0));
+
+        return jPanel;
     }
 
 
@@ -1526,7 +1622,7 @@ class L2genForm extends JTabbedPane {
     }
 
     private void parfileLostFocus() {
-        l2genData.setParfile(parfileJTextArea.getText().toString());
+        l2genData.setParamsFromParfile(parfileJTextArea.getText().toString());
     }
 
 
@@ -1542,7 +1638,7 @@ class L2genForm extends JTabbedPane {
             parfileText.append("\n");
         }
 
-        l2genData.setParfile(parfileText.toString());
+        l2genData.setParamsFromParfile(parfileText.toString());
         parfileJTextArea.setEditable(true);
         //  parfileJTextArea.setText(parfileText.toString());
     }
@@ -1580,11 +1676,11 @@ class L2genForm extends JTabbedPane {
                         public void propertyChange(PropertyChangeEvent evt) {
                             debug("receiving eventName " + eventName);
                             parfileJTextArea.setText(l2genData.getParfile());
-                            for (JCheckBox jCheckBox : paramJCheckboxes) {
-                                if (jCheckBox.getName().equals(eventName)) {
-                                    jCheckBox.setSelected(l2genData.getBooleanParamValue(eventName));
-                                }
-                            }
+//                            for (JCheckBox jCheckBox : paramJCheckboxes) {
+//                                if (jCheckBox.getName().equals(eventName)) {
+//                                    jCheckBox.setSelected(l2genData.getBooleanParamValue(eventName));
+//                                }
+//                            }
                         }
                     });
                 }
@@ -1597,6 +1693,16 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println(l2genData.MISSION_CHANGE_EVENT + " being handled");
                 missionStringChangeEvent((String) evt.getNewValue());
+                spixlJTextField.setText(l2genData.getParamValue(l2genData.SPIXL));
+                epixlJTextField.setText(l2genData.getParamValue(l2genData.EPIXL));
+                dpixlJTextField.setText(l2genData.getParamValue(l2genData.DPIXL));
+                slineJTextField.setText(l2genData.getParamValue(l2genData.SLINE));
+                elineJTextField.setText(l2genData.getParamValue(l2genData.ELINE));
+                dlineJTextField.setText(l2genData.getParamValue(l2genData.DLINE));
+                northJTextField.setText(l2genData.getParamValue(l2genData.NORTH));
+                southJTextField.setText(l2genData.getParamValue(l2genData.SOUTH));
+                eastJTextField.setText(l2genData.getParamValue(l2genData.EAST));
+                westJTextField.setText(l2genData.getParamValue(l2genData.WEST));
             }
         });
 
@@ -1877,6 +1983,7 @@ class L2genForm extends JTabbedPane {
         for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
             if (paramCategoryInfo.getTabIndex() != ParamCategoryInfo.NULL_TAB_INDEX) {
                 this.setEnabledAt(paramCategoryInfo.getTabIndex(), true);
+                debug("enabling tab " + paramCategoryInfo.getTabIndex());
             }
         }
 
