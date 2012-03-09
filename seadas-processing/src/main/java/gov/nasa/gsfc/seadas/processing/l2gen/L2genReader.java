@@ -145,8 +145,20 @@ public class L2genReader {
 
                 String name = XmlReader.getTextValue(optionElement, "name");
                 String value = XmlReader.getTextValue(optionElement, "value");
-                l2genData.setParamDefaultValue(name, value);
-                l2genData.setParamValue(name, value);
+
+                String nullValueOverrides[] = {l2genData.OFILE, l2genData.PAR, l2genData.GEOFILE};
+                if (name != null) {
+                    for (String nullValueOverride : nullValueOverrides) {
+                        if (name.equals(nullValueOverride)) {
+                            value = ParamInfo.NULL_STRING;
+                        }
+                    }
+
+                    if (!name.equals(l2genData.IFILE)) {
+                        l2genData.setParamDefaultValue(name, value);
+                        l2genData.setParamValue(name, value);
+                    }
+                }
             }
         }
     }
@@ -183,17 +195,17 @@ public class L2genReader {
                 }
 
                 String value = XmlReader.getTextValue(optionElement, "value");
-                if (type == ParamInfo.Type.BOOLEAN && value != null) {
-                    if (value.toLowerCase().equals("false")) {
-                        value = "0";
-                    } else if (value.toLowerCase().equals("true")) {
-                        value = "1";
+
+                String nullValueOverrides[] = {l2genData.IFILE, l2genData.OFILE, l2genData.PAR, l2genData.GEOFILE};
+                if (name != null) {
+                    for (String nullValueOverride : nullValueOverrides) {
+                        if (name.equals(nullValueOverride)) {
+                            value = ParamInfo.NULL_STRING;
+                        }
                     }
                 }
+
                 String defaultValue = value;
-                // String defaultValue = XmlReader.getTextValue(optionElement, "defaultValue");
-
-
                 String description = XmlReader.getTextValue(optionElement, "description");
                 String source = XmlReader.getTextValue(optionElement, "source");
 

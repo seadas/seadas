@@ -190,6 +190,13 @@ public class ParamInfo implements Comparable {
         this.validValueInfos.clear();
     }
 
+    public boolean hasValidValueInfos() {
+        if (validValueInfos.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void sortValidValueInfos() {
         //  Collections.sort(validValueInfos, new ParamValidValueInfo.ValueComparator());

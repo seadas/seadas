@@ -8,6 +8,8 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
  */
 public class L2genPrint {
 
+
+    
     boolean debug = true;
     boolean admin = true;
     boolean user = true;

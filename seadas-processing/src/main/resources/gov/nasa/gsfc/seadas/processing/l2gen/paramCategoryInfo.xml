@@ -180,7 +180,7 @@
 
     <category name="Miscellaneous">
         <makeVisible>1</makeVisible>
-        <defaultBucket>0</defaultBucket>
+        <defaultBucket>1</defaultBucket>
         <param>pversion</param>
         <param>suite</param>
         <param>il2file</param>
@@ -215,7 +215,7 @@
 
 
     <category name="Calibration Options">
-        <makeVisible>0</makeVisible>
+        <makeVisible>1</makeVisible>
         <param>eval</param>
         <param>mode</param>
         <param>tgtfile</param>
