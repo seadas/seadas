@@ -233,7 +233,7 @@ public class L2genReader {
                         paramInfo.addValidValueInfo(paramValidValueInfo);
                     }
 
-                    paramInfo.sortValidValueInfos();
+                 //   paramInfo.sortValidValueInfos();
                 }
 
                 l2genData.addParamOptionsInfo(paramInfo);

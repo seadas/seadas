@@ -12,6 +12,7 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
 import org.esa.beam.framework.ui.AppContext;
+import org.esa.beam.util.math.Array;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -154,15 +155,15 @@ class L2genForm extends JTabbedPane {
         createSubsampleTab(SUB_SETTING_TAB_NAME);
         this.setEnabledAt(currTabIndex, false);
 
-        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
-            if (paramCategoryInfo.isVisible() && (paramCategoryInfo.getParamInfos().size() > 0)) {
-                currTabIndex++;
-                JPanel currJPanel = new JPanel();
-                paramOptionsJPanels.add(currJPanel);
-                createParamsTab(paramCategoryInfo, currJPanel);
-                this.setEnabledAt(currTabIndex, false);
-            }
-        }
+//        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
+//            if (paramCategoryInfo.isVisible() && (paramCategoryInfo.getParamInfos().size() > 0)) {
+//                currTabIndex++;
+//                JPanel currJPanel = new JPanel();
+//                paramOptionsJPanels.add(currJPanel);
+//                createParamsTab(paramCategoryInfo, currJPanel);
+//                this.setEnabledAt(currTabIndex, false);
+//            }
+//        }
 
         tabCount = currTabIndex + 1;
     }
@@ -290,15 +291,16 @@ class L2genForm extends JTabbedPane {
     private void createParamsTab(ParamCategoryInfo paramCategoryInfo, JPanel paddedMainPanel) {
 
         final JPanel mainPanel = new JPanel();
-        mainPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
+
         mainPanel.setLayout(new GridBagLayout());
+        //    mainPanel.setBorder(BorderFactory.createTitledBorder("mainPanel"));
 
         int gridy = 0;
         for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
             Component component = null;
 
             if (paramInfo.hasValidValueInfos()) {
-//todo put the comboboxes in
+                component = createParamComboBox(paramInfo);
             } else {
                 if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
                     component = createParamCheckBox(paramInfo);
@@ -307,21 +309,114 @@ class L2genForm extends JTabbedPane {
                 }
             }
 
-
             if (component != null) {
                 final GridBagConstraints constraints = new GridBagConstraints();
                 constraints.gridx = 0;
                 constraints.fill = GridBagConstraints.NONE;
                 constraints.anchor = GridBagConstraints.NORTHWEST;
-                constraints.weightx = 1;
+                constraints.weightx = 0;
+                constraints.weighty = 0;
                 constraints.gridy = gridy;
                 mainPanel.add(component, constraints);
                 gridy++;
             }
         }
 
-        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
+        final JPanel outerMainPanel = new JPanel();
+        final JScrollPane jScrollPane = new JScrollPane(mainPanel);
+
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.anchor = GridBagConstraints.NORTH;
+            c.fill = GridBagConstraints.BOTH;
+            c.weightx = 1;
+            c.weighty = 1;
+
+
+            outerMainPanel.setLayout(new GridBagLayout());
+            outerMainPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
+            outerMainPanel.add(jScrollPane, c);
+        }
+
+
+        final GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = gridy;
+        c.anchor = GridBagConstraints.NORTH;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.weighty = 1;
+        final JPanel blankPanel = new JPanel();
+        final JLabel jLabel = new JLabel("");
+        blankPanel.add(jLabel);
+        blankPanel.setLayout(new GridBagLayout());
+        mainPanel.add(blankPanel, c);
+
+        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(outerMainPanel, 6);
         addTab(paramCategoryInfo.getName(), paddedMainPanel);
+    }
+
+
+    private JPanel createParamComboBox(ParamInfo paramInfo) {
+
+        final String param = paramInfo.getName();
+
+        ArrayList<ParamValidValueInfo> validValuesArrayList = new ArrayList<ParamValidValueInfo>();
+
+        for (ParamValidValueInfo paramValidValueInfo : paramInfo.getValidValueInfos()) {
+            if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().length() > 0) {
+                validValuesArrayList.add(paramValidValueInfo);
+            }
+        }
+
+//        final ParamValidValueInfo validValuesInfosArray[] = (ParamValidValueInfo[]) validValuesArrayList.toArray();
+
+        final ParamValidValueInfo[] validValueInfosArray;
+        validValueInfosArray = new ParamValidValueInfo[validValuesArrayList.size()];
+
+        int i = 0;
+        for (ParamValidValueInfo paramValidValueInfo : validValuesArrayList) {
+            validValueInfosArray[i] = paramValidValueInfo;
+            i++;
+        }
+
+
+        final JComboBox jComboBox = new JComboBox(validValueInfosArray);
+
+        jComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                l2genData.setParamValue(param, jComboBox.getSelectedItem().toString());
+            }
+        });
+
+
+        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                debug("receiving eventName " + param);
+                for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
+                    if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
+                        jComboBox.setSelectedItem(paramValidValueInfo);
+                    }
+                }
+            }
+        });
+
+
+        final JLabel jLabel = new JLabel(paramInfo.getName());
+        jLabel.setToolTipText(paramInfo.getDescription());
+        final JPanel jPanel = new JPanel();
+        jPanel.setLayout(new GridBagLayout());
+        jPanel.add(jLabel,
+                SeadasGuiUtils.makeConstraints(0, 0, GridBagConstraints.EAST));
+        jPanel.add(jComboBox,
+                SeadasGuiUtils.makeConstraints(1, 0));
+
+
+        return jPanel;
     }
 
 
@@ -330,6 +425,7 @@ class L2genForm extends JTabbedPane {
         final String paramName = paramInfo.getName();
 
         jCheckBox.setName(paramInfo.getName());
+        jCheckBox.setToolTipText(paramInfo.getDescription());
         //   paramJCheckboxes.add(jCheckBox);
 
         if (paramInfo.getValue().equals(ParamInfo.BOOLEAN_TRUE)) {
@@ -401,6 +497,7 @@ class L2genForm extends JTabbedPane {
 
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
+        jLabel.setToolTipText(paramInfo.getDescription());
         final JPanel jPanel = new JPanel();
         jPanel.setLayout(new GridBagLayout());
         jPanel.add(jLabel,

@@ -1110,8 +1110,6 @@ public class L2genData {
                 }
             }
         }
-
-
     }
 
 

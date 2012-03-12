@@ -6,7 +6,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class ParamValidValueInfo implements Comparable  {
+public class ParamValidValueInfo implements Comparable {
 
     private String value = null;
     private String description = null;
@@ -40,11 +40,18 @@ public class ParamValidValueInfo implements Comparable  {
         this.parent = parent;
     }
 
-        @Override
+    @Override
     public int compareTo(Object object) {
         return getValue().compareToIgnoreCase(((ParamValidValueInfo) object).getValue());
     }
 
+    public String toString() {
+        if (value != null) {
+            return value;
+        } else {
+            return "";
+        }
+    }
 
 //    public static final Comparator<ParamValidValueInfo> SORT_BY_VALUE
 //            = new ValueComparator();
