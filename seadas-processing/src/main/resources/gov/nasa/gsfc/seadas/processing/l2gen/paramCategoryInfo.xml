@@ -24,6 +24,8 @@
         <param>maxpointdist</param>
     </category>
 
+
+
     <category name="Subsetting Options">
         <makeVisible>0</makeVisible>
         <param>spixl</param>

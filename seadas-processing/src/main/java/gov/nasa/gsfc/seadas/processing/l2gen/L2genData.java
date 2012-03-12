@@ -428,20 +428,27 @@ public class L2genData {
         StringBuilder par = new StringBuilder("");
 
         for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
-            par.append("# " + paramCategoryInfo.getName() + "\n");
+            StringBuilder currCategoryEntries = new StringBuilder("");
 
             for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
                 if (paramInfo.getName().equals(L2PROD)) {
-                    par.append(paramInfo.getName() + "=" + getProdParamValue() + "\n");
+                    currCategoryEntries.append(paramInfo.getName() + "=" + getProdParamValue() + "\n");
                 } else if (paramInfo.getName().equals(IFILE)) {
-                    par.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                    currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
                 } else if (paramInfo.getName().equals(PAR)) {
                     // right ignore and do not print todo
                 } else if (!paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
-                    par.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                    if (!paramInfo.getName().startsWith("-")) {
+                        currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                    }
                 }
             }
-            par.append("\n");
+
+            if (currCategoryEntries.toString().length() > 0) {
+                par.append("# " + paramCategoryInfo.getName() + "\n");
+                par.append(currCategoryEntries.toString());
+                par.append("\n");
+            }
         }
 
         return par.toString();
@@ -1089,13 +1096,24 @@ public class L2genData {
             paramCategoryInfo.clearParamInfos();
         }
 
+        for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+            for (String categorizedParamName : paramCategoryInfo.getParamNames()) {
+                for (ParamInfo paramInfo : paramInfos) {
+                    if (categorizedParamName.equals(paramInfo.getName())) {
+                        paramCategoryInfo.addParamInfos(paramInfo);
+                    }
+                }
+            }
+        }
+
+
         for (ParamInfo paramInfo : paramInfos) {
             boolean found = false;
 
             for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
                 for (String categorizedParamName : paramCategoryInfo.getParamNames()) {
                     if (categorizedParamName.equals(paramInfo.getName())) {
-                        paramCategoryInfo.addParamInfos(paramInfo);
+                        //  paramCategoryInfo.addParamInfos(paramInfo);
                         found = true;
                     }
                 }
@@ -1110,6 +1128,8 @@ public class L2genData {
                 }
             }
         }
+
+
     }
 
 

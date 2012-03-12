@@ -17,6 +17,7 @@ import org.esa.beam.util.math.Array;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -155,15 +156,15 @@ class L2genForm extends JTabbedPane {
         createSubsampleTab(SUB_SETTING_TAB_NAME);
         this.setEnabledAt(currTabIndex, false);
 
-//        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
-//            if (paramCategoryInfo.isVisible() && (paramCategoryInfo.getParamInfos().size() > 0)) {
-//                currTabIndex++;
-//                JPanel currJPanel = new JPanel();
-//                paramOptionsJPanels.add(currJPanel);
-//                createParamsTab(paramCategoryInfo, currJPanel);
-//                this.setEnabledAt(currTabIndex, false);
-//            }
-//        }
+        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
+            if (paramCategoryInfo.isVisible() && (paramCategoryInfo.getParamInfos().size() > 0)) {
+                currTabIndex++;
+                JPanel currJPanel = new JPanel();
+                paramOptionsJPanels.add(currJPanel);
+                createParamsTab(paramCategoryInfo, currJPanel);
+                this.setEnabledAt(currTabIndex, false);
+            }
+        }
 
         tabCount = currTabIndex + 1;
     }
@@ -297,29 +298,18 @@ class L2genForm extends JTabbedPane {
 
         int gridy = 0;
         for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
-            Component component = null;
 
-            if (paramInfo.hasValidValueInfos()) {
-                component = createParamComboBox(paramInfo);
-            } else {
-                if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
-                    component = createParamCheckBox(paramInfo);
-                } else {
-                    component = createParamTextfield(paramInfo);
-                }
-            }
+//            if (paramInfo.hasValidValueInfos()) {
+//                createParamComboBox(paramInfo, mainPanel, gridy);
+//            } else {
+//                if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
+//                    createParamCheckBox(paramInfo, mainPanel, gridy);
+//                } else {
+//                    createParamTextfield(paramInfo, mainPanel, gridy);
+//                }
+//            }
 
-            if (component != null) {
-                final GridBagConstraints constraints = new GridBagConstraints();
-                constraints.gridx = 0;
-                constraints.fill = GridBagConstraints.NONE;
-                constraints.anchor = GridBagConstraints.NORTHWEST;
-                constraints.weightx = 0;
-                constraints.weighty = 0;
-                constraints.gridy = gridy;
-                mainPanel.add(component, constraints);
-                gridy++;
-            }
+            gridy++;
         }
 
         final JPanel outerMainPanel = new JPanel();
@@ -359,102 +349,7 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private JPanel createParamComboBox(ParamInfo paramInfo) {
-
-        final String param = paramInfo.getName();
-
-        ArrayList<ParamValidValueInfo> validValuesArrayList = new ArrayList<ParamValidValueInfo>();
-
-        for (ParamValidValueInfo paramValidValueInfo : paramInfo.getValidValueInfos()) {
-            if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().length() > 0) {
-                validValuesArrayList.add(paramValidValueInfo);
-            }
-        }
-
-//        final ParamValidValueInfo validValuesInfosArray[] = (ParamValidValueInfo[]) validValuesArrayList.toArray();
-
-        final ParamValidValueInfo[] validValueInfosArray;
-        validValueInfosArray = new ParamValidValueInfo[validValuesArrayList.size()];
-
-        int i = 0;
-        for (ParamValidValueInfo paramValidValueInfo : validValuesArrayList) {
-            validValueInfosArray[i] = paramValidValueInfo;
-            i++;
-        }
-
-
-        final JComboBox jComboBox = new JComboBox(validValueInfosArray);
-
-        jComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                l2genData.setParamValue(param, jComboBox.getSelectedItem().toString());
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                debug("receiving eventName " + param);
-                for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
-                    if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
-                        jComboBox.setSelectedItem(paramValidValueInfo);
-                    }
-                }
-            }
-        });
-
-
-        final JLabel jLabel = new JLabel(paramInfo.getName());
-        jLabel.setToolTipText(paramInfo.getDescription());
-        final JPanel jPanel = new JPanel();
-        jPanel.setLayout(new GridBagLayout());
-        jPanel.add(jLabel,
-                SeadasGuiUtils.makeConstraints(0, 0, GridBagConstraints.EAST));
-        jPanel.add(jComboBox,
-                SeadasGuiUtils.makeConstraints(1, 0));
-
-
-        return jPanel;
-    }
-
-
-    private JCheckBox createParamCheckBox(ParamInfo paramInfo) {
-        final JCheckBox jCheckBox = new JCheckBox(paramInfo.getName());
-        final String paramName = paramInfo.getName();
-
-        jCheckBox.setName(paramInfo.getName());
-        jCheckBox.setToolTipText(paramInfo.getDescription());
-        //   paramJCheckboxes.add(jCheckBox);
-
-        if (paramInfo.getValue().equals(ParamInfo.BOOLEAN_TRUE)) {
-            jCheckBox.setSelected(true);
-        } else {
-            jCheckBox.setSelected(false);
-        }
-
-        // add listener for current checkbox
-        jCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                l2genData.setParamValue(paramName, jCheckBox.isSelected());
-            }
-        });
-
-        l2genData.addPropertyChangeListener(paramName, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                debug("receiving eventName " + paramName);
-                jCheckBox.setSelected(l2genData.getBooleanParamValue(paramName));
-            }
-        });
-
-        return jCheckBox;
-    }
-
-
-    private JPanel createParamTextfield(ParamInfo paramInfo) {
+    private void createParamTextfield(ParamInfo paramInfo, JPanel jPanel, int gridy) {
 
 
         final String param = paramInfo.getName();
@@ -477,6 +372,40 @@ class L2genForm extends JTabbedPane {
         JTextField jTextField = new JTextField(jTextFieldLen);
         final JTextField finalJTextField = jTextField;
 
+
+        final JLabel jLabel = new JLabel(paramInfo.getName());
+        jLabel.setToolTipText(paramInfo.getDescription());
+
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 0;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.NORTHEAST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+            jPanel.add(jLabel, constraints);
+        }
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 1;
+            constraints.gridy = gridy;
+
+            if (jTextFieldLen == PARAM_FILESTRING_TEXTLEN) {
+                constraints.fill = GridBagConstraints.HORIZONTAL;
+            } else {
+                constraints.fill = GridBagConstraints.NONE;
+            }
+            constraints.anchor = GridBagConstraints.NORTHWEST;
+            constraints.weightx = 1;
+            constraints.weighty = 0;
+
+            jPanel.add(jTextField, constraints);
+        }
+
+
         jTextField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -494,18 +423,189 @@ class L2genForm extends JTabbedPane {
                 finalJTextField.setText(l2genData.getParamValue(param));
             }
         });
+    }
 
+
+    class MyComboBoxRenderer extends BasicComboBoxRenderer {
+
+        private String[] tooltips;
+
+        public void MyComboBoxRenderer(String[] tooltips) {
+            this.tooltips = tooltips;
+        }
+
+
+        public Component getListCellRendererComponent(JList list, Object value,
+                                                      int index, boolean isSelected, boolean cellHasFocus) {
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+                if (-1 < index) {
+                    list.setToolTipText(tooltips[index]);
+                }
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            setFont(list.getFont());
+            setText((value == null) ? "" : value.toString());
+            return this;
+        }
+
+        public void setTooltips(String[] tooltips) {
+            this.tooltips = tooltips;
+        }
+    }
+
+    private void createParamComboBox(ParamInfo paramInfo, JPanel jPanel, int gridy) {
+
+        final String param = paramInfo.getName();
+
+        ArrayList<ParamValidValueInfo> validValuesArrayList = new ArrayList<ParamValidValueInfo>();
+        ArrayList<String> validValuesToolTipsArrayList = new ArrayList<String>();
+
+        for (ParamValidValueInfo paramValidValueInfo : paramInfo.getValidValueInfos()) {
+            if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().length() > 0) {
+                validValuesArrayList.add(paramValidValueInfo);
+                validValuesToolTipsArrayList.add(paramValidValueInfo.getDescription());
+            }
+        }
+
+//        final ParamValidValueInfo validValuesInfosArray[] = (ParamValidValueInfo[]) validValuesArrayList.toArray();
+
+        final ParamValidValueInfo[] validValueInfosArray;
+        validValueInfosArray = new ParamValidValueInfo[validValuesArrayList.size()];
+
+        int i = 0;
+        for (ParamValidValueInfo paramValidValueInfo : validValuesArrayList) {
+            validValueInfosArray[i] = paramValidValueInfo;
+            i++;
+        }
+
+
+        final String[] validValuesToolTipsArray;
+        validValuesToolTipsArray = new String[validValuesArrayList.size()];
+
+        int j = 0;
+        for (String validValuesToolTip : validValuesToolTipsArrayList) {
+            validValuesToolTipsArray[j] = validValuesToolTip;
+            j++;
+        }
+
+
+        final JComboBox jComboBox = new JComboBox(validValueInfosArray);
+
+        MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
+        myComboBoxRenderer.setTooltips(validValuesToolTipsArray);
+        jComboBox.setRenderer(myComboBoxRenderer);
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
-        final JPanel jPanel = new JPanel();
-        jPanel.setLayout(new GridBagLayout());
-        jPanel.add(jLabel,
-                SeadasGuiUtils.makeConstraints(0, 0, GridBagConstraints.EAST));
-        jPanel.add(jTextField,
-                SeadasGuiUtils.makeConstraints(1, 0));
 
-        return jPanel;
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 0;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.NORTHEAST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+            jPanel.add(jLabel, constraints);
+        }
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 1;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.NORTHWEST;
+            constraints.weightx = 1;
+            constraints.weighty = 0;
+            jPanel.add(jComboBox, constraints);
+        }
+
+        jComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                l2genData.setParamValue(param, jComboBox.getSelectedItem().toString());
+            }
+        });
+
+
+        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                debug("receiving eventName " + param);
+                for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
+                    if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
+                        jComboBox.setSelectedItem(paramValidValueInfo);
+                    }
+                }
+            }
+        });
+
+    }
+
+
+    private void createParamCheckBox(ParamInfo paramInfo, JPanel jPanel, int gridy) {
+        final JCheckBox jCheckBox = new JCheckBox();
+        final String paramName = paramInfo.getName();
+
+        jCheckBox.setName(paramInfo.getName());
+
+        //   paramJCheckboxes.add(jCheckBox);
+
+        if (paramInfo.getValue().equals(ParamInfo.BOOLEAN_TRUE)) {
+            jCheckBox.setSelected(true);
+        } else {
+            jCheckBox.setSelected(false);
+        }
+
+        final JLabel jLabel = new JLabel(paramInfo.getName());
+        jLabel.setToolTipText(paramInfo.getDescription());
+
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 0;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.NORTHEAST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+            jPanel.add(jLabel, constraints);
+        }
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 1;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.NORTHWEST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+
+
+            jPanel.add(jCheckBox, constraints);
+        }
+
+
+        // add listener for current checkbox
+        jCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                l2genData.setParamValue(paramName, jCheckBox.isSelected());
+            }
+        });
+
+        l2genData.addPropertyChangeListener(paramName, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                debug("receiving eventName " + paramName);
+                jCheckBox.setSelected(l2genData.getBooleanParamValue(paramName));
+            }
+        });
     }
 
 

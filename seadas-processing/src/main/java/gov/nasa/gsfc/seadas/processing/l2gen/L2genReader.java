@@ -66,14 +66,14 @@ public class L2genReader {
                         productCategoryInfo.addProductName(product);
                     }
 
-                    productCategoryInfo.sortProductNames();
+                    //  productCategoryInfo.sortProductNames();
                 }
 
                 l2genData.addProductCategoryInfo(productCategoryInfo);
             }
         }
 
-        l2genData.sortProductCategoryInfos();
+        //  l2genData.sortProductCategoryInfos();
     }
 
 
@@ -121,14 +121,14 @@ public class L2genReader {
                         paramCategoryInfo.addParamName(param);
                     }
 
-                    paramCategoryInfo.sortParamNameInfos();
+                    //  paramCategoryInfo.sortParamNameInfos();
                 }
 
                 l2genData.addParamCategoryInfo(paramCategoryInfo);
             }
         }
 
-        l2genData.sortParamCategoryInfos();
+        //  l2genData.sortParamCategoryInfos();
     }
 
 
@@ -233,7 +233,7 @@ public class L2genReader {
                         paramInfo.addValidValueInfo(paramValidValueInfo);
                     }
 
-                 //   paramInfo.sortValidValueInfos();
+                    //   paramInfo.sortValidValueInfos();
                 }
 
                 l2genData.addParamOptionsInfo(paramInfo);
