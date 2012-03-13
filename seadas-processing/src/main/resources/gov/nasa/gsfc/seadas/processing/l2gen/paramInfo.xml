@@ -16,8 +16,7 @@
         <default>false</default>
         <source>default</source>
         <alias>--version</alias>
-        <description>print the version
-        information</description>
+        <description>print the version information</description>
     </option>
     <option>
         <name>-dump_options</name>
@@ -26,8 +25,7 @@
         <default>false</default>
         <source>default</source>
         <alias>--dump_options</alias>
-        <description>print
-        information about each option</description>
+        <description>print information about each option</description>
     </option>
     <option>
         <name>-dump_options_paramfile</name>
@@ -35,8 +33,7 @@
         <type>string</type>
         <source>default</source>
         <alias>--dump_options_paramfile</alias>
-        <description>print
-        information about each option to paramfile</description>
+        <description>print information about each option to paramfile</description>
     </option>
     <option>
         <name>-dump_options_xmlfile</name>
@@ -44,8 +41,7 @@
         <type>string</type>
         <source>command line</source>
         <alias>--dump_options_xmlfile</alias>
-        <description>print
-        information about each option to XML file</description>
+        <description>print information about each option to XML file</description>
     </option>
     <option>
         <name>par</name>
@@ -68,8 +64,7 @@
         <type>string</type>
         <default>OC</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>product suite string for loading
-        suite-specific defaults</description>
+        <description>product suite string for loading suite-specific defaults</description>
     </option>
     <option>
         <name>eval</name>
@@ -156,9 +151,7 @@
         <default>output</default>
         <source>command line</source>
         <alias>ofile1</alias>
-        <description>output L2 file #1 name, output vicarious L1B
-        for inverse mode
-   ofile[#] = additional output L2 file name</description>
+        <description>output L2 file #1 name, output vicarious L1B for inverse mode ofile[#] = additional output L2 file name</description>
     </option>
     <option>
         <name>il2file</name>
@@ -166,10 +159,7 @@
         <type>string</type>
         <source>default</source>
         <alias>il2file1</alias>
-        <description>input L2 file names for sensor to be
-        used as a calibrator.  Alternatively, a data point can be used as a
-        calibrator (e.g. MOBY)
-   il2file[#] = additional L2 callibration file names</description>
+        <description>input L2 file names for sensor to be used as a calibrator.  Alternatively, a data point can be used as a calibrator (e.g. MOBY) il2file[#] = additional L2 callibration file names</description>
     </option>
     <option>
         <name>tgtfile</name>
@@ -198,8 +188,7 @@
         <type>string</type>
         <source>command line</source>
         <alias>l2prod1</alias>
-        <description>L2 products to be included in ofile #1
-   l2prod[#] = L2 products to be included in ofile[#]</description>
+        <description>L2 products to be included in ofile #1 l2prod[#] = L2 products to be included in ofile[#]</description>
     </option>
     <option>
         <name>spixl</name>
@@ -255,8 +244,7 @@
         <type>int</type>
         <default>8</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>control-point pixel increment for lon/lat
-        arrays</description>
+        <description>control-point pixel increment for lon/lat arrays</description>
     </option>
     <option>
         <name>proc_ocean</name>
@@ -292,8 +280,7 @@
         <type>bool</type>
         <default>false</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>toggle SST processing
-        (default=1 for MODIS, 0 otherwise)</description>
+        <description>toggle SST processing (default=1 for MODIS, 0 otherwise)</description>
     </option>
     <option>
         <name>atmocor</name>
@@ -338,6 +325,10 @@
             <description>No aerosol subtraction</description>
         </validValue>
         <validValue>
+            <value><![CDATA[>0]]></value>
+            <description>Multi-scattering with fixed model (provide model number, 1-N, relative to aermodels list)</description>
+        </validValue>
+        <validValue>
             <value>0</value>
             <description>White aerosol extrapolation.</description>
         </validValue>
@@ -347,39 +338,39 @@
         </validValue>
         <validValue>
             <value>-2</value>
-            <description>Multi-scattering with 2-band, RH-based model selection and</description>
+            <description>Multi-scattering with 2-band, RH-based model selection and iterative NIR correction</description>
         </validValue>
         <validValue>
             <value>-3</value>
-            <description>Multi-scattering with 2-band model selection</description>
+            <description>Multi-scattering with 2-band model selection and iterative NIR correction</description>
         </validValue>
         <validValue>
             <value>-4</value>
-            <description>Multi-scattering with fixed model pair</description>
+            <description>Multi-scattering with fixed model pair (requires aermodmin, aermodmax, aermodrat specification)</description>
         </validValue>
         <validValue>
             <value>-5</value>
-            <description>Multi-scattering with fixed model pair</description>
+            <description>Multi-scattering with fixed model pair and iterative NIR correction (requires aermodmin, aermodmax, aermodrat specification)</description>
         </validValue>
         <validValue>
             <value>-6</value>
-            <description>Multi-scattering with fixed angstrom</description>
+            <description>Multi-scattering with fixed angstrom (requires aer_angstrom specification)</description>
         </validValue>
         <validValue>
             <value>-7</value>
-            <description>Multi-scattering with fixed angstrom</description>
+            <description>Multi-scattering with fixed angstrom and iterative NIR correction (requires aer_angstrom specification)</description>
         </validValue>
         <validValue>
             <value>-8</value>
-            <description>Multi-scattering with fixed aerosol optical thickness</description>
+            <description>Multi-scattering with fixed aerosol optical thickness (requires taua specification)</description>
         </validValue>
         <validValue>
             <value>-9</value>
-            <description>Multi-scattering with 2-band model selection using Wang et al. 2009</description>
+            <description>Multi-scattering with 2-band model selection using Wang et al. 2009 to switch between SWIR and NIR. (MODIS only, requires aer_swir_short, aer_swir_long, aer_wave_short, aer_wave_long)</description>
         </validValue>
         <validValue>
             <value>-10</value>
-            <description>Multi-scattering with MUMM correction</description>
+            <description>Multi-scattering with MUMM correction and MUMM NIR calculation</description>
         </validValue>
         <validValue>
             <value>-11</value>
@@ -389,21 +380,7 @@
             <value>-12</value>
             <description>Spectral matching via Gordon (SeaWiFS-only)</description>
         </validValue>
-        <description>aerosol mode option
-      -0: Multi-scattering with fixed model (provide model number, 1-N,
-           relative to aermodels list)
-           iterative NIR correction
-           and iterative NIR correction
-           (requires aermodmin, aermodmax, aermodrat specification)
-           and iterative NIR correction
-           (requires aermodmin, aermodmax, aermodrat specification)
-           (requires aer_angstrom specification)
-           and iterative NIR correction
-           (requires aer_angstrom specification)
-           (requires taua specification)
-           to switch between SWIR and NIR. (MODIS only,
-           requires aer_swir_short, aer_swir_long, aer_wave_short, aer_wave_long)
-           and MUMM NIR calculation</description>
+        <description>aerosol mode option</description>
     </option>
     <option>
         <name>aer_wave_short</name>
@@ -411,8 +388,7 @@
         <type>int</type>
         <default>765</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>shortest sensor wavelength for aerosol
-        model selection</description>
+        <description>shortest sensor wavelength for aerosol model selection</description>
     </option>
     <option>
         <name>aer_wave_long</name>
@@ -420,8 +396,7 @@
         <type>int</type>
         <default>865</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>longest sensor wavelength for aerosol
-        model selection</description>
+        <description>longest sensor wavelength for aerosol model selection</description>
     </option>
     <option>
         <name>aer_swir_short</name>
@@ -429,8 +404,7 @@
         <type>int</type>
         <default>-1</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>shortest sensor wavelength for
-        SWIR-based NIR Lw correction</description>
+        <description>shortest sensor wavelength for SWIR-based NIR Lw correction</description>
     </option>
     <option>
         <name>aer_swir_long</name>
@@ -438,8 +412,7 @@
         <type>int</type>
         <default>-1</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>longest sensor wavelength for SWIR-based
-        NIR Lw correction</description>
+        <description>longest sensor wavelength for SWIR-based NIR Lw correction</description>
     </option>
     <option>
         <name>aer_rrs_short</name>
@@ -447,8 +420,7 @@
         <type>float</type>
         <default>-1.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>Rrs at shortest sensor wavelength for
-        aerosol model selection</description>
+        <description>Rrs at shortest sensor wavelength for aerosol model selection</description>
     </option>
     <option>
         <name>aer_rrs_long</name>
@@ -456,8 +428,7 @@
         <type>float</type>
         <default>-1.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>Rrs at longest sensor wavelength for
-        aerosol model selection</description>
+        <description>Rrs at longest sensor wavelength for aerosol model selection</description>
     </option>
     <option>
         <name>aermodmin</name>
@@ -465,8 +436,7 @@
         <type>int</type>
         <default>-1</default>
         <source>default</source>
-        <description>lower-bounding model to use for fixed model
-        pair aerosol option</description>
+        <description>lower-bounding model to use for fixed model pair aerosol option</description>
     </option>
     <option>
         <name>aermodmax</name>
@@ -474,8 +444,7 @@
         <type>int</type>
         <default>-1</default>
         <source>default</source>
-        <description>upper-bounding model to use for fixed model
-        pair aerosol option</description>
+        <description>upper-bounding model to use for fixed model pair aerosol option</description>
     </option>
     <option>
         <name>aermodrat</name>
@@ -483,8 +452,7 @@
         <type>float</type>
         <default>0.0</default>
         <source>default</source>
-        <description>ratio to use for fixed model pair aerosol
-        option</description>
+        <description>ratio to use for fixed model pair aerosol option</description>
     </option>
     <option>
         <name>aer_angstrom</name>
@@ -492,8 +460,7 @@
         <type>float</type>
         <default>-999.0</default>
         <source>default</source>
-        <description>aerosol angstrom exponent for model
-        selection</description>
+        <description>aerosol angstrom exponent for model selection</description>
     </option>
     <option>
         <name>aer_iter_max</name>
@@ -501,8 +468,7 @@
         <type>int</type>
         <default>10</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>maximum number of iterations for NIR
-        water-leaving radiance estimation.</description>
+        <description>maximum number of iterations for NIR water-leaving radiance estimation.</description>
     </option>
     <option>
         <name>mumm_alpha</name>
@@ -510,8 +476,7 @@
         <type>float</type>
         <default>1.72</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>water-leaving reflectance ratio for MUMM
-       turbid water atmospheric correction</description>
+        <description>water-leaving reflectance ratio for MUMM turbid water atmospheric correction</description>
     </option>
     <option>
         <name>mumm_gamma</name>
@@ -519,8 +484,7 @@
         <type>float</type>
         <default>1.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>two-way Rayleigh-aerosol transmittance
-       ratio for MUMM turbid water atmospheric correction</description>
+        <description>two-way Rayleigh-aerosol transmittance ratio for MUMM turbid water atmospheric correction</description>
     </option>
     <option>
         <name>mumm_epsilon</name>
@@ -528,8 +492,7 @@
         <type>float</type>
         <default>1.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>aerosol reflectance ratio for MUMM
-        turbid water atmospheric correction</description>
+        <description>aerosol reflectance ratio for MUMM turbid water atmospheric correction</description>
     </option>
     <option>
         <name>degc</name>
@@ -593,8 +556,7 @@
             <value>0</value>
             <description>Off (default for MOS, OSMI)</description>
         </validValue>
-        <description>out-of-band correction for water-leaving
-        radiances</description>
+        <description>out-of-band correction for water-leaving radiances</description>
     </option>
     <option>
         <name>oxaband_opt</name>
@@ -602,8 +564,7 @@
         <type>bool</type>
         <default>false</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>oxygen a-band correction option
-        (default On for SeaWiFS, OSMI, and OCTS, Off otherwise)</description>
+        <description>oxygen a-band correction option (default On for SeaWiFS, OSMI, and OCTS, Off otherwise)</description>
     </option>
     <option>
         <name>filter_opt</name>
@@ -611,8 +572,7 @@
         <type>bool</type>
         <default>false</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
-        <description>filtering input data option
-        (default On for OCTS, Off otherwise)</description>
+        <description>filtering input data option (default On for OCTS, Off otherwise)</description>
     </option>
     <option>
         <name>filter_file</name>
@@ -801,16 +761,14 @@
             <value>0</value>
             <description>no correction</description>
         </validValue>
-        <description>cross-calibration option (sensor-specific)
-         comma separated list of option values, 1 per band, with bands listed in xcal_wave.</description>
+        <description>cross-calibration option (sensor-specific) comma separated list of option values, 1 per band, with bands listed in xcal_wave.</description>
     </option>
     <option>
         <name>xcal_wave</name>
         <value/>
         <type>float</type>
         <source>default</source>
-        <description>wavelengths at which to apply cross-calibration.  Comma
-        separated list of sensor wavelength values associated with xcal_opt.</description>
+        <description>wavelengths at which to apply cross-calibration.  Comma separated list of sensor wavelength values associated with xcal_opt.</description>
     </option>
     <option>
         <name>resolution</name>
@@ -828,14 +786,13 @@
         </validValue>
         <validValue>
             <value>500</value>
-            <description>500m resolution including aggregated 250 land bands and</description>
+            <description>500m resolution including aggregated 250 land bands and replication for lower resolution bands</description>
         </validValue>
         <validValue>
             <value>250</value>
             <description>250m resolution with replication for lower resolution bands</description>
         </validValue>
-        <description>processing resolution (MODIS only)
-           replication for lower resolution bands</description>
+        <description>processing resolution (MODIS only)</description>
     </option>
     <option>
         <name>giop_aph_opt</name>
@@ -871,8 +828,7 @@
         <type>float</type>
         <default>-1000.0</default>
         <source>default</source>
-        <description>GIOP model, spectral parameter
-        for aph</description>
+        <description>GIOP model, spectral parameter for aph</description>
     </option>
     <option>
         <name>giop_adg_opt</name>
@@ -912,8 +868,7 @@
         <type>float</type>
         <default>0.0145</default>
         <source>default</source>
-        <description>GIOP model, spectral parameter
-        for adg</description>
+        <description>GIOP model, spectral parameter for adg</description>
     </option>
     <option>
         <name>giop_bbp_opt</name>
@@ -977,8 +932,7 @@
         <type>float</type>
         <default>-1000.0</default>
         <source>default</source>
-        <description>GIOP model, spectral parameter
-        for bbp</description>
+        <description>GIOP model, spectral parameter for bbp</description>
     </option>
     <option>
         <name>giop_rrs_opt</name>
@@ -1002,8 +956,7 @@
         <type>float</type>
         <default>[0.0949,0.0794]</default>
         <source>default</source>
-        <description>GIOP model, Gordon
-        Rrs to bb/(a+bb) quadratic coefficients</description>
+        <description>GIOP model, Gordon Rrs to bb/(a+bb) quadratic coefficients</description>
     </option>
     <option>
         <name>giop_wave</name>
@@ -1011,8 +964,7 @@
         <type>float</type>
         <default>-1</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>GIOP model list of sensor wavelengths for optimization
-        comma-seperated list, defaults is all visible bands (400-700nm)</description>
+        <description>GIOP model list of sensor wavelengths for optimization comma-seperated list, defaults is all visible bands (400-700nm)</description>
     </option>
     <option>
         <name>giop_rrs_unc</name>
@@ -1020,8 +972,7 @@
         <type>float</type>
         <default>-1</default>
         <source>default</source>
-        <description>GIOP model list of sensor wavelengths for optimization
-        comma-seperated list, defaults is all visible bands (400-700nm)</description>
+        <description>GIOP model list of sensor wavelengths for optimization comma-seperated list, defaults is all visible bands (400-700nm)</description>
     </option>
     <option>
         <name>giop_maxiter</name>
@@ -1153,8 +1104,7 @@
         <type>int</type>
         <default>[-1,-1]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>sensor wavelengths for OC2 chlorophyll
-        algorithm</description>
+        <description>sensor wavelengths for OC2 chlorophyll algorithm</description>
     </option>
     <option>
         <name>chloc2_coef</name>
@@ -1162,8 +1112,7 @@
         <type>float</type>
         <default>[0.0,0.0,0.0,0.0,0.0]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>coefficients for OC2
-        chlorophyll algorithm</description>
+        <description>coefficients for OC2 chlorophyll algorithm</description>
     </option>
     <option>
         <name>chloc3_wave</name>
@@ -1171,8 +1120,7 @@
         <type>int</type>
         <default>[-1,-1,-1]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>sensor wavelengths for OC3
-         chlorophyll algorithm</description>
+        <description>sensor wavelengths for OC3 chlorophyll algorithm</description>
     </option>
     <option>
         <name>chloc3_coef</name>
@@ -1180,8 +1128,7 @@
         <type>float</type>
         <default>[0.0,0.0,0.0,0.0,0.0]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>coefficients for OC3
-        chlorophyll algorithm</description>
+        <description>coefficients for OC3 chlorophyll algorithm</description>
     </option>
     <option>
         <name>chloc4_wave</name>
@@ -1189,8 +1136,7 @@
         <type>int</type>
         <default>[-1,-1,-1,-1]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>sensor wavelengths for OC4
-        chlorophyll algorithm</description>
+        <description>sensor wavelengths for OC4 chlorophyll algorithm</description>
     </option>
     <option>
         <name>chloc4_coef</name>
@@ -1198,8 +1144,7 @@
         <type>float</type>
         <default>[0.0,0.0,0.0,0.0,0.0]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>coefficients for OC4
-        chlorophyll algorithm</description>
+        <description>coefficients for OC4 chlorophyll algorithm</description>
     </option>
     <option>
         <name>chlclark_wave</name>
@@ -1207,8 +1152,7 @@
         <type>int</type>
         <default>[-1,-1,-1]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>sensor wavelengths for Clark
-        chlorophyll algorithm</description>
+        <description>sensor wavelengths for Clark chlorophyll algorithm</description>
     </option>
     <option>
         <name>chlclark_coef</name>
@@ -1216,8 +1160,7 @@
         <type>float</type>
         <default>[0.0,0.0,0.0,0.0,0.0,0.0]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>coefficients for
-        Clark chlorophyll algorithm</description>
+        <description>coefficients for Clark chlorophyll algorithm</description>
     </option>
     <option>
         <name>kd2_wave</name>
@@ -1225,8 +1168,7 @@
         <type>int</type>
         <default>[-1,-1]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>sensor wavelengths for polynomial Kd(490)
-        algorithm</description>
+        <description>sensor wavelengths for polynomial Kd(490) algorithm</description>
     </option>
     <option>
         <name>kd2_coef</name>
@@ -1234,8 +1176,7 @@
         <type>float</type>
         <default>[0.0,0.0,0.0,0.0,0.0,0.0]</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>sensor wavelengths
-        for polynomial Kd(490) algorithm</description>
+        <description>sensor wavelengths for polynomial Kd(490) algorithm</description>
     </option>
     <option>
         <name>flh_offset</name>
@@ -1243,8 +1184,7 @@
         <type>float</type>
         <default>0.0</default>
         <source>default</source>
-        <description>bias to subtract
-        from retrieved fluorescence line height</description>
+        <description>bias to subtract from retrieved fluorescence line height</description>
     </option>
     <option>
         <name>btfile</name>
@@ -1399,8 +1339,7 @@
         <type>float</type>
         <default>0.1</default>
         <source>default</source>
-        <description>sea ice fraction above which will be
-        flagged as sea ice</description>
+        <description>sea ice fraction above which will be flagged as sea ice</description>
     </option>
     <option>
         <name>sstfile</name>
@@ -1408,8 +1347,7 @@
         <type>string</type>
         <default>$OCDATAROOT/common/sst_climatology.hdf</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>input
-        SST reference file</description>
+        <description>input SST reference file</description>
     </option>
     <option>
         <name>sssfile</name>
@@ -1417,8 +1355,7 @@
         <type>string</type>
         <default>$OCDATAROOT/common/sss_climatology_woa2009.hdf</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>input
-        SSS reference file</description>
+        <description>input SSS reference file</description>
     </option>
     <option>
         <name>no2file</name>
@@ -1426,8 +1363,7 @@
         <type>string</type>
         <default>$OCDATAROOT/common/no2_climatology.hdf</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>no2
-        ancillary file</description>
+        <description>no2 ancillary file</description>
     </option>
     <option>
         <name>alphafile</name>
@@ -1494,9 +1430,7 @@
         <type>int</type>
         <default>0</default>
         <source>default</source>
-        <description>pixel size of the central box in the L1 scene
-        (e.g. 5 pixels around MOBY) to be extracted into xcalfile for the
-        cross-calibration, 0=whole L1</description>
+        <description>pixel size of the central box in the L1 scene (e.g. 5 pixels around MOBY) to be extracted into xcalfile for the cross-calibration, 0=whole L1</description>
     </option>
     <option>
         <name>xcalboxcenter</name>
@@ -1504,8 +1438,7 @@
         <type>int</type>
         <default>[0,0]</default>
         <source>default</source>
-        <description>Centeral [ipix, iscan] of the box in
-        the L1 scene, [0,0] = center of the L1 scene</description>
+        <description>Centeral [ipix, iscan] of the box in the L1 scene, [0,0] = center of the L1 scene</description>
     </option>
     <option>
         <name>xcalpervalid</name>
@@ -1513,8 +1446,7 @@
         <type>int</type>
         <default>0</default>
         <source>default</source>
-        <description>min percent of valid cross-calibration
-        pixels within the box or the L1 scene, 0 = at least 1 pixel</description>
+        <description>min percent of valid cross-calibration pixels within the box or the L1 scene, 0 = at least 1 pixel</description>
     </option>
     <option>
         <name>xcalsubsmpl</name>
@@ -1522,8 +1454,7 @@
         <type>int</type>
         <default>1</default>
         <source>default</source>
-        <description>Subsampling rate for the data to be used
-        for the cross-calibration</description>
+        <description>Subsampling rate for the data to be used for the cross-calibration</description>
     </option>
     <option>
         <name>vct_msk_water</name>
@@ -1539,8 +1470,7 @@
             <value>1</value>
             <description>use deep water mask</description>
         </validValue>
-        <description>use deep water mask to select data for
-        target file:</description>
+        <description>use deep water mask to select data for target file:</description>
     </option>
     <option>
         <name>vct_water</name>
@@ -1564,9 +1494,7 @@
         <type>float</type>
         <default>0.04</default>
         <source>default</source>
-        <description>minimum % of samples filled in target
-        file to allow target file creation, if greater than 0,
-        create target, aerosol files regardless</description>
+        <description>minimum % of samples filled in target file to allow target file creation, if greater than 0, create target, aerosol files regardless</description>
     </option>
     <option>
         <name>maxpointdist</name>
@@ -1582,8 +1510,7 @@
             <value>0.0</value>
             <description>max{mean(L1 res),mean(L2 res)}</description>
         </validValue>
-        <description>max distance between L1 and L2 pixels
-       in km</description>
+        <description>max distance between L1 and L2 pixels in km</description>
     </option>
     <option>
         <name>chlthreshold</name>
@@ -1591,8 +1518,7 @@
         <type>float</type>
         <default>100.000000</default>
         <source>default</source>
-        <description>threshold on L2 data chlorophyll
-        (100.000000=CHL_MAX)</description>
+        <description>threshold on L2 data chlorophyll (100.000000=CHL_MAX)</description>
     </option>
     <option>
         <name>aotthreshold</name>
@@ -1600,8 +1526,7 @@
         <type>float</type>
         <default>1.000000</default>
         <source>default</source>
-        <description>threshold on L2 data AOTs
-        (1.000000=AOT_MAX)</description>
+        <description>threshold on L2 data AOTs (1.000000=AOT_MAX)</description>
     </option>
     <option>
         <name>coccolith</name>
@@ -1624,8 +1549,7 @@
         <value/>
         <type>float</type>
         <source>default</source>
-        <description>[taua_band1,...,taua_bandn] aerosol optical thickness of the
-        calibration data point</description>
+        <description>[taua_band1,...,taua_bandn] aerosol optical thickness of the calibration data point</description>
     </option>
     <option>
         <name>cloud_thresh</name>
@@ -1634,8 +1558,7 @@
         <default>0.027</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
         <alias>albedo</alias>
-        <description>cloud reflectance
-        threshold</description>
+        <description>cloud reflectance threshold</description>
     </option>
     <option>
         <name>cloud_wave</name>
@@ -1651,8 +1574,7 @@
         <type>float</type>
         <default>-1.0</default>
         <source>default</source>
-        <description>cloud reflectace ratio threshold
-        (-1.0=disabled)</description>
+        <description>cloud reflectace ratio threshold (-1.0=disabled)</description>
     </option>
     <option>
         <name>glint_thresh</name>
@@ -1677,8 +1599,7 @@
         <type>float</type>
         <default>0.0001</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>min NIR aerosol reflectance to attempt
-        model lookup</description>
+        <description>min NIR aerosol reflectance to attempt model lookup</description>
     </option>
     <option>
         <name>sunzen</name>
@@ -1702,8 +1623,7 @@
         <type>float</type>
         <default>0.85</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>minimum epsilon to trigger atmospheric
-        correction failure flag</description>
+        <description>minimum epsilon to trigger atmospheric correction failure flag</description>
     </option>
     <option>
         <name>epsmax</name>
@@ -1711,8 +1631,7 @@
         <type>float</type>
         <default>1.35</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>maximum epsilon to trigger atmospheric
-         correction failure flag</description>
+        <description>maximum epsilon to trigger atmospheric correction failure flag</description>
     </option>
     <option>
         <name>tauamax</name>
@@ -1720,8 +1639,7 @@
         <type>float</type>
         <default>0.3</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>maximum 865 aerosol optical depth to trigger
-        hitau flag</description>
+        <description>maximum 865 aerosol optical depth to trigger hitau flag</description>
     </option>
     <option>
         <name>nLwmin</name>
@@ -1737,8 +1655,7 @@
         <type>float</type>
         <default>0.5</default>
         <source>default</source>
-        <description>threshold on degree-of-polarization to set
-        HIPOL flag</description>
+        <description>threshold on degree-of-polarization to set HIPOL flag</description>
     </option>
     <option>
         <name>wsmax</name>
@@ -1754,8 +1671,7 @@
         <type>float</type>
         <default>-1000.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>user over-ride of windspeed in m/s
-        (-1000=use ancillary files)</description>
+        <description>user over-ride of windspeed in m/s (-1000=use ancillary files)</description>
     </option>
     <option>
         <name>windangle</name>
@@ -1763,8 +1679,7 @@
         <type>float</type>
         <default>-1000.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>user over-ride of wind angle in deg
-        (-1000=use ancillary files)</description>
+        <description>user over-ride of wind angle in deg (-1000=use ancillary files)</description>
     </option>
     <option>
         <name>pressure</name>
@@ -1772,8 +1687,7 @@
         <type>float</type>
         <default>-1000.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>user over-ride of atmospheric pressure
-        in mb (-1000=use ancillary files)</description>
+        <description>user over-ride of atmospheric pressure in mb (-1000=use ancillary files)</description>
     </option>
     <option>
         <name>ozone</name>
@@ -1781,8 +1695,7 @@
         <type>float</type>
         <default>-1000.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>user over-ride of ozone concentration in
-        cm (-1000=use ancillary files)</description>
+        <description>user over-ride of ozone concentration in cm (-1000=use ancillary files)</description>
     </option>
     <option>
         <name>relhumid</name>
@@ -1790,8 +1703,7 @@
         <type>float</type>
         <default>-1000.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>user over-ride of relative humidity in
-        percent (-1000=use ancillary files)</description>
+        <description>user over-ride of relative humidity in percent (-1000=use ancillary files)</description>
     </option>
     <option>
         <name>watervapor</name>
@@ -1799,8 +1711,7 @@
         <type>float</type>
         <default>-1000.0</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>user over-ride of water vapor in
-        g/cm^2 (-1000=use ancillary files)</description>
+        <description>user over-ride of water vapor in g/cm^2 (-1000=use ancillary files)</description>
     </option>
     <option>
         <name>maskland</name>
@@ -1872,8 +1783,7 @@
         <type>float</type>
         <default>0.25</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
-        <description>SeaWiFS only, straylight fractional
-        threshold on Ltypical</description>
+        <description>SeaWiFS only, straylight fractional threshold on Ltypical</description>
     </option>
     <option>
         <name>sl_pixl</name>
@@ -1881,8 +1791,7 @@
         <type>int</type>
         <default>-1</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
-        <description>SeaWiFS only, number of LAC pixels for
-        straylight flagging</description>
+        <description>SeaWiFS only, number of LAC pixels for straylight flagging</description>
     </option>
     <option>
         <name>vcal_opt</name>
@@ -1928,8 +1837,7 @@
         <type>string</type>
         <default>$OCDATAROOT/common/owmc_lut.hdf</default>
         <source>default</source>
-        <description>lut for OWMC
-        classification</description>
+        <description>lut for OWMC classification</description>
     </option>
     <option>
         <name>stype</name>
