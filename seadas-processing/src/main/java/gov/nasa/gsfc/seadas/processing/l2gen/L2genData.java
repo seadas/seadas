@@ -153,6 +153,15 @@ public class L2genData {
     }
 
 
+    public void fireAllParamEvents() {
+        for (ParamInfo paramInfo : paramInfos) {
+            if (paramInfo.getName() != null) {
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, paramInfo.getName(), null, null));
+            }
+        }
+    }
+
+
     public void setSelectedInfo(BaseInfo info, BaseInfo.State state) {
 
         if (state != info.getState()) {

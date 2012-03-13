@@ -12,7 +12,6 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
 import org.esa.beam.framework.ui.AppContext;
-import org.esa.beam.util.math.Array;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -130,6 +129,8 @@ class L2genForm extends JTabbedPane {
 
         if (ifile != null) {
             l2genData.setParamValue(l2genData.IFILE, ifile);
+        } else {
+         //   l2genData.fireAllParamEvents();
         }
     }
 
@@ -299,15 +300,15 @@ class L2genForm extends JTabbedPane {
         int gridy = 0;
         for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
 
-//            if (paramInfo.hasValidValueInfos()) {
-//                createParamComboBox(paramInfo, mainPanel, gridy);
-//            } else {
-//                if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
-//                    createParamCheckBox(paramInfo, mainPanel, gridy);
-//                } else {
-//                    createParamTextfield(paramInfo, mainPanel, gridy);
-//                }
-//            }
+            if (paramInfo.hasValidValueInfos()) {
+                createParamComboBox(paramInfo, mainPanel, gridy);
+            } else {
+                if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
+                    createParamCheckBox(paramInfo, mainPanel, gridy);
+                } else {
+                    createParamTextfield(paramInfo, mainPanel, gridy);
+                }
+            }
 
             gridy++;
         }
@@ -369,9 +370,8 @@ class L2genForm extends JTabbedPane {
         }
 
 
-        JTextField jTextField = new JTextField(jTextFieldLen);
-        final JTextField finalJTextField = jTextField;
-
+        final JTextField jTextField = new JTextField(jTextFieldLen);
+        jTextField.setText(paramInfo.getValue());
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
@@ -382,7 +382,7 @@ class L2genForm extends JTabbedPane {
             constraints.gridx = 0;
             constraints.gridy = gridy;
             constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.NORTHEAST;
+            constraints.anchor = GridBagConstraints.EAST;
             constraints.weightx = 0;
             constraints.weighty = 0;
             jPanel.add(jLabel, constraints);
@@ -398,7 +398,7 @@ class L2genForm extends JTabbedPane {
             } else {
                 constraints.fill = GridBagConstraints.NONE;
             }
-            constraints.anchor = GridBagConstraints.NORTHWEST;
+            constraints.anchor = GridBagConstraints.WEST;
             constraints.weightx = 1;
             constraints.weighty = 0;
 
@@ -413,14 +413,15 @@ class L2genForm extends JTabbedPane {
 
             @Override
             public void focusLost(FocusEvent e) {
-                l2genData.setParamValue(param, finalJTextField.getText().toString());
+                l2genData.setParamValue(param, jTextField.getText().toString());
             }
         });
 
         l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                finalJTextField.setText(l2genData.getParamValue(param));
+                jTextField.setText(l2genData.getParamValue(param));
+                debug("Textfield hears " + param);
             }
         });
     }
@@ -498,6 +499,12 @@ class L2genForm extends JTabbedPane {
         MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
         myComboBoxRenderer.setTooltips(validValuesToolTipsArray);
         jComboBox.setRenderer(myComboBoxRenderer);
+        for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
+            if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
+                jComboBox.setSelectedItem(paramValidValueInfo);
+            }
+        }
+
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
@@ -508,7 +515,7 @@ class L2genForm extends JTabbedPane {
             constraints.gridx = 0;
             constraints.gridy = gridy;
             constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.NORTHEAST;
+            constraints.anchor = GridBagConstraints.EAST;
             constraints.weightx = 0;
             constraints.weighty = 0;
             jPanel.add(jLabel, constraints);
@@ -519,7 +526,7 @@ class L2genForm extends JTabbedPane {
             constraints.gridx = 1;
             constraints.gridy = gridy;
             constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.NORTHWEST;
+            constraints.anchor = GridBagConstraints.WEST;
             constraints.weightx = 1;
             constraints.weighty = 0;
             jPanel.add(jComboBox, constraints);
@@ -571,7 +578,7 @@ class L2genForm extends JTabbedPane {
             constraints.gridx = 0;
             constraints.gridy = gridy;
             constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.NORTHEAST;
+            constraints.anchor = GridBagConstraints.EAST;
             constraints.weightx = 0;
             constraints.weighty = 0;
             jPanel.add(jLabel, constraints);
@@ -582,7 +589,7 @@ class L2genForm extends JTabbedPane {
             constraints.gridx = 1;
             constraints.gridy = gridy;
             constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.NORTHWEST;
+            constraints.anchor = GridBagConstraints.WEST;
             constraints.weightx = 0;
             constraints.weighty = 0;
 

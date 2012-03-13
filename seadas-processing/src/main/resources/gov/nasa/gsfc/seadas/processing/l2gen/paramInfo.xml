@@ -390,7 +390,7 @@
             <description>Spectral matching via Gordon (SeaWiFS-only)</description>
         </validValue>
         <description>aerosol mode option
-      > 0: Multi-scattering with fixed model (provide model number, 1-N,
+      -0: Multi-scattering with fixed model (provide model number, 1-N,
            relative to aermodels list)
            iterative NIR correction
            and iterative NIR correction

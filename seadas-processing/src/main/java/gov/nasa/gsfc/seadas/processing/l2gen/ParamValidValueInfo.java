@@ -46,11 +46,17 @@ public class ParamValidValueInfo implements Comparable {
     }
 
     public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("");
+
         if (value != null) {
-            return value;
-        } else {
-            return "";
+            stringBuilder.append(value);
+
+            if (description != null) {
+                stringBuilder.append(" - " + description);
+            }
         }
+
+        return stringBuilder.toString();
     }
 
 //    public static final Comparator<ParamValidValueInfo> SORT_BY_VALUE
