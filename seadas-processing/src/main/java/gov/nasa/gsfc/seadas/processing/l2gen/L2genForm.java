@@ -59,18 +59,18 @@ class L2genForm extends JTabbedPane {
     private JTextArea parfileTextEntryName;
     private JTextArea parfileTextEntryValue;
     private JButton parfileTextEntrySubmit;
-
-    private JTextField spixlJTextField;
-    private JTextField epixlJTextField;
-    private JTextField dpixlJTextField;
-    private JTextField slineJTextField;
-    private JTextField elineJTextField;
-    private JTextField dlineJTextField;
-
-    private JTextField northJTextField;
-    private JTextField southJTextField;
-    private JTextField westJTextField;
-    private JTextField eastJTextField;
+//
+//    private JTextField spixlJTextField;
+//    private JTextField epixlJTextField;
+//    private JTextField dpixlJTextField;
+//    private JTextField slineJTextField;
+//    private JTextField elineJTextField;
+//    private JTextField dlineJTextField;
+//
+//    private JTextField northJTextField;
+//    private JTextField southJTextField;
+//    private JTextField westJTextField;
+//    private JTextField eastJTextField;
 
     private JTextArea parfileJTextArea;
 
@@ -84,7 +84,7 @@ class L2genForm extends JTabbedPane {
 
     private static final String INPUT_OUTPUT_FILE_TAB_NAME = "Input/Output";
     private static final String PARFILE_TAB_NAME = "Parameters";
-    private static final String SUB_SETTING_TAB_NAME = "Subsetting Options";
+ //   private static final String SUB_SETTING_TAB_NAME = "Subsetting Options";
     private static final String PRODUCTS_TAB_NAME = "Products";
 
 
@@ -130,7 +130,7 @@ class L2genForm extends JTabbedPane {
         if (ifile != null) {
             l2genData.setParamValue(l2genData.IFILE, ifile);
         } else {
-         //   l2genData.fireAllParamEvents();
+            l2genData.fireAllParamEvents();
         }
     }
 
@@ -153,9 +153,9 @@ class L2genForm extends JTabbedPane {
         createProductsTab(PRODUCTS_TAB_NAME);
         this.setEnabledAt(currTabIndex, false);
 
-        currTabIndex++;
-        createSubsampleTab(SUB_SETTING_TAB_NAME);
-        this.setEnabledAt(currTabIndex, false);
+//        currTabIndex++;
+//        createSubsampleTab(SUB_SETTING_TAB_NAME);
+//        this.setEnabledAt(currTabIndex, false);
 
         for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
             if (paramCategoryInfo.isVisible() && (paramCategoryInfo.getParamInfos().size() > 0)) {
@@ -421,6 +421,11 @@ class L2genForm extends JTabbedPane {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jTextField.setText(l2genData.getParamValue(param));
+                if (l2genData.isParamDefault(param)) {
+                    jTextField.setForeground(new Color(200, 200, 200));
+                } else {
+                    jTextField.setForeground(new Color(0, 0, 0));
+                }
                 debug("Textfield hears " + param);
             }
         });
@@ -458,7 +463,7 @@ class L2genForm extends JTabbedPane {
         }
     }
 
-    private void createParamComboBox(ParamInfo paramInfo, JPanel jPanel, int gridy) {
+    private void createParamComboBox(final ParamInfo paramInfo, JPanel jPanel, int gridy) {
 
         final String param = paramInfo.getName();
 
@@ -496,14 +501,17 @@ class L2genForm extends JTabbedPane {
 
         final JComboBox jComboBox = new JComboBox(validValueInfosArray);
 
-        MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
-        myComboBoxRenderer.setTooltips(validValuesToolTipsArray);
-        jComboBox.setRenderer(myComboBoxRenderer);
+//        MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
+//        myComboBoxRenderer.setTooltips(validValuesToolTipsArray);
+//        jComboBox.setRenderer(myComboBoxRenderer);
         for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
             if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
                 jComboBox.setSelectedItem(paramValidValueInfo);
             }
         }
+
+        jComboBox.setForeground(Color.cyan);
+        jComboBox.setBackground(new Color(200,20,20));
 
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
@@ -535,7 +543,7 @@ class L2genForm extends JTabbedPane {
         jComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                l2genData.setParamValue(param, jComboBox.getSelectedItem().toString());
+                l2genData.setParamValue(paramInfo, (ParamValidValueInfo) jComboBox.getSelectedItem());
             }
         });
 
@@ -545,8 +553,13 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
                 debug("receiving eventName " + param);
                 for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
-                    if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
+                    if (l2genData.getParamValue(paramInfo).equals(paramValidValueInfo.getValue())) {
                         jComboBox.setSelectedItem(paramValidValueInfo);
+//                        if (l2genData.isParamDefault(paramInfo)) {
+//                            jComboBox.setForeground(new Color(80,80,80));
+//                        } else {
+//                            jComboBox.setForeground(new Color(0,0,0));
+//                        }
                     }
                 }
             }
@@ -616,53 +629,53 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createSubsampleTab(String tabnameSubsample) {
-
-        final JTabbedPane tabbedPane = new JTabbedPane();
-
-        final JPanel latlonJPanel = new JPanel();
-        final JPanel pixelLinesJPanel = new JPanel();
-
-        createLatLonPane(latlonJPanel);
-        createPixelsLinesPane(pixelLinesJPanel);
-
-
-        // Declare mainPanel and set it's attributes
-        final JPanel mainPanel = new JPanel();
-        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
-        mainPanel.setLayout(new GridBagLayout());
-
-
-        // Add Swing controls to mainPanel grid cells
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.fill = GridBagConstraints.NONE;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.weightx = 0;
-            c.weighty = 0;
-            mainPanel.add(latlonJPanel, c);
-        }
-
-
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 1;
-            c.fill = GridBagConstraints.NONE;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.weightx = 1;
-            c.weighty = 1;
-            mainPanel.add(pixelLinesJPanel, c);
-        }
-
-
-        final JPanel paddedMainPanel;
-        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
-
-        addTab(tabnameSubsample, paddedMainPanel);
-    }
+//    private void createSubsampleTab(String tabnameSubsample) {
+//
+//        final JTabbedPane tabbedPane = new JTabbedPane();
+//
+//        final JPanel latlonJPanel = new JPanel();
+//        final JPanel pixelLinesJPanel = new JPanel();
+//
+//        createLatLonPane(latlonJPanel);
+//        createPixelsLinesPane(pixelLinesJPanel);
+//
+//
+//        // Declare mainPanel and set it's attributes
+//        final JPanel mainPanel = new JPanel();
+//        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
+//        mainPanel.setLayout(new GridBagLayout());
+//
+//
+//        // Add Swing controls to mainPanel grid cells
+//        {
+//            final GridBagConstraints c = new GridBagConstraints();
+//            c.gridx = 0;
+//            c.gridy = 0;
+//            c.fill = GridBagConstraints.NONE;
+//            c.anchor = GridBagConstraints.NORTHWEST;
+//            c.weightx = 0;
+//            c.weighty = 0;
+//            mainPanel.add(latlonJPanel, c);
+//        }
+//
+//
+//        {
+//            final GridBagConstraints c = new GridBagConstraints();
+//            c.gridx = 0;
+//            c.gridy = 1;
+//            c.fill = GridBagConstraints.NONE;
+//            c.anchor = GridBagConstraints.NORTHWEST;
+//            c.weightx = 1;
+//            c.weighty = 1;
+//            mainPanel.add(pixelLinesJPanel, c);
+//        }
+//
+//
+//        final JPanel paddedMainPanel;
+//        paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
+//
+//        addTab(tabnameSubsample, paddedMainPanel);
+//    }
 
 
     private JPanel createWaveLimiterJPanel() {
@@ -1240,356 +1253,356 @@ class L2genForm extends JTabbedPane {
         return panel;
     }
 
-
-    private void createLatLonPane(JPanel inPanel) {
-
-        // ----------------------------------------------------------------------------------------
-        // Set all constants for this tabbed pane
-        // ----------------------------------------------------------------------------------------
-
-        final int COORDINATES_JTEXTFIELD_LENGTH = 5;
-
-        final String COORDINATES_PANEL_TITLE = "Coordinates";
-
-        final String NORTH_LABEL = "N";
-        final String SOUTH_LABEL = "S";
-        final String EAST_LABEL = "E";
-        final String WEST_LABEL = "W";
-
-
-        // ----------------------------------------------------------------------------------------
-        // Create all Swing controls used on this tabbed panel
-        // ----------------------------------------------------------------------------------------
-
-        northJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
-        southJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
-        westJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
-        eastJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
-
-
-        // ----------------------------------------------------------------------------------------
-        // Add lose focus listeners to all JTextField components
-        // ----------------------------------------------------------------------------------------
-
-        northJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                northLostFocus();
-            }
-        });
-
-        southJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                southLostFocus();
-            }
-        });
-
-        westJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                westLostFocus();
-            }
-        });
-
-        eastJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                eastLostFocus();
-            }
-        });
-
-
-        // ----------------------------------------------------------------------------------------
-        // Create labels for all Swing controls used on this tabbed panel
-        // ----------------------------------------------------------------------------------------
-
-        final JLabel northLabel = new JLabel(NORTH_LABEL);
-        final JLabel southLabel = new JLabel(SOUTH_LABEL);
-        final JLabel westLabel = new JLabel(WEST_LABEL);
-        final JLabel eastLabel = new JLabel(EAST_LABEL);
-
-
-        // ----------------------------------------------------------------------------------------
-        // Create mainPanel to hold all controls
-        // ----------------------------------------------------------------------------------------
-
-        //     final JPanel inPanel = new JPanel();
-        inPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
-        inPanel.setLayout(new GridBagLayout());
-
-        inPanel.add(northJTextField,
-                SeadasGuiUtils.makeConstraints(2, 1, GridBagConstraints.NORTH));
-
-        inPanel.add(southJTextField,
-                SeadasGuiUtils.makeConstraints(2, 3, GridBagConstraints.SOUTH));
-
-        inPanel.add(eastJTextField,
-                SeadasGuiUtils.makeConstraints(3, 2, GridBagConstraints.EAST));
-
-        inPanel.add(westJTextField,
-                SeadasGuiUtils.makeConstraints(1, 2, GridBagConstraints.WEST));
-
-        inPanel.add(northLabel,
-                SeadasGuiUtils.makeConstraints(2, 0, GridBagConstraints.SOUTH));
-
-        inPanel.add(southLabel,
-                SeadasGuiUtils.makeConstraints(2, 4, GridBagConstraints.NORTH));
-
-        inPanel.add(eastLabel,
-                SeadasGuiUtils.makeConstraints(4, 2, GridBagConstraints.WEST));
-
-        inPanel.add(westLabel,
-                SeadasGuiUtils.makeConstraints(0, 2, GridBagConstraints.EAST));
-
-
-        // ----------------------------------------------------------------------------------------
-        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
-        // ----------------------------------------------------------------------------------------
-
-        final JPanel wrappedMainPanel = new JPanel();
-        wrappedMainPanel.setLayout(new GridBagLayout());
-
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.insets = new Insets(3, 3, 3, 3);
-        c.fill = GridBagConstraints.NONE;
-        c.weightx = 1;
-        c.weighty = 1;
-
-        wrappedMainPanel.add(inPanel, c);
-
-
-        // ----------------------------------------------------------------------------------------
-        // Add wrappedMainPanel to tabbedPane
-        // ----------------------------------------------------------------------------------------
-
-    }
-
-
-    private void createPixelsLinesPane(JPanel mainPanel) {
-
-        // ---------------------------------------------------------------------------------------- 
-        // Set all constants for this tabbed pane
-        // ---------------------------------------------------------------------------------------- 
-
-        final int PIXELS_JTEXTFIELD_LENGTH = 5;
-        final int LINES_JTEXTFIELD_LENGTH = 5;
-
-        final String PIXELS_PANEL_TITLE = "";
-        final String LINES_PANEL_TITLE = "";
-
-        final String SPIXL_LABEL = "start pix";
-        final String EPIXL_LABEL = "end pix";
-        final String DPIXL_LABEL = "delta pix";
-        final String SLINE_LABEL = "start line";
-        final String ELINE_LABEL = "end line";
-        final String DLINE_LABEL = "delta line";
-
-
-        // ---------------------------------------------------------------------------------------- 
-        // Create all Swing controls used on this tabbed panel
-        // ---------------------------------------------------------------------------------------- 
-
-        spixlJTextField = new JTextField(PIXELS_JTEXTFIELD_LENGTH);
-        epixlJTextField = new JTextField(PIXELS_JTEXTFIELD_LENGTH);
-        dpixlJTextField = new JTextField(PIXELS_JTEXTFIELD_LENGTH);
-
-        slineJTextField = new JTextField(LINES_JTEXTFIELD_LENGTH);
-        elineJTextField = new JTextField(LINES_JTEXTFIELD_LENGTH);
-        dlineJTextField = new JTextField(LINES_JTEXTFIELD_LENGTH);
-
-
-        // ---------------------------------------------------------------------------------------- 
-        // Add lose focus listeners to all JTextField components
-        // ---------------------------------------------------------------------------------------- 
-
-        spixlJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                spixlLostFocus();
-            }
-        });
-
-
-        epixlJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                epixlLostFocus();
-            }
-        });
-
-        dpixlJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                dpixlLostFocus();
-            }
-        });
-
-        slineJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                slineLostFocus();
-            }
-        });
-
-        elineJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                elineLostFocus();
-            }
-        });
-
-        dlineJTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                dlineLostFocus();
-            }
-        });
-
-
-        // ---------------------------------------------------------------------------------------- 
-        // Create labels for all Swing controls used on this tabbed panel
-        // ---------------------------------------------------------------------------------------- 
-
-        final JLabel spixlJLabel = new JLabel(SPIXL_LABEL);
-        final JLabel epixlJLabel = new JLabel(EPIXL_LABEL);
-        final JLabel dpixlJLabel = new JLabel(DPIXL_LABEL);
-
-        final JLabel slineJLabel = new JLabel(SLINE_LABEL);
-        final JLabel elineJLabel = new JLabel(ELINE_LABEL);
-        final JLabel dlineJLabel = new JLabel(DLINE_LABEL);
-
-
-        // ---------------------------------------------------------------------------------------- 
-        // Create pixelsPanel to hold all pixel controls
-        // ---------------------------------------------------------------------------------------- 
-
-        final JPanel pixelsPanel = new JPanel();
-        //     pixelsPanel.setBorder(BorderFactory.createTitledBorder(PIXELS_PANEL_TITLE));
-        pixelsPanel.setLayout(new GridBagLayout());
-
-        pixelsPanel.add(spixlJLabel,
-                SeadasGuiUtils.makeConstraints(0, 0, GridBagConstraints.EAST));
-        pixelsPanel.add(spixlJTextField,
-                SeadasGuiUtils.makeConstraints(1, 0));
-
-        pixelsPanel.add(epixlJLabel,
-                SeadasGuiUtils.makeConstraints(0, 1, GridBagConstraints.EAST));
-        pixelsPanel.add(epixlJTextField,
-                SeadasGuiUtils.makeConstraints(1, 1));
-
-        pixelsPanel.add(dpixlJLabel,
-                SeadasGuiUtils.makeConstraints(0, 2, GridBagConstraints.EAST));
-        pixelsPanel.add(dpixlJTextField,
-                SeadasGuiUtils.makeConstraints(1, 2));
-
-
-        // ----------------------------------------------------------------------------------------
-        // Create linesPanel to hold all lines controls
-        // ----------------------------------------------------------------------------------------         
-
-        final JPanel linesPanel = new JPanel();
-        //   linesPanel.setBorder(BorderFactory.createTitledBorder(LINES_PANEL_TITLE));
-        linesPanel.setLayout(new GridBagLayout());
-
-        linesPanel.add(slineJLabel,
-                SeadasGuiUtils.makeConstraints(0, 0, GridBagConstraints.EAST));
-        linesPanel.add(slineJTextField,
-                SeadasGuiUtils.makeConstraints(1, 0));
-
-        linesPanel.add(elineJLabel,
-                SeadasGuiUtils.makeConstraints(0, 1, GridBagConstraints.EAST));
-        linesPanel.add(elineJTextField,
-                SeadasGuiUtils.makeConstraints(1, 1));
-
-        linesPanel.add(dlineJLabel,
-                SeadasGuiUtils.makeConstraints(0, 2, GridBagConstraints.EAST));
-        linesPanel.add(dlineJTextField,
-                SeadasGuiUtils.makeConstraints(1, 2));
-
-
-        // ---------------------------------------------------------------------------------------- 
-        // Create mainPanel to hold pixelsPanel and linesPanel
-        // ---------------------------------------------------------------------------------------- 
-
-
-        mainPanel.setLayout(new GridBagLayout());
-        mainPanel.setBorder(BorderFactory.createTitledBorder("Pixel-Lines"));
-
-        GridBagConstraints constraints = SeadasGuiUtils.makeConstraints(0, 0);
-        constraints.insets = new Insets(3, 3, 3, 3);
-        mainPanel.add(pixelsPanel, constraints);
-
-        constraints = SeadasGuiUtils.makeConstraints(1, 0);
-        constraints.insets = new Insets(3, 3, 3, 3);
-        mainPanel.add(linesPanel, constraints);
-
-
-        // ---------------------------------------------------------------------------------------- 
-        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
-        // ---------------------------------------------------------------------------------------- 
-
-        final JPanel wrappedMainPanel = new JPanel();
-        wrappedMainPanel.setLayout(new GridBagLayout());
-
-        constraints = SeadasGuiUtils.makeConstraints(0, 0);
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.insets = new Insets(3, 3, 3, 3);
-        constraints.fill = GridBagConstraints.NONE;
-        constraints.weightx = 1;
-        constraints.weighty = 1;
-
-        wrappedMainPanel.add(mainPanel, constraints);
-
-
-        // ---------------------------------------------------------------------------------------- 
-        // Add wrappedMainPanel to tabbedPane
-        // ---------------------------------------------------------------------------------------- 
-
-
-    }
-
+//
+//    private void createLatLonPane(JPanel inPanel) {
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Set all constants for this tabbed pane
+//        // ----------------------------------------------------------------------------------------
+//
+//        final int COORDINATES_JTEXTFIELD_LENGTH = 5;
+//
+//        final String COORDINATES_PANEL_TITLE = "Coordinates";
+//
+//        final String NORTH_LABEL = "N";
+//        final String SOUTH_LABEL = "S";
+//        final String EAST_LABEL = "E";
+//        final String WEST_LABEL = "W";
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create all Swing controls used on this tabbed panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        northJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//        southJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//        westJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//        eastJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add lose focus listeners to all JTextField components
+//        // ----------------------------------------------------------------------------------------
+//
+//        northJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                northLostFocus();
+//            }
+//        });
+//
+//        southJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                southLostFocus();
+//            }
+//        });
+//
+//        westJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                westLostFocus();
+//            }
+//        });
+//
+//        eastJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                eastLostFocus();
+//            }
+//        });
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create labels for all Swing controls used on this tabbed panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JLabel northLabel = new JLabel(NORTH_LABEL);
+//        final JLabel southLabel = new JLabel(SOUTH_LABEL);
+//        final JLabel westLabel = new JLabel(WEST_LABEL);
+//        final JLabel eastLabel = new JLabel(EAST_LABEL);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create mainPanel to hold all controls
+//        // ----------------------------------------------------------------------------------------
+//
+//        //     final JPanel inPanel = new JPanel();
+//        inPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
+//        inPanel.setLayout(new GridBagLayout());
+//
+//        inPanel.add(northJTextField,
+//                SeadasGuiUtils.makeConstraints(2, 1, GridBagConstraints.NORTH));
+//
+//        inPanel.add(southJTextField,
+//                SeadasGuiUtils.makeConstraints(2, 3, GridBagConstraints.SOUTH));
+//
+//        inPanel.add(eastJTextField,
+//                SeadasGuiUtils.makeConstraints(3, 2, GridBagConstraints.EAST));
+//
+//        inPanel.add(westJTextField,
+//                SeadasGuiUtils.makeConstraints(1, 2, GridBagConstraints.WEST));
+//
+//        inPanel.add(northLabel,
+//                SeadasGuiUtils.makeConstraints(2, 0, GridBagConstraints.SOUTH));
+//
+//        inPanel.add(southLabel,
+//                SeadasGuiUtils.makeConstraints(2, 4, GridBagConstraints.NORTH));
+//
+//        inPanel.add(eastLabel,
+//                SeadasGuiUtils.makeConstraints(4, 2, GridBagConstraints.WEST));
+//
+//        inPanel.add(westLabel,
+//                SeadasGuiUtils.makeConstraints(0, 2, GridBagConstraints.EAST));
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel wrappedMainPanel = new JPanel();
+//        wrappedMainPanel.setLayout(new GridBagLayout());
+//
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        c.insets = new Insets(3, 3, 3, 3);
+//        c.fill = GridBagConstraints.NONE;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//
+//        wrappedMainPanel.add(inPanel, c);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add wrappedMainPanel to tabbedPane
+//        // ----------------------------------------------------------------------------------------
+//
+//    }
+//
+//
+//    private void createPixelsLinesPane(JPanel mainPanel) {
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Set all constants for this tabbed pane
+//        // ----------------------------------------------------------------------------------------
+//
+//        final int PIXELS_JTEXTFIELD_LENGTH = 5;
+//        final int LINES_JTEXTFIELD_LENGTH = 5;
+//
+//        final String PIXELS_PANEL_TITLE = "";
+//        final String LINES_PANEL_TITLE = "";
+//
+//        final String SPIXL_LABEL = "start pix";
+//        final String EPIXL_LABEL = "end pix";
+//        final String DPIXL_LABEL = "delta pix";
+//        final String SLINE_LABEL = "start line";
+//        final String ELINE_LABEL = "end line";
+//        final String DLINE_LABEL = "delta line";
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create all Swing controls used on this tabbed panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        spixlJTextField = new JTextField(PIXELS_JTEXTFIELD_LENGTH);
+//        epixlJTextField = new JTextField(PIXELS_JTEXTFIELD_LENGTH);
+//        dpixlJTextField = new JTextField(PIXELS_JTEXTFIELD_LENGTH);
+//
+//        slineJTextField = new JTextField(LINES_JTEXTFIELD_LENGTH);
+//        elineJTextField = new JTextField(LINES_JTEXTFIELD_LENGTH);
+//        dlineJTextField = new JTextField(LINES_JTEXTFIELD_LENGTH);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add lose focus listeners to all JTextField components
+//        // ----------------------------------------------------------------------------------------
+//
+//        spixlJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                spixlLostFocus();
+//            }
+//        });
+//
+//
+//        epixlJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                epixlLostFocus();
+//            }
+//        });
+//
+//        dpixlJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                dpixlLostFocus();
+//            }
+//        });
+//
+//        slineJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                slineLostFocus();
+//            }
+//        });
+//
+//        elineJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                elineLostFocus();
+//            }
+//        });
+//
+//        dlineJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                dlineLostFocus();
+//            }
+//        });
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create labels for all Swing controls used on this tabbed panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JLabel spixlJLabel = new JLabel(SPIXL_LABEL);
+//        final JLabel epixlJLabel = new JLabel(EPIXL_LABEL);
+//        final JLabel dpixlJLabel = new JLabel(DPIXL_LABEL);
+//
+//        final JLabel slineJLabel = new JLabel(SLINE_LABEL);
+//        final JLabel elineJLabel = new JLabel(ELINE_LABEL);
+//        final JLabel dlineJLabel = new JLabel(DLINE_LABEL);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create pixelsPanel to hold all pixel controls
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel pixelsPanel = new JPanel();
+//        //     pixelsPanel.setBorder(BorderFactory.createTitledBorder(PIXELS_PANEL_TITLE));
+//        pixelsPanel.setLayout(new GridBagLayout());
+//
+//        pixelsPanel.add(spixlJLabel,
+//                SeadasGuiUtils.makeConstraints(0, 0, GridBagConstraints.EAST));
+//        pixelsPanel.add(spixlJTextField,
+//                SeadasGuiUtils.makeConstraints(1, 0));
+//
+//        pixelsPanel.add(epixlJLabel,
+//                SeadasGuiUtils.makeConstraints(0, 1, GridBagConstraints.EAST));
+//        pixelsPanel.add(epixlJTextField,
+//                SeadasGuiUtils.makeConstraints(1, 1));
+//
+//        pixelsPanel.add(dpixlJLabel,
+//                SeadasGuiUtils.makeConstraints(0, 2, GridBagConstraints.EAST));
+//        pixelsPanel.add(dpixlJTextField,
+//                SeadasGuiUtils.makeConstraints(1, 2));
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create linesPanel to hold all lines controls
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel linesPanel = new JPanel();
+//        //   linesPanel.setBorder(BorderFactory.createTitledBorder(LINES_PANEL_TITLE));
+//        linesPanel.setLayout(new GridBagLayout());
+//
+//        linesPanel.add(slineJLabel,
+//                SeadasGuiUtils.makeConstraints(0, 0, GridBagConstraints.EAST));
+//        linesPanel.add(slineJTextField,
+//                SeadasGuiUtils.makeConstraints(1, 0));
+//
+//        linesPanel.add(elineJLabel,
+//                SeadasGuiUtils.makeConstraints(0, 1, GridBagConstraints.EAST));
+//        linesPanel.add(elineJTextField,
+//                SeadasGuiUtils.makeConstraints(1, 1));
+//
+//        linesPanel.add(dlineJLabel,
+//                SeadasGuiUtils.makeConstraints(0, 2, GridBagConstraints.EAST));
+//        linesPanel.add(dlineJTextField,
+//                SeadasGuiUtils.makeConstraints(1, 2));
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create mainPanel to hold pixelsPanel and linesPanel
+//        // ----------------------------------------------------------------------------------------
+//
+//
+//        mainPanel.setLayout(new GridBagLayout());
+//        mainPanel.setBorder(BorderFactory.createTitledBorder("Pixel-Lines"));
+//
+//        GridBagConstraints constraints = SeadasGuiUtils.makeConstraints(0, 0);
+//        constraints.insets = new Insets(3, 3, 3, 3);
+//        mainPanel.add(pixelsPanel, constraints);
+//
+//        constraints = SeadasGuiUtils.makeConstraints(1, 0);
+//        constraints.insets = new Insets(3, 3, 3, 3);
+//        mainPanel.add(linesPanel, constraints);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel wrappedMainPanel = new JPanel();
+//        wrappedMainPanel.setLayout(new GridBagLayout());
+//
+//        constraints = SeadasGuiUtils.makeConstraints(0, 0);
+//        constraints.anchor = GridBagConstraints.NORTHWEST;
+//        constraints.insets = new Insets(3, 3, 3, 3);
+//        constraints.fill = GridBagConstraints.NONE;
+//        constraints.weightx = 1;
+//        constraints.weighty = 1;
+//
+//        wrappedMainPanel.add(mainPanel, constraints);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add wrappedMainPanel to tabbedPane
+//        // ----------------------------------------------------------------------------------------
+//
+//
+//    }
+//
 
     private void createSelectedProductsJPanel(JPanel selectedProductsPanel) {
 
@@ -1726,45 +1739,45 @@ class L2genForm extends JTabbedPane {
     // Swing Control Handlers
     //----------------------------------------------------------------------------------------
 
-    private void spixlLostFocus() {
-        l2genData.setParamValue(l2genData.SPIXL, spixlJTextField.getText().toString());
-    }
-
-    private void epixlLostFocus() {
-        l2genData.setParamValue(l2genData.EPIXL, epixlJTextField.getText().toString());
-    }
-
-    private void dpixlLostFocus() {
-        l2genData.setParamValue(l2genData.DPIXL, dpixlJTextField.getText().toString());
-    }
-
-    private void slineLostFocus() {
-        l2genData.setParamValue(l2genData.SLINE, slineJTextField.getText().toString());
-    }
-
-    private void elineLostFocus() {
-        l2genData.setParamValue(l2genData.ELINE, elineJTextField.getText().toString());
-    }
-
-    private void dlineLostFocus() {
-        l2genData.setParamValue(l2genData.DLINE, dlineJTextField.getText().toString());
-    }
-
-    private void northLostFocus() {
-        l2genData.setParamValue(l2genData.NORTH, northJTextField.getText().toString());
-    }
-
-    private void southLostFocus() {
-        l2genData.setParamValue(l2genData.SOUTH, southJTextField.getText().toString());
-    }
-
-    private void westLostFocus() {
-        l2genData.setParamValue(l2genData.WEST, westJTextField.getText().toString());
-    }
-
-    private void eastLostFocus() {
-        l2genData.setParamValue(l2genData.EAST, eastJTextField.getText().toString());
-    }
+//    private void spixlLostFocus() {
+//        l2genData.setParamValue(l2genData.SPIXL, spixlJTextField.getText().toString());
+//    }
+//
+//    private void epixlLostFocus() {
+//        l2genData.setParamValue(l2genData.EPIXL, epixlJTextField.getText().toString());
+//    }
+//
+//    private void dpixlLostFocus() {
+//        l2genData.setParamValue(l2genData.DPIXL, dpixlJTextField.getText().toString());
+//    }
+//
+//    private void slineLostFocus() {
+//        l2genData.setParamValue(l2genData.SLINE, slineJTextField.getText().toString());
+//    }
+//
+//    private void elineLostFocus() {
+//        l2genData.setParamValue(l2genData.ELINE, elineJTextField.getText().toString());
+//    }
+//
+//    private void dlineLostFocus() {
+//        l2genData.setParamValue(l2genData.DLINE, dlineJTextField.getText().toString());
+//    }
+//
+//    private void northLostFocus() {
+//        l2genData.setParamValue(l2genData.NORTH, northJTextField.getText().toString());
+//    }
+//
+//    private void southLostFocus() {
+//        l2genData.setParamValue(l2genData.SOUTH, southJTextField.getText().toString());
+//    }
+//
+//    private void westLostFocus() {
+//        l2genData.setParamValue(l2genData.WEST, westJTextField.getText().toString());
+//    }
+//
+//    private void eastLostFocus() {
+//        l2genData.setParamValue(l2genData.EAST, eastJTextField.getText().toString());
+//    }
 
     private void parfileLostFocus() {
         l2genData.setParamsFromParfile(parfileJTextArea.getText().toString());
@@ -1849,100 +1862,100 @@ class L2genForm extends JTabbedPane {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.SPIXL, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                spixlJTextField.setText(l2genData.getParamValue(l2genData.SPIXL));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
-        l2genData.addPropertyChangeListener(l2genData.EPIXL, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                epixlJTextField.setText(l2genData.getParamValue(l2genData.EPIXL));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
-        l2genData.addPropertyChangeListener(l2genData.DPIXL, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                dpixlJTextField.setText(l2genData.getParamValue(l2genData.DPIXL));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
-        l2genData.addPropertyChangeListener(l2genData.SLINE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                slineJTextField.setText(l2genData.getParamValue(l2genData.SLINE));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
-        l2genData.addPropertyChangeListener(l2genData.ELINE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                elineJTextField.setText(l2genData.getParamValue(l2genData.ELINE));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
-        l2genData.addPropertyChangeListener(l2genData.DLINE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                dlineJTextField.setText(l2genData.getParamValue(l2genData.DLINE));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(l2genData.NORTH, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                northJTextField.setText(l2genData.getParamValue(l2genData.NORTH));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(l2genData.SOUTH, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                southJTextField.setText(l2genData.getParamValue(l2genData.SOUTH));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(l2genData.WEST, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                westJTextField.setText(l2genData.getParamValue(l2genData.WEST));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(l2genData.EAST, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                eastJTextField.setText(l2genData.getParamValue(l2genData.EAST));
-                parfileJTextArea.setText(l2genData.getParfile());
-            }
-        });
-
+//        l2genData.addPropertyChangeListener(l2genData.SPIXL, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                spixlJTextField.setText(l2genData.getParamValue(l2genData.SPIXL));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
+//        l2genData.addPropertyChangeListener(l2genData.EPIXL, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                epixlJTextField.setText(l2genData.getParamValue(l2genData.EPIXL));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
+//        l2genData.addPropertyChangeListener(l2genData.DPIXL, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                dpixlJTextField.setText(l2genData.getParamValue(l2genData.DPIXL));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
+//        l2genData.addPropertyChangeListener(l2genData.SLINE, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                slineJTextField.setText(l2genData.getParamValue(l2genData.SLINE));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
+//        l2genData.addPropertyChangeListener(l2genData.ELINE, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                elineJTextField.setText(l2genData.getParamValue(l2genData.ELINE));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
+//        l2genData.addPropertyChangeListener(l2genData.DLINE, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                dlineJTextField.setText(l2genData.getParamValue(l2genData.DLINE));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
+//
+//        l2genData.addPropertyChangeListener(l2genData.NORTH, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                northJTextField.setText(l2genData.getParamValue(l2genData.NORTH));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
+//
+//        l2genData.addPropertyChangeListener(l2genData.SOUTH, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                southJTextField.setText(l2genData.getParamValue(l2genData.SOUTH));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
+//
+//        l2genData.addPropertyChangeListener(l2genData.WEST, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                westJTextField.setText(l2genData.getParamValue(l2genData.WEST));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
+//
+//        l2genData.addPropertyChangeListener(l2genData.EAST, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//
+//                eastJTextField.setText(l2genData.getParamValue(l2genData.EAST));
+//                parfileJTextArea.setText(l2genData.getParfile());
+//            }
+//        });
+//
 
         l2genData.addPropertyChangeListener(l2genData.PARFILE_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
@@ -1980,16 +1993,16 @@ class L2genForm extends JTabbedPane {
                 //   if (enableIfileEvent) {
                 System.out.println(l2genData.IFILE + " being handled");
                 missionStringChangeEvent((String) evt.getNewValue());
-                spixlJTextField.setText(l2genData.getParamValue(l2genData.SPIXL));
-                epixlJTextField.setText(l2genData.getParamValue(l2genData.EPIXL));
-                dpixlJTextField.setText(l2genData.getParamValue(l2genData.DPIXL));
-                slineJTextField.setText(l2genData.getParamValue(l2genData.SLINE));
-                elineJTextField.setText(l2genData.getParamValue(l2genData.ELINE));
-                dlineJTextField.setText(l2genData.getParamValue(l2genData.DLINE));
-                northJTextField.setText(l2genData.getParamValue(l2genData.NORTH));
-                southJTextField.setText(l2genData.getParamValue(l2genData.SOUTH));
-                eastJTextField.setText(l2genData.getParamValue(l2genData.EAST));
-                westJTextField.setText(l2genData.getParamValue(l2genData.WEST));
+//                spixlJTextField.setText(l2genData.getParamValue(l2genData.SPIXL));
+//                epixlJTextField.setText(l2genData.getParamValue(l2genData.EPIXL));
+//                dpixlJTextField.setText(l2genData.getParamValue(l2genData.DPIXL));
+//                slineJTextField.setText(l2genData.getParamValue(l2genData.SLINE));
+//                elineJTextField.setText(l2genData.getParamValue(l2genData.ELINE));
+//                dlineJTextField.setText(l2genData.getParamValue(l2genData.DLINE));
+//                northJTextField.setText(l2genData.getParamValue(l2genData.NORTH));
+//                southJTextField.setText(l2genData.getParamValue(l2genData.SOUTH));
+//                eastJTextField.setText(l2genData.getParamValue(l2genData.EAST));
+//                westJTextField.setText(l2genData.getParamValue(l2genData.WEST));
                 ifileChangedEventHandler();
                 //   }
             }

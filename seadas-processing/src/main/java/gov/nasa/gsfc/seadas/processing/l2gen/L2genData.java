@@ -624,6 +624,9 @@ public class L2genData {
         }
     }
 
+    public String getParamValue(ParamInfo paramInfo) {
+        return paramInfo.getValue();
+    }
 
     public String getParamValue(String param) {
 
@@ -670,6 +673,14 @@ public class L2genData {
         }
     }
 
+    public void setParamValue(ParamInfo paramInfo, ParamValidValueInfo paramValidValueInfo) {
+        if (paramInfo == null || paramValidValueInfo == null) {
+            return;
+        }
+
+        setParamValue(paramInfo, paramValidValueInfo.getValue());
+    }
+
     public void setParamValue(ParamInfo paramInfo, String value) {
         if (paramInfo == null) {
             return;
@@ -695,6 +706,25 @@ public class L2genData {
                 debug("Firing Event with eventName=" + paramInfo.getName());
                 propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, paramInfo.getName(), null, null));
             }
+        }
+    }
+
+
+    public boolean isParamDefault(String param) {
+
+        for (ParamInfo paramInfo : paramInfos) {
+            if (paramInfo.getName().equals(param)) {
+                return isParamDefault(paramInfo);
+            }
+        }
+        return false;
+    }
+
+    public boolean isParamDefault(ParamInfo paramInfo) {
+        if (paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
+            return true;
+        } else {
+            return false;
         }
     }
 
