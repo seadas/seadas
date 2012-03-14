@@ -8,6 +8,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
+import com.jidesoft.swing.JideButton;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
@@ -40,6 +41,13 @@ class L2genForm extends JTabbedPane {
 
     private JPanel waveLimiterJPanel;
 
+    final Color LABEL_COLOR_NOT_DEFAULT = new Color(0, 0, 80);
+    final Color LABEL_COLOR_IS_DEFAULT = new Color(0, 0, 0);
+    final Color DEFAULT_INDICATOR_COLOR = new Color(0, 0, 120);
+
+    final String DEFAULT_INDICATOR_TOOLTIP = "* Identicates that the selection is not the default value";
+    final String DEFAULT_INDICATOR_LABEL_ON = " *  ";
+    final String DEFAULT_INDICATOR_LABEL_OFF = "     ";
     final int PARAM_STRING_TEXTLEN = 15;
     final int PARAM_FILESTRING_TEXTLEN = 45;
     final int PARAM_INT_TEXTLEN = 15;
@@ -84,7 +92,7 @@ class L2genForm extends JTabbedPane {
 
     private static final String INPUT_OUTPUT_FILE_TAB_NAME = "Input/Output";
     private static final String PARFILE_TAB_NAME = "Parameters";
- //   private static final String SUB_SETTING_TAB_NAME = "Subsetting Options";
+    //   private static final String SUB_SETTING_TAB_NAME = "Subsetting Options";
     private static final String PRODUCTS_TAB_NAME = "Products";
 
 
@@ -313,9 +321,14 @@ class L2genForm extends JTabbedPane {
             gridy++;
         }
 
-        final JPanel outerMainPanel = new JPanel();
+
+        JButton restoreDefaults = new JButton("Restore Defaults (this tab only)");
+
+
         final JScrollPane jScrollPane = new JScrollPane(mainPanel);
 
+
+        final JPanel outerMainPanel = new JPanel();
         {
             final GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;
@@ -329,6 +342,19 @@ class L2genForm extends JTabbedPane {
             outerMainPanel.setLayout(new GridBagLayout());
             outerMainPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
             outerMainPanel.add(jScrollPane, c);
+        }
+
+
+        {
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 1;
+            c.anchor = GridBagConstraints.CENTER;
+            c.fill = GridBagConstraints.NONE;
+            c.weightx = 0;
+            c.weighty = 0;
+
+            outerMainPanel.add(restoreDefaults, c);
         }
 
 
@@ -376,6 +402,10 @@ class L2genForm extends JTabbedPane {
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
 
+        final JLabel defaultIndicator = new JLabel(DEFAULT_INDICATOR_LABEL_OFF);
+        defaultIndicator.setForeground(DEFAULT_INDICATOR_COLOR);
+        defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
+
 
         {
             final GridBagConstraints constraints = new GridBagConstraints();
@@ -391,6 +421,18 @@ class L2genForm extends JTabbedPane {
         {
             final GridBagConstraints constraints = new GridBagConstraints();
             constraints.gridx = 1;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.EAST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+
+            jPanel.add(defaultIndicator, constraints);
+        }
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 2;
             constraints.gridy = gridy;
 
             if (jTextFieldLen == PARAM_FILESTRING_TEXTLEN) {
@@ -422,11 +464,14 @@ class L2genForm extends JTabbedPane {
             public void propertyChange(PropertyChangeEvent evt) {
                 jTextField.setText(l2genData.getParamValue(param));
                 if (l2genData.isParamDefault(param)) {
-                    jTextField.setForeground(new Color(200, 200, 200));
+                    //       jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
+                    defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
+                    defaultIndicator.setToolTipText("");
                 } else {
-                    jTextField.setForeground(new Color(0, 0, 0));
+                    //       jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
+                    defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
+                    defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
                 }
-                debug("Textfield hears " + param);
             }
         });
     }
@@ -447,7 +492,7 @@ class L2genForm extends JTabbedPane {
                 setBackground(list.getSelectionBackground());
                 setForeground(list.getSelectionForeground());
                 if (-1 < index) {
-                    list.setToolTipText(tooltips[index]);
+                        list.setToolTipText(tooltips[index]);
                 }
             } else {
                 setBackground(list.getBackground());
@@ -473,7 +518,12 @@ class L2genForm extends JTabbedPane {
         for (ParamValidValueInfo paramValidValueInfo : paramInfo.getValidValueInfos()) {
             if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().length() > 0) {
                 validValuesArrayList.add(paramValidValueInfo);
-                validValuesToolTipsArrayList.add(paramValidValueInfo.getDescription());
+
+                if (paramValidValueInfo.getDescription().length() > 70) {
+                    validValuesToolTipsArrayList.add(paramValidValueInfo.getDescription());
+                } else {
+                    validValuesToolTipsArrayList.add(null);
+                }
             }
         }
 
@@ -501,22 +551,25 @@ class L2genForm extends JTabbedPane {
 
         final JComboBox jComboBox = new JComboBox(validValueInfosArray);
 
-//        MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
-//        myComboBoxRenderer.setTooltips(validValuesToolTipsArray);
-//        jComboBox.setRenderer(myComboBoxRenderer);
+        MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
+        myComboBoxRenderer.setTooltips(validValuesToolTipsArray);
+        jComboBox.setRenderer(myComboBoxRenderer);
         for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
             if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
                 jComboBox.setSelectedItem(paramValidValueInfo);
             }
         }
 
-        jComboBox.setForeground(Color.cyan);
-        jComboBox.setBackground(new Color(200,20,20));
+        //     jComboBox.setForeground(Color.cyan);
+        //     jComboBox.setBackground(new Color(200, 20, 20));
 
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
 
+        final JLabel defaultIndicator = new JLabel(DEFAULT_INDICATOR_LABEL_OFF);
+        defaultIndicator.setForeground(DEFAULT_INDICATOR_COLOR);
+        defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
 
         {
             final GridBagConstraints constraints = new GridBagConstraints();
@@ -532,6 +585,18 @@ class L2genForm extends JTabbedPane {
         {
             final GridBagConstraints constraints = new GridBagConstraints();
             constraints.gridx = 1;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.EAST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+
+            jPanel.add(defaultIndicator, constraints);
+        }
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 2;
             constraints.gridy = gridy;
             constraints.fill = GridBagConstraints.NONE;
             constraints.anchor = GridBagConstraints.WEST;
@@ -555,11 +620,15 @@ class L2genForm extends JTabbedPane {
                 for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
                     if (l2genData.getParamValue(paramInfo).equals(paramValidValueInfo.getValue())) {
                         jComboBox.setSelectedItem(paramValidValueInfo);
-//                        if (l2genData.isParamDefault(paramInfo)) {
-//                            jComboBox.setForeground(new Color(80,80,80));
-//                        } else {
-//                            jComboBox.setForeground(new Color(0,0,0));
-//                        }
+                        if (l2genData.isParamDefault(param)) {
+                            //     jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
+                            defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
+                            defaultIndicator.setToolTipText("");
+                        } else {
+                            //     jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
+                            defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
+                            defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
+                        }
                     }
                 }
             }
@@ -570,7 +639,7 @@ class L2genForm extends JTabbedPane {
 
     private void createParamCheckBox(ParamInfo paramInfo, JPanel jPanel, int gridy) {
         final JCheckBox jCheckBox = new JCheckBox();
-        final String paramName = paramInfo.getName();
+        final String param = paramInfo.getName();
 
         jCheckBox.setName(paramInfo.getName());
 
@@ -585,6 +654,9 @@ class L2genForm extends JTabbedPane {
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
 
+        final JLabel defaultIndicator = new JLabel(DEFAULT_INDICATOR_LABEL_OFF);
+        defaultIndicator.setForeground(DEFAULT_INDICATOR_COLOR);
+        defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
 
         {
             final GridBagConstraints constraints = new GridBagConstraints();
@@ -602,6 +674,17 @@ class L2genForm extends JTabbedPane {
             constraints.gridx = 1;
             constraints.gridy = gridy;
             constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.EAST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+
+            jPanel.add(defaultIndicator, constraints);
+        }
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 2;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
             constraints.anchor = GridBagConstraints.WEST;
             constraints.weightx = 0;
             constraints.weighty = 0;
@@ -615,15 +698,25 @@ class L2genForm extends JTabbedPane {
         jCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                l2genData.setParamValue(paramName, jCheckBox.isSelected());
+                l2genData.setParamValue(param, jCheckBox.isSelected());
             }
         });
 
-        l2genData.addPropertyChangeListener(paramName, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                debug("receiving eventName " + paramName);
-                jCheckBox.setSelected(l2genData.getBooleanParamValue(paramName));
+                debug("receiving eventName " + param);
+                jCheckBox.setSelected(l2genData.getBooleanParamValue(param));
+
+                if (l2genData.isParamDefault(param)) {
+                    //   jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
+                    defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
+                    defaultIndicator.setToolTipText("");
+                } else {
+                    //   jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
+                    defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
+                    defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
+                }
             }
         });
     }

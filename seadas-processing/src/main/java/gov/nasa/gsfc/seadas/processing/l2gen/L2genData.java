@@ -309,11 +309,11 @@ public class L2genData {
 
     }
 
-    public void addParamOptionsInfo(ParamInfo paramInfo) {
+    public void addParamInfo(ParamInfo paramInfo) {
         paramInfos.add(paramInfo);
     }
 
-    public void clearParamOptionsInfo() {
+    public void clearParamInfo() {
         paramInfos.clear();
     }
 
@@ -330,7 +330,7 @@ public class L2genData {
         productInfos.clear();
     }
 
-    public void clearParamOptionsInfos() {
+    public void clearParamInfos() {
         paramInfos.clear();
     }
 
@@ -661,7 +661,28 @@ public class L2genData {
 
     public void deleteParamValue(String param) {
 
-        setParamValue(param, null);
+        setParamValue(param, ParamInfo.NULL_STRING);
+    }
+
+    public void setParamValue(String param, String value) {
+
+        // Cleanup inputs and handle input exceptions
+        if (param == null || param.length() == 0) {
+            return;
+        }
+        if (value == null) {
+            value = ParamInfo.NULL_STRING;
+        }
+        param = param.trim();
+        value = value.trim();
+
+
+        for (ParamInfo paramInfo : paramInfos) {
+            if (paramInfo.getName().equals(param)) {
+                setParamValue(paramInfo, value);
+                return;
+            }
+        }
     }
 
 
@@ -686,7 +707,7 @@ public class L2genData {
             return;
         }
         if (value == null) {
-            value = new String();
+            value = ParamInfo.NULL_STRING;
         }
 
         if (!value.equals(paramInfo.getValue())) {
@@ -786,26 +807,6 @@ public class L2genData {
     }
 
 
-    public void setParamValue(String param, String value) {
-
-        // Cleanup inputs and handle input exceptions
-        if (param == null || param.length() == 0) {
-            return;
-        }
-        if (value == null) {
-            value = new String();
-        }
-        param = param.trim();
-        value = value.trim();
-
-
-        for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName().equals(param)) {
-                setParamValue(paramInfo, value);
-                return;
-            }
-        }
-    }
 
 
     private void setProdParamValue(String inProd) {
@@ -1215,8 +1216,8 @@ public class L2genData {
     }
 
     private void updateXmlBasedObjects(String ifile) {
-        InputStream paramOptionsStream = L2genForm.class.getResourceAsStream(getParamInfoXml(ifile));
-        l2genReader.updateParamInfosWithXml(paramOptionsStream);
+        InputStream paramInfoStream = L2genForm.class.getResourceAsStream(getParamInfoXml(ifile));
+        l2genReader.updateParamInfosWithXml(paramInfoStream);
     }
 
 
@@ -1237,8 +1238,8 @@ public class L2genData {
         InputStream stream = L2genForm.class.getResourceAsStream(getProductInfoXml(initialIfile));
         l2genReader.readProductsXml(stream);
 
-        InputStream paramOptionsStream = L2genForm.class.getResourceAsStream(getParamInfoXml(initialIfile));
-        l2genReader.readParamInfoXml(paramOptionsStream);
+        InputStream paramInfoStream = L2genForm.class.getResourceAsStream(getParamInfoXml(initialIfile));
+        l2genReader.readParamInfoXml(paramInfoStream);
 
         InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
         l2genReader.readParamCategoryXml(paramCategoryInfoStream);
@@ -1248,25 +1249,6 @@ public class L2genData {
         l2genReader.readProductCategoryXml(productCategoryInfoStream);
         setProductCategoryInfos();
 
-
-//        for (ParamInfo paramOptionsInfo : getParamInfos()) {
-//            debug("name=" + paramOptionsInfo.getName() + " value=" + paramOptionsInfo.getValue() + " defaultValue=" + paramOptionsInfo.getDefaultValue());
-//            for (ParamValidValueInfo paramValidValueInfo : paramOptionsInfo.getValidValueInfos()) {
-//                debug("     validValue=" + paramValidValueInfo.getValue());
-//            }
-//        }
-//        for (ParamCategoryInfo paramCategoryInfo : getParamCategoryInfos()) {
-//            debug("name=" + paramCategoryInfo.getName());
-//            for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
-//                debug("    param=" + paramInfo.getName());
-//            }
-//        }
-//        for (ProductCategoryInfo productCategoryInfo : getProductCategoryInfos()) {
-//            debug("name=" + productCategoryInfo.getName());
-//            for (ProductInfo productInfo : productCategoryInfo.getProductInfos()) {
-//                debug("    product=" + productInfo.getName());
-//            }
-//        }
     }
 
 

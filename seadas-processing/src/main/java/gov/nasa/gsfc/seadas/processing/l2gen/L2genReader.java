@@ -168,7 +168,7 @@ public class L2genReader {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
-        l2genData.clearParamOptionsInfos();
+        l2genData.clearParamInfos();
 
         NodeList optionNodelist = rootElement.getElementsByTagName("option");
 
@@ -236,7 +236,7 @@ public class L2genReader {
                     //   paramInfo.sortValidValueInfos();
                 }
 
-                l2genData.addParamOptionsInfo(paramInfo);
+                l2genData.addParamInfo(paramInfo);
             }
         }
 

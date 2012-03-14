@@ -119,6 +119,13 @@ public class ParamInfo implements Comparable {
         return defaultValue;
     }
 
+    public boolean isDefault() {
+        if (getValue().equals(getDefaultValue())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public void setDefaultValue(String defaultValue) {
         // Clean up and handle input exceptions
         if (defaultValue == null) {
