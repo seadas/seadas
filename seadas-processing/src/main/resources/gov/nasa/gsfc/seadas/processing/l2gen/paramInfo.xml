@@ -114,7 +114,7 @@
         </validValue>
         <validValue>
             <value>8192</value>
-            <description>use alt sensor infor file in eval</description>
+            <description>use alt sensor info file in eval</description>
         </validValue>
         <validValue>
             <value>32768</value>
@@ -159,7 +159,7 @@
         <type>string</type>
         <source>default</source>
         <alias>il2file1</alias>
-        <description>input L2 file names for sensor to be used as a calibrator.  Alternatively, a data point can be used as a calibrator (e.g. MOBY) il2file[#] = additional L2 callibration file names</description>
+        <description>input L2 file names for sensor to be used as a calibrator.  Alternatively, a data point can be used as a calibrator (e.g. MOBY) il2file[#] = additional L2 calibration file names</description>
     </option>
     <option>
         <name>tgtfile</name>
@@ -212,7 +212,7 @@
         <type>int</type>
         <default>1</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>pixel subsampling interval</description>
+        <description>pixel sub-sampling interval</description>
     </option>
     <option>
         <name>sline</name>
@@ -236,7 +236,7 @@
         <type>int</type>
         <default>1</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>line subsampling interval</description>
+        <description>line sub-sampling interval</description>
     </option>
     <option>
         <name>ctl_pt_incr</name>
@@ -687,7 +687,7 @@
         <value/>
         <type>string</type>
         <source>default</source>
-        <description>polarization sensitivites filename leader</description>
+        <description>polarization sensitivities filename leader</description>
     </option>
     <option>
         <name>pol_opt</name>
@@ -886,7 +886,7 @@
         </validValue>
         <validValue>
             <value>2</value>
-            <description>power-law with exponent derived via Hoge and Lyon (1996)</description>
+            <description><![CDATA[power-law with exponent derived via Hoge & Lyon (1996)]]></description>
         </validValue>
         <validValue>
             <value>3</value>
@@ -898,19 +898,19 @@
         </validValue>
         <validValue>
             <value>6</value>
-            <description>power-law with exponent derived via Morel and Maritorena (2001)</description>
+            <description><![CDATA[power-law with exponent derived via Morel & Maritorena (2001)]]></description>
         </validValue>
         <validValue>
             <value>7</value>
-            <description>power-law with exponent derived via Loisel and Stramski (2000)</description>
+            <description><![CDATA[power-law with exponent derived via Loisel & Stramski (2000)]]></description>
         </validValue>
         <validValue>
             <value>8</value>
-            <description>spectrally independent vector derived via Loisel and Stramski (2000)</description>
+            <description><![CDATA[spectrally independent vector derived via Loisel & Stramski (2000)]]></description>
         </validValue>
         <validValue>
             <value>9</value>
-            <description>fixed vector derived via Loisel and Stramski (2000)</description>
+            <description><![CDATA[fixed vector derived via Loisel & Stramski (2000)]]></description>
         </validValue>
         <validValue>
             <value>10</value>
@@ -964,7 +964,7 @@
         <type>float</type>
         <default>-1</default>
         <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
-        <description>GIOP model list of sensor wavelengths for optimization comma-seperated list, defaults is all visible bands (400-700nm)</description>
+        <description>GIOP model list of sensor wavelengths for optimization comma-separated list, defaults is all visible bands (400-700nm)</description>
     </option>
     <option>
         <name>giop_rrs_unc</name>
@@ -972,7 +972,7 @@
         <type>float</type>
         <default>-1</default>
         <source>default</source>
-        <description>GIOP model list of sensor wavelengths for optimization comma-seperated list, defaults is all visible bands (400-700nm)</description>
+        <description>GIOP model list of sensor wavelengths for optimization comma-separated list, defaults is all visible bands (400-700nm)</description>
     </option>
     <option>
         <name>giop_maxiter</name>
@@ -1438,7 +1438,7 @@
         <type>int</type>
         <default>[0,0]</default>
         <source>default</source>
-        <description>Centeral [ipix, iscan] of the box in the L1 scene, [0,0] = center of the L1 scene</description>
+        <description>Central [ipix, iscan] of the box in the L1 scene, [0,0] = center of the L1 scene</description>
     </option>
     <option>
         <name>xcalpervalid</name>
@@ -1454,7 +1454,7 @@
         <type>int</type>
         <default>1</default>
         <source>default</source>
-        <description>Subsampling rate for the data to be used for the cross-calibration</description>
+        <description>Sub-sampling rate for the data to be used for the cross-calibration</description>
     </option>
     <option>
         <name>vct_msk_water</name>
@@ -1574,7 +1574,7 @@
         <type>float</type>
         <default>-1.0</default>
         <source>default</source>
-        <description>cloud reflectace ratio threshold (-1.0=disabled)</description>
+        <description>cloud reflectance ratio threshold (-1.0=disabled)</description>
     </option>
     <option>
         <name>glint_thresh</name>
@@ -1869,7 +1869,7 @@
         <type>float</type>
         <default>-999</default>
         <source>default</source>
-        <description>north boundry</description>
+        <description>north boundary</description>
     </option>
     <option>
         <name>south</name>
@@ -1877,7 +1877,7 @@
         <type>float</type>
         <default>-999</default>
         <source>default</source>
-        <description>south boundry</description>
+        <description>south boundary</description>
     </option>
     <option>
         <name>east</name>
@@ -1885,7 +1885,7 @@
         <type>float</type>
         <default>-999</default>
         <source>default</source>
-        <description>east boundry</description>
+        <description>east boundary</description>
     </option>
     <option>
         <name>west</name>
@@ -1893,7 +1893,7 @@
         <type>float</type>
         <default>-999</default>
         <source>default</source>
-        <description>west boundry</description>
+        <description>west boundary</description>
     </option>
     <option>
         <name>xbox</name>
@@ -1933,7 +1933,7 @@
         <type>float</type>
         <default>0.01</default>
         <source>default</source>
-        <description>minumum reflectance for scaling</description>
+        <description>minimum reflectance for scaling</description>
     </option>
     <option>
         <name>datamax</name>
@@ -1949,7 +1949,7 @@
         <type>int</type>
         <default>1</default>
         <source>default</source>
-        <description>subsampling interval</description>
+        <description>sub-sampling interval</description>
     </option>
     <option>
         <name>outmode</name>
@@ -1987,4 +1987,3 @@
         <description>output XML file describing all possible products</description>
     </option>
 </option_list>
-
