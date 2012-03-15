@@ -95,6 +95,21 @@ public class SeadasGuiUtils {
 
 
 
+   public static void padPanel(Object innerPanel, JPanel outerPanel, int pad) {
+
+        final GridBagConstraints c;
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.insets = new Insets(pad, pad, pad, pad);
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.weighty = 1;
+
+        outerPanel.add((Component) innerPanel, c);
+    }
+
 
 
     public static JPanel addPaddedWrapperPanel(Object myMainPanel, int pad) {

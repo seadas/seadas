@@ -423,3 +423,149 @@ We want to combined the waveDependent and waveIndependent products together with
 //            }
 //
 //        });
+
+
+
+//
+//    private void createLatLonPane(JPanel inPanel) {
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Set all constants for this tabbed pane
+//        // ----------------------------------------------------------------------------------------
+//
+//        final int COORDINATES_JTEXTFIELD_LENGTH = 5;
+//
+//        final String COORDINATES_PANEL_TITLE = "Coordinates";
+//
+//        final String NORTH_LABEL = "N";
+//        final String SOUTH_LABEL = "S";
+//        final String EAST_LABEL = "E";
+//        final String WEST_LABEL = "W";
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create all Swing controls used on this tabbed panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        northJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//        southJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//        westJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//        eastJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add lose focus listeners to all JTextField components
+//        // ----------------------------------------------------------------------------------------
+//
+//        northJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                northLostFocus();
+//            }
+//        });
+//
+//        southJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                southLostFocus();
+//            }
+//        });
+//
+//        westJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                westLostFocus();
+//            }
+//        });
+//
+//        eastJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                eastLostFocus();
+//            }
+//        });
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create labels for all Swing controls used on this tabbed panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JLabel northLabel = new JLabel(NORTH_LABEL);
+//        final JLabel southLabel = new JLabel(SOUTH_LABEL);
+//        final JLabel westLabel = new JLabel(WEST_LABEL);
+//        final JLabel eastLabel = new JLabel(EAST_LABEL);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create mainPanel to hold all controls
+//        // ----------------------------------------------------------------------------------------
+//
+//        //     final JPanel inPanel = new JPanel();
+//        inPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
+//        inPanel.setLayout(new GridBagLayout());
+//
+//        inPanel.add(northJTextField,
+//                SeadasGuiUtils.makeConstraints(2, 1, GridBagConstraints.NORTH));
+//
+//        inPanel.add(southJTextField,
+//                SeadasGuiUtils.makeConstraints(2, 3, GridBagConstraints.SOUTH));
+//
+//        inPanel.add(eastJTextField,
+//                SeadasGuiUtils.makeConstraints(3, 2, GridBagConstraints.EAST));
+//
+//        inPanel.add(westJTextField,
+//                SeadasGuiUtils.makeConstraints(1, 2, GridBagConstraints.WEST));
+//
+//        inPanel.add(northLabel,
+//                SeadasGuiUtils.makeConstraints(2, 0, GridBagConstraints.SOUTH));
+//
+//        inPanel.add(southLabel,
+//                SeadasGuiUtils.makeConstraints(2, 4, GridBagConstraints.NORTH));
+//
+//        inPanel.add(eastLabel,
+//                SeadasGuiUtils.makeConstraints(4, 2, GridBagConstraints.WEST));
+//
+//        inPanel.add(westLabel,
+//                SeadasGuiUtils.makeConstraints(0, 2, GridBagConstraints.EAST));
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel wrappedMainPanel = new JPanel();
+//        wrappedMainPanel.setLayout(new GridBagLayout());
+//
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        c.insets = new Insets(3, 3, 3, 3);
+//        c.fill = GridBagConstraints.NONE;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//
+//        wrappedMainPanel.add(inPanel, c);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add wrappedMainPanel to tabbedPane
+//        // ----------------------------------------------------------------------------------------
+//
+//    }
+//
+//

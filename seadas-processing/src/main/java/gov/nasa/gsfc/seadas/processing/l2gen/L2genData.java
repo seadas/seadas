@@ -759,6 +759,12 @@ public class L2genData {
         setParamValue(paramInfo, paramInfo.getDefaultValue());
     }
 
+
+    public void setToDefaults(ParamCategoryInfo paramCategoryInfo) {
+        for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+            setParamToDefaults(paramInfo);
+        }
+    }
     public void setParamToDefaults(String param) {
         // Cleanup input and handle input exceptions
         if (param == null || param.length() == 0) {
@@ -875,6 +881,19 @@ public class L2genData {
             fireEvent(L2PROD);
         }
     }
+
+   public boolean isParamCategoryDefault(ParamCategoryInfo paramCategoryInfo) {
+       boolean isDefault = true;
+
+       for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+           if (!paramInfo.isDefault()) {
+               isDefault = false;
+           }
+       }
+
+       return isDefault;
+   }
+
 
 
     public String getMissionString() {
