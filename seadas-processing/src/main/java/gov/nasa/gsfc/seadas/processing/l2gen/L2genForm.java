@@ -14,6 +14,7 @@ import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
 import org.esa.beam.framework.ui.AppContext;
 
+import javax.print.DocFlavor;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -24,6 +25,9 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.EventObject;
@@ -155,7 +159,7 @@ class L2genForm extends JTabbedPane {
                 currTabIndex++;
                 JPanel currJPanel = new JPanel();
                 paramOptionsJPanels.add(currJPanel);
-                createParamsTab(paramCategoryInfo, currJPanel, currTabIndex);
+                createParamsTab(paramCategoryInfo, currTabIndex);
                 this.setEnabledAt(currTabIndex, false);
             }
         }
@@ -283,36 +287,93 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createParamsTab(final ParamCategoryInfo paramCategoryInfo, JPanel paddedMainPanel, final int currTabIndex) {
+    /**
+     * <html>
+     *     See Swing panel layout diagram:
+     * <a href="https://github.com/seadas/seadas/blob/master/seadas-processing/src/main/resources/gov/nasa/gsfc/seadas/processing/l2gen/paramDiagram1.jpg">
+     * paramDiagram1.jpg</a>
+     * </html>
+     *
+     * @param paramCategoryInfo
+     * @param currTabIndex
+     */
 
-        final JPanel mainPanel = new JPanel();
-
-
-
-        final JScrollPane jScrollPane = new JScrollPane(mainPanel);
-
-        final JPanel outerMainPanel = new JPanel();
-        final JPanel paddedMainPanel2 = new JPanel();
-        final JPanel blankPanel = new JPanel();
-        final JLabel jLabel = new JLabel("");
-
-        final JButton restoreDefaults = new JButton("Restore Defaults (this tab only)");
+    private void createParamsTab(final ParamCategoryInfo paramCategoryInfo, final int currTabIndex) {
 
 
-
-        restoreDefaults.setEnabled(!l2genData.isParamCategoryDefault(paramCategoryInfo));
-
-
-        mainPanel.setLayout(new GridBagLayout());
-        mainPanel.setBorder(BorderFactory.createTitledBorder("mainPanel"));
+        final JPanel paramsPanel = new JPanel();
+        paramsPanel.setLayout(new GridBagLayout());
 
 
-        restoreDefaults.addActionListener(new ActionListener() {
+        final JButton restoreDefaultsButton = new JButton("Restore Defaults (this tab only)");
+        restoreDefaultsButton.setEnabled(!l2genData.isParamCategoryDefault(paramCategoryInfo));
+
+        restoreDefaultsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 l2genData.setToDefaults(paramCategoryInfo);
             }
         });
+
+
+        int gridy = 0;
+        for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+            if (paramInfo.hasValidValueInfos()) {
+                createParamComboBox(paramInfo, paramsPanel, gridy);
+            } else {
+                if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
+                    createParamCheckBox(paramInfo, paramsPanel, gridy);
+                } else {
+                    createParamTextfield(paramInfo, paramsPanel, gridy);
+                }
+            }
+
+            gridy++;
+
+            l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    StringBuilder stringBuilder = new StringBuilder(paramCategoryInfo.getName());
+
+                    if (l2genData.isParamCategoryDefault(paramCategoryInfo)) {
+                        restoreDefaultsButton.setEnabled(false);
+                        setTabName(currTabIndex, stringBuilder.toString());
+                    } else {
+                        restoreDefaultsButton.setEnabled(true);
+                        setTabName(currTabIndex, stringBuilder.append("*").toString());
+                    }
+
+                }
+            });
+        }
+
+
+        /**
+         * Add a blank filler panel to the bottom of paramsPanel
+         * This serves the purpose of expanding at the bottom of the paramsPanel in order to fill the
+         * space so that the rest of the param control do not expand
+         */
+        {
+            final JPanel paramsFillerPanel = new JPanel();
+            paramsFillerPanel.add(new JLabel(""));
+
+            final GridBagConstraints c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = gridy;
+            c.anchor = GridBagConstraints.NORTH;
+            c.fill = GridBagConstraints.BOTH;
+            c.weightx = 1;
+            c.weighty = 1;
+            paramsPanel.add(paramsFillerPanel, c);
+        }
+
+
+        final JScrollPane paramsScroll = new JScrollPane(paramsPanel);
+
+
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
 
 
         {
@@ -323,11 +384,7 @@ class L2genForm extends JTabbedPane {
             c.fill = GridBagConstraints.BOTH;
             c.weightx = 1;
             c.weighty = 1;
-
-
-            outerMainPanel.setLayout(new GridBagLayout());
-            outerMainPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
-            outerMainPanel.add(jScrollPane, c);
+            mainPanel.add(paramsScroll, c);
         }
 
 
@@ -339,61 +396,10 @@ class L2genForm extends JTabbedPane {
             c.fill = GridBagConstraints.NONE;
             c.weightx = 0;
             c.weighty = 0;
-
-            outerMainPanel.add(restoreDefaults, c);
+            mainPanel.add(restoreDefaultsButton, c);
         }
 
-
-
-        int gridy = 0;
-        for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
-
-
-            if (paramInfo.hasValidValueInfos()) {
-                createParamComboBox(paramInfo, mainPanel, gridy);
-            } else {
-                if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
-                    createParamCheckBox(paramInfo, mainPanel, gridy);
-                } else {
-                    createParamTextfield(paramInfo, mainPanel, gridy);
-                }
-            }
-
-            gridy++;
-
-            l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    //   restoreDefaults.setEnabled(!l2genData.isParamCategoryDefault(paramCategoryInfo));
-                    StringBuilder stringBuilder = new StringBuilder(paramCategoryInfo.getName());
-
-                    if (l2genData.isParamCategoryDefault(paramCategoryInfo)) {
-                        restoreDefaults.setEnabled(false);
-                        setTabName(currTabIndex, stringBuilder.toString());
-                    } else {
-                        restoreDefaults.setEnabled(true);
-                        setTabName(currTabIndex, stringBuilder.append("*").toString());
-                    }
-
-                }
-            });
-        }
-
-
-        final GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = gridy;
-        c.anchor = GridBagConstraints.NORTH;
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.weighty = 1;
-
-        blankPanel.add(jLabel);
-        blankPanel.setLayout(new GridBagLayout());
-        mainPanel.add(blankPanel, c);
-
-
-       paddedMainPanel =  SeadasGuiUtils.addPaddedWrapperPanel(outerMainPanel, 6);
+        final JPanel paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
         addTab(paramCategoryInfo.getName(), paddedMainPanel);
     }
 
