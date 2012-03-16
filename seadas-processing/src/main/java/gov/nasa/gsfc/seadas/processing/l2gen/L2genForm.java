@@ -288,11 +288,15 @@ class L2genForm extends JTabbedPane {
 
 
     /**
-     * <html>
-     *     See Swing panel layout diagram:
+     * Creates a tab containing Swing controls for all params within a given paramCategor <p>
+     * <p/>
+     * Adds in the listeners needed to detect to each control<br>
+     * Adds in the listeners needed to update each control when an event has been fired<br>
+     *
+     * For Swing panel layout diagram see:
      * <a href="https://github.com/seadas/seadas/blob/master/seadas-processing/src/main/resources/gov/nasa/gsfc/seadas/processing/l2gen/paramDiagram1.jpg">
      * paramDiagram1.jpg</a>
-     * </html>
+     * 
      *
      * @param paramCategoryInfo
      * @param currTabIndex
