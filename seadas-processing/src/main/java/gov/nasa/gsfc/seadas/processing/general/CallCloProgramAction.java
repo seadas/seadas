@@ -1,9 +1,11 @@
-package gov.nasa.gsfc.seadas.processing;
+package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.core.CoreException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.ocssw.ProcessObserver;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
@@ -20,7 +22,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import gov.nasa.gsfc.seadas.ocssw.*;
 
 /**
  * A ...
@@ -35,6 +36,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     String programName;
     String dialogTitle;
+    String xmlFileName;
 
     @Override
     public void configure(ConfigurationElement config) throws CoreException {
@@ -43,15 +45,18 @@ public class CallCloProgramAction extends AbstractVisatAction {
             throw new CoreException("Missing DefaultOperatorAction property 'programName'.");
         }
         dialogTitle = getValue(config, "dialogTitle", programName);
+        xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED );
         super.configure(config);
     }
 
     @Override
     public void actionPerformed(CommandEvent event) {
 
+
         final AppContext appContext = getAppContext();
-        // UI Ã¶ffnen
-        final CloProgramUI cloProgramUI = new CloProgramUI(programName, dialogTitle);
+
+        final Processor processor = new Processor(programName, xmlFileName);
+        final CloProgramUI cloProgramUI = new CloProgramUI(programName, dialogTitle, processor.getParamList() );
 
         //final String title = event.getCommand().getText();
         final Window parent = appContext.getApplicationWindow();

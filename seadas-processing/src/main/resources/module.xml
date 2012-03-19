@@ -18,6 +18,10 @@
     <dependency>
         <module>seadas-app</module>
     </dependency>
+    <dependency>
+        <module>seadas-ocssw</module>
+    </dependency>
+
 
     <categories>System</categories>
 
@@ -42,7 +46,7 @@
         <action>
             <parent>seadasProcessing</parent>
             <id>l1mapgen</id>
-            <class>gov.nasa.gsfc.seadas.processing.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l1mapgen...</text>
             <programName>l1mapgen</programName>
             <dialogTitle>l1mapgen Processor</dialogTitle>
@@ -50,7 +54,7 @@
         <action>
             <parent>seadasProcessing</parent>
             <id>l1brsgen</id>
-            <class>gov.nasa.gsfc.seadas.processing.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l1brsgen...</text>
             <programName>l1brsgen</programName>
             <dialogTitle>l1brsgen Processor</dialogTitle>
@@ -58,7 +62,7 @@
         <action>
             <parent>seadasProcessing</parent>
             <id>l2mapgen</id>
-            <class>gov.nasa.gsfc.seadas.processing.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l2mapgen...</text>
             <programName>l2mapgen</programName>
             <dialogTitle>l2mapgen Processor</dialogTitle>
@@ -66,10 +70,19 @@
         <action>
             <parent>seadasProcessing</parent>
             <id>l2genSimple</id>
-            <class>gov.nasa.gsfc.seadas.processing.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l2gen Simple...</text>
             <programName>l2gen</programName>
             <dialogTitle>Simple l2gen Processor</dialogTitle>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
+            <id>l1aextract_modis</id>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>l1aextract_modis...</text>
+            <programName>l1aextract_modis</programName>
+            <dialogTitle>l1aextract_modis</dialogTitle>
+            <xmlFileName>l1aextract_modis_paramInfo.xml</xmlFileName>
         </action>
     </extension>
 

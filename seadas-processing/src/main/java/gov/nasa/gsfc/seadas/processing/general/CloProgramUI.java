@@ -14,8 +14,9 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
-package gov.nasa.gsfc.seadas.processing;
+package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.util.io.BeamFileChooser;
@@ -27,6 +28,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
 
 class CloProgramUI extends JPanel {
 
@@ -35,13 +37,33 @@ class CloProgramUI extends JPanel {
     private File selectedFile;
     private String programName;
     private String dialogTitle;
+    private final JPanel parameterPanel;
 
     public CloProgramUI(String programName, String dialogTitle) {
         super(new BorderLayout());
 
         this.programName = programName;
         this.dialogTitle = dialogTitle;
+
         parameterTextArea = new JTextArea(getDefaultText());
+
+        sourceProductSelector = new SourceProductSelector(VisatApp.getApp(), "Source Product");
+        sourceProductSelector.initProducts();
+
+        parameterPanel = new JPanel();
+
+        initUI();
+    }
+
+    public CloProgramUI(String programName, String dialogTitle, ArrayList<ParamInfo> paramList) {
+        super(new BorderLayout());
+
+        this.programName = programName;
+        this.dialogTitle = dialogTitle;
+
+        parameterTextArea = new JTextArea(getDefaultText());
+
+        parameterPanel = createParameterPanel(paramList);
 
         sourceProductSelector = new SourceProductSelector(VisatApp.getApp(), "Source Product");
         sourceProductSelector.initProducts();
@@ -196,6 +218,43 @@ class CloProgramUI extends JPanel {
                                       "Unable to create parameter file:\n'" + selectedFile + "'",
                                       "",
                                       JOptionPane.ERROR);
+    }
+
+    private JPanel createParameterPanel(ArrayList<ParamInfo> paramList) {
+
+        ParamInfo[] paramInfos = new ParamInfo[paramList.size()];
+        paramList.toArray(paramInfos);
+
+        final JPanel paramPanel = new JPanel();
+        paramPanel.setLayout(new FlowLayout());
+
+
+        for (ParamInfo paramInfo:paramInfos) {
+            switch (paramInfo.getType()) {
+                case BOOLEAN  :
+                    final JCheckBox  booleanButton = new JCheckBox();
+                    booleanButton.setSelected(false);
+                    paramPanel.add(booleanButton);
+                    break;
+                case STRING   :
+                    break;
+                case INT      :
+                    final JTextField intField = new JTextField();
+                    intField.setText(paramInfo.getValue() );
+                    paramPanel.add(intField );
+                    break;
+                case FLOAT    :
+                    break;
+            }
+
+        }
+        return paramPanel;
+    }
+
+    private JPanel singleParamPanel(){
+        JPanel singleParamPanel = new JPanel();
+
+        return singleParamPanel;
     }
 
     private String getDefaultText() {
