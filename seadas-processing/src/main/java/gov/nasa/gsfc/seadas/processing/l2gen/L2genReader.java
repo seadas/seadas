@@ -205,6 +205,7 @@ public class L2genReader {
                     }
                 }
 
+
                 String defaultValue = value;
                 String description = XmlReader.getTextValue(optionElement, "description");
                 String source = XmlReader.getTextValue(optionElement, "source");
@@ -215,6 +216,16 @@ public class L2genReader {
                 paramInfo.setDescription(description);
                 paramInfo.setDefaultValue(defaultValue);
                 paramInfo.setSource(source);
+
+                boolean isBit = false;
+                if (name != null) {
+                    if (name.equals("gas_opt") ||
+                            name.equals("eval")) {
+                        isBit = true;
+                    }
+                }
+
+                paramInfo.setBit(isBit);
 
                 NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
 

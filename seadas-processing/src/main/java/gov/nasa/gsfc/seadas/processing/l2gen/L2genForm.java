@@ -8,13 +8,11 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
-import com.jidesoft.swing.JideButton;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
 import org.esa.beam.framework.ui.AppContext;
 
-import javax.print.DocFlavor;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -26,8 +24,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.EventObject;
@@ -53,8 +49,8 @@ class L2genForm extends JTabbedPane {
     final String DEFAULT_INDICATOR_TOOLTIP = "* Identicates that the selection is not the default value";
     final String DEFAULT_INDICATOR_LABEL_ON = " *  ";
     final String DEFAULT_INDICATOR_LABEL_OFF = "     ";
-    final int PARAM_STRING_TEXTLEN = 45;
-    final int PARAM_FILESTRING_TEXTLEN = 45;
+    final int PARAM_STRING_TEXTLEN = 60;
+    final int PARAM_FILESTRING_TEXTLEN = 70;
     final int PARAM_INT_TEXTLEN = 15;
     final int PARAM_FLOAT_TEXTLEN = 15;
 
@@ -64,7 +60,7 @@ class L2genForm extends JTabbedPane {
     private JComboBox ofileJComboBox;
 
     private boolean waveLimiterControlHandlersEnabled = true;
-
+    private boolean swingSentEventsDisabled = false;
     private boolean handleIfileJComboBoxEnabled = true;
 
     private JTextArea selectedProductsJTextArea;
@@ -157,8 +153,6 @@ class L2genForm extends JTabbedPane {
         for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
             if (paramCategoryInfo.isVisible() && (paramCategoryInfo.getParamInfos().size() > 0)) {
                 currTabIndex++;
-                JPanel currJPanel = new JPanel();
-                paramOptionsJPanels.add(currJPanel);
                 createParamsTab(paramCategoryInfo, currTabIndex);
                 this.setEnabledAt(currTabIndex, false);
             }
@@ -292,11 +286,10 @@ class L2genForm extends JTabbedPane {
      * <p/>
      * Adds in the listeners needed to detect to each control<br>
      * Adds in the listeners needed to update each control when an event has been fired<br>
-     *
+     * <p/>
      * For Swing panel layout diagram see:
      * <a href="https://github.com/seadas/seadas/blob/master/seadas-processing/src/main/resources/gov/nasa/gsfc/seadas/processing/l2gen/paramDiagram1.jpg">
      * paramDiagram1.jpg</a>
-     * 
      *
      * @param paramCategoryInfo
      * @param currTabIndex
@@ -323,7 +316,11 @@ class L2genForm extends JTabbedPane {
         int gridy = 0;
         for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
             if (paramInfo.hasValidValueInfos()) {
-                createParamComboBox(paramInfo, paramsPanel, gridy);
+                if (paramInfo.isBit()) {
+                    createParamBitwiseComboBox(paramInfo, paramsPanel, gridy);
+                } else {
+                    createParamComboBox(paramInfo, paramsPanel, gridy);
+                }
             } else {
                 if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
                     createParamCheckBox(paramInfo, paramsPanel, gridy);
@@ -417,7 +414,7 @@ class L2genForm extends JTabbedPane {
 
         if (paramInfo.getType() == ParamInfo.Type.STRING) {
             if (paramInfo.getName().contains("file")) {
-                //  jTextFieldLen = PARAM_FILESTRING_TEXTLEN;
+                jTextFieldLen = PARAM_FILESTRING_TEXTLEN;
             } else {
                 jTextFieldLen = PARAM_STRING_TEXTLEN;
             }
@@ -538,6 +535,7 @@ class L2genForm extends JTabbedPane {
                 setBackground(Color.white);
                 setForeground(Color.black);
             }
+
             setFont(list.getFont());
             setText((value == null) ? "" : value.toString());
             return this;
@@ -554,6 +552,8 @@ class L2genForm extends JTabbedPane {
 
         ArrayList<ParamValidValueInfo> validValuesArrayList = new ArrayList<ParamValidValueInfo>();
         ArrayList<String> validValuesToolTipsArrayList = new ArrayList<String>();
+
+    //    validValuesArrayList.add(new String(""));
 
         for (ParamValidValueInfo paramValidValueInfo : paramInfo.getValidValueInfos()) {
             if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().length() > 0) {
@@ -591,9 +591,12 @@ class L2genForm extends JTabbedPane {
 
         final JComboBox jComboBox = new JComboBox(validValueInfosArray);
 
+
         MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
         myComboBoxRenderer.setTooltips(validValuesToolTipsArray);
         jComboBox.setRenderer(myComboBoxRenderer);
+        jComboBox.setEditable(true);
+
         for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
             if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
                 jComboBox.setSelectedItem(paramValidValueInfo);
@@ -674,6 +677,196 @@ class L2genForm extends JTabbedPane {
             }
         });
 
+    }
+
+    private void createParamBitwiseComboBox(final ParamInfo paramInfo, JPanel jPanel, int gridy) {
+
+        final JPanel valuePanel = new JPanel();
+        valuePanel.setLayout(new GridBagLayout());
+        int valuePanelGridy = 0;
+
+        final JLabel defaultIndicator = new JLabel(DEFAULT_INDICATOR_LABEL_OFF);
+        defaultIndicator.setForeground(DEFAULT_INDICATOR_COLOR);
+        defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
+
+
+        for (ParamValidValueInfo paramValidValueInfo : paramInfo.getValidValueInfos()) {
+            if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().length() > 0) {
+                createParamBitwiseCheckbox(paramInfo, paramValidValueInfo, valuePanel, valuePanelGridy, defaultIndicator);
+
+                valuePanelGridy++;
+            }
+        }
+
+        final JScrollPane valuesScroll = new JScrollPane(valuePanel);
+
+        final JLabel jLabel = new JLabel(paramInfo.getName());
+        jLabel.setToolTipText(paramInfo.getDescription());
+
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 0;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.EAST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+            jPanel.add(jLabel, constraints);
+        }
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 1;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.EAST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+
+            jPanel.add(defaultIndicator, constraints);
+        }
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 2;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.WEST;
+            constraints.weightx = 1;
+            constraints.weighty = 0;
+            jPanel.add(valuesScroll, constraints);
+        }
+
+    }
+
+
+    private void createParamBitwiseCheckbox(final ParamInfo paramInfo,
+                                            final ParamValidValueInfo paramValidValueInfo,
+                                            JPanel jPanel,
+                                            int gridy,
+                                            final JLabel defaultIndicatorLabel) {
+
+        final JCheckBox jCheckBox = new JCheckBox();
+        final String param = paramInfo.getName();
+
+        //   jCheckBox.setName(paramValidValueInfo.getValue()+" - "+paramValidValueInfo.getDescription());
+
+        jCheckBox.setSelected(paramInfo.isBitwiseSelected(paramValidValueInfo));
+
+        final JLabel jLabel = new JLabel(paramValidValueInfo.getValue() + " - " + paramValidValueInfo.getDescription());
+        jLabel.setToolTipText(paramValidValueInfo.getValue() + " - " + paramValidValueInfo.getDescription());
+
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 0;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.EAST;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+            jPanel.add(jCheckBox, constraints);
+        }
+
+
+        {
+            final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 1;
+            constraints.gridy = gridy;
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.anchor = GridBagConstraints.WEST;
+            constraints.weightx = 1;
+            constraints.weighty = 0;
+            jPanel.add(jLabel, constraints);
+        }
+
+
+        // add listener for current checkbox
+        jCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                //todo needs to call a bitwise variant
+                String currValueString = l2genData.getParamValue(paramInfo);
+                int currValue = Integer.parseInt(currValueString);
+                String currValidValueString = paramValidValueInfo.getValue();
+                int currValidValue = Integer.parseInt(currValidValueString);
+                int newValue = currValue;
+
+                if (currValidValue > 0) {
+                    if (jCheckBox.isSelected()) {
+
+                        newValue = (currValue | currValidValue);
+                    } else {
+
+                        if ((currValue & currValidValue) > 0) {
+                            newValue = currValue - currValidValue;
+                        }
+                    }
+                } else {
+                    if (jCheckBox.isSelected()) {
+                        newValue = 0;
+                    } else {
+                        if (!swingSentEventsDisabled) {
+                            swingSentEventsDisabled = true;
+                            l2genData.setParamToDefaults(paramInfo);
+                            swingSentEventsDisabled = false;
+                        }
+                        return;
+                    }
+                }
+
+
+                String newValueString = Integer.toString(newValue);
+
+                debug("I heard you click param=" + param + " currVV=" + currValidValueString + " origValue=" + currValueString + "newValue=" + newValueString);
+
+                if (!swingSentEventsDisabled) {
+                    swingSentEventsDisabled = true;
+                    l2genData.setParamValue(param, newValueString);
+                    swingSentEventsDisabled = false;
+                }
+            }
+        }
+
+        );
+
+        l2genData.addPropertyChangeListener(param, new
+
+                PropertyChangeListener() {
+                    @Override
+                    public void propertyChange
+                            (PropertyChangeEvent
+                                     evt) {
+                        debug("receiving eventName " + param);
+                        //todo needs to call a bitwise variant
+
+                        int value = Integer.parseInt(paramValidValueInfo.getValue());
+
+                        if (value > 0) {
+                            jCheckBox.setSelected(paramInfo.isBitwiseSelected(paramValidValueInfo));
+                        } else {
+                            if (paramValidValueInfo.getValue().equals(l2genData.getParamValue(paramInfo))) {
+                                jCheckBox.setSelected(true);
+                            } else {
+                                jCheckBox.setSelected(false);
+                            }
+                        }
+
+
+                        if (l2genData.isParamDefault(param)) {
+                            //   jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
+                            defaultIndicatorLabel.setText(DEFAULT_INDICATOR_LABEL_OFF);
+                            defaultIndicatorLabel.setToolTipText("");
+                        } else {
+                            //   jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
+                            defaultIndicatorLabel.setText(DEFAULT_INDICATOR_LABEL_ON);
+                            defaultIndicatorLabel.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
+                        }
+                    }
+                }
+
+        );
     }
 
 
@@ -1033,6 +1226,7 @@ class L2genForm extends JTabbedPane {
 
             return editor;
         }
+
     }
 
 

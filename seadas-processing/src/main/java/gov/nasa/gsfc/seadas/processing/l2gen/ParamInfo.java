@@ -17,8 +17,10 @@ public class ParamInfo implements Comparable {
     private String defaultValue = NULL_STRING;
     private String description = NULL_STRING;
     private String source = NULL_STRING;
+    private boolean isBit = false;
 
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
+
 
     public static enum Type {
         BOOLEAN, STRING, INT, FLOAT
@@ -143,6 +145,17 @@ public class ParamInfo implements Comparable {
         }
     }
 
+    public boolean isBitwiseSelected(ParamValidValueInfo paramValidValueInfo) {
+        int intParamValue = Integer.parseInt(value);
+        int intParamValidValue = Integer.parseInt(paramValidValueInfo.getValue());
+
+        if ((intParamValue & intParamValidValue) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public String getDescription() {
         return description;
     }
@@ -203,6 +216,14 @@ public class ParamInfo implements Comparable {
         } else {
             return false;
         }
+    }
+
+    public boolean isBit() {
+        return isBit;
+    }
+
+    public void setBit(boolean bit) {
+        isBit = bit;
     }
 
     public void sortValidValueInfos() {
