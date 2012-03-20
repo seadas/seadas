@@ -526,7 +526,7 @@ class L2genForm extends JTabbedPane {
                 setForeground(list.getSelectionForeground());
 //                setBackground(Color.white);
 //                setForeground(Color.black);
-                if (-1 < index) {
+                if (-1 < index && index < tooltips.length) {
                     list.setToolTipText(tooltips[index]);
                 }
             } else {
@@ -550,14 +550,14 @@ class L2genForm extends JTabbedPane {
 
         final String param = paramInfo.getName();
 
-        ArrayList<ParamValidValueInfo> validValuesArrayList = new ArrayList<ParamValidValueInfo>();
+        ArrayList<ParamValidValueInfo> jComboBoxArrayList = new ArrayList<ParamValidValueInfo>();
         ArrayList<String> validValuesToolTipsArrayList = new ArrayList<String>();
 
-    //    validValuesArrayList.add(new String(""));
+        //    jComboBoxArrayList.add(new String(""));
 
         for (ParamValidValueInfo paramValidValueInfo : paramInfo.getValidValueInfos()) {
             if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().length() > 0) {
-                validValuesArrayList.add(paramValidValueInfo);
+                jComboBoxArrayList.add(paramValidValueInfo);
 
                 if (paramValidValueInfo.getDescription().length() > 70) {
                     validValuesToolTipsArrayList.add(paramValidValueInfo.getDescription());
@@ -567,20 +567,18 @@ class L2genForm extends JTabbedPane {
             }
         }
 
-//        final ParamValidValueInfo validValuesInfosArray[] = (ParamValidValueInfo[]) validValuesArrayList.toArray();
+//        final ParamValidValueInfo validValuesInfosArray[] = (ParamValidValueInfo[]) jComboBoxArrayList.toArray();
 
-        final ParamValidValueInfo[] validValueInfosArray;
-        validValueInfosArray = new ParamValidValueInfo[validValuesArrayList.size()];
+        final ParamValidValueInfo[] jComboBoxArray;
+        jComboBoxArray = new ParamValidValueInfo[jComboBoxArrayList.size()];
 
         int i = 0;
-        for (ParamValidValueInfo paramValidValueInfo : validValuesArrayList) {
-            validValueInfosArray[i] = paramValidValueInfo;
+        for (ParamValidValueInfo paramValidValueInfo : jComboBoxArrayList) {
+            jComboBoxArray[i] = paramValidValueInfo;
             i++;
         }
 
-
-        final String[] validValuesToolTipsArray;
-        validValuesToolTipsArray = new String[validValuesArrayList.size()];
+        final String[] validValuesToolTipsArray = new String[jComboBoxArrayList.size()];
 
         int j = 0;
         for (String validValuesToolTip : validValuesToolTipsArrayList) {
@@ -589,15 +587,15 @@ class L2genForm extends JTabbedPane {
         }
 
 
-        final JComboBox jComboBox = new JComboBox(validValueInfosArray);
+        final JComboBox jComboBox = new JComboBox(jComboBoxArray);
 
-
-        MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
+        final MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
         myComboBoxRenderer.setTooltips(validValuesToolTipsArray);
         jComboBox.setRenderer(myComboBoxRenderer);
-        jComboBox.setEditable(true);
+        jComboBox.setEditable(false);
 
-        for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
+
+        for (ParamValidValueInfo paramValidValueInfo : jComboBoxArray) {
             if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
                 jComboBox.setSelectedItem(paramValidValueInfo);
             }
@@ -606,6 +604,7 @@ class L2genForm extends JTabbedPane {
         //     jComboBox.setForeground(Color.cyan);
         //     jComboBox.setBackground(new Color(200, 20, 20));
 
+        final boolean userArrayNeeded[] = {false};
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
@@ -660,10 +659,15 @@ class L2genForm extends JTabbedPane {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 debug("receiving eventName " + param);
-                for (ParamValidValueInfo paramValidValueInfo : validValueInfosArray) {
-                    if (l2genData.getParamValue(paramInfo).equals(paramValidValueInfo.getValue())) {
-                        jComboBox.setSelectedItem(paramValidValueInfo);
-                        if (l2genData.isParamDefault(param)) {
+                boolean found = false;
+                ComboBoxModel comboBoxModel = jComboBox.getModel();
+
+                for (int i = 0; i < comboBoxModel.getSize(); i++) {
+                    ParamValidValueInfo jComboBoxItem = (ParamValidValueInfo) comboBoxModel.getElementAt(i);
+                    if (paramInfo.getValue().equals(jComboBoxItem.getValue())) {
+                        jComboBox.setSelectedItem(jComboBoxItem);
+
+                        if (l2genData.isParamDefault(paramInfo)) {
                             //     jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
                             defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                             defaultIndicator.setToolTipText("");
@@ -672,10 +676,54 @@ class L2genForm extends JTabbedPane {
                             defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
                             defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
                         }
+                        found = true;
                     }
+                }
+
+                if (!found) {
+                    final ParamValidValueInfo newArray[] = new ParamValidValueInfo[comboBoxModel.getSize() + 1];
+                    int i;
+                    for (i = 0; i < comboBoxModel.getSize(); i++) {
+                        newArray[i] = (ParamValidValueInfo) comboBoxModel.getElementAt(i);
+                    }
+                    newArray[i] = new ParamValidValueInfo(paramInfo.getValue());
+                    newArray[i].setDescription("User defined value");
+                    jComboBox.setModel(new DefaultComboBoxModel(newArray));
+                    jComboBox.setSelectedItem(newArray[i]);
                 }
             }
         });
+
+//                l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                debug("receiving eventName " + param);
+//
+//                boolean found=false;
+////                if (userArrayNeeded[1])
+////
+//                for (ParamValidValueInfo jComboBoxItem : jComboBoxArray) {
+//                    if (paramInfo.getValue().equals(jComboBoxItem.getValue())) {
+//                        jComboBox.setSelectedItem(jComboBoxItem);
+//
+//                        if (l2genData.isParamDefault(paramInfo)) {
+//                            //     jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
+//                            defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
+//                            defaultIndicator.setToolTipText("");
+//                        } else {
+//                            //     jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
+//                            defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
+//                            defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
+//                        }
+//                        found = true;
+//                    }
+//                }
+//
+//                if (!found)  {
+//                    jComboBox.setModel(new DefaultComboBoxModel(jComboBoxAlternateArray));
+//                }
+//            }
+//        });
 
     }
 
