@@ -47,12 +47,14 @@ public class L2genReader {
                     productCategoryInfo.setVisible(false);
                 }
 
+                boolean defaultBucket;
                 if (defaultBucketString != null && defaultBucketString.equals("1")) {
-                    productCategoryInfo.setDefaultBucket(true);
+                    defaultBucket = true;
                 } else {
-                    productCategoryInfo.setDefaultBucket(false);
+                    defaultBucket = false;
                 }
 
+                productCategoryInfo.setDefaultBucket(defaultBucket);
 
                 NodeList productNodelist = categoryElement.getElementsByTagName("product");
 

@@ -9,6 +9,8 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.io.DataInputStream;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A ...
@@ -765,6 +767,7 @@ public class L2genData {
             setParamToDefaults(paramInfo);
         }
     }
+
     public void setParamToDefaults(String param) {
         // Cleanup input and handle input exceptions
         if (param == null || param.length() == 0) {
@@ -811,8 +814,6 @@ public class L2genData {
 
         paramInfo.setDefaultValue(value);
     }
-
-
 
 
     private void setProdParamValue(String inProd) {
@@ -882,18 +883,17 @@ public class L2genData {
         }
     }
 
-   public boolean isParamCategoryDefault(ParamCategoryInfo paramCategoryInfo) {
-       boolean isDefault = true;
+    public boolean isParamCategoryDefault(ParamCategoryInfo paramCategoryInfo) {
+        boolean isDefault = true;
 
-       for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
-           if (!paramInfo.isDefault()) {
-               isDefault = false;
-           }
-       }
+        for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+            if (!paramInfo.isDefault()) {
+                isDefault = false;
+            }
+        }
 
-       return isDefault;
-   }
-
+        return isDefault;
+    }
 
 
     public String getMissionString() {
@@ -1050,63 +1050,44 @@ public class L2genData {
 
 
     private void setCustomOfile(String ifile) {
-// todo see Sean he mention something about a string replacement
+
+        String IFILE_STRING_TO_BE_REPLACED[] = {"L1A", "L1B"};
+        StringBuilder stringBuilder = new StringBuilder();
+        String ofile = null;
+
         for (ParamInfo paramInfo : paramInfos) {
             if (paramInfo.getName().equals(OFILE)) {
-
-                String ofile;
-                if (ifile != null) {
-                    String ifileSuffixTrimmedOff;
-
-                    int i = ifile.lastIndexOf('.');
-                    if (i != -1) {
-                        ifileSuffixTrimmedOff = ifile.substring(0, i);
-                    } else {
-                        ifileSuffixTrimmedOff = ifile;
+                /**
+                 * replace last occurrence of instance of IFILE_STRING_TO_BE_REPLACED[]
+                 */
+                for (String string_to_be_replaced : IFILE_STRING_TO_BE_REPLACED) {
+                    if (ifile.toUpperCase().contains(string_to_be_replaced)) {
+                        int index = ifile.toUpperCase().lastIndexOf(string_to_be_replaced);
+                        stringBuilder.append(ifile.substring(0, (index - 1)));
+                        stringBuilder.append(TARGET_PRODUCT_SUFFIX);
+                        stringBuilder.append(ifile.substring((index + string_to_be_replaced.length()), ifile.length()));
+                        ofile = stringBuilder.toString();
+                        break;
                     }
+                }
 
-                    ofile = ifileSuffixTrimmedOff + "." + TARGET_PRODUCT_SUFFIX;
-
-                } else {
-                    ofile = "";
+                /**
+                 * Not found so append it
+                 */
+                if (ofile == null) {
+                    stringBuilder.append(ifile);
+                    stringBuilder.append("." + TARGET_PRODUCT_SUFFIX);
+                    ofile = stringBuilder.toString();
                 }
 
                 paramInfo.setValue(ofile);
 
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, OFILE, null, null));
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, OFILE, null, ofile));
                 return;
             }
         }
     }
 
-
-    private String getL2genDefaults() {
-
-        //todo add logic to create defaults file
-
-        String L2GEN_DEFAULTS_FILENAME = "l2genDefaults.par";
-
-
-        InputStream stream = L2genData.class.getResourceAsStream(L2GEN_DEFAULTS_FILENAME);
-
-        // Get the object of DataInputStream
-        DataInputStream in = new DataInputStream(stream);
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        String strLine;
-        StringBuilder stringBuilder = new StringBuilder();
-
-        return stringBuilder.toString();
-        //Read File Line By Line
-//        try {
-//            while ((strLine = br.readLine()) != null) {
-//                stringBuilder.append(strLine);
-//                stringBuilder.append("\n");
-//            }
-//        } catch (IOException e) {
-//        }
-//
-//        return stringBuilder.toString();
-    }
 
     private void debug(String string) {
         System.out.println(string);
@@ -1116,10 +1097,19 @@ public class L2genData {
     /**
      * resets productInfos within productCategoryInfos to link to appropriate entry in productInfos
      */
-    public void setProductCategoryInfos() {
-// todo make sure order is correct
+    public void setProductCategoryInfosOld() {
         for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
             productCategoryInfo.clearProductInfos();
+        }
+
+        for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+            for (String categorizedProductName : productCategoryInfo.getProductNames()) {
+                for (ProductInfo productInfo : productInfos) {
+                    if (categorizedProductName.equals(productInfo.getName())) {
+                        productCategoryInfo.addProductInfo(productInfo);
+                    }
+                }
+            }
         }
 
         for (ProductInfo productInfo : productInfos) {
@@ -1128,7 +1118,6 @@ public class L2genData {
             for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
                 for (String categorizedProductName : productCategoryInfo.getProductNames()) {
                     if (categorizedProductName.equals(productInfo.getName())) {
-                        productCategoryInfo.addProductInfo(productInfo);
                         found = true;
                     }
                 }
@@ -1147,10 +1136,50 @@ public class L2genData {
 
 
     /**
+     * resets productInfos within productCategoryInfos to link to appropriate entry in productInfos
+     */
+    public void setProductCategoryInfos() {
+        for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+            productCategoryInfo.clearChildren();
+        }
+
+        for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+           for (String categorizedProductName : productCategoryInfo.getProductNames()) {
+                for (ProductInfo productInfo : productInfos) {
+                    if (categorizedProductName.equals(productInfo.getName())) {
+                        productCategoryInfo.addChild(productInfo);
+                    }
+                }
+            }
+        }
+
+        for (ProductInfo productInfo : productInfos) {
+            boolean found = false;
+
+            for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+                for (String categorizedProductName : productCategoryInfo.getProductNames()) {
+                    if (categorizedProductName.equals(productInfo.getName())) {
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) {
+                for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+                    if (productCategoryInfo.isDefaultBucket()) {
+                        productCategoryInfo.addChild(productInfo);
+                        l2genPrint.adminlog("Dropping uncategorized product '" + productInfo.getName() + "' into the defaultBucket");
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
      * resets paramInfos within paramCategoryInfos to link to appropriate entry in paramInfos
      */
     public void setParamCategoryInfos() {
-//todo make sure order is correct
         for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
             paramCategoryInfo.clearParamInfos();
         }

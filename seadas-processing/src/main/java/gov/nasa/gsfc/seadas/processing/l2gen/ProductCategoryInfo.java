@@ -9,7 +9,7 @@ import java.util.Collections;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class ProductCategoryInfo implements Comparable {
+public class ProductCategoryInfo extends BaseInfo {
 
 
     private String name = null;
@@ -64,22 +64,6 @@ public class ProductCategoryInfo implements Comparable {
         productNames.add(name);
     }
 
-    public void clearProductNames() {
-        productNames.clear();
-    }
-
-    public void sortProductInfos() {
-        Collections.sort(productInfos);
-    }
-
-    public void sortProductNames() {
-        Collections.sort(productNames, String.CASE_INSENSITIVE_ORDER);
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return getName().compareToIgnoreCase(((ProductCategoryInfo) o).getName());
-    }
 
     public ArrayList<String> getProductNames() {
         return productNames;

@@ -834,7 +834,6 @@ class L2genForm extends JTabbedPane {
         jCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                //todo needs to call a bitwise variant
                 String currValueString = l2genData.getParamValue(paramInfo);
                 int currValue = Integer.parseInt(currValueString);
                 String currValidValueString = paramValidValueInfo.getValue();
@@ -887,7 +886,6 @@ class L2genForm extends JTabbedPane {
                             (PropertyChangeEvent
                                      evt) {
                         debug("receiving eventName " + param);
-                        //todo needs to call a bitwise variant
 
                         int value = Integer.parseInt(paramValidValueInfo.getValue());
 
@@ -1280,48 +1278,52 @@ class L2genForm extends JTabbedPane {
 
     private TreeNode createTree() {
 
-        DefaultMutableTreeNode product, oldAlgorithm, algorithm = null, wavelength;
+        DefaultMutableTreeNode productCategory, product, oldAlgorithm, algorithm = null, wavelength;
 
         oldAlgorithm = new DefaultMutableTreeNode();
         BaseInfo oldAInfo = null;
 
         rootNode = new DefaultMutableTreeNode(new BaseInfo());
 
-        for (ProductInfo productInfo : l2genData.getProductInfos()) {
-            product = new DefaultMutableTreeNode(productInfo);
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                algorithm = new DefaultMutableTreeNode(aInfo);
+        for (ProductCategoryInfo productCategoryInfo : l2genData.getProductCategoryInfos()) {
+            productCategory = new DefaultMutableTreeNode(productCategoryInfo);
+            rootNode.add(productCategory);
+            for (BaseInfo pInfo : productCategoryInfo.getChildren()) {
+                product = new DefaultMutableTreeNode(pInfo);
+                for (BaseInfo aInfo : pInfo.getChildren()) {
+                    algorithm = new DefaultMutableTreeNode(aInfo);
 
-                if (algorithm.toString().equals(oldAlgorithm.toString())) {
-                    if (oldAInfo.hasChildren()) {
-                        if (aInfo.hasChildren()) {
-                            algorithm = oldAlgorithm;
+                    if (algorithm.toString().equals(oldAlgorithm.toString())) {
+                        if (oldAInfo.hasChildren()) {
+                            if (aInfo.hasChildren()) {
+                                algorithm = oldAlgorithm;
+                            } else {
+                                oldAlgorithm.add(algorithm);
+                            }
                         } else {
-                            oldAlgorithm.add(algorithm);
+                            if (aInfo.hasChildren()) {
+                                product.remove(oldAlgorithm);
+                                algorithm.add(oldAlgorithm);
+                                product.add(algorithm);
+                            }
                         }
                     } else {
-                        if (aInfo.hasChildren()) {
-                            product.remove(oldAlgorithm);
-                            algorithm.add(oldAlgorithm);
-                            product.add(algorithm);
-                        }
+                        product.add(algorithm);
                     }
+
+                    for (BaseInfo wInfo : aInfo.getChildren()) {
+                        wavelength = new DefaultMutableTreeNode(wInfo);
+                        algorithm.add(wavelength);
+                    }
+
+                    oldAInfo = aInfo;
+                    oldAlgorithm = algorithm;
+                }
+                if (pInfo.getChildren().size() == 1) {
+                    productCategory.add(algorithm);
                 } else {
-                    product.add(algorithm);
+                    productCategory.add(product);
                 }
-
-                for (BaseInfo wInfo : aInfo.getChildren()) {
-                    wavelength = new DefaultMutableTreeNode(wInfo);
-                    algorithm.add(wavelength);
-                }
-
-                oldAInfo = aInfo;
-                oldAlgorithm = algorithm;
-            }
-            if (productInfo.getChildren().size() == 1) {
-                rootNode.add(algorithm);
-            } else {
-                rootNode.add(product);
             }
         }
 
