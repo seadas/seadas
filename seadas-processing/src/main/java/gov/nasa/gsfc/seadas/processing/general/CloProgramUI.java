@@ -24,6 +24,8 @@ import org.esa.beam.util.io.FileUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,12 +34,14 @@ import java.util.ArrayList;
 
 class CloProgramUI extends JPanel {
 
+    private static final String[] COLUMN_NAMES = new String[]{"Parameter Name", "Parameter Value"};
     private final JTextArea parameterTextArea;
     private final SourceProductSelector sourceProductSelector;
     private File selectedFile;
     private String programName;
     private String dialogTitle;
     private final JPanel parameterPanel;
+    private ParamInfo[] paramInfos;
 
     public CloProgramUI(String programName, String dialogTitle) {
         super(new BorderLayout());
@@ -65,7 +69,11 @@ class CloProgramUI extends JPanel {
 
         parameterPanel = createParameterPanel(paramList);
 
+        paramInfos = new ParamInfo[paramList.size()];
+        paramList.toArray(paramInfos);
+
         sourceProductSelector = new SourceProductSelector(VisatApp.getApp(), "Source Product");
+
         sourceProductSelector.initProducts();
 
         initUI();
@@ -75,12 +83,24 @@ class CloProgramUI extends JPanel {
         return sourceProductSelector.getSelectedProduct();
     }
 
+//    public String getProcessingParameters() {
+//        return parameterTextArea.getText();
+//    }
+
     public String getProcessingParameters() {
-        return parameterTextArea.getText();
+        String parameterString = new String(" ");
+        for (ParamInfo paramInfo:paramInfos) {
+            if (! paramInfo.getName().equals(ParamUtils.IFILE) && !paramInfo.getName().equals(ParamUtils.OFILE)) {
+                parameterString = parameterString + " " + paramInfo.getName()  + "=" + paramInfo.getValue();
+            }
+        }
+        return parameterString;
     }
 
     private void initUI() {
-        final JScrollPane textScrollPane = new JScrollPane(parameterTextArea);
+        //final JScrollPane textScrollPane = new JScrollPane(parameterTextArea);
+        final JScrollPane textScrollPane = new JScrollPane(parameterPanel);
+
         textScrollPane.setPreferredSize(new Dimension(600, 300));
 
         final JButton saveParameterFileButton = new JButton("Store Parameters...");
@@ -95,6 +115,7 @@ class CloProgramUI extends JPanel {
 
         final JPanel parameterComponent = new JPanel(new BorderLayout());
         parameterComponent.add(textScrollPane, BorderLayout.CENTER);
+        //parameterComponent.add(parameterPanel, BorderLayout.CENTER);
         parameterComponent.add(buttonPanel, BorderLayout.SOUTH);
 
         add(sourceProductSelector.createDefaultPanel(), BorderLayout.NORTH);
@@ -226,8 +247,16 @@ class CloProgramUI extends JPanel {
         paramList.toArray(paramInfos);
 
         final JPanel paramPanel = new JPanel();
-        paramPanel.setLayout(new FlowLayout());
+        paramPanel.setBorder(new TitledBorder(" Parameters ") );
+        //paramPanel.setLayout(new BoxLayout(paramPanel, BoxLayout.Y_AXIS));
+        paramPanel.setLayout(new FlowLayout() );
 
+        final JPanel paramTitlePanel = new JPanel();
+        paramTitlePanel.setLayout(new FlowLayout());
+        paramTitlePanel.add(new JLabel(COLUMN_NAMES[0]));
+        paramTitlePanel.add(new JLabel(COLUMN_NAMES[1]));
+
+        //paramPanel.add(paramTitlePanel);
 
         for (ParamInfo paramInfo:paramInfos) {
             switch (paramInfo.getType()) {
@@ -239,9 +268,20 @@ class CloProgramUI extends JPanel {
                 case STRING   :
                     break;
                 case INT      :
+                    final JPanel intPanel = new JPanel();
+                    intPanel.setLayout(new FlowLayout() );
+                    final JLabel intFieldLabel = new JLabel(paramInfo.getName() );
+                    intFieldLabel.setHorizontalAlignment(JLabel.RIGHT);
+                    //intFieldLabel.setBorder(new EtchedBorder());
+                    //intFieldLabel.setSize();
                     final JTextField intField = new JTextField();
                     intField.setText(paramInfo.getValue() );
-                    paramPanel.add(intField );
+                    intField.setHorizontalAlignment(JTextField.RIGHT);
+
+                    intPanel.add(intFieldLabel);
+                    intPanel.add(intField);
+
+                    paramPanel.add(intPanel);
                     break;
                 case FLOAT    :
                     break;
@@ -251,11 +291,6 @@ class CloProgramUI extends JPanel {
         return paramPanel;
     }
 
-    private JPanel singleParamPanel(){
-        JPanel singleParamPanel = new JPanel();
-
-        return singleParamPanel;
-    }
 
     private String getDefaultText() {
         // changed all products using wavelength 555 to 560
@@ -280,4 +315,55 @@ class CloProgramUI extends JPanel {
                 "programName=" + programName + "\n";
     }
 
+
+    private class ParamListTableModel extends AbstractTableModel  {
+
+        private ParamListTableModel() {
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            return COLUMN_NAMES[columnIndex];
+        }
+
+        public int getColumnCount() {
+            return COLUMN_NAMES.length;
+        }
+
+        public int getRowCount() {
+
+            return paramInfos.length;
+        }
+
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            final ParamInfo pi = paramInfos[rowIndex] ;
+            if (columnIndex == 0) {
+
+                return pi.getName();
+            } else if (columnIndex == 1) {
+                return pi.getValue();
+            }
+            return null;
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            final ParamInfo pi = paramInfos[rowIndex] ;;
+            if (columnIndex == 0) {
+                final String name = (String) aValue;
+                pi.setName(name)  ;
+                fireTableCellUpdated(rowIndex, columnIndex);
+            } else if (columnIndex == 1) {
+                pi.setValue((String) aValue);
+                fireTableCellUpdated(rowIndex, columnIndex);
+            }
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex == 1;
+        }
+
+    }
 }
+
