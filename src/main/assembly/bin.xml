@@ -149,6 +149,7 @@
                             <!-- Exclude all module JARs, because we already put them into "modules"-->
                             <exclude>gov.nasa.gsfc.seadas:seadas-*</exclude>
                             <exclude>org.esa.beam:beam-*</exclude>
+                            <exclude>org.esa.beam:blue-marble-worldmap</exclude>
                             <exclude>com.bc.ceres:ceres-*</exclude>
                             <exclude>ncsa.hdf:*</exclude>
                         </excludes>
