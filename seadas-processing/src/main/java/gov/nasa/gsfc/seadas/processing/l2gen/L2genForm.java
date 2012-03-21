@@ -1191,6 +1191,18 @@ class L2genForm extends JTabbedPane {
                 nodeRenderer.setBackground(textBackground);
             }
 
+//            if (((DefaultMutableTreeNode) value).getParent() == null) {
+//                check.setVisible(false);
+//            }
+
+            BaseInfo baseInfo = (BaseInfo) ((DefaultMutableTreeNode) value).getUserObject();
+
+            if (baseInfo instanceof ProductCategoryInfo) {
+                check.setVisible(false);
+            } else {
+                check.setVisible(true);
+            }
+
             return nodeRenderer;
         }
     }
@@ -1267,6 +1279,8 @@ class L2genForm extends JTabbedPane {
             if (value instanceof DefaultMutableTreeNode) {
                 currentNode = (DefaultMutableTreeNode) value;
             }
+
+
             Component editor = renderer.getTreeCellRendererComponent(tree, value,
                     true, expanded, leaf, row, true);
 
@@ -1286,43 +1300,45 @@ class L2genForm extends JTabbedPane {
         rootNode = new DefaultMutableTreeNode(new BaseInfo());
 
         for (ProductCategoryInfo productCategoryInfo : l2genData.getProductCategoryInfos()) {
-            productCategory = new DefaultMutableTreeNode(productCategoryInfo);
-            rootNode.add(productCategory);
-            for (BaseInfo pInfo : productCategoryInfo.getChildren()) {
-                product = new DefaultMutableTreeNode(pInfo);
-                for (BaseInfo aInfo : pInfo.getChildren()) {
-                    algorithm = new DefaultMutableTreeNode(aInfo);
+            if (productCategoryInfo.isVisible() && productCategoryInfo.hasChildren()) {
+                productCategory = new DefaultMutableTreeNode(productCategoryInfo);
+                rootNode.add(productCategory);
+                for (BaseInfo pInfo : productCategoryInfo.getChildren()) {
+                    product = new DefaultMutableTreeNode(pInfo);
+                    for (BaseInfo aInfo : pInfo.getChildren()) {
+                        algorithm = new DefaultMutableTreeNode(aInfo);
 
-                    if (algorithm.toString().equals(oldAlgorithm.toString())) {
-                        if (oldAInfo.hasChildren()) {
-                            if (aInfo.hasChildren()) {
-                                algorithm = oldAlgorithm;
+                        if (algorithm.toString().equals(oldAlgorithm.toString())) {
+                            if (oldAInfo.hasChildren()) {
+                                if (aInfo.hasChildren()) {
+                                    algorithm = oldAlgorithm;
+                                } else {
+                                    oldAlgorithm.add(algorithm);
+                                }
                             } else {
-                                oldAlgorithm.add(algorithm);
+                                if (aInfo.hasChildren()) {
+                                    product.remove(oldAlgorithm);
+                                    algorithm.add(oldAlgorithm);
+                                    product.add(algorithm);
+                                }
                             }
                         } else {
-                            if (aInfo.hasChildren()) {
-                                product.remove(oldAlgorithm);
-                                algorithm.add(oldAlgorithm);
-                                product.add(algorithm);
-                            }
+                            product.add(algorithm);
                         }
+
+                        for (BaseInfo wInfo : aInfo.getChildren()) {
+                            wavelength = new DefaultMutableTreeNode(wInfo);
+                            algorithm.add(wavelength);
+                        }
+
+                        oldAInfo = aInfo;
+                        oldAlgorithm = algorithm;
+                    }
+                    if (pInfo.getChildren().size() == 1) {
+                        productCategory.add(algorithm);
                     } else {
-                        product.add(algorithm);
+                        productCategory.add(product);
                     }
-
-                    for (BaseInfo wInfo : aInfo.getChildren()) {
-                        wavelength = new DefaultMutableTreeNode(wInfo);
-                        algorithm.add(wavelength);
-                    }
-
-                    oldAInfo = aInfo;
-                    oldAlgorithm = algorithm;
-                }
-                if (pInfo.getChildren().size() == 1) {
-                    productCategory.add(algorithm);
-                } else {
-                    productCategory.add(product);
                 }
             }
         }

@@ -180,7 +180,7 @@
     </category>
 
     <category name="Hidden Stuff">
-        <makeVisible>1</makeVisible>
+        <makeVisible>0</makeVisible>
         <product>l2_flags</product>
         <product>myprod1</product>
         <product>myprod10</product>
