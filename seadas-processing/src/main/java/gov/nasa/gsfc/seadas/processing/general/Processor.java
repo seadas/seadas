@@ -17,8 +17,6 @@ import java.util.ArrayList;
  */
 public class Processor {
 
-
-
     private String name;
     private String location;
     private ArrayList<ParamInfo> paramList;
