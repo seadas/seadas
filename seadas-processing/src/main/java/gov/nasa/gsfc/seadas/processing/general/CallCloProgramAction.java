@@ -56,7 +56,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final AppContext appContext = getAppContext();
 
         final Processor processor = new Processor(programName, xmlFileName);
-        final CloProgramUI cloProgramUI = new CloProgramUI(programName, dialogTitle, processor.getParamList() );
+        final CloProgramUI cloProgramUI = new CloProgramUI(programName, dialogTitle, processor.getParamList());
 
         //final String title = event.getCommand().getText();
         final Window parent = appContext.getApplicationWindow();
@@ -89,7 +89,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final File inputFile = selectedProduct.getFileLocation();
         final File outputDir = inputFile.getParentFile();
+        final String  parameterList = cloProgramUI.getProcessingParameters();
         final File parameterFile = createParameterFile(outputDir, cloProgramUI.getProcessingParameters());
+
         if (parameterFile == null) {
             JOptionPane.showMessageDialog(parent,
                                           "Unable to create parameter file '" + parameterFile + "'.",
@@ -107,7 +109,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
                         ocsswRoot.getPath() + "/run/bin/" + ocsswArch + "/" + programName,
                         "ifile=" + inputFile,
                         "ofile=" + outputFile,
-                        "par=" + parameterFile
+                        "spixl=1",
+                        "epixl=-1",
+                        "sline=1",
+                        "eline=-1"
+                        //"par=" + parameterFile
                 };
                 final String[] envp = {
                         "OCSSWROOT=${OCSSWROOT}".replace("${OCSSWROOT}", ocsswRoot.getPath()),
