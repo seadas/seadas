@@ -357,9 +357,7 @@ public abstract class SeadasFileReader {
                         band.setValidPixelExpression(validExpression);
                     }
                     product.addBand(band);
-                    if (variable.getName().contains("log")){
-                        band.setLog10Scaled(true);
-                    }
+
                     try {
                         band.setNoDataValue((double) variable.findAttribute("bad_value_unscaled").getNumericValue().floatValue());
                         band.setNoDataValueUsed(true);

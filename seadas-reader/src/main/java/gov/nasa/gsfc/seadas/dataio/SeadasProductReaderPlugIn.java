@@ -131,6 +131,7 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
                 Attribute platformShortName = ncfile.findGlobalAttribute("Platform_Short_Name");
+                Attribute seam_lon = ncfile.findGlobalAttribute("Seam_Lon");
 
                 Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
@@ -185,6 +186,8 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
                         }
 
                     }
+                } else if (seam_lon != null) {
+                    return DecodeQualification.INTENDED;
                 } else if (isSeadasMapped) {
                     return DecodeQualification.INTENDED;
                 } else {

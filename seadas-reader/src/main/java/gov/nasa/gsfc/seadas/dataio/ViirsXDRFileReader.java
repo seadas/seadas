@@ -19,7 +19,6 @@ import java.util.List;
  * User: seadas
  * Date: 11/14/11
  * Time: 2:23 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ViirsXDRFileReader extends SeadasFileReader {
     private NetcdfFile geofile;
@@ -210,11 +209,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 List<Attribute> attrs = var.getAttributes();
                 for (Attribute attr : attrs) {
                     if (attr.getName().equals("Ascending/Descending_Indicator")) {
-                        if (attr.getNumericValue().longValue() == 0) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return attr.getNumericValue().longValue() == 0 ? true : false;
                     }
                 }
             }

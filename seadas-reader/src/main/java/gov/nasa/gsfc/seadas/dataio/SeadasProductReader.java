@@ -47,6 +47,7 @@ public class SeadasProductReader extends AbstractProductReader {
         Level2("Level 2"),
         Level3_Bin("Level 3 Binned"),
         SMI("Level 3 Mapped"),
+        MEaSUREs("MEaSUREs Mapped"),
         SeadasMapped("SeaDAS Mapped"),
         VIIRS_SDR("VIIRS SDR"),
         VIIRS_EDR("VIIRS EDR"),
@@ -103,6 +104,7 @@ public class SeadasProductReader extends AbstractProductReader {
                     seadasFileReader = new L3BinFileReader(this);
                     break;
                 case SMI:
+                case MEaSUREs:
                     seadasFileReader = new SMIFileReader(this);
                     break;
                 case SeadasMapped:
@@ -170,6 +172,19 @@ public class SeadasProductReader extends AbstractProductReader {
         }
     }
 
+    public boolean checkMEaSUREs() {
+        try {
+            List<Variable> seadasMappedVariables = ncfile.getVariables();
+            Attribute seam_lon = ncfile.findGlobalAttribute("Seam_Lon");
+            if (seam_lon !=null && !seadasMappedVariables.get(0).getName().contains("l3m_data")){
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
     public boolean checkModisL1B() {
         Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
         if (modisl1bGroup != null) {
@@ -225,6 +240,8 @@ public class SeadasProductReader extends AbstractProductReader {
             return tmp;
         }  else if (checkSeadasMapped()) {
             return ProductType.SeadasMapped;
+        }  else if (checkMEaSUREs()){
+            return ProductType.MEaSUREs;
         }
 
         throw new ProductIOException("Unrecognized product type");
