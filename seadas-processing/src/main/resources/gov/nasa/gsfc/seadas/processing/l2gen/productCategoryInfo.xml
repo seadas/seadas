@@ -19,63 +19,6 @@
         <product>TLg</product>
     </category>
 
-    <category name="Atmospheric Correction Intermediates">
-        <makeVisible>1</makeVisible>
-        <product>aerindex</product>
-        <product>aer_model_max</product>
-        <product>aer_model_min</product>
-        <product>aer_model_ratio</product>
-        <product>aer_num_iter</product>
-        <product>angstrom_meris</product>
-        <product>brdf</product>
-        <product>cloud_albedo</product>
-        <product>dpol</product>
-        <product>epsilon</product>
-        <product>fsol</product>
-        <product>glint_coef</product>
-        <product>iter</product>
-        <product>ms_epsilon</product>
-        <product>polcor</product>
-        <product>Taua_meris</product>
-        <product>tg_sen</product>
-        <product>tg_sol</product>
-        <product>t_h2o</product>
-        <product>tindx_morel</product>
-        <product>tindx_shi</product>
-        <product>t_o2</product>
-        <product>t_sen</product>
-        <product>t_sol</product>
-        <product>v</product>
-        <product>w0</product>
-    </category>
-
-    <category name="Ancillary/Meterological/Geometric Parameters">
-        <makeVisible>1</makeVisible>
-        <product>detnum</product>
-        <product>height</product>
-        <product>humidity</product>
-        <product>ice_frac</product>
-        <product>mside</product>
-        <product>mwind</product>
-        <product>no2_frac</product>
-        <product>no2_strat</product>
-        <product>no2_tropo</product>
-        <product>ozone</product>
-        <product>pixnum</product>
-        <product>pressure</product>
-        <product>relaz</product>
-        <product>scattang</product>
-        <product>sena</product>
-        <product>senz</product>
-        <product>sola</product>
-        <product>solz</product>
-        <product>sssref</product>
-        <product>sstref</product>
-        <product>water_vapor</product>
-        <product>windangle</product>
-        <product>windspeed</product>
-        <product>zwind</product>
-    </category>
 
     <category name="Derived Geophysical Parameters">
         <makeVisible>1</makeVisible>
@@ -145,16 +88,65 @@
         <product>owtn</product>
     </category>
 
-    <category name="Calibration Parameters (Inverse mode)">
-        <makeVisible>0</makeVisible>
-        <product>vbsat</product>
-        <product>vbtgt</product>
-        <product>vgain</product>
-        <product>vLt</product>
-        <product>vLw</product>
-        <product>vnLw</product>
-        <product>vtLw</product>
+    <category name="Ancillary/Meterological/Geometric Parameters">
+        <makeVisible>1</makeVisible>
+        <product>detnum</product>
+        <product>height</product>
+        <product>humidity</product>
+        <product>ice_frac</product>
+        <product>mside</product>
+        <product>mwind</product>
+        <product>no2_frac</product>
+        <product>no2_strat</product>
+        <product>no2_tropo</product>
+        <product>ozone</product>
+        <product>pixnum</product>
+        <product>pressure</product>
+        <product>relaz</product>
+        <product>scattang</product>
+        <product>sena</product>
+        <product>senz</product>
+        <product>sola</product>
+        <product>solz</product>
+        <product>sssref</product>
+        <product>sstref</product>
+        <product>water_vapor</product>
+        <product>windangle</product>
+        <product>windspeed</product>
+        <product>zwind</product>
     </category>
+
+
+    <category name="Atmospheric Correction Intermediates">
+        <makeVisible>1</makeVisible>
+        <product>aerindex</product>
+        <product>aer_model_max</product>
+        <product>aer_model_min</product>
+        <product>aer_model_ratio</product>
+        <product>aer_num_iter</product>
+        <product>angstrom_meris</product>
+        <product>brdf</product>
+        <product>cloud_albedo</product>
+        <product>dpol</product>
+        <product>epsilon</product>
+        <product>fsol</product>
+        <product>glint_coef</product>
+        <product>iter</product>
+        <product>ms_epsilon</product>
+        <product>polcor</product>
+        <product>Taua_meris</product>
+        <product>tg_sen</product>
+        <product>tg_sol</product>
+        <product>t_h2o</product>
+        <product>tindx_morel</product>
+        <product>tindx_shi</product>
+        <product>t_o2</product>
+        <product>t_sen</product>
+        <product>t_sol</product>
+        <product>v</product>
+        <product>w0</product>
+    </category>
+
 
     <category name="Uncertainties/Error Estimates">
         <makeVisible>1</makeVisible>
@@ -178,6 +170,20 @@
         <product>Rrs_unc</product>
         <product>stdv</product>
     </category>
+
+
+
+    <category name="Calibration Parameters (Inverse mode)">
+        <makeVisible>0</makeVisible>
+        <product>vbsat</product>
+        <product>vbtgt</product>
+        <product>vgain</product>
+        <product>vLt</product>
+        <product>vLw</product>
+        <product>vnLw</product>
+        <product>vtLw</product>
+    </category>
+
 
     <category name="Hidden Stuff">
         <makeVisible>0</makeVisible>
