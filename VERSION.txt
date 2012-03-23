@@ -1,1 +1,1 @@
-${seadas.version}
+VERSION 7.0

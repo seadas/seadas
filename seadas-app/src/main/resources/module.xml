@@ -56,10 +56,10 @@
     <!--</dependency>-->
 
 
-    <categories>System,Application,VISAT</categories>
+    <categories>System,Application,VISAT,SeaDAS</categories>
 
     <extension point="ceres-core:applications">
-        <application id="SeaDAS" class="org.esa.beam.visat.VisatMain"/>
+        <application id="SeaDAS" class="gov.nasa.gsfc.seadas.SeadasMain"/>
     </extension>
 
     <!--<extension point="beam-ui:actions">-->
