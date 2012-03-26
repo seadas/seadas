@@ -7,10 +7,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-import java.io.DataInputStream;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A ...
@@ -988,22 +985,23 @@ public class L2genData {
                     if (missionChanged) {
                         algorithmInfo.clearChildren();
                         for (WavelengthInfo wavelengthInfo : waveLimiter) {
-                            if (wavelengthInfo.getWavelength() < WavelengthInfo.VISIBLE_UPPER_LIMIT) {
-                                if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE ||
-                                        algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
-                                    WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
-                                    newWavelengthInfo.setParent(algorithmInfo);
-                                    newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
-                                    algorithmInfo.addChild(newWavelengthInfo);
-                                }
-                            } else {
-                                if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR ||
-                                        algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
-                                    WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
-                                    newWavelengthInfo.setParent(algorithmInfo);
-                                    newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
-                                    algorithmInfo.addChild(newWavelengthInfo);
-                                }
+                            boolean addWavelength = false;
+
+                            if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+                                addWavelength = true;
+                            } else if (wavelengthInfo.getWavelength() >= WavelengthInfo.INFRARED_LOWER_LIMIT &&
+                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR) {
+                                addWavelength = true;
+                            } else if (wavelengthInfo.getWavelength() <= WavelengthInfo.VISIBLE_UPPER_LIMIT &&
+                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE) {
+                                addWavelength = true;
+                            }
+
+                            if (addWavelength) {
+                                WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
+                                newWavelengthInfo.setParent(algorithmInfo);
+                                newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
+                                algorithmInfo.addChild(newWavelengthInfo);
                             }
                         }
                     } else {
@@ -1144,7 +1142,7 @@ public class L2genData {
         }
 
         for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
-           for (String categorizedProductName : productCategoryInfo.getProductNames()) {
+            for (String categorizedProductName : productCategoryInfo.getProductNames()) {
                 for (ProductInfo productInfo : productInfos) {
                     if (categorizedProductName.equals(productInfo.getName())) {
                         productCategoryInfo.addChild(productInfo);

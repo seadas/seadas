@@ -8,14 +8,16 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
  */
 public class WavelengthInfo extends BaseInfo {
 
-    public static final int VISIBLE_UPPER_LIMIT = 3000;
+    public static final int INFRARED_LOWER_LIMIT = 3000;
+    public static final int VISIBLE_UPPER_LIMIT = 725;
+
     public static final int NULL_WAVELENGTH = -1;
 
     private int wavelength = NULL_WAVELENGTH;
     private boolean defaultSelected = false;
 
     public static enum WaveType {
-        VISIBLE, INFRARED
+        VISIBLE, INFRARED, NEAR_INFRARED
     }
 
     public WavelengthInfo(int wavelength, AlgorithmInfo algorithmInfo) {
@@ -79,11 +81,14 @@ public class WavelengthInfo extends BaseInfo {
 
     public boolean isWaveType(WaveType waveType) {
         if (waveType == WaveType.INFRARED
-                && wavelength >= VISIBLE_UPPER_LIMIT) {
+                && wavelength >= INFRARED_LOWER_LIMIT) {
             return true;
 
-        } else if (waveType == WaveType.VISIBLE
-                && wavelength >= 0 && wavelength < VISIBLE_UPPER_LIMIT) {
+        } else if (waveType == WaveType.VISIBLE &&
+                wavelength <= VISIBLE_UPPER_LIMIT) {
+            return true;
+        } else if (waveType == WaveType.NEAR_INFRARED &&
+                wavelength > VISIBLE_UPPER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
             return true;
         } else {
             return false;

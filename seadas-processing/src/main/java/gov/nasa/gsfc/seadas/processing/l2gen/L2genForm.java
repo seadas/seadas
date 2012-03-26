@@ -87,6 +87,8 @@ class L2genForm extends JTabbedPane {
 
     private String WAVE_LIMITER_SELECT_ALL_INFRARED = "Select All Infrared";
     private String WAVE_LIMITER_DESELECT_ALL_INFRARED = "Deselect All Infrared";
+    private String WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED = "Select All Near-Infrared";
+    private String WAVE_LIMITER_DESELECT_ALL_NEAR_INFRARED = "Deselect All Near-Infrared";
     private String WAVE_LIMITER_SELECT_ALL_VISIBLE = "Select All Visible";
     private String WAVE_LIMITER_DESELECT_ALL_VISIBLE = "Deselect All Visible";
 
@@ -96,6 +98,7 @@ class L2genForm extends JTabbedPane {
     private JButton selectedProductsCancelButton;
     private JButton waveLimiterSelectAllInfrared;
     private JButton waveLimiterSelectAllVisible;
+    private JButton waveLimiterSelectAllNearInfrared;
 
     private JTree productJTree;
 
@@ -1019,6 +1022,19 @@ class L2genForm extends JTabbedPane {
         });
 
 
+        waveLimiterSelectAllNearInfrared = new JButton(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED);
+
+        waveLimiterSelectAllNearInfrared.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (waveLimiterSelectAllNearInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED, true);
+                } else if (waveLimiterSelectAllNearInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_NEAR_INFRARED)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED, false);
+                }
+            }
+        });
+
         waveLimiterSelectAllVisible = new JButton(WAVE_LIMITER_SELECT_ALL_VISIBLE);
 
         waveLimiterSelectAllVisible.addActionListener(new ActionListener() {
@@ -1064,6 +1080,13 @@ class L2genForm extends JTabbedPane {
         mainPanel.add(waveLimiterSelectAllInfrared, c);
 
         c = SeadasGuiUtils.makeConstraints(0, 2);
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = 1;
+        c.weighty = 1;
+        mainPanel.add(waveLimiterSelectAllNearInfrared, c);
+
+        c = SeadasGuiUtils.makeConstraints(0, 3);
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.CENTER;
         c.gridwidth = 2;
@@ -1913,6 +1936,7 @@ class L2genForm extends JTabbedPane {
         }
 
         waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
+        waveLimiterSelectAllNearInfrared.setText(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED);
         waveLimiterSelectAllVisible.setText(WAVE_LIMITER_SELECT_ALL_VISIBLE);
 
         if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
@@ -1928,6 +1952,14 @@ class L2genForm extends JTabbedPane {
             l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, true);
         } else {
             waveLimiterSelectAllVisible.setEnabled(false);
+        }
+
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.NEAR_INFRARED)) {
+            waveLimiterSelectAllNearInfrared.setEnabled(true);
+
+            l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED, true);
+        } else {
+            waveLimiterSelectAllNearInfrared.setEnabled(false);
         }
 
 
@@ -2049,21 +2081,44 @@ class L2genForm extends JTabbedPane {
 
         // Set INFRARED 'Select All' toggle to appropriate text
         if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
-            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED) && waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
-                waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_DESELECT_ALL_INFRARED);
-            } else if (!l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED) && waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
-                waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
+            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED)) {
+                if (!waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
+                    waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_DESELECT_ALL_INFRARED);
+                }
+            } else {
+                if (!waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
+                    waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
+                }
             }
         }
 
-        // Set INFRARED 'Select All' toggle to appropriate text
-        if (l2genData.hasWaveType(WavelengthInfo.WaveType.VISIBLE)) {
-            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE) && waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_SELECT_ALL_VISIBLE)) {
-                waveLimiterSelectAllVisible.setText(WAVE_LIMITER_DESELECT_ALL_VISIBLE);
-            } else if (!l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE) && waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_DESELECT_ALL_VISIBLE)) {
-                waveLimiterSelectAllVisible.setText(WAVE_LIMITER_SELECT_ALL_VISIBLE);
+        // Set NEAR_INFRARED 'Select All' toggle to appropriate text
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.NEAR_INFRARED)) {
+            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED)) {
+                if (!waveLimiterSelectAllNearInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_NEAR_INFRARED)) {
+                    waveLimiterSelectAllNearInfrared.setText(WAVE_LIMITER_DESELECT_ALL_NEAR_INFRARED);
+                }
+            } else {
+                if (!waveLimiterSelectAllNearInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED)) {
+                    waveLimiterSelectAllNearInfrared.setText(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED);
+                }
             }
         }
+
+
+        // Set VISIBLE 'Select All' toggle to appropriate text
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.VISIBLE)) {
+            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE)) {
+                if (!waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_DESELECT_ALL_VISIBLE)) {
+                    waveLimiterSelectAllVisible.setText(WAVE_LIMITER_DESELECT_ALL_VISIBLE);
+                }
+            } else {
+                if (!waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_SELECT_ALL_VISIBLE)) {
+                    waveLimiterSelectAllVisible.setText(WAVE_LIMITER_SELECT_ALL_VISIBLE);
+                }
+            }
+        }
+
 
         // Turn on control handlers now that all controls are set
         waveLimiterControlHandlersEnabled = true;
