@@ -4,7 +4,6 @@ import com.bc.ceres.core.CoreException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.ProcessObserver;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.datamodel.Product;
@@ -45,7 +44,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             throw new CoreException("Missing DefaultOperatorAction property 'programName'.");
         }
         dialogTitle = getValue(config, "dialogTitle", programName);
-        xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED );
+        xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
         super.configure(config);
     }
 
@@ -55,12 +54,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final AppContext appContext = getAppContext();
 
-        final Processor processor = new Processor(programName, xmlFileName);
-        final CloProgramUI cloProgramUI = new CloProgramUI(programName, dialogTitle, processor.getParamList());
+        final CloProgramUI cloProgramUI = new CloProgramUI(programName, xmlFileName);
 
-        //final String title = event.getCommand().getText();
         final Window parent = appContext.getApplicationWindow();
+
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_CANCEL, null);
+
+
         modalDialog.getButton(ModalDialog.ID_OK).setText("Run");
         final int dialogResult = modalDialog.show();
         if (dialogResult != ModalDialog.ID_OK) {
@@ -72,60 +72,85 @@ public class CallCloProgramAction extends AbstractVisatAction {
             VisatApp.getApp().showErrorDialog(programName, "No product selected.");
             return;
         }
-        final File ocsswRoot;
-        try {
-            ocsswRoot = OCSSW.getOcsswRoot();
-        } catch (IOException e) {
-            VisatApp.getApp().showErrorDialog(programName, e.getMessage());
+//        final File ocsswRoot;
+//        try {
+//            ocsswRoot = OCSSW.getOcsswRoot();
+//        } catch (IOException e) {
+//            VisatApp.getApp().showErrorDialog(programName, e.getMessage());
+//            return;
+//        }
+//        final String ocsswArch;
+//        try {
+//            ocsswArch = OCSSW.getOcsswArch();
+//        } catch (IOException e) {
+//            VisatApp.getApp().showErrorDialog(programName, e.getMessage());
+//            return;
+//        }
+
+        final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
+
+        if (! processorModel.isValidProcessor()){
+            VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
             return;
-        }
-        final String ocsswArch;
-        try {
-            ocsswArch = OCSSW.getOcsswArch();
-        } catch (IOException e) {
-            VisatApp.getApp().showErrorDialog(programName, e.getMessage());
-            return;
+
         }
 
         final File inputFile = selectedProduct.getFileLocation();
         final File outputDir = inputFile.getParentFile();
-        final String  parameterList = cloProgramUI.getProcessingParameters();
+
+        processorModel.setInputFile(inputFile);
+        processorModel.setOutputFileDir(outputDir);
         final File parameterFile = createParameterFile(outputDir, cloProgramUI.getProcessingParameters());
 
         if (parameterFile == null) {
             JOptionPane.showMessageDialog(parent,
-                                          "Unable to create parameter file '" + parameterFile + "'.",
-                                          "Error",
-                                          JOptionPane.ERROR_MESSAGE);
+                    "Unable to create parameter file '" + parameterFile + "'.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
-        final File outputFile = new File(outputDir, "l2gen-out-" + Long.toHexString(System.nanoTime()));
+        //final File outputFile = new File(outputDir, programName + "-out-" + Long.toHexString(System.nanoTime()));
+        final File outputFile = processorModel.getOutputFile();
 
-        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(parent, "Running l2gen...") {
+        System.out.println("output file name: " + outputFile.toString());
+
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(parent, "Running" + programName + " ...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
-                final String[] cmdarray = {
-                        ocsswRoot.getPath() + "/run/bin/" + ocsswArch + "/" + programName,
-                        "ifile=" + inputFile,
-                        "ofile=" + outputFile,
-                        "spixl=1",
-                        "epixl=-1",
-                        "sline=1",
-                        "eline=-1"
-                        //"par=" + parameterFile
-                };
-                final String[] envp = {
-                        "OCSSWROOT=${OCSSWROOT}".replace("${OCSSWROOT}", ocsswRoot.getPath()),
-                        "OCSSW_ARCH=${OCSSW_ARCH}".replace("${OCSSW_ARCH}", ocsswArch),
-                        "OCDATAROOT=${OCSSWROOT}/run/data".replace("${OCSSWROOT}", ocsswRoot.getPath()),
-                };
+//                final String[] cmdarray = {
+//                        ocsswRoot.getPath() + "/run/bin/" + ocsswArch + "/" + programName,
+//                        "ifile=" + inputFile,
+//                        "ofile=" + outputFile,
+//                        "spixl=1",
+//                        "epixl=-1",
+//                        "sline=1",
+//                        "eline=-1"
+//                        //"par=" + parameterFile
+//                };
+                //final String[] programCmdArray = processorModel.getProgramCmdArray();
+//                final String[] cmdarray = {
+//                        ocsswRoot.getPath() + "/run/bin/" + ocsswArch + "/" + programName,
+//                        inputFile.toString(),
+//                        "100",
+//                        "300",
+//                        "1",
+//                        "21",
+//                        outputFile.toString()
+//                        //"par=" + parameterFile
+//                };
+//                final String[] envp = {
+//                        "OCSSWROOT=${OCSSWROOT}".replace("${OCSSWROOT}", ocsswRoot.getPath()),
+//                        "OCSSW_ARCH=${OCSSW_ARCH}".replace("${OCSSW_ARCH}", ocsswArch),
+//                        "OCDATAROOT=${OCSSWROOT}/run/data".replace("${OCSSWROOT}", ocsswRoot.getPath()),
+//                };
 
-                final Process process = Runtime.getRuntime().exec(cmdarray, envp, ocsswRoot);
+                //final Process process = Runtime.getRuntime().exec(cmdarray, envp, ocsswRoot);
+                final Process process = Runtime.getRuntime().exec(processorModel.getProgramCmdArray(), processorModel.getProgramEnv(), processorModel.getProgramRoot() );
 
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
-                processObserver.addHandler(new ProgressHandler());
-                processObserver.addHandler(new ConsoleHandler());
+                processObserver.addHandler(new ProgressHandler(programName));
+                processObserver.addHandler(new ConsoleHandler(programName));
                 processObserver.startAndWait();
 
                 int exitCode = process.exitValue();
@@ -133,7 +158,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 pm.done();
 
                 if (exitCode != 0) {
-                    throw new IOException("l2gen failed with exit code " + exitCode + ".\nCheck log for more details.");
+                    throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
 
                 appContext.getProductManager().addProduct(ProductIO.readProduct(outputFile));
@@ -145,11 +170,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected void done() {
                 try {
                     final File outputFile = get();
-                    VisatApp.getApp().showInfoDialog("l2gen", "l2gen done!\nOutput written to:\n" + outputFile, null);
+                    VisatApp.getApp().showInfoDialog(programName, programName + " done!\nOutput written to:\n" + outputFile, null);
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {
-                    VisatApp.getApp().showErrorDialog("l2gen", e.getMessage());
+                    VisatApp.getApp().showErrorDialog(programName, "execution exeption? " + e.getMessage());
                 }
             }
         };
@@ -159,7 +184,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     private File createParameterFile(File outputDir, final String parameterText) {
         try {
-            final File tempFile = File.createTempFile("l2gen", ".par", outputDir);
+            final File tempFile = File.createTempFile(programName, ".par", outputDir);
             tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
@@ -177,12 +202,18 @@ public class CallCloProgramAction extends AbstractVisatAction {
     }
 
     /**
-     * Handler that tries to extract progress from stdout of l2gen
+     * Handler that tries to extract progress from stdout of ocssw processor
      */
     private static class ProgressHandler implements ProcessObserver.Handler {
 
+
         boolean progressSeen;
         int lastScan = 0;
+        String programName;
+
+        ProgressHandler(String programName) {
+            this.programName = programName;
+        }
 
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
@@ -195,13 +226,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
                 if (!progressSeen) {
                     progressSeen = true;
-                    pm.beginTask("l2gen", numScans);
+                    pm.beginTask(programName, numScans);
                 }
                 pm.worked(scan - lastScan);
                 lastScan = scan;
             }
 
-            pm.setTaskName("l2gen");
+            pm.setTaskName(programName);
             pm.setSubTaskName(line);
         }
 
@@ -212,14 +243,20 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     private static class ConsoleHandler implements ProcessObserver.Handler {
 
+        String programName;
+
+        ConsoleHandler(String programName) {
+            this.programName = programName;
+        }
+
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
-            System.out.println("l2gen: " + line);
+            System.out.println(programName + ": " + line);
         }
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-            System.err.println("l2gen stderr: " + line);
+            System.err.println(programName + " stderr: " + line);
         }
     }
 

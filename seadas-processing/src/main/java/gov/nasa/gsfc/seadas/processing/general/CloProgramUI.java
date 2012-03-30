@@ -17,6 +17,7 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.ParamValidValueInfo;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.util.io.BeamFileChooser;
@@ -25,75 +26,72 @@ import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
 
 class CloProgramUI extends JPanel {
 
-    private static final String[] COLUMN_NAMES = new String[]{"Parameter Name", "Parameter Value"};
     private final JTextArea parameterTextArea;
     private final SourceProductSelector sourceProductSelector;
+    private final OutputFileSelector outputFileSelector;
     private File selectedFile;
     private String programName;
-    private String dialogTitle;
     private final JPanel parameterPanel;
-    private ParamInfo[] paramInfos;
+    private ProcessorModel processorModel;
 
-    public CloProgramUI(String programName, String dialogTitle) {
+
+    public CloProgramUI(String programName, String xmlFileName) {
         super(new BorderLayout());
 
         this.programName = programName;
-        this.dialogTitle = dialogTitle;
+        processorModel = new ProcessorModel(programName, xmlFileName);
 
         parameterTextArea = new JTextArea(getDefaultText());
 
-        sourceProductSelector = new SourceProductSelector(VisatApp.getApp(), "Source Product");
+        parameterPanel = createParameterPanel(processorModel.getProgramParamList());
+
+        sourceProductSelector = new SourceProductSelector(VisatApp.getApp(), "Input File");
         sourceProductSelector.initProducts();
 
-        parameterPanel = new JPanel();
+        outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
 
         initUI();
     }
 
-    public CloProgramUI(String programName, String dialogTitle, ArrayList<ParamInfo> paramList) {
-        super(new BorderLayout());
 
-        this.programName = programName;
-        this.dialogTitle = dialogTitle;
-
-        parameterTextArea = new JTextArea(getDefaultText());
-
-        parameterPanel = createParameterPanel(paramList);
-
-        paramInfos = new ParamInfo[paramList.size()];
-        paramList.toArray(paramInfos);
-
-        sourceProductSelector = new SourceProductSelector(VisatApp.getApp(), "Source Product");
-
-        sourceProductSelector.initProducts();
-
-        initUI();
+    public ProcessorModel getProcessorModel() {
+        return processorModel;
     }
 
     public Product getSelectedSourceProduct() {
         return sourceProductSelector.getSelectedProduct();
     }
 
+    public File getOutputFile() {
+        return outputFileSelector.getModel().getProductFile();
+    }
+
+
+
 //    public String getProcessingParameters() {
 //        return parameterTextArea.getText();
 //    }
 
     public String getProcessingParameters() {
-        String parameterString = new String(" ");
-        for (ParamInfo paramInfo:paramInfos) {
-            if (! paramInfo.getName().equals(ParamUtils.IFILE) && !paramInfo.getName().equals(ParamUtils.OFILE)) {
-                parameterString = parameterString + " " + paramInfo.getName()  + "=" + paramInfo.getValue();
+        String parameterString = new String("\n");
+        ArrayList<ParamInfo> paramInfos = processorModel.getProgramParamList();
+        for (ParamInfo paramInfo : paramInfos) {
+            if (!paramInfo.getName().equals(ParamUtils.IFILE) && !paramInfo.getName().equals(ParamUtils.OFILE)) {
+                parameterString = parameterString + paramInfo.getName() + "=" + paramInfo.getValue() + "\n";
             }
         }
+        parameterString = parameterString + "programName=" + programName + "\n";
+        System.out.println(parameterString);
         return parameterString;
     }
 
@@ -120,6 +118,7 @@ class CloProgramUI extends JPanel {
 
         add(sourceProductSelector.createDefaultPanel(), BorderLayout.NORTH);
         add(parameterComponent, BorderLayout.CENTER);
+        add(outputFileSelector.createDefaultPanel(), BorderLayout.SOUTH);
     }
 
     private ActionListener createLoadParameterAction() {
@@ -133,10 +132,10 @@ class CloProgramUI extends JPanel {
                     final File file = beamFileChooser.getSelectedFile();
                     if (!file.exists()) {
                         JOptionPane.showMessageDialog(parent,
-                                                      "Unable to load parameter file '" + file + "'.\n" +
-                                                              "The file does not exist.",
-                                                      "Error",
-                                                      JOptionPane.ERROR_MESSAGE);
+                                "Unable to load parameter file '" + file + "'.\n" +
+                                        "The file does not exist.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     LineNumberReader reader = null;
@@ -154,10 +153,10 @@ class CloProgramUI extends JPanel {
                         System.err.println(e1.getMessage());
                         e1.printStackTrace();
                         JOptionPane.showMessageDialog(parent,
-                                                      "Unable to load parameter file '" + file + "'.\n" +
-                                                              "Error reading file.",
-                                                      "Error",
-                                                      JOptionPane.ERROR_MESSAGE);
+                                "Unable to load parameter file '" + file + "'.\n" +
+                                        "Error reading file.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                         parameterTextArea.setText(getDefaultText());
                     } finally {
                         if (reader != null) {
@@ -236,59 +235,129 @@ class CloProgramUI extends JPanel {
 
     private void showErrorMessage(JComponent parent) {
         JOptionPane.showMessageDialog(parent,
-                                      "Unable to create parameter file:\n'" + selectedFile + "'",
-                                      "",
-                                      JOptionPane.ERROR);
+                "Unable to create parameter file:\n'" + selectedFile + "'",
+                "",
+                JOptionPane.ERROR);
     }
 
     private JPanel createParameterPanel(ArrayList<ParamInfo> paramList) {
 
-        ParamInfo[] paramInfos = new ParamInfo[paramList.size()];
-        paramList.toArray(paramInfos);
-
         final JPanel paramPanel = new JPanel();
-        paramPanel.setBorder(new TitledBorder(" Parameters ") );
-        //paramPanel.setLayout(new BoxLayout(paramPanel, BoxLayout.Y_AXIS));
-        paramPanel.setLayout(new FlowLayout() );
+        paramPanel.setBorder(new TitledBorder(" Parameters "));
 
-        final JPanel paramTitlePanel = new JPanel();
-        paramTitlePanel.setLayout(new FlowLayout());
-        paramTitlePanel.add(new JLabel(COLUMN_NAMES[0]));
-        paramTitlePanel.add(new JLabel(COLUMN_NAMES[1]));
+        paramPanel.setLayout(new FlowLayout());
 
-        //paramPanel.add(paramTitlePanel);
+        ParamInfo.Type paramType;
+        for (ParamInfo paramInfo : paramList) {
+            paramType = paramInfo.getType();
+            if (paramType == ParamInfo.Type.BOOLEAN) {
+                final JCheckBox booleanCheckBox = new JCheckBox();
+                paramPanel.add(booleanCheckBox);
 
-        for (ParamInfo paramInfo:paramInfos) {
-            switch (paramInfo.getType()) {
-                case BOOLEAN  :
-                    final JCheckBox  booleanButton = new JCheckBox();
-                    booleanButton.setSelected(false);
-                    paramPanel.add(booleanButton);
-                    break;
-                case STRING   :
-                    break;
-                case INT      :
-                    final JPanel intPanel = new JPanel();
-                    intPanel.setLayout(new FlowLayout() );
-                    final JLabel intFieldLabel = new JLabel(paramInfo.getName() );
-                    intFieldLabel.setHorizontalAlignment(JLabel.RIGHT);
-                    //intFieldLabel.setBorder(new EtchedBorder());
-                    //intFieldLabel.setSize();
-                    final JTextField intField = new JTextField();
-                    intField.setText(paramInfo.getValue() );
-                    intField.setHorizontalAlignment(JTextField.RIGHT);
+            } else if (!(paramInfo.getName().equals(ParamUtils.IFILE) || paramInfo.getName().equals(ParamUtils.OFILE))) {
+                if (paramInfo.hasValidValueInfos()) {
 
-                    intPanel.add(intFieldLabel);
-                    intPanel.add(intField);
+                    paramPanel.add(makeComboBoxOptionPanel(paramInfo));
 
-                    paramPanel.add(intPanel);
-                    break;
-                case FLOAT    :
-                    break;
+                } else {
+                    paramPanel.add(makeTextFieldOptionPanel(paramInfo));
+                }
             }
+
 
         }
         return paramPanel;
+    }
+
+    private JPanel makeComboBoxOptionPanel(final ParamInfo paramInfo) {
+        final JPanel singlePanel = new JPanel();
+        singlePanel.setLayout(new FlowLayout());
+
+        final JLabel optionNameLabel = new JLabel(paramInfo.getName());
+
+        singlePanel.add(optionNameLabel);
+
+
+        String optionDefaultValue = paramInfo.getValue();
+
+
+        ArrayList<ParamValidValueInfo> validValues = paramInfo.getValidValueInfos();
+        String[] values = new String[validValues.size()];
+        validValues.toArray(values);
+
+        final JComboBox inputList = new JComboBox(values);
+        inputList.setEditable(true);
+        int defaultValuePosition = validValues.indexOf(optionDefaultValue);
+
+        if (defaultValuePosition != -1) {
+            inputList.setSelectedIndex(defaultValuePosition);
+        }
+
+        inputList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String newValue = (String) inputList.getSelectedItem();
+                processorModel.updateParamInfo(paramInfo, newValue);
+            }
+        });
+        inputList.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+        singlePanel.add(inputList);
+
+
+        switch (paramInfo.getType()) {
+            case STRING:
+                break;
+            case INT:
+                break;
+            case FLOAT:
+                break;
+        }
+
+        return singlePanel;
+    }
+
+    private JPanel makeTextFieldOptionPanel(final ParamInfo paramInfo) {
+        final JPanel singlePanel = new JPanel();
+        singlePanel.setLayout(new FlowLayout());
+
+        final JLabel optionNameLabel = new JLabel(paramInfo.getName());
+
+        singlePanel.add(optionNameLabel);
+
+
+        String optionDefaultValue = paramInfo.getDefaultValue();
+
+
+        final JTextField inputField = new JTextField(optionDefaultValue);
+        inputField.setToolTipText(paramInfo.getDescription());
+        inputField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String newValue = inputField.getText();
+                processorModel.updateParamInfo(paramInfo, newValue);
+            }
+        });
+        singlePanel.add(inputField);
+
+        switch (paramInfo.getType()) {
+            case STRING:
+                break;
+            case INT:
+                break;
+            case BOOLEAN:
+                final JCheckBox booleanCheckBox = new JCheckBox();
+                singlePanel.add(booleanCheckBox);
+                break;
+            case FLOAT:
+                break;
+        }
+
+        return singlePanel;
     }
 
 
@@ -315,55 +384,5 @@ class CloProgramUI extends JPanel {
                 "programName=" + programName + "\n";
     }
 
-
-    private class ParamListTableModel extends AbstractTableModel  {
-
-        private ParamListTableModel() {
-        }
-
-        @Override
-        public String getColumnName(int columnIndex) {
-            return COLUMN_NAMES[columnIndex];
-        }
-
-        public int getColumnCount() {
-            return COLUMN_NAMES.length;
-        }
-
-        public int getRowCount() {
-
-            return paramInfos.length;
-        }
-
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            final ParamInfo pi = paramInfos[rowIndex] ;
-            if (columnIndex == 0) {
-
-                return pi.getName();
-            } else if (columnIndex == 1) {
-                return pi.getValue();
-            }
-            return null;
-        }
-
-        @Override
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            final ParamInfo pi = paramInfos[rowIndex] ;;
-            if (columnIndex == 0) {
-                final String name = (String) aValue;
-                pi.setName(name)  ;
-                fireTableCellUpdated(rowIndex, columnIndex);
-            } else if (columnIndex == 1) {
-                pi.setValue((String) aValue);
-                fireTableCellUpdated(rowIndex, columnIndex);
-            }
-        }
-
-        @Override
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return columnIndex == 1;
-        }
-
-    }
 }
 

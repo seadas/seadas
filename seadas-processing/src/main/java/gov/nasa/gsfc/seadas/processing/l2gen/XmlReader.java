@@ -74,6 +74,12 @@ public class XmlReader {
         return textVal;
     }
 
+    public static String getAttributeTextValue(Element ele, String attributeName) {
+        String textVal = null;
+
+        textVal = ele.getAttribute(attributeName);
+        return textVal;
+    }
 
     /**
      * Calls getTextValue and returns a int value

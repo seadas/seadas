@@ -36,6 +36,9 @@ public class ParamUtils {
     public static final String OFILE = "ofile";
     public static final String L2PROD = "l2prod";
 
+    public static final String OPTION_NAME = "name";
+    public static final String OPTION_TYPE = "type";
+
     public static final String NO_XML_FILE_SPECIFIED = "No XML file Specified";
 
     public final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
@@ -49,7 +52,7 @@ public class ParamUtils {
         IFILE, OFILE, PAR, GEOFILE
     }
 
-    public static ArrayList computeParamList(String paramXmlFileName) {
+    public static ArrayList computeParamListNew(String paramXmlFileName) {
 
         if (paramXmlFileName.equals(NO_XML_FILE_SPECIFIED)) {
             return getDefaultParamList();
@@ -68,8 +71,9 @@ public class ParamUtils {
 
             Element optionElement = (Element) optionNodelist.item(i);
 
-            String name = XmlReader.getTextValue(optionElement, "name");
-            String tmpType = XmlReader.getTextValue(optionElement, "type");
+
+            String name = XmlReader.getTextValue(optionElement, OPTION_NAME);
+            String tmpType = optionElement.getAttribute(OPTION_TYPE);
 
             ParamInfo.Type type = null;
 
@@ -123,6 +127,96 @@ public class ParamUtils {
 
                     paramValidValueInfo.setDescription(validValueDescription);
                     paramValidValueInfo.setParent(paramInfo);      // why to set the parent?
+                    paramInfo.addValidValueInfo(paramValidValueInfo);
+                }
+
+            }
+
+            paramList.add(paramInfo) ;
+
+        }
+
+        return paramList;
+    }
+
+
+    public static ArrayList computeParamList(String paramXmlFileName) {
+
+        if (paramXmlFileName.equals(NO_XML_FILE_SPECIFIED)) {
+            return getDefaultParamList();
+        }
+
+        final ArrayList<ParamInfo> paramList = new ArrayList<ParamInfo>();
+
+        XmlReader xmlReader = new XmlReader();
+        InputStream paramStream = ParamUtils.class.getResourceAsStream(paramXmlFileName);
+        Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
+        NodeList optionNodelist = rootElement.getElementsByTagName("option");
+        if (optionNodelist == null || optionNodelist.getLength() == 0) {
+           return null;
+        }
+        for (int i = 0; i < optionNodelist.getLength(); i++) {
+
+            Element optionElement = (Element) optionNodelist.item(i);
+
+            String name = XmlReader.getTextValue(optionElement, OPTION_NAME);
+            System.out.println(name);
+            String tmpType = XmlReader.getAttributeTextValue(optionElement,OPTION_TYPE);
+            System.out.println(tmpType );
+
+            ParamInfo.Type type = null;
+
+            if (tmpType != null) {
+                if (tmpType.toLowerCase().equals("bool")) {
+                    type = ParamInfo.Type.BOOLEAN;
+                } else if (tmpType.toLowerCase().equals("int")) {
+                    type = ParamInfo.Type.INT;
+                } else if (tmpType.toLowerCase().equals("float")) {
+                    type = ParamInfo.Type.FLOAT;
+                } else if (tmpType.toLowerCase().equals("string")) {
+                    type = ParamInfo.Type.STRING;
+                }
+            }
+
+            String value = XmlReader.getTextValue(optionElement, "value");
+
+
+
+            if (name != null) {
+                String nullValueOverrides[] = {ParamUtils.IFILE, ParamUtils.OFILE, ParamUtils.PAR, ParamUtils.GEOFILE};
+                for (String nullValueOverride : nullValueOverrides) {
+                    if (name.equals(nullValueOverride)) {
+                        value = ParamInfo.NULL_STRING;
+                    }
+                }
+            }
+
+            String defaultValue = value;
+            String description = XmlReader.getTextValue(optionElement, "description");
+            String source = XmlReader.getTextValue(optionElement, "source");
+            String order = XmlReader.getTextValue(optionElement, "order");
+
+            ParamInfo paramInfo = new ParamInfo(name, value, type);
+
+            paramInfo.setDescription(description);
+            paramInfo.setDefaultValue(defaultValue);
+            paramInfo.setSource(source);
+            paramInfo.setOrder(new Integer(order).intValue());
+
+            NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
+
+            if (validValueNodelist != null && validValueNodelist.getLength() > 0) {
+                for (int j = 0; j < validValueNodelist.getLength(); j++) {
+
+                    Element validValueElement = (Element) validValueNodelist.item(j);
+
+                    String validValueValue = XmlReader.getTextValue(validValueElement, "value");
+                    String validValueDescription = XmlReader.getTextValue(validValueElement, "description");
+
+                    ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(validValueValue);
+
+                    paramValidValueInfo.setDescription(validValueDescription);
+                    paramValidValueInfo.setParent(paramInfo);      // why need a parent?
                     paramInfo.addValidValueInfo(paramValidValueInfo);
                 }
 

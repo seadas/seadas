@@ -82,7 +82,7 @@
             <text>l1aextract_modis...</text>
             <programName>l1aextract_modis</programName>
             <dialogTitle>l1aextract_modis</dialogTitle>
-            <xmlFileName>l1aextract_modis_paramInfo.xml</xmlFileName>
+            <xmlFileName>paramInfo_l1aextract_modis.xml</xmlFileName>
         </action>
     </extension>
 

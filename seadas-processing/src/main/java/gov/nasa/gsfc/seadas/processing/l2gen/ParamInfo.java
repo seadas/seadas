@@ -18,6 +18,7 @@ public class ParamInfo implements Comparable {
     private String description = NULL_STRING;
     private String source = NULL_STRING;
     private boolean isBit = false;
+    private int order;
 
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
 
@@ -224,6 +225,14 @@ public class ParamInfo implements Comparable {
 
     public void setBit(boolean bit) {
         isBit = bit;
+    }
+
+    public void setOrder(int order){
+        this.order = order;
+    }
+
+    public int getOrder() {
+        return order;
     }
 
     public void sortValidValueInfos() {
