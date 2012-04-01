@@ -67,6 +67,7 @@ public abstract class SeadasFileReader {
         final int[] count = new int[]{1, sourceWidth};
         Object buffer = destBuffer.getElems();
         Variable variable = variableMap.get(destBand);
+        int rank = variable.getRank();
 
         int targetIndex = 0;
         pm.beginTask("Reading band '" + variable.getShortName() + "'...", sourceHeight);
@@ -311,7 +312,6 @@ public abstract class SeadasFileReader {
 
         }
     }
-//todo: separate individual band addition from the addBands method.
     public Map<Band, Variable> addBands(Product product,
                                         List<Variable> variables) {
         final Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
@@ -653,7 +653,6 @@ public abstract class SeadasFileReader {
         for (Attribute attribute : globalAttributes) {
             //if (attribute.getName().contains("EV")) {
             if (attribute.getName().matches(".*(EV|Value|Bad|Nois|Electronics|Dead|Detector).*")) {
-                continue;
             } else {
                 addAttributeToElement(element, attribute);
             }

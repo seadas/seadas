@@ -21,7 +21,6 @@ import java.util.List;
  * Time: 2:23 PM
  */
 public class ViirsXDRFileReader extends SeadasFileReader {
-    private NetcdfFile geofile;
 
     ViirsXDRFileReader(SeadasProductReader productReader) {
         super(productReader);
@@ -167,7 +166,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 }
             }
 
-            geofile = NetcdfFile.open(geocheck.getPath());
+            NetcdfFile geofile = NetcdfFile.open(geocheck.getPath());
 
             final String longitude = "Longitude";
             final String latitude = "Latitude";
@@ -209,7 +208,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 List<Attribute> attrs = var.getAttributes();
                 for (Attribute attr : attrs) {
                     if (attr.getName().equals("Ascending/Descending_Indicator")) {
-                        return attr.getNumericValue().longValue() == 0 ? true : false;
+                        return attr.getNumericValue().longValue() == 0;
                     }
                 }
             }
@@ -286,14 +285,8 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         }
     }
 
-    private boolean isSpectralBand(Band band) {
-        return band.getName().equals("B0") || band.getName().equals("B2") || band.getName().equals(
-                "B3") || band.getName().equals("MIR");
-    }
-
     @Override
     protected void addFlagsAndMasks(Product product) {
-        //todo: modify colors - use some of the new definitions in SeadasFileReader :)
         Band QFBand = product.getBand("QF1_VIIRSOCCEDR");
         if (QFBand != null) {
             FlagCoding flagCoding = new FlagCoding("QF1");
@@ -423,31 +416,31 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("AtmFail_O3", "Atmospheric correction failure - Ozone correction",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF3_VIIRSOCCEDR & 0x70 ==  0x10",
-                                                                 Color.RED, 0.5));
+                                                                 SeadasFileReader.FailRed, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("AtmFail_WC", "Atmospheric correction failure - Whitecap correction",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF3_VIIRSOCCEDR & 0x70 ==  0x20",
-                                                                 Color.RED, 0.5));
+                                                                 SeadasFileReader.FailRed, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("AtmFail_pol", "Atmospheric correction failure - Polarization correction",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF3_VIIRSOCCEDR & 0x70 ==  0x30",
-                                                                 Color.RED, 0.5));
+                                                                 SeadasFileReader.FailRed, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("AtmFail_rayleigh", "Atmospheric correction failure - Rayliegh correction",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF3_VIIRSOCCEDR & 0x70 ==  0x40",
-                                                                 Color.RED, 0.5));
+                                                                 SeadasFileReader.FailRed, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("AtmFail_aerosol", "Atmospheric correction failure - Aerosol correction",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF3_VIIRSOCCEDR & 0x70 ==  0x50",
-                                                                 Color.RED, 0.5));
+                                                                 SeadasFileReader.FailRed, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("AtmFail_difftran", "Atmospheric correction failure - Diffuse transmission zero",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF3_VIIRSOCCEDR. & 0x70 ==  0x60",
-                                                                 Color.RED, 0.5));
+                                                                 SeadasFileReader.FailRed, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("AtmFail_NO", "Atmospheric correction failure - no correction possible",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF3_VIIRSOCCEDR & 0x70 ==  0x70",
-                                                                 Color.RED, 0.0));
+                                                                 SeadasFileReader.FailRed, 0.0));
         }
 
         QFBand = product.getBand("QF4_VIIRSOCCEDR");
@@ -480,7 +473,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("Land", "Land mask",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF4_VIIRSOCCEDR & 0x03 == 0x03",
-                                                                 Color.GREEN, 0.0));
+                                                                 SeadasFileReader.LandBrown, 0.0));
             product.getMaskGroup().add(Mask.BandMathsType.create("Ice/Snow", "Ice/snow mask.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF4_VIIRSOCCEDR.Ice_Snow",
@@ -488,19 +481,19 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("HighSolZ", "Solar Zenith angle > 70 deg.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF4_VIIRSOCCEDR.HighSolZ",
-                                                                 Color.MAGENTA, 0.2));
+                                                                 SeadasFileReader.Purple, 0.2));
             product.getMaskGroup().add(Mask.BandMathsType.create("Glint", "Sun Glint.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF4_VIIRSOCCEDR.Glint",
-                                                                 Color.YELLOW, 0.1));
+                                                                 SeadasFileReader.BrightPink, 0.1));
             product.getMaskGroup().add(Mask.BandMathsType.create("HighSenZ", "Sensor Zenith angle > 53 deg.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF4_VIIRSOCCEDR.HighSenZ",
-                                                                 Color.orange, 0.5));
+                                                                 SeadasFileReader.LightCyan, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("ShallowWater", "Shallow Water mask.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF4_VIIRSOCCEDR.Shallow",
-                                                                 Color.BLUE, 0.5));
+                                                                 SeadasFileReader.BurntUmber, 0.5));
         }
         QFBand = product.getBand("QF5_VIIRSOCCEDR");
         if (QFBand != null) {
@@ -519,7 +512,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("Clear", "Confidently Cloud-free.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR & 0x03 == 0x00",
-                                                                 Color.YELLOW, 0.5));
+                                                                 SeadasFileReader.Cornflower, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("LikelyClear", "Probably cloud-free",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF4_VIIRSOCCEDR & 0x03 == 0x01",
@@ -535,7 +528,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("Straylight", "Adjacent pixel not clear, possible straylight contaminated.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.Straylight",
-                                                                 Color.ORANGE, 0.5));
+                                                                 Color.YELLOW, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("Cirrus", "Thin Cirrus cloud detected.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.Cirrus",
@@ -543,11 +536,11 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("HighAer", "Non-cloud obstruction (heavy aerosol load) detected.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.HighAer",
-                                                                 Color.MAGENTA, 0.5));
+                                                                 SeadasFileReader.LightPink, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("AbsAer", "Strongly absorbing aerosol detected.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.AbsAer",
-                                                                 Color.RED, 0.5));
+                                                                 Color.ORANGE, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("HighAOT", "Aerosol optical thickness @ 555nm > 0.3.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.HighAOT",
@@ -567,7 +560,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("Turbid", "Turbid water detected (Rrs @ 555nm > 0.012)",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR.Turbid ",
-                                                                 Color.YELLOW, 0.5));
+                                                                 SeadasFileReader.LightBrown, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("Coccolithophore", "Coccolithophores detected",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.Coccolithophore ",
@@ -575,19 +568,19 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("HighCDOM", "CDOM absorption @ 410nm > 2 m^-1.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR.HighCDOM ",
-                                                                 Color.GREEN, 0.5));
+                                                                 SeadasFileReader.Mustard, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("ChlFail", "No Chlorophyll retrieval possible.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR & 0x18 == 0x00",
-                                                                 Color.RED, 0.0));
+                                                                 SeadasFileReader.FailRed, 0.0));
             product.getMaskGroup().add(Mask.BandMathsType.create("LowChl", "Chlorophyll < 1 mg m^-3",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR & 0x18 == 0x08",
-                                                                 Color.ORANGE, 0.5));
+                                                                 SeadasFileReader.Coral, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("ModChl", "Chlorophyll between 1 and 10 mg m^-3",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR  & 0x18 == 0x10",
-                                                                 Color.MAGENTA, 0.5));
+                                                                 SeadasFileReader.DarkGreen, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("HighChl", "Chlorphyll > 10 mg m^-3",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR   & 0x18 == 0x10",
@@ -595,11 +588,11 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("CarderEmp", "Carder Empirical algorithm used.",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR & 0xE0 == 0x20",
-                                                                 Color.BLUE, 0.5));
+                                                                 SeadasFileReader.NewGreen, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("UnpackPig", "Phytoplankton with packaged pigment",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR & 0xE0 == 0x40",
-                                                                 Color.ORANGE, 0.5));
+                                                                 SeadasFileReader.TealGreen, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("WtPigGlobal", "Weighted packaged pigment - global",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR & 0xE0 == 0x80",
@@ -611,7 +604,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("FullPackPig", "Phytoplankton with fully packaged pigment",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR & 0xE0 == 0xC0",
-                                                                 Color.DARK_GRAY, 0.5));
+                                                                 SeadasFileReader.TealBlue, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("NoOCC", "No ocean color chlorphyll retrieval",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR & 0xE0 == 0xE0",
@@ -640,7 +633,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("ChlWarn", "Chlorophyll out-of-range (< 0.05 or > 50 mg m^-3)",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF7_VIIRSOCCEDR.ChlWarn",
-                                                                 Color.GRAY, 0.2));
+                                                                 Color.LIGHT_GRAY, 0.2));
             product.getMaskGroup().add(Mask.BandMathsType.create("IOPaWarn", "IOP absorption out-of-range (< 0.01 or  > 10 m^-1)",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF7_VIIRSOCCEDR.IOPaWarn",
@@ -656,7 +649,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             product.getMaskGroup().add(Mask.BandMathsType.create("Bright", "Bright Target flag",
                                                                  product.getSceneRasterWidth(),
                                                                  product.getSceneRasterHeight(), "QF7_VIIRSOCCEDR.Bright",
-                                                                 Color.YELLOW, 0.2));
+                                                                 Color.GRAY, 0.2));
 
         }
         QFBand = product.getBand("QF1_VIIRSMBANDSDR");

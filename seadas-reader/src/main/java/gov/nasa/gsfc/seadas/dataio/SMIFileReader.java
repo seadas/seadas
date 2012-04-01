@@ -2,10 +2,7 @@ package gov.nasa.gsfc.seadas.dataio;
 
 import gov.nasa.gsfc.seadas.dataio.SeadasProductReader.ProductType;
 import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.CrsGeoCoding;
-import org.esa.beam.framework.datamodel.MetadataElement;
-import org.esa.beam.framework.datamodel.Product;
+import org.esa.beam.framework.datamodel.*;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -56,6 +53,7 @@ public class SMIFileReader extends SeadasFileReader {
         variableMap = addBands(product, ncFile.getVariables());
 
         addGeocoding(product);
+        addFlagsAndMasks(product);
         return product;
     }
 
@@ -163,5 +161,44 @@ public class SMIFileReader extends SeadasFileReader {
 
         final MetadataElement metadataRoot = product.getMetadataRoot();
         metadataRoot.addElement(smiElement);
+    }
+        @Override
+    protected void addFlagsAndMasks(Product product) {
+        Band QFBand = product.getBand("l3m_qual");
+        if (QFBand != null) {
+            FlagCoding flagCoding = new FlagCoding("SST_Quality");
+            flagCoding.addFlag("QualityLevel", 0, "Best quality");
+//            flagCoding.addFlag("Best", 0, "Best quality");
+//            flagCoding.addFlag("Good", 0x01, "Good quality");
+//            flagCoding.addFlag("Questionable", 0x02, "Questionable quality");
+//            flagCoding.addFlag("Bad", 0x03, "Bad quality");
+//            flagCoding.addFlag("NoValue", 4, "Not Processed");
+
+
+            product.getFlagCodingGroup().add(flagCoding);
+            QFBand.setSampleCoding(flagCoding);
+
+           product.getMaskGroup().add(Mask.BandMathsType.create("Best", "Highest quality retrieval",
+                                                                product.getSceneRasterWidth(),
+                                                                product.getSceneRasterHeight(), "l3m_qual == 0",
+                                                                SeadasFileReader.Cornflower, 0.6));
+           product.getMaskGroup().add(Mask.BandMathsType.create("Good", "Good quality retrieval",
+                                                                product.getSceneRasterWidth(),
+                                                                product.getSceneRasterHeight(), "l3m_qual == 1",
+                                                                SeadasFileReader.LightPurple, 0.6));
+           product.getMaskGroup().add(Mask.BandMathsType.create("Questionable", "Questionable quality retrieval",
+                                                                product.getSceneRasterWidth(),
+                                                                product.getSceneRasterHeight(), "l3m_qual == 2",
+                                                                SeadasFileReader.BurntUmber, 0.6));
+           product.getMaskGroup().add(Mask.BandMathsType.create("Bad", "Bad quality retrieval",
+                                                                product.getSceneRasterWidth(),
+                                                                product.getSceneRasterHeight(), "l3m_qual == 3",
+                                                                SeadasFileReader.FailRed, 0.6));
+//           product.getMaskGroup().add(Mask.BandMathsType.create("NoValue", "No Retrieval",
+//                                                                product.getSceneRasterWidth(),
+//                                                                product.getSceneRasterHeight(), "l3m_qual.NotComputed",
+//                                                                SeadasFileReader.BrightPink, 0.6));
+
+        }
     }
 }

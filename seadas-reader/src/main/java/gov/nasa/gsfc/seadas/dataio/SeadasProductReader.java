@@ -48,6 +48,7 @@ public class SeadasProductReader extends AbstractProductReader {
         Level3_Bin("Level 3 Binned"),
         SMI("Level 3 Mapped"),
         MEaSUREs("MEaSUREs Mapped"),
+        MEaSUREs_Bin("MEaSUREs Binned"),
         SeadasMapped("SeaDAS Mapped"),
         VIIRS_SDR("VIIRS SDR"),
         VIIRS_EDR("VIIRS EDR"),
@@ -102,6 +103,9 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case Level3_Bin:
                     seadasFileReader = new L3BinFileReader(this);
+                    break;
+                case MEaSUREs_Bin:
+                    seadasFileReader = new MeasuresL3BinFileReader(this);
                     break;
                 case SMI:
                 case MEaSUREs:
@@ -172,25 +176,26 @@ public class SeadasProductReader extends AbstractProductReader {
         }
     }
 
-    public boolean checkMEaSUREs() {
+    public ProductType checkMEaSUREs() {
         try {
             List<Variable> seadasMappedVariables = ncfile.getVariables();
             Attribute seam_lon = ncfile.findGlobalAttribute("Seam_Lon");
-            if (seam_lon !=null && !seadasMappedVariables.get(0).getName().contains("l3m_data")){
-                return true;
+            Attribute data_bins = ncfile.findGlobalAttribute("Data_Bins");
+            if (seam_lon != null && !seadasMappedVariables.get(0).getName().contains("l3m_data")) {
+                if (data_bins != null) {
+                    return ProductType.MEaSUREs_Bin;
+                } else {
+                    return ProductType.MEaSUREs;
+                }
             }
         } catch (Exception e) {
-            return false;
         }
-        return false;
+        return ProductType.UNKNOWN;
     }
 
     public boolean checkModisL1B() {
         Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
-        if (modisl1bGroup != null) {
-            return true;
-        }
-        return false;
+        return modisl1bGroup != null;
     }
 
     public ProductType checkViirsXDR() {
@@ -240,8 +245,8 @@ public class SeadasProductReader extends AbstractProductReader {
             return tmp;
         }  else if (checkSeadasMapped()) {
             return ProductType.SeadasMapped;
-        }  else if (checkMEaSUREs()){
-            return ProductType.MEaSUREs;
+        }  else if ((tmp = checkMEaSUREs()) != ProductType.UNKNOWN) {
+            return tmp;
         }
 
         throw new ProductIOException("Unrecognized product type");
