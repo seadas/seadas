@@ -62,10 +62,8 @@ public class SourceProductFileSelector {
     private JComboBox productNameComboBox;
     private final ProductManager.Listener productManagerListener;
     private ComboBoxSelectionContext selectionContext;
+    private ProcessorModel processorModel;
 
-    public SourceProductFileSelector(AppContext appContext) {
-        this(appContext, "Name:");
-    }
 
     public SourceProductFileSelector(AppContext appContext, String labelText) {
         this.appContext = appContext;
@@ -117,6 +115,18 @@ public class SourceProductFileSelector {
         };
     }
 
+    public SourceProductFileSelector(AppContext appContext) {
+        this(appContext, "Name:");
+    }
+
+    public void setProcessorModel(ProcessorModel processorModel) {
+        this.processorModel = processorModel;
+    }
+
+
+    public ProcessorModel getProcessorModel() {
+        return processorModel;
+    }
     /**
      * @return the product filter, default is a filter which accepts all products
      */

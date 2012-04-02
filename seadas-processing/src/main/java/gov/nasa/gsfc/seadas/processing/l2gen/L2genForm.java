@@ -1609,7 +1609,7 @@ class L2genForm extends JTabbedPane {
                 if (sourceProduct != null && sourceProductSelector.getSelectedProduct() != null
                         && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
                     if (handleIfileJComboBoxEnabled) {
-                        //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getName());
+                        //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getProgramName());
                         l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
                     }
                 }
@@ -1811,7 +1811,7 @@ class L2genForm extends JTabbedPane {
                             debug("receiving eventName " + eventName);
                             parfileJTextArea.setText(l2genData.getParfile());
 //                            for (JCheckBox jCheckBox : paramJCheckboxes) {
-//                                if (jCheckBox.getName().equals(eventName)) {
+//                                if (jCheckBox.getProgramName().equals(eventName)) {
 //                                    jCheckBox.setSelected(l2genData.getBooleanParamValue(eventName));
 //                                }
 //                            }

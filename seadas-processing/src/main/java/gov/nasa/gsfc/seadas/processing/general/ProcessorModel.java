@@ -154,19 +154,18 @@ public class ProcessorModel {
             System.out.println("order: " + option.getOrder() + "   value = " + option.getValue());
         }
 
-        //cmdArray[0] = programLocation + programName;
         cmdArray[1] = inputFile.toString();
         cmdArray[cmdArray.length -1] = outputFile.toString();
-        final String[] cmdarray = {
-                programLocation + programName,
-                inputFile.toString(),
-                "100",
-                "300",
-                "1",
-                "21",
-                outputFile.toString()
-                //"par=" + parameterFile
-        };
+//        final String[] cmdarray = {
+//                programLocation + programName,
+//                inputFile.toString(),
+//                "100",
+//                "300",
+//                "1",
+//                "21",
+//                outputFile.toString()
+//                //"par=" + parameterFile
+//        };
 
         return cmdArray;
     }

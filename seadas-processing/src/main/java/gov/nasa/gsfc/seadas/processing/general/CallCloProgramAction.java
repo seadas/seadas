@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
  * A ...
  *
  * @author Norman Fomferra
+ * @author Aynur Abdurazik
  * @since SeaDAS 7.0
  */
 public class CallCloProgramAction extends AbstractVisatAction {
@@ -63,31 +64,26 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         modalDialog.getButton(ModalDialog.ID_OK).setText("Run");
         final int dialogResult = modalDialog.show();
+
         if (dialogResult != ModalDialog.ID_OK) {
             return;
         }
 
+        cloProgramUI.updateProcessorModel();
+        final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
+
         final Product selectedProduct = cloProgramUI.getSelectedSourceProduct();
+
         if (selectedProduct == null) {
             VisatApp.getApp().showErrorDialog(programName, "No product selected.");
             return;
         }
-//        final File ocsswRoot;
-//        try {
-//            ocsswRoot = OCSSW.getOcsswRoot();
-//        } catch (IOException e) {
-//            VisatApp.getApp().showErrorDialog(programName, e.getMessage());
-//            return;
-//        }
-//        final String ocsswArch;
-//        try {
-//            ocsswArch = OCSSW.getOcsswArch();
-//        } catch (IOException e) {
-//            VisatApp.getApp().showErrorDialog(programName, e.getMessage());
-//            return;
-//        }
 
-        final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
+        if (selectedProduct != null) {
+            modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
+        }
+
+
 
         if (! processorModel.isValidProcessor()){
             VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
@@ -100,6 +96,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         processorModel.setInputFile(inputFile);
         processorModel.setOutputFileDir(outputDir);
+
         final File parameterFile = createParameterFile(outputDir, cloProgramUI.getProcessingParameters());
 
         if (parameterFile == null) {
@@ -109,7 +106,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        //final File outputFile = new File(outputDir, programName + "-out-" + Long.toHexString(System.nanoTime()));
+
         final File outputFile = processorModel.getOutputFile();
 
         System.out.println("output file name: " + outputFile.toString());
@@ -118,34 +115,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
-//                final String[] cmdarray = {
-//                        ocsswRoot.getPath() + "/run/bin/" + ocsswArch + "/" + programName,
-//                        "ifile=" + inputFile,
-//                        "ofile=" + outputFile,
-//                        "spixl=1",
-//                        "epixl=-1",
-//                        "sline=1",
-//                        "eline=-1"
-//                        //"par=" + parameterFile
-//                };
-                //final String[] programCmdArray = processorModel.getProgramCmdArray();
-//                final String[] cmdarray = {
-//                        ocsswRoot.getPath() + "/run/bin/" + ocsswArch + "/" + programName,
-//                        inputFile.toString(),
-//                        "100",
-//                        "300",
-//                        "1",
-//                        "21",
-//                        outputFile.toString()
-//                        //"par=" + parameterFile
-//                };
-//                final String[] envp = {
-//                        "OCSSWROOT=${OCSSWROOT}".replace("${OCSSWROOT}", ocsswRoot.getPath()),
-//                        "OCSSW_ARCH=${OCSSW_ARCH}".replace("${OCSSW_ARCH}", ocsswArch),
-//                        "OCDATAROOT=${OCSSWROOT}/run/data".replace("${OCSSWROOT}", ocsswRoot.getPath()),
-//                };
-
-                //final Process process = Runtime.getRuntime().exec(cmdarray, envp, ocsswRoot);
                 final Process process = Runtime.getRuntime().exec(processorModel.getProgramCmdArray(), processorModel.getProgramEnv(), processorModel.getProgramRoot() );
 
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
@@ -174,7 +143,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {
-                    VisatApp.getApp().showErrorDialog(programName, "execution exeption? " + e.getMessage());
+                    VisatApp.getApp().showErrorDialog(programName, "execution exception: " + e.getMessage());
                 }
             }
         };

@@ -19,16 +19,19 @@ package gov.nasa.gsfc.seadas.processing.general;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamValidValueInfo;
 import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.util.io.BeamFileChooser;
 import org.esa.beam.util.io.FileUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -37,12 +40,13 @@ import java.util.ArrayList;
 class CloProgramUI extends JPanel {
 
     private final JTextArea parameterTextArea;
-    private final SourceProductSelector sourceProductSelector;
+    private final SourceProductFileSelector sourceProductSelector;
     private final OutputFileSelector outputFileSelector;
     private File selectedFile;
     private String programName;
     private final JPanel parameterPanel;
     private ProcessorModel processorModel;
+    private File defaultOutputDir;
 
 
     public CloProgramUI(String programName, String xmlFileName) {
@@ -55,7 +59,8 @@ class CloProgramUI extends JPanel {
 
         parameterPanel = createParameterPanel(processorModel.getProgramParamList());
 
-        sourceProductSelector = new SourceProductSelector(VisatApp.getApp(), "Input File");
+        sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "Input File");
+        sourceProductSelector.setProcessorModel(processorModel);
         sourceProductSelector.initProducts();
 
         outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
@@ -64,18 +69,33 @@ class CloProgramUI extends JPanel {
     }
 
 
+    public void updateProcessorModel() {
+
+        Product selectedProduct = sourceProductSelector.getSelectedProduct();
+        if (sourceProductSelector.getSelectedProduct() != null) {
+            final File inputFile = selectedProduct.getFileLocation();
+            System.out.println("update processors model " + inputFile.toString());
+            processorModel.setInputFile(inputFile);
+        }
+
+        OutputFileSelectorModel outputFileSelectorModel = outputFileSelector.getModel();
+        outputFileSelectorModel.getProductDir();
+        System.out.println(outputFileSelectorModel.getProductFileName());
+        processorModel.setInputFile(outputFileSelectorModel.getProductDir());
+    }
+
     public ProcessorModel getProcessorModel() {
         return processorModel;
     }
 
     public Product getSelectedSourceProduct() {
+
         return sourceProductSelector.getSelectedProduct();
     }
 
     public File getOutputFile() {
         return outputFileSelector.getModel().getProductFile();
     }
-
 
 
 //    public String getProcessingParameters() {
@@ -331,15 +351,75 @@ class CloProgramUI extends JPanel {
 
 
         String optionDefaultValue = paramInfo.getDefaultValue();
-
-
         final JTextField inputField = new JTextField(optionDefaultValue);
         inputField.setToolTipText(paramInfo.getDescription());
+        final String newValue;// = inputField.getText();
         inputField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String newValue = inputField.getText();
                 processorModel.updateParamInfo(paramInfo, newValue);
+            }
+        });
+
+        inputField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent documentEvent) {
+                String newValue = inputField.getText();
+                validateInput(newValue);
+                processorModel.updateParamInfo(paramInfo, newValue);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent documentEvent) {
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent documentEvent) {
+            }
+        });
+
+        inputField.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent mouseEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+                double value;
+                try {
+                    String textValue = inputField.getText();
+                    value = Double.parseDouble(textValue);
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(singlePanel, "Please enter valid number.");
+                    inputField.requestFocusInWindow();
+                    return;
+                }
+
+                boolean valid = validateInput(inputField.getText());
+
+                if (!valid) {
+                    inputField.requestFocusInWindow();
+                    return;
+                }
             }
         });
         singlePanel.add(inputField);
@@ -360,6 +440,12 @@ class CloProgramUI extends JPanel {
         return singlePanel;
     }
 
+
+    private boolean validateInput(String input) {
+        //processorModel.updateParamInfo(paramInfo, newValue);
+        return true;
+
+    }
 
     private String getDefaultText() {
         // changed all products using wavelength 555 to 560
