@@ -143,19 +143,12 @@
         <algorithm>
             <prefix>Lt_</prefix>
             <suffix></suffix>
-            <parameterType>Visible</parameterType>
+            <parameterType>All</parameterType>
             <dataType>FLOAT32</dataType>
             <units>mW cm^-2 um^-1 sr^-1</units>
             <description>Calibrated TOA radiance at 0 nm</description>
         </algorithm>
-        <algorithm>
-            <prefix>Lt_</prefix>
-            <suffix></suffix>
-            <parameterType>IR</parameterType>
-            <dataType>FLOAT32</dataType>
-            <units>mW cm^-2 um^-1 sr^-1</units>
-            <description>Calibrated TOA radiance at 0 nm</description>
-        </algorithm>
+
     </product>
     <product name="Lt_unc">
         <algorithm>

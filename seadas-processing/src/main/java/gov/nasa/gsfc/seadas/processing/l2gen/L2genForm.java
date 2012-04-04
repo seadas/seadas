@@ -11,7 +11,10 @@ import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.SourceProductSelector;
 import org.esa.beam.framework.gpf.ui.TargetProductSelector;
+import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.AppContext;
+import org.esa.beam.framework.ui.UIUtils;
+import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -1060,6 +1063,8 @@ class L2genForm extends JTabbedPane {
 
         final JPanel mainPanel = new JPanel();
         mainPanel.setBorder(BorderFactory.createTitledBorder("Wavelength Limiter"));
+        mainPanel.setToolTipText("The wavelengths selected here are applied when you check a wavelength dependent product.  Not that any subsequent change ...");
+
 
         mainPanel.setLayout(new GridBagLayout());
 
@@ -1077,14 +1082,16 @@ class L2genForm extends JTabbedPane {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1;
         c.weighty = 1;
-        mainPanel.add(waveLimiterSelectAllInfrared, c);
+        mainPanel.add(waveLimiterSelectAllNearInfrared, c);
+
 
         c = SeadasGuiUtils.makeConstraints(0, 2);
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1;
         c.weighty = 1;
-        mainPanel.add(waveLimiterSelectAllNearInfrared, c);
+        mainPanel.add(waveLimiterSelectAllInfrared, c);
+
 
         c = SeadasGuiUtils.makeConstraints(0, 3);
         c.fill = GridBagConstraints.BOTH;
@@ -1578,13 +1585,35 @@ class L2genForm extends JTabbedPane {
 ////        mainPanel.add(new JScrollPane(treeTable), c);
 //        mainPanel.add(selectedProductsCartJPanel, c);
 //
+        final JPanel helpPanel = new JPanel(new BorderLayout());
+        helpPanel.add(getHelpButton("l2genIntroduction"), BorderLayout.EAST);
 
+        c = SeadasGuiUtils.makeConstraints(0, 2);
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.NORTH;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.gridwidth = 2;
+        mainPanel.add(helpPanel, c);
 
         addTab(myTabname, mainPanel);
 
     }
 
 
+    protected AbstractButton getHelpButton(String helpId) {
+        if (helpId != null) {
+            final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon("icons/Help24.gif"),
+                    false);
+            helpButton.setToolTipText("Help.");
+            helpButton.setName("helpButton");
+            HelpSys.enableHelpOnButton(helpButton, helpId);
+          //  HelpSys.enableHelpKey(getParentDialogContentPane(), getHelpId());
+            return helpButton;
+        }
+
+        return null;
+    }
     //----------------------------------------------------------------------------------------
     // Methods involving Panels
     //----------------------------------------------------------------------------------------

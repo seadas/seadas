@@ -91,6 +91,15 @@
     <mapID target="bandArithmetic" url="visat/BandMaths.html"/>
     <mapID target="geometryManagement" url="visat/GeometryManagement.html"/>
 
+    <mapID target="l2genProductSelector" url="visat/L2genProductSelector.html"/>
+    <mapID target="l2gen" url="visat/L2gen.html"/>
+    <mapID target="l2genSubsettingOptions" url="visat/L2genSubsettingOptions.html"/>
+    <mapID target="l2genSimple" url="visat/L2genSimple.html"/>
+    <mapID target="l2mapgen" url="visat/L2mapgen.html"/>
+    <mapID target="l1mapgen" url="visat/L1mapgen.html"/>
+    <mapID target="l1gen" url="visat/L1gen.html"/>
+    <mapID target="processingTools" url="visat/ProcessingTools.html"/>
+
 
     <mapID target="reprojectionAction" url="visat/Reprojection.html"/>
     <mapID target="orthorectificationAction" url="visat/Orthorectification.html"/>

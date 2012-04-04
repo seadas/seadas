@@ -919,8 +919,8 @@ public class L2genData {
         // lookup hash relating mission letter with mission directory name
         final HashMap<String, String> missionDirectoryNameHashMap = new HashMap();
         missionDirectoryNameHashMap.put("S", "seawifs");
-        missionDirectoryNameHashMap.put("A", "modisa");
-        missionDirectoryNameHashMap.put("T", "modist");
+        missionDirectoryNameHashMap.put("A", "hmodisa");
+        missionDirectoryNameHashMap.put("T", "hmodist");
 
         String missionDirectoryName = missionDirectoryNameHashMap.get(getMissionString());
 
