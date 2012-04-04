@@ -1586,7 +1586,7 @@ class L2genForm extends JTabbedPane {
 //        mainPanel.add(selectedProductsCartJPanel, c);
 //
         final JPanel helpPanel = new JPanel(new BorderLayout());
-        helpPanel.add(getHelpButton("l2genIntroduction"), BorderLayout.EAST);
+        helpPanel.add(getHelpButton("l2gen"), BorderLayout.EAST);
 
         c = SeadasGuiUtils.makeConstraints(0, 2);
         c.fill = GridBagConstraints.NONE;
