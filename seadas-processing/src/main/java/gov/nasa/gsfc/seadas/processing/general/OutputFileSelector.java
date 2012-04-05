@@ -198,7 +198,16 @@ public class OutputFileSelector {
             if (chooser.showDialog(windowAncestor, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
                 final File selectedDir = chooser.getSelectedFile();
                 if (selectedDir != null) {
-                    model.setProductDir(selectedDir);
+                    if (selectedDir.canWrite() ) {
+                        model.setProductDir(selectedDir);
+                    }  else {
+                        JOptionPane.showMessageDialog( chooser,
+                                                        "Directory " + selectedDir.toString() +  "has no write permission",
+                                                        "Error",
+                                                        JOptionPane.ERROR_MESSAGE);
+                        chooser.requestFocus();
+                    }
+
                 } else {
                     model.setProductDir(new File("."));
                 }

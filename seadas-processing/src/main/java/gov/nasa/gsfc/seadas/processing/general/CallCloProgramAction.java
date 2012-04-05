@@ -13,10 +13,8 @@ import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractVisatAction;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -69,10 +67,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return;
         }
 
-        cloProgramUI.updateProcessorModel();
-        final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
-
-        final Product selectedProduct = cloProgramUI.getSelectedSourceProduct();
+       final Product selectedProduct = cloProgramUI.getSelectedSourceProduct();
 
         if (selectedProduct == null) {
             VisatApp.getApp().showErrorDialog(programName, "No product selected.");
@@ -83,7 +78,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
         }
 
-
+        final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
 
         if (! processorModel.isValidProcessor()){
             VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
@@ -91,32 +86,16 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         }
 
-        final File inputFile = selectedProduct.getFileLocation();
-        final File outputDir = inputFile.getParentFile();
-
-        processorModel.setInputFile(inputFile);
-        processorModel.setOutputFileDir(outputDir);
-
-        final File parameterFile = createParameterFile(outputDir, cloProgramUI.getProcessingParameters());
-
-        if (parameterFile == null) {
-            JOptionPane.showMessageDialog(parent,
-                    "Unable to create parameter file '" + parameterFile + "'.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
 
         final File outputFile = processorModel.getOutputFile();
 
-        System.out.println("output file name: " + outputFile.toString());
 
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(parent, "Running" + programName + " ...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
-                final Process process = Runtime.getRuntime().exec(processorModel.getProgramCmdArray(), processorModel.getProgramEnv(), processorModel.getProgramRoot() );
-
+                //final Process process = Runtime.getRuntime().exec(processorModel.getProgramCmdArray(), processorModel.getProgramEnv(), processorModel.getProgramRoot() );
+                final Process process = processorModel.executeProcess();
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 processObserver.addHandler(new ProgressHandler(programName));
                 processObserver.addHandler(new ConsoleHandler(programName));
@@ -149,25 +128,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
         };
 
         swingWorker.execute();
-    }
-
-    private File createParameterFile(File outputDir, final String parameterText) {
-        try {
-            final File tempFile = File.createTempFile(programName, ".par", outputDir);
-            tempFile.deleteOnExit();
-            FileWriter fileWriter = null;
-            try {
-                fileWriter = new FileWriter(tempFile);
-                fileWriter.write(parameterText);
-            } finally {
-                if (fileWriter != null) {
-                    fileWriter.close();
-                }
-            }
-            return tempFile;
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     /**

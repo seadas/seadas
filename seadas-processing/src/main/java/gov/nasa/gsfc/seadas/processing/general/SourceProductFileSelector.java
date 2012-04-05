@@ -31,8 +31,11 @@ import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,6 +66,7 @@ public class SourceProductFileSelector {
     private final ProductManager.Listener productManagerListener;
     private ComboBoxSelectionContext selectionContext;
     private ProcessorModel processorModel;
+    private RegexFileFilter regexFileFilter;
 
 
     public SourceProductFileSelector(AppContext appContext, String labelText) {
@@ -113,6 +117,8 @@ public class SourceProductFileSelector {
                 productListModel.removeElement(product);
             }
         };
+        regexFileFilter = new RegexFileFilter("*");
+
     }
 
     public SourceProductFileSelector(AppContext appContext) {
@@ -127,6 +133,7 @@ public class SourceProductFileSelector {
     public ProcessorModel getProcessorModel() {
         return processorModel;
     }
+
     /**
      * @return the product filter, default is a filter which accepts all products
      */
@@ -147,7 +154,7 @@ public class SourceProductFileSelector {
             addProduct(product);
         }
         final Product selectedProduct = appContext.getSelectedProduct();
-        if (selectedProduct != null && productFilter.accept(selectedProduct)) {
+        if (selectedProduct != null && productFilter.accept(selectedProduct) && regexFileFilter.accept(selectedProduct.getFileLocation())) {
             productListModel.setSelectedItem(selectedProduct);
         }
         appContext.getProductManager().addListener(productManagerListener);
@@ -180,10 +187,10 @@ public class SourceProductFileSelector {
             productListModel.setSelectedItem(null);
             return;
         }
-        if (productListModelContains(product)) {
+        if (productListModelContains(product) && regexFileFilter.accept(product.getFileLocation())) {
             productListModel.setSelectedItem(product);
         } else {
-            if (productFilter.accept(product)) {
+            if (productFilter.accept(product) && regexFileFilter.accept(product.getFileLocation())) {
                 if (extraProduct != null) {
                     productListModel.removeElement(extraProduct);
                     extraProduct.dispose();
@@ -222,7 +229,7 @@ public class SourceProductFileSelector {
     }
 
     private void addProduct(Product product) {
-        if (productFilter.accept(product)) {
+        if (productFilter.accept(product) && regexFileFilter.accept(product.getFileLocation())) {
             productListModel.addElement(product);
         }
     }
@@ -262,32 +269,65 @@ public class SourceProductFileSelector {
         tableLayout.setTableWeightX(1.0);
         tableLayout.setRowFill(0, TableLayout.Fill.HORIZONTAL);
         tableLayout.setRowFill(1, TableLayout.Fill.HORIZONTAL);
+        tableLayout.setRowFill(2, TableLayout.Fill.HORIZONTAL);
         tableLayout.setTablePadding(3, 3);
         JPanel panel = new JPanel(tableLayout);
         panel.setBorder(BorderFactory.createTitledBorder("Source Product"));
         panel.add(getProductNameLabel());
         panel.add(subPanel);
+        panel.add(createFilterPane());
         panel.add(tableLayout.createVerticalSpacer());
+
         return panel;
+    }
+
+    private JPanel createFilterPane() {
+        final JPanel filterPanel = new JPanel(new FlowLayout());
+        final JLabel filterLabel = new JLabel("Filter File by regex:");
+        final JTextField filterRegexField = new JTextField();
+        filterRegexField.setColumns(20);
+        filterRegexField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent documentEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+                regexFileFilter = new RegexFileFilter(filterRegexField.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent documentEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent documentEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+        filterPanel.add(filterLabel);
+        filterPanel.add(filterRegexField);
+        return filterPanel;
+
     }
 
     private class ProductFileChooserAction extends AbstractAction {
 
         private String APPROVE_BUTTON_TEXT = "Select";
-        private JFileChooser chooser;
+        private JFileChooser fileChooser;
 
         private ProductFileChooserAction() {
             super("...");
-            chooser = new BeamFileChooser();
-            chooser.setDialogTitle("Select Source Product");
+            fileChooser = new BeamFileChooser();
+
+            fileChooser.setDialogTitle("Select Source Product");
             final Iterator<ProductReaderPlugIn> iterator = ProductIOPlugInManager.getInstance().getAllReaderPlugIns();
             while (iterator.hasNext()) {
                 // todo - (mp, 2008/04/22)check if product file filter is applicable
-                chooser.addChoosableFileFilter(iterator.next().getProductFileFilter());
+                fileChooser.addChoosableFileFilter(iterator.next().getProductFileFilter());
             }
+
             // todo - (mp, 2008/04/22)check if product file filter is applicable
-            chooser.setAcceptAllFileFilterUsed(true);
-            chooser.setFileFilter(chooser.getAcceptAllFileFilter());
+            fileChooser.setAcceptAllFileFilterUsed(true);
+            fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
         }
 
         @Override
@@ -298,10 +338,12 @@ public class SourceProductFileSelector {
             String openDir = appContext.getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                     homeDirPath);
             currentDirectory = new File(openDir);
-            chooser.setCurrentDirectory(currentDirectory);
+            fileChooser.setCurrentDirectory(currentDirectory);
 
-            if (chooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
-                final File file = chooser.getSelectedFile();
+            fileChooser.addChoosableFileFilter(regexFileFilter);
+
+            if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
+                final File file = fileChooser.getSelectedFile();
 
                 Product product = null;
                 try {
@@ -315,12 +357,13 @@ public class SourceProductFileSelector {
                         }
                     }
 
-                    if (productFilter.accept(product)) {
+                    if (productFilter.accept(product) && regexFileFilter.accept(file)  ) {
                         setSelectedProduct(product);
                     } else {
                         final String message = String.format("Product [%s] is not a valid source.",
                                 product.getFileLocation().getCanonicalPath());
                         handleError(window, message);
+                        System.out.println(product.getFileLocation().isHidden());
                         product.dispose();
                     }
                 } catch (IOException e) {
@@ -332,7 +375,7 @@ public class SourceProductFileSelector {
                     handleError(window, e.getMessage());
                     e.printStackTrace();
                 }
-                currentDirectory = chooser.getCurrentDirectory();
+                currentDirectory = fileChooser.getCurrentDirectory();
                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         currentDirectory.getAbsolutePath());
             }
@@ -410,6 +453,33 @@ public class SourceProductFileSelector {
         @Override
         public boolean accept(Product product) {
             return true;
+        }
+    }
+
+    private class RegexFileFilter extends FileFilter {
+
+        private String regex;
+
+        public RegexFileFilter(String regex) throws IllegalStateException {
+            System.out.println(regex);
+            if (regex == null || regex.trim().length() == 0) {
+
+                throw new IllegalStateException();
+            }
+
+            this.regex = ".*" + regex + ".*";
+
+        }
+
+        /* (non-Javadoc)
+        * @see java.io.FileFilter#accept(java.io.File)
+        */
+        public boolean accept(File pathname) {
+            return (pathname.isFile() && pathname.getName().matches(this.regex));
+        }
+
+        public String getDescription() {
+            return "Files matching regular expression: '" + regex + "'";
         }
     }
 }

@@ -93,4 +93,15 @@ public class XmlReader {
         return Integer.parseInt(getTextValue(ele, tagName));
     }
 
+        /**
+     * Calls getTextValue and returns a boolean value
+     *
+     * @param ele
+     * @param tagName
+     * @return
+     */
+    public static boolean getBooleanValue(Element ele, String tagName) {
+        return Boolean.parseBoolean(getTextValue(ele, tagName))  ;
+    }
+
 }

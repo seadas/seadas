@@ -59,9 +59,9 @@ class CloProgramUI extends JPanel {
 
         parameterPanel = createParameterPanel(processorModel.getProgramParamList());
 
-        sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "Input File");
+        sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
         sourceProductSelector.setProcessorModel(processorModel);
-        sourceProductSelector.initProducts();
+        //sourceProductSelector.initProducts();
 
         outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
 
@@ -79,12 +79,14 @@ class CloProgramUI extends JPanel {
         }
 
         OutputFileSelectorModel outputFileSelectorModel = outputFileSelector.getModel();
-        outputFileSelectorModel.getProductDir();
-        System.out.println(outputFileSelectorModel.getProductFileName());
-        processorModel.setInputFile(outputFileSelectorModel.getProductDir());
+        if (outputFileSelectorModel != null) {
+            processorModel.setOutputFileDir(outputFileSelectorModel.getProductDir());
+            processorModel.setOutputFileName(outputFileSelectorModel.getProductFileName());
+        }
     }
 
     public ProcessorModel getProcessorModel() {
+        updateProcessorModel();
         return processorModel;
     }
 
@@ -307,6 +309,8 @@ class CloProgramUI extends JPanel {
 
         final JComboBox inputList = new JComboBox(values);
         inputList.setEditable(true);
+        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
+                                                 inputList.getPreferredSize().height));
         int defaultValuePosition = validValues.indexOf(optionDefaultValue);
 
         if (defaultValuePosition != -1) {
@@ -353,7 +357,7 @@ class CloProgramUI extends JPanel {
         String optionDefaultValue = paramInfo.getDefaultValue();
         final JTextField inputField = new JTextField(optionDefaultValue);
         inputField.setToolTipText(paramInfo.getDescription());
-        final String newValue;// = inputField.getText();
+        inputField.setColumns(5);
         inputField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -469,6 +473,7 @@ class CloProgramUI extends JPanel {
                 "giop_bbp_opt=3\n" +
                 "programName=" + programName + "\n";
     }
+
 
 }
 

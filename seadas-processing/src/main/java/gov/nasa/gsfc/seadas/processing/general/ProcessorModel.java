@@ -5,6 +5,7 @@ import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
 import org.esa.beam.visat.VisatApp;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,12 +28,15 @@ public class ProcessorModel {
     private File programRoot;
     private File inputFile;
     private File outputFile;
+    private String outputFileName;
     private File outputFileDir;
+    private File parFile;
 
-    public ProcessorModel(String name, String paramXmlFileName) {
+    public ProcessorModel(String name, String parXMLFileName) {
         this.programName = name;
         computeProcessorEnv();
-        paramList = ParamUtils.computeParamList(paramXmlFileName);
+        paramList = ParamUtils.computeParamList(parXMLFileName);
+        acceptsParFile = ParamUtils.getParFilePreference(parXMLFileName);
     }
 
     public boolean isValidProcessor() {
@@ -69,21 +73,40 @@ public class ProcessorModel {
         return errorMessage;
     }
 
-    public void setInputFile(File inputFile ) {
+    public void setInputFile(File inputFile) {
         this.inputFile = inputFile;
+        outputFileDir = inputFile.getParentFile();
+        System.out.println(this.inputFile.toString() + " ~~~~~~~~ " + outputFileDir.toString());
     }
 
     public File getInputFile() {
         return inputFile;
     }
-    public void setOutputFile(File outputFile ) {
+
+    public void setOutputFile(File outputFile) {
         this.outputFile = outputFile;
     }
-    public void setOutputFileDir(File outputFileDir ) {
-        this.outputFileDir = outputFileDir;
-        outputFile = new File(outputFileDir, programName + "-out-" + Long.toHexString(System.nanoTime()));
+
+    public void setOutputFileName(String outputFileName) {
+        this.outputFileName = outputFileName;
     }
+
+    public void setOutputFileDir(File outputFileDir) {
+        if (outputFileDir != null) {
+            this.outputFileDir = outputFileDir;
+        }
+    }
+
     public File getOutputFile() {
+        if (outputFile == null) {
+            if (outputFileName == null) {
+                //default output file name
+                outputFile = new File(outputFileDir, programName + "-out-" + Long.toHexString(System.nanoTime()));
+            } else {
+                //construct output file  based on output dir and file name
+                outputFile = new File(outputFileDir, outputFileName);
+            }
+        }
         return outputFile;
     }
 
@@ -134,17 +157,26 @@ public class ProcessorModel {
         this.programRoot = ocsswRoot;
     }
 
-    /**
-     * this method returns a command array for execution.
-     * the array is constructed using the paramList data and input/output files.
-     * the command array structure is: full pathname of the program to be executed, input file name, params in the required order and finally the output file name.
-     * assumption: order starts with 1
-     * @return
-     */
-    public String[] getProgramCmdArray() {
 
+    private String[] getCmdArrayWithParFile() {
+        final String[] cmdArray = {
+                programLocation + programName,
+                "ifile=" + inputFile,
+                "ofile=" + outputFile,
+                "par=" + parFile
+        };
+
+        for (int i = 0; i < cmdArray.length; i++) {
+            System.out.println("i = " + i + " " + cmdArray[i]);
+        }
+
+        return cmdArray;
+    }
+
+    private String[] getCmdArrayWithArguments() {
         final String[] cmdArray = new String[paramList.size() + 1];
         cmdArray[0] = programLocation + programName;
+
 
         Iterator itr = paramList.iterator();
         ParamInfo option;
@@ -155,19 +187,30 @@ public class ProcessorModel {
         }
 
         cmdArray[1] = inputFile.toString();
-        cmdArray[cmdArray.length -1] = outputFile.toString();
-//        final String[] cmdarray = {
-//                programLocation + programName,
-//                inputFile.toString(),
-//                "100",
-//                "300",
-//                "1",
-//                "21",
-//                outputFile.toString()
-//                //"par=" + parameterFile
-//        };
+        cmdArray[cmdArray.length - 1] = outputFile.toString();
 
+        for (int i = 0; i < cmdArray.length; i++) {
+            System.out.println("i = " + i + " " + cmdArray[i]);
+        }
         return cmdArray;
+    }
+
+    /**
+     * this method returns a command array for execution.
+     * the array is constructed using the paramList data and input/output files.
+     * the command array structure is: full pathname of the program to be executed, input file name, params in the required order and finally the output file name.
+     * assumption: order starts with 1
+     *
+     * @return
+     */
+    public String[] getProgramCmdArray() {
+
+        if (acceptsParFile) {
+            return getCmdArrayWithParFile();
+        } else {
+
+            return getCmdArrayWithArguments();
+        }
     }
 
     public String[] getProgramEnv() {
@@ -175,7 +218,44 @@ public class ProcessorModel {
 
     }
 
-    private void computeParFile() {
+    private void createParFile(File outputDir, final String parameterText) {
+        try {
+            final File tempFile = File.createTempFile(programName, ".par", outputDir);
+            tempFile.deleteOnExit();
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter(tempFile);
+                fileWriter.write(parameterText);
+            } finally {
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            }
 
+//                   if (tempFile == null) {
+//           JOptionPane.showMessageDialog(this.getClass().ge  ,
+//                   "Unable to create parameter file '" + parFile + "'.",
+//                   "Error",
+//                   JOptionPane.ERROR_MESSAGE);
+//            return;
+//        }
+            parFile = tempFile;
+        } catch (IOException e) {
+            return;
+        }
+    }
+    public Process executeProcess() throws IOException {
+
+        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot() );
+
+    }
+
+    private void computeParFile() {
+//                      final String[] cmdarray = {
+//                        ocsswRoot.getPath() + "/run/bin/" + ocsswArch + "/" + programName,
+//                        "ifile=" + inputFile,
+//                        "ofile=" + outputFile,
+//                        "par=" + parFile
+//                };
     }
 }

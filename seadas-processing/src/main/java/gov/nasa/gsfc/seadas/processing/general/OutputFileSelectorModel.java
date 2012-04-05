@@ -2,9 +2,10 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.binding.*;
 import com.bc.ceres.binding.validators.NotNullValidator;
+import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.dataio.ProductIOPlugInManager;
-import org.esa.beam.framework.dataio.ProductWriterPlugIn;
 import org.esa.beam.framework.datamodel.ProductNode;
+import org.esa.beam.util.StringUtils;
 import org.esa.beam.util.io.FileUtils;
 
 import java.beans.PropertyChangeEvent;
@@ -12,7 +13,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,7 +24,7 @@ import java.util.Iterator;
 public class OutputFileSelectorModel {
 
 
-    private static final String OCSSW_FORMAT_NAME = "OCSSW";
+    private static final String ENVISAT_FORMAT_NAME = "ENVISAT";
     // used by object binding
     private String productName;
     private boolean saveToFileSelected;
@@ -64,11 +64,18 @@ public class OutputFileSelectorModel {
         productDirDescriptor.setDisplayName("target product directory");
 
         setOpenInAppSelected(true);
+        setSaveToFileSelected(true);
+        this.formatNames = formatNames;
+        if (StringUtils.contains(this.formatNames, ProductIO.DEFAULT_FORMAT_NAME)) {
+            setFormatName(ProductIO.DEFAULT_FORMAT_NAME);
+        } else {
+            setFormatName(formatNames[0]);
+        }
     }
 
-    public static OutputFileSelectorModel createSeadasOutputFileSelectorModel() {
-        return new SeadasOutputFileSelectorModel();
-    }
+//    public static OutputFileSelectorModel createEnvisatTargetProductSelectorModel() {
+//        return new EnvisatTargetProductSelectorModel();
+//    }
 
     public String getProductName() {
         return productName;
@@ -92,21 +99,21 @@ public class OutputFileSelectorModel {
 
     String getProductFileName() {
         String productFileName = productName;
-        Iterator<ProductWriterPlugIn> iterator = ProductIOPlugInManager.getInstance().getWriterPlugIns(formatName);
-        if (iterator.hasNext()) {
-            final ProductWriterPlugIn writerPlugIn = iterator.next();
-
-            boolean ok = false;
-            for (String extension : writerPlugIn.getDefaultFileExtensions()) {
-                if (productFileName.endsWith(extension)) {
-                    ok = true;
-                    break;
-                }
-            }
-            if (!ok) {
-                productFileName = productFileName.concat(writerPlugIn.getDefaultFileExtensions()[0]);
-            }
-        }
+//        Iterator<ProductWriterPlugIn> iterator = ProductIOPlugInManager.getInstance().getWriterPlugIns(formatName);
+//        if (iterator.hasNext()) {
+//            final ProductWriterPlugIn writerPlugIn = iterator.next();
+//
+//            boolean ok = false;
+//            for (String extension : writerPlugIn.getDefaultFileExtensions()) {
+//                if (productFileName.endsWith(extension)) {
+//                    ok = true;
+//                    break;
+//                }
+//            }
+//            if (!ok) {
+//                productFileName = productFileName.concat(writerPlugIn.getDefaultFileExtensions()[0]);
+//            }
+//        }
         return productFileName;
     }
 
@@ -153,23 +160,23 @@ public class OutputFileSelectorModel {
             final String name = (String) value;
             if (!ProductNode.isValidNodeName(name)) {
                 final String message = MessageFormat.format("The product name ''{0}'' is not valid.\n\n"
-                        + "Names must not start with a dot and must not\n"
-                        + "contain any of the following characters: \\/:*?\"<>|",
-                        name);
+                                                            + "Names must not start with a dot and must not\n"
+                                                            + "contain any of the following characters: \\/:*?\"<>|",
+                                                            name);
                 throw new ValidationException(message);
             }
         }
     }
 
-    public static class SeadasOutputFileSelectorModel extends OutputFileSelectorModel {
+    public static class EnvisatTargetProductSelectorModel extends OutputFileSelectorModel {
 
-        private SeadasOutputFileSelectorModel() {
+        private EnvisatTargetProductSelectorModel() {
             super(createFormats());
         }
 
         @Override
         public File getProductFile() {
-            if (!OCSSW_FORMAT_NAME.equals(getFormatName())) {
+            if (!ENVISAT_FORMAT_NAME.equals(getFormatName())) {
                 return super.getProductFile();
             }
             final String productName = getProductName();
@@ -180,8 +187,8 @@ public class OutputFileSelectorModel {
         private static String[] createFormats() {
             final String[] productWriterFormatStrings = ProductIOPlugInManager.getInstance().getAllProductWriterFormatStrings();
             final String[] formatNames = Arrays.copyOf(productWriterFormatStrings,
-                    productWriterFormatStrings.length + 1);
-            formatNames[formatNames.length - 1] = OCSSW_FORMAT_NAME;
+                                                       productWriterFormatStrings.length + 1);
+            formatNames[formatNames.length - 1] = ENVISAT_FORMAT_NAME;
             return formatNames;
         }
     }

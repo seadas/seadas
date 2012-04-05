@@ -48,7 +48,7 @@ public class ParamUtils {
 
     public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
 
-    public enum nullValueOverrides{
+    public enum nullValueOverrides {
         IFILE, OFILE, PAR, GEOFILE
     }
 
@@ -65,7 +65,7 @@ public class ParamUtils {
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         NodeList optionNodelist = rootElement.getElementsByTagName("option");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
-           return null;
+            return null;
         }
         for (int i = 0; i < optionNodelist.getLength(); i++) {
 
@@ -90,7 +90,6 @@ public class ParamUtils {
             }
 
             String value = XmlReader.getTextValue(optionElement, "value");
-
 
 
             if (name != null) {
@@ -132,13 +131,26 @@ public class ParamUtils {
 
             }
 
-            paramList.add(paramInfo) ;
+            paramList.add(paramInfo);
 
         }
 
         return paramList;
     }
 
+    public static boolean getParFilePreference(String parXMLFileName) {
+
+        boolean acceptsParFile = false;
+        XmlReader xmlReader = new XmlReader();
+        InputStream paramStream = ParamUtils.class.getResourceAsStream(parXMLFileName);
+        Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
+        NodeList optionNodelist = rootElement.getElementsByTagName("programMetaData");
+        if (optionNodelist != null && optionNodelist.getLength() != 0) {
+            Element metaDataElement = (Element) optionNodelist.item(0);
+            acceptsParFile = XmlReader.getBooleanValue(metaDataElement, "hasParFile");
+        }
+        return acceptsParFile;
+    }
 
     public static ArrayList computeParamList(String paramXmlFileName) {
 
@@ -153,7 +165,7 @@ public class ParamUtils {
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         NodeList optionNodelist = rootElement.getElementsByTagName("option");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
-           return null;
+            return null;
         }
         for (int i = 0; i < optionNodelist.getLength(); i++) {
 
@@ -161,8 +173,8 @@ public class ParamUtils {
 
             String name = XmlReader.getTextValue(optionElement, OPTION_NAME);
             System.out.println(name);
-            String tmpType = XmlReader.getAttributeTextValue(optionElement,OPTION_TYPE);
-            System.out.println(tmpType );
+            String tmpType = XmlReader.getAttributeTextValue(optionElement, OPTION_TYPE);
+            System.out.println(tmpType);
 
             ParamInfo.Type type = null;
 
@@ -179,7 +191,6 @@ public class ParamUtils {
             }
 
             String value = XmlReader.getTextValue(optionElement, "value");
-
 
 
             if (name != null) {
@@ -222,7 +233,7 @@ public class ParamUtils {
 
             }
 
-            paramList.add(paramInfo) ;
+            paramList.add(paramInfo);
 
         }
 
@@ -232,11 +243,11 @@ public class ParamUtils {
 
     /**
      * Create a default array list with ifile, ofile,  spixl, epixl, sline, eline options
+     *
      * @return
      */
-    public static ArrayList getDefaultParamList(){
+    public static ArrayList getDefaultParamList() {
         ArrayList<ParamInfo> defaultParamList = new ArrayList<ParamInfo>();
-        //
         return defaultParamList;
     }
 

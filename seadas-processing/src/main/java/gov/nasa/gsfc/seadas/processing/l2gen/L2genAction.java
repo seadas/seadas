@@ -16,9 +16,9 @@
 
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+import gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction;
 import org.esa.beam.framework.ui.ModelessDialog;
 import org.esa.beam.framework.ui.command.CommandEvent;
-import org.esa.beam.visat.actions.AbstractVisatAction;
 
 /**
  * Geographic collocation action.
@@ -26,7 +26,7 @@ import org.esa.beam.visat.actions.AbstractVisatAction;
  * @author Ralf Quast
  * @version $Revision: 2535 $ $Date: 2008-07-09 14:10:01 +0200 (Mi, 09 Jul 2008) $
  */
-public class L2genAction extends AbstractVisatAction {
+public class L2genAction extends CallCloProgramAction {
     
     private ModelessDialog dialog;
 
