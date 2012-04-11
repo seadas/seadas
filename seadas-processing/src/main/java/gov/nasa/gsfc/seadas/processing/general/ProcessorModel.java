@@ -31,6 +31,7 @@ public class ProcessorModel {
     private String outputFileName;
     private File outputFileDir;
     private File parFile;
+    private String parString;
 
 
     public ProcessorModel(String name) {
@@ -77,6 +78,11 @@ public class ProcessorModel {
 
     public File getParFile() {
         return parFile;
+    }
+
+    public void setParString(String parString){
+        this.parString = parString;
+
     }
 
     public void setAcceptsParFile(boolean acceptsParFile) {

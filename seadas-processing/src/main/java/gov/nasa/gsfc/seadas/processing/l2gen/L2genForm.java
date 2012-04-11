@@ -171,6 +171,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     //----------------------------------------------------------------------------------------
 
     public ProcessorModel getProcessorModel() {
+        processorModel.setParString(l2genData.getParfile());
         return processorModel;
     }
 
