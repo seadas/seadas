@@ -17,8 +17,8 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction;
-import org.esa.beam.framework.ui.ModelessDialog;
-import org.esa.beam.framework.ui.command.CommandEvent;
+import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
+import org.esa.beam.framework.ui.AppContext;
 
 /**
  * Geographic collocation action.
@@ -27,14 +27,11 @@ import org.esa.beam.framework.ui.command.CommandEvent;
  * @version $Revision: 2535 $ $Date: 2008-07-09 14:10:01 +0200 (Mi, 09 Jul 2008) $
  */
 public class L2genAction extends CallCloProgramAction {
-    
-    private ModelessDialog dialog;
+
 
     @Override
-    public void actionPerformed(CommandEvent event) {
-        if (dialog == null) {
-            dialog = new L2genDialog("l2gen", event.getCommand().getHelpId(), getAppContext());
-        }
-        dialog.show();
+    public CloProgramUI getProgramUI(AppContext appContext) {
+        return new L2genForm(appContext);
     }
+
 }

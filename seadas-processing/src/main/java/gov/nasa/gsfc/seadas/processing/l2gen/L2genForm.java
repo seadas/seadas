@@ -8,13 +8,16 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
+import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
+import gov.nasa.gsfc.seadas.processing.general.OutputFileSelector;
+import gov.nasa.gsfc.seadas.processing.general.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.gpf.ui.SourceProductSelector;
-import org.esa.beam.framework.gpf.ui.TargetProductSelector;
 import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
+import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -26,18 +29,17 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.EventObject;
 
 
-class L2genForm extends JTabbedPane {
+class L2genForm extends JTabbedPane implements CloProgramUI {
     // note: line count=2865 before cleanup  now 1868
     // now 2395 after 1839
     private final AppContext appContext;
-    private final SourceProductSelector sourceProductSelector;
-    private final TargetProductSelector targetProductSelector;
+    private final SourceProductFileSelector sourceProductSelector;
+    private final OutputFileSelector outputFileSelector;
 
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
     //  private ArrayList<JCheckBox> paramJCheckboxes = null;
@@ -82,7 +84,7 @@ class L2genForm extends JTabbedPane {
 
     private int tabCount = 0;
 
-    private static final String INPUT_OUTPUT_FILE_TAB_NAME = "Input/Output";
+    private static final String INPUT_OUTPUT_FILE_TAB_NAME = "Main";
     private static final String PARFILE_TAB_NAME = "Parameters";
     //   private static final String SUB_SETTING_TAB_NAME = "Subsetting Options";
     private static final String PRODUCTS_TAB_NAME = "Products";
@@ -113,11 +115,39 @@ class L2genForm extends JTabbedPane {
     private String EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE = "Edit";
     private String EDIT_LOAD_BUTTON_TEXT_EDIT_MODE = "Load";
 
+    private ProcessorModel processorModel;
 
-    L2genForm(TargetProductSelector targetProductSelector, AppContext appContext) {
-        this.targetProductSelector = targetProductSelector;
+
+//    L2genForm(TargetProductSelector targetProductSelector, AppContext appContext) {
+//        this.outputFileSelector = targetProductSelector;
+//        this.appContext = appContext;
+//        this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
+//
+//        // determine whether ifile has been set prior to launching l2gen
+//        String ifile = null;
+//        if (sourceProductSelector.getSelectedProduct() != null
+//                && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
+//            ifile = sourceProductSelector.getSelectedProduct().getFileLocation().toString();
+//        }
+//
+//        l2genData.initXmlBasedObjects();
+//        createUserInterface();
+//        addL2genDataListeners();
+//
+//        if (ifile != null) {
+//            l2genData.setParamValue(l2genData.IFILE, ifile);
+//        } else {
+//            l2genData.fireAllParamEvents();
+//        }
+//    }
+
+    L2genForm(AppContext appContext) {
         this.appContext = appContext;
-        this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
+
+        processorModel = new ProcessorModel("l2gen");
+
+        sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
+        outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
 
         // determine whether ifile has been set prior to launching l2gen
         String ifile = null;
@@ -136,11 +166,17 @@ class L2genForm extends JTabbedPane {
             l2genData.fireAllParamEvents();
         }
     }
-
-
     //----------------------------------------------------------------------------------------
     // Create tabs within the main panel
     //----------------------------------------------------------------------------------------
+
+    public ProcessorModel getProcessorModel() {
+        return processorModel;
+    }
+
+    public Product getSelectedSourceProduct() {
+        return sourceProductSelector.getSelectedProduct();
+    }
 
     private void createUserInterface() {
 
@@ -148,9 +184,9 @@ class L2genForm extends JTabbedPane {
         createIOParametersTab(INPUT_OUTPUT_FILE_TAB_NAME);
         this.setEnabledAt(currTabIndex, true);
 
-        currTabIndex++;
-        createParfileTab(PARFILE_TAB_NAME);
-        this.setEnabledAt(currTabIndex, false);
+//        currTabIndex++;
+//        createParfileTab(PARFILE_TAB_NAME);
+//        this.setEnabledAt(currTabIndex, false);
 
         currTabIndex++;
         createProductsTab(PRODUCTS_TAB_NAME);
@@ -173,6 +209,7 @@ class L2genForm extends JTabbedPane {
     //----------------------------------------------------------------------------------------
 
     private void createIOParametersTab(String myTabname) {
+
         final TableLayout tableLayout = new TableLayout(1);
         tableLayout.setTableWeightX(1.0);
         tableLayout.setTableWeightY(0);
@@ -181,8 +218,9 @@ class L2genForm extends JTabbedPane {
 
         final JPanel ioPanel = new JPanel(tableLayout);
         ioPanel.add(createSourceProductPanel());
-        ioPanel.add(createOfileJPanel());
-        ioPanel.add(targetProductSelector.createDefaultPanel());
+        //ioPanel.add(createOfileJPanel());
+        ioPanel.add(createParfileTab());
+        ioPanel.add(outputFileSelector.createDefaultPanel());
         ioPanel.add(tableLayout.createVerticalSpacer());
 
         addTab(myTabname, ioPanel);
@@ -190,7 +228,7 @@ class L2genForm extends JTabbedPane {
     }
 
 
-    private void createParfileTab(String myTabname) {
+    private JPanel createParfileTab() {
 
         // Define all Swing controls used on this tab page
         final JButton loadParfileButton = new JButton("Open");
@@ -282,8 +320,8 @@ class L2genForm extends JTabbedPane {
         final JPanel finalMainPanel;
         finalMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 3);
 
-
-        addTab(myTabname, finalMainPanel);
+        return finalMainPanel;
+        //addTab(myTabname, finalMainPanel);
     }
 
 
@@ -1608,7 +1646,7 @@ class L2genForm extends JTabbedPane {
             helpButton.setToolTipText("Help.");
             helpButton.setName("helpButton");
             HelpSys.enableHelpOnButton(helpButton, helpId);
-          //  HelpSys.enableHelpKey(getParentDialogContentPane(), getHelpId());
+            //  HelpSys.enableHelpKey(getParentDialogContentPane(), getHelpId());
             return helpButton;
         }
 
@@ -2042,7 +2080,7 @@ class L2genForm extends JTabbedPane {
                 handleIfileJComboBoxEnabled = false;
                 sourceProductSelector.setSelectedProduct(null);
 
-//                final TargetProductSelectorModel selectorModel = targetProductSelector.getModel();
+//                final TargetProductSelectorModel selectorModel = outputFileSelector.getModel();
 //                selectorModel.setProductName(null);
 
                 handleIfileJComboBoxEnabled = true;

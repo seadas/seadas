@@ -475,6 +475,10 @@ public class SourceProductFileSelector {
         * @see java.io.FileFilter#accept(java.io.File)
         */
         public boolean accept(File pathname) {
+
+            if (regex == null) {
+                return true;
+            }
             return (pathname.isFile() && pathname.getName().matches(this.regex));
         }
 

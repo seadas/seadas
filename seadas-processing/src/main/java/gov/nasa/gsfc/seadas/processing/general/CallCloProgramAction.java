@@ -47,13 +47,29 @@ public class CallCloProgramAction extends AbstractVisatAction {
         super.configure(config);
     }
 
+    public String getProgramName() {
+        return programName;
+    }
+
+    public String getXmlFileName() {
+        return xmlFileName;
+    }
+
+    public String getDialogTitle() {
+        return dialogTitle;
+    }
+
+    public CloProgramUI getProgramUI(AppContext appContext ) {
+        return new CloProgramUIImpl(programName, xmlFileName);
+    }
+
     @Override
     public void actionPerformed(CommandEvent event) {
 
 
         final AppContext appContext = getAppContext();
 
-        final CloProgramUI cloProgramUI = new CloProgramUI(programName, xmlFileName);
+        final CloProgramUI cloProgramUI = getProgramUI(appContext);
 
         final Window parent = appContext.getApplicationWindow();
 
@@ -80,7 +96,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
 
-        if (! processorModel.isValidProcessor()){
+        executeProgram(processorModel)  ;
+
+    }
+
+    public void executeProgram(ProcessorModel pm ){
+
+        final ProcessorModel processorModel = pm;
+                if (! processorModel.isValidProcessor()){
             VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
             return;
 
@@ -89,8 +112,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final File outputFile = processorModel.getOutputFile();
 
-
-        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(parent, "Running" + programName + " ...") {
+        System.out.println("output file: " + outputFile );
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running" + programName + " ...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
@@ -109,7 +132,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
 
-                appContext.getProductManager().addProduct(ProductIO.readProduct(outputFile));
+                getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile));
 
                 return outputFile;
             }
@@ -128,6 +151,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         };
 
         swingWorker.execute();
+
     }
 
     /**

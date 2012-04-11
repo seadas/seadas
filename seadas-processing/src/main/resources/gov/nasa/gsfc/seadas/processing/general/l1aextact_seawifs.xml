@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+    </programMetaData>
+    <options>
+        <option type="string">
+            <name>ifile</name>
+            <value>q</value>
+            <default></default>
+            <description>input MODIS L1A datafile</description>
+            <source>command line</source>
+            <aliases>
+                <alias>ifile1</alias>
+            </aliases>
+            <order>1</order>
+        </option>
+        <option type="int">
+            <name>spixl</name>
+            <value>1</value>
+            <default>1</default>
+            <description>start pixel number</description>
+            <order>2</order>
+        </option>
+        <option type="int">
+            <name>epixl</name>
+            <value>-1</value>
+            <default>-1</default>
+            <description>end pixel number (-1=the last pixel)</description>
+            <order>3</order>
+        </option>
+        <option type="int">
+            <name>sline</name>
+            <value>1</value>
+            <default>1</default>
+            <description>start line number</description>
+            <order>4</order>
+        </option>
+        <option type="int">
+            <name>eline</name>
+            <value>-1</value>
+            <default>-1</default>
+            <description>end line number (-1=the last line)</description>
+            <order>5</order>
+        </option>
+        <option type="string">
+            <name>ofile</name>
+            <value></value>
+            <default>output</default>
+            <description>output L2 file name</description>
+            <order>6</order>
+        </option>
+    </options>
+</paramInfo>

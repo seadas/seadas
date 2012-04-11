@@ -42,6 +42,10 @@
             <class>gov.nasa.gsfc.seadas.processing.l2gen.L2genAction</class>
             <text>l2gen..</text>
             <shortDescr>L2 File Generation</shortDescr>
+            <programName>l2gen</programName>
+            <dialogTitle>l2gen</dialogTitle>
+            <xmlFileName>paramInfo.xml</xmlFileName>
+
         </action>
         <action>
             <parent>seadasProcessing</parent>
@@ -66,6 +70,7 @@
             <text>l2mapgen...</text>
             <programName>l2mapgen</programName>
             <dialogTitle>l2mapgen Processor</dialogTitle>
+            <xmlFileName>paramInfo_l2mapgen.xml</xmlFileName>
         </action>
         <action>
             <parent>seadasProcessing</parent>

@@ -32,12 +32,22 @@ public class ProcessorModel {
     private File outputFileDir;
     private File parFile;
 
+
+    public ProcessorModel(String name) {
+        this(name, null);
+    }
+
     public ProcessorModel(String name, String parXMLFileName) {
         this.programName = name;
         computeProcessorEnv();
-        paramList = ParamUtils.computeParamList(parXMLFileName);
-        acceptsParFile = ParamUtils.getParFilePreference(parXMLFileName);
+        if (parXMLFileName != null) {
+            paramList = ParamUtils.computeParamList(parXMLFileName);
+            acceptsParFile = ParamUtils.getParFilePreference(parXMLFileName);
+
+        }
+
     }
+
 
     public boolean isValidProcessor() {
         return programLocation != null;
@@ -59,6 +69,14 @@ public class ProcessorModel {
     public ArrayList getProgramParamList() {
 
         return paramList;
+    }
+
+    public void setParFile(File parFile) {
+        this.parFile = parFile;
+    }
+
+    public File getParFile() {
+        return parFile;
     }
 
     public void setAcceptsParFile(boolean acceptsParFile) {
@@ -244,9 +262,12 @@ public class ProcessorModel {
             return;
         }
     }
+
     public Process executeProcess() throws IOException {
 
-        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot() );
+        System.out.println("executing par file for l2gen ...");
+
+        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
 
     }
 
