@@ -94,7 +94,7 @@ public class SourceProductFileSelector {
                         productNameComboBox.setToolTipText(product.getDisplayName());
                     }
                 } else {
-                    productNameComboBox.setToolTipText("Select a source product.");
+                    productNameComboBox.setToolTipText("Select an input file.");
                 }
             }
         });
@@ -272,7 +272,7 @@ public class SourceProductFileSelector {
         tableLayout.setRowFill(2, TableLayout.Fill.HORIZONTAL);
         tableLayout.setTablePadding(3, 3);
         JPanel panel = new JPanel(tableLayout);
-        panel.setBorder(BorderFactory.createTitledBorder("Source Product"));
+        panel.setBorder(BorderFactory.createTitledBorder("Input File"));
         panel.add(getProductNameLabel());
         panel.add(subPanel);
         panel.add(createFilterPane());
