@@ -537,6 +537,13 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
         });
 
+        jTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                l2genData.setParamValue(param, jTextField.getText().toString());
+            }
+        });
+        
         l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -1824,7 +1831,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
 
     private void parfileLostFocus() {
-        l2genData.setParamsFromParfile(parfileJTextArea.getText().toString());
+        l2genData.setParamsFromParfile(parfileJTextArea.getText().toString(), false);
     }
 
 
@@ -1840,7 +1847,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             parfileText.append("\n");
         }
 
-        l2genData.setParamsFromParfile(parfileText.toString());
+        l2genData.setParamsFromParfile(parfileText.toString(), true);
         parfileJTextArea.setEditable(true);
         //  parfileJTextArea.setText(parfileText.toString());
     }

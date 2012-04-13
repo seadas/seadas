@@ -17,6 +17,7 @@ import java.util.*;
  */
 public class L2genData {
 
+    private boolean ignoreIfileInParString = true;
     private String OCDATAROOT = System.getenv("OCDATAROOT");
 
     private String PRODUCT_INFO_XML = "productInfo.xml";
@@ -76,6 +77,14 @@ public class L2genData {
         if (new File(initialIfile).exists()) {
             this.initialIfile = initialIfile;
         }
+    }
+
+    public boolean isIgnoreIfileInParString() {
+        return ignoreIfileInParString;
+    }
+
+    public void setIgnoreIfileInParString(boolean ignoreIfileInParString) {
+        this.ignoreIfileInParString = ignoreIfileInParString;
     }
 
     public enum RegionType {Coordinates, PixelLines}
@@ -534,17 +543,27 @@ public class L2genData {
 // DANNY IS REVIEWING CODE AND LEFT OFF HERE
 
 
-    public void setParamsFromParfile(String parfileContent) {
+    public void setParamsFromParfile(String parfileContent, boolean checkIgnoreIfileInParString) {
 
         ArrayList<ParamInfo> parfileParamInfos = parseParfile(parfileContent);
 
         /*
         Handle IFILE first
          */
-        for (ParamInfo newParamInfo : parfileParamInfos) {
-            if (newParamInfo.getName().equals(IFILE)) {
-                setParamValue(IFILE, newParamInfo.getValue());
-                break;
+        boolean ignoreIfileOfile;
+        if (!checkIgnoreIfileInParString || (checkIgnoreIfileInParString && !ignoreIfileInParString)) {
+            ignoreIfileOfile = false;
+        } else {
+            ignoreIfileOfile = true;
+        }
+
+
+        if (!ignoreIfileOfile) {
+            for (ParamInfo newParamInfo : parfileParamInfos) {
+                if (newParamInfo.getName().equals(IFILE)) {
+                    setParamValue(IFILE, newParamInfo.getValue());
+                    break;
+                }
             }
         }
 
@@ -553,7 +572,21 @@ public class L2genData {
         Ignore IFILE (handled earlier) and PAR (which is todo)
          */
         for (ParamInfo newParamInfo : parfileParamInfos) {
-            if (!newParamInfo.getName().equals(IFILE) && !newParamInfo.getName().equals(PAR)) {
+            boolean setParamValue = true;
+
+            if (newParamInfo.getName().equals(OFILE) && ignoreIfileOfile) {
+                setParamValue = false;
+            }
+
+            if (newParamInfo.getName().equals(IFILE)) {
+                setParamValue = false;
+            }
+
+            if (newParamInfo.getName().equals(PAR)) {
+                setParamValue = false;
+            }
+
+            if (setParamValue) {
                 setParamValue(newParamInfo.getName(), newParamInfo.getValue());
             }
         }

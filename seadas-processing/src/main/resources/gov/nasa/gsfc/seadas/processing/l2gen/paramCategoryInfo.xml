@@ -7,7 +7,7 @@
 
     </category>
 
-    <category name="Used Elsewhere">
+    <category name="Hidden Stuff">
         <makeVisible>0</makeVisible>
         <param>geofile</param>
         <param>-help</param>
@@ -22,6 +22,7 @@
         <param>-dump_options_paramfile</param>
         <param>-dump_options_xmlfile</param>
         <param>-version</param>
+        <param>flaguse</param>
     </category>
 
 
@@ -220,7 +221,6 @@
         <param>aerfile</param>
         <param>calfile</param>
         <param>eval</param>
-        <param>flaguse</param>
         <param>mode</param>
         <param>owmcfile</param>
         <param>tgtfile</param>
