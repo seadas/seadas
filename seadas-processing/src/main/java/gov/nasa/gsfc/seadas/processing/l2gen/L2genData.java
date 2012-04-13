@@ -593,10 +593,10 @@ public class L2genData {
 
         /*
         Delete all params NOT contained in parfileContent to defaults (basically set to default)
-        Except: L2PROD and IFILE remain at current value
+        Except: L2PROD and IFILE and OFILE remain at current value
          */
         for (ParamInfo paramInfo : paramInfos) {
-            if (!paramInfo.getName().equals(L2PROD) && !paramInfo.getName().equals(IFILE)) {
+            if (!paramInfo.getName().equals(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE)) {
                 boolean paramHandled = false;
                 for (ParamInfo parfileParamInfo : parfileParamInfos) {
                     if (paramInfo.getName().equals(parfileParamInfo.getName())) {
