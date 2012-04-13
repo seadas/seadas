@@ -31,7 +31,7 @@ public class L2genAction extends CallCloProgramAction {
 
     @Override
     public CloProgramUI getProgramUI(AppContext appContext) {
-        return new L2genForm(appContext);
+        return new L2genForm(appContext, getXmlFileName());
     }
 
 }

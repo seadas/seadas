@@ -117,7 +117,7 @@ public class SourceProductFileSelector {
                 productListModel.removeElement(product);
             }
         };
-        regexFileFilter = new RegexFileFilter("*");
+        regexFileFilter = new RegexFileFilter();
 
     }
 
@@ -291,6 +291,7 @@ public class SourceProductFileSelector {
             public void insertUpdate(DocumentEvent documentEvent) {
                 //To change body of implemented methods use File | Settings | File Templates.
                 regexFileFilter = new RegexFileFilter(filterRegexField.getText());
+                System.out.println(regexFileFilter.getDescription());
             }
 
             @Override
@@ -318,7 +319,7 @@ public class SourceProductFileSelector {
             super("...");
             fileChooser = new BeamFileChooser();
 
-            fileChooser.setDialogTitle("Select Source Product");
+            fileChooser.setDialogTitle("Select Input File");
             final Iterator<ProductReaderPlugIn> iterator = ProductIOPlugInManager.getInstance().getAllReaderPlugIns();
             while (iterator.hasNext()) {
                 // todo - (mp, 2008/04/22)check if product file filter is applicable
@@ -460,11 +461,15 @@ public class SourceProductFileSelector {
 
         private String regex;
 
+        public RegexFileFilter(){
+            this(null);
+        }
         public RegexFileFilter(String regex) throws IllegalStateException {
-            System.out.println(regex);
+            System.out.println("regular expression: " + regex);
             if (regex == null || regex.trim().length() == 0) {
 
-                throw new IllegalStateException();
+                //throw new IllegalStateException();
+                return;
             }
 
             this.regex = ".*" + regex + ".*";

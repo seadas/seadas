@@ -94,7 +94,10 @@ public class OutputFileSelectorModel {
     }
 
     public File getProductFile() {
-        return new File(productDir, getProductFileName());
+        if (productName == null) {
+            return null;
+        }
+        return new File(productDir, productName);
     }
 
     String getProductFileName() {

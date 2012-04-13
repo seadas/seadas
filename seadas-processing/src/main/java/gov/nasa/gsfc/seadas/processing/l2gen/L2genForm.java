@@ -141,10 +141,10 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 //        }
 //    }
 
-    L2genForm(AppContext appContext) {
+    L2genForm(AppContext appContext, String xmlFileName) {
         this.appContext = appContext;
 
-        processorModel = new ProcessorModel("l2gen");
+        processorModel = new ProcessorModel("l2gen", xmlFileName);
 
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
         outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
@@ -156,15 +156,24 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             ifile = sourceProductSelector.getSelectedProduct().getFileLocation().toString();
         }
 
+        String ofile = null;
+        if (outputFileSelector.getModel().getProductFile() != null) {
+            ofile = outputFileSelector.getModel().getProductFile().getAbsolutePath();
+            System.out.println("ofile: " + ofile);
+        }
+
         l2genData.initXmlBasedObjects();
         createUserInterface();
         addL2genDataListeners();
 
         if (ifile != null) {
             l2genData.setParamValue(l2genData.IFILE, ifile);
+        } else if (ofile != null) {
+            l2genData.setParamValue(l2genData.OFILE, ofile);
         } else {
             l2genData.fireAllParamEvents();
         }
+
     }
     //----------------------------------------------------------------------------------------
     // Create tabs within the main panel
@@ -220,8 +229,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         final JPanel ioPanel = new JPanel(tableLayout);
         ioPanel.add(createSourceProductPanel());
         //ioPanel.add(createOfileJPanel());
+
+        ioPanel.add(createOutputFilePanel());
         ioPanel.add(createParfileTab());
-        ioPanel.add(outputFileSelector.createDefaultPanel());
         ioPanel.add(tableLayout.createVerticalSpacer());
 
         addTab(myTabname, ioPanel);
@@ -1687,6 +1697,28 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                         //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getProgramName());
                         l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
                     }
+                }
+            }
+        });
+        return panel;
+    }
+
+    private JPanel createOutputFilePanel() {
+        final JPanel panel = outputFileSelector.createDefaultPanel();
+
+//        outputFileSelector.getModel().getProductNameComboBox().setPrototypeDisplayValue(
+//                "MER_RR__1PPBCM20030730_071000_000003972018_00321_07389_0000.N1");
+        outputFileSelector.getModel().getValueContainer().addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                String ofile = null;
+                if (outputFileSelector.getModel().getProductFile() != null) {
+                    ofile = outputFileSelector.getModel().getProductFile().getAbsolutePath();
+                    System.out.println("ofile: " + ofile);
+                }
+
+                if (ofile != null) {
+                    l2genData.setParamValue(l2genData.OFILE, ofile);
                 }
             }
         });

@@ -44,7 +44,7 @@
             <shortDescr>L2 File Generation</shortDescr>
             <programName>l2gen</programName>
             <dialogTitle>l2gen</dialogTitle>
-            <xmlFileName>paramInfo.xml</xmlFileName>
+            <xmlFileName>paramInfo_l2gen.xml</xmlFileName>
 
         </action>
         <action>

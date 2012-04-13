@@ -212,7 +212,11 @@ public class ParamUtils {
             paramInfo.setDescription(description);
             paramInfo.setDefaultValue(defaultValue);
             paramInfo.setSource(source);
-            paramInfo.setOrder(new Integer(order).intValue());
+
+            if (order != null) {
+                paramInfo.setOrder(new Integer(order).intValue());
+            }
+
 
             NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
 

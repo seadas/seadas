@@ -81,9 +81,11 @@ public class ProcessorModel {
     }
 
     public void setParString(String parString){
-        this.parString = parString;
 
-    }
+        System.out.println("parString: " + parString);
+        this.parString = parString;
+        createParFile(outputFileDir, parString);
+     }
 
     public void setAcceptsParFile(boolean acceptsParFile) {
         this.acceptsParFile = acceptsParFile;
@@ -185,8 +187,8 @@ public class ProcessorModel {
     private String[] getCmdArrayWithParFile() {
         final String[] cmdArray = {
                 programLocation + programName,
-                "ifile=" + inputFile,
-                "ofile=" + outputFile,
+                //"ifile=" + inputFile,
+                //"ofile=" + outputFile,
                 "par=" + parFile
         };
 
@@ -230,7 +232,8 @@ public class ProcessorModel {
     public String[] getProgramCmdArray() {
 
         if (acceptsParFile) {
-            return getCmdArrayWithParFile();
+           return getCmdArrayWithParFile();
+
         } else {
 
             return getCmdArrayWithArguments();
@@ -272,6 +275,10 @@ public class ProcessorModel {
     public Process executeProcess() throws IOException {
 
         System.out.println("executing par file for l2gen ...");
+
+        System.out.println(getProgramRoot() );
+        System.out.println(getProgramEnv() );
+
 
         return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
 

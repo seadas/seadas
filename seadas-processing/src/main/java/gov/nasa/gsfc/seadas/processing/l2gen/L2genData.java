@@ -711,6 +711,7 @@ public class L2genData {
 
         for (ParamInfo paramInfo : paramInfos) {
             if (paramInfo.getName().equals(param)) {
+                System.out.println("param: " + param + " value: " + value);
                 setParamValue(paramInfo, value);
                 return;
             }
@@ -745,6 +746,8 @@ public class L2genData {
         if (!value.equals(paramInfo.getValue())) {
             if (paramInfo.getName().equals(IFILE)) {
                 setIfileParamValue(paramInfo, value);
+            } else if (paramInfo.getName().equals(OFILE)) {
+                paramInfo.setValue(value);
             } else if (paramInfo.getName().equals(L2PROD)) {
                 setProdParamValue(value);
             } else {
@@ -1078,7 +1081,6 @@ public class L2genData {
 
 
     }
-
 
     private void setCustomOfile(String ifile) {
 

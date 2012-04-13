@@ -34,7 +34,7 @@ class L2genDialog extends SingleTargetProductDialog {
     L2genDialog(final String title, final String helpID, AppContext appContext) {
         super(appContext, title, ID_APPLY_CLOSE, helpID);
         //form = new L2genForm(getTargetProductSelector(), appContext);
-        form = new L2genForm(appContext);
+        form = new L2genForm(appContext, "test");
     }
 
     @Override

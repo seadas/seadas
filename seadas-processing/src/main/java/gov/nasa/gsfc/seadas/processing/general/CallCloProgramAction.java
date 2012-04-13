@@ -9,10 +9,12 @@ import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.ModalDialog;
+import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractVisatAction;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +61,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         return dialogTitle;
     }
 
-    public CloProgramUI getProgramUI(AppContext appContext ) {
+    public CloProgramUI getProgramUI(AppContext appContext) {
         return new CloProgramUIImpl(programName, xmlFileName);
     }
 
@@ -73,17 +75,27 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final Window parent = appContext.getApplicationWindow();
 
-        final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_CANCEL, null);
+        final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
 
 
         modalDialog.getButton(ModalDialog.ID_OK).setText("Run");
+        modalDialog.getButton(ModalDialog.ID_HELP).setText("");
+        modalDialog.getButton(ModalDialog.ID_HELP).setIcon(UIUtils.loadImageIcon("icons/Help24.gif"));
+
+        //Make sure program is only executed when the "run" button is clicked.
+        ((JButton) modalDialog.getButton(ModalDialog.ID_OK)).setDefaultCapable(false);
+        modalDialog.getJDialog().getRootPane().setDefaultButton(null);
+
         final int dialogResult = modalDialog.show();
+
+        System.out.println("dialog result: " + dialogResult);
 
         if (dialogResult != ModalDialog.ID_OK) {
             return;
         }
 
-       final Product selectedProduct = cloProgramUI.getSelectedSourceProduct();
+
+        final Product selectedProduct = cloProgramUI.getSelectedSourceProduct();
 
         if (selectedProduct == null) {
             VisatApp.getApp().showErrorDialog(programName, "No product selected.");
@@ -96,14 +108,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
 
-        executeProgram(processorModel)  ;
+        executeProgram(processorModel);
 
     }
 
-    public void executeProgram(ProcessorModel pm ){
+    public void executeProgram(ProcessorModel pm) {
 
         final ProcessorModel processorModel = pm;
-                if (! processorModel.isValidProcessor()){
+        if (!processorModel.isValidProcessor()) {
             VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
             return;
 
@@ -112,7 +124,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final File outputFile = processorModel.getOutputFile();
 
-        System.out.println("output file: " + outputFile );
+        System.out.println("output file: " + outputFile);
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running" + programName + " ...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
