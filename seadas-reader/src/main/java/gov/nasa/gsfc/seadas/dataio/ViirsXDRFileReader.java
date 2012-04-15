@@ -149,7 +149,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         //todo: refine logic to get correct navGroup
         File inputFile = productReader.getInputFile();
         String navGroup = "All_Data/VIIRS-MOD-GEO-TC_All";
-        String geoFileName = inputFile.getName();
+        String geoFileName;
 
         Attribute geoRef = findAttribute("N_GEO_Ref");
         if (geoRef != null) {
@@ -162,21 +162,25 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 
             String path = inputFile.getParent();
             File geocheck = new File(path, geoFileName);
+            // remove the create time segment and try again
             if (!geocheck.exists() || geoFileName == null) {
-                if (geoFileName.contains("GMODO")) {
-                    geoFileName = geoFileName.replaceFirst("GMODO", "GMTCO");
-                } else {
-                    geoFileName = geoFileName.replaceFirst("GMTCO", "GMODO");
-
+                String geoFileName_noctime = geoFileName;
+                if (!inputFile.getName().matches("_c\\d{20}_")) {
+                    geoFileName_noctime = geoFileName_noctime.replaceFirst("_c\\d{20}_", "_");
                 }
-                geocheck = new File(path, geoFileName);
+
+                geocheck = new File(path, geoFileName_noctime);
+
                 if (!geocheck.exists()) {
-                    if (!inputFile.getName().matches("_c\\d{20}_")) {
-                        geoFileName = geoFileName.replaceFirst("_c\\d{20}_", "_");
+                    if (geoFileName.contains("GMODO")) {
+                        geoFileName = geoFileName.replaceFirst("GMODO", "GMTCO");
+                    } else {
+                        geoFileName = geoFileName.replaceFirst("GMTCO", "GMODO");
+
                     }
                     geocheck = new File(path, geoFileName);
                     if (!geocheck.exists()) {
-                        return;
+                            return;
                     }
                 }
             }
@@ -529,7 +533,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                     SeadasFileReader.Cornflower, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("LikelyClear", "Probably cloud-free",
                     product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "QF4_VIIRSOCCEDR & 0x03 == 0x01",
+                    product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR & 0x03 == 0x01",
                     Color.LIGHT_GRAY, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("LikelyCloud", "Probably cloud contaminated.",
                     product.getSceneRasterWidth(),
@@ -577,7 +581,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                     SeadasFileReader.LightBrown, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("Coccolithophore", "Coccolithophores detected",
                     product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.Coccolithophore ",
+                    product.getSceneRasterHeight(), "QF6_VIIRSOCCEDR.Coccolithophore ",
                     Color.CYAN, 0.2));
             product.getMaskGroup().add(Mask.BandMathsType.create("HighCDOM", "CDOM absorption @ 410nm > 2 m^-1.",
                     product.getSceneRasterWidth(),
