@@ -557,10 +557,14 @@ public class L2genData {
             ignoreIfileOfile = true;
         }
 
+        if (getParamValue(L2PROD).equals(ParamInfo.NULL_STRING)) {
+            ignoreIfileOfile = false;
+        }
+
 
         if (!ignoreIfileOfile) {
             for (ParamInfo newParamInfo : parfileParamInfos) {
-                if (newParamInfo.getName().equals(IFILE)) {
+                if (newParamInfo.getName().toLowerCase().equals(IFILE)) {
                     setParamValue(IFILE, newParamInfo.getValue());
                     break;
                 }
@@ -574,20 +578,20 @@ public class L2genData {
         for (ParamInfo newParamInfo : parfileParamInfos) {
             boolean setParamValue = true;
 
-            if (newParamInfo.getName().equals(OFILE) && ignoreIfileOfile) {
+            if (newParamInfo.getName().toLowerCase().equals(OFILE) && ignoreIfileOfile) {
                 setParamValue = false;
             }
 
-            if (newParamInfo.getName().equals(IFILE)) {
+            if (newParamInfo.getName().toLowerCase().equals(IFILE)) {
                 setParamValue = false;
             }
 
-            if (newParamInfo.getName().equals(PAR)) {
+            if (newParamInfo.getName().toLowerCase().equals(PAR)) {
                 setParamValue = false;
             }
 
             if (setParamValue) {
-                setParamValue(newParamInfo.getName(), newParamInfo.getValue());
+                setParamValue(newParamInfo.getName().toLowerCase(), newParamInfo.getValue());
             }
         }
 
@@ -599,7 +603,7 @@ public class L2genData {
             if (!paramInfo.getName().equals(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE)) {
                 boolean paramHandled = false;
                 for (ParamInfo parfileParamInfo : parfileParamInfos) {
-                    if (paramInfo.getName().equals(parfileParamInfo.getName())) {
+                    if (paramInfo.getName().toLowerCase().equals(parfileParamInfo.getName().toLowerCase())) {
                         paramHandled = true;
                     }
                 }
@@ -666,12 +670,12 @@ public class L2genData {
             return "";
         }
 
-        if (param.equals(L2PROD)) {
+        if (param.toLowerCase().equals(L2PROD)) {
             return getProdParamValue();
         }
 
         for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName().equals(param)) {
+            if (paramInfo.getName().toLowerCase().equals(param.toLowerCase())) {
                 return paramInfo.getValue();
             }
         }
@@ -710,8 +714,7 @@ public class L2genData {
 
 
         for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName().equals(param)) {
-                System.out.println("param: " + param + " value: " + value);
+            if (paramInfo.getName().toLowerCase().equals(param.toLowerCase())) {
                 setParamValue(paramInfo, value);
                 return;
             }
@@ -746,8 +749,6 @@ public class L2genData {
         if (!value.equals(paramInfo.getValue())) {
             if (paramInfo.getName().equals(IFILE)) {
                 setIfileParamValue(paramInfo, value);
-            } else if (paramInfo.getName().equals(OFILE)) {
-                paramInfo.setValue(value);
             } else if (paramInfo.getName().equals(L2PROD)) {
                 setProdParamValue(value);
             } else {
@@ -769,7 +770,7 @@ public class L2genData {
     public boolean isParamDefault(String param) {
 
         for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName().equals(param)) {
+            if (paramInfo.getName().toLowerCase().equals(param.toLowerCase())) {
                 return isParamDefault(paramInfo);
             }
         }
@@ -784,6 +785,21 @@ public class L2genData {
         }
     }
 
+
+    public String getParamDefault(String param) {
+        String value = null;
+
+        if (param == null ) {
+            return null;
+        }
+
+        for (ParamInfo paramInfo : paramInfos) {
+            if (paramInfo.getName().toLowerCase().equals(param.toLowerCase())) {
+                paramInfo.getDefaultValue();
+            }
+        }
+        return value;
+    }
 
     public void setParamToDefaults(ParamInfo paramInfo) {
         // handle input exceptions
@@ -831,7 +847,7 @@ public class L2genData {
 
 
         for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName().equals(param)) {
+            if (paramInfo.getName().toLowerCase().equals(param.toLowerCase())) {
                 setParamDefaultValue(paramInfo, value);
                 return;
             }
@@ -1081,6 +1097,7 @@ public class L2genData {
 
 
     }
+
 
     private void setCustomOfile(String ifile) {
 
