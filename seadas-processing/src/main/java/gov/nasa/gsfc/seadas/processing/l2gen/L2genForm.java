@@ -117,6 +117,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private ProcessorModel processorModel;
 
+    int outputFilePanelHeight;
+    int inputFilePanelHeight;
+
 
 //    L2genForm(TargetProductSelector targetProductSelector, AppContext appContext) {
 //        this.outputFileSelector = targetProductSelector;
@@ -223,8 +226,11 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         final TableLayout tableLayout = new TableLayout(1);
         tableLayout.setTableWeightX(1.0);
         tableLayout.setTableWeightY(0);
-        tableLayout.setTableFill(TableLayout.Fill.BOTH);
+        //tableLayout.setTableFill(TableLayout.Fill.BOTH);
         tableLayout.setTablePadding(3, 3);
+        tableLayout.setRowFill(0, TableLayout.Fill.HORIZONTAL);
+        tableLayout.setRowFill(1, TableLayout.Fill.HORIZONTAL);
+        tableLayout.setRowFill(2, TableLayout.Fill.BOTH);
 
         final JPanel ioPanel = new JPanel(tableLayout);
         ioPanel.add(createSourceProductPanel());
@@ -274,6 +280,8 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         parfileJTextArea = new JTextArea();
         parfileJTextArea.setEditable(true);
         parfileJTextArea.setBackground(Color.decode("#ffffff"));
+        parfileJTextArea.setAutoscrolls(true);
+        parfileJTextArea.setRows(new Double(this.getPreferredSize().getHeight()).intValue());
 
         parfileJTextArea.addFocusListener(new FocusListener() {
             @Override
@@ -315,7 +323,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             JScrollPane scrollTextArea = new JScrollPane(parfileJTextArea);
 
             scrollTextArea.createHorizontalScrollBar();
-            scrollTextArea.setMaximumSize(new Dimension(400, 400));
+            //scrollTextArea.setMaximumSize(new Dimension(400, 400));
 
             final GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;
@@ -332,6 +340,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         finalMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 3);
 
         return finalMainPanel;
+        //return mainPanel;
         //addTab(myTabname, finalMainPanel);
     }
 
@@ -553,7 +562,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 l2genData.setParamValue(param, jTextField.getText().toString());
             }
         });
-        
+
         l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -1700,6 +1709,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 }
             }
         });
+        inputFilePanelHeight = panel.getHeight();
         return panel;
     }
 
@@ -1722,6 +1732,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 }
             }
         });
+        outputFilePanelHeight = panel.getHeight();
         return panel;
     }
 
