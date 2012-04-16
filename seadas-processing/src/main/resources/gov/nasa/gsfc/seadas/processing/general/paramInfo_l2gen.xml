@@ -1,0 +1,2041 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+    </programMetaData>
+    <option_list>
+        <option>
+            <name>-help</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <source>default</source>
+            <alias>-h</alias>
+            <alias>--help</alias>
+            <description>print usage information</description>
+        </option>
+        <option>
+            <name>-version</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <source>default</source>
+            <alias>--version</alias>
+            <description>print the version information</description>
+        </option>
+        <option>
+            <name>-dump_options</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <source>default</source>
+            <alias>--dump_options</alias>
+            <description>print information about each option</description>
+        </option>
+        <option>
+            <name>-dump_options_paramfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <alias>--dump_options_paramfile</alias>
+            <description>print information about each option to paramfile</description>
+        </option>
+        <option>
+            <name>-dump_options_xmlfile</name>
+            <value>options.xml</value>
+            <type>string</type>
+            <source>command line</source>
+            <alias>--dump_options_xmlfile</alias>
+            <description>print information about each option to XML file</description>
+        </option>
+        <option>
+            <name>par</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>input parameter file</description>
+        </option>
+        <option>
+            <name>pversion</name>
+            <value>Unspecified</value>
+            <type>string</type>
+            <default>Unspecified</default>
+            <source>default</source>
+            <description>processing version string</description>
+        </option>
+        <option>
+            <name>suite</name>
+            <value>OC</value>
+            <type>string</type>
+            <default>OC</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>product suite string for loading suite-specific defaults</description>
+        </option>
+        <option>
+            <name>eval</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>standard processing</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>init to old aerosol models</description>
+            </validValue>
+            <validValue>
+                <value>16</value>
+                <description>enables MODIS cirrus mask</description>
+            </validValue>
+            <validValue>
+                <value>32</value>
+                <description>use test sensor info file</description>
+            </validValue>
+            <validValue>
+                <value>64</value>
+                <description>use test rayleigh tables</description>
+            </validValue>
+            <validValue>
+                <value>128</value>
+                <description>use test aerosol tables</description>
+            </validValue>
+            <validValue>
+                <value>256</value>
+                <description>use test polarization tables</description>
+            </validValue>
+            <validValue>
+                <value>1024</value>
+                <description>mask modis mirror-side 1 (navfail)</description>
+            </validValue>
+            <validValue>
+                <value>2048</value>
+                <description>mask modis mirror-side 2 (navfail)</description>
+            </validValue>
+            <validValue>
+                <value>4096</value>
+                <description>remove warm tests for SSTref</description>
+            </validValue>
+            <validValue>
+                <value>8192</value>
+                <description>use alt sensor info file in eval</description>
+            </validValue>
+            <validValue>
+                <value>32768</value>
+                <description>enables spherical path geom for dtran</description>
+            </validValue>
+            <description>evaluation bitmask</description>
+        </option>
+        <option>
+            <name>ifile</name>
+            <value>S1998199173926.L1A_GAC</value>
+            <type>string</type>
+            <source>command line</source>
+            <alias>ifile1</alias>
+            <description>input L1 file name</description>
+        </option>
+        <option>
+            <name>ilist</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>file containing list of input files, one per line</description>
+        </option>
+        <option>
+            <name>geofile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>input L1 geolocation file name (MODIS only)</description>
+        </option>
+        <option>
+            <name>ofile</name>
+            <value>S1998199173926.L2</value>
+            <type>string</type>
+            <default>output</default>
+            <source>command line</source>
+            <alias>ofile1</alias>
+            <description>output L2 file #1 name, output vicarious L1B for inverse mode ofile[#] = additional output L2
+                file name
+            </description>
+        </option>
+        <option>
+            <name>il2file</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <alias>il2file1</alias>
+            <description>input L2 file names for sensor to be used as a calibrator. Alternatively, a data point can be
+                used as a calibrator (e.g. MOBY) il2file[#] = additional L2 calibration file names
+            </description>
+        </option>
+        <option>
+            <name>tgtfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>vicarious calibration target file</description>
+        </option>
+        <option>
+            <name>aerfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>aerosol model specification file</description>
+        </option>
+        <option>
+            <name>metafile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>output meta-data file</description>
+        </option>
+        <option>
+            <name>l2prod</name>
+            <value>log10chl chlor_a</value>
+            <type>string</type>
+            <source>command line</source>
+            <alias>l2prod1</alias>
+            <description>L2 products to be included in ofile #1 l2prod[#] = L2 products to be included in ofile[#]
+            </description>
+        </option>
+        <option>
+            <name>spixl</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>start pixel number</description>
+        </option>
+        <option>
+            <name>epixl</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>end pixel number (-1=the last pixel)</description>
+        </option>
+        <option>
+            <name>dpixl</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>pixel sub-sampling interval</description>
+        </option>
+        <option>
+            <name>sline</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>start line number</description>
+        </option>
+        <option>
+            <name>eline</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>end line number (-1=the last line)</description>
+        </option>
+        <option>
+            <name>dline</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>line sub-sampling interval</description>
+        </option>
+        <option>
+            <name>ctl_pt_incr</name>
+            <value>1</value>
+            <type>int</type>
+            <default>8</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>control-point pixel increment for lon/lat arrays</description>
+        </option>
+        <option>
+            <name>proc_ocean</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <validValue>
+                <value>1</value>
+                <description>On</description>
+            </validValue>
+            <validValue>
+                <value>0</value>
+                <description>Off</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>force all pixels to be processed as ocean</description>
+            </validValue>
+            <description>toggle ocean processing</description>
+        </option>
+        <option>
+            <name>proc_land</name>
+            <value>1</value>
+            <type>bool</type>
+            <default>off</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>toggle land processing</description>
+        </option>
+        <option>
+            <name>proc_sst</name>
+            <value>0</value>
+            <type>bool</type>
+            <default>false</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>toggle SST processing (default=1 for MODIS, 0 otherwise)</description>
+        </option>
+        <option>
+            <name>atmocor</name>
+            <value>1</value>
+            <type>bool</type>
+            <default>on</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>toggle atmospheric correction</description>
+        </option>
+        <option>
+            <name>mode</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <validValue>
+                <value>0</value>
+                <description>forward processing</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>inverse (calibration) mode, targeting to nLw=0</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>inverse (calibration) mode, given nLw target</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>inverse (calibration) mode, given Lw target (internally normalized)</description>
+            </validValue>
+            <description>processing mode</description>
+        </option>
+        <option>
+            <name>aer_opt</name>
+            <value>-2</value>
+            <type>int</type>
+            <default>99</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <validValue>
+                <value>-99</value>
+                <description>No aerosol subtraction</description>
+            </validValue>
+            <validValue>
+                <value><![CDATA[>0]]></value>
+                <description>Multi-scattering with fixed model (provide model number, 1-N, relative to aermodels list)
+                </description>
+            </validValue>
+            <validValue>
+                <value>0</value>
+                <description>White aerosol extrapolation.</description>
+            </validValue>
+            <validValue>
+                <value>-1</value>
+                <description>Multi-scattering with 2-band model selection</description>
+            </validValue>
+            <validValue>
+                <value>-2</value>
+                <description>Multi-scattering with 2-band, RH-based model selection and iterative NIR correction
+                </description>
+            </validValue>
+            <validValue>
+                <value>-3</value>
+                <description>Multi-scattering with 2-band model selection and iterative NIR correction</description>
+            </validValue>
+            <validValue>
+                <value>-4</value>
+                <description>Multi-scattering with fixed model pair (requires aermodmin, aermodmax, aermodrat
+                    specification)
+                </description>
+            </validValue>
+            <validValue>
+                <value>-5</value>
+                <description>Multi-scattering with fixed model pair and iterative NIR correction (requires aermodmin,
+                    aermodmax, aermodrat specification)
+                </description>
+            </validValue>
+            <validValue>
+                <value>-6</value>
+                <description>Multi-scattering with fixed angstrom (requires aer_angstrom specification)</description>
+            </validValue>
+            <validValue>
+                <value>-7</value>
+                <description>Multi-scattering with fixed angstrom and iterative NIR correction (requires aer_angstrom
+                    specification)
+                </description>
+            </validValue>
+            <validValue>
+                <value>-8</value>
+                <description>Multi-scattering with fixed aerosol optical thickness (requires taua specification)
+                </description>
+            </validValue>
+            <validValue>
+                <value>-9</value>
+                <description>Multi-scattering with 2-band model selection using Wang et al. 2009 to switch between SWIR
+                    and NIR. (MODIS only, requires aer_swir_short, aer_swir_long, aer_wave_short, aer_wave_long)
+                </description>
+            </validValue>
+            <validValue>
+                <value>-10</value>
+                <description>Multi-scattering with MUMM correction and MUMM NIR calculation</description>
+            </validValue>
+            <validValue>
+                <value>-11</value>
+                <description>Spectral optimization via Kuchinke (SeaWiFS-only)</description>
+            </validValue>
+            <validValue>
+                <value>-12</value>
+                <description>Spectral matching via Gordon (SeaWiFS-only)</description>
+            </validValue>
+            <description>aerosol mode option</description>
+        </option>
+        <option>
+            <name>aer_wave_short</name>
+            <value>765</value>
+            <type>int</type>
+            <default>765</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>shortest sensor wavelength for aerosol model selection</description>
+        </option>
+        <option>
+            <name>aer_wave_long</name>
+            <value>865</value>
+            <type>int</type>
+            <default>865</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>longest sensor wavelength for aerosol model selection</description>
+        </option>
+        <option>
+            <name>aer_swir_short</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>shortest sensor wavelength for SWIR-based NIR Lw correction</description>
+        </option>
+        <option>
+            <name>aer_swir_long</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>longest sensor wavelength for SWIR-based NIR Lw correction</description>
+        </option>
+        <option>
+            <name>aer_rrs_short</name>
+            <value>-1.0</value>
+            <type>float</type>
+            <default>-1.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>Rrs at shortest sensor wavelength for aerosol model selection</description>
+        </option>
+        <option>
+            <name>aer_rrs_long</name>
+            <value>-1.0</value>
+            <type>float</type>
+            <default>-1.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>Rrs at longest sensor wavelength for aerosol model selection</description>
+        </option>
+        <option>
+            <name>aermodmin</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>default</source>
+            <description>lower-bounding model to use for fixed model pair aerosol option</description>
+        </option>
+        <option>
+            <name>aermodmax</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>default</source>
+            <description>upper-bounding model to use for fixed model pair aerosol option</description>
+        </option>
+        <option>
+            <name>aermodrat</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <source>default</source>
+            <description>ratio to use for fixed model pair aerosol option</description>
+        </option>
+        <option>
+            <name>aer_angstrom</name>
+            <value>-999.0</value>
+            <type>float</type>
+            <default>-999.0</default>
+            <source>default</source>
+            <description>aerosol angstrom exponent for model selection</description>
+        </option>
+        <option>
+            <name>aer_iter_max</name>
+            <value>10</value>
+            <type>int</type>
+            <default>10</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>maximum number of iterations for NIR water-leaving radiance estimation.</description>
+        </option>
+        <option>
+            <name>mumm_alpha</name>
+            <value>1.72</value>
+            <type>float</type>
+            <default>1.72</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>water-leaving reflectance ratio for MUMM turbid water atmospheric correction</description>
+        </option>
+        <option>
+            <name>mumm_gamma</name>
+            <value>1.00</value>
+            <type>float</type>
+            <default>1.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>two-way Rayleigh-aerosol transmittance ratio for MUMM turbid water atmospheric correction
+            </description>
+        </option>
+        <option>
+            <name>mumm_epsilon</name>
+            <value>1.00</value>
+            <type>float</type>
+            <default>1.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>aerosol reflectance ratio for MUMM turbid water atmospheric correction</description>
+        </option>
+        <option>
+            <name>degc</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <description>Deg C for AVHRR</description>
+        </option>
+        <option>
+            <name>absaer_opt</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>use rhow constant</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>apply chlorophyll climatology to calculate rhow</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>1+validate against nLw_412 climatology</description>
+            </validValue>
+            <description>absorbing aerosol flagging option</description>
+        </option>
+        <option>
+            <name>glint_opt</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <validValue>
+                <value>0</value>
+                <description>glint correction off</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>standard glint correction</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>simple glint correction</description>
+            </validValue>
+            <description>glint correction:</description>
+        </option>
+        <option>
+            <name>outband_opt</name>
+            <value>2</value>
+            <type>int</type>
+            <default>99</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <validValue>
+                <value>2</value>
+                <description>On (default for MODIS, SeaWiFS, OCTS)</description>
+            </validValue>
+            <validValue>
+                <value>0</value>
+                <description>Off (default for MOS, OSMI)</description>
+            </validValue>
+            <description>out-of-band correction for water-leaving radiances</description>
+        </option>
+        <option>
+            <name>oxaband_opt</name>
+            <value>1</value>
+            <type>bool</type>
+            <default>false</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>oxygen a-band correction option (default On for SeaWiFS, OSMI, and OCTS, Off otherwise)
+            </description>
+        </option>
+        <option>
+            <name>filter_opt</name>
+            <value>1</value>
+            <type>bool</type>
+            <default>false</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
+            <description>filtering input data option (default On for OCTS, Off otherwise)</description>
+        </option>
+        <option>
+            <name>filter_file</name>
+            <value>/disk02/ocssw/run/data/seawifs/seawifs_gac_filter.dat</value>
+            <type>string</type>
+            <default>$OCDATAROOT/sensor/sensor_filter.dat</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
+            <description>data file for input filtering</description>
+        </option>
+        <option>
+            <name>brdf_opt</name>
+            <value>7</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <validValue>
+                <value>0</value>
+                <description>no correction</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>Fresnel reflection/refraction correction for sensor path</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>Fresnel reflection/refraction correction for sensor + solar path</description>
+            </validValue>
+            <validValue>
+                <value>7</value>
+                <description>Morel f/Q + Fresnel solar + Fresnel sensor</description>
+            </validValue>
+            <validValue>
+                <value>15</value>
+                <description>Gordon DT + Morel f/Q + Fresnel solar + Fresnel sensor</description>
+            </validValue>
+            <validValue>
+                <value>19</value>
+                <description>Morel Q + Fresnel solar + Fresnel sensor</description>
+            </validValue>
+            <description>Bidirectional reflectance correction</description>
+        </option>
+        <option>
+            <name>gas_opt</name>
+            <value>15</value>
+            <type>int</type>
+            <default>1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <validValue>
+                <value>0</value>
+                <description>no correction</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>Ozone</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>CO2</description>
+            </validValue>
+            <validValue>
+                <value>4</value>
+                <description>NO2</description>
+            </validValue>
+            <validValue>
+                <value>8</value>
+                <description>H2O</description>
+            </validValue>
+            <description>gaseous transmittance bitmask selector</description>
+        </option>
+        <option>
+            <name>iop_opt</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>None (products requiring a or bb will fail)</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>Carder</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>GSM</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>QAA</description>
+            </validValue>
+            <validValue>
+                <value>4</value>
+                <description>PML</description>
+            </validValue>
+            <validValue>
+                <value>5</value>
+                <description>NIWA</description>
+            </validValue>
+            <validValue>
+                <value>6</value>
+                <description>LAS</description>
+            </validValue>
+            <validValue>
+                <value>7</value>
+                <description>GIOP</description>
+            </validValue>
+            <description>IOP model for use in downstream products</description>
+        </option>
+        <option>
+            <name>polfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>polarization sensitivities filename leader</description>
+        </option>
+        <option>
+            <name>pol_opt</name>
+            <value>0</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <validValue>
+                <value>0</value>
+                <description>no correction</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>only Rayleigh component is polarized</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>all radiance polarized like Rayleigh</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>only Rayleigh and Glint are polarized (MODIS default)</description>
+            </validValue>
+            <validValue>
+                <value>4</value>
+                <description>all radiance polarized like Rayleigh + Glint</description>
+            </validValue>
+            <description>polarization correction (sensor-specific)</description>
+        </option>
+        <option>
+            <name>rad_opt</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>no correction</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>apply MERIS Smile correction</description>
+            </validValue>
+            <description>radiation correction option (sensor-specific)</description>
+        </option>
+        <option>
+            <name>xcalfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>cross-calibration file</description>
+        </option>
+        <option>
+            <name>xcal_opt</name>
+            <value/>
+            <type>int</type>
+            <source>default</source>
+            <validValue>
+                <value>3</value>
+                <description>apply cross-calibration corrections (polarization and rvs)</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>apply cross-calibration polarization corrections</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>apply cross-calibration rvs corrections</description>
+            </validValue>
+            <validValue>
+                <value>0</value>
+                <description>no correction</description>
+            </validValue>
+            <description>cross-calibration option (sensor-specific) comma separated list of option values, 1 per band,
+                with bands listed in xcal_wave.
+            </description>
+        </option>
+        <option>
+            <name>xcal_wave</name>
+            <value/>
+            <type>float</type>
+            <source>default</source>
+            <description>wavelengths at which to apply cross-calibration. Comma separated list of sensor wavelength
+                values associated with xcal_opt.
+            </description>
+        </option>
+        <option>
+            <name>resolution</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>default</source>
+            <validValue>
+                <value>-1</value>
+                <description>standard ocean 1km processing</description>
+            </validValue>
+            <validValue>
+                <value>1000</value>
+                <description>1km resolution including aggregated 250 and 500m land bands</description>
+            </validValue>
+            <validValue>
+                <value>500</value>
+                <description>500m resolution including aggregated 250 land bands and replication for lower resolution
+                    bands
+                </description>
+            </validValue>
+            <validValue>
+                <value>250</value>
+                <description>250m resolution with replication for lower resolution bands</description>
+            </validValue>
+            <description>processing resolution (MODIS only)</description>
+        </option>
+        <option>
+            <name>giop_aph_opt</name>
+            <value>2</value>
+            <type>int</type>
+            <default>2</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>tabulated (supplied via giop_aph_file)</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>Bricaud et al. 1995 (chlorophyll supplied via default empirical algorithm)</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>Ciotti and Bricaud 2006 (size fraction supplied via giop_aph_s)</description>
+            </validValue>
+            <description>GIOP model aph function type</description>
+        </option>
+        <option>
+            <name>giop_aph_file</name>
+            <value>$OCDATAROOT/common/aph_default.txt</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/aph_default.txt</default>
+            <source>default</source>
+            <description>GIOP model, tabulated aph spectra</description>
+        </option>
+        <option>
+            <name>giop_aph_s</name>
+            <value>-1000.0</value>
+            <type>float</type>
+            <default>-1000.0</default>
+            <source>default</source>
+            <description>GIOP model, spectral parameter for aph</description>
+        </option>
+        <option>
+            <name>giop_adg_opt</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>tabulated (supplied via giop_adg_file)</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>exponential with exponent supplied via giop_adg_s)</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>exponential with exponent derived via Lee et al. (2002)</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>exponential with exponent derived via OBPG method</description>
+            </validValue>
+            <description>GIOP model adg function type</description>
+        </option>
+        <option>
+            <name>giop_adg_file</name>
+            <value>$OCDATAROOT/common/adg_default.txt</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/adg_default.txt</default>
+            <source>default</source>
+            <description>GIOP model, tabulated adg spectra</description>
+        </option>
+        <option>
+            <name>giop_adg_s</name>
+            <value>0.0145</value>
+            <type>float</type>
+            <default>0.0145</default>
+            <source>default</source>
+            <description>GIOP model, spectral parameter for adg</description>
+        </option>
+        <option>
+            <name>giop_bbp_opt</name>
+            <value>3</value>
+            <type>int</type>
+            <default>3</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>tabulated (supplied via giop_bbp_file)</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>power-law with exponent supplied via giop_bbp_s)</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description><![CDATA[power-law with exponent derived via Hoge & Lyon (1996)]]></description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>power-law with exponent derived via Lee et al. (2002)</description>
+            </validValue>
+            <validValue>
+                <value>5</value>
+                <description>power-law with exponent derived via Ciotti et al. (1999)</description>
+            </validValue>
+            <validValue>
+                <value>6</value>
+                <description><![CDATA[power-law with exponent derived via Morel & Maritorena (2001)]]></description>
+            </validValue>
+            <validValue>
+                <value>7</value>
+                <description><![CDATA[power-law with exponent derived via Loisel & Stramski (2000)]]></description>
+            </validValue>
+            <validValue>
+                <value>8</value>
+                <description>
+                    <![CDATA[spectrally independent vector derived via Loisel & Stramski (2000)]]></description>
+            </validValue>
+            <validValue>
+                <value>9</value>
+                <description><![CDATA[fixed vector derived via Loisel & Stramski (2000)]]></description>
+            </validValue>
+            <validValue>
+                <value>10</value>
+                <description>fixed vector derived via lee et al. (2002)</description>
+            </validValue>
+            <description>GIOP model bbp function type</description>
+        </option>
+        <option>
+            <name>giop_bbp_file</name>
+            <value>$OCDATAROOT/common/bbp_default.txt</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/bbp_default.txt</default>
+            <source>default</source>
+            <description>GIOP model, tabulated bbp spectra</description>
+        </option>
+        <option>
+            <name>giop_bbp_s</name>
+            <value>-1000.0</value>
+            <type>float</type>
+            <default>-1000.0</default>
+            <source>default</source>
+            <description>GIOP model, spectral parameter for bbp</description>
+        </option>
+        <option>
+            <name>giop_rrs_opt</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>Gordon quadratic (specified with giop_grd)</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>Morel f/Q</description>
+            </validValue>
+            <description>GIOP model Rrs to bb/(a+bb) method</description>
+        </option>
+        <option>
+            <name>giop_grd</name>
+            <value>[0.0949,0.0794]</value>
+            <type>float</type>
+            <default>[0.0949,0.0794]</default>
+            <source>default</source>
+            <description>GIOP model, Gordon Rrs to bb/(a+bb) quadratic coefficients</description>
+        </option>
+        <option>
+            <name>giop_wave</name>
+            <value>[412,443,490,510,555,670]</value>
+            <type>float</type>
+            <default>-1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>GIOP model list of sensor wavelengths for optimization comma-separated list, defaults is all
+                visible bands (400-700nm)
+            </description>
+        </option>
+        <option>
+            <name>giop_rrs_unc</name>
+            <value>-1</value>
+            <type>float</type>
+            <default>-1</default>
+            <source>default</source>
+            <description>GIOP model list of sensor wavelengths for optimization comma-separated list, defaults is all
+                visible bands (400-700nm)
+            </description>
+        </option>
+        <option>
+            <name>giop_maxiter</name>
+            <value>50</value>
+            <type>int</type>
+            <default>50</default>
+            <source>default</source>
+            <description>GIOP Model iteration limit</description>
+        </option>
+        <option>
+            <name>giop_fit_opt</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>Amoeba optimization</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>Levenberg-Marquardt optimization</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>SVD matrix inversion</description>
+            </validValue>
+            <description>GIOP model optimization method</description>
+        </option>
+        <option>
+            <name>giop_ts_opt</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>none</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>apply to bbw</description>
+            </validValue>
+            <description>GIOP temperature and salinity dependence</description>
+        </option>
+        <option>
+            <name>gsm_opt</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>default coefficients</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>Chesapeake regional coefficients</description>
+            </validValue>
+            <description>GSM model options</description>
+        </option>
+        <option>
+            <name>gsm_fit</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>Amoeba</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>Levenberg-Marquardt</description>
+            </validValue>
+            <description>SM fit algorithm</description>
+        </option>
+        <option>
+            <name>gsm_adg_s</name>
+            <value>0.02061</value>
+            <type>float</type>
+            <default>0.02061</default>
+            <source>default</source>
+            <description>GSM IOP model, spectral slope for adg</description>
+        </option>
+        <option>
+            <name>gsm_bbp_s</name>
+            <value>1.03373</value>
+            <type>float</type>
+            <default>1.03373</default>
+            <source>default</source>
+            <description>GSM IOP model, spectral slope for bbp</description>
+        </option>
+        <option>
+            <name>gsm_aphw</name>
+            <value>[412.0, 443.0, 490.0, 510.0, 555.0, 670.0]</value>
+            <type>float</type>
+            <default>[412.0, 443.0, 490.0, 510.0, 555.0, 670.0]</default>
+            <source>default</source>
+            <description>GSM IOP model, wavelengths of ap* table</description>
+        </option>
+        <option>
+            <name>gsm_aphs</name>
+            <value>[0.00665, 0.05582, 0.02055, 0.01910, 0.01015, 0.01424]</value>
+            <type>float</type>
+            <default>[0.00665, 0.05582, 0.02055, 0.01910, 0.01015, 0.01424]</default>
+            <source>default</source>
+            <description>GSM IOP model, coefficients of ap* table</description>
+        </option>
+        <option>
+            <name>qaa_adg_s</name>
+            <value>0.015</value>
+            <type>float</type>
+            <default>0.015</default>
+            <source>default</source>
+            <alias>qaa_S</alias>
+            <description>QAA IOP model, spectral slope for adg</description>
+        </option>
+        <option>
+            <name>qaa_wave</name>
+            <value>[412,443,490,555,670]</value>
+            <type>int</type>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>sensor wavelengths for QAA algorithm</description>
+        </option>
+        <option>
+            <name>chloc2_wave</name>
+            <value>[489,555]</value>
+            <type>int</type>
+            <default>[-1,-1]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>sensor wavelengths for OC2 chlorophyll algorithm</description>
+        </option>
+        <option>
+            <name>chloc2_coef</name>
+            <value>[0.2511,-2.0853,1.5035,-3.1747, 0.3383]</value>
+            <type>float</type>
+            <default>[0.0,0.0,0.0,0.0,0.0]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>coefficients for OC2 chlorophyll algorithm</description>
+        </option>
+        <option>
+            <name>chloc3_wave</name>
+            <value>[443,489,555]</value>
+            <type>int</type>
+            <default>[-1,-1,-1]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>sensor wavelengths for OC3 chlorophyll algorithm</description>
+        </option>
+        <option>
+            <name>chloc3_coef</name>
+            <value>[0.2515,-2.3798,1.5823,-0.6372,-0.5692]</value>
+            <type>float</type>
+            <default>[0.0,0.0,0.0,0.0,0.0]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>coefficients for OC3 chlorophyll algorithm</description>
+        </option>
+        <option>
+            <name>chloc4_wave</name>
+            <value>[443,489,510,555]</value>
+            <type>int</type>
+            <default>[-1,-1,-1,-1]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>sensor wavelengths for OC4 chlorophyll algorithm</description>
+        </option>
+        <option>
+            <name>chloc4_coef</name>
+            <value>[0.3272,-2.9940,2.7218,-1.2259,-0.5683]</value>
+            <type>float</type>
+            <default>[0.0,0.0,0.0,0.0,0.0]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>coefficients for OC4 chlorophyll algorithm</description>
+        </option>
+        <option>
+            <name>chlclark_wave</name>
+            <value>[443,490,555]</value>
+            <type>int</type>
+            <default>[-1,-1,-1]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>sensor wavelengths for Clark chlorophyll algorithm</description>
+        </option>
+        <option>
+            <name>chlclark_coef</name>
+            <value>[0.819199,-3.297494,7.683118,-17.612831 ,18.692510,-7.302652]</value>
+            <type>float</type>
+            <default>[0.0,0.0,0.0,0.0,0.0,0.0]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>coefficients for Clark chlorophyll algorithm</description>
+        </option>
+        <option>
+            <name>kd2_wave</name>
+            <value>[490,555]</value>
+            <type>int</type>
+            <default>[-1,-1]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>sensor wavelengths for polynomial Kd(490) algorithm</description>
+        </option>
+        <option>
+            <name>kd2_coef</name>
+            <value>[0.0166,-0.8515,-1.8263,1.8714,-2.4414,-1.0690]</value>
+            <type>float</type>
+            <default>[0.0,0.0,0.0,0.0,0.0,0.0]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>sensor wavelengths for polynomial Kd(490) algorithm</description>
+        </option>
+        <option>
+            <name>flh_offset</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <source>default</source>
+            <description>bias to subtract from retrieved fluorescence line height</description>
+        </option>
+        <option>
+            <name>btfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>IR brightness temperature file</description>
+        </option>
+        <option>
+            <name>sstcoeffile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>IR sst algorithm coefficients file</description>
+        </option>
+        <option>
+            <name>sstssesfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>IR sst algorithm error statistics file</description>
+        </option>
+        <option>
+            <name>sstmirrfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>IR sst algorithm mirror-side corrections file</description>
+        </option>
+        <option>
+            <name>sst4coeffile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>SWIR sst algorithm coefficients file</description>
+        </option>
+        <option>
+            <name>sst4ssesfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>SWIR sst algorithm error statistics file</description>
+        </option>
+        <option>
+            <name>sst4mirrfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>SWIR sst algorithm mirror-side corrections file</description>
+        </option>
+        <option>
+            <name>owtfile</name>
+            <value>/disk02/ocssw/run/data/seawifs/class/seawifs_owt_stats.hdf</value>
+            <type>string</type>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>optical water type file</description>
+        </option>
+        <option>
+            <name>owtchlerrfile</name>
+            <value>/disk02/ocssw/run/data/seawifs/class/seawifs_owt_chl_error.txt</value>
+            <type>string</type>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>chl error file associate with optical water type</description>
+        </option>
+        <option>
+            <name>aermodels</name>
+            <value>
+                [r30f95v01,r30f80v01,r30f50v01,r30f30v01,r30f20v01,r30f10v01,r30f05v01,r30f02v01,r30f01v01,r30f00v01,r50f95v01,r50f80v01,r50f50v01,r50f30v01,r50f20v01,r50f10v01,r50f05v01,r50f02v01,r50f01v01,r50f00v01,r70f95v01,r70f80v01,r70f50v01,r70f30v01,r70f20v01,r70f10v01,r70f05v01,r70f02v01,r70f01v01,r70f00v01,r75f95v01,r75f80v01,r75f50v01,r75f30v01,r75f20v01,r75f10v01,r75f05v01,r75f02v01,r75f01v01,r75f00v01,r80f95v01,r80f80v01,r80f50v01,r80f30v01,r80f20v01,r80f10v01,r80f05v01,r80f02v01,r80f01v01,r80f00v01,r85f95v01,r85f80v01,r85f50v01,r85f30v01,r85f20v01,r85f10v01,r85f05v01,r85f02v01,r85f01v01,r85f00v01,r90f95v01,r90f80v01,r90f50v01,r90f30v01,r90f20v01,r90f10v01,r90f05v01,r90f02v01,r90f01v01,r90f00v01,r95f95v01,r95f80v01,r95f50v01,r95f30v01,r95f20v01,r95f10v01,r95f05v01,r95f02v01,r95f01v01,r95f00v01]
+            </value>
+            <type>string</type>
+            <default>
+                [r30f95v01,r30f80v01,r30f50v01,r30f30v01,r30f20v01,r30f10v01,r30f05v01,r30f02v01,r30f01v01,r30f00v01,r50f95v01,r50f80v01,r50f50v01,r50f30v01,r50f20v01,r50f10v01,r50f05v01,r50f02v01,r50f01v01,r50f00v01,r70f95v01,r70f80v01,r70f50v01,r70f30v01,r70f20v01,r70f10v01,r70f05v01,r70f02v01,r70f01v01,r70f00v01,r75f95v01,r75f80v01,r75f50v01,r75f30v01,r75f20v01,r75f10v01,r75f05v01,r75f02v01,r75f01v01,r75f00v01,r80f95v01,r80f80v01,r80f50v01,r80f30v01,r80f20v01,r80f10v01,r80f05v01,r80f02v01,r80f01v01,r80f00v01,r85f95v01,r85f80v01,r85f50v01,r85f30v01,r85f20v01,r85f10v01,r85f05v01,r85f02v01,r85f01v01,r85f00v01,r90f95v01,r90f80v01,r90f50v01,r90f30v01,r90f20v01,r90f10v01,r90f05v01,r90f02v01,r90f01v01,r90f00v01,r95f95v01,r95f80v01,r95f50v01,r95f30v01,r95f20v01,r95f10v01,r95f05v01,r95f02v01,r95f01v01,r95f00v01]
+            </default>
+            <source>default</source>
+            <description>aerosol models</description>
+        </option>
+        <option>
+            <name>met1</name>
+            <value>/disk02/ocssw/run/data/common/met_climatology.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/met_climatology.hdf</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>1st meteorological ancillary data file</description>
+        </option>
+        <option>
+            <name>met2</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>2nd meteorological ancillary data file</description>
+        </option>
+        <option>
+            <name>met3</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>3rd meteorological ancillary data file</description>
+        </option>
+        <option>
+            <name>ozone1</name>
+            <value>/disk02/ocssw/run/data/common/ozone_climatology.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/ozone_climatology.hdf</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>1st ozone ancillary data file</description>
+        </option>
+        <option>
+            <name>ozone2</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>2nd ozone ancillary data file</description>
+        </option>
+        <option>
+            <name>ozone3</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>3rd ozone ancillary data file</description>
+        </option>
+        <option>
+            <name>land</name>
+            <value>/disk02/ocssw/run/data/common/landmask.dat</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/landmask.dat</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>land mask file</description>
+        </option>
+        <option>
+            <name>water</name>
+            <value>/disk02/ocssw/run/data/common/watermask.dat</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/watermask.dat</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>shallow water mask file</description>
+        </option>
+        <option>
+            <name>demfile</name>
+            <value>$OCDATAROOT/common/digital_elevation_map.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/digital_elevation_map.hdf</default>
+            <source>default</source>
+            <description>digital elevation map file</description>
+        </option>
+        <option>
+            <name>icefile</name>
+            <value>/disk02/ocssw/run/data/common/ice_climatology.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/ice_mask.hdf</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>sea ice file</description>
+        </option>
+        <option>
+            <name>ice_threshold</name>
+            <value>0.1</value>
+            <type>float</type>
+            <default>0.1</default>
+            <source>default</source>
+            <description>sea ice fraction above which will be flagged as sea ice</description>
+        </option>
+        <option>
+            <name>sstfile</name>
+            <value>/disk02/ocssw/run/data/common/sst_climatology.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/sst_climatology.hdf</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>input SST reference file</description>
+        </option>
+        <option>
+            <name>sssfile</name>
+            <value>/disk02/ocssw/run/data/common/sss_climatology_woa2009.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/sss_climatology_woa2009.hdf</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>input SSS reference file</description>
+        </option>
+        <option>
+            <name>no2file</name>
+            <value>/disk02/ocssw/run/data/common/no2_climatology.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/no2_climatology.hdf</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>no2 ancillary file</description>
+        </option>
+        <option>
+            <name>alphafile</name>
+            <value>/disk02/ocssw/run/data/common/alpha510_climatology.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/alpha510_climatology.hdf</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>alpha510 climatology file</description>
+        </option>
+        <option>
+            <name>tauafile</name>
+            <value>/disk02/ocssw/run/data/common/taua865_climatology.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/taua865_climatology.hdf</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>taua865 climatology file</description>
+        </option>
+        <option>
+            <name>cldfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>cloud mask file (MODIS only)</description>
+        </option>
+        <option>
+            <name>calfile</name>
+            <value>/disk02/ocssw/run/data/seawifs/cal/seawifs_cal_2010.hdf</value>
+            <type>string</type>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>system calibration file</description>
+        </option>
+        <option>
+            <name>offset</name>
+            <value>[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]</value>
+            <type>float</type>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>calibration offset adjustment</description>
+        </option>
+        <option>
+            <name>gain</name>
+            <value>[1.0066,0.9983,0.9892,0.9924,1.0047,0.9799,0.9700,1.00]</value>
+            <type>float</type>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>calibration gain multiplier</description>
+        </option>
+        <option>
+            <name>gain_unc</name>
+            <value/>
+            <type>float</type>
+            <source>default</source>
+            <description>calibration gain uncertainty</description>
+        </option>
+        <option>
+            <name>flaguse</name>
+            <value>
+                ATMFAIL,LAND,HIGLINT,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLFAIL,NAVWARN,ABSAER,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,SSTFAIL
+            </value>
+            <type>string</type>
+            <default>
+                ATMFAIL,LAND,HIGLINT,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLFAIL,NAVWARN,ABSAER,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,SSTFAIL
+            </default>
+            <source>default</source>
+            <description>Flags to use</description>
+        </option>
+        <option>
+            <name>xcalbox</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <description>pixel size of the central box in the L1 scene (e.g. 5 pixels around MOBY) to be extracted into
+                xcalfile for the cross-calibration, 0=whole L1
+            </description>
+        </option>
+        <option>
+            <name>xcalboxcenter</name>
+            <value>[0,0]</value>
+            <type>int</type>
+            <default>[0,0]</default>
+            <source>default</source>
+            <description>Central [ipix, iscan] of the box in the L1 scene, [0,0] = center of the L1 scene</description>
+        </option>
+        <option>
+            <name>xcalpervalid</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <description>min percent of valid cross-calibration pixels within the box or the L1 scene, 0 = at least 1
+                pixel
+            </description>
+        </option>
+        <option>
+            <name>xcalsubsmpl</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>default</source>
+            <description>Sub-sampling rate for the data to be used for the cross-calibration</description>
+        </option>
+        <option>
+            <name>vct_msk_water</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>no selection with mask</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>use deep water mask</description>
+            </validValue>
+            <description>use deep water mask to select data for target file:</description>
+        </option>
+        <option>
+            <name>vct_water</name>
+            <value>$OCDATAROOT/common/deep_water_mask_9km.dat</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/deep_water_mask_9km.dat</default>
+            <source>default</source>
+            <description>name of deep water mask to use</description>
+        </option>
+        <option>
+            <name>vct_min_nbin</name>
+            <value>4</value>
+            <type>int</type>
+            <default>4</default>
+            <source>default</source>
+            <description>minimum # of samples in a bin for acceptance</description>
+        </option>
+        <option>
+            <name>vct_fill_pct</name>
+            <value>0.04</value>
+            <type>float</type>
+            <default>0.04</default>
+            <source>default</source>
+            <description>minimum % of samples filled in target file to allow target file creation, if greater than 0,
+                create target, aerosol files regardless
+            </description>
+        </option>
+        <option>
+            <name>maxpointdist</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <source>default</source>
+            <validValue>
+                <value>-1.0</value>
+                <description>use mean res of L1 data</description>
+            </validValue>
+            <validValue>
+                <value>0.0</value>
+                <description>max{mean(L1 res),mean(L2 res)}</description>
+            </validValue>
+            <description>max distance between L1 and L2 pixels in km</description>
+        </option>
+        <option>
+            <name>chlthreshold</name>
+            <value>100.000000</value>
+            <type>float</type>
+            <default>100.000000</default>
+            <source>default</source>
+            <description>threshold on L2 data chlorophyll (100.000000=CHL_MAX)</description>
+        </option>
+        <option>
+            <name>aotthreshold</name>
+            <value>1.000000</value>
+            <type>float</type>
+            <default>1.000000</default>
+            <source>default</source>
+            <description>threshold on L2 data AOTs (1.000000=AOT_MAX)</description>
+        </option>
+        <option>
+            <name>coccolith</name>
+            <value>[1.1,0.9, 0.75, 1.85, 1.0, 1.65, 0.6, 1.15]</value>
+            <type>float</type>
+            <default>[1.1,0.9,0.75,1.85,1.0,1.65,0.6,1.15]</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>coccolithophore algorithm coefs</description>
+        </option>
+        <option>
+            <name>cirrus_thresh</name>
+            <value>[-1.0,-1.0]</value>
+            <type>float</type>
+            <default>[-1.0,-1.0]</default>
+            <source>default</source>
+            <description>cirrus reflectance thresholds</description>
+        </option>
+        <option>
+            <name>taua</name>
+            <value/>
+            <type>float</type>
+            <source>default</source>
+            <description>[taua_band1,...,taua_bandn] aerosol optical thickness of the calibration data point
+            </description>
+        </option>
+        <option>
+            <name>cloud_thresh</name>
+            <value>0.027</value>
+            <type>float</type>
+            <default>0.027</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <alias>albedo</alias>
+            <description>cloud reflectance threshold</description>
+        </option>
+        <option>
+            <name>cloud_wave</name>
+            <value>865.0</value>
+            <type>float</type>
+            <default>865.0</default>
+            <source>default</source>
+            <description>wavelength of cloud reflectance test</description>
+        </option>
+        <option>
+            <name>cloud_eps</name>
+            <value>-1.0</value>
+            <type>float</type>
+            <default>-1.0</default>
+            <source>default</source>
+            <description>cloud reflectance ratio threshold (-1.0=disabled)</description>
+        </option>
+        <option>
+            <name>glint_thresh</name>
+            <value>0.005</value>
+            <type>float</type>
+            <default>0.005</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <alias>glint</alias>
+            <description>high sun glint threshold</description>
+        </option>
+        <option>
+            <name>absaer</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>absorbing aerosol threshold on aerosol index</description>
+        </option>
+        <option>
+            <name>rhoamin</name>
+            <value>0.0002</value>
+            <type>float</type>
+            <default>0.0001</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>min NIR aerosol reflectance to attempt model lookup</description>
+        </option>
+        <option>
+            <name>sunzen</name>
+            <value>70.0</value>
+            <type>float</type>
+            <default>75.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>sun zenith angle threshold in deg.</description>
+        </option>
+        <option>
+            <name>satzen</name>
+            <value>60.0</value>
+            <type>float</type>
+            <default>60.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>satellite zenith angle threshold</description>
+        </option>
+        <option>
+            <name>epsmin</name>
+            <value>0.80</value>
+            <type>float</type>
+            <default>0.85</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>minimum epsilon to trigger atmospheric correction failure flag</description>
+        </option>
+        <option>
+            <name>epsmax</name>
+            <value>1.35</value>
+            <type>float</type>
+            <default>1.35</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>maximum epsilon to trigger atmospheric correction failure flag</description>
+        </option>
+        <option>
+            <name>tauamax</name>
+            <value>0.3</value>
+            <type>float</type>
+            <default>0.3</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>maximum 865 aerosol optical depth to trigger hitau flag</description>
+        </option>
+        <option>
+            <name>nLwmin</name>
+            <value>0.15</value>
+            <type>float</type>
+            <default>0.15</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>minimum nLw(555) to trigger low Lw flag</description>
+        </option>
+        <option>
+            <name>hipol</name>
+            <value>0.5</value>
+            <type>float</type>
+            <default>0.5</default>
+            <source>default</source>
+            <description>threshold on degree-of-polarization to set HIPOL flag</description>
+        </option>
+        <option>
+            <name>wsmax</name>
+            <value>12.0</value>
+            <type>float</type>
+            <default>8.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>windspeed limit on white-cap correction in m/s</description>
+        </option>
+        <option>
+            <name>windspeed</name>
+            <value>-1000</value>
+            <type>float</type>
+            <default>-1000.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>user over-ride of windspeed in m/s (-1000=use ancillary files)</description>
+        </option>
+        <option>
+            <name>windangle</name>
+            <value>-1000</value>
+            <type>float</type>
+            <default>-1000.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>user over-ride of wind angle in deg (-1000=use ancillary files)</description>
+        </option>
+        <option>
+            <name>pressure</name>
+            <value>-1000</value>
+            <type>float</type>
+            <default>-1000.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>user over-ride of atmospheric pressure in mb (-1000=use ancillary files)</description>
+        </option>
+        <option>
+            <name>ozone</name>
+            <value>-1000</value>
+            <type>float</type>
+            <default>-1000.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>user over-ride of ozone concentration in cm (-1000=use ancillary files)</description>
+        </option>
+        <option>
+            <name>relhumid</name>
+            <value>-1000</value>
+            <type>float</type>
+            <default>-1000.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>user over-ride of relative humidity in percent (-1000=use ancillary files)</description>
+        </option>
+        <option>
+            <name>watervapor</name>
+            <value>-1000</value>
+            <type>float</type>
+            <default>-1000.0</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>user over-ride of water vapor in g/cm^2 (-1000=use ancillary files)</description>
+        </option>
+        <option>
+            <name>maskland</name>
+            <value>1</value>
+            <type>bool</type>
+            <default>on</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>land mask option</description>
+        </option>
+        <option>
+            <name>maskbath</name>
+            <value>0</value>
+            <type>bool</type>
+            <default>off</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>shallow water mask option</description>
+        </option>
+        <option>
+            <name>maskcloud</name>
+            <value>1</value>
+            <type>bool</type>
+            <default>on</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>cloud mask option</description>
+        </option>
+        <option>
+            <name>maskglint</name>
+            <value>0</value>
+            <type>bool</type>
+            <default>off</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>glint mask option</description>
+        </option>
+        <option>
+            <name>masksunzen</name>
+            <value>0</value>
+            <type>bool</type>
+            <default>off</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>large sun zenith angle mask option</description>
+        </option>
+        <option>
+            <name>masksatzen</name>
+            <value>0</value>
+            <type>bool</type>
+            <default>off</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>large satellite zenith angle mask option</description>
+        </option>
+        <option>
+            <name>maskhilt</name>
+            <value>1</value>
+            <type>bool</type>
+            <default>on</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>high Lt masking</description>
+        </option>
+        <option>
+            <name>maskstlight</name>
+            <value>0</value>
+            <type>bool</type>
+            <default>on</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
+            <description>stray light masking</description>
+        </option>
+        <option>
+            <name>sl_frac</name>
+            <value>0.250000</value>
+            <type>float</type>
+            <default>0.25</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
+            <description>SeaWiFS only, straylight fractional threshold on Ltypical</description>
+        </option>
+        <option>
+            <name>sl_pixl</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
+            <description>SeaWiFS only, number of LAC pixels for straylight flagging</description>
+        </option>
+        <option>
+            <name>vcal_opt</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>default</source>
+            <description>Vicarious calibration option</description>
+        </option>
+        <option>
+            <name>vcal_chl</name>
+            <value>-1.0</value>
+            <type>float</type>
+            <default>-1.0</default>
+            <source>default</source>
+            <description>Vicarious calibration chl</description>
+        </option>
+        <option>
+            <name>vcal_solz</name>
+            <value>-1.0</value>
+            <type>float</type>
+            <default>-1.0</default>
+            <source>default</source>
+            <description>Vicarious calibration solz</description>
+        </option>
+        <option>
+            <name>vcal_nLw</name>
+            <value/>
+            <type>float</type>
+            <source>default</source>
+            <description>Vicarious calibration normalized water leaving radiances</description>
+        </option>
+        <option>
+            <name>vcal_Lw</name>
+            <value/>
+            <type>float</type>
+            <source>default</source>
+            <description>Vicarious calibration water leaving radiances</description>
+        </option>
+        <option>
+            <name>owmcfile</name>
+            <value>$OCDATAROOT/common/owmc_lut.hdf</value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/owmc_lut.hdf</default>
+            <source>default</source>
+            <description>lut for OWMC classification</description>
+        </option>
+        <option>
+            <name>stype</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>log</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>linear</description>
+            </validValue>
+            <description>scaling type</description>
+        </option>
+        <option>
+            <name>rgb</name>
+            <value>[1,1,1]</value>
+            <type>int</type>
+            <default>[1,1,1]</default>
+            <source>default</source>
+            <description>bands to use for red, green and blue</description>
+        </option>
+        <option>
+            <name>north</name>
+            <value>-999</value>
+            <type>float</type>
+            <default>-999</default>
+            <source>default</source>
+            <description>north boundary</description>
+        </option>
+        <option>
+            <name>south</name>
+            <value>-999</value>
+            <type>float</type>
+            <default>-999</default>
+            <source>default</source>
+            <description>south boundary</description>
+        </option>
+        <option>
+            <name>east</name>
+            <value>-999</value>
+            <type>float</type>
+            <default>-999</default>
+            <source>default</source>
+            <description>east boundary</description>
+        </option>
+        <option>
+            <name>west</name>
+            <value>-999</value>
+            <type>float</type>
+            <default>-999</default>
+            <source>default</source>
+            <description>west boundary</description>
+        </option>
+        <option>
+            <name>xbox</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>default</source>
+            <description>number of pixels on either side of the SW point</description>
+        </option>
+        <option>
+            <name>ybox</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <source>default</source>
+            <description>number of scan lines on either side of the SW point</description>
+        </option>
+        <option>
+            <name>width</name>
+            <value>600</value>
+            <type>int</type>
+            <default>600</default>
+            <source>default</source>
+            <description>width of output image</description>
+        </option>
+        <option>
+            <name>threshold</name>
+            <value>0.1</value>
+            <type>float</type>
+            <default>0.1</default>
+            <source>default</source>
+            <description>threshold for the number of good pixels before an image is produced</description>
+        </option>
+        <option>
+            <name>datamin</name>
+            <value>0.01</value>
+            <type>float</type>
+            <default>0.01</default>
+            <source>default</source>
+            <description>minimum reflectance for scaling</description>
+        </option>
+        <option>
+            <name>datamax</name>
+            <value>0.9</value>
+            <type>float</type>
+            <default>0.9</default>
+            <source>default</source>
+            <description>maximum reflectance for scaling</description>
+        </option>
+        <option>
+            <name>subsamp</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <source>default</source>
+            <description>sub-sampling interval</description>
+        </option>
+        <option>
+            <name>outmode</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>8bit HDF</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>24bit HDF</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>PPM</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>flat binary</description>
+            </validValue>
+            <validValue>
+                <value>4</value>
+                <description>PNG</description>
+            </validValue>
+            <description>defines output format</description>
+        </option>
+        <option>
+            <name>prodxmlfile</name>
+            <value/>
+            <type>string</type>
+            <source>default</source>
+            <description>output XML file describing all possible products</description>
+        </option>
+    </option_list>
+</paramInfo>

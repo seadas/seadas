@@ -51,6 +51,7 @@ public class ProcessorModel {
 
 
     public boolean isValidProcessor() {
+        System.out.println(programLocation);
         return programLocation != null;
     }
 
@@ -80,12 +81,12 @@ public class ProcessorModel {
         return parFile;
     }
 
-    public void setParString(String parString){
+    public void setParString(String parString) {
 
         System.out.println("parString: " + parString);
         this.parString = parString;
         createParFile(outputFileDir, parString);
-     }
+    }
 
     public void setAcceptsParFile(boolean acceptsParFile) {
         this.acceptsParFile = acceptsParFile;
@@ -157,7 +158,8 @@ public class ProcessorModel {
             ocsswRoot = OCSSW.getOcsswRoot();
         } catch (IOException e) {
             errorMessage = e.getMessage();
-            VisatApp.getApp().showErrorDialog(programName, e.getMessage());
+            if (VisatApp.getApp() != null)
+                VisatApp.getApp().showErrorDialog(programName, e.getMessage());
             return;
         }
 
@@ -166,7 +168,8 @@ public class ProcessorModel {
             ocsswArch = OCSSW.getOcsswArch();
         } catch (IOException e) {
             errorMessage = e.getMessage();
-            VisatApp.getApp().showErrorDialog(programName, e.getMessage());
+            if (VisatApp.getApp() != null)
+                VisatApp.getApp().showErrorDialog(programName, e.getMessage());
             return;
         }
 
@@ -183,6 +186,18 @@ public class ProcessorModel {
         this.programRoot = ocsswRoot;
     }
 
+    public void setDefaultEnv() {
+        programLocation = "/Users/Shared/ocssw/run/bin/macosx_intel/";
+        programRoot = new File("/Users/Shared/ocssw");
+
+        final String[] envp = {
+                "OCSSWROOT=" + programRoot,
+                "OCSSW_ARCH=" + "macosx_intel",
+                "OCDATAROOT=" + programRoot + "/run/data",
+        };
+        processorEnv = envp;
+
+    }
 
     private String[] getCmdArrayWithParFile() {
         final String[] cmdArray = {
@@ -232,7 +247,7 @@ public class ProcessorModel {
     public String[] getProgramCmdArray() {
 
         if (acceptsParFile) {
-           return getCmdArrayWithParFile();
+            return getCmdArrayWithParFile();
 
         } else {
 
@@ -276,8 +291,8 @@ public class ProcessorModel {
 
         System.out.println("executing par file for l2gen ...");
 
-        System.out.println(getProgramRoot() );
-        System.out.println(getProgramEnv() );
+        System.out.println(getProgramRoot());
+        System.out.println(getProgramEnv());
 
 
         return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());

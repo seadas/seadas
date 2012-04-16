@@ -61,6 +61,20 @@ public class CallCloProgramAction extends AbstractVisatAction {
         return dialogTitle;
     }
 
+
+    public void setProgramName(String programName) {
+        this.programName = programName;
+    }
+
+    public void setDialogTitle(String dialogTitle) {
+        this.dialogTitle = dialogTitle;
+    }
+
+    public void setXmlFileName(String xmlFileName) {
+        this.xmlFileName = xmlFileName;
+    }
+
+
     public CloProgramUI getProgramUI(AppContext appContext) {
         return new CloProgramUIImpl(programName, xmlFileName);
     }
@@ -241,4 +255,5 @@ public class CallCloProgramAction extends AbstractVisatAction {
             }
         }
     }
+
 }
