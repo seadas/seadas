@@ -1864,6 +1864,11 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private void parfileLostFocus() {
         l2genData.setParamsFromParfile(parfileJTextArea.getText().toString(), false);
+        // reset the text
+        // this is done here because events were fired only if params actually changed
+        // changes to comments or param-case dont trigger an event
+        // so setting the text here insures that this textarea is updated
+        parfileJTextArea.setText(l2genData.getParfile());
     }
 
 
