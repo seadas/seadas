@@ -61,12 +61,14 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
         sourceProductSelector.setProcessorModel(processorModel);
-        //sourceProductSelector.initProducts();
+        sourceProductSelector.initProducts();
 
         outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
 
         initUI();
     }
+
+
 
 
     //private void

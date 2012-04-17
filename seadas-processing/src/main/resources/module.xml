@@ -28,7 +28,7 @@
     <extension point="beam-ui:actions">
         <action>
             <parent>tools</parent>
-            <!--<placeAfter>openSession</placeAfter>-->
+            <placeAfter>orthorectificationAction</placeAfter>
             <id>seadasProcessing</id>
             <class>org.esa.beam.visat.actions.ActionGroup</class>
             <text>OCSSW Processing</text>
