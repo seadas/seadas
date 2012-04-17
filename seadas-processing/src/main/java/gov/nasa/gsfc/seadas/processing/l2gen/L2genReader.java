@@ -160,12 +160,15 @@ public class L2genReader {
                     if (!name.equals(l2genData.IFILE)) {
                         //  l2genData.setParamDefaultValue(name, value);
                         l2genData.setParamValue(name, value);
+                         System.out.println(l2genData.getParamValue(l2genData.L2PROD));
 
                         if (name.equals(l2genData.L2PROD)) {
                             l2genData.copyToProductDefaults();
                         } else {
                             l2genData.setParamToDefaults(name);
                         }
+
+                        System.out.println(l2genData.getParamValue(l2genData.L2PROD));
                     }
                 }
             }

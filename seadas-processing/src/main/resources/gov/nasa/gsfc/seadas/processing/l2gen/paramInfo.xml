@@ -195,7 +195,7 @@
         </option>
         <option>
             <name>l2prod</name>
-            <value>log10chl chlor_a</value>
+            <value>Es_412</value>
             <type>string</type>
             <source>command line</source>
             <alias>l2prod1</alias>

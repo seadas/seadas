@@ -160,11 +160,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             ifile = sourceProductSelector.getSelectedProduct().getFileLocation().toString();
         }
 
-        String ofile = null;
-        if (outputFileSelector.getModel().getProductFile() != null) {
-            ofile = outputFileSelector.getModel().getProductFile().getAbsolutePath();
-            System.out.println("ofile: " + ofile);
-        }
 
         l2genData.initXmlBasedObjects();
         createUserInterface();
@@ -172,8 +167,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         if (ifile != null) {
             l2genData.setParamValue(l2genData.IFILE, ifile);
-        } else if (ofile != null) {
-            l2genData.setParamValue(l2genData.OFILE, ofile);
         } else {
             l2genData.fireAllParamEvents();
         }
@@ -1987,6 +1980,21 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 debug("productChangedHandler() being called");
                 productChangedHandler();
 
+            }
+        });
+
+        l2genData.addPropertyChangeListener(l2genData.OFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                String ofileString = l2genData.getParamValue(l2genData.OFILE);
+                if (ofileString.equals(ParamInfo.NULL_STRING)) {
+//                    outputFileSelector.getModel().setProductDir(null);
+//                    outputFileSelector.getModel().setProductName(null);
+                } else {
+                    File ofile = new File(ofileString);
+                    outputFileSelector.getModel().setProductDir(ofile.getParentFile());
+                    outputFileSelector.getModel().setProductName(ofile.getName());
+                }
             }
         });
 
