@@ -150,6 +150,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         processorModel = new ProcessorModel("l2gen", xmlFileName);
 
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
+        sourceProductSelector.initProducts();
         outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
 
         // determine whether ifile has been set prior to launching l2gen
