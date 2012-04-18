@@ -23,6 +23,30 @@ public class SeadasGuiUtils {
         return c;
     }
 
+    public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, double weighty, int pad) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = gridx;
+        c.gridy = gridy;
+        c.weightx = weightx;
+        c.weighty = weighty;
+        c.insets = new Insets(pad, pad, pad, pad);
+
+        return c;
+    }
+
+    public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, int pad, double weighty, int anchor, int fill) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = gridx;
+        c.gridy = gridy;
+        c.weightx = weightx;
+        c.weighty = weighty;
+        c.anchor = anchor;
+        c.fill = fill;
+        c.insets = new Insets(pad, pad, pad, pad);
+
+        return c;
+    }
+
     public static GridBagConstraints makeConstraints(int gridx, int gridy, int anchor) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = gridx;
@@ -53,7 +77,7 @@ public class SeadasGuiUtils {
     public static JPanel addPaddedWrapperPanel(Object myMainPanel, int pad, int anchor) {
 
         JPanel myWrapperPanel = new JPanel();
-     //   myWrapperPanel.setBorder(BorderFactory.createTitledBorder(""));
+        //   myWrapperPanel.setBorder(BorderFactory.createTitledBorder(""));
         myWrapperPanel.setLayout(new GridBagLayout());
 
         final GridBagConstraints c;
@@ -94,8 +118,7 @@ public class SeadasGuiUtils {
     }
 
 
-
-   public static void padPanel(Object innerPanel, JPanel outerPanel, int pad) {
+    public static void padPanel(Object innerPanel, JPanel outerPanel, int pad) {
 
         final GridBagConstraints c;
         c = new GridBagConstraints();
@@ -109,7 +132,6 @@ public class SeadasGuiUtils {
 
         outerPanel.add((Component) innerPanel, c);
     }
-
 
 
     public static JPanel addPaddedWrapperPanel(Object myMainPanel, int pad) {

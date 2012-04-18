@@ -77,6 +77,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private JTextArea parfileJTextArea;
 
     private JFileChooser parfileChooser = new JFileChooser();
+    private JFileChooser geofileChooser = new JFileChooser();
 
     private DefaultMutableTreeNode rootNode;
 
@@ -231,6 +232,11 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         //ioPanel.add(createOfileJPanel());
 
         ioPanel.add(createOutputFilePanel());
+
+
+        ioPanel.add(createGeofileChooserPanel());
+
+
         ioPanel.add(createParfileTab());
         ioPanel.add(tableLayout.createVerticalSpacer());
 
@@ -239,11 +245,100 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
+    private JPanel createGeofileChooserPanel() {
+
+        final JButton geofileChooserButton = new JButton("...");
+        geofileChooserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                geofileChooserHandler(geofileChooser);
+            }
+        });
+
+        final JTextField geofileTextfield = new JTextField();
+        geofileTextfield.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                geofileTextfieldHandler(geofileTextfield);
+            }
+        });
+
+        l2genData.addPropertyChangeListener(l2genData.GEOFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                String geofileString = l2genData.getParamValue(l2genData.GEOFILE);
+                if (geofileString == null || geofileString.equals(ParamInfo.NULL_STRING)) {
+                    geofileChooser.setSelectedFile(null);
+
+                } else {
+                    geofileChooser.setSelectedFile(new File(geofileString));
+                }
+
+                geofileTextfield.setText(geofileString);
+            }
+        });
+
+
+        final Dimension size = new Dimension(26, 26);
+        geofileChooserButton.setPreferredSize(size);
+        geofileChooserButton.setMinimumSize(size);
+        geofileChooserButton.setMaximumSize(size);
+
+//        geofileTextfield.setColumns(PARAM_FILESTRING_TEXTLEN);
+//        geofileTextfield.setMaximumSize(new Dimension(70,16));
+
+
+        final JPanel subPanel = new JPanel((new GridBagLayout()));
+        subPanel.add(geofileTextfield,
+                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, 2, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+        subPanel.add(geofileChooserButton,
+                SeadasGuiUtils.makeConstraints(1, 0, 0, 0, 2, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        final JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createTitledBorder("Geofile"));
+        mainPanel.add(subPanel,
+                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+
+        return mainPanel;
+    }
+
+
+
+
+
+
+
+
+
+    private JPanel fillPanel(Dimension dimension) {
+        JPanel jPanel = new JPanel();
+        jPanel.setPreferredSize(dimension);
+        jPanel.setMaximumSize(dimension);
+        jPanel.setMinimumSize(dimension);
+        return jPanel;
+    }
+
+    private void geofileChooserHandler(JFileChooser jFileChooser) {
+        int result = jFileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            l2genData.setParamValue(l2genData.GEOFILE, jFileChooser.getSelectedFile().toString());
+        }
+    }
+
+
+    private void geofileTextfieldHandler(JTextField jTextField) {
+        l2genData.setParamValue(l2genData.GEOFILE, jTextField.getText());
+    }
+
+
     private JPanel createParfileTab() {
 
         // Define all Swing controls used on this tab page
         final JButton loadParfileButton = new JButton("Open");
         final JButton saveParfileButton = new JButton("Save");
+
 
         saveParfileButton.addActionListener(new ActionListener() {
             @Override
@@ -1916,35 +2011,17 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private void addL2genDataListeners() {
 
-        for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
-            if (paramCategoryInfo.isVisible()) {
-                for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
-                    final String eventName = paramInfo.getName();
-
-                    debug("Making listener for " + eventName);
-                    l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
-                        @Override
-                        public void propertyChange(PropertyChangeEvent evt) {
-                            debug("receiving eventName " + eventName);
-                            parfileJTextArea.setText(l2genData.getParfile());
-//                            for (JCheckBox jCheckBox : paramJCheckboxes) {
-//                                if (jCheckBox.getProgramName().equals(eventName)) {
-//                                    jCheckBox.setSelected(l2genData.getBooleanParamValue(eventName));
-//                                }
-//                            }
-                        }
-                    });
+        for (ParamInfo paramInfo : l2genData.getParamInfos()) {
+            final String eventName = paramInfo.getName();
+            debug("Making listener for " + eventName);
+            l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    debug("receiving eventName " + eventName);
+                    parfileJTextArea.setText(l2genData.getParfile());
                 }
-            }
+            });
         }
-
-
-//        l2genData.addPropertyChangeListener(l2genData.MISSION_CHANGE_EVENT, new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent evt) {
-//
-//            }
-//        });
 
 
         l2genData.addPropertyChangeListener(l2genData.INVALID_IFILE_EVENT, new PropertyChangeListener() {
