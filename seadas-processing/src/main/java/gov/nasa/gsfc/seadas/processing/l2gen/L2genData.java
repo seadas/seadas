@@ -28,6 +28,7 @@ public class L2genData {
     private String PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml";
 
     private String initialIfile = DEFAULT_IFILE;
+
     public boolean ifileIsValid = true;
 
     public final String PAR = "par";
@@ -1112,7 +1113,7 @@ public class L2genData {
         for (String string_to_be_replaced : IFILE_STRING_TO_BE_REPLACED) {
             if (ifile.toUpperCase().contains(string_to_be_replaced)) {
                 int index = ifile.toUpperCase().lastIndexOf(string_to_be_replaced);
-                stringBuilder.append(ifile.substring(0, (index - 1)));
+                stringBuilder.append(ifile.substring(0, index));
                 stringBuilder.append(TARGET_PRODUCT_SUFFIX);
                 stringBuilder.append(ifile.substring((index + string_to_be_replaced.length()), ifile.length()));
                 ofile = stringBuilder.toString();
@@ -1135,41 +1136,61 @@ public class L2genData {
 
     private void setCustomGeofile(String ifile) {
 
-        ArrayList<String> possibleGeoFiles = new ArrayList<String>();
-
-        String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC"};
-
-        /**
-         * replace last occurrence of instance of STRING_TO_BE_REPLACED[]
-         */
-        for (String string_to_be_replaced : STRING_TO_BE_REPLACED) {
-            if (ifile.toUpperCase().contains(string_to_be_replaced)) {
-
-                int index = ifile.toUpperCase().lastIndexOf(string_to_be_replaced);
-                String start = ifile.substring(0, index);
-                String end = ifile.substring((index + string_to_be_replaced.length()), ifile.length());
-
-                StringBuilder littleGeo = new StringBuilder(start + "geo" + end);
-                possibleGeoFiles.add(littleGeo.toString());
-
-                StringBuilder bigGeo = new StringBuilder(start + "GEO" + end);
-                possibleGeoFiles.add(bigGeo.toString());
-                break;
-            }
-        }
-
-        StringBuilder addedLittleGeo = new StringBuilder(ifile + "." + "geo");
-        possibleGeoFiles.add(addedLittleGeo.toString());
-        StringBuilder addedBigGeo = new StringBuilder(ifile + "." + "GEO");
-        possibleGeoFiles.add(addedBigGeo.toString());
-
-
         String geofile = ParamInfo.NULL_STRING;
+        String VIIRS_IFILE_PREFIX = "SVM01";
+        String VIIRS_GEOFILE_PREFIX = "GMTCO";
 
-        for (String possibleGeoFile : possibleGeoFiles) {
-            if (new File(possibleGeoFile).exists()) {
-                geofile = possibleGeoFile;
+
+        File ifileFile = new File(ifile);
+
+
+
+        if (ifileFile.getName().toUpperCase().startsWith(VIIRS_IFILE_PREFIX)) {
+            StringBuilder geofileStringBuilder = new StringBuilder();
+            geofileStringBuilder.append(ifileFile.getParent());
+            geofileStringBuilder.append("/");
+            geofileStringBuilder.append(VIIRS_GEOFILE_PREFIX);
+            geofileStringBuilder.append(ifileFile.getName().substring(VIIRS_IFILE_PREFIX.length()));
+
+            geofile = geofileStringBuilder.toString();
+        } else {
+
+
+            ArrayList<String> possibleGeoFiles = new ArrayList<String>();
+
+            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC"};
+
+            /**
+             * replace last occurrence of instance of STRING_TO_BE_REPLACED[]
+             */
+            for (String string_to_be_replaced : STRING_TO_BE_REPLACED) {
+                if (ifile.toUpperCase().contains(string_to_be_replaced)) {
+
+                    int index = ifile.toUpperCase().lastIndexOf(string_to_be_replaced);
+                    String start = ifile.substring(0, index);
+                    String end = ifile.substring((index + string_to_be_replaced.length()), ifile.length());
+
+                    StringBuilder littleGeo = new StringBuilder(start + "geo" + end);
+                    possibleGeoFiles.add(littleGeo.toString());
+
+                    StringBuilder bigGeo = new StringBuilder(start + "GEO" + end);
+                    possibleGeoFiles.add(bigGeo.toString());
+                    break;
+                }
             }
+
+            StringBuilder addedLittleGeo = new StringBuilder(ifile + "." + "geo");
+            possibleGeoFiles.add(addedLittleGeo.toString());
+            StringBuilder addedBigGeo = new StringBuilder(ifile + "." + "GEO");
+            possibleGeoFiles.add(addedBigGeo.toString());
+
+
+            for (String possibleGeoFile : possibleGeoFiles) {
+                if (new File(possibleGeoFile).exists()) {
+                    geofile = possibleGeoFile;
+                }
+            }
+
         }
 
         setParamValue(GEOFILE, geofile);
