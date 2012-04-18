@@ -331,9 +331,15 @@ public abstract class SeadasFileReader {
         for (String name: product.getBandNames()){
             Band band = product.getBandAt(product.getBandIndex(name));
             if (name.matches("\\w+_\\d{3,}")) {
-                        final float wavelength = Float.parseFloat(name.split("_")[1]);
-                        band.setSpectralWavelength(wavelength);
-                        band.setSpectralBandIndex(spectralBandIndex++);
+                String[] parts = name.split("_");
+                String wvlstr = parts[parts.length -1].trim();
+                //Some bands have the wvl portion in the middle...
+                if (!wvlstr.matches("^\\d{3,}")) {
+                    wvlstr =  parts[parts.length -2].trim();
+                }
+                final float wavelength = Float.parseFloat(wvlstr);
+                band.setSpectralWavelength(wavelength);
+                band.setSpectralBandIndex(spectralBandIndex++);
             }
         }
     }
