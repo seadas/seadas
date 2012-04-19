@@ -16,28 +16,24 @@
 package gov.nasa.gsfc.seadas;
 
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
-import org.esa.beam.util.SystemUtils;
 import org.esa.beam.visat.VisatApp;
 
 /**
- * The <code>VisatApp</code> class represents the VISAT application.
+ * The <code>SeadasApp</code> class represents the SeaDAS UI application.
  *
- * @author Norman Fomferra
- * @author Marco Peters
- * @author Sabine Embacher
- * @version $Revision$ $Date$
+ * @author Don
  */
 public class SeadasApp extends VisatApp {
 
     /**
-     * Constructs the VISAT application instance. The constructor does not start the application nor does it perform any GUI
+     * Constructs the SeaDAS UI application instance. The constructor does not start the application nor does it perform any GUI
      * work.
      *
      * @param applicationDescriptor The application descriptor.
      */
     public SeadasApp(ApplicationDescriptor applicationDescriptor) {
         super(applicationDescriptor);
-        SystemUtils.BEAM_HOME_PAGE = "http://seadas.gsfc.nasa.gov/";
+        // SystemUtils.BEAM_HOME_PAGE = "http://seadas.gsfc.nasa.gov/";
     }
 
 }

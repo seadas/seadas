@@ -52,7 +52,7 @@ public class SeadasMain implements RuntimeRunnable {
      * Entry point for the VISAT application called by the Ceres runtime.
      *
      * @param argument        a {@code String[]} containing the command line arguments
-     * @param progressMonitor a progress monitor         
+     * @param progressMonitor a progress monitor
      * @throws Exception if an error occurs
      */
     @Override
@@ -80,8 +80,8 @@ public class SeadasMain implements RuntimeRunnable {
 
         final ApplicationDescriptor applicationDescriptor = BeamUiActivator.getInstance().getApplicationDescriptor();
         if (applicationDescriptor == null) {
-             throw new IllegalStateException(String.format("Application descriptor not found for applicationId='%s'.",
-                                                           BeamUiActivator.getInstance().getApplicationId()));
+            throw new IllegalStateException(String.format("Application descriptor not found for applicationId='%s'.",
+                                                          BeamUiActivator.getInstance().getApplicationId()));
         }
 
         boolean debugEnabled = false;
@@ -95,7 +95,7 @@ public class SeadasMain implements RuntimeRunnable {
                     System.err.printf("%s error: illegal option '" + arg + "'", applicationDescriptor.getDisplayName());
                     return;
                 }
-            } else if (arg.endsWith(OpenSessionAction.SESSION_FILE_FILTER.getDefaultExtension())) {
+            } else if (arg.endsWith(OpenSessionAction.getSessionFileFilter().getDefaultExtension())) {
                 sessionFile = arg;
             } else {
                 productFilepathList.add(arg);
@@ -113,7 +113,7 @@ public class SeadasMain implements RuntimeRunnable {
                 }
             });
         }
-        
+
         SeadasApp app = createApplication(applicationDescriptor);
         app.startUp(progressMonitor);
         openSession(app, sessionFile);
@@ -123,7 +123,7 @@ public class SeadasMain implements RuntimeRunnable {
     protected SeadasApp createApplication(ApplicationDescriptor applicationDescriptor) {
         return new SeadasApp(applicationDescriptor);
     }
-    
+
     private void openSession(SeadasApp app, String sessionFile) {
         if (sessionFile != null && !(sessionFile.trim().isEmpty())) {
             final OpenSessionAction action = (OpenSessionAction) app.getCommandManager().getCommand(OpenSessionAction.ID);
