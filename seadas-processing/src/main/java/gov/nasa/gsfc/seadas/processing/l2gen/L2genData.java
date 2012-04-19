@@ -1101,33 +1101,99 @@ public class L2genData {
     }
 
 
-    private void setCustomOfile(String ifile) {
+    private String getViirsOfilename(String ifile) {
 
-        String IFILE_STRING_TO_BE_REPLACED[] = {"L1A", "L1B"};
-        StringBuilder stringBuilder = new StringBuilder();
-        String ofile = null;
+        StringBuilder ofile = new StringBuilder();
 
-        /**
-         * replace last occurrence of instance of IFILE_STRING_TO_BE_REPLACED[]
-         */
-        for (String string_to_be_replaced : IFILE_STRING_TO_BE_REPLACED) {
-            if (ifile.toUpperCase().contains(string_to_be_replaced)) {
-                int index = ifile.toUpperCase().lastIndexOf(string_to_be_replaced);
-                stringBuilder.append(ifile.substring(0, index));
-                stringBuilder.append(TARGET_PRODUCT_SUFFIX);
-                stringBuilder.append(ifile.substring((index + string_to_be_replaced.length()), ifile.length()));
-                ofile = stringBuilder.toString();
-                break;
-            }
+        String yearString = ifile.substring(11, 14);
+        String monthString = ifile.substring(15, 16);
+        String dayOfMonthString = ifile.substring(17, 18);
+
+        String formattedDateString = getFormattedDateString(yearString, monthString, dayOfMonthString);
+
+        String timeString = ifile.substring(21, 26);
+
+        ofile.append("V");
+        ofile.append(formattedDateString);
+        ofile.append(timeString);
+        ofile.append(".");
+        ofile.append("L2_NPP");
+
+        return ofile.toString();
+    }
+
+
+    private int getDayOfYear(int year, int month, int dayOfMonth) {
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.set(GregorianCalendar.DAY_OF_MONTH, dayOfMonth);
+        gc.set(GregorianCalendar.MONTH, month);
+        gc.set(GregorianCalendar.YEAR, year);
+        return gc.get(GregorianCalendar.DAY_OF_YEAR);
+    }
+
+
+    private String getFormattedDateString(String yearString, String monthString, String dayOfMonthString) {
+        int year = Integer.parseInt(yearString);
+        int month = Integer.parseInt(monthString);
+        int dayOfMonth = Integer.parseInt(dayOfMonthString);
+        return getFormattedDateString(year, month, dayOfMonth);
+    }
+
+
+    private String getFormattedDateString(int year, int month, int dayOfMonth) {
+
+        StringBuilder formattedDateString = new StringBuilder(Integer.toString(year));
+
+        int dayOfYear = getDayOfYear(year, month, dayOfMonth);
+
+        StringBuilder dayOfYearString = new StringBuilder(Integer.toString(dayOfYear));
+
+        while (dayOfYearString.toString().length() < 3) {
+            dayOfYearString.insert(0, "0");
         }
 
-        /**
-         * Not found so append it
-         */
-        if (ofile == null) {
-            stringBuilder.append(ifile);
-            stringBuilder.append("." + TARGET_PRODUCT_SUFFIX);
-            ofile = stringBuilder.toString();
+        formattedDateString.append(dayOfYearString);
+
+        return formattedDateString.toString();
+    }
+
+
+    private void setCustomOfile(String ifile) {
+
+        String ofile = ParamInfo.NULL_STRING;
+        String VIIRS_IFILE_PREFIX = "SVM01";
+        File ifileFile = new File(ifile);
+
+
+        if (ifileFile.getName().toUpperCase().startsWith(VIIRS_IFILE_PREFIX)) {
+            ofile = getViirsOfilename(ifile);
+        } else {
+            String OFILE_REPLACEMENT_STRING = "L2";
+            String IFILE_STRING_TO_BE_REPLACED[] = {"L1A", "L1B"};
+            StringBuilder stringBuilder = new StringBuilder();
+
+            /**
+             * replace last occurrence of instance of IFILE_STRING_TO_BE_REPLACED[]
+             */
+            for (String string_to_be_replaced : IFILE_STRING_TO_BE_REPLACED) {
+                if (ifile.toUpperCase().contains(string_to_be_replaced)) {
+                    int index = ifile.toUpperCase().lastIndexOf(string_to_be_replaced);
+                    stringBuilder.append(ifile.substring(0, index));
+                    stringBuilder.append(OFILE_REPLACEMENT_STRING);
+                    stringBuilder.append(ifile.substring((index + string_to_be_replaced.length()), ifile.length()));
+                    ofile = stringBuilder.toString();
+                    break;
+                }
+            }
+
+            /**
+             * Not found so append it
+             */
+            if (ofile == null) {
+                stringBuilder.append(ifile);
+                stringBuilder.append("." + OFILE_REPLACEMENT_STRING);
+                ofile = stringBuilder.toString();
+            }
         }
 
         setParamValue(OFILE, ofile);
@@ -1138,14 +1204,11 @@ public class L2genData {
 
         String geofile = ParamInfo.NULL_STRING;
         String VIIRS_IFILE_PREFIX = "SVM01";
-        String VIIRS_GEOFILE_PREFIX = "GMTCO";
-
-
         File ifileFile = new File(ifile);
 
 
-
         if (ifileFile.getName().toUpperCase().startsWith(VIIRS_IFILE_PREFIX)) {
+            String VIIRS_GEOFILE_PREFIX = "GMTCO";
             StringBuilder geofileStringBuilder = new StringBuilder();
             geofileStringBuilder.append(ifileFile.getParent());
             geofileStringBuilder.append("/");
@@ -1154,11 +1217,10 @@ public class L2genData {
 
             geofile = geofileStringBuilder.toString();
         } else {
-
-
             ArrayList<String> possibleGeoFiles = new ArrayList<String>();
 
             String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC"};
+            String STRING_TO_INSERT[] = {"geo", "GEO"};
 
             /**
              * replace last occurrence of instance of STRING_TO_BE_REPLACED[]
@@ -1170,27 +1232,25 @@ public class L2genData {
                     String start = ifile.substring(0, index);
                     String end = ifile.substring((index + string_to_be_replaced.length()), ifile.length());
 
-                    StringBuilder littleGeo = new StringBuilder(start + "geo" + end);
-                    possibleGeoFiles.add(littleGeo.toString());
+                    for (String string_to_insert : STRING_TO_INSERT) {
+                        StringBuilder possibleGeofile = new StringBuilder(start + string_to_insert + end);
+                        possibleGeoFiles.add(possibleGeofile.toString());
+                    }
 
-                    StringBuilder bigGeo = new StringBuilder(start + "GEO" + end);
-                    possibleGeoFiles.add(bigGeo.toString());
                     break;
                 }
             }
 
-            StringBuilder addedLittleGeo = new StringBuilder(ifile + "." + "geo");
-            possibleGeoFiles.add(addedLittleGeo.toString());
-            StringBuilder addedBigGeo = new StringBuilder(ifile + "." + "GEO");
-            possibleGeoFiles.add(addedBigGeo.toString());
-
+            for (String string_to_insert : STRING_TO_INSERT) {
+                StringBuilder possibleGeofile = new StringBuilder(ifile + "." + string_to_insert);
+                possibleGeoFiles.add(possibleGeofile.toString());
+            }
 
             for (String possibleGeoFile : possibleGeoFiles) {
                 if (new File(possibleGeoFile).exists()) {
                     geofile = possibleGeoFile;
                 }
             }
-
         }
 
         setParamValue(GEOFILE, geofile);
