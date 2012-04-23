@@ -34,7 +34,24 @@ public class SeadasGuiUtils {
         return c;
     }
 
-    public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, int pad, double weighty, int anchor, int fill) {
+
+
+        public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, double weighty, int anchor, int fill) {
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = gridx;
+        c.gridy = gridy;
+        c.weightx = weightx;
+        c.weighty = weighty;
+        c.anchor = anchor;
+        c.fill = fill;
+
+
+
+        return c;
+    }
+
+    public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, double weighty, int anchor, int fill, int pad) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = gridx;
         c.gridy = gridy;
@@ -44,8 +61,24 @@ public class SeadasGuiUtils {
         c.fill = fill;
         c.insets = new Insets(pad, pad, pad, pad);
 
+
         return c;
     }
+
+    public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, double weighty, int anchor, int fill, int pad, int gridwidth) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = gridx;
+        c.gridy = gridy;
+        c.weightx = weightx;
+        c.weighty = weighty;
+        c.anchor = anchor;
+        c.fill = fill;
+        c.insets = new Insets(pad, pad, pad, pad);
+        c.gridwidth = gridwidth;
+
+        return c;
+    }
+
 
     public static GridBagConstraints makeConstraints(int gridx, int gridy, int anchor) {
         GridBagConstraints c = new GridBagConstraints();

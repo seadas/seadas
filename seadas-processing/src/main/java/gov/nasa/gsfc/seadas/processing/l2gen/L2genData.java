@@ -1,3 +1,5 @@
+
+
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 
@@ -17,7 +19,7 @@ import java.util.*;
  */
 public class L2genData {
 
-    private boolean ignoreIfileInParString = true;
+    public boolean retainCurrentIfile = true;
     private String OCDATAROOT = System.getenv("OCDATAROOT");
 
     private String PRODUCT_INFO_XML = "productInfo.xml";
@@ -53,6 +55,7 @@ public class L2genData {
     public final String WAVE_LIMITER_CHANGE_EVENT = "WAVE_LIMITER_CHANGE_EVENT";
     // public final String L2PROD = L2PROD;
     public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
+    public final String RETAIN_IFILE_CHANGE_EVENT = "RETAIN_IFILE_CHANGE_EVENT";
 
     private final String TARGET_PRODUCT_SUFFIX = "L2";
 
@@ -80,12 +83,14 @@ public class L2genData {
         }
     }
 
-    public boolean isIgnoreIfileInParString() {
-        return ignoreIfileInParString;
+    public boolean isRetainCurrentIfile() {
+        return retainCurrentIfile;
     }
 
-    public void setIgnoreIfileInParString(boolean ignoreIfileInParString) {
-        this.ignoreIfileInParString = ignoreIfileInParString;
+    public void setRetainCurrentIfile(boolean retainCurrentIfile) {
+
+        this.retainCurrentIfile = retainCurrentIfile;
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, RETAIN_IFILE_CHANGE_EVENT, null, null));
     }
 
     public enum RegionType {Coordinates, PixelLines}
@@ -552,7 +557,7 @@ public class L2genData {
         Handle IFILE first
          */
         boolean ignoreIfileOfile;
-        if (!checkIgnoreIfileInParString || (checkIgnoreIfileInParString && !ignoreIfileInParString)) {
+        if (!checkIgnoreIfileInParString || (checkIgnoreIfileInParString && !retainCurrentIfile)) {
             ignoreIfileOfile = false;
         } else {
             ignoreIfileOfile = true;
@@ -1105,29 +1110,39 @@ public class L2genData {
 
         StringBuilder ofile = new StringBuilder();
 
-        String yearString = ifile.substring(11, 14);
-        String monthString = ifile.substring(15, 16);
-        String dayOfMonthString = ifile.substring(17, 18);
+        String yearString = ifile.substring(11, 15);
+        String monthString = ifile.substring(15, 17);
+        String dayOfMonthString = ifile.substring(17, 19);
 
         String formattedDateString = getFormattedDateString(yearString, monthString, dayOfMonthString);
 
-        String timeString = ifile.substring(21, 26);
-
+        String timeString = ifile.substring(21, 27);
         ofile.append("V");
         ofile.append(formattedDateString);
         ofile.append(timeString);
+
         ofile.append(".");
         ofile.append("L2_NPP");
+
 
         return ofile.toString();
     }
 
 
+    /**
+     * Given standard Gregorian date return day of year (Jan 1=1, Feb 1=32, etc)
+     * @param year
+     * @param month  1-based Jan=1, etc.
+     * @param dayOfMonth
+     * @return
+     */
+
     private int getDayOfYear(int year, int month, int dayOfMonth) {
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.set(GregorianCalendar.DAY_OF_MONTH, dayOfMonth);
-        gc.set(GregorianCalendar.MONTH, month);
-        gc.set(GregorianCalendar.YEAR, year);
+//        int monthIndex = month - 1;
+        GregorianCalendar gc = new GregorianCalendar(year, month-1, dayOfMonth);
+//        gc.set(GregorianCalendar.DAY_OF_MONTH, dayOfMonth);
+//        gc.set(GregorianCalendar.MONTH, monthIndex);
+//        gc.set(GregorianCalendar.YEAR, year);
         return gc.get(GregorianCalendar.DAY_OF_YEAR);
     }
 
@@ -1160,6 +1175,7 @@ public class L2genData {
 
     private void setCustomOfile(String ifile) {
 
+   //     ifile = "SVM01_npp_d20120108_t0029304_e0030545_b01016_obpg_ops.h5";
         String ofile = ParamInfo.NULL_STRING;
         String VIIRS_IFILE_PREFIX = "SVM01";
         File ifileFile = new File(ifile);

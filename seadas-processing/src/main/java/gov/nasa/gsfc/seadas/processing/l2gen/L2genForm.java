@@ -5,7 +5,6 @@ Author: Danny Knowles
 
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
-import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
@@ -85,7 +84,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private int tabCount = 0;
 
-    private static final String INPUT_OUTPUT_FILE_TAB_NAME = "Main";
+    private static final String MAIN_TAB_NAME = "Main";
     private static final String PARFILE_TAB_NAME = "Parameters";
     //   private static final String SUB_SETTING_TAB_NAME = "Subsetting Options";
     private static final String PRODUCTS_TAB_NAME = "Products";
@@ -189,12 +188,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private void createUserInterface() {
 
         int currTabIndex = 0;
-        createIOParametersTab(INPUT_OUTPUT_FILE_TAB_NAME);
+        createMainTab(MAIN_TAB_NAME);
         this.setEnabledAt(currTabIndex, true);
 
-//        currTabIndex++;
-//        createParfileTab(PARFILE_TAB_NAME);
-//        this.setEnabledAt(currTabIndex, false);
 
         currTabIndex++;
         createProductsTab(PRODUCTS_TAB_NAME);
@@ -216,32 +212,23 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     // Methods to create each of the main  and sub tabs
     //----------------------------------------------------------------------------------------
 
-    private void createIOParametersTab(String myTabname) {
+    private void createMainTab(String tabname) {
 
-        final TableLayout tableLayout = new TableLayout(1);
-        tableLayout.setTableWeightX(1.0);
-        tableLayout.setTableWeightY(0);
-        //tableLayout.setTableFill(TableLayout.Fill.BOTH);
-        tableLayout.setTablePadding(3, 3);
-        tableLayout.setRowFill(0, TableLayout.Fill.HORIZONTAL);
-        tableLayout.setRowFill(1, TableLayout.Fill.HORIZONTAL);
-        tableLayout.setRowFill(2, TableLayout.Fill.BOTH);
+        final JPanel mainPanel = new JPanel(new GridBagLayout());
 
-        final JPanel ioPanel = new JPanel(tableLayout);
-        ioPanel.add(createSourceProductPanel());
-        //ioPanel.add(createOfileJPanel());
+        mainPanel.add(createSourceProductPanel(),
+                SeadasGuiUtils.makeConstraints(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        ioPanel.add(createOutputFilePanel());
+        mainPanel.add(createOutputFilePanel(),
+                SeadasGuiUtils.makeConstraints(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
+        mainPanel.add(createGeofileChooserPanel(),
+                SeadasGuiUtils.makeConstraints(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        ioPanel.add(createGeofileChooserPanel());
+        mainPanel.add(createParfilePanel(),
+                SeadasGuiUtils.makeConstraints(0, 3, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
-
-        ioPanel.add(createParfileTab());
-        ioPanel.add(tableLayout.createVerticalSpacer());
-
-        addTab(myTabname, ioPanel);
-
+        addTab(tabname, mainPanel);
     }
 
 
@@ -284,31 +271,21 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         geofileChooserButton.setMinimumSize(size);
         geofileChooserButton.setMaximumSize(size);
 
-//        geofileTextfield.setColumns(PARAM_FILESTRING_TEXTLEN);
-//        geofileTextfield.setMaximumSize(new Dimension(70,16));
-
 
         final JPanel subPanel = new JPanel((new GridBagLayout()));
         subPanel.add(geofileTextfield,
-                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, 2, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 2));
         subPanel.add(geofileChooserButton,
-                SeadasGuiUtils.makeConstraints(1, 0, 0, 0, 2, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                SeadasGuiUtils.makeConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
 
         final JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder("Geofile"));
         mainPanel.add(subPanel,
-                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
         return mainPanel;
     }
-
-
-
-
-
-
-
 
 
     private JPanel fillPanel(Dimension dimension) {
@@ -333,13 +310,10 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
-    private JPanel createParfileTab() {
+    private JPanel createParfilePanel() {
 
-        // Define all Swing controls used on this tab page
-        final JButton loadParfileButton = new JButton("Open");
+
         final JButton saveParfileButton = new JButton("Save");
-
-
         saveParfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -351,7 +325,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
         });
 
-        loadParfileButton.addActionListener(new ActionListener() {
+
+        final JButton openParfileButton = new JButton("Open");
+        openParfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int result = parfileChooser.showOpenDialog(null);
@@ -366,11 +342,32 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
         });
 
+
+        final JCheckBox retainIfileOfileCheckbox = new JCheckBox("Retain Selected IFILE");
+        retainIfileOfileCheckbox.setSelected(l2genData.isRetainCurrentIfile());
+        retainIfileOfileCheckbox.setToolTipText("If an ifile is currently selected then any ifile entry in the parfile being opened will be ignored.");
+
+        // add listener for current checkbox
+        retainIfileOfileCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                l2genData.setRetainCurrentIfile(retainIfileOfileCheckbox.isSelected());
+            }
+        });
+
+        l2genData.addPropertyChangeListener(l2genData.RETAIN_IFILE_CHANGE_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                retainIfileOfileCheckbox.setSelected(l2genData.isRetainCurrentIfile());
+            }
+        });
+
+
         parfileJTextArea = new JTextArea();
         parfileJTextArea.setEditable(true);
         parfileJTextArea.setBackground(Color.decode("#ffffff"));
         parfileJTextArea.setAutoscrolls(true);
-        parfileJTextArea.setRows(new Double(this.getPreferredSize().getHeight()).intValue());
+        // parfileJTextArea.setRows(new Double(this.getPreferredSize().getHeight()).intValue());
 
         parfileJTextArea.addFocusListener(new FocusListener() {
             @Override
@@ -384,53 +381,24 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        // Declare mainPanel and set it's attributes
-        final JPanel mainPanel = new JPanel();
+        final JPanel buttonsSubPanel = new JPanel(new GridBagLayout());
+        buttonsSubPanel.add(openParfileButton,
+                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        buttonsSubPanel.add(retainIfileOfileCheckbox,
+                SeadasGuiUtils.makeConstraints(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH));
+        buttonsSubPanel.add(saveParfileButton,
+                SeadasGuiUtils.makeConstraints(2, 0, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+
+        final JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder("Parfile"));
-        mainPanel.setLayout(new GridBagLayout());
-
-        // Add openButton control to a mainPanel grid cell
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.anchor = GridBagConstraints.WEST;
-            mainPanel.add(loadParfileButton, c);
-        }
-
-        // Add saveButton control to a mainPanel grid cell
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 1;
-            c.gridy = 0;
-            c.anchor = GridBagConstraints.EAST;
-            mainPanel.add(saveParfileButton, c);
-        }
-
-        // Add textArea control to a mainPanel grid cell
-        {
-            JScrollPane scrollTextArea = new JScrollPane(parfileJTextArea);
-
-            scrollTextArea.createHorizontalScrollBar();
-            //scrollTextArea.setMaximumSize(new Dimension(400, 400));
-
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 1;
-            c.fill = GridBagConstraints.BOTH;
-            c.gridwidth = 2;
-            c.weightx = 1;
-            c.weighty = 1;
-            mainPanel.add(scrollTextArea, c);
-        }
+        mainPanel.add(buttonsSubPanel,
+                SeadasGuiUtils.makeConstraints(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        mainPanel.add(new JScrollPane(parfileJTextArea),
+                SeadasGuiUtils.makeConstraints(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
 
-        final JPanel finalMainPanel;
-        finalMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 3);
-
-        return finalMainPanel;
-        //return mainPanel;
-        //addTab(myTabname, finalMainPanel);
+        return mainPanel;
     }
 
 
@@ -524,10 +492,10 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         final JScrollPane paramsScroll = new JScrollPane(paramsPanel);
 
-
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
+
 
 
         {
@@ -555,6 +523,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         final JPanel paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
         addTab(paramCategoryInfo.getName(), paddedMainPanel);
+        paddedMainPanel.setPreferredSize(new Dimension(1000,800));
     }
 
 
