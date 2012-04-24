@@ -15,79 +15,7 @@ public class SeadasGuiUtils {
     }
 
 
-    public static GridBagConstraints makeConstraints(int gridx, int gridy) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = gridx;
-        c.gridy = gridy;
 
-        return c;
-    }
-
-    public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, double weighty, int pad) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = gridx;
-        c.gridy = gridy;
-        c.weightx = weightx;
-        c.weighty = weighty;
-        c.insets = new Insets(pad, pad, pad, pad);
-
-        return c;
-    }
-
-
-
-        public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, double weighty, int anchor, int fill) {
-        GridBagConstraints c = new GridBagConstraints();
-
-        c.gridx = gridx;
-        c.gridy = gridy;
-        c.weightx = weightx;
-        c.weighty = weighty;
-        c.anchor = anchor;
-        c.fill = fill;
-
-
-
-        return c;
-    }
-
-    public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, double weighty, int anchor, int fill, int pad) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = gridx;
-        c.gridy = gridy;
-        c.weightx = weightx;
-        c.weighty = weighty;
-        c.anchor = anchor;
-        c.fill = fill;
-        c.insets = new Insets(pad, pad, pad, pad);
-
-
-        return c;
-    }
-
-    public static GridBagConstraints makeConstraints(int gridx, int gridy, double weightx, double weighty, int anchor, int fill, int pad, int gridwidth) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = gridx;
-        c.gridy = gridy;
-        c.weightx = weightx;
-        c.weighty = weighty;
-        c.anchor = anchor;
-        c.fill = fill;
-        c.insets = new Insets(pad, pad, pad, pad);
-        c.gridwidth = gridwidth;
-
-        return c;
-    }
-
-
-    public static GridBagConstraints makeConstraints(int gridx, int gridy, int anchor) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = gridx;
-        c.gridy = gridy;
-        c.anchor = anchor;
-
-        return c;
-    }
 
     public static JPanel addWrapperPanel(Object myMainPanel) {
         JPanel myWrapperPanel = new JPanel();

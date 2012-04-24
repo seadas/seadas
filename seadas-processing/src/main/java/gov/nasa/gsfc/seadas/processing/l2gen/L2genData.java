@@ -563,9 +563,9 @@ public class L2genData {
             ignoreIfileOfile = true;
         }
 
-        if (getParamValue(L2PROD).equals(ParamInfo.NULL_STRING)) {
-            ignoreIfileOfile = false;
-        }
+//        if (getParamValue(L2PROD).equals(ParamInfo.NULL_STRING)) {
+//            ignoreIfileOfile = false;
+//        }
 
 
         if (!ignoreIfileOfile) {

@@ -41,13 +41,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private final OutputFileSelector outputFileSelector;
 
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
-    //  private ArrayList<JCheckBox> paramJCheckboxes = null;
-    private ArrayList<JPanel> paramOptionsJPanels = new ArrayList<JPanel>();
 
     private JPanel waveLimiterJPanel;
 
-    final Color LABEL_COLOR_NOT_DEFAULT = new Color(0, 0, 80);
-    final Color LABEL_COLOR_IS_DEFAULT = new Color(0, 0, 0);
     final Color DEFAULT_INDICATOR_COLOR = new Color(0, 0, 120);
 
     final String DEFAULT_INDICATOR_TOOLTIP = "* Identicates that the selection is not the default value";
@@ -58,20 +54,11 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     final int PARAM_INT_TEXTLEN = 15;
     final int PARAM_FLOAT_TEXTLEN = 15;
 
-    //private JTable productsCartJTable;
-    //   private SelectedProductsTableModel productsCartTableModel;
-    //private JPanel productsCartJPanel;
-    private JComboBox ofileJComboBox;
-
     private boolean waveLimiterControlHandlersEnabled = true;
     private boolean swingSentEventsDisabled = false;
     private boolean handleIfileJComboBoxEnabled = true;
 
     private JTextArea selectedProductsJTextArea;
-
-    private JTextArea parfileTextEntryName;
-    private JTextArea parfileTextEntryValue;
-    private JButton parfileTextEntrySubmit;
 
     private JTextArea parfileJTextArea;
 
@@ -85,10 +72,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private int tabCount = 0;
 
     private static final String MAIN_TAB_NAME = "Main";
-    private static final String PARFILE_TAB_NAME = "Parameters";
-    //   private static final String SUB_SETTING_TAB_NAME = "Subsetting Options";
     private static final String PRODUCTS_TAB_NAME = "Products";
-
 
     private String WAVE_LIMITER_SELECT_ALL_INFRARED = "Select All Infrared";
     private String WAVE_LIMITER_DESELECT_ALL_INFRARED = "Deselect All Infrared";
@@ -120,29 +104,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     int outputFilePanelHeight;
     int inputFilePanelHeight;
 
-
-//    L2genForm(TargetProductSelector targetProductSelector, AppContext appContext) {
-//        this.outputFileSelector = targetProductSelector;
-//        this.appContext = appContext;
-//        this.sourceProductSelector = new SourceProductSelector(appContext, "Source Product:");
-//
-//        // determine whether ifile has been set prior to launching l2gen
-//        String ifile = null;
-//        if (sourceProductSelector.getSelectedProduct() != null
-//                && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
-//            ifile = sourceProductSelector.getSelectedProduct().getFileLocation().toString();
-//        }
-//
-//        l2genData.initXmlBasedObjects();
-//        createUserInterface();
-//        addL2genDataListeners();
-//
-//        if (ifile != null) {
-//            l2genData.setParamValue(l2genData.IFILE, ifile);
-//        } else {
-//            l2genData.fireAllParamEvents();
-//        }
-//    }
 
     L2genForm(AppContext appContext, String xmlFileName) {
         this.appContext = appContext;
@@ -217,16 +178,16 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         final JPanel mainPanel = new JPanel(new GridBagLayout());
 
         mainPanel.add(createSourceProductPanel(),
-                SeadasGuiUtils.makeConstraints(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         mainPanel.add(createOutputFilePanel(),
-                SeadasGuiUtils.makeConstraints(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         mainPanel.add(createGeofileChooserPanel(),
-                SeadasGuiUtils.makeConstraints(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         mainPanel.add(createParfilePanel(),
-                SeadasGuiUtils.makeConstraints(0, 3, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+                new GridBagConstraintsCustom(0, 3, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
         addTab(tabname, mainPanel);
     }
@@ -271,30 +232,21 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         geofileChooserButton.setMinimumSize(size);
         geofileChooserButton.setMaximumSize(size);
 
-
         final JPanel subPanel = new JPanel((new GridBagLayout()));
         subPanel.add(geofileTextfield,
-                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 2));
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 2));
         subPanel.add(geofileChooserButton,
-                SeadasGuiUtils.makeConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
 
         final JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder("Geofile"));
         mainPanel.add(subPanel,
-                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
         return mainPanel;
     }
 
-
-    private JPanel fillPanel(Dimension dimension) {
-        JPanel jPanel = new JPanel();
-        jPanel.setPreferredSize(dimension);
-        jPanel.setMaximumSize(dimension);
-        jPanel.setMinimumSize(dimension);
-        return jPanel;
-    }
 
     private void geofileChooserHandler(JFileChooser jFileChooser) {
         int result = jFileChooser.showOpenDialog(null);
@@ -346,6 +298,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         final JCheckBox retainIfileOfileCheckbox = new JCheckBox("Retain Selected IFILE");
         retainIfileOfileCheckbox.setSelected(l2genData.isRetainCurrentIfile());
         retainIfileOfileCheckbox.setToolTipText("If an ifile is currently selected then any ifile entry in the parfile being opened will be ignored.");
+        retainIfileOfileCheckbox.setEnabled(false);
 
         // add listener for current checkbox
         retainIfileOfileCheckbox.addItemListener(new ItemListener() {
@@ -359,6 +312,16 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 retainIfileOfileCheckbox.setSelected(l2genData.isRetainCurrentIfile());
+            }
+        });
+
+        l2genData.addPropertyChangeListener(l2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+
+                if (l2genData.getParamValue(l2genData.IFILE).length() > 0) {
+                    retainIfileOfileCheckbox.setEnabled(true);
+                }
             }
         });
 
@@ -383,19 +346,19 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         final JPanel buttonsSubPanel = new JPanel(new GridBagLayout());
         buttonsSubPanel.add(openParfileButton,
-                SeadasGuiUtils.makeConstraints(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE));
         buttonsSubPanel.add(retainIfileOfileCheckbox,
-                SeadasGuiUtils.makeConstraints(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH));
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH));
         buttonsSubPanel.add(saveParfileButton,
-                SeadasGuiUtils.makeConstraints(2, 0, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(2, 0, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
         final JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder("Parfile"));
         mainPanel.add(buttonsSubPanel,
-                SeadasGuiUtils.makeConstraints(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         mainPanel.add(new JScrollPane(parfileJTextArea),
-                SeadasGuiUtils.makeConstraints(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
 
         return mainPanel;
@@ -473,57 +436,35 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         /**
          * Add a blank filler panel to the bottom of paramsPanel
          * This serves the purpose of expanding at the bottom of the paramsPanel in order to fill the
-         * space so that the rest of the param control do not expand
+         * space so that the rest of the param controls do not expand
          */
-        {
-            final JPanel paramsFillerPanel = new JPanel();
-            paramsFillerPanel.add(new JLabel(""));
 
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = gridy;
-            c.anchor = GridBagConstraints.NORTH;
-            c.fill = GridBagConstraints.BOTH;
-            c.weightx = 1;
-            c.weighty = 1;
-            paramsPanel.add(paramsFillerPanel, c);
-        }
+        paramsPanel.add(new JPanel(),
+                new GridBagConstraintsCustom(0, gridy, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH));
 
 
         final JScrollPane paramsScroll = new JScrollPane(paramsPanel);
 
-        final JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
+        final JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
 
+        mainPanel.add(paramsScroll,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH));
+
+        mainPanel.add(restoreDefaultsButton,
+                new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
 
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.anchor = GridBagConstraints.NORTH;
-            c.fill = GridBagConstraints.BOTH;
-            c.weightx = 1;
-            c.weighty = 1;
-            mainPanel.add(paramsScroll, c);
-        }
+        //     final JPanel paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
+
+        final JPanel paddedMainPanel = new JPanel(new GridBagLayout());
+        paddedMainPanel.setPreferredSize(new Dimension(1000, 800));
+
+        paddedMainPanel.add(mainPanel,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 6));
 
 
-        {
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 1;
-            c.anchor = GridBagConstraints.CENTER;
-            c.fill = GridBagConstraints.NONE;
-            c.weightx = 0;
-            c.weighty = 0;
-            mainPanel.add(restoreDefaultsButton, c);
-        }
-
-        final JPanel paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
         addTab(paramCategoryInfo.getName(), paddedMainPanel);
-        paddedMainPanel.setPreferredSize(new Dimension(1000,800));
     }
 
 
@@ -561,46 +502,21 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
 
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 0;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.EAST;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-            jPanel.add(jLabel, constraints);
+        jPanel.add(jLabel,
+                new GridBagConstraintsCustom(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        jPanel.add(defaultIndicator,
+                new GridBagConstraintsCustom(1, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        int fill;
+        if (jTextFieldLen > 0) {
+            fill = GridBagConstraints.NONE;
+        } else {
+            fill = GridBagConstraints.HORIZONTAL;
         }
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 1;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.EAST;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-
-            jPanel.add(defaultIndicator, constraints);
-        }
-
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 2;
-            constraints.gridy = gridy;
-
-            if (jTextFieldLen == 0) {
-                constraints.fill = GridBagConstraints.HORIZONTAL;
-            } else {
-                constraints.fill = GridBagConstraints.NONE;
-            }
-
-            constraints.anchor = GridBagConstraints.WEST;
-            constraints.weightx = 1;
-            constraints.weighty = 0;
-
-            jPanel.add(jTextField, constraints);
-        }
+        jPanel.add(jTextField,
+                new GridBagConstraintsCustom(2, gridy, 1, 0, GridBagConstraints.WEST, fill));
 
 
         jTextField.addFocusListener(new FocusListener() {
@@ -742,39 +658,17 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         defaultIndicator.setForeground(DEFAULT_INDICATOR_COLOR);
         defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 0;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.EAST;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-            jPanel.add(jLabel, constraints);
-        }
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 1;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.EAST;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
+        jPanel.add(jLabel,
+                new GridBagConstraintsCustom(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
-            jPanel.add(defaultIndicator, constraints);
-        }
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 2;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.WEST;
-            constraints.weightx = 1;
-            constraints.weighty = 0;
-            jPanel.add(jComboBox, constraints);
-        }
+        jPanel.add(defaultIndicator,
+                new GridBagConstraintsCustom(1, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+
+        jPanel.add(jComboBox,
+                new GridBagConstraintsCustom(2, gridy, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
         jComboBox.addActionListener(new ActionListener() {
             @Override
@@ -823,37 +717,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
         });
 
-//                l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                debug("receiving eventName " + param);
-//
-//                boolean found=false;
-////                if (userArrayNeeded[1])
-////
-//                for (ParamValidValueInfo jComboBoxItem : jComboBoxArray) {
-//                    if (paramInfo.getValue().equals(jComboBoxItem.getValue())) {
-//                        jComboBox.setSelectedItem(jComboBoxItem);
-//
-//                        if (l2genData.isParamDefault(paramInfo)) {
-//                            //     jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
-//                            defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
-//                            defaultIndicator.setToolTipText("");
-//                        } else {
-//                            //     jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
-//                            defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
-//                            defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
-//                        }
-//                        found = true;
-//                    }
-//                }
-//
-//                if (!found)  {
-//                    jComboBox.setModel(new DefaultComboBoxModel(jComboBoxAlternateArray));
-//                }
-//            }
-//        });
-
     }
 
     private void createParamBitwiseComboBox(final ParamInfo paramInfo, JPanel jPanel, int gridy) {
@@ -880,41 +743,14 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
 
+        jPanel.add(jLabel,
+                new GridBagConstraintsCustom(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 0;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.EAST;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-            jPanel.add(jLabel, constraints);
-        }
+        jPanel.add(defaultIndicator,
+                new GridBagConstraintsCustom(1, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 1;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.EAST;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-
-            jPanel.add(defaultIndicator, constraints);
-        }
-
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 2;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.WEST;
-            constraints.weightx = 1;
-            constraints.weighty = 0;
-            jPanel.add(valuesScroll, constraints);
-        }
-
+        jPanel.add(valuesScroll,
+                new GridBagConstraintsCustom(2, gridy, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
     }
 
 
@@ -934,29 +770,11 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         final JLabel jLabel = new JLabel(paramValidValueInfo.getValue() + " - " + paramValidValueInfo.getDescription());
         jLabel.setToolTipText(paramValidValueInfo.getValue() + " - " + paramValidValueInfo.getDescription());
 
+        jPanel.add(jCheckBox,
+                new GridBagConstraintsCustom(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 0;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.EAST;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-            jPanel.add(jCheckBox, constraints);
-        }
-
-
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 1;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.WEST;
-            constraints.weightx = 1;
-            constraints.weighty = 0;
-            jPanel.add(jLabel, constraints);
-        }
+        jPanel.add(jLabel,
+                new GridBagConstraintsCustom(1, gridy, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
 
         // add listener for current checkbox
@@ -1066,39 +884,15 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         defaultIndicator.setForeground(DEFAULT_INDICATOR_COLOR);
         defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 0;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.EAST;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
-            jPanel.add(jLabel, constraints);
-        }
 
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 1;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.EAST;
-            constraints.weightx = 0;
-            constraints.weighty = 0;
+        jPanel.add(jLabel,
+                new GridBagConstraintsCustom(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
-            jPanel.add(defaultIndicator, constraints);
-        }
-        {
-            final GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 2;
-            constraints.gridy = gridy;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.anchor = GridBagConstraints.WEST;
-            constraints.weightx = 1;
-            constraints.weighty = 0;
-            jPanel.add(jCheckBox, constraints);
-        }
+        jPanel.add(defaultIndicator,
+                new GridBagConstraintsCustom(1, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
+        jPanel.add(jCheckBox,
+                new GridBagConstraintsCustom(2, gridy, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
         // add listener for current checkbox
         jCheckBox.addItemListener(new ItemListener() {
@@ -1175,55 +969,31 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        waveLimiterJPanel = new JPanel();
-        // wavelengthsJPanel.setBorder(BorderFactory.createTitledBorder("Wavelength Limiter"));
-        waveLimiterJPanel.setLayout(new GridBagLayout());
+        waveLimiterJPanel = new JPanel(new GridBagLayout());
 
 
         // ----------------------------------------------------------------------------------------
         // Create mainPanel to hold all controls
         // ----------------------------------------------------------------------------------------
 
-        final JPanel mainPanel = new JPanel();
+        final JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder("Wavelength Limiter"));
         mainPanel.setToolTipText("The wavelengths selected here are applied when you check a wavelength dependent product.  Not that any subsequent change ...");
 
 
-        mainPanel.setLayout(new GridBagLayout());
-
         // Add to mainPanel grid cell
 
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = 1;
-        c.weighty = 1;
-        mainPanel.add(waveLimiterSelectAllVisible, c);
+        mainPanel.add(waveLimiterSelectAllVisible,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
 
-        c = SeadasGuiUtils.makeConstraints(0, 1);
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = 1;
-        c.weighty = 1;
-        mainPanel.add(waveLimiterSelectAllNearInfrared, c);
+        mainPanel.add(waveLimiterSelectAllNearInfrared,
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
 
+        mainPanel.add(waveLimiterSelectAllInfrared,
+                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
 
-        c = SeadasGuiUtils.makeConstraints(0, 2);
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = 1;
-        c.weighty = 1;
-        mainPanel.add(waveLimiterSelectAllInfrared, c);
-
-
-        c = SeadasGuiUtils.makeConstraints(0, 3);
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridwidth = 2;
-        c.weightx = 1;
-        c.weighty = 1;
-        mainPanel.add(waveLimiterJPanel, c);
-
+        mainPanel.add(waveLimiterJPanel,
+                new GridBagConstraintsCustom(0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH));
 
         // ----------------------------------------------------------------------------------------
         // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
@@ -1651,73 +1421,31 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         createSelectedProductsJPanel(selectedProductsJPanel);
 
 
-        final JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
-
-        GridBagConstraints c;
+        final JPanel mainPanel = new JPanel(new GridBagLayout());
 
 
-        JPanel treeBorderJPanel = new JPanel();
+        JPanel treeBorderJPanel = new JPanel(new GridBagLayout());
         treeBorderJPanel.setBorder(BorderFactory.createTitledBorder("Product Selector"));
-        treeBorderJPanel.setLayout(new GridBagLayout());
-
-        c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.weighty = 1;
-        treeBorderJPanel.add(new JScrollPane(productJTree), c);
-
-        c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.anchor = GridBagConstraints.NORTHWEST;
-        // c.insets = new Insets(3, 3, 3, 3);
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.weighty = 1;
-//        mainPanel.add(new JScrollPane(treeTable), c);
-        mainPanel.add(treeBorderJPanel, c);
 
 
-        c = SeadasGuiUtils.makeConstraints(1, 0);
-        c.anchor = GridBagConstraints.NORTHWEST;
-        // c.insets = new Insets(3, 3, 3, 3);
-        c.fill = GridBagConstraints.NONE;
-        c.weightx = 1;
-        c.weighty = 1;
-//        mainPanel.add(new JScrollPane(treeTable), c);
-        mainPanel.add(wavelengthsLimitorJPanel, c);
+        treeBorderJPanel.add(new JScrollPane(productJTree),
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
+
+        mainPanel.add(treeBorderJPanel,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
+
+        mainPanel.add(wavelengthsLimitorJPanel,
+                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+
+        mainPanel.add(selectedProductsJPanel,
+                new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, 0, 2));
 
 
-        // Add to mainPanel grid cell
-
-        c = SeadasGuiUtils.makeConstraints(0, 1);
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTH;
-        c.weightx = 0;
-        c.weighty = 0;
-        c.gridwidth = 2;
-        mainPanel.add(selectedProductsJPanel, c);
-
-
-//        c = SeadasGuiUtils.makeConstraints(1, 0);
-//        c.anchor = GridBagConstraints.NORTHEAST;
-//        // c.insets = new Insets(3, 3, 3, 3);
-//        c.fill = GridBagConstraints.BOTH;
-//        c.weightx = 1;
-//        c.weighty = 1;
-////        mainPanel.add(new JScrollPane(treeTable), c);
-//        mainPanel.add(selectedProductsCartJPanel, c);
+//        final JPanel helpPanel = new JPanel(new GridBagLayout());
+//        helpPanel.add(getHelpButton("l2gen"), BorderLayout.EAST);
 //
-        final JPanel helpPanel = new JPanel(new BorderLayout());
-        helpPanel.add(getHelpButton("l2gen"), BorderLayout.EAST);
-
-        c = SeadasGuiUtils.makeConstraints(0, 2);
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.NORTH;
-        c.weightx = 0;
-        c.weighty = 0;
-        c.gridwidth = 2;
-        mainPanel.add(helpPanel, c);
+//        mainPanel.add(helpPanel,
+//                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, 0, 2));
 
         addTab(myTabname, mainPanel);
 
@@ -1737,6 +1465,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         return null;
     }
+
     //----------------------------------------------------------------------------------------
     // Methods involving Panels
     //----------------------------------------------------------------------------------------
@@ -1851,55 +1580,17 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1;
-        c.gridwidth = 3;
-        selectedProductsPanel.add(selectedProductsJTextArea, c);
+        selectedProductsPanel.add(selectedProductsJTextArea,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 0, 3));
 
+        selectedProductsPanel.add(panel1,
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        c = SeadasGuiUtils.makeConstraints(0, 1);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1;
-        selectedProductsPanel.add(panel1, c);
+        selectedProductsPanel.add(panel2,
+                new GridBagConstraintsCustom(1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        c = SeadasGuiUtils.makeConstraints(1, 1);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1;
-        selectedProductsPanel.add(panel2, c);
-
-        c = SeadasGuiUtils.makeConstraints(2, 1);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1;
-        selectedProductsPanel.add(panel3, c);
-    }
-
-    private JPanel createOfileJPanel() {
-
-        JPanel selectedProductsPanel = new JPanel();
-        selectedProductsPanel.setBorder(BorderFactory.createTitledBorder("Output File"));
-        selectedProductsPanel.setLayout(new GridBagLayout());
-
-        ofileJComboBox = new JComboBox();
-// todo add listener to this
-
-        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1;
-        selectedProductsPanel.add(ofileJComboBox, c);
-
-        return selectedProductsPanel;
-    }
-
-
-    //----------------------------------------------------------------------------------------
-    // Methods involved with the Parfile Tab
-    //----------------------------------------------------------------------------------------
-
-    public void loadParfileEntry() {
-        System.out.println(parfileTextEntryName.getText() + "=" + parfileTextEntryValue.getText());
-        l2genData.setParamValue(parfileTextEntryName.getText(), parfileTextEntryValue.getText());
-        System.out.println("ifile=" + l2genData.getParamValue(l2genData.IFILE));
+        selectedProductsPanel.add(panel3,
+                new GridBagConstraintsCustom(2, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
     }
 
 
@@ -2149,15 +1840,10 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         for (JCheckBox wavelengthGroupCheckbox : wavelengthGroupCheckboxes) {
             // add current JCheckBox to the panel
-            {
-                final GridBagConstraints c = new GridBagConstraints();
-                c.gridx = gridxCnt;
-                c.gridy = gridyCnt;
-                c.fill = GridBagConstraints.NONE;
-                c.anchor = GridBagConstraints.NORTHWEST;
-                c.weightx = 1;
-                waveLimiterJPanel.add(wavelengthGroupCheckbox, c);
-            }
+
+            waveLimiterJPanel.add(wavelengthGroupCheckbox,
+                    new GridBagConstraintsCustom(gridxCnt, gridyCnt, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+
 
             // increment GridBag coordinates
             if (gridxCnt < (NUMBER_OF_COLUMNS - 1)) {
@@ -2166,7 +1852,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 gridxCnt = 0;
                 gridyCnt++;
             }
-
         }
 
         // updateWaveLimiterSelectionStates();
