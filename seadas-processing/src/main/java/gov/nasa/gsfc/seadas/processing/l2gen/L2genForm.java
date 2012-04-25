@@ -34,8 +34,7 @@ import java.util.EventObject;
 
 
 class L2genForm extends JTabbedPane implements CloProgramUI {
-    // note: line count=2865 before cleanup  now 1868
-    // now 2395 after 1839
+
     private final AppContext appContext;
     private final SourceProductFileSelector sourceProductSelector;
     private final OutputFileSelector outputFileSelector;
@@ -60,7 +59,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private JTextArea selectedProductsJTextArea;
 
-    private JTextArea parfileJTextArea;
+    private JTextArea parStringTextArea;
 
     private JFileChooser parfileChooser = new JFileChooser();
     private JFileChooser geofileChooser = new JFileChooser();
@@ -138,7 +137,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     //----------------------------------------------------------------------------------------
 
     public ProcessorModel getProcessorModel() {
-        processorModel.setParString(l2genData.getParfile());
+        processorModel.setParString(l2genData.getParString());
         return processorModel;
     }
 
@@ -326,20 +325,20 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        parfileJTextArea = new JTextArea();
-        parfileJTextArea.setEditable(true);
-        parfileJTextArea.setBackground(Color.decode("#ffffff"));
-        parfileJTextArea.setAutoscrolls(true);
-        // parfileJTextArea.setRows(new Double(this.getPreferredSize().getHeight()).intValue());
+        parStringTextArea = new JTextArea();
+        parStringTextArea.setEditable(true);
+        parStringTextArea.setBackground(Color.decode("#ffffff"));
+        parStringTextArea.setAutoscrolls(true);
+        // parStringTextArea.setRows(new Double(this.getPreferredSize().getHeight()).intValue());
 
-        parfileJTextArea.addFocusListener(new FocusListener() {
+        parStringTextArea.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                parfileLostFocus();
+                parStringTextAreaLostFocus();
             }
         });
 
@@ -357,7 +356,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         mainPanel.setBorder(BorderFactory.createTitledBorder("Parfile"));
         mainPanel.add(buttonsSubPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-        mainPanel.add(new JScrollPane(parfileJTextArea),
+        mainPanel.add(new JScrollPane(parStringTextArea),
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
 
@@ -1482,10 +1481,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             public void selectionChanged(SelectionChangeEvent event) {
                 Product sourceProduct = getSourceProduct();
 
-                if (handleIfileJComboBoxEnabled) {
-                    //   updateTargetProductName(sourceProduct);
-                }
-
 
                 if (sourceProduct != null && sourceProductSelector.getSelectedProduct() != null
                         && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
@@ -1622,13 +1617,13 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     //----------------------------------------------------------------------------------------
 
 
-    private void parfileLostFocus() {
-        l2genData.setParamsFromParfile(parfileJTextArea.getText().toString(), false);
+    private void parStringTextAreaLostFocus() {
+        l2genData.setParamsFromParfile(parStringTextArea.getText().toString(), false);
         // reset the text
         // this is done here because events were fired only if params actually changed
         // changes to comments or param-case dont trigger an event
         // so setting the text here insures that this textarea is updated
-        parfileJTextArea.setText(l2genData.getParfile());
+        parStringTextArea.setText(l2genData.getParString());
     }
 
 
@@ -1644,9 +1639,10 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             parfileText.append("\n");
         }
 
-        l2genData.setParamsFromParfile(parfileText.toString(), true);
-        parfileJTextArea.setEditable(true);
-        //  parfileJTextArea.setText(parfileText.toString());
+
+        l2genData.setParamsFromParfile(parfileText.toString(), l2genData.isRetainCurrentIfile());
+        parStringTextArea.setEditable(true);
+        //  parStringTextArea.setText(parfileText.toString());
     }
 
     public void writeParfile() {
@@ -1655,7 +1651,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             // Create file
             FileWriter fstream = new FileWriter(parfileChooser.getSelectedFile().toString());
             BufferedWriter out = new BufferedWriter(fstream);
-            out.write(l2genData.getParfile());
+            out.write(l2genData.getParString());
             //Close the output stream
             out.close();
         } catch (Exception e) {//Catch exception if any
@@ -1678,7 +1674,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     debug("receiving eventName " + eventName);
-                    parfileJTextArea.setText(l2genData.getParfile());
+                    parStringTextArea.setText(l2genData.getParString());
                 }
             });
         }
@@ -1696,7 +1692,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println("receiving PARFILE_TEXT_CHANGE_EVENT_NAME");
-                parfileJTextArea.setText(l2genData.getParfile());
+                parStringTextArea.setText(l2genData.getParString());
             }
         });
 
@@ -1742,7 +1738,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             public void propertyChange(PropertyChangeEvent evt) {
                 //   if (enableIfileEvent) {
                 System.out.println(l2genData.IFILE + " being handled");
-                missionStringChangeEvent((String) evt.getNewValue());
                 ifileChangedEventHandler();
                 //   }
             }
@@ -1753,7 +1748,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         l2genData.addPropertyChangeListener(l2genData.DEFAULTS_CHANGED_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                parfileJTextArea.setText(l2genData.getParfile());
+                parStringTextArea.setText(l2genData.getParString());
             }
         });
 
@@ -1763,7 +1758,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             public void propertyChange(PropertyChangeEvent evt) {
                 debug("EVENT RECEIVED ofile");
                 debug(l2genData.getParamValue("ofile=" + l2genData.OFILE));
-                parfileJTextArea.setText(l2genData.getParfile());
+                parStringTextArea.setText(l2genData.getParString());
                 updateOfileHandler();
             }
         });
@@ -1859,29 +1854,25 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private void ifileChangedEventHandler() {
 
+        File ifile = new File(l2genData.getParamValue(l2genData.IFILE));
+
         if (sourceProductSelector != null) {
-            boolean setSourceProductSelector = false;
-
-            if (l2genData.getParamValue(l2genData.IFILE) != null &&
-                    sourceProductSelector.getSelectedProduct() != null &&
-                    sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
-                if (!l2genData.getParamValue(l2genData.IFILE).equals(sourceProductSelector.getSelectedProduct().getFileLocation().toString())) {
-                    setSourceProductSelector = true;
-                }
-            } else {
-                setSourceProductSelector = true;
-            }
-
-            if (setSourceProductSelector == true) {
-                handleIfileJComboBoxEnabled = false;
-                sourceProductSelector.setSelectedProduct(null);
-
-//                final TargetProductSelectorModel selectorModel = outputFileSelector.getModel();
-//                selectorModel.setProductName(null);
-
-                handleIfileJComboBoxEnabled = true;
-            }
+            handleIfileJComboBoxEnabled = false;
+            sourceProductSelector.setSelectedFile(ifile);
+            handleIfileJComboBoxEnabled = true;
         }
+
+
+        for (int tabIndex = 1; tabIndex < tabCount; tabIndex++) {
+            this.setEnabledAt(tabIndex, true);
+        }
+
+        updateWavelengthLimiterPanel();
+        updateProductTreePanel();
+        updateWaveLimiterSelectionStates();
+
+        parStringTextArea.setText(l2genData.getParString());
+        selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
     }
 
     private void invalidIfileEvent() {
@@ -1896,30 +1887,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         if (tabIndex < (this.getTabCount() + 1)) {
             this.setTitleAt(tabIndex, name);
         }
-    }
-
-
-    private void missionStringChangeEvent(String newMissionString) {
-
-
-        ifileChangedEventHandler();
-
-        for (int tabIndex = 1; tabIndex < tabCount; tabIndex++) {
-            this.setEnabledAt(tabIndex, true);
-        }
-
-        //       createProductSelectorWavelengthsPanel();
-
-        updateWavelengthLimiterPanel();
-        //   l2genData.applyParfileDefaults();
-        updateProductTreePanel();
-
-        // setWaveDependentProductsJList();
-        updateWaveLimiterSelectionStates();
-
-
-        parfileJTextArea.setText(l2genData.getParfile());
-        selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
     }
 
 
@@ -1991,7 +1958,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private void productChangedHandler() {
 
         selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
-        parfileJTextArea.setText(l2genData.getParfile());
+        parStringTextArea.setText(l2genData.getParString());
         productJTree.treeDidChange();
         checkTreeState(rootNode);
     }

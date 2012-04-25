@@ -1,5 +1,3 @@
-
-
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 
@@ -446,7 +444,7 @@ public class L2genData {
     }
 
 
-    public String getParfile() {
+    public String getParString() {
 
         StringBuilder par = new StringBuilder("");
 
@@ -549,29 +547,17 @@ public class L2genData {
 // DANNY IS REVIEWING CODE AND LEFT OFF HERE
 
 
-    public void setParamsFromParfile(String parfileContent, boolean checkIgnoreIfileInParString) {
+    public void setParamsFromParfile(String parfileContent, boolean ignoreIfile) {
 
         ArrayList<ParamInfo> parfileParamInfos = parseParfile(parfileContent);
 
         /*
         Handle IFILE first
          */
-        boolean ignoreIfileOfile;
-        if (!checkIgnoreIfileInParString || (checkIgnoreIfileInParString && !retainCurrentIfile)) {
-            ignoreIfileOfile = false;
-        } else {
-            ignoreIfileOfile = true;
-        }
-
-//        if (getParamValue(L2PROD).equals(ParamInfo.NULL_STRING)) {
-//            ignoreIfileOfile = false;
-//        }
-
-
-        if (!ignoreIfileOfile) {
-            for (ParamInfo newParamInfo : parfileParamInfos) {
-                if (newParamInfo.getName().toLowerCase().equals(IFILE)) {
-                    setParamValue(IFILE, newParamInfo.getValue());
+        if (!ignoreIfile) {
+            for (ParamInfo parfileParamInfo : parfileParamInfos) {
+                if (parfileParamInfo.getName().toLowerCase().equals(IFILE)) {
+                    setParamValue(IFILE, parfileParamInfo.getValue());
                     break;
                 }
             }
@@ -582,23 +568,24 @@ public class L2genData {
         Ignore IFILE (handled earlier) and PAR (which is todo)
          */
         for (ParamInfo newParamInfo : parfileParamInfos) {
-            boolean setParamValue = true;
 
-            if (newParamInfo.getName().toLowerCase().equals(OFILE) && ignoreIfileOfile) {
-                setParamValue = false;
+            if (newParamInfo.getName().toLowerCase().equals(OFILE) && ignoreIfile) {
+                continue;
+            }
+
+            if (newParamInfo.getName().toLowerCase().equals(GEOFILE) && ignoreIfile) {
+                continue;
             }
 
             if (newParamInfo.getName().toLowerCase().equals(IFILE)) {
-                setParamValue = false;
+                continue;
             }
 
             if (newParamInfo.getName().toLowerCase().equals(PAR)) {
-                setParamValue = false;
+                continue;
             }
 
-            if (setParamValue) {
-                setParamValue(newParamInfo.getName().toLowerCase(), newParamInfo.getValue());
-            }
+            setParamValue(newParamInfo.getName().toLowerCase(), newParamInfo.getValue());
         }
 
         /*
@@ -720,7 +707,12 @@ public class L2genData {
 
 
         for (ParamInfo paramInfo : paramInfos) {
+
+
             if (paramInfo.getName().toLowerCase().equals(param.toLowerCase())) {
+                if (param.toLowerCase().equals(OFILE.toLowerCase())) {
+                    int i = 0;
+                }
                 setParamValue(paramInfo, value);
                 return;
             }
@@ -1094,12 +1086,12 @@ public class L2genData {
             setCustomGeofile(newIfile);
 
             debug(IFILE.toString() + "being fired");
-            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, IFILE, null, getMissionString()));
+            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, IFILE, null, null));
 
         } else {
             ifileIsValid = false;
             debug(INVALID_IFILE_EVENT.toString() + "being fired");
-            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, INVALID_IFILE_EVENT, null, getMissionString()));
+            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, INVALID_IFILE_EVENT, null, null));
         }
 
 
@@ -1131,15 +1123,16 @@ public class L2genData {
 
     /**
      * Given standard Gregorian date return day of year (Jan 1=1, Feb 1=32, etc)
+     *
      * @param year
-     * @param month  1-based Jan=1, etc.
+     * @param month      1-based Jan=1, etc.
      * @param dayOfMonth
      * @return
      */
 
     private int getDayOfYear(int year, int month, int dayOfMonth) {
 //        int monthIndex = month - 1;
-        GregorianCalendar gc = new GregorianCalendar(year, month-1, dayOfMonth);
+        GregorianCalendar gc = new GregorianCalendar(year, month - 1, dayOfMonth);
 //        gc.set(GregorianCalendar.DAY_OF_MONTH, dayOfMonth);
 //        gc.set(GregorianCalendar.MONTH, monthIndex);
 //        gc.set(GregorianCalendar.YEAR, year);
@@ -1175,7 +1168,7 @@ public class L2genData {
 
     private void setCustomOfile(String ifile) {
 
-   //     ifile = "SVM01_npp_d20120108_t0029304_e0030545_b01016_obpg_ops.h5";
+        //     ifile = "SVM01_npp_d20120108_t0029304_e0030545_b01016_obpg_ops.h5";
         String ofile = ParamInfo.NULL_STRING;
         String VIIRS_IFILE_PREFIX = "SVM01";
         File ifileFile = new File(ifile);
@@ -1211,6 +1204,7 @@ public class L2genData {
                 ofile = stringBuilder.toString();
             }
         }
+
 
         setParamValue(OFILE, ofile);
     }
