@@ -219,49 +219,54 @@ public class L2genReader {
                 String description = XmlReader.getTextValue(optionElement, "description");
                 String source = XmlReader.getTextValue(optionElement, "source");
 
+                ParamInfo paramInfo;
+
                 if (name.toLowerCase().equals(l2genData.L2PROD)) {
                     l2genData.setParamValue(l2genData.L2PROD, value);
                     l2genData.setProductDefaults();
+                    paramInfo = new L2prodParamInfo(l2genData);
+
                 } else {
 
-                    ParamInfo paramInfo = new ParamInfo(name, value, type);
-
-                    paramInfo.setDescription(description);
-                    paramInfo.setDefaultValue(defaultValue);
-                    paramInfo.setSource(source);
-
-                    boolean isBit = false;
-                    if (name != null) {
-                        if (name.equals("gas_opt") ||
-                                name.equals("eval")) {
-                            isBit = true;
-                        }
-                    }
-
-                    paramInfo.setBit(isBit);
-
-                    NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
-
-                    if (validValueNodelist != null && validValueNodelist.getLength() > 0) {
-                        for (int j = 0; j < validValueNodelist.getLength(); j++) {
-
-                            Element validValueElement = (Element) validValueNodelist.item(j);
-
-                            String validValueValue = XmlReader.getTextValue(validValueElement, "value");
-                            String validValueDescription = XmlReader.getTextValue(validValueElement, "description");
-
-                            ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(validValueValue);
-
-                            paramValidValueInfo.setDescription(validValueDescription);
-                            paramValidValueInfo.setParent(paramInfo);
-                            paramInfo.addValidValueInfo(paramValidValueInfo);
-                        }
-
-                        //   paramInfo.sortValidValueInfos();
-                    }
-
-                    l2genData.addParamInfo(paramInfo);
+                    paramInfo = new ParamInfo(name, value, type);
                 }
+
+                paramInfo.setDescription(description);
+                paramInfo.setDefaultValue(defaultValue);
+                paramInfo.setSource(source);
+
+                boolean isBit = false;
+                if (name != null) {
+                    if (name.equals("gas_opt") ||
+                            name.equals("eval")) {
+                        isBit = true;
+                    }
+                }
+
+                paramInfo.setBit(isBit);
+
+                NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
+
+                if (validValueNodelist != null && validValueNodelist.getLength() > 0) {
+                    for (int j = 0; j < validValueNodelist.getLength(); j++) {
+
+                        Element validValueElement = (Element) validValueNodelist.item(j);
+
+                        String validValueValue = XmlReader.getTextValue(validValueElement, "value");
+                        String validValueDescription = XmlReader.getTextValue(validValueElement, "description");
+
+                        ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(validValueValue);
+
+                        paramValidValueInfo.setDescription(validValueDescription);
+                        paramValidValueInfo.setParent(paramInfo);
+                        paramInfo.addValidValueInfo(paramValidValueInfo);
+                    }
+
+                    //   paramInfo.sortValidValueInfos();
+                }
+
+                l2genData.addParamInfo(paramInfo);
+
             }
         }
 

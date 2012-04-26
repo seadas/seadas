@@ -45,7 +45,7 @@ public class L2genData {
     public final String EAST = "east";
     public final String IFILE = "ifile";
     public final String OFILE = "ofile";
-    public final String L2PROD = "l2prod";
+    public static final String L2PROD = "l2prod";
 
     public final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
     public final String PARFILE_CHANGE_EVENT = "PARFILE_CHANGE_EVENT";
