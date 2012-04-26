@@ -56,6 +56,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private boolean waveLimiterControlHandlersEnabled = true;
     private boolean swingSentEventsDisabled = false;
     private boolean handleIfileJComboBoxEnabled = true;
+    private boolean handleOfileSelecterEnabled = true;
 
     private JTextArea selectedProductsJTextArea;
 
@@ -138,6 +139,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     public ProcessorModel getProcessorModel() {
         processorModel.setParString(l2genData.getParString());
+        processorModel.setOutputFile(new File(l2genData.getParamValue(l2genData.OFILE)));
         return processorModel;
     }
 
@@ -345,11 +347,11 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         final JPanel buttonsSubPanel = new JPanel(new GridBagLayout());
         buttonsSubPanel.add(openParfileButton,
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         buttonsSubPanel.add(retainIfileOfileCheckbox,
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH));
+                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH,2));
         buttonsSubPanel.add(saveParfileButton,
-                new GridBagConstraintsCustom(2, 0, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
         final JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -1510,7 +1512,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 }
 
                 if (ofile != null) {
-                    l2genData.setParamValue(l2genData.OFILE, ofile);
+                    if (handleOfileSelecterEnabled) {
+                        l2genData.setParamValue(l2genData.OFILE, ofile);
+                    }
                 }
             }
         });
@@ -1618,7 +1622,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
 
     private void parStringTextAreaLostFocus() {
-        l2genData.setParamsFromParfile(parStringTextArea.getText().toString(), false);
+        l2genData.setParamsWithParString(parStringTextArea.getText().toString(), false);
         // reset the text
         // this is done here because events were fired only if params actually changed
         // changes to comments or param-case dont trigger an event
@@ -1640,7 +1644,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         }
 
 
-        l2genData.setParamsFromParfile(parfileText.toString(), l2genData.isRetainCurrentIfile());
+        l2genData.setParamsWithParString(parfileText.toString(), l2genData.isRetainCurrentIfile());
         parStringTextArea.setEditable(true);
         //  parStringTextArea.setText(parfileText.toString());
     }
@@ -1716,6 +1720,8 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
         });
 
+
+
         l2genData.addPropertyChangeListener(l2genData.OFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -1725,11 +1731,15 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 //                    outputFileSelector.getModel().setProductName(null);
                 } else {
                     File ofile = new File(ofileString);
+
+                    handleOfileSelecterEnabled = false;
                     outputFileSelector.getModel().setProductDir(ofile.getParentFile());
                     outputFileSelector.getModel().setProductName(ofile.getName());
+                    handleOfileSelecterEnabled = true;
                 }
             }
         });
+
 
 
         l2genData.addPropertyChangeListener(l2genData.IFILE, new PropertyChangeListener() {
@@ -1753,15 +1763,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.OFILE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                debug("EVENT RECEIVED ofile");
-                debug(l2genData.getParamValue("ofile=" + l2genData.OFILE));
-                parStringTextArea.setText(l2genData.getParString());
-                updateOfileHandler();
-            }
-        });
     }
 
 
@@ -1963,11 +1964,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         checkTreeState(rootNode);
     }
 
-
-    private void updateOfileHandler() {
-
-        //todo
-    }
 
 
     //----------------------------------------------------------------------------------------

@@ -158,17 +158,13 @@ public class L2genReader {
                     }
 
                     if (!name.equals(l2genData.IFILE)) {
-                        //  l2genData.setParamDefaultValue(name, value);
                         l2genData.setParamValue(name, value);
-                         System.out.println(l2genData.getParamValue(l2genData.L2PROD));
 
                         if (name.equals(l2genData.L2PROD)) {
-                            l2genData.copyToProductDefaults();
+                            l2genData.setProductDefaults();
                         } else {
-                            l2genData.setParamToDefaults(name);
+                            l2genData.setParamDefault(name);
                         }
-
-                        System.out.println(l2genData.getParamValue(l2genData.L2PROD));
                     }
                 }
             }
@@ -225,7 +221,7 @@ public class L2genReader {
 
                 if (name.toLowerCase().equals(l2genData.L2PROD)) {
                     l2genData.setParamValue(l2genData.L2PROD, value);
-                    l2genData.copyToProductDefaults();
+                    l2genData.setProductDefaults();
                 } else {
 
                     ParamInfo paramInfo = new ParamInfo(name, value, type);

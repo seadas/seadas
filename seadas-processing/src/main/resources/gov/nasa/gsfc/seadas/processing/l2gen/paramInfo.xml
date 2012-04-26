@@ -195,7 +195,7 @@
         </option>
         <option>
             <name>l2prod</name>
-            <value>Es_412</value>
+            <value>aot_865 angstrom Rrs_vvv Kd_490 pic poc cdom_index par</value>
             <type>string</type>
             <source>command line</source>
             <alias>l2prod1</alias>

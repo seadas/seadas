@@ -4,12 +4,12 @@
         <param>ifile</param>
         <param>l2prod</param>
         <param>ofile</param>
-
+        <param>geofile</param>
     </category>
 
     <category name="Hidden Stuff">
         <makeVisible>0</makeVisible>
-        <param>geofile</param>
+
         <param>-help</param>
         <param>ilist</param>
         <param>maxpointdist</param>

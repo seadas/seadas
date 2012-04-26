@@ -448,6 +448,9 @@ public class L2genData {
 
         StringBuilder par = new StringBuilder("");
 
+
+        par.append(L2PROD + "=" + getProdParamValue() + "\n\n");
+
         for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
             StringBuilder currCategoryEntries = new StringBuilder("");
 
@@ -547,9 +550,9 @@ public class L2genData {
 // DANNY IS REVIEWING CODE AND LEFT OFF HERE
 
 
-    public void setParamsFromParfile(String parfileContent, boolean ignoreIfile) {
+    public void setParamsWithParString(String parString, boolean ignoreIfile) {
 
-        ArrayList<ParamInfo> parfileParamInfos = parseParfile(parfileContent);
+        ArrayList<ParamInfo> parfileParamInfos = parseParfile(parString);
 
         /*
         Handle IFILE first
@@ -563,8 +566,10 @@ public class L2genData {
             }
         }
 
+        boolean ofileSet = false;
+        boolean geofileSet = false;
         /*
-        Set all params contained in parfileContent
+        Set all params contained in parString
         Ignore IFILE (handled earlier) and PAR (which is todo)
          */
         for (ParamInfo newParamInfo : parfileParamInfos) {
@@ -586,14 +591,30 @@ public class L2genData {
             }
 
             setParamValue(newParamInfo.getName().toLowerCase(), newParamInfo.getValue());
+
+            if (newParamInfo.getName().toLowerCase().equals(GEOFILE)) {
+                geofileSet = true;
+            }
+
+            if (newParamInfo.getName().toLowerCase().equals(OFILE)) {
+                ofileSet = true;
+            }
+        }
+
+        if (!ofileSet) {
+            setCustomOfile();
+        }
+
+        if (!geofileSet) {
+            setCustomGeofile();
         }
 
         /*
-        Delete all params NOT contained in parfileContent to defaults (basically set to default)
-        Except: L2PROD and IFILE and OFILE remain at current value
+        Delete all params NOT contained in parString to defaults (basically set to default)
+        Except: L2PROD and IFILE  remain at current value
          */
         for (ParamInfo paramInfo : paramInfos) {
-            if (!paramInfo.getName().equals(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE)) {
+            if (!paramInfo.getName().equals(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE) && !paramInfo.getName().equals(GEOFILE)) {
                 boolean paramHandled = false;
                 for (ParamInfo parfileParamInfo : parfileParamInfos) {
                     if (paramInfo.getName().toLowerCase().equals(parfileParamInfo.getName().toLowerCase())) {
@@ -606,6 +627,7 @@ public class L2genData {
                 }
             }
         }
+
     }
 
 
@@ -638,7 +660,7 @@ public class L2genData {
         }
     }
 
-    public void copyToProductDefaults() {
+    public void setProductDefaults() {
 
         for (ProductInfo productInfo : productInfos) {
             for (BaseInfo aInfo : productInfo.getChildren()) {
@@ -693,6 +715,7 @@ public class L2genData {
         setParamValue(param, ParamInfo.NULL_STRING);
     }
 
+
     public void setParamValue(String param, String value) {
 
         // Cleanup inputs and handle input exceptions
@@ -705,20 +728,23 @@ public class L2genData {
         param = param.trim();
         value = value.trim();
 
-
-        for (ParamInfo paramInfo : paramInfos) {
-
-
-            if (paramInfo.getName().toLowerCase().equals(param.toLowerCase())) {
-                if (param.toLowerCase().equals(OFILE.toLowerCase())) {
-                    int i = 0;
-                }
-                setParamValue(paramInfo, value);
-                return;
-            }
+        if (param.toLowerCase().equals(L2PROD)) {
+            setProdParamValue(value);
+        } else {
+            setParamValue(getParamInfo(param), value);
         }
     }
 
+
+    private ParamInfo getParamInfo(String param) {
+        for (ParamInfo paramInfo : paramInfos) {
+            if (paramInfo.getName().toLowerCase().equals(param.toLowerCase())) {
+                return paramInfo;
+            }
+        }
+
+        return null;
+    }
 
     public void setParamValue(String param, boolean selected) {
         if (selected) {
@@ -728,6 +754,7 @@ public class L2genData {
         }
     }
 
+
     public void setParamValue(ParamInfo paramInfo, ParamValidValueInfo paramValidValueInfo) {
         if (paramInfo == null || paramValidValueInfo == null) {
             return;
@@ -735,6 +762,7 @@ public class L2genData {
 
         setParamValue(paramInfo, paramValidValueInfo.getValue());
     }
+
 
     public void setParamValue(ParamInfo paramInfo, String value) {
         if (paramInfo == null) {
@@ -744,10 +772,11 @@ public class L2genData {
             value = ParamInfo.NULL_STRING;
         }
 
+
         if (!value.equals(paramInfo.getValue())) {
-            if (paramInfo.getName().equals(IFILE)) {
+            if (paramInfo.getName().toLowerCase().equals(IFILE)) {
                 setIfileParamValue(paramInfo, value);
-            } else if (paramInfo.getName().equals(L2PROD)) {
+            } else if (paramInfo.getName().toLowerCase().equals(L2PROD)) {
                 setProdParamValue(value);
             } else {
                 debug("adding " + paramInfo.getName() + "=" + value + " to paramValues");
@@ -815,7 +844,7 @@ public class L2genData {
         }
     }
 
-    public void setParamToDefaults(String param) {
+    public void setParamDefault(String param) {
         // Cleanup input and handle input exceptions
         if (param == null || param.length() == 0) {
             return;
@@ -870,6 +899,8 @@ public class L2genData {
         }
 
         // if product changed
+
+
         if (!inProd.equals(getParamValue(L2PROD))) {
             TreeSet<String> inProducts = new TreeSet<String>();
             for (String prodEntry : inProd.split(" ")) {
@@ -881,33 +912,24 @@ public class L2genData {
             // For every product in ProductInfoArray set selected to agree with inProducts
             //----------------------------------------------------------------------------------------------------
 
-            BaseInfo.State newState;
-
             for (ProductInfo productInfo : productInfos) {
                 for (BaseInfo aInfo : productInfo.getChildren()) {
                     AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
 
                     if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.NONE) {
                         if (inProducts.contains(algorithmInfo.getFullName())) {
-                            newState = AlgorithmInfo.State.SELECTED;
+                            algorithmInfo.setState(AlgorithmInfo.State.SELECTED);
                         } else {
-                            newState = AlgorithmInfo.State.NOT_SELECTED;
-                        }
-
-                        if (algorithmInfo.getState() != newState) {
-                            algorithmInfo.setState(newState);
+                            algorithmInfo.setState(AlgorithmInfo.State.NOT_SELECTED);
                         }
                     } else {
                         for (BaseInfo wInfo : aInfo.getChildren()) {
                             WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
 
                             if (inProducts.contains(wavelengthInfo.getFullName())) {
-                                newState = WavelengthInfo.State.SELECTED;
+                                wavelengthInfo.setState(WavelengthInfo.State.SELECTED);
                             } else {
-                                newState = WavelengthInfo.State.NOT_SELECTED;
-                            }
-                            if (wavelengthInfo.getState() != newState) {
-                                wavelengthInfo.setState(newState);
+                                wavelengthInfo.setState(WavelengthInfo.State.NOT_SELECTED);
                             }
                         }
 
@@ -1080,10 +1102,8 @@ public class L2genData {
 
             updateXmlBasedObjects(newIfile);
 
-            copyToProductDefaults();
-
-            setCustomOfile(newIfile);
-            setCustomGeofile(newIfile);
+            setCustomOfile();
+            setCustomGeofile();
 
             debug(IFILE.toString() + "being fired");
             propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, IFILE, null, null));
@@ -1131,11 +1151,7 @@ public class L2genData {
      */
 
     private int getDayOfYear(int year, int month, int dayOfMonth) {
-//        int monthIndex = month - 1;
         GregorianCalendar gc = new GregorianCalendar(year, month - 1, dayOfMonth);
-//        gc.set(GregorianCalendar.DAY_OF_MONTH, dayOfMonth);
-//        gc.set(GregorianCalendar.MONTH, monthIndex);
-//        gc.set(GregorianCalendar.YEAR, year);
         return gc.get(GregorianCalendar.DAY_OF_YEAR);
     }
 
@@ -1166,9 +1182,9 @@ public class L2genData {
     }
 
 
-    private void setCustomOfile(String ifile) {
+    private void setCustomOfile() {
 
-        //     ifile = "SVM01_npp_d20120108_t0029304_e0030545_b01016_obpg_ops.h5";
+        String ifile = getParamValue(IFILE);
         String ofile = ParamInfo.NULL_STRING;
         String VIIRS_IFILE_PREFIX = "SVM01";
         File ifileFile = new File(ifile);
@@ -1210,8 +1226,9 @@ public class L2genData {
     }
 
 
-    private void setCustomGeofile(String ifile) {
+    private void setCustomGeofile() {
 
+        String ifile = getParamValue(IFILE);
         String geofile = ParamInfo.NULL_STRING;
         String VIIRS_IFILE_PREFIX = "SVM01";
         File ifileFile = new File(ifile);
