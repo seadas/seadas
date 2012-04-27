@@ -1550,7 +1550,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         selectedProductsDefaultsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                l2genData.copyFromProductDefaults();
+                l2genData.setProdToDefault();
             }
         });
 
@@ -1673,11 +1673,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         for (ParamInfo paramInfo : l2genData.getParamInfos()) {
             final String eventName = paramInfo.getName();
-            debug("Making listener for " + eventName);
             l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    debug("receiving eventName " + eventName);
                     parStringTextArea.setText(l2genData.getParString());
                 }
             });
@@ -1692,21 +1690,12 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.PARFILE_CHANGE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println("receiving PARFILE_TEXT_CHANGE_EVENT_NAME");
-                parStringTextArea.setText(l2genData.getParString());
-            }
-        });
 
 
         l2genData.addPropertyChangeListener(l2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println("WAVELENGTH_LIMITER_CHANGE_EVENT fired");
                 updateWaveLimiterSelectionStates();
-                // setWaveDependentProductsJList();
             }
         });
 
@@ -1714,9 +1703,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         l2genData.addPropertyChangeListener(l2genData.L2PROD, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                debug("productChangedHandler() being called");
                 productChangedHandler();
-
             }
         });
 
@@ -1727,8 +1714,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             public void propertyChange(PropertyChangeEvent evt) {
                 String ofileString = l2genData.getParamValue(l2genData.OFILE);
                 if (ofileString.equals(ParamInfo.NULL_STRING)) {
-//                    outputFileSelector.getModel().setProductDir(null);
-//                    outputFileSelector.getModel().setProductName(null);
                 } else {
                     File ofile = new File(ofileString);
 
@@ -1754,13 +1739,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         });
 
-
-        l2genData.addPropertyChangeListener(l2genData.DEFAULTS_CHANGED_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                parStringTextArea.setText(l2genData.getParString());
-            }
-        });
 
 
     }
@@ -1959,7 +1937,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private void productChangedHandler() {
 
         selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
-        parStringTextArea.setText(l2genData.getParString());
         productJTree.treeDidChange();
         checkTreeState(rootNode);
     }

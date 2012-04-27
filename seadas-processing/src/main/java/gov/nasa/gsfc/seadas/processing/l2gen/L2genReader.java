@@ -159,12 +159,7 @@ public class L2genReader {
 
                     if (!name.equals(l2genData.IFILE)) {
                         l2genData.setParamValue(name, value);
-
-                        if (name.equals(l2genData.L2PROD)) {
-                            l2genData.setProductDefaults();
-                        } else {
-                            l2genData.setParamDefault(name);
-                        }
+                        l2genData.setParamDefault(name);
                     }
                 }
             }
@@ -214,25 +209,19 @@ public class L2genReader {
                     }
                 }
 
-
-                String defaultValue = value;
                 String description = XmlReader.getTextValue(optionElement, "description");
                 String source = XmlReader.getTextValue(optionElement, "source");
 
                 ParamInfo paramInfo;
-
                 if (name.toLowerCase().equals(l2genData.L2PROD)) {
-                    l2genData.setParamValue(l2genData.L2PROD, value);
-                    l2genData.setProductDefaults();
-                    paramInfo = new L2prodParamInfo(l2genData);
-
+                    paramInfo = new L2prodParamInfo(value);
+                    l2genData.setL2prodParamInfo((L2prodParamInfo) paramInfo);
                 } else {
-
                     paramInfo = new ParamInfo(name, value, type);
                 }
 
+                paramInfo.setDefaultValue(value);
                 paramInfo.setDescription(description);
-                paramInfo.setDefaultValue(defaultValue);
                 paramInfo.setSource(source);
 
                 boolean isBit = false;
@@ -261,12 +250,9 @@ public class L2genReader {
                         paramValidValueInfo.setParent(paramInfo);
                         paramInfo.addValidValueInfo(paramValidValueInfo);
                     }
-
-                    //   paramInfo.sortValidValueInfos();
                 }
 
                 l2genData.addParamInfo(paramInfo);
-
             }
         }
 

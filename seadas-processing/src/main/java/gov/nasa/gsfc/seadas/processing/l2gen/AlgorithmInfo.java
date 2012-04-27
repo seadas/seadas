@@ -181,6 +181,50 @@ public class AlgorithmInfo extends BaseInfo {
         return result.toString().replaceAll("[_]+", "_").replaceAll("[_]$", "");
     }
 
+    public boolean isDefaultSelectedShortcut(ShortcutType shortcutType) {
+        boolean found = false;
+
+        if (shortcutType == ShortcutType.ALL) {
+            for (BaseInfo wInfo : getChildren()) {
+                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+                if (wavelengthInfo.isDefaultSelected()) {
+                    found = true;
+                } else {
+                    return false;
+                }
+            }
+            return found;
+
+        } else if (shortcutType == ShortcutType.VISIBLE) {
+            for (BaseInfo wInfo : getChildren()) {
+                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+                if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE)) {
+                    if (wavelengthInfo.isDefaultSelected()) {
+                        found = true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return found;
+
+        } else if (shortcutType == ShortcutType.IR) {
+            for (BaseInfo wInfo : getChildren()) {
+                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+                if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED)) {
+                    if (wavelengthInfo.isDefaultSelected()) {
+                        found = true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return found;
+        }
+        return false;
+    }
+
+
 
     public boolean isSelectedShortcut(ShortcutType shortcutType) {
         boolean found = false;
@@ -224,6 +268,10 @@ public class AlgorithmInfo extends BaseInfo {
         }
         return false;
     }
+
+
+
+
 
     public void setStateShortcut(ShortcutType shortcutType, State state) {
         System.out.println("setStateShortcut" + shortcutType + " ---- " + state);

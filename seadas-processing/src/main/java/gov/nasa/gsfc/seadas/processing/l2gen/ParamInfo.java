@@ -38,9 +38,13 @@ public class ParamInfo implements Comparable {
     }
 
     public ParamInfo(String name, String value) {
-        setName(name);
-        setValue(value);
-    }
+         setName(name);
+         setValue(value);
+     }
+
+    public ParamInfo(String name) {
+         setName(name);
+     }
 
 
     public String getName() {
