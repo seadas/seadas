@@ -214,8 +214,7 @@ public class L2genReader {
 
                 ParamInfo paramInfo;
                 if (name.toLowerCase().equals(l2genData.L2PROD)) {
-                    paramInfo = new L2prodParamInfo(value);
-                    l2genData.setL2prodParamInfo((L2prodParamInfo) paramInfo);
+                    paramInfo = l2genData.createL2prodParamInfo(value);
                 } else {
                     paramInfo = new ParamInfo(name, value, type);
                 }

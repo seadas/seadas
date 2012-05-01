@@ -1,11 +1,10 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import org.esa.beam.util.StringUtils;
+import org.hsqldb.lib.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.HashSet;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +27,7 @@ public class L2prodParamInfo extends ParamInfo {
 
 
     public String getValue() {
-        ArrayList<String> prodArrayList = new ArrayList<String>();
+        ArrayList<String> l2prod = new ArrayList<String>();
 
         for (ProductInfo productInfo : productInfos) {
             for (BaseInfo aInfo : productInfo.getChildren()) {
@@ -36,13 +35,13 @@ public class L2prodParamInfo extends ParamInfo {
                     AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
 
                     if (algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.ALL)) {
-                        prodArrayList.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.ALL));
+                        l2prod.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.ALL));
                     } else {
                         if (algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
-                            prodArrayList.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.IR));
+                            l2prod.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.IR));
                         }
                         if (algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
-                            prodArrayList.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
+                            l2prod.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
                         }
 
                         for (BaseInfo wInfo : aInfo.getChildren()) {
@@ -50,26 +49,28 @@ public class L2prodParamInfo extends ParamInfo {
 
                             if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE) && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
                                 if (wInfo.isSelected()) {
-                                    prodArrayList.add(wavelengthInfo.getFullName());
+                                    l2prod.add(wavelengthInfo.getFullName());
                                 }
                             }
 
                             if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED) && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
                                 if (wInfo.isSelected()) {
-                                    prodArrayList.add(wavelengthInfo.getFullName());
+                                    l2prod.add(wavelengthInfo.getFullName());
                                 }
                             }
                         }
                     }
                 } else {
                     if (aInfo.isSelected()) {
-                        prodArrayList.add(aInfo.getFullName());
+                        l2prod.add(aInfo.getFullName());
                     }
                 }
             }
         }
 
-        return StringUtils.join(prodArrayList, " ");
+        Collections.sort(l2prod);
+
+        return StringUtils.join(l2prod, " ");
     }
 
 
@@ -82,7 +83,7 @@ public class L2prodParamInfo extends ParamInfo {
         // if product changed
 
         if (!value.equals(getValue())) {
-            TreeSet<String> inProducts = new TreeSet<String>();
+            HashSet<String> inProducts = new HashSet<String>();
             for (String prodEntry : value.split(" ")) {
                 prodEntry.trim();
                 inProducts.add(prodEntry);
@@ -131,22 +132,21 @@ public class L2prodParamInfo extends ParamInfo {
     }
 
 
-
     public String getDefaultValue() {
-        ArrayList<String> prodArrayList = new ArrayList<String>();
+        ArrayList<String> l2prodDefault = new ArrayList<String>();
 
         for (ProductInfo productInfo : productInfos) {
             for (BaseInfo aInfo : productInfo.getChildren()) {
                 AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
                 if (aInfo.hasChildren()) {
                     if (algorithmInfo.isDefaultSelectedShortcut(AlgorithmInfo.ShortcutType.ALL)) {
-                        prodArrayList.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.ALL));
+                        l2prodDefault.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.ALL));
                     } else {
                         if (algorithmInfo.isDefaultSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
-                            prodArrayList.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.IR));
+                            l2prodDefault.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.IR));
                         }
                         if (algorithmInfo.isDefaultSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
-                            prodArrayList.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
+                            l2prodDefault.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
                         }
 
                         for (BaseInfo wInfo : aInfo.getChildren()) {
@@ -154,26 +154,28 @@ public class L2prodParamInfo extends ParamInfo {
 
                             if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE) && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
                                 if (wavelengthInfo.isDefaultSelected()) {
-                                    prodArrayList.add(wavelengthInfo.getFullName());
+                                    l2prodDefault.add(wavelengthInfo.getFullName());
                                 }
                             }
 
                             if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED) && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
                                 if (wavelengthInfo.isDefaultSelected()) {
-                                    prodArrayList.add(wavelengthInfo.getFullName());
+                                    l2prodDefault.add(wavelengthInfo.getFullName());
                                 }
                             }
                         }
                     }
                 } else {
                     if (algorithmInfo.isDefaultSelected()) {
-                        prodArrayList.add(aInfo.getFullName());
+                        l2prodDefault.add(aInfo.getFullName());
                     }
                 }
             }
         }
 
-        return StringUtils.join(prodArrayList, " ");
+        Collections.sort(l2prodDefault);
+
+        return StringUtils.join(l2prodDefault, " ");
     }
 
 
@@ -206,9 +208,8 @@ public class L2prodParamInfo extends ParamInfo {
     public void setDefaultValue(String defaultValue) {
         setValue(defaultValue);
         copyValueToDefault();
-
-
     }
+
 
     public void copyValueToDefault() {
 
@@ -225,10 +226,9 @@ public class L2prodParamInfo extends ParamInfo {
         }
     }
 
+
     public void setToDefault() {
         // This method loops through the entire productInfoArray setting all the states to the default state
-
-        boolean productChanged = false;
 
         for (ProductInfo productInfo : productInfos) {
             for (BaseInfo aInfo : productInfo.getChildren()) {
@@ -236,13 +236,11 @@ public class L2prodParamInfo extends ParamInfo {
                     for (BaseInfo wInfo : aInfo.getChildren()) {
                         if (wInfo.isSelected() != ((WavelengthInfo) wInfo).isDefaultSelected()) {
                             wInfo.setSelected(((WavelengthInfo) wInfo).isDefaultSelected());
-                            productChanged = true;
                         }
                     }
                 } else {
                     if (aInfo.isSelected() != ((AlgorithmInfo) aInfo).isDefaultSelected()) {
                         aInfo.setSelected(((AlgorithmInfo) aInfo).isDefaultSelected());
-                        productChanged = true;
                     }
                 }
             }

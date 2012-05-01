@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 
+import org.esa.beam.util.StringUtils;
+
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -81,7 +83,7 @@ public class L2genData {
     public void setRetainCurrentIfile(boolean retainCurrentIfile) {
 
         this.retainCurrentIfile = retainCurrentIfile;
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, RETAIN_IFILE_CHANGE_EVENT, null, null));
+        fireEvent(RETAIN_IFILE_CHANGE_EVENT);
     }
 
 
@@ -95,78 +97,72 @@ public class L2genData {
 
     }
 
-
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        boolean found = false;
-
+    private EventInfo getEventInfo(String name) {
         for (EventInfo eventInfo : eventInfos) {
-            if (propertyName.equals(eventInfo.getName())) {
-                eventInfo.addPropertyChangeListener(listener);
-                found = true;
+            if (name.equals(eventInfo.getName())) {
+                return eventInfo;
             }
         }
+        return null;
+    }
 
-        if (!found) {
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        EventInfo eventInfo = getEventInfo(propertyName);
+        if (eventInfo == null) {
             propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+        } else {
+            eventInfo.addPropertyChangeListener(listener);
         }
     }
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        boolean found = false;
-
-        for (EventInfo eventInfo : eventInfos) {
-            if (propertyName.equals(eventInfo.getName())) {
-                eventInfo.removePropertyChangeListener(listener);
-                found = true;
-            }
-        }
-
-        if (!found) {
+        EventInfo eventInfo = getEventInfo(propertyName);
+        if (eventInfo == null) {
             propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+        } else {
+            eventInfo.removePropertyChangeListener(listener);
         }
     }
 
 
-    public void disableEvent(String eventName) {
-        for (EventInfo eventInfo : eventInfos) {
-            if (eventName.equals(eventInfo.toString())) {
-                eventInfo.setEnabled(false);
-                //  debug("Disabled event " + eventName + " current enabled count = " + eventInfo.getEnabledCount());
-            }
+    public void disableEvent(String name) {
+        EventInfo eventInfo = getEventInfo(name);
+        if (eventInfo == null) {
+            debug("disableEvent - eventInfo not found for " + name);
+        } else {
+            eventInfo.setEnabled(false);
         }
     }
 
-    public void enableEvent(String eventName) {
-        for (EventInfo eventInfo : eventInfos) {
-            if (eventName.equals(eventInfo.toString())) {
-                eventInfo.setEnabled(true);
-                //   debug("Enabled event " + eventName + " current enabled count = " + eventInfo.getEnabledCount());
-            }
+    public void enableEvent(String name) {
+        EventInfo eventInfo = getEventInfo(name);
+        if (eventInfo == null) {
+            debug("enableEvent - eventInfo not found for " + name);
+        } else {
+            eventInfo.setEnabled(true);
         }
     }
 
-    public void fireEvent(String eventName) {
-        fireEvent(eventName, null, null);
+    public void fireEvent(String name) {
+        fireEvent(name, null, null);
     }
 
-    public void fireEvent(String eventName, Object oldValue, Object newValue) {
-        for (EventInfo eventInfo : eventInfos) {
-            if (eventName.equals(eventInfo.toString())) {
-                eventInfo.fireEvent(oldValue, newValue);
-                return;
-            }
+    public void fireEvent(String name, Object oldValue, Object newValue) {
+        EventInfo eventInfo = getEventInfo(name);
+        if (eventInfo == null) {
+            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, oldValue, newValue));
+        } else {
+            eventInfo.fireEvent(oldValue, newValue);
         }
     }
-
 
     public void fireAllParamEvents() {
         for (ParamInfo paramInfo : paramInfos) {
             if (paramInfo.getName() != null) {
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, paramInfo.getName(), null, null));
+                fireEvent(paramInfo.getName());
             }
         }
     }
-
 
     public void setSelectedInfo(BaseInfo info, BaseInfo.State state) {
 
@@ -194,7 +190,7 @@ public class L2genData {
             if (selectedWavelength.equals(wavelengthInfo.getWavelengthString())) {
                 if (selected != wavelengthInfo.isSelected()) {
                     wavelengthInfo.setSelected(selected);
-                    propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, WAVE_LIMITER_CHANGE_EVENT, null, null));
+                    fireEvent(WAVE_LIMITER_CHANGE_EVENT);
                 }
             }
         }
@@ -266,9 +262,7 @@ public class L2genData {
                 wavelengthInfo.setSelected(selected);
             }
         }
-
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, WAVE_LIMITER_CHANGE_EVENT, null, null));
-
+        fireEvent(WAVE_LIMITER_CHANGE_EVENT);
     }
 
     public void addParamInfo(ParamInfo paramInfo) {
@@ -422,7 +416,7 @@ public class L2genData {
 // DANNY IS REVIEWING CODE AND LEFT OFF HERE
 
 
-    public void setParamsWithParString(String parString, boolean ignoreIfile) {
+    public void setParString(String parString, boolean ignoreIfile) {
 
         ArrayList<ParamInfo> parfileParamInfos = parseParfile(parString);
 
@@ -446,6 +440,7 @@ public class L2genData {
          */
         for (ParamInfo newParamInfo : parfileParamInfos) {
 
+
             if (newParamInfo.getName().toLowerCase().equals(OFILE) && ignoreIfile) {
                 continue;
             }
@@ -460,6 +455,11 @@ public class L2genData {
 
             if (newParamInfo.getName().toLowerCase().equals(PAR)) {
                 continue;
+            }
+
+            if (newParamInfo.getName().toLowerCase().equals(L2PROD)) {
+
+                newParamInfo.setValue(sortStringList(newParamInfo.getValue()));
             }
 
             setParamValue(newParamInfo.getName(), newParamInfo.getValue());
@@ -608,7 +608,7 @@ public class L2genData {
                 } else {
                     paramInfo.setValue(paramInfo.getDefaultValue());
                 }
-                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, paramInfo.getName(), null, null));
+                fireEvent(paramInfo.getName());
             }
         }
     }
@@ -824,13 +824,13 @@ public class L2genData {
             setCustomOfile();
             setCustomGeofile();
 
-            debug(IFILE.toString() + "being fired");
-            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, IFILE, null, null));
+            //debug(IFILE.toString() + "being fired");
+            fireEvent(IFILE);
 
         } else {
             ifileIsValid = false;
-            debug(INVALID_IFILE_EVENT.toString() + "being fired");
-            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, INVALID_IFILE_EVENT, null, null));
+            //debug(INVALID_IFILE_EVENT.toString() + "being fired");
+            fireEvent(INVALID_IFILE_EVENT);
         }
 
 
@@ -1107,17 +1107,17 @@ public class L2genData {
         InputStream paramInfoStream = L2genForm.class.getResourceAsStream(getParamInfoXml(initialIfile));
         l2genReader.readParamInfoXml(paramInfoStream);
 
-        InputStream stream = L2genForm.class.getResourceAsStream(getProductInfoXml(initialIfile));
-        l2genReader.readProductsXml(stream);
+//        InputStream stream = L2genForm.class.getResourceAsStream(getProductInfoXml(initialIfile));
+//        l2genReader.readProductsXml(stream);
 
 
         InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
         l2genReader.readParamCategoryXml(paramCategoryInfoStream);
         setParamCategoryInfos();
 
-        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
-        l2genReader.readProductCategoryXml(productCategoryInfoStream);
-        setProductCategoryInfos();
+//        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
+//        l2genReader.readProductCategoryXml(productCategoryInfoStream);
+//        setProductCategoryInfos();
 
     }
 
@@ -1168,7 +1168,30 @@ public class L2genData {
         l2prodParamInfo.clearProductCategoryInfos();
     }
 
+    public L2prodParamInfo createL2prodParamInfo(String value) {
+        L2prodParamInfo l2prodParamInfo = new L2prodParamInfo(value);
+        setL2prodParamInfo(l2prodParamInfo);
 
+        InputStream productInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_INFO_XML);
+        l2genReader.readProductsXml(productInfoStream);
+
+        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
+        l2genReader.readProductCategoryXml(productCategoryInfoStream);
+        setProductCategoryInfos();
+        
+        return l2prodParamInfo;
+    }
+
+        public String sortStringList(String stringlist) {
+        String[] products = stringlist.split("\\s+");
+        ArrayList<String> productArrayList = new ArrayList<String>();
+        for (String product : products) {
+            productArrayList.add(product);
+        }
+        Collections.sort(productArrayList);
+
+        return StringUtils.join(productArrayList, " ");
+    }
 }
 
 

@@ -16,6 +16,7 @@ import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
+import org.esa.beam.util.StringUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
@@ -29,6 +30,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.EventObject;
 
@@ -1559,7 +1561,8 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (EDIT_LOAD_BUTTON_TEXT_EDIT_MODE.equals(selectedProductsEditLoadButton.getText())) {
-                    l2genData.setParamValue(l2genData.L2PROD, selectedProductsJTextArea.getText());
+                    String l2prod = sortStringList(selectedProductsJTextArea.getText());
+                    l2genData.setParamValue(l2genData.L2PROD, l2prod);
                     selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
                     setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
                 } else {
@@ -1567,6 +1570,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 }
             }
         });
+
 
 
         selectedProductsCancelButton.addActionListener(new ActionListener() {
@@ -1622,7 +1626,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
 
     private void parStringTextAreaLostFocus() {
-        l2genData.setParamsWithParString(parStringTextArea.getText().toString(), false);
+        l2genData.setParString(parStringTextArea.getText().toString(), false);
         // reset the text
         // this is done here because events were fired only if params actually changed
         // changes to comments or param-case dont trigger an event
@@ -1644,7 +1648,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         }
 
 
-        l2genData.setParamsWithParString(parfileText.toString(), l2genData.isRetainCurrentIfile());
+        l2genData.setParString(parfileText.toString(), l2genData.isRetainCurrentIfile());
         parStringTextArea.setEditable(true);
         //  parStringTextArea.setText(parfileText.toString());
     }
@@ -1995,5 +1999,16 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         System.out.println(string);
     }
 
+
+    public String sortStringList(String stringlist) {
+        String[] products = stringlist.split("\\s+");
+        ArrayList<String> productArrayList = new ArrayList<String>();
+        for (String product : products) {
+            productArrayList.add(product);
+        }
+        Collections.sort(productArrayList);
+
+        return StringUtils.join(productArrayList, " ");
+    }
 
 }
