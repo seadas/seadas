@@ -60,7 +60,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private boolean handleIfileJComboBoxEnabled = true;
     private boolean handleOfileSelecterEnabled = true;
 
-    private JTextArea selectedProductsJTextArea;
+    // private JTextArea selectedProductsJTextArea;
 
     private JTextArea parStringTextArea;
 
@@ -69,12 +69,13 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private DefaultMutableTreeNode rootNode;
 
-    private String SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT = "No products currently selected";
 
     private int tabCount = 0;
 
     private static final String MAIN_TAB_NAME = "Main";
     private static final String PRODUCTS_TAB_NAME = "Products";
+    private static final int MAIN_TAB_INDEX = 0;
+    private static final int PRODUCTS_TAB_INDEX = 1;
 
     private String WAVE_LIMITER_SELECT_ALL_INFRARED = "Select All Infrared";
     private String WAVE_LIMITER_DESELECT_ALL_INFRARED = "Deselect All Infrared";
@@ -84,9 +85,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private String WAVE_LIMITER_DESELECT_ALL_VISIBLE = "Deselect All Visible";
 
 
-    private JButton selectedProductsDefaultsButton;
-    private JButton selectedProductsEditLoadButton;
-    private JButton selectedProductsCancelButton;
+    //  private JButton selectedProductsDefaultsButton;
     private JButton waveLimiterSelectAllInfrared;
     private JButton waveLimiterSelectAllVisible;
     private JButton waveLimiterSelectAllNearInfrared;
@@ -96,10 +95,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private L2genData l2genData = new L2genData();
     private L2genReader l2genReader = new L2genReader(l2genData);
 
-    enum DisplayMode {STANDARD_MODE, EDIT_MODE}
-
-    private String EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE = "Edit";
-    private String EDIT_LOAD_BUTTON_TEXT_EDIT_MODE = "Load";
 
     private ProcessorModel processorModel;
 
@@ -151,14 +146,13 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private void createUserInterface() {
 
-        int currTabIndex = 0;
         createMainTab(MAIN_TAB_NAME);
-        this.setEnabledAt(currTabIndex, true);
+        this.setEnabledAt(MAIN_TAB_INDEX, true);
 
-
-        currTabIndex++;
         createProductsTab(PRODUCTS_TAB_NAME);
-        this.setEnabledAt(currTabIndex, false);
+        this.setEnabledAt(PRODUCTS_TAB_INDEX, false);
+
+        int currTabIndex = 1;
 
         for (ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
             if (paramCategoryInfo.isVisible() && (paramCategoryInfo.getParamInfos().size() > 0)) {
@@ -331,7 +325,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         parStringTextArea = new JTextArea();
         parStringTextArea.setEditable(true);
-        parStringTextArea.setBackground(Color.decode("#ffffff"));
+//        parStringTextArea.setBackground(Color.decode("#ffffff"));
         parStringTextArea.setAutoscrolls(true);
         // parStringTextArea.setRows(new Double(this.getPreferredSize().getHeight()).intValue());
 
@@ -351,7 +345,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         buttonsSubPanel.add(openParfileButton,
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         buttonsSubPanel.add(retainIfileOfileCheckbox,
-                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH,2));
+                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 2));
         buttonsSubPanel.add(saveParfileButton,
                 new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
@@ -545,11 +539,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             public void propertyChange(PropertyChangeEvent evt) {
                 jTextField.setText(l2genData.getParamValue(param));
                 if (l2genData.isParamDefault(param)) {
-                    //       jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicator.setToolTipText("");
                 } else {
-                    //       jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
                     defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
                 }
@@ -572,14 +564,11 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             if (isSelected) {
                 setBackground(list.getSelectionBackground());
                 setForeground(list.getSelectionForeground());
-//                setBackground(Color.white);
-//                setForeground(Color.black);
+
                 if (-1 < index && index < tooltips.length) {
                     list.setToolTipText(tooltips[index]);
                 }
             } else {
-//                setBackground(list.getBackground());
-//                setForeground(list.getForeground());
                 setBackground(Color.white);
                 setForeground(Color.black);
             }
@@ -601,7 +590,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         ArrayList<ParamValidValueInfo> jComboBoxArrayList = new ArrayList<ParamValidValueInfo>();
         ArrayList<String> validValuesToolTipsArrayList = new ArrayList<String>();
 
-        //    jComboBoxArrayList.add(new String(""));
 
         for (ParamValidValueInfo paramValidValueInfo : paramInfo.getValidValueInfos()) {
             if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().length() > 0) {
@@ -614,8 +602,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 }
             }
         }
-
-//        final ParamValidValueInfo validValuesInfosArray[] = (ParamValidValueInfo[]) jComboBoxArrayList.toArray();
 
         final ParamValidValueInfo[] jComboBoxArray;
         jComboBoxArray = new ParamValidValueInfo[jComboBoxArrayList.size()];
@@ -649,10 +635,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
         }
 
-        //     jComboBox.setForeground(Color.cyan);
-        //     jComboBox.setBackground(new Color(200, 20, 20));
-
-        final boolean userArrayNeeded[] = {false};
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
@@ -694,11 +676,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                         jComboBox.setSelectedItem(jComboBoxItem);
 
                         if (l2genData.isParamDefault(paramInfo)) {
-                            //     jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
                             defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                             defaultIndicator.setToolTipText("");
                         } else {
-                            //     jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
                             defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
                             defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
                         }
@@ -766,7 +746,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         final JCheckBox jCheckBox = new JCheckBox();
         final String param = paramInfo.getName();
 
-        //   jCheckBox.setName(paramValidValueInfo.getValue()+" - "+paramValidValueInfo.getDescription());
 
         jCheckBox.setSelected(paramInfo.isBitwiseSelected(paramValidValueInfo));
 
@@ -851,11 +830,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
 
                         if (l2genData.isParamDefault(param)) {
-                            //   jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
                             defaultIndicatorLabel.setText(DEFAULT_INDICATOR_LABEL_OFF);
                             defaultIndicatorLabel.setToolTipText("");
                         } else {
-                            //   jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
                             defaultIndicatorLabel.setText(DEFAULT_INDICATOR_LABEL_ON);
                             defaultIndicatorLabel.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
                         }
@@ -872,7 +849,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         jCheckBox.setName(paramInfo.getName());
 
-        //   paramJCheckboxes.add(jCheckBox);
 
         if (paramInfo.getValue().equals(ParamInfo.BOOLEAN_TRUE)) {
             jCheckBox.setSelected(true);
@@ -912,11 +888,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 jCheckBox.setSelected(l2genData.getBooleanParamValue(param));
 
                 if (l2genData.isParamDefault(param)) {
-                    //   jLabel.setForeground(LABEL_COLOR_IS_DEFAULT);
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicator.setToolTipText("");
                 } else {
-                    //   jLabel.setForeground(LABEL_COLOR_NOT_DEFAULT);
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
                     defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
                 }
@@ -940,6 +914,25 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                     l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, true);
                 } else if (waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
                     l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, false);
+                }
+            }
+        });
+
+
+        l2genData.addPropertyChangeListener(l2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                // Set INFRARED 'Select All' toggle to appropriate text
+                if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
+                    if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED)) {
+                        if (!waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
+                            waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_DESELECT_ALL_INFRARED);
+                        }
+                    } else {
+                        if (!waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
+                            waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
+                        }
+                    }
                 }
             }
         });
@@ -998,18 +991,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         mainPanel.add(waveLimiterJPanel,
                 new GridBagConstraintsCustom(0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH));
 
-        // ----------------------------------------------------------------------------------------
-        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
-        // ----------------------------------------------------------------------------------------
 
-        JPanel wrappedMainPanel = SeadasGuiUtils.addWrapperPanel(mainPanel);
-
-
-        // ----------------------------------------------------------------------------------------
-        // Add wrappedMainPanel to tabbedPane
-        // ----------------------------------------------------------------------------------------
-
-        // tabbedPane.addTab(myTabname, wrappedMainPanel);
         return mainPanel;
 
     }
@@ -1401,40 +1383,38 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
-    private void createProductsTab(String myTabname) {
-
-
-        JPanel wavelengthsLimitorJPanel = createWaveLimiterJPanel();
-        //    JPanel selectedProductsCartJPanel = new JPanel();
-        //   createSelectedProductsCartJPanelNew(selectedProductsCartJPanel);
+    private JPanel createProductSelectorJPanel() {
 
         TreeNode rootNode = createTree();
         productJTree = new JTree(rootNode);
-
-        CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
-        productJTree.setCellRenderer(renderer);
-
+        productJTree.setCellRenderer(new CheckBoxNodeRenderer());
         productJTree.setCellEditor(new CheckBoxNodeEditor(productJTree));
         productJTree.setEditable(true);
         productJTree.setShowsRootHandles(true);
         productJTree.setRootVisible(false);
 
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createTitledBorder("Product Selector"));
 
-        final JPanel selectedProductsJPanel = new JPanel();
-        createSelectedProductsJPanel(selectedProductsJPanel);
+        mainPanel.add(new JScrollPane(productJTree),
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
+
+        return mainPanel;
+    }
+
+
+    private void createProductsTab(String tabname) {
+
+        JPanel productSelectorJPanel = createProductSelectorJPanel();
+
+        JPanel wavelengthsLimitorJPanel = createWaveLimiterJPanel();
+
+        JPanel selectedProductsJPanel = createSelectedProductsJPanel();
 
 
         final JPanel mainPanel = new JPanel(new GridBagLayout());
 
-
-        JPanel treeBorderJPanel = new JPanel(new GridBagLayout());
-        treeBorderJPanel.setBorder(BorderFactory.createTitledBorder("Product Selector"));
-
-
-        treeBorderJPanel.add(new JScrollPane(productJTree),
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
-
-        mainPanel.add(treeBorderJPanel,
+        mainPanel.add(productSelectorJPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
 
         mainPanel.add(wavelengthsLimitorJPanel,
@@ -1444,30 +1424,22 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, 0, 2));
 
 
-//        final JPanel helpPanel = new JPanel(new GridBagLayout());
-//        helpPanel.add(getHelpButton("l2gen"), BorderLayout.EAST);
-//
-//        mainPanel.add(helpPanel,
-//                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, 0, 2));
+        addTab(tabname, mainPanel);
 
-        addTab(myTabname, mainPanel);
+        l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                StringBuilder tabname = new StringBuilder(PRODUCTS_TAB_NAME);
 
+                if (l2genData.isParamDefault(L2genData.L2PROD)) {
+                    setTabName(PRODUCTS_TAB_INDEX, tabname.toString());
+                } else {
+                    setTabName(PRODUCTS_TAB_INDEX, tabname.append("*").toString());
+                }
+            }
+        });
     }
 
-
-    protected AbstractButton getHelpButton(String helpId) {
-        if (helpId != null) {
-            final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon("icons/Help24.gif"),
-                    false);
-            helpButton.setToolTipText("Help.");
-            helpButton.setName("helpButton");
-            HelpSys.enableHelpOnButton(helpButton, helpId);
-            //  HelpSys.enableHelpKey(getParentDialogContentPane(), getHelpId());
-            return helpButton;
-        }
-
-        return null;
-    }
 
     //----------------------------------------------------------------------------------------
     // Methods involving Panels
@@ -1525,98 +1497,69 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
-    private void createSelectedProductsJPanel(JPanel selectedProductsPanel) {
+    private JPanel createSelectedProductsJPanel() {
 
-
-        selectedProductsPanel.setBorder(BorderFactory.createTitledBorder("Selected Products"));
-        selectedProductsPanel.setLayout(new GridBagLayout());
-
-        selectedProductsDefaultsButton = new JButton("Apply Defaults");
-        selectedProductsEditLoadButton = new JButton();
-        selectedProductsCancelButton = new JButton("Cancel");
-
-
-        selectedProductsJTextArea = new JTextArea(SELECTED_PRODUCTS_JTEXT_AREA_DEFAULT);
+        final JTextArea selectedProductsJTextArea = new JTextArea();
         selectedProductsJTextArea.setLineWrap(true);
         selectedProductsJTextArea.setWrapStyleWord(true);
         selectedProductsJTextArea.setColumns(20);
         selectedProductsJTextArea.setRows(5);
+        selectedProductsJTextArea.setEditable(true);
 
-        setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
+        selectedProductsJTextArea.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
 
-        JPanel panel1 = SeadasGuiUtils.addPaddedWrapperPanel(selectedProductsDefaultsButton, 3, GridBagConstraints.WEST);
-        JPanel panel2 = SeadasGuiUtils.addPaddedWrapperPanel(selectedProductsEditLoadButton, 3, GridBagConstraints.CENTER);
-        JPanel panel3 = SeadasGuiUtils.addPaddedWrapperPanel(selectedProductsCancelButton, 3, GridBagConstraints.EAST);
+            @Override
+            public void focusLost(FocusEvent e) {
+                String l2prod = l2genData.sortStringList(selectedProductsJTextArea.getText());
+                l2genData.setParamValue(L2genData.L2PROD, l2prod);
+                selectedProductsJTextArea.setText(l2genData.getParamValue(L2genData.L2PROD));
+            }
+        });
 
 
-        selectedProductsDefaultsButton.addActionListener(new ActionListener() {
+        l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                selectedProductsJTextArea.setText(l2genData.getParamValue(L2genData.L2PROD));
+            }
+        });
+
+
+        final JButton defaultsButton = new JButton("Apply Defaults");
+        defaultsButton.setEnabled(false);
+
+        defaultsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 l2genData.setProdToDefault();
             }
         });
 
-
-        selectedProductsEditLoadButton.addActionListener(new ActionListener() {
+        l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (EDIT_LOAD_BUTTON_TEXT_EDIT_MODE.equals(selectedProductsEditLoadButton.getText())) {
-                    String l2prod = sortStringList(selectedProductsJTextArea.getText());
-                    l2genData.setParamValue(l2genData.L2PROD, l2prod);
-                    selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
-                    setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (l2genData.isParamDefault(L2genData.L2PROD)) {
+                    defaultsButton.setEnabled(false);
                 } else {
-                    setDisplayModeSelectedProducts(DisplayMode.EDIT_MODE);
+                    defaultsButton.setEnabled(true);
                 }
             }
         });
 
 
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createTitledBorder("Selected Products"));
 
-        selectedProductsCancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
-
-                setDisplayModeSelectedProducts(DisplayMode.STANDARD_MODE);
-            }
-        });
-
-
-        selectedProductsPanel.add(selectedProductsJTextArea,
+        mainPanel.add(selectedProductsJTextArea,
                 new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 0, 3));
 
-        selectedProductsPanel.add(panel1,
-                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        mainPanel.add(defaultsButton,
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        selectedProductsPanel.add(panel2,
-                new GridBagConstraintsCustom(1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-
-        selectedProductsPanel.add(panel3,
-                new GridBagConstraintsCustom(2, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-    }
-
-
-    //----------------------------------------------------------------------------------------
-    // Methods involved with the Product Tab
-    //----------------------------------------------------------------------------------------
-
-
-    private void setDisplayModeSelectedProducts(DisplayMode displayMode) {
-
-        if (displayMode == DisplayMode.STANDARD_MODE) {
-            selectedProductsJTextArea.setEditable(false);
-            selectedProductsJTextArea.setBackground(Color.decode("#dddddd"));
-            selectedProductsEditLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_STANDARD_MODE);
-            selectedProductsDefaultsButton.setEnabled(true);
-            selectedProductsCancelButton.setVisible(false);
-        } else if (displayMode == DisplayMode.EDIT_MODE) {
-            selectedProductsJTextArea.setEditable(true);
-            selectedProductsJTextArea.setBackground(Color.decode("#ffffff"));
-            selectedProductsEditLoadButton.setText(EDIT_LOAD_BUTTON_TEXT_EDIT_MODE);
-            selectedProductsDefaultsButton.setEnabled(false);
-            selectedProductsCancelButton.setVisible(true);
-        }
+        return mainPanel;
     }
 
 
@@ -1694,8 +1637,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-
-
         l2genData.addPropertyChangeListener(l2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -1710,7 +1651,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 productChangedHandler();
             }
         });
-
 
 
         l2genData.addPropertyChangeListener(l2genData.OFILE, new PropertyChangeListener() {
@@ -1730,7 +1670,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-
         l2genData.addPropertyChangeListener(l2genData.IFILE, new PropertyChangeListener() {
             @Override
 
@@ -1742,7 +1681,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
 
         });
-
 
 
     }
@@ -1855,7 +1793,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         updateWaveLimiterSelectionStates();
 
         parStringTextArea.setText(l2genData.getParString());
-        selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
     }
 
     private void invalidIfileEvent() {
@@ -1940,11 +1877,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private void productChangedHandler() {
 
-        selectedProductsJTextArea.setText(l2genData.getParamValue(l2genData.L2PROD));
         productJTree.treeDidChange();
         checkTreeState(rootNode);
     }
-
 
 
     //----------------------------------------------------------------------------------------
@@ -1999,16 +1934,5 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         System.out.println(string);
     }
 
-
-    public String sortStringList(String stringlist) {
-        String[] products = stringlist.split("\\s+");
-        ArrayList<String> productArrayList = new ArrayList<String>();
-        for (String product : products) {
-            productArrayList.add(product);
-        }
-        Collections.sort(productArrayList);
-
-        return StringUtils.join(productArrayList, " ");
-    }
 
 }

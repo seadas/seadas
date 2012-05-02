@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import org.esa.beam.util.StringUtils;
-import org.hsqldb.lib.*;
 
 import java.util.*;
 import java.util.HashSet;
@@ -19,14 +18,24 @@ public class L2prodParamInfo extends ParamInfo {
     private ArrayList<ProductCategoryInfo> productCategoryInfos = new ArrayList<ProductCategoryInfo>();
 
 
-    public L2prodParamInfo(String value) {
+    public L2prodParamInfo() {
         super(L2genData.L2PROD);
         setType(Type.STRING);
-        setValue(value);
     }
 
 
-    public String getValue() {
+    public void setValue(String value) {
+        putValueIntoProductInfos(value);
+        updateValue();
+    }
+
+
+    public void updateValue() {
+        super.setValue(getValueFromProductInfos());
+    }
+
+
+    private String getValueFromProductInfos() {
         ArrayList<String> l2prod = new ArrayList<String>();
 
         for (ProductInfo productInfo : productInfos) {
@@ -74,7 +83,7 @@ public class L2prodParamInfo extends ParamInfo {
     }
 
 
-    public void setValue(String value) {
+    private void putValueIntoProductInfos(String value) {
 
         if (value == null) {
             value = "";
@@ -132,7 +141,12 @@ public class L2prodParamInfo extends ParamInfo {
     }
 
 
-    public String getDefaultValue() {
+    public void updateDefaultValue() {
+        super.setDefaultValue(getDefaultValueFromProductInfos());
+    }
+
+
+    public String getDefaultValueFromProductInfos() {
         ArrayList<String> l2prodDefault = new ArrayList<String>();
 
         for (ProductInfo productInfo : productInfos) {
@@ -179,39 +193,18 @@ public class L2prodParamInfo extends ParamInfo {
     }
 
 
-    public boolean isDefault() {
-        boolean isDefault = true;
-
-        for (ProductInfo productInfo : productInfos) {
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                if (aInfo.hasChildren()) {
-                    for (BaseInfo wInfo : aInfo.getChildren()) {
-                        WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                        if (wavelengthInfo.isSelected() != wavelengthInfo.isDefaultSelected()) {
-                            isDefault = false;
-                        }
-                        ;
-                    }
-                } else {
-                    AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
-                    if (algorithmInfo.isSelected() != algorithmInfo.isDefaultSelected()) {
-                        isDefault = false;
-                    }
-                }
-            }
-        }
-
-        return isDefault;
-    }
-
-
     public void setDefaultValue(String defaultValue) {
         setValue(defaultValue);
-        copyValueToDefault();
+        copyProductInfoValueToDefault();
+        updateDefaultValue();
     }
 
 
-    public void copyValueToDefault() {
+
+
+
+
+    private void copyProductInfoValueToDefault() {
 
         for (ProductInfo productInfo : productInfos) {
             for (BaseInfo aInfo : productInfo.getChildren()) {
@@ -224,6 +217,8 @@ public class L2prodParamInfo extends ParamInfo {
                 }
             }
         }
+
+        updateDefaultValue();
     }
 
 
@@ -245,6 +240,8 @@ public class L2prodParamInfo extends ParamInfo {
                 }
             }
         }
+
+        updateValue();
     }
 
 

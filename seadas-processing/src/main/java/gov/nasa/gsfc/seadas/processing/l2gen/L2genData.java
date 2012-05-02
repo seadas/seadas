@@ -168,6 +168,7 @@ public class L2genData {
 
         if (state != info.getState()) {
             info.setState(state);
+            l2prodParamInfo.updateValue();
             fireEvent(L2PROD);
         }
     }
@@ -1169,11 +1170,13 @@ public class L2genData {
     }
 
     public L2prodParamInfo createL2prodParamInfo(String value) {
-        L2prodParamInfo l2prodParamInfo = new L2prodParamInfo(value);
+        L2prodParamInfo l2prodParamInfo = new L2prodParamInfo();
         setL2prodParamInfo(l2prodParamInfo);
 
         InputStream productInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_INFO_XML);
         l2genReader.readProductsXml(productInfoStream);
+
+        l2prodParamInfo.setValue(value);
 
         InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
         l2genReader.readProductCategoryXml(productCategoryInfoStream);

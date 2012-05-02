@@ -569,3 +569,33 @@ We want to combined the waveDependent and waveIndependent products together with
 //    }
 //
 //
+
+
+
+
+// HELP EXAMPLE
+
+//        final JPanel helpPanel = new JPanel(new GridBagLayout());
+//        helpPanel.add(getHelpButton("l2gen"), BorderLayout.EAST);
+//
+//        mainPanel.add(helpPanel,
+//                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, 0, 2));
+
+//    protected AbstractButton getHelpButton(String helpId) {
+//        if (helpId != null) {
+//            final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon("icons/Help24.gif"),
+//                    false);
+//            helpButton.setToolTipText("Help.");
+//            helpButton.setName("helpButton");
+//            HelpSys.enableHelpOnButton(helpButton, helpId);
+//            //  HelpSys.enableHelpKey(getParentDialogContentPane(), getHelpId());
+//            return helpButton;
+//        }
+//
+//        return null;
+//    }
+
+
+
+
+
