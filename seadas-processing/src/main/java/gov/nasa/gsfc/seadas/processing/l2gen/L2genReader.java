@@ -158,8 +158,7 @@ public class L2genReader {
                     }
 
                     if (!name.equals(l2genData.IFILE)) {
-                        l2genData.setParamValue(name, value);
-                        l2genData.setParamDefault(name);
+                        l2genData.setParamValueAndDefault(name, value);
                     }
                 }
             }
@@ -219,7 +218,7 @@ public class L2genReader {
                     paramInfo = new ParamInfo(name, value, type);
                 }
 
-                paramInfo.setDefaultValue(value);
+                paramInfo.setDefaultValue(paramInfo.getValue());
                 paramInfo.setDescription(description);
                 paramInfo.setSource(source);
 

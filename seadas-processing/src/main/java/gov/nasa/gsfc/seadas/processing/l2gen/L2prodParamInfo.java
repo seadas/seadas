@@ -141,108 +141,9 @@ public class L2prodParamInfo extends ParamInfo {
     }
 
 
-    public void updateDefaultValue() {
-        super.setDefaultValue(getDefaultValueFromProductInfos());
-    }
-
-
-    public String getDefaultValueFromProductInfos() {
-        ArrayList<String> l2prodDefault = new ArrayList<String>();
-
-        for (ProductInfo productInfo : productInfos) {
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
-                if (aInfo.hasChildren()) {
-                    if (algorithmInfo.isDefaultSelectedShortcut(AlgorithmInfo.ShortcutType.ALL)) {
-                        l2prodDefault.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.ALL));
-                    } else {
-                        if (algorithmInfo.isDefaultSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
-                            l2prodDefault.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.IR));
-                        }
-                        if (algorithmInfo.isDefaultSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
-                            l2prodDefault.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
-                        }
-
-                        for (BaseInfo wInfo : aInfo.getChildren()) {
-                            WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-
-                            if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE) && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
-                                if (wavelengthInfo.isDefaultSelected()) {
-                                    l2prodDefault.add(wavelengthInfo.getFullName());
-                                }
-                            }
-
-                            if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED) && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
-                                if (wavelengthInfo.isDefaultSelected()) {
-                                    l2prodDefault.add(wavelengthInfo.getFullName());
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if (algorithmInfo.isDefaultSelected()) {
-                        l2prodDefault.add(aInfo.getFullName());
-                    }
-                }
-            }
-        }
-
-        Collections.sort(l2prodDefault);
-
-        return StringUtils.join(l2prodDefault, " ");
-    }
-
-
-    public void setDefaultValue(String defaultValue) {
-        setValue(defaultValue);
-        copyProductInfoValueToDefault();
-        updateDefaultValue();
-    }
 
 
 
-
-
-
-    private void copyProductInfoValueToDefault() {
-
-        for (ProductInfo productInfo : productInfos) {
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                if (aInfo.hasChildren()) {
-                    for (BaseInfo wInfo : aInfo.getChildren()) {
-                        ((WavelengthInfo) wInfo).setDefaultSelected(wInfo.isSelected());
-                    }
-                } else {
-                    ((AlgorithmInfo) aInfo).setDefaultSelected(aInfo.isSelected());
-                }
-            }
-        }
-
-        updateDefaultValue();
-    }
-
-
-    public void setToDefault() {
-        // This method loops through the entire productInfoArray setting all the states to the default state
-
-        for (ProductInfo productInfo : productInfos) {
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                if (aInfo.hasChildren()) {
-                    for (BaseInfo wInfo : aInfo.getChildren()) {
-                        if (wInfo.isSelected() != ((WavelengthInfo) wInfo).isDefaultSelected()) {
-                            wInfo.setSelected(((WavelengthInfo) wInfo).isDefaultSelected());
-                        }
-                    }
-                } else {
-                    if (aInfo.isSelected() != ((AlgorithmInfo) aInfo).isDefaultSelected()) {
-                        aInfo.setSelected(((AlgorithmInfo) aInfo).isDefaultSelected());
-                    }
-                }
-            }
-        }
-
-        updateValue();
-    }
 
 
     public void addProductInfo(ProductInfo productInfo) {
@@ -257,40 +158,33 @@ public class L2prodParamInfo extends ParamInfo {
         Collections.sort(productInfos, comparator);
     }
 
-    public void resetProductInfos(boolean missionChanged, ArrayList<WavelengthInfo> waveLimiter) {
+    public void resetProductInfos(ArrayList<WavelengthInfo> waveLimiter) {
 
         for (ProductInfo productInfo : productInfos) {
             productInfo.setSelected(false);
             for (BaseInfo aInfo : productInfo.getChildren()) {
-                aInfo.setSelected(false);
                 AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
-
+                algorithmInfo.setSelected(false);
                 if (algorithmInfo.getParameterType() != AlgorithmInfo.ParameterType.NONE) {
-                    if (missionChanged) {
-                        algorithmInfo.clearChildren();
-                        for (WavelengthInfo wavelengthInfo : waveLimiter) {
-                            boolean addWavelength = false;
+                    algorithmInfo.clearChildren();
+                    for (WavelengthInfo wavelengthInfo : waveLimiter) {
+                        boolean addWavelength = false;
 
-                            if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
-                                addWavelength = true;
-                            } else if (wavelengthInfo.getWavelength() >= WavelengthInfo.INFRARED_LOWER_LIMIT &&
-                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR) {
-                                addWavelength = true;
-                            } else if (wavelengthInfo.getWavelength() <= WavelengthInfo.VISIBLE_UPPER_LIMIT &&
-                                    algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE) {
-                                addWavelength = true;
-                            }
-
-                            if (addWavelength) {
-                                WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
-                                newWavelengthInfo.setParent(algorithmInfo);
-                                newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
-                                algorithmInfo.addChild(newWavelengthInfo);
-                            }
+                        if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+                            addWavelength = true;
+                        } else if (wavelengthInfo.getWavelength() >= WavelengthInfo.INFRARED_LOWER_LIMIT &&
+                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR) {
+                            addWavelength = true;
+                        } else if (wavelengthInfo.getWavelength() <= WavelengthInfo.VISIBLE_UPPER_LIMIT &&
+                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE) {
+                            addWavelength = true;
                         }
-                    } else {
-                        for (BaseInfo wInfo : algorithmInfo.getChildren()) {
-                            wInfo.setSelected(false);
+
+                        if (addWavelength) {
+                            WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
+                            newWavelengthInfo.setParent(algorithmInfo);
+                            newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
+                            algorithmInfo.addChild(newWavelengthInfo);
                         }
                     }
                 }

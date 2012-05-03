@@ -10,6 +10,14 @@
         </algorithm>
     </product>
     <product name="chlor_a">
+                <algorithm name="chlor_a">
+            <prefix>chlor_a</prefix>
+            <suffix></suffix>
+            <parameterType>None</parameterType>
+            <dataType>FLOAT32</dataType>
+            <units>mg m^-3</units>
+            <description>Chlorophyll</description>
+        </algorithm>
         <algorithm name="oc2">
             <prefix>chl_oc2</prefix>
             <suffix></suffix>

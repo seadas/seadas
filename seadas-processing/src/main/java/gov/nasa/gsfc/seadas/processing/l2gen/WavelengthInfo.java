@@ -14,11 +14,12 @@ public class WavelengthInfo extends BaseInfo {
     public static final int NULL_WAVELENGTH = -1;
 
     private int wavelength = NULL_WAVELENGTH;
-    private boolean defaultSelected = false;
+
 
     public static enum WaveType {
         VISIBLE, INFRARED, NEAR_INFRARED
     }
+
 
     public WavelengthInfo(int wavelength, AlgorithmInfo algorithmInfo) {
         super(Integer.toString(wavelength), algorithmInfo);
@@ -37,6 +38,11 @@ public class WavelengthInfo extends BaseInfo {
             this.wavelength = NULL_WAVELENGTH;
         }
     }
+
+    public AlgorithmInfo getAlgorithmInfo() {
+        return (AlgorithmInfo) getParent();
+    }
+
 
     public int getWavelength() {
         return wavelength;
@@ -94,36 +100,6 @@ public class WavelengthInfo extends BaseInfo {
             return false;
         }
     }
-
-
-    public AlgorithmInfo getAlgorithmInfo() {
-        return (AlgorithmInfo) getParent();
-    }
-
-
-    public boolean isDefaultSelected() {
-        return defaultSelected;
-    }
-
-    public void setDefaultSelected(boolean defaultSelected) {
-        this.defaultSelected = defaultSelected;
-    }
-
-//    @Override
-//    public boolean isWavelengthDependent() {
-//        if (wavelength != NULL_WAVELENGTH) {
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean isWavelengthIndependent() {
-//        if (wavelength == NULL_WAVELENGTH) {
-//            return true;
-//        }
-//        return false;
-//    }
 
 
 }

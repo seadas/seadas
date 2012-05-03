@@ -33,7 +33,6 @@ public class AlgorithmInfo extends BaseInfo {
     private String units = null;
     private ParameterType parameterType = null;
 
-    private boolean defaultSelected = false;
 
 
     public AlgorithmInfo(String name, String description, ParameterType parameterType) {
@@ -70,14 +69,6 @@ public class AlgorithmInfo extends BaseInfo {
         setParent(productInfo);
     }
 
-
-    public boolean isDefaultSelected() {
-        return defaultSelected;
-    }
-
-    public void setDefaultSelected(boolean defaultSelected) {
-        this.defaultSelected = defaultSelected;
-    }
 
     public String getDataType() {
         return dataType;
@@ -181,48 +172,7 @@ public class AlgorithmInfo extends BaseInfo {
         return result.toString().replaceAll("[_]+", "_").replaceAll("[_]$", "");
     }
 
-    public boolean isDefaultSelectedShortcut(ShortcutType shortcutType) {
-        boolean found = false;
 
-        if (shortcutType == ShortcutType.ALL) {
-            for (BaseInfo wInfo : getChildren()) {
-                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                if (wavelengthInfo.isDefaultSelected()) {
-                    found = true;
-                } else {
-                    return false;
-                }
-            }
-            return found;
-
-        } else if (shortcutType == ShortcutType.VISIBLE) {
-            for (BaseInfo wInfo : getChildren()) {
-                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE)) {
-                    if (wavelengthInfo.isDefaultSelected()) {
-                        found = true;
-                    } else {
-                        return false;
-                    }
-                }
-            }
-            return found;
-
-        } else if (shortcutType == ShortcutType.IR) {
-            for (BaseInfo wInfo : getChildren()) {
-                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED)) {
-                    if (wavelengthInfo.isDefaultSelected()) {
-                        found = true;
-                    } else {
-                        return false;
-                    }
-                }
-            }
-            return found;
-        }
-        return false;
-    }
 
 
 

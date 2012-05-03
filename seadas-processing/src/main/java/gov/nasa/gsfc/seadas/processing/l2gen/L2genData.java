@@ -540,6 +540,43 @@ public class L2genData {
     }
 
 
+    public void setParamValueAndDefault(String param, String value) {
+
+        // Cleanup inputs and handle input exceptions
+        if (param == null || param.length() == 0) {
+            return;
+        }
+        if (value == null) {
+            value = ParamInfo.NULL_STRING;
+        }
+        param = param.trim();
+        value = value.trim();
+
+        setParamValueAndDefault(getParamInfo(param), value);
+    }
+
+
+    public void setParamValueAndDefault(ParamInfo paramInfo, String value) {
+        if (paramInfo == null) {
+            return;
+        }
+        if (value == null) {
+            value = ParamInfo.NULL_STRING;
+        }
+
+        if (!value.equals(paramInfo.getValue()) || !value.equals(paramInfo.getDefaultValue())) {
+            if (paramInfo.getName().toLowerCase().equals(IFILE)) {
+                setIfileParamValue(paramInfo, value);
+            } else {
+                paramInfo.setValue(value);
+                paramInfo.setDefaultValue(paramInfo.getValue());
+                setConflictingParams(paramInfo.getName());
+                fireEvent(paramInfo.getName());
+            }
+        }
+    }
+
+
     public void setParamValue(String param, String value) {
 
         // Cleanup inputs and handle input exceptions
@@ -694,12 +731,8 @@ public class L2genData {
         value = value.trim();
 
 
-        for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName().toLowerCase().equals(param.toLowerCase())) {
-                setParamDefaultValue(paramInfo, value);
-                return;
-            }
-        }
+        ParamInfo paramInfo = getParamInfo(param);
+        setParamDefaultValue(paramInfo, value);
     }
 
 
@@ -818,7 +851,7 @@ public class L2genData {
 
             resetWaveLimiter();
             //  propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, WAVE_LIMITER_CHANGE_EVENT, null, null));
-            l2prodParamInfo.resetProductInfos(true, waveLimiter);
+            l2prodParamInfo.resetProductInfos(waveLimiter);
 
             updateXmlBasedObjects(newIfile);
 
@@ -1144,7 +1177,7 @@ public class L2genData {
 
     public void setProdToDefault() {
         if (!l2prodParamInfo.isDefault()) {
-            l2prodParamInfo.setToDefault();
+            l2prodParamInfo.setValue(l2prodParamInfo.getDefaultValue());
             fireEvent(L2PROD);
         }
     }
@@ -1181,11 +1214,11 @@ public class L2genData {
         InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
         l2genReader.readProductCategoryXml(productCategoryInfoStream);
         setProductCategoryInfos();
-        
+
         return l2prodParamInfo;
     }
 
-        public String sortStringList(String stringlist) {
+    public String sortStringList(String stringlist) {
         String[] products = stringlist.split("\\s+");
         ArrayList<String> productArrayList = new ArrayList<String>();
         for (String product : products) {
