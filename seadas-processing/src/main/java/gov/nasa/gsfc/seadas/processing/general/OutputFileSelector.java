@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
+import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
 import org.esa.beam.framework.dataio.ProductIOPlugInManager;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.util.io.FileChooserFactory;
@@ -92,6 +93,11 @@ public class OutputFileSelector {
         return outputFileNameTextField;
     }
 
+    public JTextField getOutputFileNameTextField(int length) {
+        outputFileNameTextField.setColumns(length);
+        return outputFileNameTextField;
+    }
+
     public JLabel getOutputFileDirLabel() {
         return outputFileDirLabel;
     }
@@ -109,34 +115,42 @@ public class OutputFileSelector {
         return openInAppCheckBox;
     }
 
-    public JPanel createDefaultPanel() {
-        final JPanel subPanel1 = new JPanel(new BorderLayout(3, 3));
-        subPanel1.add(getOutputFileNameLabel(), BorderLayout.NORTH);
-        subPanel1.add(getOutputFileNameTextField(), BorderLayout.CENTER);
 
-        final JPanel subPanel3 = new JPanel(new BorderLayout(3, 3));
-        subPanel3.add(getOutputFileDirLabel(), BorderLayout.NORTH);
-        subPanel3.add(getOutputFileDirTextField(), BorderLayout.CENTER);
-        subPanel3.add(getOutputFileDirChooserButton(), BorderLayout.EAST);
-
-        final TableLayout tableLayout = new TableLayout(1);
-        tableLayout.setTableAnchor(TableLayout.Anchor.WEST);
-        tableLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
-        tableLayout.setTableWeightX(1.0);
-
-        tableLayout.setCellPadding(0, 0, new Insets(3, 3, 3, 3));
-        tableLayout.setCellPadding(1, 0, new Insets(3, 3, 3, 3));
-        tableLayout.setCellPadding(2, 0, new Insets(0, 24, 3, 3));
-        tableLayout.setCellPadding(3, 0, new Insets(3, 3, 3, 3));
-
-        final JPanel panel = new JPanel(tableLayout);
-        panel.setBorder(BorderFactory.createTitledBorder(outFrameLabel));
-        panel.add(subPanel1);
-        panel.add(subPanel3);
-        panel.add(getOpenInAppCheckBox());
-
-        return panel;
+    public void setOutputFileNameLabel(JLabel jLabel) {
+        this.outputFileNameLabel = jLabel;
     }
+
+    public void setOutputFileDirLabel(JLabel jLabel) {
+        this.outputFileDirLabel = jLabel;
+    }
+
+
+    public JPanel createDefaultPanel() {
+
+        final Dimension size = new Dimension(26, 26);
+        outputFileDirChooserButton.setPreferredSize(size);
+        outputFileDirChooserButton.setMinimumSize(size);
+        outputFileDirChooserButton.setMaximumSize(size);
+
+
+        final JPanel mainPanel = new JPanel(new GridBagLayout());
+
+        mainPanel.add(getOutputFileNameLabel(),
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        mainPanel.add(getOutputFileNameTextField(),
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        mainPanel.add(getOutputFileDirLabel(),
+                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        mainPanel.add(getOutputFileDirTextField(),
+                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        mainPanel.add(getOutputFileDirChooserButton(),
+                new GridBagConstraintsCustom(4, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        mainPanel.add(new JPanel(),
+                new GridBagConstraintsCustom(5, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
+
+        return mainPanel;
+    }
+
 
     private void updateUIState() {
         if (model.isSaveToFileSelected()) {
@@ -198,13 +212,13 @@ public class OutputFileSelector {
             if (chooser.showDialog(windowAncestor, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
                 final File selectedDir = chooser.getSelectedFile();
                 if (selectedDir != null) {
-                    if (selectedDir.canWrite() ) {
+                    if (selectedDir.canWrite()) {
                         model.setProductDir(selectedDir);
-                    }  else {
-                        JOptionPane.showMessageDialog( chooser,
-                                                        "Directory " + selectedDir.toString() +  "has no write permission",
-                                                        "Error",
-                                                        JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(chooser,
+                                "Directory " + selectedDir.toString() + "has no write permission",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                         chooser.requestFocus();
                     }
 

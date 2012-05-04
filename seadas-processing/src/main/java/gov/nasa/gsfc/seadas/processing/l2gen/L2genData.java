@@ -17,40 +17,38 @@ import java.util.*;
  */
 public class L2genData {
 
-    public boolean retainCurrentIfile = true;
-    private String OCDATAROOT = System.getenv("OCDATAROOT");
 
-    private String PRODUCT_INFO_XML = "productInfo.xml";
-    private String PARAM_INFO_XML = "paramInfo.xml";
-    private String DEFAULT_IFILE = "";
+    private static final String OCDATAROOT = System.getenv("OCDATAROOT");
 
-    private String PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml";
-    private String PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml";
+    private static final String PRODUCT_INFO_XML = "productInfo.xml";
+    private static final String PARAM_INFO_XML = "paramInfo.xml";
+    private static final String DEFAULT_IFILE = "";
+    private static final String PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml";
+    private static final String PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml";
 
-    private String initialIfile = DEFAULT_IFILE;
-
-    public boolean ifileIsValid = true;
-
-    public final String PAR = "par";
-    public final String GEOFILE = "geofile";
-
-    public final String SPIXL = "spixl";
-    public final String EPIXL = "epixl";
-    public final String SLINE = "sline";
-    public final String ELINE = "eline";
-    public final String NORTH = "north";
-    public final String SOUTH = "south";
-    public final String WEST = "west";
-    public final String EAST = "east";
-
-
-    public final String IFILE = "ifile";
-    public final String OFILE = "ofile";
+    public static final String PAR = "par";
+    public static final String GEOFILE = "geofile";
+    public static final String SPIXL = "spixl";
+    public static final String EPIXL = "epixl";
+    public static final String SLINE = "sline";
+    public static final String ELINE = "eline";
+    public static final String NORTH = "north";
+    public static final String SOUTH = "south";
+    public static final String WEST = "west";
+    public static final String EAST = "east";
+    public static final String IFILE = "ifile";
+    public static final String OFILE = "ofile";
     public static final String L2PROD = "l2prod";
 
-    public final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
-    public final String WAVE_LIMITER_CHANGE_EVENT = "WAVE_LIMITER_CHANGE_EVENT";
-    public final String RETAIN_IFILE_CHANGE_EVENT = "RETAIN_IFILE_CHANGE_EVENT";
+    public static final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
+    public static final String WAVE_LIMITER_CHANGE_EVENT = "WAVE_LIMITER_CHANGE_EVENT";
+    public static final String RETAIN_IFILE_CHANGE_EVENT = "RETAIN_IFILE_CHANGE_EVENT";
+    public static final String SHOW_DEFAULTS_IN_PARSTRING_EVENT = "SHOW_DEFAULTS_IN_PARSTRING_EVENT";
+
+    private String initialIfile = DEFAULT_IFILE;
+    public boolean retainCurrentIfile = true;
+    public boolean ifileIsValid = true;
+    private boolean showDefaultsInParString = false;
 
 
     private L2genReader l2genReader = new L2genReader(this);
@@ -82,8 +80,21 @@ public class L2genData {
 
     public void setRetainCurrentIfile(boolean retainCurrentIfile) {
 
-        this.retainCurrentIfile = retainCurrentIfile;
-        fireEvent(RETAIN_IFILE_CHANGE_EVENT);
+        if (this.retainCurrentIfile != retainCurrentIfile) {
+            this.retainCurrentIfile = retainCurrentIfile;
+            fireEvent(RETAIN_IFILE_CHANGE_EVENT);
+        }
+    }
+
+    public boolean isShowDefaultsInParString() {
+        return showDefaultsInParString;
+    }
+
+    public void setShowDefaultsInParString(boolean showDefaultsInParString) {
+        if (this.showDefaultsInParString != showDefaultsInParString) {
+            this.showDefaultsInParString = showDefaultsInParString;
+            fireEvent(SHOW_DEFAULTS_IN_PARSTRING_EVENT);
+        }
     }
 
 
@@ -361,7 +372,7 @@ public class L2genData {
                     currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
                 } else if (paramInfo.getName().equals(PAR)) {
                     // right ignore and do not print todo
-                } else if (!paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
+                } else if (isShowDefaultsInParString() || !paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
                     if (!paramInfo.getName().startsWith("-")) {
                         currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
                     }

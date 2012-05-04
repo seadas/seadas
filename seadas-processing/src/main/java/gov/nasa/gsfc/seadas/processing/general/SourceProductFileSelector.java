@@ -19,6 +19,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.selection.SelectionChangeListener;
 import com.bc.ceres.swing.selection.support.ComboBoxSelectionContext;
+import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.dataio.ProductIOPlugInManager;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
@@ -246,6 +247,10 @@ public class SourceProductFileSelector {
         return productNameLabel;
     }
 
+    public void setProductNameLabel(JLabel jLabel) {
+        this.productNameLabel = jLabel;
+    }
+
     public JButton getProductFileChooserButton() {
         return productFileChooserButton;
     }
@@ -260,32 +265,35 @@ public class SourceProductFileSelector {
     }
 
     public JPanel createDefaultPanel() {
-        final JPanel subPanel = new JPanel(new BorderLayout(3, 3));
-        subPanel.add(getProductNameComboBox(), BorderLayout.CENTER);
-        subPanel.add(getProductFileChooserButton(), BorderLayout.EAST);
 
-        final TableLayout tableLayout = new TableLayout(1);
-        tableLayout.setTableAnchor(TableLayout.Anchor.WEST);
-        tableLayout.setTableWeightX(1.0);
-        tableLayout.setRowFill(0, TableLayout.Fill.HORIZONTAL);
-        tableLayout.setRowFill(1, TableLayout.Fill.HORIZONTAL);
-        tableLayout.setRowFill(2, TableLayout.Fill.HORIZONTAL);
-        tableLayout.setTablePadding(3, 3);
-        JPanel panel = new JPanel(tableLayout);
-        panel.setBorder(BorderFactory.createTitledBorder("Input File"));
-        panel.add(getProductNameLabel());
-        panel.add(subPanel);
-        panel.add(createFilterPane());
-        panel.add(tableLayout.createVerticalSpacer());
+        // make the button square
+        //   int buttonDefaultWidth = productFileChooserButton.getPreferredSize().width;
+        //   productFileChooserButton.setPreferredSize(new Dimension(buttonDefaultWidth, buttonDefaultWidth));
 
-        return panel;
+        final Dimension size = new Dimension(26, 26);
+        productFileChooserButton.setPreferredSize(size);
+        productFileChooserButton.setMinimumSize(size);
+        productFileChooserButton.setMaximumSize(size);
+
+
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.add(getProductNameLabel(),
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        mainPanel.add(getProductNameComboBox(),
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        mainPanel.add(getProductFileChooserButton(),
+                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        mainPanel.add(createFilterPane(),
+                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
+
+        return mainPanel;
     }
 
     private JPanel createFilterPane() {
-        final JPanel filterPanel = new JPanel(new FlowLayout());
-        final JLabel filterLabel = new JLabel("Filter File by regex:");
+
         final JTextField filterRegexField = new JTextField();
-        filterRegexField.setColumns(20);
+
+        filterRegexField.setColumns(15);
         filterRegexField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent documentEvent) {
@@ -304,9 +312,16 @@ public class SourceProductFileSelector {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         });
-        filterPanel.add(filterLabel);
-        filterPanel.add(filterRegexField);
-        return filterPanel;
+
+
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+
+        mainPanel.add(new JLabel("Filter by regex:"),
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        mainPanel.add(filterRegexField,
+                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+        return mainPanel;
 
     }
 
@@ -358,7 +373,7 @@ public class SourceProductFileSelector {
                         }
                     }
 
-                    if (productFilter.accept(product) && regexFileFilter.accept(file)  ) {
+                    if (productFilter.accept(product) && regexFileFilter.accept(file)) {
                         setSelectedProduct(product);
                     } else {
                         final String message = String.format("Product [%s] is not a valid source.",
@@ -461,9 +476,10 @@ public class SourceProductFileSelector {
 
         private String regex;
 
-        public RegexFileFilter(){
+        public RegexFileFilter() {
             this(null);
         }
+
         public RegexFileFilter(String regex) throws IllegalStateException {
             System.out.println("regular expression: " + regex);
             if (regex == null || regex.trim().length() == 0) {

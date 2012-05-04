@@ -60,8 +60,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private boolean handleIfileJComboBoxEnabled = true;
     private boolean handleOfileSelecterEnabled = true;
 
-    // private JTextArea selectedProductsJTextArea;
-
     private JTextArea parStringTextArea;
 
     private JFileChooser parfileChooser = new JFileChooser();
@@ -93,8 +91,6 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private JTree productJTree;
 
     private L2genData l2genData = new L2genData();
-    private L2genReader l2genReader = new L2genReader(l2genData);
-
 
     private ProcessorModel processorModel;
 
@@ -124,7 +120,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         addL2genDataListeners();
 
         if (ifile != null) {
-            l2genData.setParamValue(l2genData.IFILE, ifile);
+            l2genData.setParamValue(L2genData.IFILE, ifile);
         } else {
             l2genData.fireAllParamEvents();
         }
@@ -136,7 +132,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     public ProcessorModel getProcessorModel() {
         processorModel.setParString(l2genData.getParString());
-        processorModel.setOutputFile(new File(l2genData.getParamValue(l2genData.OFILE)));
+        processorModel.setOutputFile(new File(l2genData.getParamValue(L2genData.OFILE)));
         return processorModel;
     }
 
@@ -166,13 +162,10 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
-    //----------------------------------------------------------------------------------------
-    // Methods to create each of the main  and sub tabs
-    //----------------------------------------------------------------------------------------
-
-    private void createMainTab(String tabname) {
+    private JPanel createInputOutputPanel() {
 
         final JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createTitledBorder("Primary Input/Output Files"));
 
         mainPanel.add(createSourceProductPanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
@@ -183,8 +176,25 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         mainPanel.add(createGeofileChooserPanel(),
                 new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
+        return mainPanel;
+    }
+
+    //----------------------------------------------------------------------------------------
+    // Methods to create each of the main  and sub tabs
+    //----------------------------------------------------------------------------------------
+
+    private void createMainTab(String tabname) {
+
+        final JPanel mainPanel = new JPanel(new GridBagLayout());
+
+        mainPanel.add(createInputOutputPanel(),
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+
         mainPanel.add(createParfilePanel(),
-                new GridBagConstraintsCustom(0, 3, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 3));
+
+        mainPanel.add(outputFileSelector.getOpenInAppCheckBox(),
+                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
         addTab(tabname, mainPanel);
     }
@@ -192,26 +202,28 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private JPanel createGeofileChooserPanel() {
 
-        final JButton geofileChooserButton = new JButton("...");
-        geofileChooserButton.addActionListener(new ActionListener() {
+        final JLabel jLabel = new JLabel(L2genData.GEOFILE);
+
+        final JButton jButton = new JButton("...");
+        jButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 geofileChooserHandler(geofileChooser);
             }
         });
 
-        final JTextField geofileTextfield = new JTextField();
-        geofileTextfield.addActionListener(new ActionListener() {
+        final JTextField jTextField = new JTextField();
+        jTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                geofileTextfieldHandler(geofileTextfield);
+                geofileTextfieldHandler(jTextField);
             }
         });
 
-        l2genData.addPropertyChangeListener(l2genData.GEOFILE, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.GEOFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                String geofileString = l2genData.getParamValue(l2genData.GEOFILE);
+                String geofileString = l2genData.getParamValue(L2genData.GEOFILE);
                 if (geofileString == null || geofileString.equals(ParamInfo.NULL_STRING)) {
                     geofileChooser.setSelectedFile(null);
 
@@ -219,27 +231,24 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                     geofileChooser.setSelectedFile(new File(geofileString));
                 }
 
-                geofileTextfield.setText(geofileString);
+                jTextField.setText(geofileString);
             }
         });
 
 
         final Dimension size = new Dimension(26, 26);
-        geofileChooserButton.setPreferredSize(size);
-        geofileChooserButton.setMinimumSize(size);
-        geofileChooserButton.setMaximumSize(size);
-
-        final JPanel subPanel = new JPanel((new GridBagLayout()));
-        subPanel.add(geofileTextfield,
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 2));
-        subPanel.add(geofileChooserButton,
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        jButton.setPreferredSize(size);
+        jButton.setMinimumSize(size);
+        jButton.setMaximumSize(size);
 
 
-        final JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBorder(BorderFactory.createTitledBorder("Geofile"));
-        mainPanel.add(subPanel,
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+        final JPanel mainPanel = new JPanel((new GridBagLayout()));
+        mainPanel.add(jLabel,
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        mainPanel.add(jTextField,
+                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 2));
+        mainPanel.add(jButton,
+                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
         return mainPanel;
     }
@@ -249,13 +258,13 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         int result = jFileChooser.showOpenDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {
-            l2genData.setParamValue(l2genData.GEOFILE, jFileChooser.getSelectedFile().toString());
+            l2genData.setParamValue(L2genData.GEOFILE, jFileChooser.getSelectedFile().toString());
         }
     }
 
 
     private void geofileTextfieldHandler(JTextField jTextField) {
-        l2genData.setParamValue(l2genData.GEOFILE, jTextField.getText());
+        l2genData.setParamValue(L2genData.GEOFILE, jTextField.getText());
     }
 
 
@@ -312,22 +321,43 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
         });
 
-        l2genData.addPropertyChangeListener(l2genData.IFILE, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
 
-                if (l2genData.getParamValue(l2genData.IFILE).length() > 0) {
+                if (l2genData.getParamValue(L2genData.IFILE).length() > 0) {
                     retainIfileOfileCheckbox.setEnabled(true);
                 }
             }
         });
 
 
+        final JCheckBox showDefaultsCheckbox = new JCheckBox("Show Defaults");
+        showDefaultsCheckbox.setSelected(l2genData.isShowDefaultsInParString());
+        showDefaultsCheckbox.setToolTipText("Displays all the defaults with the parfile text region");
+        showDefaultsCheckbox.setEnabled(true);
+
+        // add listener for current checkbox
+        showDefaultsCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                l2genData.setShowDefaultsInParString(showDefaultsCheckbox.isSelected());
+            }
+        });
+
+        l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_IN_PARSTRING_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                showDefaultsCheckbox.setSelected(l2genData.isShowDefaultsInParString());
+            }
+        });
+
+
         parStringTextArea = new JTextArea();
+        final JScrollPane parStringScrollArea = new JScrollPane(parStringTextArea);
         parStringTextArea.setEditable(true);
-//        parStringTextArea.setBackground(Color.decode("#ffffff"));
         parStringTextArea.setAutoscrolls(true);
-        // parStringTextArea.setRows(new Double(this.getPreferredSize().getHeight()).intValue());
+
 
         parStringTextArea.addFocusListener(new FocusListener() {
             @Override
@@ -341,20 +371,48 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
+        for (ParamInfo paramInfo : l2genData.getParamInfos()) {
+            final String eventName = paramInfo.getName();
+            l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    parStringTextArea.setText(l2genData.getParString());
+//                    parStringScrollArea.repaint();
+//                    parStringScrollArea.updateUI();
+//                    parStringScrollArea.getVerticalScrollBar().setValue(0);
+//                    parStringScrollArea.getHorizontalScrollBar().setValue(0);
+                }
+            });
+        }
+
+        l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_IN_PARSTRING_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                parStringTextArea.setText(l2genData.getParString());
+//                parStringScrollArea.repaint();
+//                parStringScrollArea.updateUI();
+//                parStringScrollArea.getVerticalScrollBar().setValue(0);
+//                parStringScrollArea.getHorizontalScrollBar().setValue(0);
+            }
+        });
+
+
         final JPanel buttonsSubPanel = new JPanel(new GridBagLayout());
         buttonsSubPanel.add(openParfileButton,
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         buttonsSubPanel.add(retainIfileOfileCheckbox,
-                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 2));
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        buttonsSubPanel.add(showDefaultsCheckbox,
+                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 2));
         buttonsSubPanel.add(saveParfileButton,
-                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
         final JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder("Parfile"));
         mainPanel.add(buttonsSubPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-        mainPanel.add(new JScrollPane(parStringTextArea),
+        mainPanel.add(parStringScrollArea,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
 
@@ -919,7 +977,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 // Set INFRARED 'Select All' toggle to appropriate text
@@ -1257,7 +1315,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     public void checkTreeState(DefaultMutableTreeNode node) {
 
-        l2genData.disableEvent(l2genData.L2PROD);
+        l2genData.disableEvent(L2genData.L2PROD);
         BaseInfo info = (BaseInfo) node.getUserObject();
         BaseInfo.State newState = info.getState();
 
@@ -1306,7 +1364,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         }
 
-        l2genData.enableEvent(l2genData.L2PROD);
+        l2genData.enableEvent(L2genData.L2PROD);
     }
 
 
@@ -1324,7 +1382,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             return;
         }
 
-        l2genData.disableEvent(l2genData.L2PROD);
+        l2genData.disableEvent(L2genData.L2PROD);
 
         if (node.getChildCount() > 0) {
             l2genData.setSelectedInfo(info, state);
@@ -1371,7 +1429,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
         }
 
-        l2genData.enableEvent(l2genData.L2PROD);
+        l2genData.enableEvent(L2genData.L2PROD);
     }
 
 
@@ -1446,9 +1504,10 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     //----------------------------------------------------------------------------------------
 
     private JPanel createSourceProductPanel() {
+        sourceProductSelector.setProductNameLabel(new JLabel(L2genData.IFILE));
         final JPanel panel = sourceProductSelector.createDefaultPanel();
 
-        sourceProductSelector.getProductNameLabel().setText("Name:");
+        //     sourceProductSelector.getProductNameLabel().setText("Name:");
         sourceProductSelector.getProductNameComboBox().setPrototypeDisplayValue(
                 "MER_RR__1PPBCM20030730_071000_000003972018_00321_07389_0000.N1");
 
@@ -1462,7 +1521,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                         && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
                     if (handleIfileJComboBoxEnabled) {
                         //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getProgramName());
-                        l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
+                        l2genData.setParamValue(L2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
                     }
                 }
             }
@@ -1472,6 +1531,8 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
     private JPanel createOutputFilePanel() {
+        outputFileSelector.setOutputFileNameLabel(new JLabel(L2genData.OFILE + " (name)"));
+        outputFileSelector.setOutputFileDirLabel(new JLabel(L2genData.OFILE + " (directory)"));
         final JPanel panel = outputFileSelector.createDefaultPanel();
 
 //        outputFileSelector.getModel().getProductNameComboBox().setPrototypeDisplayValue(
@@ -1487,7 +1548,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
                 if (ofile != null) {
                     if (handleOfileSelecterEnabled) {
-                        l2genData.setParamValue(l2genData.OFILE, ofile);
+                        l2genData.setParamValue(L2genData.OFILE, ofile);
                     }
                 }
             }
@@ -1618,18 +1679,8 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private void addL2genDataListeners() {
 
-        for (ParamInfo paramInfo : l2genData.getParamInfos()) {
-            final String eventName = paramInfo.getName();
-            l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    parStringTextArea.setText(l2genData.getParString());
-                }
-            });
-        }
 
-
-        l2genData.addPropertyChangeListener(l2genData.INVALID_IFILE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.INVALID_IFILE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 invalidIfileEvent();
@@ -1637,7 +1688,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updateWaveLimiterSelectionStates();
@@ -1645,7 +1696,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.L2PROD, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 productChangedHandler();
@@ -1653,10 +1704,10 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.OFILE, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.OFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                String ofileString = l2genData.getParamValue(l2genData.OFILE);
+                String ofileString = l2genData.getParamValue(L2genData.OFILE);
                 if (ofileString.equals(ParamInfo.NULL_STRING)) {
                 } else {
                     File ofile = new File(ofileString);
@@ -1670,12 +1721,12 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.IFILE, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
 
             public void propertyChange(PropertyChangeEvent evt) {
                 //   if (enableIfileEvent) {
-                System.out.println(l2genData.IFILE + " being handled");
+                System.out.println(L2genData.IFILE + " being handled");
                 ifileChangedEventHandler();
                 //   }
             }
@@ -1775,7 +1826,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private void ifileChangedEventHandler() {
 
-        File ifile = new File(l2genData.getParamValue(l2genData.IFILE));
+        File ifile = new File(l2genData.getParamValue(L2genData.IFILE));
 
         if (sourceProductSelector != null) {
             handleIfileJComboBoxEnabled = false;
