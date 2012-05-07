@@ -52,17 +52,45 @@ public class OutputFileSelector {
         updateUIState();
     }
 
-    private void initComponents() {
-        outputFileNameLabel = new JLabel("Name: ");
-        outputFileNameTextField = new JTextField(25);
-        outputFileDirLabel = new JLabel("Directory:");
-        outputFileDirTextField = new JTextField(25);
-        outputFileDirChooserButton = new JButton(new ProductDirChooserAction());
-        openInAppCheckBox = new JCheckBox("Open in " + appContext.getApplicationName());
 
-        final Dimension size = new Dimension(26, 16);
+    private void initComponents() {
+
+        outputFileNameLabel = new JLabel("Name: ");
+        outputFileNameLabel.setPreferredSize(outputFileNameLabel.getPreferredSize());
+        outputFileNameLabel.setMinimumSize(outputFileNameLabel.getPreferredSize());
+        outputFileNameLabel.setMaximumSize(outputFileNameLabel.getPreferredSize());
+
+        outputFileNameTextField = new JTextField("123456789 123456789 12345");
+        outputFileNameTextField.setPreferredSize(outputFileNameTextField.getPreferredSize());
+        outputFileNameTextField.setMaximumSize(outputFileNameTextField.getPreferredSize());
+        outputFileNameTextField.setMinimumSize(outputFileNameTextField.getPreferredSize());
+        outputFileNameTextField.setText("");
+
+
+        outputFileDirLabel = new JLabel("Directory:");
+        outputFileDirLabel.setPreferredSize(outputFileDirLabel.getPreferredSize());
+        outputFileDirLabel.setMinimumSize(outputFileDirLabel.getPreferredSize());
+        outputFileDirLabel.setMaximumSize(outputFileDirLabel.getPreferredSize());
+
+        outputFileDirTextField = new JTextField("123456789 123456789 12345");
+        outputFileDirTextField.setPreferredSize(outputFileDirTextField.getPreferredSize());
+        outputFileDirTextField.setMinimumSize(outputFileDirTextField.getPreferredSize());
+        outputFileDirTextField.setMaximumSize(outputFileDirTextField.getPreferredSize());
+        outputFileDirTextField.setText("");
+
+
+        outputFileDirChooserButton = new JButton(new ProductDirChooserAction());
+
+        outputFileDirChooserButton.setMargin(new Insets(0, -7, 0, -7));
+        final Dimension size = new Dimension(outputFileDirChooserButton.getPreferredSize().width,
+                outputFileDirTextField.getPreferredSize().height);
         outputFileDirChooserButton.setPreferredSize(size);
         outputFileDirChooserButton.setMinimumSize(size);
+        outputFileDirChooserButton.setMaximumSize(size);
+
+
+        openInAppCheckBox = new JCheckBox("Open in " + appContext.getApplicationName());
+
     }
 
     private void bindComponents() {
@@ -127,26 +155,18 @@ public class OutputFileSelector {
 
     public JPanel createDefaultPanel() {
 
-        final Dimension size = new Dimension(26, 26);
-        outputFileDirChooserButton.setPreferredSize(size);
-        outputFileDirChooserButton.setMinimumSize(size);
-        outputFileDirChooserButton.setMaximumSize(size);
-
-
         final JPanel mainPanel = new JPanel(new GridBagLayout());
 
         mainPanel.add(getOutputFileNameLabel(),
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
         mainPanel.add(getOutputFileNameTextField(),
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
         mainPanel.add(getOutputFileDirLabel(),
                 new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
         mainPanel.add(getOutputFileDirTextField(),
-                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
         mainPanel.add(getOutputFileDirChooserButton(),
                 new GridBagConstraintsCustom(4, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-        mainPanel.add(new JPanel(),
-                new GridBagConstraintsCustom(5, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
 
         return mainPanel;
     }

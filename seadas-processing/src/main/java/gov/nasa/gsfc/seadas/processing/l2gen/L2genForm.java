@@ -212,7 +212,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             }
         });
 
-        final JTextField jTextField = new JTextField();
+        final JTextField jTextField = new JTextField("123456789 123456789 12345");
         jTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -236,7 +236,15 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        final Dimension size = new Dimension(26, 26);
+        jTextField.setPreferredSize(jTextField.getPreferredSize());
+        jTextField.setMinimumSize(jTextField.getPreferredSize());
+        jTextField.setMaximumSize(jTextField.getPreferredSize());
+        jTextField.setText("");
+
+
+        jButton.setMargin(new Insets(0, -7, 0, -7));
+        final Dimension size = new Dimension(jButton.getPreferredSize().width,
+                jTextField.getPreferredSize().height);
         jButton.setPreferredSize(size);
         jButton.setMinimumSize(size);
         jButton.setMaximumSize(size);

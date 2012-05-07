@@ -32,6 +32,7 @@ import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
@@ -76,13 +77,16 @@ public class SourceProductFileSelector {
 
         productNameLabel = new JLabel(labelText);
         productFileChooserButton = new JButton(new ProductFileChooserAction());
-        final Dimension size = new Dimension(26, 16);
-        productFileChooserButton.setPreferredSize(size);
-        productFileChooserButton.setMinimumSize(size);
+        //    final Dimension size = new Dimension(26, 16);
+        //     productFileChooserButton.setPreferredSize(size);
+        //    productFileChooserButton.setMinimumSize(size);
 
         productNameComboBox = new JComboBox(productListModel);
-        productNameComboBox.setPrototypeDisplayValue("[1] 123456789 123456789 12345");
+        productNameComboBox.setPrototypeDisplayValue("[1] 123456789 123456789 123456789 123456789 123456789");
         productNameComboBox.setRenderer(new ProductListCellRenderer());
+        productNameComboBox.setPreferredSize(productNameComboBox.getPreferredSize());
+        //   productNameComboBox.setMaximumSize(productNameComboBox.getPreferredSize());
+        productNameComboBox.setMinimumSize(productNameComboBox.getPreferredSize());
         productNameComboBox.addPopupMenuListener(new ProductPopupMenuListener());
         productNameComboBox.addActionListener(new ActionListener() {
             @Override
@@ -266,34 +270,36 @@ public class SourceProductFileSelector {
 
     public JPanel createDefaultPanel() {
 
-        // make the button square
-        //   int buttonDefaultWidth = productFileChooserButton.getPreferredSize().width;
-        //   productFileChooserButton.setPreferredSize(new Dimension(buttonDefaultWidth, buttonDefaultWidth));
-
-        final Dimension size = new Dimension(26, 26);
+        productFileChooserButton.setMargin(new Insets(0, -7, 0, -7));
+        final Dimension size = new Dimension(productFileChooserButton.getPreferredSize().width, productNameComboBox.getPreferredSize().height);
         productFileChooserButton.setPreferredSize(size);
         productFileChooserButton.setMinimumSize(size);
         productFileChooserButton.setMaximumSize(size);
+
+
 
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.add(getProductNameLabel(),
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
         mainPanel.add(getProductNameComboBox(),
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
         mainPanel.add(getProductFileChooserButton(),
                 new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
         mainPanel.add(createFilterPane(),
-                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
+                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
         return mainPanel;
     }
 
     private JPanel createFilterPane() {
 
-        final JTextField filterRegexField = new JTextField();
+        final JTextField filterRegexField = new JTextField("123456789 ");
+        filterRegexField.setPreferredSize(filterRegexField.getPreferredSize());
+        filterRegexField.setMinimumSize(filterRegexField.getPreferredSize());
+        filterRegexField.setMaximumSize(filterRegexField.getPreferredSize());
+        filterRegexField.setText("");
 
-        filterRegexField.setColumns(15);
         filterRegexField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent documentEvent) {
@@ -313,13 +319,18 @@ public class SourceProductFileSelector {
             }
         });
 
+        JLabel label = new JLabel("Filter by regex:");
+        label.setPreferredSize(label.getPreferredSize());
+        label.setMinimumSize(label.getPreferredSize());
+        label.setMaximumSize(label.getPreferredSize());
+
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
-        mainPanel.add(new JLabel("Filter by regex:"),
+        mainPanel.add(label,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         mainPanel.add(filterRegexField,
-                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
         return mainPanel;
 
