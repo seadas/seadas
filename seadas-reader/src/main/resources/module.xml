@@ -37,7 +37,7 @@
         <optional>true</optional>
     </dependency>
 
-    <categories>Reader,OBPG,MODIS,HDF,VISAT</categories>
+    <categories>Reader,OBPG,SeaDAS,HDF,VISAT</categories>
 
     <extension point="beam-ui:actions">
         <action>
@@ -46,9 +46,9 @@
             <formatName>NASA-OBPG</formatName>
             <useAllFileFilter>true</useAllFileFilter>
             <mnemonic>O</mnemonic>
-            <text>Import NASA Ocean Color (MODIS, OCTS, CZCS, SeaWiFS) Product...</text>
-            <shortDescr>Import a NASA Ocean Color data product or subset.</shortDescr>
-            <description>Import a NASA Ocean Color (MODIS, OCTS, CZCS, SeaWiFS) data product or product subset.
+            <text>Import Ocean Color (CZCS, MODIS, OCTS, SeaWiFS, VIIRS) Product...</text>
+            <shortDescr>Import a SeaDAS-supported Ocean Color data product.</shortDescr>
+            <description>Import a SeaDAS-supported Ocean Color (MODIS, OCTS, CZCS, SeaWiFS, VIIRS) data product.
             </description>
             <helpId>importObpgProduct</helpId>
         </action>
@@ -56,43 +56,43 @@
 
     <extension point="beam-core:rgbProfiles">
         <rgbProfile>
-            <name>NASA OBPG SeaWiFS L2</name>
+            <name>NASA SeaWiFS L2</name>
             <red>nLw_670</red>
             <green>nLw_510</green>
             <blue>nLw_443</blue>
         </rgbProfile>
         <rgbProfile>
-            <name>NASA OBPG MODIS L2</name>
+            <name>NASA MODIS L2</name>
             <red>nLw_667</red>
             <green>nLw_531</green>
             <blue>nLw_443</blue>
         </rgbProfile>
         <rgbProfile>
-            <name>NASA OBPG OCTS/CZCS L2</name>
+            <name>NASA OCTS/CZCS L2</name>
             <red>nLw_670</red>
             <green>nLw_520</green>
             <blue>nLw_443</blue>
         </rgbProfile>
         <rgbProfile>
-            <name>NASA OBPG SeaWiFS L2 Tristimulus</name>
+            <name>NASA SeaWiFS L2 Tristimulus</name>
             <red>log(1 + 0.2*nLw_443 + 1.1*nLw_670)</red>
             <green>log(1 + 0.2*nLw_443 + 0.4*nLw_510 + 0.4*nLw_555)</green>
             <blue>log(1 + 1.85*nLw_443)</blue>
         </rgbProfile>
         <rgbProfile>
-            <name>NASA OBPG MODIS L2 Tristimulus</name>
+            <name>NASA MODIS L2 Tristimulus</name>
             <red>log(1 + 0.2*nLw_443 + 1.1*nLw_670)</red>
             <green>log(1 + 0.2*nLw_443 + 0.4*nLw_531 + 0.4*nLw_551)</green>
             <blue>log(1 + 1.85*nLw_443)</blue>
         </rgbProfile>
         <rgbProfile>
-            <name>NASA OBPG OCTS L2 Tristimulus</name>
+            <name>NASA OCTS L2 Tristimulus</name>
             <red>log(1 + 0.2*nLw_443 + 1.1*nLw_670)</red>
             <green>log(1 + 0.2*nLw_443 + 0.4*nLw_520 + 0.4*nLw_565)</green>
             <blue>log(1 + 1.85*nLw_443)</blue>
         </rgbProfile>
         <rgbProfile>
-            <name>NASA OBPG CZCS L2 Tristimulus</name>
+            <name>NASA CZCS L2 Tristimulus</name>
             <red>log(1 + 0.2*nLw_443 + 1.1*nLw_670)</red>
             <green>log(1 + 0.2*nLw_443 + 0.4*nLw_520 + 0.4*nLw_550)</green>
             <blue>log(1 + 1.85*nLw_443)</blue>

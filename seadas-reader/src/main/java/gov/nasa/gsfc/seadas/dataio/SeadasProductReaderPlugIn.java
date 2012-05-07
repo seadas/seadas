@@ -41,14 +41,17 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
     private static final String DEFAULT_FILE_EXTENSION_L1A_HNSG = ".L1A_HNSG";
      */
     private static final String DEFAULT_FILE_EXTENSION_L2 = ".L2";
+    private static final String DEFAULT_FILE_EXTENSION_L2_GAC = DEFAULT_FILE_EXTENSION_L2 + "_GAC";
+    private static final String DEFAULT_FILE_EXTENSION_L2_GAC_OC = DEFAULT_FILE_EXTENSION_L2_GAC + "_OC";
     private static final String DEFAULT_FILE_EXTENSION_L2_LAC = DEFAULT_FILE_EXTENSION_L2 + "_LAC";
     private static final String DEFAULT_FILE_EXTENSION_L2_LAC_OC = DEFAULT_FILE_EXTENSION_L2_LAC + "_OC";
     private static final String DEFAULT_FILE_EXTENSION_L2_LAC_SST = DEFAULT_FILE_EXTENSION_L2_LAC + "_SST";
     private static final String DEFAULT_FILE_EXTENSION_L2_LAC_SST4 = DEFAULT_FILE_EXTENSION_L2_LAC + "_SST4";
     private static final String DEFAULT_FILE_EXTENSION_L2_MLAC = DEFAULT_FILE_EXTENSION_L2 + "_MLAC";
     private static final String DEFAULT_FILE_EXTENSION_L2_MLAC_OC = DEFAULT_FILE_EXTENSION_L2_MLAC + "_OC";
+    private static final String FILE_EXTENSION_VIIRS_H5 = ".h5";
 
-    public static final String READER_DESCRIPTION = "NASA Ocean Color (OBPG) Products";
+    public static final String READER_DESCRIPTION = "SeaDAS-Supported Ocean Color Products";
     public static final String FORMAT_NAME = "NASA-OBPG";
 
     private static final String[] supportedProductTypes = {
@@ -262,12 +265,14 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
         // todo: return regular expression to clean up the extensions.
         return new String[]{
                 DEFAULT_FILE_EXTENSION,
-                DEFAULT_FILE_EXTENSION_L2,
-                DEFAULT_FILE_EXTENSION_L2_LAC,
+                FILE_EXTENSION_VIIRS_H5,
+//                DEFAULT_FILE_EXTENSION_L2,
+                DEFAULT_FILE_EXTENSION_L2_GAC_OC,
+//                DEFAULT_FILE_EXTENSION_L2_LAC,
                 DEFAULT_FILE_EXTENSION_L2_LAC_OC,
                 DEFAULT_FILE_EXTENSION_L2_LAC_SST,
                 DEFAULT_FILE_EXTENSION_L2_LAC_SST4,
-                DEFAULT_FILE_EXTENSION_L2_MLAC,
+//                DEFAULT_FILE_EXTENSION_L2_MLAC,
                 DEFAULT_FILE_EXTENSION_L2_MLAC_OC
         };
     }

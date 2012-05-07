@@ -365,7 +365,7 @@ public abstract class SeadasFileReader {
                     product.addBand(band);
 
                     try {
-                        band.setNoDataValue((double) variable.findAttribute("bad_value_unscaled").getNumericValue().floatValue());
+                        band.setNoDataValue((double) variable.findAttribute("bad_value_scaled").getNumericValue().floatValue());
                         band.setNoDataValueUsed(true);
                     } catch (Exception e) {
 
@@ -409,6 +409,30 @@ public abstract class SeadasFileReader {
         if (group != null) {
             final MetadataElement sensorBandParam = getMetadataElementSave(product, "Sensor_Band_Parameters");
             handleMetadataGroup(group, sensorBandParam);
+        }
+    }
+
+    public void addBandMetadata(Product product) throws ProductIOException {
+        Group group = ncFile.findGroup("Geophysical Data");
+        if (group != null) {
+            final MetadataElement bandAttributes = new MetadataElement("Band_Attributes");
+            List<Variable> variables = group.getVariables();
+            for (Variable variable : variables) {
+                final String name = variable.getShortName();
+                final MetadataElement sdsElement = new MetadataElement(name+".attributes");
+                final int dataType = getProductDataType(variable);
+                final MetadataAttribute prodtypeattr = new MetadataAttribute("data_type", dataType);
+
+                sdsElement.addAttribute(prodtypeattr);
+                bandAttributes.addElement(sdsElement);
+
+                final List<Attribute> list = variable.getAttributes();
+                for (Attribute varAttribute : list) {
+                    addAttributeToElement(sdsElement, varAttribute);
+                }
+            }
+            final MetadataElement metadataRoot = product.getMetadataRoot();
+            metadataRoot.addElement(bandAttributes);
         }
     }
 
