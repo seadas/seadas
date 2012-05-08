@@ -16,11 +16,13 @@ public class L2prodParamInfo extends ParamInfo {
 
     private ArrayList<ProductInfo> productInfos = new ArrayList<ProductInfo>();
     private ArrayList<ProductCategoryInfo> productCategoryInfos = new ArrayList<ProductCategoryInfo>();
+    private ArrayList<WavelengthInfo> waveLimiter;
 
 
-    public L2prodParamInfo() {
+    public L2prodParamInfo(ArrayList<WavelengthInfo> waveLimiter) {
         super(L2genData.L2PROD);
         setType(Type.STRING);
+        this.waveLimiter = waveLimiter;
     }
 
 

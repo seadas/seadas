@@ -340,6 +340,27 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
+        final JButton getAncButton = new JButton("Get Anc");
+        getAncButton.setEnabled(false);
+        getAncButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                l2genData.setAncillaryFiles();
+            }
+        });
+
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+
+                if (l2genData.getParamValue(L2genData.IFILE).length() > 0) {
+                    getAncButton.setEnabled(true);
+                    l2genData.removePropertyChangeListener(L2genData.IFILE, this);
+                }
+            }
+        });
+
+
         final JCheckBox showDefaultsCheckbox = new JCheckBox("Show Defaults");
         showDefaultsCheckbox.setSelected(l2genData.isShowDefaultsInParString());
         showDefaultsCheckbox.setToolTipText("Displays all the defaults with the parfile text region");
@@ -384,7 +405,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    parStringTextArea.setText(l2genData.getParString());
+                    parStringTextArea.setText(l2genData.getParString(l2genData.isShowDefaultsInParString()));
 //                    parStringScrollArea.repaint();
 //                    parStringScrollArea.updateUI();
 //                    parStringScrollArea.getVerticalScrollBar().setValue(0);
@@ -396,7 +417,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_IN_PARSTRING_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                parStringTextArea.setText(l2genData.getParString());
+                parStringTextArea.setText(l2genData.getParString(l2genData.isShowDefaultsInParString()));
 //                parStringScrollArea.repaint();
 //                parStringScrollArea.updateUI();
 //                parStringScrollArea.getVerticalScrollBar().setValue(0);
@@ -410,10 +431,12 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         buttonsSubPanel.add(retainIfileOfileCheckbox,
                 new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-        buttonsSubPanel.add(showDefaultsCheckbox,
+        buttonsSubPanel.add(getAncButton,
                 new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 2));
+        buttonsSubPanel.add(showDefaultsCheckbox,
+                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 2));
         buttonsSubPanel.add(saveParfileButton,
-                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(4, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
         final JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -1643,7 +1666,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         // this is done here because events were fired only if params actually changed
         // changes to comments or param-case dont trigger an event
         // so setting the text here insures that this textarea is updated
-        parStringTextArea.setText(l2genData.getParString());
+        parStringTextArea.setText(l2genData.getParString(l2genData.isShowDefaultsInParString()));
     }
 
 
@@ -1851,7 +1874,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         updateProductTreePanel();
         updateWaveLimiterSelectionStates();
 
-        parStringTextArea.setText(l2genData.getParString());
+        parStringTextArea.setText(l2genData.getParString(l2genData.isShowDefaultsInParString()));
     }
 
     private void invalidIfileEvent() {

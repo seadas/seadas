@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import org.esa.beam.util.StringUtils;
 
+import javax.print.attribute.standard.DocumentName;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -361,6 +362,10 @@ public class L2genData {
 
 
     public String getParString() {
+        return getParString(false);
+    }
+
+    public String getParString(boolean showDefaults) {
 
         StringBuilder par = new StringBuilder("");
 
@@ -372,7 +377,7 @@ public class L2genData {
                     currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
                 } else if (paramInfo.getName().equals(PAR)) {
                     // right ignore and do not print todo
-                } else if (isShowDefaultsInParString() || !paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
+                } else if (showDefaults || !paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
                     if (!paramInfo.getName().startsWith("-")) {
                         currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
                     }
@@ -390,7 +395,7 @@ public class L2genData {
     }
 
 
-    private ArrayList<ParamInfo> parseParfile(String parfileContents) {
+    private ArrayList<ParamInfo> parseParString(String parfileContents) {
 
         ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
 
@@ -427,10 +432,13 @@ public class L2genData {
 
 // DANNY IS REVIEWING CODE AND LEFT OFF HERE
 
-
     public void setParString(String parString, boolean ignoreIfile) {
+        setParString(parString, ignoreIfile, false);
+    }
 
-        ArrayList<ParamInfo> parfileParamInfos = parseParfile(parString);
+    public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode) {
+
+        ArrayList<ParamInfo> parfileParamInfos = parseParString(parString);
 
         /*
         Handle IFILE first
@@ -485,33 +493,38 @@ public class L2genData {
             }
         }
 
-        if (!ofileSet) {
-            setCustomOfile();
-        }
 
-        if (!geofileSet) {
-            setCustomGeofile();
-        }
 
-        /*
-        Delete all params NOT contained in parString to defaults (basically set to default)
-        Except: L2PROD and IFILE  remain at current value
-         */
-        for (ParamInfo paramInfo : paramInfos) {
-            if (!paramInfo.getName().equals(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE) && !paramInfo.getName().equals(GEOFILE)) {
-                boolean paramHandled = false;
-                for (ParamInfo parfileParamInfo : parfileParamInfos) {
-                    if (paramInfo.getName().toLowerCase().equals(parfileParamInfo.getName().toLowerCase())) {
-                        paramHandled = true;
+        if (!addParamsMode) {
+
+            if (!ofileSet) {
+                setCustomOfile();
+            }
+
+            if (!geofileSet) {
+                setCustomGeofile();
+            }
+
+            /*
+           Delete all params NOT contained in parString to defaults (basically set to default)
+           Except: L2PROD and IFILE  remain at current value
+            */
+            for (ParamInfo paramInfo : paramInfos) {
+                if (!paramInfo.getName().equals(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE) && !paramInfo.getName().equals(GEOFILE)) {
+                    boolean paramHandled = false;
+                    for (ParamInfo parfileParamInfo : parfileParamInfos) {
+                        if (paramInfo.getName().toLowerCase().equals(parfileParamInfo.getName().toLowerCase())) {
+                            paramHandled = true;
+                        }
+                    }
+
+                    if (!paramHandled && (paramInfo.getValue() != paramInfo.getDefaultValue())) {
+                        setParamValue(paramInfo.getName(), paramInfo.getDefaultValue());
                     }
                 }
-
-                if (!paramHandled && (paramInfo.getValue() != paramInfo.getDefaultValue())) {
-                    setParamValue(paramInfo.getName(), paramInfo.getDefaultValue());
-                }
             }
-        }
 
+        }
     }
 
 
@@ -651,7 +664,7 @@ public class L2genData {
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
                 setIfileParamValue(paramInfo, value);
             } else {
-                if (value.length() > 0) {
+                if (value.length() > 0 || paramInfo.getName().toLowerCase().equals(L2PROD)) {
                     paramInfo.setValue(value);
                     setConflictingParams(paramInfo.getName());
                 } else {
@@ -1047,6 +1060,15 @@ public class L2genData {
         setParamValue(GEOFILE, geofile);
     }
 
+    public void setAncillaryFiles() {
+
+        //todo Don
+        debug("TODO FOR DON GETANC");
+        String ancillaryFiles = "met1=helloMet1 \nmet2=helloMet2";
+
+        setParString(ancillaryFiles, true, true);
+    }
+
 
     private void debug(String string) {
         System.out.println(string);
@@ -1214,10 +1236,10 @@ public class L2genData {
     }
 
     public L2prodParamInfo createL2prodParamInfo(String value) {
-        L2prodParamInfo l2prodParamInfo = new L2prodParamInfo();
+        L2prodParamInfo l2prodParamInfo = new L2prodParamInfo(waveLimiter);
         setL2prodParamInfo(l2prodParamInfo);
 
-        InputStream productInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_INFO_XML);
+        InputStream productInfoStream = L2genForm.class.getResourceAsStream(getProductInfoXml(initialIfile));
         l2genReader.readProductsXml(productInfoStream);
 
         l2prodParamInfo.setValue(value);
