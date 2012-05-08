@@ -18,6 +18,7 @@ package gov.nasa.gsfc.seadas.dataio;
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.AbstractProductReader;
 import org.esa.beam.framework.dataio.ProductIOException;
+import org.esa.beam.framework.dataio.ProductReaderPlugIn;
 import org.esa.beam.framework.datamodel.*;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
@@ -73,7 +74,7 @@ public class SeadasProductReader extends AbstractProductReader {
      * @param readerPlugIn the reader plug-in which created this reader, can be <code>null</code> for internal reader
      *                     implementations
      */
-    protected SeadasProductReader(SeadasProductReaderPlugIn readerPlugIn) {
+    protected SeadasProductReader(ProductReaderPlugIn readerPlugIn) {
         super(readerPlugIn);
     }
 
@@ -82,7 +83,7 @@ public class SeadasProductReader extends AbstractProductReader {
 
         try {
 //            Product product;
-            final File inFile = getInputFile();
+            final File inFile = getInputFile(getInput());
             final String path = inFile.getPath();
 
             ncfile = NetcdfFile.open(path);
@@ -156,7 +157,7 @@ public class SeadasProductReader extends AbstractProductReader {
     }
 
     public File getInputFile() {
-        return ((SeadasProductReaderPlugIn) getReaderPlugIn()).getInputFile(getInput());
+        return SeadasProductReader.getInputFile(getInput());
     }
 
     public NetcdfFile getNcfile() {
@@ -251,6 +252,18 @@ public class SeadasProductReader extends AbstractProductReader {
 
         throw new ProductIOException("Unrecognized product type");
 
+    }
+
+    public static File getInputFile(Object input) {
+        File inputFile;
+        if (input instanceof File) {
+            inputFile = (File) input;
+        } else if (input instanceof String) {
+            inputFile = new File((String) input);
+        } else {
+            return null;
+        }
+        return inputFile;
     }
 
 }

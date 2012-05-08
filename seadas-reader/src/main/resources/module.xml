@@ -41,16 +41,89 @@
 
     <extension point="beam-ui:actions">
         <action>
-            <id>importObpgProduct</id>
+            <id>importSeadasL1Product</id>
             <class>org.esa.beam.visat.actions.ProductImportAction</class>
-            <formatName>NASA-OBPG</formatName>
+            <formatName>SeaDAS-L1</formatName>
             <useAllFileFilter>true</useAllFileFilter>
             <mnemonic>O</mnemonic>
-            <text>NASA Ocean Color (CZCS, MODIS, OCTS, SeaWiFS, VIIRS)</text>
-            <shortDescr>Import a SeaDAS-supported Ocean Color data product.</shortDescr>
-            <description>Import a SeaDAS-supported Ocean Color (MODIS, OCTS, CZCS, SeaWiFS, VIIRS) data product.
+            <text>Import SeaDAS L1 Product</text>
+            <shortDescr>Import a SeaDAS-supported L1 data product.</shortDescr>
+            <description>Import a SeaDAS-supported Level 1 (OCTS, CZCS, SeaWiFS) data product.
             </description>
-            <helpId>importObpgProduct</helpId>
+            <helpId>importSeadasL1Product</helpId>
+        </action>
+        <action>
+            <id>importSeadasL2Product</id>
+            <class>org.esa.beam.visat.actions.ProductImportAction</class>
+            <formatName>SeaDAS-L2</formatName>
+            <useAllFileFilter>true</useAllFileFilter>
+            <mnemonic>O</mnemonic>
+            <text>Import SeaDAS L2 Product</text>
+            <shortDescr>Import a SeaDAS-supported L2 data product.</shortDescr>
+            <description>Import a SeaDAS-supported Level 2 (CZCS, OCTS, SeaWiFS, MODIS, VIIRS, etc.) data product.
+            </description>
+            <helpId>importSeadasL2Product</helpId>
+        </action>
+        <action>
+            <id>importSeadasL3Product</id>
+            <class>org.esa.beam.visat.actions.ProductImportAction</class>
+            <formatName>SeaDAS-L3</formatName>
+            <useAllFileFilter>true</useAllFileFilter>
+            <mnemonic>O</mnemonic>
+            <text>Import SeaDAS L3 Product</text>
+            <shortDescr>Import a SeaDAS-supported L3 data product.</shortDescr>
+            <description>Import a SeaDAS-supported Level 3 (CZCS, OCTS, SeaWiFS, MODIS, VIIRS, etc.) data product.
+            </description>
+            <helpId>importSeadasL3Product</helpId>
+        </action>
+        <action>
+            <id>importAquariusProduct</id>
+            <class>org.esa.beam.visat.actions.ProductImportAction</class>
+            <formatName>Aquarius</formatName>
+            <useAllFileFilter>true</useAllFileFilter>
+            <mnemonic>O</mnemonic>
+            <text>Import Aquarius Product</text>
+            <shortDescr>Import an Aquarius data product.</shortDescr>
+            <description>Import an Aquarius (L1, L2, L3) data product.
+            </description>
+            <helpId>importAquariusProduct</helpId>
+        </action>
+        <action>
+            <id>importModisL1BProduct</id>
+            <class>org.esa.beam.visat.actions.ProductImportAction</class>
+            <formatName>Aquarius</formatName>
+            <useAllFileFilter>true</useAllFileFilter>
+            <mnemonic>O</mnemonic>
+            <text>Import MODIS L1B Product</text>
+            <shortDescr>Import a MODIS L1B data product.</shortDescr>
+            <description>Import a MODIS Level 1B data product.
+            </description>
+            <helpId>importModisL1BProduct</helpId>
+        </action>
+
+        <action>
+            <id>importViirsProduct</id>
+            <class>org.esa.beam.visat.actions.ProductImportAction</class>
+            <formatName>VIIRS</formatName>
+            <useAllFileFilter>true</useAllFileFilter>
+            <mnemonic>O</mnemonic>
+            <text>Import VIIRS Product</text>
+            <shortDescr>Import a VIIRS data product.</shortDescr>
+            <description>Import a VIIRS (SDR, EDR) data product.
+            </description>
+            <helpId>importViirsProduct</helpId>
+        </action>
+        <action>
+            <id>importSeadasBrowseProduct</id>
+            <class>org.esa.beam.visat.actions.ProductImportAction</class>
+            <formatName>SeaDAS-Browse</formatName>
+            <useAllFileFilter>true</useAllFileFilter>
+            <mnemonic>O</mnemonic>
+            <text>Import SeaDAS Browse Product</text>
+            <shortDescr>Import a SeaDAS Browse data product.</shortDescr>
+            <description>Import a SeaDAS Browse (L1, L2) data product.
+            </description>
+            <helpId>importSeadasBrowseProduct</helpId>
         </action>
     </extension>
 

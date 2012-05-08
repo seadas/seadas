@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
+public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
 
     // Set to "true" to output debugging information.
     // Don't forget to setback to "false" in production code!
@@ -36,10 +36,7 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
     private static final boolean DEBUG = false;
 
     private static final String DEFAULT_FILE_EXTENSION = ".hdf";
-    /*
-    private static final String DEFAULT_FILE_EXTENSION_L1A_GAC = ".L1A_GAC";
-    private static final String DEFAULT_FILE_EXTENSION_L1A_HNSG = ".L1A_HNSG";
-     */
+
     private static final String DEFAULT_FILE_EXTENSION_L2 = ".L2";
     private static final String DEFAULT_FILE_EXTENSION_L2_GAC = DEFAULT_FILE_EXTENSION_L2 + "_GAC";
     private static final String DEFAULT_FILE_EXTENSION_L2_GAC_OC = DEFAULT_FILE_EXTENSION_L2_GAC + "_OC";
@@ -49,59 +46,20 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
     private static final String DEFAULT_FILE_EXTENSION_L2_LAC_SST4 = DEFAULT_FILE_EXTENSION_L2_LAC + "_SST4";
     private static final String DEFAULT_FILE_EXTENSION_L2_MLAC = DEFAULT_FILE_EXTENSION_L2 + "_MLAC";
     private static final String DEFAULT_FILE_EXTENSION_L2_MLAC_OC = DEFAULT_FILE_EXTENSION_L2_MLAC + "_OC";
-    private static final String FILE_EXTENSION_VIIRS_H5 = ".h5";
 
-    public static final String READER_DESCRIPTION = "SeaDAS-Supported Ocean Color Products";
-    public static final String FORMAT_NAME = "NASA-OBPG";
+    public static final String READER_DESCRIPTION = "SeaDAS-Supported Level 2 Products";
+    public static final String FORMAT_NAME = "SeaDAS-L2";
 
     private static final String[] supportedProductTypes = {
-            "Aquarius Level 1A Data",
-            "Aquarius Level 2 Data",
-            "CZCS Level-1A Data",
-            "CZCS Level-1B",
             "CZCS Level-2 Data",
-            "CZCS Level-3 Standard Mapped Image",
             "HMODISA Level-2 Data",
-            "HMODISA Level-3 Standard Mapped Image",
-            "HMODIST Level-3 Standard Mapped Image",
             "MERIS Level-2 Data",
-            "MERIS Level-1 Browse Data",
-            "MERIS Level-2 Browse Data",
-            "MODIS_SWATH_Type_L1B",
-            "MODISA Level-1 Browse Data",
-            "HMODISA Level-1 Browse Data",
-            "MODISA Level-2 Browse Data",
-            "HMODISA Level-2 Browse Data",
             "MODISA Level-2 Data",
             "MODIST Level-2 Data",
-            "MOS Level-1B",
             "MOS Level-2 Data",
-            "OSMI Level-1A Data",
-            "OSMI Level-1B",
             "OSMI Level-2 Data",
-            "OCM2 Level-3 Standard Mapped Image",
-            "OCTS Level-1A GAC Data",
             "OCTS Level-2 Data",
-            "OCTS Level-3 Standard Mapped Image",
-            "SeaWiFS Near Real-Time Ancillary Data",
-            "SeaWiFS Level-1B",
-            "SeaWiFS Level-1A Data",
             "SeaWiFS Level-2 Data",
-            "SeaWiFS Level-3 Standard Mapped Image",
-            "VIIRS Level-3 Standard Mapped Image",
-            "Level-3 Standard Mapped Image",
-            "SeaWiFS Level-3 Binned Data",
-            "CZCS Level-3 Binned Data",
-            "OCTS Level-3 Binned Data",
-            "HMODISA Level-3 Binned Data",
-            "HMODIST Level-3 Binned Data",
-            "MERIS Level-3 Binned Data",
-            "MODIS Level-3 Binned Data",
-            "OSMI Level-3 Binned Data",
-            "OCM2 Level-3 Binned Data",
-            "Aquarius Level-3 Binned Data",
-            "Level-3 Binned Data",
-            "VIIRS Level-3 Binned Data",
             "VIIRSN Level-2 Data",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
@@ -112,7 +70,7 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
      */
     @Override
     public DecodeQualification getDecodeQualification(Object input) {
-        final File file = getInputFile(input);
+        final File file = SeadasProductReader.getInputFile(input);
         if (file == null) {
             return DecodeQualification.UNABLE;
         }
@@ -133,66 +91,22 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
-                Attribute platformShortName = ncfile.findGlobalAttribute("Platform_Short_Name");
-                Attribute seam_lon = ncfile.findGlobalAttribute("Seam_Lon");
 
-                Group modisl1bGroup = ncfile.findGroup("MODIS_SWATH_Type_L1B");
-                List<Variable> seadasMappedVariables = ncfile.getVariables();
-                Boolean isSeadasMapped = false;
-                try {
-                    isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
-                } catch (Exception e) {
-                }
+                if (titleAttribute != null) {
 
-                if (titleAttribute != null || modisl1bGroup != null || platformShortName != null) {
-                    if (titleAttribute != null){
-                        final String title = titleAttribute.getStringValue();
-                        if (title != null) {
-                            if (supportedProductTypeSet.contains(title.trim())) {
-                                if (DEBUG) {
-                                    System.out.println(file);
-                                }
-                                return DecodeQualification.INTENDED;
-                            } else {
-                                if (DEBUG) {
-                                    System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
-                                }
-                            }
-                        }
-                    } else if (modisl1bGroup != null) {
-                        final String shortname = modisl1bGroup.getShortName();
-                        if (shortname != null) {
-                            if (supportedProductTypeSet.contains(shortname.trim())) {
-                                if (DEBUG) {
-                                    System.out.println(file);
-                                }
-                                return DecodeQualification.INTENDED;
-                            } else {
-                                if (DEBUG) {
-                                    System.out.println("# Unrecognized attribute group=[" + shortname + "]: " + file);
-                                }
-                            }
-                        }
-                    } else {
-//                        must be NPP
-                        String platformName = platformShortName.getStringValue();
-                        if (platformName.equals("NPP")){
-                            Group dataProduct = ncfile.findGroup("Data_Products");
-                            String dataProductList0 = dataProduct.getGroups().get(0).getShortName();
-                            if (dataProductList0.matches("VIIRS.*DR")) {
-                                return DecodeQualification.INTENDED;
-                            }
-                        }else {
+                    final String title = titleAttribute.getStringValue();
+                    if (title != null) {
+                        if (supportedProductTypeSet.contains(title.trim())) {
                             if (DEBUG) {
-                                    System.out.println("# Unrecognized platform=[" + platformName + "]: " + file);
-                                }
+                                System.out.println(file);
+                            }
+                            return DecodeQualification.INTENDED;
+                        } else {
+                            if (DEBUG) {
+                                System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
+                            }
                         }
-
                     }
-                } else if (seam_lon != null) {
-                    return DecodeQualification.INTENDED;
-                } else if (isSeadasMapped) {
-                    return DecodeQualification.INTENDED;
                 } else {
                     if (DEBUG) {
                         System.out.println("# Missing attribute 'Title': " + file);
@@ -265,14 +179,10 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
         // todo: return regular expression to clean up the extensions.
         return new String[]{
                 DEFAULT_FILE_EXTENSION,
-                FILE_EXTENSION_VIIRS_H5,
-//                DEFAULT_FILE_EXTENSION_L2,
                 DEFAULT_FILE_EXTENSION_L2_GAC_OC,
-//                DEFAULT_FILE_EXTENSION_L2_LAC,
                 DEFAULT_FILE_EXTENSION_L2_LAC_OC,
                 DEFAULT_FILE_EXTENSION_L2_LAC_SST,
                 DEFAULT_FILE_EXTENSION_L2_LAC_SST4,
-//                DEFAULT_FILE_EXTENSION_L2_MLAC,
                 DEFAULT_FILE_EXTENSION_L2_MLAC_OC
         };
     }
@@ -300,19 +210,4 @@ public class SeadasProductReaderPlugIn implements ProductReaderPlugIn {
     public String[] getFormatNames() {
         return new String[]{FORMAT_NAME};
     }
-
-    public File getInputFile(Object input) {
-        File inputFile;
-        if (input instanceof File) {
-            inputFile = (File) input;
-        } else if (input instanceof String) {
-            inputFile = new File((String) input);
-        } else {
-            return null;
-        }
-        return inputFile;
-    }
-
-
-
 }
