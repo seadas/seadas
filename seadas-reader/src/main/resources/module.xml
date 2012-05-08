@@ -1,13 +1,13 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
-    <symbolicName>seadas-obpg-reader</symbolicName>
-    <version>1.2</version>
-    <name>OBPG Ocean Color Product Reader</name>
+    <symbolicName>seadas-reader</symbolicName>
+    <version>1.3-SNAPSHOT</version>
+    <name>NASA OBPG Ocean Color Product Reader</name>
     <description>A reader for NASA Ocean Color (HDF) Level-2 Data Products</description>
 
-    <vendor>Brockmann Consult GmbH</vendor>
-    <contactAddress>Max Planck Str.2, 21502 Geesthacht (Germany)</contactAddress>
-    <copyright>(C) 2007 by Brockmann Consult GmbH</copyright>
+    <vendor>NASA Ocean Biogeochemical Processing Group</vendor>
+    <contactAddress>NASA GSFC, Greenbelt, Maryland, MD, USA</contactAddress>
+    <copyright>(C) 2012 by NASA OBPG</copyright>
     <url>http://oceancolor.gsfc.nasa.gov/</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
 
@@ -46,7 +46,7 @@
             <formatName>NASA-OBPG</formatName>
             <useAllFileFilter>true</useAllFileFilter>
             <mnemonic>O</mnemonic>
-            <text>Import Ocean Color (CZCS, MODIS, OCTS, SeaWiFS, VIIRS) Product...</text>
+            <text>NASA Ocean Color (CZCS, MODIS, OCTS, SeaWiFS, VIIRS)</text>
             <shortDescr>Import a SeaDAS-supported Ocean Color data product.</shortDescr>
             <description>Import a SeaDAS-supported Ocean Color (MODIS, OCTS, CZCS, SeaWiFS, VIIRS) data product.
             </description>
