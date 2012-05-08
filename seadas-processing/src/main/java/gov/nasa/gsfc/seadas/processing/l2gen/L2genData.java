@@ -170,7 +170,7 @@ public class L2genData {
 
     public void fireAllParamEvents() {
         for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName() != null) {
+            if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals(L2PROD)) {
                 fireEvent(paramInfo.getName());
             }
         }
@@ -1071,7 +1071,8 @@ public class L2genData {
 
 
     private void debug(String string) {
-        System.out.println(string);
+
+      //  System.out.println(string);
     }
 
 

@@ -11,6 +11,7 @@ import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
 import gov.nasa.gsfc.seadas.processing.general.OutputFileSelector;
 import gov.nasa.gsfc.seadas.processing.general.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
+import jj2000.j2k.codestream.HeaderInfo;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.AppContext;
@@ -44,6 +45,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
 
     private JPanel waveLimiterJPanel;
+    private boolean initialConfiguration = true;
 
     final Color DEFAULT_INDICATOR_COLOR = new Color(0, 0, 120);
 
@@ -124,6 +126,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         } else {
             l2genData.fireAllParamEvents();
         }
+        initialConfiguration = false;
 
     }
     //----------------------------------------------------------------------------------------
@@ -173,8 +176,45 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         mainPanel.add(createOutputFilePanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        mainPanel.add(createGeofileChooserPanel(),
+        enableOutputFilePanel(false);
+
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (!initialConfiguration) {
+                    enableOutputFilePanel(true);
+                    l2genData.removePropertyChangeListener(L2genData.IFILE, this);
+                }
+            }
+        });
+
+
+        final JPanel geofilePanel = createGeofileChooserPanel();
+        Component[] geofilePanelComponents = geofilePanel.getComponents();
+        for (Component component : geofilePanelComponents) {
+            component.setEnabled(false);
+        }
+        // geofilePanel.setEnabled(false);
+
+
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (!initialConfiguration) {
+                    Component[] geofilePanelComponents = geofilePanel.getComponents();
+                    for (Component component : geofilePanelComponents) {
+                        component.setEnabled(true);
+                    }
+
+                    l2genData.removePropertyChangeListener(L2genData.IFILE, this);
+                }
+            }
+        });
+
+
+        mainPanel.add(geofilePanel,
                 new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
 
         return mainPanel;
     }
@@ -280,6 +320,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
 
         final JButton saveParfileButton = new JButton("Save");
+        saveParfileButton.setEnabled(false);
         saveParfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -287,6 +328,17 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
                 if (result == JFileChooser.APPROVE_OPTION) {
                     writeParfile();
+                }
+            }
+        });
+
+
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (!initialConfiguration) {
+                    saveParfileButton.setEnabled(true);
+                    l2genData.removePropertyChangeListener(L2genData.IFILE, this);
                 }
             }
         });
@@ -364,7 +416,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         final JCheckBox showDefaultsCheckbox = new JCheckBox("Show Defaults");
         showDefaultsCheckbox.setSelected(l2genData.isShowDefaultsInParString());
         showDefaultsCheckbox.setToolTipText("Displays all the defaults with the parfile text region");
-        showDefaultsCheckbox.setEnabled(true);
+        showDefaultsCheckbox.setEnabled(false);
 
         // add listener for current checkbox
         showDefaultsCheckbox.addItemListener(new ItemListener() {
@@ -373,6 +425,18 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
                 l2genData.setShowDefaultsInParString(showDefaultsCheckbox.isSelected());
             }
         });
+
+
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (!initialConfiguration) {
+                    showDefaultsCheckbox.setEnabled(true);
+                    l2genData.removePropertyChangeListener(L2genData.IFILE, this);
+                }
+            }
+        });
+
 
         l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_IN_PARSTRING_EVENT, new PropertyChangeListener() {
             @Override
@@ -1589,6 +1653,11 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
+    private void enableOutputFilePanel(boolean enabled) {
+        outputFileSelector.setEnabled(enabled);
+    }
+
+
     private JPanel createSelectedProductsJPanel() {
 
         final JTextArea selectedProductsJTextArea = new JTextArea();
@@ -1758,7 +1827,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
             public void propertyChange(PropertyChangeEvent evt) {
                 //   if (enableIfileEvent) {
                 System.out.println(L2genData.IFILE + " being handled");
-                ifileChangedEventHandler();
+                if (!initialConfiguration) {
+                    ifileChangedEventHandler();
+                }
                 //   }
             }
 
@@ -2013,7 +2084,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
 
     private void debug(String string) {
-        System.out.println(string);
+        //  System.out.println(string);
     }
 
 
