@@ -51,7 +51,7 @@ public class L2genData {
     private boolean validIfile = false;
     private boolean showDefaultsInParString = false;
 
-    public ArrayList<WavelengthInfo> waveLimiter = new ArrayList<WavelengthInfo>();
+    public ArrayList<WavelengthInfo> waveLimiterInfos = new ArrayList<WavelengthInfo>();
 
     private L2genReader l2genReader = new L2genReader(this);
 
@@ -203,17 +203,17 @@ public class L2genData {
 
 
     /**
-     * Set wavelength in waveLimiter based on GUI change
+     * Set wavelength in waveLimiterInfos based on GUI change
      *
      * @param selectedWavelength
      * @param selected
      */
     public void setSelectedWaveLimiter(String selectedWavelength, boolean selected) {
 
-        for (WavelengthInfo wavelengthInfo : waveLimiter) {
-            if (selectedWavelength.equals(wavelengthInfo.getWavelengthString())) {
-                if (selected != wavelengthInfo.isSelected()) {
-                    wavelengthInfo.setSelected(selected);
+        for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+            if (selectedWavelength.equals(waveLimiterInfo.getWavelengthString())) {
+                if (selected != waveLimiterInfo.isSelected()) {
+                    waveLimiterInfo.setSelected(selected);
                     fireEvent(WAVE_LIMITER_CHANGE_EVENT);
                 }
             }
@@ -222,17 +222,17 @@ public class L2genData {
 
 
     /**
-     * Determine is mission has particular waveType based on what is in the waveLimiter Array
+     * Determine is mission has particular waveType based on what is in the waveLimiterInfos Array
      * <p/>
-     * Used by the waveLimiter GUI to enable/disable the appropriate 'Select All' toggle buttons
+     * Used by the waveLimiterInfos GUI to enable/disable the appropriate 'Select All' toggle buttons
      *
      * @param waveType
-     * @return true if waveType in waveLimiter, otherwise false
+     * @return true if waveType in waveLimiterInfos, otherwise false
      */
     public boolean hasWaveType(WavelengthInfo.WaveType waveType) {
 
-        for (WavelengthInfo wavelengthInfo : waveLimiter) {
-            if (wavelengthInfo.isWaveType(waveType)) {
+        for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+            if (waveLimiterInfo.isWaveType(waveType)) {
                 return true;
             }
         }
@@ -254,9 +254,9 @@ public class L2genData {
 
         int selectedCount = 0;
 
-        for (WavelengthInfo wavelengthInfo : waveLimiter) {
-            if (wavelengthInfo.isWaveType(waveType)) {
-                if (wavelengthInfo.isSelected()) {
+        for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+            if (waveLimiterInfo.isWaveType(waveType)) {
+                if (waveLimiterInfo.isSelected()) {
                     selectedCount++;
                 } else {
                     return false;
@@ -281,9 +281,9 @@ public class L2genData {
      */
     public void setSelectedAllWaveLimiter(WavelengthInfo.WaveType waveType, boolean selected) {
 
-        for (WavelengthInfo wavelengthInfo : waveLimiter) {
-            if (wavelengthInfo.isWaveType(waveType)) {
-                wavelengthInfo.setSelected(selected);
+        for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+            if (waveLimiterInfo.isWaveType(waveType)) {
+                waveLimiterInfo.setSelected(selected);
             }
         }
         fireEvent(WAVE_LIMITER_CHANGE_EVENT);
@@ -317,8 +317,8 @@ public class L2genData {
     }
 
 
-    public ArrayList<WavelengthInfo> getWaveLimiter() {
-        return waveLimiter;
+    public ArrayList<WavelengthInfo> getWaveLimiterInfos() {
+        return waveLimiterInfos;
     }
 
 
@@ -838,7 +838,7 @@ public class L2genData {
 
 
     private void resetWaveLimiter() {
-        waveLimiter.clear();
+        waveLimiterInfos.clear();
 
         // determine the filename which contains the wavelengths
         String sensorInfoFilename = getSensorInfoFilename();
@@ -866,7 +866,7 @@ public class L2genData {
                     final String currWavelength = splitLine[1].trim();
 
                     WavelengthInfo wavelengthInfo = new WavelengthInfo(currWavelength);
-                    waveLimiter.add(wavelengthInfo);
+                    waveLimiterInfos.add(wavelengthInfo);
                     debug("wavelengthLimiterArray adding wave=" + wavelengthInfo.getWavelengthString());
                 }
             }
@@ -1137,9 +1137,9 @@ public class L2genData {
 
 
     public boolean compareWavelengthLimiter(WavelengthInfo wavelengthInfo) {
-        for (WavelengthInfo wavelengthLimitorInfo : getWaveLimiter()) {
-            if (wavelengthLimitorInfo.getWavelength() == wavelengthInfo.getWavelength()) {
-                if (wavelengthLimitorInfo.isSelected()) {
+        for (WavelengthInfo waveLimitorInfo : getWaveLimiterInfos()) {
+            if (waveLimitorInfo.getWavelength() == wavelengthInfo.getWavelength()) {
+                if (waveLimitorInfo.isSelected()) {
                     return true;
                 } else {
                     return false;
@@ -1252,7 +1252,7 @@ public class L2genData {
     }
 
     public L2prodParamInfo createL2prodParamInfo(String value) {
-        L2prodParamInfo l2prodParamInfo = new L2prodParamInfo(waveLimiter);
+        L2prodParamInfo l2prodParamInfo = new L2prodParamInfo();
         setL2prodParamInfo(l2prodParamInfo);
 
         InputStream productInfoStream = L2genForm.class.getResourceAsStream(getProductInfoXml(initialIfile));

@@ -283,7 +283,7 @@ public class L2genReader {
 
                         Element algElement = (Element) algNodelist.item(j);
 
-                        AlgorithmInfo algorithmInfo = new AlgorithmInfo(l2genData.waveLimiter);
+                        AlgorithmInfo algorithmInfo = new AlgorithmInfo(l2genData.waveLimiterInfos);
 
                         if (algElement.hasAttribute("name")) {
                             String algorithmName = algElement.getAttribute("name");

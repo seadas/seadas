@@ -1918,9 +1918,9 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
         ArrayList<JCheckBox> wavelengthGroupCheckboxes = new ArrayList<JCheckBox>();
 
-        for (WavelengthInfo wavelengthInfo : l2genData.getWaveLimiter()) {
+        for (WavelengthInfo waveLimiterInfo : l2genData.getWaveLimiterInfos()) {
 
-            final String currWavelength = wavelengthInfo.getWavelengthString();
+            final String currWavelength = waveLimiterInfo.getWavelengthString();
             final JCheckBox currJCheckBox = new JCheckBox(currWavelength);
 
             currJCheckBox.setName(currWavelength);
@@ -2018,7 +2018,7 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
 
 
     /**
-     * Set all waveLimiter controls to agree with l2genData
+     * Set all waveLimiterInfos controls to agree with l2genData
      */
     private void updateWaveLimiterSelectionStates() {
 
@@ -2026,11 +2026,11 @@ class L2genForm extends JTabbedPane implements CloProgramUI {
         waveLimiterControlHandlersEnabled = false;
 
         // Set all checkboxes to agree with l2genData
-        for (WavelengthInfo wavelengthInfo : l2genData.getWaveLimiter()) {
+        for (WavelengthInfo waveLimiterInfo : l2genData.getWaveLimiterInfos()) {
             for (JCheckBox currJCheckbox : wavelengthsJCheckboxArrayList) {
-                if (wavelengthInfo.getWavelengthString().equals(currJCheckbox.getName())) {
-                    if (wavelengthInfo.isSelected() != currJCheckbox.isSelected()) {
-                        currJCheckbox.setSelected(wavelengthInfo.isSelected());
+                if (waveLimiterInfo.getWavelengthString().equals(currJCheckbox.getName())) {
+                    if (waveLimiterInfo.isSelected() != currJCheckbox.isSelected()) {
+                        currJCheckbox.setSelected(waveLimiterInfo.isSelected());
                     }
                 }
             }

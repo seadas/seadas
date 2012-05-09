@@ -1,10 +1,10 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
+import ucar.units.Test;
 
-import org.esa.beam.util.StringUtils;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * A ...
@@ -32,7 +32,7 @@ public class AlgorithmInfo extends BaseInfo {
 
     // These fields are populated according to productInfo.xml
 
-    public ArrayList<WavelengthInfo> waveLimiter;
+    public ArrayList<WavelengthInfo> waveLimiterInfos;
     private String dataType = null;
     private String prefix = null;
     private String suffix = null;
@@ -40,11 +40,11 @@ public class AlgorithmInfo extends BaseInfo {
     private ParameterType parameterType = null;
 
 
-    public AlgorithmInfo(String name, String description, ParameterType parameterType, ArrayList<WavelengthInfo> waveLimiter) {
+    public AlgorithmInfo(String name, String description, ParameterType parameterType, ArrayList<WavelengthInfo> waveLimiterInfos) {
         super(name);
         setDescription(description);
         this.parameterType = parameterType;
-        this.waveLimiter = waveLimiter;
+        this.waveLimiterInfos = waveLimiterInfos;
     }
 
 //    public AlgorithmInfo(String name, String description, String waveTypeStr) {
@@ -55,8 +55,8 @@ public class AlgorithmInfo extends BaseInfo {
 //        this(name, description, ParameterType.NONE);
 //    }
 
-    public AlgorithmInfo(ArrayList<WavelengthInfo> waveLimiter) {
-        this("", "", ParameterType.NONE, waveLimiter);
+    public AlgorithmInfo(ArrayList<WavelengthInfo> waveLimiterInfos) {
+        this("", "", ParameterType.NONE, waveLimiterInfos);
     }
 
     public String getProductName() {
@@ -161,7 +161,7 @@ public class AlgorithmInfo extends BaseInfo {
         }
     }
 
-    public String getShortcutFullname(ShortcutType shortcutType) {
+    private String getShortcutFullname(ShortcutType shortcutType) {
 
         StringBuilder result = new StringBuilder();
 
@@ -179,7 +179,7 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
 
-    public boolean isSelectedShortcut(ShortcutType shortcutType) {
+    private boolean isSelectedShortcut(ShortcutType shortcutType) {
         boolean found = false;
 
         if (shortcutType == ShortcutType.ALL) {
@@ -223,33 +223,102 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
 
-    public ArrayList<String>  getL2prod() {
+    public void setL2prod(HashSet<String> inProducts) {
+
+        if (getParameterType() == AlgorithmInfo.ParameterType.NONE) {
+            if (inProducts.contains(getFullName())) {
+                setState(AlgorithmInfo.State.SELECTED);
+            } else {
+                setState(AlgorithmInfo.State.NOT_SELECTED);
+            }
+        } else {
+            for (BaseInfo wInfo : getChildren()) {
+                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+
+                if (inProducts.contains(wavelengthInfo.getFullName())) {
+                    wavelengthInfo.setState(WavelengthInfo.State.SELECTED);
+                } else {
+                    wavelengthInfo.setState(WavelengthInfo.State.NOT_SELECTED);
+                }
+            }
+
+            if (inProducts.contains(getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE))) {
+                setStateShortcut(AlgorithmInfo.ShortcutType.VISIBLE, AlgorithmInfo.State.SELECTED);
+            }
+
+            if (inProducts.contains(getShortcutFullname(AlgorithmInfo.ShortcutType.IR))) {
+                setStateShortcut(AlgorithmInfo.ShortcutType.IR, AlgorithmInfo.State.SELECTED);
+            }
+
+            if (inProducts.contains(getShortcutFullname(AlgorithmInfo.ShortcutType.ALL))) {
+                setStateShortcut(AlgorithmInfo.ShortcutType.ALL, AlgorithmInfo.State.SELECTED);
+            }
+        }
+    }
+
+
+    public ArrayList<String> getL2prod() {
 
         ArrayList<String> l2prod = new ArrayList<String>();
 
         if (hasChildren()) {
+            int count = 0;
+            int selectedCount = 0;
+            int visibleCount = 0;
+            int visibleSelectedCount = 0;
+            int infraredCount = 0;
+            int infraredSelectedCount = 0;
 
-            if (isSelectedShortcut(AlgorithmInfo.ShortcutType.ALL)) {
-                l2prod.add(getShortcutFullname(AlgorithmInfo.ShortcutType.ALL));
-            } else {
-                if (isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
-                    l2prod.add(getShortcutFullname(AlgorithmInfo.ShortcutType.IR));
+            for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+                for (BaseInfo wInfo : getChildren()) {
+                    WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+                    if (wavelengthInfo.getWavelength() == waveLimiterInfo.getWavelength()) {
+                        if (wavelengthInfo.isSelected()) {
+                            if (waveLimiterInfo.getWaveType() == WavelengthInfo.WaveType.INFRARED) {
+                                infraredSelectedCount++;
+                            } else if (waveLimiterInfo.getWaveType() == WavelengthInfo.WaveType.VISIBLE) {
+                                visibleSelectedCount++;
+                            }
+                            selectedCount++;
+                        }
+
+                        continue;
+                    }
                 }
-                if (isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
-                    l2prod.add(getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
+
+                if (waveLimiterInfo.getWaveType() == WavelengthInfo.WaveType.INFRARED) {
+                    infraredCount++;
+                } else if (waveLimiterInfo.getWaveType() == WavelengthInfo.WaveType.VISIBLE) {
+                    visibleCount++;
+                }
+
+                count++;
+            }
+
+
+            if (selectedCount == count) {
+                l2prod.add(getShortcutFullname(ShortcutType.ALL));
+            } else {
+                if (visibleSelectedCount == visibleCount) {
+                    l2prod.add(getShortcutFullname(ShortcutType.VISIBLE));
+                }
+
+                if (infraredSelectedCount == infraredCount) {
+                    l2prod.add(getShortcutFullname(ShortcutType.IR));
                 }
 
                 for (BaseInfo wInfo : getChildren()) {
                     WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-
-                    if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE) && !isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
-                        if (wInfo.isSelected()) {
-                            l2prod.add(wavelengthInfo.getFullName());
-                        }
-                    }
-
-                    if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED) && !isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
-                        if (wInfo.isSelected()) {
+                    if (wInfo.isSelected()) {
+                        if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE)) {
+                            if (visibleSelectedCount != visibleCount) {
+                                l2prod.add(wavelengthInfo.getFullName());
+                            }
+                        } else if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED)) {
+                            if (infraredSelectedCount != infraredCount) {
+                                l2prod.add(wavelengthInfo.getFullName());
+                            }
+                        } else {
                             l2prod.add(wavelengthInfo.getFullName());
                         }
                     }
@@ -265,7 +334,35 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
 
-    public void setStateShortcut(ShortcutType shortcutType, State state) {
+    public void reset() {
+
+        setSelected(false);
+        if (getParameterType() != AlgorithmInfo.ParameterType.NONE) {
+            clearChildren();
+            for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+                boolean addWavelength = false;
+
+                if (getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+                    addWavelength = true;
+                } else if (waveLimiterInfo.getWavelength() >= WavelengthInfo.INFRARED_LOWER_LIMIT &&
+                        getParameterType() == AlgorithmInfo.ParameterType.IR) {
+                    addWavelength = true;
+                } else if (waveLimiterInfo.getWavelength() <= WavelengthInfo.VISIBLE_UPPER_LIMIT &&
+                        getParameterType() == AlgorithmInfo.ParameterType.VISIBLE) {
+                    addWavelength = true;
+                }
+
+                if (addWavelength) {
+                    WavelengthInfo newWavelengthInfo = new WavelengthInfo(waveLimiterInfo.getWavelength());
+                    newWavelengthInfo.setParent(this);
+                    newWavelengthInfo.setDescription(getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
+                    addChild(newWavelengthInfo);
+                }
+            }
+        }
+    }
+
+    private void setStateShortcut(ShortcutType shortcutType, State state) {
         System.out.println("setStateShortcut" + shortcutType + " ---- " + state);
         for (BaseInfo wInfo : getChildren()) {
             WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;

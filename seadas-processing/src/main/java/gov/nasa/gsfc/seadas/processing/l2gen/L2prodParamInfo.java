@@ -16,13 +16,12 @@ public class L2prodParamInfo extends ParamInfo {
 
     private ArrayList<ProductInfo> productInfos = new ArrayList<ProductInfo>();
     private ArrayList<ProductCategoryInfo> productCategoryInfos = new ArrayList<ProductCategoryInfo>();
-    private ArrayList<WavelengthInfo> waveLimiter;
 
 
-    public L2prodParamInfo(ArrayList<WavelengthInfo> waveLimiter) {
+
+    public L2prodParamInfo() {
         super(L2genData.L2PROD);
         setType(Type.STRING);
-        this.waveLimiter = waveLimiter;
     }
 
 
@@ -79,36 +78,7 @@ public class L2prodParamInfo extends ParamInfo {
             for (ProductInfo productInfo : productInfos) {
                 for (BaseInfo aInfo : productInfo.getChildren()) {
                     AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
-
-                    if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.NONE) {
-                        if (inProducts.contains(algorithmInfo.getFullName())) {
-                            algorithmInfo.setState(AlgorithmInfo.State.SELECTED);
-                        } else {
-                            algorithmInfo.setState(AlgorithmInfo.State.NOT_SELECTED);
-                        }
-                    } else {
-                        for (BaseInfo wInfo : aInfo.getChildren()) {
-                            WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-
-                            if (inProducts.contains(wavelengthInfo.getFullName())) {
-                                wavelengthInfo.setState(WavelengthInfo.State.SELECTED);
-                            } else {
-                                wavelengthInfo.setState(WavelengthInfo.State.NOT_SELECTED);
-                            }
-                        }
-
-                        if (inProducts.contains(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE))) {
-                            algorithmInfo.setStateShortcut(AlgorithmInfo.ShortcutType.VISIBLE, AlgorithmInfo.State.SELECTED);
-                        }
-
-                        if (inProducts.contains(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.IR))) {
-                            algorithmInfo.setStateShortcut(AlgorithmInfo.ShortcutType.IR, AlgorithmInfo.State.SELECTED);
-                        }
-
-                        if (inProducts.contains(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.ALL))) {
-                            algorithmInfo.setStateShortcut(AlgorithmInfo.ShortcutType.ALL, AlgorithmInfo.State.SELECTED);
-                        }
-                    }
+                    algorithmInfo.setL2prod(inProducts);
                 }
             }
         }
@@ -133,30 +103,35 @@ public class L2prodParamInfo extends ParamInfo {
             productInfo.setSelected(false);
             for (BaseInfo aInfo : productInfo.getChildren()) {
                 AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
-                algorithmInfo.setSelected(false);
-                if (algorithmInfo.getParameterType() != AlgorithmInfo.ParameterType.NONE) {
-                    algorithmInfo.clearChildren();
-                    for (WavelengthInfo wavelengthInfo : waveLimiter) {
-                        boolean addWavelength = false;
+                algorithmInfo.reset();
 
-                        if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
-                            addWavelength = true;
-                        } else if (wavelengthInfo.getWavelength() >= WavelengthInfo.INFRARED_LOWER_LIMIT &&
-                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR) {
-                            addWavelength = true;
-                        } else if (wavelengthInfo.getWavelength() <= WavelengthInfo.VISIBLE_UPPER_LIMIT &&
-                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE) {
-                            addWavelength = true;
-                        }
 
-                        if (addWavelength) {
-                            WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
-                            newWavelengthInfo.setParent(algorithmInfo);
-                            newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
-                            algorithmInfo.addChild(newWavelengthInfo);
-                        }
-                    }
-                }
+//                algorithmInfo.setSelected(false);
+//                if (algorithmInfo.getParameterType() != AlgorithmInfo.ParameterType.NONE) {
+//                    algorithmInfo.clearChildren();
+//                    for (WavelengthInfo wavelengthInfo : waveLimiterInfos) {
+//                        boolean addWavelength = false;
+//
+//                        if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+//                            addWavelength = true;
+//                        } else if (wavelengthInfo.getWavelength() >= WavelengthInfo.INFRARED_LOWER_LIMIT &&
+//                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR) {
+//                            addWavelength = true;
+//                        } else if (wavelengthInfo.getWavelength() <= WavelengthInfo.VISIBLE_UPPER_LIMIT &&
+//                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE) {
+//                            addWavelength = true;
+//                        }
+//
+//                        if (addWavelength) {
+//                            WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
+//                            newWavelengthInfo.setParent(algorithmInfo);
+//                            newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
+//                            algorithmInfo.addChild(newWavelengthInfo);
+//                        }
+//                    }
+//                }
+//
+
             }
         }
     }
