@@ -37,6 +37,9 @@
         <module>beam-core</module>
     </dependency>
     <dependency>
+        <module>beam-merisl3-reader</module>
+    </dependency>
+    <dependency>
         <module>beam-visat-rcp</module>
         <optional>true</optional>
     </dependency>
