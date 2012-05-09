@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import org.esa.beam.util.StringUtils;
 
-import javax.print.attribute.standard.DocumentName;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -42,15 +41,17 @@ public class L2genData {
     public static final String L2PROD = "l2prod";
 
     public static final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
+    public static final String IFILE_VALIDATION_CHANGE_EVENT = "IFILE_VALIDATION_CHANGE_EVENT";
     public static final String WAVE_LIMITER_CHANGE_EVENT = "WAVE_LIMITER_CHANGE_EVENT";
     public static final String RETAIN_IFILE_CHANGE_EVENT = "RETAIN_IFILE_CHANGE_EVENT";
     public static final String SHOW_DEFAULTS_IN_PARSTRING_EVENT = "SHOW_DEFAULTS_IN_PARSTRING_EVENT";
 
     private String initialIfile = DEFAULT_IFILE;
     public boolean retainCurrentIfile = true;
-    public boolean ifileIsValid = true;
+    private boolean validIfile = false;
     private boolean showDefaultsInParString = false;
 
+    public ArrayList<WavelengthInfo> waveLimiter = new ArrayList<WavelengthInfo>();
 
     private L2genReader l2genReader = new L2genReader(this);
 
@@ -58,8 +59,6 @@ public class L2genData {
     private ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
     private ArrayList<ParamCategoryInfo> paramCategoryInfos = new ArrayList<ParamCategoryInfo>();
 
-
-    private ArrayList<WavelengthInfo> waveLimiter = new ArrayList<WavelengthInfo>();
 
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -95,6 +94,18 @@ public class L2genData {
         if (this.showDefaultsInParString != showDefaultsInParString) {
             this.showDefaultsInParString = showDefaultsInParString;
             fireEvent(SHOW_DEFAULTS_IN_PARSTRING_EVENT);
+        }
+    }
+
+    public boolean isValidIfile() {
+        return validIfile;
+    }
+
+    public void setValidIfile(boolean newValidIfile) {
+        if (isValidIfile() != newValidIfile) {
+            boolean oldValidIfile = isValidIfile();
+            this.validIfile = newValidIfile;
+            fireEvent(IFILE_VALIDATION_CHANGE_EVENT, oldValidIfile, newValidIfile);
         }
     }
 
@@ -494,7 +505,6 @@ public class L2genData {
         }
 
 
-
         if (!addParamsMode) {
 
             if (!ofileSet) {
@@ -672,6 +682,7 @@ public class L2genData {
                 }
                 fireEvent(paramInfo.getName());
             }
+
         }
     }
 
@@ -868,14 +879,16 @@ public class L2genData {
     // it will reset and make new wavelengthInfoArray
     private void setIfileParamValue(ParamInfo paramInfo, String newIfile) {
 
+        String oldIfile = getParamValue(IFILE);
         paramInfo.setValue(newIfile);
 
         if (new File(newIfile).exists()) {
-            ifileIsValid = true;
+            setValidIfile(true);
+
 
             resetWaveLimiter();
             //  propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, WAVE_LIMITER_CHANGE_EVENT, null, null));
-            l2prodParamInfo.resetProductInfos(waveLimiter);
+            l2prodParamInfo.resetProductInfos();
 
             updateXmlBasedObjects(newIfile);
 
@@ -883,11 +896,13 @@ public class L2genData {
             setCustomGeofile();
 
             //debug(IFILE.toString() + "being fired");
-            fireEvent(IFILE);
+
+            fireEvent(IFILE, oldIfile, newIfile);
 
         } else {
-            ifileIsValid = false;
+            setValidIfile(false);
             //debug(INVALID_IFILE_EVENT.toString() + "being fired");
+            fireEvent(IFILE, oldIfile, newIfile);
             fireEvent(INVALID_IFILE_EVENT);
         }
 
@@ -1072,7 +1087,7 @@ public class L2genData {
 
     private void debug(String string) {
 
-      //  System.out.println(string);
+        //  System.out.println(string);
     }
 
 

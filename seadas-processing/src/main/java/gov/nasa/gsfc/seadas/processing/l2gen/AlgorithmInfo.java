@@ -1,5 +1,11 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import org.esa.beam.util.StringUtils;
+
 /**
  * A ...
  *
@@ -26,7 +32,7 @@ public class AlgorithmInfo extends BaseInfo {
 
     // These fields are populated according to productInfo.xml
 
-
+    public ArrayList<WavelengthInfo> waveLimiter;
     private String dataType = null;
     private String prefix = null;
     private String suffix = null;
@@ -34,23 +40,23 @@ public class AlgorithmInfo extends BaseInfo {
     private ParameterType parameterType = null;
 
 
-
-    public AlgorithmInfo(String name, String description, ParameterType parameterType) {
+    public AlgorithmInfo(String name, String description, ParameterType parameterType, ArrayList<WavelengthInfo> waveLimiter) {
         super(name);
         setDescription(description);
         this.parameterType = parameterType;
+        this.waveLimiter = waveLimiter;
     }
 
-    public AlgorithmInfo(String name, String description, String waveTypeStr) {
-        this(name, description, convertWavetype(waveTypeStr));
-    }
+//    public AlgorithmInfo(String name, String description, String waveTypeStr) {
+//        this(name, description, convertWavetype(waveTypeStr));
+//    }
+//
+//    public AlgorithmInfo(String name, String description) {
+//        this(name, description, ParameterType.NONE);
+//    }
 
-    public AlgorithmInfo(String name, String description) {
-        this(name, description, ParameterType.NONE);
-    }
-
-    public AlgorithmInfo() {
-        this("", "", ParameterType.NONE);
+    public AlgorithmInfo(ArrayList<WavelengthInfo> waveLimiter) {
+        this("", "", ParameterType.NONE, waveLimiter);
     }
 
     public String getProductName() {
@@ -173,9 +179,6 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
 
-
-
-
     public boolean isSelectedShortcut(ShortcutType shortcutType) {
         boolean found = false;
 
@@ -220,7 +223,46 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
 
+    public ArrayList<String>  getL2prod() {
 
+        ArrayList<String> l2prod = new ArrayList<String>();
+
+        if (hasChildren()) {
+
+            if (isSelectedShortcut(AlgorithmInfo.ShortcutType.ALL)) {
+                l2prod.add(getShortcutFullname(AlgorithmInfo.ShortcutType.ALL));
+            } else {
+                if (isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
+                    l2prod.add(getShortcutFullname(AlgorithmInfo.ShortcutType.IR));
+                }
+                if (isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
+                    l2prod.add(getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
+                }
+
+                for (BaseInfo wInfo : getChildren()) {
+                    WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+
+                    if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE) && !isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
+                        if (wInfo.isSelected()) {
+                            l2prod.add(wavelengthInfo.getFullName());
+                        }
+                    }
+
+                    if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED) && !isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
+                        if (wInfo.isSelected()) {
+                            l2prod.add(wavelengthInfo.getFullName());
+                        }
+                    }
+                }
+            }
+        } else {
+            if (isSelected()) {
+                l2prod.add(getFullName());
+            }
+        }
+
+        return l2prod;
+    }
 
 
     public void setStateShortcut(ShortcutType shortcutType, State state) {

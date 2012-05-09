@@ -17,7 +17,7 @@ public class WavelengthInfo extends BaseInfo {
 
 
     public static enum WaveType {
-        VISIBLE, INFRARED, NEAR_INFRARED
+        VISIBLE, INFRARED, NEAR_INFRARED, NULL
     }
 
 
@@ -102,4 +102,15 @@ public class WavelengthInfo extends BaseInfo {
     }
 
 
+        public WaveType getWaveType() {
+        if ( wavelength >= INFRARED_LOWER_LIMIT) {
+            return WaveType.INFRARED;
+        } else if (  wavelength <= VISIBLE_UPPER_LIMIT) {
+            return WaveType.VISIBLE;
+        } else if (wavelength > VISIBLE_UPPER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
+            return WaveType.NEAR_INFRARED;
+        } else {
+            return WaveType.NULL;
+        }
+    }
 }

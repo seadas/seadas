@@ -42,39 +42,11 @@ public class L2prodParamInfo extends ParamInfo {
 
         for (ProductInfo productInfo : productInfos) {
             for (BaseInfo aInfo : productInfo.getChildren()) {
-                if (aInfo.hasChildren()) {
-                    AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+                AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+                ArrayList<String> l2prodsThisAlgorithm = algorithmInfo.getL2prod();
 
-                    if (algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.ALL)) {
-                        l2prod.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.ALL));
-                    } else {
-                        if (algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
-                            l2prod.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.IR));
-                        }
-                        if (algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
-                            l2prod.add(algorithmInfo.getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE));
-                        }
-
-                        for (BaseInfo wInfo : aInfo.getChildren()) {
-                            WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-
-                            if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE) && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.VISIBLE)) {
-                                if (wInfo.isSelected()) {
-                                    l2prod.add(wavelengthInfo.getFullName());
-                                }
-                            }
-
-                            if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED) && !algorithmInfo.isSelectedShortcut(AlgorithmInfo.ShortcutType.IR)) {
-                                if (wInfo.isSelected()) {
-                                    l2prod.add(wavelengthInfo.getFullName());
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if (aInfo.isSelected()) {
-                        l2prod.add(aInfo.getFullName());
-                    }
+                for (String l2prodThisAlgorithm : l2prodsThisAlgorithm) {
+                    l2prod.add(l2prodThisAlgorithm);
                 }
             }
         }
@@ -143,11 +115,6 @@ public class L2prodParamInfo extends ParamInfo {
     }
 
 
-
-
-
-
-
     public void addProductInfo(ProductInfo productInfo) {
         productInfos.add(productInfo);
     }
@@ -160,7 +127,7 @@ public class L2prodParamInfo extends ParamInfo {
         Collections.sort(productInfos, comparator);
     }
 
-    public void resetProductInfos(ArrayList<WavelengthInfo> waveLimiter) {
+    public void resetProductInfos() {
 
         for (ProductInfo productInfo : productInfos) {
             productInfo.setSelected(false);
