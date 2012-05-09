@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-public class ViirsProductReaderPlugIn0 implements ProductReaderPlugIn {
+public class ViirsProductReaderPlugIn implements ProductReaderPlugIn {
 
     // Set to "true" to output debugging information.
     // Don't forget to setback to "false" in production code!
