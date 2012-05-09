@@ -22,13 +22,12 @@ import org.esa.beam.util.io.BeamFileFilter;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Locale;
 
-public class VIIRSProductReaderPlugIn implements ProductReaderPlugIn {
+public class ViirsProductReaderPlugIn0 implements ProductReaderPlugIn {
 
     // Set to "true" to output debugging information.
     // Don't forget to setback to "false" in production code!
