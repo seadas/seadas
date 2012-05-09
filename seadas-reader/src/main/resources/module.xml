@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-reader</symbolicName>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3-20120509-01</version>
     <name>NASA OBPG Ocean Color Product Reader</name>
     <description>A reader for NASA Ocean Color (HDF) Level-2 Data Products</description>
 
@@ -10,9 +10,13 @@
     <copyright>(C) 2012 by NASA OBPG</copyright>
     <url>http://oceancolor.gsfc.nasa.gov/</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+    <funding>NASA GSFC</funding>
 
     <changelog>
         <![CDATA[
+        Changes in 1.3:<br/>
+        Module development taken over by NASA GSFC, Ocean Biogeochemical Processing Group.<br/>
+        Readers added for VIIRS, Aquarius, MODIS L1B and SeaDAS L1, L2, L3 and browse products.<br/>
         Changes in 1.2:<br/>
         [BEAM-1149] - OBPG reader causes Exception if used with GPF<br/>
         [BEAM-1087] - OBPG child products can not be read<br/>
@@ -37,7 +41,7 @@
         <optional>true</optional>
     </dependency>
 
-    <categories>Reader,OBPG,SeaDAS,HDF,VISAT</categories>
+    <categories>Reader,OBPG,SeaDAS,HDF,VISAT,NASA</categories>
 
     <extension point="beam-ui:actions">
         <action>
@@ -45,8 +49,7 @@
             <class>org.esa.beam.visat.actions.ProductImportAction</class>
             <formatName>SeaDAS-L1</formatName>
             <useAllFileFilter>true</useAllFileFilter>
-            <mnemonic>O</mnemonic>
-            <text>Import SeaDAS L1 Product</text>
+            <text>SeaDAS L1 (OCTS, CZCS, SeaWiFS)</text>
             <shortDescr>Import a SeaDAS-supported L1 data product.</shortDescr>
             <description>Import a SeaDAS-supported Level 1 (OCTS, CZCS, SeaWiFS) data product.
             </description>
@@ -57,8 +60,7 @@
             <class>org.esa.beam.visat.actions.ProductImportAction</class>
             <formatName>SeaDAS-L2</formatName>
             <useAllFileFilter>true</useAllFileFilter>
-            <mnemonic>O</mnemonic>
-            <text>Import SeaDAS L2 Product</text>
+            <text>SeaDAS L2 (CZCS, OCTS, SeaWiFS, MODIS, VIIRS, etc.)</text>
             <shortDescr>Import a SeaDAS-supported L2 data product.</shortDescr>
             <description>Import a SeaDAS-supported Level 2 (CZCS, OCTS, SeaWiFS, MODIS, VIIRS, etc.) data product.
             </description>
@@ -69,8 +71,7 @@
             <class>org.esa.beam.visat.actions.ProductImportAction</class>
             <formatName>SeaDAS-L3</formatName>
             <useAllFileFilter>true</useAllFileFilter>
-            <mnemonic>O</mnemonic>
-            <text>Import SeaDAS L3 Product</text>
+            <text>SeaDAS L3 (CZCS, OCTS, SeaWiFS, MODIS, VIIRS, etc.)</text>
             <shortDescr>Import a SeaDAS-supported L3 data product.</shortDescr>
             <description>Import a SeaDAS-supported Level 3 (CZCS, OCTS, SeaWiFS, MODIS, VIIRS, etc.) data product.
             </description>
@@ -81,36 +82,31 @@
             <class>org.esa.beam.visat.actions.ProductImportAction</class>
             <formatName>Aquarius</formatName>
             <useAllFileFilter>true</useAllFileFilter>
-            <mnemonic>O</mnemonic>
-            <text>Import Aquarius Product</text>
-            <shortDescr>Import an Aquarius data product.</shortDescr>
-            <description>Import an Aquarius (L1, L2, L3) data product.
+            <text>Aquarius (L1A, L2, L3)</text>
+            <shortDescr>Import an Aquarius (L1A, L2, L3) data product.</shortDescr>
+            <description>Import an Aquarius (L1A, L2, L3) data product.
             </description>
             <helpId>importAquariusProduct</helpId>
         </action>
         <action>
             <id>importModisL1BProduct</id>
             <class>org.esa.beam.visat.actions.ProductImportAction</class>
-            <formatName>Aquarius</formatName>
+            <formatName>MODIS-L1B</formatName>
             <useAllFileFilter>true</useAllFileFilter>
-            <mnemonic>O</mnemonic>
-            <text>Import MODIS L1B Product</text>
-            <shortDescr>Import a MODIS L1B data product.</shortDescr>
+            <text>MODIS L1B</text>
+            <shortDescr>Import a MODIS Level 1B data product.</shortDescr>
             <description>Import a MODIS Level 1B data product.
             </description>
             <helpId>importModisL1BProduct</helpId>
         </action>
-
         <action>
             <id>importViirsProduct</id>
             <class>org.esa.beam.visat.actions.ProductImportAction</class>
             <formatName>VIIRS</formatName>
             <useAllFileFilter>true</useAllFileFilter>
-            <mnemonic>O</mnemonic>
-            <text>Import VIIRS Product</text>
-            <shortDescr>Import a VIIRS data product.</shortDescr>
-            <description>Import a VIIRS (SDR, EDR) data product.
-            </description>
+            <text>VIIRS (SDR, EDR)</text>
+            <shortDescr>Import a VIIRS (SDR, EDR) data product.</shortDescr>
+            <description>Import a VIIRS (SDR, EDR) data product.</description>
             <helpId>importViirsProduct</helpId>
         </action>
         <action>
@@ -118,9 +114,8 @@
             <class>org.esa.beam.visat.actions.ProductImportAction</class>
             <formatName>SeaDAS-Browse</formatName>
             <useAllFileFilter>true</useAllFileFilter>
-            <mnemonic>O</mnemonic>
-            <text>Import SeaDAS Browse Product</text>
-            <shortDescr>Import a SeaDAS Browse data product.</shortDescr>
+            <text>SeaDAS Browse (L1, L2)</text>
+            <shortDescr>Import a SeaDAS Browse (L1, L2) data product.</shortDescr>
             <description>Import a SeaDAS Browse (L1, L2) data product.
             </description>
             <helpId>importSeadasBrowseProduct</helpId>
