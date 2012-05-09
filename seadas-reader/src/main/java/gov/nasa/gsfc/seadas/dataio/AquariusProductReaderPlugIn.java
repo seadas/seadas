@@ -20,13 +20,14 @@ import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
 import org.esa.beam.util.io.BeamFileFilter;
 import ucar.nc2.Attribute;
-import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 public class AquariusProductReaderPlugIn implements ProductReaderPlugIn {
 
@@ -47,7 +48,7 @@ public class AquariusProductReaderPlugIn implements ProductReaderPlugIn {
     private static final String[] supportedProductTypes = {
             "Aquarius Level 1A Data",
             "Aquarius Level 2 Data",
-            "Aquarius Level-3 Binned Data"
+            "Aquarius Level 3 Binned Data"
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
