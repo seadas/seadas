@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-pixel-extraction</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-scripting</artifactId>
-            <version>4.10-SNAPSHOT</version>
+            <version>4.10</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>org.esa.beam</groupId>-->
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-landsat-reader</artifactId>
-            <version>1.3-SNAPSHOT</version>
+            <version>1.3</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
