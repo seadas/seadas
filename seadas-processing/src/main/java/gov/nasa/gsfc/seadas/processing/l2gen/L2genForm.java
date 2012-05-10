@@ -78,8 +78,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     private String WAVE_LIMITER_SELECT_ALL_VISIBLE = "Select All Visible";
     private String WAVE_LIMITER_DESELECT_ALL_VISIBLE = "Deselect All Visible";
 
-
-    //  private JButton selectedProductsDefaultsButton;
     private JButton waveLimiterSelectAllInfrared;
     private JButton waveLimiterSelectAllVisible;
     private JButton waveLimiterSelectAllNearInfrared;
@@ -89,9 +87,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     private L2genData l2genData = new L2genData();
 
     private ProcessorModel processorModel;
-
-    int outputFilePanelHeight;
-    int inputFilePanelHeight;
 
 
     L2genForm(AppContext appContext, String xmlFileName) {
@@ -127,7 +122,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
             l2genData.fireAllParamEvents();
         }
 
-
+        l2genData.fireEvent(L2genData.IFILE_VALIDATION_CHANGE_EVENT);
     }
     //----------------------------------------------------------------------------------------
     // Create tabs within the main panel
@@ -173,10 +168,13 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         mainPanel.add(createInputFilePanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        mainPanel.add(createOutputFilePanel(),
+//        mainPanel.add(createGeofileChooserPanel(),
+//                new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+        mainPanel.add(createNewGeoFilePanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        mainPanel.add(createGeofileChooserPanel(),
+        mainPanel.add(createOutputFilePanel(),
                 new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         return mainPanel;
@@ -1292,10 +1290,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
                 public void itemStateChanged(ItemEvent itemEvent) {
                     TristateCheckBox.State state = renderer.getJCheckBox().getState();
 
-                    System.out.print("********** listener ***********\n");
-                    System.out.print("checkbox - " + renderer.label.getText() + " - " + state.toString() + "\n");
-                    //     System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
-
                     if (stopCellEditing()) {
                         fireEditingStopped();
                     }
@@ -1305,7 +1299,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
             renderer.getJCheckBox().addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    System.out.print("--changeListener\n");
                     if (stopCellEditing()) {
                         fireEditingStopped();
                     }
@@ -1314,7 +1307,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
             renderer.getJCheckBox().addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.print("--actionListener\n");
                 }
             });
 
@@ -1324,11 +1316,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         public Object getCellEditorValue() {
 
             TristateCheckBox.State state = renderer.getJCheckBox().getState();
-//
-//            System.out.print("-----getCellEditorValue - " + renderer.label.getText() + " - " + state.toString() + "\n");
-//            System.out.print("    val - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
-//            l2genData.setSelectedInfo(currentValue, getInfoState(state));
-//            System.out.print("   aval - " + currentValue.getFullName() + " - " + currentValue.getState().toString() + "\n");
 
             setNodeState(currentNode, getInfoState(state));
 
@@ -1344,20 +1331,15 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         public Component getTreeCellEditorComponent(JTree tree, Object value,
                                                     boolean selected, boolean expanded, boolean leaf, int row) {
 
-            System.out.print("getTreeCellEditorComponent (" + Integer.toString(row) + ") " +
-                    ((BaseInfo) ((DefaultMutableTreeNode) value).getUserObject()).getFullName() + "\n");
-
             if (value instanceof DefaultMutableTreeNode) {
                 currentNode = (DefaultMutableTreeNode) value;
             }
-
 
             Component editor = renderer.getTreeCellRendererComponent(tree, value,
                     true, expanded, leaf, row, true);
 
             return editor;
         }
-
     }
 
 
@@ -1610,23 +1592,19 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private JPanel createInputFilePanel() {
 
-        final JPanel panel = sourceProductSelector.createDefaultPanel();
-
         sourceProductSelector.setProductNameLabel(new JLabel(L2genData.IFILE));
         sourceProductSelector.getProductNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
+        final JPanel panel = sourceProductSelector.createDefaultPanel();
+
 
         sourceProductSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
             @Override
             public void selectionChanged(SelectionChangeEvent event) {
-                Product sourceProduct = getSourceProduct();
-
-
-                if (sourceProduct != null && sourceProductSelector.getSelectedProduct() != null
+                if (handleIfileJComboBoxEnabled &&
+                        sourceProductSelector.getSelectedProduct() != null
                         && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
-                    if (handleIfileJComboBoxEnabled) {
-                        l2genData.setParamValue(L2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
-                    }
+                    l2genData.setParamValue(L2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
                 }
             }
         });
@@ -1656,6 +1634,63 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
                 }
             }
         });
+
+        return panel;
+    }
+
+
+    private JPanel createNewGeoFilePanel() {
+        final SourceProductFileSelector geofileSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
+
+        geofileSelector.setProductNameLabel(new JLabel(L2genData.GEOFILE));
+        geofileSelector.getProductNameComboBox().setPrototypeDisplayValue(
+                "123456789 123456789 123456789 123456789 123456789 ");
+        final JPanel panel = geofileSelector.createDefaultPanel();
+//        geofileSelector.setEnabled(false);
+
+
+        geofileSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
+            @Override
+            public void selectionChanged(SelectionChangeEvent event) {
+                if (handleIfileJComboBoxEnabled &&
+                        geofileSelector.getSelectedProduct() != null
+                        && geofileSelector.getSelectedProduct().getFileLocation() != null) {
+                    l2genData.setParamValue(L2genData.GEOFILE, geofileSelector.getSelectedProduct().getFileLocation().toString());
+                }
+            }
+        });
+
+
+        l2genData.addPropertyChangeListener(L2genData.GEOFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+
+                if (geofileSelector != null) {
+                    File geofile = new File(l2genData.getParamValue(L2genData.GEOFILE));
+                    handleIfileJComboBoxEnabled = false;
+                    if (geofile.exists()) {
+                        geofileSelector.setSelectedFile(geofile);
+                    } else {
+                        geofileSelector.releaseProducts();
+                    }
+                    handleIfileJComboBoxEnabled = true;
+                }
+            }
+        });
+
+        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+
+                boolean isSetNewValue = false;
+                if (evt.getNewValue() != null) {
+                    isSetNewValue = new Boolean((Boolean) evt.getNewValue());
+                }
+
+                geofileSelector.setEnabled(isSetNewValue);
+            }
+        });
+
 
         return panel;
     }
@@ -1828,7 +1863,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         l2genData.addPropertyChangeListener(L2genData.INVALID_IFILE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-             //   invalidIfileEvent();
+                //   invalidIfileEvent();
             }
         });
 
@@ -1866,7 +1901,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-
         l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -1885,20 +1919,11 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
             @Override
 
             public void propertyChange(PropertyChangeEvent evt) {
-                //   if (enableIfileEvent) {
-
-                System.out.println(L2genData.IFILE + " being handled");
                 if (!initialConfiguration) {
                     ifileChangedEventHandler();
                 }
-                //   }
             }
-
-        }
-
-        );
-
-
+        });
     }
 
     private void enableTabs(boolean enabled) {

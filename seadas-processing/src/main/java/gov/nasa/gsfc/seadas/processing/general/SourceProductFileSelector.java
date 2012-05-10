@@ -66,6 +66,8 @@ public class SourceProductFileSelector {
     private final ProductManager.Listener productManagerListener;
     private ComboBoxSelectionContext selectionContext;
     private RegexFileFilter regexFileFilter;
+    private JTextField filterRegexField;
+    private JLabel filterRegexLabel;
 
 
     public SourceProductFileSelector(AppContext appContext, String labelText) {
@@ -121,6 +123,14 @@ public class SourceProductFileSelector {
         };
         regexFileFilter = new RegexFileFilter();
 
+    }
+
+    public void setEnabled(boolean enabled) {
+        productNameComboBox.setEnabled(enabled);
+        productNameLabel.setEnabled(enabled);
+        productFileChooserButton.setEnabled(enabled);
+        filterRegexField.setEnabled(enabled);
+        filterRegexLabel.setEnabled(enabled);
     }
 
     public SourceProductFileSelector(AppContext appContext) {
@@ -265,8 +275,6 @@ public class SourceProductFileSelector {
         productFileChooserButton.setMaximumSize(size);
 
 
-
-
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.add(getProductNameLabel(),
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
@@ -282,7 +290,7 @@ public class SourceProductFileSelector {
 
     private JPanel createFilterPane() {
 
-        final JTextField filterRegexField = new JTextField("123456789 ");
+        filterRegexField = new JTextField("123456789 ");
         filterRegexField.setPreferredSize(filterRegexField.getPreferredSize());
         filterRegexField.setMinimumSize(filterRegexField.getPreferredSize());
         filterRegexField.setMaximumSize(filterRegexField.getPreferredSize());
@@ -307,15 +315,16 @@ public class SourceProductFileSelector {
             }
         });
 
-        JLabel label = new JLabel("Filter by regex:");
-        label.setPreferredSize(label.getPreferredSize());
-        label.setMinimumSize(label.getPreferredSize());
-        label.setMaximumSize(label.getPreferredSize());
+        filterRegexLabel = new JLabel("filter:");
+        filterRegexLabel.setPreferredSize(filterRegexLabel.getPreferredSize());
+        filterRegexLabel.setMinimumSize(filterRegexLabel.getPreferredSize());
+        filterRegexLabel.setMaximumSize(filterRegexLabel.getPreferredSize());
+        filterRegexLabel.setToolTipText("Filter the chooser by regular expression");
 
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
-        mainPanel.add(label,
+        mainPanel.add(filterRegexLabel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         mainPanel.add(filterRegexField,
                 new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));

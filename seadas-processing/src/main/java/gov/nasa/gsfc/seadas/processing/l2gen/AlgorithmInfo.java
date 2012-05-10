@@ -363,7 +363,6 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
     private void setStateShortcut(ShortcutType shortcutType, State state) {
-        System.out.println("setStateShortcut" + shortcutType + " ---- " + state);
         for (BaseInfo wInfo : getChildren()) {
             WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
 
@@ -380,6 +379,4 @@ public class AlgorithmInfo extends BaseInfo {
             }
         }
     }
-
-
 }

@@ -67,7 +67,7 @@ public class EventInfo {
             pending = true;
         } else {
             pending = false;
-            System.out.println("Actually Firing event - " + name);
+           // System.out.println("Actually Firing event - " + name);
             propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(sourceObject, name, oldValue, newValue));
         }
     }
@@ -86,4 +86,6 @@ public class EventInfo {
     public int getEnabledCount() {
         return enabledCount;
     }
+
+
 }

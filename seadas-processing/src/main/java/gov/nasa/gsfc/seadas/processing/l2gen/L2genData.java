@@ -388,15 +388,21 @@ public class L2genData {
                     currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
                 } else if (paramInfo.getName().equals(PAR)) {
                     // right ignore and do not print todo
-                } else if (showDefaults || !paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
+                } else {
                     if (!paramInfo.getName().startsWith("-")) {
-                        currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                        if (paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
+                            if (showDefaults) {
+                                currCategoryEntries.append("# " + paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                            }
+                        } else {
+                            currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                        }
                     }
                 }
             }
 
             if (currCategoryEntries.toString().length() > 0) {
-                par.append("# " + paramCategoryInfo.getName() + "\n");
+                par.append("# " + paramCategoryInfo.getName().toUpperCase() + "\n");
                 par.append(currCategoryEntries.toString());
                 par.append("\n");
             }
@@ -910,17 +916,18 @@ public class L2genData {
     }
 
 
-    private String getViirsOfilename(String ifile) {
+    private String getViirsOfilename(File iFile) {
 
-        StringBuilder ofile = new StringBuilder();
 
-        String yearString = ifile.substring(11, 15);
-        String monthString = ifile.substring(15, 17);
-        String dayOfMonthString = ifile.substring(17, 19);
+        StringBuilder ofile = new StringBuilder(iFile.getParent() + "/");
+
+        String yearString = iFile.getName().substring(11, 15);
+        String monthString = iFile.getName().substring(15, 17);
+        String dayOfMonthString = iFile.getName().substring(17, 19);
 
         String formattedDateString = getFormattedDateString(yearString, monthString, dayOfMonthString);
 
-        String timeString = ifile.substring(21, 27);
+        String timeString = iFile.getName().substring(21, 27);
         ofile.append("V");
         ofile.append(formattedDateString);
         ofile.append(timeString);
@@ -983,7 +990,7 @@ public class L2genData {
 
 
         if (ifileFile.getName().toUpperCase().startsWith(VIIRS_IFILE_PREFIX)) {
-            ofile = getViirsOfilename(ifile);
+            ofile = getViirsOfilename(ifileFile);
         } else {
             String OFILE_REPLACEMENT_STRING = "L2";
             String IFILE_STRING_TO_BE_REPLACED[] = {"L1A", "L1B"};

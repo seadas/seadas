@@ -1,28 +1,14 @@
 <categoryList>
-    <category name="Required Fields">
+    <category name="Primary Input Output Fields">
         <makeVisible>0</makeVisible>
         <param>ifile</param>
-        <param>l2prod</param>
-        <param>ofile</param>
         <param>geofile</param>
+        <param>ofile</param>
     </category>
 
-    <category name="Hidden Stuff">
+    <category name="Products">
         <makeVisible>0</makeVisible>
-
-        <param>-help</param>
-        <param>ilist</param>
-        <param>maxpointdist</param>
-        <param>par</param>
-        <param>vct_fill_pct</param>
-        <param>vct_min_nbin</param>
-        <param>vct_msk_water</param>
-        <param>vct_water</param>
-        <param>-dump_options</param>
-        <param>-dump_options_paramfile</param>
-        <param>-dump_options_xmlfile</param>
-        <param>-version</param>
-        <param>flaguse</param>
+        <param>l2prod</param>
     </category>
 
 
@@ -210,11 +196,6 @@
         <param>width</param>
     </category>
 
-    <category name="Dump Bucket">
-        <makeVisible>0</makeVisible>
-        <defaultBucket>1</defaultBucket>
-    </category>
-
 
     <category name="Calibration Options">
         <makeVisible>1</makeVisible>
@@ -237,4 +218,29 @@
         <param>xcalsubsmpl</param>
         <param>xcal_wave</param>
     </category>
+
+
+    <category name="Uncategorized Params">
+        <makeVisible>0</makeVisible>
+        <defaultBucket>1</defaultBucket>
+    </category>
+
+
+    <category name="Params Not Supported in GUI">
+        <makeVisible>0</makeVisible>
+        <param>-help</param>
+        <param>ilist</param>
+        <param>maxpointdist</param>
+        <param>par</param>
+        <param>vct_fill_pct</param>
+        <param>vct_min_nbin</param>
+        <param>vct_msk_water</param>
+        <param>vct_water</param>
+        <param>-dump_options</param>
+        <param>-dump_options_paramfile</param>
+        <param>-dump_options_xmlfile</param>
+        <param>-version</param>
+        <param>flaguse</param>
+    </category>
+
 </categoryList>
