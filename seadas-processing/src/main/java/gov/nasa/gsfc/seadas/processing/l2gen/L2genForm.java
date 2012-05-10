@@ -39,7 +39,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
 
     private JPanel waveLimiterJPanel;
-    private boolean initialConfiguration = true;
+
 
     final Color DEFAULT_INDICATOR_COLOR = new Color(0, 0, 120);
 
@@ -94,35 +94,27 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
         processorModel = new ProcessorModel("l2gen", xmlFileName);
 
-        sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
+        sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), L2genData.IFILE);
         sourceProductSelector.initProducts();
-        outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
-
-        // determine whether ifile has been set prior to launching l2gen
-        String ifile = null;
-        if (sourceProductSelector.getSelectedProduct() != null
-                && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
-            ifile = sourceProductSelector.getSelectedProduct().getFileLocation().toString();
-
-            if (ifile != null && ifile.length() > 0) {
-                initialConfiguration = false;
-            }
-        }
+        outputFileSelector = new OutputFileSelector(VisatApp.getApp(), L2genData.OFILE);
 
 
         l2genData.initXmlBasedObjects();
         createUserInterface();
         addL2genDataListeners();
 
-        initialConfiguration = false;
+        // set ifile if it has been loaded into SeaDAS prior to launching l2gen
+        if (sourceProductSelector.getSelectedProduct() != null
+                && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
+           String ifile = sourceProductSelector.getSelectedProduct().getFileLocation().toString();
 
-        if (ifile != null) {
-            l2genData.setParamValue(L2genData.IFILE, ifile);
-        } else {
-            l2genData.fireAllParamEvents();
+            if (ifile != null && ifile.length() > 0) {
+                l2genData.setParamValue(L2genData.IFILE, ifile);
+            }
         }
 
-        l2genData.fireEvent(L2genData.IFILE_VALIDATION_CHANGE_EVENT);
+        l2genData.fireAllParamEvents();
+        l2genData.fireEvent(L2genData.IFILE_VALIDATION_CHANGE_EVENT, null, l2genData.isValidIfile());
     }
     //----------------------------------------------------------------------------------------
     // Create tabs within the main panel
@@ -171,7 +163,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 //        mainPanel.add(createGeofileChooserPanel(),
 //                new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        mainPanel.add(createNewGeoFilePanel(),
+        mainPanel.add(createGeoFilePanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         mainPanel.add(createOutputFilePanel(),
@@ -362,7 +354,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         final JCheckBox retainIfileOfileCheckbox = new JCheckBox("Retain Selected IFILE");
         retainIfileOfileCheckbox.setSelected(l2genData.isRetainCurrentIfile());
         retainIfileOfileCheckbox.setToolTipText("If an ifile is currently selected then any ifile entry in the parfile being opened will be ignored.");
-        retainIfileOfileCheckbox.setEnabled(false);
+        //     retainIfileOfileCheckbox.setEnabled(false);
 
         // add listener for current checkbox
         retainIfileOfileCheckbox.addItemListener(new ItemListener() {
@@ -395,7 +387,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
 
         final JButton getAncButton = new JButton("Get Anc");
-        getAncButton.setEnabled(false);
+        //   getAncButton.setEnabled(false);
         getAncButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -421,7 +413,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         final JCheckBox showDefaultsCheckbox = new JCheckBox("Show Defaults");
         showDefaultsCheckbox.setSelected(l2genData.isShowDefaultsInParString());
         showDefaultsCheckbox.setToolTipText("Displays all the defaults with the parfile text region");
-        showDefaultsCheckbox.setEnabled(false);
+        //     showDefaultsCheckbox.setEnabled(false);
 
         // add listener for current checkbox
         showDefaultsCheckbox.addItemListener(new ItemListener() {
@@ -1639,8 +1631,8 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
-    private JPanel createNewGeoFilePanel() {
-        final SourceProductFileSelector geofileSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
+    private JPanel createGeoFilePanel() {
+        final SourceProductFileSelector geofileSelector = new SourceProductFileSelector(VisatApp.getApp(), L2genData.GEOFILE);
 
         geofileSelector.setProductNameLabel(new JLabel(L2genData.GEOFILE));
         geofileSelector.getProductNameComboBox().setPrototypeDisplayValue(
@@ -1703,7 +1695,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         final JPanel panel = outputFileSelector.createDefaultPanel();
 
 
-        outputFileSelector.setEnabled(false);
+        //   outputFileSelector.setEnabled(false);
 
 
         outputFileSelector.getModel().getValueContainer().addPropertyChangeListener(new PropertyChangeListener() {
@@ -1919,9 +1911,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
             @Override
 
             public void propertyChange(PropertyChangeEvent evt) {
-                if (!initialConfiguration) {
                     ifileChangedEventHandler();
-                }
             }
         });
     }
