@@ -499,16 +499,18 @@ public abstract class SeadasFileReader {
 
 
     public boolean getDefaultFlip() throws ProductIOException {
-        String startAttr = getStringAttribute("Start Node");
         boolean startNodeAscending = false;
-        if (startAttr != null) {
-            startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
-        }
-        String endAttr = getStringAttribute("End Node");
         boolean endNodeAscending = false;
-        if (endAttr != null) {
-            endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
-        }
+        try{
+            String startAttr = getStringAttribute("Start Node");
+            if (startAttr != null) {
+                startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
+            }
+            String endAttr = getStringAttribute("End Node");
+            if (endAttr != null) {
+                endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
+            }
+        } catch (Exception e){}
 
         return (startNodeAscending && endNodeAscending);
     }

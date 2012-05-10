@@ -96,10 +96,12 @@ public class SeadasProductReader extends AbstractProductReader {
                 case Level2:
                 case Level1B:
                 case Level1A_CZCS:
-                case Level1A_OCTS:
                 case Level1A_Aquarius:
                 case Level2_CZCS:
                     seadasFileReader = new L2FileReader(this);
+                    break;
+                case Level1A_OCTS:
+                    seadasFileReader = new L1AOctsFileReader(this);
                     break;
                 case Level1A_Seawifs:
                     seadasFileReader = new L1ASeawifsFileReader(this);
