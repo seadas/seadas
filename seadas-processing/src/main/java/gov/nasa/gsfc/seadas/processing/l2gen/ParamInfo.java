@@ -24,7 +24,7 @@ public class ParamInfo implements Comparable {
 
 
     public static enum Type {
-        BOOLEAN, STRING, INT, FLOAT
+        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE
     }
 
     public static String NULL_STRING = "";

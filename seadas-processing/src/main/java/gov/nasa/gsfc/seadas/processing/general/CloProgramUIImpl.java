@@ -1,32 +1,28 @@
 /*
- * Copyright (C) 2011 Brockmann Consult GmbH (info@brockmann-consult.de)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 3 of the License, or (at your option)
- * any later version.
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, see http://www.gnu.org/licenses/
- */
+Author: Danny Knowles
+    Don Shea
+*/
 
 package gov.nasa.gsfc.seadas.processing.general;
 
+import com.bc.ceres.binding.Property;
+import com.bc.ceres.binding.PropertyContainer;
+import com.bc.ceres.binding.ValueRange;
+import com.bc.ceres.swing.TableLayout;
+import com.bc.ceres.swing.binding.BindingContext;
+import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
+import com.bc.ceres.swing.selection.SelectionChangeEvent;
+import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
+import gov.nasa.gsfc.seadas.processing.l2gen.L2genData;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.ParamValidValueInfo;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.util.io.BeamFileChooser;
 import org.esa.beam.util.io.FileUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,95 +32,102 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 
 public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
-    private final JTextArea parameterTextArea;
+    private final String programName;
     private final SourceProductFileSelector sourceProductSelector;
+    private final SourceProductFileSelector geoFileSelector;
     private final OutputFileSelector outputFileSelector;
+    //private final OptionalFileSelector geoFileSelector;
+
+    private JFileChooser parfileChooser = new JFileChooser();
+    private JFileChooser geofileChooser = new JFileChooser();
+
+    private DefaultMutableTreeNode rootNode;
     private File selectedFile;
-    private String programName;
-    private final JPanel parameterPanel;
+
+    private int tabCount = 0;
+
+    private static final String MAIN_TAB_NAME = "Main";
+
+
     private ProcessorModel processorModel;
-    private File defaultOutputDir;
+
+    int outputFilePanelHeight;
+    int inputFilePanelHeight;
+
+    private boolean handleIfileJComboBoxEnabled = true;
+    private boolean handleOfileSelecterEnabled = true;
 
 
-    public CloProgramUIImpl(String programName, String xmlFileName) {
-        super(new BorderLayout());
-
+    CloProgramUIImpl(String programName, String xmlFileName) {
         this.programName = programName;
+
         processorModel = new ProcessorModel(programName, xmlFileName);
 
-        parameterTextArea = new JTextArea(getDefaultText());
-
-        parameterPanel = createParameterPanel(processorModel.getProgramParamList());
-
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
-        sourceProductSelector.setProcessorModel(processorModel);
         sourceProductSelector.initProducts();
-
         outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
-
-        initUI();
+        geoFileSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
+        inputFilePanelHeight = 0;
+        outputFilePanelHeight = 0;
+        createUserInterface();
     }
 
-
-
-
-    //private void
-
-
-    public void updateProcessorModel() {
-
-        Product selectedProduct = sourceProductSelector.getSelectedProduct();
-        if (sourceProductSelector.getSelectedProduct() != null) {
-            final File inputFile = selectedProduct.getFileLocation();
-            System.out.println("update processors model " + inputFile.toString());
-            processorModel.setInputFile(inputFile);
-        }
-
-        OutputFileSelectorModel outputFileSelectorModel = outputFileSelector.getModel();
-        if (outputFileSelectorModel != null) {
-            processorModel.setOutputFileDir(outputFileSelectorModel.getProductDir());
-            processorModel.setOutputFileName(outputFileSelectorModel.getProductFileName());
-        }
-    }
 
     public ProcessorModel getProcessorModel() {
-        updateProcessorModel();
         return processorModel;
+
     }
 
     public Product getSelectedSourceProduct() {
-
         return sourceProductSelector.getSelectedProduct();
     }
 
-    public File getOutputFile() {
-        return outputFileSelector.getModel().getProductFile();
+    private void createUserInterface() {
+
+        final JPanel mainPanel = new JPanel(new GridBagLayout());
+
+        mainPanel.add(createInputOutputPanel(),
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+
+        mainPanel.add(createParamPanel(),
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 3));
+
+        mainPanel.add(outputFileSelector.getOpenInAppCheckBox(),
+                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        add(mainPanel);
     }
 
 
-//    public String getProcessingParameters() {
-//        return parameterTextArea.getText();
-//    }
+    private JPanel createInputOutputPanel() {
 
-    public String getProcessingParameters() {
-        String parameterString = new String("\n");
-        ArrayList<ParamInfo> paramInfos = processorModel.getProgramParamList();
-        for (ParamInfo paramInfo : paramInfos) {
-            if (!paramInfo.getName().equals(ParamUtils.IFILE) && !paramInfo.getName().equals(ParamUtils.OFILE)) {
-                parameterString = parameterString + paramInfo.getName() + "=" + paramInfo.getValue() + "\n";
-            }
+        final JPanel inputOutputPanel = new JPanel(new GridBagLayout());
+        inputOutputPanel.setBorder(BorderFactory.createTitledBorder("Primary Input/Output Files"));
+
+        inputOutputPanel.add(createSourceProductPanel(),
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+        if (processorModel.hasGeoFile()) {
+            inputOutputPanel.add(createGeoFilePanel(),
+                    new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         }
-        parameterString = parameterString + "programName=" + programName + "\n";
-        System.out.println(parameterString);
-        return parameterString;
+
+        inputOutputPanel.add(createOutputFilePanel(),
+                new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+
+        return inputOutputPanel;
     }
 
-    private void initUI() {
+
+    private JPanel createParamPanel() {
         //final JScrollPane textScrollPane = new JScrollPane(parameterTextArea);
-        final JScrollPane textScrollPane = new JScrollPane(parameterPanel);
+        final JScrollPane textScrollPane = new JScrollPane(createParamPanel(processorModel.getProgramParamList()));
 
         textScrollPane.setPreferredSize(new Dimension(600, 300));
 
@@ -140,12 +143,9 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         final JPanel parameterComponent = new JPanel(new BorderLayout());
         parameterComponent.add(textScrollPane, BorderLayout.CENTER);
-        //parameterComponent.add(parameterPanel, BorderLayout.CENTER);
         parameterComponent.add(buttonPanel, BorderLayout.SOUTH);
 
-        add(sourceProductSelector.createDefaultPanel(), BorderLayout.NORTH);
-        add(parameterComponent, BorderLayout.CENTER);
-        add(outputFileSelector.createDefaultPanel(), BorderLayout.SOUTH);
+        return parameterComponent;
     }
 
     private ActionListener createLoadParameterAction() {
@@ -168,13 +168,14 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                     LineNumberReader reader = null;
                     try {
                         reader = new LineNumberReader(new FileReader(file));
-                        parameterTextArea.setText("");
                         String line;
                         line = reader.readLine();
                         while (line != null) {
-                            parameterTextArea.append(line);
-                            parameterTextArea.append("\n");
+                            System.out.printf("%1$d %2$s %n", reader.getLineNumber(), line);
                             line = reader.readLine();
+
+                            //System.out.println(line);
+                            //System.out.println(reader.getLineNumber());
                         }
                     } catch (IOException e1) {
                         System.err.println(e1.getMessage());
@@ -184,7 +185,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                                         "Error reading file.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
-                        parameterTextArea.setText(getDefaultText());
+                        //    parameterTextArea.setText(getDefaultText());
                     } finally {
                         if (reader != null) {
                             try {
@@ -241,7 +242,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(parameterFile);
-            fileWriter.write(parameterTextArea.getText());
+            //fileWriter.write(parameterTextArea.getText());
             return parameterFile;
         } finally {
             if (fileWriter != null) {
@@ -260,6 +261,16 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         return FileUtils.exchangeExtension(productFile, ".par");
     }
 
+    private File getGeoFile() {
+        final Product selectedProduct = sourceProductSelector.getSelectedProduct();
+        if (selectedProduct == null
+                || selectedProduct.getFileLocation() == null) {
+            return null;
+        }
+        final File productFile = selectedProduct.getFileLocation();
+        return FileUtils.exchangeExtension(productFile, ".GEO");
+    }
+
     private void showErrorMessage(JComponent parent) {
         JOptionPane.showMessageDialog(parent,
                 "Unable to create parameter file:\n'" + selectedFile + "'",
@@ -267,129 +278,47 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                 JOptionPane.ERROR);
     }
 
-    private JPanel createParameterPanel(ArrayList<ParamInfo> paramList) {
 
-        final JPanel paramPanel = new JPanel();
-        paramPanel.setBorder(new TitledBorder(" Parameters "));
+    private JPanel createParamPanel(ArrayList<ParamInfo> paramList) {
 
-        paramPanel.setLayout(new FlowLayout());
+        JPanel paramPanel = new JPanel();
+        JPanel booleanParamPanel = new JPanel();
+        JPanel fileParamPanel = new JPanel();
+        //Dimension paramPanelDimension = new Dimension(1000, 800);
+        TableLayout paramLayout = new TableLayout(4);
+        paramPanel.setLayout(paramLayout);
+        TableLayout booelanParamLayout = new TableLayout(3);
+        booleanParamPanel.setLayout(booelanParamLayout);
 
-        ParamInfo.Type paramType;
-        for (ParamInfo paramInfo : paramList) {
-            paramType = paramInfo.getType();
-            if (paramType == ParamInfo.Type.BOOLEAN) {
-                final JCheckBox booleanCheckBox = new JCheckBox();
-                paramPanel.add(booleanCheckBox);
+        TableLayout fileParamLayout = new TableLayout(1);
+        fileParamPanel.setLayout(fileParamLayout);
 
-            } else if (!(paramInfo.getName().equals(ParamUtils.IFILE) || paramInfo.getName().equals(ParamUtils.OFILE))) {
-                if (paramInfo.hasValidValueInfos()) {
+        //paramPanel.setBorder(new EmptyBorder(null));
+        //paramPanel.setPreferredSize(paramPanelDimension);
 
-                    paramPanel.add(makeComboBoxOptionPanel(paramInfo));
-
-                } else {
-                    paramPanel.add(makeTextFieldOptionPanel(paramInfo));
+        Iterator itr = paramList.iterator();
+        while (itr.hasNext()) {
+            final ParamInfo pi = (ParamInfo) itr.next();
+            if (!(pi.getName().equals(ParamUtils.IFILE) || pi.getName().equals("infile") || pi.getName().equals(ParamUtils.OFILE) || pi.getName().equals("geofile"))) {
+                debug(pi.getName());
+                switch (pi.getType()) {
+                    case BOOLEAN:
+                        booleanParamPanel.add(makeBooleanOptionField(pi));
+                        break;
+                    case OFILE:
+                        fileParamPanel.add(makeFileOptionField(pi));
+                        break;
+                    case IFILE:
+                        fileParamPanel.add(makeFileOptionField(pi));
+                        break;
+                    case STRING:
+                        paramPanel.add(makeOptionField(pi));
                 }
+                //paramPanel.add(makeOptionField(pi));
             }
-
-
-        }
-        return paramPanel;
-    }
-
-    private JPanel makeComboBoxOptionPanel(final ParamInfo paramInfo) {
-        final JPanel singlePanel = new JPanel();
-        singlePanel.setLayout(new FlowLayout());
-
-        final JLabel optionNameLabel = new JLabel(paramInfo.getName());
-
-        singlePanel.add(optionNameLabel);
-
-
-        String optionDefaultValue = paramInfo.getValue();
-
-
-        ArrayList<ParamValidValueInfo> validValues = paramInfo.getValidValueInfos();
-        String[] values = new String[validValues.size()];
-        validValues.toArray(values);
-
-        final JComboBox inputList = new JComboBox(values);
-        inputList.setEditable(true);
-        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
-                                                 inputList.getPreferredSize().height));
-        int defaultValuePosition = validValues.indexOf(optionDefaultValue);
-
-        if (defaultValuePosition != -1) {
-            inputList.setSelectedIndex(defaultValuePosition);
         }
 
-        inputList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String newValue = (String) inputList.getSelectedItem();
-                processorModel.updateParamInfo(paramInfo, newValue);
-            }
-        });
-        inputList.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        });
-        singlePanel.add(inputList);
-
-
-        switch (paramInfo.getType()) {
-            case STRING:
-                break;
-            case INT:
-                break;
-            case FLOAT:
-                break;
-        }
-
-        return singlePanel;
-    }
-
-    private JPanel makeTextFieldOptionPanel(final ParamInfo paramInfo) {
-        final JPanel singlePanel = new JPanel();
-        singlePanel.setLayout(new FlowLayout());
-
-        final JLabel optionNameLabel = new JLabel(paramInfo.getName());
-
-        singlePanel.add(optionNameLabel);
-
-
-        String optionDefaultValue = paramInfo.getDefaultValue();
-        final JTextField inputField = new JTextField(optionDefaultValue);
-        inputField.setToolTipText(paramInfo.getDescription());
-        inputField.setColumns(5);
-        inputField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String newValue = inputField.getText();
-                processorModel.updateParamInfo(paramInfo, newValue);
-            }
-        });
-
-        inputField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent documentEvent) {
-                String newValue = inputField.getText();
-                validateInput(newValue);
-                processorModel.updateParamInfo(paramInfo, newValue);
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent documentEvent) {
-
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent documentEvent) {
-            }
-        });
-
-        inputField.addMouseListener(new MouseListener() {
+        paramPanel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 //To change body of implemented methods use File | Settings | File Templates.
@@ -413,72 +342,333 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             @Override
             public void mouseExited(MouseEvent mouseEvent) {
                 //To change body of implemented methods use File | Settings | File Templates.
-                double value;
-                try {
-                    String textValue = inputField.getText();
-                    value = Double.parseDouble(textValue);
-                } catch (NumberFormatException nfe) {
-                    JOptionPane.showMessageDialog(singlePanel, "Please enter valid number.");
-                    inputField.requestFocusInWindow();
-                    return;
+
+                validateParams();
+            }
+        });
+        paramPanel.add(fileParamPanel);
+        paramPanel.add(booleanParamPanel);
+        return paramPanel;
+    }
+
+    private JPanel makeOptionField(final ParamInfo pi) {
+
+        final String optionName = pi.getName();
+        final String optionValue = pi.getValue();
+        final JPanel optionPanel = new JPanel();
+        optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
+        optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        optionPanel.add(new JLabel(optionName));
+
+
+        final PropertyContainer vc = new PropertyContainer();
+        vc.addProperty(Property.create(optionName, optionValue));
+        vc.getDescriptor(optionName).setDisplayName(optionName);
+
+        final ValueRange valueRange = new ValueRange(-180, 180);
+
+
+        vc.getDescriptor(optionName).setValueRange(valueRange);
+
+        final BindingContext ctx = new BindingContext(vc);
+        final JTextField field = new JTextField();
+        field.setColumns(8);
+        field.setHorizontalAlignment(JFormattedTextField.LEFT);
+        System.out.println(optionName + "  " + optionValue);
+        field.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                String propertyName = propertyChangeEvent.getPropertyName();
+                if ("focusOwner".equals(propertyName)) {
+
+                } else if ("focusedWindow".equals(propertyName)) {
+
                 }
+                Object source = propertyChangeEvent.getSource();
+                // if (source == amountField) {
+                //    amount = ((Number)amountField.getValue()).doubleValue();
+                //    ...
+            }
+            //// ...//re-compute payment and update field..
 
-                boolean valid = validateInput(inputField.getText());
+        });
+        ctx.bind(optionName, field);
 
-                if (!valid) {
-                    inputField.requestFocusInWindow();
-                    return;
+        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+
+                pi.setValue(field.getText());
+
+            }
+        });
+
+        optionPanel.add(field);
+
+        return optionPanel;
+
+    }
+
+    private JPanel makeBooleanOptionField(final ParamInfo pi) {
+
+        final String optionName = pi.getName();
+        final boolean optionValue = new Boolean(pi.getValue());
+        final JPanel optionPanel = new JPanel();
+        optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
+        optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        optionPanel.add(new JLabel(optionName));
+
+
+        final PropertyContainer vc = new PropertyContainer();
+        vc.addProperty(Property.create(optionName, optionValue));
+        vc.getDescriptor(optionName).setDisplayName(optionName);
+
+        final ValueRange valueRange = new ValueRange(0, 1);
+
+
+        vc.getDescriptor(optionName).setValueRange(valueRange);
+
+        final BindingContext ctx = new BindingContext(vc);
+        final JCheckBox field = new JCheckBox();
+        field.setHorizontalAlignment(JFormattedTextField.LEFT);
+        debug(optionName + "  " + optionValue);
+        ctx.bind(optionName, field);
+
+        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+
+                pi.setValue((new Boolean(field.isSelected())).toString());
+                pi.setValue(field.getText());
+
+                System.out.printf("%s %s %n", (new Boolean(field.isSelected())).toString(), field.getText());
+
+            }
+        });
+
+        optionPanel.add(field);
+
+        return optionPanel;
+
+    }
+
+    private JPanel makeFileOptionField(final ParamInfo pi) {
+
+        final String optionName = pi.getName();
+        final String optionValue = pi.getValue();
+        //final JPanel optionPanel = new JPanel();
+        // optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
+        //optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        //optionPanel.add(new JLabel(optionName));
+
+
+        final PropertyContainer vc = new PropertyContainer();
+        vc.addProperty(Property.create(optionName, optionValue));
+        vc.getDescriptor(optionName).setDisplayName(optionName);
+
+        final OptionalFileSelector ofs = new OptionalFileSelector(optionName);
+        ofs.addPropertyChangeListener(optionName, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+        // /final ValueRange valueRange = new ValueRange(-180, 180);
+        //vc.getDescriptor(optionName).setValueRange(valueRange);
+
+        final BindingContext ctx = new BindingContext(vc);
+        debug(optionName + "  " + optionValue);
+        ctx.bind(optionName, ofs.getFileNameField());
+
+        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+
+                pi.setValue(ofs.getCurrentFileName());
+                //pi.setValue(field.getText());
+                debugf("%s %s %n", new String[]{ofs.getCurrentFileName(), pi.getValue()});
+                //System.out.printf("%s %s %n", (new Boolean(field.isSelected())).toString(), field.getText() );
+
+            }
+        });
+
+        //optionPanel.add(ofs);
+
+        return ofs;
+
+    }
+
+    private void validateParams() {
+
+    }
+
+
+    class MyComboBoxRenderer extends BasicComboBoxRenderer {
+
+        private String[] tooltips;
+
+        public void MyComboBoxRenderer(String[] tooltips) {
+            this.tooltips = tooltips;
+        }
+
+
+        public Component getListCellRendererComponent(JList list, Object value,
+                                                      int index, boolean isSelected, boolean cellHasFocus) {
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+
+                if (-1 < index && index < tooltips.length) {
+                    list.setToolTipText(tooltips[index]);
+                }
+            } else {
+                setBackground(Color.white);
+                setForeground(Color.black);
+            }
+
+            setFont(list.getFont());
+            setText((value == null) ? "" : value.toString());
+            return this;
+        }
+
+        public void setTooltips(String[] tooltips) {
+            this.tooltips = tooltips;
+        }
+    }
+
+
+    private JPanel createSourceProductPanel() {
+        sourceProductSelector.setProductNameLabel(new JLabel(L2genData.IFILE));
+        final JPanel panel = sourceProductSelector.createDefaultPanel();
+
+        //     sourceProductSelector.getProductNameLabel().setText("Name:");
+        sourceProductSelector.getProductNameComboBox().setPrototypeDisplayValue(
+                "MER_RR__1PPBCM20030730_071000_000003972018_00321_07389_0000.N1");
+
+        sourceProductSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
+            @Override
+            public void selectionChanged(SelectionChangeEvent event) {
+                Product sourceProduct = getSourceProduct();
+
+
+                if (sourceProduct != null && sourceProductSelector.getSelectedProduct() != null
+                        && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
+                    if (handleIfileJComboBoxEnabled) {
+                        //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getProgramName());
+                        processorModel.updateParamInfo(L2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
+                        File geoFile = getGeoFile();
+                        //geoFileSelector;
+                        if (geoFile.exists()) {
+                            geoFileSelector.setSelectedFile(geoFile);
+                            processorModel.updateParamInfo("geofile", geoFile.toString());
+                        }
+
+
+                    }
                 }
             }
         });
-        singlePanel.add(inputField);
+        inputFilePanelHeight = panel.getHeight();
+        return panel;
+    }
 
-        switch (paramInfo.getType()) {
-            case STRING:
-                break;
-            case INT:
-                break;
-            case BOOLEAN:
-                final JCheckBox booleanCheckBox = new JCheckBox();
-                singlePanel.add(booleanCheckBox);
-                break;
-            case FLOAT:
-                break;
+    private JPanel createGeoFilePanel() {
+        geoFileSelector.setProductNameLabel(new JLabel(L2genData.GEOFILE));
+        final JPanel panel = geoFileSelector.createDefaultPanel();
+
+        //     sourceProductSelector.getProductNameLabel().setText("Name:");
+        geoFileSelector.getProductNameComboBox().setPrototypeDisplayValue(
+                "MER_RR__1PPBCM20030730_071000_000003972018_00321_07389_0000.N1");
+
+        geoFileSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
+            @Override
+            public void selectionChanged(SelectionChangeEvent event) {
+
+
+                if (geoFileSelector.getSelectedProduct() != null
+                        && geoFileSelector.getSelectedProduct().getFileLocation() != null) {
+                    if (handleIfileJComboBoxEnabled) {
+                        //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getProgramName());
+                        processorModel.updateParamInfo(L2genData.GEOFILE, geoFileSelector.getSelectedProduct().getFileLocation().toString());
+                    }
+                }
+            }
+        });
+        inputFilePanelHeight = inputFilePanelHeight + panel.getHeight();
+        return panel;
+    }
+
+    private void ifileChangedEventHandler() {
+
+        File ifile = processorModel.getInputFile();
+
+        if (sourceProductSelector != null) {
+            handleIfileJComboBoxEnabled = false;
+            sourceProductSelector.setSelectedFile(ifile);
+            handleIfileJComboBoxEnabled = true;
         }
 
-        return singlePanel;
-    }
-
-
-    private boolean validateInput(String input) {
-        //processorModel.updateParamInfo(paramInfo, newValue);
-        return true;
 
     }
 
-    private String getDefaultText() {
-        // changed all products using wavelength 555 to 560
-        // wavelength 555 is not valid for GIOP when using MERIS
-        return "l2prod=chl_giop,a_443_giop,a_560_giop,bb_443_giop,bb_560_giop,aph_443_giop,aph_560_giop,adg_443_giop,adg_s_giop,bbp_443_giop,bbp_s_giop,rrsdiff_giop\n" +
-                "\n" +
-                "# L-M fit\n" +
-                "giop_fit_opt=1\n" +
-                "\n" +
-                "# Morel f/Q to relate bb/(a+bb) to Rrs\n" +
-                "giop_rrs_opt=1\n" +
-                "\n" +
-                "# Bricaud 1995 aph spectrum \n" +
-                "giop_aph_opt=2\n" +
-                "\n" +
-                "# exponential adg function\n" +
-                "giop_adg_opt=1\n" +
-                "giop_adg_s=0.0145\n" +
-                "\n" +
-                "# power-law bbp with QAA adaptive exponent\n" +
-                "giop_bbp_opt=3\n" +
-                "programName=" + programName + "\n";
+    private JPanel createOutputFilePanel() {
+        outputFileSelector.setOutputFileNameLabel(new JLabel(L2genData.OFILE + " (name)"));
+        outputFileSelector.setOutputFileDirLabel(new JLabel(L2genData.OFILE + " (directory)"));
+        final JPanel panel = outputFileSelector.createDefaultPanel();
+
+//        outputFileSelector.getModel().getProductNameComboBox().setPrototypeDisplayValue(
+//                "MER_RR__1PPBCM20030730_071000_000003972018_00321_07389_0000.N1");
+        outputFileSelector.getModel().getValueContainer().addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                String ofile = null;
+                if (outputFileSelector.getModel().getProductFile() != null) {
+                    ofile = outputFileSelector.getModel().getProductFile().getAbsolutePath();
+                    System.out.println("ofile: " + ofile);
+                }
+
+                if (ofile != null) {
+                    if (handleOfileSelecterEnabled) {
+                        processorModel.updateParamInfo(L2genData.OFILE, ofile);
+                    }
+                }
+            }
+        });
+        outputFilePanelHeight = panel.getHeight();
+        return panel;
+    }
+
+
+    //----------------------------------------------------------------------------------------
+    // Miscellaneous
+    //----------------------------------------------------------------------------------------
+
+    Product getSourceProduct() {
+        return sourceProductSelector.getSelectedProduct();
+    }
+
+    /*
+    */
+    void prepareShow() {
+        sourceProductSelector.initProducts();
+    }
+
+    void prepareHide() {
+        sourceProductSelector.releaseProducts();
+    }
+
+
+    private void debug(String string) {
+        System.out.println(string);
+    }
+
+    private void debugf(String formatString, Object[] messages) {
+        System.out.printf(formatString, messages);
     }
 
 
 }
-

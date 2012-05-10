@@ -52,7 +52,22 @@ public class ParamUtils {
         IFILE, OFILE, PAR, GEOFILE
     }
 
-    public static ArrayList computeParamListNew(String paramXmlFileName) {
+
+
+    public static void parseXMLForProcessor(String programXMLFileName) {
+
+        XmlReader xmlReader = new XmlReader();
+        InputStream xmlFileStream = ParamUtils.class.getResourceAsStream(programXMLFileName);
+        Element rootElement = xmlReader.parseAndGetRootElement(xmlFileStream);
+
+        NodeList optionNodelist = rootElement.getElementsByTagName("option");
+        if (optionNodelist == null || optionNodelist.getLength() == 0) {
+            return;
+        }
+
+    }
+
+    public ArrayList computeParamListNew(String paramXmlFileName) {
 
         if (paramXmlFileName.equals(NO_XML_FILE_SPECIFIED)) {
             return getDefaultParamList();
@@ -74,11 +89,11 @@ public class ParamUtils {
 
             String name = XmlReader.getTextValue(optionElement, OPTION_NAME);
             String tmpType = optionElement.getAttribute(OPTION_TYPE);
-
+            debug("option type in ParamUtils: " + tmpType);
             ParamInfo.Type type = null;
 
             if (tmpType != null) {
-                if (tmpType.toLowerCase().equals("bool")) {
+                if (tmpType.toLowerCase().equals("boolean")) {
                     type = ParamInfo.Type.BOOLEAN;
                 } else if (tmpType.toLowerCase().equals("int")) {
                     type = ParamInfo.Type.INT;
@@ -86,6 +101,10 @@ public class ParamUtils {
                     type = ParamInfo.Type.FLOAT;
                 } else if (tmpType.toLowerCase().equals("string")) {
                     type = ParamInfo.Type.STRING;
+                } else if (tmpType.toLowerCase().equals("ifile")) {
+                    type = ParamInfo.Type.IFILE ;
+                }else if (tmpType.toLowerCase().equals("ofile")) {
+                    type = ParamInfo.Type.OFILE ;
                 }
             }
 
@@ -152,6 +171,20 @@ public class ParamUtils {
         return acceptsParFile;
     }
 
+    public static boolean hasProgramDependency(String parXMLFileName) {
+
+        boolean hasProgramDependecy = false;
+        XmlReader xmlReader = new XmlReader();
+        InputStream paramStream = ParamUtils.class.getResourceAsStream(parXMLFileName);
+        Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
+        NodeList optionNodelist = rootElement.getElementsByTagName("hasProgramDependency");
+        if (optionNodelist != null && optionNodelist.getLength() != 0) {
+            Element metaDataElement = (Element) optionNodelist.item(0);
+            hasProgramDependecy = XmlReader.getBooleanValue(metaDataElement, "requiresOptionComputation");
+        }
+        return hasProgramDependecy;
+    }
+
     public static ArrayList computeParamList(String paramXmlFileName) {
 
         if (paramXmlFileName.equals(NO_XML_FILE_SPECIFIED)) {
@@ -172,14 +205,14 @@ public class ParamUtils {
             Element optionElement = (Element) optionNodelist.item(i);
 
             String name = XmlReader.getTextValue(optionElement, OPTION_NAME);
-            System.out.println(name);
+            debug("option name: " + name);
             String tmpType = XmlReader.getAttributeTextValue(optionElement, OPTION_TYPE);
-            System.out.println(tmpType);
+            debug("option type: " + tmpType);
 
             ParamInfo.Type type = null;
 
             if (tmpType != null) {
-                if (tmpType.toLowerCase().equals("bool")) {
+                if (tmpType.toLowerCase().equals("boolean")) {
                     type = ParamInfo.Type.BOOLEAN;
                 } else if (tmpType.toLowerCase().equals("int")) {
                     type = ParamInfo.Type.INT;
@@ -187,6 +220,10 @@ public class ParamUtils {
                     type = ParamInfo.Type.FLOAT;
                 } else if (tmpType.toLowerCase().equals("string")) {
                     type = ParamInfo.Type.STRING;
+                } else if (tmpType.toLowerCase().equals("ifile")) {
+                    type = ParamInfo.Type.IFILE;
+                }  else if (tmpType.toLowerCase().equals("ofile")) {
+                    type = ParamInfo.Type.OFILE;
                 }
             }
 
@@ -253,6 +290,10 @@ public class ParamUtils {
     public static ArrayList getDefaultParamList() {
         ArrayList<ParamInfo> defaultParamList = new ArrayList<ParamInfo>();
         return defaultParamList;
+    }
+
+    static void debug(String debugMessage) {
+        System.out.println(debugMessage);
     }
 
 

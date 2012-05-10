@@ -30,7 +30,7 @@ import java.util.Enumeration;
 import java.util.EventObject;
 
 
-class L2genForm extends JTabbedPane implements CloProgramUI {
+public class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private final AppContext appContext;
     private final SourceProductFileSelector sourceProductSelector;

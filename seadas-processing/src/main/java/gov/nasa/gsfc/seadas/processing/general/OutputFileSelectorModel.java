@@ -171,9 +171,9 @@ public class OutputFileSelectorModel {
         }
     }
 
-    public static class EnvisatTargetProductSelectorModel extends OutputFileSelectorModel {
+    public static class SeadasTargetProductSelectorModel extends OutputFileSelectorModel {
 
-        private EnvisatTargetProductSelectorModel() {
+        private SeadasTargetProductSelectorModel() {
             super(createFormats());
         }
 

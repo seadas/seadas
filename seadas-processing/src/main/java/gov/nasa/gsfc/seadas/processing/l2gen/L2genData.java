@@ -62,7 +62,7 @@ public class L2genData {
 
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
-    private L2genPrint l2genPrint = new L2genPrint();
+    private SeadasPrint l2genPrint = new SeadasPrint();
 
     public String getInitialIfile() {
         return initialIfile;

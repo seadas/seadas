@@ -6,57 +6,6 @@
         <parFileOptionName>l2genmap.par</parFileOptionName>
     </programMetaData>
     <options>
-        <option type="boolean" runtimeOption="false">
-            <name>-help</name>
-            <value>false</value>
-            <type>bool</type>
-            <default>false</default>
-            <source>default</source>
-            <alias>-h</alias>
-            <alias>--help</alias>
-            <description>print usage information</description>
-        </option>
-        <option type="boolean" runtimeOption="false">
-            <name>-version</name>
-            <value>false</value>
-            <type>bool</type>
-            <default>false</default>
-            <source>default</source>
-            <alias>--version</alias>
-            <description>print the version information</description>
-        </option>
-        <option type="boolean">
-            <name>-dump_options</name>
-            <value>false</value>
-            <type>bool</type>
-            <default>false</default>
-            <source>default</source>
-            <alias>--dump_options</alias>
-            <description>print information about each option</description>
-        </option>
-        <option type="string">
-            <name>-dump_options_paramfile</name>
-            <value/>
-            <type>string</type>
-            <source>default</source>
-            <alias>--dump_options_paramfile</alias>
-            <description>print information about each option to paramfile</description>
-        </option>
-        <option type="string">
-            <name>-dump_options_xmlfile</name>
-            <value>l2mapgen.xml</value>
-            <type>string</type>
-            <source>command line</source>
-            <alias>--dump_options_xmlfile</alias>
-            <description>print information about each option to XML file</description>
-        </option>
-        <option type="string">
-            <name>par</name>
-            <value/>
-            <type>string</type>
-            <source>default</source>
-            <description>input parameter file</description>
-        </option>
         <option type="string">
             <name>ifile</name>
             <value/>

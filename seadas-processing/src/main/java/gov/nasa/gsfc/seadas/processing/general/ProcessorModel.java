@@ -1,14 +1,21 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.l2gen.EventInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.SeadasPrint;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
 import org.esa.beam.visat.VisatApp;
 
+import javax.swing.event.SwingPropertyChangeSupport;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +25,8 @@ import java.util.Iterator;
  * To change this template use File | Settings | File Templates.
  */
 public class ProcessorModel {
+    private static final String PROCESSING_SCAN_REGEX = "Processing scan .+?\\((\\d+) of (\\d+)\\)";
+    static final Pattern PROCESSING_SCAN_PATTERN = Pattern.compile(PROCESSING_SCAN_REGEX);
 
     private String programName;
     private String programLocation;
@@ -32,7 +41,13 @@ public class ProcessorModel {
     private File outputFileDir;
     private File parFile;
     private String parString;
+    private boolean hasDependency;
+    private ProcessorModel dependentProcessor;
 
+    private boolean hasOutputFile;
+    private boolean hasGeoFile;
+    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
+     private PropertyChangeSupport changeSupport;
 
     public ProcessorModel(String name) {
         this(name, null);
@@ -44,14 +59,34 @@ public class ProcessorModel {
         if (parXMLFileName != null) {
             paramList = ParamUtils.computeParamList(parXMLFileName);
             acceptsParFile = ParamUtils.getParFilePreference(parXMLFileName);
+            hasDependency = true;
+            hasOutputFile = true;
+            hasGeoFile = true;
 
         }
 
     }
 
+    protected void hasOutputFile(boolean hasOutputFile) {
+        this.hasOutputFile = hasOutputFile;
+    }
+
+
+    protected boolean hasDependency() {
+        return hasDependency;
+    }
+
+    protected boolean hasGeoFile() {
+        return hasGeoFile;
+    }
+
+    protected ProcessorModel getDependentProcessor() {
+        return dependentProcessor;
+
+    }
 
     public boolean isValidProcessor() {
-        System.out.println(programLocation);
+        SeadasPrint.debug(programLocation);
         return programLocation != null;
     }
 
@@ -83,7 +118,7 @@ public class ProcessorModel {
 
     public void setParString(String parString) {
 
-        System.out.println("parString: " + parString);
+        //System.out.println("parString: " + parString);
         this.parString = parString;
         createParFile(outputFileDir, parString);
     }
@@ -103,7 +138,8 @@ public class ProcessorModel {
     public void setInputFile(File inputFile) {
         this.inputFile = inputFile;
         outputFileDir = inputFile.getParentFile();
-        System.out.println(this.inputFile.toString() + " ~~~~~~~~ " + outputFileDir.toString());
+        outputFile = getOutputFile();
+        //System.out.println(this.inputFile.toString() + " ~~~~~~~~ " + outputFileDir.toString());
     }
 
     public File getInputFile() {
@@ -147,8 +183,46 @@ public class ProcessorModel {
                 option.setValue(newValue);
             }
         }
+    }
 
+      public ParamInfo getParamInfo(String paramName) {
+        Iterator<ParamInfo> itr = paramList.iterator();
+        ParamInfo option;
+        while (itr.hasNext()) {
 
+            option = itr.next();
+            if (option.getName().equals(paramName)) {
+                return option;
+            }
+        }
+          return null;
+    }
+
+    public String getParamValue(String paramName) {
+
+        Iterator<ParamInfo> itr = paramList.iterator();
+        ParamInfo option;
+        while (itr.hasNext()) {
+
+            option = itr.next();
+            if (option.getName().equals(paramName)) {
+                return option.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    public void updateParamInfo(String paramName, String newValue) {
+        Iterator<ParamInfo> itr = paramList.iterator();
+        ParamInfo option;
+        while (itr.hasNext()) {
+
+            option = itr.next();
+            if (option.getName().equals(paramName)) {
+                option.setValue(newValue);
+            }
+        }
     }
 
     private void computeProcessorEnv() {
@@ -208,7 +282,7 @@ public class ProcessorModel {
         };
 
         for (int i = 0; i < cmdArray.length; i++) {
-            System.out.println("i = " + i + " " + cmdArray[i]);
+            //System.out.println("i = " + i + " " + cmdArray[i]);
         }
 
         return cmdArray;
@@ -224,11 +298,13 @@ public class ProcessorModel {
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
             cmdArray[option.getOrder()] = option.getValue();
-            System.out.println("order: " + option.getOrder() + "   value = " + option.getValue());
+            //System.out.println("order: " + option.getOrder() + "  " + option.getName() + " = " + option.getValue());
         }
 
         cmdArray[1] = inputFile.toString();
-        cmdArray[cmdArray.length - 1] = outputFile.toString();
+        if (hasOutputFile) {
+            cmdArray[cmdArray.length - 1] = outputFile.toString();
+        }
 
         for (int i = 0; i < cmdArray.length; i++) {
             System.out.println("i = " + i + " " + cmdArray[i]);
@@ -289,7 +365,7 @@ public class ProcessorModel {
 
     public Process executeProcess() throws IOException {
 
-        System.out.println("executing par file for l2gen ...");
+        System.out.println("executing ...");
 
         System.out.println(getProgramRoot());
         System.out.println(getProgramEnv());
@@ -307,4 +383,84 @@ public class ProcessorModel {
 //                        "par=" + parFile
 //                };
     }
+
+    public EventInfo[] eventInfos = {
+            new EventInfo("none", this),
+    };
+
+    private EventInfo getEventInfo(String name) {
+        for (EventInfo eventInfo : eventInfos) {
+            if (name.equals(eventInfo.getName())) {
+                return eventInfo;
+            }
+        }
+        return null;
+    }
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        EventInfo eventInfo = getEventInfo(propertyName);
+        if (eventInfo == null) {
+            propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+        } else {
+            eventInfo.addPropertyChangeListener(listener);
+        }
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        EventInfo eventInfo = getEventInfo(propertyName);
+        if (eventInfo == null) {
+            propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+        } else {
+            eventInfo.removePropertyChangeListener(listener);
+        }
+    }
+
+
+    public void disableEvent(String name) {
+        EventInfo eventInfo = getEventInfo(name);
+        if (eventInfo == null) {
+            debug("disableEvent - eventInfo not found for " + name);
+        } else {
+            eventInfo.setEnabled(false);
+        }
+    }
+
+    public void enableEvent(String name) {
+        EventInfo eventInfo = getEventInfo(name);
+        if (eventInfo == null) {
+            debug("enableEvent - eventInfo not found for " + name);
+        } else {
+            eventInfo.setEnabled(true);
+        }
+    }
+
+    public void fireEvent(String name) {
+        fireEvent(name, null, null);
+    }
+
+    public void fireEvent(String name, Object oldValue, Object newValue) {
+        EventInfo eventInfo = getEventInfo(name);
+        if (eventInfo == null) {
+            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, oldValue, newValue));
+        } else {
+            eventInfo.fireEvent(oldValue, newValue);
+        }
+    }
+
+    public void fireAllParamEvents() {
+        for (ParamInfo paramInfo : paramList) {
+            if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals("none")) {
+                fireEvent(paramInfo.getName());
+            }
+        }
+    }
+
+    private void debug(String string) {
+
+       //  System.out.println(string);
+     }
+     public void setProperty(String property) {
+  //changeSupport.firePropertyChange("property", this.property, this.property=property);
+ }
+
 }

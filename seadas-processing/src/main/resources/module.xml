@@ -65,6 +65,15 @@
         </action>
         <action>
             <parent>seadasProcessing</parent>
+            <id>l1bgen_modis</id>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>l1bgen_modis...</text>
+            <programName>modis_L1B.py</programName>
+            <dialogTitle>l1bgen_modis Processor</dialogTitle>
+            <xmlFileName>l1bgen_modis.xml</xmlFileName>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
             <id>l2mapgen</id>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l2mapgen...</text>
@@ -88,6 +97,24 @@
             <programName>l1aextract_modis</programName>
             <dialogTitle>l1aextract_modis</dialogTitle>
             <xmlFileName>paramInfo_l1aextract_modis.xml</xmlFileName>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
+            <id>l1aextract_seawifs</id>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>l1aextract_seawifs...</text>
+            <programName>l1aextract_seawifs</programName>
+            <dialogTitle>l1aextract_seawifs</dialogTitle>
+            <xmlFileName>l1aextract_seawifs.xml</xmlFileName>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
+            <id>l2aextract</id>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>l2aextract...</text>
+            <programName>l2aextract</programName>
+            <dialogTitle>l2aextract</dialogTitle>
+            <xmlFileName>l2aextract.xml</xmlFileName>
         </action>
     </extension>
 

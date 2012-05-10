@@ -76,7 +76,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
 
     public CloProgramUI getProgramUI(AppContext appContext) {
-        return new CloProgramUIImpl(programName, xmlFileName);
+        //return new ExtractorUI(programName, xmlFileName)  ;
+        return new CloProgramUIImpl(programName, xmlFileName)  ;
     }
 
     @Override
@@ -136,6 +137,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
 
 
+
         final File outputFile = processorModel.getOutputFile();
 
         System.out.println("output file: " + outputFile);
@@ -153,6 +155,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 int exitCode = process.exitValue();
 
                 pm.done();
+                //process.getOutputStream();
 
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
@@ -177,6 +180,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         };
 
         swingWorker.execute();
+        //swingWorker.get();
 
     }
 

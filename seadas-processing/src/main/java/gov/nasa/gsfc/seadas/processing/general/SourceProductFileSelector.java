@@ -16,7 +16,6 @@
 
 package gov.nasa.gsfc.seadas.processing.general;
 
-import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.selection.SelectionChangeListener;
 import com.bc.ceres.swing.selection.support.ComboBoxSelectionContext;
 import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
@@ -32,7 +31,6 @@ import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
@@ -67,7 +65,6 @@ public class SourceProductFileSelector {
     private JComboBox productNameComboBox;
     private final ProductManager.Listener productManagerListener;
     private ComboBoxSelectionContext selectionContext;
-    private ProcessorModel processorModel;
     private RegexFileFilter regexFileFilter;
 
 
@@ -128,15 +125,6 @@ public class SourceProductFileSelector {
 
     public SourceProductFileSelector(AppContext appContext) {
         this(appContext, "Name:");
-    }
-
-    public void setProcessorModel(ProcessorModel processorModel) {
-        this.processorModel = processorModel;
-    }
-
-
-    public ProcessorModel getProcessorModel() {
-        return processorModel;
     }
 
     /**
