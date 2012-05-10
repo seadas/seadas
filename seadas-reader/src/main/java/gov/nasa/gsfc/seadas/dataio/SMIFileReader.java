@@ -31,9 +31,8 @@ public class SMIFileReader extends SeadasFileReader {
         int [] dims = ncFile.getVariables().get(0).getShape();
         int sceneHeight = dims[0];
         int sceneWidth = dims[1];
-
-        String [] nameparts = ncFile.getLocation().split(File.separator);
-        String productName = nameparts[nameparts.length-1];
+        
+        String productName = productReader.getInputFile().getName();
         try {
                 productName = getStringAttribute("Product Name");
         } catch (Exception e) {

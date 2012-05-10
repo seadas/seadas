@@ -40,7 +40,10 @@ public class SeadasProductReader extends AbstractProductReader {
 
 
     enum ProductType {
+        Level1A_Aquarius("Aquarius Level 1A"),
+        Level2_Aquarius("Aquarius Level 2"),
         Level1A_CZCS("CZCS Level 1A"),
+        Level1A_OCTS("OCTS Level 1A"),
         Level2_CZCS("Level 2"),
         Level1A_Seawifs("SeaWiFS Level 1A"),
         Level1B("Generic Level 1B"),
@@ -93,6 +96,8 @@ public class SeadasProductReader extends AbstractProductReader {
                 case Level2:
                 case Level1B:
                 case Level1A_CZCS:
+                case Level1A_OCTS:
+                case Level1A_Aquarius:
                 case Level2_CZCS:
                     seadasFileReader = new L2FileReader(this);
                     break;
@@ -121,7 +126,7 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
 
                 default:
-                    throw new IOException("Unrecognized product type");
+                    throw new IOException("Unrecognized product type BOB");
             }
 
             return seadasFileReader.createProduct();
@@ -226,11 +231,17 @@ public class SeadasProductReader extends AbstractProductReader {
             title = titleAttr.getStringValue().trim();
             if (title.equals("CZCS Level-2 Data")) {
                 return ProductType.Level2_CZCS;
+            } else if (title.contains("Aquarius Level 1A Data")) {
+                return ProductType.Level1A_Aquarius;
             } else if (title.contains("Level-1B")) {
                 return ProductType.Level1B;
             } else if (title.equals("CZCS Level-1A Data")){
                 return ProductType.Level1A_CZCS;
+            } else if (title.equals("OCTS Level-1A GAC Data")){
+                return ProductType.Level1A_OCTS;
             } else if (title.contains("Level-2")) {
+                return ProductType.Level2;
+            } else if (title.contains("Level 2")) {
                 return ProductType.Level2;
             } else if (title.equals("SeaWiFS Level-1A Data")) {
                 return ProductType.Level1A_Seawifs;

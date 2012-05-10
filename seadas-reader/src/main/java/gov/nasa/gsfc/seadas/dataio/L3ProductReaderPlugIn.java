@@ -52,6 +52,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
             "SeaWiFS Level-3 Standard Mapped Image",
             "VIIRS Level-3 Standard Mapped Image",
             "Level-3 Standard Mapped Image",
+            " Level-3 Standard Mapped Image",
             "SeaWiFS Level-3 Binned Data",
             "CZCS Level-3 Binned Data",
             "OCTS Level-3 Binned Data",
