@@ -13,8 +13,6 @@ public class OCSSW {
 
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
     public static final String OCSSWROOT_PROPERTY = "seadas.ocssw.root";
-    public static final String OCSSW_ARCH_ENVVAR = "OCSSW_ARCH";
-    public static final String OCSSW_ARCH_PROPERTY = "seadas.ocssw.arch";
 
     public static File getOcsswRoot() throws IOException {
         String dirPath = System.getProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
@@ -30,12 +28,4 @@ public class OCSSW {
         return dir;
     }
 
-    public static String getOcsswArch() throws IOException {
-        String arch = System.getProperty(OCSSW_ARCH_PROPERTY, System.getenv(OCSSW_ARCH_ENVVAR));
-        if (arch == null) {
-            throw new IOException(String.format("Either environment variable '%s' or\n" +
-                                                        "configuration parameter '%s' must be given.", OCSSWROOT_ENVVAR, OCSSWROOT_PROPERTY));
-        }
-        return arch;
-    }
 }

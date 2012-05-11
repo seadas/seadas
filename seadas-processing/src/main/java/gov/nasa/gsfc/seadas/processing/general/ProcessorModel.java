@@ -47,7 +47,7 @@ public class ProcessorModel {
     private boolean hasOutputFile;
     private boolean hasGeoFile;
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
-     private PropertyChangeSupport changeSupport;
+    private PropertyChangeSupport changeSupport;
 
     public ProcessorModel(String name) {
         this(name, null);
@@ -104,7 +104,6 @@ public class ProcessorModel {
     }
 
     public ArrayList getProgramParamList() {
-
         return paramList;
     }
 
@@ -181,35 +180,32 @@ public class ProcessorModel {
             option = itr.next();
             if (option.getName().equals(currentOption.getName())) {
                 option.setValue(newValue);
+                return;
             }
         }
     }
 
-      public ParamInfo getParamInfo(String paramName) {
+    public ParamInfo getParamInfo(String paramName) {
         Iterator<ParamInfo> itr = paramList.iterator();
         ParamInfo option;
         while (itr.hasNext()) {
-
             option = itr.next();
             if (option.getName().equals(paramName)) {
                 return option;
             }
         }
-          return null;
+        return null;
     }
 
     public String getParamValue(String paramName) {
-
         Iterator<ParamInfo> itr = paramList.iterator();
         ParamInfo option;
         while (itr.hasNext()) {
-
             option = itr.next();
             if (option.getName().equals(paramName)) {
                 return option.getValue();
             }
         }
-
         return null;
     }
 
@@ -217,10 +213,10 @@ public class ProcessorModel {
         Iterator<ParamInfo> itr = paramList.iterator();
         ParamInfo option;
         while (itr.hasNext()) {
-
             option = itr.next();
             if (option.getName().equals(paramName)) {
                 option.setValue(newValue);
+                return;
             }
         }
     }
@@ -237,37 +233,21 @@ public class ProcessorModel {
             return;
         }
 
-        final String ocsswArch;
-        try {
-            ocsswArch = OCSSW.getOcsswArch();
-        } catch (IOException e) {
-            errorMessage = e.getMessage();
-            if (VisatApp.getApp() != null)
-                VisatApp.getApp().showErrorDialog(programName, e.getMessage());
-            return;
-        }
-
-        final String location = ocsswRoot.getPath() + "/run/bin/" + ocsswArch + "/";
-
         final String[] envp = {
-                "OCSSWROOT=" + ocsswRoot.getPath(),
-                "OCSSW_ARCH=" + ocsswArch,
-                "OCDATAROOT=" + ocsswRoot.getPath() + "/run/data",
+                "OCSSWROOT=" + ocsswRoot.getPath()
         };
 
         processorEnv = envp;
-        this.programLocation = location;
-        this.programRoot = ocsswRoot;
+        programLocation = ocsswRoot.getPath() + "/run/scripts/";
+        programRoot = ocsswRoot;
     }
 
     public void setDefaultEnv() {
-        programLocation = "/Users/Shared/ocssw/run/bin/macosx_intel/";
+        programLocation = "/Users/Shared/ocssw/scripts/macosx_intel/";
         programRoot = new File("/Users/Shared/ocssw");
 
         final String[] envp = {
                 "OCSSWROOT=" + programRoot,
-                "OCSSW_ARCH=" + "macosx_intel",
-                "OCDATAROOT=" + programRoot + "/run/data",
         };
         processorEnv = envp;
 
@@ -275,35 +255,29 @@ public class ProcessorModel {
 
     private String[] getCmdArrayWithParFile() {
         final String[] cmdArray = {
-                programLocation + programName,
-                //"ifile=" + inputFile,
-                //"ofile=" + outputFile,
+                programLocation + "ocssw_runner",
+                programName,
                 "par=" + parFile
         };
 
-        for (int i = 0; i < cmdArray.length; i++) {
-            //System.out.println("i = " + i + " " + cmdArray[i]);
-        }
+        //for (int i = 0; i < cmdArray.length; i++) {
+        //System.out.println("i = " + i + " " + cmdArray[i]);
+        //}
 
         return cmdArray;
     }
 
     private String[] getCmdArrayWithArguments() {
-        final String[] cmdArray = new String[paramList.size() + 1];
-        cmdArray[0] = programLocation + programName;
-
+        final String[] cmdArray = new String[paramList.size() + 2];
+        cmdArray[0] = programLocation + "ocssw_runner";
+        cmdArray[1] = programName;
 
         Iterator itr = paramList.iterator();
         ParamInfo option;
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
-            cmdArray[option.getOrder()] = option.getValue();
+            cmdArray[option.getOrder() + 1] = option.getValue();
             //System.out.println("order: " + option.getOrder() + "  " + option.getName() + " = " + option.getValue());
-        }
-
-        cmdArray[1] = inputFile.toString();
-        if (hasOutputFile) {
-            cmdArray[cmdArray.length - 1] = outputFile.toString();
         }
 
         for (int i = 0; i < cmdArray.length; i++) {
@@ -457,10 +431,11 @@ public class ProcessorModel {
 
     private void debug(String string) {
 
-       //  System.out.println(string);
-     }
-     public void setProperty(String property) {
-  //changeSupport.firePropertyChange("property", this.property, this.property=property);
- }
+        //  System.out.println(string);
+    }
+
+    public void setProperty(String property) {
+        //changeSupport.firePropertyChange("property", this.property, this.property=property);
+    }
 
 }

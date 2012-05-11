@@ -58,13 +58,6 @@ public class CallL2genAction extends AbstractVisatAction {
             VisatApp.getApp().showErrorDialog("l2gen", e.getMessage());
             return;
         }
-        final String ocsswArch;
-        try {
-            ocsswArch = OCSSW.getOcsswArch();
-        } catch (IOException e) {
-            VisatApp.getApp().showErrorDialog("l2gen", e.getMessage());
-            return;
-        }
 
         final File inputFile = selectedProduct.getFileLocation();
         final File outputDir = inputFile.getParentFile();
@@ -83,18 +76,17 @@ public class CallL2genAction extends AbstractVisatAction {
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
                 final String[] cmdarray = {
-                        "${OCSSWROOT}/run/bin/${OCSSW_ARCH}/l2gen".replace("${OCSSWROOT}", ocsswRoot.getPath()).replace("${OCSSW_ARCH}", ocsswArch),
+                        "${OCSSWROOT}/run/scripts/ocssw_runner".replace("${OCSSWROOT}", ocsswRoot.getPath()),
+                        "l2gen",
                         "ifile=" + inputFile,
                         "ofile=" + outputFile,
                         "par=" + parameterFile
                 };
                 final String[] envp = {
                         "OCSSWROOT=${OCSSWROOT}".replace("${OCSSWROOT}", ocsswRoot.getPath()),
-                        "OCSSW_ARCH=${OCSSW_ARCH}".replace("${OCSSW_ARCH}", ocsswArch),
-                        "OCDATAROOT=${OCSSWROOT}/run/data".replace("${OCSSWROOT}", ocsswRoot.getPath()),
-                };
+                 };
 
-                final Process process = Runtime.getRuntime().exec(cmdarray, envp, ocsswRoot);
+                final Process process = Runtime.getRuntime().exec(cmdarray, envp, outputDir);
 
                 final ProcessObserver processObserver = new ProcessObserver(process, "l2gen", pm);
                 processObserver.addHandler(new ProgressHandler());
