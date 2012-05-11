@@ -296,14 +296,14 @@ public class AlgorithmInfo extends BaseInfo {
             }
 
 
-            if (selectedCount == count) {
+            if (selectedCount == count && selectedCount > 0) {
                 l2prod.add(getShortcutFullname(ShortcutType.ALL));
             } else {
-                if (visibleSelectedCount == visibleCount) {
+                if (visibleSelectedCount == visibleCount && visibleSelectedCount > 0) {
                     l2prod.add(getShortcutFullname(ShortcutType.VISIBLE));
                 }
 
-                if (infraredSelectedCount == infraredCount) {
+                if (infraredSelectedCount == infraredCount && infraredSelectedCount > 0) {
                     l2prod.add(getShortcutFullname(ShortcutType.IR));
                 }
 

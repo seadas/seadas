@@ -44,7 +44,8 @@ public class L2genData {
     public static final String IFILE_VALIDATION_CHANGE_EVENT = "IFILE_VALIDATION_CHANGE_EVENT";
     public static final String WAVE_LIMITER_CHANGE_EVENT = "WAVE_LIMITER_CHANGE_EVENT";
     public static final String RETAIN_IFILE_CHANGE_EVENT = "RETAIN_IFILE_CHANGE_EVENT";
-    public static final String SHOW_DEFAULTS_IN_PARSTRING_EVENT = "SHOW_DEFAULTS_IN_PARSTRING_EVENT";
+    public static final String SHOW_DEFAULTS_EVENT = "SHOW_DEFAULTS_EVENT";
+    public static final String PARSTRING_REFORMAT_EVENT = "PARSTRING_REFORMAT_EVENT";
 
     private String initialIfile = DEFAULT_IFILE;
     public boolean retainCurrentIfile = true;
@@ -93,7 +94,7 @@ public class L2genData {
     public void setShowDefaultsInParString(boolean showDefaultsInParString) {
         if (this.showDefaultsInParString != showDefaultsInParString) {
             this.showDefaultsInParString = showDefaultsInParString;
-            fireEvent(SHOW_DEFAULTS_IN_PARSTRING_EVENT);
+            fireEvent(SHOW_DEFAULTS_EVENT);
         }
     }
 
@@ -373,7 +374,7 @@ public class L2genData {
 
 
     public String getParString() {
-        return getParString(false);
+        return getParString(isShowDefaultsInParString());
     }
 
     public String getParString(boolean showDefaults) {
@@ -541,6 +542,8 @@ public class L2genData {
             }
 
         }
+
+        fireEvent(PARSTRING_REFORMAT_EVENT);
     }
 
 

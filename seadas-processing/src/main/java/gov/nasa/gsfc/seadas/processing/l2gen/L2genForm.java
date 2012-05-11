@@ -56,12 +56,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     private boolean handleIfileJComboBoxEnabled = true;
     private boolean handleOfileSelecterEnabled = true;
 
-    private JTextArea parStringTextArea;
-
-    private JFileChooser parfileChooser = new JFileChooser();
-    private JFileChooser geofileChooser = new JFileChooser();
-
-    private DefaultMutableTreeNode rootNode;
+ //   private DefaultMutableTreeNode rootNode;
 
 
     private int myTabCount = 0;
@@ -82,7 +77,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     private JButton waveLimiterSelectAllVisible;
     private JButton waveLimiterSelectAllNearInfrared;
 
-    private JTree productJTree;
+ //   private JTree productJTree;
 
     private L2genData l2genData = new L2genData();
 
@@ -106,7 +101,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         // set ifile if it has been loaded into SeaDAS prior to launching l2gen
         if (sourceProductSelector.getSelectedProduct() != null
                 && sourceProductSelector.getSelectedProduct().getFileLocation() != null) {
-           String ifile = sourceProductSelector.getSelectedProduct().getFileLocation().toString();
+            String ifile = sourceProductSelector.getSelectedProduct().getFileLocation().toString();
 
             if (ifile != null && ifile.length() > 0) {
                 l2genData.setParamValue(L2genData.IFILE, ifile);
@@ -121,7 +116,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     //----------------------------------------------------------------------------------------
 
     public ProcessorModel getProcessorModel() {
-        processorModel.setParString(l2genData.getParString());
+        processorModel.setParString(l2genData.getParString(false));
         processorModel.setOutputFile(new File(l2genData.getParamValue(L2genData.OFILE)));
         return processorModel;
     }
@@ -160,9 +155,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         mainPanel.add(createInputFilePanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-//        mainPanel.add(createGeofileChooserPanel(),
-//                new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-
         mainPanel.add(createGeoFilePanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
@@ -184,7 +176,11 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         mainPanel.add(createInputOutputPanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
-        mainPanel.add(createParfilePanel(),
+
+        L2genParfilePanel l2genParfilePanel = new L2genParfilePanel();
+
+
+        mainPanel.add(l2genParfilePanel,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 3));
 
         mainPanel.add(outputFileSelector.getOpenInAppCheckBox(),
@@ -194,324 +190,298 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
-    private JPanel createGeofileChooserPanel() {
+    private class L2genParfilePanel extends JPanel {
 
-        final JTextField jTextField = new JTextField("123456789 123456789 12345");
-        jTextField.setPreferredSize(jTextField.getPreferredSize());
-        jTextField.setMinimumSize(jTextField.getPreferredSize());
-        jTextField.setMaximumSize(jTextField.getPreferredSize());
-        jTextField.setText("");
-
-        jTextField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                geofileTextfieldHandler(jTextField);
-            }
-        });
-
-        jTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                geofileTextfieldHandler(jTextField);
-            }
-        });
+        private JButton openButton;
+        private JButton saveButton;
+        private JCheckBox retainIfileCheckbox;
+        private JButton getAncButton;
+        private JCheckBox showDefaultsCheckbox;
+        private JTextArea parStringTextArea;
 
 
-        l2genData.addPropertyChangeListener(L2genData.GEOFILE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                String geofileString = l2genData.getParamValue(L2genData.GEOFILE);
-                if (geofileString == null || geofileString.equals(ParamInfo.NULL_STRING)) {
-                    geofileChooser.setSelectedFile(null);
-
-                } else {
-                    geofileChooser.setSelectedFile(new File(geofileString));
-                }
-
-                jTextField.setText(geofileString);
-            }
-        });
-
-
-        final JButton jButton = new JButton("...");
-
-        jButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                geofileChooserHandler(geofileChooser);
-            }
-        });
-
-        jButton.setMargin(new Insets(0, -7, 0, -7));
-        Dimension size = new Dimension(jButton.getPreferredSize().width,
-                jTextField.getPreferredSize().height);
-        jButton.setPreferredSize(size);
-        jButton.setMinimumSize(size);
-        jButton.setMaximumSize(size);
-
-
-        final JPanel mainPanel = new JPanel((new GridBagLayout()));
-        mainPanel.add(new JLabel(L2genData.GEOFILE),
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-        mainPanel.add(jTextField,
-                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 2));
-        mainPanel.add(jButton,
-                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-
-
-        Component[] geofilePanelComponents = mainPanel.getComponents();
-        for (Component component : geofilePanelComponents) {
-            component.setEnabled(false);
+        L2genParfilePanel() {
+            initComponents();
+            addComponents();
         }
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                boolean isSetNewValue = false;
-                if (evt.getNewValue() != null) {
-                    isSetNewValue = new Boolean((Boolean) evt.getNewValue());
-                }
-
-                Component[] geofilePanelComponents = mainPanel.getComponents();
-                for (Component component : geofilePanelComponents) {
-                    component.setEnabled(isSetNewValue);
-                }
-            }
-        });
-
-        return mainPanel;
-    }
-
-
-    private void geofileChooserHandler(JFileChooser jFileChooser) {
-        int result = jFileChooser.showOpenDialog(null);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            l2genData.setParamValue(L2genData.GEOFILE, jFileChooser.getSelectedFile().toString());
+        public void initComponents() {
+            openButton = createOpenButton();
+            saveButton = createSaveButton();
+            retainIfileCheckbox = createRetainIfileCheckbox();
+            getAncButton = createGetAncButton();
+            showDefaultsCheckbox = createShowDefaultsCheckbox();
+            parStringTextArea = createParStringTextArea();
         }
-    }
 
 
-    private void geofileTextfieldHandler(JTextField jTextField) {
-        l2genData.setParamValue(L2genData.GEOFILE, jTextField.getText());
-    }
+        public void addComponents() {
+
+            setLayout(new GridBagLayout());
+            setBorder(BorderFactory.createTitledBorder("Parfile"));
 
 
-    private JPanel createParfilePanel() {
+            final JPanel subPanel = new JPanel(new GridBagLayout());
+            subPanel.add(openButton,
+                    new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+            subPanel.add(retainIfileCheckbox,
+                    new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+            subPanel.add(getAncButton,
+                    new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 2));
+            subPanel.add(showDefaultsCheckbox,
+                    new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 2));
+            subPanel.add(saveButton,
+                    new GridBagConstraintsCustom(4, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
-        final JButton saveParfileButton = new JButton("Save");
-        saveParfileButton.setEnabled(false);
-        saveParfileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int result = parfileChooser.showSaveDialog(null);
-
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    writeParfile();
-                }
-            }
-        });
+            add(subPanel,
+                    new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+            add(new JScrollPane(parStringTextArea),
+                    new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+        }
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+        private JButton createOpenButton() {
 
-                boolean isSetNewValue = false;
-                if (evt.getNewValue() != null) {
-                    isSetNewValue = new Boolean((Boolean) evt.getNewValue());
-                }
+            String NAME = "Open";
 
-                saveParfileButton.setEnabled(isSetNewValue);
-            }
-        });
+            final JButton jButton = new JButton(NAME);
 
+            final JFileChooser jFileChooser = new JFileChooser();
 
-        final JButton openParfileButton = new JButton("Open");
-        openParfileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int result = parfileChooser.showOpenDialog(null);
-
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    uploadParfile();
-                    debug("uploadParfile called");
-                } else {
-                    debug("uploadParfile not called");
-                }
-
-            }
-        });
-
-
-        final JCheckBox retainIfileOfileCheckbox = new JCheckBox("Retain Selected IFILE");
-        retainIfileOfileCheckbox.setSelected(l2genData.isRetainCurrentIfile());
-        retainIfileOfileCheckbox.setToolTipText("If an ifile is currently selected then any ifile entry in the parfile being opened will be ignored.");
-        //     retainIfileOfileCheckbox.setEnabled(false);
-
-        // add listener for current checkbox
-        retainIfileOfileCheckbox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                l2genData.setRetainCurrentIfile(retainIfileOfileCheckbox.isSelected());
-            }
-        });
-
-        l2genData.addPropertyChangeListener(l2genData.RETAIN_IFILE_CHANGE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                retainIfileOfileCheckbox.setSelected(l2genData.isRetainCurrentIfile());
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                boolean isSetNewValue = false;
-                if (evt.getNewValue() != null) {
-                    isSetNewValue = new Boolean((Boolean) evt.getNewValue());
-                }
-
-                retainIfileOfileCheckbox.setEnabled(isSetNewValue);
-            }
-        });
-
-
-        final JButton getAncButton = new JButton("Get Anc");
-        //   getAncButton.setEnabled(false);
-        getAncButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                l2genData.setAncillaryFiles();
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                boolean isSetNewValue = false;
-                if (evt.getNewValue() != null) {
-                    isSetNewValue = new Boolean((Boolean) evt.getNewValue());
-                }
-
-                getAncButton.setEnabled(isSetNewValue);
-            }
-        });
-
-
-        final JCheckBox showDefaultsCheckbox = new JCheckBox("Show Defaults");
-        showDefaultsCheckbox.setSelected(l2genData.isShowDefaultsInParString());
-        showDefaultsCheckbox.setToolTipText("Displays all the defaults with the parfile text region");
-        //     showDefaultsCheckbox.setEnabled(false);
-
-        // add listener for current checkbox
-        showDefaultsCheckbox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                l2genData.setShowDefaultsInParString(showDefaultsCheckbox.isSelected());
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                boolean isSetNewValue = false;
-                if (evt.getNewValue() != null) {
-                    isSetNewValue = new Boolean((Boolean) evt.getNewValue());
-                }
-
-                showDefaultsCheckbox.setEnabled(isSetNewValue);
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_IN_PARSTRING_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                showDefaultsCheckbox.setSelected(l2genData.isShowDefaultsInParString());
-            }
-        });
-
-
-        parStringTextArea = new JTextArea();
-        final JScrollPane parStringScrollArea = new JScrollPane(parStringTextArea);
-        parStringTextArea.setEditable(true);
-        parStringTextArea.setAutoscrolls(true);
-
-
-        parStringTextArea.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                parStringTextAreaLostFocus();
-            }
-        });
-
-
-        for (ParamInfo paramInfo : l2genData.getParamInfos()) {
-            final String eventName = paramInfo.getName();
-            l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
+            jButton.addActionListener(new ActionListener() {
                 @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    parStringTextArea.setText(l2genData.getParString(l2genData.isShowDefaultsInParString()));
-//                    parStringScrollArea.repaint();
-//                    parStringScrollArea.updateUI();
-//                    parStringScrollArea.getVerticalScrollBar().setValue(0);
-//                    parStringScrollArea.getHorizontalScrollBar().setValue(0);
+                public void actionPerformed(ActionEvent e) {
+                    uploadParfile(jFileChooser);
                 }
             });
+
+            return jButton;
         }
 
-        l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_IN_PARSTRING_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                parStringTextArea.setText(l2genData.getParString(l2genData.isShowDefaultsInParString()));
-//                parStringScrollArea.repaint();
-//                parStringScrollArea.updateUI();
-//                parStringScrollArea.getVerticalScrollBar().setValue(0);
-//                parStringScrollArea.getHorizontalScrollBar().setValue(0);
+
+        private JButton createSaveButton() {
+
+            String NAME = "Save";
+
+            final JButton jButton = new JButton(NAME);
+
+            final JFileChooser jFileChooser = new JFileChooser();
+
+            jButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writeParfile(jFileChooser);
+                }
+            });
+
+
+            l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    jButton.setEnabled(l2genData.isValidIfile());
+                }
+            });
+
+            return jButton;
+        }
+
+
+        private JCheckBox createRetainIfileCheckbox() {
+
+            String NAME = "Retain Selected IFILE";
+            String TOOL_TIP = "If an ifile is currently selected then any ifile entry in the parfile being opened will be ignored.";
+
+            final JCheckBox jCheckBox = new JCheckBox(NAME);
+
+            jCheckBox.setSelected(l2genData.isRetainCurrentIfile());
+            jCheckBox.setToolTipText(TOOL_TIP);
+
+            final boolean[] handlerEnabled = {true};
+
+            jCheckBox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (handlerEnabled[0]) {
+                        l2genData.setRetainCurrentIfile(jCheckBox.isSelected());
+                    }
+                }
+            });
+
+            l2genData.addPropertyChangeListener(l2genData.RETAIN_IFILE_CHANGE_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    handlerEnabled[0] = false;
+                    jCheckBox.setSelected(l2genData.isRetainCurrentIfile());
+                    handlerEnabled[0] = true;
+                }
+            });
+
+
+            l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    jCheckBox.setEnabled(l2genData.isValidIfile());
+                }
+            });
+
+            return jCheckBox;
+        }
+
+
+        private JButton createGetAncButton() {
+
+            String NAME = "Get Ancillary";
+
+            final JButton jButton = new JButton(NAME);
+
+            jButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    l2genData.setAncillaryFiles();
+                }
+            });
+
+
+            l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    jButton.setEnabled(l2genData.isValidIfile());
+                }
+            });
+
+            return jButton;
+        }
+
+
+        private JCheckBox createShowDefaultsCheckbox() {
+
+            String NAME = "Show Defaults";
+            String TOOL_TIP = "Displays all the defaults with the parfile text region";
+
+            final JCheckBox jCheckBox = new JCheckBox(NAME);
+
+            jCheckBox.setSelected(l2genData.isShowDefaultsInParString());
+            jCheckBox.setToolTipText(TOOL_TIP);
+
+            final boolean[] handlerEnabled = {true};
+
+            jCheckBox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (handlerEnabled[0]) {
+                        l2genData.setShowDefaultsInParString(jCheckBox.isSelected());
+                    }
+                }
+            });
+
+
+            l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    jCheckBox.setEnabled(l2genData.isValidIfile());
+                }
+            });
+
+
+            l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    handlerEnabled[0] = false;
+                    jCheckBox.setSelected(l2genData.isShowDefaultsInParString());
+                    handlerEnabled[0] = true;
+                }
+            });
+
+            return jCheckBox;
+        }
+
+
+        private JTextArea createParStringTextArea() {
+
+            final JTextArea jTextArea = new JTextArea();
+            jTextArea.setEditable(true);
+            jTextArea.setAutoscrolls(true);
+
+            jTextArea.addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    l2genData.setParString(jTextArea.getText().toString(), false);
+                }
+            });
+
+
+            for (ParamInfo paramInfo : l2genData.getParamInfos()) {
+                final String eventName = paramInfo.getName();
+                l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        jTextArea.setText(l2genData.getParString());
+                    }
+                });
             }
-        });
+
+            l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    jTextArea.setText(l2genData.getParString());
+
+                }
+            });
+
+            l2genData.addPropertyChangeListener(l2genData.PARSTRING_REFORMAT_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    jTextArea.setText(l2genData.getParString());
+
+                }
+            });
+
+            return jTextArea;
+        }
 
 
-        final JPanel buttonsSubPanel = new JPanel(new GridBagLayout());
-        buttonsSubPanel.add(openParfileButton,
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        buttonsSubPanel.add(retainIfileOfileCheckbox,
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-        buttonsSubPanel.add(getAncButton,
-                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 2));
-        buttonsSubPanel.add(showDefaultsCheckbox,
-                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 2));
-        buttonsSubPanel.add(saveParfileButton,
-                new GridBagConstraintsCustom(4, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        private void uploadParfile(JFileChooser parfileChooser) {
+
+            int result = parfileChooser.showOpenDialog(null);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                final ArrayList<String> parfileTextLines = myReadDataFile(parfileChooser.getSelectedFile().toString());
+
+                StringBuilder parfileText = new StringBuilder();
+
+                for (String currLine : parfileTextLines) {
+                    debug(currLine);
+                    parfileText.append(currLine);
+                    parfileText.append("\n");
+                }
+
+                l2genData.setParString(parfileText.toString(), l2genData.isRetainCurrentIfile());
+            }
+        }
 
 
-        final JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBorder(BorderFactory.createTitledBorder("Parfile"));
-        mainPanel.add(buttonsSubPanel,
-                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-        mainPanel.add(parStringScrollArea,
-                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+        private void writeParfile(JFileChooser parfileChooser) {
+            int result = parfileChooser.showSaveDialog(null);
 
-
-        return mainPanel;
+            if (result == JFileChooser.APPROVE_OPTION) {
+                try {
+                    // Create file
+                    FileWriter fstream = new FileWriter(parfileChooser.getSelectedFile().toString());
+                    BufferedWriter out = new BufferedWriter(fstream);
+                    out.write(l2genData.getParString(false));
+                    //Close the output stream
+                    out.close();
+                } catch (Exception e) {//Catch exception if any
+                    System.err.println("Error: " + e.getMessage());
+                }
+            }
+        }
     }
 
 
@@ -1149,400 +1119,402 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
     }
 
-
-    private TristateCheckBox.State getCheckboxState(BaseInfo.State state) {
-        switch (state) {
-            case SELECTED:
-                return TristateCheckBox.SELECTED;
-            case PARTIAL:
-                return TristateCheckBox.PARTIAL;
-            default:
-                return TristateCheckBox.NOT_SELECTED;
-        }
-    }
-
-    private BaseInfo.State getInfoState(TristateCheckBox.State state) {
-        if (state == TristateCheckBox.SELECTED) {
-            return BaseInfo.State.SELECTED;
-        }
-        if (state == TristateCheckBox.PARTIAL) {
-            return BaseInfo.State.PARTIAL;
-        }
-        return BaseInfo.State.NOT_SELECTED;
-
-    }
-
-
-    class CheckBoxNodeRenderer implements TreeCellRenderer {
-        private JPanel nodeRenderer = new JPanel();
-        private JLabel label = new JLabel();
-        private TristateCheckBox check = new TristateCheckBox();
-
-        Color selectionBorderColor, selectionForeground, selectionBackground,
-                textForeground, textBackground;
-
-        protected TristateCheckBox getJCheckBox() {
-            return check;
-        }
-
-        public CheckBoxNodeRenderer() {
-            Insets inset0 = new Insets(0, 0, 0, 0);
-            check.setMargin(inset0);
-            nodeRenderer.setLayout(new BorderLayout());
-            nodeRenderer.add(check, BorderLayout.WEST);
-            nodeRenderer.add(label, BorderLayout.CENTER);
-
-            Font fontValue;
-            fontValue = UIManager.getFont("Tree.font");
-            if (fontValue != null) {
-                check.setFont(fontValue);
-                label.setFont(fontValue);
-            }
-            Boolean booleanValue = (Boolean) UIManager
-                    .get("Tree.drawsFocusBorderAroundIcon");
-            check.setFocusPainted((booleanValue != null)
-                    && (booleanValue.booleanValue()));
-
-            selectionBorderColor = UIManager.getColor("Tree.selectionBorderColor");
-            selectionForeground = UIManager.getColor("Tree.selectionForeground");
-            selectionBackground = UIManager.getColor("Tree.selectionBackground");
-            textForeground = UIManager.getColor("Tree.textForeground");
-            textBackground = UIManager.getColor("Tree.textBackground");
-        }
-
-        public Component getTreeCellRendererComponent(JTree tree, Object value,
-                                                      boolean selected, boolean expanded, boolean leaf, int row,
-                                                      boolean hasFocus) {
-
-            String stringValue = null;
-            BaseInfo.State state = BaseInfo.State.NOT_SELECTED;
-
-            if ((value != null) && (value instanceof DefaultMutableTreeNode)) {
-                Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
-                if (userObject instanceof BaseInfo) {
-                    BaseInfo info = (BaseInfo) userObject;
-                    state = info.getState();
-                    stringValue = info.getFullName();
-
-                    tree.setToolTipText(info.getDescription());
-                }
-            }
-
-            if (stringValue == null) {
-                stringValue = tree.convertValueToText(value, selected, expanded, leaf, row, false);
-            }
-
-            label.setText(stringValue);
-            check.setState(getCheckboxState(state));
-            check.setEnabled(tree.isEnabled());
-
-            if (selected) {
-                label.setForeground(selectionForeground);
-                check.setForeground(selectionForeground);
-                nodeRenderer.setForeground(selectionForeground);
-                label.setBackground(selectionBackground);
-                check.setBackground(selectionBackground);
-                nodeRenderer.setBackground(selectionBackground);
-            } else {
-                label.setForeground(textForeground);
-                check.setForeground(textForeground);
-                nodeRenderer.setForeground(textForeground);
-                label.setBackground(textBackground);
-                check.setBackground(textBackground);
-                nodeRenderer.setBackground(textBackground);
-            }
-
-//            if (((DefaultMutableTreeNode) value).getParent() == null) {
-//                check.setVisible(false);
+//
+//    private TristateCheckBox.State getCheckboxState(BaseInfo.State state) {
+//        switch (state) {
+//            case SELECTED:
+//                return TristateCheckBox.SELECTED;
+//            case PARTIAL:
+//                return TristateCheckBox.PARTIAL;
+//            default:
+//                return TristateCheckBox.NOT_SELECTED;
+//        }
+//    }
+//
+//    private BaseInfo.State getInfoState(TristateCheckBox.State state) {
+//        if (state == TristateCheckBox.SELECTED) {
+//            return BaseInfo.State.SELECTED;
+//        }
+//        if (state == TristateCheckBox.PARTIAL) {
+//            return BaseInfo.State.PARTIAL;
+//        }
+//        return BaseInfo.State.NOT_SELECTED;
+//
+//    }
+//
+//
+//    class CheckBoxNodeRenderer implements TreeCellRenderer {
+//        private JPanel nodeRenderer = new JPanel();
+//        private JLabel label = new JLabel();
+//        private TristateCheckBox check = new TristateCheckBox();
+//
+//        Color selectionBorderColor, selectionForeground, selectionBackground,
+//                textForeground, textBackground;
+//
+//        protected TristateCheckBox getJCheckBox() {
+//            return check;
+//        }
+//
+//        public CheckBoxNodeRenderer() {
+//            Insets inset0 = new Insets(0, 0, 0, 0);
+//            check.setMargin(inset0);
+//            nodeRenderer.setLayout(new BorderLayout());
+//            nodeRenderer.add(check, BorderLayout.WEST);
+//            nodeRenderer.add(label, BorderLayout.CENTER);
+//
+//            Font fontValue;
+//            fontValue = UIManager.getFont("Tree.font");
+//            if (fontValue != null) {
+//                check.setFont(fontValue);
+//                label.setFont(fontValue);
 //            }
-
-            BaseInfo baseInfo = (BaseInfo) ((DefaultMutableTreeNode) value).getUserObject();
-
-            if (baseInfo instanceof ProductCategoryInfo) {
-                check.setVisible(false);
-            } else {
-                check.setVisible(true);
-            }
-
-            return nodeRenderer;
-        }
-    }
-
-    class CheckBoxNodeEditor extends AbstractCellEditor implements TreeCellEditor {
-
-        CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
-        JTree tree;
-        DefaultMutableTreeNode currentNode;
-
-        public CheckBoxNodeEditor(JTree tree) {
-            this.tree = tree;
-
-            // add a listener fo the check box
-            ItemListener itemListener = new ItemListener() {
-                public void itemStateChanged(ItemEvent itemEvent) {
-                    TristateCheckBox.State state = renderer.getJCheckBox().getState();
-
-                    if (stopCellEditing()) {
-                        fireEditingStopped();
-                    }
-                }
-            };
-            //renderer.getJCheckBox().addItemListener(itemListener);
-            renderer.getJCheckBox().addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    if (stopCellEditing()) {
-                        fireEditingStopped();
-                    }
-                }
-            });
-            renderer.getJCheckBox().addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                }
-            });
-
-
-        }
-
-        public Object getCellEditorValue() {
-
-            TristateCheckBox.State state = renderer.getJCheckBox().getState();
-
-            setNodeState(currentNode, getInfoState(state));
-
-            return currentNode.getUserObject();
-        }
-
-        public boolean isCellEditable(EventObject event) {
-
-            return true;
-
-        }
-
-        public Component getTreeCellEditorComponent(JTree tree, Object value,
-                                                    boolean selected, boolean expanded, boolean leaf, int row) {
-
-            if (value instanceof DefaultMutableTreeNode) {
-                currentNode = (DefaultMutableTreeNode) value;
-            }
-
-            Component editor = renderer.getTreeCellRendererComponent(tree, value,
-                    true, expanded, leaf, row, true);
-
-            return editor;
-        }
-    }
-
-
-    private TreeNode createTree() {
-
-        DefaultMutableTreeNode productCategory, product, oldAlgorithm, algorithm = null, wavelength;
-
-        oldAlgorithm = new DefaultMutableTreeNode();
-        BaseInfo oldAInfo = null;
-
-        rootNode = new DefaultMutableTreeNode(new BaseInfo());
-
-        for (ProductCategoryInfo productCategoryInfo : l2genData.getProductCategoryInfos()) {
-            if (productCategoryInfo.isVisible() && productCategoryInfo.hasChildren()) {
-                productCategory = new DefaultMutableTreeNode(productCategoryInfo);
-                rootNode.add(productCategory);
-                for (BaseInfo pInfo : productCategoryInfo.getChildren()) {
-                    product = new DefaultMutableTreeNode(pInfo);
-                    for (BaseInfo aInfo : pInfo.getChildren()) {
-                        algorithm = new DefaultMutableTreeNode(aInfo);
-
-                        if (algorithm.toString().equals(oldAlgorithm.toString())) {
-                            if (oldAInfo.hasChildren()) {
-                                if (aInfo.hasChildren()) {
-                                    algorithm = oldAlgorithm;
-                                } else {
-                                    oldAlgorithm.add(algorithm);
-                                }
-                            } else {
-                                if (aInfo.hasChildren()) {
-                                    product.remove(oldAlgorithm);
-                                    algorithm.add(oldAlgorithm);
-                                    product.add(algorithm);
-                                }
-                            }
-                        } else {
-                            product.add(algorithm);
-                        }
-
-                        for (BaseInfo wInfo : aInfo.getChildren()) {
-                            wavelength = new DefaultMutableTreeNode(wInfo);
-                            algorithm.add(wavelength);
-                        }
-
-                        oldAInfo = aInfo;
-                        oldAlgorithm = algorithm;
-                    }
-                    if (pInfo.getChildren().size() == 1) {
-                        productCategory.add(algorithm);
-                    } else {
-                        productCategory.add(product);
-                    }
-                }
-            }
-        }
-
-        return rootNode;
-    }
-
-
-    public void checkTreeState(DefaultMutableTreeNode node) {
-
-        l2genData.disableEvent(L2genData.L2PROD);
-        BaseInfo info = (BaseInfo) node.getUserObject();
-        BaseInfo.State newState = info.getState();
-
-        if (node.getChildCount() > 0) {
-            Enumeration<DefaultMutableTreeNode> enumeration = node.children();
-            DefaultMutableTreeNode kid;
-            boolean selectedFound = false;
-            boolean notSelectedFound = false;
-            while (enumeration.hasMoreElements()) {
-                kid = enumeration.nextElement();
-                checkTreeState(kid);
-
-                BaseInfo childInfo = (BaseInfo) kid.getUserObject();
-
-                switch (childInfo.getState()) {
-                    case SELECTED:
-                        selectedFound = true;
-                        break;
-                    case PARTIAL:
-                        selectedFound = true;
-                        notSelectedFound = true;
-                        break;
-                    case NOT_SELECTED:
-                        notSelectedFound = true;
-                        break;
-                }
-            }
-
-            if (selectedFound && !notSelectedFound) {
-                newState = BaseInfo.State.SELECTED;
-            } else if (!selectedFound && notSelectedFound) {
-                newState = BaseInfo.State.NOT_SELECTED;
-            } else if (selectedFound && notSelectedFound) {
-                newState = BaseInfo.State.PARTIAL;
-            }
-
-        } else {
-            if (newState == BaseInfo.State.PARTIAL) {
-                newState = BaseInfo.State.SELECTED;
-                debug("in checkAlgorithmState converted newState to " + newState);
-            }
-        }
-
-        if (newState != info.getState()) {
-            l2genData.setSelectedInfo(info, newState);
-
-        }
-
-        l2genData.enableEvent(L2genData.L2PROD);
-    }
-
-
-    public void setNodeState(DefaultMutableTreeNode node, BaseInfo.State state) {
-
-        debug("setNodeState called with state = " + state);
-
-        if (node == null) {
-            return;
-        }
-
-        BaseInfo info = (BaseInfo) node.getUserObject();
-
-        if (state == info.getState()) {
-            return;
-        }
-
-        l2genData.disableEvent(L2genData.L2PROD);
-
-        if (node.getChildCount() > 0) {
-            l2genData.setSelectedInfo(info, state);
-
-            Enumeration<DefaultMutableTreeNode> enumeration = node.children();
-            DefaultMutableTreeNode childNode;
-
-            BaseInfo.State newState = state;
-
-            while (enumeration.hasMoreElements()) {
-                childNode = enumeration.nextElement();
-
-                BaseInfo childInfo = (BaseInfo) childNode.getUserObject();
-
-                if (childInfo instanceof WavelengthInfo) {
-                    if (state == BaseInfo.State.PARTIAL) {
-                        if (l2genData.compareWavelengthLimiter((WavelengthInfo) childInfo)) {
-                            newState = BaseInfo.State.SELECTED;
-                        } else {
-                            newState = BaseInfo.State.NOT_SELECTED;
-                        }
-                    }
-                }
-
-                setNodeState(childNode, newState);
-            }
-
-            DefaultMutableTreeNode ancestorNode;
-            DefaultMutableTreeNode targetNode = node;
-            ancestorNode = (DefaultMutableTreeNode) node.getParent();
-
-            while (ancestorNode.getParent() != null) {
-                targetNode = ancestorNode;
-                ancestorNode = (DefaultMutableTreeNode) ancestorNode.getParent();
-            }
-
-            checkTreeState(targetNode);
-
-        } else {
-            if (state == BaseInfo.State.PARTIAL) {
-                l2genData.setSelectedInfo(info, BaseInfo.State.SELECTED);
-            } else {
-                l2genData.setSelectedInfo(info, state);
-            }
-        }
-
-        l2genData.enableEvent(L2genData.L2PROD);
-    }
-
-
-    private void updateProductTreePanel() {
-
-        TreeNode rootNode = createTree();
-        productJTree.setModel(new DefaultTreeModel(rootNode, false));
-
-    }
-
-
-    private JPanel createProductSelectorJPanel() {
-
-        TreeNode rootNode = createTree();
-        productJTree = new JTree(rootNode);
-        productJTree.setCellRenderer(new CheckBoxNodeRenderer());
-        productJTree.setCellEditor(new CheckBoxNodeEditor(productJTree));
-        productJTree.setEditable(true);
-        productJTree.setShowsRootHandles(true);
-        productJTree.setRootVisible(false);
-
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBorder(BorderFactory.createTitledBorder("Product Selector"));
-
-        mainPanel.add(new JScrollPane(productJTree),
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
-
-        return mainPanel;
-    }
+//            Boolean booleanValue = (Boolean) UIManager
+//                    .get("Tree.drawsFocusBorderAroundIcon");
+//            check.setFocusPainted((booleanValue != null)
+//                    && (booleanValue.booleanValue()));
+//
+//            selectionBorderColor = UIManager.getColor("Tree.selectionBorderColor");
+//            selectionForeground = UIManager.getColor("Tree.selectionForeground");
+//            selectionBackground = UIManager.getColor("Tree.selectionBackground");
+//            textForeground = UIManager.getColor("Tree.textForeground");
+//            textBackground = UIManager.getColor("Tree.textBackground");
+//        }
+//
+//        public Component getTreeCellRendererComponent(JTree tree, Object value,
+//                                                      boolean selected, boolean expanded, boolean leaf, int row,
+//                                                      boolean hasFocus) {
+//
+//            String stringValue = null;
+//            BaseInfo.State state = BaseInfo.State.NOT_SELECTED;
+//
+//            if ((value != null) && (value instanceof DefaultMutableTreeNode)) {
+//                Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
+//                if (userObject instanceof BaseInfo) {
+//                    BaseInfo info = (BaseInfo) userObject;
+//                    state = info.getState();
+//                    stringValue = info.getFullName();
+//
+//                    tree.setToolTipText(info.getDescription());
+//                }
+//            }
+//
+//            if (stringValue == null) {
+//                stringValue = tree.convertValueToText(value, selected, expanded, leaf, row, false);
+//            }
+//
+//            label.setText(stringValue);
+//            check.setState(getCheckboxState(state));
+//            check.setEnabled(tree.isEnabled());
+//
+//            if (selected) {
+//                label.setForeground(selectionForeground);
+//                check.setForeground(selectionForeground);
+//                nodeRenderer.setForeground(selectionForeground);
+//                label.setBackground(selectionBackground);
+//                check.setBackground(selectionBackground);
+//                nodeRenderer.setBackground(selectionBackground);
+//            } else {
+//                label.setForeground(textForeground);
+//                check.setForeground(textForeground);
+//                nodeRenderer.setForeground(textForeground);
+//                label.setBackground(textBackground);
+//                check.setBackground(textBackground);
+//                nodeRenderer.setBackground(textBackground);
+//            }
+//
+////            if (((DefaultMutableTreeNode) value).getParent() == null) {
+////                check.setVisible(false);
+////            }
+//
+//            BaseInfo baseInfo = (BaseInfo) ((DefaultMutableTreeNode) value).getUserObject();
+//
+//            if (baseInfo instanceof ProductCategoryInfo) {
+//                check.setVisible(false);
+//            } else {
+//                check.setVisible(true);
+//            }
+//
+//            return nodeRenderer;
+//        }
+//    }
+//
+//    class CheckBoxNodeEditor extends AbstractCellEditor implements TreeCellEditor {
+//
+//        CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
+//        JTree tree;
+//        DefaultMutableTreeNode currentNode;
+//
+//        public CheckBoxNodeEditor(JTree tree) {
+//            this.tree = tree;
+//
+//            // add a listener fo the check box
+//            ItemListener itemListener = new ItemListener() {
+//                public void itemStateChanged(ItemEvent itemEvent) {
+//                    TristateCheckBox.State state = renderer.getJCheckBox().getState();
+//
+//                    if (stopCellEditing()) {
+//                        fireEditingStopped();
+//                    }
+//                }
+//            };
+//            //renderer.getJCheckBox().addItemListener(itemListener);
+//            renderer.getJCheckBox().addChangeListener(new ChangeListener() {
+//                @Override
+//                public void stateChanged(ChangeEvent e) {
+//                    if (stopCellEditing()) {
+//                        fireEditingStopped();
+//                    }
+//                }
+//            });
+//            renderer.getJCheckBox().addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                }
+//            });
+//
+//
+//        }
+//
+//        public Object getCellEditorValue() {
+//
+//            TristateCheckBox.State state = renderer.getJCheckBox().getState();
+//
+//            setNodeState(currentNode, getInfoState(state));
+//
+//            return currentNode.getUserObject();
+//        }
+//
+//        public boolean isCellEditable(EventObject event) {
+//
+//            return true;
+//
+//        }
+//
+//        public Component getTreeCellEditorComponent(JTree tree, Object value,
+//                                                    boolean selected, boolean expanded, boolean leaf, int row) {
+//
+//            if (value instanceof DefaultMutableTreeNode) {
+//                currentNode = (DefaultMutableTreeNode) value;
+//            }
+//
+//            Component editor = renderer.getTreeCellRendererComponent(tree, value,
+//                    true, expanded, leaf, row, true);
+//
+//            return editor;
+//        }
+//    }
+//
+//
+//    private TreeNode createTree() {
+//
+//        DefaultMutableTreeNode productCategory, product, oldAlgorithm, algorithm = null, wavelength;
+//
+//        oldAlgorithm = new DefaultMutableTreeNode();
+//        BaseInfo oldAInfo = null;
+//
+//        rootNode = new DefaultMutableTreeNode(new BaseInfo());
+//
+//        for (ProductCategoryInfo productCategoryInfo : l2genData.getProductCategoryInfos()) {
+//            if (productCategoryInfo.isVisible() && productCategoryInfo.hasChildren()) {
+//                productCategory = new DefaultMutableTreeNode(productCategoryInfo);
+//                rootNode.add(productCategory);
+//                for (BaseInfo pInfo : productCategoryInfo.getChildren()) {
+//                    product = new DefaultMutableTreeNode(pInfo);
+//                    for (BaseInfo aInfo : pInfo.getChildren()) {
+//                        algorithm = new DefaultMutableTreeNode(aInfo);
+//
+//                        if (algorithm.toString().equals(oldAlgorithm.toString())) {
+//                            if (oldAInfo.hasChildren()) {
+//                                if (aInfo.hasChildren()) {
+//                                    algorithm = oldAlgorithm;
+//                                } else {
+//                                    oldAlgorithm.add(algorithm);
+//                                }
+//                            } else {
+//                                if (aInfo.hasChildren()) {
+//                                    product.remove(oldAlgorithm);
+//                                    algorithm.add(oldAlgorithm);
+//                                    product.add(algorithm);
+//                                }
+//                            }
+//                        } else {
+//                            product.add(algorithm);
+//                        }
+//
+//                        for (BaseInfo wInfo : aInfo.getChildren()) {
+//                            wavelength = new DefaultMutableTreeNode(wInfo);
+//                            algorithm.add(wavelength);
+//                        }
+//
+//                        oldAInfo = aInfo;
+//                        oldAlgorithm = algorithm;
+//                    }
+//                    if (pInfo.getChildren().size() == 1) {
+//                        productCategory.add(algorithm);
+//                    } else {
+//                        productCategory.add(product);
+//                    }
+//                }
+//            }
+//        }
+//
+//        return rootNode;
+//    }
+//
+//
+//    public void checkTreeState(DefaultMutableTreeNode node) {
+//
+//        l2genData.disableEvent(L2genData.L2PROD);
+//        BaseInfo info = (BaseInfo) node.getUserObject();
+//        BaseInfo.State newState = info.getState();
+//
+//        if (node.getChildCount() > 0) {
+//            Enumeration<DefaultMutableTreeNode> enumeration = node.children();
+//            DefaultMutableTreeNode kid;
+//            boolean selectedFound = false;
+//            boolean notSelectedFound = false;
+//            while (enumeration.hasMoreElements()) {
+//                kid = enumeration.nextElement();
+//                checkTreeState(kid);
+//
+//                BaseInfo childInfo = (BaseInfo) kid.getUserObject();
+//
+//                switch (childInfo.getState()) {
+//                    case SELECTED:
+//                        selectedFound = true;
+//                        break;
+//                    case PARTIAL:
+//                        selectedFound = true;
+//                        notSelectedFound = true;
+//                        break;
+//                    case NOT_SELECTED:
+//                        notSelectedFound = true;
+//                        break;
+//                }
+//            }
+//
+//            if (selectedFound && !notSelectedFound) {
+//                newState = BaseInfo.State.SELECTED;
+//            } else if (!selectedFound && notSelectedFound) {
+//                newState = BaseInfo.State.NOT_SELECTED;
+//            } else if (selectedFound && notSelectedFound) {
+//                newState = BaseInfo.State.PARTIAL;
+//            }
+//
+//        } else {
+//            if (newState == BaseInfo.State.PARTIAL) {
+//                newState = BaseInfo.State.SELECTED;
+//                debug("in checkAlgorithmState converted newState to " + newState);
+//            }
+//        }
+//
+//        if (newState != info.getState()) {
+//            l2genData.setSelectedInfo(info, newState);
+//
+//        }
+//
+//        l2genData.enableEvent(L2genData.L2PROD);
+//    }
+//
+//
+//    public void setNodeState(DefaultMutableTreeNode node, BaseInfo.State state) {
+//
+//        debug("setNodeState called with state = " + state);
+//
+//        if (node == null) {
+//            return;
+//        }
+//
+//        BaseInfo info = (BaseInfo) node.getUserObject();
+//
+//        if (state == info.getState()) {
+//            return;
+//        }
+//
+//        l2genData.disableEvent(L2genData.L2PROD);
+//
+//        if (node.getChildCount() > 0) {
+//            l2genData.setSelectedInfo(info, state);
+//
+//            Enumeration<DefaultMutableTreeNode> enumeration = node.children();
+//            DefaultMutableTreeNode childNode;
+//
+//            BaseInfo.State newState = state;
+//
+//            while (enumeration.hasMoreElements()) {
+//                childNode = enumeration.nextElement();
+//
+//                BaseInfo childInfo = (BaseInfo) childNode.getUserObject();
+//
+//                if (childInfo instanceof WavelengthInfo) {
+//                    if (state == BaseInfo.State.PARTIAL) {
+//                        if (l2genData.compareWavelengthLimiter((WavelengthInfo) childInfo)) {
+//                            newState = BaseInfo.State.SELECTED;
+//                        } else {
+//                            newState = BaseInfo.State.NOT_SELECTED;
+//                        }
+//                    }
+//                }
+//
+//                setNodeState(childNode, newState);
+//            }
+//
+//            DefaultMutableTreeNode ancestorNode;
+//            DefaultMutableTreeNode targetNode = node;
+//            ancestorNode = (DefaultMutableTreeNode) node.getParent();
+//
+//            while (ancestorNode.getParent() != null) {
+//                targetNode = ancestorNode;
+//                ancestorNode = (DefaultMutableTreeNode) ancestorNode.getParent();
+//            }
+//
+//            checkTreeState(targetNode);
+//
+//        } else {
+//            if (state == BaseInfo.State.PARTIAL) {
+//                l2genData.setSelectedInfo(info, BaseInfo.State.SELECTED);
+//            } else {
+//                l2genData.setSelectedInfo(info, state);
+//            }
+//        }
+//
+//        l2genData.enableEvent(L2genData.L2PROD);
+//    }
+//
+//
+//    private void updateProductTreePanel() {
+//
+//        TreeNode rootNode = createTree();
+//        productJTree.setModel(new DefaultTreeModel(rootNode, false));
+//
+//    }
+//
+//
+//    private JPanel createProductSelectorJPanel() {
+//
+//        TreeNode rootNode = createTree();
+//        productJTree = new JTree(rootNode);
+//        productJTree.setCellRenderer(new CheckBoxNodeRenderer());
+//        productJTree.setCellEditor(new CheckBoxNodeEditor(productJTree));
+//        productJTree.setEditable(true);
+//        productJTree.setShowsRootHandles(true);
+//        productJTree.setRootVisible(false);
+//
+//        JPanel mainPanel = new JPanel(new GridBagLayout());
+//        mainPanel.setBorder(BorderFactory.createTitledBorder("Product Selector"));
+//
+//        mainPanel.add(new JScrollPane(productJTree),
+//                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
+//
+//        return mainPanel;
+//    }
 
 
     private void createProductsTab(String tabname) {
 
-        JPanel productSelectorJPanel = createProductSelectorJPanel();
+ //      JPanel productSelectorJPanel2 = createProductSelectorJPanel();
+        JPanel productSelectorJPanel = new L2genProductSelectorPanel(l2genData);
+
 
         JPanel wavelengthsLimitorJPanel = createWaveLimiterJPanel();
 
@@ -1797,55 +1769,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
 
     //----------------------------------------------------------------------------------------
-    // Swing Control Handlers
-    //----------------------------------------------------------------------------------------
-
-
-    private void parStringTextAreaLostFocus() {
-        l2genData.setParString(parStringTextArea.getText().toString(), false);
-        // reset the text
-        // this is done here because events were fired only if params actually changed
-        // changes to comments or param-case dont trigger an event
-        // so setting the text here insures that this textarea is updated
-        parStringTextArea.setText(l2genData.getParString(l2genData.isShowDefaultsInParString()));
-    }
-
-
-    public void uploadParfile() {
-
-        final ArrayList<String> parfileTextLines = myReadDataFile(parfileChooser.getSelectedFile().toString());
-
-        StringBuilder parfileText = new StringBuilder();
-
-        for (String currLine : parfileTextLines) {
-            debug(currLine);
-            parfileText.append(currLine);
-            parfileText.append("\n");
-        }
-
-
-        l2genData.setParString(parfileText.toString(), l2genData.isRetainCurrentIfile());
-        parStringTextArea.setEditable(true);
-        //  parStringTextArea.setText(parfileText.toString());
-    }
-
-    public void writeParfile() {
-
-        try {
-            // Create file
-            FileWriter fstream = new FileWriter(parfileChooser.getSelectedFile().toString());
-            BufferedWriter out = new BufferedWriter(fstream);
-            out.write(l2genData.getParString());
-            //Close the output stream
-            out.close();
-        } catch (Exception e) {//Catch exception if any
-            System.err.println("Error: " + e.getMessage());
-        }
-
-    }
-
-
-    //----------------------------------------------------------------------------------------
     // Listeners and L2genData Handlers
     //----------------------------------------------------------------------------------------
 
@@ -1868,12 +1791,12 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                productChangedHandler();
-            }
-        });
+//        l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                productChangedHandler();
+//            }
+//        });
 
 
         l2genData.addPropertyChangeListener(L2genData.OFILE, new PropertyChangeListener() {
@@ -1911,7 +1834,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
             @Override
 
             public void propertyChange(PropertyChangeEvent evt) {
-                    ifileChangedEventHandler();
+                ifileChangedEventHandler();
             }
         });
     }
@@ -2012,7 +1935,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     private void ifileChangedEventHandler() {
 
         updateWavelengthLimiterPanel();
-        updateProductTreePanel();
+     //   updateProductTreePanel();
         updateWaveLimiterSelectionStates();
 
     }
@@ -2097,11 +2020,11 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
-    private void productChangedHandler() {
-
-        productJTree.treeDidChange();
-        checkTreeState(rootNode);
-    }
+//    private void productChangedHandler() {
+//
+//        productJTree.treeDidChange();
+//        checkTreeState(rootNode);
+//    }
 
 
     //----------------------------------------------------------------------------------------
