@@ -67,23 +67,10 @@ public class ProcessorModel {
 
     }
 
-    protected void hasOutputFile(boolean hasOutputFile) {
-        this.hasOutputFile = hasOutputFile;
-    }
-
-
-    protected boolean hasDependency() {
-        return hasDependency;
-    }
-
     protected boolean hasGeoFile() {
         return hasGeoFile;
     }
 
-    protected ProcessorModel getDependentProcessor() {
-        return dependentProcessor;
-
-    }
 
     public boolean isValidProcessor() {
         SeadasPrint.debug(programLocation);
@@ -242,28 +229,16 @@ public class ProcessorModel {
         programRoot = ocsswRoot;
     }
 
-    public void setDefaultEnv() {
-        programLocation = "/Users/Shared/ocssw/scripts/macosx_intel/";
-        programRoot = new File("/Users/Shared/ocssw");
-
-        final String[] envp = {
-                "OCSSWROOT=" + programRoot,
-        };
-        processorEnv = envp;
-
-    }
-
     private String[] getCmdArrayWithParFile() {
+         parFile = parFile == null ? computeParFile() : parFile;
         final String[] cmdArray = {
                 programLocation + "ocssw_runner",
                 programName,
                 "par=" + parFile
         };
-
-        //for (int i = 0; i < cmdArray.length; i++) {
-        //System.out.println("i = " + i + " " + cmdArray[i]);
-        //}
-
+              for (int i = 0; i < cmdArray.length; i++) {
+            SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
+        }
         return cmdArray;
     }
 
@@ -277,11 +252,11 @@ public class ProcessorModel {
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
             cmdArray[option.getOrder() + 1] = option.getValue();
-            //System.out.println("order: " + option.getOrder() + "  " + option.getName() + " = " + option.getValue());
+            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + " = " + option.getValue());
         }
 
         for (int i = 0; i < cmdArray.length; i++) {
-            System.out.println("i = " + i + " " + cmdArray[i]);
+            SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
         }
         return cmdArray;
     }
@@ -324,38 +299,59 @@ public class ProcessorModel {
                 }
             }
 
-//                   if (tempFile == null) {
-//           JOptionPane.showMessageDialog(this.getClass().ge  ,
-//                   "Unable to create parameter file '" + parFile + "'.",
-//                   "Error",
-//                   JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
             parFile = tempFile;
         } catch (IOException e) {
             return;
         }
     }
 
+      private File computeParFile() {
+        //parString = "";
+
+        StringBuilder parString = new StringBuilder("");
+        Iterator itr = paramList.iterator();
+        ParamInfo option;
+        while (itr.hasNext()) {
+            option = (ParamInfo) itr.next();
+            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + " = " + option.getValue() + "option value is valid :" + (new Boolean (option.getValue().length() > 0 )));
+            SeadasLogger.getLogger().info(option.getName() + " = " + option.getValue() + "option type is :" + option.getType() + " " + option.getType().equals(ParamInfo.Type.HELP));
+
+            if (!option.getType().equals(ParamInfo.Type.HELP) && option.getValue().length() > 0 ) {
+                parString = parString.append(option.getName() + " = " + option.getValue() + "\n");
+            }
+
+        }
+        SeadasLogger.getLogger().info("parString: " + parString);
+        try {
+            final File tempFile = File.createTempFile(programName, ".par", outputFileDir);
+            tempFile.deleteOnExit();
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter(tempFile);
+                fileWriter.write(parString.toString());
+            } finally {
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            }
+            parFile = tempFile;
+        } catch (IOException e) {
+            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            return null;
+        }
+        return parFile;
+    }
+
     public Process executeProcess() throws IOException {
 
-        System.out.println("executing ...");
+        SeadasLogger.getLogger().info("executing ...");
 
-        System.out.println(getProgramRoot());
-        System.out.println(getProgramEnv());
+        SeadasLogger.getLogger().info(getProgramRoot().toString());
+        SeadasLogger.getLogger().info(getProgramEnv().toString()  );
 
 
         return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
 
-    }
-
-    private void computeParFile() {
-//                      final String[] cmdarray = {
-//                        ocsswRoot.getPath() + "/run/bin/" + ocsswArch + "/" + programName,
-//                        "ifile=" + inputFile,
-//                        "ofile=" + outputFile,
-//                        "par=" + parFile
-//                };
     }
 
     public EventInfo[] eventInfos = {

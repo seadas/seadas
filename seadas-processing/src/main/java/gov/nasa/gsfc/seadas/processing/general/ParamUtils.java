@@ -39,6 +39,9 @@ public class ParamUtils {
     public static final String OPTION_NAME = "name";
     public static final String OPTION_TYPE = "type";
 
+    public static final String XML_ELEMENT_HAS_GEO_FILE = "hasGeoFile";
+    public static final String XML_ELEMENT_HAS_PAR_FILE = "hasParFile";
+
     public static final String NO_XML_FILE_SPECIFIED = "No XML file Specified";
 
     public final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
@@ -48,10 +51,12 @@ public class ParamUtils {
 
     public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
 
+
+    private static int longestIFileNameLength;
+
     public enum nullValueOverrides {
         IFILE, OFILE, PAR, GEOFILE
     }
-
 
 
     public static void parseXMLForProcessor(String programXMLFileName) {
@@ -93,18 +98,20 @@ public class ParamUtils {
             ParamInfo.Type type = null;
 
             if (tmpType != null) {
-                if (tmpType.toLowerCase().equals("boolean")) {
+                if (tmpType.toLowerCase().equals(ParamInfo.PARAM_TYPE_BOOLEAN )) {
                     type = ParamInfo.Type.BOOLEAN;
-                } else if (tmpType.toLowerCase().equals("int")) {
+                } else if (tmpType.toLowerCase().equals(ParamInfo.PARAM_TYPE_INT)) {
                     type = ParamInfo.Type.INT;
-                } else if (tmpType.toLowerCase().equals("float")) {
+                } else if (tmpType.toLowerCase().equals(ParamInfo.PARAM_TYPE_FLOAT )) {
                     type = ParamInfo.Type.FLOAT;
-                } else if (tmpType.toLowerCase().equals("string")) {
+                } else if (tmpType.toLowerCase().equals(ParamInfo.PARAM_TYPE_STRING )) {
                     type = ParamInfo.Type.STRING;
-                } else if (tmpType.toLowerCase().equals("ifile")) {
-                    type = ParamInfo.Type.IFILE ;
-                }else if (tmpType.toLowerCase().equals("ofile")) {
-                    type = ParamInfo.Type.OFILE ;
+                } else if (tmpType.toLowerCase().equals(ParamInfo.PARAM_TYPE_IFILE)) {
+                    type = ParamInfo.Type.IFILE;
+                } else if (tmpType.toLowerCase().equals(ParamInfo.PARAM_TYPE_OFILE )) {
+                    type = ParamInfo.Type.OFILE;
+                } else if (tmpType.toLowerCase().equals(ParamInfo.PARAM_TYPE_HELP  )) {
+                    type = ParamInfo.Type.HELP;
                 }
             }
 
@@ -171,20 +178,32 @@ public class ParamUtils {
         return acceptsParFile;
     }
 
-    public static boolean hasProgramDependency(String parXMLFileName) {
+       public static boolean getOptionStatus(String parXMLFileName, String elementName) {
 
-        boolean hasProgramDependecy = false;
+        boolean optionStatus = false;
         XmlReader xmlReader = new XmlReader();
         InputStream paramStream = ParamUtils.class.getResourceAsStream(parXMLFileName);
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
-        NodeList optionNodelist = rootElement.getElementsByTagName("hasProgramDependency");
-        if (optionNodelist != null && optionNodelist.getLength() != 0) {
-            Element metaDataElement = (Element) optionNodelist.item(0);
-            hasProgramDependecy = XmlReader.getBooleanValue(metaDataElement, "requiresOptionComputation");
+        NodeList optionNodelist = rootElement.getElementsByTagName(elementName);
+        if (optionNodelist == null || optionNodelist.getLength() == 0) {
+            SeadasLogger.getLogger().warning(elementName + " exist: " + optionStatus)  ;
+            return optionStatus;
         }
-        return hasProgramDependecy;
+            Element metaDataElement = (Element) optionNodelist.item(0);
+
+            String name = metaDataElement.getTagName();
+            SeadasLogger.getLogger().fine("tag name: " + name);
+         //   if (name.equals(elementName)) {
+                optionStatus = Boolean.parseBoolean(metaDataElement.getFirstChild().getNodeValue())  ;
+                SeadasLogger.getLogger().fine(name + " value = " + metaDataElement.getFirstChild().getNodeValue()  + " " + optionStatus );
+          //  }
+
+        return optionStatus;
     }
 
+    public static int getLongestIFileNameLength() {
+        return longestIFileNameLength;
+    }
     public static ArrayList computeParamList(String paramXmlFileName) {
 
         if (paramXmlFileName.equals(NO_XML_FILE_SPECIFIED)) {
@@ -200,6 +219,9 @@ public class ParamUtils {
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
             return null;
         }
+
+        longestIFileNameLength = 0;
+
         for (int i = 0; i < optionNodelist.getLength(); i++) {
 
             Element optionElement = (Element) optionNodelist.item(i);
@@ -222,8 +244,13 @@ public class ParamUtils {
                     type = ParamInfo.Type.STRING;
                 } else if (tmpType.toLowerCase().equals("ifile")) {
                     type = ParamInfo.Type.IFILE;
-                }  else if (tmpType.toLowerCase().equals("ofile")) {
+                    if (name.length() > longestIFileNameLength ) {
+                        longestIFileNameLength = name.length();
+                    }
+                } else if (tmpType.toLowerCase().equals("ofile")) {
                     type = ParamInfo.Type.OFILE;
+                }   else if (tmpType.toLowerCase().equals("help")) {
+                    type = ParamInfo.Type.HELP;
                 }
             }
 
@@ -293,7 +320,7 @@ public class ParamUtils {
     }
 
     static void debug(String debugMessage) {
-        System.out.println(debugMessage);
+        //System.out.println(debugMessage);
     }
 
 

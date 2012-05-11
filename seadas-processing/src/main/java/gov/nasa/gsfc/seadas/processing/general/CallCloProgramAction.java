@@ -19,6 +19,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,13 +84,17 @@ public class CallCloProgramAction extends AbstractVisatAction {
     @Override
     public void actionPerformed(CommandEvent event) {
 
-
+        SeadasLogger.initLogger("ProcessingGUI_log");
+        SeadasLogger.getLogger().setLevel(Level.FINE);
         final AppContext appContext = getAppContext();
 
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
 
         final Window parent = appContext.getApplicationWindow();
 
+        if (programName.equals("modis_L1B.py")  ) {
+            programName = "l1bgen_modis";
+        }
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
 
 
@@ -103,7 +108,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final int dialogResult = modalDialog.show();
 
-        System.out.println("dialog result: " + dialogResult);
+        SeadasLogger.getLogger().info("dialog result: " + dialogResult);
 
         if (dialogResult != ModalDialog.ID_OK) {
             return;
@@ -140,7 +145,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final File outputFile = processorModel.getOutputFile();
 
-        System.out.println("output file: " + outputFile);
+        SeadasLogger.getLogger().info("output file: " + outputFile);
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running" + programName + " ...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
@@ -234,12 +239,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
-            System.out.println(programName + ": " + line);
+            SeadasLogger.getLogger().info(programName + ": " + line);
         }
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-            System.err.println(programName + " stderr: " + line);
+            SeadasLogger.getLogger().info(programName + " stderr: " + line);
         }
     }
 

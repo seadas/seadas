@@ -15,7 +15,7 @@ public class ProcessorModelTest {
     @Test
     public void testIsValidProcessor() throws Exception {
         ProcessorModel pm = new ProcessorModel("l2gen", "paramInfo_l2gen.xml");
-        pm.setDefaultEnv();
+        //pm.setDefaultEnv();
         assertTrue(pm.isValidProcessor() );
     }
 

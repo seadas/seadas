@@ -20,11 +20,19 @@ public class ParamInfo implements Comparable {
     private boolean isBit = false;
     private int order;
 
+    public static final String PARAM_TYPE_IFILE = "ifile";
+    public static final String PARAM_TYPE_OFILE = "ofile";
+    public static final String PARAM_TYPE_HELP = "help";
+    public static final String PARAM_TYPE_STRING = "string";
+    public static final String PARAM_TYPE_FLOAT = "float";
+    public static final String PARAM_TYPE_INT = "int";
+    public static final String PARAM_TYPE_BOOLEAN = "boolean";
+
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
 
 
     public static enum Type {
-        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE
+        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP
     }
 
     public static String NULL_STRING = "";

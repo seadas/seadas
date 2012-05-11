@@ -268,11 +268,11 @@ public class SourceProductFileSelector {
 
     public JPanel createDefaultPanel() {
 
-        productFileChooserButton.setMargin(new Insets(0, -7, 0, -7));
-        final Dimension size = new Dimension(productFileChooserButton.getPreferredSize().width, productNameComboBox.getPreferredSize().height);
-        productFileChooserButton.setPreferredSize(size);
-        productFileChooserButton.setMinimumSize(size);
-        productFileChooserButton.setMaximumSize(size);
+        //productFileChooserButton.setMargin(new Insets(0, 0, 0,0));
+//        final Dimension size = new Dimension(productFileChooserButton.getPreferredSize().width, productNameComboBox.getPreferredSize().height);
+//        productFileChooserButton.setPreferredSize(size);
+//        productFileChooserButton.setMinimumSize(size);
+//        productFileChooserButton.setMaximumSize(size);
 
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -301,7 +301,7 @@ public class SourceProductFileSelector {
             public void insertUpdate(DocumentEvent documentEvent) {
                 //To change body of implemented methods use File | Settings | File Templates.
                 regexFileFilter = new RegexFileFilter(filterRegexField.getText());
-                System.out.println(regexFileFilter.getDescription());
+                SeadasLogger.getLogger().warning(regexFileFilter.getDescription())  ;
             }
 
             @Override
@@ -387,7 +387,7 @@ public class SourceProductFileSelector {
                         final String message = String.format("Product [%s] is not a valid source.",
                                 product.getFileLocation().getCanonicalPath());
                         handleError(window, message);
-                        System.out.println(product.getFileLocation().isHidden());
+                        SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString()  );
                         product.dispose();
                     }
                 } catch (IOException e) {
@@ -489,7 +489,7 @@ public class SourceProductFileSelector {
         }
 
         public RegexFileFilter(String regex) throws IllegalStateException {
-            System.out.println("regular expression: " + regex);
+            SeadasLogger.getLogger().info("regular expression: " + regex);
             if (regex == null || regex.trim().length() == 0) {
 
                 //throw new IllegalStateException();

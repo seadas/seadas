@@ -13,14 +13,27 @@ public class SeadasPrint {
     private static boolean admin = true;
     private static boolean user = true;
 
+    private static boolean danny = false;
+    private static boolean aynur = false;
 
     public SeadasPrint() {
     }
 
+    public static enum DebugType {
+        DANNY, AYNUR
+    }
 
     public static void debug(String message) {
         if (isDebug()) {
             System.out.println(message);
+        }
+    }
+
+    public static void debug(DebugType dt, String message) {
+        if (dt == DebugType.DANNY && danny) {
+             System.out.println(message);
+        }  else if (dt ==DebugType.AYNUR && aynur) {
+                                                  System.out.println(message);;
         }
     }
 

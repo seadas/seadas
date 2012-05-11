@@ -19,6 +19,7 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.util.io.BeamFileChooser;
 import org.esa.beam.util.io.FileUtils;
 import org.esa.beam.visat.VisatApp;
+import ucar.unidata.util.StringUtil;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
@@ -129,7 +130,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         //final JScrollPane textScrollPane = new JScrollPane(parameterTextArea);
         final JScrollPane textScrollPane = new JScrollPane(createParamPanel(processorModel.getProgramParamList()));
 
-        textScrollPane.setPreferredSize(new Dimension(600, 300));
+        textScrollPane.setPreferredSize(new Dimension(700, 400));
 
         final JButton saveParameterFileButton = new JButton("Store Parameters...");
         saveParameterFileButton.addActionListener(createSafeAsAction());
@@ -171,7 +172,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                         String line;
                         line = reader.readLine();
                         while (line != null) {
-                            System.out.printf("%1$d %2$s %n", reader.getLineNumber(), line);
+                            //System.out.printf("%1$d %2$s %n", reader.getLineNumber(), line);
                             line = reader.readLine();
 
                             //System.out.println(line);
@@ -282,17 +283,20 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     private JPanel createParamPanel(ArrayList<ParamInfo> paramList) {
 
         JPanel paramPanel = new JPanel();
+        JPanel textFieldPanel = new JPanel();
         JPanel booleanParamPanel = new JPanel();
         JPanel fileParamPanel = new JPanel();
         //Dimension paramPanelDimension = new Dimension(1000, 800);
-        TableLayout paramLayout = new TableLayout(4);
-        paramPanel.setLayout(paramLayout);
+
+
         TableLayout booelanParamLayout = new TableLayout(3);
         booleanParamPanel.setLayout(booelanParamLayout);
 
         TableLayout fileParamLayout = new TableLayout(1);
         fileParamPanel.setLayout(fileParamLayout);
 
+        TableLayout textFieldPanelLayout = new TableLayout(4);
+        textFieldPanel.setLayout(textFieldPanelLayout);
         //paramPanel.setBorder(new EmptyBorder(null));
         //paramPanel.setPreferredSize(paramPanelDimension);
 
@@ -300,19 +304,26 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         while (itr.hasNext()) {
             final ParamInfo pi = (ParamInfo) itr.next();
             if (!(pi.getName().equals(ParamUtils.IFILE) || pi.getName().equals("infile") || pi.getName().equals(ParamUtils.OFILE) || pi.getName().equals("geofile"))) {
-                debug(pi.getName());
+                SeadasLogger.getLogger().fine(pi.getName());
                 switch (pi.getType()) {
                     case BOOLEAN:
                         booleanParamPanel.add(makeBooleanOptionField(pi));
                         break;
-                    case OFILE:
-                        fileParamPanel.add(makeFileOptionField(pi));
-                        break;
                     case IFILE:
-                        fileParamPanel.add(makeFileOptionField(pi));
+                        fileParamPanel.add(makeInputFileOptionField(pi));
+                        break;
+                    case OFILE:
+                        fileParamPanel.add(makeOutputFileOptionField(pi));
                         break;
                     case STRING:
-                        paramPanel.add(makeOptionField(pi));
+                        textFieldPanel.add(makeOptionField(pi));
+                        break;
+                    case INT:
+                        textFieldPanel.add(makeOptionField(pi));
+                        break;
+                    case FLOAT:
+                        textFieldPanel.add(makeOptionField(pi));
+                        break;
                 }
                 //paramPanel.add(makeOptionField(pi));
             }
@@ -346,8 +357,33 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                 validateParams();
             }
         });
-        paramPanel.add(fileParamPanel);
-        paramPanel.add(booleanParamPanel);
+        SeadasLogger.getLogger().info("boolean panel components: " + booleanParamPanel.getComponentCount());
+        SeadasLogger.getLogger().info("file panel components: " + fileParamPanel.getComponentCount());
+        SeadasLogger.getLogger().info("textfield panel components: " + textFieldPanel.getComponentCount());
+
+        TableLayout paramLayout = new TableLayout(3);
+
+        paramPanel.setLayout(paramLayout);
+
+        if (fileParamPanel.getComponentCount() != 0) {
+            paramLayout.setCellColspan(0, 0, 3);
+            paramPanel.add(fileParamPanel);
+        }
+        if (textFieldPanel.getComponentCount() != 0) {
+            if (booleanParamPanel.getComponentCount() == 0) {
+                paramLayout.setCellColspan(1,0,3);
+            }  else {
+                paramLayout.setCellColspan(1,0,2);
+            }
+            paramPanel.add(textFieldPanel);
+        }
+        if (booleanParamPanel.getComponentCount() != 0) {
+            if (textFieldPanel.getComponentCount() == 0) {
+                paramLayout.setCellColspan(1,0,3);
+            }
+            paramPanel.add(booleanParamPanel);
+        }
+
         return paramPanel;
     }
 
@@ -374,7 +410,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         final JTextField field = new JTextField();
         field.setColumns(8);
         field.setHorizontalAlignment(JFormattedTextField.LEFT);
-        System.out.println(optionName + "  " + optionValue);
+        //System.out.println(optionName + "  " + optionValue);
         field.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -432,7 +468,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         final BindingContext ctx = new BindingContext(vc);
         final JCheckBox field = new JCheckBox();
         field.setHorizontalAlignment(JFormattedTextField.LEFT);
-        debug(optionName + "  " + optionValue);
+        SeadasLogger.getLogger().finest(optionName + "  " + optionValue);
         ctx.bind(optionName, field);
 
         ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
@@ -441,9 +477,9 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             public void propertyChange(PropertyChangeEvent pce) {
 
                 pi.setValue((new Boolean(field.isSelected())).toString());
-                pi.setValue(field.getText());
+                // pi.setValue((new Boolean(field.isSelected())).toString());
 
-                System.out.printf("%s %s %n", (new Boolean(field.isSelected())).toString(), field.getText());
+                SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
 
             }
         });
@@ -480,7 +516,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         //vc.getDescriptor(optionName).setValueRange(valueRange);
 
         final BindingContext ctx = new BindingContext(vc);
-        debug(optionName + "  " + optionValue);
+        SeadasLogger.getLogger().finest(optionName + "  " + optionValue);
         ctx.bind(optionName, ofs.getFileNameField());
 
         ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
@@ -542,7 +578,8 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
 
     private JPanel createSourceProductPanel() {
-        sourceProductSelector.setProductNameLabel(new JLabel(L2genData.IFILE));
+        String ifileNamePad = StringUtil.repeat(" ", ParamUtils.getLongestIFileNameLength());
+        sourceProductSelector.setProductNameLabel(new JLabel(ifileNamePad + L2genData.IFILE ));
         final JPanel panel = sourceProductSelector.createDefaultPanel();
 
         //     sourceProductSelector.getProductNameLabel().setText("Name:");
@@ -560,6 +597,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                     if (handleIfileJComboBoxEnabled) {
                         //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getProgramName());
                         processorModel.updateParamInfo(L2genData.IFILE, sourceProductSelector.getSelectedProduct().getFileLocation().toString());
+                        //processorModel.setInputFile();
                         File geoFile = getGeoFile();
                         //geoFileSelector;
                         if (geoFile.exists()) {
@@ -628,7 +666,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                 String ofile = null;
                 if (outputFileSelector.getModel().getProductFile() != null) {
                     ofile = outputFileSelector.getModel().getProductFile().getAbsolutePath();
-                    System.out.println("ofile: " + ofile);
+                    //System.out.println("ofile: " + ofile);
                 }
 
                 if (ofile != null) {
@@ -642,7 +680,60 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         return panel;
     }
 
+    private JPanel makeOutputFileOptionField(final ParamInfo pi) {
 
+        final OutputFileSelector outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "ofile");
+        outputFileSelector.setOutputFileNameLabel(new JLabel(pi.getName()));
+        outputFileSelector.setOutputFileDirLabel(new JLabel(" Save in: "));
+        final JPanel panel = outputFileSelector.createDefaultPanel();
+
+//        outputFileSelector.getModel().getProductNameComboBox().setPrototypeDisplayValue(
+//                "MER_RR__1PPBCM20030730_071000_000003972018_00321_07389_0000.N1");
+        outputFileSelector.getModel().getValueContainer().addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                String ofile = null;
+                if (outputFileSelector.getModel().getProductFile() != null) {
+                    ofile = outputFileSelector.getModel().getProductFile().getAbsolutePath();
+                    //System.out.println("ofile: " + ofile);
+                }
+
+                if (ofile != null) {
+                    if (handleOfileSelecterEnabled) {
+                        processorModel.updateParamInfo(pi, ofile);
+                    }
+                }
+            }
+        });
+        outputFilePanelHeight = panel.getHeight();
+        return panel;
+    }
+
+    private JPanel makeInputFileOptionField(final ParamInfo pi) {
+        final SourceProductFileSelector inputFileSelector = new SourceProductFileSelector(VisatApp.getApp(), "ifile");
+        inputFileSelector.setProductNameLabel(new JLabel(pi.getName()));
+        final JPanel panel = inputFileSelector.createDefaultPanel();
+
+        //     sourceProductSelector.getProductNameLabel().setText("Name:");
+        inputFileSelector.getProductNameComboBox().setPrototypeDisplayValue(
+                "MER_RR__1PPBCM20030730_071000_000003972018_00321_07389_0000.N1");
+
+        inputFileSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
+            @Override
+            public void selectionChanged(SelectionChangeEvent event) {
+
+                if (inputFileSelector.getSelectedProduct() != null
+                        && inputFileSelector.getSelectedProduct().getFileLocation() != null) {
+                    if (handleIfileJComboBoxEnabled) {
+                        //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getProgramName());
+                        processorModel.updateParamInfo(L2genData.IFILE, inputFileSelector.getSelectedProduct().getFileLocation().toString());
+                    }
+                }
+            }
+        });
+        // inputFilePanelHeight = panel.getHeight();
+        return panel;
+    }
     //----------------------------------------------------------------------------------------
     // Miscellaneous
     //----------------------------------------------------------------------------------------
@@ -663,11 +754,11 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
 
     private void debug(String string) {
-        System.out.println(string);
+        //System.out.println(string);
     }
 
     private void debugf(String formatString, Object[] messages) {
-        System.out.printf(formatString, messages);
+        //System.out.printf(formatString, messages);
     }
 
 
