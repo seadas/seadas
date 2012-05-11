@@ -389,7 +389,6 @@ public class ProcessorModel {
         }
     }
 
-
     public void disableEvent(String name) {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
