@@ -232,6 +232,7 @@ public class L2genParfilePanel extends JPanel {
         final JTextArea jTextArea = new JTextArea();
         jTextArea.setEditable(true);
         jTextArea.setAutoscrolls(true);
+        final boolean[] parStringInProgress = {false};
 
         jTextArea.addFocusListener(new FocusListener() {
             @Override
@@ -250,7 +251,9 @@ public class L2genParfilePanel extends JPanel {
             l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    jTextArea.setText(l2genData.getParString());
+                    if (!parStringInProgress[0]) {
+                        jTextArea.setText(l2genData.getParString());
+                    }
                 }
             });
         }
@@ -263,10 +266,18 @@ public class L2genParfilePanel extends JPanel {
             }
         });
 
-        l2genData.addPropertyChangeListener(l2genData.PARSTRING_REFORMAT_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(l2genData.PARSTRING_IN_PROGRESS, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                parStringInProgress[0] = true;
+            }
+        });
+
+        l2genData.addPropertyChangeListener(l2genData.PARSTRING, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jTextArea.setText(l2genData.getParString());
+                parStringInProgress[0] = false;
 
             }
         });

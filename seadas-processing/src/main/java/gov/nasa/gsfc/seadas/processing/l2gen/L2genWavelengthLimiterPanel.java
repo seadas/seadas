@@ -24,16 +24,16 @@ public class L2genWavelengthLimiterPanel extends JPanel {
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
     boolean waveLimiterControlHandlersEnabled = false;
 
-    private String WAVE_LIMITER_SELECT_ALL_INFRARED = "Select All Infrared";
-    private String WAVE_LIMITER_DESELECT_ALL_INFRARED = "Deselect All Infrared";
-    private String WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED = "Select All Near-Infrared";
-    private String WAVE_LIMITER_DESELECT_ALL_NEAR_INFRARED = "Deselect All Near-Infrared";
-    private String WAVE_LIMITER_SELECT_ALL_VISIBLE = "Select All Visible";
-    private String WAVE_LIMITER_DESELECT_ALL_VISIBLE = "Deselect All Visible";
+    private JButton infraredButton;
+    private JButton visibleButton;
+    private JButton nearInfraredButton;
 
-    private JButton waveLimiterSelectAllInfrared;
-    private JButton waveLimiterSelectAllVisible;
-    private JButton waveLimiterSelectAllNearInfrared;
+    String SELECT_ALL_INFRARED = "Select All Infrared";
+    String DESELECT_ALL_INFRARED = "Deselect All Infrared";
+    String SELECT_ALL_NEAR_INFRARED = "Select All Near-Infrared";
+    String DESELECT_ALL_NEAR_INFRARED = "Deselect All Near-Infrared";
+    String SELECT_ALL_VISIBLE = "Select All Visible";
+    String DESELECT_ALL_VISIBLE = "Deselect All Visible";
 
 
     L2genWavelengthLimiterPanel(L2genData l2genData) {
@@ -46,6 +46,205 @@ public class L2genWavelengthLimiterPanel extends JPanel {
 
     public void initComponents() {
         waveLimiterJPanel = createWaveLimiterJPanel();
+        infraredButton = createInfraredButton();
+        nearInfraredButton = createNearInfraredButton();
+        visibleButton = createVisibleButton();
+
+
+    }
+
+    public void addComponents() {
+
+        setLayout(new GridBagLayout());
+        setBorder(BorderFactory.createTitledBorder("Wavelength Limiter"));
+        setToolTipText("The wavelengths selected here are applied when you check a wavelength dependent product.  Not that any subsequent change ...");
+
+        add(visibleButton,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+
+        add(nearInfraredButton,
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+
+        add(infraredButton,
+                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+
+        add(waveLimiterJPanel,
+                new GridBagConstraintsCustom(0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH));
+    }
+
+
+    private JButton createInfraredButton() {
+
+
+        final JButton jButton = new JButton(SELECT_ALL_INFRARED);
+
+        jButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jButton.getText().equals(SELECT_ALL_INFRARED)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, true);
+                } else if (jButton.getText().equals(DESELECT_ALL_INFRARED)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, false);
+                }
+            }
+        });
+
+
+        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                updateInfraredButton();
+            }
+        });
+
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                updateInfraredButton();
+            }
+        });
+
+        return jButton;
+    }
+
+
+    private void updateInfraredButton() {
+
+        // Set INFRARED 'Select All' toggle to appropriate text and enabled
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
+            nearInfraredButton.setEnabled(true);
+            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED)) {
+                if (!infraredButton.getText().equals(DESELECT_ALL_INFRARED)) {
+                    infraredButton.setText(DESELECT_ALL_INFRARED);
+                }
+            } else {
+                if (!infraredButton.getText().equals(SELECT_ALL_INFRARED)) {
+                    infraredButton.setText(SELECT_ALL_INFRARED);
+                }
+            }
+        } else {
+             nearInfraredButton.setEnabled(false);
+        }
+    }
+
+
+    private JButton createNearInfraredButton() {
+
+
+        final JButton jButton = new JButton(SELECT_ALL_NEAR_INFRARED);
+
+        jButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jButton.getText().equals(SELECT_ALL_NEAR_INFRARED)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED, true);
+                } else if (jButton.getText().equals(DESELECT_ALL_NEAR_INFRARED)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED, false);
+                }
+            }
+        });
+
+
+        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                updateNearInfraredButton();
+            }
+        });
+
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                updateNearInfraredButton();
+            }
+        });
+
+        return jButton;
+    }
+
+
+    private void updateNearInfraredButton() {
+        // Set NEAR_INFRARED 'Select All' toggle to appropriate text and enabled
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.NEAR_INFRARED)) {
+             nearInfraredButton.setEnabled(true);
+            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED)) {
+                if (!nearInfraredButton.getText().equals(DESELECT_ALL_NEAR_INFRARED)) {
+                    nearInfraredButton.setText(DESELECT_ALL_NEAR_INFRARED);
+                }
+            } else {
+                if (!nearInfraredButton.getText().equals(SELECT_ALL_NEAR_INFRARED)) {
+                    nearInfraredButton.setText(SELECT_ALL_NEAR_INFRARED);
+                }
+            }
+        } else {
+             nearInfraredButton.setEnabled(true);
+        }
+    }
+
+
+    private JButton createVisibleButton() {
+
+
+        final JButton jButton = new JButton(SELECT_ALL_VISIBLE);
+
+        jButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jButton.getText().equals(SELECT_ALL_VISIBLE)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, true);
+                } else if (jButton.getText().equals(DESELECT_ALL_VISIBLE)) {
+                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, false);
+                }
+            }
+        });
+
+        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                updateVisibleButton();
+            }
+        });
+
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                updateVisibleButton();
+            }
+        });
+
+        return jButton;
+    }
+
+
+    private void updateVisibleButton() {
+
+        // Set VISIBLE 'Select All' toggle to appropriate text and enabled
+        if (l2genData.hasWaveType(WavelengthInfo.WaveType.VISIBLE)) {
+            visibleButton.setEnabled(true);
+            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE)) {
+                if (!visibleButton.getText().equals(DESELECT_ALL_VISIBLE)) {
+                    visibleButton.setText(DESELECT_ALL_VISIBLE);
+                }
+            } else {
+                if (!visibleButton.getText().equals(SELECT_ALL_VISIBLE)) {
+                    visibleButton.setText(SELECT_ALL_VISIBLE);
+                }
+            }
+        } else {
+            visibleButton.setEnabled(false);
+        }
+
+    }
+
+    private JPanel createWaveLimiterJPanel() {
+
+        // ----------------------------------------------------------------------------------------
+        // Create all Swing controls used on this tabbed panel
+        // ----------------------------------------------------------------------------------------
+
+
+        waveLimiterJPanel = new JPanel(new GridBagLayout());
+
 
         l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
             @Override
@@ -61,95 +260,6 @@ public class L2genWavelengthLimiterPanel extends JPanel {
                 updateWaveLimiterSelectionStates();
             }
         });
-    }
-
-    public void addComponents() {
-
-        setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createTitledBorder("Wavelength Limiter"));
-        setToolTipText("The wavelengths selected here are applied when you check a wavelength dependent product.  Not that any subsequent change ...");
-
-        add(waveLimiterSelectAllVisible,
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
-
-        add(waveLimiterSelectAllNearInfrared,
-                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
-
-        add(waveLimiterSelectAllInfrared,
-                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
-
-        add(waveLimiterJPanel,
-                new GridBagConstraintsCustom(0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH));
-    }
-
-
-    private JPanel createWaveLimiterJPanel() {
-
-        // ----------------------------------------------------------------------------------------
-        // Create all Swing controls used on this tabbed panel
-        // ----------------------------------------------------------------------------------------
-
-        waveLimiterSelectAllInfrared = new JButton(WAVE_LIMITER_SELECT_ALL_INFRARED);
-
-        waveLimiterSelectAllInfrared.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
-                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, true);
-                } else if (waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
-                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, false);
-                }
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_CHANGE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                // Set INFRARED 'Select All' toggle to appropriate text
-                if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
-                    if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED)) {
-                        if (!waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
-                            waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_DESELECT_ALL_INFRARED);
-                        }
-                    } else {
-                        if (!waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
-                            waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
-                        }
-                    }
-                }
-            }
-        });
-
-
-        waveLimiterSelectAllNearInfrared = new JButton(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED);
-
-        waveLimiterSelectAllNearInfrared.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (waveLimiterSelectAllNearInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED)) {
-                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED, true);
-                } else if (waveLimiterSelectAllNearInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_NEAR_INFRARED)) {
-                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED, false);
-                }
-            }
-        });
-
-        waveLimiterSelectAllVisible = new JButton(WAVE_LIMITER_SELECT_ALL_VISIBLE);
-
-        waveLimiterSelectAllVisible.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_SELECT_ALL_VISIBLE)) {
-                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, true);
-                } else if (waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_DESELECT_ALL_VISIBLE)) {
-                    l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, false);
-                }
-            }
-        });
-
-
-        waveLimiterJPanel = new JPanel(new GridBagLayout());
 
 
         return waveLimiterJPanel;
@@ -191,31 +301,17 @@ public class L2genWavelengthLimiterPanel extends JPanel {
             wavelengthGroupCheckboxes.add(currJCheckBox);
         }
 
-        waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
-        waveLimiterSelectAllNearInfrared.setText(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED);
-        waveLimiterSelectAllVisible.setText(WAVE_LIMITER_SELECT_ALL_VISIBLE);
 
         if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
-            waveLimiterSelectAllInfrared.setEnabled(true);
             l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, true);
-        } else {
-            waveLimiterSelectAllInfrared.setEnabled(false);
         }
 
         if (l2genData.hasWaveType(WavelengthInfo.WaveType.VISIBLE)) {
-            waveLimiterSelectAllVisible.setEnabled(true);
-
             l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE, true);
-        } else {
-            waveLimiterSelectAllVisible.setEnabled(false);
         }
 
         if (l2genData.hasWaveType(WavelengthInfo.WaveType.NEAR_INFRARED)) {
-            waveLimiterSelectAllNearInfrared.setEnabled(true);
-
             l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED, true);
-        } else {
-            waveLimiterSelectAllNearInfrared.setEnabled(false);
         }
 
 
@@ -241,6 +337,8 @@ public class L2genWavelengthLimiterPanel extends JPanel {
             }
         }
 
+        // just in case
+        l2genData.fireEvent(l2genData.WAVE_LIMITER_CHANGE_EVENT);
         // updateWaveLimiterSelectionStates();
     }
 
@@ -260,46 +358,6 @@ public class L2genWavelengthLimiterPanel extends JPanel {
                     if (waveLimiterInfo.isSelected() != currJCheckbox.isSelected()) {
                         currJCheckbox.setSelected(waveLimiterInfo.isSelected());
                     }
-                }
-            }
-        }
-
-        // Set INFRARED 'Select All' toggle to appropriate text
-        if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
-            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED)) {
-                if (!waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_INFRARED)) {
-                    waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_DESELECT_ALL_INFRARED);
-                }
-            } else {
-                if (!waveLimiterSelectAllInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_INFRARED)) {
-                    waveLimiterSelectAllInfrared.setText(WAVE_LIMITER_SELECT_ALL_INFRARED);
-                }
-            }
-        }
-
-        // Set NEAR_INFRARED 'Select All' toggle to appropriate text
-        if (l2genData.hasWaveType(WavelengthInfo.WaveType.NEAR_INFRARED)) {
-            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.NEAR_INFRARED)) {
-                if (!waveLimiterSelectAllNearInfrared.getText().equals(WAVE_LIMITER_DESELECT_ALL_NEAR_INFRARED)) {
-                    waveLimiterSelectAllNearInfrared.setText(WAVE_LIMITER_DESELECT_ALL_NEAR_INFRARED);
-                }
-            } else {
-                if (!waveLimiterSelectAllNearInfrared.getText().equals(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED)) {
-                    waveLimiterSelectAllNearInfrared.setText(WAVE_LIMITER_SELECT_ALL_NEAR_INFRARED);
-                }
-            }
-        }
-
-
-        // Set VISIBLE 'Select All' toggle to appropriate text
-        if (l2genData.hasWaveType(WavelengthInfo.WaveType.VISIBLE)) {
-            if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.VISIBLE)) {
-                if (!waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_DESELECT_ALL_VISIBLE)) {
-                    waveLimiterSelectAllVisible.setText(WAVE_LIMITER_DESELECT_ALL_VISIBLE);
-                }
-            } else {
-                if (!waveLimiterSelectAllVisible.getText().equals(WAVE_LIMITER_SELECT_ALL_VISIBLE)) {
-                    waveLimiterSelectAllVisible.setText(WAVE_LIMITER_SELECT_ALL_VISIBLE);
                 }
             }
         }

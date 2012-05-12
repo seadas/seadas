@@ -45,7 +45,8 @@ public class L2genData {
     public static final String WAVE_LIMITER_CHANGE_EVENT = "WAVE_LIMITER_CHANGE_EVENT";
     public static final String RETAIN_IFILE_CHANGE_EVENT = "RETAIN_IFILE_CHANGE_EVENT";
     public static final String SHOW_DEFAULTS_EVENT = "SHOW_DEFAULTS_EVENT";
-    public static final String PARSTRING_REFORMAT_EVENT = "PARSTRING_REFORMAT_EVENT";
+    public static final String PARSTRING = "PARSTRING";
+    public static final String PARSTRING_IN_PROGRESS = "PARSTRING_IN_PROGRESS";
 
     private String initialIfile = DEFAULT_IFILE;
     public boolean retainCurrentIfile = true;
@@ -456,6 +457,7 @@ public class L2genData {
 
     public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode) {
 
+        fireEvent(PARSTRING_IN_PROGRESS);
         ArrayList<ParamInfo> parfileParamInfos = parseParString(parString);
 
         /*
@@ -543,7 +545,7 @@ public class L2genData {
 
         }
 
-        fireEvent(PARSTRING_REFORMAT_EVENT);
+        fireEvent(PARSTRING);
     }
 
 
