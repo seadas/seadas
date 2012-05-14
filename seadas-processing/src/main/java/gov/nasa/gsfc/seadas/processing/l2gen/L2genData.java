@@ -41,12 +41,12 @@ public class L2genData {
     public static final String L2PROD = "l2prod";
 
     public static final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
-    public static final String IFILE_VALIDATION_CHANGE_EVENT = "IFILE_VALIDATION_CHANGE_EVENT";
-    public static final String WAVE_LIMITER_CHANGE_EVENT = "WAVE_LIMITER_CHANGE_EVENT";
-    public static final String RETAIN_IFILE_CHANGE_EVENT = "RETAIN_IFILE_CHANGE_EVENT";
+    public static final String IFILE_VALIDATION_EVENT = "IFILE_VALIDATION_EVENT";
+    public static final String WAVE_LIMITER_EVENT = "WAVE_LIMITER_EVENT";
+    public static final String RETAIN_IFILE_EVENT = "RETAIN_IFILE_EVENT";
     public static final String SHOW_DEFAULTS_EVENT = "SHOW_DEFAULTS_EVENT";
-    public static final String PARSTRING = "PARSTRING";
-    public static final String PARSTRING_IN_PROGRESS = "PARSTRING_IN_PROGRESS";
+    public static final String PARSTRING_EVENT = "PARSTRING_EVENT";
+    public static final String PARSTRING_IN_PROGRESS_EVENT = "PARSTRING_IN_PROGRESS_EVENT";
 
     private String initialIfile = DEFAULT_IFILE;
     public boolean retainCurrentIfile = true;
@@ -84,7 +84,7 @@ public class L2genData {
 
         if (this.retainCurrentIfile != retainCurrentIfile) {
             this.retainCurrentIfile = retainCurrentIfile;
-            fireEvent(RETAIN_IFILE_CHANGE_EVENT);
+            fireEvent(RETAIN_IFILE_EVENT);
         }
     }
 
@@ -104,10 +104,10 @@ public class L2genData {
     }
 
     public void setValidIfile(boolean newValidIfile) {
-        if (isValidIfile() != newValidIfile) {
+        if (newValidIfile != isValidIfile()) {
             boolean oldValidIfile = isValidIfile();
             this.validIfile = newValidIfile;
-            fireEvent(IFILE_VALIDATION_CHANGE_EVENT, oldValidIfile, newValidIfile);
+            fireEvent(IFILE_VALIDATION_EVENT, oldValidIfile, isValidIfile());
         }
     }
 
@@ -119,7 +119,7 @@ public class L2genData {
     };
 
     public L2genData() {
-
+        initXmlBasedObjects();
     }
 
     private EventInfo getEventInfo(String name) {
@@ -182,11 +182,16 @@ public class L2genData {
     }
 
     public void fireAllParamEvents() {
+        fireEvent(PARSTRING_IN_PROGRESS_EVENT);
         for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals(L2PROD)) {
+            if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals(IFILE)) {
                 fireEvent(paramInfo.getName());
             }
         }
+        fireEvent(RETAIN_IFILE_EVENT);
+        fireEvent(WAVE_LIMITER_EVENT);
+        fireEvent(IFILE_VALIDATION_EVENT, null, isValidIfile());
+        fireEvent(PARSTRING_EVENT);
     }
 
     public void setSelectedInfo(BaseInfo info, BaseInfo.State state) {
@@ -216,7 +221,7 @@ public class L2genData {
             if (selectedWavelength.equals(waveLimiterInfo.getWavelengthString())) {
                 if (selected != waveLimiterInfo.isSelected()) {
                     waveLimiterInfo.setSelected(selected);
-                    fireEvent(WAVE_LIMITER_CHANGE_EVENT);
+                    fireEvent(WAVE_LIMITER_EVENT);
                 }
             }
         }
@@ -288,7 +293,7 @@ public class L2genData {
                 waveLimiterInfo.setSelected(selected);
             }
         }
-        fireEvent(WAVE_LIMITER_CHANGE_EVENT);
+        fireEvent(WAVE_LIMITER_EVENT);
     }
 
     public void addParamInfo(ParamInfo paramInfo) {
@@ -457,7 +462,7 @@ public class L2genData {
 
     public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode) {
 
-        fireEvent(PARSTRING_IN_PROGRESS);
+        fireEvent(PARSTRING_IN_PROGRESS_EVENT);
         ArrayList<ParamInfo> parfileParamInfos = parseParString(parString);
 
         /*
@@ -498,18 +503,19 @@ public class L2genData {
             }
 
             if (newParamInfo.getName().toLowerCase().equals(L2PROD)) {
-
                 newParamInfo.setValue(sortStringList(newParamInfo.getValue()));
             }
 
             setParamValue(newParamInfo.getName(), newParamInfo.getValue());
 
-            if (newParamInfo.getName().toLowerCase().equals(GEOFILE)) {
-                geofileSet = true;
-            }
+            if (newParamInfo.getValue().length() > 0) {
+                if (newParamInfo.getName().toLowerCase().equals(GEOFILE)) {
+                    geofileSet = true;
+                }
 
-            if (newParamInfo.getName().toLowerCase().equals(OFILE)) {
-                ofileSet = true;
+                if (newParamInfo.getName().toLowerCase().equals(OFILE)) {
+                    ofileSet = true;
+                }
             }
         }
 
@@ -545,7 +551,7 @@ public class L2genData {
 
         }
 
-        fireEvent(PARSTRING);
+        fireEvent(PARSTRING_EVENT);
     }
 
 
@@ -898,7 +904,7 @@ public class L2genData {
 
 
             resetWaveLimiter();
-            //  propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, WAVE_LIMITER_CHANGE_EVENT, null, null));
+            //  propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, WAVE_LIMITER_EVENT, null, null));
             l2prodParamInfo.resetProductInfos();
 
             updateXmlBasedObjects(newIfile);
@@ -1198,22 +1204,12 @@ public class L2genData {
 
 
     public void initXmlBasedObjects() {
-
         InputStream paramInfoStream = L2genForm.class.getResourceAsStream(getParamInfoXml(initialIfile));
         l2genReader.readParamInfoXml(paramInfoStream);
-
-//        InputStream stream = L2genForm.class.getResourceAsStream(getProductInfoXml(initialIfile));
-//        l2genReader.readProductsXml(stream);
-
 
         InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
         l2genReader.readParamCategoryXml(paramCategoryInfoStream);
         setParamCategoryInfos();
-
-//        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
-//        l2genReader.readProductCategoryXml(productCategoryInfoStream);
-//        setProductCategoryInfos();
-
     }
 
 

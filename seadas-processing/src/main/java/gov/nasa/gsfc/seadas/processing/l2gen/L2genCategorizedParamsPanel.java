@@ -17,20 +17,22 @@ import java.util.ArrayList;
  */
 public class L2genCategorizedParamsPanel extends JPanel {
 
-    L2genData l2genData;
-    ParamCategoryInfo paramCategoryInfo;
-    JPanel paramsPanel;
-    JButton restoreDefaultsButton;
+    private L2genData l2genData;
+    private ParamCategoryInfo paramCategoryInfo;
+    private JPanel paramsPanel;
+    private JButton restoreDefaultsButton;
+    private boolean defaultsSelected = true;
 
-    final Color DEFAULT_INDICATOR_COLOR = new Color(0, 0, 120);
 
-    final String DEFAULT_INDICATOR_TOOLTIP = "* Identicates that the selection is not the default value";
-    final String DEFAULT_INDICATOR_LABEL_ON = " *  ";
-    final String DEFAULT_INDICATOR_LABEL_OFF = "     ";
-    final int PARAM_STRING_TEXTLEN = 60;
-    final int PARAM_FILESTRING_TEXTLEN = 70;
-    final int PARAM_INT_TEXTLEN = 15;
-    final int PARAM_FLOAT_TEXTLEN = 15;
+    private final Color DEFAULT_INDICATOR_COLOR = new Color(0, 0, 120);
+
+    private final String DEFAULT_INDICATOR_TOOLTIP = "* Identicates that the selection is not the default value";
+    private final String DEFAULT_INDICATOR_LABEL_ON = " *  ";
+    private final String DEFAULT_INDICATOR_LABEL_OFF = "     ";
+    private final int PARAM_STRING_TEXTLEN = 60;
+    private final int PARAM_FILESTRING_TEXTLEN = 70;
+    private final int PARAM_INT_TEXTLEN = 15;
+    private final int PARAM_FLOAT_TEXTLEN = 15;
 
     private boolean swingSentEventsDisabled = false;
 

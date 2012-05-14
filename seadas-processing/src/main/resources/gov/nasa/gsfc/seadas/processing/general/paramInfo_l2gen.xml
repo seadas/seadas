@@ -997,7 +997,7 @@
             <default>-1</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>GIOP model list of sensor wavelengths for optimization comma-separated list, defaults is all
-                visible bands (400-700nm)
+                autoTab bands (400-700nm)
             </description>
         </option>
         <option>
@@ -1007,7 +1007,7 @@
             <default>-1</default>
             <source>default</source>
             <description>GIOP model list of sensor wavelengths for optimization comma-separated list, defaults is all
-                visible bands (400-700nm)
+                autoTab bands (400-700nm)
             </description>
         </option>
         <option>

@@ -41,7 +41,7 @@ class L2genDialog extends SingleTargetProductDialog {
 
     @Override
     protected boolean verifyUserInput() {
-        if (form.getSourceProduct() == null) {
+        if (form.getSelectedSourceProduct() == null) {
             showErrorDialog("No product to reproject selected.");
             return false;
         }

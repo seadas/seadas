@@ -93,15 +93,15 @@ public class L2genReader {
                 Element categoryElement = (Element) categoryNodelist.item(i);
 
                 String name = categoryElement.getAttribute("name");
-                String visible = XmlReader.getTextValue(categoryElement, "makeVisible");
+                String autoTab = XmlReader.getTextValue(categoryElement, "autoTab");
                 String defaultBucketString = XmlReader.getTextValue(categoryElement, "defaultBucket");
 
                 ParamCategoryInfo paramCategoryInfo = new ParamCategoryInfo(name);
 
-                if (visible != null && visible.equals("1")) {
-                    paramCategoryInfo.setVisible(true);
+                if (autoTab != null && autoTab.equals("1")) {
+                    paramCategoryInfo.setAutoTab(true);
                 } else {
-                    paramCategoryInfo.setVisible(false);
+                    paramCategoryInfo.setAutoTab(false);
                 }
 
                 if (defaultBucketString != null && defaultBucketString.equals("1")) {

@@ -47,7 +47,7 @@ public class ParamUtils {
     public final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
     public final String PARFILE_CHANGE_EVENT = "PARFILE_CHANGE_EVENT";
 
-    public final String WAVE_LIMITER_CHANGE_EVENT = "WAVE_LIMITER_CHANGE_EVENT";
+    public final String WAVE_LIMITER_CHANGE_EVENT = "WAVE_LIMITER_EVENT";
 
     public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
 

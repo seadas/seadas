@@ -12,15 +12,15 @@ import java.util.Collections;
 public class ParamCategoryInfo implements Comparable {
 
     private String name = null;
-    private boolean visible = false;
+    private boolean autoTab = false;
     private boolean defaultBucket = false;
 
     private ArrayList<String> paramNames = new ArrayList<String>();
     private ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
 
-    public ParamCategoryInfo(String name, boolean visible) {
+    public ParamCategoryInfo(String name, boolean autoTab) {
         this.name = name;
-        this.visible = visible;
+        this.autoTab = autoTab;
     }
 
     public ParamCategoryInfo(String name) {
@@ -35,12 +35,12 @@ public class ParamCategoryInfo implements Comparable {
         this.name = name;
     }
 
-    public boolean isVisible() {
-        return visible;
+    public boolean isAutoTab() {
+        return autoTab;
     }
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
+    public void setAutoTab(boolean autoTab) {
+        this.autoTab = autoTab;
     }
 
     public ArrayList<String> getParamNames() {

@@ -51,17 +51,23 @@ public class L2genParfilePanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Parfile"));
 
 
+        final JPanel openButtonRetainPanel = new JPanel(new GridBagLayout());
+        openButtonRetainPanel.setBorder(BorderFactory.createEtchedBorder());
+        openButtonRetainPanel.add(openButton,
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,2));
+        openButtonRetainPanel.add(retainIfileCheckbox,
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,2));
+
+
         final JPanel subPanel = new JPanel(new GridBagLayout());
-        subPanel.add(openButton,
+        subPanel.add(openButtonRetainPanel,
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        subPanel.add(retainIfileCheckbox,
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
         subPanel.add(getAncButton,
-                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 2));
+                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
         subPanel.add(showDefaultsCheckbox,
-                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 2));
+                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
         subPanel.add(saveButton,
-                new GridBagConstraintsCustom(4, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
         add(subPanel,
@@ -106,7 +112,7 @@ public class L2genParfilePanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jButton.setEnabled(l2genData.isValidIfile());
@@ -138,7 +144,7 @@ public class L2genParfilePanel extends JPanel {
             }
         });
 
-        l2genData.addPropertyChangeListener(l2genData.RETAIN_IFILE_CHANGE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(l2genData.RETAIN_IFILE_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 handlerEnabled[0] = false;
@@ -148,7 +154,7 @@ public class L2genParfilePanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jCheckBox.setEnabled(l2genData.isValidIfile());
@@ -173,7 +179,7 @@ public class L2genParfilePanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jButton.setEnabled(l2genData.isValidIfile());
@@ -206,7 +212,7 @@ public class L2genParfilePanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_CHANGE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jCheckBox.setEnabled(l2genData.isValidIfile());
@@ -266,14 +272,14 @@ public class L2genParfilePanel extends JPanel {
             }
         });
 
-        l2genData.addPropertyChangeListener(l2genData.PARSTRING_IN_PROGRESS, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(l2genData.PARSTRING_IN_PROGRESS_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 parStringInProgress[0] = true;
             }
         });
 
-        l2genData.addPropertyChangeListener(l2genData.PARSTRING, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(l2genData.PARSTRING_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jTextArea.setText(l2genData.getParString());

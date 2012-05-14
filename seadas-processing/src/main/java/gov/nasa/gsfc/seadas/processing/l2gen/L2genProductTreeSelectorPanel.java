@@ -21,14 +21,14 @@ import java.util.EventObject;
  * Time: 2:28 PM
  * To change this template use File | Settings | File Templates.
  */
-public class L2genProductSelectorPanel extends JPanel {
+public class L2genProductTreeSelectorPanel extends JPanel {
 
     private L2genData l2genData;
     private DefaultMutableTreeNode rootNode;
     private JTree productJTree;
 
 
-    L2genProductSelectorPanel(L2genData l2genData) {
+    L2genProductTreeSelectorPanel(L2genData l2genData) {
 
         this.l2genData = l2genData;
 
@@ -153,7 +153,7 @@ public class L2genProductSelectorPanel extends JPanel {
             }
 
 //            if (((DefaultMutableTreeNode) value).getParent() == null) {
-//                check.setVisible(false);
+//                check.setAutoTab(false);
 //            }
 
             BaseInfo baseInfo = (BaseInfo) ((DefaultMutableTreeNode) value).getUserObject();

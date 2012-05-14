@@ -1110,7 +1110,7 @@
         <type>float</type>
         <default>-1</default>
         <description>GIOP model list of sensor wavelengths for optimization
-        comma-seperated list, defaults is all visible bands (400-700nm)</description>
+        comma-seperated list, defaults is all autoTab bands (400-700nm)</description>
         <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
     </option>
     <option>
@@ -1119,7 +1119,7 @@
         <type>float</type>
         <default>-1</default>
         <description>GIOP model list of sensor wavelengths for optimization
-        comma-seperated list, defaults is all visible bands (400-700nm)</description>
+        comma-seperated list, defaults is all autoTab bands (400-700nm)</description>
         <source>default</source>
     </option>
     <option>

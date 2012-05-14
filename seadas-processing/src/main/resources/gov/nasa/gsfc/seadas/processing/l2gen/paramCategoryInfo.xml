@@ -1,19 +1,19 @@
 <categoryList>
     <category name="Primary Input Output Fields">
-        <makeVisible>0</makeVisible>
+        <autoTab>0</autoTab>
         <param>ifile</param>
         <param>geofile</param>
         <param>ofile</param>
     </category>
 
     <category name="Products">
-        <makeVisible>0</makeVisible>
+        <autoTab>0</autoTab>
         <param>l2prod</param>
     </category>
 
 
     <category name="Subsetting Options">
-        <makeVisible>1</makeVisible>
+        <autoTab>1</autoTab>
         <param>spixl</param>
         <param>epixl</param>
         <param>dpixl</param>
@@ -30,7 +30,7 @@
     </category>
 
     <category name="Thresholds">
-        <makeVisible>1</makeVisible>
+        <autoTab>1</autoTab>
         <param>aotthreshold</param>
         <param>chlthreshold</param>
         <param>cirrus_thresh</param>
@@ -52,7 +52,7 @@
     </category>
 
     <category name="IOP Options">
-        <makeVisible>1</makeVisible>
+        <autoTab>1</autoTab>
         <param>giop_adg_file</param>
         <param>giop_adg_opt</param>
         <param>giop_adg_s</param>
@@ -81,7 +81,7 @@
     </category>
 
     <category name="Processing Options">
-        <makeVisible>1</makeVisible>
+        <autoTab>1</autoTab>
         <param>absaer_opt</param>
         <param>absaer</param>
         <param>aer_angstrom</param>
@@ -130,7 +130,7 @@
     </category>
 
     <category name="Ancillary Inputs">
-        <makeVisible>1</makeVisible>
+        <autoTab>1</autoTab>
         <param>alphafile</param>
         <param>btfile</param>
         <param>cldfile</param>
@@ -167,7 +167,7 @@
     </category>
 
     <category name="Miscellaneous">
-        <makeVisible>1</makeVisible>
+        <autoTab>1</autoTab>
         <defaultBucket>1</defaultBucket>
         <param>chlclark_coef</param>
         <param>chlclark_wave</param>
@@ -198,7 +198,7 @@
 
 
     <category name="Calibration Options">
-        <makeVisible>1</makeVisible>
+        <autoTab>1</autoTab>
         <param>aerfile</param>
         <param>calfile</param>
         <param>eval</param>
@@ -220,14 +220,8 @@
     </category>
 
 
-    <category name="Uncategorized Params">
-        <makeVisible>0</makeVisible>
-        <defaultBucket>1</defaultBucket>
-    </category>
-
-
     <category name="Params Not Supported in GUI">
-        <makeVisible>0</makeVisible>
+        <autoTab>0</autoTab>
         <param>-help</param>
         <param>ilist</param>
         <param>maxpointdist</param>
