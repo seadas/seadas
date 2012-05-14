@@ -81,6 +81,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
+   
     private void createCategoryParamTabs(int startTabIndex) {
         int tabIndex = startTabIndex;
 
