@@ -16,7 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 
-
+//test
 public class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private static final String GUI_NAME = "l2gen";
