@@ -1,10 +1,12 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 
+import com.bc.jexp.impl.AbstractSymbol;
 import com.sun.corba.se.impl.copyobject.FallbackObjectCopierImpl;
 import gov.nasa.gsfc.seadas.processing.general.ProcessorModel;
 import org.esa.beam.util.StringUtils;
 import org.geotools.data.wms.WMS1_1_0;
+import ucar.ma2.ArrayDouble;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
@@ -51,6 +53,7 @@ public class L2genData {
     public static final String PARSTRING_EVENT = "PARSTRING_EVENT";
     public static final String PARSTRING_IN_PROGRESS_EVENT = "PARSTRING_IN_PROGRESS_EVENT";
 
+    private boolean requiresGeofile = false;
     public boolean retainCurrentIfile = true;
     private boolean validIfile = false;
     private boolean showDefaultsInParString = false;
@@ -67,7 +70,6 @@ public class L2genData {
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
     private SeadasPrint l2genPrint = new SeadasPrint();
-
 
 
     public boolean isRetainCurrentIfile() {
@@ -105,6 +107,23 @@ public class L2genData {
         }
     }
 
+    public boolean isRequiresGeofile() {
+        return requiresGeofile;
+    }
+
+
+    public void setRequiresGeofile(File file) {
+
+        if (file != null) {
+            String missionString = file.getName().substring(0, 1);
+            if (missionString.equals("A") || missionString.equals("T")) {
+                 this.requiresGeofile = true;
+            } else {
+                 this.requiresGeofile = false;
+            }
+        }
+    }
+
 
     public enum RegionType {Coordinates, PixelLines}
 
@@ -117,6 +136,9 @@ public class L2genData {
         if (iFile != null && iFile.exists()) {
             setValidIfile(true);
         }
+
+        setRequiresGeofile(iFile);
+
 
         initXmlBasedObjects(iFile);
     }
@@ -182,6 +204,7 @@ public class L2genData {
 
     public void fireAllParamEvents() {
         fireEvent(PARSTRING_IN_PROGRESS_EVENT);
+        fireEvent(IFILE);
         for (ParamInfo paramInfo : paramInfos) {
             if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals(IFILE)) {
                 fireEvent(paramInfo.getName());
@@ -189,7 +212,7 @@ public class L2genData {
         }
         fireEvent(RETAIN_IFILE_EVENT);
         fireEvent(WAVE_LIMITER_EVENT);
-        fireEvent(IFILE_VALIDATION_EVENT, null, isValidIfile());
+        fireEvent(IFILE_VALIDATION_EVENT);
         fireEvent(PARSTRING_EVENT);
     }
 
@@ -391,17 +414,24 @@ public class L2genData {
 
             for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
                 if (paramInfo.getName().equals(IFILE)) {
-                    currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                    currCategoryEntries.append(makeParEntry(paramInfo));
+                } else if (paramInfo.getName().equals(OFILE)) {
+                    currCategoryEntries.append(makeParEntry(paramInfo));
+                } else if (paramInfo.getName().equals(GEOFILE)) {
+                    if (isRequiresGeofile()) {
+                        currCategoryEntries.append(makeParEntry(paramInfo));
+                    }
                 } else if (paramInfo.getName().equals(PAR)) {
                     // right ignore and do not print todo
                 } else {
                     if (!paramInfo.getName().startsWith("-")) {
+
                         if (paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
                             if (showDefaults) {
-                                currCategoryEntries.append("# " + paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                                currCategoryEntries.append(makeParEntry(paramInfo, true));
                             }
                         } else {
-                            currCategoryEntries.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+                            currCategoryEntries.append(makeParEntry(paramInfo));
                         }
                     }
                 }
@@ -415,6 +445,21 @@ public class L2genData {
         }
 
         return par.toString();
+    }
+
+    private String makeParEntry(ParamInfo paramInfo) {
+        return makeParEntry(paramInfo, false);
+    }
+
+    private String makeParEntry(ParamInfo paramInfo, boolean commented) {
+        StringBuilder line = new StringBuilder();
+
+        if (commented) {
+            line.append("# ");
+        }
+
+        line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+        return line.toString();
     }
 
 
@@ -451,8 +496,6 @@ public class L2genData {
 
         return paramInfos;
     }
-
-
 
 
     public void setParString(String parString, boolean ignoreIfile) {
@@ -525,7 +568,7 @@ public class L2genData {
                 setCustomOfile();
             }
 
-            if (!geofileSet) {
+            if (!geofileSet && isRequiresGeofile()) {
                 setCustomGeofile();
             }
 
@@ -839,6 +882,7 @@ public class L2genData {
         missionDirectoryNameHashMap.put("A", "hmodisa");
         missionDirectoryNameHashMap.put("T", "hmodist");
 
+
         String missionDirectoryName = missionDirectoryNameHashMap.get(getMissionString());
 
         // determine the filename which contains the wavelengths
@@ -848,6 +892,7 @@ public class L2genData {
         sensorInfoFilenameStringBuilder.append(missionDirectoryName);
         sensorInfoFilenameStringBuilder.append("/");
         sensorInfoFilenameStringBuilder.append("msl12_sensor_info.dat");
+
 
         return sensorInfoFilenameStringBuilder.toString();
     }
@@ -901,6 +946,7 @@ public class L2genData {
         if (new File(newIfile).exists()) {
             setValidIfile(true);
 
+            setRequiresGeofile(new File(newIfile));
 
             resetWaveLimiter();
             //  propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, WAVE_LIMITER_EVENT, null, null));
@@ -972,7 +1018,6 @@ public class L2genData {
 
         setParString(ancillaryFiles.toString(), true, true);
     }
-
 
 
     private void debug(String string) {
@@ -1072,7 +1117,6 @@ public class L2genData {
 
         String paramInfoXml = PRODUCT_INFO_XML;
 
-
         return L2genForm.class.getResourceAsStream(paramInfoXml);
     }
 
@@ -1113,14 +1157,7 @@ public class L2genData {
 //
 
 
-
-
-
-
-
-
         String paramInfoXml = PARAM_INFO_XML;
-
 
         return L2genForm.class.getResourceAsStream(paramInfoXml);
     }
@@ -1139,7 +1176,9 @@ public class L2genData {
             paramInfoStream = getParamInfoInputStream(iFile);
 
             oFile = SeadasFilenamePatterns.getOFile(iFile);
-            geoFile = SeadasFilenamePatterns.getGeoFile(iFile);
+            if (isRequiresGeofile()) {
+                geoFile = SeadasFilenamePatterns.getGeoFile(iFile);
+            }
         } else {
             productInfoStream = getProductInfoInputStream(DEFAULT_IFILE);
             paramInfoStream = getParamInfoInputStream(DEFAULT_IFILE);
