@@ -1,7 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 
+import com.sun.corba.se.impl.copyobject.FallbackObjectCopierImpl;
 import org.esa.beam.util.StringUtils;
+import org.geotools.data.wms.WMS1_1_0;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
@@ -22,7 +24,7 @@ public class L2genData {
 
     private static final String PRODUCT_INFO_XML = "productInfo.xml";
     private static final String PARAM_INFO_XML = "paramInfo.xml";
-    private static final String DEFAULT_IFILE = "";
+    private static final File DEFAULT_IFILE = new File("");
     private static final String PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml";
     private static final String PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml";
 
@@ -48,7 +50,6 @@ public class L2genData {
     public static final String PARSTRING_EVENT = "PARSTRING_EVENT";
     public static final String PARSTRING_IN_PROGRESS_EVENT = "PARSTRING_IN_PROGRESS_EVENT";
 
-    private String initialIfile = DEFAULT_IFILE;
     public boolean retainCurrentIfile = true;
     private boolean validIfile = false;
     private boolean showDefaultsInParString = false;
@@ -66,15 +67,7 @@ public class L2genData {
 
     private SeadasPrint l2genPrint = new SeadasPrint();
 
-    public String getInitialIfile() {
-        return initialIfile;
-    }
 
-    public void setInitialIfile(String initialIfile) {
-        if (new File(initialIfile).exists()) {
-            this.initialIfile = initialIfile;
-        }
-    }
 
     public boolean isRetainCurrentIfile() {
         return retainCurrentIfile;
@@ -118,8 +111,13 @@ public class L2genData {
             new EventInfo(L2PROD, this),
     };
 
-    public L2genData() {
-        initXmlBasedObjects();
+    public L2genData(File iFile) {
+
+        if (iFile != null && iFile.exists()) {
+            setValidIfile(true);
+        }
+
+        initXmlBasedObjects(iFile);
     }
 
     private EventInfo getEventInfo(String name) {
@@ -454,7 +452,7 @@ public class L2genData {
     }
 
 
-// DANNY IS REVIEWING CODE AND LEFT OFF HERE
+
 
     public void setParString(String parString, boolean ignoreIfile) {
         setParString(parString, ignoreIfile, false);
@@ -907,10 +905,10 @@ public class L2genData {
             //  propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, WAVE_LIMITER_EVENT, null, null));
             l2prodParamInfo.resetProductInfos();
 
-            updateXmlBasedObjects(newIfile);
+            updateXmlBasedObjects(new File(newIfile));
 
-            setCustomOfile();
-            setCustomGeofile();
+//            setCustomOfile();
+//            setCustomGeofile();
 
             //debug(IFILE.toString() + "being fired");
 
@@ -927,171 +925,17 @@ public class L2genData {
     }
 
 
-    private String getViirsOfilename(File iFile) {
-
-
-        StringBuilder ofile = new StringBuilder(iFile.getParent() + "/");
-
-        String yearString = iFile.getName().substring(11, 15);
-        String monthString = iFile.getName().substring(15, 17);
-        String dayOfMonthString = iFile.getName().substring(17, 19);
-
-        String formattedDateString = getFormattedDateString(yearString, monthString, dayOfMonthString);
-
-        String timeString = iFile.getName().substring(21, 27);
-        ofile.append("V");
-        ofile.append(formattedDateString);
-        ofile.append(timeString);
-
-        ofile.append(".");
-        ofile.append("L2_NPP");
-
-
-        return ofile.toString();
-    }
-
-
-    /**
-     * Given standard Gregorian date return day of year (Jan 1=1, Feb 1=32, etc)
-     *
-     * @param year
-     * @param month      1-based Jan=1, etc.
-     * @param dayOfMonth
-     * @return
-     */
-
-    private int getDayOfYear(int year, int month, int dayOfMonth) {
-        GregorianCalendar gc = new GregorianCalendar(year, month - 1, dayOfMonth);
-        return gc.get(GregorianCalendar.DAY_OF_YEAR);
-    }
-
-
-    private String getFormattedDateString(String yearString, String monthString, String dayOfMonthString) {
-        int year = Integer.parseInt(yearString);
-        int month = Integer.parseInt(monthString);
-        int dayOfMonth = Integer.parseInt(dayOfMonthString);
-        return getFormattedDateString(year, month, dayOfMonth);
-    }
-
-
-    private String getFormattedDateString(int year, int month, int dayOfMonth) {
-
-        StringBuilder formattedDateString = new StringBuilder(Integer.toString(year));
-
-        int dayOfYear = getDayOfYear(year, month, dayOfMonth);
-
-        StringBuilder dayOfYearString = new StringBuilder(Integer.toString(dayOfYear));
-
-        while (dayOfYearString.toString().length() < 3) {
-            dayOfYearString.insert(0, "0");
-        }
-
-        formattedDateString.append(dayOfYearString);
-
-        return formattedDateString.toString();
-    }
-
-
     private void setCustomOfile() {
-
-        String ifile = getParamValue(IFILE);
-        String ofile = ParamInfo.NULL_STRING;
-        String VIIRS_IFILE_PREFIX = "SVM01";
-        File ifileFile = new File(ifile);
-
-
-        if (ifileFile.getName().toUpperCase().startsWith(VIIRS_IFILE_PREFIX)) {
-            ofile = getViirsOfilename(ifileFile);
-        } else {
-            String OFILE_REPLACEMENT_STRING = "L2";
-            String IFILE_STRING_TO_BE_REPLACED[] = {"L1A", "L1B"};
-            StringBuilder stringBuilder = new StringBuilder();
-
-            /**
-             * replace last occurrence of instance of IFILE_STRING_TO_BE_REPLACED[]
-             */
-            for (String string_to_be_replaced : IFILE_STRING_TO_BE_REPLACED) {
-                if (ifile.toUpperCase().contains(string_to_be_replaced)) {
-                    int index = ifile.toUpperCase().lastIndexOf(string_to_be_replaced);
-                    stringBuilder.append(ifile.substring(0, index));
-                    stringBuilder.append(OFILE_REPLACEMENT_STRING);
-                    stringBuilder.append(ifile.substring((index + string_to_be_replaced.length()), ifile.length()));
-                    ofile = stringBuilder.toString();
-                    break;
-                }
-            }
-
-            /**
-             * Not found so append it
-             */
-            if (ofile == null) {
-                stringBuilder.append(ifile);
-                stringBuilder.append("." + OFILE_REPLACEMENT_STRING);
-                ofile = stringBuilder.toString();
-            }
-        }
-
-
-        setParamValue(OFILE, ofile);
+        File oFile = SeadasFilenamePatterns.getOFile(new File(getParamValue(IFILE)));
+        setParamValue(OFILE, oFile.toString());
     }
 
 
     private void setCustomGeofile() {
-
-        String ifile = getParamValue(IFILE);
-        String geofile = ParamInfo.NULL_STRING;
-        String VIIRS_IFILE_PREFIX = "SVM01";
-        File ifileFile = new File(ifile);
-
-
-        if (ifileFile.getName().toUpperCase().startsWith(VIIRS_IFILE_PREFIX)) {
-            String VIIRS_GEOFILE_PREFIX = "GMTCO";
-            StringBuilder geofileStringBuilder = new StringBuilder();
-            geofileStringBuilder.append(ifileFile.getParent());
-            geofileStringBuilder.append("/");
-            geofileStringBuilder.append(VIIRS_GEOFILE_PREFIX);
-            geofileStringBuilder.append(ifileFile.getName().substring(VIIRS_IFILE_PREFIX.length()));
-
-            geofile = geofileStringBuilder.toString();
-        } else {
-            ArrayList<String> possibleGeoFiles = new ArrayList<String>();
-
-            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC"};
-            String STRING_TO_INSERT[] = {"geo", "GEO"};
-
-            /**
-             * replace last occurrence of instance of STRING_TO_BE_REPLACED[]
-             */
-            for (String string_to_be_replaced : STRING_TO_BE_REPLACED) {
-                if (ifile.toUpperCase().contains(string_to_be_replaced)) {
-
-                    int index = ifile.toUpperCase().lastIndexOf(string_to_be_replaced);
-                    String start = ifile.substring(0, index);
-                    String end = ifile.substring((index + string_to_be_replaced.length()), ifile.length());
-
-                    for (String string_to_insert : STRING_TO_INSERT) {
-                        StringBuilder possibleGeofile = new StringBuilder(start + string_to_insert + end);
-                        possibleGeoFiles.add(possibleGeofile.toString());
-                    }
-
-                    break;
-                }
-            }
-
-            for (String string_to_insert : STRING_TO_INSERT) {
-                StringBuilder possibleGeofile = new StringBuilder(ifile + "." + string_to_insert);
-                possibleGeoFiles.add(possibleGeofile.toString());
-            }
-
-            for (String possibleGeoFile : possibleGeoFiles) {
-                if (new File(possibleGeoFile).exists()) {
-                    geofile = possibleGeoFile;
-                }
-            }
-        }
-
-        setParamValue(GEOFILE, geofile);
+        File geoFile = SeadasFilenamePatterns.getGeoFile(new File(getParamValue(IFILE)));
+        setParamValue(GEOFILE, geoFile.toString());
     }
+
 
     public void setAncillaryFiles() {
 
@@ -1185,27 +1029,56 @@ public class L2genData {
     }
 
 
-    private void updateXmlBasedObjects(String ifile) {
-        InputStream paramInfoStream = L2genForm.class.getResourceAsStream(getParamInfoXml(ifile));
-        l2genReader.updateParamInfosWithXml(paramInfoStream);
+    private void updateXmlBasedObjects(File iFile) {
+
+        InputStream paramInfoStream = getParamInfoInputStream(iFile);
+
+        File oFile = SeadasFilenamePatterns.getOFile(iFile);
+        File geoFile = SeadasFilenamePatterns.getGeoFile(iFile);
+
+        l2genReader.updateParamInfosWithXml(paramInfoStream, iFile, geoFile, oFile);
     }
 
 
-    private String getProductInfoXml(String ifile) {
+    private InputStream getProductInfoInputStream(File file) {
 
-        return PRODUCT_INFO_XML;
+        String paramInfoXml = PRODUCT_INFO_XML;
 
-    }
 
-    private String getParamInfoXml(String file) {
-
-        return PARAM_INFO_XML;
+        return L2genForm.class.getResourceAsStream(paramInfoXml);
     }
 
 
-    public void initXmlBasedObjects() {
-        InputStream paramInfoStream = L2genForm.class.getResourceAsStream(getParamInfoXml(initialIfile));
-        l2genReader.readParamInfoXml(paramInfoStream);
+    private InputStream getParamInfoInputStream(File file) {
+
+        String paramInfoXml = PARAM_INFO_XML;
+
+
+        return L2genForm.class.getResourceAsStream(paramInfoXml);
+    }
+
+
+    public void initXmlBasedObjects(File iFile) {
+
+        File oFile = null;
+        File geoFile = null;
+
+        InputStream paramInfoStream;
+        InputStream productInfoStream;
+
+        if (iFile != null) {
+            productInfoStream = getProductInfoInputStream(iFile);
+            paramInfoStream = getParamInfoInputStream(iFile);
+
+            oFile = SeadasFilenamePatterns.getOFile(iFile);
+            geoFile = SeadasFilenamePatterns.getGeoFile(iFile);
+        } else {
+            productInfoStream = getProductInfoInputStream(DEFAULT_IFILE);
+            paramInfoStream = getParamInfoInputStream(DEFAULT_IFILE);
+        }
+
+
+        l2genReader.readParamInfoXml(paramInfoStream, productInfoStream, iFile, geoFile, oFile);
 
         InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
         l2genReader.readParamCategoryXml(paramCategoryInfoStream);
@@ -1259,11 +1132,10 @@ public class L2genData {
         l2prodParamInfo.clearProductCategoryInfos();
     }
 
-    public L2prodParamInfo createL2prodParamInfo(String value) {
+    public L2prodParamInfo createL2prodParamInfo(String value, InputStream productInfoStream) {
         L2prodParamInfo l2prodParamInfo = new L2prodParamInfo();
         setL2prodParamInfo(l2prodParamInfo);
 
-        InputStream productInfoStream = L2genForm.class.getResourceAsStream(getProductInfoXml(initialIfile));
         l2genReader.readProductsXml(productInfoStream);
 
         l2prodParamInfo.setValue(value);

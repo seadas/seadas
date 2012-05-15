@@ -4,6 +4,7 @@ import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import gov.nasa.gsfc.seadas.processing.general.OutputFileSelector;
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
+import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
@@ -63,6 +64,7 @@ public class L2genInputOutputPanel extends JPanel {
 
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), L2genData.IFILE);
         sourceProductSelector.initProducts();
+
 
         final boolean[] handlerEnabled = {true};
 
@@ -224,7 +226,28 @@ public class L2genInputOutputPanel extends JPanel {
         return sourceProductSelector.getSelectedProduct().getFileLocation();
     }
 
+
+    public Product getSelectedProduct() {
+        if (sourceProductSelector == null) {
+            return null;
+        }
+
+        return sourceProductSelector.getSelectedProduct();
+    }
+
     public OutputFileSelector getOutputFileSelector() {
         return outputFileSelector;
+    }
+
+    public void prepareShow() {
+        if (sourceProductSelector != null) {
+            sourceProductSelector.initProducts();
+        }
+    }
+
+    public void prepareHide() {
+        if (sourceProductSelector != null) {
+            sourceProductSelector.releaseProducts();
+        }
     }
 }

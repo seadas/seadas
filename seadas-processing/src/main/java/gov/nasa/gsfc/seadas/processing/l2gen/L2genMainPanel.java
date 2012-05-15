@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
+import org.esa.beam.framework.datamodel.Product;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,5 +61,26 @@ public class L2genMainPanel extends JPanel {
 
     public File getSelectedIFile() {
         return l2genInputOutputPanel.getSelectedIFile();
+    }
+
+    public Product getSelectedProduct() {
+        if (l2genInputOutputPanel != null) {
+            return l2genInputOutputPanel.getSelectedProduct();
+        }
+
+        return null;
+    }
+
+
+    public void prepareShow() {
+        if (l2genInputOutputPanel != null) {
+            l2genInputOutputPanel.prepareShow();
+        }
+    }
+
+    public void prepareHide() {
+        if (l2genInputOutputPanel != null) {
+            l2genInputOutputPanel.prepareHide();
+        }
     }
 }

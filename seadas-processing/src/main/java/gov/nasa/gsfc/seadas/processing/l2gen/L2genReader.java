@@ -134,7 +134,7 @@ public class L2genReader {
     }
 
 
-    public void updateParamInfosWithXml(InputStream stream) {
+    public void updateParamInfosWithXml(InputStream stream, File iFile, File geoFile, File oFile) {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
@@ -146,19 +146,22 @@ public class L2genReader {
                 Element optionElement = (Element) optionNodelist.item(i);
 
                 String name = XmlReader.getTextValue(optionElement, "name");
-                name = name.toLowerCase();
-                String value = XmlReader.getTextValue(optionElement, "value");
 
-                String nullValueOverrides[] = {l2genData.OFILE, l2genData.PAR, l2genData.GEOFILE};
                 if (name != null) {
-                    for (String nullValueOverride : nullValueOverrides) {
-                        if (name.equals(nullValueOverride)) {
-                            value = ParamInfo.NULL_STRING;
-                        }
-                    }
+                    name = name.toLowerCase();
+                    String value = XmlReader.getTextValue(optionElement, "value");
 
-                    if (!name.equals(l2genData.IFILE)) {
-                        l2genData.setParamValueAndDefault(name, value);
+                    value = valueOverRides(name, value, iFile, geoFile, oFile);
+
+                    if (!name.toLowerCase().equals(l2genData.IFILE)) {
+                        if (name.toLowerCase().equals(L2genData.OFILE) ||
+                                name.toLowerCase().equals(L2genData.GEOFILE) ||
+                                name.toLowerCase().equals(L2genData.PAR)
+                                ) {
+                            l2genData.setParamValue(name, value);
+                        } else {
+                            l2genData.setParamValueAndDefault(name, value);
+                        }
                     }
                 }
             }
@@ -166,7 +169,7 @@ public class L2genReader {
     }
 
 
-    public void readParamInfoXml(InputStream stream) {
+    public void readParamInfoXml(InputStream stream, InputStream productInfoStream, File iFile, File geoFile, File oFile) {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
@@ -180,81 +183,120 @@ public class L2genReader {
                 Element optionElement = (Element) optionNodelist.item(i);
 
                 String name = XmlReader.getTextValue(optionElement, "name");
-                name = name.toLowerCase();
-                String tmpType = XmlReader.getTextValue(optionElement, "type");
+                if (name != null && name.length() > 0) {
+                    name = name.toLowerCase();
+                    String tmpType = XmlReader.getTextValue(optionElement, "type");
 
-                ParamInfo.Type type = null;
+                    ParamInfo.Type type = null;
 
-                if (tmpType != null) {
-                    if (tmpType.toLowerCase().equals("bool")) {
-                        type = ParamInfo.Type.BOOLEAN;
-                    } else if (tmpType.toLowerCase().equals("int")) {
-                        type = ParamInfo.Type.INT;
-                    } else if (tmpType.toLowerCase().equals("float")) {
-                        type = ParamInfo.Type.FLOAT;
-                    } else if (tmpType.toLowerCase().equals("string")) {
-                        type = ParamInfo.Type.STRING;
-                    }
-                }
-
-                String value = XmlReader.getTextValue(optionElement, "value");
-
-                String nullValueOverrides[] = {l2genData.IFILE, l2genData.OFILE, l2genData.PAR, l2genData.GEOFILE};
-                if (name != null) {
-                    for (String nullValueOverride : nullValueOverrides) {
-                        if (name.equals(nullValueOverride)) {
-                            value = ParamInfo.NULL_STRING;
+                    if (tmpType != null) {
+                        if (tmpType.toLowerCase().equals("bool")) {
+                            type = ParamInfo.Type.BOOLEAN;
+                        } else if (tmpType.toLowerCase().equals("int")) {
+                            type = ParamInfo.Type.INT;
+                        } else if (tmpType.toLowerCase().equals("float")) {
+                            type = ParamInfo.Type.FLOAT;
+                        } else if (tmpType.toLowerCase().equals("string")) {
+                            type = ParamInfo.Type.STRING;
                         }
                     }
-                }
 
-                String description = XmlReader.getTextValue(optionElement, "description");
-                String source = XmlReader.getTextValue(optionElement, "source");
+                    String value = XmlReader.getTextValue(optionElement, "value");
 
-                ParamInfo paramInfo;
-                if (name.toLowerCase().equals(l2genData.L2PROD)) {
-                    paramInfo = l2genData.createL2prodParamInfo(value);
-                } else {
-                    paramInfo = new ParamInfo(name, value, type);
-                }
+                    value = valueOverRides(name, value, iFile, geoFile, oFile);
 
-                paramInfo.setDefaultValue(paramInfo.getValue());
-                paramInfo.setDescription(description);
-                paramInfo.setSource(source);
+                    String description = XmlReader.getTextValue(optionElement, "description");
+                    String source = XmlReader.getTextValue(optionElement, "source");
 
-                boolean isBit = false;
-                if (name != null) {
-                    if (name.equals("gas_opt") ||
-                            name.equals("eval")) {
-                        isBit = true;
+                    ParamInfo paramInfo;
+                    if (name.toLowerCase().equals(l2genData.L2PROD)) {
+                        paramInfo = l2genData.createL2prodParamInfo(value, productInfoStream);
+                    } else {
+                        paramInfo = new ParamInfo(name, value, type);
                     }
-                }
 
-                paramInfo.setBit(isBit);
+                    if (name.toLowerCase().equals(L2genData.OFILE) ||
+                            name.toLowerCase().equals(L2genData.OFILE) ||
+                            name.toLowerCase().equals(L2genData.GEOFILE) ||
+                            name.toLowerCase().equals(L2genData.PAR)
+                            ) {
+                        paramInfo.setDefaultValue(ParamInfo.NULL_STRING);
+                    } else {
 
-                NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
-
-                if (validValueNodelist != null && validValueNodelist.getLength() > 0) {
-                    for (int j = 0; j < validValueNodelist.getLength(); j++) {
-
-                        Element validValueElement = (Element) validValueNodelist.item(j);
-
-                        String validValueValue = XmlReader.getTextValue(validValueElement, "value");
-                        String validValueDescription = XmlReader.getTextValue(validValueElement, "description");
-
-                        ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(validValueValue);
-
-                        paramValidValueInfo.setDescription(validValueDescription);
-                        paramValidValueInfo.setParent(paramInfo);
-                        paramInfo.addValidValueInfo(paramValidValueInfo);
+                        paramInfo.setDefaultValue(paramInfo.getValue());
                     }
-                }
 
-                l2genData.addParamInfo(paramInfo);
+                    paramInfo.setDescription(description);
+                    paramInfo.setSource(source);
+
+                    boolean isBit = false;
+                    if (name != null) {
+                        if (name.equals("gas_opt") ||
+                                name.equals("eval")) {
+                            isBit = true;
+                        }
+                    }
+
+                    paramInfo.setBit(isBit);
+
+                    NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
+
+                    if (validValueNodelist != null && validValueNodelist.getLength() > 0) {
+                        for (int j = 0; j < validValueNodelist.getLength(); j++) {
+
+                            Element validValueElement = (Element) validValueNodelist.item(j);
+
+                            String validValueValue = XmlReader.getTextValue(validValueElement, "value");
+                            String validValueDescription = XmlReader.getTextValue(validValueElement, "description");
+
+                            ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(validValueValue);
+
+                            paramValidValueInfo.setDescription(validValueDescription);
+                            paramValidValueInfo.setParent(paramInfo);
+                            paramInfo.addValidValueInfo(paramValidValueInfo);
+                        }
+                    }
+
+                    l2genData.addParamInfo(paramInfo);
+                }
             }
         }
 
         l2genData.sortParamInfos();
+    }
+
+
+    private String valueOverRides(String name, String value, File iFile, File geoFile, File oFile) {
+
+        if (name.toLowerCase().equals(L2genData.IFILE)) {
+            if (iFile != null) {
+                value = iFile.toString();
+            } else {
+                value = ParamInfo.NULL_STRING;
+            }
+        }
+
+        if (name.toLowerCase().equals(L2genData.GEOFILE)) {
+            if (geoFile != null) {
+                value = geoFile.toString();
+            } else {
+                value = ParamInfo.NULL_STRING;
+            }
+        }
+
+        if (name.toLowerCase().equals(L2genData.OFILE)) {
+            if (oFile != null) {
+                value = oFile.toString();
+            } else {
+                value = ParamInfo.NULL_STRING;
+            }
+        }
+
+        if (name.toLowerCase().equals(L2genData.PAR)) {
+            value = ParamInfo.NULL_STRING;
+        }
+
+        return value;
     }
 
 

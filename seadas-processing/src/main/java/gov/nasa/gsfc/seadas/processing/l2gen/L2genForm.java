@@ -7,9 +7,9 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
 import gov.nasa.gsfc.seadas.processing.general.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
+import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
@@ -29,16 +29,19 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
         processorModel = new ProcessorModel(GUI_NAME, xmlFileName);
 
-        l2genData = new L2genData();
+        l2genData = new L2genData(getInitialSelectedSourceFile());
 
         createMainTab(0);
         createProductsTab(1);
         createCategoryParamTabs(2);
 
-        File iFile = l2genMainPanel.getSelectedIFile();
-        if (iFile != null) {
-            l2genData.setParamValue(L2genData.IFILE, iFile.toString());
-        }
+//        Product product = VisatApp.getApp().getSelectedProduct();
+//        if (product != null) {
+//            File iFile = product.getFileLocation();
+//            if (iFile != null) {
+//                l2genData.setParamValue(L2genData.IFILE, iFile.toString());
+//            }
+//        }
 
         l2genData.fireAllParamEvents();
     }
@@ -81,7 +84,6 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
-   
     private void createCategoryParamTabs(int startTabIndex) {
         int tabIndex = startTabIndex;
 
@@ -128,31 +130,35 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         return processorModel;
     }
 
-    private SourceProductFileSelector getSourceProductSelector() {
-        if (l2genMainPanel == null) {
-            return null;
-        }
 
-        return l2genMainPanel.getSourceProductSelector();
+    public Product getInitialSelectedSourceProduct() {
+        return VisatApp.getApp().getSelectedProduct();
+    }
+
+    public File getInitialSelectedSourceFile() {
+        if (getInitialSelectedSourceProduct() != null) {
+            return getInitialSelectedSourceProduct().getFileLocation();
+        }
+        return null;
     }
 
     public Product getSelectedSourceProduct() {
-        if (getSourceProductSelector() != null) {
-            return getSourceProductSelector().getSelectedProduct();
-        } else {
-            return null;
+        if (l2genMainPanel != null) {
+            l2genMainPanel.getSelectedProduct();
         }
+        return null;
     }
 
+
     void prepareShow() {
-        if (getSourceProductSelector() != null) {
-            getSourceProductSelector().initProducts();
+        if (l2genMainPanel != null) {
+            l2genMainPanel.prepareShow();
         }
     }
 
     void prepareHide() {
-        if (getSourceProductSelector() != null) {
-            getSourceProductSelector().releaseProducts();
+        if (l2genMainPanel != null) {
+            l2genMainPanel.prepareHide();
         }
     }
 }
