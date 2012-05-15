@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
 
 
 import com.sun.corba.se.impl.copyobject.FallbackObjectCopierImpl;
+import gov.nasa.gsfc.seadas.processing.general.ProcessorModel;
 import org.esa.beam.util.StringUtils;
 import org.geotools.data.wms.WMS1_1_0;
 
@@ -936,15 +937,42 @@ public class L2genData {
         setParamValue(GEOFILE, geoFile.toString());
     }
 
-
     public void setAncillaryFiles() {
 
-        //todo Don
-        debug("TODO FOR DON GETANC");
-        String ancillaryFiles = "met1=helloMet1 \nmet2=helloMet2";
+        if (!isValidIfile()) {
+            System.out.println("ERROR - Can not run getanc.py without a valid ifile.");
+            return;
+        }
 
-        setParString(ancillaryFiles, true, true);
+        // get the ifile
+        String ifile = getParamValue("ifile");
+        StringBuilder ancillaryFiles = new StringBuilder("");
+
+        ProcessorModel processorModel = new ProcessorModel("getanc.py");
+        processorModel.setAcceptsParFile(false);
+        processorModel.addParamInfo("ifile", ifile, 1);
+
+        try {
+            Process p = processorModel.executeProcess();
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line = stdInput.readLine();
+            while (line != null) {
+                if (line.contains("=")) {
+                    ancillaryFiles.append(line);
+                    ancillaryFiles.append("\n");
+                }
+                line = stdInput.readLine();
+            }
+        } catch (IOException e) {
+            System.out.println("ERROR - Problem running getanc.py");
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        setParString(ancillaryFiles.toString(), true, true);
     }
+
 
 
     private void debug(String string) {
@@ -1050,6 +1078,46 @@ public class L2genData {
 
 
     private InputStream getParamInfoInputStream(File file) {
+
+//        // get the ifile
+//        String ifile = file.getAbsolutePath();
+//        File workDir = file.getParentFile();
+//
+//        ProcessorModel processorModel = new ProcessorModel("l2gen");
+//        processorModel.setAcceptsParFile(true);
+//        processorModel.setInputFile(file);
+//        processorModel.setOutputFileDir(workDir);
+//
+//        processorModel.addParamInfo("ifile", ifile);
+//        processorModel.addParamInfo("ofile", ifile);
+//
+//
+//
+//        try {
+//            Process p = processorModel.executeProcess();
+//            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//
+//            String line = stdInput.readLine();
+//            while (line != null) {
+//                if (line.contains("=")) {
+//                    ancillaryFiles.append(line);
+//                    ancillaryFiles.append("\n");
+//                }
+//                line = stdInput.readLine();
+//            }
+//        } catch (IOException e) {
+//            System.out.println("ERROR - Problem running getanc.py");
+//            System.out.println(e.getMessage());
+//            return;
+//        }
+//
+
+
+
+
+
+
+
 
         String paramInfoXml = PARAM_INFO_XML;
 

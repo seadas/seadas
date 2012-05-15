@@ -13,7 +13,7 @@ public class ParamInfo implements Comparable {
 
     private String name = NULL_STRING;
     private String value = NULL_STRING;
-    private Type type = null;
+    private Type type = Type.STRING;
     private String defaultValue = NULL_STRING;
     private String description = NULL_STRING;
     private String source = NULL_STRING;

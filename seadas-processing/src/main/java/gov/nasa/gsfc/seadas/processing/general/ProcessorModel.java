@@ -62,9 +62,13 @@ public class ProcessorModel {
             hasDependency = true;
             hasOutputFile = true;
             hasGeoFile = true;
-
+        } else {
+            paramList = new ArrayList<ParamInfo>();
+            acceptsParFile = false;
+            hasDependency = false;
+            hasOutputFile = false;
+            hasGeoFile = false;
         }
-
     }
 
     protected boolean hasGeoFile() {
@@ -88,6 +92,21 @@ public class ProcessorModel {
 
     public File getProgramRoot() {
         return programRoot;
+    }
+
+    public void addParamInfo(ParamInfo info) {
+        paramList.add(info);
+    }
+
+    public void addParamInfo(String name, String value) {
+        ParamInfo info = new ParamInfo(name, value);
+        addParamInfo(info);
+    }
+
+    public void addParamInfo(String name, String value, int order) {
+        ParamInfo info = new ParamInfo(name, value);
+        info.setOrder(order);
+        addParamInfo(info);
     }
 
     public ArrayList getProgramParamList() {
@@ -230,13 +249,13 @@ public class ProcessorModel {
     }
 
     private String[] getCmdArrayWithParFile() {
-         parFile = parFile == null ? computeParFile() : parFile;
+        parFile = parFile == null ? computeParFile() : parFile;
         final String[] cmdArray = {
                 programLocation + "ocssw_runner",
                 programName,
                 "par=" + parFile
         };
-              for (int i = 0; i < cmdArray.length; i++) {
+        for (int i = 0; i < cmdArray.length; i++) {
             SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
         }
         return cmdArray;
@@ -305,7 +324,7 @@ public class ProcessorModel {
         }
     }
 
-      private File computeParFile() {
+    private File computeParFile() {
         //parString = "";
 
         StringBuilder parString = new StringBuilder("");
@@ -313,10 +332,10 @@ public class ProcessorModel {
         ParamInfo option;
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
-            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + " = " + option.getValue() + "option value is valid :" + (new Boolean (option.getValue().length() > 0 )));
+            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + " = " + option.getValue() + "option value is valid :" + (new Boolean(option.getValue().length() > 0)));
             SeadasLogger.getLogger().info(option.getName() + " = " + option.getValue() + "option type is :" + option.getType() + " " + option.getType().equals(ParamInfo.Type.HELP));
 
-            if (!option.getType().equals(ParamInfo.Type.HELP) && option.getValue().length() > 0 ) {
+            if (!option.getType().equals(ParamInfo.Type.HELP) && option.getValue().length() > 0) {
                 parString = parString.append(option.getName() + " = " + option.getValue() + "\n");
             }
 
@@ -347,10 +366,9 @@ public class ProcessorModel {
         SeadasLogger.getLogger().info("executing ...");
 
         SeadasLogger.getLogger().info(getProgramRoot().toString());
-        SeadasLogger.getLogger().info(getProgramEnv().toString()  );
+        SeadasLogger.getLogger().info(getProgramEnv().toString());
 
-
-        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
+        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), outputFileDir);
 
     }
 
