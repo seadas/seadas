@@ -134,7 +134,7 @@ public class L2genReader {
     }
 
 
-    public void updateParamInfosWithXml(InputStream stream, File iFile, File geoFile, File oFile) {
+    public void updateParamInfosWithXml(InputStream stream) {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
@@ -151,17 +151,13 @@ public class L2genReader {
                     name = name.toLowerCase();
                     String value = XmlReader.getTextValue(optionElement, "value");
 
-                    value = valueOverRides(name, value, iFile, geoFile, oFile);
+                    if (value == null || value.length() == 0) {
+                        value = XmlReader.getTextValue(optionElement, "value");
+                    }
+
 
                     if (!name.toLowerCase().equals(l2genData.IFILE)) {
-                        if (name.toLowerCase().equals(L2genData.OFILE) ||
-                                name.toLowerCase().equals(L2genData.GEOFILE) ||
-                                name.toLowerCase().equals(L2genData.PAR)
-                                ) {
-                            l2genData.setParamValue(name, value);
-                        } else {
-                            l2genData.setParamValueAndDefault(name, value);
-                        }
+                        l2genData.setParamValueAndDefault(name, value);
                     }
                 }
             }
@@ -169,7 +165,7 @@ public class L2genReader {
     }
 
 
-    public void readParamInfoXml(InputStream stream, InputStream productInfoStream, File iFile, File geoFile, File oFile) {
+    public void readParamInfoXml(InputStream stream, InputStream productInfoStream) {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
@@ -202,8 +198,6 @@ public class L2genReader {
                     }
 
                     String value = XmlReader.getTextValue(optionElement, "value");
-
-                    value = valueOverRides(name, value, iFile, geoFile, oFile);
 
                     String description = XmlReader.getTextValue(optionElement, "description");
                     String source = XmlReader.getTextValue(optionElement, "source");

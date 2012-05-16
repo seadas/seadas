@@ -104,34 +104,6 @@ public class L2prodParamInfo extends ParamInfo {
             for (BaseInfo aInfo : productInfo.getChildren()) {
                 AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
                 algorithmInfo.reset();
-
-
-//                algorithmInfo.setSelected(false);
-//                if (algorithmInfo.getParameterType() != AlgorithmInfo.ParameterType.NONE) {
-//                    algorithmInfo.clearChildren();
-//                    for (WavelengthInfo wavelengthInfo : waveLimiterInfos) {
-//                        boolean addWavelength = false;
-//
-//                        if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.ALL) {
-//                            addWavelength = true;
-//                        } else if (wavelengthInfo.getWavelength() >= WavelengthInfo.INFRARED_LOWER_LIMIT &&
-//                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.IR) {
-//                            addWavelength = true;
-//                        } else if (wavelengthInfo.getWavelength() <= WavelengthInfo.VISIBLE_UPPER_LIMIT &&
-//                                algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.VISIBLE) {
-//                            addWavelength = true;
-//                        }
-//
-//                        if (addWavelength) {
-//                            WavelengthInfo newWavelengthInfo = new WavelengthInfo(wavelengthInfo.getWavelength());
-//                            newWavelengthInfo.setParent(algorithmInfo);
-//                            newWavelengthInfo.setDescription(algorithmInfo.getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
-//                            algorithmInfo.addChild(newWavelengthInfo);
-//                        }
-//                    }
-//                }
-//
-
             }
         }
     }
