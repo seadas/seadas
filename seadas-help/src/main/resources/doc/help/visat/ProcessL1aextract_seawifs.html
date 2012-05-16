@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>VISAT Help - Data Processing Tools</title>
+    <title>SeaDAS Help - Data Processing Tools - l1aextract_seawifs</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,7 +10,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Data Processing Tools
+            l1aextract_seawifs
         </td>
         <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
                                                                                        border=0></a></td>
@@ -21,7 +21,7 @@
 <h3>l1aextract_seawifs</h3>
 
 <p>
-    Creates an l1aextract_seawifs file from an input ... file.
+    Creates an extracted L1A SeaWiFS file.
 </p>
 
 <h4>Location</h4>
@@ -32,8 +32,22 @@
 <p>
     TBD
 </p>
+<h5>Command Line Usage</h5>
+<pre>
+    Usage: l1aextract_seawifs infile spix epix sscan escan pix_sub sc_sub outfile
+       where:
+        infile   - input l1a data HDF file
+        spix     - start pixel number
+        epix     - end pixel number
+        sscan    - start scan line
+        escan    - end scan line
+        pix_sub  - pixel subsampling rate
+        sc_sub   - scan line subsampling rate
+        outfile  - output file name
 
-
+    NOTE: Start and End pixel/scanline will be set to input file's nsamp
+         and nrec respectively, if, the given values are out of range
+</pre>
 <hr>
 </body>
 </html>

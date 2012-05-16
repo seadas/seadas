@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>VISAT Help - Data Processing Tools</title>
+    <title>SeaDAS Help - Data Processing Tools - l1aextract_modis</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,7 +10,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Data Processing Tools
+            l1aextract_modis
         </td>
         <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
                                                                                        border=0></a></td>
@@ -21,7 +21,7 @@
 <h3>l1aextract_modis</h3>
 
 <p>
-    Creates an l1aextract_modis file from an input ... file.
+    Creates an extracted L1A MODIS file.
 </p>
 
 <h4>Location</h4>
@@ -32,7 +32,19 @@
 <p>
     TBD
 </p>
+<h5>Command Line Usage</h5>
+<pre>
+Usage: l1aextract_modis infile spixl epixl sline eline outfile
+   where:
+        infile   - input MODIS L1A datafile
+        spixl    - start pixel number (1-based)
+        epixl    - end pixel number (1-based)
+        sline    - start line (1-based)
+        eline    - end line (1-based)
+        outfile  - output file name
 
+Note: Enter line number NOT scan number!
+</pre>
 
 <hr>
 </body>
