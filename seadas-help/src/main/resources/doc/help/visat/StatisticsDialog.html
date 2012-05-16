@@ -33,22 +33,39 @@
 
 <h3>Statistics Display</h3>
 
-<p>Displays statistical information about the band.
-   You can either choose to compute the statistics for a whole band, for a single ROI ot
-    to iterate over all ROIs.
+<p>This dialog, opened via <img src="images/icons/Statistics24.gif">, displays statistical information about the currently
+    selected band. See the screenshot for an example.
 </p>
 
-<p class="inote"><b>Note:</b> A mouse right-click within the statistics data area
+<blockquote>
+    <img src="images/StatisticsDialog.png">
+</blockquote>
+
+The set of statistical information displayed comprises:
+<ul>
+    <li>the total number of pixels</li>
+    <li>the minimum/maximum geophysical value</li>
+    <li>the arithmetic mean of the geophysical values (see http://en.wikipedia.org/wiki/Arithmetic_mean)</li>
+    <li>the standard deviation (sigma) (see http://en.wikipedia.org/wiki/Standard_deviation#With_sample_standard_deviation)</li>
+    <li>the median of the geophysical values (see http://en.wikipedia.org/wiki/Median)</li>
+    <li>several percentile thresholds (see http://en.wikipedia.org/wiki/Percentile)</li>
+</ul>
+
+<p>
+    Additionally, two diagrams are displayed: the left one is a histogram, the right one shows the thresholds for all
+    percentiles.<br>
+    The statistics can be computed for a whole band, or the considered pixels can be restricted to those matching a
+    single or multiple ROI masks. The list of masks can be narrowed down by typing a pattern into the text field. For
+    convenience, there is also the <img src="images/icons/MaskManager24.png">-icon which allows the user to open the
+    <a href="MaskManagement.html">Mask Manager</a> tool window.
+</p>
+
+<p class="inote"><b>Note:</b> A mouse right-click within the statistics tables
     brings up a context menu with the item <i>Copy data to clipboard</i>.
     This will copy the diagram data as tabulated text to the system clipboard.
     The copied text can then be pasted directly into a spreadsheet application
-    (e.g. Microsoft&reg; Excel).</p>
-
-
-<blockquote>
-    <img src="images/StatisticsDialogMultiRoi.png">
-</blockquote>
-
+    (e.g. Microsoft&reg; Excel).
+</p>
 
 <hr>
 </body>
