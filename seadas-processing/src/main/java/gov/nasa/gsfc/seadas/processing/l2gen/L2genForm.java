@@ -29,21 +29,20 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
         processorModel = new ProcessorModel(GUI_NAME, xmlFileName);
 
-        l2genData = new L2genData(getInitialSelectedSourceFile());
+        l2genData = new L2genData();
 
-        createMainTab(0);
-        createProductsTab(1);
-        createCategoryParamTabs(2);
+        if (l2genData.initXmlBasedObjects()) {
 
-//        Product product = VisatApp.getApp().getSelectedProduct();
-//        if (product != null) {
-//            File iFile = product.getFileLocation();
-//            if (iFile != null) {
-//                l2genData.setParamValue(L2genData.IFILE, iFile.toString());
-//            }
-//        }
+            createMainTab(0);
+            createProductsTab(1);
+            createCategoryParamTabs(2);
 
-        l2genData.fireAllParamEvents();
+            l2genData.setInitialValues(getInitialSelectedSourceFile());
+
+            l2genData.fireAllParamEvents();
+        } else {
+            addTab("ERROR", new JLabel("Problem initializing l2gen"));
+        }
     }
 
 

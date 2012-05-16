@@ -14,8 +14,32 @@ import java.util.GregorianCalendar;
 public class SeadasFilenamePatterns {
 
 
+    static public String getOfile(File iFile) {
+
+        String ofile = null;
+        File oFile = getOFile(iFile);
+
+        if (oFile != null) {
+            ofile = oFile.getAbsoluteFile().toString();
+        }
+
+        return ofile;
+    }
+
+    static public String getGeofile(File iFile) {
+
+        String geofile = null;
+        File geoFile = getGeoFile(iFile);
+
+        if (geoFile != null) {
+            geofile = geoFile.getAbsoluteFile().toString();
+        }
+
+        return geofile;
+    }
+
     static public File getOFile(File iFile) {
-        if (iFile == null) {
+        if (iFile == null || iFile.getAbsoluteFile().length() == 0) {
             return null;
         }
 
@@ -33,6 +57,9 @@ public class SeadasFilenamePatterns {
 
 
     static public File getGeoFile(File iFile) {
+        if (iFile == null || iFile.getAbsoluteFile().length() == 0) {
+            return null;
+        }
 
         String VIIRS_IFILE_PREFIX = "SVM01";
 
@@ -93,12 +120,11 @@ public class SeadasFilenamePatterns {
     }
 
 
-
     static private File getViirsOfilename(File iFile) {
-
-        if (iFile == null) {
+        if (iFile == null || iFile.getAbsoluteFile().length() == 0) {
             return null;
         }
+
 
         StringBuilder ofile = new StringBuilder(iFile.getParent() + "/");
 
@@ -121,7 +147,7 @@ public class SeadasFilenamePatterns {
 
 
     static private File getStandardOfile(File iFile) {
-        if (iFile == null) {
+        if (iFile == null || iFile.getAbsoluteFile().length() == 0) {
             return null;
         }
 
