@@ -2,10 +2,8 @@ package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.PixelGeoCoding;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.beam.framework.datamodel.*;
+import org.esa.beam.framework.dataop.maptransf.Datum;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
@@ -36,9 +34,8 @@ public class L1AOctsFileReader extends SeadasFileReader {
 
         int sceneWidth = getIntAttribute("Pixels per Scan Line");
         int sceneHeight = getIntAttribute("Number of Scan Lines") * 2;
-        String productName = getStringAttribute("Product Name");
+        String productName = productReader.getInputFile().getName();
 
-        mustFlipX = mustFlipY = getDefaultFlip();
         SeadasProductReader.ProductType productType = productReader.getProductType();
 
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
@@ -60,62 +57,53 @@ public class L1AOctsFileReader extends SeadasFileReader {
         addScientificMetadata(product);
 
         variableMap = addOctsBands(product, ncFile.getVariables());
-
+        // todo: OCTS L1 uses the same orbit vector geolocation as SeaWiFS - make the SeaWiFSL1aGeonav code generic
         addGeocoding(product);
 
-        addFlagsAndMasks(product);
+//        addFlagsAndMasks(product);
 
         return product;
 
     }
 
     public void addGeocoding(final Product product) throws ProductIOException {
-        String navGroup = "Navigation Data";
-        final String longitude = "longitude";
-        final String latitude = "latitude";
-        final String cntlPoints = "cntl_pt_cols";
-        Band latBand = null;
-        Band lonBand = null;
-
-        if (ncFile.findGroup(navGroup) == null) {
-            if (ncFile.findGroup("Navigation") != null) {
-                navGroup = "Navigation";
-            }
-        }
-
-        if (product.containsBand(latitude) && product.containsBand(longitude)) {
-            latBand = product.getBand(latitude);
-            lonBand = product.getBand(longitude);
-        } else {
-            Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
-            Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
-            Variable cntlPointVar = ncFile.findVariable(navGroup + "/" + cntlPoints);
-            if (latVar != null && lonVar != null && cntlPointVar != null) {
-                final ProductData lonRawData = readData(lonVar);
-                final ProductData latRawData = readData(latVar);
-
-                latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
-                lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
+        String navGroup = "Scan-Line Attributes";
+        final String longitude = "lon";
+        final String latitude = "lat";
+        int susampX = 16;
+        int subsampY = 2;
 
 
-                Array cntArray;
-                try {
-                    cntArray = cntlPointVar.read();
-                    int[] colPoints = (int[]) cntArray.getStorage();
-                    computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints);
-                } catch (IOException e) {
-                   throw new ProductIOException(e.getMessage());
-                }
-            }
-        }
+        Variable lats = ncFile.findVariable(navGroup + "/" +latitude);
+        Variable lons = ncFile.findVariable(navGroup + "/" +longitude);
+
+        int[] dims = lats.getShape();
+
+        float[] latTiePoints;
+        float[] lonTiePoints;
+
         try {
-            if (latBand != null && lonBand != null) {
-                product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-            }
+            Array latarr = lats.read();
+            Array lonarr = lons.read();
+
+            latTiePoints = (float[]) latarr.getStorage();
+            lonTiePoints = (float[]) lonarr.getStorage();
+
+            final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1], dims[0], 0, 0,
+                    susampX, subsampY, latTiePoints);
+
+            product.addTiePointGrid(latGrid);
+
+            final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1], dims[0], 0, 0,
+                    susampX, subsampY, lonTiePoints);
+
+            product.addTiePointGrid(lonGrid);
+
+            product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
+
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage());
         }
-
     }
 
     private Map<Band, Variable> addOctsBands(Product product, List<Variable> variables) {

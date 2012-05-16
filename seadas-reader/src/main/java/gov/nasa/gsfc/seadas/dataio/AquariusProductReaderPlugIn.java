@@ -46,7 +46,7 @@ public class AquariusProductReaderPlugIn implements ProductReaderPlugIn {
     public static final String FORMAT_NAME = "Aquarius";
 
     private static final String[] supportedProductTypes = {
-            "Aquarius Level 1A Data",
+//            "Aquarius Level 1A Data",
             "Aquarius Level 2 Data",
             "Aquarius Level 3 Binned Data"
     };

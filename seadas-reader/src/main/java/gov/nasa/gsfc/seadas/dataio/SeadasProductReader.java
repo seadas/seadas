@@ -93,10 +93,13 @@ public class SeadasProductReader extends AbstractProductReader {
             productType = findProductType();
 
             switch (productType) {
+                case Level1A_Aquarius:
+                case Level2_Aquarius:
+                    seadasFileReader = new AquariusL2FileReader(this);
+                    break;
                 case Level2:
                 case Level1B:
                 case Level1A_CZCS:
-                case Level1A_Aquarius:
                 case Level2_CZCS:
                     seadasFileReader = new L2FileReader(this);
                     break;
@@ -235,7 +238,9 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Level2_CZCS;
             } else if (title.contains("Aquarius Level 1A Data")) {
                 return ProductType.Level1A_Aquarius;
-            } else if (title.contains("Level-1B")) {
+            } else if (title.contains("Aquarius Level 2 Data")) {
+                return ProductType.Level2_Aquarius;
+            }else if (title.contains("Level-1B")) {
                 return ProductType.Level1B;
             } else if (title.equals("CZCS Level-1A Data")){
                 return ProductType.Level1A_CZCS;

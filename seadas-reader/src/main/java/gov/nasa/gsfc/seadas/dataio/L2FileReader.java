@@ -90,6 +90,10 @@ public class L2FileReader extends SeadasFileReader {
         if (product.containsBand(latitude) && product.containsBand(longitude)) {
             latBand = product.getBand(latitude);
             lonBand = product.getBand(longitude);
+            latBand.setNoDataValue(-999.);
+            lonBand.setNoDataValue(-999.);
+            latBand.setNoDataValueUsed(true);
+            lonBand.setNoDataValueUsed(true);
         } else {
             Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
             Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
@@ -100,7 +104,10 @@ public class L2FileReader extends SeadasFileReader {
 
                 latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
                 lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
-
+                latBand.setNoDataValue(-999.);
+                lonBand.setNoDataValue(-999.);
+                latBand.setNoDataValueUsed(true);
+                lonBand.setNoDataValueUsed(true);
 
                 Array cntArray;
                 try {

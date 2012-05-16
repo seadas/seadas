@@ -414,6 +414,9 @@ public abstract class SeadasFileReader {
 
     public void addBandMetadata(Product product) throws ProductIOException {
         Group group = ncFile.findGroup("Geophysical Data");
+        if (productReader.getProductType() == SeadasProductReader.ProductType.Level2_Aquarius){
+            group = ncFile.findGroup("Aquarius Data");
+        }
         if (group != null) {
             final MetadataElement bandAttributes = new MetadataElement("Band_Attributes");
             List<Variable> variables = group.getVariables();
@@ -616,15 +619,19 @@ public abstract class SeadasFileReader {
             String timeString = attribute.getStringValue().trim();
             final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
             final DateFormat dateFormatModis = ProductData.UTC.createDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+            final DateFormat dateFormatOcts = ProductData.UTC.createDateFormat("yyyyMMdd HH:mm:ss.SSSSSS");
             try {
                 if (isModis) {
                     final Date date = dateFormatModis.parse(timeString);
                     String milliSeconds = timeString.substring(timeString.length() - 3);
                     return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
+                } else if (productReader.getProductType() == SeadasProductReader.ProductType.Level1A_OCTS){
+                    final Date date = dateFormatOcts.parse(timeString);
+                    String milliSeconds = timeString.substring(timeString.length() - 3);
+                    return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
                 } else {
                     final Date date = dateFormat.parse(timeString);
                     String milliSeconds = timeString.substring(timeString.length() - 3);
-
                     return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
                 }
             } catch (ParseException e) {
