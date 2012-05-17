@@ -11,42 +11,59 @@ import java.util.GregorianCalendar;
  * Time: 11:44 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SeadasFilenamePatterns {
+public class FilenamePatterns {
 
 
-    static public String getOfile(File iFile) {
+    static public String getOFileName(File iFile) {
+        MissionInfo missionInfo = new MissionInfo(iFile);
+        return getOFileName(iFile, missionInfo);
+    }
 
-        String ofile = null;
-        File oFile = getOFile(iFile);
 
+    static public String getOFileName(File iFile, MissionInfo missionInfo) {
+        File oFile = getOFile(iFile, missionInfo);
         if (oFile != null) {
-            ofile = oFile.getAbsoluteFile().toString();
+            return oFile.getAbsoluteFile().toString();
         }
-
-        return ofile;
+        return null;
     }
 
-    static public String getGeofile(File iFile) {
-
-        String geofile = null;
-        File geoFile = getGeoFile(iFile);
-
-        if (geoFile != null) {
-            geofile = geoFile.getAbsoluteFile().toString();
-        }
-
-        return geofile;
-    }
 
     static public File getOFile(File iFile) {
-        if (iFile == null || iFile.getAbsoluteFile().length() == 0) {
+        MissionInfo missionInfo = new MissionInfo(iFile);
+        return getOFile(iFile, missionInfo);
+    }
+
+
+
+
+    static public String getGeoFileName(File iFile) {
+        MissionInfo missionInfo = new MissionInfo(iFile);
+        return getGeoFileName(iFile, missionInfo);
+    }
+
+
+    static public String getGeoFileName(File iFile, MissionInfo missionInfo) {
+        File oFile = getGeoFile(iFile, missionInfo);
+        if (oFile != null) {
+            return oFile.getAbsoluteFile().toString();
+        }
+        return null;
+    }
+
+
+    static public File getGeoFile(File iFile) {
+        MissionInfo missionInfo = new MissionInfo(iFile);
+        return getGeoFile(iFile, missionInfo);
+    }
+
+    static public File getOFile(File iFile, MissionInfo missionInfo) {
+        if (iFile == null || iFile.getAbsoluteFile().length() == 0 || missionInfo == null) {
             return null;
         }
 
         File oFile;
-        String VIIRS_IFILE_PREFIX = "SVM01";
-
-        if (iFile.getName().toUpperCase().startsWith(VIIRS_IFILE_PREFIX)) {
+        if (missionInfo.isName(MissionInfo.VIIRS)) {
             oFile = getViirsOfilename(iFile);
         } else {
             oFile = getStandardOfile(iFile);
@@ -56,7 +73,9 @@ public class SeadasFilenamePatterns {
     }
 
 
-    static public File getGeoFile(File iFile) {
+
+
+    static public File getGeoFile(File iFile, MissionInfo missionInfo) {
         if (iFile == null || iFile.getAbsoluteFile().length() == 0) {
             return null;
         }
@@ -68,7 +87,7 @@ public class SeadasFilenamePatterns {
         StringBuilder geofile = new StringBuilder();
         File geoFile = null;
 
-        if (iFile.getName().toUpperCase().startsWith(VIIRS_IFILE_PREFIX)) {
+        if (missionInfo.isName(MissionInfo.VIIRS)) {
             String VIIRS_GEOFILE_PREFIX = "GMTCO";
             geofileBasename.append(VIIRS_GEOFILE_PREFIX);
             geofileBasename.append(iFile.getName().substring(VIIRS_IFILE_PREFIX.length()));

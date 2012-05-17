@@ -74,7 +74,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 setEnabledAt(tabIndex, l2genData.isValidIfile());
@@ -110,7 +110,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
                 }
 
 
-                l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
+                l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
                     @Override
                     public void propertyChange(PropertyChangeEvent evt) {
                         setEnabledAt(tabIndexFinal, l2genData.isValidIfile());

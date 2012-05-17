@@ -19,7 +19,7 @@ import java.util.*;
 public class L2genData {
 
 
-    private static final String OCDATAROOT = System.getenv("OCDATAROOT");
+    //  private static final String OCDATAROOT = System.getenv("OCDATAROOT");
 
     private static final String PRODUCT_INFO_XML = "productInfo.xml";
     private static final String PARAM_INFO_XML = "paramInfo.xml";
@@ -42,7 +42,6 @@ public class L2genData {
     public static final String L2PROD = "l2prod";
 
     public static final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
-    public static final String IFILE_VALIDATION_EVENT = "IFILE_VALIDATION_EVENT";
     public static final String WAVE_LIMITER_EVENT = "WAVE_LIMITER_EVENT";
     public static final String RETAIN_IFILE_EVENT = "RETAIN_IFILE_EVENT";
     public static final String SHOW_DEFAULTS_EVENT = "SHOW_DEFAULTS_EVENT";
@@ -50,10 +49,9 @@ public class L2genData {
     public static final String PARSTRING_IN_PROGRESS_EVENT = "PARSTRING_IN_PROGRESS_EVENT";
 
     public boolean retainCurrentIfile = true;
-    private boolean validIfile = false;
     private boolean showDefaultsInParString = false;
 
-    public SeadasMission mission = new SeadasMission();
+    public InputFileInfo iFileInfo = new InputFileInfo(null);
 
     public ArrayList<WavelengthInfo> waveLimiterInfos = new ArrayList<WavelengthInfo>();
 
@@ -93,21 +91,16 @@ public class L2genData {
     }
 
     public boolean isValidIfile() {
-        return validIfile;
+        if (iFileInfo != null) {
+            return iFileInfo.isFileExists();
+        }
+        return false;
     }
 
-    public void setValidIfile(boolean newValidIfile) {
-        if (newValidIfile != isValidIfile()) {
-            boolean oldValidIfile = isValidIfile();
-            this.validIfile = newValidIfile;
-            fireEvent(IFILE_VALIDATION_EVENT, oldValidIfile, isValidIfile());
-        }
-    }
 
     public boolean isRequiresGeofile() {
-        return mission.isRequiresGeofile();
+        return iFileInfo.isRequiresGeofile();
     }
-
 
 
     public enum RegionType {Coordinates, PixelLines}
@@ -188,7 +181,7 @@ public class L2genData {
         }
         fireEvent(RETAIN_IFILE_EVENT);
         fireEvent(WAVE_LIMITER_EVENT);
-        fireEvent(IFILE_VALIDATION_EVENT);
+        fireEvent(IFILE);
         fireEvent(PARSTRING_EVENT);
     }
 
@@ -494,9 +487,6 @@ public class L2genData {
                 }
             }
         }
-
-        boolean ofileSet = false;
-        boolean geofileSet = false;
         /*
         Set all params contained in parString
         Ignore IFILE (handled earlier) and PAR (which is todo)
@@ -526,27 +516,10 @@ public class L2genData {
 
             setParamValue(newParamInfo.getName(), newParamInfo.getValue());
 
-            if (newParamInfo.getValue().length() > 0) {
-                if (newParamInfo.getName().toLowerCase().equals(GEOFILE)) {
-                    geofileSet = true;
-                }
-
-                if (newParamInfo.getName().toLowerCase().equals(OFILE)) {
-                    ofileSet = true;
-                }
-            }
         }
 
 
         if (!addParamsMode) {
-
-            if (!ofileSet) {
-                setCustomOfile();
-            }
-
-            if (!geofileSet && isRequiresGeofile()) {
-                setCustomGeofile();
-            }
 
             /*
            Delete all params NOT contained in parString to defaults (basically set to default)
@@ -640,6 +613,8 @@ public class L2genData {
             } else {
                 paramInfo.setValue(value);
                 paramInfo.setDefaultValue(paramInfo.getValue());
+                String test = getParamValue(OFILE);
+                String test2 = getParamDefault(OFILE);
                 setConflictingParams(paramInfo.getName());
                 fireEvent(paramInfo.getName());
             }
@@ -853,13 +828,13 @@ public class L2genData {
 
     private String getSensorInfoFilename() {
 
-        if (mission.getDirectory() != null) {
-        // determine the filename which contains the wavelengths
-        final StringBuilder sensorInfoFilename = new StringBuilder("");
-        sensorInfoFilename.append(mission.getDirectory());
-        sensorInfoFilename.append("/");
-        sensorInfoFilename.append("msl12_sensor_info.dat");
-        return sensorInfoFilename.toString();
+        if (iFileInfo.getMissionDirectory() != null) {
+            // determine the filename which contains the wavelengths
+            final StringBuilder sensorInfoFilename = new StringBuilder("");
+            sensorInfoFilename.append(iFileInfo.getMissionDirectory());
+            sensorInfoFilename.append("/");
+            sensorInfoFilename.append("msl12_sensor_info.dat");
+            return sensorInfoFilename.toString();
         } else {
             return null;
         }
@@ -915,48 +890,24 @@ public class L2genData {
         paramInfo.setValue(newIfile);
         paramInfo.setDefaultValue(newIfile);
 
-        if (iFile != null && iFile.exists()) {
-            mission.setMission(iFile);
-            setValidIfile(true);
+        iFileInfo.setFile(iFile);
 
+        if (iFileInfo.isFileExists() && iFileInfo.isLevel(FileLevelInfo.Level.L1B)) {
             resetWaveLimiter();
-
             l2prodParamInfo.resetProductInfos();
-
             updateXmlBasedObjects(iFile);
-
-            fireEvent(IFILE, oldIfile, newIfile);
-
-            setParamValueAndDefault(OFILE, SeadasFilenamePatterns.getOfile(iFile));
-            if (isRequiresGeofile()) {
-                setParamValueAndDefault(GEOFILE, SeadasFilenamePatterns.getGeofile(iFile));
-            }
-            setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
-
-
         } else {
-            mission.setMission(null);
-            setValidIfile(false);
-            fireEvent(IFILE, oldIfile, newIfile);
+            iFileInfo.setFile(null);
             fireEvent(INVALID_IFILE_EVENT);
-
-            setParamValueAndDefault(OFILE, ParamInfo.NULL_STRING);
-            setParamValueAndDefault(GEOFILE, ParamInfo.NULL_STRING);
-            setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
         }
+
+        setParamValueAndDefault(OFILE, iFileInfo.getOFileName());
+        setParamValueAndDefault(GEOFILE, iFileInfo.getGeoFileName());
+        setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
+
+        fireEvent(IFILE, oldIfile, newIfile);
     }
 
-
-    private void setCustomOfile() {
-        File oFile = SeadasFilenamePatterns.getOFile(new File(getParamValue(IFILE)));
-        setParamValue(OFILE, oFile.toString());
-    }
-
-
-    private void setCustomGeofile() {
-        File geoFile = SeadasFilenamePatterns.getGeoFile(new File(getParamValue(IFILE)));
-        setParamValue(GEOFILE, geoFile.toString());
-    }
 
     public void setAncillaryFiles() {
 

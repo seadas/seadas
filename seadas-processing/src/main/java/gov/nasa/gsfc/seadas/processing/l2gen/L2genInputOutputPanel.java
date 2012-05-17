@@ -196,7 +196,7 @@ public class L2genInputOutputPanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 outputFileSelector.setEnabled(l2genData.isValidIfile());

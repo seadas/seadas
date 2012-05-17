@@ -112,7 +112,7 @@ public class L2genParfilePanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jButton.setEnabled(l2genData.isValidIfile());
@@ -154,7 +154,7 @@ public class L2genParfilePanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jCheckBox.setEnabled(l2genData.isValidIfile());
@@ -179,7 +179,7 @@ public class L2genParfilePanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jButton.setEnabled(l2genData.isValidIfile());
@@ -212,7 +212,7 @@ public class L2genParfilePanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE_VALIDATION_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 jCheckBox.setEnabled(l2genData.isValidIfile());
