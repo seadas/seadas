@@ -13,6 +13,5 @@ public interface CloProgramUI {
 
     public ProcessorModel getProcessorModel();
     public Product getSelectedSourceProduct();
-
-
+    public boolean isOpenOutputInApp();
 }

@@ -2,8 +2,9 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.EventInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.SeadasPrint;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.SeadasPrint;
+import org.esa.beam.util.Guardian;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -15,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -35,19 +37,15 @@ public class ProcessorModel {
     private String[] processorEnv;
     private String errorMessage;
     private File programRoot;
-    private File inputFile;
-    private File outputFile;
-    private String outputFileName;
-    private File outputFileDir;
-    private File parFile;
     private String parString;
-    private boolean hasDependency;
-    private ProcessorModel dependentProcessor;
 
-    private boolean hasOutputFile;
     private boolean hasGeoFile;
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
     private PropertyChangeSupport changeSupport;
+
+    private Set<String> primaryOptions;
+
+    private String primaryInputFileOptionName, primaryOutputFileOptionName;
 
     public ProcessorModel(String name) {
         this(name, null);
@@ -58,23 +56,48 @@ public class ProcessorModel {
         computeProcessorEnv();
         if (parXMLFileName != null) {
             paramList = ParamUtils.computeParamList(parXMLFileName);
-            acceptsParFile = ParamUtils.getParFilePreference(parXMLFileName);
-            hasDependency = true;
-            hasOutputFile = true;
-            hasGeoFile = true;
-        } else {
-            paramList = new ArrayList<ParamInfo>();
-            acceptsParFile = false;
-            hasDependency = false;
-            hasOutputFile = false;
-            hasGeoFile = false;
+            acceptsParFile = ParamUtils.getOptionStatus(parXMLFileName, "hasParFile");
+            hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
+            primaryOptions = ParamUtils.getPrimaryOptions(parXMLFileName);
+            primaryInputFileOptionName = getPrimaryInputFileOptionName();
+            primaryOutputFileOptionName = getPrimaryOutputFileOptionName();
         }
+
+    }
+
+    protected String getPrimaryInputFileOptionName() {
+
+        Iterator<ParamInfo> itr = paramList.iterator();
+        ParamInfo option;
+        while (itr.hasNext()) {
+
+            option = itr.next();
+            if (option.getType().equals(ParamInfo.Type.IFILE) && primaryOptions.contains(option.getName())) {
+
+                return option.getName();
+            }
+        }
+        return null;
+    }
+
+    protected String getPrimaryOutputFileOptionName() {
+
+        Iterator<ParamInfo> itr = paramList.iterator();
+        ParamInfo option;
+        while (itr.hasNext()) {
+
+            option = itr.next();
+            if (option.getType().equals(ParamInfo.Type.OFILE) && primaryOptions.contains(option.getName())) {
+
+                return option.getName();
+            }
+        }
+        return null;
     }
 
     protected boolean hasGeoFile() {
         return hasGeoFile;
     }
-
 
     public boolean isValidProcessor() {
         SeadasPrint.debug(programLocation);
@@ -85,6 +108,19 @@ public class ProcessorModel {
         return programName;
     }
 
+    protected boolean hasPrimaryOutputFile() {
+        Iterator<ParamInfo> itr = paramList.iterator();
+        ParamInfo option;
+        while (itr.hasNext()) {
+
+            option = itr.next();
+            if (option.getType().equals(ParamInfo.Type.OFILE) && primaryOptions.contains(option.getName())) {
+
+                return true;
+            }
+        }
+        return false;
+    }
 
     public String getProgramLocation() {
         return programLocation;
@@ -94,38 +130,13 @@ public class ProcessorModel {
         return programRoot;
     }
 
-    public void addParamInfo(ParamInfo info) {
-        paramList.add(info);
-    }
-
-    public void addParamInfo(String name, String value) {
-        ParamInfo info = new ParamInfo(name, value);
-        addParamInfo(info);
-    }
-
-    public void addParamInfo(String name, String value, int order) {
-        ParamInfo info = new ParamInfo(name, value);
-        info.setOrder(order);
-        addParamInfo(info);
-    }
-
     public ArrayList getProgramParamList() {
         return paramList;
     }
 
-    public void setParFile(File parFile) {
-        this.parFile = parFile;
-    }
-
-    public File getParFile() {
-        return parFile;
-    }
 
     public void setParString(String parString) {
-
-        //System.out.println("parString: " + parString);
         this.parString = parString;
-        createParFile(outputFileDir, parString);
     }
 
     public void setAcceptsParFile(boolean acceptsParFile) {
@@ -140,43 +151,15 @@ public class ProcessorModel {
         return errorMessage;
     }
 
-    public void setInputFile(File inputFile) {
-        this.inputFile = inputFile;
-        outputFileDir = inputFile.getParentFile();
-        outputFile = getOutputFile();
-        //System.out.println(this.inputFile.toString() + " ~~~~~~~~ " + outputFileDir.toString());
-    }
-
-    public File getInputFile() {
-        return inputFile;
-    }
-
-    public void setOutputFile(File outputFile) {
-        this.outputFile = outputFile;
-    }
-
-    public void setOutputFileName(String outputFileName) {
-        this.outputFileName = outputFileName;
-    }
-
-    public void setOutputFileDir(File outputFileDir) {
-        if (outputFileDir != null) {
-            this.outputFileDir = outputFileDir;
-        }
-    }
-
-    public File getOutputFile() {
-        if (outputFile == null) {
-            if (outputFileName == null) {
-                //default output file name
-                outputFile = new File(outputFileDir, programName + "-out-" + Long.toHexString(System.nanoTime()));
-            } else {
-                //construct output file  based on output dir and file name
-                outputFile = new File(outputFileDir, outputFileName);
-            }
-        }
-        return outputFile;
-    }
+//    public File getOutputFile() {
+//
+//        if (getOFileName() != null) {
+//           return new File(getParamValue(getOFileName()));
+//        }
+//
+//        return null;
+//
+//    }
 
     public void updateParamInfo(ParamInfo currentOption, String newValue) {
         Iterator<ParamInfo> itr = paramList.iterator();
@@ -185,10 +168,15 @@ public class ProcessorModel {
 
             option = itr.next();
             if (option.getName().equals(currentOption.getName())) {
+
                 option.setValue(newValue);
                 return;
             }
         }
+    }
+
+    public void propertyChange() {
+        //addPropertyChangeListener();
     }
 
     public ParamInfo getParamInfo(String paramName) {
@@ -201,6 +189,19 @@ public class ProcessorModel {
             }
         }
         return null;
+    }
+
+    public boolean isAllParamsValid() {
+
+        Iterator<ParamInfo> itr = paramList.iterator();
+        ParamInfo option;
+        while (itr.hasNext()) {
+            option = itr.next();
+            if (option.getValue() == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public String getParamValue(String paramName) {
@@ -216,11 +217,12 @@ public class ProcessorModel {
     }
 
     public void updateParamInfo(String paramName, String newValue) {
+        Guardian.assertNotNull("parameter name", paramName);
         Iterator<ParamInfo> itr = paramList.iterator();
         ParamInfo option;
         while (itr.hasNext()) {
             option = itr.next();
-            if (option.getName().equals(paramName)) {
+            if (option.getName().equals(paramName.trim())) {
                 option.setValue(newValue);
                 return;
             }
@@ -249,11 +251,10 @@ public class ProcessorModel {
     }
 
     private String[] getCmdArrayWithParFile() {
-        parFile = parFile == null ? computeParFile() : parFile;
         final String[] cmdArray = {
                 programLocation + "ocssw_runner",
                 programName,
-                "par=" + parFile
+                "par=" + computeParFile()
         };
         for (int i = 0; i < cmdArray.length; i++) {
             SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
@@ -262,6 +263,9 @@ public class ProcessorModel {
     }
 
     private String[] getCmdArrayWithArguments() {
+
+//        SeadasLogger.getLogger().info("ifile update: " + getIFileName() + inputFile.toString());
+//        SeadasLogger.getLogger().info("ofile update: " + getOFileName() + getOutputFile().toString());
         final String[] cmdArray = new String[paramList.size() + 2];
         cmdArray[0] = programLocation + "ocssw_runner";
         cmdArray[1] = programName;
@@ -271,7 +275,7 @@ public class ProcessorModel {
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
             cmdArray[option.getOrder() + 1] = option.getValue();
-            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + " = " + option.getValue());
+            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
 
         for (int i = 0; i < cmdArray.length; i++) {
@@ -304,28 +308,34 @@ public class ProcessorModel {
 
     }
 
-    private void createParFile(File outputDir, final String parameterText) {
+    private File computeParFile() {
+
         try {
-            final File tempFile = File.createTempFile(programName, ".par", outputDir);
+            final File tempFile = File.createTempFile("tmpParFile", ".par");
             tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
                 fileWriter = new FileWriter(tempFile);
-                fileWriter.write(parameterText);
+                fileWriter.write(getParString());
             } finally {
                 if (fileWriter != null) {
                     fileWriter.close();
                 }
             }
+            return tempFile;
 
-            parFile = tempFile;
         } catch (IOException e) {
-            return;
+            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            return null;
         }
     }
 
-    private File computeParFile() {
-        //parString = "";
+    protected String getParString() {
+
+        if (parString != null) {
+            return parString;
+        }
+
 
         StringBuilder parString = new StringBuilder("");
         Iterator itr = paramList.iterator();
@@ -341,35 +351,14 @@ public class ProcessorModel {
 
         }
         SeadasLogger.getLogger().info("parString: " + parString);
-        try {
-            final File tempFile = File.createTempFile(programName, ".par", outputFileDir);
-            tempFile.deleteOnExit();
-            FileWriter fileWriter = null;
-            try {
-                fileWriter = new FileWriter(tempFile);
-                fileWriter.write(parString.toString());
-            } finally {
-                if (fileWriter != null) {
-                    fileWriter.close();
-                }
-            }
-            parFile = tempFile;
-        } catch (IOException e) {
-            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
-            return null;
-        }
-        return parFile;
+        return parString.toString();
     }
 
     public Process executeProcess() throws IOException {
 
-        SeadasLogger.getLogger().info("executing ...");
+        SeadasLogger.getLogger().info("Executing processor " + getProgramName() + "...");
 
-        SeadasLogger.getLogger().info(getProgramRoot().toString());
-        SeadasLogger.getLogger().info(getProgramEnv().toString());
-
-        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), outputFileDir);
-
+        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
     }
 
     public EventInfo[] eventInfos = {

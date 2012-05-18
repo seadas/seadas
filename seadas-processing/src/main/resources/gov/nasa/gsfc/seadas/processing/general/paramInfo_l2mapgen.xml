@@ -4,6 +4,10 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>l2genmap.par</parFileOptionName>
+                <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
     </programMetaData>
     <options>
         <option type="string">

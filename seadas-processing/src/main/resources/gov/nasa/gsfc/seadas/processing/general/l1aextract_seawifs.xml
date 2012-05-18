@@ -4,6 +4,10 @@
     <programMetaData>
         <hasParFile>false</hasParFile>
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>infile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
     </programMetaData>
     <options>
         <option type="ifile">
@@ -32,14 +36,14 @@
             <order>3</order>
         </option>
         <option type="int">
-            <name>sscan</name>
+            <name>sline</name>
             <value>1</value>
             <default>1</default>
             <description>start line number</description>
             <order>4</order>
         </option>
         <option type="int">
-            <name>escan</name>
+            <name>eline</name>
             <value>-1</value>
             <default>-1</default>
             <description>end line number (-1=the last line)</description>
@@ -54,7 +58,7 @@
         </option>
         <option type="int">
             <name>sc_sub</name>
-            <value>-1</value>
+            <value>1</value>
             <default>-1</default>
             <description>end line number (-1=the last line)</description>
             <order>7</order>

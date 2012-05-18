@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:noNamespaceSchemaLocation="l1bgen_modis.xsd">
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">>
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>parfile</parFileOptionName>
         <hasGeoFile>true</hasGeoFile>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>geofile</primaryOption>
+        </primaryOptions>
     </programMetaData>
     <options>
         <option type="ifile">
@@ -15,7 +19,7 @@
             <source>command line</source>
             <order>1</order>
         </option>
-              <option type="ifile">
+        <option type="ifile">
             <name>geofile</name>
             <value></value>
             <default></default>
@@ -93,14 +97,14 @@
             <description>Path of directory containing LUT files</description>
             <order>12</order>
         </option>
-                <option type="boolean">
+        <option type="boolean">
             <name>log</name>
             <value></value>
             <default></default>
             <description>Path of directory containing LUT files</description>
             <order>13</order>
         </option>
-                <option type="boolean">
+        <option type="boolean">
             <name>verbose</name>
             <value></value>
             <default></default>

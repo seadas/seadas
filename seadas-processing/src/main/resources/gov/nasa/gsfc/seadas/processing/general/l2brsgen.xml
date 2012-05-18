@@ -173,9 +173,9 @@
         </option>
         <option type="boolean">
             <name>apply_pal</name>
-            <value>no</value>
+            <value>false</value>
             <type>bool</type>
-            <default>no</default>
+            <default>false</default>
             <description>apply color palette, false = grayscale</description>
             <source>default</source>
         </option>
@@ -245,8 +245,12 @@
             </description>
             <source>default</source>
             <validValue>
-                <value>(default</value>
-                <description>see product_table)</description>
+                <value>1</value>
+                <description>LINEAR</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>LOG</description>
             </validValue>
         </option>
         <option type="int">

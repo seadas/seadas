@@ -35,18 +35,18 @@ public class SeadasLogger {
         return logger;
     }
 
-    public static void initLogger(String loggerFileName) {
+    public static void initLogger(String loggerFileName, boolean printToConsole) {
         _loggerFileName = loggerFileName;
         if (log) {
-            initLogger();
+            initLogger(printToConsole);
         } else {
             initSevereLogger();
         }
     }
 
-    public static void initLogger() {
+    public static void initLogger(boolean printToConsole) {
         BeamLogManager.setSystemLoggerName("seadas");
-        BeamLogManager.configureSystemLogger((new SimpleFormatter()), false);
+        BeamLogManager.configureSystemLogger((new SimpleFormatter()), printToConsole);
         logger = BeamLogManager.getSystemLogger();
         FileHandler fileTxt;
         SimpleFormatter formatterTxt = new SimpleFormatter();

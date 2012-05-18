@@ -4,6 +4,9 @@
     <programMetaData>
         <hasParFile>false</hasParFile>
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>infile</primaryOption>
+        </primaryOptions>
     </programMetaData>
     <options>
         <option type="ifile">
@@ -19,31 +22,31 @@
         </option>
         <option type="int">
             <name>SWlon</name>
-            <value>1</value>
-            <default>1</default>
-            <description>start pixel number</description>
+            <value></value>
+            <default></default>
+            <description>south</description>
             <order>2</order>
         </option>
         <option type="int">
             <name>SWlat</name>
-            <value>-1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>end pixel number (-1=the last pixel)</description>
             <order>3</order>
         </option>
         <option type="int">
             <name>NElon</name>
-            <value>1</value>
-            <default>1</default>
+            <value></value>
+            <default></default>
             <description>start line number</description>
             <order>4</order>
         </option>
         <option type="int">
             <name>NElat</name>
-            <value>-1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>end line number (-1=the last line)</description>
             <order>5</order>
         </option>
-      </options>
+    </options>
 </paramInfo>

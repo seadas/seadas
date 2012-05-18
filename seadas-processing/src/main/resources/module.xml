@@ -134,16 +134,7 @@
             <dialogTitle>l2extract</dialogTitle>
             <xmlFileName>l2extract.xml</xmlFileName>
         </action>
-        <action>
-            <parent>seadasProcessing</parent>
-            <id>l2aextract</id>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>l2aextract...</text>
-            <programName>l2aextract</programName>
-            <dialogTitle>l2aextract</dialogTitle>
-            <xmlFileName>l2aextract.xml</xmlFileName>
-        </action>
-        <action>
+         <action>
             <parent>seadasProcessing</parent>
             <id>l1brsgen</id>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>

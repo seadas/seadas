@@ -39,6 +39,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
     String dialogTitle;
     String xmlFileName;
 
+    private boolean printLogToConsole = true;
+    private boolean openOutputInApp = true;
+
     @Override
     public void configure(ConfigurationElement config) throws CoreException {
         programName = getConfigString(config, "programName");
@@ -77,15 +80,18 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
 
     public CloProgramUI getProgramUI(AppContext appContext) {
-        //return new ExtractorUI(programName, xmlFileName)  ;
+        if (programName.indexOf("extract") != -1 ){
+            return new ExtractorUI(programName, xmlFileName)  ;
+        }
+
         return new CloProgramUIImpl(programName, xmlFileName)  ;
     }
 
     @Override
     public void actionPerformed(CommandEvent event) {
 
-        SeadasLogger.initLogger("ProcessingGUI_log");
-        SeadasLogger.getLogger().setLevel(Level.FINE);
+        SeadasLogger.initLogger("ProcessingGUI_log", printLogToConsole);
+        SeadasLogger.getLogger().setLevel(Level.INFO);
         final AppContext appContext = getAppContext();
 
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
@@ -127,6 +133,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
 
         final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
+        openOutputInApp = cloProgramUI.isOpenOutputInApp();
 
         executeProgram(processorModel);
 
@@ -143,9 +150,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
 
 
-        final File outputFile = processorModel.getOutputFile();
+        //final File outputFile = processorModel.getOutputFile();
 
-        SeadasLogger.getLogger().info("output file: " + outputFile);
+        //SeadasLogger.getLogger().info("output file: " + outputFile);
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running" + programName + " ...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
@@ -165,8 +172,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
+                File outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName())  );
+                if (openOutputInApp ) {
+                    getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile  ));
+                }
 
-                getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile));
+                SeadasLogger.getLogger().finest("Final output file name: " + outputFile)  ;
 
                 return outputFile;
             }
