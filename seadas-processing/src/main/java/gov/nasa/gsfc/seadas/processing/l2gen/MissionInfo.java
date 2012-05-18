@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
-import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,16 +15,28 @@ public class MissionInfo {
     private static final String OCDATAROOT = System.getenv("OCDATAROOT");
 
 
+    public static enum Id {
+        SEAWIFS,
+        MODISA,
+        MODIST,
+        VIIRS,
+        MERIS,
+        CZCS,
+        AQUARIUS,
+        OCTS,
+        UNKNOWN
+    }
+
     public static String SeaWiFS = "SeaWiFS";
     public static String SeaWiFS_DIRECTORY = "seawifs";
 
-    public static String MODISA = "MODISA";
+    public static String MODISA = "MODIS Aqua";
     public static String MODISA_DIRECTORY = "hmodisa";
 
-    public static String MODIST = "MODIST";
+    public static String MODIST = "MODIS Terra";
     public static String MODIST_DIRECTORY = "hmodist";
 
-    public static String VIIRS = "VIIRS";
+    public static String VIIRS = "VIIRSN";
     public static String VIIRS_DIRECTORY = "viirsn";
 
     public static String MERIS = "MERIS";
@@ -43,107 +55,123 @@ public class MissionInfo {
     public static String NULL_STRING = "";
 
 
-    private HashMap<String, String> directoryLookup = new HashMap();
+    private HashMap<Id, String> nameLookup = new HashMap();
+    private HashMap<Id, String> directoryLookup = new HashMap();
 
 
-    private String name = NULL_STRING;
-    private boolean requiresGeofile = false;
+    private Id id = Id.UNKNOWN;
+    private boolean geofileRequired = false;
     private String directory = NULL_STRING;
 
 
     public MissionInfo() {
         initDirectoryLookup();
+        initNameLookup();
     }
 
-    public MissionInfo(File iFile) {
-        initDirectoryLookup();
 
-        if (iFile != null) {
-            setName(iFile);
-        }
+    public void clear() {
+        id = Id.UNKNOWN;
+        geofileRequired = false;
+        directory = NULL_STRING;
+
     }
-
 
     private void initDirectoryLookup() {
-        directoryLookup.put(SeaWiFS, SeaWiFS_DIRECTORY);
-        directoryLookup.put(MODISA, MODISA_DIRECTORY);
-        directoryLookup.put(MODIST, MODIST_DIRECTORY);
-        directoryLookup.put(VIIRS, VIIRS_DIRECTORY);
-        directoryLookup.put(MERIS, MERIS_DIRECTORY);
-        directoryLookup.put(CZCS, CZCS_DIRECTORY);
-        directoryLookup.put(AQUARIUS, AQUARIUS_DIRECTORY);
-        directoryLookup.put(OCTS, OCTS_DIRECTORY);
+        directoryLookup.put(Id.SEAWIFS, SeaWiFS_DIRECTORY);
+        directoryLookup.put(Id.MODISA, MODISA_DIRECTORY);
+        directoryLookup.put(Id.MODIST, MODIST_DIRECTORY);
+        directoryLookup.put(Id.VIIRS, VIIRS_DIRECTORY);
+        directoryLookup.put(Id.MERIS, MERIS_DIRECTORY);
+        directoryLookup.put(Id.CZCS, CZCS_DIRECTORY);
+        directoryLookup.put(Id.AQUARIUS, AQUARIUS_DIRECTORY);
+        directoryLookup.put(Id.OCTS, OCTS_DIRECTORY);
     }
 
-    public String getName() {
-        return name;
+
+    private void initNameLookup() {
+        nameLookup.put(Id.SEAWIFS, SeaWiFS);
+        nameLookup.put(Id.MODISA, MODISA);
+        nameLookup.put(Id.MODIST, MODIST);
+        nameLookup.put(Id.VIIRS, VIIRS);
+        nameLookup.put(Id.MERIS, MERIS);
+        nameLookup.put(Id.CZCS, CZCS);
+        nameLookup.put(Id.AQUARIUS, AQUARIUS);
+        nameLookup.put(Id.OCTS, OCTS);
     }
 
-    private void setName(String name) {
-        if (name == null) {
-            this.name = NULL_STRING;
-        }
-        this.name = name;
+
+    public Id getId() {
+        return id;
     }
 
-    public boolean isName(String name) {
-        if (this.name != null && this.name.equals(name)) {
+    public void setId(Id id) {
+        this.id = id;
+        setRequiresGeofile();
+        setMissionDirectoryName();
+    }
+
+    public boolean isId(Id id) {
+        if (id == getId()) {
             return true;
         } else {
             return false;
         }
     }
 
-    public void setName(File iFile) {
-
-        if (iFile != null && iFile.exists()) {
-            String ifile = iFile.getName().toString();
-            String VIIRS_IFILE_PREFIX = "SVM01";
-            String MODISA_IFILE_PREFIX = "A";
-            String MODIST_IFILE_PREFIX = "T";
-
-            if (ifile.toUpperCase().startsWith(VIIRS_IFILE_PREFIX)) {
-                this.setName(VIIRS);
-            } else if (ifile.toUpperCase().startsWith(MODISA_IFILE_PREFIX)) {
-                this.setName(MODISA);
-            } else if (ifile.toUpperCase().startsWith(MODIST_IFILE_PREFIX)) {
-                this.setName(MODIST);
-            } else {
-                this.setName(NULL_STRING);
-            }
-
-        } else {
-            this.setName(NULL_STRING);
+    public void setName(String nameString) {
+        if (nameString == null) {
+            setId(Id.UNKNOWN);
+            return;
         }
 
-        setRequiresGeofile();
-        setMissionDirectoryName();
+        Iterator itr = nameLookup.keySet().iterator();
+
+        while (itr.hasNext()) {
+            Object key = itr.next();
+            if (nameLookup.get(key).toLowerCase().equals(nameString.toLowerCase())) {
+                setId((Id) key);
+                return;
+            }
+        }
+
+        setId(Id.UNKNOWN);
+        return;
+    }
+
+
+    public boolean isName(String name) {
+        if (this.id != null && this.id.equals(name)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
     private void setRequiresGeofile() {
 
-        if (isName(MODISA) || isName(MODIST) || isName(VIIRS)) {
-            setRequiresGeofile(true);
+        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRS)) {
+            setGeofileRequired(true);
         } else {
-            setRequiresGeofile(false);
+            setGeofileRequired(false);
         }
     }
 
 
-    public boolean isRequiresGeofile() {
-        return requiresGeofile;
+    public boolean isGeofileRequired() {
+        return geofileRequired;
     }
 
-    private void setRequiresGeofile(boolean requiresGeofile) {
-        this.requiresGeofile = requiresGeofile;
+    private void setGeofileRequired(boolean geofileRequired) {
+        this.geofileRequired = geofileRequired;
     }
 
 
     private void setMissionDirectoryName() {
 
-        if (directoryLookup.containsKey(name)) {
-            String missionPiece = directoryLookup.get(name);
+        if (directoryLookup.containsKey(id)) {
+            String missionPiece = directoryLookup.get(id);
 
             // determine the filename which contains the wavelengths
             final StringBuilder directory = new StringBuilder("");

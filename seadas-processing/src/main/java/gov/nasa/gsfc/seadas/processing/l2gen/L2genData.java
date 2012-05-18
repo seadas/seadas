@@ -51,7 +51,7 @@ public class L2genData {
     public boolean retainCurrentIfile = true;
     private boolean showDefaultsInParString = false;
 
-    public InputFileInfo iFileInfo = new InputFileInfo(null);
+    public FileInfo iFileInfo = new FileInfo(null);
 
     public ArrayList<WavelengthInfo> waveLimiterInfos = new ArrayList<WavelengthInfo>();
 
@@ -99,7 +99,7 @@ public class L2genData {
 
 
     public boolean isRequiresGeofile() {
-        return iFileInfo.isRequiresGeofile();
+        return iFileInfo.geofileRequired();
     }
 
 
@@ -892,7 +892,16 @@ public class L2genData {
 
         iFileInfo.setFile(iFile);
 
-        if (iFileInfo.isFileExists() && iFileInfo.isLevel(FileLevelInfo.Level.L1B)) {
+        if (iFileInfo.isFileExists() &&
+                iFileInfo.isMission(MissionInfo.Id.MODISA) &&
+                iFileInfo.isType(FileTypeInfo.Type.L1B) &&
+                iFileInfo.geofileRequired()) {
+
+        }
+
+
+        if (iFileInfo.isFileExists() &&
+                iFileInfo.getType() == FileTypeInfo.Type.L1B) {
             resetWaveLimiter();
             l2prodParamInfo.resetProductInfos();
             updateXmlBasedObjects(iFile);

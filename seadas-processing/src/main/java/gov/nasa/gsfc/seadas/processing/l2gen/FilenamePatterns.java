@@ -14,10 +14,10 @@ import java.util.GregorianCalendar;
 public class FilenamePatterns {
 
 
-    static public String getOFileName(File iFile) {
-        MissionInfo missionInfo = new MissionInfo(iFile);
-        return getOFileName(iFile, missionInfo);
-    }
+//    static public String getOFileName(File iFile) {
+//        MissionInfo missionInfo = new MissionInfo(iFile);
+//        return getOFileName(iFile, missionInfo);
+//    }
 
 
     static public String getOFileName(File iFile, MissionInfo missionInfo) {
@@ -29,18 +29,18 @@ public class FilenamePatterns {
     }
 
 
-    static public File getOFile(File iFile) {
-        MissionInfo missionInfo = new MissionInfo(iFile);
-        return getOFile(iFile, missionInfo);
-    }
-
-
-
-
-    static public String getGeoFileName(File iFile) {
-        MissionInfo missionInfo = new MissionInfo(iFile);
-        return getGeoFileName(iFile, missionInfo);
-    }
+//    static public File getOFile(File iFile) {
+//        MissionInfo missionInfo = new MissionInfo(iFile);
+//        return getOFile(iFile, missionInfo);
+//    }
+//
+//
+//
+//
+//    static public String getGeoFileName(File iFile) {
+//        MissionInfo missionInfo = new MissionInfo(iFile);
+//        return getGeoFileName(iFile, missionInfo);
+//    }
 
 
     static public String getGeoFileName(File iFile, MissionInfo missionInfo) {
@@ -51,11 +51,11 @@ public class FilenamePatterns {
         return null;
     }
 
-
-    static public File getGeoFile(File iFile) {
-        MissionInfo missionInfo = new MissionInfo(iFile);
-        return getGeoFile(iFile, missionInfo);
-    }
+//
+//    static public File getGeoFile(File iFile) {
+//        MissionInfo missionInfo = new MissionInfo(iFile);
+//        return getGeoFile(iFile, missionInfo);
+//    }
 
     static public File getOFile(File iFile, MissionInfo missionInfo) {
         if (iFile == null || iFile.getAbsoluteFile().length() == 0 || missionInfo == null) {
@@ -63,7 +63,7 @@ public class FilenamePatterns {
         }
 
         File oFile;
-        if (missionInfo.isName(MissionInfo.VIIRS)) {
+        if (missionInfo.isId(MissionInfo.Id.VIIRS)) {
             oFile = getViirsOfilename(iFile);
         } else {
             oFile = getStandardOfile(iFile);
@@ -87,7 +87,7 @@ public class FilenamePatterns {
         StringBuilder geofile = new StringBuilder();
         File geoFile = null;
 
-        if (missionInfo.isName(MissionInfo.VIIRS)) {
+        if (missionInfo.isId(MissionInfo.Id.VIIRS)) {
             String VIIRS_GEOFILE_PREFIX = "GMTCO";
             geofileBasename.append(VIIRS_GEOFILE_PREFIX);
             geofileBasename.append(iFile.getName().substring(VIIRS_IFILE_PREFIX.length()));

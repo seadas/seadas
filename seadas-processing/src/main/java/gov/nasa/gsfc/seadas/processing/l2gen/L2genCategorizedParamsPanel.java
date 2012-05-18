@@ -86,7 +86,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
             l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-//                    StringBuilder stringBuilder = new StringBuilder(paramCategoryInfo.getName());
+//                    StringBuilder stringBuilder = new StringBuilder(paramCategoryInfo.getId());
 
                     if (l2genData.isParamCategoryDefault(paramCategoryInfo)) {
                         restoreDefaultsButton.setEnabled(false);
