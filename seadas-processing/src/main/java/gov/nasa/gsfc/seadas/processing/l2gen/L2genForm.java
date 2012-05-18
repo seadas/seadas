@@ -125,7 +125,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
     public ProcessorModel getProcessorModel() {
         processorModel.setParString(l2genData.getParString(false));
-        processorModel.setOutputFile(new File(l2genData.getParamValue(L2genData.OFILE)));
+        processorModel.updateParamInfo(L2genData.OFILE,l2genData.getParamValue(L2genData.OFILE));
         return processorModel;
     }
 
@@ -159,5 +159,9 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         if (l2genMainPanel != null) {
             l2genMainPanel.prepareHide();
         }
+    }
+    public boolean isOpenOutputInApp(){
+        //return l2genMainPanel.getOutputProductSelector().
+        return true;
     }
 }

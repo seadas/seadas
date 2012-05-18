@@ -36,7 +36,6 @@ public class ProcessorModel {
     private boolean acceptsParFile;
     private String[] processorEnv;
     private String errorMessage;
-    private File programRoot;
     private String parString;
 
     private boolean hasGeoFile;
@@ -61,8 +60,29 @@ public class ProcessorModel {
             primaryOptions = ParamUtils.getPrimaryOptions(parXMLFileName);
             primaryInputFileOptionName = getPrimaryInputFileOptionName();
             primaryOutputFileOptionName = getPrimaryOutputFileOptionName();
+        } else {
+            paramList = new ArrayList<ParamInfo>();
+            acceptsParFile = false;
+            hasGeoFile = false;
         }
 
+    }
+
+    public void addParamInfo(ParamInfo info) {
+        paramList.add(info);
+
+    }
+
+    public void addParamInfo(String name, String value) {
+        ParamInfo info = new ParamInfo(name, value);
+        addParamInfo(info);
+    }
+
+
+    public void addParamInfo(String name, String value, int order) {
+        ParamInfo info = new ParamInfo(name, value);
+        info.setOrder(order);
+        addParamInfo(info);
     }
 
     protected String getPrimaryInputFileOptionName() {
@@ -122,13 +142,6 @@ public class ProcessorModel {
         return false;
     }
 
-    public String getProgramLocation() {
-        return programLocation;
-    }
-
-    public File getProgramRoot() {
-        return programRoot;
-    }
 
     public ArrayList getProgramParamList() {
         return paramList;
@@ -247,7 +260,6 @@ public class ProcessorModel {
 
         processorEnv = envp;
         programLocation = ocsswRoot.getPath() + "/run/scripts/";
-        programRoot = ocsswRoot;
     }
 
     private String[] getCmdArrayWithParFile() {
@@ -358,7 +370,8 @@ public class ProcessorModel {
 
         SeadasLogger.getLogger().info("Executing processor " + getProgramName() + "...");
 
-        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
+        //return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
+        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv());
     }
 
     public EventInfo[] eventInfos = {
