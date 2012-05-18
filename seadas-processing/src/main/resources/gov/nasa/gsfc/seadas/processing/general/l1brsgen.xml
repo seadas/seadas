@@ -1,2211 +1,249 @@
-<option_list>
-    <option>
-        <name>-help</name>
-        <value>false</value>
-        <type>bool</type>
-        <default>false</default>
-        <description>print usage information</description>
-        <source>default</source>
-        <alias>-h</alias>
-        <alias>--help</alias>
-    </option>
-    <option>
-        <name>-version</name>
-        <value>false</value>
-        <type>bool</type>
-        <default>false</default>
-        <description>print the version
-        information</description>
-        <source>default</source>
-        <alias>--version</alias>
-    </option>
-    <option>
-        <name>-dump_options</name>
-        <value>false</value>
-        <type>bool</type>
-        <default>false</default>
-        <description>print
-        information about each option</description>
-        <source>default</source>
-        <alias>--dump_options</alias>
-    </option>
-    <option>
-        <name>-dump_options_paramfile</name>
-        <value/>
-        <type>string</type>
-        <description>print
-        information about each option to paramfile</description>
-        <source>default</source>
-        <alias>--dump_options_paramfile</alias>
-    </option>
-    <option>
-        <name>-dump_options_xmlfile</name>
-        <value>l1brsgen.xml</value>
-        <type>string</type>
-        <description>print
-        information about each option to XML file</description>
-        <source>command line</source>
-        <alias>--dump_options_xmlfile</alias>
-    </option>
-    <option>
-        <name>par</name>
-        <value/>
-        <type>string</type>
-        <description>input parameter file</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>pversion</name>
-        <value>Unspecified</value>
-        <type>string</type>
-        <default>Unspecified</default>
-        <description>processing version string</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>suite</name>
-        <value>OC</value>
-        <type>string</type>
-        <default>OC</default>
-        <description>product suite string for loading
-        suite-specific defaults</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>eval</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>evaluation bitmask
-          0: standard processing
-          1: init to old aerosol models
-         16: enables MODIS cirrus mask
-         32: use test sensor info file
-         64: use test rayleigh tables
-        128: use test aerosol tables
-        256: use test polarization tables
-       1024: mask modis mirror-side 1 (navfail)
-       2048: mask modis mirror-side 2 (navfail)
-       4096: remove warm tests for SSTref
-       8192: use alt sensor infor file in eval
-      32768: enables spherical path geom for dtran</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>standard processing</description>
-        </validValue>
-        <validValue>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+        <hasGeoFile>true</hasGeoFile>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="help">
+            <name>-help</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print usage information</description>
+            <source>default</source>
+            <alias>-h</alias>
+            <alias>--help</alias>
+        </option>
+        <option type="help">
+            <name>-version</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print the version
+                information
+            </description>
+            <source>default</source>
+            <alias>--version</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print
+                information about each option
+            </description>
+            <source>default</source>
+            <alias>--dump_options</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_paramfile</name>
+            <value/>
+            <type>string</type>
+            <description>print
+                information about each option to paramfile
+            </description>
+            <source>default</source>
+            <alias>--dump_options_paramfile</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_xmlfile</name>
+            <value>l1brsgen.xml</value>
+            <type>string</type>
+            <description>print
+                information about each option to XML file
+            </description>
+            <source>command line</source>
+            <alias>--dump_options_xmlfile</alias>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value>Unspecified</value>
+            <type>string</type>
+            <default>Unspecified</default>
+            <description>processing version string</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>suite</name>
+            <value>OC</value>
+            <type>string</type>
+            <default>OC</default>
+            <description>product suite string for loading
+                suite-specific defaults
+            </description>
+            <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
+        </option>
+
+        <option type="ifile">
+            <name>ifile</name>
+            <value>/Users/Shared/ocssw/test/l2gen/A2002365234500.L1B_LAC</value>
+            <type>string</type>
+            <description>input L1 file name</description>
+            <source>command line</source>
+            <alias>ifile1</alias>
+        </option>
+        <option type="ifile">
+            <name>geofile</name>
+            <value/>
+            <type>string</type>
+            <description>input L1 geolocation file name (MODIS only)</description>
+            <source>default</source>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value>output</value>
+            <type>string</type>
+            <default>output</default>
+            <description>output L2 file #1 name, output vicarious L1B
+                for inverse mode
+                ofile[#] = additional output L2 file name
+            </description>
+            <source>default</source>
+            <alias>ofile1</alias>
+        </option>
+
+        <option type="int">
+            <name>spixl</name>
             <value>1</value>
-            <description>init to old aerosol models</description>
-        </validValue>
-        <validValue>
-            <value>16</value>
-            <description>enables MODIS cirrus mask</description>
-        </validValue>
-        <validValue>
-            <value>32</value>
-            <description>use test sensor info file</description>
-        </validValue>
-        <validValue>
-            <value>64</value>
-            <description>use test rayleigh tables</description>
-        </validValue>
-        <validValue>
-            <value>128</value>
-            <description>use test aerosol tables</description>
-        </validValue>
-        <validValue>
-            <value>256</value>
-            <description>use test polarization tables</description>
-        </validValue>
-        <validValue>
-            <value>1024</value>
-            <description>mask modis mirror-side 1 (navfail)</description>
-        </validValue>
-        <validValue>
-            <value>2048</value>
-            <description>mask modis mirror-side 2 (navfail)</description>
-        </validValue>
-        <validValue>
-            <value>4096</value>
-            <description>remove warm tests for SSTref</description>
-        </validValue>
-        <validValue>
-            <value>8192</value>
-            <description>use alt sensor infor file in eval</description>
-        </validValue>
-        <validValue>
-            <value>32768</value>
-            <description>enables spherical path geom for dtran</description>
-        </validValue>
-    </option>
-    <option>
-        <name>ifile</name>
-        <value>/Users/Shared/ocssw/test/l2gen/A2002365234500.L1B_LAC</value>
-        <type>string</type>
-        <description>input L1 file name</description>
-        <source>command line</source>
-        <alias>ifile1</alias>
-    </option>
-    <option>
-        <name>ilist</name>
-        <value/>
-        <type>string</type>
-        <description>file containing list of input files, one per line</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>geofile</name>
-        <value/>
-        <type>string</type>
-        <description>input L1 geolocation file name (MODIS only)</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>ofile</name>
-        <value>output</value>
-        <type>string</type>
-        <default>output</default>
-        <description>output L2 file #1 name, output vicarious L1B
-        for inverse mode
-   ofile[#] = additional output L2 file name</description>
-        <source>default</source>
-        <alias>ofile1</alias>
-    </option>
-    <option>
-        <name>il2file</name>
-        <value/>
-        <type>string</type>
-        <description>input L2 file names for sensor to be
-        used as a calibrator.  Alternatively, a data point can be used as a
-        calibrator (e.g. MOBY)
-   il2file[#] = additional L2 callibration file names</description>
-        <source>default</source>
-        <alias>il2file1</alias>
-    </option>
-    <option>
-        <name>tgtfile</name>
-        <value/>
-        <type>string</type>
-        <description>vicarious calibration target file</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>aerfile</name>
-        <value/>
-        <type>string</type>
-        <description>aerosol model specification file</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>metafile</name>
-        <value/>
-        <type>string</type>
-        <description>output meta-data file</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>l2prod</name>
-        <value>aot_869 angstrom Rrs_vvv chlor_a Kd_490 pic poc cdom_index ipar nflh</value>
-        <type>string</type>
-        <description>L2 products to be included in ofile #1
-   l2prod[#] = L2 products to be included in ofile[#]</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults_OC.par</source>
-        <alias>l2prod1</alias>
-    </option>
-    <option>
-        <name>spixl</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>start pixel number</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>epixl</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>end pixel number (-1=the last pixel)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>dpixl</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>pixel subsampling interval</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sline</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>start line number</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>eline</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>end line number (-1=the last line)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>dline</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>line subsampling interval</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>ctl_pt_incr</name>
-        <value>1</value>
-        <type>int</type>
-        <default>8</default>
-        <description> control-point pixel increment for lon/lat
-        arrays</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>proc_ocean</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>toggle ocean processing
-        1: On
-        0: Off
-        2: force all pixels to be processed as ocean</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <validValue>
-            <value>1</value>
-            <description>On</description>
-        </validValue>
-        <validValue>
-            <value>0</value>
-            <description>Off</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>force all pixels to be processed as ocean</description>
-        </validValue>
-    </option>
-    <option>
-        <name>proc_land</name>
-        <value>1</value>
-        <type>bool</type>
-        <default>off</default>
-        <description>toggle land processing</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>proc_sst</name>
-        <value>1</value>
-        <type>bool</type>
-        <default>false</default>
-        <description>toggle SST processing
-        (default=1 for MODIS, 0 otherwise)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>atmocor</name>
-        <value>0</value>
-        <type>bool</type>
-        <default>on</default>
-        <description>toggle atmospheric correction</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>mode</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>processing mode
-        0: forward processing
-        1: inverse (calibration) mode, targeting to nLw=0
-        2: inverse (calibration) mode, given nLw target
-        3: inverse (calibration) mode, given Lw target (internally normalized)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <validValue>
-            <value>0</value>
-            <description>forward processing</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>inverse (calibration) mode, targeting to nLw=0</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>inverse (calibration) mode, given nLw target</description>
-        </validValue>
-        <validValue>
-            <value>3</value>
-            <description>inverse (calibration) mode, given Lw target (internally normalized)</description>
-        </validValue>
-    </option>
-    <option>
-        <name>aer_opt</name>
-        <value>-2</value>
-        <type>int</type>
-        <default>99</default>
-        <description>aerosol mode option
-      -99: No aerosol subtraction
-      > 0: Multi-scattering with fixed model (provide model number, 1-N,
-           relative to aermodels list)
-        0: White aerosol extrapolation.
-       -1: Multi-scattering with 2-band model selection
-       -2: Multi-scattering with 2-band, RH-based model selection and
-           iterative NIR correction
-       -3: Multi-scattering with 2-band model selection
-           and iterative NIR correction
-       -4: Multi-scattering with fixed model pair
-           (requires aermodmin, aermodmax, aermodrat specification)
-       -5: Multi-scattering with fixed model pair
-           and iterative NIR correction
-           (requires aermodmin, aermodmax, aermodrat specification)
-       -6: Multi-scattering with fixed angstrom
-           (requires aer_angstrom specification)
-       -7: Multi-scattering with fixed angstrom
-           and iterative NIR correction
-           (requires aer_angstrom specification)
-       -8: Multi-scattering with fixed aerosol optical thickness
-           (requires taua specification)
-       -9: Multi-scattering with 2-band model selection using Wang et al. 2009
-           to switch between SWIR and NIR. (MODIS only,
-           requires aer_swir_short, aer_swir_long, aer_wave_short, aer_wave_long)
-      -10: Multi-scattering with MUMM correction
-           and MUMM NIR calculation 
-      -11: Spectral optimization via Kuchinke (SeaWiFS-only)
-      -12: Spectral matching via Gordon (SeaWiFS-only)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <validValue>
-            <value>-99</value>
-            <description>No aerosol subtraction</description>
-        </validValue>
-        <validValue>
-            <value>0</value>
-            <description>White aerosol extrapolation.</description>
-        </validValue>
-        <validValue>
+            <type>int</type>
+            <default>1</default>
+            <description>start pixel number</description>
+            <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
+        </option>
+        <option type="int">
+            <name>epixl</name>
             <value>-1</value>
-            <description>Multi-scattering with 2-band model selection</description>
-        </validValue>
-        <validValue>
-            <value>-2</value>
-            <description>Multi-scattering with 2-band, RH-based model selection and</description>
-        </validValue>
-        <validValue>
-            <value>-3</value>
-            <description>Multi-scattering with 2-band model selection</description>
-        </validValue>
-        <validValue>
-            <value>-4</value>
-            <description>Multi-scattering with fixed model pair</description>
-        </validValue>
-        <validValue>
-            <value>-5</value>
-            <description>Multi-scattering with fixed model pair</description>
-        </validValue>
-        <validValue>
-            <value>-6</value>
-            <description>Multi-scattering with fixed angstrom</description>
-        </validValue>
-        <validValue>
-            <value>-7</value>
-            <description>Multi-scattering with fixed angstrom</description>
-        </validValue>
-        <validValue>
-            <value>-8</value>
-            <description>Multi-scattering with fixed aerosol optical thickness</description>
-        </validValue>
-        <validValue>
-            <value>-9</value>
-            <description>Multi-scattering with 2-band model selection using Wang et al. 2009</description>
-        </validValue>
-        <validValue>
-            <value>-10</value>
-            <description>Multi-scattering with MUMM correction</description>
-        </validValue>
-        <validValue>
-            <value>-11</value>
-            <description>Spectral optimization via Kuchinke (SeaWiFS-only)</description>
-        </validValue>
-        <validValue>
-            <value>-12</value>
-            <description>Spectral matching via Gordon (SeaWiFS-only)</description>
-        </validValue>
-    </option>
-    <option>
-        <name>aer_wave_short</name>
-        <value>748</value>
-        <type>int</type>
-        <default>765</default>
-        <description>shortest sensor wavelength for aerosol
-        model selection</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>aer_wave_long</name>
-        <value>869</value>
-        <type>int</type>
-        <default>865</default>
-        <description>longest sensor wavelength for aerosol
-        model selection</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>aer_swir_short</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>shortest sensor wavelength for
-        SWIR-based NIR Lw correction</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>aer_swir_long</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>longest sensor wavelength for SWIR-based
-        NIR Lw correction</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>aer_rrs_short</name>
-        <value>-1.0</value>
-        <type>float</type>
-        <default>-1.0</default>
-        <description>Rrs at shortest sensor wavelength for
-        aerosol model selection</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>aer_rrs_long</name>
-        <value>-1.0</value>
-        <type>float</type>
-        <default>-1.0</default>
-        <description>Rrs at longest sensor wavelength for
-        aerosol model selection</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>aermodmin</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>lower-bounding model to use for fixed model
-        pair aerosol option</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>aermodmax</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>upper-bounding model to use for fixed model
-        pair aerosol option</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>aermodrat</name>
-        <value>0.0</value>
-        <type>float</type>
-        <default>0.0</default>
-        <description>ratio to use for fixed model pair aerosol
-        option</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>aer_angstrom</name>
-        <value>-999.0</value>
-        <type>float</type>
-        <default>-999.0</default>
-        <description>aerosol angstrom exponent for model
-        selection</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>aer_iter_max</name>
-        <value>10</value>
-        <type>int</type>
-        <default>10</default>
-        <description>maximum number of iterations for NIR
-        water-leaving radiance estimation.</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>mumm_alpha</name>
-        <value>1.945</value>
-        <type>float</type>
-        <default>1.72</default>
-        <description>water-leaving reflectance ratio for MUMM
-       turbid water atmospheric correction</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>mumm_gamma</name>
-        <value>1.00</value>
-        <type>float</type>
-        <default>1.0</default>
-        <description>two-way Rayleigh-aerosol transmittance
-       ratio for MUMM turbid water atmospheric correction</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>mumm_epsilon</name>
-        <value>1.00</value>
-        <type>float</type>
-        <default>1.0</default>
-        <description>aerosol reflectance ratio for MUMM
-        turbid water atmospheric correction</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>degc</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>Deg C for AVHRR</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>absaer_opt</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>absorbing aerosol flagging option
-        0: use rhow constant
-        1: apply chlorophyll climatology to calculate rhow
-        2: 1+validate against nLw_412 climatology</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>use rhow constant</description>
-        </validValue>
-        <validValue>
+            <type>int</type>
+            <default>-1</default>
+            <description>end pixel number (-1=the last pixel)</description>
+            <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
+        </option>
+        <option type="int">
+            <name>sline</name>
             <value>1</value>
-            <description>apply chlorophyll climatology to calculate rhow</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>1+validate against nLw_412 climatology</description>
-        </validValue>
-    </option>
-    <option>
-        <name>glint_opt</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>glint correction:
-        0: glint correction off
-        1: standard glint correction
-        2: simple glint correction
-</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <validValue>
-            <value>0</value>
-            <description>glint correction off</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>standard glint correction</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>simple glint correction</description>
-        </validValue>
-    </option>
-    <option>
-        <name>outband_opt</name>
-        <value>2</value>
-        <type>int</type>
-        <default>99</default>
-        <description>out-of-band correction for water-leaving
-        radiances
-        2: On (default for MODIS, SeaWiFS, OCTS)
-        0: Off (default for MOS, OSMI)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <validValue>
-            <value>2</value>
-            <description>On (default for MODIS, SeaWiFS, OCTS)</description>
-        </validValue>
-        <validValue>
-            <value>0</value>
-            <description>Off (default for MOS, OSMI)</description>
-        </validValue>
-    </option>
-    <option>
-        <name>oxaband_opt</name>
-        <value>0</value>
-        <type>bool</type>
-        <default>false</default>
-        <description>oxygen a-band correction option
-        (default On for SeaWiFS, OSMI, and OCTS, Off otherwise)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>filter_opt</name>
-        <value>1</value>
-        <type>bool</type>
-        <default>false</default>
-        <description>filtering input data option
-        (default On for OCTS, Off otherwise)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>filter_file</name>
-        <value>/Users/Shared/ocssw/run/data/modisa/msl12_filter.dat</value>
-        <type>string</type>
-        <default>$OCDATAROOT/sensor/sensor_filter.dat</default>
-        <description>
-        data file for input filtering</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>brdf_opt</name>
-        <value>7</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>Bidirectional reflectance correction
-        0: no correction
-        1: Fresnel reflection/refraction correction for sensor path
-        3: Fresnel reflection/refraction correction for sensor + solar path
-        7: Morel f/Q + Fresnel solar + Fresnel sensor
-       15: Gordon DT + Morel f/Q + Fresnel solar + Fresnel sensor
-       19: Morel Q + Fresnel solar + Fresnel sensor</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <validValue>
-            <value>0</value>
-            <description>no correction</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>Fresnel reflection/refraction correction for sensor path</description>
-        </validValue>
-        <validValue>
-            <value>3</value>
-            <description>Fresnel reflection/refraction correction for sensor + solar path</description>
-        </validValue>
-        <validValue>
-            <value>7</value>
-            <description>Morel f/Q + Fresnel solar + Fresnel sensor</description>
-        </validValue>
-        <validValue>
-            <value>15</value>
-            <description>Gordon DT + Morel f/Q + Fresnel solar + Fresnel sensor</description>
-        </validValue>
-        <validValue>
-            <value>19</value>
-            <description>Morel Q + Fresnel solar + Fresnel sensor</description>
-        </validValue>
-    </option>
-    <option>
-        <name>gas_opt</name>
-        <value>15</value>
-        <type>int</type>
-        <default>1</default>
-        <description>gaseous transmittance bitmask selector
-        0: no correction
-        1: Ozone
-        2: CO2
-        4: NO2
-        8: H2O</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <validValue>
-            <value>0</value>
-            <description>no correction</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>Ozone</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>CO2</description>
-        </validValue>
-        <validValue>
-            <value>4</value>
-            <description>NO2</description>
-        </validValue>
-        <validValue>
-            <value>8</value>
-            <description>H2O</description>
-        </validValue>
-    </option>
-    <option>
-        <name>iop_opt</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>IOP model for use in downstream products
-        0: None (products requiring a or bb will fail)
-        1: Carder
-        2: GSM
-        3: QAA
-        4: PML
-        5: NIWA
-        6: LAS
-        7: GIOP</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>None (products requiring a or bb will fail)</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>Carder</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>GSM</description>
-        </validValue>
-        <validValue>
-            <value>3</value>
-            <description>QAA</description>
-        </validValue>
-        <validValue>
-            <value>4</value>
-            <description>PML</description>
-        </validValue>
-        <validValue>
-            <value>5</value>
-            <description>NIWA</description>
-        </validValue>
-        <validValue>
-            <value>6</value>
-            <description>LAS</description>
-        </validValue>
-        <validValue>
-            <value>7</value>
-            <description>GIOP</description>
-        </validValue>
-    </option>
-    <option>
-        <name>polfile</name>
-        <value>/Users/Shared/ocssw/run/data/modisa/cal/polcor_modisa_2010b</value>
-        <type>string</type>
-        <description>polarization sensitivites filename leader</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>pol_opt</name>
-        <value>3</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>polarization correction (sensor-specific)
-        0: no correction
-        1: only Rayleigh component is polarized
-        2: all radiance polarized like Rayleigh
-        3: only Rayleigh and Glint are polarized (MODIS default)
-        4: all radiance polarized like Rayleigh + Glint</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <validValue>
-            <value>0</value>
-            <description>no correction</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>only Rayleigh component is polarized</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>all radiance polarized like Rayleigh</description>
-        </validValue>
-        <validValue>
-            <value>3</value>
-            <description>only Rayleigh and Glint are polarized (MODIS default)</description>
-        </validValue>
-        <validValue>
-            <value>4</value>
-            <description>all radiance polarized like Rayleigh + Glint</description>
-        </validValue>
-    </option>
-    <option>
-        <name>rad_opt</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>radiation correction option (sensor-specific)
-        0: no correction
-        1: apply MERIS Smile correction</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>no correction</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>apply MERIS Smile correction</description>
-        </validValue>
-    </option>
-    <option>
-        <name>xcalfile</name>
-        <value>/Users/Shared/ocssw/run/data/modisa/cal/xcal_modisa_axc19e</value>
-        <type>string</type>
-        <description>cross-calibration file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>xcal_opt</name>
-        <value>[1,1,1,1,1,1,1]</value>
-        <type>int</type>
-        <description>cross-calibration option (sensor-specific)
-         comma separated list of option values, 1 per band, with bands listed in xcal_wave.
-        3: apply cross-calibration corrections (polarization and rvs)
-        2: apply cross-calibration polarization corrections
-        1: apply cross-calibration rvs corrections
-        0: no correction</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <validValue>
-            <value>3</value>
-            <description>apply cross-calibration corrections (polarization and rvs)</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>apply cross-calibration polarization corrections</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>apply cross-calibration rvs corrections</description>
-        </validValue>
-        <validValue>
-            <value>0</value>
-            <description>no correction</description>
-        </validValue>
-    </option>
-    <option>
-        <name>xcal_wave</name>
-        <value>[412,443,488,531,547,667,678]</value>
-        <type>float</type>
-        <description>wavelengths at which to apply cross-calibration.  Comma
-        separated list of sensor wavelength values associated with xcal_opt.</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>resolution</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>processing resolution (MODIS only)
-       -1: standard ocean 1km processing
-     1000: 1km resolution including aggregated 250 and 500m land bands
-      500: 500m resolution including aggregated 250 land bands and
-           replication for lower resolution bands
-      250: 250m resolution with replication for lower resolution bands</description>
-        <source>default</source>
-        <validValue>
+            <type>int</type>
+            <default>1</default>
+            <description>start line number</description>
+            <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
+        </option>
+        <option type="int">
+            <name>eline</name>
             <value>-1</value>
-            <description>standard ocean 1km processing</description>
-        </validValue>
-        <validValue>
-            <value>1000</value>
-            <description>1km resolution including aggregated 250 and 500m land bands</description>
-        </validValue>
-        <validValue>
-            <value>500</value>
-            <description>500m resolution including aggregated 250 land bands and</description>
-        </validValue>
-        <validValue>
-            <value>250</value>
-            <description>250m resolution with replication for lower resolution bands</description>
-        </validValue>
-    </option>
-    <option>
-        <name>giop_aph_opt</name>
-        <value>2</value>
-        <type>int</type>
-        <default>2</default>
-        <description>GIOP model aph function type
-        0: tabulated (supplied via giop_aph_file)
-        2: Bricaud et al. 1995 (chlorophyll supplied via default empirical algorithm)
-        3: Ciotti and Bricaud 2006 (size fraction supplied via giop_aph_s)</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>tabulated (supplied via giop_aph_file)</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>Bricaud et al. 1995 (chlorophyll supplied via default empirical algorithm)</description>
-        </validValue>
-        <validValue>
-            <value>3</value>
-            <description>Ciotti and Bricaud 2006 (size fraction supplied via giop_aph_s)</description>
-        </validValue>
-    </option>
-    <option>
-        <name>giop_aph_file</name>
-        <value>$OCDATAROOT/common/aph_default.txt</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/aph_default.txt</default>
-        <description>
-        GIOP model, tabulated aph spectra</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>giop_aph_s</name>
-        <value>-1000.0</value>
-        <type>float</type>
-        <default>-1000.0</default>
-        <description>GIOP model, spectral parameter
-        for aph</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>giop_adg_opt</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>GIOP model adg function type
-        0: tabulated (supplied via giop_adg_file)
-        1: exponential with exponent supplied via giop_adg_s)
-        2: exponential with exponent derived via Lee et al. (2002)
-        3: exponential with exponent derived via OBPG method</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>tabulated (supplied via giop_adg_file)</description>
-        </validValue>
-        <validValue>
+            <type>int</type>
+            <default>-1</default>
+            <description>end line number (-1=the last line)</description>
+            <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
+        </option>
+               <option type="int">
+            <name>subsamp</name>
             <value>1</value>
-            <description>exponential with exponent supplied via giop_adg_s)</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>exponential with exponent derived via Lee et al. (2002)</description>
-        </validValue>
-        <validValue>
-            <value>3</value>
-            <description>exponential with exponent derived via OBPG method</description>
-        </validValue>
-    </option>
-    <option>
-        <name>giop_adg_file</name>
-        <value>$OCDATAROOT/common/adg_default.txt</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/adg_default.txt</default>
-        <description>
-        GIOP model, tabulated adg spectra</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>giop_adg_s</name>
-        <value>0.0145</value>
-        <type>float</type>
-        <default>0.0145</default>
-        <description>GIOP model, spectral parameter
-        for adg</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>giop_bbp_opt</name>
-        <value>3</value>
-        <type>int</type>
-        <default>3</default>
-        <description>GIOP model bbp function type
-        0: tabulated (supplied via giop_bbp_file)
-        1: power-law with exponent supplied via giop_bbp_s)
-        2: power-law with exponent derived via Hoge and Lyon (1996)
-        3: power-law with exponent derived via Lee et al. (2002)
-        5: power-law with exponent derived via Ciotti et al. (1999)
-        6: power-law with exponent derived via Morel and Maritorena (2001)
-        7: power-law with exponent derived via Loisel and Stramski (2000)
-        8: spectrally independent vector derived via Loisel and Stramski (2000)
-        9: fixed vector derived via Loisel and Stramski (2000)
-       10: fixed vector derived via lee et al. (2002)</description>
-        <source>default</source>
-        <validValue>
+            <type>int</type>
+            <default>1</default>
+            <description>sub-sampling interval</description>
+            <source></source>
+        </option>
+               <option type="int">
+            <name>rgb</name>
+            <value>[1,1,1]</value>
+            <type>int</type>
+            <default>[1,1,1]</default>
+            <description>bands to use for red, green and blue</description>
+        </option>
+               <option type="boolean">
+            <name>atmospheric correction</name>
+            <value>true</value>
+            <type>boolean</type>
+            <default>true</default>
+            <description>toggle atmospheric correction</description>
+        </option>
+        <option type="float">
+            <name>datamin</name>
+            <value>0.01</value>
+            <type>float</type>
+            <default>0.01</default>
+            <description>minimum value for data scaling
+                (default: see product_table)
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>(default</value>
+                <description>see product_table)</description>
+            </validValue>
+        </option>
+        <option type="float">
+            <name>datamax</name>
+            <value>0.9</value>
+            <type>float</type>
+            <default>0.9</default>
+            <description>maximum value for data scaling
+                (default: see product_table)
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>(default</value>
+                <description>see product_table)</description>
+            </validValue>
+        </option>
+        <option type="int">
+            <name>stype</name>
             <value>0</value>
-            <description>tabulated (supplied via giop_bbp_file)</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>power-law with exponent supplied via giop_bbp_s)</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>power-law with exponent derived via Hoge and Lyon (1996)</description>
-        </validValue>
-        <validValue>
-            <value>3</value>
-            <description>power-law with exponent derived via Lee et al. (2002)</description>
-        </validValue>
-        <validValue>
-            <value>5</value>
-            <description>power-law with exponent derived via Ciotti et al. (1999)</description>
-        </validValue>
-        <validValue>
-            <value>6</value>
-            <description>power-law with exponent derived via Morel and Maritorena (2001)</description>
-        </validValue>
-        <validValue>
-            <value>7</value>
-            <description>power-law with exponent derived via Loisel and Stramski (2000)</description>
-        </validValue>
-        <validValue>
-            <value>8</value>
-            <description>spectrally independent vector derived via Loisel and Stramski (2000)</description>
-        </validValue>
-        <validValue>
-            <value>9</value>
-            <description>fixed vector derived via Loisel and Stramski (2000)</description>
-        </validValue>
-        <validValue>
-            <value>10</value>
-            <description>fixed vector derived via lee et al. (2002)</description>
-        </validValue>
-    </option>
-    <option>
-        <name>giop_bbp_file</name>
-        <value>$OCDATAROOT/common/bbp_default.txt</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/bbp_default.txt</default>
-        <description>
-        GIOP model, tabulated bbp spectra</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>giop_bbp_s</name>
-        <value>-1000.0</value>
-        <type>float</type>
-        <default>-1000.0</default>
-        <description>GIOP model, spectral parameter
-        for bbp</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>giop_rrs_opt</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>GIOP model Rrs to bb/(a+bb) method
-        0: Gordon quadratic (specified with giop_grd)
-        1: Morel f/Q</description>
-        <source>default</source>
-        <validValue>
+            <type>int</type>
+            <default>0</default>
+            <description>scaling type: 0: log; 1: linear
+                (default: see product_table)
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>log</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>linear</description>
+            </validValue>
+        </option>
+        <option type="int">
+            <name>outmode</name>
             <value>0</value>
-            <description>Gordon quadratic (specified with giop_grd)</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>Morel f/Q</description>
-        </validValue>
-    </option>
-    <option>
-        <name>giop_grd</name>
-        <value>[0.0949,0.0794]</value>
-        <type>float</type>
-        <default>[0.0949,0.0794]</default>
-        <description>GIOP model, Gordon
-        Rrs to bb/(a+bb) quadratic coefficients</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>giop_wave</name>
-        <value>[412,443,488,547,667]</value>
-        <type>float</type>
-        <default>-1</default>
-        <description>GIOP model list of sensor wavelengths for optimization
-        comma-seperated list, defaults is all autoTab bands (400-700nm)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>giop_rrs_unc</name>
-        <value>-1</value>
-        <type>float</type>
-        <default>-1</default>
-        <description>GIOP model list of sensor wavelengths for optimization
-        comma-seperated list, defaults is all autoTab bands (400-700nm)</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>giop_maxiter</name>
-        <value>50</value>
-        <type>int</type>
-        <default>50</default>
-        <description>GIOP Model iteration limit</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>giop_fit_opt</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>GIOP model optimization method
-        0: Amoeba optimization
-        1: Levenberg-Marquardt optimization
-        3: SVD matrix inversion</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>Amoeba optimization</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>Levenberg-Marquardt optimization</description>
-        </validValue>
-        <validValue>
-            <value>3</value>
-            <description>SVD matrix inversion</description>
-        </validValue>
-    </option>
-    <option>
-        <name>giop_ts_opt</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>GIOP temperature and salinity dependence
-        0: none
-        1: apply to bbw
-</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>none</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>apply to bbw</description>
-        </validValue>
-    </option>
-    <option>
-        <name>gsm_opt</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>GSM model options
-        0: default coefficients
-        1: Chesapeake regional coefficients</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>default coefficients</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>Chesapeake regional coefficients</description>
-        </validValue>
-    </option>
-    <option>
-        <name>gsm_fit</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>SM fit algorithm
-        0: Amoeba
-        1: Levenberg-Marquardt</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>Amoeba</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>Levenberg-Marquardt</description>
-        </validValue>
-    </option>
-    <option>
-        <name>gsm_adg_s</name>
-        <value>0.02061</value>
-        <type>float</type>
-        <default>0.02061</default>
-        <description>GSM IOP model, spectral slope for adg</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>gsm_bbp_s</name>
-        <value>1.03373</value>
-        <type>float</type>
-        <default>1.03373</default>
-        <description>GSM IOP model, spectral slope for bbp</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>gsm_aphw</name>
-        <value>[412.0, 443.0, 490.0, 510.0, 555.0, 670.0]</value>
-        <type>float</type>
-        <default>[412.0, 443.0, 490.0, 510.0, 555.0, 670.0]</default>
-        <description>
-        GSM IOP model, wavelengths of ap* table</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>gsm_aphs</name>
-        <value>[0.00665, 0.05582, 0.02055, 0.01910, 0.01015, 0.01424]</value>
-        <type>float</type>
-        <default>[0.00665, 0.05582, 0.02055, 0.01910, 0.01015, 0.01424]</default>
-        <description>GSM IOP model, coefficients of ap* table</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>qaa_adg_s</name>
-        <value>0.015</value>
-        <type>float</type>
-        <default>0.015</default>
-        <description>QAA IOP model, spectral slope for adg</description>
-        <source>default</source>
-        <alias>qaa_S</alias>
-    </option>
-    <option>
-        <name>qaa_wave</name>
-        <value>[412,443,488,547,667]</value>
-        <type>int</type>
-        <description>sensor wavelengths for QAA algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>chloc2_wave</name>
-        <value>[488,547]</value>
-        <type>int</type>
-        <default>[-1,-1]</default>
-        <description>sensor wavelengths for OC2 chlorophyll
-        algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>chloc2_coef</name>
-        <value>[0.2500,-2.4752,1.4061,-2.8237, 0.5405]</value>
-        <type>float</type>
-        <default>[0.0,0.0,0.0,0.0,0.0]</default>
-        <description>coefficients for OC2
-        chlorophyll algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>chloc3_wave</name>
-        <value>[443,488,547]</value>
-        <type>int</type>
-        <default>[-1,-1,-1]</default>
-        <description>sensor wavelengths for OC3
-         chlorophyll algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>chloc3_coef</name>
-        <value>[0.2424,-2.7423,1.8017, 0.0015,-1.2280]</value>
-        <type>float</type>
-        <default>[0.0,0.0,0.0,0.0,0.0]</default>
-        <description>coefficients for OC3
-        chlorophyll algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>chloc4_wave</name>
-        <value>[]</value>
-        <type>int</type>
-        <default>[-1,-1,-1,-1]</default>
-        <description>sensor wavelengths for OC4
-        chlorophyll algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>chloc4_coef</name>
-        <value>[]</value>
-        <type>float</type>
-        <default>[0.0,0.0,0.0,0.0,0.0]</default>
-        <description>coefficients for OC4
-        chlorophyll algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>chlclark_wave</name>
-        <value>[443,488,547]</value>
-        <type>int</type>
-        <default>[-1,-1,-1]</default>
-        <description>sensor wavelengths for Clark
-        chlorophyll algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>chlclark_coef</name>
-        <value>[0.789273,-3.925523,11.637764,-27.157997,27.936958,-10.398587]</value>
-        <type>float</type>
-        <default>[0.0,0.0,0.0,0.0,0.0,0.0]</default>
-        <description>coefficients for
-        Clark chlorophyll algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>kd2_wave</name>
-        <value>[488,547]</value>
-        <type>int</type>
-        <default>[-1,-1]</default>
-        <description>sensor wavelengths for polynomial Kd(490)
-        algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>kd2_coef</name>
-        <value>[0.0166,-0.8813,-2.0584,2.5878,-3.4885,-1.5061]</value>
-        <type>float</type>
-        <default>[0.0,0.0,0.0,0.0,0.0,0.0]</default>
-        <description>sensor wavelengths
-        for polynomial Kd(490) algorithm</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>flh_offset</name>
-        <value>0.0</value>
-        <type>float</type>
-        <default>0.0</default>
-        <description>bias to subtract
-        from retrieved fluorescence line height</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>btfile</name>
-        <value>/Users/Shared/ocssw/run/data/modisa/cal/bt_modisa.hdf</value>
-        <type>string</type>
-        <description>IR brightness temperature file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sstcoeffile</name>
-        <value>/Users/Shared/ocssw/run/data/modisa/cal/sst_coef_modisa_v5.dat</value>
-        <type>string</type>
-        <description>IR sst algorithm coefficients file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sstssesfile</name>
-        <value>/Users/Shared/ocssw/run/data/modisa/cal/sst_sses_modisa_v5.hdf</value>
-        <type>string</type>
-        <description>IR sst algorithm error statistics file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sstmirrfile</name>
-        <value></value>
-        <type>string</type>
-        <description>IR sst algorithm mirror-side corrections file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sst4coeffile</name>
-        <value>/Users/Shared/ocssw/run/data/modisa/cal/sst4_coef_modisa_v5.dat</value>
-        <type>string</type>
-        <description>SWIR sst algorithm coefficients file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sst4ssesfile</name>
-        <value>/Users/Shared/ocssw/run/data/modisa/cal/sst4_sses_modisa_v5.hdf</value>
-        <type>string</type>
-        <description>SWIR sst algorithm error statistics file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sst4mirrfile</name>
-        <value></value>
-        <type>string</type>
-        <description>SWIR sst algorithm mirror-side corrections file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>owtfile</name>
-        <value>/Users/Shared/ocssw/run/data/modis/class/modis_owt_stats.hdf</value>
-        <type>string</type>
-        <description>optical water type file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>owtchlerrfile</name>
-        <value>/Users/Shared/ocssw/run/data/modisa/class/modisa_owt_chl_error.txt</value>
-        <type>string</type>
-        <description>chl error file associate with optical water type</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>aermodels</name>
-        <value>[r30f95v01,r30f80v01,r30f50v01,r30f30v01,r30f20v01,r30f10v01,r30f05v01,r30f02v01,r30f01v01,r30f00v01,r50f95v01,r50f80v01,r50f50v01,r50f30v01,r50f20v01,r50f10v01,r50f05v01,r50f02v01,r50f01v01,r50f00v01,r70f95v01,r70f80v01,r70f50v01,r70f30v01,r70f20v01,r70f10v01,r70f05v01,r70f02v01,r70f01v01,r70f00v01,r75f95v01,r75f80v01,r75f50v01,r75f30v01,r75f20v01,r75f10v01,r75f05v01,r75f02v01,r75f01v01,r75f00v01,r80f95v01,r80f80v01,r80f50v01,r80f30v01,r80f20v01,r80f10v01,r80f05v01,r80f02v01,r80f01v01,r80f00v01,r85f95v01,r85f80v01,r85f50v01,r85f30v01,r85f20v01,r85f10v01,r85f05v01,r85f02v01,r85f01v01,r85f00v01,r90f95v01,r90f80v01,r90f50v01,r90f30v01,r90f20v01,r90f10v01,r90f05v01,r90f02v01,r90f01v01,r90f00v01,r95f95v01,r95f80v01,r95f50v01,r95f30v01,r95f20v01,r95f10v01,r95f05v01,r95f02v01,r95f01v01,r95f00v01]</value>
-        <type>string</type>
-        <default>[r30f95v01,r30f80v01,r30f50v01,r30f30v01,r30f20v01,r30f10v01,r30f05v01,r30f02v01,r30f01v01,r30f00v01,r50f95v01,r50f80v01,r50f50v01,r50f30v01,r50f20v01,r50f10v01,r50f05v01,r50f02v01,r50f01v01,r50f00v01,r70f95v01,r70f80v01,r70f50v01,r70f30v01,r70f20v01,r70f10v01,r70f05v01,r70f02v01,r70f01v01,r70f00v01,r75f95v01,r75f80v01,r75f50v01,r75f30v01,r75f20v01,r75f10v01,r75f05v01,r75f02v01,r75f01v01,r75f00v01,r80f95v01,r80f80v01,r80f50v01,r80f30v01,r80f20v01,r80f10v01,r80f05v01,r80f02v01,r80f01v01,r80f00v01,r85f95v01,r85f80v01,r85f50v01,r85f30v01,r85f20v01,r85f10v01,r85f05v01,r85f02v01,r85f01v01,r85f00v01,r90f95v01,r90f80v01,r90f50v01,r90f30v01,r90f20v01,r90f10v01,r90f05v01,r90f02v01,r90f01v01,r90f00v01,r95f95v01,r95f80v01,r95f50v01,r95f30v01,r95f20v01,r95f10v01,r95f05v01,r95f02v01,r95f01v01,r95f00v01]</default>
-        <description>aerosol models</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>met1</name>
-        <value>/Users/Shared/ocssw/run/data/common/met_climatology.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/met_climatology.hdf</default>
-        <description>
-        1st meteorological ancillary data file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>met2</name>
-        <value/>
-        <type>string</type>
-        <description>2nd meteorological ancillary data file</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>met3</name>
-        <value/>
-        <type>string</type>
-        <description>3rd meteorological ancillary data file</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>ozone1</name>
-        <value>/Users/Shared/ocssw/run/data/common/ozone_climatology.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/ozone_climatology.hdf</default>
-        <description>
-        1st ozone ancillary data file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>ozone2</name>
-        <value/>
-        <type>string</type>
-        <description>2nd ozone ancillary data file</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>ozone3</name>
-        <value/>
-        <type>string</type>
-        <description>3rd ozone ancillary data file</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>land</name>
-        <value>/Users/Shared/ocssw/run/data/common/landmask.dat</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/landmask.dat</default>
-        <description>land mask file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>water</name>
-        <value>/Users/Shared/ocssw/run/data/common/watermask.dat</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/watermask.dat</default>
-        <description>
-        shallow water mask file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>demfile</name>
-        <value>$OCDATAROOT/common/digital_elevation_map.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/digital_elevation_map.hdf</default>
-        <description>
-        digital elevation map file</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>icefile</name>
-        <value>/Users/Shared/ocssw/run/data/common/ice_climatology.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/ice_mask.hdf</default>
-        <description>sea ice file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>ice_threshold</name>
-        <value>0.1</value>
-        <type>float</type>
-        <default>0.1</default>
-        <description>sea ice fraction above which will be
-        flagged as sea ice</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>sstfile</name>
-        <value>/Users/Shared/ocssw/run/data/common/sst_climatology.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/sst_climatology.hdf</default>
-        <description>input
-        SST reference file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sssfile</name>
-        <value>/Users/Shared/ocssw/run/data/common/sss_climatology_woa2009.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/sss_climatology_woa2009.hdf</default>
-        <description>input
-        SSS reference file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>no2file</name>
-        <value>/Users/Shared/ocssw/run/data/common/no2_climatology.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/no2_climatology.hdf</default>
-        <description>no2
-        ancillary file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>alphafile</name>
-        <value>/Users/Shared/ocssw/run/data/common/alpha510_climatology.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/alpha510_climatology.hdf</default>
-        <description>
-        alpha510 climatology file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>tauafile</name>
-        <value>/Users/Shared/ocssw/run/data/common/taua865_climatology.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/taua865_climatology.hdf</default>
-        <description>
-        taua865 climatology file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>cldfile</name>
-        <value/>
-        <type>string</type>
-        <description>cloud mask file (MODIS only)</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>calfile</name>
-        <value></value>
-        <type>string</type>
-        <description>system calibration file</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>offset</name>
-        <value>[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]</value>
-        <type>float</type>
-        <description>calibration offset adjustment</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>gain</name>
-        <value>[0.9731,0.9910,0.9935,1.0002,0.9994,0.9996,0.9998,0.9989,1.0]</value>
-        <type>float</type>
-        <description>calibration gain multiplier</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>gain_unc</name>
-        <value/>
-        <type>float</type>
-        <description>calibration gain uncertainty</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>flaguse</name>
-        <value>ATMFAIL,LAND,HIGLINT,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLFAIL,NAVWARN,ABSAER,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,SSTFAIL</value>
-        <type>string</type>
-        <default>ATMFAIL,LAND,HIGLINT,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLFAIL,NAVWARN,ABSAER,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,SSTFAIL</default>
-        <description>Flags to use</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>xcalbox</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>pixel size of the central box in the L1 scene
-        (e.g. 5 pixels around MOBY) to be extracted into xcalfile for the
-        cross-calibration, 0=whole L1</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>xcalboxcenter</name>
-        <value>[0,0]</value>
-        <type>int</type>
-        <default>[0,0]</default>
-        <description>Centeral [ipix, iscan] of the box in
-        the L1 scene, [0,0] = center of the L1 scene</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>xcalpervalid</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>min percent of valid cross-calibration
-        pixels within the box or the L1 scene, 0 = at least 1 pixel</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>xcalsubsmpl</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>Subsampling rate for the data to be used
-        for the cross-calibration</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>vct_msk_water</name>
-        <value>1</value>
-        <type>int</type>
-        <default>1</default>
-        <description>use deep water mask to select data for
-        target file:
-        0: no selection with mask
-        1: use deep water mask</description>
-        <source>default</source>
-        <validValue>
-            <value>0</value>
-            <description>no selection with mask</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>use deep water mask</description>
-        </validValue>
-    </option>
-    <option>
-        <name>vct_water</name>
-        <value>$OCDATAROOT/common/deep_water_mask_9km.dat</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/deep_water_mask_9km.dat</default>
-        <description>
-        name of deep water mask to use</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>vct_min_nbin</name>
-        <value>4</value>
-        <type>int</type>
-        <default>4</default>
-        <description>minimum # of samples in a bin for acceptance</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>vct_fill_pct</name>
-        <value>0.04</value>
-        <type>float</type>
-        <default>0.04</default>
-        <description>minimum % of samples filled in target
-        file to allow target file creation, if greater than 0,
-        create target, aerosol files regardless</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>maxpointdist</name>
-        <value>0.0</value>
-        <type>float</type>
-        <default>0.0</default>
-        <description>max distance between L1 and L2 pixels
-       in km
-       -1.0: use mean res of L1 data
-        0.0: max{mean(L1 res),mean(L2 res)}</description>
-        <source>default</source>
-        <validValue>
-            <value>-1.0</value>
-            <description>use mean res of L1 data</description>
-        </validValue>
-        <validValue>
-            <value>0.0</value>
-            <description>max{mean(L1 res),mean(L2 res)}</description>
-        </validValue>
-    </option>
-    <option>
-        <name>chlthreshold</name>
-        <value>100.000000</value>
-        <type>float</type>
-        <default>100.000000</default>
-        <description>threshold on L2 data chlorophyll
-        (100.000000=CHL_MAX)</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>aotthreshold</name>
-        <value>1.000000</value>
-        <type>float</type>
-        <default>1.000000</default>
-        <description>threshold on L2 data AOTs
-        (1.000000=AOT_MAX)</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>coccolith</name>
-        <value>[1.1,0.9, 0.75, 1.85, 1.0, 1.65, 0.6, 1.15]</value>
-        <type>float</type>
-        <default>[1.1,0.9,0.75,1.85,1.0,1.65,0.6,1.15]</default>
-        <description>
-        coccolithophore algorithm coefs</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>cirrus_thresh</name>
-        <value>[-1.0,-1.0]</value>
-        <type>float</type>
-        <default>[-1.0,-1.0]</default>
-        <description>cirrus reflectance thresholds</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>taua</name>
-        <value/>
-        <type>float</type>
-        <description>[taua_band1,...,taua_bandn] aerosol optical thickness of the
-        calibration data point</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>cloud_thresh</name>
-        <value>0.027</value>
-        <type>float</type>
-        <default>0.027</default>
-        <description>cloud reflectance
-        threshold</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <alias>albedo</alias>
-    </option>
-    <option>
-        <name>cloud_wave</name>
-        <value>865.0</value>
-        <type>float</type>
-        <default>865.0</default>
-        <description>wavelength of cloud reflectance test</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>cloud_eps</name>
-        <value>-1.0</value>
-        <type>float</type>
-        <default>-1.0</default>
-        <description>cloud reflectace ratio threshold
-        (-1.0=disabled)</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>glint_thresh</name>
-        <value>0.005</value>
-        <type>float</type>
-        <default>0.005</default>
-        <description>high sun glint threshold</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-        <alias>glint</alias>
-    </option>
-    <option>
-        <name>absaer</name>
-        <value>0.0</value>
-        <type>float</type>
-        <default>0.0</default>
-        <description>absorbing aerosol threshold on aerosol index</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>rhoamin</name>
-        <value>0.0002</value>
-        <type>float</type>
-        <default>0.0001</default>
-        <description>min NIR aerosol reflectance to attempt
-        model lookup</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sunzen</name>
-        <value>70.0</value>
-        <type>float</type>
-        <default>75.0</default>
-        <description>sun zenith angle threshold in deg.</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>satzen</name>
-        <value>60.0</value>
-        <type>float</type>
-        <default>60.0</default>
-        <description>satellite zenith angle threshold</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>epsmin</name>
-        <value>0.80</value>
-        <type>float</type>
-        <default>0.85</default>
-        <description>minimum epsilon to trigger atmospheric
-        correction failure flag</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>epsmax</name>
-        <value>1.35</value>
-        <type>float</type>
-        <default>1.35</default>
-        <description>maximum epsilon to trigger atmospheric
-         correction failure flag</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>tauamax</name>
-        <value>0.3</value>
-        <type>float</type>
-        <default>0.3</default>
-        <description>maximum 865 aerosol optical depth to trigger
-        hitau flag</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>nLwmin</name>
-        <value>0.15</value>
-        <type>float</type>
-        <default>0.15</default>
-        <description>minimum nLw(555) to trigger low Lw flag</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>hipol</name>
-        <value>0.5</value>
-        <type>float</type>
-        <default>0.5</default>
-        <description>threshold on degree-of-polarization to set
-        HIPOL flag</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>wsmax</name>
-        <value>12.0</value>
-        <type>float</type>
-        <default>8.0</default>
-        <description>windspeed limit on white-cap correction in m/s</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>windspeed</name>
-        <value>-1000</value>
-        <type>float</type>
-        <default>-1000.0</default>
-        <description>user over-ride of windspeed in m/s
-        (-1000=use ancillary files)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>windangle</name>
-        <value>-1000</value>
-        <type>float</type>
-        <default>-1000.0</default>
-        <description>user over-ride of wind angle in deg
-        (-1000=use ancillary files)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>pressure</name>
-        <value>-1000</value>
-        <type>float</type>
-        <default>-1000.0</default>
-        <description>user over-ride of atmospheric pressure
-        in mb (-1000=use ancillary files)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>ozone</name>
-        <value>-1000</value>
-        <type>float</type>
-        <default>-1000.0</default>
-        <description>user over-ride of ozone concentration in
-        cm (-1000=use ancillary files)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>relhumid</name>
-        <value>-1000</value>
-        <type>float</type>
-        <default>-1000.0</default>
-        <description>user over-ride of relative humidity in
-        percent (-1000=use ancillary files)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>watervapor</name>
-        <value>-1000</value>
-        <type>float</type>
-        <default>-1000.0</default>
-        <description>user over-ride of water vapor in
-        g/cm^2 (-1000=use ancillary files)</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>maskland</name>
-        <value>1</value>
-        <type>bool</type>
-        <default>on</default>
-        <description>land mask option</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>maskbath</name>
-        <value>0</value>
-        <type>bool</type>
-        <default>off</default>
-        <description>shallow water mask option</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>maskcloud</name>
-        <value>1</value>
-        <type>bool</type>
-        <default>on</default>
-        <description>cloud mask option</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>maskglint</name>
-        <value>0</value>
-        <type>bool</type>
-        <default>off</default>
-        <description>glint mask option</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>masksunzen</name>
-        <value>0</value>
-        <type>bool</type>
-        <default>off</default>
-        <description>large sun zenith angle mask option</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>masksatzen</name>
-        <value>0</value>
-        <type>bool</type>
-        <default>off</default>
-        <description>large satellite zenith angle mask option</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>maskhilt</name>
-        <value>1</value>
-        <type>bool</type>
-        <default>on</default>
-        <description>high Lt masking</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>maskstlight</name>
-        <value>0</value>
-        <type>bool</type>
-        <default>on</default>
-        <description>stray light masking</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
-    </option>
-    <option>
-        <name>sl_frac</name>
-        <value>0.25</value>
-        <type>float</type>
-        <default>0.25</default>
-        <description>SeaWiFS only, straylight fractional
-        threshold on Ltypical</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>sl_pixl</name>
-        <value>0</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>SeaWiFS only, number of LAC pixels for
-        straylight flagging</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>vcal_opt</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>Vicarious calibration option</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>vcal_chl</name>
-        <value>-1.0</value>
-        <type>float</type>
-        <default>-1.0</default>
-        <description>Vicarious calibration chl</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>vcal_solz</name>
-        <value>-1.0</value>
-        <type>float</type>
-        <default>-1.0</default>
-        <description>Vicarious calibration solz</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>vcal_nLw</name>
-        <value/>
-        <type>float</type>
-        <description>Vicarious calibration normalized water leaving radiances</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>vcal_Lw</name>
-        <value/>
-        <type>float</type>
-        <description>Vicarious calibration water leaving radiances</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>owmcfile</name>
-        <value>$OCDATAROOT/common/owmc_lut.hdf</value>
-        <type>string</type>
-        <default>$OCDATAROOT/common/owmc_lut.hdf</default>
-        <description>lut for OWMC
-        classification</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>stype</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>scaling type
-        0: log
-        1: linear</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-        <validValue>
-            <value>0</value>
-            <description>log</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>linear</description>
-        </validValue>
-    </option>
-    <option>
-        <name>rgb</name>
-        <value>667,551,488</value>
-        <type>int</type>
-        <default>[1,1,1]</default>
-        <description>bands to use for red, green and blue</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>north</name>
-        <value>-999</value>
-        <type>float</type>
-        <default>-999</default>
-        <description>north boundry</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>south</name>
-        <value>-999</value>
-        <type>float</type>
-        <default>-999</default>
-        <description>south boundry</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>east</name>
-        <value>-999</value>
-        <type>float</type>
-        <default>-999</default>
-        <description>east boundry</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>west</name>
-        <value>-999</value>
-        <type>float</type>
-        <default>-999</default>
-        <description>west boundry</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>xbox</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>number of pixels on either side of the SW point</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>ybox</name>
-        <value>-1</value>
-        <type>int</type>
-        <default>-1</default>
-        <description>number of scan lines on either side of the SW point</description>
-        <source>default</source>
-    </option>
-    <option>
-        <name>width</name>
-        <value>600</value>
-        <type>int</type>
-        <default>600</default>
-        <description>width of output image</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>threshold</name>
-        <value>0.1</value>
-        <type>float</type>
-        <default>0.1</default>
-        <description>threshold for the number of good pixels before an image is produced</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>datamin</name>
-        <value>0.01</value>
-        <type>float</type>
-        <default>0.01</default>
-        <description>minumum reflectance for scaling</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>datamax</name>
-        <value>0.9</value>
-        <type>float</type>
-        <default>0.9</default>
-        <description>maximum reflectance for scaling</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>subsamp</name>
-        <value>10</value>
-        <type>int</type>
-        <default>1</default>
-        <description>subsampling interval</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-    </option>
-    <option>
-        <name>outmode</name>
-        <value>0</value>
-        <type>int</type>
-        <default>0</default>
-        <description>defines output format
-        0: 8bit HDF
-        1: 24bit HDF
-        2: PPM
-        3: flat binary
-        4: PNG
-</description>
-        <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
-        <validValue>
-            <value>0</value>
-            <description>8bit HDF</description>
-        </validValue>
-        <validValue>
-            <value>1</value>
-            <description>24bit HDF</description>
-        </validValue>
-        <validValue>
-            <value>2</value>
-            <description>PPM</description>
-        </validValue>
-        <validValue>
-            <value>3</value>
-            <description>flat binary</description>
-        </validValue>
-        <validValue>
-            <value>4</value>
-            <description>PNG</description>
-        </validValue>
-    </option>
-    <option>
-        <name>prodxmlfile</name>
-        <value/>
-        <type>string</type>
-        <description>output XML file describing all possible products</description>
-        <source>default</source>
-    </option>
-</option_list>
+            <type>int</type>
+            <default>0</default>
+            <description>defines output file format
+                0: 8bit HDF
+                1: 24bit HDF
+                2: PPM
+                3: flat binary
+                4: PNG
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>8 bit HDF browse file</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>24 bit HDF browse file</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>PPM color or PGM grayscale image file</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>flat binary</description>
+            </validValue>
+            <validValue>
+                <value>4</value>
+                <description>PNG</description>
+            </validValue>
+        </option>
+
+    </options>
+</paramInfo>

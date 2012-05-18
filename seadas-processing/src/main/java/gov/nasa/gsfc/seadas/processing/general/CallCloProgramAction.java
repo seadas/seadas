@@ -5,6 +5,7 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.ocssw.ProcessObserver;
+import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
@@ -50,7 +51,26 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
+
         super.configure(config);
+    }
+
+    private String getXMLFileName() {
+        String xmlFileName = programName + "_paramInfo.xml";
+        ProcessorModel pm = new ProcessorModel(programName);
+        ParamInfo pi;
+        pi = new ParamInfo("dumpOption", "-dump_options_xmlfile");
+        pi.setOrder(1);
+        pm.addParamInfo(pi);
+        pi = new ParamInfo("ofile", xmlFileName);
+        pi.setOrder(2);
+        pm.addParamInfo(pi);
+
+
+        ProgramExecutor pe = new ProgramExecutor();
+        pe.executeProgram(pm);
+        SeadasLogger.getLogger().info("xml file name: " + xmlFileName );
+        return xmlFileName;
     }
 
     public String getProgramName() {
@@ -80,11 +100,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
 
     public CloProgramUI getProgramUI(AppContext appContext) {
-        if (programName.indexOf("extract") != -1 ){
-            return new ExtractorUI(programName, xmlFileName)  ;
+        if (programName.indexOf("extract") != -1) {
+            return new ExtractorUI(programName, xmlFileName);
         }
 
-        return new CloProgramUIImpl(programName, xmlFileName)  ;
+        return new CloProgramUIImpl(programName, xmlFileName);
     }
 
     @Override
@@ -92,15 +112,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         SeadasLogger.initLogger("ProcessingGUI_log", printLogToConsole);
         SeadasLogger.getLogger().setLevel(Level.INFO);
+
+        //xmlFileName = getXMLFileName();
+
         final AppContext appContext = getAppContext();
 
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
 
         final Window parent = appContext.getApplicationWindow();
 
-        if (programName.equals("modis_L1B.py")  ) {
-            programName = "l1bgen_modis";
-        }
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
 
 
@@ -149,7 +169,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
 
 
-
         //final File outputFile = processorModel.getOutputFile();
 
         //SeadasLogger.getLogger().info("output file: " + outputFile);
@@ -172,12 +191,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
-                File outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName())  );
-                if (openOutputInApp ) {
-                    getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile  ));
+                File outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()));
+                if (openOutputInApp) {
+                    getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile));
                 }
 
-                SeadasLogger.getLogger().finest("Final output file name: " + outputFile)  ;
+                SeadasLogger.getLogger().finest("Final output file name: " + outputFile);
 
                 return outputFile;
             }
