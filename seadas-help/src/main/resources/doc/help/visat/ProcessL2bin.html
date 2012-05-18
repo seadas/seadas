@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>VISAT Help - Data Processing Tools</title>
+    <title>SeaDAS Help - Data Processing Tools - l2bin</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,7 +10,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Data Processing Tools
+            l2bin
         </td>
         <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
                                                                                        border=0></a></td>
@@ -21,7 +21,7 @@
 <h3>l2bin</h3>
 
 <p>
-    Creates an l2bin file from an input ... file.
+    Creates a Level 3 bin file from one or more Level 2 input files.
 </p>
 
 <h4>Location</h4>
@@ -32,7 +32,35 @@
 <p>
     TBD
 </p>
+<h5>Command Line Usage</h5>
+<pre>
+    Usage: l2bin parfile=parfile or
+                infile=infile ofile=ofile [sday=sday] [eday=eday]
+                resolve=resolve [flaguse=flaguse] [l3bprod=l3bprod]
+                [prodtype=prodtype] [noext=noext] [verbose=verbose
+                [rowgroup=rowgroup] [night=night] [pversion=pversion]
 
+       parfile   = parameter filename
+       infile    = input filename/filelist
+       ofile     = output bin filename
+       sday      = start datadate (YYYYDDD) [ignored for "regional" prodtype]
+       eday      = end datadate   (YYYYDDD) [ignored for "regional" prodtype]
+       resolve   = bin resolution (H,1,2,4,9,36)
+       flaguse   = flags masked [see /SENSOR/l2bin_defaults.par]
+       l3bprod   = bin products [default=all products]
+                   Set to "ALL" or "all" for all L2 products in 1st input file.
+                   Use ':' or ',' or ' ' as delimiters.
+                   Use ';' or '=' to delineate minimum values.
+       prodtype  = product type (Set to "regional" to bin all scans.) [default=day]
+       pversion  = production version [default=Unspecified]
+       noext     = set to 1 to suppress generation of external files
+                   [default=0, (1 for "regional" prodtype)]
+       rowgroup  = # of bin rows to process at once.
+       night     = set to 1 for SST night processing [default=0]
+       qual_prod = quality product field name
+       qual_max  = maximum acceptable quality [default=2]
+       verbose   = Allow more verbose screen messages [default=0]
+</pre>
 
 <hr>
 </body>
