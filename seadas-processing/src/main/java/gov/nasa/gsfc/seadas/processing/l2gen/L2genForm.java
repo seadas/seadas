@@ -21,15 +21,14 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
     private static final String GUI_NAME = "l2gen";
 
-    private L2genData l2genData;
+    private final L2genData l2genData = new L2genData();
+
     private L2genMainPanel l2genMainPanel;
     private ProcessorModel processorModel;
 
     L2genForm(AppContext appContext, String xmlFileName) {
 
         processorModel = new ProcessorModel(GUI_NAME, xmlFileName);
-
-        l2genData = new L2genData();
 
         if (l2genData.initXmlBasedObjects()) {
 
@@ -125,7 +124,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
     public ProcessorModel getProcessorModel() {
         processorModel.setParString(l2genData.getParString(false));
-        processorModel.updateParamInfo(L2genData.OFILE,l2genData.getParamValue(L2genData.OFILE));
+        processorModel.updateParamInfo(L2genData.OFILE, l2genData.getParamValue(L2genData.OFILE));
         return processorModel;
     }
 
@@ -160,8 +159,12 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
             l2genMainPanel.prepareHide();
         }
     }
-    public boolean isOpenOutputInApp(){
-        //return l2genMainPanel.getOutputProductSelector().
+
+    public boolean isOpenOutputInApp() {
+        if (l2genMainPanel != null) {
+            l2genMainPanel.getOpenInAppCheckBox().isSelected();
+        }
+
         return true;
     }
 }

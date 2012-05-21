@@ -27,41 +27,50 @@ public class MissionInfo {
         UNKNOWN
     }
 
-    public static String SeaWiFS = "SeaWiFS";
-    public static String SeaWiFS_DIRECTORY = "seawifs";
-
-    public static String MODISA = "MODIS Aqua";
-    public static String MODISA_DIRECTORY = "hmodisa";
-
-    public static String MODIST = "MODIS Terra";
-    public static String MODIST_DIRECTORY = "hmodist";
-
-    public static String VIIRS = "VIIRSN";
-    public static String VIIRS_DIRECTORY = "viirsn";
-
-    public static String MERIS = "MERIS";
-    public static String MERIS_DIRECTORY = "meris";
-
-    public static String CZCS = "CZCS";
-    public static String CZCS_DIRECTORY = "czcs";
-
-    public static String AQUARIUS = "AQUARIUS";
-    public static String AQUARIUS_DIRECTORY = "aquarius";
-
-    public static String OCTS = "OCTS";
-    public static String OCTS_DIRECTORY = "octs";
+    public final static Id[] SUPPORTED_IDS = {
+            Id.SEAWIFS,
+            Id.MODISA,
+            Id.MODIST,
+            Id.VIIRS,
+            Id.MERIS,
+            Id.CZCS,
+            Id.AQUARIUS,
+            Id.OCTS};
 
 
-    public static String NULL_STRING = "";
+    public final static String[] SEAWIFS_NAMES = {"SeaWiFS"};
+    public final static String SEAWIFS_DIRECTORY = "seawifs";
+
+    public final static String[] MODISA_NAMES = {"MODIS Aqua", "Aqua", "MODISA"};
+    public final static String MODISA_DIRECTORY = "hmodisa";
+
+    public final static String[] MODIST_NAMES = {"MODIS Terra", "TERRA", "MODIST"};
+    public final static String MODIST_DIRECTORY = "hmodist";
+
+    public final static String[] VIIRS_NAMES = {"VIIRSN", "VIIRS"};
+    public final static String VIIRS_DIRECTORY = "viirsn";
+
+    public final static String[] MERIS_NAMES = {"MERIS"};
+    public final static String MERIS_DIRECTORY = "meris";
+
+    public final static String[] CZCS_NAMES = {"CZCS"};
+    public final static String CZCS_DIRECTORY = "czcs";
+
+    public final static String[] AQUARIUS_NAMES = {"AQUARIUS"};
+    public final static String AQUARIUS_DIRECTORY = "aquarius";
+
+    public final static String[] OCTS_NAMES = {"OCTS"};
+    public final static String OCTS_DIRECTORY = "octs";
 
 
-    private HashMap<Id, String> nameLookup = new HashMap();
-    private HashMap<Id, String> directoryLookup = new HashMap();
+    private final HashMap<Id, String[]> namesLookup = new HashMap<Id, String[]>();
+    private final HashMap<Id, String> directoryLookup = new HashMap<Id, String>();
 
 
-    private Id id = Id.UNKNOWN;
-    private boolean geofileRequired = false;
-    private String directory = NULL_STRING;
+    private Id id;
+
+    private boolean geofileRequired;
+    private String directory;
 
 
     public MissionInfo() {
@@ -70,15 +79,20 @@ public class MissionInfo {
     }
 
 
-    public void clear() {
-        id = Id.UNKNOWN;
-        geofileRequired = false;
-        directory = NULL_STRING;
+    public MissionInfo(Id id) {
+        this();
+        setId(id);
+    }
 
+
+    public void clear() {
+        id = null;
+        geofileRequired = false;
+        directory = null;
     }
 
     private void initDirectoryLookup() {
-        directoryLookup.put(Id.SEAWIFS, SeaWiFS_DIRECTORY);
+        directoryLookup.put(Id.SEAWIFS, SEAWIFS_DIRECTORY);
         directoryLookup.put(Id.MODISA, MODISA_DIRECTORY);
         directoryLookup.put(Id.MODIST, MODIST_DIRECTORY);
         directoryLookup.put(Id.VIIRS, VIIRS_DIRECTORY);
@@ -90,14 +104,14 @@ public class MissionInfo {
 
 
     private void initNameLookup() {
-        nameLookup.put(Id.SEAWIFS, SeaWiFS);
-        nameLookup.put(Id.MODISA, MODISA);
-        nameLookup.put(Id.MODIST, MODIST);
-        nameLookup.put(Id.VIIRS, VIIRS);
-        nameLookup.put(Id.MERIS, MERIS);
-        nameLookup.put(Id.CZCS, CZCS);
-        nameLookup.put(Id.AQUARIUS, AQUARIUS);
-        nameLookup.put(Id.OCTS, OCTS);
+        namesLookup.put(Id.SEAWIFS, SEAWIFS_NAMES);
+        namesLookup.put(Id.MODISA, MODISA_NAMES);
+        namesLookup.put(Id.MODIST, MODIST_NAMES);
+        namesLookup.put(Id.VIIRS, VIIRS_NAMES);
+        namesLookup.put(Id.MERIS, MERIS_NAMES);
+        namesLookup.put(Id.CZCS, CZCS_NAMES);
+        namesLookup.put(Id.AQUARIUS, AQUARIUS_NAMES);
+        namesLookup.put(Id.OCTS, OCTS_NAMES);
     }
 
 
@@ -106,6 +120,7 @@ public class MissionInfo {
     }
 
     public void setId(Id id) {
+        clear();
         this.id = id;
         setRequiresGeofile();
         setMissionDirectoryName();
@@ -121,30 +136,34 @@ public class MissionInfo {
 
     public void setName(String nameString) {
         if (nameString == null) {
-            setId(Id.UNKNOWN);
+            setId(null);
             return;
         }
 
-        Iterator itr = nameLookup.keySet().iterator();
+        Iterator itr = namesLookup.keySet().iterator();
 
         while (itr.hasNext()) {
             Object key = itr.next();
-            if (nameLookup.get(key).toLowerCase().equals(nameString.toLowerCase())) {
-                setId((Id) key);
-                return;
-            }
+            for (String name : namesLookup.get(key))
+                if (name.toLowerCase().equals(nameString.toLowerCase())) {
+                    setId((Id) key);
+                    return;
+                }
         }
 
         setId(Id.UNKNOWN);
         return;
     }
 
+    public String getNameString() {
+        if (id == null) {
+            return null;
+        }
 
-    public boolean isName(String name) {
-        if (this.id != null && this.id.equals(name)) {
-            return true;
+        if (namesLookup.containsKey(id)) {
+            return namesLookup.get(id)[0];
         } else {
-            return false;
+            return namesLookup.get(Id.UNKNOWN)[0];
         }
     }
 
@@ -174,7 +193,7 @@ public class MissionInfo {
             String missionPiece = directoryLookup.get(id);
 
             // determine the filename which contains the wavelengths
-            final StringBuilder directory = new StringBuilder("");
+            final StringBuilder directory = new StringBuilder();
             directory.append(OCDATAROOT);
             directory.append("/");
             directory.append(missionPiece);
@@ -193,5 +212,13 @@ public class MissionInfo {
         this.directory = directory;
     }
 
+    public boolean isSupported() {
+        for (Id id : SUPPORTED_IDS) {
+            if (id == this.id) {
+                return true;
+            }
+        }
 
+        return false;
+    }
 }

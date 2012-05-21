@@ -83,4 +83,8 @@ public class L2genMainPanel extends JPanel {
             l2genInputOutputPanel.prepareHide();
         }
     }
+
+    public JCheckBox getOpenInAppCheckBox() {
+        return l2genInputOutputPanel.getOpenInAppCheckBox();
+    }
 }

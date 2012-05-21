@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import gov.nasa.gsfc.seadas.processing.general.ProcessorModel;
-import org.python.antlr.ast.Str;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,16 +16,17 @@ import java.io.InputStreamReader;
  */
 public class FileInfo {
 
+    private final MissionInfo missionInfo = new MissionInfo();
+    private final FileTypeInfo fileTypeInfo = new FileTypeInfo();
+
     private File file;
-    private MissionInfo missionInfo = new MissionInfo();
-    private FileTypeInfo fileTypeInfo = new FileTypeInfo();
 
 
     public FileInfo() {
-        setFile(null);
     }
 
     public FileInfo(File file) {
+        this();
         setFile(file);
     }
 
@@ -37,17 +37,17 @@ public class FileInfo {
     }
 
     public void setFile(File file) {
+        clear();
+
         if (file == null || file.getAbsolutePath().toString().length() == 0) {
-            clear();
+            return;
         }
 
         this.file = file;
 
-        missionInfo.clear();
-        fileTypeInfo.clear();
+        String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
 
-
-        ProcessorModel processorModel = new ProcessorModel("get_obpg_file_type.py");
+        ProcessorModel processorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
         processorModel.setAcceptsParFile(false);
         processorModel.addParamInfo("file", file.getAbsolutePath(), 1);
 
@@ -72,7 +72,7 @@ public class FileInfo {
                 }
             }
         } catch (IOException e) {
-            System.out.println("ERROR - Problem running get_obpg_file_type.py");
+            System.out.println("ERROR - Problem running " + FILE_INFO_SYSTEM_CALL);
             System.out.println(e.getMessage());
         }
     }
@@ -129,15 +129,19 @@ public class FileInfo {
         return missionInfo.getDirectory();
     }
 
-    public FileTypeInfo.Type getType() {
+    public FileTypeInfo.Id getType() {
         return fileTypeInfo.getType();
     }
 
-    public void setType(FileTypeInfo.Type type) {
+    public void setType(FileTypeInfo.Id type) {
         fileTypeInfo.setType(type);
     }
 
-    public boolean isType(FileTypeInfo.Type type) {
+    public boolean isType(FileTypeInfo.Id type) {
         return fileTypeInfo.isType(type);
+    }
+
+    public boolean isSupportedMission() {
+        return missionInfo.isSupported();
     }
 }
