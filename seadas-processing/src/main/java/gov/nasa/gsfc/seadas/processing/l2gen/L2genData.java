@@ -94,7 +94,7 @@ public class L2genData {
         if (iFileInfo != null &&
                 iFileInfo.isFileExists() &&
                 iFileInfo.isSupportedMission() &&
-                iFileInfo.isType(FileTypeInfo.Id.L1B)) {
+                iFileInfo.isTypeId(FileTypeInfo.Id.L1B)) {
             return true;
         }
 
@@ -896,23 +896,14 @@ public class L2genData {
 
         iFileInfo.setFile(iFile);
 
-
-        if (iFileInfo.isFileExists()) {
-            if (iFileInfo.isSupportedMission()) {
-                if (iFileInfo.isType(FileTypeInfo.Id.L1B)) {
-                    resetWaveLimiter();
-                    l2prodParamInfo.resetProductInfos();
-                    updateXmlBasedObjects(iFile);
-                } else {
-                    fireEvent(INVALID_IFILE_EVENT);
-                }
-            } else {
-                fireEvent(INVALID_IFILE_EVENT);
-            }
+        if (isValidIfile()) {
+            resetWaveLimiter();
+            l2prodParamInfo.resetProductInfos();
+            updateXmlBasedObjects(iFile);
         } else {
-            //   iFileInfo.setFile(null);
             fireEvent(INVALID_IFILE_EVENT);
         }
+
 
         setParamValueAndDefault(OFILE, iFileInfo.getOFileName());
         setParamValueAndDefault(GEOFILE, iFileInfo.getGeoFileName());

@@ -16,26 +16,27 @@ public class MissionInfo {
 
 
     public static enum Id {
-        SEAWIFS,
+        AQUARIUS,
+        CZCS,
+        MERIS,
         MODISA,
         MODIST,
-        VIIRS,
-        MERIS,
-        CZCS,
-        AQUARIUS,
         OCTS,
+        SEAWIFS,
+        VIIRS,
         UNKNOWN
     }
 
     public final static Id[] SUPPORTED_IDS = {
-            Id.SEAWIFS,
+            Id.AQUARIUS,
+            Id.CZCS,
+            Id.MERIS,
             Id.MODISA,
             Id.MODIST,
+            Id.OCTS,
+            Id.SEAWIFS,
             Id.VIIRS,
-            Id.MERIS,
-            Id.CZCS,
-            Id.AQUARIUS,
-            Id.OCTS};
+    };
 
 
     public final static String[] SEAWIFS_NAMES = {"SeaWiFS"};
@@ -63,8 +64,8 @@ public class MissionInfo {
     public final static String OCTS_DIRECTORY = "octs";
 
 
-    private final HashMap<Id, String[]> namesLookup = new HashMap<Id, String[]>();
-    private final HashMap<Id, String> directoryLookup = new HashMap<Id, String>();
+    private final HashMap<Id, String[]> names = new HashMap<Id, String[]>();
+    private final HashMap<Id, String> directories = new HashMap<Id, String>();
 
 
     private Id id;
@@ -74,8 +75,8 @@ public class MissionInfo {
 
 
     public MissionInfo() {
-        initDirectoryLookup();
-        initNameLookup();
+        initDirectoriesHashMap();
+        initNamesHashMap();
     }
 
 
@@ -91,27 +92,27 @@ public class MissionInfo {
         directory = null;
     }
 
-    private void initDirectoryLookup() {
-        directoryLookup.put(Id.SEAWIFS, SEAWIFS_DIRECTORY);
-        directoryLookup.put(Id.MODISA, MODISA_DIRECTORY);
-        directoryLookup.put(Id.MODIST, MODIST_DIRECTORY);
-        directoryLookup.put(Id.VIIRS, VIIRS_DIRECTORY);
-        directoryLookup.put(Id.MERIS, MERIS_DIRECTORY);
-        directoryLookup.put(Id.CZCS, CZCS_DIRECTORY);
-        directoryLookup.put(Id.AQUARIUS, AQUARIUS_DIRECTORY);
-        directoryLookup.put(Id.OCTS, OCTS_DIRECTORY);
+    private void initDirectoriesHashMap() {
+        directories.put(Id.SEAWIFS, SEAWIFS_DIRECTORY);
+        directories.put(Id.MODISA, MODISA_DIRECTORY);
+        directories.put(Id.MODIST, MODIST_DIRECTORY);
+        directories.put(Id.VIIRS, VIIRS_DIRECTORY);
+        directories.put(Id.MERIS, MERIS_DIRECTORY);
+        directories.put(Id.CZCS, CZCS_DIRECTORY);
+        directories.put(Id.AQUARIUS, AQUARIUS_DIRECTORY);
+        directories.put(Id.OCTS, OCTS_DIRECTORY);
     }
 
 
-    private void initNameLookup() {
-        namesLookup.put(Id.SEAWIFS, SEAWIFS_NAMES);
-        namesLookup.put(Id.MODISA, MODISA_NAMES);
-        namesLookup.put(Id.MODIST, MODIST_NAMES);
-        namesLookup.put(Id.VIIRS, VIIRS_NAMES);
-        namesLookup.put(Id.MERIS, MERIS_NAMES);
-        namesLookup.put(Id.CZCS, CZCS_NAMES);
-        namesLookup.put(Id.AQUARIUS, AQUARIUS_NAMES);
-        namesLookup.put(Id.OCTS, OCTS_NAMES);
+    private void initNamesHashMap() {
+        names.put(Id.SEAWIFS, SEAWIFS_NAMES);
+        names.put(Id.MODISA, MODISA_NAMES);
+        names.put(Id.MODIST, MODIST_NAMES);
+        names.put(Id.VIIRS, VIIRS_NAMES);
+        names.put(Id.MERIS, MERIS_NAMES);
+        names.put(Id.CZCS, CZCS_NAMES);
+        names.put(Id.AQUARIUS, AQUARIUS_NAMES);
+        names.put(Id.OCTS, OCTS_NAMES);
     }
 
 
@@ -140,11 +141,11 @@ public class MissionInfo {
             return;
         }
 
-        Iterator itr = namesLookup.keySet().iterator();
+        Iterator itr = names.keySet().iterator();
 
         while (itr.hasNext()) {
             Object key = itr.next();
-            for (String name : namesLookup.get(key))
+            for (String name : names.get(key))
                 if (name.toLowerCase().equals(nameString.toLowerCase())) {
                     setId((Id) key);
                     return;
@@ -155,15 +156,15 @@ public class MissionInfo {
         return;
     }
 
-    public String getNameString() {
+    public String getName() {
         if (id == null) {
             return null;
         }
 
-        if (namesLookup.containsKey(id)) {
-            return namesLookup.get(id)[0];
+        if (names.containsKey(id)) {
+            return names.get(id)[0];
         } else {
-            return namesLookup.get(Id.UNKNOWN)[0];
+            return names.get(Id.UNKNOWN)[0];
         }
     }
 
@@ -189,8 +190,8 @@ public class MissionInfo {
 
     private void setMissionDirectoryName() {
 
-        if (directoryLookup.containsKey(id)) {
-            String missionPiece = directoryLookup.get(id);
+        if (directories.containsKey(id)) {
+            String missionPiece = directories.get(id);
 
             // determine the filename which contains the wavelengths
             final StringBuilder directory = new StringBuilder();

@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
  */
 public class FileInfo {
 
+    private static final String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
+
     private final MissionInfo missionInfo = new MissionInfo();
     private final FileTypeInfo fileTypeInfo = new FileTypeInfo();
 
@@ -45,8 +47,6 @@ public class FileInfo {
 
         this.file = file;
 
-        String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
-
         ProcessorModel processorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
         processorModel.setAcceptsParFile(false);
         processorModel.addParamInfo("file", file.getAbsolutePath(), 1);
@@ -63,7 +63,7 @@ public class FileInfo {
                     String fileType = splitLine[2].toString().trim();
 
                     if (fileType.length() > 0) {
-                        fileTypeInfo.setType(fileType);
+                        fileTypeInfo.setName(fileType);
                     }
 
                     if (missionName.length() > 0) {
@@ -88,6 +88,14 @@ public class FileInfo {
         return missionInfo;
     }
 
+    public String getFileName() {
+        if (file != null) {
+            return file.getAbsoluteFile().toString();
+        } else {
+            return null;
+        }
+    }
+
     //-------------------------- Indirect Get Methods ----------------------------
 
     public boolean isFileExists() {
@@ -97,51 +105,72 @@ public class FileInfo {
         return false;
     }
 
-    public MissionInfo.Id getMission() {
+
+    public MissionInfo.Id getMissionId() {
         return missionInfo.getId();
     }
 
-    public boolean isMission(MissionInfo.Id missionId) {
-        return missionInfo.isId(missionId);
-    }
-
-    public File getOFile() {
-        return FilenamePatterns.getOFile(file, missionInfo);
-    }
-
-    public String getOFileName() {
-        return FilenamePatterns.getOFileName(file, missionInfo);
-    }
-
-    public boolean geofileRequired() {
-        return missionInfo.isGeofileRequired();
-    }
-
-    public File getGeoFile() {
-        return FilenamePatterns.getGeoFile(file, missionInfo);
-    }
-
-    public String getGeoFileName() {
-        return FilenamePatterns.getGeoFileName(file, missionInfo);
+    public String getMissionName() {
+        return missionInfo.getName();
     }
 
     public String getMissionDirectory() {
         return missionInfo.getDirectory();
     }
 
-    public FileTypeInfo.Id getType() {
-        return fileTypeInfo.getType();
-    }
-
-    public void setType(FileTypeInfo.Id type) {
-        fileTypeInfo.setType(type);
-    }
-
-    public boolean isType(FileTypeInfo.Id type) {
-        return fileTypeInfo.isType(type);
+    public boolean isMissionId(MissionInfo.Id missionId) {
+        return missionInfo.isId(missionId);
     }
 
     public boolean isSupportedMission() {
         return missionInfo.isSupported();
     }
+
+
+
+    public FileTypeInfo.Id getTypeId() {
+        return fileTypeInfo.getId();
+    }
+
+    public String getTypeName() {
+        return fileTypeInfo.getName();
+    }
+
+    public boolean isTypeId(FileTypeInfo.Id type) {
+        return fileTypeInfo.isId(type);
+    }
+
+
+
+    public FileInfo getOFileInfo() {
+        return FilenamePatterns.getOFileInfo(this);
+    }
+
+    public File getOFile() {
+        return getOFileInfo().getFile();
+    }
+
+    public String getOFileName() {
+        return getOFileInfo().getFileName();
+    }
+
+
+    public boolean geofileRequired() {
+        return missionInfo.isGeofileRequired();
+    }
+
+
+    public FileInfo getGeoFileInfo() {
+        return FilenamePatterns.getGeoFileInfo(this);
+    }
+
+    public File getGeoFile() {
+        return getGeoFileInfo().getFile();
+    }
+
+    public String getGeoFileName() {
+        return getGeoFileInfo().getFileName();
+    }
+
+
 }

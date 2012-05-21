@@ -28,84 +28,86 @@ public class FileTypeInfo {
     private final static String[] GEO_NAMES = {"GEO"};
     private final static String[] UNKNOWN_NAMES = {"UNKNOWN"};
 
-    private final HashMap<Id, String[]> typesLookup = new HashMap<Id, String[]>();
+    private final HashMap<Id, String[]> names = new HashMap<Id, String[]>();
 
 
-    private Id type = null;
+    private Id id = null;
 
 
     public FileTypeInfo() {
-        initLevelHashMap();
+        initNamesHashMap();
     }
 
-    public FileTypeInfo(Id type) {
+    public FileTypeInfo(Id id) {
         this();
-        this.type = type;
+        this.id = id;
     }
 
     public void clear() {
-        type = null;
+        id = null;
     }
 
-    private void initLevelHashMap() {
-        typesLookup.put(Id.L0, L0_NAMES);
-        typesLookup.put(Id.L1A, L1A_NAMES);
-        typesLookup.put(Id.L1B, L1B_NAMES);
-        typesLookup.put(Id.L2, L2_NAMES);
-        typesLookup.put(Id.GEO, GEO_NAMES);
-        typesLookup.put(Id.UNKNOWN, UNKNOWN_NAMES);
+    private void initNamesHashMap() {
+        names.put(Id.L0, L0_NAMES);
+        names.put(Id.L1A, L1A_NAMES);
+        names.put(Id.L1B, L1B_NAMES);
+        names.put(Id.L2, L2_NAMES);
+        names.put(Id.GEO, GEO_NAMES);
+        names.put(Id.UNKNOWN, UNKNOWN_NAMES);
     }
 
-    public Id getType() {
-        return type;
+    public Id getId() {
+        return id;
     }
 
-    public void setType(Id type) {
-        this.type = type;
+    public void setId(Id id) {
+        this.id = id;
     }
 
-    public boolean isType(Id type) {
-        if (this.type == type) {
+    public boolean isId(Id id) {
+        if (this.id == id) {
             return true;
         } else {
             return false;
         }
     }
 
-    public void setType(String type) {
+    public void setName(String name) {
         clear();
 
-        if (type == null) {
+        if (name == null) {
             return;
         }
 
-        Iterator itr = typesLookup.keySet().iterator();
+        Iterator itr = names.keySet().iterator();
 
         while (itr.hasNext()) {
             Object key = itr.next();
 
-            for (String typeLookup : typesLookup.get(key)) {
-                if (typeLookup.toLowerCase().equals(type.toLowerCase())) {
-                    setType((Id) key);
+            for (String typeLookup : names.get(key)) {
+                if (typeLookup.toLowerCase().equals(name.toLowerCase())) {
+                    setId((Id) key);
                     return;
                 }
             }
         }
 
-        setType(Id.UNKNOWN);
+        setId(Id.UNKNOWN);
         return;
     }
 
 
-    public String getTypeString() {
-        if (type == null) {
+    public String getName() {
+        if (id == null) {
             return null;
         }
 
-        if (typesLookup.containsKey(type)) {
-            return typesLookup.get(type)[0];
+        if (names.containsKey(id)) {
+            return names.get(id)[0];
         } else {
-            return typesLookup.get(Id.UNKNOWN)[0];
+            return names.get(Id.UNKNOWN)[0];
         }
     }
+
+
 }
