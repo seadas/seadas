@@ -883,38 +883,26 @@ public class L2genData {
     }
 
 
-    private File getFileRequirePath(String fileName) {
-        if (fileName == null) {
-            return null;
-        }
-
-        File file = new File(fileName);
-        if (file != null && !fileName.equals(file.getAbsolutePath())) {
-            return file;
-        }
-
-        return null;
-    }
-
-
     // runs this if IFILE changes
     // it will reset missionString
     // it will reset and make new wavelengthInfoArray
     private void setIfileParamValue(ParamInfo paramInfo, String newIfile) {
 
-        File iFile = getFileRequirePath(newIfile);
-
-        //     String absPath = iFile.getAbsolutePath();
         String oldIfile = getParamValue(IFILE);
+
+        if (newIfile != null && newIfile.length() > 0) {
+            iFileInfo.setFile(new File(newIfile));
+        } else {
+            iFileInfo.setFile(null);
+        }
+
         paramInfo.setValue(newIfile);
         paramInfo.setDefaultValue(newIfile);
-
-        iFileInfo.setFile(iFile);
 
         if (isValidIfile()) {
             resetWaveLimiter();
             l2prodParamInfo.resetProductInfos();
-            updateXmlBasedObjects(iFile);
+            updateXmlBasedObjects(iFileInfo.getFile());
             setParamValueAndDefault(OFILE, iFileInfo.getOFileName());
             setParamValueAndDefault(GEOFILE, iFileInfo.getGeoFileName());
         } else {
@@ -922,7 +910,6 @@ public class L2genData {
             setParamValueAndDefault(GEOFILE, null);
             fireEvent(INVALID_IFILE_EVENT);
         }
-
 
         setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
 

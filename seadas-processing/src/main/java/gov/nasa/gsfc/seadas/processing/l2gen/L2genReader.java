@@ -181,12 +181,13 @@ public class L2genReader {
                 String name = XmlReader.getTextValue(optionElement, "name");
                 if (name != null && name.length() > 0) {
                     name = name.toLowerCase();
-                    String tmpType = XmlReader.getTextValue(optionElement, "type");
+                    String tmpType = optionElement.getAttribute("type");
+                    //   String tmpType = XmlReader.getTextValue(optionElement, "type");
 
                     ParamInfo.Type type = null;
 
                     if (tmpType != null) {
-                        if (tmpType.toLowerCase().equals("bool")) {
+                        if (tmpType.toLowerCase().equals("boolean")) {
                             type = ParamInfo.Type.BOOLEAN;
                         } else if (tmpType.toLowerCase().equals("int")) {
                             type = ParamInfo.Type.INT;
@@ -194,6 +195,10 @@ public class L2genReader {
                             type = ParamInfo.Type.FLOAT;
                         } else if (tmpType.toLowerCase().equals("string")) {
                             type = ParamInfo.Type.STRING;
+                        } else if (tmpType.toLowerCase().equals("ifile")) {
+                            type = ParamInfo.Type.IFILE;
+                        } else if (tmpType.toLowerCase().equals("ofile")) {
+                            type = ParamInfo.Type.OFILE;
                         }
                     }
 

@@ -140,31 +140,57 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
     }
 
+    private String buildStringPrototype(int size) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < size; i++) {
+            stringBuilder.append("p");
+        }
+
+        return stringBuilder.toString();
+    }
 
     private void createParamTextfield(ParamInfo paramInfo, JPanel jPanel, int gridy) {
 
-
         final String param = paramInfo.getName();
-        int jTextFieldLen = 0;
 
+//        final String PROTOTYPE_70 = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 ";
+//        final String PROTOTYPE_60 = "123456789 123456789 123456789 123456789 123456789  123456789 ";
+//        final String PROTOTYPE_15 = "123456789 12345";
+
+        final String PROTOTYPE_70 = buildStringPrototype(70);
+        final String PROTOTYPE_60 = buildStringPrototype(60);
+        final String PROTOTYPE_15 = buildStringPrototype(15);
+
+        int fill;
+        String textfieldPrototype = null;
 
         if (paramInfo.getType() == ParamInfo.Type.STRING) {
-            if (paramInfo.getName().contains("file")) {
-                jTextFieldLen = PARAM_FILESTRING_TEXTLEN;
-            } else {
-                jTextFieldLen = PARAM_STRING_TEXTLEN;
-            }
+            textfieldPrototype = PROTOTYPE_60;
+            fill = GridBagConstraints.NONE;
         } else if (paramInfo.getType() == ParamInfo.Type.INT) {
-            jTextFieldLen = PARAM_INT_TEXTLEN;
+            textfieldPrototype = PROTOTYPE_15;
+            fill = GridBagConstraints.NONE;
         } else if (paramInfo.getType() == ParamInfo.Type.FLOAT) {
-            jTextFieldLen = PARAM_FLOAT_TEXTLEN;
+            textfieldPrototype = buildStringPrototype(60);
+            fill = GridBagConstraints.NONE;
+        } else if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+            textfieldPrototype = PROTOTYPE_70;
+            fill = GridBagConstraints.HORIZONTAL;
+        } else if (paramInfo.getType() == ParamInfo.Type.OFILE) {
+            textfieldPrototype = PROTOTYPE_70;
+            fill = GridBagConstraints.HORIZONTAL;
+        } else {
+            textfieldPrototype = PROTOTYPE_70;
+            fill = GridBagConstraints.NONE;
         }
 
 
-        final JTextField jTextField = new JTextField();
-        if (jTextFieldLen > 0) {
-            jTextField.setColumns(jTextFieldLen);
-        }
+        final JTextField jTextField = new JTextField(textfieldPrototype);
+        jTextField.setPreferredSize(jTextField.getPreferredSize());
+        jTextField.setMaximumSize(jTextField.getPreferredSize());
+        jTextField.setMinimumSize(jTextField.getPreferredSize());
+
         jTextField.setText(paramInfo.getValue());
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
@@ -181,12 +207,6 @@ public class L2genCategorizedParamsPanel extends JPanel {
         jPanel.add(defaultIndicator,
                 new GridBagConstraintsCustom(1, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
-        int fill;
-        if (jTextFieldLen > 0) {
-            fill = GridBagConstraints.NONE;
-        } else {
-            fill = GridBagConstraints.HORIZONTAL;
-        }
 
         jPanel.add(jTextField,
                 new GridBagConstraintsCustom(2, gridy, 1, 0, GridBagConstraints.WEST, fill));
