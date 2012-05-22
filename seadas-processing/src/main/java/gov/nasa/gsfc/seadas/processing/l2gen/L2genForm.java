@@ -142,7 +142,7 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
 
     public Product getSelectedSourceProduct() {
         if (l2genMainPanel != null) {
-            l2genMainPanel.getSelectedProduct();
+           return l2genMainPanel.getSelectedProduct();
         }
         return null;
     }
