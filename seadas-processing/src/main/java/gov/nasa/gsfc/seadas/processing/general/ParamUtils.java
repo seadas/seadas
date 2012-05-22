@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamValidValueInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.XmlReader;
+import org.esa.beam.visat.VisatApp;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -83,7 +84,9 @@ public class ParamUtils {
         NodeList optionNodelist = rootElement.getElementsByTagName("primaryOption");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
             SeadasLogger.getLogger().warning("primaryOptions does not exist!");
-            return null;
+            primaryOptions.add("ifile");
+            primaryOptions.add("ofile");
+            return primaryOptions;
         }
         for (int i = 0; i < optionNodelist.getLength(); i++) {
             Element optionElement = (Element) optionNodelist.item(i);
@@ -130,7 +133,12 @@ public class ParamUtils {
 
         XmlReader xmlReader = new XmlReader();
         InputStream paramStream = ParamUtils.class.getResourceAsStream(paramXmlFileName);
+
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
+        if (rootElement == null ) {
+                        VisatApp.getApp().showErrorDialog("XML file " + paramXmlFileName + " not found." );
+            return null;
+        }
         NodeList optionNodelist = rootElement.getElementsByTagName("option");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
             return null;
