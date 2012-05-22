@@ -20,28 +20,34 @@ import java.util.ArrayList;
 public class L2genWavelengthLimiterPanel extends JPanel {
 
     private L2genData l2genData;
+
     private JPanel waveLimiterJPanel;
+
     private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
+
     private boolean waveLimiterControlHandlersEnabled = false;
 
-    private JButton infraredButton;
-    private JButton visibleButton;
-    private JButton nearInfraredButton;
+    private JButton
+            infraredButton,
+            visibleButton,
+            nearInfraredButton;
 
-    private String SELECT_ALL_INFRARED = "Select All Infrared";
-    private String DESELECT_ALL_INFRARED = "Deselect All Infrared";
-    private String SELECT_ALL_NEAR_INFRARED = "Select All Near-Infrared";
-    private String DESELECT_ALL_NEAR_INFRARED = "Deselect All Near-Infrared";
-    private String SELECT_ALL_VISIBLE = "Select All Visible";
-    private String DESELECT_ALL_VISIBLE = "Deselect All Visible";
+    private final static String
+            SELECT_ALL_INFRARED = "Select All Infrared",
+            DESELECT_ALL_INFRARED = "Deselect All Infrared",
+            SELECT_ALL_NEAR_INFRARED = "Select All Near-Infrared",
+            DESELECT_ALL_NEAR_INFRARED = "Deselect All Near-Infrared",
+            SELECT_ALL_VISIBLE = "Select All Visible",
+            DESELECT_ALL_VISIBLE = "Deselect All Visible";
+
+  //  private InfraredButton infraredButton = new InfraredButton();
 
 
     L2genWavelengthLimiterPanel(L2genData l2genData) {
-
         this.l2genData = l2genData;
-
         initComponents();
         addComponents();
+
     }
 
     public void initComponents() {
@@ -49,12 +55,9 @@ public class L2genWavelengthLimiterPanel extends JPanel {
         infraredButton = createInfraredButton();
         nearInfraredButton = createNearInfraredButton();
         visibleButton = createVisibleButton();
-
-
     }
 
     public void addComponents() {
-
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createTitledBorder("Wavelength Limiter"));
         setToolTipText("The wavelengths selected here are applied when you check a wavelength dependent product.  Not that any subsequent change ...");
@@ -74,7 +77,6 @@ public class L2genWavelengthLimiterPanel extends JPanel {
 
 
     private JButton createInfraredButton() {
-
 
         final JButton jButton = new JButton(SELECT_ALL_INFRARED);
 
@@ -127,9 +129,72 @@ public class L2genWavelengthLimiterPanel extends JPanel {
         }
     }
 
+    private class InfraredButton {
+
+
+        private static final String selectAll = SELECT_ALL_INFRARED;
+        private static final String deselectAll = DESELECT_ALL_INFRARED;
+
+
+        InfraredButton() {
+        }
+
+        private JButton createInfraredButton() {
+
+            final JButton jButton = new JButton(selectAll);
+
+            jButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (jButton.getText().equals(selectAll)) {
+                        l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, true);
+                    } else if (jButton.getText().equals(deselectAll)) {
+                        l2genData.setSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED, false);
+                    }
+                }
+            });
+
+
+            l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    updateInfraredButton();
+                }
+            });
+
+            l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    updateInfraredButton();
+                }
+            });
+
+            return jButton;
+        }
+
+
+        private void updateInfraredButton() {
+
+            // Set INFRARED 'Select All' toggle to appropriate text and enabled
+            if (l2genData.hasWaveType(WavelengthInfo.WaveType.INFRARED)) {
+                nearInfraredButton.setEnabled(true);
+                if (l2genData.isSelectedAllWaveLimiter(WavelengthInfo.WaveType.INFRARED)) {
+                    if (!infraredButton.getText().equals(deselectAll)) {
+                        infraredButton.setText(deselectAll);
+                    }
+                } else {
+                    if (!infraredButton.getText().equals(selectAll)) {
+                        infraredButton.setText(selectAll);
+                    }
+                }
+            } else {
+                nearInfraredButton.setEnabled(false);
+            }
+        }
+    }
+
 
     private JButton createNearInfraredButton() {
-
 
         final JButton jButton = new JButton(SELECT_ALL_NEAR_INFRARED);
 
@@ -184,7 +249,6 @@ public class L2genWavelengthLimiterPanel extends JPanel {
 
     private JButton createVisibleButton() {
 
-
         final JButton jButton = new JButton(SELECT_ALL_VISIBLE);
 
         jButton.addActionListener(new ActionListener() {
@@ -233,18 +297,12 @@ public class L2genWavelengthLimiterPanel extends JPanel {
         } else {
             visibleButton.setEnabled(false);
         }
-
     }
+
 
     private JPanel createWaveLimiterJPanel() {
 
-        // ----------------------------------------------------------------------------------------
-        // Create all Swing controls used on this tabbed panel
-        // ----------------------------------------------------------------------------------------
-
-
-        waveLimiterJPanel = new JPanel(new GridBagLayout());
-
+        final JPanel jPanel = new JPanel(new GridBagLayout());
 
         l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_EVENT, new PropertyChangeListener() {
             @Override
@@ -261,9 +319,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
             }
         });
 
-
-        return waveLimiterJPanel;
-
+        return jPanel;
     }
 
 

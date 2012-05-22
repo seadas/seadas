@@ -219,7 +219,6 @@ public class MissionInfo {
                 return true;
             }
         }
-
         return false;
     }
 }

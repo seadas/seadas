@@ -20,51 +20,55 @@ public class L2genData {
 
 
     //  private static final String OCDATAROOT = System.getenv("OCDATAROOT");
-
-    private static final String PRODUCT_INFO_XML = "productInfo.xml";
-    private static final String PARAM_INFO_XML = "paramInfo.xml";
     private static final File DEFAULT_IFILE = new File("S2002032172026.L1A_GAC.reallysmall");
-    private static final String PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml";
-    private static final String PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml";
 
-    public static final String PAR = "par";
-    public static final String GEOFILE = "geofile";
-    public static final String SPIXL = "spixl";
-    public static final String EPIXL = "epixl";
-    public static final String SLINE = "sline";
-    public static final String ELINE = "eline";
-    public static final String NORTH = "north";
-    public static final String SOUTH = "south";
-    public static final String WEST = "west";
-    public static final String EAST = "east";
-    public static final String IFILE = "ifile";
-    public static final String OFILE = "ofile";
-    public static final String L2PROD = "l2prod";
+    private static final String
+            PRODUCT_INFO_XML = "productInfo.xml",
+            PARAM_INFO_XML = "paramInfo.xml",
+            PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml",
+            PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml";
 
-    public static final String INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT";
-    public static final String WAVE_LIMITER_EVENT = "WAVE_LIMITER_EVENT";
-    public static final String RETAIN_IFILE_EVENT = "RETAIN_IFILE_EVENT";
-    public static final String SHOW_DEFAULTS_EVENT = "SHOW_DEFAULTS_EVENT";
-    public static final String PARSTRING_EVENT = "PARSTRING_EVENT";
-    public static final String PARSTRING_IN_PROGRESS_EVENT = "PARSTRING_IN_PROGRESS_EVENT";
+    public static final String
+            PAR = "par",
+            GEOFILE = "geofile",
+            SPIXL = "spixl",
+            EPIXL = "epixl",
+            SLINE = "sline",
+            ELINE = "eline",
+            NORTH = "north",
+            SOUTH = "south",
+            WEST = "west",
+            EAST = "east",
+            IFILE = "ifile",
+            OFILE = "ofile",
+            L2PROD = "l2prod";
 
-    public boolean retainCurrentIfile = true;
-    private boolean showDefaultsInParString = false;
+    public static final String
+            INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT",
+            WAVE_LIMITER_EVENT = "WAVE_LIMITER_EVENT",
+            RETAIN_IFILE_EVENT = "RETAIN_IFILE_EVENT",
+            SHOW_DEFAULTS_EVENT = "SHOW_DEFAULTS_EVENT",
+            PARSTRING_EVENT = "PARSTRING_EVENT",
+            PARSTRING_IN_PROGRESS_EVENT = "PARSTRING_IN_PROGRESS_EVENT";
 
-    public FileInfo iFileInfo = new FileInfo(null);
 
-    public ArrayList<WavelengthInfo> waveLimiterInfos = new ArrayList<WavelengthInfo>();
+    public final FileInfo iFileInfo = new FileInfo(null);
 
-    private L2genReader l2genReader = new L2genReader(this);
+    public final ArrayList<WavelengthInfo> waveLimiterInfos = new ArrayList<WavelengthInfo>();
+
+    private final L2genReader l2genReader = new L2genReader(this);
+
+    private final ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
+    private final ArrayList<ParamCategoryInfo> paramCategoryInfos = new ArrayList<ParamCategoryInfo>();
+
+    private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
+
+    private final SeadasPrint l2genPrint = new SeadasPrint();
+
 
     private L2prodParamInfo l2prodParamInfo;  // shortcut path to the one contained in paramInfo
-    private ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
-    private ArrayList<ParamCategoryInfo> paramCategoryInfos = new ArrayList<ParamCategoryInfo>();
-
-
-    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
-
-    private SeadasPrint l2genPrint = new SeadasPrint();
+    public boolean retainCurrentIfile = true;
+    private boolean showDefaultsInParString = false;
 
 
     public boolean isRetainCurrentIfile() {
@@ -197,11 +201,6 @@ public class L2genData {
             fireEvent(L2PROD);
         }
     }
-
-
-    /*
-
-     */
 
 
     /**
@@ -884,12 +883,28 @@ public class L2genData {
     }
 
 
+    private File getFileRequirePath(String fileName) {
+        if (fileName == null) {
+            return null;
+        }
+
+        File file = new File(fileName);
+        if (file != null && !fileName.equals(file.getAbsolutePath())) {
+            return file;
+        }
+
+        return null;
+    }
+
+
     // runs this if IFILE changes
     // it will reset missionString
     // it will reset and make new wavelengthInfoArray
     private void setIfileParamValue(ParamInfo paramInfo, String newIfile) {
 
-        File iFile = new File(newIfile);
+        File iFile = getFileRequirePath(newIfile);
+
+        //     String absPath = iFile.getAbsolutePath();
         String oldIfile = getParamValue(IFILE);
         paramInfo.setValue(newIfile);
         paramInfo.setDefaultValue(newIfile);
@@ -900,14 +915,17 @@ public class L2genData {
             resetWaveLimiter();
             l2prodParamInfo.resetProductInfos();
             updateXmlBasedObjects(iFile);
+            setParamValueAndDefault(OFILE, iFileInfo.getOFileName());
+            setParamValueAndDefault(GEOFILE, iFileInfo.getGeoFileName());
         } else {
+            setParamValueAndDefault(OFILE, null);
+            setParamValueAndDefault(GEOFILE, null);
             fireEvent(INVALID_IFILE_EVENT);
         }
 
 
-        setParamValueAndDefault(OFILE, iFileInfo.getOFileName());
-        setParamValueAndDefault(GEOFILE, iFileInfo.getGeoFileName());
         setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
+
 
         fireEvent(IFILE, oldIfile, newIfile);
     }
@@ -1019,9 +1037,6 @@ public class L2genData {
         return paramCategoryInfos;
     }
 
-    public void setParamCategoryInfos(ArrayList<ParamCategoryInfo> paramCategoryInfos) {
-        this.paramCategoryInfos = paramCategoryInfos;
-    }
 
     public void addParamCategoryInfo(ParamCategoryInfo paramCategoryInfo) {
         paramCategoryInfos.add(paramCategoryInfo);

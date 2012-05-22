@@ -9,7 +9,7 @@
         <option>
             <name>-help</name>
             <value>false</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>false</default>
             <source>default</source>
             <alias>-h</alias>
@@ -19,7 +19,7 @@
         <option>
             <name>-version</name>
             <value>false</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>false</default>
             <source>default</source>
             <alias>--version</alias>
@@ -28,7 +28,7 @@
         <option>
             <name>-dump_options</name>
             <value>false</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>false</default>
             <source>default</source>
             <alias>--dump_options</alias>
@@ -281,7 +281,7 @@
         <option>
             <name>proc_land</name>
             <value>1</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>off</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>toggle land processing</description>
@@ -289,7 +289,7 @@
         <option>
             <name>proc_sst</name>
             <value>0</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>false</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>toggle SST processing (default=1 for MODIS, 0 otherwise)</description>
@@ -297,7 +297,7 @@
         <option>
             <name>atmocor</name>
             <value>1</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>on</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>toggle atmospheric correction</description>
@@ -585,7 +585,7 @@
         <option>
             <name>oxaband_opt</name>
             <value>1</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>false</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>oxygen a-band correction option (default On for SeaWiFS, OSMI, and OCTS, Off otherwise)
@@ -594,7 +594,7 @@
         <option>
             <name>filter_opt</name>
             <value>1</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>false</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
             <description>filtering input data option (default On for OCTS, Off otherwise)</description>
@@ -1767,7 +1767,7 @@
         <option>
             <name>maskland</name>
             <value>1</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>on</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>land mask option</description>
@@ -1775,7 +1775,7 @@
         <option>
             <name>maskbath</name>
             <value>0</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>off</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>shallow water mask option</description>
@@ -1783,7 +1783,7 @@
         <option>
             <name>maskcloud</name>
             <value>1</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>on</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>cloud mask option</description>
@@ -1791,7 +1791,7 @@
         <option>
             <name>maskglint</name>
             <value>0</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>off</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>glint mask option</description>
@@ -1799,7 +1799,7 @@
         <option>
             <name>masksunzen</name>
             <value>0</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>off</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>large sun zenith angle mask option</description>
@@ -1807,7 +1807,7 @@
         <option>
             <name>masksatzen</name>
             <value>0</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>off</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>large satellite zenith angle mask option</description>
@@ -1815,7 +1815,7 @@
         <option>
             <name>maskhilt</name>
             <value>1</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>on</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>high Lt masking</description>
@@ -1823,7 +1823,7 @@
         <option>
             <name>maskstlight</name>
             <value>0</value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>on</default>
             <source>/disk02/ocssw/run/data/seawifs/msl12_defaults.par</source>
             <description>stray light masking</description>

@@ -16,8 +16,18 @@ public class BaseInfo implements Comparable<BaseInfo> {
 
 
     public enum State {
-        NOT_SELECTED, PARTIAL, SELECTED
+        NOT_SELECTED,
+        PARTIAL,
+        SELECTED
     }
+
+
+    private String name;
+    private State state = State.NOT_SELECTED;
+    private String description = null;
+    private BaseInfo parent = null;
+    private ArrayList<BaseInfo> children = new ArrayList<BaseInfo>();
+
 
     public static final Comparator<ProductInfo> CASE_SENSITIVE_ORDER
             = new CaseSensitiveComparator();
@@ -43,11 +53,6 @@ public class BaseInfo implements Comparable<BaseInfo> {
     }
 
 
-    private String name;
-    private State state = State.NOT_SELECTED;
-    private String description = null;
-    private BaseInfo parent = null;
-    private ArrayList<BaseInfo> children = new ArrayList<BaseInfo>();
 
     public BaseInfo() {
         this("", null);

@@ -92,9 +92,11 @@ public class ProcessorModel {
         while (itr.hasNext()) {
 
             option = itr.next();
-            if (option.getType().equals(ParamInfo.Type.IFILE) && primaryOptions.contains(option.getName())) {
+            if (option.getType() != null) {
+                if (option.getType().equals(ParamInfo.Type.IFILE) && primaryOptions.contains(option.getName())) {
 
-                return option.getName();
+                    return option.getName();
+                }
             }
         }
         return null;
@@ -107,9 +109,11 @@ public class ProcessorModel {
         while (itr.hasNext()) {
 
             option = itr.next();
-            if (option.getType().equals(ParamInfo.Type.OFILE) && primaryOptions.contains(option.getName())) {
+            if (option.getType() != null) {
+                if (option.getType().equals(ParamInfo.Type.OFILE) && primaryOptions.contains(option.getName())) {
 
-                return option.getName();
+                    return option.getName();
+                }
             }
         }
         return null;

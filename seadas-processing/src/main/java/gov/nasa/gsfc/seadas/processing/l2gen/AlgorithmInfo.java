@@ -13,30 +13,40 @@ import java.util.HashSet;
  * @since SeaDAS 7.0
  */
 public class AlgorithmInfo extends BaseInfo {
+
     public static enum ParameterType {
-        VISIBLE, IR, ALL, NONE
+        VISIBLE,
+        IR,
+        ALL,
+        NONE
     }
+
 
     public static enum ShortcutType {
-        VISIBLE, IR, ALL
+        VISIBLE,
+        IR,
+        ALL
     }
 
-    private static String SHORTCUT_NAMEPART_VISIBLE = "vvv";
-    private static String SHORTCUT_NAMEPART_IR = "iii";
-    private static String SHORTCUT_NAMEPART_ALL = "nnn";
-
-    private static String PARAMTYPE_VISIBLE = "VISIBLE";
-    private static String PARAMTYPE_IR = "IR";
-    private static String PARAMTYPE_ALL = "ALL";
-    private static String PARAMTYPE_NONE = "NONE";
+    public final static String
+            SHORTCUT_NAMEPART_VISIBLE = "vvv",
+            SHORTCUT_NAMEPART_IR = "iii",
+            SHORTCUT_NAMEPART_ALL = "nnn",
+            PARAMTYPE_VISIBLE = "VISIBLE",
+            PARAMTYPE_IR = "IR",
+            PARAMTYPE_ALL = "ALL",
+            PARAMTYPE_NONE = "NONE";
 
     // These fields are populated according to productInfo.xml
 
     public ArrayList<WavelengthInfo> waveLimiterInfos;
-    private String dataType = null;
-    private String prefix = null;
-    private String suffix = null;
-    private String units = null;
+
+    private String
+            dataType = null,
+            prefix = null,
+            suffix = null,
+            units = null;
+
     private ParameterType parameterType = null;
 
 

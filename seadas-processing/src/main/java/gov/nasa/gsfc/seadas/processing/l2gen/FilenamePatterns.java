@@ -25,7 +25,7 @@ public class FilenamePatterns {
         }
 
         File iFile = fileInfo.getFile();
-        if (iFile.getAbsoluteFile().length() == 0) {
+        if (iFile == null || iFile.getAbsolutePath().length() == 0) {
             return null;
         }
 
@@ -52,7 +52,7 @@ public class FilenamePatterns {
         }
 
         File iFile = fileInfo.getFile();
-        if (iFile.getAbsoluteFile().length() == 0) {
+        if (iFile == null || iFile.getAbsolutePath().length() == 0) {
             return null;
         }
 
