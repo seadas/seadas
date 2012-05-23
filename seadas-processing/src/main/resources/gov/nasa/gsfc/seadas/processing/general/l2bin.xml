@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>infile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>infile</name>
+            <value></value>
+            <default></default>
+            <description>input L1 file name</description>
+            <source>command line</source>
+            <aliases>
+                <alias>ifile1</alias>
+            </aliases>
+            <order>1</order>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value></value>
+            <default>output</default>
+            <description>output L2 file #1 name, output vicarious L1B for inverse mode</description>
+            <alias>ofile1</alias>
+            <order>2</order>
+        </option>
+        <option type="string">
+            <name>sday</name>
+            <value></value>
+            <default></default>
+            <description>start datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
+            <order>3</order>
+        </option>
+        <option type="string">
+            <name>eday</name>
+            <value></value>
+            <default></default>
+            <description>end datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
+            <order>4</order>
+        </option>
+        <option type="int">
+            <name>resolve</name>
+            <value>1</value>
+            <default>1</default>
+            <description>bin resolution (H,1,2,4,9,36)</description>
+            <order>5</order>
+        </option>
+        <option type="string">
+            <name>flaguse</name>
+            <value></value>
+            <default></default>
+            <description>flags masked [see /SENSOR/l2bin_defaults.par]</description>
+            <order>6</order>
+        </option>
+        <option type="string">
+            <name>l3bprod</name>
+            <value></value>
+            <default></default>
+            <description>bin products [default=all products]
+                Set to "ALL" or "all" for all L2 products in 1st input file.
+                Use ':' or ',' or ' ' as delimiters.
+                Use ';' or '=' to delineate minimum values.
+            </description>
+            <order>7</order>
+        </option>
+        <option type="string">
+            <name>prodtype</name>
+            <value></value>
+            <default>day</default>
+            <description>product type (Set to "regional" to bin all scans.) [default=day]</description>
+            <order>8</order>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <default>Unspecified</default>
+            <description>production version [default=Unspecified]</description>
+            <order>9</order>
+        </option>
+        <option type="boolean">
+            <name>noext</name>
+            <value></value>
+            <default>false</default>
+            <description>set to 1 to suppress generation of external files
+                [default=0, (1 for "regional" prodtype)]
+            </description>
+            <order>10</order>
+        </option>
+
+        <option type="int">
+            <name>rowgroup</name>
+            <value></value>
+            <default></default>
+            <description># of bin rows to process at once</description>
+            <order>11</order>
+        </option>
+        <option type="boolean">
+            <name>night</name>
+            <value></value>
+            <default>false</default>
+            <description>set to 1 for SST night processing [default=0]</description>
+            <order>12</order>
+        </option>
+        <option type="string">
+            <name>qual_prod</name>
+            <value></value>
+            <default></default>
+            <description>quality product field name</description>
+            <order>13</order>
+        </option>
+        <option type="int">
+            <name>qual_max</name>
+            <value></value>
+            <default>2</default>
+            <description>maximum acceptable quality [default=2]</description>
+            <order>14</order>
+        </option>
+        <option type="boolean">
+            <name>verbose</name>
+            <value></value>
+            <default>false</default>
+            <description>Allow more verbose screen messages [default=0]</description>
+            <order>15</order>
+        </option>
+    </options>
+</paramInfo>
