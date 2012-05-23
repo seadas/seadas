@@ -135,8 +135,8 @@ public class ParamUtils {
         InputStream paramStream = ParamUtils.class.getResourceAsStream(paramXmlFileName);
 
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
-        if (rootElement == null ) {
-                        VisatApp.getApp().showErrorDialog("XML file " + paramXmlFileName + " not found." );
+        if (rootElement == null) {
+            VisatApp.getApp().showErrorDialog("XML file " + paramXmlFileName + " not found.");
             return null;
         }
         NodeList optionNodelist = rootElement.getElementsByTagName("option");
@@ -190,7 +190,7 @@ public class ParamUtils {
                 }
             }
 
-            String defaultValue = value;
+
             String description = XmlReader.getTextValue(optionElement, "description");
             String source = XmlReader.getTextValue(optionElement, "source");
             String order = XmlReader.getTextValue(optionElement, "order");
@@ -198,7 +198,11 @@ public class ParamUtils {
             ParamInfo paramInfo = new ParamInfo(name, value, type);
 
             paramInfo.setDescription(description);
-            paramInfo.setDefaultValue(defaultValue);
+
+            String defaultValue = XmlReader.getTextValue(optionElement, "default");
+            if (defaultValue != null || defaultValue == null) {
+                paramInfo.setDefaultValue(defaultValue);
+            }
             paramInfo.setSource(source);
 
             if (order != null) {

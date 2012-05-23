@@ -407,14 +407,18 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     protected JPanel makeOptionField(final ParamInfo pi) {
 
         final String optionName = pi.getName();
-        final String optionValue = pi.getValue();
+        //final String optionValue = pi.getValue();
         final JPanel optionPanel = new JPanel();
         TableLayout fieldLayout = new TableLayout(1);
         fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         optionPanel.setLayout(fieldLayout);
         optionPanel.add(new JLabel(optionName));
 
-
+        if (pi.getValue() == null || pi.getValue().length() == 0) {
+            if (pi.getDefaultValue() != null) {
+                pi.setValue(pi.getDefaultValue());
+            }
+        }
         final PropertyContainer vc = new PropertyContainer();
         vc.addProperty(Property.create(optionName, pi.getValue()));
         vc.getDescriptor(optionName).setDisplayName(optionName);
@@ -430,16 +434,17 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
         field.setMinimumSize(field.getPreferredSize());
-      //  field.addPropertyChangeListener("option field", //////);
-       // processorModel.addPropertyChangeListener();
-        PropertyChangeListener[] pcl = field.getPropertyChangeListeners();
-        for (int i=0; i<pcl.length; i++){
-            System.out.println("listener name: " + pcl[i].getClass().toString());
 
-        }
-        File file1 =  new File("/Users/aabduraz/test.par");
-         File file2 =  new File("aabduraz/test.par");
-         System.out.println("file and directory test: " + file1.isAbsolute() + " " + file2.isAbsolute()) ;
+        //  field.addPropertyChangeListener("option field", //////);
+        // processorModel.addPropertyChangeListener();
+//        PropertyChangeListener[] pcl = field.getPropertyChangeListeners();
+//        for (int i = 0; i < pcl.length; i++) {
+//            System.out.println("listener name: " + pcl[i].getClass().toString());
+//
+//        }
+//        File file1 = new File("/Users/aabduraz/test.par");
+//        File file2 = new File("aabduraz/test.par");
+//        System.out.println("file and directory test: " + file1.isAbsolute() + " " + file2.isAbsolute());
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription());
         }
@@ -449,10 +454,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
-                //SeadasLogger.getLogger().info("property change: " + pi.getValue());
-                //SeadasLogger.getLogger().info("property change: " + field.getText());
-
-                pi.setValue(field.getText());
+                 pi.setValue(field.getText());
                 handleParamChanged();
             }
         });
@@ -498,9 +500,6 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
 
-                SeadasLogger.getLogger().info("property change: " + pi.getValue());
-                SeadasLogger.getLogger().info("property change: " + field.getText());
-
                 pi.setValue((new Boolean(field.isSelected())).toString());
 
                 SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
@@ -543,7 +542,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         inputList.setEditable(true);
         inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
                 inputList.getPreferredSize().height));
-               if (paramInfo.getDescription() != null) {
+        if (paramInfo.getDescription() != null) {
             inputList.setToolTipText(paramInfo.getDescription());
         }
         int defaultValuePosition = validValues.indexOf(optionDefaultValue);
@@ -855,8 +854,6 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     private void debugf(String formatString, Object[] messages) {
         //System.out.printf(formatString, messages);
     }
-
-
 
 
 }

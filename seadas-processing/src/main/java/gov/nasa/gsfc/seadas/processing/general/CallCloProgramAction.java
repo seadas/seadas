@@ -40,7 +40,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     String dialogTitle;
     String xmlFileName;
 
-    private boolean printLogToConsole = true;
+    private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
 
     @Override
