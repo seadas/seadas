@@ -65,6 +65,15 @@
         <!--</action>-->
         <action>
             <parent>seadasProcessing</parent>
+            <id>modis_L1A.py</id>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>modis_L1A.py...</text>
+            <programName>modis_L1A.py</programName>
+            <dialogTitle>modis_L1A.py Processor</dialogTitle>
+            <xmlFileName>modis_L1A.xml</xmlFileName>
+        </action>
+        <action>
+            <parent>seadasProcessing</parent>
             <id>modis_L1B.py</id>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>modis_L1B.py...</text>
@@ -75,12 +84,12 @@
         </action>
         <action>
             <parent>seadasProcessing</parent>
-            <id>modis_L1A.py</id>
+            <id>modis_GEO.py</id>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>modis_L1A.py...</text>
-            <programName>modis_L1A.py</programName>
-            <dialogTitle>modis_L1A.py Processor</dialogTitle>
-            <xmlFileName>modis_L1A.xml</xmlFileName>
+            <text>modis_GEO.py...</text>
+            <programName>modis_GEO.py</programName>
+            <dialogTitle>modis_GEO.py Processor</dialogTitle>
+            <xmlFileName>modis_GEO.xml</xmlFileName>
         </action>
         <!--<action>-->
         <!--<parent>seadasProcessing</parent>-->
