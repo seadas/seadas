@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>ifile</name>
+            <value/>
+            <type>string</type>
+            <description>input bin file name</description>
+            <source>default</source>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value/>
+            <type>string</type>
+            <default></default>
+            <description>output map filename</description>
+            <source>default</source>
+        </option>
+
+        <option type="string" required="true">
+            <name>prod</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>product name</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>precision</name>
+            <value></value>
+            <type>string</type>
+            <default>F</default>
+            <description>output map precision: 'B' (default), 'I', 'F'</description>
+            <source>default</source>
+            <validValue>
+                <value>B</value>
+                <description>default</description>
+            </validValue>
+            <validValue>
+                <value>I</value>
+            </validValue>
+            <validValue>
+                <value>F</value>
+            </validValue>
+        </option>
+        <option type="ifile">
+            <name>palfile</name>
+            <value/>
+            <type>string</type>
+            <description>palette filename</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>processing version string</description>
+            <source>default</source>
+        </option>
+
+
+        <option type="float">
+            <name>datamin</name>
+            <value></value>
+            <type>float</type>
+            <default></default>
+            <description>minimum value for data scaling
+            </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>datamax</name>
+            <value></value>
+            <type>float</type>
+            <default></default>
+            <description>maximum value for data scaling
+            </description>
+            <source>default</source>
+        </option>
+        <option type="int">
+            <name>stype</name>
+            <value></value>
+            <type>int</type>
+            <default></default>
+            <description>scaling type 1: LINEAR 2: LOG
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>1</value>
+                <description>LINEAR</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>LOG</description>
+            </validValue>
+        </option>
+        <option type="int">
+            <name>meas</name>
+            <value></value>
+            <type>int</type>
+            <default>1</default>
+            <description>measurement to map, 1=mean, 2=var, 3=stdev, 4=pixels, 5=scenes (default=1)
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>1</value>
+                <description>mean</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>var</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>stdev</description>
+            </validValue>
+            <validValue>
+                <value>4</value>
+                <description>pixels</description>
+            </validValue>
+            <validValue>
+                <value>5</value>
+                <description>scenes</description>
+            </validValue>
+        </option>
+        <option type="float">
+            <name>loneast</name>
+            <value></value>
+            <type>float</type>
+            <default>180</default>
+            <description>Easternmost longitude (default=+180)
+            </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>lonwest</name>
+            <value></value>
+            <type>float</type>
+            <default>-180</default>
+            <description>Westernmost longitude (default=+180)</description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>latnorth</name>
+            <value></value>
+            <type>float</type>
+            <default>+90</default>
+            <description>Northernmost latitude (default=+90)</description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>latsouth</name>
+            <value></value>
+            <type>float</type>
+            <default>-90</default>
+            <description>Southernmost latitude (default=-90)</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>projection</name>
+            <value></value>
+            <type>string</type>
+            <default>RECT</default>
+            <description>SIN | RECT (default=RECT)</description>
+            <source>default</source>
+            <validValue>
+                <value>SIN</value>
+                <description></description>
+            </validValue>
+            <validValue>
+                <value>RECT</value>
+                <description></description>
+            </validValue>
+        </option>
+        <option type="string">
+            <name>resolution</name>
+            <value></value>
+            <type>string</type>
+            <default>9km</default>
+            <description>36km | 9km | 4km | 2km | 1km
+                1deg (one deg) | 10deg (0.1 deg) (default=9km)
+            </description>
+            <validValue>
+                <value>36km</value>
+                <description></description>
+            </validValue>
+            <validValue>
+                <value>9km</value>
+                <description></description>
+            </validValue>
+            <validValue>
+                <value>4km</value>
+                <description></description>
+            </validValue>
+            <validValue>
+                <value>2km</value>
+                <description></description>
+            </validValue>
+            <validValue>
+                <value>1km</value>
+                <description></description>
+            </validValue>
+            <validValue>
+                <value>1deg</value>
+                <description></description>
+            </validValue>
+            <validValue>
+                <value>10deg</value>
+                <description></description>
+            </validValue>
+        </option>
+        <option type="int">
+            <name>seam_lon</name>
+            <value></value>
+            <type>int</type>
+            <default>-180</default>
+            <description>Longitude of Left Edge of Map</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>proddesc</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>Product Description</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>units</name>
+            <value></value>
+            <type></type>
+            <default></default>
+            <description>Product Units</description>
+            <source>default</source>
+        </option>
+    </options>
+</paramInfo>

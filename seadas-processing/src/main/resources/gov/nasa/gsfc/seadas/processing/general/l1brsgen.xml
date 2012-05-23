@@ -8,6 +8,7 @@
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>
+            <primaryOption>geofile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
@@ -120,7 +121,7 @@
         </option>
         <option type="int">
             <name>epixl</name>
-            <value>-1</value>
+            <value> </value>
             <type>int</type>
             <default>-1</default>
             <description>end pixel number (-1=the last pixel)</description>
@@ -128,7 +129,7 @@
         </option>
         <option type="int">
             <name>sline</name>
-            <value>1</value>
+            <value></value>
             <type>int</type>
             <default>1</default>
             <description>start line number</description>
@@ -136,7 +137,7 @@
         </option>
         <option type="int">
             <name>eline</name>
-            <value>-1</value>
+            <value></value>
             <type>int</type>
             <default>-1</default>
             <description>end line number (-1=the last line)</description>
@@ -158,7 +159,7 @@
             <description>bands to use for red, green and blue</description>
         </option>
                <option type="boolean">
-            <name>atmospheric correction</name>
+            <name>atmocor</name>
             <value>true</value>
             <type>boolean</type>
             <default>true</default>
@@ -173,10 +174,10 @@
                 (default: see product_table)
             </description>
             <source>default</source>
-            <validValue>
-                <value>(default</value>
-                <description>see product_table)</description>
-            </validValue>
+            <!--<validValue>-->
+                <!--<value>(default</value>-->
+                <!--<description>see product_table)</description>-->
+            <!--</validValue>-->
         </option>
         <option type="float">
             <name>datamax</name>
@@ -187,10 +188,10 @@
                 (default: see product_table)
             </description>
             <source>default</source>
-            <validValue>
-                <value>(default</value>
-                <description>see product_table)</description>
-            </validValue>
+            <!--<validValue>-->
+                <!--<value>(default</value>-->
+                <!--<description>see product_table)</description>-->
+            <!--</validValue>-->
         </option>
         <option type="int">
             <name>stype</name>

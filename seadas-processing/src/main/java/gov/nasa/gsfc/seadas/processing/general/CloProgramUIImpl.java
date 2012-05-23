@@ -63,7 +63,6 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         this.programName = programName;
         this.xmlFileName = xmlFileName;
         processorModel = new ProcessorModel(programName, xmlFileName);
-
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
         sourceProductSelector.initProducts();
         outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
@@ -431,26 +430,19 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
         field.setMinimumSize(field.getPreferredSize());
-        //System.out.println(optionName + "  " + optionValue);
-//        field.addPropertyChangeListener(new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                String propertyName = propertyChangeEvent.getPropertyName();
-//                propertyChangeEvent.getSource();
-//                //System.out.println("property changed: " + propertyName + propertyChangeEvent.getSource() + propertyChangeEvent.getNewValue() + propertyChangeEvent.getOldValue() + propertyChangeEvent.getClass()   );
-//                if ("focusOwner".equals(propertyName)) {
-//
-//                } else if ("focusedWindow".equals(propertyName)) {
-//
-//                }
-//                Object source = propertyChangeEvent.getSource();
-//                // if (source == amountField) {
-//                //    amount = ((Number)amountField.getValue()).doubleValue();
-//                //    ...
-//            }
-//            //// ...//re-compute payment and update field..
-//
-//        });
+      //  field.addPropertyChangeListener("option field", //////);
+       // processorModel.addPropertyChangeListener();
+        PropertyChangeListener[] pcl = field.getPropertyChangeListeners();
+        for (int i=0; i<pcl.length; i++){
+            System.out.println("listener name: " + pcl[i].getClass().toString());
+
+        }
+        File file1 =  new File("/Users/aabduraz/test.par");
+         File file2 =  new File("aabduraz/test.par");
+         System.out.println("file and directory test: " + file1.isAbsolute() + " " + file2.isAbsolute()) ;
+        if (pi.getDescription() != null) {
+            field.setToolTipText(pi.getDescription());
+        }
         ctx.bind(optionName, field);
 
         ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
@@ -495,6 +487,9 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         final BindingContext ctx = new BindingContext(vc);
         final JCheckBox field = new JCheckBox();
         field.setHorizontalAlignment(JFormattedTextField.LEFT);
+        if (pi.getDescription() != null) {
+            field.setToolTipText(pi.getDescription());
+        }
         SeadasLogger.getLogger().finest(optionName + "  " + optionValue);
         ctx.bind(optionName, field);
 
@@ -548,6 +543,9 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         inputList.setEditable(true);
         inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
                 inputList.getPreferredSize().height));
+               if (paramInfo.getDescription() != null) {
+            inputList.setToolTipText(paramInfo.getDescription());
+        }
         int defaultValuePosition = validValues.indexOf(optionDefaultValue);
 
         if (defaultValuePosition != -1) {
@@ -857,6 +855,8 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     private void debugf(String formatString, Object[] messages) {
         //System.out.printf(formatString, messages);
     }
+
+
 
 
 }

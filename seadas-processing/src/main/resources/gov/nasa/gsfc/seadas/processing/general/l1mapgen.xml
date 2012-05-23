@@ -86,10 +86,10 @@
         </option>
         <option type="int">
             <name>resolution</name>
-            <value>-1</value>
+            <value></value>
             <type>int</type>
             <default>-1</default>
-            <description>bands to use for red, green and blue</description>
+            <description>processing resolution (MODIS only)</description>
             <validValue>
                 <value>1000</value>
                 <description>1km resolution including aggregated 250 and 500m land bands</description>
@@ -103,6 +103,10 @@
             <validValue>
                 <value>250</value>
                 <description>250m resolution with replication for lower resolution bands</description>
+            </validValue>
+            <validValue>
+                <value>-1</value>
+                <description>standard ocean 1km processing</description>
             </validValue>
         </option>
         <option type="ofile">
@@ -123,9 +127,9 @@
         </option>
         <option type="string">
             <name>pversion</name>
-            <value>Unspecified</value>
+            <value></value>
             <type>string</type>
-            <default>Unspecified</default>
+            <default></default>
             <description>processing version string</description>
             <source>default</source>
         </option>
@@ -134,156 +138,123 @@
             <value>OC</value>
             <type>string</type>
             <default>OC</default>
-            <description>product suite string for loading
-                suite-specific defaults
+            <description>product suite string for loading suite-specific defaults
             </description>
             <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
         </option>
 
         <option type="float">
             <name>datamin</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
-            <default>0.0</default>
-            <description>minimum value for data scaling
-                (default: see SMI product table)
+            <default>0.01</default>
+            <description>minimum reflectance for scaling
             </description>
             <source>default</source>
         </option>
         <option type="float">
             <name>datamax</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
-            <default>0.0</default>
-            <description>maximum value for data scaling
-                (default: see SMI product table)
+            <default>0.9</default>
+            <description>maximum reflectance for scaling
             </description>
             <source>default</source>
         </option>
         <option type="int">
             <name>stype</name>
-            <value>0</value>
+            <value></value>
             <type>int</type>
             <default>0</default>
-            <description>scaling type: 1=LINEAR; 2=LOG;
-                (default: see SMI product table)
+            <description>scaling type  0: log 1: linear
             </description>
             <source>default</source>
-        </option>
+            <validValue>
+                <value>0</value>
+                <description>log</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>linear</description>
+            </validValue>
+         </option>
         <option type="float">
             <name>east</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
-            <default>0.0</default>
-            <description>Map East longitude
-                (default=scene(s) Easternmost Longitude)
+            <default>-999</default>
+            <description>east boundary
             </description>
             <source>default</source>
         </option>
         <option type="float">
             <name>west</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
-            <default>0.0</default>
-            <description>Map West longitude
-                (default=scene(s) Westernmost Longitude)
-            </description>
+            <default>-999</default>
+            <description>west boundary </description>
             <source>default</source>
         </option>
         <option type="float">
             <name>north</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
-            <default>0.0</default>
-            <description>Map North latitude
-                (default=scene(s) Northernmost Longitude)
-            </description>
+            <default>-999</default>
+            <description>north boundary</description>
             <source>default</source>
         </option>
         <option type="float">
             <name>south</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
-            <default>0.0</default>
-            <description>Map South latitude
-                (default=scene(s) Southernmost Longitude)
-            </description>
+            <default>-999</default>
+            <description>south boundary</description>
             <source>default</source>
         </option>
         <option type="int">
             <name>width</name>
-            <value>800</value>
+            <value></value>
             <type>int</type>
-            <default>800</default>
+            <default>600</default>
             <description>width of the output image</description>
             <source>default</source>
         </option>
         <option type="float">
             <name>threshold</name>
-            <value>5</value>
+            <value></value>
             <type>float</type>
-            <default>5</default>
-            <description>minimum percentage of the area of interest
-                that must receive valid pixel data before an image is generated
+            <default>0.1</default>
+            <description>threshold for the number of good pixels before an image is produced
             </description>
             <source>default</source>
         </option>
         <option type="int">
             <name>rgb</name>
-            <value>[1,1,1]</value>
+            <value></value>
             <type>int</type>
             <default>[1,1,1]</default>
             <description>bands to use for red, green and blue</description>
         </option>
         <option type="int">
             <name>outmode</name>
-            <value>1</value>
+            <value></value>
             <type>int</type>
-            <default>1</default>
-            <description>format of the output file
-                1: PPM or PGM image file
-                2: PNG color or grayscale image file
-                3: TIFF color or grayscale geo tiff image file
+            <default>0</default>
+            <description>format of the output file   0: PPM  1: PNG  2: GeoTIFF
             </description>
             <source>default</source>
             <validValue>
-                <value>1</value>
-                <description>PPM or PGM image file</description>
+                <value>0</value>
+                <description>PPM image file</description>
             </validValue>
             <validValue>
-                <value>2</value>
+                <value>1</value>
                 <description>PNG color or grayscale image file</description>
             </validValue>
             <validValue>
-                <value>3</value>
-                <description>TIFF color or grayscale geo tiff image file</description>
+                <value>2</value>
+                <description>GeoTIFF color or grayscale geo tiff image file</description>
             </validValue>
-        </option>
-        <option type="help">
-            <name>help1</name>
-            <value/>
-            <type>helpString</type>
-            <description>
-                If the "mask" option is set, the output PGM image will be masked for
-                flags defined in the flaguse parameter. The "no data" pixel value will
-                change from 0 to 255, and pixel values 252, 253, and 254 will represent the
-                sunglint, land, and all other (e.g. clouds/ice,hilt,atmfail,navfail,chlfail)
-                masks, respectively. NOTE: sunglint is NOT masked by default, but if it is
-                added to the flaguse parameter, it will be distinguished in the masking as
-                medium gray. If a palette is applied and the mask option is set, the
-                palette values will be modified:
-                Value R G B
-                252 128 128 128
-                253 160 82 45
-                254 255 255 255
-                255 0 0 0
-
-                By default, this program sends its results to standard output as a
-                PGM-formatted binary data stream. Save it to a file via ">" or pipe it
-                to your favorite image display program. The output image is rendered in
-                a Plate Carree projection.
-            </description>
-            <source>default</source>
         </option>
     </options>
 </paramInfo>
