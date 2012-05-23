@@ -48,20 +48,20 @@
 
         </action>
         <!--<action>-->
-            <!--<parent>seadasProcessing</parent>-->
-            <!--<id>l1mapgen</id>-->
-            <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
-            <!--<text>l1mapgen...</text>-->
-            <!--<programName>l1mapgen</programName>-->
-            <!--<dialogTitle>l1mapgen Processor</dialogTitle>-->
+        <!--<parent>seadasProcessing</parent>-->
+        <!--<id>l1mapgen</id>-->
+        <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
+        <!--<text>l1mapgen...</text>-->
+        <!--<programName>l1mapgen</programName>-->
+        <!--<dialogTitle>l1mapgen Processor</dialogTitle>-->
         <!--</action>-->
         <!--<action>-->
-            <!--<parent>seadasProcessing</parent>-->
-            <!--<id>l1brsgen</id>-->
-            <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
-            <!--<text>l1brsgen...</text>-->
-            <!--<programName>l1brsgen</programName>-->
-            <!--<dialogTitle>l1brsgen Processor</dialogTitle>-->
+        <!--<parent>seadasProcessing</parent>-->
+        <!--<id>l1brsgen</id>-->
+        <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
+        <!--<text>l1brsgen...</text>-->
+        <!--<programName>l1brsgen</programName>-->
+        <!--<dialogTitle>l1brsgen Processor</dialogTitle>-->
         <!--</action>-->
         <action>
             <parent>seadasProcessing</parent>
@@ -71,17 +71,26 @@
             <programName>modis_L1B.py</programName>
             <dialogTitle>modis_L1B.py Processor</dialogTitle>
             <xmlFileName>modis_L1B.xml</xmlFileName>
-                        <shortDescr>L1Bgen Modis</shortDescr>
+            <shortDescr>L1Bgen Modis</shortDescr>
         </action>
         <action>
             <parent>seadasProcessing</parent>
-            <id>l1agen</id>
+            <id>modis_L1A.py</id>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>l1agen...</text>
-            <programName>l1agen</programName>
-            <dialogTitle>l1agen Processor</dialogTitle>
-            <xmlFileName>l1agen.xml</xmlFileName>
+            <text>modis_L1A.py...</text>
+            <programName>modis_L1A.py</programName>
+            <dialogTitle>modis_L1A.py Processor</dialogTitle>
+            <xmlFileName>modis_L1A.xml</xmlFileName>
         </action>
+        <!--<action>-->
+        <!--<parent>seadasProcessing</parent>-->
+        <!--<id>l1agen</id>-->
+        <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
+        <!--<text>l1agen...</text>-->
+        <!--<programName>l1agen</programName>-->
+        <!--<dialogTitle>l1agen Processor</dialogTitle>-->
+        <!--<xmlFileName>l1agen.xml</xmlFileName>-->
+        <!--</action>-->
         <action>
             <parent>seadasProcessing</parent>
             <id>l1bgen</id>
@@ -100,14 +109,14 @@
             <dialogTitle>l2mapgen Processor</dialogTitle>
             <xmlFileName>paramInfo_l2mapgen.xml</xmlFileName>
         </action>
-        <action>
-            <parent>seadasProcessing</parent>
-            <id>l2genSimple</id>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>l2gen Simple...</text>
-            <programName>l2gen</programName>
-            <dialogTitle>Simple l2gen Processor</dialogTitle>
-        </action>
+        <!--<action>-->
+            <!--<parent>seadasProcessing</parent>-->
+            <!--<id>l2genSimple</id>-->
+            <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
+            <!--<text>l2gen Simple...</text>-->
+            <!--<programName>l2gen</programName>-->
+            <!--<dialogTitle>Simple l2gen Processor</dialogTitle>-->
+        <!--</action>-->
         <action>
             <parent>seadasProcessing</parent>
             <id>l1aextract_modis</id>
@@ -126,7 +135,7 @@
             <dialogTitle>l1aextract_seawifs</dialogTitle>
             <xmlFileName>l1aextract_seawifs.xml</xmlFileName>
         </action>
-               <action>
+        <action>
             <parent>seadasProcessing</parent>
             <id>l2extract</id>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
@@ -135,7 +144,7 @@
             <dialogTitle>l2extract</dialogTitle>
             <xmlFileName>l2extract.xml</xmlFileName>
         </action>
-         <action>
+        <action>
             <parent>seadasProcessing</parent>
             <id>l1brsgen</id>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
@@ -189,7 +198,7 @@
             <dialogTitle>l3bin</dialogTitle>
             <xmlFileName>l3bin.xml</xmlFileName>
         </action>
-               <action>
+        <action>
             <parent>seadasProcessing</parent>
             <id>smigen</id>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
@@ -198,23 +207,23 @@
             <dialogTitle>smigen</dialogTitle>
             <xmlFileName>smigen.xml</xmlFileName>
         </action>
-               <!--<action>-->
-            <!--<parent>seadasProcessing</parent>-->
-            <!--<id>smitoppm</id>-->
-            <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
-            <!--<text>smitoppm...</text>-->
-            <!--<programName>smitoppm</programName>-->
-            <!--<dialogTitle>smitoppm</dialogTitle>-->
-            <!--<xmlFileName>smitoppm.xml</xmlFileName>-->
+        <!--<action>-->
+        <!--<parent>seadasProcessing</parent>-->
+        <!--<id>smitoppm</id>-->
+        <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
+        <!--<text>smitoppm...</text>-->
+        <!--<programName>smitoppm</programName>-->
+        <!--<dialogTitle>smitoppm</dialogTitle>-->
+        <!--<xmlFileName>smitoppm.xml</xmlFileName>-->
         <!--</action>-->
-                     <!--<action>-->
-            <!--<parent>seadasProcessing</parent>-->
-            <!--<id>l3gen</id>-->
-            <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
-            <!--<text>l3gen...</text>-->
-            <!--<programName>l3gen</programName>-->
-            <!--<dialogTitle>l3gen</dialogTitle>-->
-            <!--<xmlFileName>l3gen.xml</xmlFileName>-->
+        <!--<action>-->
+        <!--<parent>seadasProcessing</parent>-->
+        <!--<id>l3gen</id>-->
+        <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
+        <!--<text>l3gen...</text>-->
+        <!--<programName>l3gen</programName>-->
+        <!--<dialogTitle>l3gen</dialogTitle>-->
+        <!--<xmlFileName>l3gen.xml</xmlFileName>-->
         <!--</action>-->
 
     </extension>
