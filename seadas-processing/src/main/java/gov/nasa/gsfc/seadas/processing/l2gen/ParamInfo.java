@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -46,14 +47,41 @@ public class ParamInfo implements Comparable {
     }
 
     public ParamInfo(String name, String value) {
-         setName(name);
-         setValue(value);
-     }
+        setName(name);
+        setValue(value);
+    }
 
     public ParamInfo(String name) {
-         setName(name);
-     }
+        setName(name);
+    }
 
+
+    public boolean isValid(File rootDir) {
+        if (type == Type.IFILE && value != null && value.length() > 0) {
+            File file = getFile(rootDir);
+            if (file != null && file.exists()) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+    public File getFile(File rootDir) {
+        if (type == Type.IFILE && value != null && value.length() > 0) {
+            File file = new File(value);
+            if (file != null) {
+                if (file.isAbsolute()) {
+                    return file;
+                } else if (!file.isAbsolute() && rootDir != null) {
+                    File fileWithRootDir = new File(rootDir, value);
+                    return fileWithRootDir;
+                }
+            }
+        }
+        return null;
+    }
 
     public String getName() {
         return name;
@@ -78,6 +106,7 @@ public class ParamInfo implements Comparable {
     public String getValue() {
         return value;
     }
+
 
     public void setValue(String value) {
         // Clean up and handle input exceptions
@@ -141,6 +170,7 @@ public class ParamInfo implements Comparable {
             return false;
         }
     }
+
     public void setDefaultValue(String defaultValue) {
         // Clean up and handle input exceptions
         if (defaultValue == null) {
@@ -239,7 +269,7 @@ public class ParamInfo implements Comparable {
         isBit = bit;
     }
 
-    public void setOrder(int order){
+    public void setOrder(int order) {
         this.order = order;
     }
 

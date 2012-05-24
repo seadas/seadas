@@ -9,6 +9,8 @@ import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -103,14 +105,17 @@ public class L2genInputOutputPanel extends JPanel {
     }
 
 
+
+
     private JPanel createGeoFilePanel() {
         final SourceProductFileSelector geofileSelector = new SourceProductFileSelector(VisatApp.getApp(), L2genData.GEOFILE);
+     //   final SourceProductFileSelector geofileSelector = new SourceProductFileSelector(null, L2genData.GEOFILE);
 
         geofileSelector.setProductNameLabel(new JLabel(L2genData.GEOFILE));
         geofileSelector.getProductNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
 
-        final JPanel jPanel = geofileSelector.createDefaultPanel();
+        final JPanel jPanel = geofileSelector.createIfilePanel(true);
 
         final boolean[] handlerEnabled = {true};
 
@@ -125,17 +130,36 @@ public class L2genInputOutputPanel extends JPanel {
             }
         });
 
+        geofileSelector.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (handlerEnabled[0] &&
+                        geofileSelector.getIfileTextfield() != null) {
+
+                    l2genData.setParamValue(L2genData.GEOFILE, geofileSelector.getIfileTextfield().getText());
+                }
+
+            }
+        });
 
         l2genData.addPropertyChangeListener(L2genData.GEOFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                File geoFile = new File(l2genData.getParamValue(L2genData.GEOFILE));
                 handlerEnabled[0] = false;
-                if (geoFile.exists()) {
-                    geofileSelector.setSelectedFile(geoFile);
-                } else {
-                    geofileSelector.releaseProducts();
+//                File file = l2genData.getParamFile(L2genData.GEOFILE);
+//                if (file != null) {
+//                    geofileSelector.setSelectedFile(file);
+//                } else {
+//                    geofileSelector.releaseProducts();
+//                }
+                if (geofileSelector.getIfileTextfield() != null) {
+                    geofileSelector.getIfileTextfield().setText(l2genData.getParamValue(L2genData.GEOFILE));
                 }
+
                 handlerEnabled[0] = true;
             }
         });

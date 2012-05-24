@@ -84,6 +84,7 @@ public class FileInfo {
         return file;
     }
 
+
     public MissionInfo getMissionInfo() {
         return missionInfo;
     }
@@ -103,6 +104,21 @@ public class FileInfo {
             return file.exists();
         }
         return false;
+    }
+
+    public boolean isFileAbsolute() {
+        if (file != null) {
+            return file.isAbsolute();
+        }
+        return false;
+    }
+
+    public File getParentFile() {
+        if (file != null) {
+            return file.getParentFile();
+        }
+
+        return null;
     }
 
 
@@ -127,7 +143,6 @@ public class FileInfo {
     }
 
 
-
     public FileTypeInfo.Id getTypeId() {
         return fileTypeInfo.getId();
     }
@@ -139,7 +154,6 @@ public class FileInfo {
     public boolean isTypeId(FileTypeInfo.Id type) {
         return fileTypeInfo.isId(type);
     }
-
 
 
     public FileInfo getOFileInfo() {

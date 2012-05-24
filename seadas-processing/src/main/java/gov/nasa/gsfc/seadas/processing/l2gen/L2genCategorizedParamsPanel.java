@@ -1,11 +1,17 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
+import com.bc.ceres.swing.selection.SelectionChangeEvent;
+import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
+import org.esa.beam.visat.VisatApp;
+
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -76,6 +82,8 @@ public class L2genCategorizedParamsPanel extends JPanel {
             } else {
                 if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
                     createParamCheckBox(paramInfo, paramsPanel, gridy);
+                } else if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+                    createFileSelectorRow(paramInfo, paramsPanel, gridy);
                 } else {
                     createParamTextfield(paramInfo, paramsPanel, gridy);
                 }
@@ -245,6 +253,77 @@ public class L2genCategorizedParamsPanel extends JPanel {
         });
     }
 
+
+
+
+    private void createFileSelectorRow(ParamInfo paramInfo, JPanel jPanel, int gridy) {
+
+
+        final JLabel jLabel = new JLabel(paramInfo.getName());
+        jLabel.setToolTipText(paramInfo.getDescription());
+
+        final JLabel defaultIndicator = new JLabel(DEFAULT_INDICATOR_LABEL_OFF);
+        defaultIndicator.setForeground(DEFAULT_INDICATOR_COLOR);
+        defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
+
+        JPanel valuePanel = createFileSelectorPanel(paramInfo.getName());
+
+        jPanel.add(jLabel,
+                new GridBagConstraintsCustom(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        jPanel.add(defaultIndicator,
+                new GridBagConstraintsCustom(1, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+
+        jPanel.add(valuePanel,
+                new GridBagConstraintsCustom(2, gridy, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+    }
+
+
+
+        private JPanel createFileSelectorPanel(final String param) {
+
+        final SourceProductFileSelector fileSelector = new SourceProductFileSelector(VisatApp.getApp(), param);
+
+        fileSelector.setProductNameLabel(new JLabel(param));
+        fileSelector.getProductNameComboBox().setPrototypeDisplayValue(
+                "123456789 123456789 123456789 123456789 123456789 ");
+
+        final JPanel jPanel = fileSelector.createDefaultPanel(false);
+
+        final boolean[] handlerEnabled = {true};
+
+        fileSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
+            @Override
+            public void selectionChanged(SelectionChangeEvent event) {
+                if (handlerEnabled[0] &&
+                        fileSelector.getSelectedProduct() != null
+                        && fileSelector.getSelectedProduct().getFileLocation() != null) {
+                    l2genData.setParamValue(param, fileSelector.getSelectedProduct().getFileLocation().toString());
+                }
+            }
+        });
+
+
+        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                handlerEnabled[0] = false;
+                File file = l2genData.getParamFile(param);
+                if (file != null) {
+                    fileSelector.setSelectedFile(file);
+                } else {
+                    fileSelector.releaseProducts();
+                }
+
+                handlerEnabled[0] = true;
+            }
+        });
+
+
+        return jPanel;
+    }
 
     class MyComboBoxRenderer extends BasicComboBoxRenderer {
 

@@ -95,11 +95,22 @@ public class L2genData {
     }
 
     public boolean isValidIfile() {
-        if (iFileInfo != null &&
-                iFileInfo.isFileExists() &&
-                iFileInfo.isSupportedMission() &&
-                iFileInfo.isTypeId(FileTypeInfo.Id.L1B)) {
-            return true;
+
+        if (iFileInfo != null && iFileInfo.isFileExists()  && iFileInfo.isFileAbsolute()) {
+            if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
+                    iFileInfo.isMissionId(MissionInfo.Id.MODIST) ||
+                    iFileInfo.isMissionId(MissionInfo.Id.MERIS)
+                    ) {
+                if (iFileInfo.isTypeId(FileTypeInfo.Id.L1B)) {
+                    return true;
+                }
+
+            } else if (iFileInfo.isSupportedMission()) {
+                if (iFileInfo.isTypeId(FileTypeInfo.Id.L1A) ||
+                        iFileInfo.isTypeId(FileTypeInfo.Id.L1B)) {
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -430,6 +441,12 @@ public class L2genData {
             line.append("# ");
         }
 
+        if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+            if (!paramInfo.isValid(iFileInfo.getParentFile())) {
+                line.append("# WARNING!!! file " + paramInfo.getValue() + " does not exist" + "\n");
+            }
+        }
+
         line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
         return line.toString();
     }
@@ -584,6 +601,26 @@ public class L2genData {
         setParamValue(param, ParamInfo.NULL_STRING);
     }
 
+
+    public boolean isValidParamValue(String param) {
+        ParamInfo paramInfo = getParamInfo(param);
+
+        if (paramInfo != null) {
+            return paramInfo.isValid(iFileInfo.getParentFile());
+        }
+
+        return false;
+    }
+
+    public File getParamFile(String param) {
+        ParamInfo paramInfo = getParamInfo(param);
+
+        if (paramInfo != null) {
+            return paramInfo.getFile(iFileInfo.getParentFile());
+        }
+
+        return null;
+    }
 
     public void setParamValueAndDefault(String param, String value) {
 
