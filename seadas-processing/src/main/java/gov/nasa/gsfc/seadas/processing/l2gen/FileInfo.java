@@ -169,7 +169,7 @@ public class FileInfo {
     }
 
 
-    public boolean geofileRequired() {
+    public boolean isGeofileRequired() {
         return missionInfo.isGeofileRequired();
     }
 

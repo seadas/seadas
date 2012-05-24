@@ -96,7 +96,7 @@ public class L2genData {
 
     public boolean isValidIfile() {
 
-        if (iFileInfo != null && iFileInfo.isFileExists()  && iFileInfo.isFileAbsolute()) {
+        if (iFileInfo != null && iFileInfo.isFileExists() && iFileInfo.isFileAbsolute()) {
             if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
                     iFileInfo.isMissionId(MissionInfo.Id.MODIST) ||
                     iFileInfo.isMissionId(MissionInfo.Id.MERIS)
@@ -118,7 +118,7 @@ public class L2genData {
 
 
     public boolean isRequiresGeofile() {
-        return iFileInfo.geofileRequired();
+        return iFileInfo.isGeofileRequired();
     }
 
 
@@ -437,17 +437,30 @@ public class L2genData {
     private String makeParEntry(ParamInfo paramInfo, boolean commented) {
         StringBuilder line = new StringBuilder();
 
-        if (commented) {
-            line.append("# ");
-        }
-
-        if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-            if (!paramInfo.isValid(iFileInfo.getParentFile())) {
-                line.append("# WARNING!!! file " + paramInfo.getValue() + " does not exist" + "\n");
+        if (paramInfo.getValue().length() > 0) {
+            if (commented) {
+                line.append("# ");
             }
-        }
 
-        line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+
+            if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+                if (!paramInfo.isValid(iFileInfo.getParentFile())) {
+                    line.append("# WARNING!!! file " + paramInfo.getValue() + " does not exist" + "\n");
+                } else if (paramInfo.getName().equals(IFILE)) {
+                    if (!isValidIfile()) {
+                        line.append("# WARNING!!! file " + paramInfo.getValue() + " is not a valid input file" + "\n");
+                    }
+                } else if (paramInfo.getName().equals(GEOFILE)) {
+                    FileInfo geoFileInfo = new FileInfo(getParamFile(GEOFILE));
+                    if (!geoFileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
+                        line.append("# WARNING!!! file " + paramInfo.getValue() + " is not a GEO file" + "\n");
+                    }
+                }
+            }
+
+            line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
+        }
+        
         return line.toString();
     }
 
@@ -941,7 +954,11 @@ public class L2genData {
             l2prodParamInfo.resetProductInfos();
             updateXmlBasedObjects(iFileInfo.getFile());
             setParamValueAndDefault(OFILE, iFileInfo.getOFileName());
-            setParamValueAndDefault(GEOFILE, iFileInfo.getGeoFileName());
+            if (iFileInfo.isGeofileRequired()) {
+                setParamValueAndDefault(GEOFILE, iFileInfo.getGeoFileName());
+            } else {
+                setParamValueAndDefault(GEOFILE, null);
+            }
         } else {
             setParamValueAndDefault(OFILE, null);
             setParamValueAndDefault(GEOFILE, null);
