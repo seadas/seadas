@@ -371,11 +371,22 @@ public class ProcessorModel {
     }
 
     public Process executeProcess() throws IOException {
+;
+        try {
+            return executeProcess(getRootDir());
+        } catch (Exception e) {
+            return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv());
+        }
+
+    }
+
+    public Process executeProcess(File rootDir) throws IOException {
 
         SeadasLogger.getLogger().info("Executing processor " + getProgramName() + "...");
 
         //return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
-        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv());
+
+        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), rootDir);
     }
 
     public EventInfo[] eventInfos = {
@@ -455,6 +466,11 @@ public class ProcessorModel {
 
     public void setProperty(String property) {
         //changeSupport.firePropertyChange("property", this.property, this.property=property);
+    }
+
+    public File getRootDir() {
+        return (new File(getParamValue(getPrimaryInputFileOptionName()))).getParentFile();
+        // return rootDir;
     }
 
 }
