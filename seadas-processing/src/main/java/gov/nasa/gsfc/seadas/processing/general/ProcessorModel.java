@@ -362,7 +362,7 @@ public class ProcessorModel {
             SeadasLogger.getLogger().info(option.getName() + " = " + option.getValue() + "option type is :" + option.getType() + " " + option.getType().equals(ParamInfo.Type.HELP));
 
             if (!option.getType().equals(ParamInfo.Type.HELP) && option.getValue().length() > 0) {
-                parString = parString.append(option.getName() + " = " + option.getValue() + "\n");
+                parString = parString.append(option.getName() + "=" + option.getValue() + "\n");
             }
 
         }
