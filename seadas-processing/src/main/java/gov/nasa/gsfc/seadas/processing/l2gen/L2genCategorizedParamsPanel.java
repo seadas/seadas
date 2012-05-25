@@ -254,17 +254,33 @@ public class L2genCategorizedParamsPanel extends JPanel {
     }
 
 
-    private void createFileSelectorRow(ParamInfo paramInfo, JPanel jPanel, int gridy) {
+    private void createFileSelectorRow(final ParamInfo paramInfo, JPanel jPanel, int gridy) {
 
 
         final JLabel jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
 
         final JLabel defaultIndicator = new JLabel(DEFAULT_INDICATOR_LABEL_OFF);
+
+        l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (l2genData.isParamDefault(paramInfo.getName())) {
+                    defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
+                    defaultIndicator.setToolTipText("");
+                } else {
+                    defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_ON);
+                    defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
+                }
+            }
+        });
+
+
         defaultIndicator.setForeground(DEFAULT_INDICATOR_COLOR);
         defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
 
         JPanel valuePanel = createFileSelectorPanel(paramInfo.getName());
+
 
         jPanel.add(jLabel,
                 new GridBagConstraintsCustom(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
@@ -281,8 +297,8 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
     private JPanel createFileSelectorPanel(final String param) {
 
-        final InputFileSelectorPanel jPanel = new InputFileSelectorPanel(VisatApp.getApp(), param+"_FILE_SELECTOR_PANEL_CHANGED");
-        jPanel.setName(param);
+        final InputFileSelectorPanel jPanel = new InputFileSelectorPanel(VisatApp.getApp(), param + "_FILE_SELECTOR_PANEL_CHANGED");
+
 
         final boolean[] handlerEnabled = {true};
 
