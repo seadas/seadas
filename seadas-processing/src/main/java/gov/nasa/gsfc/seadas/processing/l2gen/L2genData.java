@@ -52,7 +52,7 @@ public class L2genData {
             PARSTRING_IN_PROGRESS_EVENT = "PARSTRING_IN_PROGRESS_EVENT";
 
 
-    public final FileInfo iFileInfo = new FileInfo(null);
+    public FileInfo iFileInfo = null;
 
     public final ArrayList<WavelengthInfo> waveLimiterInfos = new ArrayList<WavelengthInfo>();
 
@@ -96,7 +96,7 @@ public class L2genData {
 
     public boolean isValidIfile() {
 
-        if (iFileInfo != null && iFileInfo.isFileExists() && iFileInfo.isFileAbsolute()) {
+        if (iFileInfo != null && iFileInfo.exists() && iFileInfo.isAbsolute()) {
             if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
                     iFileInfo.isMissionId(MissionInfo.Id.MODIST) ||
                     iFileInfo.isMissionId(MissionInfo.Id.MERIS)
@@ -118,7 +118,11 @@ public class L2genData {
 
 
     public boolean isRequiresGeofile() {
-        return iFileInfo.isGeofileRequired();
+        if (iFileInfo != null) {
+            return iFileInfo.isGeofileRequired();
+        }
+
+        return false;
     }
 
 
@@ -444,14 +448,14 @@ public class L2genData {
 
 
             if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                if (!paramInfo.isValid(iFileInfo.getParentFile())) {
+                if (iFileInfo != null && !paramInfo.isValid(iFileInfo.getParentFile())) {
                     line.append("# WARNING!!! file " + paramInfo.getValue() + " does not exist" + "\n");
                 } else if (paramInfo.getName().equals(IFILE)) {
                     if (!isValidIfile()) {
                         line.append("# WARNING!!! file " + paramInfo.getValue() + " is not a valid input file" + "\n");
                     }
                 } else if (paramInfo.getName().equals(GEOFILE)) {
-                    FileInfo geoFileInfo = new FileInfo(getParamFile(GEOFILE));
+                    FileInfo geoFileInfo = getParamFileInfo(GEOFILE);
                     if (!geoFileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
                         line.append("# WARNING!!! file " + paramInfo.getValue() + " is not a GEO file" + "\n");
                     }
@@ -460,7 +464,7 @@ public class L2genData {
 
             line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
         }
-        
+
         return line.toString();
     }
 
@@ -618,18 +622,18 @@ public class L2genData {
     public boolean isValidParamValue(String param) {
         ParamInfo paramInfo = getParamInfo(param);
 
-        if (paramInfo != null) {
+        if (paramInfo != null && iFileInfo != null) {
             return paramInfo.isValid(iFileInfo.getParentFile());
         }
 
         return false;
     }
 
-    public File getParamFile(String param) {
+    public FileInfo getParamFileInfo(String param) {
         ParamInfo paramInfo = getParamInfo(param);
 
-        if (paramInfo != null) {
-            return paramInfo.getFile(iFileInfo.getParentFile());
+        if (paramInfo != null && iFileInfo != null) {
+            return paramInfo.getFileInfo(iFileInfo.getParentFile());
         }
 
         return null;
@@ -881,7 +885,7 @@ public class L2genData {
 
     private String getSensorInfoFilename() {
 
-        if (iFileInfo.getMissionDirectory() != null) {
+        if (iFileInfo != null && iFileInfo.getMissionDirectory() != null) {
             // determine the filename which contains the wavelengths
             final StringBuilder sensorInfoFilename = new StringBuilder("");
             sensorInfoFilename.append(iFileInfo.getMissionDirectory());
@@ -941,21 +945,29 @@ public class L2genData {
         String oldIfile = getParamValue(IFILE);
 
         if (newIfile != null && newIfile.length() > 0) {
-            iFileInfo.setFile(new File(newIfile));
+            iFileInfo = new FileInfo(newIfile);
         } else {
-            iFileInfo.setFile(null);
+            iFileInfo = null;
         }
 
         paramInfo.setValue(newIfile);
         paramInfo.setDefaultValue(newIfile);
 
-        if (isValidIfile()) {
+        if (iFileInfo != null && isValidIfile()) {
             resetWaveLimiter();
             l2prodParamInfo.resetProductInfos();
-            updateXmlBasedObjects(iFileInfo.getFile());
-            setParamValueAndDefault(OFILE, iFileInfo.getOFileName());
+            updateXmlBasedObjects((File) iFileInfo);
+
+            FileInfo oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
+            if (oFileInfo != null) {
+                setParamValueAndDefault(OFILE, oFileInfo.getAbsolutePath());
+            }
+
             if (iFileInfo.isGeofileRequired()) {
-                setParamValueAndDefault(GEOFILE, iFileInfo.getGeoFileName());
+                FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo);
+                if (geoFileInfo != null) {
+                    setParamValueAndDefault(GEOFILE, geoFileInfo.getAbsolutePath());
+                }
             } else {
                 setParamValueAndDefault(GEOFILE, null);
             }

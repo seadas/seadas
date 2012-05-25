@@ -14,42 +14,43 @@ import java.io.InputStreamReader;
  * Time: 11:27 AM
  * To change this template use File | Settings | File Templates.
  */
-public class FileInfo {
+public class FileInfo extends File {
 
     private static final String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
 
     private final MissionInfo missionInfo = new MissionInfo();
     private final FileTypeInfo fileTypeInfo = new FileTypeInfo();
 
-    private File file;
 
+    public FileInfo(String parent, String child) {
+        super(parent, child);
 
-    public FileInfo() {
+        if (this.exists()) {
+            init();
+        }
     }
 
-    public FileInfo(File file) {
-        this();
-        setFile(file);
+    public FileInfo(String pathname) {
+        super(pathname);
+
+        if (this.exists()) {
+            init();
+        }
     }
+
 
     public void clear() {
-        file = null;
+
         missionInfo.clear();
         fileTypeInfo.clear();
     }
 
-    public void setFile(File file) {
+    public void init() {
         clear();
-
-        if (file == null || file.getAbsolutePath().toString().length() == 0) {
-            return;
-        }
-
-        this.file = file;
 
         ProcessorModel processorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
         processorModel.setAcceptsParFile(false);
-        processorModel.addParamInfo("file", file.getAbsolutePath(), 1);
+        processorModel.addParamInfo("file", getAbsolutePath(), 1);
 
         try {
             Process p = processorModel.executeProcess();
@@ -78,48 +79,7 @@ public class FileInfo {
     }
 
 
-    //-------------------------- Direct Get Methods ----------------------------
-
-    public File getFile() {
-        return file;
-    }
-
-
-    public MissionInfo getMissionInfo() {
-        return missionInfo;
-    }
-
-    public String getFileName() {
-        if (file != null) {
-            return file.getAbsoluteFile().toString();
-        } else {
-            return null;
-        }
-    }
-
     //-------------------------- Indirect Get Methods ----------------------------
-
-    public boolean isFileExists() {
-        if (file != null) {
-            return file.exists();
-        }
-        return false;
-    }
-
-    public boolean isFileAbsolute() {
-        if (file != null) {
-            return file.isAbsolute();
-        }
-        return false;
-    }
-
-    public File getParentFile() {
-        if (file != null) {
-            return file.getParentFile();
-        }
-
-        return null;
-    }
 
 
     public MissionInfo.Id getMissionId() {
@@ -156,17 +116,6 @@ public class FileInfo {
     }
 
 
-    public FileInfo getOFileInfo() {
-        return FilenamePatterns.getOFileInfo(this);
-    }
-
-    public File getOFile() {
-        return getOFileInfo().getFile();
-    }
-
-    public String getOFileName() {
-        return getOFileInfo().getFileName();
-    }
 
 
     public boolean isGeofileRequired() {
@@ -174,17 +123,6 @@ public class FileInfo {
     }
 
 
-    public FileInfo getGeoFileInfo() {
-        return FilenamePatterns.getGeoFileInfo(this);
-    }
-
-    public File getGeoFile() {
-        return getGeoFileInfo().getFile();
-    }
-
-    public String getGeoFileName() {
-        return getGeoFileInfo().getFileName();
-    }
 
 
 }
