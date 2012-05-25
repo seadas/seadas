@@ -293,10 +293,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
     private JPanel createFileSelectorPanel(final String param) {
 
-        final FileSelectorPanel jPanel = new FileSelectorPanel(
-                VisatApp.getApp(),
-                FileSelectorPanel.ChooserType.IFILE,
-                param + "_FILE_SELECTOR_PANEL_CHANGED");
+        final FileSelectorPanel jPanel = new FileSelectorPanel(VisatApp.getApp(), FileSelectorPanel.Type.IFILE);
 
 
         final boolean[] handlerEnabled = {true};

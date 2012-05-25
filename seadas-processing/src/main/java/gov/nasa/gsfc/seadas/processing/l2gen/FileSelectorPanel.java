@@ -6,7 +6,6 @@ import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.BasicApp;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -34,27 +33,20 @@ import java.io.File;
 
 public class FileSelectorPanel extends JPanel {
 
-    public ChooserType getChooserType() {
-        return chooserType;
-    }
 
-    public void setChooserType(ChooserType chooserType) {
-        this.chooserType = chooserType;
-    }
-
-    public enum ChooserType {
+    public enum Type {
         IFILE,
         OFILE
     }
 
-    private String propertyName;
+    private  String propertyName = "FILE_SELECTOR_PANEL_CHANGED";
 
     private AppContext appContext;
 
-    private ChooserType chooserType;
+    private Type type;
     private String name;
     private JLabel nameLabel;
-    private JTextField ifileTextfield;
+    private JTextField fileTextfield;
 
     private JButton fileChooserButton;
 
@@ -70,19 +62,24 @@ public class FileSelectorPanel extends JPanel {
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
 
-    public FileSelectorPanel(AppContext appContext, ChooserType chooserType, String propertyName) {
+    public FileSelectorPanel(AppContext appContext, Type type) {
         this.appContext = appContext;
-        this.propertyName = propertyName;
-        this.setChooserType(chooserType);
+        this.setType(type);
 
         initComponents();
         addComponents();
     }
 
 
+    public FileSelectorPanel(AppContext appContext, Type type, String name) {
+        this(appContext, type);
+        setName(name);
+    }
+
+
     private void initComponents() {
 
-        ifileTextfield = createIfileTextfield();
+        fileTextfield = createFileTextfield();
 
         nameLabel = new JLabel(name);
 
@@ -103,7 +100,7 @@ public class FileSelectorPanel extends JPanel {
             nameLabel.setVisible(false);
         }
 
-        add(ifileTextfield,
+        add(fileTextfield,
                 new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
         add(fileChooserButton,
                 new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
@@ -117,7 +114,7 @@ public class FileSelectorPanel extends JPanel {
         fileChooserButton.setEnabled(enabled);
         filterRegexField.setEnabled(enabled);
         filterRegexLabel.setEnabled(enabled);
-        ifileTextfield.setEnabled(enabled);
+        fileTextfield.setEnabled(enabled);
     }
 
 
@@ -130,7 +127,7 @@ public class FileSelectorPanel extends JPanel {
     }
 
     public String getFileName() {
-        return ifileTextfield.getText();
+        return fileTextfield.getText();
     }
 
 
@@ -147,14 +144,14 @@ public class FileSelectorPanel extends JPanel {
         }
 
         if (filenameChanged) {
-            ifileTextfield.setText(filename);
+            fileTextfield.setText(filename);
             fireEvent(propertyName, lastFilename, filename);
             lastFilename = filename;
         }
     }
 
 
-    public JTextField createIfileTextfield() {
+    public JTextField createFileTextfield() {
 
         final JTextField jTextField = new JTextField();
 
@@ -226,6 +223,15 @@ public class FileSelectorPanel extends JPanel {
 
     }
 
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     public String getPropertyName() {
         return propertyName;
     }
@@ -265,7 +271,7 @@ public class FileSelectorPanel extends JPanel {
             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
                 final File file = fileChooser.getSelectedFile();
 
-                lastFilename = ifileTextfield.getText();
+                lastFilename = fileTextfield.getText();
 
 
                 String filename;

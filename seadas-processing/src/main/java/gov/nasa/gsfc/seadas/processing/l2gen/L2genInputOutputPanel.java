@@ -105,12 +105,10 @@ public class L2genInputOutputPanel extends JPanel {
 
     private JPanel createGeoFilePanel() {
 
-        final FileSelectorPanel geofileSelectorPanel = new FileSelectorPanel(
-                VisatApp.getApp(),
-                FileSelectorPanel.ChooserType.IFILE,
-                L2genData.GEOFILE + "_FILE_SELECTOR_PANEL_CHANGED");
-        
-        geofileSelectorPanel.setName(L2genData.GEOFILE);
+        final FileSelectorPanel geofileSelectorPanel = new FileSelectorPanel(VisatApp.getApp(),
+                FileSelectorPanel.Type.IFILE,
+                L2genData.GEOFILE);
+
 
         final boolean[] handlerEnabled = {true};
 
