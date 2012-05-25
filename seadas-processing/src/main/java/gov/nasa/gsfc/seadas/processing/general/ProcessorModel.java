@@ -371,7 +371,7 @@ public class ProcessorModel {
     }
 
     public Process executeProcess() throws IOException {
-;
+        ;
         try {
             return executeProcess(getRootDir());
         } catch (Exception e) {
@@ -469,8 +469,18 @@ public class ProcessorModel {
     }
 
     public File getRootDir() {
-        return (new File(getParamValue(getPrimaryInputFileOptionName()))).getParentFile();
-        // return rootDir;
+        File rootDir = (new File(getParamValue(getPrimaryInputFileOptionName()))).getParentFile();
+        if (rootDir != null) {
+            return rootDir ;
+        } else {
+            try {
+                rootDir = OCSSW.getOcsswRoot();
+            } catch (Exception e) {
+                System.out.println("error in getting ocssw root!");
+            }
+
+        }
+        return rootDir == null ? new File(".") : rootDir  ;
     }
 
 }

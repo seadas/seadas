@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import org.esa.beam.util.Debug;
 import org.esa.beam.util.Guardian;
 import org.esa.beam.util.logging.BeamLogManager;
 import org.hsqldb.lib.FileUtil;
@@ -71,12 +72,15 @@ public class SeadasLogger {
             //String currentDir = new File(".").getAbsolutePath();  //or String currentDir = System.getProperty("user.dir");
 
             File[] files = new File(System.getProperty("user.dir")).listFiles();
-            for (File file : files) {
-                String fileName = file.getName();
-                System.out.println(fileName);
-                if ((fileName.indexOf(htmlLogFileName) != -1 &&  fileName.substring(fileName.indexOf(htmlLogFileName) + htmlLogFileName.length()).trim().length() > 0)  ||
-                    (fileName.indexOf(txtLogFileName) != -1 &&  fileName.substring(fileName.indexOf(txtLogFileName) + txtLogFileName.length()).trim().length() > 0) ) {
-                     file.delete();
+            Debug.assertNotNull(files);
+            if (files != null) {
+                for (File file : files) {
+                    String fileName = file.getName();
+                    System.out.println(fileName);
+                    if ((fileName.indexOf(htmlLogFileName) != -1 && fileName.substring(fileName.indexOf(htmlLogFileName) + htmlLogFileName.length()).trim().length() > 0) ||
+                            (fileName.indexOf(txtLogFileName) != -1 && fileName.substring(fileName.indexOf(txtLogFileName) + txtLogFileName.length()).trim().length() > 0)) {
+                        file.delete();
+                    }
                 }
             }
             fileTxt.setFormatter(formatterTxt);
