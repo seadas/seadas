@@ -4,6 +4,7 @@ import org.esa.beam.util.Guardian;
 import org.esa.beam.util.logging.BeamLogManager;
 import org.hsqldb.lib.FileUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,16 +56,29 @@ public class SeadasLogger {
         Formatter formatterHTML = new MyHtmlFormatter();
 
         logger.setLevel(Level.INFO);
-
+        String txtLogFileName = _loggerFileName + ".txt";
+        String htmlLogFileName = _loggerFileName + ".html";
         try {
-            if (FileUtil.exists(_loggerFileName + ".txt")) {
-                FileUtil.delete(_loggerFileName + ".txt");
+            if (FileUtil.exists(txtLogFileName)) {
+                FileUtil.delete(txtLogFileName);
             }
-            if (FileUtil.exists(_loggerFileName + ".html")) {
-                FileUtil.delete(_loggerFileName + ".html");
+            if (FileUtil.exists(htmlLogFileName)) {
+                FileUtil.delete(htmlLogFileName);
             }
-            fileTxt = new FileHandler(_loggerFileName + ".txt");
-            fileHTML = new FileHandler(_loggerFileName + ".html");
+            fileTxt = new FileHandler(txtLogFileName);
+            fileHTML = new FileHandler(htmlLogFileName);
+
+            //String currentDir = new File(".").getAbsolutePath();  //or String currentDir = System.getProperty("user.dir");
+
+            File[] files = new File(System.getProperty("user.dir")).listFiles();
+            for (File file : files) {
+                String fileName = file.getName();
+                System.out.println(fileName);
+                if ((fileName.indexOf(htmlLogFileName) != -1 &&  fileName.substring(fileName.indexOf(htmlLogFileName) + htmlLogFileName.length()).trim().length() > 0)  ||
+                    (fileName.indexOf(txtLogFileName) != -1 &&  fileName.substring(fileName.indexOf(txtLogFileName) + txtLogFileName.length()).trim().length() > 0) ) {
+                     file.delete();
+                }
+            }
             fileTxt.setFormatter(formatterTxt);
             logger.addHandler(fileTxt);
             fileHTML.setFormatter(formatterHTML);
