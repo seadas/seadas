@@ -6,6 +6,7 @@ import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.BasicApp;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
+import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -31,12 +32,26 @@ import java.io.File;
  */
 
 
-public class InputFileSelectorPanel extends JPanel {
+public class FileSelectorPanel extends JPanel {
+
+    public ChooserType getChooserType() {
+        return chooserType;
+    }
+
+    public void setChooserType(ChooserType chooserType) {
+        this.chooserType = chooserType;
+    }
+
+    public enum ChooserType {
+        IFILE,
+        OFILE
+    }
 
     private String propertyName;
 
     private AppContext appContext;
 
+    private ChooserType chooserType;
     private String name;
     private JLabel nameLabel;
     private JTextField ifileTextfield;
@@ -55,9 +70,10 @@ public class InputFileSelectorPanel extends JPanel {
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
 
-    public InputFileSelectorPanel(AppContext appContext, String propertyName) {
+    public FileSelectorPanel(AppContext appContext, ChooserType chooserType, String propertyName) {
         this.appContext = appContext;
         this.propertyName = propertyName;
+        this.setChooserType(chooserType);
 
         initComponents();
         addComponents();
@@ -116,7 +132,6 @@ public class InputFileSelectorPanel extends JPanel {
     public String getFileName() {
         return ifileTextfield.getText();
     }
-
 
 
     public void setFilename(String filename) {

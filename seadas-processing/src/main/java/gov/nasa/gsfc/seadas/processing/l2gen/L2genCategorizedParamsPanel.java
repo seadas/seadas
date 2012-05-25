@@ -1,8 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
-import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
-import com.bc.ceres.swing.selection.SelectionChangeEvent;
-import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
@@ -11,7 +8,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -297,7 +293,10 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
     private JPanel createFileSelectorPanel(final String param) {
 
-        final InputFileSelectorPanel jPanel = new InputFileSelectorPanel(VisatApp.getApp(), param + "_FILE_SELECTOR_PANEL_CHANGED");
+        final FileSelectorPanel jPanel = new FileSelectorPanel(
+                VisatApp.getApp(),
+                FileSelectorPanel.ChooserType.IFILE,
+                param + "_FILE_SELECTOR_PANEL_CHANGED");
 
 
         final boolean[] handlerEnabled = {true};
