@@ -254,8 +254,6 @@ public class L2genCategorizedParamsPanel extends JPanel {
     }
 
 
-
-
     private void createFileSelectorRow(ParamInfo paramInfo, JPanel jPanel, int gridy) {
 
 
@@ -281,26 +279,18 @@ public class L2genCategorizedParamsPanel extends JPanel {
     }
 
 
+    private JPanel createFileSelectorPanel(final String param) {
 
-        private JPanel createFileSelectorPanel(final String param) {
-
-        final SourceProductFileSelector fileSelector = new SourceProductFileSelector(VisatApp.getApp(), param);
-
-        fileSelector.setProductNameLabel(new JLabel(param));
-        fileSelector.getProductNameComboBox().setPrototypeDisplayValue(
-                "123456789 123456789 123456789 123456789 123456789 ");
-
-        final JPanel jPanel = fileSelector.createDefaultPanel(false);
+        final InputFileSelectorPanel jPanel = new InputFileSelectorPanel(VisatApp.getApp(), param+"_FILE_SELECTOR_PANEL_CHANGED");
+        jPanel.setName(param);
 
         final boolean[] handlerEnabled = {true};
 
-        fileSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
+        jPanel.addPropertyChangeListener(jPanel.getPropertyName(), new PropertyChangeListener() {
             @Override
-            public void selectionChanged(SelectionChangeEvent event) {
-                if (handlerEnabled[0] &&
-                        fileSelector.getSelectedProduct() != null
-                        && fileSelector.getSelectedProduct().getFileLocation() != null) {
-                    l2genData.setParamValue(param, fileSelector.getSelectedProduct().getFileLocation().toString());
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (handlerEnabled[0]) {
+                    l2genData.setParamValue(param, jPanel.getFileName());
                 }
             }
         });
@@ -310,19 +300,13 @@ public class L2genCategorizedParamsPanel extends JPanel {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 handlerEnabled[0] = false;
-                File file = l2genData.getParamFile(param);
-                if (file != null) {
-                    fileSelector.setSelectedFile(file);
-                } else {
-                    fileSelector.releaseProducts();
-                }
-
+                jPanel.setFilename(l2genData.getParamValue(param));
                 handlerEnabled[0] = true;
             }
         });
 
-
         return jPanel;
+
     }
 
     class MyComboBoxRenderer extends BasicComboBoxRenderer {
