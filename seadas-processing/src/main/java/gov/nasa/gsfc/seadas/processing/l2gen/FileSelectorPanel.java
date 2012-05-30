@@ -55,10 +55,11 @@ public class FileSelectorPanel extends JPanel {
     private RegexFileFilter regexFileFilter;
     private JTextField filterRegexField;
     private JLabel filterRegexLabel;
-    private final JPanel filterPane = new JPanel(new GridBagLayout());
-
 
     private String lastFilename = null;
+
+    private final JPanel filterPane = new JPanel(new GridBagLayout());
+
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -146,6 +147,7 @@ public class FileSelectorPanel extends JPanel {
 
 
     public void setFilename(String filename) {
+
         boolean filenameChanged = false;
         if (filename != null) {
             if (!filename.equals(lastFilename)) {
@@ -296,22 +298,19 @@ public class FileSelectorPanel extends JPanel {
 
             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
                 final File file = fileChooser.getSelectedFile();
-
-                lastFilename = fileTextfield.getText();
-
-
-                String filename;
-                if (file != null) {
-                    filename = file.getAbsolutePath();
-                } else {
-                    filename = null;
-                }
-
-                setFilename(filename);
-
                 currentDirectory = fileChooser.getCurrentDirectory();
                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         currentDirectory.getAbsolutePath());
+
+                lastFilename = fileTextfield.getText();
+
+                String filename = null;
+                if (file != null) {
+                    filename = file.getAbsolutePath();
+                }
+
+
+                setFilename(filename);
             }
         }
 

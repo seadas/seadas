@@ -78,7 +78,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
             } else {
                 if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
                     createParamCheckBox(paramInfo, paramsPanel, gridy);
-                } else if (paramInfo.getType() == ParamInfo.Type.IFILE || paramInfo.getType() == ParamInfo.Type.OFILE ) {
+                } else if (paramInfo.getType() == ParamInfo.Type.IFILE || paramInfo.getType() == ParamInfo.Type.OFILE) {
                     createFileSelectorRow(paramInfo, paramsPanel, gridy);
                 } else {
                     createParamTextfield(paramInfo, paramsPanel, gridy);
@@ -291,41 +291,42 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
     private JPanel createFileSelectorPanel(final ParamInfo paramInfo) {
 
-        if (paramInfo.getType() == ParamInfo.Type.IFILE || paramInfo.getType() == ParamInfo.Type.OFILE) {
+        FileSelectorPanel.Type type = null;
+        if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+            type = FileSelectorPanel.Type.IFILE;
+        } else if (paramInfo.getType() == ParamInfo.Type.OFILE) {
+            type = FileSelectorPanel.Type.OFILE;
+        }
 
-            final FileSelectorPanel fileSelectorPanel = new FileSelectorPanel(VisatApp.getApp());
-
-            if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                fileSelectorPanel.setType(FileSelectorPanel.Type.IFILE);
-            } else if (paramInfo.getType() == ParamInfo.Type.OFILE) {
-                fileSelectorPanel.setType(FileSelectorPanel.Type.OFILE);
-            }
-
-            final boolean[] handlerEnabled = {true};
-
-            fileSelectorPanel.addPropertyChangeListener(fileSelectorPanel.getPropertyName(), new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    if (handlerEnabled[0]) {
-                        l2genData.setParamValue(paramInfo.getName(), fileSelectorPanel.getFileName());
-                    }
-                }
-            });
-
-
-            l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    handlerEnabled[0] = false;
-                    fileSelectorPanel.setFilename(l2genData.getParamValue(paramInfo.getName()));
-                    handlerEnabled[0] = true;
-                }
-            });
-
-            return fileSelectorPanel;
-        } else {
+        if (type == null) {
             return null;
         }
+
+        final FileSelectorPanel fileSelectorPanel = new FileSelectorPanel(VisatApp.getApp(), type);
+
+        final boolean[] handlerEnabled = {true};
+
+        fileSelectorPanel.addPropertyChangeListener(fileSelectorPanel.getPropertyName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (handlerEnabled[0]) {
+                    l2genData.setParamValue(paramInfo.getName(), fileSelectorPanel.getFileName());
+                }
+            }
+        });
+
+
+        l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                handlerEnabled[0] = false;
+                fileSelectorPanel.setFilename(l2genData.getParamValue(paramInfo.getName()));
+                handlerEnabled[0] = true;
+            }
+        });
+
+        return fileSelectorPanel;
+
 
     }
 
