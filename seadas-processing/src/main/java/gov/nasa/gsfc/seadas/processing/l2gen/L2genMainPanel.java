@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
+import org.esa.beam.framework.ui.AppContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,23 +46,20 @@ public class L2genMainPanel extends JPanel {
         add(l2genParfilePanel,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 3));
 
-        add(l2genInputOutputPanel.getOpenInAppCheckBox(),
-                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
     }
 
 
-    public SourceProductFileSelector getSourceProductSelector() {
-        if (l2genInputOutputPanel == null) {
-            return null;
-
-        }
-
-        return l2genInputOutputPanel.getSourceProductSelector();
-    }
-
-    public File getSelectedIFile() {
-        return l2genInputOutputPanel.getSelectedIFile();
-    }
+//    public SourceProductFileSelector getSourceProductSelector() {
+//        if (l2genInputOutputPanel == null) {
+//            return null;
+//        }
+//
+//        return l2genInputOutputPanel.getSourceProductSelector();
+//    }
+//
+//    public File getSelectedIFile() {
+//        return l2genInputOutputPanel.getSelectedIFile();
+//    }
 
     public Product getSelectedProduct() {
         if (l2genInputOutputPanel != null) {
@@ -84,7 +82,4 @@ public class L2genMainPanel extends JPanel {
         }
     }
 
-    public JCheckBox getOpenInAppCheckBox() {
-        return l2genInputOutputPanel.getOpenInAppCheckBox();
-    }
 }

@@ -39,7 +39,7 @@ public class FileSelectorPanel extends JPanel {
         OFILE
     }
 
-    private  String propertyName = "FILE_SELECTOR_PANEL_CHANGED";
+    private String propertyName = "FILE_SELECTOR_PANEL_CHANGED";
 
     private AppContext appContext;
 
@@ -55,6 +55,7 @@ public class FileSelectorPanel extends JPanel {
     private RegexFileFilter regexFileFilter;
     private JTextField filterRegexField;
     private JLabel filterRegexLabel;
+    private final JPanel filterPane = new JPanel(new GridBagLayout());
 
 
     private String lastFilename = null;
@@ -62,9 +63,14 @@ public class FileSelectorPanel extends JPanel {
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
 
+    public FileSelectorPanel(AppContext appContext) {
+        this(appContext, null);
+    }
+
+
     public FileSelectorPanel(AppContext appContext, Type type) {
         this.appContext = appContext;
-        this.setType(type);
+        setType(type);
 
         initComponents();
         addComponents();
@@ -85,7 +91,6 @@ public class FileSelectorPanel extends JPanel {
 
         fileChooserButton = new JButton(new FileChooserAction());
 
-        regexFileFilter = new RegexFileFilter();
     }
 
 
@@ -104,17 +109,26 @@ public class FileSelectorPanel extends JPanel {
                 new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
         add(fileChooserButton,
                 new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-        add(createFilterPane(),
+
+
+        add(filterPane,
                 new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+
+        if (type != Type.IFILE) {
+            filterPane.setVisible(false);
+        }
     }
 
 
     public void setEnabled(boolean enabled) {
         nameLabel.setEnabled(enabled);
         fileChooserButton.setEnabled(enabled);
-        filterRegexField.setEnabled(enabled);
-        filterRegexLabel.setEnabled(enabled);
-        fileTextfield.setEnabled(enabled);
+
+        if (type == Type.IFILE) {
+            filterRegexField.setEnabled(enabled);
+            filterRegexLabel.setEnabled(enabled);
+            fileTextfield.setEnabled(enabled);
+        }
     }
 
 
@@ -178,7 +192,9 @@ public class FileSelectorPanel extends JPanel {
     }
 
 
-    private JPanel createFilterPane() {
+    private void createFilterPane(JPanel mainPanel) {
+
+        mainPanel.removeAll();
 
         filterRegexField = new JTextField("123456789 ");
         filterRegexField.setPreferredSize(filterRegexField.getPreferredSize());
@@ -212,14 +228,11 @@ public class FileSelectorPanel extends JPanel {
         filterRegexLabel.setToolTipText("Filter the chooser by regular expression");
 
 
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-
         mainPanel.add(filterRegexLabel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         mainPanel.add(filterRegexField,
                 new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        return mainPanel;
 
     }
 
@@ -230,6 +243,17 @@ public class FileSelectorPanel extends JPanel {
 
     public void setType(Type type) {
         this.type = type;
+
+
+        if (type == Type.IFILE) {
+            regexFileFilter = new RegexFileFilter();
+            createFilterPane(filterPane);
+            filterPane.setVisible(true);
+        } else {
+            regexFileFilter = null;
+            filterPane.removeAll();
+            filterPane.setVisible(false);
+        }
     }
 
     public String getPropertyName() {
@@ -266,7 +290,9 @@ public class FileSelectorPanel extends JPanel {
             currentDirectory = new File(openDir);
             fileChooser.setCurrentDirectory(currentDirectory);
 
-            fileChooser.addChoosableFileFilter(regexFileFilter);
+            if (type == Type.IFILE) {
+                fileChooser.addChoosableFileFilter(regexFileFilter);
+            }
 
             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
                 final File file = fileChooser.getSelectedFile();

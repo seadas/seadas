@@ -12,12 +12,13 @@ import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 
 //test
-public class L2genForm extends JTabbedPane implements CloProgramUI {
+public class L2genForm extends JPanel implements CloProgramUI {
 
     private static final String GUI_NAME = "l2gen";
 
@@ -26,38 +27,55 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     private L2genMainPanel l2genMainPanel;
     private ProcessorModel processorModel;
 
+    private JCheckBox openInAppCheckBox;
+
     L2genForm(AppContext appContext, String xmlFileName) {
 
         processorModel = new ProcessorModel(GUI_NAME, xmlFileName);
 
         if (l2genData.initXmlBasedObjects()) {
 
-            createMainTab(0);
-            createProductsTab(1);
-            createCategoryParamTabs(2);
+            setOpenInAppCheckBox(new JCheckBox("Open in " + appContext.getApplicationName()));
+            getOpenInAppCheckBox().setSelected(true);
+
+            JTabbedPane jTabbedPane = new JTabbedPane();
+
+            createMainTab(jTabbedPane);
+            createProductsTab(jTabbedPane);
+            createCategoryParamTabs(jTabbedPane);
+
+            setLayout(new GridBagLayout());
+
+            add(jTabbedPane,
+                    new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+            add(getOpenInAppCheckBox(),
+                    new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
 
             l2genData.setInitialValues(getInitialSelectedSourceFile());
 
             l2genData.fireAllParamEvents();
         } else {
-            addTab("ERROR", new JLabel("Problem initializing l2gen"));
+            add(new JLabel("Problem initializing l2gen"));
         }
     }
 
 
-    private void createMainTab(final int tabIndex) {
+    private void createMainTab(JTabbedPane jTabbedPane) {
 
         final String TAB_NAME = "Main";
         l2genMainPanel = new L2genMainPanel(l2genData);
-        addTab(TAB_NAME, l2genMainPanel);
+        jTabbedPane.addTab(TAB_NAME, l2genMainPanel);
     }
 
 
-    private void createProductsTab(final int tabIndex) {
+    private void createProductsTab(final JTabbedPane jTabbedPane) {
+
 
         final String TAB_NAME = "Products";
         L2genProductsPanel l2genProductsPanel = new L2genProductsPanel((l2genData));
-        addTab(TAB_NAME, l2genProductsPanel);
+        jTabbedPane.addTab(TAB_NAME, l2genProductsPanel);
+        final int tabIndex = jTabbedPane.getTabCount() - 1;
 
         l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
             @Override
@@ -65,9 +83,9 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
                 StringBuilder tabname = new StringBuilder(TAB_NAME);
 
                 if (l2genData.isParamDefault(L2genData.L2PROD)) {
-                    setTitleAt(tabIndex, tabname.toString());
+                    jTabbedPane.setTitleAt(tabIndex, tabname.toString());
                 } else {
-                    setTitleAt(tabIndex, tabname.append("*").toString());
+                    jTabbedPane.setTitleAt(tabIndex, tabname.append("*").toString());
                 }
             }
         });
@@ -76,21 +94,20 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
         l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                setEnabledAt(tabIndex, l2genData.isValidIfile());
+                jTabbedPane.setEnabledAt(tabIndex, l2genData.isValidIfile());
             }
         });
     }
 
 
-    private void createCategoryParamTabs(int startTabIndex) {
-        int tabIndex = startTabIndex;
+    private void createCategoryParamTabs(final JTabbedPane jTabbedPane) {
 
         for (final ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
             if (paramCategoryInfo.isAutoTab() && (paramCategoryInfo.getParamInfos().size() > 0)) {
-                final int tabIndexFinal = tabIndex;
 
                 L2genCategorizedParamsPanel l2genCategorizedParamsPanel = new L2genCategorizedParamsPanel(l2genData, paramCategoryInfo);
-                addTab(paramCategoryInfo.getName(), l2genCategorizedParamsPanel);
+                jTabbedPane.addTab(paramCategoryInfo.getName(), l2genCategorizedParamsPanel);
+                final int tabIndex = jTabbedPane.getTabCount() - 1;
 
                 for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
                     l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
@@ -99,9 +116,9 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
                             StringBuilder stringBuilder = new StringBuilder(paramCategoryInfo.getName());
 
                             if (l2genData.isParamCategoryDefault(paramCategoryInfo)) {
-                                setTitleAt(tabIndexFinal, stringBuilder.toString());
+                                jTabbedPane.setTitleAt(tabIndex, stringBuilder.toString());
                             } else {
-                                setTitleAt(tabIndexFinal, stringBuilder.append("*").toString());
+                                jTabbedPane.setTitleAt(tabIndex, stringBuilder.append("*").toString());
                             }
 
                         }
@@ -112,11 +129,9 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
                 l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
                     @Override
                     public void propertyChange(PropertyChangeEvent evt) {
-                        setEnabledAt(tabIndexFinal, l2genData.isValidIfile());
+                        jTabbedPane.setEnabledAt(tabIndex, l2genData.isValidIfile());
                     }
                 });
-
-                tabIndex++;
             }
         }
     }
@@ -148,6 +163,20 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
 
+//    public Product getSelectedSourceProduct() {
+//        FileInfo iFileInfo = l2genData.getParamFileInfo(L2genData.IFILE);
+//
+//
+//        if (iFileInfo != null && iFileInfo.canRead()) {
+//            Product product = new Product(iFileInfo.getName(), "DummyType", 10, 10);
+//            product.setFileLocation(iFileInfo);
+//            return product;
+//        }
+//
+//        return null;
+//    }
+
+
     void prepareShow() {
         if (l2genMainPanel != null) {
             l2genMainPanel.prepareShow();
@@ -161,10 +190,17 @@ public class L2genForm extends JTabbedPane implements CloProgramUI {
     }
 
     public boolean isOpenOutputInApp() {
-        if (l2genMainPanel != null) {
-            l2genMainPanel.getOpenInAppCheckBox().isSelected();
+        if (getOpenInAppCheckBox() != null) {
+            return getOpenInAppCheckBox().isSelected();
         }
-
         return true;
+    }
+
+    public JCheckBox getOpenInAppCheckBox() {
+        return openInAppCheckBox;
+    }
+
+    public void setOpenInAppCheckBox(JCheckBox openInAppCheckBox) {
+        this.openInAppCheckBox = openInAppCheckBox;
     }
 }

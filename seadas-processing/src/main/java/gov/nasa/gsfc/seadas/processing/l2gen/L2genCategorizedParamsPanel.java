@@ -78,7 +78,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
             } else {
                 if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
                     createParamCheckBox(paramInfo, paramsPanel, gridy);
-                } else if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+                } else if (paramInfo.getType() == ParamInfo.Type.IFILE || paramInfo.getType() == ParamInfo.Type.OFILE ) {
                     createFileSelectorRow(paramInfo, paramsPanel, gridy);
                 } else {
                     createParamTextfield(paramInfo, paramsPanel, gridy);
@@ -275,7 +275,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
         defaultIndicator.setForeground(DEFAULT_INDICATOR_COLOR);
         defaultIndicator.setToolTipText(DEFAULT_INDICATOR_TOOLTIP);
 
-        JPanel valuePanel = createFileSelectorPanel(paramInfo.getName());
+        JPanel valuePanel = createFileSelectorPanel(paramInfo);
 
 
         jPanel.add(jLabel,
@@ -284,40 +284,48 @@ public class L2genCategorizedParamsPanel extends JPanel {
         jPanel.add(defaultIndicator,
                 new GridBagConstraintsCustom(1, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
-
         jPanel.add(valuePanel,
                 new GridBagConstraintsCustom(2, gridy, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-
     }
 
 
-    private JPanel createFileSelectorPanel(final String param) {
+    private JPanel createFileSelectorPanel(final ParamInfo paramInfo) {
 
-        final FileSelectorPanel jPanel = new FileSelectorPanel(VisatApp.getApp(), FileSelectorPanel.Type.IFILE);
+        if (paramInfo.getType() == ParamInfo.Type.IFILE || paramInfo.getType() == ParamInfo.Type.OFILE) {
 
+            final FileSelectorPanel fileSelectorPanel = new FileSelectorPanel(VisatApp.getApp());
 
-        final boolean[] handlerEnabled = {true};
+            if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+                fileSelectorPanel.setType(FileSelectorPanel.Type.IFILE);
+            } else if (paramInfo.getType() == ParamInfo.Type.OFILE) {
+                fileSelectorPanel.setType(FileSelectorPanel.Type.OFILE);
+            }
 
-        jPanel.addPropertyChangeListener(jPanel.getPropertyName(), new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (handlerEnabled[0]) {
-                    l2genData.setParamValue(param, jPanel.getFileName());
+            final boolean[] handlerEnabled = {true};
+
+            fileSelectorPanel.addPropertyChangeListener(fileSelectorPanel.getPropertyName(), new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (handlerEnabled[0]) {
+                        l2genData.setParamValue(paramInfo.getName(), fileSelectorPanel.getFileName());
+                    }
                 }
-            }
-        });
+            });
 
 
-        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                handlerEnabled[0] = false;
-                jPanel.setFilename(l2genData.getParamValue(param));
-                handlerEnabled[0] = true;
-            }
-        });
+            l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    handlerEnabled[0] = false;
+                    fileSelectorPanel.setFilename(l2genData.getParamValue(paramInfo.getName()));
+                    handlerEnabled[0] = true;
+                }
+            });
 
-        return jPanel;
+            return fileSelectorPanel;
+        } else {
+            return null;
+        }
 
     }
 
