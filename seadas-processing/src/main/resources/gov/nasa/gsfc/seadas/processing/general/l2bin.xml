@@ -78,7 +78,7 @@
         <option type="string">
             <name>pversion</name>
             <value></value>
-            <default>Unspecified</default>
+            <default></default>
             <description>production version [default=Unspecified]</description>
             <order>9</order>
         </option>
