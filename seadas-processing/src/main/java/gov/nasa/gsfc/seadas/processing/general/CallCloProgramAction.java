@@ -17,6 +17,10 @@ import org.esa.beam.visat.actions.AbstractVisatAction;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -40,7 +44,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     String dialogTitle;
     String xmlFileName;
 
-    private boolean printLogToConsole = false;
+    private boolean printLogToConsole = true;
     private boolean openOutputInApp = true;
 
     @Override
@@ -69,7 +73,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         ProgramExecutor pe = new ProgramExecutor();
         pe.executeProgram(pm);
-        SeadasLogger.getLogger().info("xml file name: " + xmlFileName );
+        SeadasLogger.getLogger().info("xml file name: " + xmlFileName);
         return xmlFileName;
     }
 
@@ -110,6 +114,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
     @Override
     public void actionPerformed(CommandEvent event) {
 
+        //System.setProperty("user.dir", "/User/Shared/ocssw/test");
+
         SeadasLogger.initLogger("ProcessingGUI_log", printLogToConsole);
         SeadasLogger.getLogger().setLevel(Level.INFO);
 
@@ -122,8 +128,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final Window parent = appContext.getApplicationWindow();
 
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
-
-
+         modalDialog.getJDialog().getContentPane().addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+                System.out.println("window property changed 4");
+                modalDialog.getJDialog().pack();
+            }
+        });
         modalDialog.getButton(ModalDialog.ID_OK).setText("Run");
         modalDialog.getButton(ModalDialog.ID_HELP).setText("");
         modalDialog.getButton(ModalDialog.ID_HELP).setIcon(UIUtils.loadImageIcon("icons/Help24.gif"));
