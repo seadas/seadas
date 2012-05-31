@@ -430,6 +430,7 @@ public class L2genProductTreeSelectorPanel extends JPanel {
         productJTree.setShowsRootHandles(true);
         productJTree.setRootVisible(false);
 
+        final boolean[] handlerEnabled = {true};
 
         l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
@@ -442,7 +443,11 @@ public class L2genProductTreeSelectorPanel extends JPanel {
         l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                productChangedHandler();
+                if (handlerEnabled[0]) {
+                    handlerEnabled[0] = false;
+                    productChangedHandler();
+                    handlerEnabled[0] = true;
+                }
             }
         });
 

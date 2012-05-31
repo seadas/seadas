@@ -86,6 +86,7 @@ public class L2genProductsPanel extends JPanel {
         jTextArea.setRows(5);
         jTextArea.setEditable(true);
 
+
         jTextArea.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -93,9 +94,9 @@ public class L2genProductsPanel extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                String l2prod = l2genData.sortStringList(jTextArea.getText());
-                l2genData.setParamValue(L2genData.L2PROD, l2prod);
-                jTextArea.setText(l2genData.getParamValue(L2genData.L2PROD));
+                    String l2prod = l2genData.sortStringList(jTextArea.getText());
+                    l2genData.setParamValue(L2genData.L2PROD, l2prod);
+                    jTextArea.setText(l2genData.getParamValue(L2genData.L2PROD));
             }
         });
 

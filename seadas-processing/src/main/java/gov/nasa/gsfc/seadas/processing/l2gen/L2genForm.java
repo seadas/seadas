@@ -52,9 +52,14 @@ public class L2genForm extends JPanel implements CloProgramUI {
                     new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
+            l2genData.disableEvent(L2genData.PARSTRING_EVENT);
+            l2genData.disableEvent(L2genData.L2PROD);
             l2genData.setInitialValues(getInitialSelectedSourceFile());
 
             l2genData.fireAllParamEvents();
+            l2genData.enableEvent(L2genData.L2PROD);
+            l2genData.enableEvent(L2genData.PARSTRING_EVENT);
+
         } else {
             add(new JLabel("Problem initializing l2gen"));
         }

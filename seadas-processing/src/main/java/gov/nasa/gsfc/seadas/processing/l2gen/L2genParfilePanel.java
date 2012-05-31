@@ -258,7 +258,8 @@ public class L2genParfilePanel extends JPanel {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     if (!parStringInProgress[0]) {
-                        jTextArea.setText(l2genData.getParString());
+                        l2genData.fireEvent(L2genData.PARSTRING_EVENT);
+            //            jTextArea.setText(l2genData.getParString());
                     }
                 }
             });
@@ -267,17 +268,18 @@ public class L2genParfilePanel extends JPanel {
         l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_EVENT, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                jTextArea.setText(l2genData.getParString());
+                l2genData.fireEvent(L2genData.PARSTRING_EVENT);
+       //         jTextArea.setText(l2genData.getParString());
 
             }
         });
 
-        l2genData.addPropertyChangeListener(l2genData.PARSTRING_IN_PROGRESS_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                parStringInProgress[0] = true;
-            }
-        });
+//        l2genData.addPropertyChangeListener(l2genData.PARSTRING_IN_PROGRESS_EVENT, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                parStringInProgress[0] = true;
+//            }
+//        });
 
         l2genData.addPropertyChangeListener(l2genData.PARSTRING_EVENT, new PropertyChangeListener() {
             @Override

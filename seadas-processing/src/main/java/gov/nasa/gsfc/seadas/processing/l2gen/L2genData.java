@@ -130,6 +130,7 @@ public class L2genData {
 
     public EventInfo[] eventInfos = {
             new EventInfo(L2PROD, this),
+            new EventInfo(PARSTRING_EVENT, this)
     };
 
     public L2genData() {
@@ -195,17 +196,24 @@ public class L2genData {
     }
 
     public void fireAllParamEvents() {
-        fireEvent(PARSTRING_IN_PROGRESS_EVENT);
-        fireEvent(IFILE);
+        //   fireEvent(PARSTRING_IN_PROGRESS_EVENT);
+        disableEvent(PARSTRING_EVENT);
+        disableEvent(L2PROD);
+
         for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals(IFILE)) {
+            //    if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals(IFILE)) {
+            if (paramInfo.getName() != null) {
                 fireEvent(paramInfo.getName());
             }
         }
+        fireEvent(SHOW_DEFAULTS_EVENT);
         fireEvent(RETAIN_IFILE_EVENT);
         fireEvent(WAVE_LIMITER_EVENT);
-        fireEvent(IFILE);
         fireEvent(PARSTRING_EVENT);
+
+        enableEvent(L2PROD);
+        enableEvent(PARSTRING_EVENT);
+
     }
 
     public void setSelectedInfo(BaseInfo info, BaseInfo.State state) {
@@ -942,6 +950,9 @@ public class L2genData {
     // it will reset and make new wavelengthInfoArray
     private void setIfileParamValue(ParamInfo paramInfo, String newIfile) {
 
+        disableEvent(PARSTRING_EVENT);
+        disableEvent(L2PROD);
+        //     fireEvent(PARSTRING_IN_PROGRESS_EVENT);
         String oldIfile = getParamValue(IFILE);
 
         if (newIfile != null && newIfile.length() > 0) {
@@ -981,6 +992,11 @@ public class L2genData {
 
 
         fireEvent(IFILE, oldIfile, newIfile);
+
+        fireEvent(PARSTRING_EVENT);
+        enableEvent(L2PROD);
+        enableEvent(PARSTRING_EVENT);
+
     }
 
 
@@ -1173,11 +1189,19 @@ public class L2genData {
             InputStream paramInfoStream = getParamInfoInputStream(DEFAULT_IFILE);
 
             if (paramInfoStream != null && productInfoStream != null) {
+                disableEvent(PARSTRING_EVENT);
+                disableEvent(L2PROD);
+                //              fireEvent(PARSTRING_IN_PROGRESS_EVENT);
                 l2genReader.readParamInfoXml(paramInfoStream, productInfoStream);
 
                 InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
                 l2genReader.readParamCategoryXml(paramCategoryInfoStream);
                 setParamCategoryInfos();
+
+
+                fireEvent(PARSTRING_EVENT);
+                enableEvent(L2PROD);
+                enableEvent(PARSTRING_EVENT);
 
                 return true;
             }
