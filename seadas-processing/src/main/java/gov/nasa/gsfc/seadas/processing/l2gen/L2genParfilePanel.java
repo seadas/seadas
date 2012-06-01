@@ -18,6 +18,11 @@ import java.util.ArrayList;
 
 public class L2genParfilePanel extends JPanel {
 
+    private L2genForm l2genForm;
+    private L2genData l2genData;
+
+    private int tabIndex;
+
     private JButton openButton;
     private JButton saveButton;
     private JCheckBox retainIfileCheckbox;
@@ -25,12 +30,12 @@ public class L2genParfilePanel extends JPanel {
     private JCheckBox showDefaultsCheckbox;
     private JTextArea parStringTextArea;
 
-    private L2genData l2genData;
-    private L2genForm l2genForm;
 
-    L2genParfilePanel(L2genForm l2genForm, L2genData l2genData) {
-        this.l2genData = l2genData;
+    L2genParfilePanel(L2genForm l2genForm, int tabIndex) {
+
         this.l2genForm = l2genForm;
+        this.l2genData = l2genForm.getL2genData();
+        this.tabIndex = tabIndex;
 
         initComponents();
         addComponents();
@@ -43,7 +48,7 @@ public class L2genParfilePanel extends JPanel {
         retainIfileCheckbox = createRetainIfileCheckbox();
         getAncButton = createGetAncButton();
         showDefaultsCheckbox = createShowDefaultsCheckbox();
-        parStringTextArea = createParStringTextArea();
+        parStringTextArea = new ParStringTextArea().getjTextArea();
     }
 
 
@@ -74,6 +79,7 @@ public class L2genParfilePanel extends JPanel {
 
         add(subPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
         add(new JScrollPane(parStringTextArea),
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
     }
@@ -235,60 +241,84 @@ public class L2genParfilePanel extends JPanel {
     }
 
 
-    private JTextArea createParStringTextArea() {
+    private class ParStringTextArea {
 
-        final JTextArea jTextArea = new JTextArea();
-        jTextArea.setEditable(true);
-        jTextArea.setAutoscrolls(true);
+        private final JTextArea jTextArea = new JTextArea();
 
-        jTextArea.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
+        private boolean updatePending = false;
+
+        ParStringTextArea() {
+
+            jTextArea.setEditable(true);
+            jTextArea.setAutoscrolls(true);
+
+            jTextArea.addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    controlHandler();
+                }
+            });
+
+
+            for (ParamInfo paramInfo : l2genData.getParamInfos()) {
+                final String eventName = paramInfo.getName();
+                l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        // relay this to PARSTRING event in case it is currently disabled
+                        l2genData.fireEvent(L2genData.PARSTRING);
+                    }
+                });
             }
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                l2genData.setParString(jTextArea.getText().toString(), false);
-            }
-        });
-
-
-        for (ParamInfo paramInfo : l2genData.getParamInfos()) {
-            final String eventName = paramInfo.getName();
-            l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
+            l2genData.addPropertyChangeListener(L2genData.SHOW_DEFAULTS, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                        l2genData.fireEvent(L2genData.PARSTRING);
+                    // relay this to PARSTRING event in case it is currently disabled
+                    l2genData.fireEvent(L2genData.PARSTRING);
+                }
+            });
+
+
+            l2genData.addPropertyChangeListener(L2genData.PARSTRING, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    eventHandler();
+                }
+            });
+
+
+            l2genData.addPropertyChangeListener(L2genData.TAB_CHANGE, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (updatePending) {
+                        eventHandler();
+                    }
                 }
             });
         }
 
-        l2genData.addPropertyChangeListener(L2genData.SHOW_DEFAULTS, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                l2genData.fireEvent(L2genData.PARSTRING);
+
+        private void controlHandler() {
+            l2genData.setParString(jTextArea.getText(), false);
+        }
+
+
+        private void eventHandler() {
+            if (l2genForm.getjTabbedPane().getSelectedIndex() == tabIndex) {
+                jTextArea.setText(l2genData.getParString());
+            } else {
+                updatePending = true;
             }
-        });
+        }
 
-
-        l2genData.addPropertyChangeListener(L2genData.TAB_CHANGE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                l2genData.fireEvent(L2genData.PARSTRING);
-            }
-        });
-
-
-        l2genData.addPropertyChangeListener(L2genData.PARSTRING, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (l2genForm.getjTabbedPane().getSelectedIndex() == l2genForm.getMainTabIndex()) {
-                    jTextArea.setText(l2genData.getParString());
-                }
-            }
-        });
-
-        return jTextArea;
+        public JTextArea getjTextArea() {
+            return jTextArea;
+        }
     }
 
 

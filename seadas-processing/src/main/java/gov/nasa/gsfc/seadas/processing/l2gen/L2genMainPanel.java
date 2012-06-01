@@ -1,12 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
-import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.ui.AppContext;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,17 +14,20 @@ import java.io.File;
  */
 public class L2genMainPanel extends JPanel {
 
-    private final L2genData l2genData;
     private final L2genForm l2genForm;
+    private final L2genData l2genData;
+
+    private int tabIndex;
 
     private L2genInputOutputPanel l2genInputOutputPanel;
     private L2genParfilePanel l2genParfilePanel;
 
 
-    L2genMainPanel(L2genForm l2genForm, L2genData l2genData) {
+    L2genMainPanel(L2genForm l2genForm, int tabIndex) {
 
-        this.l2genData = l2genData;
         this.l2genForm = l2genForm;
+        this.l2genData = l2genForm.getL2genData();
+        this.tabIndex = tabIndex;
 
         initComponents();
         addComponents();
@@ -35,7 +35,7 @@ public class L2genMainPanel extends JPanel {
 
     private void initComponents() {
         l2genInputOutputPanel = new L2genInputOutputPanel(l2genData);
-        l2genParfilePanel = new L2genParfilePanel(l2genForm, l2genData);
+        l2genParfilePanel = new L2genParfilePanel(l2genForm, tabIndex);
     }
 
     private void addComponents() {
@@ -50,18 +50,6 @@ public class L2genMainPanel extends JPanel {
 
     }
 
-
-//    public SourceProductFileSelector getSourceProductSelector() {
-//        if (l2genInputOutputPanel == null) {
-//            return null;
-//        }
-//
-//        return l2genInputOutputPanel.getSourceProductSelector();
-//    }
-//
-//    public File getSelectedIFile() {
-//        return l2genInputOutputPanel.getSelectedIFile();
-//    }
 
     public Product getSelectedProduct() {
         if (l2genInputOutputPanel != null) {
@@ -83,5 +71,4 @@ public class L2genMainPanel extends JPanel {
             l2genInputOutputPanel.prepareHide();
         }
     }
-
 }
