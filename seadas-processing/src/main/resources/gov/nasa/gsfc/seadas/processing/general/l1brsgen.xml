@@ -66,9 +66,9 @@
         </option>
         <option type="string">
             <name>pversion</name>
-            <value>Unspecified</value>
+            <value></value>
             <type>string</type>
-            <default>Unspecified</default>
+            <default></default>
             <description>processing version string</description>
             <source>default</source>
         </option>

@@ -161,11 +161,15 @@ public class FileSelectorPanel extends JPanel {
 
         if (filenameChanged) {
             fileTextfield.setText(filename);
+            fileTextfield.setFocusable(true);
             fireEvent(propertyName, lastFilename, filename);
             lastFilename = filename;
         }
     }
 
+    public JTextField getFileTextField() {
+        return fileTextfield;
+    }
 
     public JTextField createFileTextfield() {
 
@@ -277,6 +281,16 @@ public class FileSelectorPanel extends JPanel {
             fileChooser = new BeamFileChooser();
 
             fileChooser.setDialogTitle("Select Input File");
+
+            fileChooser.setAcceptAllFileFilterUsed(true);
+            fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
+        }
+
+        private FileChooserAction(String dialogTitle) {
+            super("...");
+            fileChooser = new BeamFileChooser();
+
+            fileChooser.setDialogTitle(dialogTitle);
 
             fileChooser.setAcceptAllFileFilterUsed(true);
             fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());

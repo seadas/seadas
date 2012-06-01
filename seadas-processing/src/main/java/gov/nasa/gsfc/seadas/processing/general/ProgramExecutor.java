@@ -22,146 +22,168 @@ public class ProgramExecutor {
     private static final String PROCESSING_SCAN_REGEX = "Processing scan .+?\\((\\d+) of (\\d+)\\)";
     static final Pattern PROCESSING_SCAN_PATTERN = Pattern.compile(PROCESSING_SCAN_REGEX);
 
-        File outputFile;
+    File outputFile;
 
-        public void executeProgram(ProcessorModel pm) {
+    public int executeProgram(String[] command) {
+        ProcessBuilder probuilder = new ProcessBuilder(command);
+        //set up work directory
+//        System.out.println(System.getProperty("user.dir"));
+//        probuilder.directory(new File("/Users/Shared/ocssw/test/smigen/"));
 
-             final ProcessorModel processorModel = pm;
-             if (!processorModel.isValidProcessor()) {
-                 VisatApp.getApp().showErrorDialog(processorModel.getProgramName(), processorModel.getProgramErrorMessage());
-                 return;
+        int exitValue = -1;
+        try {
+            Process process = probuilder.start();
+            exitValue = process.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-             }
+        return exitValue;
+    }
+
+    public void executeProgram(ProcessorModel pm) {
+
+        final ProcessorModel processorModel = pm;
+        if (!processorModel.isValidProcessor()) {
+            VisatApp.getApp().showErrorDialog(processorModel.getProgramName(), processorModel.getProgramErrorMessage());
+            return;
+
+        }
 
 
+        //final File outputFile = processorModel.getOutputFile();
 
-             //final File outputFile = processorModel.getOutputFile();
+        //SeadasLogger.getLogger().info("output file: " + outputFile);
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(VisatApp.getApp().getApplicationWindow(), "Running" + processorModel.getProgramName() + " ...") {
+            @Override
+            protected File doInBackground(ProgressMonitor pm) throws Exception {
 
-             //SeadasLogger.getLogger().info("output file: " + outputFile);
-             ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(VisatApp.getApp().getApplicationWindow(), "Running" + processorModel.getProgramName() + " ...") {
-                 @Override
-                 protected File doInBackground(ProgressMonitor pm) throws Exception {
+                //final Process process = Runtime.getRuntime().exec(processorModel.getProgramCmdArray(), processorModel.getProgramEnv(), processorModel.getProgramRoot() );
+                final Process process = processorModel.executeProcess();
+                final ProcessObserver processObserver = new ProcessObserver(process, processorModel.getProgramName(), pm);
+                processObserver.addHandler(new ProgressHandler(processorModel.getProgramName()));
+                processObserver.addHandler(new ConsoleHandler(processorModel.getProgramName()));
+                processObserver.startAndWait();
 
-                     //final Process process = Runtime.getRuntime().exec(processorModel.getProgramCmdArray(), processorModel.getProgramEnv(), processorModel.getProgramRoot() );
-                     final Process process = processorModel.executeProcess();
-                     final ProcessObserver processObserver = new ProcessObserver(process, processorModel.getProgramName(), pm);
-                     processObserver.addHandler(new ProgressHandler(processorModel.getProgramName()));
-                     processObserver.addHandler(new ConsoleHandler(processorModel.getProgramName()));
-                     processObserver.startAndWait();
+                int exitCode = process.exitValue();
 
-                     int exitCode = process.exitValue();
+                pm.done();
+                //process.getOutputStream();
 
-                     pm.done();
-                     //process.getOutputStream();
+                if (exitCode != 0) {
+                    throw new IOException(processorModel.getProgramName() + " failed with exit code " + exitCode + ".\nCheck log for more details.");
+                }
+                outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()));
 
-                     if (exitCode != 0) {
-                         throw new IOException(processorModel.getProgramName() + " failed with exit code " + exitCode + ".\nCheck log for more details.");
-                     }
-                     outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName())  );
 //                     if (openOutputInApp ) {
 //                         getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile));
 //                     }
 
-                     SeadasLogger.getLogger().finest("Final output file name: " + outputFile)  ;
+                SeadasLogger.getLogger().finest("Final output file name: " + outputFile);
 
-                     return outputFile;
-                 }
+                return outputFile;
+            }
 
-                 @Override
-                 protected void done() {
-                     try {
-                         final File outputFile = get();
-                         VisatApp.getApp().showInfoDialog(processorModel.getProgramName()  , processorModel.getProgramName() + " done!\nOutput written to:\n" + outputFile, null);
-                     } catch (InterruptedException e) {
-                         //
-                     } catch (ExecutionException e) {
-                         VisatApp.getApp().showErrorDialog(processorModel.getProgramName(), "execution exception: " + e.getMessage());
-                     }
-                 }
-             };
+            @Override
+            protected void done() {
+                try {
+                    final File outputFile = get();
+                    VisatApp.getApp().showInfoDialog(processorModel.getProgramName(), processorModel.getProgramName() + " done!\nOutput written to:\n" + outputFile, null);
+                } catch (InterruptedException e) {
+                    //
+                } catch (ExecutionException e) {
+                    VisatApp.getApp().showErrorDialog(processorModel.getProgramName(), "execution exception: " + e.getMessage());
+                    System.out.println(e.getStackTrace().toString());
+//                         String[] cmdArray = processorModel.getProgramCmdArray();
+//                         for (int i = 0; i<cmdArray.length; i++) {
+//                             System.out.println(cmdArray[i]);
+//                         }
+                }
+            }
+        };
 
-             swingWorker.execute();
-             //swingWorker.get();
+        swingWorker.execute();
+        //swingWorker.get();
 
-         }
+    }
 
-        public File getOutputFile(){
-            return outputFile;
+    public File getOutputFile() {
+        return outputFile;
+    }
+
+    /**
+     * Handler that tries to extract progress from stdout of ocssw processor
+     */
+    private static class ProgressHandler implements ProcessObserver.Handler {
+
+
+        boolean progressSeen;
+        int lastScan = 0;
+        String programName;
+
+        ProgressHandler(String programName) {
+            this.programName = programName;
         }
 
-         /**
-          * Handler that tries to extract progress from stdout of ocssw processor
-          */
-         private static class ProgressHandler implements ProcessObserver.Handler {
+        @Override
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
 
+            Matcher matcher = PROCESSING_SCAN_PATTERN.matcher(line);
+            if (matcher.find()) {
 
-             boolean progressSeen;
-             int lastScan = 0;
-             String programName;
+                int scan = Integer.parseInt(matcher.group(1));
+                int numScans = Integer.parseInt(matcher.group(2));
 
-             ProgressHandler(String programName) {
-                 this.programName = programName;
-             }
+                if (!progressSeen) {
+                    progressSeen = true;
+                    pm.beginTask(programName, numScans);
+                }
+                pm.worked(scan - lastScan);
+                lastScan = scan;
+            }
 
-             @Override
-             public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
+            pm.setTaskName(programName);
+            pm.setSubTaskName(line);
+        }
 
-                 Matcher matcher = PROCESSING_SCAN_PATTERN.matcher(line);
-                 if (matcher.find()) {
+        @Override
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
+        }
+    }
 
-                     int scan = Integer.parseInt(matcher.group(1));
-                     int numScans = Integer.parseInt(matcher.group(2));
+    private static class ConsoleHandler implements ProcessObserver.Handler {
 
-                     if (!progressSeen) {
-                         progressSeen = true;
-                         pm.beginTask(programName, numScans);
-                     }
-                     pm.worked(scan - lastScan);
-                     lastScan = scan;
-                 }
+        String programName;
 
-                 pm.setTaskName(programName);
-                 pm.setSubTaskName(line);
-             }
+        ConsoleHandler(String programName) {
+            this.programName = programName;
+        }
 
-             @Override
-             public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-             }
-         }
+        @Override
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
+            SeadasLogger.getLogger().info(programName + ": " + line);
+        }
 
-         private static class ConsoleHandler implements ProcessObserver.Handler {
+        @Override
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
+            SeadasLogger.getLogger().info(programName + " stderr: " + line);
+        }
+    }
 
-             String programName;
+    private static class TerminationHandler implements ProcessObserver.Handler {
 
-             ConsoleHandler(String programName) {
-                 this.programName = programName;
-             }
+        @Override
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
+            if (pm.isCanceled()) {
+                process.destroy();
+            }
+        }
 
-             @Override
-             public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
-                 SeadasLogger.getLogger().info(programName + ": " + line);
-             }
-
-             @Override
-             public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-                 SeadasLogger.getLogger().info(programName + " stderr: " + line);
-             }
-         }
-
-         private static class TerminationHandler implements ProcessObserver.Handler {
-
-             @Override
-             public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
-                 if (pm.isCanceled()) {
-                     process.destroy();
-                 }
-             }
-
-             @Override
-             public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-                 if (pm.isCanceled()) {
-                     process.destroy();
-                 }
-             }
-         }
+        @Override
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
+            if (pm.isCanceled()) {
+                process.destroy();
+            }
+        }
+    }
 }

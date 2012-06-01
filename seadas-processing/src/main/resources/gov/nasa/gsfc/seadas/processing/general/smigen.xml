@@ -223,7 +223,7 @@
             <name>seam_lon</name>
             <value></value>
             <type>int</type>
-            <default>-180</default>
+            <default>0</default>
             <description>Longitude of Left Edge of Map</description>
             <source>default</source>
         </option>
@@ -243,5 +243,21 @@
             <description>Product Units</description>
             <source>default</source>
         </option>
+         <!--<option type="boolean">-->
+            <!--<name>Convert to ppm</name>-->
+            <!--<value></value>-->
+            <!--<type></type>-->
+            <!--<default>false</default>-->
+            <!--<description>Convert the input smi file into ppm file</description>-->
+            <!--<source>default</source>-->
+        <!--</option>-->
+         <!--<option type="ofile">-->
+            <!--<name>ppm file name</name>-->
+            <!--<value></value>-->
+            <!--<type></type>-->
+            <!--<default></default>-->
+            <!--<description>Output ppm file</description>-->
+        <!--</option>-->
+
     </options>
 </paramInfo>

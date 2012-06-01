@@ -17,8 +17,6 @@ import org.esa.beam.visat.actions.AbstractVisatAction;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -108,6 +106,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return new ExtractorUI(programName, xmlFileName);
         }
 
+        if (programName.indexOf("smigen") != -1) {
+
+        }
+
         return new CloProgramUIImpl(programName, xmlFileName);
     }
 
@@ -119,6 +121,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         SeadasLogger.initLogger("ProcessingGUI_log", printLogToConsole);
         SeadasLogger.getLogger().setLevel(Level.INFO);
 
+
         //xmlFileName = getXMLFileName();
 
         final AppContext appContext = getAppContext();
@@ -128,11 +131,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final Window parent = appContext.getApplicationWindow();
 
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
-         modalDialog.getJDialog().getContentPane().addPropertyChangeListener(new PropertyChangeListener() {
+        modalDialog.getJDialog().getContentPane().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 //To change body of implemented methods use File | Settings | File Templates.
-                System.out.println("window property changed 4");
+                //System.out.println("window property changed 4");
                 modalDialog.getJDialog().pack();
             }
         });
@@ -169,6 +172,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         executeProgram(processorModel);
 
+//        if (processorModel.getSecondaryProcessor() != null) {
+//            ProgramExecutor pe = new ProgramExecutor();
+//            pe.executeProgram(processorModel.getSecondaryProcessor());
+//
+//        }
+            SeadasLogger.deleteLoggerOnExit(true);
+
     }
 
     public void executeProgram(ProcessorModel pm) {
@@ -188,7 +198,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
-                //final Process process = Runtime.getRuntime().exec(processorModel.getProgramCmdArray(), processorModel.getProgramEnv(), processorModel.getProgramRoot() );
                 final Process process = processorModel.executeProcess();
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 processObserver.addHandler(new ProgressHandler(programName));
@@ -198,12 +207,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 int exitCode = process.exitValue();
 
                 pm.done();
-                //process.getOutputStream();
 
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
                 File outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()));
+
                 if (openOutputInApp) {
                     getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile));
                 }
@@ -218,6 +227,19 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 try {
                     final File outputFile = get();
                     VisatApp.getApp().showInfoDialog(programName, programName + " done!\nOutput written to:\n" + outputFile, null);
+                    ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
+                    if (secondaryProcessor != null) {
+                        ProgramExecutor pe = new ProgramExecutor();
+
+                        int exitCode = pe.executeProgram(secondaryProcessor.getProgramCmdArray());
+
+                        if (exitCode == 0)  {
+                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
+                                     secondaryProcessor.getProgramName() + " done!\n", null);
+                        }
+
+                    }
+
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {

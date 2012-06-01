@@ -46,6 +46,8 @@ public class ProcessorModel {
 
     private String primaryInputFileOptionName, primaryOutputFileOptionName;
 
+    private ProcessorModel secondaryProcessor;
+
     public ProcessorModel(String name) {
         this(name, null);
     }
@@ -371,7 +373,6 @@ public class ProcessorModel {
     }
 
     public Process executeProcess() throws IOException {
-        ;
         try {
             return executeProcess(getRootDir());
         } catch (Exception e) {
@@ -480,7 +481,15 @@ public class ProcessorModel {
             }
 
         }
+        System.out.println("current dir: " + System.getProperty("user.dir"));
         return rootDir == null ? new File(".") : rootDir  ;
     }
 
+    public ProcessorModel getSecondaryProcessor() {
+        return secondaryProcessor;
+    }
+
+    public void setSecondaryProcessor(ProcessorModel secondaryProcessor) {
+        this.secondaryProcessor = secondaryProcessor;
+    }
 }
