@@ -12,6 +12,8 @@ import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -29,36 +31,44 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     private JCheckBox openInAppCheckBox;
 
+    private final JTabbedPane jTabbedPane = new JTabbedPane();
+    private int mainTabIndex = 0;
+
     L2genForm(AppContext appContext, String xmlFileName) {
 
         processorModel = new ProcessorModel(GUI_NAME, xmlFileName);
 
+        setOpenInAppCheckBox(new JCheckBox("Open in " + appContext.getApplicationName()));
+        getOpenInAppCheckBox().setSelected(true);
+
         if (l2genData.initXmlBasedObjects()) {
 
-            setOpenInAppCheckBox(new JCheckBox("Open in " + appContext.getApplicationName()));
-            getOpenInAppCheckBox().setSelected(true);
+            createMainTab();
+            createProductsTab();
+            createCategoryParamTabs();
 
-            JTabbedPane jTabbedPane = new JTabbedPane();
+            getjTabbedPane().addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent evt) {
+                    l2genData.fireEvent(L2genData.TAB_CHANGE);
+                }
+            });
 
-            createMainTab(jTabbedPane);
-            createProductsTab(jTabbedPane);
-            createCategoryParamTabs(jTabbedPane);
 
             setLayout(new GridBagLayout());
 
-            add(jTabbedPane,
+            add(getjTabbedPane(),
                     new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
             add(getOpenInAppCheckBox(),
                     new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
-            l2genData.disableEvent(L2genData.PARSTRING_EVENT);
+            l2genData.disableEvent(L2genData.PARSTRING);
             l2genData.disableEvent(L2genData.L2PROD);
             l2genData.setInitialValues(getInitialSelectedSourceFile());
 
             l2genData.fireAllParamEvents();
             l2genData.enableEvent(L2genData.L2PROD);
-            l2genData.enableEvent(L2genData.PARSTRING_EVENT);
+            l2genData.enableEvent(L2genData.PARSTRING);
 
         } else {
             add(new JLabel("Problem initializing l2gen"));
@@ -66,16 +76,16 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
 
-    private void createMainTab(JTabbedPane jTabbedPane) {
+    private void createMainTab() {
 
         final String TAB_NAME = "Main";
-        l2genMainPanel = new L2genMainPanel(l2genData);
+        l2genMainPanel = new L2genMainPanel(this, l2genData);
         jTabbedPane.addTab(TAB_NAME, l2genMainPanel);
+        mainTabIndex = jTabbedPane.getTabCount() - 1;
     }
 
 
-    private void createProductsTab(final JTabbedPane jTabbedPane) {
-
+    private void createProductsTab() {
 
         final String TAB_NAME = "Products";
         L2genProductsPanel l2genProductsPanel = new L2genProductsPanel((l2genData));
@@ -105,7 +115,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
 
-    private void createCategoryParamTabs(final JTabbedPane jTabbedPane) {
+    private void createCategoryParamTabs() {
 
         for (final ParamCategoryInfo paramCategoryInfo : l2genData.getParamCategoryInfos()) {
             if (paramCategoryInfo.isAutoTab() && (paramCategoryInfo.getParamInfos().size() > 0)) {
@@ -162,7 +172,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public Product getSelectedSourceProduct() {
         if (l2genMainPanel != null) {
-           return l2genMainPanel.getSelectedProduct();
+            return l2genMainPanel.getSelectedProduct();
         }
         return null;
     }
@@ -207,5 +217,13 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public void setOpenInAppCheckBox(JCheckBox openInAppCheckBox) {
         this.openInAppCheckBox = openInAppCheckBox;
+    }
+
+    public JTabbedPane getjTabbedPane() {
+        return jTabbedPane;
+    }
+
+    public int getMainTabIndex() {
+        return mainTabIndex;
     }
 }

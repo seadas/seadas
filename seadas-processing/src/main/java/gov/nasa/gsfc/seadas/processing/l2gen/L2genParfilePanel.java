@@ -26,9 +26,11 @@ public class L2genParfilePanel extends JPanel {
     private JTextArea parStringTextArea;
 
     private L2genData l2genData;
+    private L2genForm l2genForm;
 
-    L2genParfilePanel(L2genData l2genData) {
+    L2genParfilePanel(L2genForm l2genForm, L2genData l2genData) {
         this.l2genData = l2genData;
+        this.l2genForm = l2genForm;
 
         initComponents();
         addComponents();
@@ -54,9 +56,9 @@ public class L2genParfilePanel extends JPanel {
         final JPanel openButtonRetainPanel = new JPanel(new GridBagLayout());
         openButtonRetainPanel.setBorder(BorderFactory.createEtchedBorder());
         openButtonRetainPanel.add(openButton,
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,2));
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
         openButtonRetainPanel.add(retainIfileCheckbox,
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,2));
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
 
         final JPanel subPanel = new JPanel(new GridBagLayout());
@@ -144,7 +146,7 @@ public class L2genParfilePanel extends JPanel {
             }
         });
 
-        l2genData.addPropertyChangeListener(l2genData.RETAIN_IFILE_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(l2genData.RETAIN_IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 handlerEnabled[0] = false;
@@ -220,7 +222,7 @@ public class L2genParfilePanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 handlerEnabled[0] = false;
@@ -238,7 +240,6 @@ public class L2genParfilePanel extends JPanel {
         final JTextArea jTextArea = new JTextArea();
         jTextArea.setEditable(true);
         jTextArea.setAutoscrolls(true);
-        final boolean[] parStringInProgress = {false};
 
         jTextArea.addFocusListener(new FocusListener() {
             @Override
@@ -257,36 +258,33 @@ public class L2genParfilePanel extends JPanel {
             l2genData.addPropertyChangeListener(eventName, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (!parStringInProgress[0]) {
-                        l2genData.fireEvent(L2genData.PARSTRING_EVENT);
-            //            jTextArea.setText(l2genData.getParString());
-                    }
+                        l2genData.fireEvent(L2genData.PARSTRING);
                 }
             });
         }
 
-        l2genData.addPropertyChangeListener(l2genData.SHOW_DEFAULTS_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.SHOW_DEFAULTS, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                l2genData.fireEvent(L2genData.PARSTRING_EVENT);
-       //         jTextArea.setText(l2genData.getParString());
-
+                l2genData.fireEvent(L2genData.PARSTRING);
             }
         });
 
-//        l2genData.addPropertyChangeListener(l2genData.PARSTRING_IN_PROGRESS_EVENT, new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                parStringInProgress[0] = true;
-//            }
-//        });
 
-        l2genData.addPropertyChangeListener(l2genData.PARSTRING_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.TAB_CHANGE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                jTextArea.setText(l2genData.getParString());
-                parStringInProgress[0] = false;
+                l2genData.fireEvent(L2genData.PARSTRING);
+            }
+        });
 
+
+        l2genData.addPropertyChangeListener(L2genData.PARSTRING, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (l2genForm.getjTabbedPane().getSelectedIndex() == l2genForm.getMainTabIndex()) {
+                    jTextArea.setText(l2genData.getParString());
+                }
             }
         });
 

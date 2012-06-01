@@ -92,7 +92,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updateInfraredButton();
@@ -155,7 +155,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
             });
 
 
-            l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_EVENT, new PropertyChangeListener() {
+            l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     updateInfraredButton();
@@ -210,7 +210,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updateNearInfraredButton();
@@ -262,7 +262,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
             }
         });
 
-        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updateVisibleButton();
@@ -304,7 +304,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
 
         final JPanel jPanel = new JPanel(new GridBagLayout());
 
-        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER_EVENT, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(L2genData.WAVE_LIMITER, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updateWaveLimiterSelectionStates();
@@ -394,7 +394,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
         }
 
         // just in case
-        l2genData.fireEvent(l2genData.WAVE_LIMITER_EVENT);
+        l2genData.fireEvent(l2genData.WAVE_LIMITER);
         // updateWaveLimiterSelectionStates();
     }
 

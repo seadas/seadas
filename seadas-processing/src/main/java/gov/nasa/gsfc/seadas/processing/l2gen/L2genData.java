@@ -44,12 +44,12 @@ public class L2genData {
             L2PROD = "l2prod";
 
     public static final String
-            INVALID_IFILE_EVENT = "INVALID_IFILE_EVENT",
-            WAVE_LIMITER_EVENT = "WAVE_LIMITER_EVENT",
-            RETAIN_IFILE_EVENT = "RETAIN_IFILE_EVENT",
-            SHOW_DEFAULTS_EVENT = "SHOW_DEFAULTS_EVENT",
-            PARSTRING_EVENT = "PARSTRING_EVENT",
-            PARSTRING_IN_PROGRESS_EVENT = "PARSTRING_IN_PROGRESS_EVENT";
+            INVALID_IFILE = "INVALID_IFILE_EVENT",
+            WAVE_LIMITER = "WAVE_LIMITER_EVENT",
+            RETAIN_IFILE = "RETAIN_IFILE_EVENT",
+            SHOW_DEFAULTS = "SHOW_DEFAULTS_EVENT",
+            PARSTRING = "PARSTRING_EVENT",
+            TAB_CHANGE = "TAB_CHANGE_EVENT";
 
 
     public FileInfo iFileInfo = null;
@@ -65,6 +65,8 @@ public class L2genData {
 
     private final SeadasPrint l2genPrint = new SeadasPrint();
 
+    private int currentTabIndex = 0;
+
 
     private L2prodParamInfo l2prodParamInfo;  // shortcut path to the one contained in paramInfo
     public boolean retainCurrentIfile = true;
@@ -79,7 +81,7 @@ public class L2genData {
 
         if (this.retainCurrentIfile != retainCurrentIfile) {
             this.retainCurrentIfile = retainCurrentIfile;
-            fireEvent(RETAIN_IFILE_EVENT);
+            fireEvent(RETAIN_IFILE);
         }
     }
 
@@ -90,7 +92,7 @@ public class L2genData {
     public void setShowDefaultsInParString(boolean showDefaultsInParString) {
         if (this.showDefaultsInParString != showDefaultsInParString) {
             this.showDefaultsInParString = showDefaultsInParString;
-            fireEvent(SHOW_DEFAULTS_EVENT);
+            fireEvent(SHOW_DEFAULTS);
         }
     }
 
@@ -130,7 +132,7 @@ public class L2genData {
 
     public EventInfo[] eventInfos = {
             new EventInfo(L2PROD, this),
-            new EventInfo(PARSTRING_EVENT, this)
+            new EventInfo(PARSTRING, this)
     };
 
     public L2genData() {
@@ -197,7 +199,7 @@ public class L2genData {
 
     public void fireAllParamEvents() {
         //   fireEvent(PARSTRING_IN_PROGRESS_EVENT);
-        disableEvent(PARSTRING_EVENT);
+        disableEvent(PARSTRING);
         disableEvent(L2PROD);
 
         for (ParamInfo paramInfo : paramInfos) {
@@ -206,13 +208,13 @@ public class L2genData {
                 fireEvent(paramInfo.getName());
             }
         }
-        fireEvent(SHOW_DEFAULTS_EVENT);
-        fireEvent(RETAIN_IFILE_EVENT);
-        fireEvent(WAVE_LIMITER_EVENT);
-        fireEvent(PARSTRING_EVENT);
+        fireEvent(SHOW_DEFAULTS);
+        fireEvent(RETAIN_IFILE);
+        fireEvent(WAVE_LIMITER);
+        fireEvent(PARSTRING);
 
         enableEvent(L2PROD);
-        enableEvent(PARSTRING_EVENT);
+        enableEvent(PARSTRING);
 
     }
 
@@ -238,7 +240,7 @@ public class L2genData {
             if (selectedWavelength.equals(waveLimiterInfo.getWavelengthString())) {
                 if (selected != waveLimiterInfo.isSelected()) {
                     waveLimiterInfo.setSelected(selected);
-                    fireEvent(WAVE_LIMITER_EVENT);
+                    fireEvent(WAVE_LIMITER);
                 }
             }
         }
@@ -310,7 +312,7 @@ public class L2genData {
                 waveLimiterInfo.setSelected(selected);
             }
         }
-        fireEvent(WAVE_LIMITER_EVENT);
+        fireEvent(WAVE_LIMITER);
     }
 
     public void addParamInfo(ParamInfo paramInfo) {
@@ -518,7 +520,7 @@ public class L2genData {
 
     public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode) {
 
-        fireEvent(PARSTRING_IN_PROGRESS_EVENT);
+        disableEvent(PARSTRING);
         ArrayList<ParamInfo> parfileParamInfos = parseParString(parString);
 
         /*
@@ -587,7 +589,8 @@ public class L2genData {
 
         }
 
-        fireEvent(PARSTRING_EVENT);
+        fireEvent(PARSTRING);
+        enableEvent(PARSTRING);
     }
 
 
@@ -950,7 +953,7 @@ public class L2genData {
     // it will reset and make new wavelengthInfoArray
     private void setIfileParamValue(ParamInfo paramInfo, String newIfile) {
 
-        disableEvent(PARSTRING_EVENT);
+        disableEvent(PARSTRING);
         disableEvent(L2PROD);
         //     fireEvent(PARSTRING_IN_PROGRESS_EVENT);
         String oldIfile = getParamValue(IFILE);
@@ -985,7 +988,7 @@ public class L2genData {
         } else {
             setParamValueAndDefault(OFILE, null);
             setParamValueAndDefault(GEOFILE, null);
-            fireEvent(INVALID_IFILE_EVENT);
+            fireEvent(INVALID_IFILE);
         }
 
         setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
@@ -993,9 +996,9 @@ public class L2genData {
 
         fireEvent(IFILE, oldIfile, newIfile);
 
-        fireEvent(PARSTRING_EVENT);
+        fireEvent(PARSTRING);
         enableEvent(L2PROD);
-        enableEvent(PARSTRING_EVENT);
+        enableEvent(PARSTRING);
 
     }
 
@@ -1189,7 +1192,7 @@ public class L2genData {
             InputStream paramInfoStream = getParamInfoInputStream(DEFAULT_IFILE);
 
             if (paramInfoStream != null && productInfoStream != null) {
-                disableEvent(PARSTRING_EVENT);
+                disableEvent(PARSTRING);
                 disableEvent(L2PROD);
                 //              fireEvent(PARSTRING_IN_PROGRESS_EVENT);
                 l2genReader.readParamInfoXml(paramInfoStream, productInfoStream);
@@ -1199,9 +1202,9 @@ public class L2genData {
                 setParamCategoryInfos();
 
 
-                fireEvent(PARSTRING_EVENT);
+                fireEvent(PARSTRING);
                 enableEvent(L2PROD);
-                enableEvent(PARSTRING_EVENT);
+                enableEvent(PARSTRING);
 
                 return true;
             }

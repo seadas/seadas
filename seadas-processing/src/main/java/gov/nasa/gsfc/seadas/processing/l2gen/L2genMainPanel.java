@@ -18,14 +18,16 @@ import java.io.File;
 public class L2genMainPanel extends JPanel {
 
     private final L2genData l2genData;
+    private final L2genForm l2genForm;
 
     private L2genInputOutputPanel l2genInputOutputPanel;
     private L2genParfilePanel l2genParfilePanel;
 
 
-    L2genMainPanel(L2genData l2genData) {
+    L2genMainPanel(L2genForm l2genForm, L2genData l2genData) {
 
         this.l2genData = l2genData;
+        this.l2genForm = l2genForm;
 
         initComponents();
         addComponents();
@@ -33,7 +35,7 @@ public class L2genMainPanel extends JPanel {
 
     private void initComponents() {
         l2genInputOutputPanel = new L2genInputOutputPanel(l2genData);
-        l2genParfilePanel = new L2genParfilePanel(l2genData);
+        l2genParfilePanel = new L2genParfilePanel(l2genForm, l2genData);
     }
 
     private void addComponents() {
