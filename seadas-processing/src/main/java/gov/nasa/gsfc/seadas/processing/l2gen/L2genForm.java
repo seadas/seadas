@@ -32,6 +32,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private JCheckBox openInAppCheckBox;
 
     private final JTabbedPane jTabbedPane = new JTabbedPane();
+    private int tabIndex;
 //    private int mainTabIndex = 0;
 
     L2genForm(AppContext appContext, String xmlFileName) {
@@ -47,9 +48,11 @@ public class L2genForm extends JPanel implements CloProgramUI {
             createProductsTab();
             createCategoryParamTabs();
 
+            tabIndex = jTabbedPane.getSelectedIndex();
+
             getjTabbedPane().addChangeListener(new ChangeListener() {
                 public void stateChanged(ChangeEvent evt) {
-                    getL2genData().fireEvent(L2genData.TAB_CHANGE);
+                    tabChangeHandler();
                 }
             });
 
@@ -73,6 +76,13 @@ public class L2genForm extends JPanel implements CloProgramUI {
         } else {
             add(new JLabel("Problem initializing l2gen"));
         }
+    }
+
+    private void tabChangeHandler() {
+        int oldTabIndex = tabIndex;
+        int newTabIndex = jTabbedPane.getSelectedIndex();
+        tabIndex = newTabIndex;
+        getL2genData().fireEvent(L2genData.TAB_CHANGE, oldTabIndex, newTabIndex);
     }
 
 
@@ -154,7 +164,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public ProcessorModel getProcessorModel() {
         processorModel.setParString(getL2genData().getParString(false));
-        processorModel.updateParamInfo(L2genData.OFILE, getL2genData().getParamValue(L2genData.OFILE));
+        processorModel.updateParamInfo("ofile", getL2genData().getParamValue(l2genData.getOfileParamInfo()));
         return processorModel;
     }
 

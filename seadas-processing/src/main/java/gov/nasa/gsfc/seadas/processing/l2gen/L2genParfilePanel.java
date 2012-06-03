@@ -295,11 +295,18 @@ public class L2genParfilePanel extends JPanel {
             l2genData.addPropertyChangeListener(L2genData.TAB_CHANGE, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (updatePending) {
-                        eventHandler();
-                    }
+                    tabChangeEventHandler(evt);
                 }
             });
+        }
+
+
+        private void tabChangeEventHandler(PropertyChangeEvent evt) {
+            if (evt.getNewValue().equals(tabIndex) && !evt.getOldValue().equals(tabIndex)) {
+                l2genData.enableEvent(L2genData.PARSTRING);
+            } else if (!evt.getNewValue().equals(tabIndex) && evt.getOldValue().equals(tabIndex)) {
+                l2genData.disableEvent(L2genData.PARSTRING);
+            }
         }
 
 
@@ -309,11 +316,7 @@ public class L2genParfilePanel extends JPanel {
 
 
         private void eventHandler() {
-            if (l2genForm.getjTabbedPane().getSelectedIndex() == tabIndex) {
-                jTextArea.setText(l2genData.getParString());
-            } else {
-                updatePending = true;
-            }
+            jTextArea.setText(l2genData.getParString());
         }
 
         public JTextArea getjTextArea() {

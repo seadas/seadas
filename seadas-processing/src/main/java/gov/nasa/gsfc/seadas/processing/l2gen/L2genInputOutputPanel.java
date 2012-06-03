@@ -59,11 +59,6 @@ public class L2genInputOutputPanel extends JPanel {
     }
 
 
-
-
-
-
-
     private JPanel createIfilePanel() {
 
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), L2genData.IFILE);
@@ -77,12 +72,14 @@ public class L2genInputOutputPanel extends JPanel {
 
         final boolean[] handlerEnabled = {true};
 
+        final ParamInfo paramInfo = l2genData.getParamInfo(L2genData.IFILE);
+
         sourceProductSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
             @Override
             public void selectionChanged(SelectionChangeEvent event) {
                 File iFile = getSelectedIFile();
                 if (handlerEnabled[0] && iFile != null) {
-                    l2genData.setParamValue(L2genData.IFILE, iFile.getAbsolutePath());
+                    l2genData.setParamValue(paramInfo, iFile.getAbsolutePath());
                 }
             }
         });
@@ -91,7 +88,7 @@ public class L2genInputOutputPanel extends JPanel {
         l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                File iFile = new File(l2genData.getParamValue(l2genData.IFILE));
+                File iFile = new File(l2genData.getParamValue(paramInfo));
                 handlerEnabled[0] = false;
                 if (iFile != null && iFile.exists()) {
                     sourceProductSelector.setSelectedFile(iFile);
@@ -109,18 +106,19 @@ public class L2genInputOutputPanel extends JPanel {
     private JPanel createGeofilePanel() {
 
 
-        final FileSelectorPanel  jPanel = new FileSelectorPanel(VisatApp.getApp(),
+        final FileSelectorPanel jPanel = new FileSelectorPanel(VisatApp.getApp(),
                 FileSelectorPanel.Type.IFILE, L2genData.GEOFILE);
 
 
         final boolean[] handlerEnabled = {true};
 
+        final ParamInfo paramInfo = l2genData.getParamInfo(L2genData.GEOFILE);
 
         jPanel.addPropertyChangeListener(jPanel.getPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (handlerEnabled[0]) {
-                    l2genData.setParamValue(L2genData.GEOFILE, jPanel.getFileName());
+                    l2genData.setParamValue(paramInfo, jPanel.getFileName());
                 }
             }
         });
@@ -130,7 +128,7 @@ public class L2genInputOutputPanel extends JPanel {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 handlerEnabled[0] = false;
-                jPanel.setFilename(l2genData.getParamValue(L2genData.GEOFILE));
+                jPanel.setFilename(l2genData.getParamValue(paramInfo));
                 handlerEnabled[0] = true;
             }
         });
@@ -146,48 +144,43 @@ public class L2genInputOutputPanel extends JPanel {
     }
 
 
-
-    
     private JPanel createOfilePanel() {
 
-         final FileSelectorPanel jPanel = new FileSelectorPanel(VisatApp.getApp(),
-                 FileSelectorPanel.Type.OFILE, L2genData.OFILE);
+        final FileSelectorPanel jPanel = new FileSelectorPanel(VisatApp.getApp(),
+                FileSelectorPanel.Type.OFILE, L2genData.OFILE);
+
+        final boolean[] handlerEnabled = {true};
+
+        final ParamInfo paramInfo = l2genData.getParamInfo(L2genData.OFILE);
+
+        jPanel.addPropertyChangeListener(jPanel.getPropertyName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (handlerEnabled[0]) {
+                    l2genData.setParamValue(paramInfo, jPanel.getFileName());
+                }
+            }
+        });
 
 
-         final boolean[] handlerEnabled = {true};
+        l2genData.addPropertyChangeListener(L2genData.OFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                handlerEnabled[0] = false;
+                jPanel.setFilename(l2genData.getParamValue(paramInfo));
+                handlerEnabled[0] = true;
+            }
+        });
 
+        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                jPanel.setEnabled(l2genData.isValidIfile());
+            }
+        });
 
-         jPanel.addPropertyChangeListener(jPanel.getPropertyName(), new PropertyChangeListener() {
-             @Override
-             public void propertyChange(PropertyChangeEvent evt) {
-                 if (handlerEnabled[0]) {
-                     l2genData.setParamValue(L2genData.OFILE, jPanel.getFileName());
-                 }
-             }
-         });
-
-
-         l2genData.addPropertyChangeListener(L2genData.OFILE, new PropertyChangeListener() {
-             @Override
-             public void propertyChange(PropertyChangeEvent evt) {
-                 handlerEnabled[0] = false;
-                 jPanel.setFilename(l2genData.getParamValue(L2genData.OFILE));
-                 handlerEnabled[0] = true;
-             }
-         });
-
-         l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
-             @Override
-             public void propertyChange(PropertyChangeEvent evt) {
-                 jPanel.setEnabled(l2genData.isValidIfile());
-             }
-         });
-
-         return jPanel;
-     }
-
-
-
+        return jPanel;
+    }
 
 
     public SourceProductFileSelector getSourceProductSelector() {
@@ -213,7 +206,6 @@ public class L2genInputOutputPanel extends JPanel {
 
         return sourceProductSelector.getSelectedProduct();
     }
-
 
 
     public void prepareShow() {

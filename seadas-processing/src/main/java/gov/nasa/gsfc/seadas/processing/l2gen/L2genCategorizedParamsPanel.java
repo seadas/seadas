@@ -23,18 +23,12 @@ public class L2genCategorizedParamsPanel extends JPanel {
     private ParamCategoryInfo paramCategoryInfo;
     private JPanel paramsPanel;
     private JButton restoreDefaultsButton;
-    private boolean defaultsSelected = true;
-
 
     private final Color DEFAULT_INDICATOR_COLOR = new Color(0, 0, 120);
 
     private final String DEFAULT_INDICATOR_TOOLTIP = "* Identicates that the selection is not the default value";
     private final String DEFAULT_INDICATOR_LABEL_ON = " *  ";
     private final String DEFAULT_INDICATOR_LABEL_OFF = "     ";
-    private final int PARAM_STRING_TEXTLEN = 60;
-    private final int PARAM_FILESTRING_TEXTLEN = 70;
-    private final int PARAM_INT_TEXTLEN = 15;
-    private final int PARAM_FLOAT_TEXTLEN = 15;
 
     private boolean swingSentEventsDisabled = false;
 
@@ -90,14 +84,10 @@ public class L2genCategorizedParamsPanel extends JPanel {
             l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-//                    StringBuilder stringBuilder = new StringBuilder(paramCategoryInfo.getId());
-
                     if (l2genData.isParamCategoryDefault(paramCategoryInfo)) {
                         restoreDefaultsButton.setEnabled(false);
-//                        setTabName(currTabIndex, stringBuilder.toString());
                     } else {
                         restoreDefaultsButton.setEnabled(true);
-//                        setTabName(currTabIndex, stringBuilder.append("*").toString());
                     }
 
                 }
@@ -131,17 +121,6 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
         add(restoreDefaultsButton,
                 new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-
-
-        //     final JPanel paddedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(mainPanel, 6);
-
-//        final JPanel paddedMainPanel = new JPanel(new GridBagLayout());
-//        paddedMainPanel.setPreferredSize(new Dimension(1000, 800));
-//
-//        paddedMainPanel.add(mainPanel,
-//                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 6));
-
-
     }
 
     private String buildStringPrototype(int size) {
@@ -154,20 +133,14 @@ public class L2genCategorizedParamsPanel extends JPanel {
         return stringBuilder.toString();
     }
 
-    private void createParamTextfield(ParamInfo paramInfo, JPanel jPanel, int gridy) {
-
-        final String param = paramInfo.getName();
-
-//        final String PROTOTYPE_70 = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 ";
-//        final String PROTOTYPE_60 = "123456789 123456789 123456789 123456789 123456789  123456789 ";
-//        final String PROTOTYPE_15 = "123456789 12345";
+    private void createParamTextfield(final ParamInfo paramInfo, JPanel jPanel, int gridy) {
 
         final String PROTOTYPE_70 = buildStringPrototype(70);
         final String PROTOTYPE_60 = buildStringPrototype(60);
         final String PROTOTYPE_15 = buildStringPrototype(15);
 
         int fill;
-        String textfieldPrototype = null;
+        String textfieldPrototype;
 
         if (paramInfo.getType() == ParamInfo.Type.STRING) {
             textfieldPrototype = PROTOTYPE_60;
@@ -223,22 +196,22 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                l2genData.setParamValue(param, jTextField.getText().toString());
+                l2genData.setParamValue(paramInfo, jTextField.getText().toString());
             }
         });
 
         jTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                l2genData.setParamValue(param, jTextField.getText().toString());
+                l2genData.setParamValue(paramInfo, jTextField.getText().toString());
             }
         });
 
-        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                jTextField.setText(l2genData.getParamValue(param));
-                if (l2genData.isParamDefault(param)) {
+                jTextField.setText(l2genData.getParamValue(paramInfo));
+                if (l2genData.isParamDefault(paramInfo)) {
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicator.setToolTipText("");
                 } else {
@@ -261,7 +234,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
         l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if (l2genData.isParamDefault(paramInfo.getName())) {
+                if (l2genData.isParamDefault(paramInfo)) {
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicator.setToolTipText("");
                 } else {
@@ -310,7 +283,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (handlerEnabled[0]) {
-                    l2genData.setParamValue(paramInfo.getName(), fileSelectorPanel.getFileName());
+                    l2genData.setParamValue(paramInfo, fileSelectorPanel.getFileName());
                 }
             }
         });
@@ -320,7 +293,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 handlerEnabled[0] = false;
-                fileSelectorPanel.setFilename(l2genData.getParamValue(paramInfo.getName()));
+                fileSelectorPanel.setFilename(l2genData.getParamValue(paramInfo));
                 handlerEnabled[0] = true;
             }
         });
@@ -365,7 +338,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
     private void createParamComboBox(final ParamInfo paramInfo, JPanel jPanel, int gridy) {
 
-        final String param = paramInfo.getName();
+     //   final String param = paramInfo.getName();
 
         ArrayList<ParamValidValueInfo> jComboBoxArrayList = new ArrayList<ParamValidValueInfo>();
         ArrayList<String> validValuesToolTipsArrayList = new ArrayList<String>();
@@ -410,7 +383,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
 
         for (ParamValidValueInfo paramValidValueInfo : jComboBoxArray) {
-            if (l2genData.getParamValue(param).equals(paramValidValueInfo.getValue())) {
+            if (l2genData.getParamValue(paramInfo).equals(paramValidValueInfo.getValue())) {
                 jComboBox.setSelectedItem(paramValidValueInfo);
             }
         }
@@ -443,10 +416,9 @@ public class L2genCategorizedParamsPanel extends JPanel {
         });
 
 
-        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                debug("receiving eventName " + param);
                 boolean found = false;
                 ComboBoxModel comboBoxModel = jComboBox.getModel();
 
@@ -524,7 +496,6 @@ public class L2genCategorizedParamsPanel extends JPanel {
                                             final JLabel defaultIndicatorLabel) {
 
         final JCheckBox jCheckBox = new JCheckBox();
-        final String param = paramInfo.getName();
 
 
         jCheckBox.setSelected(paramInfo.isBitwiseSelected(paramValidValueInfo));
@@ -575,11 +546,9 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
                 String newValueString = Integer.toString(newValue);
 
-                debug("I heard you click param=" + param + " currVV=" + currValidValueString + " origValue=" + currValueString + "newValue=" + newValueString);
-
                 if (!swingSentEventsDisabled) {
                     swingSentEventsDisabled = true;
-                    l2genData.setParamValue(param, newValueString);
+                    l2genData.setParamValue(paramInfo, newValueString);
                     swingSentEventsDisabled = false;
                 }
             }
@@ -587,10 +556,9 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
         );
 
-        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                debug("receiving eventName " + param);
 
                 int value = Integer.parseInt(paramValidValueInfo.getValue());
 
@@ -605,7 +573,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
                 }
 
 
-                if (l2genData.isParamDefault(param)) {
+                if (l2genData.isParamDefault(paramInfo)) {
                     defaultIndicatorLabel.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicatorLabel.setToolTipText("");
                 } else {
@@ -619,9 +587,8 @@ public class L2genCategorizedParamsPanel extends JPanel {
     }
 
 
-    private void createParamCheckBox(ParamInfo paramInfo, JPanel jPanel, int gridy) {
+    private void createParamCheckBox(final ParamInfo paramInfo, JPanel jPanel, int gridy) {
         final JCheckBox jCheckBox = new JCheckBox();
-        final String param = paramInfo.getName();
 
         jCheckBox.setName(paramInfo.getName());
 
@@ -653,17 +620,16 @@ public class L2genCategorizedParamsPanel extends JPanel {
         jCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                l2genData.setParamValue(param, jCheckBox.isSelected());
+                l2genData.setParamValue(paramInfo, jCheckBox.isSelected());
             }
         });
 
-        l2genData.addPropertyChangeListener(param, new PropertyChangeListener() {
+        l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                debug("receiving eventName " + param);
-                jCheckBox.setSelected(l2genData.getBooleanParamValue(param));
+                jCheckBox.setSelected(l2genData.getBooleanParamValue(paramInfo));
 
-                if (l2genData.isParamDefault(param)) {
+                if (l2genData.isParamDefault(paramInfo)) {
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicator.setToolTipText("");
                 } else {
