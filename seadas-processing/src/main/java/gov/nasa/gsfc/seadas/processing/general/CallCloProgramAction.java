@@ -44,7 +44,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     String dialogTitle;
     String xmlFileName;
 
-    private boolean printLogToConsole = true;
+    private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
 
     @Override
@@ -114,12 +114,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
     @Override
     public void actionPerformed(CommandEvent event) {
 
-        //System.setProperty("user.dir", "/User/Shared/ocssw/test");
-
         SeadasLogger.initLogger("ProcessingGUI_log", printLogToConsole);
-        SeadasLogger.getLogger().setLevel(Level.INFO);
-
-        //xmlFileName = getXMLFileName();
+        SeadasLogger.getLogger().setLevel(Level.SEVERE);
 
         final AppContext appContext = getAppContext();
 
@@ -131,8 +127,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
          modalDialog.getJDialog().getContentPane().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-                System.out.println("window property changed 4");
                 modalDialog.getJDialog().pack();
             }
         });
@@ -180,15 +174,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         }
 
-
-        //final File outputFile = processorModel.getOutputFile();
-
-        //SeadasLogger.getLogger().info("output file: " + outputFile);
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running" + programName + " ...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
-                //final Process process = Runtime.getRuntime().exec(processorModel.getProgramCmdArray(), processorModel.getProgramEnv(), processorModel.getProgramRoot() );
                 final Process process = processorModel.executeProcess();
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 processObserver.addHandler(new ProgressHandler(programName));
@@ -198,7 +187,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 int exitCode = process.exitValue();
 
                 pm.done();
-                //process.getOutputStream();
 
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
@@ -227,8 +215,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
         };
 
         swingWorker.execute();
-        //swingWorker.get();
-
     }
 
     /**

@@ -56,7 +56,7 @@ public class ExtractorUI extends CloProgramUIImpl {
         geoFileName = geoFileName.substring(0, geoFileName.indexOf("."));
         geoFileName = geoFileName.concat(".GEO");
 
-        System.out.println("geofileName = " + geoFileName);
+        //System.out.println("geofileName = " + geoFileName);
         return new File(inputFile.getParentFile(), geoFileName);
     }
 
@@ -65,7 +65,7 @@ public class ExtractorUI extends CloProgramUIImpl {
         Product selectedProduct = sourceProductSelector.getSelectedProduct();
         if (sourceProductSelector.getSelectedProduct() != null) {
             final File inputFile = selectedProduct.getFileLocation();
-            System.out.println("update processors model " + inputFile.toString());
+            //System.out.println("update processors model " + inputFile.toString());
             extractor.updateParamInfo(extractor.getPrimaryInputFileOptionName(), inputFile.toString());
 
             //lonlat2pixline.setInputFile(getGeoFileName(inputFile));
@@ -116,7 +116,7 @@ public class ExtractorUI extends CloProgramUIImpl {
                 if (line.indexOf("=") != -1) {
                     tmp = line.split("=");
 
-                    System.out.printf("Option name: %1$s  Value: %2$s %n", tmp[0], tmp[1]);
+                    //System.out.printf("Option name: %1$s  Value: %2$s %n", tmp[0], tmp[1]);
                     extractor.updateParamInfo(tmp[0], tmp[1]);
                 }
             }
@@ -138,7 +138,7 @@ public class ExtractorUI extends CloProgramUIImpl {
         newsPanel.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                System.out.println(propertyChangeEvent.getPropertyName());
+                //System.out.println(propertyChangeEvent.getPropertyName());
             }
         });
         newsPanel.getComponent(0);
@@ -156,7 +156,7 @@ public class ExtractorUI extends CloProgramUIImpl {
 
                 if (pixellonlatSwitch.isSelected()) {
                     pixellonlatSwitch.setBorderPainted(true);
-                    System.out.println(pixellonlatSwitch.isSelected());
+                    //System.out.println(pixellonlatSwitch.isSelected());
                     updateProcessorModel();
                     computePixelsFromLonLat();
                     pixelPanel = createParamPanel(extractor);
@@ -192,7 +192,7 @@ public class ExtractorUI extends CloProgramUIImpl {
 
     private void updateParamPanel() {
 
-        System.out.println(pixellonlatSwitch.isSelected());
+        //System.out.println(pixellonlatSwitch.isSelected());
        // if (pixellonlatSwitch.isSelected()) {
 
             paramPanel.remove(paramPanel.getComponent(2));
@@ -203,9 +203,9 @@ public class ExtractorUI extends CloProgramUIImpl {
 //            paramPanel.remove(pixelPanel);
 //            paramPanel.add(newsPanel, new GridBagConstraintsCustom(0, 0, 3, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 //        }
-         System.out.println("component 0: " + paramPanel.getComponent(0).getName());
-        System.out.println("component 1: " +paramPanel.getComponent(1).getName());
-        System.out.println("component 2: " +paramPanel.getComponent(2).getName());
+        // System.out.println("component 0: " + paramPanel.getComponent(0).getName());
+        //System.out.println("component 1: " +paramPanel.getComponent(1).getName());
+        //System.out.println("component 2: " +paramPanel.getComponent(2).getName());
         paramPanel.validate();
         paramPanel.repaint(50L);
     }

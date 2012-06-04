@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;

@@ -69,14 +69,11 @@ public class SeadasLogger {
             fileTxt = new FileHandler(txtLogFileName);
             fileHTML = new FileHandler(htmlLogFileName);
 
-            //String currentDir = new File(".").getAbsolutePath();  //or String currentDir = System.getProperty("user.dir");
-
             File[] files = new File(System.getProperty("user.dir")).listFiles();
             Debug.assertNotNull(files);
             if (files != null) {
                 for (File file : files) {
                     String fileName = file.getName();
-                    System.out.println(fileName);
                     if ((fileName.indexOf(htmlLogFileName) != -1 && fileName.substring(fileName.indexOf(htmlLogFileName) + htmlLogFileName.length()).trim().length() > 0) ||
                             (fileName.indexOf(txtLogFileName) != -1 && fileName.substring(fileName.indexOf(txtLogFileName) + txtLogFileName.length()).trim().length() > 0)) {
                         file.delete();

@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.general.FileSelectorPanel;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
