@@ -40,6 +40,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -200,12 +202,13 @@ public class SourceProductFileSelector {
             productListModel.setSelectedItem(product);
         } else {
             if (productFilter.accept(product) && regexFileFilter.accept(product.getFileLocation())) {
+                productListModel.addElement(product);
+                productListModel.setSelectedItem(product);
                 if (extraProduct != null) {
                     productListModel.removeElement(extraProduct);
                     extraProduct.dispose();
                 }
-                productListModel.addElement(product);
-                productListModel.setSelectedItem(product);
+
                 extraProduct = product;
             }
         }
@@ -325,28 +328,6 @@ public class SourceProductFileSelector {
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
     }
 
-//    public JPanel createDefaultPanel() {
-//
-//        //productFileChooserButton.setMargin(new Insets(0, 0, 0,0));
-////        final Dimension size = new Dimension(productFileChooserButton.getPreferredSize().width, productNameComboBox.getPreferredSize().height);
-////        productFileChooserButton.setPreferredSize(size);
-////        productFileChooserButton.setMinimumSize(size);
-////        productFileChooserButton.setMaximumSize(size);
-//
-//
-//        JPanel mainPanel = new JPanel(new GridBagLayout());
-//        mainPanel.add(getProductNameLabel(),
-//                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-//        mainPanel.add(getProductNameComboBox(),
-//                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
-//        mainPanel.add(getProductFileChooserButton(),
-//                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-//        mainPanel.add(createFilterPane(),
-//                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-//
-//        return mainPanel;
-//    }
-
     private JPanel createFilterPane() {
 
         filterRegexField = new JTextField("123456789 ");
@@ -398,6 +379,13 @@ public class SourceProductFileSelector {
 
     public void setIfileTextfield(JTextField ifileTextfield) {
         this.ifileTextfield = ifileTextfield;
+
+        this.ifileTextfield.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
     }
 
     private class ProductFileChooserAction extends AbstractAction {
@@ -444,6 +432,7 @@ public class SourceProductFileSelector {
                 Product product = null;
                 try {
                     product = ProductIO.readProduct(file);
+                    System.out.println("new ifile read in fine");
                     if (product == null) {
                         if (file.canRead()) {
                             product = new Product(file.getName(), "DummyType", 10, 10);
@@ -463,6 +452,7 @@ public class SourceProductFileSelector {
                         product.dispose();
                     }
                 } catch (IOException e) {
+
                     handleError(window, e.getMessage());
                 } catch (Exception e) {
                     if (product != null) {
@@ -580,6 +570,7 @@ public class SourceProductFileSelector {
             if (regex == null) {
                 return true;
             }
+            System.out.println("regex: " + (pathname.isFile() && pathname.getName().matches(this.regex)));
             return (pathname.isFile() && pathname.getName().matches(this.regex));
         }
 
