@@ -1,7 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.XmlReader;
-import gov.nasa.gsfc.seadas.processing.l2gen.*;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genAlgorithmInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductInfo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -41,7 +43,7 @@ public class L2genReader {
                 String visible = XmlReader.getTextValue(categoryElement, "makeVisible");
                 String defaultBucketString = XmlReader.getTextValue(categoryElement, "defaultBucket");
 
-                ProductCategoryInfo productCategoryInfo = new ProductCategoryInfo(name);
+                L2genProductCategoryInfo productCategoryInfo = new L2genProductCategoryInfo(name);
 
                 if (visible != null && visible.equals("1")) {
                     productCategoryInfo.setVisible(true);
@@ -316,7 +318,7 @@ public class L2genReader {
                 Element prodElement = (Element) prodNodelist.item(i);
 
                 String prodName = prodElement.getAttribute("name");
-                ProductInfo productInfo = new ProductInfo(prodName);
+                L2genProductInfo productInfo = new L2genProductInfo(prodName);
                 productInfo.setName(prodName);
 
                 NodeList algNodelist = prodElement.getElementsByTagName("algorithm");
@@ -326,7 +328,7 @@ public class L2genReader {
 
                         Element algElement = (Element) algNodelist.item(j);
 
-                        AlgorithmInfo algorithmInfo = new AlgorithmInfo(l2genData.waveLimiterInfos);
+                        L2genAlgorithmInfo algorithmInfo = new L2genAlgorithmInfo(l2genData.waveLimiterInfos);
 
                         if (algElement.hasAttribute("name")) {
                             String algorithmName = algElement.getAttribute("name");
@@ -364,7 +366,7 @@ public class L2genReader {
             } // for products
         }
 
-        l2genData.sortProductInfos(ProductInfo.CASE_INSENSITIVE_ORDER);
+        l2genData.sortProductInfos(L2genProductInfo.CASE_INSENSITIVE_ORDER);
     }
 
 

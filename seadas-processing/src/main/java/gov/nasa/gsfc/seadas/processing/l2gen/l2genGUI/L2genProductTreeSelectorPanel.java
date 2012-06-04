@@ -1,6 +1,9 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI;
 
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genBaseInfo;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genWavelengthInfo;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 
 import javax.swing.*;
@@ -53,25 +56,25 @@ public class L2genProductTreeSelectorPanel extends JPanel {
                 new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
     }
 
-    private TristateCheckBox.State getCheckboxState(BaseInfo.State state) {
+    private L2genTristateCheckBox.State getCheckboxState(L2genBaseInfo.State state) {
         switch (state) {
             case SELECTED:
-                return TristateCheckBox.SELECTED;
+                return L2genTristateCheckBox.SELECTED;
             case PARTIAL:
-                return TristateCheckBox.PARTIAL;
+                return L2genTristateCheckBox.PARTIAL;
             default:
-                return TristateCheckBox.NOT_SELECTED;
+                return L2genTristateCheckBox.NOT_SELECTED;
         }
     }
 
-    private BaseInfo.State getInfoState(TristateCheckBox.State state) {
-        if (state == TristateCheckBox.SELECTED) {
-            return BaseInfo.State.SELECTED;
+    private L2genBaseInfo.State getInfoState(L2genTristateCheckBox.State state) {
+        if (state == L2genTristateCheckBox.SELECTED) {
+            return L2genBaseInfo.State.SELECTED;
         }
-        if (state == TristateCheckBox.PARTIAL) {
-            return BaseInfo.State.PARTIAL;
+        if (state == L2genTristateCheckBox.PARTIAL) {
+            return L2genBaseInfo.State.PARTIAL;
         }
-        return BaseInfo.State.NOT_SELECTED;
+        return L2genBaseInfo.State.NOT_SELECTED;
 
     }
 
@@ -79,12 +82,12 @@ public class L2genProductTreeSelectorPanel extends JPanel {
     class CheckBoxNodeRenderer implements TreeCellRenderer {
         private JPanel nodeRenderer = new JPanel();
         private JLabel label = new JLabel();
-        private TristateCheckBox check = new TristateCheckBox();
+        private L2genTristateCheckBox check = new L2genTristateCheckBox();
 
         Color selectionBorderColor, selectionForeground, selectionBackground,
                 textForeground, textBackground;
 
-        protected TristateCheckBox getJCheckBox() {
+        protected L2genTristateCheckBox getJCheckBox() {
             return check;
         }
 
@@ -118,12 +121,12 @@ public class L2genProductTreeSelectorPanel extends JPanel {
                                                       boolean hasFocus) {
 
             String stringValue = null;
-            BaseInfo.State state = BaseInfo.State.NOT_SELECTED;
+            L2genBaseInfo.State state = L2genBaseInfo.State.NOT_SELECTED;
 
             if ((value != null) && (value instanceof DefaultMutableTreeNode)) {
                 Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
-                if (userObject instanceof BaseInfo) {
-                    BaseInfo info = (BaseInfo) userObject;
+                if (userObject instanceof L2genBaseInfo) {
+                    L2genBaseInfo info = (L2genBaseInfo) userObject;
                     state = info.getState();
                     stringValue = info.getFullName();
 
@@ -159,9 +162,9 @@ public class L2genProductTreeSelectorPanel extends JPanel {
 //                check.setAutoTab(false);
 //            }
 
-            BaseInfo baseInfo = (BaseInfo) ((DefaultMutableTreeNode) value).getUserObject();
+            L2genBaseInfo baseInfo = (L2genBaseInfo) ((DefaultMutableTreeNode) value).getUserObject();
 
-            if (baseInfo instanceof ProductCategoryInfo) {
+            if (baseInfo instanceof L2genProductCategoryInfo) {
                 check.setVisible(false);
             } else {
                 check.setVisible(true);
@@ -183,7 +186,7 @@ public class L2genProductTreeSelectorPanel extends JPanel {
             // add a listener fo the check box
             ItemListener itemListener = new ItemListener() {
                 public void itemStateChanged(ItemEvent itemEvent) {
-                    TristateCheckBox.State state = renderer.getJCheckBox().getState();
+                    L2genTristateCheckBox.State state = renderer.getJCheckBox().getState();
 
                     if (stopCellEditing()) {
                         fireEditingStopped();
@@ -210,7 +213,7 @@ public class L2genProductTreeSelectorPanel extends JPanel {
 
         public Object getCellEditorValue() {
 
-            TristateCheckBox.State state = renderer.getJCheckBox().getState();
+            L2genTristateCheckBox.State state = renderer.getJCheckBox().getState();
 
             setNodeState(currentNode, getInfoState(state));
 
@@ -243,17 +246,17 @@ public class L2genProductTreeSelectorPanel extends JPanel {
         DefaultMutableTreeNode productCategory, product, oldAlgorithm, algorithm = null, wavelength;
 
         oldAlgorithm = new DefaultMutableTreeNode();
-        BaseInfo oldAInfo = null;
+        L2genBaseInfo oldAInfo = null;
 
-        rootNode = new DefaultMutableTreeNode(new BaseInfo());
+        rootNode = new DefaultMutableTreeNode(new L2genBaseInfo());
 
-        for (ProductCategoryInfo productCategoryInfo : l2genData.getProductCategoryInfos()) {
+        for (L2genProductCategoryInfo productCategoryInfo : l2genData.getProductCategoryInfos()) {
             if (productCategoryInfo.isVisible() && productCategoryInfo.hasChildren()) {
                 productCategory = new DefaultMutableTreeNode(productCategoryInfo);
                 rootNode.add(productCategory);
-                for (BaseInfo pInfo : productCategoryInfo.getChildren()) {
+                for (L2genBaseInfo pInfo : productCategoryInfo.getChildren()) {
                     product = new DefaultMutableTreeNode(pInfo);
-                    for (BaseInfo aInfo : pInfo.getChildren()) {
+                    for (L2genBaseInfo aInfo : pInfo.getChildren()) {
                         algorithm = new DefaultMutableTreeNode(aInfo);
 
                         if (algorithm.toString().equals(oldAlgorithm.toString())) {
@@ -274,7 +277,7 @@ public class L2genProductTreeSelectorPanel extends JPanel {
                             product.add(algorithm);
                         }
 
-                        for (BaseInfo wInfo : aInfo.getChildren()) {
+                        for (L2genBaseInfo wInfo : aInfo.getChildren()) {
                             wavelength = new DefaultMutableTreeNode(wInfo);
                             algorithm.add(wavelength);
                         }
@@ -298,8 +301,8 @@ public class L2genProductTreeSelectorPanel extends JPanel {
     public void checkTreeState(DefaultMutableTreeNode node) {
 
         l2genData.disableEvent(L2genData.L2PROD);
-        BaseInfo info = (BaseInfo) node.getUserObject();
-        BaseInfo.State newState = info.getState();
+        L2genBaseInfo info = (L2genBaseInfo) node.getUserObject();
+        L2genBaseInfo.State newState = info.getState();
 
         if (node.getChildCount() > 0) {
             Enumeration<DefaultMutableTreeNode> enumeration = node.children();
@@ -310,7 +313,7 @@ public class L2genProductTreeSelectorPanel extends JPanel {
                 kid = enumeration.nextElement();
                 checkTreeState(kid);
 
-                BaseInfo childInfo = (BaseInfo) kid.getUserObject();
+                L2genBaseInfo childInfo = (L2genBaseInfo) kid.getUserObject();
 
                 switch (childInfo.getState()) {
                     case SELECTED:
@@ -327,16 +330,16 @@ public class L2genProductTreeSelectorPanel extends JPanel {
             }
 
             if (selectedFound && !notSelectedFound) {
-                newState = BaseInfo.State.SELECTED;
+                newState = L2genBaseInfo.State.SELECTED;
             } else if (!selectedFound && notSelectedFound) {
-                newState = BaseInfo.State.NOT_SELECTED;
+                newState = L2genBaseInfo.State.NOT_SELECTED;
             } else if (selectedFound && notSelectedFound) {
-                newState = BaseInfo.State.PARTIAL;
+                newState = L2genBaseInfo.State.PARTIAL;
             }
 
         } else {
-            if (newState == BaseInfo.State.PARTIAL) {
-                newState = BaseInfo.State.SELECTED;
+            if (newState == L2genBaseInfo.State.PARTIAL) {
+                newState = L2genBaseInfo.State.SELECTED;
                 debug("in checkAlgorithmState converted newState to " + newState);
             }
         }
@@ -350,7 +353,7 @@ public class L2genProductTreeSelectorPanel extends JPanel {
     }
 
 
-    public void setNodeState(DefaultMutableTreeNode node, BaseInfo.State state) {
+    public void setNodeState(DefaultMutableTreeNode node, L2genBaseInfo.State state) {
 
         debug("setNodeState called with state = " + state);
 
@@ -358,7 +361,7 @@ public class L2genProductTreeSelectorPanel extends JPanel {
             return;
         }
 
-        BaseInfo info = (BaseInfo) node.getUserObject();
+        L2genBaseInfo info = (L2genBaseInfo) node.getUserObject();
 
         if (state == info.getState()) {
             return;
@@ -372,19 +375,19 @@ public class L2genProductTreeSelectorPanel extends JPanel {
             Enumeration<DefaultMutableTreeNode> enumeration = node.children();
             DefaultMutableTreeNode childNode;
 
-            BaseInfo.State newState = state;
+            L2genBaseInfo.State newState = state;
 
             while (enumeration.hasMoreElements()) {
                 childNode = enumeration.nextElement();
 
-                BaseInfo childInfo = (BaseInfo) childNode.getUserObject();
+                L2genBaseInfo childInfo = (L2genBaseInfo) childNode.getUserObject();
 
-                if (childInfo instanceof WavelengthInfo) {
-                    if (state == BaseInfo.State.PARTIAL) {
-                        if (l2genData.compareWavelengthLimiter((WavelengthInfo) childInfo)) {
-                            newState = BaseInfo.State.SELECTED;
+                if (childInfo instanceof L2genWavelengthInfo) {
+                    if (state == L2genBaseInfo.State.PARTIAL) {
+                        if (l2genData.compareWavelengthLimiter((L2genWavelengthInfo) childInfo)) {
+                            newState = L2genBaseInfo.State.SELECTED;
                         } else {
-                            newState = BaseInfo.State.NOT_SELECTED;
+                            newState = L2genBaseInfo.State.NOT_SELECTED;
                         }
                     }
                 }
@@ -404,8 +407,8 @@ public class L2genProductTreeSelectorPanel extends JPanel {
             checkTreeState(targetNode);
 
         } else {
-            if (state == BaseInfo.State.PARTIAL) {
-                l2genData.setSelectedInfo(info, BaseInfo.State.SELECTED);
+            if (state == L2genBaseInfo.State.PARTIAL) {
+                l2genData.setSelectedInfo(info, L2genBaseInfo.State.SELECTED);
             } else {
                 l2genData.setSelectedInfo(info, state);
             }

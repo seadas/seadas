@@ -955,7 +955,7 @@ public class SeadasProcessorFrame extends javax.swing.JFrame {
     // option editor windows
     private OptionEditorFrame l2genOptionEditor = null;
     private OptionEditorFrame[] optionEditors = new OptionEditorFrame[NUM_OUTPUT_ROWS];
-    private String[] outputProgramNames = {"l1agen_seawifs", "l1brsgen", "l1mapgen", "l2gen", "l2brsgen",
+    private String[] outputProgramNames = {"l1agen_seawifs", "l1brsgen", "l1mapgen", "l2genGUI", "l2brsgen",
         "l2mapgen", "l3bin", "l3mapgen", "l3gen"};
 
     private void setup() {

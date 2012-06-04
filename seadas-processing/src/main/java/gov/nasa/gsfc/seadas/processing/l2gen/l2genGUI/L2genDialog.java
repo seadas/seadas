@@ -14,13 +14,11 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI;
 
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.*;
 import org.esa.beam.framework.ui.AppContext;
-
-import java.awt.*;
 
 class L2genDialog extends SingleTargetProductDialog {
 

@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +12,7 @@ import java.util.List;
  * Time: 8:30 AM
  * To change this template use File | Settings | File Templates.
  */
-public class BaseInfo implements Comparable<BaseInfo> {
+public class L2genBaseInfo implements Comparable<L2genBaseInfo> {
 
 
     public enum State {
@@ -25,44 +25,44 @@ public class BaseInfo implements Comparable<BaseInfo> {
     private String name;
     private State state = State.NOT_SELECTED;
     private String description = null;
-    private BaseInfo parent = null;
-    private ArrayList<BaseInfo> children = new ArrayList<BaseInfo>();
+    private L2genBaseInfo parent = null;
+    private ArrayList<L2genBaseInfo> children = new ArrayList<L2genBaseInfo>();
 
 
-    public static final Comparator<ProductInfo> CASE_SENSITIVE_ORDER
+    public static final Comparator<L2genProductInfo> CASE_SENSITIVE_ORDER
             = new CaseSensitiveComparator();
 
-    public static final Comparator<ProductInfo> CASE_INSENSITIVE_ORDER
+    public static final Comparator<L2genProductInfo> CASE_INSENSITIVE_ORDER
             = new CaseInsensitiveComparator();
 
 
     private static class CaseSensitiveComparator
-            implements Comparator<ProductInfo> {
+            implements Comparator<L2genProductInfo> {
 
-        public int compare(ProductInfo s1, ProductInfo s2) {
+        public int compare(L2genProductInfo s1, L2genProductInfo s2) {
             return s1.getFullName().compareTo(s2.getFullName());
         }
     }
 
     private static class CaseInsensitiveComparator
-            implements Comparator<ProductInfo> {
+            implements Comparator<L2genProductInfo> {
 
-        public int compare(ProductInfo s1, ProductInfo s2) {
+        public int compare(L2genProductInfo s1, L2genProductInfo s2) {
             return s1.getFullName().compareToIgnoreCase(s2.getFullName());
         }
     }
 
 
 
-    public BaseInfo() {
+    public L2genBaseInfo() {
         this("", null);
     }
 
-    public BaseInfo(String name) {
+    public L2genBaseInfo(String name) {
         this(name, null);
     }
 
-    public BaseInfo(String name, BaseInfo parent) {
+    public L2genBaseInfo(String name, L2genBaseInfo parent) {
         this.name = name;
         this.parent = parent;
     }
@@ -114,11 +114,11 @@ public class BaseInfo implements Comparable<BaseInfo> {
     }
 
 
-    public void setParent(BaseInfo parent) {
+    public void setParent(L2genBaseInfo parent) {
         this.parent = parent;
     }
 
-    public BaseInfo getParent() {
+    public L2genBaseInfo getParent() {
         return parent;
     }
 
@@ -126,7 +126,7 @@ public class BaseInfo implements Comparable<BaseInfo> {
         return !children.isEmpty();
     }
 
-    public List<BaseInfo> getChildren() {
+    public List<L2genBaseInfo> getChildren() {
         return children;
     }
 
@@ -134,18 +134,18 @@ public class BaseInfo implements Comparable<BaseInfo> {
         children.clear();
     }
 
-    public void addChild(BaseInfo child) {
+    public void addChild(L2genBaseInfo child) {
         children.add(child);
     }
 
-    public int compareTo(BaseInfo info) {
+    public int compareTo(L2genBaseInfo info) {
         return getName().compareToIgnoreCase(info.getName());
     }
 
     public void dump() {
         System.out.println(getName());
 
-        for (BaseInfo info : getChildren()) {
+        for (L2genBaseInfo info : getChildren()) {
             info.dump();
         }
     }

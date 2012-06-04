@@ -2,7 +2,11 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 
 import gov.nasa.gsfc.seadas.processing.general.*;
-import gov.nasa.gsfc.seadas.processing.l2gen.*;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI.*;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genBaseInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genWavelengthInfo;
 import org.esa.beam.util.StringUtils;
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -55,7 +59,7 @@ public class L2genData {
 
     public FileInfo iFileInfo = null;
 
-    public final ArrayList<WavelengthInfo> waveLimiterInfos = new ArrayList<WavelengthInfo>();
+    public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
 
     private final L2genReader l2genReader = new L2genReader(this);
 
@@ -255,7 +259,7 @@ public class L2genData {
 
     }
 
-    public void setSelectedInfo(BaseInfo info, BaseInfo.State state) {
+    public void setSelectedInfo(L2genBaseInfo info, L2genBaseInfo.State state) {
 
         if (state != info.getState()) {
             info.setState(state);
@@ -273,7 +277,7 @@ public class L2genData {
      */
     public void setSelectedWaveLimiter(String selectedWavelength, boolean selected) {
 
-        for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+        for (L2genWavelengthInfo waveLimiterInfo : waveLimiterInfos) {
             if (selectedWavelength.equals(waveLimiterInfo.getWavelengthString())) {
                 if (selected != waveLimiterInfo.isSelected()) {
                     waveLimiterInfo.setSelected(selected);
@@ -292,9 +296,9 @@ public class L2genData {
      * @param waveType
      * @return true if waveType in waveLimiterInfos, otherwise false
      */
-    public boolean hasWaveType(WavelengthInfo.WaveType waveType) {
+    public boolean hasWaveType(L2genWavelengthInfo.WaveType waveType) {
 
-        for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+        for (L2genWavelengthInfo waveLimiterInfo : waveLimiterInfos) {
             if (waveLimiterInfo.isWaveType(waveType)) {
                 return true;
             }
@@ -313,11 +317,11 @@ public class L2genData {
      *
      * @return true if all of given wavelength type selected, otherwise false
      */
-    public boolean isSelectedAllWaveLimiter(WavelengthInfo.WaveType waveType) {
+    public boolean isSelectedAllWaveLimiter(L2genWavelengthInfo.WaveType waveType) {
 
         int selectedCount = 0;
 
-        for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+        for (L2genWavelengthInfo waveLimiterInfo : waveLimiterInfos) {
             if (waveLimiterInfo.isWaveType(waveType)) {
                 if (waveLimiterInfo.isSelected()) {
                     selectedCount++;
@@ -342,9 +346,9 @@ public class L2genData {
      *
      * @param selected
      */
-    public void setSelectedAllWaveLimiter(WavelengthInfo.WaveType waveType, boolean selected) {
+    public void setSelectedAllWaveLimiter(L2genWavelengthInfo.WaveType waveType, boolean selected) {
 
-        for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+        for (L2genWavelengthInfo waveLimiterInfo : waveLimiterInfos) {
             if (waveLimiterInfo.isWaveType(waveType)) {
                 waveLimiterInfo.setSelected(selected);
             }
@@ -380,7 +384,7 @@ public class L2genData {
     }
 
 
-    public ArrayList<WavelengthInfo> getWaveLimiterInfos() {
+    public ArrayList<L2genWavelengthInfo> getWaveLimiterInfos() {
         return waveLimiterInfos;
     }
 
@@ -883,7 +887,7 @@ public class L2genData {
                         // get current wavelength and add into in a JCheckBox
                         final String currWavelength = splitLine[1].trim();
 
-                        WavelengthInfo wavelengthInfo = new WavelengthInfo(currWavelength);
+                        L2genWavelengthInfo wavelengthInfo = new L2genWavelengthInfo(currWavelength);
                         waveLimiterInfos.add(wavelengthInfo);
                         debug("wavelengthLimiterArray adding wave=" + wavelengthInfo.getWavelengthString());
                     }
@@ -1036,8 +1040,8 @@ public class L2genData {
     }
 
 
-    public boolean compareWavelengthLimiter(WavelengthInfo wavelengthInfo) {
-        for (WavelengthInfo waveLimitorInfo : getWaveLimiterInfos()) {
+    public boolean compareWavelengthLimiter(L2genWavelengthInfo wavelengthInfo) {
+        for (L2genWavelengthInfo waveLimitorInfo : getWaveLimiterInfos()) {
             if (waveLimitorInfo.getWavelength() == wavelengthInfo.getWavelength()) {
                 if (waveLimitorInfo.isSelected()) {
                     return true;
@@ -1086,7 +1090,7 @@ public class L2genData {
 //        String ifile = file.getAbsolutePath();
 //        File workDir = file.getParentFile();
 //
-//        ProcessorModel processorModel = new ProcessorModel("l2gen");
+//        ProcessorModel processorModel = new ProcessorModel("l2genGUI");
 //        processorModel.setAcceptsParFile(true);
 //        processorModel.setInputFile(file);
 //        processorModel.setOutputFileDir(workDir);
@@ -1170,7 +1174,7 @@ public class L2genData {
     }
 
 
-    public void addProductInfo(ProductInfo productInfo) {
+    public void addProductInfo(L2genProductInfo productInfo) {
         l2prodParamInfo.addProductInfo(productInfo);
     }
 
@@ -1180,7 +1184,7 @@ public class L2genData {
     }
 
 
-    public void sortProductInfos(Comparator<ProductInfo> comparator) {
+    public void sortProductInfos(Comparator<L2genProductInfo> comparator) {
         l2prodParamInfo.sortProductInfos(comparator);
     }
 
@@ -1199,11 +1203,11 @@ public class L2genData {
         l2prodParamInfo.setProductCategoryInfos();
     }
 
-    public ArrayList<ProductCategoryInfo> getProductCategoryInfos() {
+    public ArrayList<L2genProductCategoryInfo> getProductCategoryInfos() {
         return l2prodParamInfo.getProductCategoryInfos();
     }
 
-    public void addProductCategoryInfo(ProductCategoryInfo productCategoryInfo) {
+    public void addProductCategoryInfo(L2genProductCategoryInfo productCategoryInfo) {
         l2prodParamInfo.addProductCategoryInfo(productCategoryInfo);
     }
 

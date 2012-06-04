@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +30,7 @@ import java.awt.event.*;
  * 6. You have to make a TristateDecorator as a button model that
  * wraps the original button model and does state management.
  */
-public class TristateCheckBox extends JCheckBox {
+public class L2genTristateCheckBox extends JCheckBox {
     /**
      * This is a type-safe enumerated type
      */
@@ -45,7 +45,7 @@ public class TristateCheckBox extends JCheckBox {
 
     private final TristateDecorator model;
 
-    public TristateCheckBox(String text, Icon icon, State initial) {
+    public L2genTristateCheckBox(String text, Icon icon, State initial) {
         super(text, icon);
         // Add a listener for when the mouse is pressed
         super.addMouseListener(new MouseAdapter() {
@@ -70,15 +70,15 @@ public class TristateCheckBox extends JCheckBox {
         setState(initial);
     }
 
-    public TristateCheckBox(String text, State initial) {
+    public L2genTristateCheckBox(String text, State initial) {
         this(text, null, initial);
     }
 
-    public TristateCheckBox(String text) {
+    public L2genTristateCheckBox(String text) {
         this(text, PARTIAL);
     }
 
-    public TristateCheckBox() {
+    public L2genTristateCheckBox() {
         this(null);
     }
 

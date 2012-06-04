@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData;
 
 /**
  * A ...
@@ -6,7 +6,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class WavelengthInfo extends BaseInfo {
+public class L2genWavelengthInfo extends L2genBaseInfo {
 
     public static final int INFRARED_LOWER_LIMIT = 3000;
     public static final int VISIBLE_UPPER_LIMIT = 725;
@@ -21,16 +21,16 @@ public class WavelengthInfo extends BaseInfo {
     }
 
 
-    public WavelengthInfo(int wavelength, AlgorithmInfo algorithmInfo) {
+    public L2genWavelengthInfo(int wavelength, L2genAlgorithmInfo algorithmInfo) {
         super(Integer.toString(wavelength), algorithmInfo);
         this.wavelength = wavelength;
     }
 
-    public WavelengthInfo(int wavelength) {
+    public L2genWavelengthInfo(int wavelength) {
         this(wavelength, null);
     }
 
-    public WavelengthInfo(String wavelengthStr) {
+    public L2genWavelengthInfo(String wavelengthStr) {
         super(wavelengthStr);
         try {
             this.wavelength = Integer.parseInt(wavelengthStr);
@@ -39,8 +39,8 @@ public class WavelengthInfo extends BaseInfo {
         }
     }
 
-    public AlgorithmInfo getAlgorithmInfo() {
-        return (AlgorithmInfo) getParent();
+    public L2genAlgorithmInfo getAlgorithmInfo() {
+        return (L2genAlgorithmInfo) getParent();
     }
 
 
@@ -62,11 +62,11 @@ public class WavelengthInfo extends BaseInfo {
 
         StringBuilder result = new StringBuilder();
 
-        BaseInfo aInfo = getParent();
+        L2genBaseInfo aInfo = getParent();
 
         if (aInfo != null) {
-            String prefix = ((AlgorithmInfo) aInfo).getPrefix();
-            String suffix = ((AlgorithmInfo) aInfo).getSuffix();
+            String prefix = ((L2genAlgorithmInfo) aInfo).getPrefix();
+            String suffix = ((L2genAlgorithmInfo) aInfo).getSuffix();
 
             if (prefix != null && !prefix.isEmpty()) {
                 result.append(prefix);

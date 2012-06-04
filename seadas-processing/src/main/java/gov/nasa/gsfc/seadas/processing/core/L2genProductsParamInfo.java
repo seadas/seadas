@@ -1,11 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.AlgorithmInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.BaseInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.ProductCategoryInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.ProductInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genAlgorithmInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genBaseInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductInfo;
 import org.esa.beam.util.StringUtils;
 
 import java.util.*;
@@ -20,8 +18,8 @@ import java.util.HashSet;
  */
 public class L2genProductsParamInfo extends ParamInfo {
 
-    private ArrayList<ProductInfo> productInfos = new ArrayList<ProductInfo>();
-    private ArrayList<ProductCategoryInfo> productCategoryInfos = new ArrayList<ProductCategoryInfo>();
+    private ArrayList<L2genProductInfo> productInfos = new ArrayList<L2genProductInfo>();
+    private ArrayList<L2genProductCategoryInfo> productCategoryInfos = new ArrayList<L2genProductCategoryInfo>();
 
 
 
@@ -45,9 +43,9 @@ public class L2genProductsParamInfo extends ParamInfo {
     private String getValueFromProductInfos() {
         ArrayList<String> l2prod = new ArrayList<String>();
 
-        for (ProductInfo productInfo : productInfos) {
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+        for (L2genProductInfo productInfo : productInfos) {
+            for (L2genBaseInfo aInfo : productInfo.getChildren()) {
+                L2genAlgorithmInfo algorithmInfo = (L2genAlgorithmInfo) aInfo;
                 ArrayList<String> l2prodsThisAlgorithm = algorithmInfo.getL2prod();
 
                 for (String l2prodThisAlgorithm : l2prodsThisAlgorithm) {
@@ -81,9 +79,9 @@ public class L2genProductsParamInfo extends ParamInfo {
             // For every product in ProductInfoArray set selected to agree with inProducts
             //----------------------------------------------------------------------------------------------------
 
-            for (ProductInfo productInfo : productInfos) {
-                for (BaseInfo aInfo : productInfo.getChildren()) {
-                    AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+            for (L2genProductInfo productInfo : productInfos) {
+                for (L2genBaseInfo aInfo : productInfo.getChildren()) {
+                    L2genAlgorithmInfo algorithmInfo = (L2genAlgorithmInfo) aInfo;
                     algorithmInfo.setL2prod(inProducts);
                 }
             }
@@ -91,7 +89,7 @@ public class L2genProductsParamInfo extends ParamInfo {
     }
 
 
-    protected void addProductInfo(ProductInfo productInfo) {
+    protected void addProductInfo(L2genProductInfo productInfo) {
         productInfos.add(productInfo);
     }
 
@@ -99,29 +97,29 @@ public class L2genProductsParamInfo extends ParamInfo {
         productInfos.clear();
     }
 
-    protected void sortProductInfos(Comparator<ProductInfo> comparator) {
+    protected void sortProductInfos(Comparator<L2genProductInfo> comparator) {
         Collections.sort(productInfos, comparator);
     }
 
     protected void resetProductInfos() {
 
-        for (ProductInfo productInfo : productInfos) {
+        for (L2genProductInfo productInfo : productInfos) {
             productInfo.setSelected(false);
-            for (BaseInfo aInfo : productInfo.getChildren()) {
-                AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+            for (L2genBaseInfo aInfo : productInfo.getChildren()) {
+                L2genAlgorithmInfo algorithmInfo = (L2genAlgorithmInfo) aInfo;
                 algorithmInfo.reset();
             }
         }
     }
 
     protected void setProductCategoryInfos() {
-        for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+        for (L2genProductCategoryInfo productCategoryInfo : productCategoryInfos) {
             productCategoryInfo.clearChildren();
         }
 
-        for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+        for (L2genProductCategoryInfo productCategoryInfo : productCategoryInfos) {
             for (String categorizedProductName : productCategoryInfo.getProductNames()) {
-                for (ProductInfo productInfo : productInfos) {
+                for (L2genProductInfo productInfo : productInfos) {
                     if (categorizedProductName.equals(productInfo.getName())) {
                         productCategoryInfo.addChild(productInfo);
                     }
@@ -129,10 +127,10 @@ public class L2genProductsParamInfo extends ParamInfo {
             }
         }
 
-        for (ProductInfo productInfo : productInfos) {
+        for (L2genProductInfo productInfo : productInfos) {
             boolean found = false;
 
-            for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+            for (L2genProductCategoryInfo productCategoryInfo : productCategoryInfos) {
                 for (String categorizedProductName : productCategoryInfo.getProductNames()) {
                     if (categorizedProductName.equals(productInfo.getName())) {
                         found = true;
@@ -141,7 +139,7 @@ public class L2genProductsParamInfo extends ParamInfo {
             }
 
             if (!found) {
-                for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
+                for (L2genProductCategoryInfo productCategoryInfo : productCategoryInfos) {
                     if (productCategoryInfo.isDefaultBucket()) {
                         productCategoryInfo.addChild(productInfo);
                     }
@@ -151,11 +149,11 @@ public class L2genProductsParamInfo extends ParamInfo {
     }
 
 
-    public ArrayList<ProductCategoryInfo> getProductCategoryInfos() {
+    public ArrayList<L2genProductCategoryInfo> getProductCategoryInfos() {
         return productCategoryInfos;
     }
 
-    protected void addProductCategoryInfo(ProductCategoryInfo productCategoryInfo) {
+    protected void addProductCategoryInfo(L2genProductCategoryInfo productCategoryInfo) {
         productCategoryInfos.add(productCategoryInfo);
     }
 

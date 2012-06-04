@@ -1,8 +1,9 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI;
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamValidValueInfo;
 import gov.nasa.gsfc.seadas.processing.general.FileSelectorPanel;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 import org.esa.beam.visat.VisatApp;

@@ -1,7 +1,6 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * A ...
@@ -9,7 +8,7 @@ import java.util.Collections;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class ProductCategoryInfo extends BaseInfo {
+public class L2genProductCategoryInfo extends L2genBaseInfo {
 
 
     private String name = null;
@@ -17,9 +16,9 @@ public class ProductCategoryInfo extends BaseInfo {
     private boolean defaultBucket = false;
 
     private ArrayList<String> productNames = new ArrayList<String>();
-    ArrayList<ProductInfo> productInfos = new ArrayList<ProductInfo>();
+    ArrayList<L2genProductInfo> productInfos = new ArrayList<L2genProductInfo>();
 
-    public ProductCategoryInfo(String name) {
+    public L2genProductCategoryInfo(String name) {
         this.name = name;
     }
 
@@ -47,12 +46,12 @@ public class ProductCategoryInfo extends BaseInfo {
         this.defaultBucket = defaultBucket;
     }
 
-    public ArrayList<ProductInfo> getProductInfos() {
+    public ArrayList<L2genProductInfo> getProductInfos() {
         return productInfos;
     }
 
 
-    public void addProductInfo(ProductInfo productInfo) {
+    public void addProductInfo(L2genProductInfo productInfo) {
         productInfos.add(productInfo);
     }
 

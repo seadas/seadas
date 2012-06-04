@@ -1,7 +1,5 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData;
 
-
-import ucar.units.Test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,7 +10,7 @@ import java.util.HashSet;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class AlgorithmInfo extends BaseInfo {
+public class L2genAlgorithmInfo extends L2genBaseInfo {
 
     public static enum ParameterType {
         VISIBLE,
@@ -39,7 +37,7 @@ public class AlgorithmInfo extends BaseInfo {
 
     // These fields are populated according to productInfo.xml
 
-    public ArrayList<WavelengthInfo> waveLimiterInfos;
+    public ArrayList<L2genWavelengthInfo> waveLimiterInfos;
 
     private String
             dataType = null,
@@ -50,7 +48,7 @@ public class AlgorithmInfo extends BaseInfo {
     private ParameterType parameterType = null;
 
 
-    public AlgorithmInfo(String name, String description, ParameterType parameterType, ArrayList<WavelengthInfo> waveLimiterInfos) {
+    public L2genAlgorithmInfo(String name, String description, ParameterType parameterType, ArrayList<L2genWavelengthInfo> waveLimiterInfos) {
         super(name);
         setDescription(description);
         this.parameterType = parameterType;
@@ -65,7 +63,7 @@ public class AlgorithmInfo extends BaseInfo {
 //        this(name, description, ParameterType.NONE);
 //    }
 
-    public AlgorithmInfo(ArrayList<WavelengthInfo> waveLimiterInfos) {
+    public L2genAlgorithmInfo(ArrayList<L2genWavelengthInfo> waveLimiterInfos) {
         this("", "", ParameterType.NONE, waveLimiterInfos);
     }
 
@@ -77,11 +75,11 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
 
-    public ProductInfo getProductInfo() {
-        return (ProductInfo) getParent();
+    public L2genProductInfo getProductInfo() {
+        return (L2genProductInfo) getParent();
     }
 
-    public void setProductInfo(ProductInfo productInfo) {
+    public void setProductInfo(L2genProductInfo productInfo) {
         setParent(productInfo);
     }
 
@@ -193,8 +191,8 @@ public class AlgorithmInfo extends BaseInfo {
         boolean found = false;
 
         if (shortcutType == ShortcutType.ALL) {
-            for (BaseInfo wInfo : getChildren()) {
-                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+            for (L2genBaseInfo wInfo : getChildren()) {
+                L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
                 if (wavelengthInfo.isSelected()) {
                     found = true;
                 } else {
@@ -204,9 +202,9 @@ public class AlgorithmInfo extends BaseInfo {
             return found;
 
         } else if (shortcutType == ShortcutType.VISIBLE) {
-            for (BaseInfo wInfo : getChildren()) {
-                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE)) {
+            for (L2genBaseInfo wInfo : getChildren()) {
+                L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
+                if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.VISIBLE)) {
                     if (wavelengthInfo.isSelected()) {
                         found = true;
                     } else {
@@ -217,9 +215,9 @@ public class AlgorithmInfo extends BaseInfo {
             return found;
 
         } else if (shortcutType == ShortcutType.IR) {
-            for (BaseInfo wInfo : getChildren()) {
-                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
-                if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED)) {
+            for (L2genBaseInfo wInfo : getChildren()) {
+                L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
+                if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
                     if (wavelengthInfo.isSelected()) {
                         found = true;
                     } else {
@@ -235,33 +233,33 @@ public class AlgorithmInfo extends BaseInfo {
 
     public void setL2prod(HashSet<String> inProducts) {
 
-        if (getParameterType() == AlgorithmInfo.ParameterType.NONE) {
+        if (getParameterType() == L2genAlgorithmInfo.ParameterType.NONE) {
             if (inProducts.contains(getFullName())) {
-                setState(AlgorithmInfo.State.SELECTED);
+                setState(L2genAlgorithmInfo.State.SELECTED);
             } else {
-                setState(AlgorithmInfo.State.NOT_SELECTED);
+                setState(L2genAlgorithmInfo.State.NOT_SELECTED);
             }
         } else {
-            for (BaseInfo wInfo : getChildren()) {
-                WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+            for (L2genBaseInfo wInfo : getChildren()) {
+                L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
 
                 if (inProducts.contains(wavelengthInfo.getFullName())) {
-                    wavelengthInfo.setState(WavelengthInfo.State.SELECTED);
+                    wavelengthInfo.setState(L2genWavelengthInfo.State.SELECTED);
                 } else {
-                    wavelengthInfo.setState(WavelengthInfo.State.NOT_SELECTED);
+                    wavelengthInfo.setState(L2genWavelengthInfo.State.NOT_SELECTED);
                 }
             }
 
-            if (inProducts.contains(getShortcutFullname(AlgorithmInfo.ShortcutType.VISIBLE))) {
-                setStateShortcut(AlgorithmInfo.ShortcutType.VISIBLE, AlgorithmInfo.State.SELECTED);
+            if (inProducts.contains(getShortcutFullname(L2genAlgorithmInfo.ShortcutType.VISIBLE))) {
+                setStateShortcut(L2genAlgorithmInfo.ShortcutType.VISIBLE, L2genAlgorithmInfo.State.SELECTED);
             }
 
-            if (inProducts.contains(getShortcutFullname(AlgorithmInfo.ShortcutType.IR))) {
-                setStateShortcut(AlgorithmInfo.ShortcutType.IR, AlgorithmInfo.State.SELECTED);
+            if (inProducts.contains(getShortcutFullname(L2genAlgorithmInfo.ShortcutType.IR))) {
+                setStateShortcut(L2genAlgorithmInfo.ShortcutType.IR, L2genAlgorithmInfo.State.SELECTED);
             }
 
-            if (inProducts.contains(getShortcutFullname(AlgorithmInfo.ShortcutType.ALL))) {
-                setStateShortcut(AlgorithmInfo.ShortcutType.ALL, AlgorithmInfo.State.SELECTED);
+            if (inProducts.contains(getShortcutFullname(L2genAlgorithmInfo.ShortcutType.ALL))) {
+                setStateShortcut(L2genAlgorithmInfo.ShortcutType.ALL, L2genAlgorithmInfo.State.SELECTED);
             }
         }
     }
@@ -279,14 +277,14 @@ public class AlgorithmInfo extends BaseInfo {
             int infraredCount = 0;
             int infraredSelectedCount = 0;
 
-            for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
-                for (BaseInfo wInfo : getChildren()) {
-                    WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+            for (L2genWavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+                for (L2genBaseInfo wInfo : getChildren()) {
+                    L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
                     if (wavelengthInfo.getWavelength() == waveLimiterInfo.getWavelength()) {
                         if (wavelengthInfo.isSelected()) {
-                            if (waveLimiterInfo.getWaveType() == WavelengthInfo.WaveType.INFRARED) {
+                            if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.INFRARED) {
                                 infraredSelectedCount++;
-                            } else if (waveLimiterInfo.getWaveType() == WavelengthInfo.WaveType.VISIBLE) {
+                            } else if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.VISIBLE) {
                                 visibleSelectedCount++;
                             }
                             selectedCount++;
@@ -296,9 +294,9 @@ public class AlgorithmInfo extends BaseInfo {
                     }
                 }
 
-                if (waveLimiterInfo.getWaveType() == WavelengthInfo.WaveType.INFRARED) {
+                if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.INFRARED) {
                     infraredCount++;
-                } else if (waveLimiterInfo.getWaveType() == WavelengthInfo.WaveType.VISIBLE) {
+                } else if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.VISIBLE) {
                     visibleCount++;
                 }
 
@@ -317,14 +315,14 @@ public class AlgorithmInfo extends BaseInfo {
                     l2prod.add(getShortcutFullname(ShortcutType.IR));
                 }
 
-                for (BaseInfo wInfo : getChildren()) {
-                    WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+                for (L2genBaseInfo wInfo : getChildren()) {
+                    L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
                     if (wInfo.isSelected()) {
-                        if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE)) {
+                        if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.VISIBLE)) {
                             if (visibleSelectedCount != visibleCount) {
                                 l2prod.add(wavelengthInfo.getFullName());
                             }
-                        } else if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED)) {
+                        } else if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
                             if (infraredSelectedCount != infraredCount) {
                                 l2prod.add(wavelengthInfo.getFullName());
                             }
@@ -347,23 +345,23 @@ public class AlgorithmInfo extends BaseInfo {
     public void reset() {
 
         setSelected(false);
-        if (getParameterType() != AlgorithmInfo.ParameterType.NONE) {
+        if (getParameterType() != L2genAlgorithmInfo.ParameterType.NONE) {
             clearChildren();
-            for (WavelengthInfo waveLimiterInfo : waveLimiterInfos) {
+            for (L2genWavelengthInfo waveLimiterInfo : waveLimiterInfos) {
                 boolean addWavelength = false;
 
-                if (getParameterType() == AlgorithmInfo.ParameterType.ALL) {
+                if (getParameterType() == L2genAlgorithmInfo.ParameterType.ALL) {
                     addWavelength = true;
-                } else if (waveLimiterInfo.getWavelength() >= WavelengthInfo.INFRARED_LOWER_LIMIT &&
-                        getParameterType() == AlgorithmInfo.ParameterType.IR) {
+                } else if (waveLimiterInfo.getWavelength() >= L2genWavelengthInfo.INFRARED_LOWER_LIMIT &&
+                        getParameterType() == L2genAlgorithmInfo.ParameterType.IR) {
                     addWavelength = true;
-                } else if (waveLimiterInfo.getWavelength() <= WavelengthInfo.VISIBLE_UPPER_LIMIT &&
-                        getParameterType() == AlgorithmInfo.ParameterType.VISIBLE) {
+                } else if (waveLimiterInfo.getWavelength() <= L2genWavelengthInfo.VISIBLE_UPPER_LIMIT &&
+                        getParameterType() == L2genAlgorithmInfo.ParameterType.VISIBLE) {
                     addWavelength = true;
                 }
 
                 if (addWavelength) {
-                    WavelengthInfo newWavelengthInfo = new WavelengthInfo(waveLimiterInfo.getWavelength());
+                    L2genWavelengthInfo newWavelengthInfo = new L2genWavelengthInfo(waveLimiterInfo.getWavelength());
                     newWavelengthInfo.setParent(this);
                     newWavelengthInfo.setDescription(getDescription() + ", at " + newWavelengthInfo.getWavelengthString());
                     addChild(newWavelengthInfo);
@@ -373,16 +371,16 @@ public class AlgorithmInfo extends BaseInfo {
     }
 
     private void setStateShortcut(ShortcutType shortcutType, State state) {
-        for (BaseInfo wInfo : getChildren()) {
-            WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+        for (L2genBaseInfo wInfo : getChildren()) {
+            L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
 
-            if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.VISIBLE)) {
+            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.VISIBLE)) {
                 if (shortcutType == ShortcutType.ALL || shortcutType == ShortcutType.VISIBLE) {
                     wavelengthInfo.setState(state);
                 }
             }
 
-            if (wavelengthInfo.isWaveType(WavelengthInfo.WaveType.INFRARED)) {
+            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
                 if (shortcutType == ShortcutType.ALL || shortcutType == ShortcutType.IR) {
                     wavelengthInfo.setState(state);
                 }

@@ -3,12 +3,9 @@ Author: Danny Knowles
     Don Shea
 */
 
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI;
 
-import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 import org.esa.beam.framework.datamodel.Product;
@@ -26,7 +23,7 @@ import java.io.*;
 //test
 public class L2genForm extends JPanel implements CloProgramUI {
 
-    private static final String GUI_NAME = "l2gen";
+    private static final String GUI_NAME = "l2genGUI";
 
     private final L2genData l2genData = new L2genData();
 
@@ -78,7 +75,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
             getL2genData().enableEvent(L2genData.PARSTRING);
 
         } else {
-            add(new JLabel("Problem initializing l2gen"));
+            add(new JLabel("Problem initializing l2genGUI"));
         }
     }
 
