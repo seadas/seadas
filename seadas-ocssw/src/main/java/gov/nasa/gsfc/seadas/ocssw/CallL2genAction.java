@@ -48,14 +48,14 @@ public class CallL2genAction extends AbstractVisatAction {
 
         final Product selectedProduct = l2genGiopUI.getSelectedSourceProduct();
         if (selectedProduct == null) {
-            VisatApp.getApp().showErrorDialog("l2genGUI", "No product selected.");
+            VisatApp.getApp().showErrorDialog("userInterface", "No product selected.");
             return;
         }
         final File ocsswRoot;
         try {
             ocsswRoot = OCSSW.getOcsswRoot();
         } catch (IOException e) {
-            VisatApp.getApp().showErrorDialog("l2genGUI", e.getMessage());
+            VisatApp.getApp().showErrorDialog("userInterface", e.getMessage());
             return;
         }
 
@@ -69,15 +69,15 @@ public class CallL2genAction extends AbstractVisatAction {
                                           JOptionPane.ERROR_MESSAGE);
             return;
         }
-        final File outputFile = new File(outputDir, "l2genGUI-out-" + Long.toHexString(System.nanoTime()));
+        final File outputFile = new File(outputDir, "userInterface-out-" + Long.toHexString(System.nanoTime()));
 
-        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(parent, "Running l2genGUI...") {
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(parent, "Running userInterface...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
                 final String[] cmdarray = {
                         "${OCSSWROOT}/run/scripts/ocssw_runner".replace("${OCSSWROOT}", ocsswRoot.getPath()),
-                        "l2genGUI",
+                        "userInterface",
                         "ifile=" + inputFile,
                         "ofile=" + outputFile,
                         "par=" + parameterFile
@@ -88,7 +88,7 @@ public class CallL2genAction extends AbstractVisatAction {
 
                 final Process process = Runtime.getRuntime().exec(cmdarray, envp, outputDir);
 
-                final ProcessObserver processObserver = new ProcessObserver(process, "l2genGUI", pm);
+                final ProcessObserver processObserver = new ProcessObserver(process, "userInterface", pm);
                 processObserver.addHandler(new ProgressHandler());
                 processObserver.addHandler(new ConsoleHandler());
                 processObserver.startAndWait();
@@ -98,7 +98,7 @@ public class CallL2genAction extends AbstractVisatAction {
                 pm.done();
 
                 if (exitCode != 0) {
-                    throw new IOException("l2genGUI failed with exit code " + exitCode + ".\nCheck log for more details.");
+                    throw new IOException("userInterface failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
 
                 appContext.getProductManager().addProduct(ProductIO.readProduct(outputFile));
@@ -110,11 +110,11 @@ public class CallL2genAction extends AbstractVisatAction {
             protected void done() {
                 try {
                     final File outputFile = get();
-                    VisatApp.getApp().showInfoDialog("l2genGUI", "l2genGUI done!\nOutput written to:\n" + outputFile, null);
+                    VisatApp.getApp().showInfoDialog("userInterface", "userInterface done!\nOutput written to:\n" + outputFile, null);
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {
-                    VisatApp.getApp().showErrorDialog("l2genGUI", e.getMessage());
+                    VisatApp.getApp().showErrorDialog("userInterface", e.getMessage());
                 }
             }
         };
@@ -124,7 +124,7 @@ public class CallL2genAction extends AbstractVisatAction {
 
     private File createParameterFile(File outputDir, final String parameterText) {
         try {
-            final File tempFile = File.createTempFile("l2genGUI", ".par", outputDir);
+            final File tempFile = File.createTempFile("userInterface", ".par", outputDir);
             tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
@@ -142,7 +142,7 @@ public class CallL2genAction extends AbstractVisatAction {
     }
 
     /**
-     * Handler that tries to extract progress from stdout of l2genGUI
+     * Handler that tries to extract progress from stdout of userInterface
      */
     private static class ProgressHandler implements ProcessObserver.Handler {
 
@@ -160,13 +160,13 @@ public class CallL2genAction extends AbstractVisatAction {
 
                 if (!progressSeen) {
                     progressSeen = true;
-                    pm.beginTask("l2genGUI", numScans);
+                    pm.beginTask("userInterface", numScans);
                 }
                 pm.worked(scan - lastScan);
                 lastScan = scan;
             }
 
-            pm.setTaskName("l2genGUI");
+            pm.setTaskName("userInterface");
             pm.setSubTaskName(line);
         }
 
@@ -179,12 +179,12 @@ public class CallL2genAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
-            System.out.println("l2genGUI: " + line);
+            System.out.println("userInterface: " + line);
         }
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-            System.err.println("l2genGUI stderr: " + line);
+            System.err.println("userInterface stderr: " + line);
         }
     }
 

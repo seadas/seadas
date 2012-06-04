@@ -14,7 +14,7 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
-package gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI;
+package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.*;

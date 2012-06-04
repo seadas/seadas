@@ -1,9 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genAlgorithmInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductCategoryInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genBaseInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genAlgorithmInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductInfo;
 import org.esa.beam.util.StringUtils;
 
 import java.util.*;

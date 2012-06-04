@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI;
+package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 /**
  * Created by IntelliJ IDEA.

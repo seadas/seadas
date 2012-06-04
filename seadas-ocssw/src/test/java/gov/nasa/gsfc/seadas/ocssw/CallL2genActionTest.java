@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import static org.junit.Assert.*;
 
 /**
- * A test that deals with l2genGUI's stdout.
+ * A test that deals with userInterface's stdout.
  *
  * @author Norman Fomferra
  * @since SeaDAS 7.0

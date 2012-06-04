@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData;
+package gov.nasa.gsfc.seadas.processing.l2gen.productData;
 
 import java.util.ArrayList;
 

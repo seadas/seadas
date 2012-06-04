@@ -2,11 +2,11 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 
 import gov.nasa.gsfc.seadas.processing.general.*;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI.*;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genBaseInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductCategoryInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genWavelengthInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.*;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genWavelengthInfo;
 import org.esa.beam.util.StringUtils;
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -1090,7 +1090,7 @@ public class L2genData {
 //        String ifile = file.getAbsolutePath();
 //        File workDir = file.getParentFile();
 //
-//        ProcessorModel processorModel = new ProcessorModel("l2genGUI");
+//        ProcessorModel processorModel = new ProcessorModel("userInterface");
 //        processorModel.setAcceptsParFile(true);
 //        processorModel.setInputFile(file);
 //        processorModel.setOutputFileDir(workDir);

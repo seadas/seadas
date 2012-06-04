@@ -1,9 +1,9 @@
-package gov.nasa.gsfc.seadas.processing.l2gen.l2genGUI;
+package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genBaseInfo;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genProductCategoryInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.l2genProductData.L2genWavelengthInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genWavelengthInfo;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 
 import javax.swing.*;
