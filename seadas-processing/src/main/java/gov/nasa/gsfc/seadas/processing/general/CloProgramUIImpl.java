@@ -16,7 +16,6 @@ import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.l2gen.FileSelectorPanel;
-import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamValidValueInfo;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.BasicApp;

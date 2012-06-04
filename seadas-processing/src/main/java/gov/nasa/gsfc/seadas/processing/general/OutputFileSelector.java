@@ -1,8 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
-import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
-import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
 import org.esa.beam.framework.dataio.ProductIOPlugInManager;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.util.io.FileChooserFactory;

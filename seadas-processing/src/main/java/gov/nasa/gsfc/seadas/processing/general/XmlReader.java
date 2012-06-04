@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.general;
 
 
 import org.w3c.dom.Document;

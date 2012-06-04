@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 

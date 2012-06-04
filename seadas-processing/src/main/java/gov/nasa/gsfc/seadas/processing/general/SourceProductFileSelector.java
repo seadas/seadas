@@ -18,7 +18,6 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.swing.selection.SelectionChangeListener;
 import com.bc.ceres.swing.selection.support.ComboBoxSelectionContext;
-import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.dataio.ProductIOPlugInManager;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;

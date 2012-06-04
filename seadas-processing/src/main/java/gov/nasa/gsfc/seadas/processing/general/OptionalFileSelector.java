@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
-import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

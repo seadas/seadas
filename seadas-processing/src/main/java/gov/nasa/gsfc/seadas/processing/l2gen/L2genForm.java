@@ -10,6 +10,7 @@ import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
+import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.visat.VisatApp;

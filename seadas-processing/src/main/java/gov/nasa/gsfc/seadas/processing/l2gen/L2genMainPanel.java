@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 import org.esa.beam.framework.datamodel.Product;
 
 import javax.swing.*;

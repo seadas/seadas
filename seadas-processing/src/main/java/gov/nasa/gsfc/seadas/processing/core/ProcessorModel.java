@@ -2,8 +2,8 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.general.SeadasPrint;
 import gov.nasa.gsfc.seadas.processing.l2gen.EventInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.SeadasPrint;
 import org.esa.beam.util.Guardian;
 import org.esa.beam.visat.VisatApp;
 

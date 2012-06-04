@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
 
 import org.esa.beam.framework.ui.AppContext;
