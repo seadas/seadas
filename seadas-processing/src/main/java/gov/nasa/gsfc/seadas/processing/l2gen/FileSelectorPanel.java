@@ -46,7 +46,7 @@ public class FileSelectorPanel extends JPanel {
     private Type type;
     private String name;
     private JLabel nameLabel;
-    private JTextField fileJTextfield;
+    private JTextField fileTextfield;
 
     private JButton fileChooserButton;
 
@@ -86,7 +86,7 @@ public class FileSelectorPanel extends JPanel {
 
     private void initComponents() {
 
-        fileJTextfield = createFileTextfield();
+        fileTextfield = createFileTextfield();
 
         nameLabel = new JLabel(name);
 
@@ -106,7 +106,7 @@ public class FileSelectorPanel extends JPanel {
             nameLabel.setVisible(false);
         }
 
-        add(fileJTextfield,
+        add(fileTextfield,
                 new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
         add(fileChooserButton,
                 new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
@@ -128,7 +128,7 @@ public class FileSelectorPanel extends JPanel {
         if (type == Type.IFILE) {
             filterRegexField.setEnabled(enabled);
             filterRegexLabel.setEnabled(enabled);
-            fileJTextfield.setEnabled(enabled);
+            fileTextfield.setEnabled(enabled);
         }
     }
 
@@ -142,18 +142,26 @@ public class FileSelectorPanel extends JPanel {
     }
 
     public String getFileName() {
-        return fileJTextfield.getText();
+        return fileTextfield.getText();
+    }
+
+
+
+    public JTextField getFileTextField() {
+        return fileTextfield;
     }
 
 
     public void setFilename(String filename) {
-        fileJTextfield.setText(filename);
+
+        fileTextfield.setText(filename);
+        handleFileTextfield();
     }
 
 
-    public void fileTextfieldHandler() {
+    private void handleFileTextfield() {
 
-        String currentFilename = fileJTextfield.getText();
+        String currentFilename = fileTextfield.getText();
 
         boolean filenameChanged = false;
         if (currentFilename != null) {
@@ -167,6 +175,7 @@ public class FileSelectorPanel extends JPanel {
         }
 
         if (filenameChanged) {
+            fileTextfield.setFocusable(true);
             String tmpLastFilename = lastFilename;
             lastFilename = currentFilename;
             fireEvent(propertyName, tmpLastFilename, currentFilename);
@@ -181,7 +190,7 @@ public class FileSelectorPanel extends JPanel {
         jTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fileTextfieldHandler();
+                handleFileTextfield();
             }
         });
 
@@ -193,7 +202,7 @@ public class FileSelectorPanel extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                fileTextfieldHandler();
+                handleFileTextfield();
             }
         });
 
@@ -289,6 +298,16 @@ public class FileSelectorPanel extends JPanel {
             fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
         }
 
+        private FileChooserAction(String dialogTitle) {
+            super("...");
+            fileChooser = new BeamFileChooser();
+
+            fileChooser.setDialogTitle(dialogTitle);
+
+            fileChooser.setAcceptAllFileFilterUsed(true);
+            fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
+        }
+
         @Override
         public void actionPerformed(ActionEvent event) {
             final Window window = SwingUtilities.getWindowAncestor((JComponent) event.getSource());
@@ -309,10 +328,12 @@ public class FileSelectorPanel extends JPanel {
                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         currentDirectory.getAbsolutePath());
 
+
                 String filename = null;
                 if (file != null) {
                     filename = file.getAbsolutePath();
                 }
+
 
                 setFilename(filename);
             }
