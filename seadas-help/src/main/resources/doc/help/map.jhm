@@ -99,15 +99,13 @@
     <mapID target="vectorDataManagement" url="visat/VectorDataManagement.html"/>
 
 
-
-      
-
     <mapID target="l1aextract_modis" url="visat/ProcessL1aextract_modis.html"/>
     <mapID target="l1aextract_seawifs" url="visat/ProcessL1aextract_seawifs.html"/>
     <mapID target="l1agen" url="visat/ProcessL1agen.html"/>
-    <mapID target="geogen" url="visat/ProcessGeogen.html"/>
+    <mapID target="modis_GEO.py" url="visat/ProcessModis_GEO.py.html"/>
     <mapID target="l1bgen" url="visat/ProcessL1bgen.html"/>
-    <mapID target="l1bgen_modis" url="visat/ProcessL1bgen_modis.html"/>
+    <mapID target="modis_L1B.py" url="visat/ProcessModis_L1B.py.html"/>
+    <mapID target="modis_L1A.py" url="visat/ProcessModis_L1A.py.html"/>
     <mapID target="l1mapgen" url="visat/ProcessL1mapgen"/>
     <mapID target="l1brsgen" url="visat/ProcessL1brsgen.html"/>
     <mapID target="l2extract" url="visat/ProcessL2extract.html"/>
@@ -121,8 +119,8 @@
 
 
     <mapID target="processOverview" url="visat/ProcessOverview.html"/>
-     <mapID target="l2genProductSelector" url="visat/ProcessL2genProductSelector.html"/>
-        <mapID target="l2genSubsettingOptions" url="visat/ProcessL2genSubsettingOptions.html"/>
+    <mapID target="l2genProductSelector" url="visat/ProcessL2genProductSelector.html"/>
+    <mapID target="l2genSubsettingOptions" url="visat/ProcessL2genSubsettingOptions.html"/>
 
 
     <mapID target="reprojectionAction" url="visat/Reprojection.html"/>

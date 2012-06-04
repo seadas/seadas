@@ -112,7 +112,6 @@
                 <tocitem text="l2extract" target="l2extract"/>
                 <tocitem text="L2gen Deluxe">
                     <tocitem text="Introduction" target="l2gen"/>
-
                     <tocitem text="Product Selector" target="l2genProductSelector"/>
                     <tocitem text="Subsetting Options" target="l2genSubsettingOptions"/>
                 </tocitem>
@@ -122,6 +121,9 @@
                 <tocitem text="l2bin" target="l2bin"/>
                 <tocitem text="l3bin" target="l3bin"/>
                 <tocitem text="smigen" target="smigen"/>
+                <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
+                <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
+                <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
 
             </tocitem>
 

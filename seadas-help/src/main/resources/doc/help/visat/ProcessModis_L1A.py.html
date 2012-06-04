@@ -1,0 +1,67 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - modis_L1A.py</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            modis_L1A.py
+        </td>
+        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>modis_L1A.py</h3>
+
+<p>
+    Creates a Level 1 bin file from one or more input MODIS Level 0 bin files.
+</p>
+
+<h4>Location</h4>
+<p>Tools -> OCSSW Processing -> modis_L1A.py</p>
+
+
+<h4>Details</h4>
+<p>
+    TBD
+</p>
+<h5>Command Line Usage</h5>
+<pre>
+Usage:
+    modis_L1A.py [OPTIONS] MODIS_L0_file
+            or
+    modis_L1A.py --parfile=parameter_file [OPTIONS]
+
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -p PARFILE, --parfile=PARFILE
+                        Parameter file containing program inputs
+  -o L1AFILE, --output=L1AFILE
+                        Output L1A filename - defaults to
+                        '(A|T)YYYYDDDHHMMSS.L1A_LAC'
+  -m MISSION, --mission=MISSION
+                        MODIS mission - A(qua) or T(erra)
+  -s STARTNUDGE, --startnudge=STARTNUDGE
+                        Level-0 start-time offset (seconds)
+  -e STOPNUDGE, --stopnudge=STOPNUDGE
+                        Level-0 stop-time offset (seconds)
+  -n NEXT, --nextgranule=NEXT
+                        Next L0 granule (for geolocation of last scan; sets
+                        stopnudge=0)
+  -v, --verbose         print status messages
+  --log                 Save processing log file(s)
+  -d, --disableL0fix    Disable use of l0fix_modis utility for corrupt packets
+</pre>
+
+<hr>
+</body>
+</html>
