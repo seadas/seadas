@@ -1,8 +1,7 @@
-package gov.nasa.gsfc.seadas.processing.general;
+package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
+import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.l2gen.EventInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.SeadasPrint;
 import org.esa.beam.util.Guardian;
@@ -46,6 +45,7 @@ public class ProcessorModel {
     private Set<String> primaryOptions;
 
     private String primaryInputFileOptionName, primaryOutputFileOptionName;
+       private ProcessorModel secondaryProcessor;
 
     public ProcessorModel(String name) {
         this(name, null);
@@ -74,6 +74,19 @@ public class ProcessorModel {
 
     }
 
+    public void createsmitoppmProcessorModel(String ofileName){
+        ProcessorModel smitoppm = new ProcessorModel("smitoppm_4_ui");
+        smitoppm.setAcceptsParFile(false);
+        ParamInfo pi1 = new ParamInfo("ifile", getParamValue(getPrimaryOutputFileOptionName()));
+        pi1.setOrder(1);
+        ParamInfo pi2 = new ParamInfo("ofile", ofileName);
+        pi2.setOrder(2);
+        smitoppm.addParamInfo(pi1);
+        smitoppm.addParamInfo(pi2);
+        setSecondaryProcessor(smitoppm);
+
+    }
+
     public void addParamInfo(String name, String value) {
         ParamInfo info = new ParamInfo(name, value);
         addParamInfo(info);
@@ -82,11 +95,11 @@ public class ProcessorModel {
 
     public void addParamInfo(String name, String value, int order) {
         ParamInfo info = new ParamInfo(name, value);
-       // info.setOrder(order);
+        info.setOrder(order);
         addParamInfo(info);
     }
 
-    protected String getPrimaryInputFileOptionName() {
+    public String getPrimaryInputFileOptionName() {
 
         Iterator<ParamInfo> itr = paramList.iterator();
         ParamInfo option;
@@ -103,7 +116,7 @@ public class ProcessorModel {
         return null;
     }
 
-    protected String getPrimaryOutputFileOptionName() {
+    public String getPrimaryOutputFileOptionName() {
 
         Iterator<ParamInfo> itr = paramList.iterator();
         ParamInfo option;
@@ -120,7 +133,7 @@ public class ProcessorModel {
         return null;
     }
 
-    protected boolean hasGeoFile() {
+    public boolean hasGeoFile() {
         return hasGeoFile;
     }
 
@@ -133,7 +146,7 @@ public class ProcessorModel {
         return programName;
     }
 
-    protected boolean hasPrimaryOutputFile() {
+    public boolean hasPrimaryOutputFile() {
         Iterator<ParamInfo> itr = paramList.iterator();
         ParamInfo option;
         while (itr.hasNext()) {
@@ -187,7 +200,7 @@ public class ProcessorModel {
             option = itr.next();
             if (option.getName().equals(currentOption.getName())) {
 
-               // option.setValue(newValue);
+                option.setValue(newValue);
                 return;
             }
         }
@@ -241,7 +254,7 @@ public class ProcessorModel {
         while (itr.hasNext()) {
             option = itr.next();
             if (option.getName().equals(paramName.trim())) {
-                //option.setValue(newValue);
+                option.setValue(newValue);
                 return;
             }
         }
@@ -347,7 +360,7 @@ public class ProcessorModel {
         }
     }
 
-    protected String getParString() {
+    public String getParString() {
 
         if (parString != null) {
             return parString;
@@ -484,4 +497,11 @@ public class ProcessorModel {
         return rootDir == null ? new File(".") : rootDir  ;
     }
 
+    public ProcessorModel getSecondaryProcessor() {
+        return secondaryProcessor;
+    }
+
+    public void setSecondaryProcessor(ProcessorModel secondaryProcessor) {
+        this.secondaryProcessor = secondaryProcessor;
+    }
 }

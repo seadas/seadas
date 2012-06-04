@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+        <hasGeoFile>true</hasGeoFile>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="help">
+            <name>-help</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print usage information</description>
+            <source>default</source>
+            <alias>-h</alias>
+            <alias>--help</alias>
+        </option>
+        <option type="help">
+            <name>-version</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print the version
+                information
+            </description>
+            <source>default</source>
+            <alias>--version</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print
+                information about each option
+            </description>
+            <source>default</source>
+            <alias>--dump_options</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_paramfile</name>
+            <value/>
+            <type>string</type>
+            <description>print
+                information about each option to paramfile
+            </description>
+            <source>default</source>
+            <alias>--dump_options_paramfile</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_xmlfile</name>
+            <value>l2mapgen.xml</value>
+            <type>string</type>
+            <description>print
+                information about each option to XML file
+            </description>
+            <source>command line</source>
+            <alias>--dump_options_xmlfile</alias>
+        </option>
+        <option type="help">
+            <name>par</name>
+            <value/>
+            <type>string</type>
+            <description>input parameter file</description>
+            <source>default</source>
+        </option>
+        <option type="ifile">
+            <name>ifile</name>
+            <value/>
+            <type>string</type>
+            <description>input L2 file name or file with a list of files names</description>
+            <source>default</source>
+        </option>
+        <option type="ifile">
+            <name>geofile</name>
+            <value/>
+            <type>string</type>
+            <description>input L1 geolocation file name (MODIS only)</description>
+            <source>default</source>
+        </option>
+        <option type="int">
+            <name>resolution</name>
+            <value></value>
+            <type>int</type>
+            <default>-1</default>
+            <description>processing resolution (MODIS only)</description>
+            <validValue>
+                <value>1000</value>
+                <description>1km resolution including aggregated 250 and 500m land bands</description>
+            </validValue>
+            <validValue>
+                <value>500</value>
+                <description>500m resolution including aggregated 250 land bands and
+                    replication for lower resolution bands
+                </description>
+            </validValue>
+            <validValue>
+                <value>250</value>
+                <description>250m resolution with replication for lower resolution bands</description>
+            </validValue>
+            <validValue>
+                <value>-1</value>
+                <description>standard ocean 1km processing</description>
+            </validValue>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value/>
+            <type>string</type>
+            <default>output</default>
+            <description>(default=output) = output L2 file #1 name, output vicarious L1B for inverse mode</description>
+            <source>default</source>
+        </option>
+        <option type="ofile">
+            <name>ofile[#]</name>
+            <value/>
+            <type>string</type>
+            <default>output</default>
+            <description>additional output L2 file name</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>processing version string</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>suite</name>
+            <value>OC</value>
+            <type>string</type>
+            <default>OC</default>
+            <description>product suite string for loading suite-specific defaults
+            </description>
+            <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
+        </option>
+
+        <option type="float">
+            <name>datamin</name>
+            <value></value>
+            <type>float</type>
+            <default>0.01</default>
+            <description>minimum reflectance for scaling
+            </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>datamax</name>
+            <value></value>
+            <type>float</type>
+            <default>0.9</default>
+            <description>maximum reflectance for scaling
+            </description>
+            <source>default</source>
+        </option>
+        <option type="int">
+            <name>stype</name>
+            <value></value>
+            <type>int</type>
+            <default>0</default>
+            <description>scaling type  0: log 1: linear
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>log</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>linear</description>
+            </validValue>
+         </option>
+        <option type="float">
+            <name>east</name>
+            <value></value>
+            <type>float</type>
+            <default>-999</default>
+            <description>east boundary
+            </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>west</name>
+            <value></value>
+            <type>float</type>
+            <default>-999</default>
+            <description>west boundary </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>north</name>
+            <value></value>
+            <type>float</type>
+            <default>-999</default>
+            <description>north boundary</description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>south</name>
+            <value></value>
+            <type>float</type>
+            <default>-999</default>
+            <description>south boundary</description>
+            <source>default</source>
+        </option>
+        <option type="int">
+            <name>width</name>
+            <value></value>
+            <type>int</type>
+            <default>600</default>
+            <description>width of the output image</description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>threshold</name>
+            <value></value>
+            <type>float</type>
+            <default>0.1</default>
+            <description>threshold for the number of good pixels before an image is produced
+            </description>
+            <source>default</source>
+        </option>
+        <option type="int">
+            <name>rgb</name>
+            <value></value>
+            <type>int</type>
+            <default>[1,1,1]</default>
+            <description>bands to use for red, green and blue</description>
+        </option>
+        <option type="int">
+            <name>outmode</name>
+            <value></value>
+            <type>int</type>
+            <default>0</default>
+            <description>format of the output file   0: PPM  1: PNG  2: GeoTIFF
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>PPM image file</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>PNG color or grayscale image file</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>GeoTIFF color or grayscale geo tiff image file</description>
+            </validValue>
+        </option>
+    </options>
+</paramInfo>

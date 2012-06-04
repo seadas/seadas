@@ -14,9 +14,13 @@ import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.l2gen.FileSelectorPanel;
 import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamValidValueInfo;
 import org.esa.beam.framework.datamodel.Product;
+import org.esa.beam.framework.ui.BasicApp;
+import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
 import org.esa.beam.util.io.FileUtils;
 import org.esa.beam.visat.VisatApp;
@@ -24,7 +28,10 @@ import org.esa.beam.visat.VisatApp;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -38,7 +45,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     protected final String xmlFileName;
     protected final SourceProductFileSelector sourceProductSelector;
     protected final SourceProductFileSelector geoFileSelector;
-    protected final OutputFileSelector outputFileSelector;
+    protected FileSelectorPanel outputFileSelector;
 
 
     private JPanel mainPanel;
@@ -55,6 +62,11 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     private boolean handleIfileJComboBoxEnabled = true;
     private boolean handleOfileSelecterEnabled = true;
 
+    private JCheckBox openInAppCheckBox;
+
+    private JCheckBox smitoppmCheckBox;
+
+    private FileSelectorPanel ppmFile;
 
     CloProgramUIImpl(String programName, String xmlFileName) {
         this.programName = programName;
@@ -62,15 +74,21 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         processorModel = new ProcessorModel(programName, xmlFileName);
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
         sourceProductSelector.initProducts();
-        outputFileSelector = new OutputFileSelector(VisatApp.getApp(), "Output File");
+
         geoFileSelector = new SourceProductFileSelector(VisatApp.getApp(), "");
         inputFilePanelHeight = 0;
         outputFilePanelHeight = 0;
-        createUserInterface();
+        openInAppCheckBox = new JCheckBox("Open in " + VisatApp.getApp().getApplicationName());
+        openInAppCheckBox.setSelected(true);
+        createUserInterface(false, null);
     }
 
 
     public ProcessorModel getProcessorModel() {
+
+        if (programName.indexOf("smigen") != -1 && smitoppmCheckBox.isSelected()) {
+            processorModel.createsmitoppmProcessorModel(ppmFile.getFileName());
+        }
         return processorModel;
 
     }
@@ -79,40 +97,69 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         return sourceProductSelector.getSelectedProduct();
     }
 
-    private void createUserInterface() {
+    private void createUserInterface(boolean showParStringEditor, String parString) {
 
         if (mainPanel != null) {
             this.remove(mainPanel);
         }
+
         mainPanel = new JPanel(new GridBagLayout());
 
         mainPanel.add(createInputOutputPanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         mainPanel.add(createParamPanel(),
-                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 3));
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
-        mainPanel.add(outputFileSelector.getOpenInAppCheckBox(),
-                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        if (showParStringEditor) {
+            mainPanel.add(new JScrollPane(createParStringEditor(parString)),
+                    new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        }
+        mainPanel.add(createParStringButtonPanel(),
+                new GridBagConstraintsCustom(0, 3, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+        mainPanel.add(openInAppCheckBox,
+                new GridBagConstraintsCustom(0, 4, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL));
+        mainPanel.setPreferredSize(mainPanel.getPreferredSize());
+        mainPanel.setSize(mainPanel.getPreferredSize().width, mainPanel.getPreferredSize().height + 200);
+
+        mainPanel.revalidate();
+        mainPanel.repaint();
 
         add(mainPanel);
-        validate();
+        revalidate();
         repaint();
+        this.revalidate();
+
     }
 
-    //    private JCheckBox makeOpenInAppCheckBox(){
-//        JCheckBox openInAppCheckBox = outputFileSelector.getOpenInAppCheckBox();
-//        openInApp = outputFileSelector.getOpenInAppCheckBox().isSelected();
-//        outputFileSelector.getModel().getValueContainer().addPropertyChangeListener(new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                //To change body of implemented methods use File | Settings | File Templates.
-//                openInApp = outputFileSelector.getOpenInAppCheckBox().isSelected();
-//            }
-//        } );
-//
-//        return openInAppCheckBox;
-//    }
+    private JTextArea createParStringEditor(String parString) {
+        JTextArea parStringEditor = new JTextArea(parString);
+        parStringEditor.setPreferredSize(parStringEditor.getPreferredSize());
+
+        return parStringEditor;
+
+    }
+
+    private JPanel createParStringButtonPanel() {
+        JPanel parStringButtonPanel = new JPanel();
+
+        final JButton saveParameterFileButton = new JButton("Store Parameters...");
+        saveParameterFileButton.addActionListener(createSafeAsAction());
+
+        final JButton loadParameterButton = new JButton("Load Parameters...");
+        loadParameterButton.addActionListener(createLoadParameterAction());
+
+
+        final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.add(loadParameterButton);
+        buttonPanel.add(saveParameterFileButton);
+
+        parStringButtonPanel.add(buttonPanel);
+
+        return parStringButtonPanel;
+    }
+
+
     private JPanel createInputOutputPanel() {
 
         final JPanel inputOutputPanel = new JPanel(new GridBagLayout());
@@ -144,21 +191,60 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         textScrollPane.setPreferredSize(new Dimension(700, 400));
 
-        final JButton saveParameterFileButton = new JButton("Store Parameters...");
-        saveParameterFileButton.addActionListener(createSafeAsAction());
-
-        final JButton loadParameterButton = new JButton("Load Parameters...");
-        loadParameterButton.addActionListener(createLoadParameterAction());
-
-        final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        buttonPanel.add(loadParameterButton);
-        buttonPanel.add(saveParameterFileButton);
-
         final JPanel parameterComponent = new JPanel(new BorderLayout());
-        parameterComponent.add(textScrollPane, BorderLayout.CENTER);
-        parameterComponent.add(buttonPanel, BorderLayout.SOUTH);
 
+        parameterComponent.add(textScrollPane, BorderLayout.CENTER);
+
+
+        parameterComponent.setPreferredSize(parameterComponent.getPreferredSize());
+
+        if (programName.indexOf("smigen") != -1) {
+            JPanel smitoppmPanel = createSmiToPpmPanel();
+            parameterComponent.add(smitoppmPanel, BorderLayout.SOUTH);
+            smitoppmPanel.addPropertyChangeListener(new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    parameterComponent.validate();
+                    parameterComponent.repaint();
+                }
+            });
+        }
         return parameterComponent;
+    }
+
+    private JPanel createSmiToPpmPanel() {
+        final JPanel smitoppmPanel = new JPanel();
+        smitoppmPanel.setLayout(new FlowLayout());
+
+        final String smitoppmLabelName = "smitoppm";
+
+        JLabel smitoppmLabel = new JLabel(smitoppmLabelName);
+
+        smitoppmCheckBox = new JCheckBox();
+        smitoppmCheckBox.setSelected(false);
+
+        ppmFile = new FileSelectorPanel(VisatApp.getApp(), FileSelectorPanel.Type.OFILE, "ppm file");
+        //final OutputFileSelector ppmFile = new OutputFileSelector(VisatApp.getApp(), "ppm file");
+
+        smitoppmPanel.add(smitoppmLabel);
+        smitoppmPanel.add(smitoppmCheckBox);
+        smitoppmCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (smitoppmCheckBox.isSelected()) {
+                    smitoppmPanel.add(ppmFile);
+                    smitoppmPanel.validate();
+                    smitoppmPanel.repaint();
+                } else {
+                    smitoppmPanel.remove(ppmFile);
+                    smitoppmPanel.validate();
+                    smitoppmPanel.repaint();
+                }
+
+            }
+        });
+
+        return smitoppmPanel;
     }
 
     private ActionListener createLoadParameterAction() {
@@ -167,8 +253,15 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             public void actionPerformed(ActionEvent e) {
                 final Component parent = (Component) e.getSource();
                 System.out.print(processorModel.getRootDir().getAbsolutePath());
-                final BeamFileChooser beamFileChooser = new BeamFileChooser(processorModel.getRootDir());
+
+                String homeDirPath = SystemUtils.getUserHomeDir().getPath();
+                String openDir = VisatApp.getApp().getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                        homeDirPath);
+                final BeamFileChooser beamFileChooser = new BeamFileChooser(new File(openDir));
+                //final FileSelectorPanel parFileSelector = new FileSelectorPanel(VisatApp.getApp());
+                //parFileSelector.
                 final int status = beamFileChooser.showOpenDialog(parent);
+
                 if (status == JFileChooser.APPROVE_OPTION) {
                     final File file = beamFileChooser.getSelectedFile();
                     if (!file.exists()) {
@@ -180,31 +273,60 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                         return;
                     }
                     LineNumberReader reader = null;
+                    StringBuilder parString = new StringBuilder();
                     try {
                         reader = new LineNumberReader(new FileReader(file));
                         String line;
                         line = reader.readLine();
                         String[] option = new String[2];
                         while (line != null) {
-                            System.out.printf("%1$d %2$s %n", reader.getLineNumber(), line);
-                            option = line.split("=", 2);
-                            processorModel.updateParamInfo(option[0], option[1]);
-                            if (option[0].trim().equals(processorModel.getPrimaryInputFileOptionName())) {
-                                processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
-                                    @Override
-                                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                                        {
-                                           // sourceProductSelector.getIfileTextfield().setText();
-                                           sourceProductSelector.setSelectedFile(new File(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName())));
+                            //System.out.printf("%1$d %2$s %n", reader.getLineNumber(), line);
+                            //System.out.println("par file content : " + reader.getLineNumber() + line);
+                            parString.append(line + "\n");
+                            if (line.indexOf("=") != -1) {
+                                option = line.split("=", 2);
+                                processorModel.updateParamInfo(option[0], option[1]);
+
+
+                                if (option[0].trim().equals(processorModel.getPrimaryInputFileOptionName())) {
+                                    //sourceProductSelector.setSelectedFile(new File(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName())));
+                                    //sourceProductSelector.getProductNameComboBox().setSelectedItem();
+                                    //System.out.println("option1: " + option[0] + "   option2: " + option[1]);
+                                    processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
+                                        @Override
+                                        public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                                            {
+                                                // sourceProductSelector.getIfileTextfield().setText();
+                                                sourceProductSelector.setSelectedFile(new File(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName())));
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
+
+                                if (option[0].trim().equals(processorModel.getPrimaryOutputFileOptionName())) {
+                                    System.out.println("option1: " + option[0] + "   option2: " + option[1]);
+                                    processorModel.addPropertyChangeListener(processorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
+                                        @Override
+                                        public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                                            {
+                                                File outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()));
+                                                if (outputFile != null && outputFile.exists()) {
+                                                    System.out.println("ofile exists!");
+                                                    outputFileSelector.setFilename(outputFile.getAbsolutePath());
+//                                                    outputFileSelector.getModel().setProductDir(outputFile.getParentFile());
+//                                                    outputFileSelector.getModel().setProductName(outputFile.getName());
+                                                }
+                                                // outputFileSelector.getModel().setProductDir(new File(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName())));
+                                            }
+                                        }
+                                    });
+                                }
                             }
                             line = reader.readLine();
                         }
-                        //mainPanel.validate();
-                        //mainPanel.repaint();
-                        createUserInterface();
+                        //JTextArea parText = new JTextArea(processorModel.getParString());
+
+                        createUserInterface(true, parString.toString());
                         System.out.println("par String: " + processorModel.getParString());
                     } catch (IOException e1) {
                         System.err.println(e1.getMessage());
@@ -291,7 +413,6 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     }
 
     private File getGeoFile(File selectedProduct) {
-        //final Product selectedProduct = sourceProductSelector.getSelectedProduct();
         if (selectedProduct == null) {
             return null;
         }
@@ -306,7 +427,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     }
 
     public boolean isOpenOutputInApp() {
-        return outputFileSelector.getOpenInAppCheckBox().isSelected();
+        return openInAppCheckBox.isSelected();
     }
 
     protected JPanel createParamPanel(ProcessorModel processorModel) {
@@ -316,10 +437,8 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         JPanel booleanParamPanel = new JPanel();
         JPanel fileParamPanel = new JPanel();
         Dimension paramPanelDimension = new Dimension();
-        paramPanelDimension.setSize(ioPanelWidth, 1000);
-
-        //int iopanelSize;
-
+        //paramPanelDimension.setSize(ioPanelWidth, 100 * (paramList.size()/5 + 2));
+        paramPanelDimension.setSize(ioPanelWidth, 100);
 
         TableLayout booelanParamLayout = new TableLayout(3);
         booleanParamPanel.setLayout(booelanParamLayout);
@@ -330,8 +449,6 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
         TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
         textFieldPanel.setLayout(textFieldPanelLayout);
-        //paramPanel.setBorder(new EmptyBorder(null));
-        //paramPanel.setPreferredSize(paramPanelDimension);
 
         Iterator itr = paramList.iterator();
         while (itr.hasNext()) {
@@ -426,7 +543,8 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         if (pi.getValue() == null || pi.getValue().length() == 0) {
             if (pi.getDefaultValue() != null) {
-               // pi.setValue(pi.getDefaultValue());
+                processorModel.updateParamInfo(pi, pi.getDefaultValue());
+                //pi.setValue(pi.getDefaultValue());
             }
         }
         final PropertyContainer vc = new PropertyContainer();
@@ -454,6 +572,8 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
+                System.out.println("property changed! " + field.getText());
+                processorModel.updateParamInfo(pi, field.getText());
                 //pi.setValue(field.getText());
                 handleParamChanged();
             }
@@ -500,8 +620,9 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
 
-               // pi.setValue((new Boolean(field.isSelected())).toString());
+                //pi.setValue((new Boolean(field.isSelected())).toString());
 
+                processorModel.updateParamInfo(pi,(new Boolean(field.isSelected())).toString());
                 SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
 
             }
@@ -552,42 +673,13 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         }
 
         String optionName = paramInfo.getName();
-        //String optionValue = (String)inputList.getSelectedItem();
-//        inputList.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//                String newValue = (String) inputList.getSelectedItem();
-//                processorModel.updateParamInfo(paramInfo, newValue);
-//            }
-//        });
-//        inputList.addPropertyChangeListener(new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                //To change body of implemented methods use File | Settings | File Templates.
-//            }
-//        });
 
         final PropertyContainer vc = new PropertyContainer();
         vc.addProperty(Property.create(optionName, paramInfo.getValue()));
         vc.getDescriptor(optionName).setDisplayName(optionName);
 
-        //final ValueRange valueRange = new ValueRange(-180, 180);
-
-
-        //vc.getDescriptor(optionName).setValueRange(valueRange);
-
         final BindingContext ctx = new BindingContext(vc);
 
-//        processorModel.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                int newValuePosition = validValues.indexOf(paramInfo.getValue());
-//                if (newValuePosition != -1) {
-//                    inputList.setSelectedIndex(newValuePosition);
-//                }
-//
-//            }
-//        });
         ctx.bind(optionName, inputList);
 
         ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
@@ -596,13 +688,12 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             public void propertyChange(PropertyChangeEvent pce) {
 
                 String newValue = (String) inputList.getSelectedItem();
+                processorModel.updateParamInfo(paramInfo, newValue);
                 //paramInfo.setValue(newValue);
             }
         });
 
         singlePanel.add(inputList);
-
-
         switch (paramInfo.getType()) {
             case STRING:
                 break;
@@ -619,11 +710,6 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         final String optionName = pi.getName();
         final String optionValue = pi.getValue();
-        //final JPanel optionPanel = new JPanel();
-        // optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
-        //optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        //optionPanel.add(new JLabel(optionName));
-
 
         final PropertyContainer vc = new PropertyContainer();
         vc.addProperty(Property.create(optionName, optionValue));
@@ -637,9 +723,6 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             }
         });
 
-        // /final ValueRange valueRange = new ValueRange(-180, 180);
-        //vc.getDescriptor(optionName).setValueRange(valueRange);
-
         final BindingContext ctx = new BindingContext(vc);
         SeadasLogger.getLogger().finest(optionName + "  " + optionValue);
         ctx.bind(optionName, ofs.getFileNameField());
@@ -649,12 +732,11 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
 
-               // pi.setValue(ofs.getCurrentFileName());
+                //pi.setValue(ofs.getCurrentFileName());
+                 processorModel.updateParamInfo(pi, ofs.getCurrentFileName() );
                 debugf("%s %s %n", new String[]{ofs.getCurrentFileName(), pi.getValue()});
             }
         });
-
-        //optionPanel.add(ofs);
 
         return ofs;
 
@@ -702,19 +784,15 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     private JPanel createSourceProductPanel() {
 
         final String primaryInputFileOptionName = processorModel.getPrimaryInputFileOptionName();
+
         String primaryInputFileName = processorModel.getParamValue(primaryInputFileOptionName);
 
-        //String ifileNamePad = StringUtil.repeat(" ", ParamUtils.getLongestIFileNameLength());
-        sourceProductSelector.setProductNameLabel(new JLabel(L2genData.IFILE));
-//        if (processorModel.getInputFile() != null ) {
-//             sourceProductSelector.setSelectedFile(processorModel.getInputFile());
-//        }
+        sourceProductSelector.setProductNameLabel(new JLabel(primaryInputFileOptionName));
 
-
-        System.out.println("primary input file name:" + processorModel.getParamValue(primaryInputFileOptionName));
         if (primaryInputFileName != null) {
             sourceProductSelector.getIfileTextfield().setText(primaryInputFileName);
             sourceProductSelector.setSelectedFile(new File(primaryInputFileName));
+            sourceProductSelector.getProductNameComboBox().setSelectedItem(new File(processorModel.getParamValue(primaryInputFileOptionName)));
         }
 
         final JPanel panel = sourceProductSelector.createDefaultPanel();
@@ -731,8 +809,8 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                 if (sourceProduct != null) {
                     if (handleIfileJComboBoxEnabled) {
                         processorModel.updateParamInfo(primaryInputFileOptionName, sourceProduct.toString());
-                        outputFileSelector.getModel().setProductDir(sourceProduct.getParentFile());
-                        outputFileSelector.getModel().setProductName(sourceProduct.getName() + "_out");
+                        //outputFileSelector.getModel().setProductDir(sourceProduct.getParentFile());
+                        //outputFileSelector.getModel().setProductName(sourceProduct.getName() + "_out");
 
                         File geoFile = getGeoFile(sourceProduct);
                         if (geoFile.exists()) {
@@ -745,55 +823,36 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                 }
             }
         });
-//        sourceProductSelector.addFocusListener(new FocusListener() {
-//            @Override
-//            public void focusGained(FocusEvent focusEvent) {
-//                //To change body of implemented methods use File | Settings | File Templates.
-//            }
-//
-//            @Override
-//            public void focusLost(FocusEvent focusEvent) {
-//                //To change body of implemented methods use File | Settings | File Templates.
-//            }
-//        });
-//
-//         processorModel.addPropertyChangeListener(primaryInputFileOptionName, new PropertyChangeListener() {
-//             @Override
-//             public void propertyChange(PropertyChangeEvent evt) {
-//                 File iFile = new File(processorModel.getParamValue(primaryInputFileOptionName));
-//                 //handlerEnabled[0] = false;
-//                 if (iFile != null && iFile.exists()) {
-//                     sourceProductSelector.setSelectedFile(iFile);
-//                 } else {
-//                     sourceProductSelector.releaseProducts();
-//                 }
-//                 //handlerEnabled[0] = true;
-//             }
-//         });
-//        Component[] panelCs =  panel.getComponents();
-//        for (Component c :panelCs ) {
-//            System.out.println(c.getClass());
-//            if (c.getClass().toString().indexOf("JComboBox") != -1 )
-//            {
-//                ((JComboBox)c).setSelectedItem(primaryInputFileName);
-//            }
-//        }
-//        final PropertyContainer vc = new PropertyContainer();
-//        vc.addProperty(Property.create(primaryInputFileOptionName, primaryInputFileName));
-//        vc.getDescriptor(primaryInputFileOptionName).setDisplayName(primaryInputFileOptionName);
-//        final BindingContext ctx = new BindingContext(vc);
-//        System.out.println("property changed in parfile:" + processorModel.getParamValue(primaryInputFileOptionName) );
-//        ctx.bind(primaryInputFileOptionName, sourceProductSelector.getIfileTextfield());
-//
-//        ctx.addPropertyChangeListener(primaryInputFileOptionName, new PropertyChangeListener() {
-//
-//            @Override
-//            public void propertyChange(PropertyChangeEvent pce) {
-//
-//                System.out.println("property changed:" + sourceProductSelector.getIfileTextfield().getText() + " "  + sourceProductSelector.getSelectedProduct().getName());
-//                processorModel.updateParamInfo(primaryInputFileOptionName, sourceProductSelector.getSelectedProduct().getName());
-//            }
-//        });
+        processorModel.addPropertyChangeListener(primaryInputFileOptionName, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                File iFile = new File(processorModel.getParamValue(primaryInputFileOptionName));
+                //handlerEnabled[0] = false;
+                if (iFile != null && iFile.exists()) {
+                    sourceProductSelector.setSelectedFile(iFile);
+                } else {
+                    sourceProductSelector.releaseProducts();
+                }
+                //handlerEnabled[0] = true;
+            }
+        });
+
+        final PropertyContainer vc = new PropertyContainer();
+        vc.addProperty(Property.create(primaryInputFileOptionName, primaryInputFileName));
+        vc.getDescriptor(primaryInputFileOptionName).setDisplayName(primaryInputFileOptionName);
+        final BindingContext ctx = new BindingContext(vc);
+        System.out.println("property changed in parfile:" + processorModel.getParamValue(primaryInputFileOptionName));
+        ctx.bind(primaryInputFileOptionName, sourceProductSelector.getProductNameComboBox());
+
+        ctx.addPropertyChangeListener(primaryInputFileOptionName, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+
+                System.out.println("property changed:" + sourceProductSelector.getIfileTextfield().getText() + " " + sourceProductSelector.getSelectedProduct().getName());
+                processorModel.updateParamInfo(primaryInputFileOptionName, sourceProductSelector.getSelectedProduct().getName());
+            }
+        });
 
 
         inputFilePanelHeight = panel.getHeight();
@@ -819,7 +878,6 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                 if (geoFileSelector.getSelectedProduct() != null
                         && geoFileSelector.getSelectedProduct().getFileLocation() != null) {
                     if (handleIfileJComboBoxEnabled) {
-                        //   l2genData.setParamValue(l2genData.IFILE, sourceProductSelector.getSelectedProduct().getProgramName());
                         processorModel.updateParamInfo(L2genData.GEOFILE, geoFileSelector.getSelectedProduct().getFileLocation().toString());
                     }
                 }
@@ -829,51 +887,95 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         return panel;
     }
 
-    private void ifileChangedEventHandler() {
-
-        File ifile = new File(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-
-        if (sourceProductSelector != null) {
-            handleIfileJComboBoxEnabled = false;
-            sourceProductSelector.setSelectedFile(ifile);
-            handleIfileJComboBoxEnabled = true;
-        }
-
-
-    }
 
     protected void handleParamChanged() {
 
     }
 
     private JPanel createOutputFilePanel() {
-//        if (! processorModel.hasPrimaryOutputFile() ) {
-//            return null;
-//        }
-        outputFileSelector.setOutputFileNameLabel(new JLabel(L2genData.OFILE));
-        outputFileSelector.setOutputFileDirLabel(new JLabel("Save in:"));
-        final JPanel panel = outputFileSelector.createDefaultPanel();
 
-//        outputFileSelector.getModel().getProductNameComboBox().setPrototypeDisplayValue(
-//                "MER_RR__1PPBCM20030730_071000_000003972018_00321_07389_0000.N1");
-        outputFileSelector.getModel().getValueContainer().addPropertyChangeListener(new PropertyChangeListener() {
+
+        final String primaryOutputFileOptionName = processorModel.getPrimaryOutputFileOptionName();
+
+        final String primaryOutputFileName = processorModel.getParamValue(primaryOutputFileOptionName);
+        final ParamInfo pi = processorModel.getParamInfo(primaryOutputFileOptionName);
+
+        outputFileSelector = new FileSelectorPanel(VisatApp.getApp(), FileSelectorPanel.Type.OFILE, primaryOutputFileOptionName);
+
+
+        final PropertyContainer vc = new PropertyContainer();
+        vc.addProperty(Property.create(pi.getName(), pi.getValue()));
+        vc.getDescriptor(primaryOutputFileOptionName).setDisplayName(primaryOutputFileOptionName);
+
+        final BindingContext ctx = new BindingContext(vc);
+
+        final JTextField ofileTextField = outputFileSelector.getFileTextField();
+        ofileTextField.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String ofile = null;
-                if (outputFileSelector.getModel().getProductFile() != null) {
-                    ofile = outputFileSelector.getModel().getProductFile().getAbsolutePath();
-                }
+                System.out.println("property ofile: " + primaryOutputFileOptionName + " + " + ofileTextField.getText() + " " + outputFileSelector.getFileName());
+                System.out.println("property ofile: " + pi.getName() + " " + pi.getValue());
+                outputFileSelector.setFilename(pi.getValue());
+                ofileTextField.postActionEvent();
+            }
+        });
 
-                if (ofile != null) {
-                    if (handleOfileSelecterEnabled) {
+        outputFileSelector.addPropertyChangeListener(outputFileSelector.getPropertyName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                //if (handlerEnabled[0]) {
+                processorModel.updateParamInfo(primaryOutputFileOptionName, outputFileSelector.getFileName());
+                //}
+            }
+        });
 
-                        processorModel.updateParamInfo(processorModel.getPrimaryOutputFileOptionName(), ofile);
+        ctx.bind(primaryOutputFileOptionName, ofileTextField);
+
+        ctx.addPropertyChangeListener(primaryOutputFileOptionName, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+
+                String homeDirPath = SystemUtils.getUserHomeDir().getPath();
+                String openDir = VisatApp.getApp().getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                        homeDirPath);
+                String sourceDir = sourceProductSelector.getCurrentDirectory().toString();
+                //currentDirectory = new File(openDir);
+                //fileChooser.setCurrentDirectory(currentDirectory);
+                System.out.println("ctx ofile: " + primaryOutputFileOptionName + " + " + ofileTextField.getText() + " " + outputFileSelector.getFileName() + " " + System.getProperty("file.separator"));
+                System.out.println("/test/".indexOf("/"));
+                String ofileName = outputFileSelector.getFileName();
+                System.out.println(sourceDir + " " + sourceDir + System.getProperty("file.separator") + ofileName);
+
+                File ofile;
+                if (ofileName.indexOf(System.getProperty("file.separator")) == 0) {
+
+                    ofile = new File(ofileName);
+                    if (ofile.exists()) {
+                        processorModel.updateParamInfo(primaryOutputFileOptionName, ofileName);
                     }
+                } else {
+                    System.out.println("what is updated " + sourceDir + " " + sourceDir + System.getProperty("file.separator") + ofileName);
+                    processorModel.updateParamInfo(primaryOutputFileOptionName, sourceDir + System.getProperty("file.separator") + ofileName);
                 }
             }
         });
-        outputFilePanelHeight = panel.getHeight();
-        return panel;
+
+        processorModel.addPropertyChangeListener(primaryOutputFileOptionName, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                File oFile = new File(processorModel.getParamValue(primaryOutputFileOptionName));
+                //handlerEnabled[0] = false;
+                System.out.println("processor model property ofile: " + pi.getName() + " " + pi.getValue());
+                if (oFile != null && oFile.exists()) {
+                    outputFileSelector.setFilename(oFile.getAbsolutePath());
+                }
+                //handlerEnabled[0] = true;
+            }
+        });
+
+        outputFilePanelHeight = outputFileSelector.getHeight();
+        return outputFileSelector;
     }
 
     private JPanel makeOutputFileOptionField(final ParamInfo pi) {

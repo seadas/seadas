@@ -1,0 +1,110 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="paramInfo">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="programMetaData" >
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="hasParFile" type="xs:boolean"/>
+                            <xs:element name="parFileOptionName" type="xs:string" default="par" minOccurs="0"/>
+                            <xs:element name="progressRegex" type="xs:string" minOccurs="0"/>
+                            <xs:element name="hasProgramDependency" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name = "programName"  type="xs:string" />
+                                        <xs:element name = "programParamInfo" type="xs:string" />
+                                        <xs:element name="isDefault" type="xs:boolean" minOccurs=" 0"/>
+                                    </xs:all>
+                                </xs:complexType>
+                                    </xs:element>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="options">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="option" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="name" type="xs:string"/>
+                                        <xs:element name="value" type="xs:string" minOccurs="0">
+                                            <xs:alternative test="@type eq 'string'" type="xs:string"/>
+                                            <xs:alternative test="@type eq 'int'" type="xs:int"/>
+                                            <xs:alternative test="@type eq 'boolean'" type="xs:boolean"/>
+                                            <xs:alternative test="@type eq 'float'" type="xs:float"/>
+                                            <xs:alternative test="@type eq 'double'" type="xs:double"/>
+                                        </xs:element>
+                                        <xs:element name="default" type="xs:string" minOccurs="0">
+                                            <xs:alternative test="@type eq 'string'" type="xs:string"/>
+                                            <xs:alternative test="@type eq 'int'" type="xs:int"/>
+                                            <xs:alternative test="@type eq 'boolean'" type="xs:boolean"/>
+                                            <xs:alternative test="@type eq 'float'" type="xs:float"/>
+                                            <xs:alternative test="@type eq 'double'" type="xs:double"/>
+                                        </xs:element>
+                                        <xs:element name="source" type="xs:string" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="programName" type="xs:string" minOccurs="0"  maxOccurs="1"/>
+                                                    <xs:element name="programParamInfo" type="xs:string" minOccurs="0"  maxOccurs="1"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="isProgram" type="xs:boolean">
+
+                                                </xs:attribute>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="order" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="aliases" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="alias" type="xs:string" maxOccurs="unbounded"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="validValues" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="validValue" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:all>
+                                                                <xs:element name="value" type="xs:string">
+                                                                    <xs:alternative test="@type eq 'string'"
+                                                                                    type="xs:string"/>
+                                                                    <xs:alternative test="@type eq 'int'"
+                                                                                    type="xs:int"/>
+                                                                    <xs:alternative test="@type eq 'boolean'"
+                                                                                    type="xs:boolean"/>
+                                                                    <xs:alternative test="@type eq 'float'"
+                                                                                    type="xs:float"/>
+                                                                    <xs:alternative test="@type eq 'double'"
+                                                                                    type="xs:double"/>
+                                                                </xs:element>
+                                                                <xs:element name="description" type="xs:string"/>
+                                                            </xs:all>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="description" type="xs:string" minOccurs="0"/>
+                                    </xs:all>
+                                    <xs:attribute name="type" default="string">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="string"/>
+                                                <xs:enumeration value="int"/>
+                                                <xs:enumeration value="boolean"/>
+                                                <xs:enumeration value="float"/>
+                                                <xs:enumeration value="double"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                    <xs:attribute name="runtimeOption" type="xs:boolean" default="true"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

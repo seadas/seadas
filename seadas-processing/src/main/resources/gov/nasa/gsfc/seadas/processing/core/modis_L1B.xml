@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">>
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>parfile</parFileOptionName>
+        <hasGeoFile>true</hasGeoFile>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>geofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>ifile</name>
+            <value></value>
+            <default></default>
+            <description>Input file</description>
+            <source>command line</source>
+            <order>1</order>
+        </option>
+        <option type="ifile">
+            <name>geofile</name>
+            <value></value>
+            <default></default>
+            <description>geo file</description>
+            <source>command line</source>
+            <order>2</order>
+        </option>
+        <option type="ofile">
+            <name>okm</name>
+            <value></value>
+            <default></default>
+            <description>Output MODIS L1B 1KM HDF filename</description>
+            <order>3</order>
+        </option>
+        <option type="ofile">
+            <name>hkm</name>
+            <value></value>
+            <default></default>
+            <description>Output MODIS L1B HKM HDF filename</description>
+            <order>4</order>
+        </option>
+        <option type="ofile">
+            <name>qkm</name>
+            <value></value>
+            <default></default>
+            <description>Output MODIS L1B QKM HDF filename</description>
+            <order>5</order>
+        </option>
+        <option type="ofile">
+            <name>obc</name>
+            <value></value>
+            <default></default>
+            <description>Output MODIS L1B OBC HDF filename</description>
+            <order>6</order>
+        </option>
+        <option type="string">
+            <name>lutver</name>
+            <value></value>
+            <default></default>
+            <description>L1B LUT version number</description>
+            <order>7</order>
+        </option>
+        <option type="ifile">
+            <name>lutdir</name>
+            <value></value>
+            <default></default>
+            <description>Path of directory containing LUT files</description>
+            <order>8</order>
+        </option>
+        <option type="boolean">
+            <name>del-okm</name>
+            <value></value>
+            <default></default>
+            <description>Path of directory containing LUT files</description>
+            <order>9</order>
+        </option>
+        <option type="boolean">
+            <name>del-hkm</name>
+            <value></value>
+            <default></default>
+            <description>Path of directory containing LUT files</description>
+            <order>10</order>
+        </option>
+        <option type="boolean">
+            <name>del-qkm</name>
+            <value></value>
+            <default></default>
+            <description>Path of directory containing LUT files</description>
+            <order>11</order>
+        </option>
+        <option type="boolean">
+            <name>keep-obc</name>
+            <value></value>
+            <default></default>
+            <description>Path of directory containing LUT files</description>
+            <order>12</order>
+        </option>
+        <option type="boolean">
+            <name>log</name>
+            <value></value>
+            <default></default>
+            <description>Path of directory containing LUT files</description>
+            <order>13</order>
+        </option>
+        <option type="boolean">
+            <name>verbose</name>
+            <value></value>
+            <default></default>
+            <description>Path of directory containing LUT files</description>
+            <order>14</order>
+        </option>
+    </options>
+</paramInfo>

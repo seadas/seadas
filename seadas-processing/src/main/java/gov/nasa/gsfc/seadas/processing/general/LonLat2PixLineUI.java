@@ -6,6 +6,7 @@ import com.bc.ceres.binding.ValueRange;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;

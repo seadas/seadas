@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
-import gov.nasa.gsfc.seadas.processing.general.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 
 import java.io.BufferedReader;
 import java.io.File;

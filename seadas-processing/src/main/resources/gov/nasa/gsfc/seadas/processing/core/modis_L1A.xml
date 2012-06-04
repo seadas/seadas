@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">>
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>parfile</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>file</primaryOption>
+            <primaryOption>output</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>file</name>
+            <value></value>
+            <default></default>
+            <description>Input file</description>
+            <source>command line</source>
+        </option>
+        <option type="ofile">
+            <name>output</name>
+            <value></value>
+            <default></default>
+            <description>Output L1A filename - defaults to '(A|T)YYYYDDDHHMMSS.L1A_LAC'</description>
+        </option>
+        <option type="string">
+            <name>mission</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>MODIS mission - A(qua) or T(erra)</description>
+            <source>default</source>
+            <validValue>
+                <value>A</value>
+                <description>Aqua</description>
+            </validValue>
+            <validValue>
+                <value>T</value>
+                <description>Terra</description>
+            </validValue>
+        </option>
+        <option type="string">
+            <name>startnudge</name>
+            <value></value>
+            <default>STARTNUDGE</default>
+            <description>Level-0 start-time offset (seconds)</description>
+        </option>
+        <option type="string">
+            <name>stopnudge</name>
+            <value></value>
+            <default>STOPNUDGE</default>
+            <description>Level-0 stop-time offset (seconds)</description>
+        </option>
+        <option type="string">
+            <name>nextgranule</name>
+            <value></value>
+            <default>NEXT</default>
+            <description>Next L0 granule (for geolocation of last scan; sets stopnudge=0)</description>
+        </option>
+        <option type="boolean">
+            <name>log</name>
+            <value></value>
+            <default></default>
+            <description>Save processing log files</description>
+        </option>
+        <option type="boolean">
+            <name>verbose</name>
+            <value></value>
+            <default></default>
+            <description>print status messages</description>
+        </option>
+        <option type="boolean">
+            <name>disableL0fix</name>
+            <value></value>
+            <default></default>
+            <description>Disable use of l0fix_modis utility for corrupt packets</description>
+        </option>
+    </options>
+</paramInfo>

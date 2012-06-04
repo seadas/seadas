@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+        <hasGeoFile>true</hasGeoFile>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="help">
+            <name>-help</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print usage information</description>
+            <source>default</source>
+            <alias>-h</alias>
+            <alias>--help</alias>
+        </option>
+        <option type="help">
+            <name>-version</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print the version
+                information
+            </description>
+            <source>default</source>
+            <alias>--version</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print
+                information about each option
+            </description>
+            <source>default</source>
+            <alias>--dump_options</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_paramfile</name>
+            <value/>
+            <type>string</type>
+            <description>print
+                information about each option to paramfile
+            </description>
+            <source>default</source>
+            <alias>--dump_options_paramfile</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_xmlfile</name>
+            <value>l2mapgen.xml</value>
+            <type>string</type>
+            <description>print
+                information about each option to XML file
+            </description>
+            <source>command line</source>
+            <alias>--dump_options_xmlfile</alias>
+        </option>
+        <option type="help">
+            <name>par</name>
+            <value/>
+            <type>string</type>
+            <description>input parameter file</description>
+            <source>default</source>
+        </option>
+        <option type="ifile">
+            <name>ifile</name>
+            <value/>
+            <type>string</type>
+            <description>input L2 file name or file with a list of files names</description>
+            <source>default</source>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value/>
+            <type>string</type>
+            <description>output map filename (NULL=STDOUT)</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>prod</name>
+            <value/>
+            <type>string</type>
+            <description>product name</description>
+            <source>default</source>
+        </option>
+        <option type="boolean">
+            <name>apply_pal</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>apply color palette, false = grayscale</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>palfile</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>palette filename</description>
+            <source>default</source>
+        </option>
+        <option type="ifile">
+            <name>palette_dir</name>
+            <value></value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/palette</default>
+            <description>palette directory</description>
+            <source>/Users/Shared/ocssw/run/data/common/l2mapgen_defaults.par</source>
+        </option>
+        <option type="ifile">
+            <name>product_table</name>
+            <value></value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/smigen_product_table.dat</default>
+            <description>product table</description>
+            <source>/Users/Shared/ocssw/run/data/common/l2mapgen_defaults.par</source>
+        </option>
+        <option type="string">
+            <name>flaguse</name>
+            <value/>
+            <type>string</type>
+            <description>flags to be masked</description>
+            <source>default</source>
+        </option>
+        <option type="int">
+            <name>quality</name>
+            <value>2</value>
+            <type>int</type>
+            <default>2</default>
+            <description>minimum allowable quality level for SST. Valid
+                only for SST and only if qual_sst or qual_sst4 SDS exist
+            </description>
+            <source>default</source>
+        </option>
+        <option type="boolean">
+            <name>mask</name>
+            <value>no</value>
+            <type>bool</type>
+            <default>no</default>
+            <description>apply mask to land, cloud and glint (see below)</description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>datamin</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>minimum value for data scaling
+                (default: see SMI product table)
+            </description>
+            <source>default</source>
+          </option>
+        <option type="float">
+            <name>datamax</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>maximum value for data scaling
+                (default: see SMI product table)
+            </description>
+            <source>default</source>
+         </option>
+        <option type="int">
+            <name>stype</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <description>scaling type: 1=LINEAR; 2=LOG;
+                (default: see SMI product table)
+            </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>east</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>Map East longitude
+                (default=scene(s) Easternmost Longitude)
+            </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>west</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>Map West longitude
+                (default=scene(s) Westernmost Longitude)
+            </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>north</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>Map North latitude
+                (default=scene(s) Northernmost Longitude)
+            </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>south</name>
+            <value>0.0</value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>Map South latitude
+                (default=scene(s) Southernmost Longitude)
+            </description>
+            <source>default</source>
+        </option>
+        <option type="int">
+            <name>width</name>
+            <value>800</value>
+            <type>int</type>
+            <default>800</default>
+            <description>width of the output image</description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>threshold</name>
+            <value>5</value>
+            <type>float</type>
+            <default>5</default>
+            <description>minimum percentage of the area of interest
+                that must receive valid pixel data before an image is generated
+            </description>
+            <source>default</source>
+        </option>
+        <option type="int">
+            <name>outmode</name>
+            <value>1</value>
+            <type>int</type>
+            <default>1</default>
+            <description>format of the output file
+                1: PPM or PGM image file
+                2: PNG color or grayscale image file
+                3: TIFF color or grayscale geo tiff image file
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>1</value>
+                <description>PPM or PGM image file</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>PNG color or grayscale image file</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>TIFF color or grayscale geo tiff image file</description>
+            </validValue>
+        </option>
+        <option type="help">
+            <name>help1</name>
+            <value/>
+            <type>helpString</type>
+            <description>
+                If the "mask" option is set, the output PGM image will be masked for
+                flags defined in the flaguse parameter. The "no data" pixel value will
+                change from 0 to 255, and pixel values 252, 253, and 254 will represent the
+                sunglint, land, and all other (e.g. clouds/ice,hilt,atmfail,navfail,chlfail)
+                masks, respectively. NOTE: sunglint is NOT masked by default, but if it is
+                added to the flaguse parameter, it will be distinguished in the masking as
+                medium gray. If a palette is applied and the mask option is set, the
+                palette values will be modified:
+                Value R G B
+                252 128 128 128
+                253 160 82 45
+                254 255 255 255
+                255 0 0 0
+
+                By default, this program sends its results to standard output as a
+                PGM-formatted binary data stream. Save it to a file via ">" or pipe it
+                to your favorite image display program. The output image is rendered in
+                a Plate Carree projection.
+            </description>
+            <source>default</source>
+        </option>
+    </options>
+</paramInfo>

@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
@@ -71,13 +72,8 @@ public class ExtractorUI extends CloProgramUIImpl {
             //lonlat2pixline.setInputFile(getGeoFileName(inputFile));
             lonlat2pixline.updateParamInfo(lonlat2pixline.getPrimaryInputFileOptionName(), getGeoFileName(inputFile).toString());
         }
+            extractor.updateParamInfo(extractor.getPrimaryOutputFileOptionName(), outputFileSelector.getFileName());
 
-        OutputFileSelectorModel outputFileSelectorModel = outputFileSelector.getModel();
-        if (outputFileSelectorModel != null) {
-            extractor.updateParamInfo(extractor.getPrimaryOutputFileOptionName(), outputFileSelectorModel.getProductDir().toString() + outputFileSelectorModel.getProductFileName());
-            //extractor.setOutputFileDir(outputFileSelectorModel.getProductDir());
-            //extractor.setOutputFileName(outputFileSelectorModel.getProductFileName());
-        }
     }
 
     public ProcessorModel getProcessorModel() {

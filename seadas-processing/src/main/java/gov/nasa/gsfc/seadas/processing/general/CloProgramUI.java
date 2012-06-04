@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.framework.datamodel.Product;
 
 /**
