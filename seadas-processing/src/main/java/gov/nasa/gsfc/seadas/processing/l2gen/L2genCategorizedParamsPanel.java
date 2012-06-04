@@ -1,5 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
@@ -20,7 +23,7 @@ import java.util.ArrayList;
 public class L2genCategorizedParamsPanel extends JPanel {
 
     private L2genData l2genData;
-    private ParamCategoryInfo paramCategoryInfo;
+    private L2genParamCategoryInfo paramCategoryInfo;
     private JPanel paramsPanel;
     private JButton restoreDefaultsButton;
 
@@ -33,7 +36,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
     private boolean swingSentEventsDisabled = false;
 
 
-    L2genCategorizedParamsPanel(L2genData l2genData, ParamCategoryInfo paramCategoryInfo) {
+    L2genCategorizedParamsPanel(L2genData l2genData, L2genParamCategoryInfo paramCategoryInfo) {
 
         this.l2genData = l2genData;
         this.paramCategoryInfo = paramCategoryInfo;
@@ -196,22 +199,22 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                l2genData.setParamValue(paramInfo, jTextField.getText().toString());
+                l2genData.setParamValue(paramInfo.getName(), jTextField.getText().toString());
             }
         });
 
         jTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                l2genData.setParamValue(paramInfo, jTextField.getText().toString());
+                l2genData.setParamValue(paramInfo.getName(), jTextField.getText().toString());
             }
         });
 
         l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                jTextField.setText(l2genData.getParamValue(paramInfo));
-                if (l2genData.isParamDefault(paramInfo)) {
+                jTextField.setText(l2genData.getParamValue(paramInfo.getName()));
+                if (l2genData.isParamDefault(paramInfo.getName())) {
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicator.setToolTipText("");
                 } else {
@@ -234,7 +237,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
         l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if (l2genData.isParamDefault(paramInfo)) {
+                if (l2genData.isParamDefault(paramInfo.getName())) {
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicator.setToolTipText("");
                 } else {
@@ -283,7 +286,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (handlerEnabled[0]) {
-                    l2genData.setParamValue(paramInfo, fileSelectorPanel.getFileName());
+                    l2genData.setParamValue(paramInfo.getName(), fileSelectorPanel.getFileName());
                 }
             }
         });
@@ -293,7 +296,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 handlerEnabled[0] = false;
-                fileSelectorPanel.setFilename(l2genData.getParamValue(paramInfo));
+                fileSelectorPanel.setFilename(l2genData.getParamValue(paramInfo.getName()));
                 handlerEnabled[0] = true;
             }
         });
@@ -383,7 +386,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
 
         for (ParamValidValueInfo paramValidValueInfo : jComboBoxArray) {
-            if (l2genData.getParamValue(paramInfo).equals(paramValidValueInfo.getValue())) {
+            if (l2genData.getParamValue(paramInfo.getName()).equals(paramValidValueInfo.getValue())) {
                 jComboBox.setSelectedItem(paramValidValueInfo);
             }
         }
@@ -411,7 +414,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
         jComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                l2genData.setParamValue(paramInfo, (ParamValidValueInfo) jComboBox.getSelectedItem());
+                l2genData.setParamValue(paramInfo.getName(), (ParamValidValueInfo) jComboBox.getSelectedItem());
             }
         });
 
@@ -427,7 +430,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
                     if (paramInfo.getValue().equals(jComboBoxItem.getValue())) {
                         jComboBox.setSelectedItem(jComboBoxItem);
 
-                        if (l2genData.isParamDefault(paramInfo)) {
+                        if (l2genData.isParamDefault(paramInfo.getName())) {
                             defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                             defaultIndicator.setToolTipText("");
                         } else {
@@ -514,7 +517,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
         jCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                String currValueString = l2genData.getParamValue(paramInfo);
+                String currValueString = l2genData.getParamValue(paramInfo.getName());
                 int currValue = Integer.parseInt(currValueString);
                 String currValidValueString = paramValidValueInfo.getValue();
                 int currValidValue = Integer.parseInt(currValidValueString);
@@ -536,7 +539,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
                     } else {
                         if (!swingSentEventsDisabled) {
                             swingSentEventsDisabled = true;
-                            l2genData.setParamToDefaults(paramInfo);
+                            l2genData.setParamToDefaults(paramInfo.getName());
                             swingSentEventsDisabled = false;
                         }
                         return;
@@ -548,7 +551,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
                 if (!swingSentEventsDisabled) {
                     swingSentEventsDisabled = true;
-                    l2genData.setParamValue(paramInfo, newValueString);
+                    l2genData.setParamValue(paramInfo.getName(), newValueString);
                     swingSentEventsDisabled = false;
                 }
             }
@@ -565,7 +568,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
                 if (value > 0) {
                     jCheckBox.setSelected(paramInfo.isBitwiseSelected(paramValidValueInfo));
                 } else {
-                    if (paramValidValueInfo.getValue().equals(l2genData.getParamValue(paramInfo))) {
+                    if (paramValidValueInfo.getValue().equals(l2genData.getParamValue(paramInfo.getName()))) {
                         jCheckBox.setSelected(true);
                     } else {
                         jCheckBox.setSelected(false);
@@ -573,7 +576,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
                 }
 
 
-                if (l2genData.isParamDefault(paramInfo)) {
+                if (l2genData.isParamDefault(paramInfo.getName())) {
                     defaultIndicatorLabel.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicatorLabel.setToolTipText("");
                 } else {
@@ -620,16 +623,16 @@ public class L2genCategorizedParamsPanel extends JPanel {
         jCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                l2genData.setParamValue(paramInfo, jCheckBox.isSelected());
+                l2genData.setParamValue(paramInfo.getName(), jCheckBox.isSelected());
             }
         });
 
         l2genData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                jCheckBox.setSelected(l2genData.getBooleanParamValue(paramInfo));
+                jCheckBox.setSelected(l2genData.getBooleanParamValue(paramInfo.getName()));
 
-                if (l2genData.isParamDefault(paramInfo)) {
+                if (l2genData.isParamDefault(paramInfo.getName())) {
                     defaultIndicator.setText(DEFAULT_INDICATOR_LABEL_OFF);
                     defaultIndicator.setToolTipText("");
                 } else {

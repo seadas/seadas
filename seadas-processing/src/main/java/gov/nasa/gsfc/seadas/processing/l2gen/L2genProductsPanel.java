@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -86,7 +88,7 @@ public class L2genProductsPanel extends JPanel {
         jTextArea.setRows(5);
         jTextArea.setEditable(true);
 
-        final ParamInfo paramInfo = l2genData.getParamInfo(L2genData.L2PROD);
+
 
         jTextArea.addFocusListener(new FocusListener() {
             @Override
@@ -96,8 +98,8 @@ public class L2genProductsPanel extends JPanel {
             @Override
             public void focusLost(FocusEvent e) {
                     String l2prod = l2genData.sortStringList(jTextArea.getText());
-                    l2genData.setParamValue(paramInfo, l2prod);
-                    jTextArea.setText(l2genData.getParamValue(paramInfo));
+                    l2genData.setParamValue(L2genData.L2PROD, l2prod);
+                    jTextArea.setText(l2genData.getParamValue(L2genData.L2PROD));
             }
         });
 
@@ -105,7 +107,7 @@ public class L2genProductsPanel extends JPanel {
         l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                jTextArea.setText(l2genData.getParamValue(paramInfo));
+                jTextArea.setText(l2genData.getParamValue(L2genData.L2PROD));
             }
         });
 

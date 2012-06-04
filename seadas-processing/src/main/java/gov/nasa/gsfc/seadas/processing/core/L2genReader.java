@@ -1,5 +1,6 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.core;
 
+import gov.nasa.gsfc.seadas.processing.l2gen.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -96,7 +97,7 @@ public class L2genReader {
                 String autoTab = XmlReader.getTextValue(categoryElement, "autoTab");
                 String defaultBucketString = XmlReader.getTextValue(categoryElement, "defaultBucket");
 
-                ParamCategoryInfo paramCategoryInfo = new ParamCategoryInfo(name);
+                L2genParamCategoryInfo paramCategoryInfo = new L2genParamCategoryInfo(name);
 
                 if (autoTab != null && autoTab.equals("1")) {
                     paramCategoryInfo.setAutoTab(true);

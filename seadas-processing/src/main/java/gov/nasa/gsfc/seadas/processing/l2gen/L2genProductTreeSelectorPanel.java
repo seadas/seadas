@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;

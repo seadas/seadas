@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import java.util.Collections;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class ParamCategoryInfo implements Comparable {
+public class L2genParamCategoryInfo implements Comparable {
 
     private String name = null;
     private boolean autoTab = false;
@@ -18,12 +18,12 @@ public class ParamCategoryInfo implements Comparable {
     private ArrayList<String> paramNames = new ArrayList<String>();
     private ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
 
-    public ParamCategoryInfo(String name, boolean autoTab) {
+    public L2genParamCategoryInfo(String name, boolean autoTab) {
         this.name = name;
         this.autoTab = autoTab;
     }
 
-    public ParamCategoryInfo(String name) {
+    public L2genParamCategoryInfo(String name) {
         this.name = name;
     }
 
@@ -91,6 +91,6 @@ public class ParamCategoryInfo implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        return getName().compareToIgnoreCase(((ParamCategoryInfo) o).getName());
+        return getName().compareToIgnoreCase(((L2genParamCategoryInfo) o).getName());
     }
 }

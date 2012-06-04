@@ -5,7 +5,8 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.ocssw.ProcessObserver;
-import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
@@ -17,8 +18,6 @@ import org.esa.beam.visat.actions.AbstractVisatAction;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -64,10 +63,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
         ProcessorModel pm = new ProcessorModel(programName);
         ParamInfo pi;
         pi = new ParamInfo("dumpOption", "-dump_options_xmlfile");
-        pi.setOrder(1);
+        //pi.setOrder(1);
         pm.addParamInfo(pi);
         pi = new ParamInfo("ofile", xmlFileName);
-        pi.setOrder(2);
+        //pi.setOrder(2);
         pm.addParamInfo(pi);
 
 

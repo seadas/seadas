@@ -12,9 +12,9 @@ import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.GridBagConstraintsCustom;
-import gov.nasa.gsfc.seadas.processing.l2gen.L2genData;
-import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamValidValueInfo;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.util.io.BeamFileChooser;
@@ -426,7 +426,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         if (pi.getValue() == null || pi.getValue().length() == 0) {
             if (pi.getDefaultValue() != null) {
-                pi.setValue(pi.getDefaultValue());
+               // pi.setValue(pi.getDefaultValue());
             }
         }
         final PropertyContainer vc = new PropertyContainer();
@@ -454,7 +454,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
-                pi.setValue(field.getText());
+                //pi.setValue(field.getText());
                 handleParamChanged();
             }
         });
@@ -500,7 +500,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
 
-                pi.setValue((new Boolean(field.isSelected())).toString());
+               // pi.setValue((new Boolean(field.isSelected())).toString());
 
                 SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
 
@@ -596,7 +596,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             public void propertyChange(PropertyChangeEvent pce) {
 
                 String newValue = (String) inputList.getSelectedItem();
-                paramInfo.setValue(newValue);
+                //paramInfo.setValue(newValue);
             }
         });
 
@@ -649,7 +649,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
 
-                pi.setValue(ofs.getCurrentFileName());
+               // pi.setValue(ofs.getCurrentFileName());
                 debugf("%s %s %n", new String[]{ofs.getCurrentFileName(), pi.getValue()});
             }
         });

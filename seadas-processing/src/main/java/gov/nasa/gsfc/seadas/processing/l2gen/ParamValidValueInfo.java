@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+
 /**
  * A ...
  *

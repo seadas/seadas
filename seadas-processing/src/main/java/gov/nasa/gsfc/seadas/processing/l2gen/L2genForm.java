@@ -5,6 +5,9 @@ Author: Danny Knowles
 
 package gov.nasa.gsfc.seadas.processing.l2gen;
 
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
 import gov.nasa.gsfc.seadas.processing.general.ProcessorModel;
 import org.esa.beam.framework.datamodel.Product;
@@ -127,7 +130,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     private void createCategoryParamTabs() {
 
-        for (final ParamCategoryInfo paramCategoryInfo : getL2genData().getParamCategoryInfos()) {
+        for (final L2genParamCategoryInfo paramCategoryInfo : getL2genData().getParamCategoryInfos()) {
             if (paramCategoryInfo.isAutoTab() && (paramCategoryInfo.getParamInfos().size() > 0)) {
 
                 L2genCategorizedParamsPanel l2genCategorizedParamsPanel = new L2genCategorizedParamsPanel(getL2genData(), paramCategoryInfo);
@@ -164,7 +167,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public ProcessorModel getProcessorModel() {
         processorModel.setParString(getL2genData().getParString(false));
-        processorModel.updateParamInfo("ofile", getL2genData().getParamValue(l2genData.getOfileParamInfo()));
+        processorModel.updateParamInfo("ofile", getL2genData().getParamValue(L2genData.OFILE));
         return processorModel;
     }
 

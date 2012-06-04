@@ -1,6 +1,6 @@
-package gov.nasa.gsfc.seadas.processing.general;
+package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.l2gen.ParamValidValueInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.XmlReader;
 import org.esa.beam.visat.VisatApp;

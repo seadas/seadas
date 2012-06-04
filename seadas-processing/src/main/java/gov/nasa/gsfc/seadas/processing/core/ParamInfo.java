@@ -1,4 +1,7 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.core;
+
+import gov.nasa.gsfc.seadas.processing.l2gen.FileInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.ParamValidValueInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -87,7 +90,7 @@ public class ParamInfo implements Comparable {
         return name;
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         // Clean up and handle input exceptions
         if (name == null) {
             this.name = NULL_STRING;
@@ -108,7 +111,7 @@ public class ParamInfo implements Comparable {
     }
 
 
-    public void setValue(String value) {
+    protected void setValue(String value) {
         // Clean up and handle input exceptions
         if (value == null) {
             this.value = NULL_STRING;
@@ -155,7 +158,7 @@ public class ParamInfo implements Comparable {
         return type;
     }
 
-    public void setType(Type type) {
+    protected void setType(Type type) {
         this.type = type;
     }
 
@@ -171,7 +174,7 @@ public class ParamInfo implements Comparable {
         }
     }
 
-    public void setDefaultValue(String defaultValue) {
+   protected void setDefaultValue(String defaultValue) {
         // Clean up and handle input exceptions
         if (defaultValue == null) {
             this.defaultValue = NULL_STRING;
@@ -203,7 +206,7 @@ public class ParamInfo implements Comparable {
         return description;
     }
 
-    public void setDescription(String description) {
+    protected void setDescription(String description) {
         // Clean up and handle input exceptions
         if (description == null) {
             this.description = NULL_STRING;
@@ -222,7 +225,7 @@ public class ParamInfo implements Comparable {
         return source;
     }
 
-    public void setSource(String source) {
+    protected void setSource(String source) {
         // Clean up and handle input exceptions
         if (source == null) {
             this.source = NULL_STRING;
@@ -241,15 +244,15 @@ public class ParamInfo implements Comparable {
         return validValueInfos;
     }
 
-    public void setValidValueInfos(ArrayList<ParamValidValueInfo> validValueInfos) {
+    protected void setValidValueInfos(ArrayList<ParamValidValueInfo> validValueInfos) {
         this.validValueInfos = validValueInfos;
     }
 
-    public void addValidValueInfo(ParamValidValueInfo paramValidValueInfo) {
+   protected void addValidValueInfo(ParamValidValueInfo paramValidValueInfo) {
         this.validValueInfos.add(paramValidValueInfo);
     }
 
-    public void clearValidValueInfos() {
+     protected void clearValidValueInfos() {
         this.validValueInfos.clear();
     }
 
@@ -265,11 +268,11 @@ public class ParamInfo implements Comparable {
         return isBit;
     }
 
-    public void setBit(boolean bit) {
+     protected void setBit(boolean bit) {
         isBit = bit;
     }
 
-    public void setOrder(int order) {
+    protected void setOrder(int order) {
         this.order = order;
     }
 
@@ -277,7 +280,7 @@ public class ParamInfo implements Comparable {
         return order;
     }
 
-    public void sortValidValueInfos() {
+    protected void sortValidValueInfos() {
         //  Collections.sort(validValueInfos, new ParamValidValueInfo.ValueComparator());
         Collections.sort(validValueInfos);
     }

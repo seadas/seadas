@@ -1,8 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.l2gen.EventInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.SeadasPrint;
 import org.esa.beam.util.Guardian;
 import org.esa.beam.visat.VisatApp;
@@ -81,7 +82,7 @@ public class ProcessorModel {
 
     public void addParamInfo(String name, String value, int order) {
         ParamInfo info = new ParamInfo(name, value);
-        info.setOrder(order);
+       // info.setOrder(order);
         addParamInfo(info);
     }
 
@@ -186,7 +187,7 @@ public class ProcessorModel {
             option = itr.next();
             if (option.getName().equals(currentOption.getName())) {
 
-                option.setValue(newValue);
+               // option.setValue(newValue);
                 return;
             }
         }
@@ -240,7 +241,7 @@ public class ProcessorModel {
         while (itr.hasNext()) {
             option = itr.next();
             if (option.getName().equals(paramName.trim())) {
-                option.setValue(newValue);
+                //option.setValue(newValue);
                 return;
             }
         }

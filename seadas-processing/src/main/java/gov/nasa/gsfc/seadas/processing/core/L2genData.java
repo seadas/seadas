@@ -1,7 +1,8 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.core;
 
 
 import gov.nasa.gsfc.seadas.processing.general.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.l2gen.*;
 import org.esa.beam.util.StringUtils;
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -61,7 +62,7 @@ public class L2genData {
     private final ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
 
 
-    private final ArrayList<ParamCategoryInfo> paramCategoryInfos = new ArrayList<ParamCategoryInfo>();
+    private final ArrayList<L2genParamCategoryInfo> paramCategoryInfos = new ArrayList<L2genParamCategoryInfo>();
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -72,7 +73,7 @@ public class L2genData {
 
     // useful shortcuts to popular paramInfos
     private final HashMap<String, ParamInfo> paramInfoHashMap = new HashMap<String, ParamInfo>();
-    private L2prodParamInfo l2prodParamInfo = null;
+    private L2genProductsParamInfo l2prodParamInfo = null;
     private ParamInfo ofileParamInfo = null;
     private ParamInfo ifileParamInfo = null;
 
@@ -442,7 +443,7 @@ public class L2genData {
 
         StringBuilder par = new StringBuilder("");
 
-        for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+        for (L2genParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
             StringBuilder currCategoryEntries = new StringBuilder("");
 
             for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
@@ -653,7 +654,7 @@ public class L2genData {
     }
 
 
-    public String getParamValue(ParamInfo paramInfo) {
+    private String getParamValue(ParamInfo paramInfo) {
         return paramInfo.getValue();
     }
 
@@ -663,7 +664,7 @@ public class L2genData {
     }
 
 
-    public boolean getBooleanParamValue(ParamInfo paramInfo) {
+    private boolean getBooleanParamValue(ParamInfo paramInfo) {
         if (paramInfo.getValue().equals(ParamInfo.BOOLEAN_TRUE)) {
             return true;
         } else {
@@ -676,7 +677,7 @@ public class L2genData {
     }
 
 
-    public boolean isValidParamValue(ParamInfo paramInfo) {
+    private boolean isValidParamValue(ParamInfo paramInfo) {
         if (paramInfo != null && iFileInfo != null) {
             return paramInfo.isValid(iFileInfo.getParentFile());
         }
@@ -689,7 +690,7 @@ public class L2genData {
     }
 
 
-    public FileInfo getParamFileInfo(ParamInfo paramInfo) {
+    private FileInfo getParamFileInfo(ParamInfo paramInfo) {
         if (paramInfo != null && iFileInfo != null) {
             return paramInfo.getFileInfo(iFileInfo.getParentFile());
         }
@@ -728,7 +729,7 @@ public class L2genData {
     }
 
 
-    public void setParamValue(ParamInfo paramInfo, String value) {
+    private void setParamValue(ParamInfo paramInfo, String value) {
         if (paramInfo == null) {
             return;
         }
@@ -758,7 +759,7 @@ public class L2genData {
     }
 
 
-    public void setParamValue(ParamInfo paramInfo, boolean selected) {
+    private void setParamValue(ParamInfo paramInfo, boolean selected) {
         if (selected) {
             setParamValue(paramInfo, ParamInfo.BOOLEAN_TRUE);
         } else {
@@ -771,12 +772,16 @@ public class L2genData {
     }
 
 
-    public void setParamValue(ParamInfo paramInfo, ParamValidValueInfo paramValidValueInfo) {
+    private void setParamValue(ParamInfo paramInfo, ParamValidValueInfo paramValidValueInfo) {
         setParamValue(paramInfo, paramValidValueInfo.getValue());
     }
 
 
-    public boolean isParamDefault(ParamInfo paramInfo) {
+    public void setParamValue(String name, ParamValidValueInfo paramValidValueInfo) {
+        setParamValue(getParamInfo(name), paramValidValueInfo);
+    }
+
+    private boolean isParamDefault(ParamInfo paramInfo) {
         if (paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
             return true;
         } else {
@@ -790,7 +795,7 @@ public class L2genData {
     }
 
 
-    public String getParamDefault(ParamInfo paramInfo) {
+    private String getParamDefault(ParamInfo paramInfo) {
         if (paramInfo != null) {
             return paramInfo.getDefaultValue();
         } else {
@@ -803,21 +808,25 @@ public class L2genData {
     }
 
 
-    public void setParamToDefaults(ParamInfo paramInfo) {
+    private void setParamToDefaults(ParamInfo paramInfo) {
         if (paramInfo != null) {
             setParamValue(paramInfo, paramInfo.getDefaultValue());
         }
     }
 
 
-    public void setToDefaults(ParamCategoryInfo paramCategoryInfo) {
+    public void setParamToDefaults(String name) {
+        setParamToDefaults(getParamInfo(name));
+    }
+
+    public void setToDefaults(L2genParamCategoryInfo paramCategoryInfo) {
         for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
             setParamToDefaults(paramInfo);
         }
     }
 
 
-    public boolean isParamCategoryDefault(ParamCategoryInfo paramCategoryInfo) {
+    public boolean isParamCategoryDefault(L2genParamCategoryInfo paramCategoryInfo) {
         boolean isDefault = true;
 
         for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
@@ -986,11 +995,11 @@ public class L2genData {
      * resets paramInfos within paramCategoryInfos to link to appropriate entry in paramInfos
      */
     public void setParamCategoryInfos() {
-        for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+        for (L2genParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
             paramCategoryInfo.clearParamInfos();
         }
 
-        for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+        for (L2genParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
             for (String categorizedParamName : paramCategoryInfo.getParamNames()) {
                 for (ParamInfo paramInfo : paramInfos) {
                     if (categorizedParamName.equals(paramInfo.getName())) {
@@ -1004,7 +1013,7 @@ public class L2genData {
         for (ParamInfo paramInfo : paramInfos) {
             boolean found = false;
 
-            for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+            for (L2genParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
                 for (String categorizedParamName : paramCategoryInfo.getParamNames()) {
                     if (categorizedParamName.equals(paramInfo.getName())) {
                         //  paramCategoryInfo.addParamInfos(paramInfo);
@@ -1014,7 +1023,7 @@ public class L2genData {
             }
 
             if (!found) {
-                for (ParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+                for (L2genParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
                     if (paramCategoryInfo.isDefaultBucket()) {
                         paramCategoryInfo.addParamInfos(paramInfo);
                         l2genPrint.adminlog("Dropping uncategorized param '" + paramInfo.getName() + "' into the defaultBucket");
@@ -1041,12 +1050,12 @@ public class L2genData {
         return false;
     }
 
-    public ArrayList<ParamCategoryInfo> getParamCategoryInfos() {
+    public ArrayList<L2genParamCategoryInfo> getParamCategoryInfos() {
         return paramCategoryInfos;
     }
 
 
-    public void addParamCategoryInfo(ParamCategoryInfo paramCategoryInfo) {
+    public void addParamCategoryInfo(L2genParamCategoryInfo paramCategoryInfo) {
         paramCategoryInfos.add(paramCategoryInfo);
     }
 
@@ -1140,7 +1149,7 @@ public class L2genData {
                 // set the useful paramInfo shortcuts
                 initParamInfoHashMap();
                 setIfileParamInfo(getParamInfo(IFILE));
-                setL2prodParamInfo((L2prodParamInfo) getParamInfo(L2PROD));
+                setL2prodParamInfo((L2genProductsParamInfo) getParamInfo(L2PROD));
                 setOfileParamInfo(getParamInfo(OFILE));
 
 
@@ -1156,7 +1165,7 @@ public class L2genData {
     }
 
 
-    public void setL2prodParamInfo(L2prodParamInfo l2prodParamInfo) {
+    public void setL2prodParamInfo(L2genProductsParamInfo l2prodParamInfo) {
         this.l2prodParamInfo = l2prodParamInfo;
     }
 
@@ -1202,8 +1211,8 @@ public class L2genData {
         l2prodParamInfo.clearProductCategoryInfos();
     }
 
-    public L2prodParamInfo createL2prodParamInfo(String value, InputStream productInfoStream) {
-        L2prodParamInfo l2prodParamInfo = new L2prodParamInfo();
+    public L2genProductsParamInfo createL2prodParamInfo(String value, InputStream productInfoStream) {
+        L2genProductsParamInfo l2prodParamInfo = new L2genProductsParamInfo();
         setL2prodParamInfo(l2prodParamInfo);
 
         l2genReader.readProductsXml(productInfoStream);

@@ -1,5 +1,11 @@
-package gov.nasa.gsfc.seadas.processing.l2gen;
+package gov.nasa.gsfc.seadas.processing.core;
 
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.AlgorithmInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.BaseInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.ProductCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.l2gen.ProductInfo;
 import org.esa.beam.util.StringUtils;
 
 import java.util.*;
@@ -12,26 +18,26 @@ import java.util.HashSet;
  * Time: 2:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public class L2prodParamInfo extends ParamInfo {
+public class L2genProductsParamInfo extends ParamInfo {
 
     private ArrayList<ProductInfo> productInfos = new ArrayList<ProductInfo>();
     private ArrayList<ProductCategoryInfo> productCategoryInfos = new ArrayList<ProductCategoryInfo>();
 
 
 
-    public L2prodParamInfo() {
+    public L2genProductsParamInfo() {
         super(L2genData.L2PROD);
         setType(Type.STRING);
     }
 
 
-    public void setValue(String value) {
+    protected void setValue(String value) {
         putValueIntoProductInfos(value);
         updateValue();
     }
 
 
-    public void updateValue() {
+    protected void updateValue() {
         super.setValue(getValueFromProductInfos());
     }
 
@@ -85,19 +91,19 @@ public class L2prodParamInfo extends ParamInfo {
     }
 
 
-    public void addProductInfo(ProductInfo productInfo) {
+    protected void addProductInfo(ProductInfo productInfo) {
         productInfos.add(productInfo);
     }
 
-    public void clearProductInfos() {
+    protected void clearProductInfos() {
         productInfos.clear();
     }
 
-    public void sortProductInfos(Comparator<ProductInfo> comparator) {
+    protected void sortProductInfos(Comparator<ProductInfo> comparator) {
         Collections.sort(productInfos, comparator);
     }
 
-    public void resetProductInfos() {
+    protected void resetProductInfos() {
 
         for (ProductInfo productInfo : productInfos) {
             productInfo.setSelected(false);
@@ -108,7 +114,7 @@ public class L2prodParamInfo extends ParamInfo {
         }
     }
 
-    public void setProductCategoryInfos() {
+    protected void setProductCategoryInfos() {
         for (ProductCategoryInfo productCategoryInfo : productCategoryInfos) {
             productCategoryInfo.clearChildren();
         }
@@ -149,11 +155,11 @@ public class L2prodParamInfo extends ParamInfo {
         return productCategoryInfos;
     }
 
-    public void addProductCategoryInfo(ProductCategoryInfo productCategoryInfo) {
+    protected void addProductCategoryInfo(ProductCategoryInfo productCategoryInfo) {
         productCategoryInfos.add(productCategoryInfo);
     }
 
-    public void clearProductCategoryInfos() {
+    protected void clearProductCategoryInfos() {
         productCategoryInfos.clear();
     }
 
