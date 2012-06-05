@@ -1,8 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
-import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
-import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
-
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.BasicApp;
 import org.esa.beam.util.SystemUtils;
@@ -11,7 +8,6 @@ import org.esa.beam.util.io.BeamFileChooser;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
@@ -156,6 +152,7 @@ public class FileSelectorPanel extends JPanel {
     public void setFilename(String filename) {
 
         fileTextfield.setText(filename);
+        fileTextfield.postActionEvent();
         handleFileTextfield();
     }
 
