@@ -25,7 +25,24 @@ public class ProgramExecutor {
 
         File outputFile;
 
-        public void executeProgram(ProcessorModel pm) {
+    public int executeProgram(String[] command) {
+         ProcessBuilder probuilder = new ProcessBuilder(command);
+         //set up work directory
+//        System.out.println(System.getProperty("user.dir"));
+//        probuilder.directory(new File("/Users/Shared/ocssw/test/smigen/"));
+
+         int exitValue = -1;
+         try {
+             Process process = probuilder.start();
+             exitValue = process.waitFor();
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+
+         return exitValue;
+     }
+
+    public void executeProgram(ProcessorModel pm) {
 
              final ProcessorModel processorModel = pm;
              if (!processorModel.isValidProcessor()) {

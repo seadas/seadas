@@ -150,7 +150,6 @@ public class FileSelectorPanel extends JPanel {
 
 
     public void setFilename(String filename) {
-
         fileTextfield.setText(filename);
         fileTextfield.postActionEvent();
         handleFileTextfield();

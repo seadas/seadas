@@ -98,6 +98,19 @@ public class SeadasLogger {
 
     }
 
+       public static void deleteLoggerOnExit(boolean delete) {
+        if (delete) {
+           File txtFile = new File(System.getProperty("user.dir")+_loggerFileName + ".txt");
+            if (txtFile.exists()) {
+                txtFile.deleteOnExit();
+            }
+            File xmlFile = new File(System.getProperty("user.dir")+_loggerFileName + ".txt");
+            if (xmlFile.exists()) {
+                xmlFile.deleteOnExit();
+            }
+        }
+    }
+
     //This custom formatter formats parts of a log record to a single line
     private static class MyHtmlFormatter extends Formatter {
         // This method is called for every log records

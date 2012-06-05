@@ -44,7 +44,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     String dialogTitle;
     String xmlFileName;
 
-    private boolean printLogToConsole = false;
+    private boolean printLogToConsole = true;
     private boolean openOutputInApp = true;
 
     @Override
@@ -115,7 +115,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     public void actionPerformed(CommandEvent event) {
 
         SeadasLogger.initLogger("ProcessingGUI_log", printLogToConsole);
-        SeadasLogger.getLogger().setLevel(Level.SEVERE);
+        SeadasLogger.getLogger().setLevel(Level.INFO);
 
         final AppContext appContext = getAppContext();
 
@@ -124,10 +124,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final Window parent = appContext.getApplicationWindow();
 
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
+        modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
          modalDialog.getJDialog().getContentPane().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                 System.out.println(cloProgramUI.getProcessorModel().isReadyToRun());
                 modalDialog.getJDialog().pack();
+                if (cloProgramUI.getProcessorModel().isReadyToRun()) {
+                   modalDialog.getButton(ModalDialog.ID_OK).setEnabled(true);
+                }
             }
         });
         modalDialog.getButton(ModalDialog.ID_OK).setText("Run");
@@ -162,6 +167,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         openOutputInApp = cloProgramUI.isOpenOutputInApp();
 
         executeProgram(processorModel);
+        SeadasLogger.deleteLoggerOnExit(true);
 
     }
 
@@ -206,6 +212,18 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 try {
                     final File outputFile = get();
                     VisatApp.getApp().showInfoDialog(programName, programName + " done!\nOutput written to:\n" + outputFile, null);
+                   ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
+                    if (secondaryProcessor != null) {
+                        ProgramExecutor pe = new ProgramExecutor();
+
+                        int exitCode = pe.executeProgram(secondaryProcessor.getProgramCmdArray());
+
+                        if (exitCode == 0)  {
+                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
+                                     secondaryProcessor.getProgramName() + " done!\n", null);
+                        }
+
+                    }
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {
