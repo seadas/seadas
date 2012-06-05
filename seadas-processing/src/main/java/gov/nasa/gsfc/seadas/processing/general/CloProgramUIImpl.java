@@ -43,7 +43,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     protected final String xmlFileName;
     protected final SourceProductFileSelector sourceProductSelector;
     protected final SourceProductFileSelector geoFileSelector;
-    protected FileSelectorPanel outputFileSelector;
+    protected FileSelector outputFileSelector;
 
 
     private JPanel mainPanel;
@@ -64,7 +64,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
     private JCheckBox smitoppmCheckBox;
 
-    private FileSelectorPanel ppmFile;
+    private FileSelector ppmFile;
 
     CloProgramUIImpl(String programName, String xmlFileName) {
         this.programName = programName;
@@ -221,7 +221,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         smitoppmCheckBox = new JCheckBox();
         smitoppmCheckBox.setSelected(false);
 
-        ppmFile = new FileSelectorPanel(VisatApp.getApp(), FileSelectorPanel.Type.OFILE, "ppm file");
+        ppmFile = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, "ppm file");
         ppmFile.getFileTextField().setColumns(20);
         ppmFile.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
@@ -867,7 +867,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         final ParamInfo pi = processorModel.getParamInfo(primaryOutputFileOptionName);
 
-        outputFileSelector = new FileSelectorPanel(VisatApp.getApp(), FileSelectorPanel.Type.OFILE, primaryOutputFileOptionName);
+        outputFileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, primaryOutputFileOptionName);
 
 
         final PropertyContainer vc = new PropertyContainer();
@@ -919,7 +919,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
     private JPanel makeOutputFileOptionField(final ParamInfo pi) {
 
-        final FileSelectorPanel outputFileSelector = new FileSelectorPanel(VisatApp.getApp(), FileSelectorPanel.Type.OFILE, pi.getName());
+        final FileSelector outputFileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, pi.getName());
           outputFileSelector.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {

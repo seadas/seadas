@@ -4,7 +4,7 @@ import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamValidValueInfo;
-import gov.nasa.gsfc.seadas.processing.general.FileSelectorPanel;
+import gov.nasa.gsfc.seadas.processing.general.FileSelector;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 import org.esa.beam.visat.VisatApp;
 
@@ -270,18 +270,18 @@ public class L2genCategorizedParamsPanel extends JPanel {
 
     private JPanel createFileSelectorPanel(final ParamInfo paramInfo) {
 
-        FileSelectorPanel.Type type = null;
+        FileSelector.Type type = null;
         if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-            type = FileSelectorPanel.Type.IFILE;
+            type = FileSelector.Type.IFILE;
         } else if (paramInfo.getType() == ParamInfo.Type.OFILE) {
-            type = FileSelectorPanel.Type.OFILE;
+            type = FileSelector.Type.OFILE;
         }
 
         if (type == null) {
             return null;
         }
 
-        final FileSelectorPanel fileSelectorPanel = new FileSelectorPanel(VisatApp.getApp(), type);
+        final FileSelector fileSelectorPanel = new FileSelector(VisatApp.getApp(), type);
 
         final boolean[] handlerEnabled = {true};
 

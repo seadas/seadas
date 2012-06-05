@@ -28,7 +28,7 @@ import java.io.File;
  */
 
 
-public class FileSelectorPanel  {
+public class FileSelector {
 
 
     private JPanel jPanel = new JPanel(new GridBagLayout());
@@ -65,12 +65,12 @@ public class FileSelectorPanel  {
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
 
-    public FileSelectorPanel(AppContext appContext) {
+    public FileSelector(AppContext appContext) {
         this(appContext, null);
     }
 
 
-    public FileSelectorPanel(AppContext appContext, Type type) {
+    public FileSelector(AppContext appContext, Type type) {
         this.appContext = appContext;
         setType(type);
 
@@ -79,7 +79,7 @@ public class FileSelectorPanel  {
     }
 
 
-    public FileSelectorPanel(AppContext appContext, Type type, String name) {
+    public FileSelector(AppContext appContext, Type type, String name) {
         this(appContext, type);
         setName(name);
     }
@@ -100,20 +100,20 @@ public class FileSelectorPanel  {
 
 
        jPanel.add(nameLabel,
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+               new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
         if (name == null) {
             nameLabel.setVisible(false);
         }
 
        jPanel.add(fileTextfield,
-                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
+               new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
        jPanel.add(fileChooserButton,
-                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+               new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
 
        jPanel.add(filterPane,
-                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+               new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
         if (type != Type.IFILE) {
             filterPane.setVisible(false);
