@@ -28,7 +28,11 @@ import java.io.File;
  */
 
 
-public class FileSelectorPanel extends JPanel {
+public class FileSelectorPanel  {
+
+
+    private JPanel jPanel = new JPanel(new GridBagLayout());
+
 
 
     public enum Type {
@@ -93,23 +97,22 @@ public class FileSelectorPanel extends JPanel {
 
 
     private void addComponents() {
-        setLayout(new GridBagLayout());
 
 
-        add(nameLabel,
+       jPanel.add(nameLabel,
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
         if (name == null) {
             nameLabel.setVisible(false);
         }
 
-        add(fileTextfield,
+       jPanel.add(fileTextfield,
                 new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
-        add(fileChooserButton,
+       jPanel.add(fileChooserButton,
                 new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
 
-        add(filterPane,
+       jPanel.add(filterPane,
                 new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
         if (type != Type.IFILE) {
@@ -373,6 +376,11 @@ public class FileSelectorPanel extends JPanel {
         public String getDescription() {
             return "Files matching regular expression: '" + regex + "'";
         }
+    }
+
+
+    public JPanel getjPanel() {
+        return jPanel;
     }
 
 

@@ -304,7 +304,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
             }
         });
 
-        return fileSelectorPanel;
+        return fileSelectorPanel.getjPanel();
 
 
     }

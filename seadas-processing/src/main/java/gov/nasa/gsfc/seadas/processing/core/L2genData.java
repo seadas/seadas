@@ -72,25 +72,20 @@ public class L2genData {
 
     private final SeadasPrint l2genPrint = new SeadasPrint();
 
-    private int currentTabIndex = 0;
 
 
     // useful shortcuts to popular paramInfos
-    private final HashMap<String, ParamInfo> paramInfoHashMap = new HashMap<String, ParamInfo>();
+    private final HashMap<String, ParamInfo> paramInfoLookup = new HashMap<String, ParamInfo>();
     private L2genProductsParamInfo l2prodParamInfo = null;
-    private ParamInfo ofileParamInfo = null;
-    private ParamInfo ifileParamInfo = null;
+
 
 
     public boolean retainCurrentIfile = true;
     private boolean showDefaultsInParString = false;
 
-    public void initParamInfoHashMap() {
-        paramInfoHashMap.clear();
-        for (ParamInfo paramInfo : paramInfos) {
-            paramInfoHashMap.put(paramInfo.getName().toLowerCase(), paramInfo);
-        }
+    public L2genData() {
     }
+
 
     public boolean isRetainCurrentIfile() {
         return retainCurrentIfile;
@@ -146,38 +141,15 @@ public class L2genData {
         return false;
     }
 
-    public ParamInfo getOfileParamInfo() {
-        if (ofileParamInfo == null) {
-            return getParamInfo(OFILE);
-        }
-        return ofileParamInfo;
-    }
-
-    public void setOfileParamInfo(ParamInfo ofileParamInfo) {
-        this.ofileParamInfo = ofileParamInfo;
-    }
-
-    public ParamInfo getIfileParamInfo() {
-        if (ifileParamInfo == null) {
-            return getParamInfo(IFILE);
-        }
-        return ifileParamInfo;
-    }
-
-    public void setIfileParamInfo(ParamInfo ifileParamInfo) {
-        this.ifileParamInfo = ifileParamInfo;
-    }
 
 
-    public enum RegionType {Coordinates, PixelLines}
+
 
     public EventInfo[] eventInfos = {
             new EventInfo(L2PROD, this),
             new EventInfo(PARSTRING, this)
     };
 
-    public L2genData() {
-    }
 
     private EventInfo getEventInfo(String name) {
         for (EventInfo eventInfo : eventInfos) {
@@ -239,12 +211,11 @@ public class L2genData {
     }
 
     public void fireAllParamEvents() {
-        //   fireEvent(PARSTRING_IN_PROGRESS_EVENT);
+
         disableEvent(PARSTRING);
         disableEvent(L2PROD);
 
         for (ParamInfo paramInfo : paramInfos) {
-            //    if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals(IFILE)) {
             if (paramInfo.getName() != null) {
                 fireEvent(paramInfo.getName());
             }
@@ -358,6 +329,7 @@ public class L2genData {
 
     public void addParamInfo(ParamInfo paramInfo) {
         paramInfos.add(paramInfo);
+        paramInfoLookup.put(paramInfo.getName().toLowerCase(), paramInfo);
     }
 
     public void clearParamInfo() {
@@ -570,7 +542,7 @@ public class L2genData {
         if (!ignoreIfile) {
             for (ParamInfo parfileParamInfo : parfileParamInfos) {
                 if (parfileParamInfo.getName().toLowerCase().equals(IFILE)) {
-                    setParamValue(getIfileParamInfo(), parfileParamInfo.getValue());
+                    setParamValue(getParamInfo(IFILE), parfileParamInfo.getValue());
                     break;
                 }
             }
@@ -634,6 +606,8 @@ public class L2genData {
     }
 
 
+
+
     public ParamInfo getParamInfo(String name) {
 
         if (name == null) {
@@ -642,25 +616,14 @@ public class L2genData {
 
         name = name.trim().toLowerCase();
 
-        if (paramInfoHashMap.size() > 0) {
-            if (paramInfoHashMap.containsKey(name)) {
-                return paramInfoHashMap.get(name);
-            }
-        } else {
-            for (ParamInfo paramInfo : paramInfos) {
-                if (paramInfo.getName().toLowerCase().equals(name)) {
-                    return paramInfo;
-                }
-            }
-        }
-
-        return null;
+        return paramInfoLookup.get(name);
     }
 
 
     private String getParamValue(ParamInfo paramInfo) {
         return paramInfo.getValue();
     }
+
 
 
     public String getParamValue(String name) {
@@ -761,6 +724,7 @@ public class L2genData {
     public void setParamValue(String name, String value) {
         setParamValue(getParamInfo(name), value);
     }
+
 
 
     private void setParamValue(ParamInfo paramInfo, boolean selected) {
@@ -905,7 +869,7 @@ public class L2genData {
         disableEvent(PARSTRING);
         disableEvent(L2PROD);
 
-        String oldIfile = getParamValue(getIfileParamInfo());
+        String oldIfile = getParamValue(getParamInfo(IFILE));
 
         if (newIfile != null && newIfile.length() > 0) {
             iFileInfo = new FileInfo(newIfile);
@@ -917,6 +881,7 @@ public class L2genData {
         paramInfo.setDefaultValue(newIfile);
 
         if (iFileInfo != null && isValidIfile()) {
+
             resetWaveLimiter();
             l2prodParamInfo.resetProductInfos();
             updateXmlBasedObjects((File) iFileInfo);
@@ -960,7 +925,7 @@ public class L2genData {
         }
 
         // get the ifile
-        String ifile = getParamValue(getIfileParamInfo());
+        String ifile = getParamValue(getParamInfo(IFILE));
         StringBuilder ancillaryFiles = new StringBuilder("");
 
         ProcessorModel processorModel = new ProcessorModel("getanc.py");
@@ -1143,19 +1108,12 @@ public class L2genData {
             if (paramInfoStream != null && productInfoStream != null) {
                 disableEvent(PARSTRING);
                 disableEvent(L2PROD);
-                //              fireEvent(PARSTRING_IN_PROGRESS_EVENT);
-                l2genReader.readParamInfoXml(paramInfoStream, productInfoStream);
+
+                l2genReader.readParamInfoXml(paramInfoStream);
 
                 InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
                 l2genReader.readParamCategoryXml(paramCategoryInfoStream);
                 setParamCategoryInfos();
-
-                // set the useful paramInfo shortcuts
-                initParamInfoHashMap();
-                setIfileParamInfo(getParamInfo(IFILE));
-                setL2prodParamInfo((L2genProductsParamInfo) getParamInfo(L2PROD));
-                setOfileParamInfo(getParamInfo(OFILE));
-
 
                 fireEvent(PARSTRING);
                 enableEvent(L2PROD);
@@ -1215,7 +1173,10 @@ public class L2genData {
         l2prodParamInfo.clearProductCategoryInfos();
     }
 
-    public L2genProductsParamInfo createL2prodParamInfo(String value, InputStream productInfoStream) {
+    public L2genProductsParamInfo createL2prodParamInfo(String value) {
+
+        InputStream productInfoStream = getProductInfoInputStream(DEFAULT_IFILE);
+
         L2genProductsParamInfo l2prodParamInfo = new L2genProductsParamInfo();
         setL2prodParamInfo(l2prodParamInfo);
 

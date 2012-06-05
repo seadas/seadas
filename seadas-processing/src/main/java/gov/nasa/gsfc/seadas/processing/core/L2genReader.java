@@ -169,7 +169,7 @@ public class L2genReader {
     }
 
 
-    public void readParamInfoXml(InputStream stream, InputStream productInfoStream) {
+    public void readParamInfoXml(InputStream stream) {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
@@ -213,7 +213,7 @@ public class L2genReader {
 
                     ParamInfo paramInfo;
                     if (name.toLowerCase().equals(l2genData.L2PROD)) {
-                        paramInfo = l2genData.createL2prodParamInfo(value, productInfoStream);
+                        paramInfo = l2genData.createL2prodParamInfo(value);
                     } else {
                         paramInfo = new ParamInfo(name, value, type);
                     }

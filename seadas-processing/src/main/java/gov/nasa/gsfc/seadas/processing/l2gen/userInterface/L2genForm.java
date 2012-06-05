@@ -22,7 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 
-//test
+
 public class L2genForm extends JPanel implements CloProgramUI {
 
     private static final String GUI_NAME = "userInterface";
@@ -36,7 +36,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     private final JTabbedPane jTabbedPane = new JTabbedPane();
     private int tabIndex;
-//    private int mainTabIndex = 0;
 
     L2genForm(AppContext appContext, String xmlFileName) {
 
@@ -191,20 +190,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
 
-//    public Product getSelectedSourceProduct() {
-//        FileInfo iFileInfo = l2genData.getParamFileInfo(L2genData.IFILE);
-//
-//
-//        if (iFileInfo != null && iFileInfo.canRead()) {
-//            Product product = new Product(iFileInfo.getName(), "DummyType", 10, 10);
-//            product.setFileLocation(iFileInfo);
-//            return product;
-//        }
-//
-//        return null;
-//    }
-
-
     void prepareShow() {
         if (l2genMainPanel != null) {
             l2genMainPanel.prepareShow();
@@ -235,10 +220,8 @@ public class L2genForm extends JPanel implements CloProgramUI {
     public JTabbedPane getjTabbedPane() {
         return jTabbedPane;
     }
-//
-//    public int getMainTabIndex() {
-//        return mainTabIndex;
-//    }
+
+
 
     public L2genData getL2genData() {
         return l2genData;
