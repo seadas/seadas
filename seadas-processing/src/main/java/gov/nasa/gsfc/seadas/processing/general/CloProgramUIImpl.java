@@ -223,7 +223,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         ppmFile = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, "ppm file");
         ppmFile.getFileTextField().setColumns(20);
-        ppmFile.addPropertyChangeListener(new PropertyChangeListener() {
+        ppmFile.addPropertyChangeListener("ppmfilename", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (ppmFile.getFileName() != null && sourceProductSelector.getIfileTextfield().getText() != null) {
@@ -237,12 +237,12 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (smitoppmCheckBox.isSelected()) {
-                    smitoppmPanel.add(ppmFile);
+                    smitoppmPanel.add(ppmFile.getjPanel());
                     processorModel.setReadyToRun(false);
                     smitoppmPanel.validate();
                     smitoppmPanel.repaint();
                 } else {
-                    smitoppmPanel.remove(ppmFile);
+                    smitoppmPanel.remove(ppmFile.getjPanel());
                     smitoppmPanel.validate();
                     smitoppmPanel.repaint();
                 }
@@ -780,11 +780,11 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                     if (handleIfileJComboBoxEnabled) {
                         processorModel.updateParamInfo(primaryInputFileOptionName, sourceProduct.toString());
 
-                        File geoFile = getGeoFile(sourceProduct);
-                        if (geoFile.exists()) {
-                            geoFileSelector.setSelectedFile(geoFile);
-                            processorModel.updateParamInfo(L2genData.GEOFILE, geoFile.toString());
-                        }
+//                        //File geoFile = getGeoFile(sourceProduct);
+//                        if (geoFile.exists()) {
+//                            geoFileSelector.setSelectedFile(geoFile);
+//                            processorModel.updateParamInfo(L2genData.GEOFILE, geoFile.toString());
+//                        }
 
 
                     }
@@ -913,14 +913,14 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             }
         });
 
-        outputFilePanelHeight = outputFileSelector.getHeight();
-        return outputFileSelector;
+        outputFilePanelHeight = outputFileSelector.getjPanel().getHeight();
+        return outputFileSelector.getjPanel();
     }
 
     private JPanel makeOutputFileOptionField(final ParamInfo pi) {
 
         final FileSelector outputFileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, pi.getName());
-          outputFileSelector.addPropertyChangeListener(new PropertyChangeListener() {
+          outputFileSelector.addPropertyChangeListener("output file option", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 String ofile = null;
@@ -936,8 +936,8 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                 }
             }
         });
-        outputFilePanelHeight = outputFileSelector.getHeight();
-        return outputFileSelector;
+        outputFilePanelHeight = outputFileSelector.getjPanel().getHeight();
+        return outputFileSelector.getjPanel();
     }
 
     private JPanel makeInputFileOptionField(final ParamInfo pi) {
