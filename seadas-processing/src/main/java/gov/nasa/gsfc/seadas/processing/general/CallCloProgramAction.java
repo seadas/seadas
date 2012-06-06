@@ -125,14 +125,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
         modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
-         modalDialog.getJDialog().getContentPane().addPropertyChangeListener(new PropertyChangeListener() {
+        modalDialog.getJDialog().getContentPane().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                 System.out.println(cloProgramUI.getProcessorModel().isReadyToRun());
-                modalDialog.getJDialog().pack();
+                System.out.println(cloProgramUI.getProcessorModel().isReadyToRun());
                 if (cloProgramUI.getProcessorModel().isReadyToRun()) {
-                   modalDialog.getButton(ModalDialog.ID_OK).setEnabled(true);
+                    modalDialog.getButton(ModalDialog.ID_OK).setEnabled(true);
                 }
+                //modalDialog.getJDialog().pack();
             }
         });
         modalDialog.getButton(ModalDialog.ID_OK).setText("Run");
@@ -212,15 +212,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 try {
                     final File outputFile = get();
                     VisatApp.getApp().showInfoDialog(programName, programName + " done!\nOutput written to:\n" + outputFile, null);
-                   ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
+                    ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ProgramExecutor pe = new ProgramExecutor();
 
                         int exitCode = pe.executeProgram(secondaryProcessor.getProgramCmdArray());
 
-                        if (exitCode == 0)  {
-                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
-                                     secondaryProcessor.getProgramName() + " done!\n", null);
+                        if (exitCode == 0) {
+                            VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
+                                    secondaryProcessor.getProgramName() + " done!\n", null);
                         }
 
                     }
