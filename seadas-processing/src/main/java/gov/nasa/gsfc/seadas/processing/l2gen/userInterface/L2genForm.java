@@ -10,6 +10,7 @@ import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
+import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.visat.VisatApp;
@@ -93,7 +94,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
         final String TAB_NAME = "Main";
         final int tabIndex = jTabbedPane.getTabCount();
         l2genMainPanel = new L2genMainPanel(this, tabIndex);
-        jTabbedPane.addTab(TAB_NAME, l2genMainPanel);
+        jTabbedPane.addTab(TAB_NAME, l2genMainPanel.getjPanel());
     }
 
 
@@ -182,25 +183,40 @@ public class L2genForm extends JPanel implements CloProgramUI {
         return null;
     }
 
+
+
+
+    public SourceProductFileSelector getSourceProductSelector() {
+        return l2genMainPanel.getPrimaryIOFilesSelector().getIfileSelector().getSourceProductSelector();
+    }
+
+
     public Product getSelectedSourceProduct() {
-        if (l2genMainPanel != null) {
-            return l2genMainPanel.getSelectedProduct();
+        if (getSourceProductSelector() != null) {
+            return getSourceProductSelector().getSelectedProduct();
         }
+
         return null;
     }
 
 
-    void prepareShow() {
-        if (l2genMainPanel != null) {
-            l2genMainPanel.prepareShow();
+    public void prepareShow() {
+        if (getSourceProductSelector() != null) {
+            getSourceProductSelector().initProducts();
         }
     }
 
-    void prepareHide() {
-        if (l2genMainPanel != null) {
-            l2genMainPanel.prepareHide();
+    public void prepareHide() {
+        if (getSourceProductSelector() != null) {
+            getSourceProductSelector().releaseProducts();
         }
     }
+
+
+
+
+
+
 
     public boolean isOpenOutputInApp() {
         if (getOpenInAppCheckBox() != null) {
