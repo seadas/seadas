@@ -44,6 +44,8 @@ public class ProcessorModel {
 
     private Set<String> primaryOptions;
 
+    private boolean readyToRun;
+
     private String primaryInputFileOptionName, primaryOutputFileOptionName;
        private ProcessorModel secondaryProcessor;
 
@@ -72,6 +74,14 @@ public class ProcessorModel {
     public void addParamInfo(ParamInfo info) {
         paramList.add(info);
 
+    }
+
+    public boolean isReadyToRun() {
+        return readyToRun;
+    }
+
+    public void setReadyToRun(boolean readyToRun){
+        this.readyToRun = readyToRun;
     }
 
     public void createsmitoppmProcessorModel(String ofileName){
