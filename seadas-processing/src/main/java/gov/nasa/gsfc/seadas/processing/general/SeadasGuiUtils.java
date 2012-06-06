@@ -2,6 +2,8 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.util.ArrayList;
 
 /**
  * A ...
@@ -15,6 +17,70 @@ public class SeadasGuiUtils {
     }
 
 
+    public static String importFile(JFileChooser jFileChooser) {
+
+        StringBuilder stringBuilder;
+
+        int result = jFileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            final ArrayList<String> parfileTextLines = myReadDataFile(jFileChooser.getSelectedFile().toString());
+
+            stringBuilder = new StringBuilder();
+
+            for (String currLine : parfileTextLines) {
+                stringBuilder.append(currLine);
+                stringBuilder.append("\n");
+            }
+
+            return stringBuilder.toString();
+        }
+
+        return null;
+    }
+
+
+    public static void exportFile(JFileChooser fileChooser, String contents) {
+        int result = fileChooser.showSaveDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            try {
+                // Create file
+                FileWriter fstream = new FileWriter(fileChooser.getSelectedFile().toString());
+                BufferedWriter out = new BufferedWriter(fstream);
+                out.write(contents);
+                //Close the output stream
+                out.close();
+            } catch (Exception e) {//Catch exception if any
+                System.err.println("Error: " + e.getMessage());
+            }
+        }
+    }
+
+
+    private static ArrayList<String> myReadDataFile
+            (String
+                     fileName) {
+        String lineData;
+        ArrayList<String> fileContents = new ArrayList<String>();
+        BufferedReader moFile = null;
+        try {
+            moFile = new BufferedReader(new FileReader(new File(fileName)));
+            while ((lineData = moFile.readLine()) != null) {
+
+                fileContents.add(lineData);
+            }
+        } catch (IOException e) {
+            ;
+        } finally {
+            try {
+                moFile.close();
+            } catch (Exception e) {
+                //Ignore
+            }
+        }
+        return fileContents;
+    }
 
 
     public static JPanel addWrapperPanel(Object myMainPanel) {

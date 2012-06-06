@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
+import gov.nasa.gsfc.seadas.processing.general.SeadasGuiUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,8 +48,8 @@ public class L2genParfilePanel extends JPanel {
 
 
     public void initComponents() {
-        openButton = createOpenButton();
-        saveButton = createSaveButton();
+        openButton = new L2genParfileImporter().getjButton();
+        saveButton = new L2genParfileExporter().getjButton();
         retainIfileCheckbox = createRetainIfileCheckbox();
         getAncButton = createGetAncButton();
         showDefaultsCheckbox = createShowDefaultsCheckbox();
@@ -89,49 +90,71 @@ public class L2genParfilePanel extends JPanel {
     }
 
 
-    private JButton createOpenButton() {
+    private class L2genParfileImporter {
 
-        String NAME = "Open";
+        final private JButton jButton;
 
-        final JButton jButton = new JButton(NAME);
+        L2genParfileImporter() {
 
-        final JFileChooser jFileChooser = new JFileChooser();
+            String NAME = "Open";
 
-        jButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                uploadParfile(jFileChooser);
-            }
-        });
+            jButton = new JButton(NAME);
 
-        return jButton;
+            final JFileChooser jFileChooser = new JFileChooser();
+
+            jButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String contents = SeadasGuiUtils.importFile(jFileChooser);
+                    l2genData.setParString(contents, l2genData.isRetainCurrentIfile());
+                }
+            });
+        }
+
+        public JButton getjButton() {
+            return jButton;
+        }
     }
 
 
-    private JButton createSaveButton() {
+    private class L2genParfileExporter {
 
-        String NAME = "Save";
+        final private JButton jButton;
+        final JFileChooser jFileChooser;
 
-        final JButton jButton = new JButton(NAME);
+        public L2genParfileExporter() {
+            String NAME = "Save";
+            jButton = new JButton(NAME);
+            jFileChooser = new JFileChooser();
 
-        final JFileChooser jFileChooser = new JFileChooser();
+            addControlListeners();
+            addEventListeners();
+        }
 
-        jButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                writeParfile(jFileChooser);
-            }
-        });
+        private void addControlListeners() {
+            jButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String contents = l2genData.getParString(false);
+                    SeadasGuiUtils.exportFile(jFileChooser, contents);
+                }
+            });
+
+        }
 
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                jButton.setEnabled(l2genData.isValidIfile());
-            }
-        });
+        private void addEventListeners() {
+            l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    jButton.setEnabled(l2genData.isValidIfile());
+                }
+            });
+        }
 
-        return jButton;
+        public JButton getjButton() {
+            return jButton;
+        }
     }
 
 
@@ -326,68 +349,6 @@ public class L2genParfilePanel extends JPanel {
         public JTextArea getjTextArea() {
             return jTextArea;
         }
-    }
-
-
-    private void uploadParfile(JFileChooser parfileChooser) {
-
-        int result = parfileChooser.showOpenDialog(null);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            final ArrayList<String> parfileTextLines = myReadDataFile(parfileChooser.getSelectedFile().toString());
-
-            StringBuilder parfileText = new StringBuilder();
-
-            for (String currLine : parfileTextLines) {
-                debug(currLine);
-                parfileText.append(currLine);
-                parfileText.append("\n");
-            }
-
-            l2genData.setParString(parfileText.toString(), l2genData.isRetainCurrentIfile());
-        }
-    }
-
-
-    private void writeParfile(JFileChooser parfileChooser) {
-        int result = parfileChooser.showSaveDialog(null);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            try {
-                // Create file
-                FileWriter fstream = new FileWriter(parfileChooser.getSelectedFile().toString());
-                BufferedWriter out = new BufferedWriter(fstream);
-                out.write(l2genData.getParString(false));
-                //Close the output stream
-                out.close();
-            } catch (Exception e) {//Catch exception if any
-                System.err.println("Error: " + e.getMessage());
-            }
-        }
-    }
-
-    private ArrayList<String> myReadDataFile
-            (String
-                     fileName) {
-        String lineData;
-        ArrayList<String> fileContents = new ArrayList<String>();
-        BufferedReader moFile = null;
-        try {
-            moFile = new BufferedReader(new FileReader(new File(fileName)));
-            while ((lineData = moFile.readLine()) != null) {
-
-                fileContents.add(lineData);
-            }
-        } catch (IOException e) {
-            ;
-        } finally {
-            try {
-                moFile.close();
-            } catch (Exception e) {
-                //Ignore
-            }
-        }
-        return fileContents;
     }
 
 
