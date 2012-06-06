@@ -218,7 +218,7 @@ public class L2genReader {
                         paramInfo = new ParamInfo(name, value, type);
                     }
 
-                    if (name.toLowerCase().equals(L2genData.OFILE) ||
+                    if (name.toLowerCase().equals(L2genData.IFILE) ||
                             name.toLowerCase().equals(L2genData.OFILE) ||
                             name.toLowerCase().equals(L2genData.GEOFILE) ||
                             name.toLowerCase().equals(L2genData.PAR)

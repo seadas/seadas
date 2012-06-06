@@ -44,7 +44,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     String dialogTitle;
     String xmlFileName;
 
-    private boolean printLogToConsole = true;
+    private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
 
     @Override
@@ -124,7 +124,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final Window parent = appContext.getApplicationWindow();
 
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
-        modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
+        modalDialog.getButton(ModalDialog.ID_OK).setEnabled(true);
         modalDialog.getJDialog().getContentPane().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
