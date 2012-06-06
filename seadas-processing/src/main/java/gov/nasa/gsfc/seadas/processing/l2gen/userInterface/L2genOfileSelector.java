@@ -32,7 +32,7 @@ public class L2genOfileSelector {
     }
 
     private void addControlListeners() {
-        fileSelector.addPropertyChangeListener(fileSelector.getPropertyName(), new PropertyChangeListener() {
+        fileSelector.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (isControlHandlerEnabled()) {

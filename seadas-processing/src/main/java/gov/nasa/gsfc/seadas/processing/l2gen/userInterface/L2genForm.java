@@ -59,6 +59,17 @@ public class L2genForm extends JPanel implements CloProgramUI {
                 }
             });
 
+            l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (l2genData.isValidIfile()) {
+                        processorModel.setReadyToRun(true);
+                    } else {
+                        processorModel.setReadyToRun(false);
+                    }
+                   boolean  test = processorModel.isReadyToRun();
+                }
+            });
 
             setLayout(new GridBagLayout());
 
@@ -184,8 +195,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
 
-
-
     public SourceProductFileSelector getSourceProductSelector() {
         return l2genMainPanel.getPrimaryIOFilesSelector().getIfileSelector().getSourceProductSelector();
     }
@@ -213,11 +222,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
 
-
-
-
-
-
     public boolean isOpenOutputInApp() {
         if (getOpenInAppCheckBox() != null) {
             return getOpenInAppCheckBox().isSelected();
@@ -236,7 +240,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
     public JTabbedPane getjTabbedPane() {
         return jTabbedPane;
     }
-
 
 
     public L2genData getL2genData() {

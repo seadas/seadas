@@ -34,7 +34,6 @@ public class FileSelector {
     private JPanel jPanel = new JPanel(new GridBagLayout());
 
 
-
     public enum Type {
         IFILE,
         OFILE
@@ -99,21 +98,21 @@ public class FileSelector {
     private void addComponents() {
 
 
-       jPanel.add(nameLabel,
-               new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        jPanel.add(nameLabel,
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
         if (name == null) {
             nameLabel.setVisible(false);
         }
 
-       jPanel.add(fileTextfield,
-               new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
-       jPanel.add(fileChooserButton,
-               new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        jPanel.add(fileTextfield,
+                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
+        jPanel.add(fileChooserButton,
+                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
 
-       jPanel.add(filterPane,
-               new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        jPanel.add(filterPane,
+                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
         if (type != Type.IFILE) {
             filterPane.setVisible(false);
@@ -144,7 +143,6 @@ public class FileSelector {
     public String getFileName() {
         return fileTextfield.getText();
     }
-
 
 
     public JTextField getFileTextField() {
@@ -383,6 +381,9 @@ public class FileSelector {
         return jPanel;
     }
 
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+    }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(propertyName, listener);

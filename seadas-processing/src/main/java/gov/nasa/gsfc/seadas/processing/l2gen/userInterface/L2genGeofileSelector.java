@@ -31,7 +31,7 @@ public class L2genGeofileSelector {
     }
 
     private void addControlListeners() {
-        fileSelector.addPropertyChangeListener(fileSelector.getPropertyName(), new PropertyChangeListener() {
+        fileSelector.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (isControlHandlerEnabled()) {
