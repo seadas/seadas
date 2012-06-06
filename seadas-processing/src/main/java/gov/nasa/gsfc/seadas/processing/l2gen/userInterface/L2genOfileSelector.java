@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
 import gov.nasa.gsfc.seadas.processing.general.FileSelector;
 import org.esa.beam.visat.VisatApp;
 
@@ -17,13 +18,13 @@ import java.beans.PropertyChangeListener;
  */
 public class L2genOfileSelector {
 
-    final private L2genData l2genData;
+    final private L2genDataProcessorModel l2genDataProcessorModel;
 
     final private FileSelector fileSelector;
     private boolean controlHandlerEnabled = true;
 
-    public L2genOfileSelector(L2genData l2genData) {
-        this.l2genData = l2genData;
+    public L2genOfileSelector(L2genDataProcessorModel  l2genDataProcessorModel) {
+        this.l2genDataProcessorModel = l2genDataProcessorModel;
 
         fileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, L2genData.OFILE);
 
@@ -36,7 +37,7 @@ public class L2genOfileSelector {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (isControlHandlerEnabled()) {
-                    l2genData.setParamValue(L2genData.OFILE, fileSelector.getFileName());
+                    l2genDataProcessorModel.setParamValue(L2genData.OFILE, fileSelector.getFileName());
                 }
             }
         });
@@ -44,19 +45,19 @@ public class L2genOfileSelector {
     }
 
     private void addEventListeners() {
-        l2genData.addPropertyChangeListener(L2genData.OFILE, new PropertyChangeListener() {
+        l2genDataProcessorModel.addPropertyChangeListener(L2genData.OFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 disableControlHandler();
-                fileSelector.setFilename(l2genData.getParamValue(L2genData.OFILE));
+                fileSelector.setFilename(l2genDataProcessorModel.getParamValue(L2genData.OFILE));
                 enableControlHandler();
             }
         });
 
-        l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+        l2genDataProcessorModel.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                fileSelector.setEnabled(l2genData.isValidIfile());
+                fileSelector.setEnabled(l2genDataProcessorModel.isValidIfile());
             }
         });
     }

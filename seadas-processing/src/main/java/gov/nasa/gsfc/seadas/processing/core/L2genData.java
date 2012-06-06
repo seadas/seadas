@@ -21,7 +21,7 @@ import java.util.*;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class L2genData {
+public class L2genData implements L2genDataProcessorModel{
 
 
     //  private static final String OCDATAROOT = System.getenv("OCDATAROOT");

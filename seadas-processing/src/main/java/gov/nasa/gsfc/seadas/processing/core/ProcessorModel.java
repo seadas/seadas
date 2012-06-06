@@ -1,9 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.general.EventInfo;
-import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
-import gov.nasa.gsfc.seadas.processing.general.SeadasPrint;
+import gov.nasa.gsfc.seadas.processing.general.*;
 import org.esa.beam.util.Guardian;
 import org.esa.beam.visat.VisatApp;
 
@@ -26,7 +24,7 @@ import java.util.regex.Pattern;
  * Time: 2:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ProcessorModel {
+public class ProcessorModel implements L2genDataProcessorModel {
     private static final String PROCESSING_SCAN_REGEX = "Processing scan .+?\\((\\d+) of (\\d+)\\)";
     static final Pattern PROCESSING_SCAN_PATTERN = Pattern.compile(PROCESSING_SCAN_REGEX);
 
@@ -47,7 +45,7 @@ public class ProcessorModel {
     private boolean readyToRun;
 
     private String primaryInputFileOptionName, primaryOutputFileOptionName;
-       private ProcessorModel secondaryProcessor;
+    private ProcessorModel secondaryProcessor;
 
     public ProcessorModel(String name) {
         this(name, null);
@@ -80,11 +78,11 @@ public class ProcessorModel {
         return readyToRun;
     }
 
-    public void setReadyToRun(boolean readyToRun){
+    public void setReadyToRun(boolean readyToRun) {
         this.readyToRun = readyToRun;
     }
 
-    public void createsmitoppmProcessorModel(String ofileName){
+    public void createsmitoppmProcessorModel(String ofileName) {
         ProcessorModel smitoppm = new ProcessorModel("smitoppm_4_ui");
         smitoppm.setAcceptsParFile(false);
         ParamInfo pi1 = new ParamInfo("ifile", getParamValue(getPrimaryOutputFileOptionName()));
@@ -208,8 +206,8 @@ public class ProcessorModel {
         while (itr.hasNext()) {
 
             option = itr.next();
+            System.out.println(option.getName() + currentOption.getName());
             if (option.getName().equals(currentOption.getName())) {
-
                 option.setValue(newValue);
                 return;
             }
@@ -225,7 +223,7 @@ public class ProcessorModel {
         ParamInfo option;
         while (itr.hasNext()) {
             option = itr.next();
-            if (option.getName().equals(paramName)) {
+            if (option.getName().equals(paramName.trim())) {
                 return option;
             }
         }
@@ -268,6 +266,11 @@ public class ProcessorModel {
                 return;
             }
         }
+    }
+
+
+    public void setParamValue(String name, String value){
+        updateParamInfo(name, value);
     }
 
     private void computeProcessorEnv() {
@@ -495,7 +498,7 @@ public class ProcessorModel {
     public File getRootDir() {
         File rootDir = (new File(getParamValue(getPrimaryInputFileOptionName()))).getParentFile();
         if (rootDir != null) {
-            return rootDir ;
+            return rootDir;
         } else {
             try {
                 rootDir = OCSSW.getOcsswRoot();
@@ -504,7 +507,7 @@ public class ProcessorModel {
             }
 
         }
-        return rootDir == null ? new File(".") : rootDir  ;
+        return rootDir == null ? new File(".") : rootDir;
     }
 
     public ProcessorModel getSecondaryProcessor() {
@@ -513,5 +516,13 @@ public class ProcessorModel {
 
     public void setSecondaryProcessor(ProcessorModel secondaryProcessor) {
         this.secondaryProcessor = secondaryProcessor;
+    }
+
+    public boolean isValidIfile() {
+        return true;
+    }
+
+    public boolean isRequiresGeofile() {
+        return hasGeoFile;
     }
 }

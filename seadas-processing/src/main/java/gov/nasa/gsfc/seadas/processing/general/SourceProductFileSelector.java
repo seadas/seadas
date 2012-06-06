@@ -431,7 +431,7 @@ public class SourceProductFileSelector {
                 Product product = null;
                 try {
                     product = ProductIO.readProduct(file);
-                    System.out.println("new ifile read in fine");
+                    //System.out.println("new ifile read in fine");
                     if (product == null) {
                         if (file.canRead()) {
                             product = new Product(file.getName(), "DummyType", 10, 10);

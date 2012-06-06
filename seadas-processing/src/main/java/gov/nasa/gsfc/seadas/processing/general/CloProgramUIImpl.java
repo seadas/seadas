@@ -223,7 +223,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         ppmFile = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, "ppm file");
         ppmFile.getFileTextField().setColumns(20);
-        ppmFile.addPropertyChangeListener("ppmfilename", new PropertyChangeListener() {
+        ppmFile.addPropertyChangeListener(ppmFile.getPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (ppmFile.getFileName() != null && sourceProductSelector.getIfileTextfield().getText() != null) {
@@ -285,13 +285,13 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                         String[] option;
                         ParamInfo pi;
                         while (line != null) {
-                           parString.append(line + "\n");
+                            parString.append(line + "\n");
 
                             if (line.indexOf("=") != -1) {
                                 option = line.split("=", 2);
                                 System.out.println("option1: " + option[0] + "   option2: " + option[1]);
-                                pi = processorModel.getParamInfo(option[0]);
-                                processorModel.updateParamInfo(pi, option[1]);
+                                pi = processorModel.getParamInfo(option[0].trim());
+                                processorModel.updateParamInfo(pi, option[1].trim());
                             }
                             line = reader.readLine();
                         }
@@ -592,7 +592,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
                 //pi.setValue((new Boolean(field.isSelected())).toString());
 
-                processorModel.updateParamInfo(pi,(new Boolean(field.isSelected())).toString());
+                processorModel.updateParamInfo(pi, (new Boolean(field.isSelected())).toString());
                 SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
 
             }
@@ -703,7 +703,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             public void propertyChange(PropertyChangeEvent pce) {
 
                 //pi.setValue(ofs.getCurrentFileName());
-                 processorModel.updateParamInfo(pi, ofs.getCurrentFileName() );
+                processorModel.updateParamInfo(pi, ofs.getCurrentFileName());
                 debugf("%s %s %n", new String[]{ofs.getCurrentFileName(), pi.getValue()});
             }
         });
@@ -780,11 +780,11 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                     if (handleIfileJComboBoxEnabled) {
                         processorModel.updateParamInfo(primaryInputFileOptionName, sourceProduct.toString());
 
-//                        //File geoFile = getGeoFile(sourceProduct);
-//                        if (geoFile.exists()) {
-//                            geoFileSelector.setSelectedFile(geoFile);
-//                            processorModel.updateParamInfo(L2genData.GEOFILE, geoFile.toString());
-//                        }
+                        File geoFile = getGeoFile(sourceProduct);
+                        if (geoFile.exists()) {
+                            geoFileSelector.setSelectedFile(geoFile);
+                            processorModel.updateParamInfo(L2genData.GEOFILE, geoFile.toString());
+                        }
 
 
                     }
@@ -809,7 +809,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
         vc.addProperty(Property.create(primaryInputFileOptionName, primaryInputFileName));
         vc.getDescriptor(primaryInputFileOptionName).setDisplayName(primaryInputFileOptionName);
         final BindingContext ctx = new BindingContext(vc);
-       // System.out.println("property changed in parfile:" + processorModel.getParamValue(primaryInputFileOptionName));
+        // System.out.println("property changed in parfile:" + processorModel.getParamValue(primaryInputFileOptionName));
         ctx.bind(primaryInputFileOptionName, sourceProductSelector.getProductNameComboBox());
 
         ctx.addPropertyChangeListener(primaryInputFileOptionName, new PropertyChangeListener() {
@@ -817,7 +817,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
 
-               // System.out.println("property changed:" + sourceProductSelector.getIfileTextfield().getText() + " " + sourceProductSelector.getSelectedProduct().getName());
+                // System.out.println("property changed:" + sourceProductSelector.getIfileTextfield().getText() + " " + sourceProductSelector.getSelectedProduct().getName());
                 processorModel.updateParamInfo(primaryInputFileOptionName, sourceProductSelector.getSelectedProduct().getName());
             }
         });
@@ -878,7 +878,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
 
         ctx.bind(primaryOutputFileOptionName, outputFileSelector.getFileTextField());
 
-        outputFileSelector.getFileTextField().addPropertyChangeListener(new PropertyChangeListener() {
+        outputFileSelector.addPropertyChangeListener(outputFileSelector.getPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (outputFileSelector.getFileTextField().getText() != null) {
@@ -887,16 +887,25 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
             }
         });
 
+//        outputFileSelector.getFileTextField().addPropertyChangeListener(new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                if (outputFileSelector.getFileTextField().getText() != null) {
+//                    processorModel.setReadyToRun(true);
+//                }
+//            }
+//        });
+
         ctx.addPropertyChangeListener(primaryOutputFileOptionName, new PropertyChangeListener() {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
-                System.out.println("ofile property changed! " );
+                System.out.println("ofile property changed! ");
                 String homeDirPath = SystemUtils.getUserHomeDir().getPath();
                 String openDir = VisatApp.getApp().getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         homeDirPath);
 
-                 String ofileName = outputFileSelector.getFileName();
+                String ofileName = outputFileSelector.getFileName();
 
                 File ofile;
                 if (ofileName.indexOf(System.getProperty("file.separator")) == 0) {
@@ -909,7 +918,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
                     String sourceDir = sourceProductSelector.getCurrentDirectory().toString();
                     processorModel.updateParamInfo(primaryOutputFileOptionName, sourceDir + System.getProperty("file.separator") + ofileName);
                 }
-                                processorModel.setReadyToRun(true);
+                processorModel.setReadyToRun(true);
             }
         });
 
@@ -920,7 +929,7 @@ public class CloProgramUIImpl extends JPanel implements CloProgramUI {
     private JPanel makeOutputFileOptionField(final ParamInfo pi) {
 
         final FileSelector outputFileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, pi.getName());
-          outputFileSelector.addPropertyChangeListener("output file option", new PropertyChangeListener() {
+        outputFileSelector.addPropertyChangeListener("output file option", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 String ofile = null;
