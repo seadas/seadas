@@ -123,11 +123,12 @@ public class FileSelector {
     public void setEnabled(boolean enabled) {
         nameLabel.setEnabled(enabled);
         fileChooserButton.setEnabled(enabled);
+        fileTextfield.setEnabled(enabled);
 
         if (type == Type.IFILE) {
             filterRegexField.setEnabled(enabled);
             filterRegexLabel.setEnabled(enabled);
-            fileTextfield.setEnabled(enabled);
+
         }
     }
 

@@ -104,7 +104,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
         final String TAB_NAME = "Main";
         final int tabIndex = jTabbedPane.getTabCount();
-        l2genMainPanel = new L2genMainPanel(this, tabIndex);
+        l2genMainPanel = new L2genMainPanel(l2genData, tabIndex);
         jTabbedPane.addTab(TAB_NAME, l2genMainPanel.getjPanel());
     }
 

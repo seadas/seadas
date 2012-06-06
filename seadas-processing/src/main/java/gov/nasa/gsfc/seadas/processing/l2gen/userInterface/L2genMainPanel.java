@@ -16,13 +16,16 @@ import java.awt.*;
 public class L2genMainPanel {
 
     private JPanel jPanel;
+    private int tabIndex;
 
     private L2genPrimaryIOFilesSelector primaryIOFilesSelector;
-    private L2genParfilePanel parfilePanel;
+    private L2genParfilePanel parfileParStringSpecifier;
 
-    L2genMainPanel(L2genForm l2genForm, int tabIndex) {
-        primaryIOFilesSelector = new L2genPrimaryIOFilesSelector(l2genForm.getL2genData());
-        parfilePanel = new L2genParfilePanel(l2genForm, tabIndex);
+    L2genMainPanel(L2genData l2genData, int tabIndex) {
+
+        this.tabIndex = tabIndex;
+        primaryIOFilesSelector = new L2genPrimaryIOFilesSelector(l2genData);
+        parfileParStringSpecifier = new L2genParfilePanel(l2genData, tabIndex);
 
         createJPanel();
     }
@@ -32,7 +35,7 @@ public class L2genMainPanel {
         jPanel = new JPanel(new GridBagLayout());
         jPanel.add(primaryIOFilesSelector.getjPanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        jPanel.add(parfilePanel,
+        jPanel.add(parfileParStringSpecifier.getjPanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 3));
     }
 
@@ -41,11 +44,15 @@ public class L2genMainPanel {
         return primaryIOFilesSelector;
     }
 
-    public L2genParfilePanel getParfilePanel() {
-        return parfilePanel;
+    public L2genParfilePanel getParfileParStringSpecifier() {
+        return parfileParStringSpecifier;
     }
 
     public JPanel getjPanel() {
         return jPanel;
+    }
+
+    public int getTabIndex() {
+        return tabIndex;
     }
 }
