@@ -20,7 +20,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A ...
+ * A BEAM action that demonstrates how to invoke an external executable (in this case the SeaDAS l2gen command-line executable)
+ * from within VISAT and to observe its progress, and finally open the generated product in VISAT. 
  *
  * @author Norman Fomferra
  * @since SeaDAS 7.0
