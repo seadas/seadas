@@ -13,35 +13,35 @@ Installation Guide
         *   If it is not, open `$GIT_HOME/etc/gitconfig` and set `core.autocrlf` to `input`
     *   Create a directory for SeaDAS and set `SEADAS` to this directory.
 
-2.  Add `$JAVA_HOME/bin`, `$MAVEN_HOME/bin` and `$GIT_HOME/bin` to your `PATH`. (Windows:  `%JAVA_HOME%\bin`, `%MAVEN_HOME%\bin` and `%GIT_HOME%\bin`)
+1.  Add `$JAVA_HOME/bin`, `$MAVEN_HOME/bin` and `$GIT_HOME/bin` to your `PATH`. (Windows:  `%JAVA_HOME%\bin`, `%MAVEN_HOME%\bin` and `%GIT_HOME%\bin`)
 
-3.  Checkout Ceres, BEAM and SeaDAS using `git`:
+1.  Checkout Ceres, BEAM and SeaDAS using `git`:
 
 	cd $SEADAS
         git clone git://github.com/bcdev/ceres.git ceres
 	git clone git@github.com:seadas/beam.git beam
         git clone git@github.com:seadas/seadas.git seadas
 
-	### need to checkout the correct tag version for ceres
+1.  Need to checkout the correct tag version for ceres
 	cd ceres
         git checkout -b 0.13
 
-4.  Build Ceres from source and install in local Maven repository: 
+1.  Build Ceres from source and install in local Maven repository: 
 
         cd $SEADAS/ceres
         mvn install
 
-5.  Build BEAM from source and install in local Maven repository:
+1.  Build BEAM from source and install in local Maven repository:
 
         cd $SEADAS/beam
         mvn install
 
-6.  Build SeaDAS from source and install in local Maven repository:
+1.  Build SeaDAS from source and install in local Maven repository:
 
         cd $SEADAS/seadas
         mvn install
 
-6.  Open up the project in your IDE:
+1.  Open up the project in your IDE:
     *   Netbeans:
         +   *Menu File* -> *Open Project* and select ceres
         +   Check the *Open Required Projects* box
@@ -73,14 +73,14 @@ Installation Guide
         +   Select *Root Directory* `$SEADAS/seadas`
         +   Click *Finish*
         
-7. Use the following configuration to run BEAM/VISAT:
+1. Use the following configuration to run BEAM/VISAT:
     *   Main class: `com.bc.ceres.launcher.Launcher`
     *   VM parameters: `-Xmx2G -Dceres.context=beam`
     *   Program parameters: `none`
     *   Working directory: `$SEADAS/seadas` (replace $SEADAS with your actual path)
     *   Use classpath of module (project in Eclipse): `seadas-bootstrap`
 
-8. Copy file $SEADAS/seadas/src/main/config/beam.config to directory $SEADAS/seadas/config/
+1. Copy file $SEADAS/seadas/src/main/config/beam.config to directory $SEADAS/seadas/config/
     and modify the following lines:
     * Set beam.home = .
     * Set beam.app = SeaDAS
@@ -90,7 +90,7 @@ Installation Guide
     * Set seadas.ocssw.root = <OCSSW root dirctory>
     * Set seadas.ocssw.arch = <linux, linux_64 or macosx_intel>
 
-9. Once you have all the configuration done, hit *Make Project*. Let it rebuild and then *Run*
+1. Once you have all the configuration done, hit *Make Project*. Let it rebuild and then *Run*
 
 Original instructions from [Brockmann Consult][bc].
     
