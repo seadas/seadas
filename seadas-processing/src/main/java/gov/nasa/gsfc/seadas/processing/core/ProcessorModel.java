@@ -1,7 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.general.*;
+import gov.nasa.gsfc.seadas.processing.general.EventInfo;
+import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.general.SeadasPrint;
 import org.esa.beam.util.Guardian;
 import org.esa.beam.visat.VisatApp;
 
@@ -28,6 +30,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
     private static final String PROCESSING_SCAN_REGEX = "Processing scan .+?\\((\\d+) of (\\d+)\\)";
     static final Pattern PROCESSING_SCAN_PATTERN = Pattern.compile(PROCESSING_SCAN_REGEX);
 
+    private String ifileInvalidProperty = "INVALID_IFILE";
     private String programName;
     private String programLocation;
     private ArrayList<ParamInfo> paramList;
@@ -204,11 +207,12 @@ public class ProcessorModel implements L2genDataProcessorModel {
         Iterator<ParamInfo> itr = paramList.iterator();
         ParamInfo option;
         while (itr.hasNext()) {
-
             option = itr.next();
-            System.out.println(option.getName() + currentOption.getName());
+            System.out.println(option.getName() + "|  " + currentOption.getName() + "|");
             if (option.getName().equals(currentOption.getName())) {
+                String oldValue = option.getValue();
                 option.setValue(newValue);
+                propertyChangeSupport.firePropertyChange(option.getName(), oldValue, newValue);
                 return;
             }
         }
@@ -262,14 +266,24 @@ public class ProcessorModel implements L2genDataProcessorModel {
         while (itr.hasNext()) {
             option = itr.next();
             if (option.getName().equals(paramName.trim())) {
+                String oldValue = option.getValue();
                 option.setValue(newValue);
+                propertyChangeSupport.firePropertyChange(paramName, oldValue, newValue);
                 return;
             }
         }
     }
 
+    public void updateIFileInfo(String newValue) {
 
-    public void setParamValue(String name, String value){
+    }
+
+    public void updateOFileInfo(String newValue) {
+
+    }
+
+
+    public void setParamValue(String name, String value) {
         updateParamInfo(name, value);
     }
 
@@ -491,10 +505,6 @@ public class ProcessorModel implements L2genDataProcessorModel {
         //  System.out.println(string);
     }
 
-    public void setProperty(String property) {
-        //changeSupport.firePropertyChange("property", this.property, this.property=property);
-    }
-
     public File getRootDir() {
         File rootDir = (new File(getParamValue(getPrimaryInputFileOptionName()))).getParentFile();
         if (rootDir != null) {
@@ -525,4 +535,61 @@ public class ProcessorModel implements L2genDataProcessorModel {
     public boolean isRequiresGeofile() {
         return hasGeoFile;
     }
+
+    private boolean verifyIFilePath(String ifileName) {
+
+        File ifile = new File(ifileName);
+
+        if (ifile.exists()) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean verifyParentFilePath(String fileName) {
+
+
+        File file = new File(fileName);
+
+        if (file.getParentFile().exists()) {
+            return true;
+        } else if (fileName.indexOf(System.getProperty("file.separator")) != -1) {
+            file = new File(getParamValue(getPrimaryInputFileOptionName()));
+            if (file.exists()) {
+                file = new File(file.getParentFile(), fileName);
+                if (file.getParentFile().exists()) {
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
+//    private String addPathToFileName(String fileName) {
+//
+//
+//        String homeDirPath = SystemUtils.getUserHomeDir().getPath();
+//        String openDir = VisatApp.getApp().getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+//                homeDirPath);
+//
+//        File file = new File(fileName);
+//        if (file.exists()) {
+//            updateParamInfo(primaryOutputFileOptionName, fileName);
+//        }
+//    }
+//
+//    else
+//
+//    {
+//        String sourceDir = sourceProductSelector.getCurrentDirectory().toString();
+//        processorModel.updateParamInfo(primaryOutputFileOptionName, sourceDir + System.getProperty("file.separator") + ofileName);
+//    }
+//
+//    processorModel.setReadyToRun(true);
+//
+//    return fileName;
+//}
+
 }

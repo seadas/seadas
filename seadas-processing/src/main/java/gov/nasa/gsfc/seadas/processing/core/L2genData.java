@@ -21,7 +21,7 @@ import java.util.*;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class L2genData implements L2genDataProcessorModel{
+public class L2genData implements L2genDataProcessorModel {
 
 
     //  private static final String OCDATAROOT = System.getenv("OCDATAROOT");
@@ -73,11 +73,9 @@ public class L2genData implements L2genDataProcessorModel{
     private final SeadasPrint l2genPrint = new SeadasPrint();
 
 
-
     // useful shortcuts to popular paramInfos
     private final HashMap<String, ParamInfo> paramInfoLookup = new HashMap<String, ParamInfo>();
     private L2genProductsParamInfo l2prodParamInfo = null;
-
 
 
     public boolean retainCurrentIfile = true;
@@ -101,6 +99,14 @@ public class L2genData implements L2genDataProcessorModel{
 
     public boolean isShowDefaultsInParString() {
         return showDefaultsInParString;
+    }
+
+    public String getPrimaryInputFileOptionName() {
+        return IFILE;
+    }
+
+    public String getPrimaryOutputFileOptionName() {
+        return OFILE;
     }
 
     public void setShowDefaultsInParString(boolean showDefaultsInParString) {
@@ -140,9 +146,6 @@ public class L2genData implements L2genDataProcessorModel{
 
         return false;
     }
-
-
-
 
 
     public EventInfo[] eventInfos = {
@@ -606,8 +609,6 @@ public class L2genData implements L2genDataProcessorModel{
     }
 
 
-
-
     public ParamInfo getParamInfo(String name) {
 
         if (name == null) {
@@ -623,7 +624,6 @@ public class L2genData implements L2genDataProcessorModel{
     private String getParamValue(ParamInfo paramInfo) {
         return paramInfo.getValue();
     }
-
 
 
     public String getParamValue(String name) {
@@ -724,7 +724,6 @@ public class L2genData implements L2genDataProcessorModel{
     public void setParamValue(String name, String value) {
         setParamValue(getParamInfo(name), value);
     }
-
 
 
     private void setParamValue(ParamInfo paramInfo, boolean selected) {

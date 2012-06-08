@@ -108,7 +108,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return new ExtractorUI(programName, xmlFileName);
         }
 
-        return new CloProgramUIImpl(programName, xmlFileName);
+        //return new CloProgramUIImpl(programName, xmlFileName);
+        return new ProgramUIFactory(programName, xmlFileName);
     }
 
     @Override
@@ -124,15 +125,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final Window parent = appContext.getApplicationWindow();
 
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
-        modalDialog.getButton(ModalDialog.ID_OK).setEnabled(true);
+        modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
         modalDialog.getJDialog().getContentPane().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                System.out.println(cloProgramUI.getProcessorModel().isReadyToRun());
+                System.out.println("Run button is enabled: " + cloProgramUI.getProcessorModel().isReadyToRun());
                 if (cloProgramUI.getProcessorModel().isReadyToRun()) {
                     modalDialog.getButton(ModalDialog.ID_OK).setEnabled(true);
                 }
-                //modalDialog.getJDialog().pack();
+                modalDialog.getJDialog().pack();
             }
         });
         modalDialog.getButton(ModalDialog.ID_OK).setText("Run");

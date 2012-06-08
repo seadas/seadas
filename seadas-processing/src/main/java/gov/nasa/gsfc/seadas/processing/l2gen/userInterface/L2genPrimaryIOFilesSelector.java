@@ -25,9 +25,12 @@ public class L2genPrimaryIOFilesSelector {
 
     public L2genPrimaryIOFilesSelector(L2genDataProcessorModel l2genDataProcessorModel) {
         ifileSelector = new L2genIfileSelector(l2genDataProcessorModel);
-        geofileSelector = new L2genGeofileSelector(l2genDataProcessorModel);
-        ofileSelector = new L2genOfileSelector(l2genDataProcessorModel);
-
+        if (l2genDataProcessorModel.isRequiresGeofile()) {
+            geofileSelector = new L2genGeofileSelector(l2genDataProcessorModel);
+        }
+        if (l2genDataProcessorModel.getPrimaryOutputFileOptionName() != null) {
+            ofileSelector = new L2genOfileSelector(l2genDataProcessorModel);
+        }
         createJPanel();
     }
 
@@ -39,11 +42,14 @@ public class L2genPrimaryIOFilesSelector {
         jPanel.add(ifileSelector.getJPanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        jPanel.add(geofileSelector.getJPanel(),
-                new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-
-        jPanel.add(ofileSelector.getJPanel(),
-                new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        if (geofileSelector != null) {
+            jPanel.add(geofileSelector.getJPanel(),
+                    new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        }
+        if (ofileSelector != null) {
+            jPanel.add(ofileSelector.getJPanel(),
+                    new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        }
     }
 
 

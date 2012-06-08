@@ -1,15 +1,11 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 
 /**
@@ -19,7 +15,7 @@ import java.io.*;
  * Time: 3:05 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ExtractorUI extends CloProgramUIImpl {
+public class ExtractorUI extends ProgramUIFactory {
 
     private ProcessorModel extractor;
     private ProcessorModel lonlat2pixline;
@@ -29,6 +25,8 @@ public class ExtractorUI extends CloProgramUIImpl {
     private JPanel paramPanel;
 
     private JToggleButton pixellonlatSwitch;
+
+    private ParamUIFactory paramUIFactory;
 
     public ExtractorUI(String programName, String xmlFileName) {
         super(programName, xmlFileName);
@@ -48,13 +46,13 @@ public class ExtractorUI extends CloProgramUIImpl {
 
     public void updateProcessorModel() {
 
-        Product selectedProduct = sourceProductSelector.getSelectedProduct();
-        if (sourceProductSelector.getSelectedProduct() != null) {
-            final File inputFile = selectedProduct.getFileLocation();
-            extractor.updateParamInfo(extractor.getPrimaryInputFileOptionName(), inputFile.toString());
-            lonlat2pixline.updateParamInfo(lonlat2pixline.getPrimaryInputFileOptionName(), getGeoFileName(inputFile).toString());
-        }
-        extractor.updateParamInfo(extractor.getPrimaryOutputFileOptionName(), outputFileSelector.getFileName());
+//        Product selectedProduct = sourceProductSelector.getSelectedProduct();
+//        if (sourceProductSelector.getSelectedProduct() != null) {
+//            final File inputFile = selectedProduct.getFileLocation();
+//            extractor.updateParamInfo(extractor.getPrimaryInputFileOptionName(), inputFile.toString());
+//            lonlat2pixline.updateParamInfo(lonlat2pixline.getPrimaryInputFileOptionName(), getGeoFileName(inputFile).toString());
+//        }
+//        extractor.updateParamInfo(extractor.getPrimaryOutputFileOptionName(), outputFileSelector.getFileName());
 
     }
 
@@ -67,17 +65,9 @@ public class ExtractorUI extends CloProgramUIImpl {
         return extractor;
     }
 
-    public Product getSelectedSourceProduct() {
-
-        return sourceProductSelector.getSelectedProduct();
-    }
 
     private void computePixelsFromLonLat() {
 
-        if (sourceProductSelector.getSelectedProduct() == null) {
-            VisatApp.getApp().showErrorDialog(lonlat2pixline.getProgramName(), "No product selected.");
-            return;
-        }
 
         try {
             final Process process = lonlat2pixline.executeProcess();
@@ -109,19 +99,14 @@ public class ExtractorUI extends CloProgramUIImpl {
     }
 
     protected JPanel createParamPanel() {
-        extractor = new ProcessorModel(programName, xmlFileName);
+
         lonlat2pixline = new ProcessorModel("lonlat2pixline", "lonlat2pixline.xml");
 
+         paramUIFactory = new ParamUIFactory(processorModel);
+        pixelPanel = paramUIFactory.createParamPanel(processorModel);
 
-        pixelPanel = createParamPanel(extractor);
-        newsPanel = createParamPanel(lonlat2pixline);
+        newsPanel = new ParamUIFactory(lonlat2pixline).createParamPanel(lonlat2pixline);
 
-        newsPanel.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-            }
-        });
-        newsPanel.getComponent(0);
         pixelPanel.setName("pixelPanel");
         newsPanel.setName("newsPanel");
 
@@ -136,9 +121,9 @@ public class ExtractorUI extends CloProgramUIImpl {
 
                 if (pixellonlatSwitch.isSelected()) {
                     pixellonlatSwitch.setBorderPainted(true);
-                    updateProcessorModel();
+                    //updateProcessorModel();
                     computePixelsFromLonLat();
-                    pixelPanel = createParamPanel(extractor);
+                    //pixelPanel = createParamPanel(extractor);
                 } else {
                     pixellonlatSwitch.setBorderPainted(false);
                 }

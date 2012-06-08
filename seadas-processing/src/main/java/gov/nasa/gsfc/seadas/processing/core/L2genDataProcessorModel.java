@@ -15,4 +15,6 @@ public interface L2genDataProcessorModel {
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
     public boolean isValidIfile();
     public boolean isRequiresGeofile();
+    public String getPrimaryInputFileOptionName();
+    public String getPrimaryOutputFileOptionName();
 }
