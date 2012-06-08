@@ -11,6 +11,8 @@ public class SeadasProcessorInfo {
 
 
     public static enum Id {
+        L1AEXTRACT_MODIS,
+        L1AEXTRACT_SEAWIFS,
         L1AEXTRACT,
         L1AGEN,
         GEOGEN,
@@ -132,6 +134,11 @@ public class SeadasProcessorInfo {
         }
 
         switch (processorId) {
+            case L1AEXTRACT_MODIS:
+                return iFileInfo.isSupportedMission() &&
+                        !iFileInfo.isMissionId(MissionInfo.Id.SEAWIFS);
+            case L1AEXTRACT_SEAWIFS:
+                return iFileInfo.isMissionId(MissionInfo.Id.SEAWIFS);
             case L1AEXTRACT:
                 return iFileInfo.isSupportedMission();
             case L1AGEN:
@@ -172,6 +179,10 @@ public class SeadasProcessorInfo {
         }
 
         switch (processorId) {
+            case L1AEXTRACT_MODIS:
+                return iFileInfo.isTypeId(FileTypeInfo.Id.L1A);
+            case L1AEXTRACT_SEAWIFS:
+                return iFileInfo.isTypeId(FileTypeInfo.Id.L1A);
             case L1AEXTRACT:
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L1A);
             case L1AGEN:

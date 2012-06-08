@@ -16,7 +16,7 @@ import java.awt.*;
  * Time: 7:27 AM
  * To change this template use File | Settings | File Templates.
  */
-public class L2genPrimaryIOFilesPanel {
+public class L2genPrimaryIOFilesSelector {
 
     private JPanel jPanel;
 
@@ -24,7 +24,7 @@ public class L2genPrimaryIOFilesPanel {
     private L2genGeofileSelector geofileSelector;
     private L2genOfileSelector ofileSelector;
 
-    public L2genPrimaryIOFilesPanel(L2genDataProcessorModel l2genDataProcessorModel) {
+    public L2genPrimaryIOFilesSelector(L2genDataProcessorModel l2genDataProcessorModel) {
         ifileSelector = new L2genIfileSelector(l2genDataProcessorModel);
         geofileSelector = new L2genGeofileSelector(l2genDataProcessorModel);
         ofileSelector = new L2genOfileSelector(l2genDataProcessorModel);

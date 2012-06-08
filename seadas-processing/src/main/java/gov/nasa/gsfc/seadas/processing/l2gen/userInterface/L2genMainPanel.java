@@ -18,13 +18,13 @@ public class L2genMainPanel {
     private JPanel jPanel;
     private int tabIndex;
 
-    private L2genPrimaryIOFilesPanel primaryIOFilesPanel;
+    private L2genPrimaryIOFilesSelector primaryIOFilesPanel;
     private L2genParfilePanel parfilePanel;
 
     L2genMainPanel(L2genData l2genData, int tabIndex) {
 
         this.tabIndex = tabIndex;
-        primaryIOFilesPanel = new L2genPrimaryIOFilesPanel(l2genData);
+        primaryIOFilesPanel = new L2genPrimaryIOFilesSelector(l2genData);
         parfilePanel = new L2genParfilePanel(l2genData, tabIndex);
 
         createJPanel();
@@ -40,7 +40,7 @@ public class L2genMainPanel {
     }
 
 
-    public L2genPrimaryIOFilesPanel getPrimaryIOFilesPanel() {
+    public L2genPrimaryIOFilesSelector getPrimaryIOFilesPanel() {
         return primaryIOFilesPanel;
     }
 
