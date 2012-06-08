@@ -15,11 +15,16 @@ Installation Guide
 
 2.  Add `$JAVA_HOME/bin`, `$MAVEN_HOME/bin` and `$GIT_HOME/bin` to your `PATH`. (Windows:  `%JAVA_HOME%\bin`, `%MAVEN_HOME%\bin` and `%GIT_HOME%\bin`)
 
-3.  Checkout Ceres, BEAM abd SeaDAS using `git`:
+3.  Checkout Ceres, BEAM and SeaDAS using `git`:
 
-        git clone https://github.com/bcdev/ceres.git $SEADAS/ceres
-	    git clone git://github.com/bcdev/beam.git $SEADAS/beam
-        git clone git@github.com:seadas/seadas.git $SEADAS/seadas
+	cd $SEADAS
+        git clone git://github.com/bcdev/ceres.git ceres
+	git clone git@github.com:seadas/beam.git beam
+        git clone git@github.com:seadas/seadas.git seadas
+
+	### need to checkout the correct tag version for ceres
+	cd ceres
+        git checkout -b 0.13
 
 4.  Build Ceres from source and install in local Maven repository: 
 
