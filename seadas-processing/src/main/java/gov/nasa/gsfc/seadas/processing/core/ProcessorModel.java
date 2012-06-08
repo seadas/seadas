@@ -585,7 +585,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         if (fileName.indexOf(System.getProperty("file.separator")) == 0 && new File(fileName).getParentFile().exists()) {
             return fileName;
         } else if (new File(getIfileDir(), fileName).getParentFile().exists()) {
-            return getIfileDir() + fileName;
+            return getIfileDir() + System.getProperty("file.separator") + fileName;
 
         } else {
             return null;

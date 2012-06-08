@@ -124,11 +124,15 @@ public class ParFileUI {
                                             "Error",
                                             JOptionPane.ERROR_MESSAGE);
                                 } else if (option[0].trim().equals(processorModel.getPrimaryInputFileOptionName())) {
-                                    if (!processorModel.updateIFileInfo(option[1])) {
-                                        showErrorMessage(parent, "ifile is not found. Please include absolute path in the ifile name or select ifile through file chooser.");
+                                    if (!processorModel.updateIFileInfo(option[1].trim() )) {
+                                        JOptionPane.showMessageDialog(parent,
+                                            "ifile " + option[1] + "is not found. Please include absolute path in the ifile name or select ifile through file chooser.",
+                                            "Error",
+                                            JOptionPane.ERROR_MESSAGE);
+                                        //showErrorMessage(parent, "ifile is not found. Please include absolute path in the ifile name or select ifile through file chooser.");
                                     }
                                 } else if (option[0].trim().equals(processorModel.getPrimaryOutputFileOptionName())) {
-                                    if (!processorModel.updateOFileInfo(option[1])) {
+                                    if (!processorModel.updateOFileInfo(option[1].trim())) {
                                         showErrorMessage(parent, "ofile directory does not exist!");
                                     }
                                 } else {

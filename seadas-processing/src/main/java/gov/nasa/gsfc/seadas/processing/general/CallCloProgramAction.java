@@ -255,7 +255,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
             Matcher matcher = PROCESSING_SCAN_PATTERN.matcher(line);
             if (matcher.find()) {
-
                 int scan = Integer.parseInt(matcher.group(1));
                 int numScans = Integer.parseInt(matcher.group(2));
 

@@ -46,7 +46,16 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
     private void createUserInterface() {
         ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
-        String outputfilenameoption =  processorModel.getPrimaryOutputFileOptionName();
+
+        JPanel ioPanel = ioFilesSelector.getjPanel();
+        if (! processorModel.hasGeoFile() ) {
+            ioPanel.remove(1);
+        } else if ( !processorModel.hasPrimaryOutputFile() ) {
+            ioPanel.remove(2);
+        }
+        ioPanel.repaint();
+        ioPanel.validate();
+
         if (processorModel.getPrimaryOutputFileOptionName() != null) {
             processorModel.addPropertyChangeListener(processorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
                 @Override
@@ -64,7 +73,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
         this.setLayout(new GridBagLayout());
 
-        add(ioFilesSelector.getjPanel(),
+        add(ioPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
         add(paramPanel,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
