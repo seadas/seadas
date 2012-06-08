@@ -39,8 +39,8 @@ public class ParFileUI {
     }
 
 
-    public JPanel getParStringPanel(){
-     return parStringPanel;
+    public JPanel getParStringPanel() {
+        return parStringPanel;
     }
 
     private JTextArea createParStringEditor(String parString) {
@@ -123,8 +123,17 @@ public class ParFileUI {
                                             file.getName() + " is not a correct par file for " + processorModel.getProgramName() + "'.\n",
                                             "Error",
                                             JOptionPane.ERROR_MESSAGE);
+                                } else if (option[0].trim().equals(processorModel.getPrimaryInputFileOptionName())) {
+                                    if (!processorModel.updateIFileInfo(option[1])) {
+                                        showErrorMessage(parent, "ifile is not found. Please include absolute path in the ifile name or select ifile through file chooser.");
+                                    }
+                                } else if (option[0].trim().equals(processorModel.getPrimaryOutputFileOptionName())) {
+                                    if (!processorModel.updateOFileInfo(option[1])) {
+                                        showErrorMessage(parent, "ofile directory does not exist!");
+                                    }
+                                } else {
+                                    processorModel.updateParamInfo(pi, option[1].trim());
                                 }
-                                 processorModel.updateParamInfo(pi, option[1].trim());
                             }
                             line = reader.readLine();
                         }
@@ -206,7 +215,7 @@ public class ParFileUI {
         return FileUtils.exchangeExtension(productFile, ".par");
     }
 
-    private void showErrorMessage(JComponent parent, String parFileName) {
+    private void showErrorMessage(Component parent, String parFileName) {
         JOptionPane.showMessageDialog(parent,
                 "Unable to create parameter file:\n'" + parFileName + "'",
                 "",

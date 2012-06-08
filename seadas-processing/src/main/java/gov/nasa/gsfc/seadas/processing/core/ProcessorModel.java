@@ -267,6 +267,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
             option = itr.next();
             if (option.getName().equals(paramName.trim())) {
                 String oldValue = option.getValue();
+                //newValue = "";
                 option.setValue(newValue);
                 propertyChangeSupport.firePropertyChange(paramName, oldValue, newValue);
                 return;
@@ -274,17 +275,43 @@ public class ProcessorModel implements L2genDataProcessorModel {
         }
     }
 
-    public void updateIFileInfo(String newValue) {
+    private String getAugmentedNewValue(String paramName, String newValue) {
+        if (paramName.trim().equals(getPrimaryInputFileOptionName())) {
+
+        }
+        return null;
+    }
+
+    public boolean updateIFileInfo(String newValue) {
+
+        if (verifyIFilePath(newValue)) {
+            updateParamInfo(getPrimaryInputFileOptionName(), newValue);
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
-    public void updateOFileInfo(String newValue) {
+    public boolean updateOFileInfo(String newValue) {
 
+        String ofileFullPathName = getOFileFullPath(newValue);
+        if (ofileFullPathName != null) {
+            updateParamInfo(getPrimaryOutputFileOptionName(), ofileFullPathName);
+            return true;
+        }
+        return false;
     }
 
 
     public void setParamValue(String name, String value) {
-        updateParamInfo(name, value);
+        if (name.trim().equals(getPrimaryInputFileOptionName())) {
+            updateIFileInfo(value);
+        } else if (name.trim().equals(getPrimaryOutputFileOptionName())) {
+            updateOFileInfo(value);
+        } else {
+            updateParamInfo(name, value);
+        }
     }
 
     private void computeProcessorEnv() {
@@ -546,25 +573,23 @@ public class ProcessorModel implements L2genDataProcessorModel {
         return false;
     }
 
-    private boolean verifyParentFilePath(String fileName) {
+    private String getIfileDir() {
 
+        String ifileDir = getParamValue(getPrimaryInputFileOptionName());
+        ifileDir = ifileDir.substring(0, ifileDir.lastIndexOf(System.getProperty("file.separator")));
+        return ifileDir;
+    }
 
-        File file = new File(fileName);
+    private String getOFileFullPath(String fileName) {
 
-        if (file.getParentFile().exists()) {
-            return true;
-        } else if (fileName.indexOf(System.getProperty("file.separator")) != -1) {
-            file = new File(getParamValue(getPrimaryInputFileOptionName()));
-            if (file.exists()) {
-                file = new File(file.getParentFile(), fileName);
-                if (file.getParentFile().exists()) {
-                    return true;
-                }
-            }
+        if (fileName.indexOf(System.getProperty("file.separator")) == 0 && new File(fileName).getParentFile().exists()) {
+            return fileName;
+        } else if (new File(getIfileDir(), fileName).getParentFile().exists()) {
+            return getIfileDir() + fileName;
 
+        } else {
+            return null;
         }
-
-        return false;
     }
 
 //    private String addPathToFileName(String fileName) {
