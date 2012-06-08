@@ -17,13 +17,14 @@ Installation Guide
 
 1.  Checkout Ceres, BEAM and SeaDAS using `git`:
 
-	cd $SEADAS
+        cd $SEADAS
         git clone git://github.com/bcdev/ceres.git ceres
-	git clone git@github.com:seadas/beam.git beam
+        git clone git@github.com:seadas/beam.git beam
         git clone git@github.com:seadas/seadas.git seadas
 
 1.  Need to checkout the correct tag version for ceres
-	cd ceres
+
+        cd ceres
         git checkout -b 0.13
 
 1.  Build Ceres from source and install in local Maven repository: 
@@ -88,7 +89,6 @@ Installation Guide
     * Set beam.debug = true
     * Set beam.splash.image = ./src/main/bin/common/splash.png
     * Set seadas.ocssw.root = <OCSSW root dirctory>
-    * Set seadas.ocssw.arch = <linux, linux_64 or macosx_intel>
 
 1. Once you have all the configuration done, hit *Make Project*. Let it rebuild and then *Run*
 
