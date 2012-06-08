@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 
+import com.sun.tools.corba.se.idl.StringGen;
 import gov.nasa.gsfc.seadas.processing.general.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
@@ -58,6 +59,7 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     public FileInfo iFileInfo = null;
+    public SeadasProcessorInfo seadasProcessorInfo = new SeadasProcessorInfo(SeadasProcessorInfo.Id.L2GEN);
 
     public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
 
@@ -117,25 +119,7 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
     public boolean isValidIfile() {
-
-        if (iFileInfo != null && iFileInfo.exists() && iFileInfo.isAbsolute()) {
-            if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
-                    iFileInfo.isMissionId(MissionInfo.Id.MODIST) ||
-                    iFileInfo.isMissionId(MissionInfo.Id.MERIS)
-                    ) {
-                if (iFileInfo.isTypeId(FileTypeInfo.Id.L1B)) {
-                    return true;
-                }
-
-            } else if (iFileInfo.isSupportedMission()) {
-                if (iFileInfo.isTypeId(FileTypeInfo.Id.L1A) ||
-                        iFileInfo.isTypeId(FileTypeInfo.Id.L1B)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return seadasProcessorInfo.isValidIfile();
     }
 
 
@@ -875,6 +859,8 @@ public class L2genData implements L2genDataProcessorModel {
         } else {
             iFileInfo = null;
         }
+
+        seadasProcessorInfo.setFileInfo(iFileInfo);
 
         paramInfo.setValue(newIfile);
         paramInfo.setDefaultValue(newIfile);

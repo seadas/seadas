@@ -196,7 +196,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
 
     public SourceProductFileSelector getSourceProductSelector() {
-        return l2genMainPanel.getPrimaryIOFilesSelector().getIfileSelector().getSourceProductSelector();
+        return l2genMainPanel.getPrimaryIOFilesPanel().getIfileSelector().getSourceProductSelector();
     }
 
 
