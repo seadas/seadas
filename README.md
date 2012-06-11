@@ -43,7 +43,6 @@ Installation Guide
         mvn install
 
 1.  Open up the project in your IDE:
-
    * Netbeans:
       +   *Menu File* -> *Open Project* and select ceres
       +   Check the *Open Required Projects* box
@@ -52,7 +51,6 @@ Installation Guide
       +   *Menu File* -> *Open Project* and select seadas
       +   Check the *Open Required Projects* box
       +   Set the *SeaDAS Application* as the main project
-
    * IntelliJ IDEA:
       +   *Main Menu* -> *File* -> *New Project* -> *Import Project from External Model*
       +   Choose Maven
@@ -78,7 +76,6 @@ Installation Guide
       +   Click *Finish*
       
 1. Use the following configuration to run BEAM/VISAT:
-
    *   Main class: `com.bc.ceres.launcher.Launcher`
    *   VM parameters: `-Xmx2G -Dceres.context=seadas`
    *   Program parameters: `none`
