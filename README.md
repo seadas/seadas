@@ -82,9 +82,9 @@ Installation Guide
 
 1. Copy the config file.
 
-    cd $SEADAS/seadas
-    mkdir config
-    cp src/main/config/seadas.config config
+      cd $SEADAS/seadas
+      mkdir config
+      cp src/main/config/seadas.config config
 
 1. Edit the following lines in the config file:
     * Set seadas.home = .
