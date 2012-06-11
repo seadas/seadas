@@ -92,7 +92,7 @@ Installation Guide
     * Set seadas.logLevel = ALL
     * Set seadas.debug = true
     * Set seadas.splash.image = ./src/main/bin/common/splash.png
-    * Set seadas.ocssw.root = <OCSSW root dirctory>
+    * Set seadas.ocssw.root = your OCSSW root dirctory
 
 1. Once you have all the configuration done, hit *Make Project*. Let it rebuild and then *Run*
 
