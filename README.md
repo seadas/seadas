@@ -5,13 +5,13 @@ Installation Guide
 ------------------
 
 1. Download and install build tools:
-    *   Install J2SE 1.6 and set `JAVA_HOME` accordingly.
-    *   Install Maven and set `MAVEN_HOME` accordingly.
-    *   Install GIT and set `GIT_HOME` accordingly.
-        *   On Windows we recommend the `msysGit` package.
-        *   Make sure Git is configured correctly: type `git config -l` at your console; the value `core.autocrlf` has to be set to `input`
-        *   If it is not, open `$GIT_HOME/etc/gitconfig` and set `core.autocrlf` to `input`
-    *   Create a directory for SeaDAS and set `SEADAS` to this directory.
+ *   Install J2SE 1.6 and set `JAVA_HOME` accordingly.
+ *   Install Maven and set `MAVEN_HOME` accordingly.
+ *   Install GIT and set `GIT_HOME` accordingly.
+      +   On Windows we recommend the `msysGit` package.
+      +   Make sure Git is configured correctly: type `git config -l` at your console; the value `core.autocrlf` has to be set to `input`
+      +   If it is not, open `$GIT_HOME/etc/gitconfig` and set `core.autocrlf` to `input`
+ *   Create a directory for SeaDAS and set `SEADAS` to this directory.
 
 1.  Add `$JAVA_HOME/bin`, `$MAVEN_HOME/bin` and `$GIT_HOME/bin` to your `PATH`. (Windows:  `%JAVA_HOME%\bin`, `%MAVEN_HOME%\bin` and `%GIT_HOME%\bin`)
 
@@ -61,10 +61,8 @@ Installation Guide
       +   Click *Finish*
    * Eclipse:
       +   Build Eclipse project files for BEAM:
-
-                cd $SEADAS/seadas
-                mvn eclipse:eclipse
-
+         cd $SEADAS/seadas
+         mvn eclipse:eclipse
       + Delete the created `.project` file in the main project folder.
       +   Make sure that `M2_REPO` classpath variable is set:
          -   Open *Window* -> *Preferences...* then select *Java* -> *Build Path* -> *Classpath Variables*
