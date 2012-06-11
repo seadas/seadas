@@ -22,10 +22,10 @@ Installation Guide
         git clone git@github.com:seadas/beam.git beam
         git clone git@github.com:seadas/seadas.git seadas
 
-1.  Need to checkout the correct tag version for ceres
+1.  Need to checkout the correct version for ceres
 
         cd ceres
-        git checkout -b 0.13
+        git checkout --track remotes/origin/0.13.x
 
 1.  Build Ceres from source and install in local Maven repository: 
 
