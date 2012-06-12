@@ -53,6 +53,7 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
     private static final String[] supportedProductTypes = {
             "CZCS Level-2 Data",
             "HMODISA Level-2 Data",
+            "HMODIST Level-2 Data",
             "MERIS Level-2 Data",
             "MODISA Level-2 Data",
             "MODIST Level-2 Data",

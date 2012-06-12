@@ -129,9 +129,11 @@ public class SeadasProductReader extends AbstractProductReader {
                 case VIIRS_EDR:
                     seadasFileReader = new ViirsXDRFileReader(this);
                     break;
-
+                case UNKNOWN:
+                    throw new IOException("Unrecognized product type");
                 default:
-                    throw new IOException("Unrecognized product type BOB");
+                    throw new IOException("Unrecognized product type");
+
             }
 
             return seadasFileReader.createProduct();

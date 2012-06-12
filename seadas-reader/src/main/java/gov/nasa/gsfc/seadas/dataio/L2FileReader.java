@@ -28,6 +28,22 @@ public class L2FileReader extends SeadasFileReader {
 
         int sceneWidth = getIntAttribute("Pixels per Scan Line");
         int sceneHeight = getIntAttribute("Number of Scan Lines");
+        try {
+            String navGroup = "Navigation Data";
+            final String latitude = "latitude";
+            if (ncFile.findGroup(navGroup) == null) {
+                if (ncFile.findGroup("Navigation") != null) {
+                    navGroup = "Navigation";
+                }
+            }
+            final Variable variable = ncFile.findVariable(navGroup + "/" + latitude);
+            invalidateLines(LAT_INVALIDATOR,variable);
+
+            sceneHeight -= leadLineSkip + tailLineSkip;
+
+        } catch (IOException ignore) {
+
+        }
         String productName = getStringAttribute("Product Name");
 
         mustFlipX = mustFlipY = getDefaultFlip();
@@ -52,7 +68,7 @@ public class L2FileReader extends SeadasFileReader {
             if (mustFlipY) {
                 product.setStartTime(utcEnd);
             } else {
-                product.setEndTime(utcStart);
+                product.setEndTime(utcEnd);
             }
         }
 
@@ -120,9 +136,9 @@ public class L2FileReader extends SeadasFileReader {
             }
         }
         try {
-            if (latBand != null && lonBand != null) {
+        if (latBand != null && lonBand != null) {
                 product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-            }
+        }
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage());
         }

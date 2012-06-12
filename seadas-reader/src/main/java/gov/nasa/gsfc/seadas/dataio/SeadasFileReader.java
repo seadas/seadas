@@ -34,6 +34,15 @@ public abstract class SeadasFileReader {
     protected Map<String, String> bandInfoMap = getL2BandInfoMap();
 //    protected Map<String, String> flagsInfoMap = getL2FlagsInfoMap();
 
+    protected int leadLineSkip;
+    protected int tailLineSkip;
+    public static final Invalidator LAT_INVALIDATOR = new Invalidator() {
+        @Override
+        public final boolean isInvalid(double value) {
+            return value > 90.0 || value < -90.0 || Double.isNaN(value);
+        }
+    };
+
     public SeadasFileReader(SeadasProductReader productReader) {
         this.productReader = productReader;
         ncFile = productReader.getNcfile();
@@ -72,7 +81,6 @@ public abstract class SeadasFileReader {
         int targetIndex = 0;
         pm.beginTask("Reading band '" + variable.getShortName() + "'...", sourceHeight);
         // loop over lines
-
         if (mustFlipY) {
             start[0] += sourceHeight - 1;
             try {
@@ -86,7 +94,7 @@ public abstract class SeadasFileReader {
                     synchronized (ncFile) {
                         array = variable.read(section);
                     }
-                    if (array.getRank() == 3){
+                    if (rank == 3){
                         array = array.reshapeNoCopy(newshape);
                     }
                     Object storage;
@@ -118,7 +126,7 @@ public abstract class SeadasFileReader {
                     synchronized (ncFile) {
                         array = variable.read(section);
                     }
-                    if (array.getRank() == 3){
+                    if (rank == 3){
                         array = array.reshapeNoCopy(newshape);
                     }
                     Object storage;
@@ -352,9 +360,9 @@ public abstract class SeadasFileReader {
         int variableRank = variable.getRank();
             if (variableRank == 2) {
                 final int[] dimensions = variable.getShape();
-                final int height = dimensions[0];
+                final int height = dimensions[0] - leadLineSkip - tailLineSkip;
                 final int width = dimensions[1];
-                if (height == sceneRasterHeight && width == sceneRasterWidth) {
+                if (height == sceneRasterHeight  && width == sceneRasterWidth) {
                     final String name = variable.getShortName();
                     final int dataType = getProductDataType(variable);
                     band = new Band(name, dataType, width, height);
@@ -777,6 +785,51 @@ public abstract class SeadasFileReader {
             System.arraycopy(twoDimArray[row], 0, flatArray, offset, twoDimArray[row].length);
         }
         return flatArray;
+    }
+
+    protected void invalidateLines(Invalidator invalidator,Variable latitude) throws IOException {
+        final int[] shape = latitude.getShape();
+        try {
+            int lineCount = shape[0];
+            final int[] start = new int[]{0, 0};
+            final int[] stride = new int[]{1, 1};
+            final int[] count = new int[]{1, shape[1]};
+            for (int i = 0; i < lineCount; i++) {
+                start[0] += i;
+                Section section = new Section(start, count, stride);
+                Array array;
+                synchronized (ncFile) {
+                    array = latitude.read(section);
+                }
+                float val = array.getFloat(i);
+                if (invalidator.isInvalid(val)) {
+                    leadLineSkip++;
+                } else {
+                    break;
+                }
+            }
+            for (int i = lineCount; i-- > 0; ) {
+                start[0] = i;
+                Section section = new Section(start, count, stride);
+                Array array;
+                synchronized (ncFile) {
+                    array = latitude.read(section);
+                }
+                float val = array.getFloat(lineCount - i);
+                if (invalidator.isInvalid(val)) {
+                    tailLineSkip++;
+                } else {
+                    break;
+                }
+            }
+        } catch (InvalidRangeException ignored) {
+            // cannot happen
+        }
+        return;
+    }
+    protected interface Invalidator {
+
+        boolean isInvalid(double value);
     }
 
 }
