@@ -34,11 +34,11 @@ public abstract class SeadasFileReader {
     protected Map<String, String> bandInfoMap = getL2BandInfoMap();
 //    protected Map<String, String> flagsInfoMap = getL2FlagsInfoMap();
 
-    protected int leadLineSkip;
-    protected int tailLineSkip;
-    public static final Invalidator LAT_INVALIDATOR = new Invalidator() {
+    protected int leadLineSkip = 0;
+    protected int tailLineSkip = 0;
+    protected static final SkipBadNav LAT_SKIP_BAD_NAV = new SkipBadNav() {
         @Override
-        public final boolean isInvalid(double value) {
+        public final boolean isBadNav(double value) {
             return value > 90.0 || value < -90.0 || Double.isNaN(value);
         }
     };
@@ -90,11 +90,11 @@ public abstract class SeadasFileReader {
                     }
                     Section section = new Section(start, count, stride);
                     Array array;
-                    int [] newshape= {1,sourceWidth};
+                    int[] newshape = {1, sourceWidth};
                     synchronized (ncFile) {
                         array = variable.read(section);
                     }
-                    if (rank == 3){
+                    if (rank == 3) {
                         array = array.reshapeNoCopy(newshape);
                     }
                     Object storage;
@@ -121,12 +121,12 @@ public abstract class SeadasFileReader {
                     }
                     Section section = new Section(start, count, stride);
                     Array array;
-                    int [] newshape= {sourceHeight,sourceWidth};
+                    int[] newshape = {sourceHeight, sourceWidth};
 
                     synchronized (ncFile) {
                         array = variable.read(section);
                     }
-                    if (rank == 3){
+                    if (rank == 3) {
                         array = array.reshapeNoCopy(newshape);
                     }
                     Object storage;
@@ -148,24 +148,25 @@ public abstract class SeadasFileReader {
         }
 
     }
-    final static Color LandBrown = new Color (100, 49, 12);
-    final static Color LightBrown = new Color (137,99,31);
-    final static Color FailRed = new Color(255,0,26);
-    final static Color DeepBlue = new Color(0,16,143);
-    final static Color BrightPink = new Color(255,61,245);
-    final static Color LightCyan = new Color(193,255,254);
-    final static Color NewGreen = new Color(132,199,101);
-    final static Color Mustard = new Color(206,204,70);
-    final static Color MediumGray = new Color(160,160,160);
-    final static Color Purple = new Color(141,11,134);
-    final static Color Coral = new Color(255,0,95);
-    final static Color DarkGreen = new Color(0,101,28);
-    final static Color TealGreen = new Color(0,80,79);
-    final static Color LightPink = new Color(255,208,241);
-    final static Color LightPurple = new Color(191,143,247);
-    final static Color BurntUmber = new Color(165,0,11);
-    final static Color TealBlue = new Color(0,103,144);
-    final static Color Cornflower = new Color(38,115,245);
+
+    final static Color LandBrown = new Color(100, 49, 12);
+    final static Color LightBrown = new Color(137, 99, 31);
+    final static Color FailRed = new Color(255, 0, 26);
+    final static Color DeepBlue = new Color(0, 16, 143);
+    final static Color BrightPink = new Color(255, 61, 245);
+    final static Color LightCyan = new Color(193, 255, 254);
+    final static Color NewGreen = new Color(132, 199, 101);
+    final static Color Mustard = new Color(206, 204, 70);
+    final static Color MediumGray = new Color(160, 160, 160);
+    final static Color Purple = new Color(141, 11, 134);
+    final static Color Coral = new Color(255, 0, 95);
+    final static Color DarkGreen = new Color(0, 101, 28);
+    final static Color TealGreen = new Color(0, 80, 79);
+    final static Color LightPink = new Color(255, 208, 241);
+    final static Color LightPurple = new Color(191, 143, 247);
+    final static Color BurntUmber = new Color(165, 0, 11);
+    final static Color TealBlue = new Color(0, 103, 144);
+    final static Color Cornflower = new Color(38, 115, 245);
 
     protected void addFlagsAndMasks(Product product) {
         Band QFBand = product.getBand("l2_flags");
@@ -210,122 +211,123 @@ public abstract class SeadasFileReader {
 
 
             product.getMaskGroup().add(Mask.BandMathsType.create("ATMFAIL", "Atmospheric correction failure",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.ATMFAIL",
-                                                                 FailRed, 0.0));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.ATMFAIL",
+                    FailRed, 0.0));
             product.getMaskGroup().add(Mask.BandMathsType.create("LAND", "Land",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.LAND",
-                                                                 LandBrown, 0.0));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.LAND",
+                    LandBrown, 0.0));
             product.getMaskGroup().add(Mask.BandMathsType.create("PRODWARN", "One (or more) product algorithms generated a warning",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.PRODWARN",
-                                                                 DeepBlue, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.PRODWARN",
+                    DeepBlue, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("HILT", "High (or saturating) TOA radiance",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.HILT",
-                                                                 Color.GRAY, 0.2));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.HILT",
+                    Color.GRAY, 0.2));
             product.getMaskGroup().add(Mask.BandMathsType.create("HIGLINT", "High glint determined",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.HIGLINT",
-                                                                 BrightPink, 0.2));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.HIGLINT",
+                    BrightPink, 0.2));
             product.getMaskGroup().add(Mask.BandMathsType.create("HISATZEN", "Large satellite zenith angle",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.HISATZEN",
-                                                                 LightCyan, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.HISATZEN",
+                    LightCyan, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("COASTZ", "Shallow water (<30m)",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.COASTZ",
-                                                                 BurntUmber, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.COASTZ",
+                    BurntUmber, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("STRAYLIGHT", "Straylight determined",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.STRAYLIGHT",
-                                                                 Color.YELLOW, 0.2));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.STRAYLIGHT",
+                    Color.YELLOW, 0.2));
             product.getMaskGroup().add(Mask.BandMathsType.create("CLDICE", "Cloud/Ice determined",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.CLDICE",
-                                                                 Color.WHITE, 0.0));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.CLDICE",
+                    Color.WHITE, 0.0));
             product.getMaskGroup().add(Mask.BandMathsType.create("COCCOLITH", "Coccolithophores detected",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.COCCOLITH",
-                                                                 Color.CYAN, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.COCCOLITH",
+                    Color.CYAN, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("TURBIDW", "Turbid water determined",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.TURBIDW",
-                                                                 LightBrown, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.TURBIDW",
+                    LightBrown, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("HISOLZEN", "High solar zenith angle",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.HISOLZEN",
-                                                                 Purple, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.HISOLZEN",
+                    Purple, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("LOWLW", "Low Lw @ 555nm (possible cloud shadow)",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.LOWLW",
-                                                                 Cornflower, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.LOWLW",
+                    Cornflower, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("CHLFAIL", "Chlorophyll algorithm failure",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.CHLFAIL",
-                                                                 FailRed, 0.0));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.CHLFAIL",
+                    FailRed, 0.0));
             product.getMaskGroup().add(Mask.BandMathsType.create("NAVWARN", "Navigation suspect",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.NAVWARN",
-                                                                 Color.MAGENTA, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.NAVWARN",
+                    Color.MAGENTA, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("ABSAER", "Absorbing Aerosols determined",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.ABSAER",
-                                                                 Color.ORANGE, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.ABSAER",
+                    Color.ORANGE, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("MAXAERITER", "Maximum iterations reached for NIR correction",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.MAXAERITER",
-                                                                 MediumGray, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.MAXAERITER",
+                    MediumGray, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("MODGLINT", "Moderate glint determined",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.MODGLINT",
-                                                                 LightPurple, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.MODGLINT",
+                    LightPurple, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("CHLWARN", "Chlorophyll out-of-bounds (<0.01 or >100 mg m^-3)",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.CHLWARN",
-                                                                 Color.LIGHT_GRAY, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.CHLWARN",
+                    Color.LIGHT_GRAY, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("ATMWARN", "Atmospheric correction warning; Epsilon out-of-bounds",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.ATMWARN",
-                                                                 Color.MAGENTA, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.ATMWARN",
+                    Color.MAGENTA, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("SEAICE", "Sea ice determined",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.SEAICE",
-                                                                 Color.DARK_GRAY, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.SEAICE",
+                    Color.DARK_GRAY, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("NAVFAIL", "Navigation failure",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.NAVFAIL",
-                                                                 FailRed, 0.0));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.NAVFAIL",
+                    FailRed, 0.0));
             product.getMaskGroup().add(Mask.BandMathsType.create("FILTER", "Insufficient data for smoothing filter",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.FILTER",
-                                                                 Color.LIGHT_GRAY, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.FILTER",
+                    Color.LIGHT_GRAY, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("SSTWARN", "Sea surface temperature suspect",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.SSTWARN",
-                                                                 Color.MAGENTA, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.SSTWARN",
+                    Color.MAGENTA, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("SSTFAIL", "Sea surface temperature algorithm failure",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.SSTFAIL",
-                                                                 FailRed, 0.1));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.SSTFAIL",
+                    FailRed, 0.1));
             product.getMaskGroup().add(Mask.BandMathsType.create("HIPOL", "High degree of polariztion determined",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.HIPOL",
-                                                                 Color.PINK, 0.5));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.HIPOL",
+                    Color.PINK, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("PRODFAIL", "One (or more) product algorithms produced a failure",
-                                                                 product.getSceneRasterWidth(),
-                                                                 product.getSceneRasterHeight(), "l2_flags.PRODFAIL",
-                                                                 FailRed, 0.1));
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "l2_flags.PRODFAIL",
+                    FailRed, 0.1));
 
         }
     }
+
     public Map<Band, Variable> addBands(Product product,
                                         List<Variable> variables) {
         final Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
         for (Variable variable : variables) {
             Band band = addNewBand(product, variable);
-            if(band != null){
+            if (band != null) {
                 bandToVariableMap.put(band, variable);
             }
         }
@@ -336,14 +338,14 @@ public abstract class SeadasFileReader {
 
     protected void setSpectralBand(Product product) {
         int spectralBandIndex = 0;
-        for (String name: product.getBandNames()){
+        for (String name : product.getBandNames()) {
             Band band = product.getBandAt(product.getBandIndex(name));
             if (name.matches("\\w+_\\d{3,}")) {
                 String[] parts = name.split("_");
-                String wvlstr = parts[parts.length -1].trim();
+                String wvlstr = parts[parts.length - 1].trim();
                 //Some bands have the wvl portion in the middle...
                 if (!wvlstr.matches("^\\d{3,}")) {
-                    wvlstr =  parts[parts.length -2].trim();
+                    wvlstr = parts[parts.length - 2].trim();
                 }
                 final float wavelength = Float.parseFloat(wvlstr);
                 band.setSpectralWavelength(wavelength);
@@ -358,42 +360,42 @@ public abstract class SeadasFileReader {
         Band band = null;
 
         int variableRank = variable.getRank();
-            if (variableRank == 2) {
-                final int[] dimensions = variable.getShape();
-                final int height = dimensions[0] - leadLineSkip - tailLineSkip;
-                final int width = dimensions[1];
-                if (height == sceneRasterHeight  && width == sceneRasterWidth) {
-                    final String name = variable.getShortName();
-                    final int dataType = getProductDataType(variable);
-                    band = new Band(name, dataType, width, height);
-                    final String validExpression = bandInfoMap.get(name);
-                    if (validExpression != null && !validExpression.equals("")) {
-                        band.setValidPixelExpression(validExpression);
-                    }
-                    product.addBand(band);
+        if (variableRank == 2) {
+            final int[] dimensions = variable.getShape();
+            final int height = dimensions[0] - leadLineSkip - tailLineSkip;
+            final int width = dimensions[1];
+            if (height == sceneRasterHeight && width == sceneRasterWidth) {
+                final String name = variable.getShortName();
+                final int dataType = getProductDataType(variable);
+                band = new Band(name, dataType, width, height);
+                final String validExpression = bandInfoMap.get(name);
+                if (validExpression != null && !validExpression.equals("")) {
+                    band.setValidPixelExpression(validExpression);
+                }
+                product.addBand(band);
 
-                    try {
-                        band.setNoDataValue((double) variable.findAttribute("bad_value_scaled").getNumericValue().floatValue());
-                        band.setNoDataValueUsed(true);
-                    } catch (Exception e) {
+                try {
+                    band.setNoDataValue((double) variable.findAttribute("bad_value_scaled").getNumericValue().floatValue());
+                    band.setNoDataValueUsed(true);
+                } catch (Exception e) {
 
-                    }
-                    
-                    final List<Attribute> list = variable.getAttributes();
-                    for (Attribute hdfAttribute : list) {
-                        final String attribName = hdfAttribute.getName();
-                        if ("units".equals(attribName)) {
-                            band.setUnit(hdfAttribute.getStringValue());
-                        } else if ("long_name".equals(attribName)) {
-                            band.setDescription(hdfAttribute.getStringValue());
-                        } else if ("slope".equals(attribName)) {
-                            band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
-                        } else if ("intercept".equals(attribName)) {
-                            band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
-                        }
+                }
+
+                final List<Attribute> list = variable.getAttributes();
+                for (Attribute hdfAttribute : list) {
+                    final String attribName = hdfAttribute.getName();
+                    if ("units".equals(attribName)) {
+                        band.setUnit(hdfAttribute.getStringValue());
+                    } else if ("long_name".equals(attribName)) {
+                        band.setDescription(hdfAttribute.getStringValue());
+                    } else if ("slope".equals(attribName)) {
+                        band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
+                    } else if ("intercept".equals(attribName)) {
+                        band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
                     }
                 }
             }
+        }
         return band;
     }
 
@@ -422,7 +424,7 @@ public abstract class SeadasFileReader {
 
     public void addBandMetadata(Product product) throws ProductIOException {
         Group group = ncFile.findGroup("Geophysical Data");
-        if (productReader.getProductType() == SeadasProductReader.ProductType.Level2_Aquarius){
+        if (productReader.getProductType() == SeadasProductReader.ProductType.Level2_Aquarius) {
             group = ncFile.findGroup("Aquarius Data");
         }
         if (group != null) {
@@ -430,7 +432,7 @@ public abstract class SeadasFileReader {
             List<Variable> variables = group.getVariables();
             for (Variable variable : variables) {
                 final String name = variable.getShortName();
-                final MetadataElement sdsElement = new MetadataElement(name+".attributes");
+                final MetadataElement sdsElement = new MetadataElement(name + ".attributes");
                 final int dataType = getProductDataType(variable);
                 final MetadataAttribute prodtypeattr = new MetadataAttribute("data_type", dataType);
 
@@ -448,8 +450,8 @@ public abstract class SeadasFileReader {
     }
 
     public void computeLatLonBandData(final Band latBand, final Band lonBand,
-                                       final ProductData latRawData, final ProductData lonRawData,
-                                       final int[] colPoints) {
+                                      final ProductData latRawData, final ProductData lonRawData,
+                                      final int[] colPoints) {
         latBand.ensureRasterData();
         lonBand.ensureRasterData();
 
@@ -512,7 +514,7 @@ public abstract class SeadasFileReader {
     public boolean getDefaultFlip() throws ProductIOException {
         boolean startNodeAscending = false;
         boolean endNodeAscending = false;
-        try{
+        try {
             String startAttr = getStringAttribute("Start Node");
             if (startAttr != null) {
                 startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
@@ -521,11 +523,11 @@ public abstract class SeadasFileReader {
             if (endAttr != null) {
                 endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
             }
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         return (startNodeAscending && endNodeAscending);
     }
-
 
 
     protected static HashMap<String, String> readTwoColumnTable(String resourceName) {
@@ -633,7 +635,7 @@ public abstract class SeadasFileReader {
                     final Date date = dateFormatModis.parse(timeString);
                     String milliSeconds = timeString.substring(timeString.length() - 3);
                     return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
-                } else if (productReader.getProductType() == SeadasProductReader.ProductType.Level1A_OCTS){
+                } else if (productReader.getProductType() == SeadasProductReader.ProductType.Level1A_OCTS) {
                     final Date date = dateFormatOcts.parse(timeString);
                     String milliSeconds = timeString.substring(timeString.length() - 3);
                     return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
@@ -787,7 +789,7 @@ public abstract class SeadasFileReader {
         return flatArray;
     }
 
-    protected void invalidateLines(Invalidator invalidator,Variable latitude) throws IOException {
+    protected void invalidateLines(SkipBadNav skipBadNav, Variable latitude) throws IOException {
         final int[] shape = latitude.getShape();
         try {
             int lineCount = shape[0];
@@ -802,7 +804,7 @@ public abstract class SeadasFileReader {
                     array = latitude.read(section);
                 }
                 float val = array.getFloat(i);
-                if (invalidator.isInvalid(val)) {
+                if (skipBadNav.isBadNav(val)) {
                     leadLineSkip++;
                 } else {
                     break;
@@ -816,7 +818,7 @@ public abstract class SeadasFileReader {
                     array = latitude.read(section);
                 }
                 float val = array.getFloat(lineCount - i);
-                if (invalidator.isInvalid(val)) {
+                if (skipBadNav.isBadNav(val)) {
                     tailLineSkip++;
                 } else {
                     break;
@@ -827,9 +829,10 @@ public abstract class SeadasFileReader {
         }
         return;
     }
-    protected interface Invalidator {
 
-        boolean isInvalid(double value);
+    private interface SkipBadNav {
+
+        boolean isBadNav(double value);
     }
 
 }
