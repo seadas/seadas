@@ -77,16 +77,21 @@ public class L3BinFileReader extends SeadasFileReader {
         final Variable variable = variableMap.get(destBand);
         DataType prodtype = variable.getDataType();
         float[] fbuffer;
-        short[] ibuffer;
+        short[] sbuffer;
+        int [] ibuffer;
         Object buffer;
 
         if (prodtype == DataType.FLOAT) {
             fbuffer = (float[]) destBuffer.getElems();
             Arrays.fill(fbuffer, Float.NaN);
             buffer = fbuffer;
+        } else if (prodtype == DataType.SHORT) {
+            sbuffer = (short[]) destBuffer.getElems();
+            Arrays.fill(sbuffer, (short) -999);
+            buffer = sbuffer;
         } else {
-            ibuffer = (short[]) destBuffer.getElems();
-            Arrays.fill(ibuffer, (short) -999);
+            ibuffer = (int[]) destBuffer.getElems();
+            Arrays.fill(ibuffer, -999);
             buffer = ibuffer;
         }
 
@@ -251,7 +256,7 @@ public class L3BinFileReader extends SeadasFileReader {
         final Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
 
 
-        bandToVariableMap.put(addBand(product, "bin_num", ProductData.TYPE_UINT32), binListStruc.select("bin_num").findVariable("bin_num"));
+//        bandToVariableMap.put(addBand(product, "bin_num", ProductData.TYPE_UINT32), binListStruc.select("bin_num").findVariable("bin_num"));
         bandToVariableMap.put(addBand(product, "weights", ProductData.TYPE_FLOAT32), binListStruc.select("weights").findVariable("weights"));
         bandToVariableMap.put(addBand(product, "nobs", ProductData.TYPE_UINT16), binListStruc.select("nobs").findVariable("nobs"));
         bandToVariableMap.put(addBand(product, "nscenes", ProductData.TYPE_UINT16), binListStruc.select("nscenes").findVariable("nscenes"));
@@ -282,6 +287,7 @@ public class L3BinFileReader extends SeadasFileReader {
                 Band varmean = new VirtualBand(prodname.toString(), ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(),
                         product.getSceneRasterHeight(), calcmean);
                 varmean.setNoDataValue(Double.NaN);
+                varmean.setNoDataValueUsed(true);
                 product.addBand(varmean);
 
                 // Add virtual band for product stdev
@@ -294,6 +300,7 @@ public class L3BinFileReader extends SeadasFileReader {
                 Band varstdev = new VirtualBand(prodname.toString(), ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(),
                         product.getSceneRasterHeight(), calcstdev);
                 varstdev.setNoDataValue(Double.NaN);
+                varstdev.setNoDataValueUsed(true);
 
                 product.addBand(varstdev);
             }
@@ -313,6 +320,7 @@ public class L3BinFileReader extends SeadasFileReader {
         } else {
             band.setNoDataValue(-999);
         }
+        band.setNoDataValueUsed(true);
         product.addBand(band);
         return band;
     }
