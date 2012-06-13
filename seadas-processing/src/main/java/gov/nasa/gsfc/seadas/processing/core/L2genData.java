@@ -694,13 +694,13 @@ public class L2genData implements L2genDataProcessorModel {
             if (paramInfo.getType() == ParamInfo.Type.IFILE) {
                 if (paramInfo.getName().toLowerCase().equals(IFILE)) {
                     if (value != null && value.length() > 0) {
-                        iFileInfo = new FileInfo(value);
+                        iFileInfo = getFileInfo(null, value);
                     } else {
                         iFileInfo = null;
                     }
                 } else if (paramInfo.getName().toLowerCase().equals(GEOFILE)) {
                     if (value != null && value.length() > 0) {
-                        geoFileInfo = new FileInfo(value);
+                        geoFileInfo = getFileInfo(iFileInfo.getParentFile(), value);
                     } else {
                         geoFileInfo = null;
                     }
@@ -720,6 +720,21 @@ public class L2genData implements L2genDataProcessorModel {
             }
 
         }
+    }
+
+
+    public FileInfo getFileInfo(File rootDir, String value) {
+        if (value != null && value.length() > 0) {
+            File file = new File(value);
+            if (file != null) {
+                if (file.isAbsolute()) {
+                    return new FileInfo(value);
+                } else if (!file.isAbsolute() && rootDir != null) {
+                    return new FileInfo(rootDir.getAbsolutePath(), value);
+                }
+            }
+        }
+        return null;
     }
 
 
