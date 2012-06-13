@@ -76,7 +76,6 @@ public abstract class SeadasFileReader {
         final int[] count = new int[]{1, sourceWidth};
         Object buffer = destBuffer.getElems();
         Variable variable = variableMap.get(destBand);
-        int rank = variable.getRank();
 
         int targetIndex = 0;
         pm.beginTask("Reading band '" + variable.getShortName() + "'...", sourceHeight);
@@ -94,7 +93,7 @@ public abstract class SeadasFileReader {
                     synchronized (ncFile) {
                         array = variable.read(section);
                     }
-                    if (rank == 3) {
+                    if (array.getRank() == 3) {
                         array = array.reshapeNoCopy(newshape);
                     }
                     Object storage;
@@ -126,7 +125,7 @@ public abstract class SeadasFileReader {
                     synchronized (ncFile) {
                         array = variable.read(section);
                     }
-                    if (rank == 3) {
+                    if (array.getRank() == 3) {
                         array = array.reshapeNoCopy(newshape);
                     }
                     Object storage;
@@ -377,9 +376,7 @@ public abstract class SeadasFileReader {
                 try {
                     band.setNoDataValue((double) variable.findAttribute("bad_value_scaled").getNumericValue().floatValue());
                     band.setNoDataValueUsed(true);
-                } catch (Exception e) {
-
-                }
+                } catch (Exception ignored) { }
 
                 final List<Attribute> list = variable.getAttributes();
                 for (Attribute hdfAttribute : list) {
@@ -523,8 +520,7 @@ public abstract class SeadasFileReader {
             if (endAttr != null) {
                 endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception ignored) { }
 
         return (startNodeAscending && endNodeAscending);
     }
@@ -623,8 +619,8 @@ public abstract class SeadasFileReader {
         Boolean isModis = false;
         try {
             isModis = findAttribute("MODIS Resolution", globalAttributes).isString();
-        } catch (Exception e) {
-        }
+        } catch (Exception ignored) { }
+
         if (attribute != null) {
             String timeString = attribute.getStringValue().trim();
             final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
@@ -827,11 +823,9 @@ public abstract class SeadasFileReader {
         } catch (InvalidRangeException ignored) {
             // cannot happen
         }
-        return;
     }
 
     private interface SkipBadNav {
-
         boolean isBadNav(double value);
     }
 
