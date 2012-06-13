@@ -34,6 +34,9 @@ public class SeadasLogger {
 
 
     public static Logger getLogger() {
+        if (logger == null){
+             initLogger(true);
+        }
         return logger;
     }
 

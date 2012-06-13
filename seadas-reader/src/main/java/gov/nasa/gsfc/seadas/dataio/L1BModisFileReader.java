@@ -74,7 +74,7 @@ public class L1BModisFileReader extends SeadasFileReader {
             if (mustFlipY) {
                 product.setStartTime(utcEnd);
             } else {
-                product.setEndTime(utcStart);
+                product.setEndTime(utcEnd);
             }
         }
 

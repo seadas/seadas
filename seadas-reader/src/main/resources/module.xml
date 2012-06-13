@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-reader</symbolicName>
-    <version>1.3</version>
+    <version>1.3-SNAPSHOT</version>
     <name>NASA OBPG Ocean Color Product Reader</name>
     <description>A reader for NASA Ocean Color (HDF) Level-2 Data Products</description>
 
@@ -128,21 +128,21 @@
     <extension point="beam-core:rgbProfiles">
         <rgbProfile>
             <name>NASA SeaWiFS L2</name>
-            <red>nLw_670</red>
-            <green>nLw_510</green>
-            <blue>nLw_443</blue>
+            <red>Rrs_670</red>
+            <green>Rrs_510</green>
+            <blue>Rrs_443</blue>
         </rgbProfile>
         <rgbProfile>
             <name>NASA MODIS L2</name>
-            <red>nLw_667</red>
-            <green>nLw_531</green>
-            <blue>nLw_443</blue>
+            <red>Rrs_667</red>
+            <green>Rrs_531</green>
+            <blue>Rrs_443</blue>
         </rgbProfile>
         <rgbProfile>
             <name>NASA OCTS/CZCS L2</name>
-            <red>nLw_670</red>
-            <green>nLw_520</green>
-            <blue>nLw_443</blue>
+            <red>Rrs_670</red>
+            <green>Rrs_520</green>
+            <blue>Rrs_443</blue>
         </rgbProfile>
         <rgbProfile>
             <name>NASA SeaWiFS L2 Tristimulus</name>
