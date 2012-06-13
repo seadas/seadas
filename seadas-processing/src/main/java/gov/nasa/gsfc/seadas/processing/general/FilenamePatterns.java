@@ -16,49 +16,49 @@ public class FilenamePatterns {
 
 
 
-    static public FileInfo getOFileInfo(FileInfo fileInfo) {
-        return new FileInfo(getOFile(fileInfo).getAbsolutePath());
+    static public FileInfoNew getOFileInfo(FileInfoNew fileInfo) {
+        return new FileInfoNew(getOFile(fileInfo).getAbsolutePath());
     }
 
 
-    static public File getOFile(FileInfo fileInfo) {
+    static public File getOFile(FileInfoNew fileInfo) {
         if (fileInfo == null) {
             return null;
         }
 
-        if (fileInfo.getAbsolutePath().length() == 0) {
+        if (fileInfo.getFile().getAbsolutePath().length() == 0) {
             return null;
         }
 
 
         File oFile;
         if (fileInfo.isMissionId(MissionInfo.Id.VIIRS)) {
-            oFile = getViirsOfilename(fileInfo);
+            oFile = getViirsOfilename(fileInfo.getFile());
         } else {
-            oFile = getStandardOfile(fileInfo);
+            oFile = getStandardOfile(fileInfo.getFile());
         }
 
         return oFile;
     }
 
 
-    static public FileInfo getGeoFileInfo(FileInfo fileInfo) {
-        return new FileInfo(getGeoFile(fileInfo).getAbsolutePath());
+    static public FileInfoNew getGeoFileInfo(FileInfoNew fileInfo) {
+        return new FileInfoNew(getGeoFile(fileInfo).getAbsolutePath());
     }
 
 
-    static public File getGeoFile(FileInfo iFileInfo) {
+    static public File getGeoFile(FileInfoNew iFileInfo) {
         if (iFileInfo == null) {
             return null;
         }
 
-        if (iFileInfo.getAbsolutePath().length() == 0) {
+        if (iFileInfo.getFile().getAbsolutePath().length() == 0) {
             return null;
         }
 
         String VIIRS_IFILE_PREFIX = "SVM01";
 
-        StringBuilder geofileDirectory = new StringBuilder(iFileInfo.getParent() + "/");
+        StringBuilder geofileDirectory = new StringBuilder(iFileInfo.getFile().getParent() + "/");
         StringBuilder geofileBasename = new StringBuilder();
         StringBuilder geofile = new StringBuilder();
         File geoFile = null;
@@ -66,7 +66,7 @@ public class FilenamePatterns {
         if (iFileInfo.isMissionId(MissionInfo.Id.VIIRS)) {
             String VIIRS_GEOFILE_PREFIX = "GMTCO";
             geofileBasename.append(VIIRS_GEOFILE_PREFIX);
-            geofileBasename.append(iFileInfo.getName().substring(VIIRS_IFILE_PREFIX.length()));
+            geofileBasename.append(iFileInfo.getFile().getName().substring(VIIRS_IFILE_PREFIX.length()));
             geofile.append(geofileDirectory.toString() + geofileBasename.toString());
             File possibleGeoFile = new File(geofile.toString());
             if (possibleGeoFile.exists()) {
@@ -83,11 +83,11 @@ public class FilenamePatterns {
              * replace last occurrence of instance of STRING_TO_BE_REPLACED[]
              */
             for (String string_to_be_replaced : STRING_TO_BE_REPLACED) {
-                if (iFileInfo.getName().toUpperCase().contains(string_to_be_replaced)) {
+                if (iFileInfo.getFile().getName().toUpperCase().contains(string_to_be_replaced)) {
 
-                    int index = iFileInfo.getName().toUpperCase().lastIndexOf(string_to_be_replaced);
-                    String start = iFileInfo.getName().substring(0, index);
-                    String end = iFileInfo.getName().substring((index + string_to_be_replaced.length()), iFileInfo.getName().length());
+                    int index = iFileInfo.getFile().getName().toUpperCase().lastIndexOf(string_to_be_replaced);
+                    String start = iFileInfo.getFile().getName().substring(0, index);
+                    String end = iFileInfo.getFile().getName().substring((index + string_to_be_replaced.length()), iFileInfo.getFile().getName().length());
 
                     for (String string_to_insert : STRING_TO_INSERT) {
                         StringBuilder possibleGeofile = new StringBuilder(geofileDirectory + "/" + start + string_to_insert + end);

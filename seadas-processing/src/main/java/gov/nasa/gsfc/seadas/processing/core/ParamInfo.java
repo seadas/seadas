@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.general.FileInfo;
+
 
 import java.io.File;
 import java.util.ArrayList;

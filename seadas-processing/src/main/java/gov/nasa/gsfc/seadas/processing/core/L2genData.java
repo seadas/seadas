@@ -57,8 +57,8 @@ public class L2genData implements L2genDataProcessorModel {
             TAB_CHANGE = "TAB_CHANGE_EVENT";
 
 
-    public FileInfo iFileInfo = null;
-    public FileInfo geoFileInfo = null;
+    public FileInfoNew iFileInfo = null;
+    public FileInfoNew geoFileInfo = null;
     public SeadasProcessorInfo seadasProcessorInfo = new SeadasProcessorInfo(SeadasProcessorInfo.Id.L2GEN);
 
     public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
@@ -459,7 +459,7 @@ public class L2genData implements L2genDataProcessorModel {
             line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
 
             if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                if (iFileInfo != null && !paramInfo.isValid(iFileInfo.getParentFile())) {
+                if (iFileInfo != null && !paramInfo.isValid(iFileInfo.getFile().getParentFile())) {
                     line.append("# WARNING!!! file " + paramInfo.getValue() + " does not exist" + "\n");
                 }
 
@@ -631,7 +631,7 @@ public class L2genData implements L2genDataProcessorModel {
 
     private boolean isValidParamValue(ParamInfo paramInfo) {
         if (paramInfo != null && iFileInfo != null) {
-            return paramInfo.isValid(iFileInfo.getParentFile());
+            return paramInfo.isValid(iFileInfo.getFile().getParentFile());
         }
 
         return false;
@@ -644,7 +644,7 @@ public class L2genData implements L2genDataProcessorModel {
 
     private File getParamFile(ParamInfo paramInfo) {
         if (paramInfo != null && iFileInfo != null) {
-            return paramInfo.getFile(iFileInfo.getParentFile());
+            return paramInfo.getFile(iFileInfo.getFile().getParentFile());
         }
         return null;
     }
@@ -694,18 +694,19 @@ public class L2genData implements L2genDataProcessorModel {
             if (paramInfo.getType() == ParamInfo.Type.IFILE) {
                 if (paramInfo.getName().toLowerCase().equals(IFILE)) {
                     if (value != null && value.length() > 0) {
-                        iFileInfo = getFileInfo(null, value);
+                        iFileInfo = new FileInfoNew(value);
                     } else {
                         iFileInfo = null;
                     }
                 } else if (paramInfo.getName().toLowerCase().equals(GEOFILE)) {
                     if (value != null && value.length() > 0) {
-                        geoFileInfo = getFileInfo(iFileInfo.getParentFile(), value);
+                        geoFileInfo = new FileInfoNew(iFileInfo.getFile().getParent(), value);
                     } else {
                         geoFileInfo = null;
                     }
                 }
             }
+
 
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
                 setIfileParamValue(paramInfo, value);
@@ -723,19 +724,7 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    public FileInfo getFileInfo(File rootDir, String value) {
-        if (value != null && value.length() > 0) {
-            File file = new File(value);
-            if (file != null) {
-                if (file.isAbsolute()) {
-                    return new FileInfo(value);
-                } else if (!file.isAbsolute() && rootDir != null) {
-                    return new FileInfo(rootDir.getAbsolutePath(), value);
-                }
-            }
-        }
-        return null;
-    }
+
 
 
     public void setParamValue(String name, String value) {
@@ -897,17 +886,17 @@ public class L2genData implements L2genDataProcessorModel {
 
             resetWaveLimiter();
             l2prodParamInfo.resetProductInfos();
-            updateXmlBasedObjects((File) iFileInfo);
+            updateXmlBasedObjects(iFileInfo.getFile());
 
-            FileInfo oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
+            FileInfoNew oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
             if (oFileInfo != null) {
-                setParamValueAndDefault(OFILE, oFileInfo.getAbsolutePath());
+                setParamValueAndDefault(OFILE, oFileInfo.getFile().getAbsolutePath());
             }
 
             if (iFileInfo.isGeofileRequired()) {
-                FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo);
+                FileInfoNew geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo);
                 if (geoFileInfo != null) {
-                    setParamValueAndDefault(GEOFILE, geoFileInfo.getAbsolutePath());
+                    setParamValueAndDefault(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
                 }
             } else {
                 setParamValueAndDefault(GEOFILE, null);
