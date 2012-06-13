@@ -60,7 +60,7 @@ public class ParamInfo implements Comparable {
 
     public boolean isValid(File rootDir) {
         if (type == Type.IFILE && value != null && value.length() > 0) {
-            File file = getFileInfo(rootDir);
+            File file = getFile(rootDir);
             if (file != null && file.exists()) {
                 return true;
             }
@@ -70,14 +70,16 @@ public class ParamInfo implements Comparable {
     }
 
 
-    public FileInfo getFileInfo(File rootDir) {
+
+
+    public File getFile(File rootDir) {
         if (type == Type.IFILE && value != null && value.length() > 0) {
-            FileInfo file = new FileInfo(value);
+            File file = new File(value);
             if (file != null) {
                 if (file.isAbsolute()) {
                     return file;
                 } else if (!file.isAbsolute() && rootDir != null) {
-                    FileInfo fileWithRootDir = new FileInfo(rootDir.getAbsolutePath(), value);
+                    File fileWithRootDir = new File(rootDir.getAbsolutePath(), value);
                     return fileWithRootDir;
                 }
             }
@@ -125,6 +127,7 @@ public class ParamInfo implements Comparable {
         } else {
             this.value = value;
         }
+
     }
 
 

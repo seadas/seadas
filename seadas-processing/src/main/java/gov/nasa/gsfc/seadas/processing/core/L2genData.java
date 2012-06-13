@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 
-import com.sun.tools.corba.se.idl.StringGen;
 import gov.nasa.gsfc.seadas.processing.general.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
@@ -59,6 +58,7 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     public FileInfo iFileInfo = null;
+    public FileInfo geoFileInfo = null;
     public SeadasProcessorInfo seadasProcessorInfo = new SeadasProcessorInfo(SeadasProcessorInfo.Id.L2GEN);
 
     public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
@@ -456,23 +456,24 @@ public class L2genData implements L2genDataProcessorModel {
                 line.append("# ");
             }
 
+            line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
 
             if (paramInfo.getType() == ParamInfo.Type.IFILE) {
                 if (iFileInfo != null && !paramInfo.isValid(iFileInfo.getParentFile())) {
                     line.append("# WARNING!!! file " + paramInfo.getValue() + " does not exist" + "\n");
-                } else if (paramInfo.getName().equals(IFILE)) {
+                }
+
+                if (paramInfo.getName().equals(IFILE)) {
                     if (!isValidIfile()) {
                         line.append("# WARNING!!! file " + paramInfo.getValue() + " is not a valid input file" + "\n");
                     }
                 } else if (paramInfo.getName().equals(GEOFILE)) {
-                    FileInfo geoFileInfo = getParamFileInfo(GEOFILE);
-                    if (!geoFileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
+                    if (geoFileInfo != null && !geoFileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
                         line.append("# WARNING!!! file " + paramInfo.getValue() + " is not a GEO file" + "\n");
                     }
                 }
             }
 
-            line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
         }
 
         return line.toString();
@@ -641,15 +642,15 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    private FileInfo getParamFileInfo(ParamInfo paramInfo) {
+    private File getParamFile(ParamInfo paramInfo) {
         if (paramInfo != null && iFileInfo != null) {
-            return paramInfo.getFileInfo(iFileInfo.getParentFile());
+            return paramInfo.getFile(iFileInfo.getParentFile());
         }
         return null;
     }
 
-    public FileInfo getParamFileInfo(String name) {
-        return getParamFileInfo(getParamInfo(name));
+    public File getParamFile(String name) {
+        return getParamFile(getParamInfo(name));
     }
 
 
@@ -689,6 +690,23 @@ public class L2genData implements L2genDataProcessorModel {
         }
 
         if (!value.equals(paramInfo.getValue())) {
+
+            if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+                if (paramInfo.getName().toLowerCase().equals(IFILE)) {
+                    if (value != null && value.length() > 0) {
+                        iFileInfo = new FileInfo(value);
+                    } else {
+                        iFileInfo = null;
+                    }
+                } else if (paramInfo.getName().toLowerCase().equals(GEOFILE)) {
+                    if (value != null && value.length() > 0) {
+                        geoFileInfo = new FileInfo(value);
+                    } else {
+                        geoFileInfo = null;
+                    }
+                }
+            }
+
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
                 setIfileParamValue(paramInfo, value);
             } else {
@@ -854,11 +872,6 @@ public class L2genData implements L2genDataProcessorModel {
 
         String oldIfile = getParamValue(getParamInfo(IFILE));
 
-        if (newIfile != null && newIfile.length() > 0) {
-            iFileInfo = new FileInfo(newIfile);
-        } else {
-            iFileInfo = null;
-        }
 
         seadasProcessorInfo.setFileInfo(iFileInfo);
 
