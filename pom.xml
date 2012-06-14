@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <beam.version>4.10</beam.version>
+        <beam.version>4.10.3-SNAPSHOT</beam.version>
         <ceres.version>0.13.1-SNAPSHOT</ceres.version>
         <seadas.version>7.0-SNAPSHOT</seadas.version>
         <netcdf.version>4.2.20</netcdf.version>
