@@ -26,7 +26,7 @@ import java.io.*;
 
 public class L2genForm extends JPanel implements CloProgramUI {
 
-    private static final String GUI_NAME = "userInterface";
+    private static final String GUI_NAME = "l2gen";
 
     private final L2genData l2genData = new L2genData();
 
