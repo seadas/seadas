@@ -57,7 +57,6 @@
         -->
         <module>seadas-installer</module>
         <module>seadas-bootstrap</module>
-        <module>seadas-sandbox</module>
         <module>seadas-ocssw</module>
         <module>seadas-processing</module>
 
