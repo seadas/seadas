@@ -98,8 +98,8 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
     }
 
-    public void addParamInfo(String name, String value) {
-        ParamInfo info = new ParamInfo(name, value);
+    public void addParamInfo(String name, String value, ParamInfo.Type type) {
+        ParamInfo info = new ParamInfo(name, value, type);
         addParamInfo(info);
     }
 

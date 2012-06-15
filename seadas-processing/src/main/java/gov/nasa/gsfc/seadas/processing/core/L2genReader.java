@@ -156,11 +156,10 @@ public class L2genReader {
                     String value = XmlReader.getTextValue(optionElement, "value");
 
                     if (value == null || value.length() == 0) {
-                        value = XmlReader.getTextValue(optionElement, "value");
+                        value = XmlReader.getTextValue(optionElement, "default");
                     }
 
-
-                    if (!name.toLowerCase().equals(l2genData.IFILE)) {
+                    if (!name.equals(l2genData.IFILE)) {
                         l2genData.setParamValueAndDefault(name, value);
                     }
                 }
@@ -212,16 +211,16 @@ public class L2genReader {
                     String source = XmlReader.getTextValue(optionElement, "source");
 
                     ParamInfo paramInfo;
-                    if (name.toLowerCase().equals(l2genData.L2PROD)) {
+                    if (name.equals(l2genData.L2PROD)) {
                         paramInfo = l2genData.createL2prodParamInfo(value);
                     } else {
                         paramInfo = new ParamInfo(name, value, type);
                     }
 
-                    if (name.toLowerCase().equals(L2genData.IFILE) ||
-                            name.toLowerCase().equals(L2genData.OFILE) ||
-                            name.toLowerCase().equals(L2genData.GEOFILE) ||
-                            name.toLowerCase().equals(L2genData.PAR)
+                    if (name.equals(L2genData.IFILE) ||
+                            name.equals(L2genData.OFILE) ||
+                            name.equals(L2genData.GEOFILE) ||
+                            name.equals(L2genData.PAR)
                             ) {
                         paramInfo.setDefaultValue(ParamInfo.NULL_STRING);
                     } else {
@@ -271,7 +270,8 @@ public class L2genReader {
 
     private String valueOverRides(String name, String value, File iFile, File geoFile, File oFile) {
 
-        if (name.toLowerCase().equals(L2genData.IFILE)) {
+        name = name.toLowerCase();
+        if (name.equals(L2genData.IFILE)) {
             if (iFile != null) {
                 value = iFile.toString();
             } else {
@@ -279,7 +279,7 @@ public class L2genReader {
             }
         }
 
-        if (name.toLowerCase().equals(L2genData.GEOFILE)) {
+        if (name.equals(L2genData.GEOFILE)) {
             if (geoFile != null) {
                 value = geoFile.toString();
             } else {
@@ -287,7 +287,7 @@ public class L2genReader {
             }
         }
 
-        if (name.toLowerCase().equals(L2genData.OFILE)) {
+        if (name.equals(L2genData.OFILE)) {
             if (oFile != null) {
                 value = oFile.toString();
             } else {
@@ -295,7 +295,7 @@ public class L2genReader {
             }
         }
 
-        if (name.toLowerCase().equals(L2genData.PAR)) {
+        if (name.equals(L2genData.PAR)) {
             value = ParamInfo.NULL_STRING;
         }
 
