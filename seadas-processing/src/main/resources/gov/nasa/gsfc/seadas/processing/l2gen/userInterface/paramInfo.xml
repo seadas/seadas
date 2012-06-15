@@ -565,9 +565,9 @@
         </option>
         <option type="ifile">
             <name>filter_file</name>
-            <value>/disk02/ocssw/run/data/seawifs/seawifs_gac_filter.dat</value>
+            <value>/howComeImNotDynamic/ocssw/run/data/seawifs/seawifs_gac_filter.dat</value>
             <default>$OCDATAROOT/sensor/sensor_filter.dat</default>
-            <source>/disk02/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
+            <source>/howComeImNotDynamic/ocssw/run/data/seawifs/msl12_defaults_seawifs_gac.par</source>
             <description>data file for input filtering</description>
         </option>
         <option type="int">
