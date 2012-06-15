@@ -235,7 +235,11 @@ public class SeadasProcessorInfo {
             return false;
         }
 
-        if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
+        if (iFileInfo.isMissionId(MissionInfo.Id.VIIRS)) {
+            if (iFileInfo.isTypeId(FileTypeInfo.Id.SDR)) {
+                return true;
+            }
+        } else if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
                 iFileInfo.isMissionId(MissionInfo.Id.MODIST) ||
                 iFileInfo.isMissionId(MissionInfo.Id.MERIS)
                 ) {

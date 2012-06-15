@@ -1,6 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 
+import gov.nasa.gsfc.seadas.processing.general.FileInfoNew;
+import gov.nasa.gsfc.seadas.processing.general.FileTypeInfo;
+import gov.nasa.gsfc.seadas.processing.general.SeadasProcessorInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ public class ParamInfo implements Comparable {
     private String source = NULL_STRING;
     private boolean isBit = false;
     private int order;
+    private String logComments = null;
 
     public static final String PARAM_TYPE_IFILE = "ifile";
     public static final String PARAM_TYPE_OFILE = "ofile";
@@ -33,6 +37,17 @@ public class ParamInfo implements Comparable {
 
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
 
+    public String getLogComments() {
+        return logComments;
+    }
+
+    public void setLogComments(String logComments) {
+        this.logComments = logComments;
+    }
+
+        public void clearLogComments() {
+        this.logComments = null;
+    }
 
     public static enum Type {
         BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP
@@ -68,8 +83,6 @@ public class ParamInfo implements Comparable {
         }
         return true;
     }
-
-
 
 
     public File getFile(File rootDir) {
@@ -114,6 +127,7 @@ public class ParamInfo implements Comparable {
 
     protected void setValue(String value) {
         // Clean up and handle input exceptions
+        clearLogComments();
         if (value == null) {
             this.value = NULL_STRING;
             return;
@@ -176,7 +190,7 @@ public class ParamInfo implements Comparable {
         }
     }
 
-   protected void setDefaultValue(String defaultValue) {
+    protected void setDefaultValue(String defaultValue) {
         // Clean up and handle input exceptions
         if (defaultValue == null) {
             this.defaultValue = NULL_STRING;
@@ -250,11 +264,11 @@ public class ParamInfo implements Comparable {
         this.validValueInfos = validValueInfos;
     }
 
-   protected void addValidValueInfo(ParamValidValueInfo paramValidValueInfo) {
+    protected void addValidValueInfo(ParamValidValueInfo paramValidValueInfo) {
         this.validValueInfos.add(paramValidValueInfo);
     }
 
-     protected void clearValidValueInfos() {
+    protected void clearValidValueInfos() {
         this.validValueInfos.clear();
     }
 
@@ -270,9 +284,38 @@ public class ParamInfo implements Comparable {
         return isBit;
     }
 
-     protected void setBit(boolean bit) {
+    protected void setBit(boolean bit) {
         isBit = bit;
     }
+
+
+    public void setFileLogComments(String defaultFileParent, SeadasProcessorInfo.Id processorInfoId) {
+        FileInfoNew fileInfo;
+        if (getType() == ParamInfo.Type.IFILE) {
+            fileInfo = new FileInfoNew(defaultFileParent, getValue());
+            if (fileInfo.getFile() != null) {
+                if (fileInfo.getFile().exists()) {
+                    if (getName().equals(L2genData.GEOFILE)) {
+                        if (!fileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
+                            setLogComments("File '" + fileInfo.getFile().getAbsolutePath() + "' is not a GEO file");
+                        }
+                    } else if (getName().equals(L2genData.IFILE)) {
+                        if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
+                            setLogComments("# WARNING!!! file " + getValue() + " is not a valid input mission" + "\n");
+                        } else if (!SeadasProcessorInfo.isValidFileType(fileInfo, processorInfoId)) {
+                            setLogComments("# WARNING!!! file " + getValue() + " is not a valid input file type" + "\n");
+                        }
+                    }
+                } else {
+                    setLogComments("File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                }
+
+            } else {
+                setLogComments("File '" + getValue() + "' does not exist");
+            }
+        }
+    }
+
 
     protected void setOrder(int order) {
         this.order = order;

@@ -58,8 +58,8 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     public FileInfoNew iFileInfo = null;
-    public FileInfoNew geoFileInfo = null;
-    public SeadasProcessorInfo seadasProcessorInfo = new SeadasProcessorInfo(SeadasProcessorInfo.Id.L2GEN);
+    public boolean initializingParamsWithXml = false;
+
 
     public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
 
@@ -119,7 +119,13 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
     public boolean isValidIfile() {
-        return seadasProcessorInfo.isValidIfile();
+        ParamInfo paramInfo = getParamInfo(IFILE);
+        if (paramInfo != null) {
+            if (paramInfo.getLogComments() == null) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -458,22 +464,9 @@ public class L2genData implements L2genDataProcessorModel {
 
             line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
 
-            if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                if (iFileInfo != null && !paramInfo.isValid(iFileInfo.getFile().getParentFile())) {
-                    line.append("# WARNING!!! file " + paramInfo.getValue() + " does not exist" + "\n");
-                }
-
-                if (paramInfo.getName().equals(IFILE)) {
-                    if (!isValidIfile()) {
-                        line.append("# WARNING!!! file " + paramInfo.getValue() + " is not a valid input file" + "\n");
-                    }
-                } else if (paramInfo.getName().equals(GEOFILE)) {
-                    if (geoFileInfo != null && !geoFileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
-                        line.append("# WARNING!!! file " + paramInfo.getValue() + " is not a GEO file" + "\n");
-                    }
-                }
+            if (paramInfo.getLogComments() != null) {
+                line.append("# " + paramInfo.getLogComments()+ "\n");
             }
-
         }
 
         return line.toString();
@@ -675,6 +668,13 @@ public class L2genData implements L2genDataProcessorModel {
                 paramInfo.setValue(value);
                 paramInfo.setDefaultValue(paramInfo.getValue());
                 setConflictingParams(paramInfo.getName());
+                if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+                    String defaultParentDirectory = null;
+                    if (iFileInfo != null && iFileInfo.getFile() != null) {
+                        defaultParentDirectory = iFileInfo.getFile().getParent();
+                    }
+                    paramInfo.setFileLogComments(null, SeadasProcessorInfo.Id.L2GEN);
+                }
                 fireEvent(paramInfo.getName());
             }
         }
@@ -690,22 +690,7 @@ public class L2genData implements L2genDataProcessorModel {
         }
 
         if (!value.equals(paramInfo.getValue())) {
-
-            if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                if (paramInfo.getName().toLowerCase().equals(IFILE)) {
-                    if (value != null && value.length() > 0) {
-                        iFileInfo = new FileInfoNew(value);
-                    } else {
-                        iFileInfo = null;
-                    }
-                } else if (paramInfo.getName().toLowerCase().equals(GEOFILE)) {
-                    if (value != null && value.length() > 0) {
-                        geoFileInfo = new FileInfoNew(iFileInfo.getFile().getParent(), value);
-                    } else {
-                        geoFileInfo = null;
-                    }
-                }
-            }
+            paramInfo.setLogComments(null);
 
 
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
@@ -713,6 +698,10 @@ public class L2genData implements L2genDataProcessorModel {
             } else {
                 if (value.length() > 0 || paramInfo.getName().toLowerCase().equals(L2PROD)) {
                     paramInfo.setValue(value);
+
+                    if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+                        paramInfo.setFileLogComments(iFileInfo.getFile().getParent(), SeadasProcessorInfo.Id.L2GEN);
+                    }
                     setConflictingParams(paramInfo.getName());
                 } else {
                     paramInfo.setValue(paramInfo.getDefaultValue());
@@ -722,9 +711,6 @@ public class L2genData implements L2genDataProcessorModel {
 
         }
     }
-
-
-
 
 
     public void setParamValue(String name, String value) {
@@ -869,18 +855,30 @@ public class L2genData implements L2genDataProcessorModel {
     // runs this if IFILE changes
     // it will reset missionString
     // it will reset and make new wavelengthInfoArray
-    private void setIfileParamValue(ParamInfo paramInfo, String newIfile) {
+    private void setIfileParamValue(ParamInfo paramInfo, String value) {
 
         disableEvent(PARSTRING);
         disableEvent(L2PROD);
 
         String oldIfile = getParamValue(getParamInfo(IFILE));
 
+        if (value != null && value.length() > 0) {
+            iFileInfo = new FileInfoNew(value);
+        } else {
+            iFileInfo = null;
+        }
 
-        seadasProcessorInfo.setFileInfo(iFileInfo);
 
-        paramInfo.setValue(newIfile);
-        paramInfo.setDefaultValue(newIfile);
+        paramInfo.setValue(value);
+        paramInfo.setDefaultValue(value);
+
+        String defaultParentDirectory = null;
+        if (iFileInfo != null && iFileInfo.getFile() != null) {
+            defaultParentDirectory = iFileInfo.getFile().getParent();
+        }
+
+        paramInfo.setFileLogComments(defaultParentDirectory, SeadasProcessorInfo.Id.L2GEN);
+
 
         if (iFileInfo != null && isValidIfile()) {
 
@@ -910,7 +908,7 @@ public class L2genData implements L2genDataProcessorModel {
         setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
 
 
-        fireEvent(IFILE, oldIfile, newIfile);
+        fireEvent(IFILE, oldIfile, value);
 
         fireEvent(PARSTRING);
         enableEvent(L2PROD);

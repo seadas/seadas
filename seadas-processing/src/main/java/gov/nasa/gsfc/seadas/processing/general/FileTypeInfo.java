@@ -19,6 +19,7 @@ public class FileTypeInfo {
         L1A,
         GEO,
         L1B,
+        SDR,
         L1MAP,
         L1BRS,
         L2EXTRACT,
@@ -39,6 +40,7 @@ public class FileTypeInfo {
     private final static String[] L1A_NAMES = {"Level 1A", "L1A"};
     private final static String[] GEO_NAMES = {"GEO"};
     private final static String[] L1B_NAMES = {"Level 1B", "L1B"};
+    private final static String[] SDR_NAMES = {"SDR"};
     private final static String[] L1MAP_NAMES = null;
     private final static String[] L1BRS_NAMES = {"Level 1 Browse Data"};
     private final static String[] L2EXTRACT_NAMES = null;
@@ -77,6 +79,7 @@ public class FileTypeInfo {
         nameLookup.put(Id.L1A, L1A_NAMES);
         nameLookup.put(Id.GEO, GEO_NAMES);
         nameLookup.put(Id.L1B, L1B_NAMES);
+        nameLookup.put(Id.SDR, SDR_NAMES);
         nameLookup.put(Id.L1MAP, L1MAP_NAMES);
         nameLookup.put(Id.L1BRS, L1BRS_NAMES);
         nameLookup.put(Id.L2EXTRACT, L2EXTRACT_NAMES);

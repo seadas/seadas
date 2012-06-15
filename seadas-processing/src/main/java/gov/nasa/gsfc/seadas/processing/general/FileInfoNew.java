@@ -25,20 +25,33 @@ public class FileInfoNew {
 
 
     public FileInfoNew(String defaultParent, String child) {
-        defaultParent.trim();
-        child.trim();
 
-        String filename = null;
-
-        if (isAbsolute(child)) {
-            filename = child;
-        } else if (isAbsolute(defaultParent)) {
-            filename = defaultParent + System.getProperty("file.separator") + filename;
+        if (defaultParent != null) {
+            defaultParent.trim();
+        }
+        if (child != null) {
+            child.trim();
         }
 
-        if (filename != null) {
-            file = new File(filename);
-            if (new File(filename).exists()) {
+        StringBuilder filename = new StringBuilder();
+
+        if (child != null) {
+            filename.append(child);
+
+            if (!isAbsolute(child) && defaultParent != null) {
+                filename.insert(0,defaultParent + System.getProperty("file.separator"));
+            }
+        } else {
+            if (defaultParent != null) {
+                filename.append(defaultParent);
+            }
+        }
+
+
+
+        if (filename.toString().length() > 0) {
+            file = new File(filename.toString());
+            if (new File(filename.toString()).exists()) {
                 init();
             }
         }
@@ -65,13 +78,13 @@ public class FileInfoNew {
 
 
     public void clear() {
-
+        file = null;
         missionInfo.clear();
         fileTypeInfo.clear();
     }
 
     public void init() {
-        clear();
+
 
         ProcessorModel processorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
         processorModel.setAcceptsParFile(false);
