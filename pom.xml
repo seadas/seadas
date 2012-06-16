@@ -34,6 +34,7 @@
         <ceres.version>0.13.1-SNAPSHOT</ceres.version>
         <seadas.version>7.0-SNAPSHOT</seadas.version>
         <netcdf.version>4.2.20</netcdf.version>
+        <hdf.version>2.7</hdf.version>
         <geotools.version>2.6.5</geotools.version>
         <install4j.project>seadas-installer/seadas.install4j</install4j.project>
     </properties>
@@ -59,6 +60,7 @@
         <module>seadas-bootstrap</module>
         <module>seadas-ocssw</module>
         <module>seadas-processing</module>
+        <module>../beam/lib-hdf</module>
 
     </modules>
 

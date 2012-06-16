@@ -65,7 +65,7 @@ public class SeadasMain implements RuntimeRunnable {
 
         Locale.setDefault(Locale.UK); // Force usage of British English locale
 
-        Lm.verifyLicense("Brockmann Consult", "BEAM", "lCzfhklpZ9ryjomwWxfdupxIcuIoCxg2");
+        Lm.verifyLicense("NASA GSFC", "SeaDAS", "HYG8VYydWJkjk8XvjVYl9n0UaYy61tb2");
         if (SystemInfo.isMacOSX()) {
             if (System.getProperty("com.apple.macos.useScreenMenuBar") == null) {
                 System.setProperty("com.apple.macos.useScreenMenuBar", "true");
