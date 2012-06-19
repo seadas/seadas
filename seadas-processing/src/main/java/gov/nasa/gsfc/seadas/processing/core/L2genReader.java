@@ -385,12 +385,20 @@ public class L2genReader {
     }
 
 
-    public ArrayList<String> readFileIntoArrayList(String filename) {
+     public ArrayList<String> readFileIntoArrayList(String filename) {
+         File file = null;
+         if (filename != null) {
+             file = new File(filename);
+         }
+         return readFileIntoArrayList(file);
+     }
+
+    public ArrayList<String> readFileIntoArrayList(File file) {
         String lineData;
         ArrayList<String> fileContents = new ArrayList<String>();
         BufferedReader moFile = null;
         try {
-            moFile = new BufferedReader(new FileReader(new File(filename)));
+            moFile = new BufferedReader(new FileReader(file));
             while ((lineData = moFile.readLine()) != null) {
 
                 fileContents.add(lineData);

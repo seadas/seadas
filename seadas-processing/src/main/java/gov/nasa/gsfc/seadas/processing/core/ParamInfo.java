@@ -25,7 +25,9 @@ public class ParamInfo implements Comparable {
     private String source = NULL_STRING;
     private boolean isBit = false;
     private int order;
-    private String logComments = null;
+
+    private boolean valid = true;
+    private String validationComment = null;
 
     public static final String PARAM_TYPE_IFILE = "ifile";
     public static final String PARAM_TYPE_OFILE = "ofile";
@@ -37,16 +39,26 @@ public class ParamInfo implements Comparable {
 
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
 
-    public String getLogComments() {
-        return logComments;
+    public String getValidationComment() {
+        return validationComment;
     }
 
-    public void setLogComments(String logComments) {
-        this.logComments = logComments;
+    private void setValidationComment(String validationComment) {
+        this.validationComment = validationComment;
     }
 
-        public void clearLogComments() {
-        this.logComments = null;
+    private void clearValidationComment() {
+        this.validationComment = null;
+    }
+
+
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    private void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     public static enum Type {
@@ -70,18 +82,6 @@ public class ParamInfo implements Comparable {
 
     public ParamInfo(String name) {
         setName(name);
-    }
-
-
-    public boolean isValid(File rootDir) {
-        if (type == Type.IFILE && value != null && value.length() > 0) {
-            File file = getFile(rootDir);
-            if (file != null && file.exists()) {
-                return true;
-            }
-            return false;
-        }
-        return true;
     }
 
 
@@ -127,7 +127,7 @@ public class ParamInfo implements Comparable {
 
     protected void setValue(String value) {
         // Clean up and handle input exceptions
-        clearLogComments();
+
         if (value == null) {
             this.value = NULL_STRING;
             return;
@@ -141,6 +141,7 @@ public class ParamInfo implements Comparable {
         } else {
             this.value = value;
         }
+
 
     }
 
@@ -289,7 +290,9 @@ public class ParamInfo implements Comparable {
     }
 
 
-    public void setFileLogComments(String defaultFileParent, SeadasProcessorInfo.Id processorInfoId) {
+    public void validateValue(String defaultFileParent, SeadasProcessorInfo.Id processorInfoId) {
+        clearValidationComment();
+        setValid(true);
         FileInfoNew fileInfo;
         if (getType() == ParamInfo.Type.IFILE) {
             fileInfo = new FileInfoNew(defaultFileParent, getValue());
@@ -297,21 +300,26 @@ public class ParamInfo implements Comparable {
                 if (fileInfo.getFile().exists()) {
                     if (getName().equals(L2genData.GEOFILE)) {
                         if (!fileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
-                            setLogComments("File '" + fileInfo.getFile().getAbsolutePath() + "' is not a GEO file");
+                            setValid(false);
+                            setValidationComment("File '" + fileInfo.getFile().getAbsolutePath() + "' is not a GEO file");
                         }
                     } else if (getName().equals(L2genData.IFILE)) {
                         if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
-                            setLogComments("# WARNING!!! file " + getValue() + " is not a valid input mission" + "\n");
+                            setValid(false);
+                            setValidationComment("# WARNING!!! file " + getValue() + " is not a valid input mission" + "\n");
                         } else if (!SeadasProcessorInfo.isValidFileType(fileInfo, processorInfoId)) {
-                            setLogComments("# WARNING!!! file " + getValue() + " is not a valid input file type" + "\n");
+                            setValid(false);
+                            setValidationComment("# WARNING!!! file " + getValue() + " is not a valid input file type" + "\n");
                         }
                     }
                 } else {
-                    setLogComments("File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                    setValid(false);
+                    setValidationComment("File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
                 }
 
             } else {
-                setLogComments("File '" + getValue() + "' does not exist");
+                setValid(false);
+                setValidationComment("File '" + getValue() + "' does not exist");
             }
         }
     }

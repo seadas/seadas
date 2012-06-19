@@ -123,9 +123,7 @@ public class L2genData implements L2genDataProcessorModel {
     public boolean isValidIfile() {
         ParamInfo paramInfo = getParamInfo(IFILE);
         if (paramInfo != null) {
-            if (paramInfo.getLogComments() == null) {
-                return true;
-            }
+            return paramInfo.isValid();
         }
         return false;
     }
@@ -466,8 +464,8 @@ public class L2genData implements L2genDataProcessorModel {
 
             line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
 
-            if (paramInfo.getLogComments() != null) {
-                line.append("# " + paramInfo.getLogComments()+ "\n");
+            if (paramInfo.getValidationComment() != null) {
+                line.append("# " + paramInfo.getValidationComment()+ "\n");
             }
         }
 
@@ -626,17 +624,7 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    private boolean isValidParamValue(ParamInfo paramInfo) {
-        if (paramInfo != null && iFileInfo != null) {
-            return paramInfo.isValid(iFileInfo.getFile().getParentFile());
-        }
-
-        return false;
-    }
-
-    public boolean isValidParamValue(String name) {
-        return isValidParamValue(getParamInfo(name));
-    }
+    
 
 
     private File getParamFile(ParamInfo paramInfo) {
@@ -677,7 +665,7 @@ public class L2genData implements L2genDataProcessorModel {
                     if (iFileInfo != null && iFileInfo.getFile() != null) {
                         defaultParentDirectory = iFileInfo.getFile().getParent();
                     }
-                    paramInfo.setFileLogComments(null, SeadasProcessorInfo.Id.L2GEN);
+                    paramInfo.validateValue(null, SeadasProcessorInfo.Id.L2GEN);
                 }
                 fireEvent(paramInfo.getName());
             }
@@ -694,7 +682,7 @@ public class L2genData implements L2genDataProcessorModel {
         }
 
         if (!value.equals(paramInfo.getValue())) {
-            paramInfo.setLogComments(null);
+
 
 
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
@@ -704,7 +692,7 @@ public class L2genData implements L2genDataProcessorModel {
                     paramInfo.setValue(value);
 
                     if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                        paramInfo.setFileLogComments(iFileInfo.getFile().getParent(), SeadasProcessorInfo.Id.L2GEN);
+                        paramInfo.validateValue(iFileInfo.getFile().getParent(), SeadasProcessorInfo.Id.L2GEN);
                     }
                     setConflictingParams(paramInfo.getName());
                 } else {
@@ -881,7 +869,7 @@ public class L2genData implements L2genDataProcessorModel {
             defaultParentDirectory = iFileInfo.getFile().getParent();
         }
 
-        paramInfo.setFileLogComments(defaultParentDirectory, SeadasProcessorInfo.Id.L2GEN);
+        paramInfo.validateValue(defaultParentDirectory, SeadasProcessorInfo.Id.L2GEN);
 
 
         if (iFileInfo != null && isValidIfile()) {
