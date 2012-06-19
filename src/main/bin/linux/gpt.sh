@@ -1,12 +1,12 @@
 #! /bin/sh
 
-export BEAM4_HOME=${installer:sys.installationDir}
+export SEADAS_HOME=${installer:sys.installationDir}
 
-if [ -z "$BEAM4_HOME" ]; then
+if [ -z "$SEADAS_HOME" ]; then
     echo
-    echo Error: BEAM4_HOME not found in your environment.
-    echo Please set the BEAM4_HOME variable in your environment to match the
-    echo location of the BEAM 4.x installation.
+    echo Error: SEADAS_HOME not found in your environment.
+    echo Please set the SEADAS_HOME variable in your environment to match the
+    echo location of the SeaDAS 7.x installation.
     echo
     exit 2
 fi
@@ -22,11 +22,11 @@ fi
 
 "$JAVA_HOME/bin/java" \
     -Xmx1024M \
-    -Dceres.context=beam \
+    -Dceres.context=seadas \
     "-Dbeam.mainClass=org.esa.beam.framework.gpf.main.Main" \
-    "-Dbeam.home=$BEAM4_HOME" \
-    "-Dncsa.hdf.hdflib.HDFLibrary.hdflib=$BEAM4_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf.so" \
-    "-Dncsa.hdf.hdf5lib.H5.hdf5lib=$BEAM4_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf5.so" \
-    -jar "$BEAM4_HOME/bin/ceres-launcher.jar" "$@"
+    "-Dbeam.home=$SEADAS_HOME" \
+    "-Dncsa.hdf.hdflib.HDFLibrary.hdflib=$SEADAS_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf.so" \
+    "-Dncsa.hdf.hdf5lib.H5.hdf5lib=$SEADAS_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf5.so" \
+    -jar "$SEADAS_HOME/bin/ceres-launcher.jar" "$@"
 
 exit $?

@@ -108,7 +108,6 @@
             <excludes>
                 <!-- The following are excluded, because they are not required by the final build. -->
                 <exclude>gov.nasa.gsfc.seadas:seadas-installer</exclude>
-                <exclude>gov.nasa.gsfc.seadas:seadas-sandbox</exclude>
                 <exclude>gov.nasa.gsfc.seadas:seadas-bootstrap</exclude>
             </excludes>
 
