@@ -30,7 +30,6 @@
     <name>SeaDAS Installer</name>
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas-installer</artifactId>
-    <version>${seadas.version}</version>
     <packaging>jar</packaging>
 
     <build>
