@@ -37,6 +37,7 @@ public class L2genOfileSelector {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (isControlHandlerEnabled()) {
                     l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryOutputFileOptionName(), fileSelector.getFileName());
+                    disableControlHandler();
                 }
             }
         });
@@ -47,7 +48,7 @@ public class L2genOfileSelector {
         l2genDataProcessorModel.addPropertyChangeListener(l2genDataProcessorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                disableControlHandler();
+                //disableControlHandler();
                 fileSelector.setFilename(l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryOutputFileOptionName()));
                 enableControlHandler();
             }

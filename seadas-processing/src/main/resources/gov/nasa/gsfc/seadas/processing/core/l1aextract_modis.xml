@@ -4,7 +4,6 @@
     <programMetaData>
         <hasParFile>false</hasParFile>
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
-        <hasGeoFile>true</hasGeoFile>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>

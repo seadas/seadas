@@ -2,7 +2,6 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
-import com.bc.ceres.binding.ValueRange;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
@@ -13,8 +12,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,34 +51,6 @@ public class LonLat2PixLineUI {
              lonlatPanel.add(makeOptionField(pi));
         }
 
-        lonlatPanel.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent mouseEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void mousePressed(MouseEvent mouseEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent mouseEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent mouseEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void mouseExited(MouseEvent mouseEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-
-                validateParams();
-            }
-        });
     }
 
     private JPanel makeOptionField(ParamInfo pi) {
@@ -95,11 +64,6 @@ public class LonLat2PixLineUI {
         final PropertyContainer vc = new PropertyContainer();
         vc.addProperty(Property.create(pi.getName(), pi.getValue()));
         vc.getDescriptor(pi.getName()).setDisplayName(pi.getName());
-
-        final ValueRange valueRange = new ValueRange(-360, 360);
-
-
-        vc.getDescriptor(pi.getName()).setValueRange(valueRange);
 
         final BindingContext ctx = new BindingContext(vc);
         final NumberFormatter formatter = new NumberFormatter(new DecimalFormat("#00.00#"));
@@ -115,10 +79,5 @@ public class LonLat2PixLineUI {
         return optionPanel;
 
     }
-
-    private void validateParams() {
-
-    }
-
 
 }

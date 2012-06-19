@@ -118,6 +118,15 @@
             <dialogTitle>l2mapgen Processor</dialogTitle>
             <xmlFileName>paramInfo_l2mapgen.xml</xmlFileName>
         </action>
+          <action>
+            <parent>seadasProcessing</parent>
+            <id>extractor</id>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>extractor...</text>
+            <programName>extractor</programName>
+            <dialogTitle>extractor</dialogTitle>
+            <xmlFileName>extractor.xml</xmlFileName>
+        </action>
         <!--<action>-->
             <!--<parent>seadasProcessing</parent>-->
             <!--<id>l2genSimple</id>-->
@@ -126,33 +135,33 @@
             <!--<programName>userInterface</programName>-->
             <!--<dialogTitle>Simple userInterface Processor</dialogTitle>-->
         <!--</action>-->
-        <action>
-            <parent>seadasProcessing</parent>
-            <id>l1aextract_modis</id>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>l1aextract_modis...</text>
-            <programName>l1aextract_modis</programName>
-            <dialogTitle>l1aextract_modis</dialogTitle>
-            <xmlFileName>paramInfo_l1aextract_modis.xml</xmlFileName>
-        </action>
-        <action>
-            <parent>seadasProcessing</parent>
-            <id>l1aextract_seawifs</id>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>l1aextract_seawifs...</text>
-            <programName>l1aextract_seawifs</programName>
-            <dialogTitle>l1aextract_seawifs</dialogTitle>
-            <xmlFileName>l1aextract_seawifs.xml</xmlFileName>
-        </action>
-        <action>
-            <parent>seadasProcessing</parent>
-            <id>l2extract</id>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>l2extract...</text>
-            <programName>l2extract</programName>
-            <dialogTitle>l2extract</dialogTitle>
-            <xmlFileName>l2extract.xml</xmlFileName>
-        </action>
+        <!--<action>-->
+            <!--<parent>seadasProcessing</parent>-->
+            <!--<id>l1aextract_modis</id>-->
+            <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
+            <!--<text>l1aextract_modis...</text>-->
+            <!--<programName>l1aextract_modis</programName>-->
+            <!--<dialogTitle>l1aextract_modis</dialogTitle>-->
+            <!--<xmlFileName>l1aextract_modis.xml</xmlFileName>-->
+        <!--</action>-->
+        <!--<action>-->
+            <!--<parent>seadasProcessing</parent>-->
+            <!--<id>l1aextract_seawifs</id>-->
+            <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
+            <!--<text>l1aextract_seawifs...</text>-->
+            <!--<programName>l1aextract_seawifs</programName>-->
+            <!--<dialogTitle>l1aextract_seawifs</dialogTitle>-->
+            <!--<xmlFileName>l1aextract_seawifs.xml</xmlFileName>-->
+        <!--</action>-->
+        <!--<action>-->
+            <!--<parent>seadasProcessing</parent>-->
+            <!--<id>l2extract</id>-->
+            <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
+            <!--<text>l2extract...</text>-->
+            <!--<programName>l2extract</programName>-->
+            <!--<dialogTitle>l2extract</dialogTitle>-->
+            <!--<xmlFileName>l2extract.xml</xmlFileName>-->
+        <!--</action>-->
         <action>
             <parent>seadasProcessing</parent>
             <id>l1brsgen</id>

@@ -5,9 +5,8 @@ import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genPrimaryIOFilesSe
 import org.esa.beam.framework.datamodel.Product;
 
 import javax.swing.*;
+import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,15 +19,16 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
     private L2genPrimaryIOFilesSelector ioFilesSelector;
 
-    ProcessorModel processorModel;
+    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
-    private JPanel paramPanel;
+    ProcessorModel processorModel;
 
     private ParFileUI parFileUI;
 
     public ProgramUIFactory(String programName, String xmlFileName) {
         processorModel = new ProcessorModel(programName, xmlFileName);
         parFileUI = new ParFileUI(processorModel);
+        ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
         createUserInterface();
     }
 
@@ -44,51 +44,51 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         return parFileUI.isOpenOutputInApp();
     }
 
-    private void createUserInterface() {
-        ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
-
+    protected void createUserInterface() {
         JPanel ioPanel = ioFilesSelector.getjPanel();
-        if (! processorModel.hasGeoFile() ) {
+        if (!processorModel.hasGeoFile()) {
             ioPanel.remove(1);
-        } else if ( !processorModel.hasPrimaryOutputFile() ) {
+        } else if (!processorModel.hasPrimaryOutputFile()) {
             ioPanel.remove(2);
         }
         ioPanel.repaint();
         ioPanel.validate();
 
-        if (processorModel.getPrimaryOutputFileOptionName() != null) {
-            processorModel.addPropertyChangeListener(processorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    if (processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()) != null) {
-                        processorModel.setReadyToRun(true);
-                    } else {
-                        processorModel.setReadyToRun(false);
-                    }
-                }
-            });
-        }
-        paramPanel = new ParamUIFactory(processorModel).createParamPanel();
         final JPanel parFilePanel = parFileUI.getParStringPanel();
 
         this.setLayout(new GridBagLayout());
 
         add(ioPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        add(paramPanel,
+        add(getParamPanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         add(parFilePanel,
                 new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
         setPreferredSize(getPreferredSize());
         setSize(getPreferredSize().width, getPreferredSize().height + 200);
-        this.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                validate();
-                repaint();
-            }
-        });
+    }
+
+    protected JPanel getParamPanel() {
+        return new ParamUIFactory(processorModel).createParamPanel();
+    }
+
+    protected void disableJPanel(JPanel panel) {
+        Component[] com = panel.getComponents();
+        for (int a = 0; a < com.length; a++) {
+            com[a].setEnabled(false);
+        }
+        panel.repaint();
+        panel.validate();
 
     }
+
+    protected void enableJPanel(JPanel panel) {
+        Component[] com = panel.getComponents();
+        for (int a = 0; a < com.length; a++) {
+            com[a].setEnabled(true);
+        }
+    }
+
+
 }
