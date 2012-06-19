@@ -1,9 +1,8 @@
-package gov.nasa.gsfc.seadas.ocssw;
+package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.NullProgressMonitor;
 import com.bc.ceres.core.ProgressMonitor;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 

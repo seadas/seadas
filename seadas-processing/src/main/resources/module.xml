@@ -18,9 +18,6 @@
     <dependency>
         <module>seadas-app</module>
     </dependency>
-    <dependency>
-        <module>seadas-ocssw</module>
-    </dependency>
 
 
     <categories>System</categories>
