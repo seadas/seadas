@@ -378,7 +378,9 @@ public class ProcessorModel implements L2genDataProcessorModel {
         ParamInfo option;
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
-            cmdArray[option.getOrder() + 1] = option.getValue();
+            if (!option.getDefaultValue().equals(option.getValue())) {
+                cmdArray[option.getOrder() + 1] = option.getValue();
+            }
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
 
@@ -450,7 +452,10 @@ public class ProcessorModel implements L2genDataProcessorModel {
             SeadasLogger.getLogger().info(option.getName() + " = " + option.getValue() + "option type is :" + option.getType() + " " + option.getType().equals(ParamInfo.Type.HELP));
 
             if (!option.getType().equals(ParamInfo.Type.HELP) && option.getValue().length() > 0) {
-                parString = parString.append(option.getName() + "=" + option.getValue() + "\n");
+
+                if (!option.getDefaultValue().equals(option.getValue())) {
+                    parString = parString.append(option.getName() + "=" + option.getValue() + "\n");
+                }
             }
 
         }
@@ -547,7 +552,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         }
     }
 
-     public File getRootDir() {
+    public File getRootDir() {
         File rootDir = (new File(getParamValue(getPrimaryInputFileOptionName()))).getParentFile();
         if (rootDir != null) {
             return rootDir;
