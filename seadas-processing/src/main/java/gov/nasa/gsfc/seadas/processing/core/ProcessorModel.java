@@ -214,7 +214,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         ParamInfo option;
         while (itr.hasNext()) {
             option = itr.next();
-            //System.out.println(option.getName() + "|  " + currentOption.getName() + "|");
+            SeadasLogger.getLogger().info(option.getName() + "|  " + currentOption.getName() + "|");
             if (option.getName().equals(currentOption.getName())) {
                 String oldValue = option.getValue();
                 option.setValue(newValue);
@@ -327,7 +327,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
 
     public void setParamValue(String name, String value) {
-        System.out.println("primary io file option names: " + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
+        SeadasLogger.getLogger().info("primary io file option names: " + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
         if (name.trim().equals(getPrimaryInputFileOptionName())) {
             updateIFileInfo(value);
         } else if (name.trim().equals(getPrimaryOutputFileOptionName())) {
@@ -490,7 +490,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        System.out.println("added property name: " + propertyName);
+        SeadasLogger.getLogger().info("added property name: " + propertyName);
         EventInfo eventInfo = getEventInfo(propertyName);
         if (eventInfo == null) {
             getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
@@ -511,7 +511,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
     public void disableEvent(String name) {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
-            debug("disableEvent - eventInfo not found for " + name);
+            SeadasLogger.getLogger().severe("disableEvent - eventInfo not found for " + name);
         } else {
             eventInfo.setEnabled(false);
         }
@@ -520,7 +520,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
     public void enableEvent(String name) {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
-            debug("enableEvent - eventInfo not found for " + name);
+            SeadasLogger.getLogger().severe("enableEvent - eventInfo not found for " + name);
         } else {
             eventInfo.setEnabled(true);
         }
@@ -547,12 +547,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         }
     }
 
-    private void debug(String string) {
-
-        //  System.out.println(string);
-    }
-
-    public File getRootDir() {
+     public File getRootDir() {
         File rootDir = (new File(getParamValue(getPrimaryInputFileOptionName()))).getParentFile();
         if (rootDir != null) {
             return rootDir;
@@ -560,7 +555,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
             try {
                 rootDir = OCSSW.getOcsswRoot();
             } catch (Exception e) {
-                System.out.println("error in getting ocssw root!");
+                SeadasLogger.getLogger().severe("error in getting ocssw root!");
             }
 
         }

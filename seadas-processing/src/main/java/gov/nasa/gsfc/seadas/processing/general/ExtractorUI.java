@@ -44,7 +44,7 @@ public class ExtractorUI extends ProgramUIFactory {
             try {
                 int exitValue = process.waitFor();
             } catch (Exception e) {
-                System.out.println("Execution exception 0 : " + e.getMessage());
+                SeadasLogger.getLogger().severe("Execution exception 0 : " + e.getMessage());
             }
             SeadasLogger.getLogger().info("Execution successful!");
             InputStream is = process.getInputStream();
@@ -62,7 +62,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
         } catch (IOException ioe) {
 
-            System.out.println("Execution exception: " + ioe.getMessage());
+            SeadasLogger.getLogger().severe("Execution exception: " + ioe.getMessage());
 
         }
 
@@ -70,7 +70,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
     protected JPanel getParamPanel() {
 
-        System.out.println("updating ofile change listener ...  processorModel   " + processorModel.getPrimaryOutputFileOptionName());
+        SeadasLogger.getLogger().info("updating ofile change listener ...  processorModel   " + processorModel.getPrimaryOutputFileOptionName());
 
         lonlat2pixline = new ProcessorModel("lonlat2pixline", "lonlat2pixline.xml");
 
@@ -98,7 +98,6 @@ public class ExtractorUI extends ProgramUIFactory {
                 } else {
                     pixellonlatSwitch.setBorderPainted(false);
                 }
-                //updateParamPanel(processorModel.getProgramName());
             }
         });
 
@@ -125,12 +124,6 @@ public class ExtractorUI extends ProgramUIFactory {
                     return;
                 }
                 updateParamPanel(programName);
-//                paramPanel.remove(2);
-//                paramPanel.add(getPixelPanel(programName, programName + ".xml"),
-//                        new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-//                paramPanel.repaint();
-//                paramPanel.validate();
-                //pixellonlatSwitch.setEnabled(true);
             }
         });
 
@@ -144,13 +137,6 @@ public class ExtractorUI extends ProgramUIFactory {
                     return;
                 }
                 updateParamPanel(programName);
-//                paramPanel.remove(2);
-//                paramPanel.add(getPixelPanel(programName, programName + ".xml"),
-//                        new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-//                paramPanel.setEnabled(true);
-//                paramPanel.repaint();
-//                paramPanel.validate();
-                //enableJPanel(paramPanel);
             }
         });
 
@@ -201,7 +187,7 @@ public class ExtractorUI extends ProgramUIFactory {
     }
 
     private void updateOfilePropertyChangeListeners(String ofileOptionName) {
-        System.out.println("updating ofile change listener ... " + ofileOptionName + "  " + processorModel.getPrimaryOutputFileOptionName());
+        SeadasLogger.getLogger().info("updating ofile change listener ... " + ofileOptionName + "  " + processorModel.getPrimaryOutputFileOptionName());
 
         PropertyChangeListener[] pcl = processorModel.getPropertyChangeSupport().getPropertyChangeListeners(processorModel.getPrimaryOutputFileOptionName());
         for (int i = 0; i < pcl.length; i++) {
