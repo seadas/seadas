@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.general.EventInfo;
 import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.general.SeadasPrint;
@@ -213,7 +214,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         ParamInfo option;
         while (itr.hasNext()) {
             option = itr.next();
-            System.out.println(option.getName() + "|  " + currentOption.getName() + "|");
+            //System.out.println(option.getName() + "|  " + currentOption.getName() + "|");
             if (option.getName().equals(currentOption.getName())) {
                 String oldValue = option.getValue();
                 option.setValue(newValue);
@@ -299,17 +300,11 @@ public class ProcessorModel implements L2genDataProcessorModel {
         }
     }
 
-    private String getAugmentedNewValue(String paramName, String newValue) {
-        if (paramName.trim().equals(getPrimaryInputFileOptionName())) {
-
-        }
-        return null;
-    }
-
     public boolean updateIFileInfo(String newValue) {
 
         if (verifyIFilePath(newValue)) {
             updateParamInfo(getPrimaryInputFileOptionName(), newValue);
+            updateParamInfo(getPrimaryOutputFileOptionName(), SeadasFileUtils.getDefaultOFileNameFromIFile(newValue, programName));
             return true;
         } else {
             return false;
@@ -322,6 +317,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         String ofileFullPathName = getOFileFullPath(newValue);
         if (ofileFullPathName != null) {
             updateParamInfo(getPrimaryOutputFileOptionName(), ofileFullPathName);
+            setReadyToRun(true);
             return true;
         }
         return false;
@@ -329,7 +325,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
 
     public void setParamValue(String name, String value) {
-        System.out.println("primary io file option names: "  + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
+        System.out.println("primary io file option names: " + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
         if (name.trim().equals(getPrimaryInputFileOptionName())) {
             updateIFileInfo(value);
         } else if (name.trim().equals(getPrimaryOutputFileOptionName())) {
@@ -491,8 +487,8 @@ public class ProcessorModel implements L2genDataProcessorModel {
         return null;
     }
 
-    public void  addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        System.out.println("added property name: " + propertyName );
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        System.out.println("added property name: " + propertyName);
         EventInfo eventInfo = getEventInfo(propertyName);
         if (eventInfo == null) {
             getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
