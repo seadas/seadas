@@ -44,6 +44,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     String dialogTitle;
     String xmlFileName;
 
+
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
 
@@ -188,10 +189,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
                 final Process process = processorModel.executeProcess();
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
+                final ConsoleHandler ch = new ConsoleHandler(programName);
                 processObserver.addHandler(new ProgressHandler(programName));
-                processObserver.addHandler(new ConsoleHandler(programName));
+                processObserver.addHandler(ch);
                 processObserver.startAndWait();
-
+                processorModel.setExecutionLogMessage(ch.getExecutionErrorLog());
                 int exitCode = process.exitValue();
 
                 pm.done();
@@ -205,6 +207,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 }
 
                 SeadasLogger.getLogger().finest("Final output file name: " + outputFile);
+
 
                 return outputFile;
             }
@@ -229,7 +232,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {
-                    VisatApp.getApp().showErrorDialog(programName, "execution exception: " + e.getMessage());
+                    VisatApp.getApp().showErrorDialog(programName, "execution exception: " + e.getMessage() + "\n" + processorModel.getExecutionLogMessage());
                 }
             }
         };
@@ -280,6 +283,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         String programName;
 
+        private String executionErrorLog = "";
+
         ConsoleHandler(String programName) {
             this.programName = programName;
         }
@@ -287,11 +292,17 @@ public class CallCloProgramAction extends AbstractVisatAction {
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
             SeadasLogger.getLogger().info(programName + ": " + line);
+            executionErrorLog = executionErrorLog + line + "\n";
         }
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
             SeadasLogger.getLogger().info(programName + " stderr: " + line);
+            executionErrorLog = executionErrorLog + line + "\n";
+        }
+
+        public String getExecutionErrorLog() {
+            return executionErrorLog;
         }
     }
 

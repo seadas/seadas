@@ -378,9 +378,9 @@ public class ProcessorModel implements L2genDataProcessorModel {
         ParamInfo option;
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
-            if (!option.getDefaultValue().equals(option.getValue())) {
-                cmdArray[option.getOrder() + 1] = option.getValue();
-            }
+
+            cmdArray[option.getOrder() + 1] = option.getValue();
+
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
 
@@ -661,5 +661,15 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
     public String getAllparamInitializedPropertyName() {
         return allparamInitializedPropertyName;
+    }
+
+    private String executionLogMessage;
+
+    public String getExecutionLogMessage() {
+        return executionLogMessage;
+    }
+
+    public void setExecutionLogMessage(String executionLogMessage) {
+        this.executionLogMessage = executionLogMessage;
     }
 }
