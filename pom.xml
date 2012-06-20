@@ -175,11 +175,11 @@
                 <artifactId>beam-avhrr-reader</artifactId>
                 <version>1.2</version>
             </dependency>
-            <dependency>
-                <groupId>org.esa.beam</groupId>
-                <artifactId>beam-bootstrap</artifactId>
-                <version>4.10.3-SNAPSHOT</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.esa.beam</groupId>-->
+                <!--<artifactId>beam-bootstrap</artifactId>-->
+                <!--<version>4.10.3-SNAPSHOT</version>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-core</artifactId>

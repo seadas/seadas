@@ -34,10 +34,10 @@
     <description>Provides the bootstrap classpath to launch VISAT from your favourite IDE.</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-bootstrap</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-bootstrap</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat-rcp</artifactId>

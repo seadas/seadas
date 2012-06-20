@@ -506,7 +506,7 @@ You need only select the data files for the sensors for which processing is desi
           <versionLine x="20" y="40" text="version ${compiler:sys.version}" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
         </text>
       </splashScreen>
-      <java mainClass="com.bc.ceres.launcher.Launcher" vmParameters="-Dceres.context=beam" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
+      <java mainClass="com.bc.ceres.launcher.Launcher" vmParameters="-Dceres.context=seadas" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
         <classPath>
           <archive location="bin/ceres-launcher.jar" failOnError="false" />
         </classPath>
@@ -524,6 +524,8 @@ You need only select the data files for the sensors for which processing is desi
         <file path="./src/main/resources/images/seadas-icon-16.png" />
         <file path="./src/main/resources/images/seadas-icon-32.png" />
         <file path="./src/main/resources/images/seadas-icon-48.png" />
+        <file path="./src/main/resources/images/seadas-icon-64.png" />
+        <file path="./src/main/resources/images/seadas-icon-128.png" />
       </iconImageFiles>
     </launcher>
   </launchers>

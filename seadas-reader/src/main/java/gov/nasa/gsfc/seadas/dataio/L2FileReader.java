@@ -39,7 +39,8 @@ public class L2FileReader extends SeadasFileReader {
             final Variable variable = ncFile.findVariable(navGroup + "/" + latitude);
             invalidateLines(LAT_SKIP_BAD_NAV,variable);
 
-            sceneHeight -= leadLineSkip + tailLineSkip;
+            sceneHeight -= leadLineSkip;
+            sceneHeight -= tailLineSkip;
 
         } catch (IOException ignore) {
 

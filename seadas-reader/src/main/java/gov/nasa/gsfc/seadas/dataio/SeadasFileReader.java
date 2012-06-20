@@ -70,7 +70,7 @@ public abstract class SeadasFileReader {
         if (mustFlipX) {
             sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
         }
-
+        sourceOffsetY += leadLineSkip;
         final int[] start = new int[]{sourceOffsetY, sourceOffsetX};
         final int[] stride = new int[]{1, 1};
         final int[] count = new int[]{1, sourceWidth};
@@ -793,7 +793,7 @@ public abstract class SeadasFileReader {
             final int[] stride = new int[]{1, 1};
             final int[] count = new int[]{1, shape[1]};
             for (int i = 0; i < lineCount; i++) {
-                start[0] += i;
+                start[0] = i;
                 Section section = new Section(start, count, stride);
                 Array array;
                 synchronized (ncFile) {
