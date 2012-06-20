@@ -1,14 +1,18 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 
+import com.bc.ceres.core.ProgressMonitor;
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.general.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genWavelengthInfo;
+import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.util.StringUtils;
 import org.esa.beam.util.SystemUtils;
+import org.esa.beam.visat.VisatApp;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
@@ -16,6 +20,7 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * A ...
@@ -27,7 +32,8 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     //  private static final String OCDATAROOT = System.getenv("OCDATAROOT");
-    private static final String DEFAULT_IFILE = "S2002032172026.L1A_GAC.reallysmall";
+    private static final String TINY_IFILE_NAME = "S2002032172026.L1A_GAC.reallysmall";
+    private static File tinyIFile;
 
     private static final String
             PRODUCT_INFO_XML = "productInfo.xml",
@@ -1114,10 +1120,8 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
     public boolean initXmlBasedObjects() {
-        URL url = L2genForm.class.getResource(DEFAULT_IFILE);
-        File ifile = new File(url.getFile());
 
-        InputStream paramInfoStream = getParamInfoInputStream(ifile);
+        InputStream paramInfoStream = getParamInfoInputStream(getTinyIFile());
 
         if (paramInfoStream != null) {
             disableEvent(PARSTRING);
@@ -1188,10 +1192,7 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
     public L2genProductsParamInfo createL2prodParamInfo(String value) {
-        URL url = L2genForm.class.getResource(DEFAULT_IFILE);
-        File ifile = new File(url.getFile());
-
-        InputStream productInfoStream = getProductInfoInputStream(ifile);
+        InputStream productInfoStream = getProductInfoInputStream(getTinyIFile());
 
         L2genProductsParamInfo l2prodParamInfo = new L2genProductsParamInfo();
         setL2prodParamInfo(l2prodParamInfo);
@@ -1217,6 +1218,57 @@ public class L2genData implements L2genDataProcessorModel {
 
         return StringUtils.join(productArrayList, " ");
     }
+
+    public File getTinyIFile() {
+        if(tinyIFile == null) {
+            installTinyIFile();
+        }
+        return tinyIFile;
+    }
+
+    private void installTinyIFile() {
+        final File dataDir = new File(SystemUtils.getApplicationDataDir(), "l2gen");
+        tinyIFile = new File(dataDir, TINY_IFILE_NAME);
+        if(tinyIFile.canRead()) {
+            return;
+        }
+        final URL codeSourceUrl = L2genData.class.getProtectionDomain().getCodeSource().getLocation();
+        final ResourceInstaller resourceInstaller = new ResourceInstaller(codeSourceUrl, "gov/nasa/gsfc/seadas/processing/l2gen/userInterface/",
+                dataDir);
+
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker(VisatApp.getApp().getApplicationWindow(),
+                                                                                "Installing Auxdata...") {
+            @Override
+            protected Object doInBackground(ProgressMonitor progressMonitor) throws Exception {
+                resourceInstaller.install(TINY_IFILE_NAME, progressMonitor);
+                return Boolean.TRUE;
+            }
+
+            /**
+             * Executed on the <i>Event Dispatch Thread</i> after the {@code doInBackground}
+             * method is finished. The default
+             * implementation does nothing. Subclasses may override this method to
+             * perform completion actions on the <i>Event Dispatch Thread</i>. Note
+             * that you can query status inside the implementation of this method to
+             * determine the result of this task or whether this task has been cancelled.
+             *
+             * @see #doInBackground
+             * @see #isCancelled()
+             * @see #get
+             */
+            @Override
+            protected void done() {
+                try {
+                    get();
+                } catch (Exception e) {
+                    VisatApp.getApp().getLogger().log(Level.SEVERE, "Could not install tiny iFile", e);
+                }
+            }
+        };
+
+        swingWorker.executeWithBlocking();
+    }
+
 }
 
 
