@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class ProcessorTypeInfo {
 
-        public static enum ProcessorID {
+    public static enum ProcessorID {
         EXTRACTOR,
         MODIS_L1A_PY,
         MODIS_GEO_PY,
@@ -25,14 +25,17 @@ public class ProcessorTypeInfo {
         L2BIN,
         L3BIN,
         SMIGEN,
-        SMITOPPM
+        SMITOPPM,
+        LONlAT2PIXLINE,
+        NOID
     }
 
     private static final Map<String, ProcessorID> processorHashMap = new HashMap<String, ProcessorID>() {{
 
-         put("l1aextract_modis", ProcessorID.EXTRACTOR);
-       put("l1aextract_seawifs", ProcessorID.EXTRACTOR);
+        put("l1aextract_modis", ProcessorID.EXTRACTOR);
+        put("l1aextract_seawifs", ProcessorID.EXTRACTOR);
         put("l2extract", ProcessorID.EXTRACTOR);
+        put("extractor", ProcessorID.EXTRACTOR);
         put("modis_L1A.py", ProcessorID.MODIS_L1A_PY);
         put("modis_GEO.py", ProcessorID.MODIS_GEO_PY);
         put("l1bgen", ProcessorID.L1BGEN);
@@ -45,10 +48,11 @@ public class ProcessorTypeInfo {
         put("l3bin", ProcessorID.L3BIN);
         put("smigen", ProcessorID.SMIGEN);
         put("smitoppm", ProcessorID.SMITOPPM);
+        put("lonlat2pixline", ProcessorID.LONlAT2PIXLINE);
 
-}};
+    }};
 
-    public static ProcessorID getProcessorID(String processorName){
-         return processorHashMap.get(processorName);
+    public static ProcessorID getProcessorID(String processorName) {
+        return processorHashMap.get(processorName);
     }
 }

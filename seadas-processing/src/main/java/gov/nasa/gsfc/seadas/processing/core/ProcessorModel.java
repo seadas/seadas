@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.general.EventInfo;
+import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.general.SeadasPrint;
 import org.esa.beam.util.Guardian;
@@ -304,7 +304,9 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
         if (verifyIFilePath(newValue)) {
             updateParamInfo(getPrimaryInputFileOptionName(), newValue);
-            updateParamInfo(getPrimaryOutputFileOptionName(), SeadasFileUtils.getDefaultOFileNameFromIFile(newValue, programName));
+            if (hasPrimaryOutputFile()) {
+                updateParamInfo(getPrimaryOutputFileOptionName(), SeadasFileUtils.getDefaultOFileNameFromIFile(newValue, programName));
+            }
             return true;
         } else {
             return false;

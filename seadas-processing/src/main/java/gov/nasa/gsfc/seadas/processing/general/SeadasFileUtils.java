@@ -14,6 +14,7 @@ import java.util.Calendar;
  */
 public class SeadasFileUtils {
 
+    private static boolean debug = true;
 
     public static String getCurrentDate(String dateFormat) {
         Calendar cal = Calendar.getInstance();
@@ -23,7 +24,8 @@ public class SeadasFileUtils {
     }
 
     public static String getDefaultOFileNameFromIFile(String ifileName, String programName) {
-        ProcessorTypeInfo.ProcessorID processorID =  ProcessorTypeInfo.getProcessorID(programName);
+        debug("Program name is " + programName);
+        ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
         String ofileName = ifileName + "_" + programName + ".out";
         switch (processorID) {
             case EXTRACTOR:
@@ -57,7 +59,8 @@ public class SeadasFileUtils {
                 ofileName = ifileName.replaceAll("L2_/?/?/?", "L3d_" + getCurrentDate("yyyyMMdd"));
                 break;
             case L3BIN:
-                ofileName = ifileName.replaceAll("L2_/?/?/?", "L3d_" + getCurrentDate("yyyyMMdd"));;
+                ofileName = ifileName.replaceAll("L2_/?/?/?", "L3d_" + getCurrentDate("yyyyMMdd"));
+                ;
                 break;
             case SMIGEN:
                 ofileName = ofileName.replaceAll("L3b", "L3m");
@@ -81,5 +84,11 @@ public class SeadasFileUtils {
         System.out.println(getCurrentDate("H:mm:ss:SSS"));
         System.out.println(getCurrentDate("K:mm a,z"));
         System.out.println(getCurrentDate("yyyy.MMMMM.dd GGG hh:mm aaa"));
+    }
+
+    public static void debug(String message) {
+        if (debug) {
+            System.out.println("Debugging: " + message);
+        }
     }
 }
