@@ -5,10 +5,7 @@ import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.binding.ValueRange;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
-import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.core.ParamValidValueInfo;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
@@ -136,7 +133,7 @@ public class ParamUIFactory {
         TableLayout fieldLayout = new TableLayout(1);
         fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         optionPanel.setLayout(fieldLayout);
-        optionPanel.add(new JLabel(optionName));
+        optionPanel.add(new JLabel(ParamUtils.removePreceedingDashes(optionName)));
 
 
         if (pi.getValue() == null || pi.getValue().length() == 0) {
@@ -189,7 +186,7 @@ public class ParamUIFactory {
         booleanLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         optionPanel.setLayout(booleanLayout);
         optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        optionPanel.add(new JLabel(optionName));
+        optionPanel.add(new JLabel(ParamUtils.removePreceedingDashes(optionName)));
 
 
         final PropertyContainer vc = new PropertyContainer();
@@ -241,7 +238,7 @@ public class ParamUIFactory {
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         singlePanel.setLayout(comboParamLayout);
 
-        final JLabel optionNameLabel = new JLabel(pi.getName());
+        final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
 
         singlePanel.add(optionNameLabel);
 
@@ -307,7 +304,7 @@ public class ParamUIFactory {
 
     private JPanel createIOFileOptionField(final ParamInfo pi) {
 
-        final FileSelector ioFileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, pi.getName());
+        final FileSelector ioFileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, ParamUtils.removePreceedingDashes(pi.getName()));
         ioFileSelector.getFileTextField().setColumns(40);
         ioFileSelector.addPropertyChangeListener(ioFileSelector.getPropertyName(), new PropertyChangeListener() {
             @Override

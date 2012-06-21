@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class ProcessorModelTest {
     @Test
     public void testIsValidProcessor() throws Exception {
-        ProcessorModel pm = new ProcessorModel("userInterface", "paramInfo_l2gen.xml");
+        ProcessorModel pm = new ProcessorModel("userInterface", "l2gen.xml");
         //pm.setDefaultEnv();
         assertTrue(pm.isValidProcessor() );
     }

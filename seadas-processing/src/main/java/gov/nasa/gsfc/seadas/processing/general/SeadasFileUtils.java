@@ -35,13 +35,13 @@ public class SeadasFileUtils {
                 //FileUtils.exchangeExtension(ifileName, "GEO") ;
                 break;
             case MODIS_GEO_PY:
-                ofileName = FileUtils.exchangeExtension(ifileName, "GEO");
+                ofileName = ifileName.replaceAll("L1A_LAC", "GEO");
                 break;
             case L1BGEN:
-                ofileName = FileUtils.exchangeExtension(ifileName, "L1B");
+                ofileName = ifileName.replaceAll("L1A", "L1B");
                 break;
             case MODIS_L1B_PY:
-                ofileName = FileUtils.exchangeExtension(ifileName, "L1B");
+                ofileName = ifileName.replaceAll("L1A", "L1B");
                 break;
             case L1BRSGEN:
                 ofileName = ifileName + ".BRS";

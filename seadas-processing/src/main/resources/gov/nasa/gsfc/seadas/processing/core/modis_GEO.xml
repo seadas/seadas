@@ -2,11 +2,11 @@
 <paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">>
     <programMetaData>
-        <hasParFile>true</hasParFile>
-        <parFileOptionName>parfile</parFileOptionName>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>--parfile</parFileOptionName>
         <primaryOptions>
             <primaryOption>file</primaryOption>
-            <primaryOption>output</primaryOption>
+            <primaryOption>--output</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
@@ -16,53 +16,67 @@
             <default></default>
             <description>Input file</description>
             <source>command line</source>
+            <usedAs>argument</usedAs>
+            <order>1</order>
         </option>
         <option type="ofile">
-            <name>output</name>
+            <name>--output</name>
             <value></value>
             <default></default>
             <description>generated GEO file</description>
+            <usedAs>option</usedAs>
+            <order>2</order>
         </option>
         <option type="string">
-            <name>att1</name>
+            <name>--att1</name>
             <value></value>
             <type>string</type>
             <default>ATT1</default>
             <description>Input attitude file 1 (chronological)</description>
             <source>default</source>
+            <usedAs>option</usedAs>
+            <order>3</order>
         </option>
         <option type="string">
-            <name>att2</name>
+            <name>--att2</name>
             <value></value>
             <type>string</type>
             <default>ATT2</default>
             <description>Input attitude file 2 (chronological)</description>
             <source>default</source>
+            <usedAs>option</usedAs>
+            <order>4</order>
         </option>
         <option type="string">
-            <name>eph1</name>
+            <name>--eph1</name>
             <value></value>
             <type>string</type>
             <default>EPH1</default>
             <description>Input ephemeris file 1 (chronological)</description>
             <source>default</source>
+            <usedAs>option</usedAs>
+            <order>5</order>
         </option>
         <option type="string">
-            <name>eph2</name>
+            <name>--eph2</name>
             <value></value>
             <type>string</type>
             <default>EPH2</default>
             <description>Input ephemeris file 2 (chronological)</description>
             <source>default</source>
+            <usedAs>option</usedAs>
+            <order>6</order>
         </option>
         <option type="string">
-            <name>ancdir</name>
+            <name>--ancdir</name>
             <value></value>
             <default>ANCDIR</default>
             <description>Use a custom directory tree for ancillary files</description>
+            <usedAs>option</usedAs>
+            <order>7</order>
         </option>
         <option type="string">
-            <name>ancdb</name>
+            <name>--ancdb</name>
             <value></value>
             <default>ANCDB</default>
             <description>Use a custom file for ancillary database. If full path
@@ -71,43 +85,57 @@
                 does not exist, ANCDB is assumed (or will be created)
                 under the current working directory
             </description>
+            <usedAs>option</usedAs>
+            <order>8</order>
         </option>
         <option type="string">
-            <name>threshold</name>
+            <name>--threshold</name>
             <value></value>
             <default>THRESHOLD</default>
             <description>% of geo-populated pixels required to pass geocheck validation test</description>
+            <usedAs>option</usedAs>
+            <order>9</order>
         </option>
         <option type="boolean">
-            <name>refreshDB</name>
+            <name>--refreshDB</name>
             <value></value>
             <default></default>
             <description>Remove existing database records and re-query for ancillary files</description>
+            <usedAs>flag</usedAs>
+            <order>10</order>
         </option>
         <option type="boolean">
-            <name>disable-download</name>
+            <name>--disable-download</name>
             <value></value>
             <default></default>
             <description>Disable download of ancillary files not found on hard disk</description>
+              <usedAs>flag</usedAs>
+            <order>11</order>
         </option>
         <option type="boolean">
-            <name>enable-dem</name>
+            <name>--enable-dem</name>
             <value></value>
             <default></default>
             <description>Enable MODIS terrain elevation correction</description>
+            <usedAs>flag</usedAs>
+            <order>12</order>
         </option>
         <option type="boolean">
-            <name>verbose</name>
+            <name>--verbose</name>
             <value></value>
             <default></default>
             <description>print status messages</description>
+            <usedAs>flag</usedAs>
+            <order>13</order>
         </option>
 
         <option type="boolean">
-            <name>log</name>
+            <name>--log</name>
             <value></value>
             <default></default>
             <description>Save processing log files</description>
+            <usedAs>flag</usedAs>
+            <order>14</order>
         </option>
     </options>
 </paramInfo>

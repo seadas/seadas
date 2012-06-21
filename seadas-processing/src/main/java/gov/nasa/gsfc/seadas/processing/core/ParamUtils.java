@@ -36,7 +36,6 @@ public class ParamUtils {
     public static final String EAST = "east";
     public static final String IFILE = "ifile";
     public static final String OFILE = "ofile";
-    public static final String L2PROD = "l2prod";
 
     public static final String OPTION_NAME = "name";
     public static final String OPTION_TYPE = "type";
@@ -95,6 +94,19 @@ public class ParamUtils {
         return primaryOptions;
     }
 
+    public static String getParFileOptionName(String parXMLFileName) {
+
+        XmlReader xmlReader = new XmlReader();
+        InputStream paramStream = ParamUtils.class.getResourceAsStream(parXMLFileName);
+        Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
+        NodeList optionNodelist = rootElement.getElementsByTagName("parFileOptionName");
+        if (optionNodelist == null || optionNodelist.getLength() == 0) {
+            SeadasLogger.getLogger().warning("par file option name is not speficied in the xml file. 'par' is used as a default name.");
+            return null;
+        }
+        return optionNodelist.item(0).getFirstChild().getNodeValue();
+    }
+
     public static boolean getOptionStatus(String parXMLFileName, String elementName) {
 
         boolean optionStatus = false;
@@ -117,6 +129,7 @@ public class ParamUtils {
 
         return optionStatus;
     }
+
 
     public static int getLongestIFileNameLength() {
         return longestIFileNameLength;
@@ -157,7 +170,9 @@ public class ParamUtils {
             ParamInfo.Type type = null;
 
             if (tmpType != null) {
-                if (tmpType.toLowerCase().equals("boolean")) {
+                if (tmpType.toLowerCase().equals("arg")) {
+                    type = ParamInfo.Type.ARG;
+                } else if (tmpType.toLowerCase().equals("boolean")) {
                     type = ParamInfo.Type.BOOLEAN;
                 } else if (tmpType.toLowerCase().equals("int")) {
                     type = ParamInfo.Type.INT;
@@ -193,6 +208,7 @@ public class ParamUtils {
             String description = XmlReader.getTextValue(optionElement, "description");
             String source = XmlReader.getTextValue(optionElement, "source");
             String order = XmlReader.getTextValue(optionElement, "order");
+            String usedAs = XmlReader.getTextValue(optionElement, "usedAs");
 
             ParamInfo paramInfo = new ParamInfo(name, value, type);
 
@@ -204,10 +220,14 @@ public class ParamUtils {
             }
             paramInfo.setSource(source);
 
+
             if (order != null) {
                 paramInfo.setOrder(new Integer(order).intValue());
             }
 
+            if (usedAs != null) {
+                paramInfo.setUsedAs(usedAs);
+            }
 
             NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
 
@@ -248,6 +268,10 @@ public class ParamUtils {
 
     static void debug(String debugMessage) {
         //System.out.println(debugMessage);
+    }
+
+    public static String removePreceedingDashes(String optionName) {
+        return optionName.replaceAll("--", "");
     }
 
 

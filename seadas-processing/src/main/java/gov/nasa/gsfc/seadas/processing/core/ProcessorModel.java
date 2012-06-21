@@ -41,6 +41,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
     private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
     private Set<String> primaryOptions;
+    private String parFileOptionName;
 
     private boolean readyToRun;
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
@@ -60,6 +61,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         if (parXMLFileName != null) {
             setParamList(ParamUtils.computeParamList(parXMLFileName));
             acceptsParFile = ParamUtils.getOptionStatus(parXMLFileName, "hasParFile");
+            parFileOptionName = acceptsParFile ? ParamUtils.getParFileOptionName(parXMLFileName) : null;
             hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
             setPrimaryOptions(ParamUtils.getPrimaryOptions(parXMLFileName));
             setPrimaryInputFileOptionName(getPrimaryInputFileOptionName());
@@ -110,6 +112,23 @@ public class ProcessorModel implements L2genDataProcessorModel {
         ParamInfo info = new ParamInfo(name, value);
         info.setOrder(order);
         addParamInfo(info);
+    }
+
+    public String getParFileOptionName() {
+
+        Iterator<ParamInfo> itr = getParamList().iterator();
+        ParamInfo option;
+        while (itr.hasNext()) {
+
+            option = itr.next();
+            if (option.getType() != null) {
+                if (option.getType().equals(ParamInfo.Type.IFILE) && getPrimaryOptions().contains(option.getName())) {
+
+                    return option.getName();
+                }
+            }
+        }
+        return null;
     }
 
     public String getPrimaryInputFileOptionName() {
@@ -361,7 +380,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         final String[] cmdArray = {
                 programLocation + "ocssw_runner",
                 getProgramName(),
-                "par=" + computeParFile()
+                parFileOptionName + "=" + computeParFile()
         };
         for (int i = 0; i < cmdArray.length; i++) {
             SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
@@ -370,7 +389,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
     }
 
     private String[] getCmdArrayWithArguments() {
-        final String[] cmdArray = new String[getParamList().size() + 2];
+        String[] cmdArray = new String[getParamList().size() + 2];
         cmdArray[0] = programLocation + "ocssw_runner";
         cmdArray[1] = getProgramName();
 
@@ -379,14 +398,31 @@ public class ProcessorModel implements L2genDataProcessorModel {
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
 
-            cmdArray[option.getOrder() + 1] = option.getValue();
+            if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
+                cmdArray[option.getOrder() + 1] = option.getValue();
+            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
+                cmdArray[option.getOrder() + 1] = option.getName() + "=" + option.getValue();
+            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && ( option.getValue().equals("true") || option.getValue().equals("1") ) ) {
+                cmdArray[option.getOrder() + 1] = option.getName();
+            }
 
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
 
+        ArrayList<String> finalCommandArgList = new ArrayList<String>();
+        for (String s : cmdArray) {
+            if (s != null && s.length() > 0) {
+
+                finalCommandArgList.add(s);
+            }
+        }
+
+        cmdArray = finalCommandArgList.toArray(new String[finalCommandArgList.size()]);
+
         for (int i = 0; i < cmdArray.length; i++) {
             SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
         }
+
         return cmdArray;
     }
 
@@ -467,6 +503,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         try {
             return executeProcess(getRootDir());
         } catch (Exception e) {
+            SeadasLogger.getLogger().severe(e.getMessage());
             return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv());
         }
 

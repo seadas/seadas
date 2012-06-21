@@ -10,11 +10,13 @@ import java.io.InputStreamReader;
 /**
  * Created by IntelliJ IDEA.
  * User: knowles
- * Date: 5/17/12
- * Time: 11:27 AM
+ * Date: 6/13/12
+ * Time: 4:26 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FileInfo extends File {
+public class FileInfo {
+
+    private File file;
 
     private static final String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
 
@@ -22,35 +24,71 @@ public class FileInfo extends File {
     private final FileTypeInfo fileTypeInfo = new FileTypeInfo();
 
 
-    public FileInfo(String parent, String child) {
-        super(parent, child);
+    public FileInfo(String defaultParent, String child) {
 
-        if (this.exists()) {
-            init();
+        if (defaultParent != null) {
+            defaultParent.trim();
+        }
+        if (child != null) {
+            child.trim();
+        }
+
+        StringBuilder filename = new StringBuilder();
+
+        if (child != null) {
+            filename.append(child);
+
+            if (!isAbsolute(child) && defaultParent != null) {
+                filename.insert(0,defaultParent + System.getProperty("file.separator"));
+            }
+        } else {
+            if (defaultParent != null) {
+                filename.append(defaultParent);
+            }
+        }
+
+
+
+        if (filename.toString().length() > 0) {
+            file = new File(filename.toString());
+            if (new File(filename.toString()).exists()) {
+                init();
+            }
         }
     }
 
-    public FileInfo(String pathname) {
-        super(pathname);
+    public FileInfo(String filename) {
+        filename.trim();
 
-        if (this.exists()) {
-            init();
+        if (filename != null) {
+            file = new File(filename);
+            if (new File(filename).exists()) {
+                init();
+            }
+        }
+    }
+
+    private boolean isAbsolute(String filename) {
+        if (filename.indexOf(System.getProperty("file.separator")) == 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
 
     public void clear() {
-
+        file = null;
         missionInfo.clear();
         fileTypeInfo.clear();
     }
 
     public void init() {
-        clear();
+
 
         ProcessorModel processorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
         processorModel.setAcceptsParFile(false);
-        processorModel.addParamInfo("file", getAbsolutePath(), 1);
+        processorModel.addParamInfo("file", file.getAbsolutePath(), 1);
 
         try {
             Process p = processorModel.executeProcess();
@@ -116,13 +154,12 @@ public class FileInfo extends File {
     }
 
 
-
-
     public boolean isGeofileRequired() {
         return missionInfo.isGeofileRequired();
     }
 
 
-
-
+    public File getFile() {
+        return file;
+    }
 }

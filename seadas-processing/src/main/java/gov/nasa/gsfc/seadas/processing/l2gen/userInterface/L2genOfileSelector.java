@@ -25,7 +25,7 @@ public class L2genOfileSelector {
     public L2genOfileSelector(L2genDataProcessorModel l2genDataProcessorModel) {
         this.l2genDataProcessorModel = l2genDataProcessorModel;
 
-        fileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, l2genDataProcessorModel.getPrimaryOutputFileOptionName());
+        fileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, l2genDataProcessorModel.getPrimaryOutputFileOptionName().replaceAll("--", ""));
 
         addControlListeners();
         addEventListeners();
