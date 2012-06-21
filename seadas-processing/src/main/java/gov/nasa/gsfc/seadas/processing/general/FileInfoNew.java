@@ -19,12 +19,20 @@ public class FileInfoNew {
     private File file;
 
     private static final String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
+    private static final boolean DEFAULT_MISSION_AND_FILE_TYPE_ENABLED = true;
 
     private final MissionInfo missionInfo = new MissionInfo();
     private final FileTypeInfo fileTypeInfo = new FileTypeInfo();
+    private boolean missionAndFileTypeEnabled = DEFAULT_MISSION_AND_FILE_TYPE_ENABLED;
 
 
     public FileInfoNew(String defaultParent, String child) {
+         this(defaultParent, child, DEFAULT_MISSION_AND_FILE_TYPE_ENABLED);
+    }
+
+    public FileInfoNew(String defaultParent, String child, boolean missionAndFileTypeEnabled) {
+
+        this.missionAndFileTypeEnabled = missionAndFileTypeEnabled;
 
         if (defaultParent != null) {
             defaultParent.trim();
@@ -39,7 +47,7 @@ public class FileInfoNew {
             filename.append(child);
 
             if (!isAbsolute(child) && defaultParent != null) {
-                filename.insert(0,defaultParent + System.getProperty("file.separator"));
+                filename.insert(0, defaultParent + System.getProperty("file.separator"));
             }
         } else {
             if (defaultParent != null) {
@@ -48,11 +56,11 @@ public class FileInfoNew {
         }
 
 
-
         if (filename.toString().length() > 0) {
             file = new File(filename.toString());
-            if (new File(filename.toString()).exists()) {
-                init();
+
+            if (missionAndFileTypeEnabled && new File(filename.toString()).exists()) {
+                initMissionAndFileTypeInfos();
             }
         }
     }
@@ -63,7 +71,7 @@ public class FileInfoNew {
         if (filename != null) {
             file = new File(filename);
             if (new File(filename).exists()) {
-                init();
+                initMissionAndFileTypeInfos();
             }
         }
     }
@@ -83,7 +91,7 @@ public class FileInfoNew {
         fileTypeInfo.clear();
     }
 
-    public void init() {
+    private void initMissionAndFileTypeInfos() {
 
 
         ProcessorModel processorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
@@ -161,5 +169,13 @@ public class FileInfoNew {
 
     public File getFile() {
         return file;
+    }
+
+    public boolean isMissionAndFileTypeEnabled() {
+        return missionAndFileTypeEnabled;
+    }
+
+    public void setMissionAndFileTypeEnabled(boolean missionAndFileTypeEnabled) {
+        this.missionAndFileTypeEnabled = missionAndFileTypeEnabled;
     }
 }

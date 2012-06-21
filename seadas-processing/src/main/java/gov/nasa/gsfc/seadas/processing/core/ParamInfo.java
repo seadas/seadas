@@ -26,7 +26,7 @@ public class ParamInfo implements Comparable {
     private boolean isBit = false;
     private int order;
 
-    private boolean valid = true;
+
     private String validationComment = null;
 
     public static final String PARAM_TYPE_IFILE = "ifile";
@@ -52,14 +52,14 @@ public class ParamInfo implements Comparable {
     }
 
 
-
     public boolean isValid() {
-        return valid;
+        if (getValidationComment() == null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private void setValid(boolean valid) {
-        this.valid = valid;
-    }
 
     public static enum Type {
         BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP
@@ -289,37 +289,43 @@ public class ParamInfo implements Comparable {
         isBit = bit;
     }
 
-
     public void validateValue(String defaultFileParent, SeadasProcessorInfo.Id processorInfoId) {
         clearValidationComment();
-        setValid(true);
-        FileInfoNew fileInfo;
-        if (getType() == ParamInfo.Type.IFILE) {
-            fileInfo = new FileInfoNew(defaultFileParent, getValue());
-            if (fileInfo.getFile() != null) {
-                if (fileInfo.getFile().exists()) {
-                    if (getName().equals(L2genData.GEOFILE)) {
-                        if (!fileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
-                            setValid(false);
-                            setValidationComment("File '" + fileInfo.getFile().getAbsolutePath() + "' is not a GEO file");
-                        }
-                    } else if (getName().equals(L2genData.IFILE)) {
-                        if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
-                            setValid(false);
-                            setValidationComment("# WARNING!!! file " + getValue() + " is not a valid input mission" + "\n");
-                        } else if (!SeadasProcessorInfo.isValidFileType(fileInfo, processorInfoId)) {
-                            setValid(false);
-                            setValidationComment("# WARNING!!! file " + getValue() + " is not a valid input file type" + "\n");
-                        }
-                    }
-                } else {
-                    setValid(false);
-                    setValidationComment("File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
-                }
 
+
+        if (getName().equals(L2genData.OFILE) ) {
+            boolean  test = true;
+        }
+        if (getType() == ParamInfo.Type.IFILE) {
+            FileInfoNew fileInfo;
+            if (getName().equals(L2genData.IFILE) || getName().equals(L2genData.GEOFILE)) {
+
+                fileInfo = new FileInfoNew(defaultFileParent, getValue(), true);
+                if (fileInfo.getFile() != null) {
+                    if (fileInfo.getFile().exists()) {
+                        if (getName().equals(L2genData.GEOFILE)) {
+                            if (!fileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
+                                setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' is not a GEO file");
+                            }
+                        } else if (getName().equals(L2genData.IFILE)) {
+                            if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
+                                setValidationComment("# WARNING!!! file " + getValue() + " is not a valid input mission" + "\n");
+                            } else if (!SeadasProcessorInfo.isValidFileType(fileInfo, processorInfoId)) {
+                                setValidationComment("# WARNING!!! file " + getValue() + " is not a valid input file type" + "\n");
+                            }
+                        }
+                    } else {
+                        setValidationComment("WARNING!!! File'" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                    }
+
+                } else {
+                    setValidationComment("WARNING!!! File'" + getValue() + "' does not exist");
+                }
             } else {
-                setValid(false);
-                setValidationComment("File '" + getValue() + "' does not exist");
+                fileInfo = new FileInfoNew(defaultFileParent, getValue(), false);
+                if (fileInfo.getFile() != null && !fileInfo.getFile().exists()) {
+                    setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                }
             }
         }
     }

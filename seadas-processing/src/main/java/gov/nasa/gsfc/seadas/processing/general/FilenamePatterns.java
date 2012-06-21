@@ -17,7 +17,7 @@ public class FilenamePatterns {
 
 
     static public FileInfoNew getOFileInfo(FileInfoNew fileInfo) {
-        return new FileInfoNew(getOFile(fileInfo).getAbsolutePath());
+        return new FileInfoNew(fileInfo.getFile().getParent(), getOFile(fileInfo).getAbsolutePath(), false);
     }
 
 
@@ -43,7 +43,7 @@ public class FilenamePatterns {
 
 
     static public FileInfoNew getGeoFileInfo(FileInfoNew fileInfo) {
-        return new FileInfoNew(getGeoFile(fileInfo).getAbsolutePath());
+        return new FileInfoNew(fileInfo.getFile().getParent(), getGeoFile(fileInfo).getAbsolutePath(), false);
     }
 
 
