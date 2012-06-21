@@ -293,9 +293,6 @@ public class ParamInfo implements Comparable {
         clearValidationComment();
 
 
-        if (getName().equals(L2genData.OFILE) ) {
-            boolean  test = true;
-        }
         if (getType() == ParamInfo.Type.IFILE) {
             FileInfoNew fileInfo;
             if (getName().equals(L2genData.IFILE) || getName().equals(L2genData.GEOFILE)) {
