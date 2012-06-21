@@ -40,6 +40,7 @@
             <placeBefore>modis_L1A.py</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>extractor...</text>
+            <shortDescr>Create L1 and L2 Extracts</shortDescr>
             <programName>extractor</programName>
             <dialogTitle>extractor</dialogTitle>
             <xmlFileName>extractor.xml</xmlFileName>
@@ -52,6 +53,7 @@
             <placeBefore>modis_GEO.py</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>modis_L1A.py...</text>
+            <shortDescr>Process MODIS L0 to L1A</shortDescr>
             <programName>modis_L1A.py</programName>
             <dialogTitle>modis_L1A.py Processor</dialogTitle>
             <xmlFileName>modis_L1A.xml</xmlFileName>
@@ -64,6 +66,7 @@
             <placeBefore>modis_L1B.py</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>modis_GEO.py...</text>
+            <shortDescr>Process MODIS Geolocation</shortDescr>
             <programName>modis_GEO.py</programName>
             <dialogTitle>modis_GEO.py Processor</dialogTitle>
             <xmlFileName>modis_GEO.xml</xmlFileName>
@@ -76,10 +79,10 @@
             <placeBefore>l1bgen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>modis_L1B.py...</text>
+            <shortDescr>Process MODIS L1A to L1B</shortDescr>
             <programName>modis_L1B.py</programName>
             <dialogTitle>modis_L1B.py Processor</dialogTitle>
             <xmlFileName>modis_L1B.xml</xmlFileName>
-            <shortDescr>L1Bgen Modis</shortDescr>
         </action>
 
         <action>
@@ -89,6 +92,7 @@
             <placeBefore>l1brsgen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l1bgen...</text>
+            <shortDescr>Create a generic L1B file</shortDescr>
             <programName>l1bgen</programName>
             <dialogTitle>l1bgen Processor</dialogTitle>
             <xmlFileName>l1bgen.xml</xmlFileName>
@@ -100,6 +104,7 @@
             <placeBefore>l1mapgen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l1brsgen...</text>
+            <shortDescr>Create a True Color Browse Image</shortDescr>
             <programName>l1brsgen</programName>
             <dialogTitle>l1brsgen</dialogTitle>
             <xmlFileName>l1brsgen.xml</xmlFileName>
@@ -112,6 +117,7 @@
             <placeBefore>l2gen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l1mapgen...</text>
+            <shortDescr>Create a True Color Mapped Image</shortDescr>
             <programName>l1mapgen</programName>
             <dialogTitle>l1mapgen</dialogTitle>
             <xmlFileName>l1mapgen.xml</xmlFileName>
@@ -124,6 +130,7 @@
             <placeBefore>l2brsgen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genAction</class>
             <text>l2gen...</text>
+            <shortDescr>Process a L1 file to L2</shortDescr>
             <shortDescr>L2 File Generation</shortDescr>
             <programName>l2gen</programName>
             <dialogTitle>l2gen</dialogTitle>
@@ -138,6 +145,7 @@
             <placeBefore>l2mapgen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l2brsgen...</text>
+            <shortDescr>Create a L2 Browse Image</shortDescr>
             <programName>l2brsgen</programName>
             <dialogTitle>l2brsgen</dialogTitle>
             <xmlFileName>l2brsgen.xml</xmlFileName>
@@ -161,6 +169,7 @@
             <placeBefore>l2bin</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l2mapgen...</text>
+            <shortDescr>Create a L2 Mapped Image</shortDescr>
             <programName>l2mapgen</programName>
             <dialogTitle>l2mapgen</dialogTitle>
             <xmlFileName>l2mapgen.xml</xmlFileName>
@@ -173,6 +182,7 @@
             <placeBefore>l3bin</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l2bin...</text>
+            <shortDescr>Create a L3 bin file from L2 file(s)</shortDescr>
             <programName>l2bin</programName>
             <dialogTitle>l2bin</dialogTitle>
             <xmlFileName>l2bin.xml</xmlFileName>
@@ -184,6 +194,7 @@
             <placeBefore>smigen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l3bin...</text>
+            <shortDescr>Create a L3 bin file from L3 file(s)</shortDescr>
             <programName>l3bin</programName>
             <dialogTitle>l3bin</dialogTitle>
             <xmlFileName>l3bin.xml</xmlFileName>
@@ -195,6 +206,7 @@
             <!--<placeBefore>l3gen</placeBefore>-->
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>smigen...</text>
+            <shortDescr>Create a L3 SMI file</shortDescr>
             <programName>smigen</programName>
             <dialogTitle>smigen</dialogTitle>
             <xmlFileName>smigen.xml</xmlFileName>

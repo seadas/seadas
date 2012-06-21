@@ -52,6 +52,7 @@
         <module>seadas-reader</module>
         <module>seadas-help</module>
         <module>seadas-processing</module>
+        <module>../beam/lib-hdf</module>
 
         <!--
             The following are supportive modules, they are not part of the distribution
