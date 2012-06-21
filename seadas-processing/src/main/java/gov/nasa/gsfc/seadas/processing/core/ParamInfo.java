@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 
+import gov.nasa.gsfc.seadas.processing.general.FileInfo;
 import gov.nasa.gsfc.seadas.processing.general.FileInfoNew;
 import gov.nasa.gsfc.seadas.processing.general.FileTypeInfo;
 import gov.nasa.gsfc.seadas.processing.general.SeadasProcessorInfo;
@@ -289,12 +290,16 @@ public class ParamInfo implements Comparable {
         isBit = bit;
     }
 
-    public void validateValue(String defaultFileParent, SeadasProcessorInfo.Id processorInfoId) {
+
+
+
+    public FileInfoNew validateIfileValue(String defaultFileParent, SeadasProcessorInfo.Id processorInfoId) {
         clearValidationComment();
 
+        FileInfoNew fileInfo = null;
 
         if (getType() == ParamInfo.Type.IFILE) {
-            FileInfoNew fileInfo;
+
             if (getName().equals(L2genData.IFILE) || getName().equals(L2genData.GEOFILE)) {
 
                 fileInfo = new FileInfoNew(defaultFileParent, getValue(), true);
@@ -325,6 +330,9 @@ public class ParamInfo implements Comparable {
                 }
             }
         }
+
+        return fileInfo;
+
     }
 
 

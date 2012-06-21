@@ -44,9 +44,7 @@ public class L2genIfileSelector {
             public void selectionChanged(SelectionChangeEvent event) {
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
-                    disableControlHandler();
                     l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), iFile.getAbsolutePath());
-                    enableControlHandler();
                 }
             }
         });
@@ -57,13 +55,15 @@ public class L2genIfileSelector {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 File iFile = new File(l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
-                //disableControlHandler();
+
+                disableControlHandler();
                 if (iFile != null && iFile.exists()) {
                     sourceProductSelector.setSelectedFile(iFile);
                 } else {
                     sourceProductSelector.releaseProducts();
                 }
                 enableControlHandler();
+
             }
         });
     }

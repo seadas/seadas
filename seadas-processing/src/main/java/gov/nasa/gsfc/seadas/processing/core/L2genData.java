@@ -471,7 +471,7 @@ public class L2genData implements L2genDataProcessorModel {
             line.append(paramInfo.getName() + "=" + paramInfo.getValue() + "\n");
 
             if (paramInfo.getValidationComment() != null) {
-                line.append("# " + paramInfo.getValidationComment()+ "\n");
+                line.append("# " + paramInfo.getValidationComment() + "\n");
             }
         }
 
@@ -606,7 +606,7 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     private String getParamValue(ParamInfo paramInfo) {
-        if(paramInfo == null)
+        if (paramInfo == null)
             return null;
         return paramInfo.getValue();
     }
@@ -628,9 +628,6 @@ public class L2genData implements L2genDataProcessorModel {
     public boolean getBooleanParamValue(String name) {
         return getBooleanParamValue(getParamInfo(name));
     }
-
-
-    
 
 
     private File getParamFile(ParamInfo paramInfo) {
@@ -667,11 +664,7 @@ public class L2genData implements L2genDataProcessorModel {
                 paramInfo.setDefaultValue(paramInfo.getValue());
                 setConflictingParams(paramInfo.getName());
                 if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                    String defaultParentDirectory = null;
-                    if (iFileInfo != null && iFileInfo.getFile() != null) {
-                        defaultParentDirectory = iFileInfo.getFile().getParent();
-                    }
-                    paramInfo.validateValue(null, SeadasProcessorInfo.Id.L2GEN);
+                    paramInfo.validateIfileValue(null, SeadasProcessorInfo.Id.L2GEN);
                 }
                 fireEvent(paramInfo.getName());
             }
@@ -690,7 +683,6 @@ public class L2genData implements L2genDataProcessorModel {
         if (!value.equals(paramInfo.getValue())) {
 
 
-
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
                 setIfileParamValue(paramInfo, value);
             } else {
@@ -698,7 +690,7 @@ public class L2genData implements L2genDataProcessorModel {
                     paramInfo.setValue(value);
 
                     if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                        paramInfo.validateValue(iFileInfo.getFile().getParent(), SeadasProcessorInfo.Id.L2GEN);
+                        paramInfo.validateIfileValue(iFileInfo.getFile().getParent(), SeadasProcessorInfo.Id.L2GEN);
                     }
                     setConflictingParams(paramInfo.getName());
                 } else {
@@ -860,22 +852,10 @@ public class L2genData implements L2genDataProcessorModel {
 
         String oldIfile = getParamValue(getParamInfo(IFILE));
 
-        if (value != null && value.length() > 0) {
-            iFileInfo = new FileInfoNew(value);
-        } else {
-            iFileInfo = null;
-        }
-
-
         paramInfo.setValue(value);
         paramInfo.setDefaultValue(value);
 
-        String defaultParentDirectory = null;
-        if (iFileInfo != null && iFileInfo.getFile() != null) {
-            defaultParentDirectory = iFileInfo.getFile().getParent();
-        }
-
-        paramInfo.validateValue(defaultParentDirectory, SeadasProcessorInfo.Id.L2GEN);
+       iFileInfo = paramInfo.validateIfileValue(null, SeadasProcessorInfo.Id.L2GEN);
 
 
         if (iFileInfo != null && isValidIfile()) {
@@ -1220,7 +1200,7 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
     public File getTinyIFile() {
-        if(tinyIFile == null) {
+        if (tinyIFile == null) {
             installTinyIFile();
         }
         return tinyIFile;
@@ -1229,7 +1209,7 @@ public class L2genData implements L2genDataProcessorModel {
     private void installTinyIFile() {
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), "l2gen");
         tinyIFile = new File(dataDir, TINY_IFILE_NAME);
-        if(tinyIFile.canRead()) {
+        if (tinyIFile.canRead()) {
             return;
         }
         final URL codeSourceUrl = L2genData.class.getProtectionDomain().getCodeSource().getLocation();
@@ -1237,7 +1217,7 @@ public class L2genData implements L2genDataProcessorModel {
                 dataDir);
 
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker(VisatApp.getApp().getApplicationWindow(),
-                                                                                "Installing Auxdata...") {
+                "Installing Auxdata...") {
             @Override
             protected Object doInBackground(ProgressMonitor progressMonitor) throws Exception {
                 resourceInstaller.install(TINY_IFILE_NAME, progressMonitor);
