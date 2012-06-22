@@ -52,6 +52,7 @@ public class ExtractorUI extends ProgramUIFactory {
             BufferedReader br = new BufferedReader(isr);
             String line;
             String[] tmp;
+             line = br.readLine();
             while ((line = br.readLine()) != null) {
                 SeadasLogger.getLogger().info(line);
                 if (line.indexOf("=") != -1) {
@@ -200,7 +201,7 @@ public class ExtractorUI extends ProgramUIFactory {
         System.out.println(ifileName);
 
         FileInfo ifileInfo = new FileInfo(ifileName);
-        System.out.println(ifileInfo.getTypeName() + ifileInfo.getMissionName());
+        SeadasFileUtils.debug("Extractor ifile info: " + ifileInfo.getTypeName() + ifileInfo.getMissionName());
         String programName = null;
         if (ifileInfo.getMissionName() != null && ifileInfo.getTypeName() != null) {
             if (ifileInfo.getMissionName().indexOf("MODIS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1) {

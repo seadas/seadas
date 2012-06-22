@@ -323,8 +323,12 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
         if (verifyIFilePath(newValue)) {
             updateParamInfo(getPrimaryInputFileOptionName(), newValue);
+            if ( hasGeoFile() ) {
+
+            }
             if (hasPrimaryOutputFile()) {
                 updateParamInfo(getPrimaryOutputFileOptionName(), SeadasFileUtils.getDefaultOFileNameFromIFile(newValue, programName));
+                setReadyToRun(true);
             }
             return true;
         } else {

@@ -4,7 +4,6 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <hasGeoFile>true</hasGeoFile>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>
@@ -99,7 +98,7 @@
             <description>apply color palette, false = grayscale</description>
             <source>default</source>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>palfile</name>
             <value></value>
             <type>string</type>
@@ -132,7 +131,7 @@
         </option>
         <option type="int">
             <name>quality</name>
-            <value>2</value>
+            <value></value>
             <type>int</type>
             <default>2</default>
             <description>minimum allowable quality level for SST. Valid
@@ -142,7 +141,7 @@
         </option>
         <option type="boolean">
             <name>mask</name>
-            <value>no</value>
+            <value></value>
             <type>bool</type>
             <default>no</default>
             <description>apply mask to land, cloud and glint (see below)</description>
@@ -150,7 +149,7 @@
         </option>
         <option type="float">
             <name>datamin</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
             <default>0.0</default>
             <description>minimum value for data scaling
@@ -160,7 +159,7 @@
           </option>
         <option type="float">
             <name>datamax</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
             <default>0.0</default>
             <description>maximum value for data scaling
@@ -170,7 +169,7 @@
          </option>
         <option type="int">
             <name>stype</name>
-            <value>0</value>
+            <value></value>
             <type>int</type>
             <default>0</default>
             <description>scaling type: 1=LINEAR; 2=LOG;
@@ -180,7 +179,7 @@
         </option>
         <option type="float">
             <name>east</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
             <default>0.0</default>
             <description>Map East longitude
@@ -190,7 +189,7 @@
         </option>
         <option type="float">
             <name>west</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
             <default>0.0</default>
             <description>Map West longitude
@@ -200,7 +199,7 @@
         </option>
         <option type="float">
             <name>north</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
             <default>0.0</default>
             <description>Map North latitude
@@ -210,7 +209,7 @@
         </option>
         <option type="float">
             <name>south</name>
-            <value>0.0</value>
+            <value></value>
             <type>float</type>
             <default>0.0</default>
             <description>Map South latitude
@@ -228,7 +227,7 @@
         </option>
         <option type="float">
             <name>threshold</name>
-            <value>5</value>
+            <value></value>
             <type>float</type>
             <default>5</default>
             <description>minimum percentage of the area of interest
@@ -238,7 +237,7 @@
         </option>
         <option type="int">
             <name>outmode</name>
-            <value>1</value>
+            <value></value>
             <type>int</type>
             <default>1</default>
             <description>format of the output file

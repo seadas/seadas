@@ -19,6 +19,7 @@
             <aliases>
                 <alias>ifile1</alias>
             </aliases>
+            <usedAs>argument</usedAs>
             <order>1</order>
         </option>
         <option type="int">
@@ -28,6 +29,7 @@
             <description>start pixel number</description>
             <order>2</order>
             <source>lonlat2pixline</source>
+            <usedAs>argument</usedAs>
         </option>
         <option type="int">
             <name>epixl</name>
@@ -36,6 +38,7 @@
             <description>end pixel number (-1=the last pixel)</description>
             <order>3</order>
             <source>lonlat2pixline</source>
+            <usedAs>argument</usedAs>
         </option>
         <option type="int">
             <name>sline</name>
@@ -44,6 +47,7 @@
             <description>start line number</description>
             <order>4</order>
             <source>lonlat2pixline</source>
+            <usedAs>argument</usedAs>
         </option>
         <option type="int">
             <name>eline</name>
@@ -52,12 +56,14 @@
             <description>end line number (-1=the last line)</description>
             <order>5</order>
             <source>lonlat2pixline</source>
+            <usedAs>argument</usedAs>
         </option>
         <option type="ofile">
             <name>ofile</name>
             <value></value>
             <default>output</default>
             <description>output L2 file name</description>
+            <usedAs>argument</usedAs>
             <order>6</order>
         </option>
     </options>
