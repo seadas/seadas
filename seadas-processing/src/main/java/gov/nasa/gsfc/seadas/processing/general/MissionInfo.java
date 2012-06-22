@@ -24,6 +24,8 @@ public class MissionInfo {
         OCTS,
         SEAWIFS,
         VIIRS,
+        OSMI,
+        MOS,
         UNKNOWN
     }
 
@@ -33,7 +35,9 @@ public class MissionInfo {
             Id.MERIS,
             Id.MODISA,
             Id.MODIST,
+            Id.MOS,
             Id.OCTS,
+            Id.OSMI,
             Id.SEAWIFS,
             Id.VIIRS,
     };
@@ -62,6 +66,12 @@ public class MissionInfo {
 
     public final static String[] OCTS_NAMES = {"OCTS"};
     public final static String OCTS_DIRECTORY = "octs";
+
+    public final static String[] OSMI_NAMES = {"OSMI"};
+    public final static String OSMI_DIRECTORY = "osmi";
+
+    public final static String[] MOS_NAMES = {"MOS"};
+    public final static String MOS_DIRECTORY = "mos";
 
 
     private final HashMap<Id, String[]> names = new HashMap<Id, String[]>();
@@ -101,6 +111,8 @@ public class MissionInfo {
         directories.put(Id.CZCS, CZCS_DIRECTORY);
         directories.put(Id.AQUARIUS, AQUARIUS_DIRECTORY);
         directories.put(Id.OCTS, OCTS_DIRECTORY);
+        directories.put(Id.OSMI, OSMI_DIRECTORY);
+        directories.put(Id.MOS, MOS_DIRECTORY);
     }
 
 
@@ -113,6 +125,8 @@ public class MissionInfo {
         names.put(Id.CZCS, CZCS_NAMES);
         names.put(Id.AQUARIUS, AQUARIUS_NAMES);
         names.put(Id.OCTS, OCTS_NAMES);
+        names.put(Id.OSMI, OSMI_NAMES);
+        names.put(Id.MOS, MOS_NAMES);
     }
 
 
