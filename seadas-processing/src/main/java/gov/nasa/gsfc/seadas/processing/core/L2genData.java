@@ -65,7 +65,7 @@ public class L2genData implements L2genDataProcessorModel {
             TAB_CHANGE = "TAB_CHANGE_EVENT";
 
 
-    public FileInfoNew iFileInfo = null;
+    public FileInfo iFileInfo = null;
     public boolean initializingParamsWithXml = false;
 
 
@@ -864,13 +864,13 @@ public class L2genData implements L2genDataProcessorModel {
             l2prodParamInfo.resetProductInfos();
             updateXmlBasedObjects(iFileInfo.getFile());
 
-            FileInfoNew oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
+            FileInfo oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
             if (oFileInfo != null) {
                 setParamValueAndDefault(OFILE, oFileInfo.getFile().getAbsolutePath());
             }
 
             if (iFileInfo.isGeofileRequired()) {
-                FileInfoNew geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo);
+                FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo);
                 if (geoFileInfo != null) {
                     setParamValueAndDefault(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
                 }

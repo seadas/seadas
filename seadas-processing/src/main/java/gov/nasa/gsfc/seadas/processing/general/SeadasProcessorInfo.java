@@ -29,7 +29,7 @@ public class SeadasProcessorInfo {
     }
 
     private Id id;
-    private FileInfoNew fileInfo;
+    private FileInfo fileInfo;
     private String executable;
     private boolean validIfile = false;
 
@@ -37,7 +37,7 @@ public class SeadasProcessorInfo {
         this.id = id;
     }
 
-    public SeadasProcessorInfo(Id id, FileInfoNew fileInfo) {
+    public SeadasProcessorInfo(Id id, FileInfo fileInfo) {
         this.id = id;
         this.fileInfo = fileInfo;
 
@@ -45,7 +45,7 @@ public class SeadasProcessorInfo {
         setValidIfile();
     }
 
-    public void setFileInfo(FileInfoNew fileInfo) {
+    public void setFileInfo(FileInfo fileInfo) {
         this.fileInfo = fileInfo;
         setExecutable();
         setValidIfile();
@@ -56,7 +56,7 @@ public class SeadasProcessorInfo {
         executable = getExecutable(fileInfo, id);
     }
 
-    static public String getExecutable(FileInfoNew iFileInfo, SeadasProcessorInfo.Id processorId) {
+    static public String getExecutable(FileInfo iFileInfo, SeadasProcessorInfo.Id processorId) {
         if (processorId == null || iFileInfo == null) {
             return null;
         }
@@ -128,7 +128,7 @@ public class SeadasProcessorInfo {
     }
 
 
-    static public boolean isSupportedMission(FileInfoNew iFileInfo, SeadasProcessorInfo.Id processorId) {
+    static public boolean isSupportedMission(FileInfo iFileInfo, SeadasProcessorInfo.Id processorId) {
         if (processorId == null || iFileInfo == null) {
             return false;
         }
@@ -173,7 +173,7 @@ public class SeadasProcessorInfo {
     }
 
 
-    static public boolean isValidFileType(FileInfoNew iFileInfo, SeadasProcessorInfo.Id processorId) {
+    static public boolean isValidFileType(FileInfo iFileInfo, SeadasProcessorInfo.Id processorId) {
         if (processorId == null || iFileInfo == null) {
             return false;
         }
@@ -215,7 +215,7 @@ public class SeadasProcessorInfo {
 
     }
 
-    static public boolean isValidIfile(FileInfoNew iFileInfo, SeadasProcessorInfo.Id processorId) {
+    static public boolean isValidIfile(FileInfo iFileInfo, SeadasProcessorInfo.Id processorId) {
 
         if (iFileInfo != null && iFileInfo.getFile().exists() && iFileInfo.getFile().isAbsolute()) {
             return isValidFileType(iFileInfo, processorId) && isSupportedMission(iFileInfo, processorId);
@@ -230,7 +230,7 @@ public class SeadasProcessorInfo {
     }
 
 
-    static private boolean isValidL2genFileType(FileInfoNew iFileInfo) {
+    static private boolean isValidL2genFileType(FileInfo iFileInfo) {
         if (iFileInfo == null) {
             return false;
         }
@@ -258,7 +258,7 @@ public class SeadasProcessorInfo {
     }
 
 
-    public FileInfoNew getFileInfo() {
+    public FileInfo getFileInfo() {
         return fileInfo;
     }
 

@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
-import javax.imageio.stream.FileImageInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -16,12 +15,12 @@ public class FilenamePatterns {
 
 
 
-    static public FileInfoNew getOFileInfo(FileInfoNew fileInfo) {
-        return new FileInfoNew(fileInfo.getFile().getParent(), getOFile(fileInfo).getAbsolutePath(), false);
+    static public FileInfo getOFileInfo(FileInfo fileInfo) {
+        return new FileInfo(fileInfo.getFile().getParent(), getOFile(fileInfo).getAbsolutePath(), false);
     }
 
 
-    static public File getOFile(FileInfoNew fileInfo) {
+    static public File getOFile(FileInfo fileInfo) {
         if (fileInfo == null) {
             return null;
         }
@@ -42,12 +41,12 @@ public class FilenamePatterns {
     }
 
 
-    static public FileInfoNew getGeoFileInfo(FileInfoNew fileInfo) {
-        return new FileInfoNew(fileInfo.getFile().getParent(), getGeoFile(fileInfo).getAbsolutePath(), false);
+    static public FileInfo getGeoFileInfo(FileInfo fileInfo) {
+        return new FileInfo(fileInfo.getFile().getParent(), getGeoFile(fileInfo).getAbsolutePath(), false);
     }
 
 
-    static public File getGeoFile(FileInfoNew iFileInfo) {
+    static public File getGeoFile(FileInfo iFileInfo) {
         if (iFileInfo == null) {
             return null;
         }
