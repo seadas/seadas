@@ -170,9 +170,7 @@ public class ParamUtils {
             ParamInfo.Type type = null;
 
             if (tmpType != null) {
-                if (tmpType.toLowerCase().equals("arg")) {
-                    type = ParamInfo.Type.ARG;
-                } else if (tmpType.toLowerCase().equals("boolean")) {
+                if (tmpType.toLowerCase().equals("boolean")) {
                     type = ParamInfo.Type.BOOLEAN;
                 } else if (tmpType.toLowerCase().equals("int")) {
                     type = ParamInfo.Type.INT;
