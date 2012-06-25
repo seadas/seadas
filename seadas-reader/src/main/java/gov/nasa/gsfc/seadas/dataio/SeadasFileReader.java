@@ -611,7 +611,7 @@ public abstract class SeadasFileReader {
     }
 
     public float getFloatAttribute(String key) throws ProductIOException {
-        return getIntAttribute(key, globalAttributes);
+        return getFloatAttribute(key, globalAttributes);
     }
 
     private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
@@ -799,6 +799,7 @@ public abstract class SeadasFileReader {
                 synchronized (ncFile) {
                     array = latitude.read(section);
                 }
+                //todo array needs to be converted to float.
                 float val = array.getFloat(i);
                 if (skipBadNav.isBadNav(val)) {
                     leadLineSkip++;

@@ -51,6 +51,7 @@ public class SeadasProductReader extends AbstractProductReader {
         Level2("Level 2"),
         Level3_Bin("Level 3 Binned"),
         SMI("Level 3 Mapped"),
+        BrowseFile("Browse Product"),
         MEaSUREs("MEaSUREs Mapped"),
         MEaSUREs_Bin("MEaSUREs Binned"),
         SeadasMapped("SeaDAS Mapped"),
@@ -117,6 +118,9 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case MEaSUREs_Bin:
                     seadasFileReader = new MeasuresL3BinFileReader(this);
+                    break;
+                case BrowseFile:
+                    seadasFileReader = new BrowseProductReader(this);
                     break;
                 case SMI:
                 case MEaSUREs:
@@ -248,9 +252,11 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Level1A_CZCS;
             } else if (title.equals("OCTS Level-1A GAC Data")){
                 return ProductType.Level1A_OCTS;
-            } else if (title.contains("Level-2")) {
+            } else if (title.contains("Browse")) {
+                return ProductType.BrowseFile;
+            }  else if (title.contains("Level-2")) {
                 return ProductType.Level2;
-            } else if (title.contains("Level 2")) {
+            }else if (title.contains("Level 2")) {
                 return ProductType.Level2;
             } else if (title.equals("SeaWiFS Level-1A Data")) {
                 return ProductType.Level1A_Seawifs;
