@@ -52,6 +52,8 @@ public class ParamUtils {
 
     public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
 
+    public final static String DEFAULT_PAR_FILE_NAME  = "par";
+
 
     private static int longestIFileNameLength;
 
@@ -102,7 +104,7 @@ public class ParamUtils {
         NodeList optionNodelist = rootElement.getElementsByTagName("parFileOptionName");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
             SeadasLogger.getLogger().warning("par file option name is not speficied in the xml file. 'par' is used as a default name.");
-            return "par";
+            return DEFAULT_PAR_FILE_NAME;
         }
         return optionNodelist.item(0).getFirstChild().getNodeValue();
     }
