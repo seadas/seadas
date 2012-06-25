@@ -102,7 +102,7 @@ public class ParamUtils {
         NodeList optionNodelist = rootElement.getElementsByTagName("parFileOptionName");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
             SeadasLogger.getLogger().warning("par file option name is not speficied in the xml file. 'par' is used as a default name.");
-            return null;
+            return "par";
         }
         return optionNodelist.item(0).getFirstChild().getNodeValue();
     }
