@@ -61,13 +61,14 @@ public class ProcessorModel implements L2genDataProcessorModel {
         if (parXMLFileName != null) {
             setParamList(ParamUtils.computeParamList(parXMLFileName));
             acceptsParFile = ParamUtils.getOptionStatus(parXMLFileName, "hasParFile");
-            parFileOptionName = acceptsParFile ? ParamUtils.getParFileOptionName(parXMLFileName) : null;
+            parFileOptionName = acceptsParFile ? ParamUtils.getParFileOptionName(parXMLFileName) : ParamUtils.DEFAULT_PAR_FILE_NAME;
             hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
             setPrimaryOptions(ParamUtils.getPrimaryOptions(parXMLFileName));
             setPrimaryInputFileOptionName(getPrimaryInputFileOptionName());
             setPrimaryOutputFileOptionName(getPrimaryOutputFileOptionName());
         } else {
             setParamList(new ArrayList<ParamInfo>());
+            parFileOptionName = ParamUtils.DEFAULT_PAR_FILE_NAME;
             acceptsParFile = false;
             hasGeoFile = false;
         }
@@ -128,7 +129,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
                 }
             }
         }
-        return null;
+        return ParamUtils.DEFAULT_PAR_FILE_NAME;
     }
 
     public String getPrimaryInputFileOptionName() {

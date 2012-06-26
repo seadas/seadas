@@ -257,15 +257,17 @@ public class CallCloProgramAction extends AbstractVisatAction {
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
 
+            if (!progressSeen) {
+                progressSeen = true;
+                pm.beginTask(programName, 1000);
+            }
+
             Matcher matcher = PROCESSING_SCAN_PATTERN.matcher(line);
             if (matcher.find()) {
                 int scan = Integer.parseInt(matcher.group(1));
                 int numScans = Integer.parseInt(matcher.group(2));
 
-                if (!progressSeen) {
-                    progressSeen = true;
-                    pm.beginTask(programName, numScans);
-                }
+                scan = (scan * 1000) / numScans;
                 pm.worked(scan - lastScan);
                 lastScan = scan;
             }
