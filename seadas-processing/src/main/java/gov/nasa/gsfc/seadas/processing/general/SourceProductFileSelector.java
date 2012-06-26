@@ -320,8 +320,6 @@ public class SourceProductFileSelector {
     }
 
 
-
-
     private void addLabelToMainPanel(JPanel jPanel) {
         jPanel.add(getProductNameLabel(),
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
@@ -387,6 +385,12 @@ public class SourceProductFileSelector {
         });
     }
 
+    private File[] files;
+
+    public File[] getSelectedMultiFiles() {
+        return files;
+    }
+
     private class ProductFileChooserAction extends AbstractAction {
 
         private String APPROVE_BUTTON_TEXT = "Select";
@@ -395,7 +399,7 @@ public class SourceProductFileSelector {
         private ProductFileChooserAction() {
             super("...");
             fileChooser = new BeamFileChooser();
-
+            fileChooser.setMultiSelectionEnabled(true);
             fileChooser.setDialogTitle("Select Input File");
             final Iterator<ProductReaderPlugIn> iterator = ProductIOPlugInManager.getInstance().getAllReaderPlugIns();
             while (iterator.hasNext()) {
@@ -406,6 +410,14 @@ public class SourceProductFileSelector {
             // todo - (mp, 2008/04/22)check if product file filter is applicable
             fileChooser.setAcceptAllFileFilterUsed(true);
             fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
+
+//            fileChooser.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent actionEvent) {
+//                    final File file = fileChooser.getSelectedFile();
+//                    fileChooser.getSelectedFiles();
+//                }
+//            });
         }
 
         @Override
@@ -425,6 +437,7 @@ public class SourceProductFileSelector {
 
                 if (file != null) {
                     ifileTextfield.setText(file.getAbsolutePath());
+
                 } else {
                     ifileTextfield.setText("");
                 }
@@ -443,6 +456,7 @@ public class SourceProductFileSelector {
 
                     if (productFilter.accept(product) && regexFileFilter.accept(file)) {
                         setSelectedProduct(product);
+                        //productListModel.addElement(product);
                     } else {
                         final String message = String.format("Product [%s] is not a valid source.",
                                 product.getFileLocation().getCanonicalPath());
@@ -463,6 +477,7 @@ public class SourceProductFileSelector {
                 currentDirectory = fileChooser.getCurrentDirectory();
                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         currentDirectory.getAbsolutePath());
+                files = fileChooser.getSelectedFiles();
             }
         }
 
@@ -575,6 +590,62 @@ public class SourceProductFileSelector {
 
         public String getDescription() {
             return "Files matching regular expression: '" + regex + "'";
+        }
+    }
+
+    public class MultiFileChooser extends JFileChooser {
+        public MultiFileChooser() {
+        }
+
+        public File[] getSelectedFiles() {
+            Container c1 = (Container) getComponent(3);
+            JList list = null;
+            while (c1 != null) {
+                Container c = (Container) c1.getComponent(0);
+                if (c instanceof JList) {
+                    list = (JList) c;
+                    break;
+                }
+                c1 = c;
+            }
+            Object[] entries = list.getSelectedValues();
+            File[] files = new File[entries.length];
+            for (int k = 0; k < entries.length; k++) {
+                if (entries[k] instanceof File)
+                    files[k] = (File) entries[k];
+            }
+            return files;
+        }
+    }
+
+    private class MyComboBoxRenderer extends DefaultListCellRenderer {
+
+        private String[] items;
+        private boolean[] selected;
+
+        public MyComboBoxRenderer(String[] items) {
+            this.items = items;
+            this.selected = new boolean[items.length];
+        }
+
+        public Component getListCellRendererComponent(JList list, Object value,
+                                                      boolean isSelected, boolean cellHasFocus, int index) {
+            final Component cellRendererComponent =
+                    super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            if (cellRendererComponent instanceof JLabel && value instanceof Product) {
+                final JLabel label = (JLabel) cellRendererComponent;
+                final Product product = (Product) value;
+                label.setText(product.getDisplayName());
+            }
+
+//            return cellRendererComponent;
+//        }
+            return this;
+        }
+
+        public void setSelected(int i, boolean flag) {
+            this.selected[i] = flag;
         }
     }
 }

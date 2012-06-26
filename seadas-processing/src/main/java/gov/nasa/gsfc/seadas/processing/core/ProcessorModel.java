@@ -48,6 +48,8 @@ public class ProcessorModel implements L2genDataProcessorModel {
     private String primaryOutputFileOptionName;
     private ProcessorModel secondaryProcessor;
 
+    ProcessorTypeInfo.ProcessorID processorID;
+
     public ProcessorModel(String name) {
         this(name, null);
     }
@@ -69,6 +71,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
             acceptsParFile = false;
             hasGeoFile = false;
         }
+        processorID = ProcessorTypeInfo.getProcessorID(programName);
 
     }
 
@@ -85,6 +88,10 @@ public class ProcessorModel implements L2genDataProcessorModel {
         boolean oldValue = this.readyToRun;
         this.readyToRun = readyToRun;
         fireEvent(getRunButtonPropertyName(), oldValue, readyToRun);
+//        if (processorID == ProcessorTypeInfo.ProcessorID.L2BIN
+//                || processorID == ProcessorTypeInfo.ProcessorID.L3BIN ) {
+//
+//        }
     }
 
     public void createsmitoppmProcessorModel(String ofileName) {
@@ -309,7 +316,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
     private void updateGeoFileStatus(String ifileName) {
 
-        ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
+        //ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
 
         if ((processorID == ProcessorTypeInfo.ProcessorID.L1BRSGEN
                 || processorID == ProcessorTypeInfo.ProcessorID.L1MAPGEN

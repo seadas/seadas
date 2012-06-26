@@ -74,6 +74,7 @@ public class ParFileUI {
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         parStringPanel.add(saveParameterFileButton,
                 new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        //TODO: add a checkbox to show default  values of params
 //        parStringPanel.add(showDefaultCheckBox,
 //                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
         parStringPanel.add(openInAppCheckBox,
@@ -123,6 +124,7 @@ public class ParFileUI {
                                             file.getName() + " is not a correct par file for " + processorModel.getProgramName() + "'.\n",
                                             "Error",
                                             JOptionPane.ERROR_MESSAGE);
+                                    return;
                                 } else if (option[0].trim().equals(processorModel.getPrimaryInputFileOptionName())) {
                                     if (!processorModel.updateIFileInfo(option[1].trim() )) {
                                         JOptionPane.showMessageDialog(parent,
@@ -130,10 +132,12 @@ public class ParFileUI {
                                             "Error",
                                             JOptionPane.ERROR_MESSAGE);
                                         //showErrorMessage(parent, "ifile is not found. Please include absolute path in the ifile name or select ifile through file chooser.");
+                                        return;
                                     }
                                 } else if (option[0].trim().equals(processorModel.getPrimaryOutputFileOptionName())) {
                                     if (!processorModel.updateOFileInfo(option[1].trim())) {
                                         showErrorMessage(parent, "ofile directory does not exist!");
+                                        return;
                                     }
                                 } else {
                                     processorModel.updateParamInfo(pi, option[1].trim());

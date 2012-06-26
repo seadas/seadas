@@ -1,5 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import org.esa.beam.visat.VisatApp;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -21,54 +24,17 @@ public class SeadasFileUtils {
 
     }
 
-    public static String getGeoFileNameFromIFile(String ifileName, String programName) {
-        debug("Program name is " + programName);
-        ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
-        String ofileName = ifileName + "_" + programName + ".out";
-        switch (processorID) {
-            case EXTRACTOR:
-                ofileName = ifileName + ".sub";
-                break;
-            case MODIS_L1A_PY:
-                //FileUtils.exchangeExtension(ifileName, "GEO") ;
-                break;
-            case MODIS_GEO_PY:
-                ofileName = ifileName.replaceAll("L1A_LAC", "GEO");
-                break;
-            case L1BGEN:
-                ofileName = ifileName.replaceAll("L1A", "L1B");
-                break;
-            case MODIS_L1B_PY:
-                ofileName = ifileName.replaceAll("L1A", "L1B");
-                break;
-            case L1BRSGEN:
-                ofileName = ifileName + ".BRS";
-                break;
-            case L2BRSGEN:
-                ofileName = ifileName + ".BRS";
-                break;
-            case L1MAPGEN:
-                ofileName = ifileName + "_" + programName + ".out";
-                break;
-            case L2MAPGEN:
-                ofileName = ifileName + "_" + programName + ".out";
-                break;
-            case L2BIN:
-                ofileName = ifileName.replaceAll("L2_/?/?/?", "L3d_" + getCurrentDate("yyyyMMdd"));
-                break;
-            case L3BIN:
-                ofileName = ifileName.replaceAll("L2_/?/?/?", "L3d_" + getCurrentDate("yyyyMMdd"));
-                ;
-                break;
-            case SMIGEN:
-                ofileName = ofileName.replaceAll("L3b", "L3m");
-                ofileName = ofileName.replaceAll(".main", "");
-                break;
-            case SMITOPPM:
-                ofileName = ifileName + ".ppm";
-                break;
+
+    public static String getGeoFileNameFromIFile(String ifileName) {
+
+        String geoFileName = (ifileName.substring(0, ifileName.indexOf("."))).concat(".GEO");
+
+        if (new File(geoFileName).exists()) {
+            return geoFileName;
+        } else {
+            VisatApp.getApp().showErrorDialog(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
+            return null;
         }
-        return ofileName;
     }
 
     public static String getDefaultOFileNameFromIFile(String ifileName, String programName) {

@@ -7,6 +7,9 @@ import org.esa.beam.framework.datamodel.Product;
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,6 +32,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         processorModel = new ProcessorModel(programName, xmlFileName);
         parFileUI = new ParFileUI(processorModel);
         ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
+
         createUserInterface();
     }
 
@@ -44,6 +48,25 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         return parFileUI.isOpenOutputInApp();
     }
 
+    public String getFileList() {
+        File[] selectedFiles = ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedMultiFiles();
+        StringBuilder fileNames = new StringBuilder();
+        for (File file : selectedFiles) {
+            fileNames.append(file.getAbsolutePath() + "\n");
+        }
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(new File(ioFilesSelector.getIfileSelector().getSourceProductSelector().getCurrentDirectory(), processorModel.getProgramName() + "_ifiles.lst"));
+            fileWriter.write(fileNames.toString());
+            if (fileWriter != null) {
+                fileWriter.close();
+                return processorModel.getProgramName() + "_ifiles.lst";
+            }
+        } catch (IOException ioe) {
+        }
+        return null;
+    }
+
     protected void createUserInterface() {
         JPanel ioPanel = ioFilesSelector.getjPanel();
         if (!processorModel.hasGeoFile()) {
@@ -51,6 +74,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         } else if (!processorModel.hasPrimaryOutputFile()) {
             ioPanel.remove(2);
         }
+
         ioPanel.repaint();
         ioPanel.validate();
 
