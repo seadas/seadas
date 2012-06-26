@@ -1,9 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.general.EventInfo;
-import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
-import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
-import gov.nasa.gsfc.seadas.processing.general.SeadasPrint;
+import gov.nasa.gsfc.seadas.processing.general.*;
 import org.esa.beam.util.Guardian;
 import org.esa.beam.visat.VisatApp;
 
@@ -219,16 +216,6 @@ public class ProcessorModel implements L2genDataProcessorModel {
         return errorMessage;
     }
 
-//    public File getOutputFile() {
-//
-//        if (getOFileName() != null) {
-//           return new File(getParamValue(getOFileName()));
-//        }
-//
-//        return null;
-//
-//    }
-
     public void updateParamInfo(ParamInfo currentOption, String newValue) {
         Iterator<ParamInfo> itr = getParamList().iterator();
         ParamInfo option;
@@ -320,15 +307,31 @@ public class ProcessorModel implements L2genDataProcessorModel {
         }
     }
 
-    public boolean updateIFileInfo(String newValue) {
+    private void updateGeoFileStatus(String ifileName) {
 
-        if (verifyIFilePath(newValue)) {
-            updateParamInfo(getPrimaryInputFileOptionName(), newValue);
-            if ( hasGeoFile() ) {
+        ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
 
+        if ((processorID == ProcessorTypeInfo.ProcessorID.L1BRSGEN
+                || processorID == ProcessorTypeInfo.ProcessorID.L1MAPGEN
+                || processorID == ProcessorTypeInfo.ProcessorID.MODIS_L1B_PY) && (new FileInfo(ifileName)).getMissionName().indexOf("MODIS") != -1) {
+                setHasGeoFile(true);
+
+        }                         else {
+            setHasGeoFile(false);
+        }
+    }
+
+    public boolean updateIFileInfo(String ifileName) {
+
+        if (verifyIFilePath(ifileName)) {
+            updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
+
+            updateGeoFileStatus(ifileName);
+            if (hasGeoFile()) {
+                updateParamInfo("geofile", SeadasFileUtils.getGeoFileNameFromIFile(ifileName));
             }
             if (hasPrimaryOutputFile()) {
-                updateParamInfo(getPrimaryOutputFileOptionName(), SeadasFileUtils.getDefaultOFileNameFromIFile(newValue, programName));
+                updateParamInfo(getPrimaryOutputFileOptionName(), SeadasFileUtils.getDefaultOFileNameFromIFile(ifileName, programName));
                 setReadyToRun(true);
             }
             return true;
@@ -407,7 +410,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
                 cmdArray[option.getOrder() + 1] = option.getValue();
             } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
                 cmdArray[option.getOrder() + 1] = option.getName() + "=" + option.getValue();
-            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && ( option.getValue().equals("true") || option.getValue().equals("1") ) ) {
+            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
                 cmdArray[option.getOrder() + 1] = option.getName();
             }
 
