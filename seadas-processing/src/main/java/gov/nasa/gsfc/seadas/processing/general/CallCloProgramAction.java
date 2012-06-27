@@ -122,13 +122,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final Window parent = appContext.getApplicationWindow();
 
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
-        modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
+        modalDialog.getButton(ModalDialog.ID_OK).setEnabled(cloProgramUI.getProcessorModel().isReadyToRun());
 
         cloProgramUI.getProcessorModel().addPropertyChangeListener(cloProgramUI.getProcessorModel().getRunButtonPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (cloProgramUI.getProcessorModel().isReadyToRun()) {
                     modalDialog.getButton(ModalDialog.ID_OK).setEnabled(true);
+                } else {
+                    modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
                 }
                 modalDialog.getJDialog().pack();
             }
