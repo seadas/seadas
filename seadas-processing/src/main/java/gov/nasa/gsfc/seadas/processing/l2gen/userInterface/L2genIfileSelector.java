@@ -31,14 +31,13 @@ public class L2genIfileSelector {
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), l2genDataProcessorModel.getPrimaryInputFileOptionName());
 
         //Moved control listeners before the initialization to be able to fire events at the initial steps.
-        addControlListeners();
 
         sourceProductSelector.initProducts();
         sourceProductSelector.setProductNameLabel(new JLabel(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
         sourceProductSelector.getProductNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
 
-//      addControlListeners();
+        addControlListeners();
         addEventListeners();
     }
 
