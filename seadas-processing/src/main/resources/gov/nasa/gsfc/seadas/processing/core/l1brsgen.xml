@@ -66,7 +66,7 @@
         </option>
         <option type="string">
             <name>pversion</name>
-            <value>Unspecified</value>
+            <value></value>
             <type>string</type>
             <default>Unspecified</default>
             <description>processing version string</description>
@@ -74,7 +74,7 @@
         </option>
         <option type="string">
             <name>suite</name>
-            <value>OC</value>
+            <value></value>
             <type>string</type>
             <default>OC</default>
             <description>product suite string for loading
@@ -100,7 +100,7 @@
         </option>
         <option type="ofile">
             <name>ofile</name>
-            <value>output</value>
+            <value></value>
             <type>string</type>
             <default>output</default>
             <description>output L2 file #1 name, output vicarious L1B
@@ -113,7 +113,7 @@
 
         <option type="int">
             <name>spixl</name>
-            <value>1</value>
+            <value></value>
             <type>int</type>
             <default>1</default>
             <description>start pixel number</description>
@@ -121,7 +121,7 @@
         </option>
         <option type="int">
             <name>epixl</name>
-            <value> </value>
+            <value></value>
             <type>int</type>
             <default>-1</default>
             <description>end pixel number (-1=the last pixel)</description>
@@ -145,7 +145,7 @@
         </option>
                <option type="int">
             <name>subsamp</name>
-            <value>1</value>
+            <value></value>
             <type>int</type>
             <default>1</default>
             <description>sub-sampling interval</description>
@@ -153,21 +153,21 @@
         </option>
                <option type="int">
             <name>rgb</name>
-            <value>[1,1,1]</value>
+            <value></value>
             <type>int</type>
             <default>[1,1,1]</default>
             <description>bands to use for red, green and blue</description>
         </option>
                <option type="boolean">
             <name>atmocor</name>
-            <value>true</value>
+            <value></value>
             <type>boolean</type>
             <default>true</default>
             <description>toggle atmospheric correction</description>
         </option>
         <option type="float">
             <name>datamin</name>
-            <value>0.01</value>
+            <value></value>
             <type>float</type>
             <default>0.01</default>
             <description>minimum value for data scaling
@@ -181,7 +181,7 @@
         </option>
         <option type="float">
             <name>datamax</name>
-            <value>0.9</value>
+            <value></value>
             <type>float</type>
             <default>0.9</default>
             <description>maximum value for data scaling
@@ -195,7 +195,7 @@
         </option>
         <option type="int">
             <name>stype</name>
-            <value>0</value>
+            <value></value>
             <type>int</type>
             <default>0</default>
             <description>scaling type: 0: log; 1: linear
@@ -213,7 +213,7 @@
         </option>
         <option type="int">
             <name>outmode</name>
-            <value>0</value>
+            <value></value>
             <type>int</type>
             <default>0</default>
             <description>defines output file format

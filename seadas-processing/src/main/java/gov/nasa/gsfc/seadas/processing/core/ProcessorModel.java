@@ -179,7 +179,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
     }
 
     public boolean isValidProcessor() {
-        SeadasPrint.debug(programLocation);
+        SeadasLogger.getLogger().info("program location: " + programLocation);
         return programLocation != null;
     }
 

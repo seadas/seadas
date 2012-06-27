@@ -29,12 +29,16 @@ public class L2genIfileSelector {
         this.l2genDataProcessorModel = l2genDataProcessorModel;
 
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), l2genDataProcessorModel.getPrimaryInputFileOptionName());
+
+        //Moved control listeners before the initialization to be able to fire events at the initial steps.
+        addControlListeners();
+
         sourceProductSelector.initProducts();
         sourceProductSelector.setProductNameLabel(new JLabel(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
         sourceProductSelector.getProductNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
 
-        addControlListeners();
+//      addControlListeners();
         addEventListeners();
     }
 
@@ -99,5 +103,14 @@ public class L2genIfileSelector {
 
     public SourceProductFileSelector getSourceProductSelector() {
         return sourceProductSelector;
+    }
+
+    public String getFileList() {
+        File[] selectedFiles = getSourceProductSelector().getSelectedMultiFiles();
+        StringBuilder fileNames = new StringBuilder();
+        for (File file : selectedFiles) {
+            fileNames.append(file.getAbsolutePath() + "\n");
+        }
+        return fileNames.toString();
     }
 }

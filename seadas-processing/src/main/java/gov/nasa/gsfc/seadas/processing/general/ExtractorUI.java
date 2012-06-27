@@ -198,8 +198,6 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private String getExtractorProgramName(String ifileName) {
 
-        System.out.println(ifileName);
-
         FileInfo ifileInfo = new FileInfo(ifileName);
         SeadasFileUtils.debug("Extractor ifile info: " + ifileInfo.getTypeName() + ifileInfo.getMissionName());
         String programName = null;

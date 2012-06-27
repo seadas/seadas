@@ -165,7 +165,11 @@ public class SourceProductFileSelector {
         }
         final Product selectedProduct = appContext.getSelectedProduct();
         if (selectedProduct != null && productFilter.accept(selectedProduct) && regexFileFilter.accept(selectedProduct.getFileLocation())) {
-            productListModel.setSelectedItem(selectedProduct);
+            //productListModel.setSelectedItem(selectedProduct);
+            ifileTextfield.setText(selectedProduct.getName());
+            setSelectedProduct(selectedProduct);
+
+
         }
         appContext.getProductManager().addListener(productManagerListener);
     }
@@ -410,14 +414,6 @@ public class SourceProductFileSelector {
             // todo - (mp, 2008/04/22)check if product file filter is applicable
             fileChooser.setAcceptAllFileFilterUsed(true);
             fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
-
-//            fileChooser.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent actionEvent) {
-//                    final File file = fileChooser.getSelectedFile();
-//                    fileChooser.getSelectedFiles();
-//                }
-//            });
         }
 
         @Override
@@ -437,14 +433,12 @@ public class SourceProductFileSelector {
 
                 if (file != null) {
                     ifileTextfield.setText(file.getAbsolutePath());
-
                 } else {
                     ifileTextfield.setText("");
                 }
                 Product product = null;
                 try {
                     product = ProductIO.readProduct(file);
-                    //System.out.println("new ifile read in fine");
                     if (product == null) {
                         if (file.canRead()) {
                             product = new Product(file.getName(), "DummyType", 10, 10);
@@ -584,7 +578,7 @@ public class SourceProductFileSelector {
             if (regex == null) {
                 return true;
             }
-            System.out.println("regex: " + (pathname.isFile() && pathname.getName().matches(this.regex)));
+            SeadasLogger.getLogger().info("regex: " + (pathname.isFile() && pathname.getName().matches(this.regex)))  ;
             return (pathname.isFile() && pathname.getName().matches(this.regex));
         }
 

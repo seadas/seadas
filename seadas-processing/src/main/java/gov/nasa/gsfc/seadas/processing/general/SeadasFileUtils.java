@@ -15,7 +15,7 @@ import java.util.Calendar;
  */
 public class SeadasFileUtils {
 
-    private static boolean debug = true;
+    private static boolean debug = false;
 
     public static String getCurrentDate(String dateFormat) {
         Calendar cal = Calendar.getInstance();
