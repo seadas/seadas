@@ -9,6 +9,7 @@ import org.esa.beam.util.io.FileUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
+import javax.swing.text.html.Option;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -105,7 +106,6 @@ public class ParFileUI {
                         return;
                     }
                     LineNumberReader reader = null;
-                    StringBuilder parString = new StringBuilder();
                     try {
                         reader = new LineNumberReader(new FileReader(file));
                         String line;
@@ -113,35 +113,43 @@ public class ParFileUI {
                         String[] option;
                         ParamInfo pi;
                         while (line != null) {
-                            parString.append(line + "\n");
-
                             if (line.indexOf("=") != -1) {
                                 option = line.split("=", 2);
-                                System.out.println("option1: " + option[0] + "   option2: " + option[1]);
-                                pi = processorModel.getParamInfo(option[0].trim());
-                                if (pi == null) {
-                                    JOptionPane.showMessageDialog(parent,
-                                            file.getName() + " is not a correct par file for " + processorModel.getProgramName() + "'.\n",
-                                            "Error",
-                                            JOptionPane.ERROR_MESSAGE);
-                                    return;
-                                } else if (option[0].trim().equals(processorModel.getPrimaryInputFileOptionName())) {
-                                    if (!processorModel.updateIFileInfo(option[1].trim() )) {
+                                option[0] = option[0].trim();
+                                option[1] = option[1].trim();
+                                if(!option[0].substring(0,1).equals("#")) { // ignore comments with = signs
+                                    System.out.println("option1: " + option[0] + "   option2: " + option[1]);
+                                    pi = processorModel.getParamInfo(option[0]);
+                                    if (pi == null) {
                                         JOptionPane.showMessageDialog(parent,
-                                            "ifile " + option[1] + "is not found. Please include absolute path in the ifile name or select ifile through file chooser.",
-                                            "Error",
-                                            JOptionPane.ERROR_MESSAGE);
-                                        //showErrorMessage(parent, "ifile is not found. Please include absolute path in the ifile name or select ifile through file chooser.");
+                                                file.getName() + " is not a correct par file for " + processorModel.getProgramName() + "'.\n",
+                                                "Error",
+                                                JOptionPane.ERROR_MESSAGE);
                                         return;
+                                    } else if (option[0].equals(processorModel.getPrimaryInputFileOptionName())) {
+                                        // make a relative ifile relative to the par file
+                                        File tmpFile = new File(option[1]);
+                                        if(!tmpFile.isAbsolute()) {
+                                            tmpFile = new File(file.getParentFile(), option[1]);
+                                            option[1] = tmpFile.getAbsolutePath();
+                                        }
+                                        if (!processorModel.updateIFileInfo(option[1])) {
+                                            JOptionPane.showMessageDialog(parent,
+                                                "ifile " + option[1] + " is not found. Please include absolute path in the ifile name or select ifile through file chooser.",
+                                                "Error",
+                                                JOptionPane.ERROR_MESSAGE);
+                                            //showErrorMessage(parent, "ifile is not found. Please include absolute path in the ifile name or select ifile through file chooser.");
+                                            return;
+                                        }
+                                    } else if (option[0].equals(processorModel.getPrimaryOutputFileOptionName())) {
+                                        if (!processorModel.updateOFileInfo(option[1])) {
+                                            showErrorMessage(parent, "ofile directory does not exist!");
+                                            return;
+                                        }
+                                    } else {
+                                        processorModel.updateParamInfo(pi, option[1]);
                                     }
-                                } else if (option[0].trim().equals(processorModel.getPrimaryOutputFileOptionName())) {
-                                    if (!processorModel.updateOFileInfo(option[1].trim())) {
-                                        showErrorMessage(parent, "ofile directory does not exist!");
-                                        return;
-                                    }
-                                } else {
-                                    processorModel.updateParamInfo(pi, option[1].trim());
-                                }
+                                } // not comment line
                             }
                             line = reader.readLine();
                         }

@@ -23,9 +23,6 @@ import java.util.regex.Pattern;
  * To change this template use File | Settings | File Templates.
  */
 public class ProcessorModel implements L2genDataProcessorModel {
-    private static final String PROCESSING_SCAN_REGEX = "Processing scan .+?\\((\\d+) of (\\d+)\\)";
-    static final Pattern PROCESSING_SCAN_PATTERN = Pattern.compile(PROCESSING_SCAN_REGEX);
-
     private String programName;
     private String programLocation;
     private ArrayList<ParamInfo> paramList;
@@ -47,6 +44,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
     private String primaryInputFileOptionName;
     private String primaryOutputFileOptionName;
     private ProcessorModel secondaryProcessor;
+    private Pattern progressPattern;
 
     ProcessorTypeInfo.ProcessorID processorID;
 
@@ -57,10 +55,12 @@ public class ProcessorModel implements L2genDataProcessorModel {
     public ProcessorModel(String name, String parXMLFileName) {
         this.setProgramName(name);
         computeProcessorEnv();
+        String progressRegex = ParamUtils.DEFAULT_PROGRESS_REGEX;
         if (parXMLFileName != null) {
             setParamList(ParamUtils.computeParamList(parXMLFileName));
             acceptsParFile = ParamUtils.getOptionStatus(parXMLFileName, "hasParFile");
-            parFileOptionName = acceptsParFile ? ParamUtils.getParFileOptionName(parXMLFileName) : ParamUtils.DEFAULT_PAR_FILE_NAME;
+            parFileOptionName = ParamUtils.getParFileOptionName(parXMLFileName);
+            progressRegex = ParamUtils.getProgressRegex(parXMLFileName);
             hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
             setPrimaryOptions(ParamUtils.getPrimaryOptions(parXMLFileName));
             setPrimaryInputFileOptionName(getPrimaryInputFileOptionName());
@@ -72,7 +72,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
             hasGeoFile = false;
         }
         processorID = ProcessorTypeInfo.getProcessorID(programName);
-
+        progressPattern = Pattern.compile(progressRegex);
     }
 
     public void addParamInfo(ParamInfo info) {
@@ -723,5 +723,13 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
     public void setExecutionLogMessage(String executionLogMessage) {
         this.executionLogMessage = executionLogMessage;
+    }
+
+    public void setProgressPattern(Pattern progressPattern) {
+        this.progressPattern = progressPattern;
+    }
+
+    public Pattern getProgressPattern() {
+        return progressPattern;
     }
 }

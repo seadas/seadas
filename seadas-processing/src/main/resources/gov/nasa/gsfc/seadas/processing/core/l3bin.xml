@@ -4,6 +4,8 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>parfile</parFileOptionName>
+        <!--irow:   500 of     4320 Tue Jun 26 15:35:10 2012-->
+        <progressRegex>irow: +(\d+) of +(\d+)</progressRegex>
         <primaryOptions>
             <primaryOption>infile</primaryOption>
             <primaryOption>ofile</primaryOption>

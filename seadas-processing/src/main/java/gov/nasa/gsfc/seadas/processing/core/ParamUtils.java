@@ -53,7 +53,7 @@ public class ParamUtils {
     public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
 
     public final static String DEFAULT_PAR_FILE_NAME  = "par";
-
+    public final static String DEFAULT_PROGRESS_REGEX = "Processing scan .+?\\((\\d+) of (\\d+)\\)";
 
     private static int longestIFileNameLength;
 
@@ -103,8 +103,21 @@ public class ParamUtils {
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         NodeList optionNodelist = rootElement.getElementsByTagName("parFileOptionName");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
-            SeadasLogger.getLogger().warning("par file option name is not speficied in the xml file. 'par' is used as a default name.");
+            SeadasLogger.getLogger().warning("par file option name is not specified in the xml file. 'par' is used as a default name.");
             return DEFAULT_PAR_FILE_NAME;
+        }
+        return optionNodelist.item(0).getFirstChild().getNodeValue();
+    }
+
+    public static String getProgressRegex(String parXMLFileName) {
+
+        XmlReader xmlReader = new XmlReader();
+        InputStream paramStream = ParamUtils.class.getResourceAsStream(parXMLFileName);
+        Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
+        NodeList optionNodelist = rootElement.getElementsByTagName("progressRegex");
+        if (optionNodelist == null || optionNodelist.getLength() == 0) {
+            SeadasLogger.getLogger().warning("progress meter regular expression is not specified in the xml file.");
+            return DEFAULT_PROGRESS_REGEX;
         }
         return optionNodelist.item(0).getFirstChild().getNodeValue();
     }

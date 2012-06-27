@@ -37,13 +37,9 @@ import java.util.regex.Pattern;
  */
 public class CallCloProgramAction extends AbstractVisatAction {
 
-    private static final String PROCESSING_SCAN_REGEX = "Processing scan .+?\\((\\d+) of (\\d+)\\)";
-    static final Pattern PROCESSING_SCAN_PATTERN = Pattern.compile(PROCESSING_SCAN_REGEX);
-
-    String programName;
-    String dialogTitle;
-    String xmlFileName;
-
+    private String programName;
+    private String dialogTitle;
+    private String xmlFileName;
 
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
@@ -190,7 +186,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 final Process process = processorModel.executeProcess();
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
-                processObserver.addHandler(new ProgressHandler(programName));
+                processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
                 processObserver.addHandler(ch);
                 processObserver.startAndWait();
                 processorModel.setExecutionLogMessage(ch.getExecutionErrorLog());
@@ -244,25 +240,24 @@ public class CallCloProgramAction extends AbstractVisatAction {
      * Handler that tries to extract progress from stdout of ocssw processor
      */
     private static class ProgressHandler implements ProcessObserver.Handler {
+        private boolean progressSeen;
+        private int lastScan = 0;
+        private String programName;
+        private Pattern progressPattern;
 
-
-        boolean progressSeen;
-        int lastScan = 0;
-        String programName;
-
-        ProgressHandler(String programName) {
+        ProgressHandler(String programName, Pattern progressPattern) {
             this.programName = programName;
+            this.progressPattern = progressPattern;
         }
 
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
-
             if (!progressSeen) {
                 progressSeen = true;
                 pm.beginTask(programName, 1000);
             }
 
-            Matcher matcher = PROCESSING_SCAN_PATTERN.matcher(line);
+            Matcher matcher = progressPattern.matcher(line);
             if (matcher.find()) {
                 int scan = Integer.parseInt(matcher.group(1));
                 int numScans = Integer.parseInt(matcher.group(2));
