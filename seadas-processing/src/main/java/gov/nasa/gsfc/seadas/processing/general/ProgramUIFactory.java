@@ -56,6 +56,11 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         ioPanel.repaint();
         ioPanel.validate();
 
+        //update processor model param info if there is an open product.
+        if (ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct() != null) {
+            processorModel.updateIFileInfo(ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct().getFileLocation().toString());
+        }
+
         final JPanel parFilePanel = parFileUI.getParStringPanel();
 
         this.setLayout(new GridBagLayout());

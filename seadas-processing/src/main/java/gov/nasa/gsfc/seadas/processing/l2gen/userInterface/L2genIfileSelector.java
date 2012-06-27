@@ -25,12 +25,11 @@ public class L2genIfileSelector {
     private SourceProductFileSelector sourceProductSelector;
     private boolean controlHandlerEnabled = true;
 
-    public L2genIfileSelector(L2genDataProcessorModel l2genDataProcessorModel) {
+    public
+    L2genIfileSelector(L2genDataProcessorModel l2genDataProcessorModel) {
         this.l2genDataProcessorModel = l2genDataProcessorModel;
 
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), l2genDataProcessorModel.getPrimaryInputFileOptionName());
-
-        //Moved control listeners before the initialization to be able to fire events at the initial steps.
 
         sourceProductSelector.initProducts();
         sourceProductSelector.setProductNameLabel(new JLabel(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
