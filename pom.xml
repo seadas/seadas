@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <beam.version>4.10.3-SNAPSHOT</beam.version>
+        <beam.version>4.10.3</beam.version>
         <ceres.version>0.13.1</ceres.version>
         <seadas.version>7.0-SNAPSHOT</seadas.version>
         <netcdf.version>4.2.20</netcdf.version>
@@ -171,6 +171,25 @@
             </dependency>
 
             <!-- BEAM System Level Module ########################################## -->
+
+            <dependency>
+                <groupId>com.bc.ceres</groupId>
+                <artifactId>ceres-core</artifactId>
+                <version>${ceres.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.bc.ceres</groupId>
+                <artifactId>ceres-ui</artifactId>
+                <version>${ceres.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.bc.ceres</groupId>
+                <artifactId>ceres-glayer</artifactId>
+                <version>${ceres.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-avhrr-reader</artifactId>
@@ -179,7 +198,7 @@
             <!--<dependency>-->
                 <!--<groupId>org.esa.beam</groupId>-->
                 <!--<artifactId>beam-bootstrap</artifactId>-->
-                <!--<version>4.10.3-SNAPSHOT</version>-->
+                <!--<version>${beam.version}</version>-->
             <!--</dependency>-->
             <dependency>
                 <groupId>org.esa.beam</groupId>
@@ -194,7 +213,7 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-examples</artifactId>
-                <version>4.10.3-SNAPSHOT</version>
+                <version>${beam.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
@@ -219,7 +238,7 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-modis-reader</artifactId>
-                <version>1.3-SNAPSHOT</version>
+                <version>1.3</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
@@ -239,12 +258,12 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-pixel-extraction</artifactId>
-                <version>1.2-SNAPSHOT</version>
+                <version>1.2</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-scripting</artifactId>
-                <version>4.10.3-SNAPSHOT</version>
+                <version>${beam.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
