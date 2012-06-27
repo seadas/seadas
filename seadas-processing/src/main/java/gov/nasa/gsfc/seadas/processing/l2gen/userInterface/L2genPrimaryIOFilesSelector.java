@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 
-import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 
@@ -25,9 +24,10 @@ public class L2genPrimaryIOFilesSelector {
     private L2genOfileSelector ofileSelector;
 
     public L2genPrimaryIOFilesSelector(L2genDataProcessorModel l2genDataProcessorModel) {
-        ifileSelector = new L2genIfileSelector(l2genDataProcessorModel);
+      //   ifileSelector = new L2genIfileSelector(l2genDataProcessorModel);
         geofileSelector = new L2genGeofileSelector(l2genDataProcessorModel);
         ofileSelector = new L2genOfileSelector(l2genDataProcessorModel);
+       ifileSelector = new L2genIfileSelector(l2genDataProcessorModel);
 
         createJPanel();
     }

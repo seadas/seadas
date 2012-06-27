@@ -67,7 +67,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
                     } else {
                         processorModel.setReadyToRun(false);
                     }
-                   boolean  test = processorModel.isReadyToRun();
                 }
             });
 

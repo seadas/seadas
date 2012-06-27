@@ -215,7 +215,7 @@ public class L2genData implements L2genDataProcessorModel {
         disableEvent(L2PROD);
 
         for (ParamInfo paramInfo : paramInfos) {
-            if (paramInfo.getName() != null) {
+            if (paramInfo.getName() != null && !paramInfo.getName().equals(L2genData.IFILE)) {
                 fireEvent(paramInfo.getName());
             }
         }

@@ -9,7 +9,6 @@ import org.esa.beam.util.io.FileUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -87,7 +86,7 @@ public class ParFileUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final Component parent = (Component) e.getSource();
-                System.out.print(processorModel.getRootDir().getAbsolutePath());
+                SeadasLogger.getLogger().info("current working directory: " + processorModel.getRootDir().getAbsolutePath());
 
                 String homeDirPath = SystemUtils.getUserHomeDir().getPath();
                 String openDir = VisatApp.getApp().getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
@@ -118,7 +117,7 @@ public class ParFileUI {
                                 option[0] = option[0].trim();
                                 option[1] = option[1].trim();
                                 if(!option[0].substring(0,1).equals("#")) { // ignore comments with = signs
-                                    System.out.println("option1: " + option[0] + "   option2: " + option[1]);
+                                    SeadasLogger.getLogger().info("option1: " + option[0] + "   option2: " + option[1])  ;
                                     pi = processorModel.getParamInfo(option[0]);
                                     if (pi == null) {
                                         JOptionPane.showMessageDialog(parent,

@@ -26,7 +26,7 @@ public class L2genProductsPanel extends JPanel {
     JPanel wavelengthsLimitorJPanel;
     JPanel selectedProductsJPanel;
     JTextArea selectedProductsJTextArea;
-    JButton defaultsButton;
+    private JButton restoreDefaultsButton;
 
 
     L2genProductsPanel(L2genData l2genData) {
@@ -44,23 +44,58 @@ public class L2genProductsPanel extends JPanel {
         wavelengthsLimitorJPanel = new L2genWavelengthLimiterPanel(l2genData);
 
         selectedProductsJTextArea = createSelectedProductsJTextArea();
-        defaultsButton = createDefaultsButton();
+        //       defaultsButton = createDefaultsButton();
 
         selectedProductsJPanel = createSelectedProductsJPanel();
+
+        restoreDefaultsButton = new JButton("Restore Defaults (this tab only)");
+        restoreDefaultsButton.setEnabled(!l2genData.isParamDefault(L2genData.L2PROD));
+
+        restoreDefaultsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                l2genData.setParamToDefaults(L2genData.L2PROD);
+            }
+        });
+
+        l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (l2genData.isParamDefault(L2genData.L2PROD)) {
+                    restoreDefaultsButton.setEnabled(false);
+                } else {
+                    restoreDefaultsButton.setEnabled(true);
+                }
+
+            }
+        });
 
     }
 
     public void addComponents() {
-        setLayout(new GridBagLayout());
 
-        add(productSelectorJPanel,
+
+        JPanel innerPanel = new JPanel(new GridBagLayout());
+
+        innerPanel.add(productSelectorJPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
 
-        add(wavelengthsLimitorJPanel,
-                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+        innerPanel.add(wavelengthsLimitorJPanel,
+                new GridBagConstraintsCustom(1, 0, 1, 0.5, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
 
-        add(selectedProductsJPanel,
-                new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, 0, 2));
+
+        setLayout(new GridBagLayout());
+
+        final JScrollPane innerPanelScroll = new JScrollPane(innerPanel);
+
+        add(innerPanelScroll,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH));
+
+        add(new JScrollPane(selectedProductsJPanel),
+                new GridBagConstraintsCustom(0, 1, 1, .3, GridBagConstraints.NORTH, GridBagConstraints.BOTH));
+
+        add(restoreDefaultsButton,
+                new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
     }
 
@@ -73,22 +108,22 @@ public class L2genProductsPanel extends JPanel {
         mainPanel.add(selectedProductsJTextArea,
                 new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 0, 3));
 
-        mainPanel.add(defaultsButton,
-                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
         return mainPanel;
     }
 
 
     private JTextArea createSelectedProductsJTextArea() {
 
-        final JTextArea jTextArea = new JTextArea();
+        final JTextArea jTextArea = new JTextArea("123456789 123456789 123456789 123456789 123456789 123456789 \n\n\n");
         jTextArea.setLineWrap(true);
         jTextArea.setWrapStyleWord(true);
         jTextArea.setColumns(20);
         jTextArea.setRows(5);
         jTextArea.setEditable(true);
-
+        jTextArea.setPreferredSize(jTextArea.getPreferredSize());
+        jTextArea.setMinimumSize(jTextArea.getPreferredSize());
+        jTextArea.setMaximumSize(jTextArea.getPreferredSize());
+        jTextArea.setText("");
 
 
         jTextArea.addFocusListener(new FocusListener() {
@@ -98,9 +133,9 @@ public class L2genProductsPanel extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                    String l2prod = l2genData.sortStringList(jTextArea.getText());
-                    l2genData.setParamValue(L2genData.L2PROD, l2prod);
-                    jTextArea.setText(l2genData.getParamValue(L2genData.L2PROD));
+                String l2prod = l2genData.sortStringList(jTextArea.getText());
+                l2genData.setParamValue(L2genData.L2PROD, l2prod);
+                jTextArea.setText(l2genData.getParamValue(L2genData.L2PROD));
             }
         });
 
