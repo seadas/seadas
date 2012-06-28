@@ -12,7 +12,7 @@
     </category>
 
 
-    <category name="Subsetting Options" tooltips="tooltips TBD">
+    <category name="Subsetting Options">
         <autoTab>1</autoTab>
         <param>spixl</param>
         <param>epixl</param>
@@ -42,7 +42,7 @@
         <param>flh_offset</param>
         <param>glint_thresh</param>
         <param>ice_threshold</param>
-        <param>nLwmin</param>
+        <param>nlwmin</param>
         <param>rhoamin</param>
         <param>satzen</param>
         <param>sunzen</param>
@@ -206,8 +206,8 @@
         <param>owmcfile</param>
         <param>tgtfile</param>
         <param>vcal_chl</param>
-        <param>vcal_Lw</param>
-        <param>vcal_nLw</param>
+        <param>vcal_lw</param>
+        <param>vcal_nlw</param>
         <param>vcal_opt</param>
         <param>vcal_solz</param>
         <param>xcalboxcenter</param>
