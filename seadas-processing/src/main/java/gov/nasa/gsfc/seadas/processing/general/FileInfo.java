@@ -97,7 +97,7 @@ public class FileInfo {
 
         ProcessorModel processorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
         processorModel.setAcceptsParFile(false);
-        processorModel.addParamInfo("file", file.getAbsolutePath(), 1);
+        processorModel.addParamInfo("file", file.getAbsolutePath(), ParamInfo.Type.IFILE, 1);
         processorModel.getParamInfo("file").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
 
         try {

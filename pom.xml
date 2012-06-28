@@ -119,14 +119,14 @@
             <url>http://download.osgeo.org/webdav/geotools/</url>
         </repository>
         <!--<repository>-->
-            <!--<id>swinglabs</id>-->
-            <!--<url>http://oss.sonatype.org/content/repositories/swinglabs-releases/</url>-->
-            <!--<releases>-->
-                <!--<enabled>true</enabled>-->
-            <!--</releases>-->
-            <!--<snapshots>-->
-                <!--<enabled>false</enabled>-->
-            <!--</snapshots>-->
+        <!--<id>swinglabs</id>-->
+        <!--<url>http://oss.sonatype.org/content/repositories/swinglabs-releases/</url>-->
+        <!--<releases>-->
+        <!--<enabled>true</enabled>-->
+        <!--</releases>-->
+        <!--<snapshots>-->
+        <!--<enabled>false</enabled>-->
+        <!--</snapshots>-->
         <!--</repository>-->
         <!--<repository>-->
         <!--<id>gt-primary</id>-->
@@ -199,10 +199,15 @@
                 <version>1.2.1</version>
             </dependency>
             <!--<dependency>-->
-                <!--<groupId>org.esa.beam</groupId>-->
-                <!--<artifactId>beam-bootstrap</artifactId>-->
-                <!--<version>${beam.version}</version>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-bootstrap</artifactId>-->
+            <!--<version>${beam.version}</version>-->
             <!--</dependency>-->
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>beam-geotiff</artifactId>
+                <version>1.2.1</version>
+            </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-core</artifactId>
@@ -279,9 +284,9 @@
                 <version>${beam.version}</version>
             </dependency>
             <dependency>
-                  <groupId>org.esa.beam</groupId>
-                  <artifactId>blue-marble-worldmap</artifactId>
-                 <version>1.0.2</version>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>blue-marble-worldmap</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
