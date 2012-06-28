@@ -42,7 +42,7 @@ public class ParamInfo implements Comparable {
     public static final String USED_IN_COMMAND_AS_OPTION = "option";
     public static final String USED_IN_COMMAND_AS_FLAG = "flag";
 
-    private String usedAs;
+    private String usedAs = USED_IN_COMMAND_AS_ARGUMENT;
 
 
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();

@@ -235,28 +235,24 @@
             </description>
             <source>default</source>
         </option>
-        <option type="int">
+        <option type="string">
             <name>outmode</name>
             <value></value>
-            <type>int</type>
-            <default>1</default>
-            <description>format of the output file
-                1: PPM or PGM image file
-                2: PNG color or grayscale image file
-                3: TIFF color or grayscale geo tiff image file
-            </description>
+            <type>string</type>
+            <default>ppm</default>
+            <description>format of the output file</description>
             <source>default</source>
             <validValue>
-                <value>1</value>
-                <description>PPM or PGM image file</description>
+                <value>ppm</value>
+                <description>PPM or PGM image file (alias 1)</description>
             </validValue>
             <validValue>
-                <value>2</value>
-                <description>PNG color or grayscale image file</description>
+                <value>png</value>
+                <description>PNG color or grayscale image file (alias 2)</description>
             </validValue>
             <validValue>
-                <value>3</value>
-                <description>TIFF color or grayscale geo tiff image file</description>
+                <value>tiff</value>
+                <description>TIFF color or grayscale geo tiff image file (alias 3)</description>
             </validValue>
         </option>
         <option type="help">

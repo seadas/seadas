@@ -211,38 +211,32 @@
                 <description>linear</description>
             </validValue>
         </option>
-        <option type="int">
+        <option type="string">
             <name>outmode</name>
             <value></value>
-            <type>int</type>
-            <default>0</default>
-            <description>defines output file format
-                0: 8bit HDF
-                1: 24bit HDF
-                2: PPM
-                3: flat binary
-                4: PNG
-            </description>
+            <type>string</type>
+            <default>8bit</default>
+            <description>defines output file format</description>
             <source>default</source>
             <validValue>
-                <value>0</value>
-                <description>8 bit HDF browse file</description>
+                <value>8bit</value>
+                <description>8 bit HDF browse file (alias 0)</description>
             </validValue>
             <validValue>
-                <value>1</value>
-                <description>24 bit HDF browse file</description>
+                <value>24bit</value>
+                <description>24 bit HDF browse file (alias 1)</description>
             </validValue>
             <validValue>
-                <value>2</value>
-                <description>PPM color or PGM grayscale image file</description>
+                <value>ppm</value>
+                <description>PPM color or PGM grayscale image file (alias 2)</description>
             </validValue>
             <validValue>
-                <value>3</value>
-                <description>flat binary</description>
+                <value>bin</value>
+                <description>flat binary (alias 3)</description>
             </validValue>
             <validValue>
-                <value>4</value>
-                <description>PNG</description>
+                <value>png</value>
+                <description>PNG (alias 4)</description>
             </validValue>
         </option>
 

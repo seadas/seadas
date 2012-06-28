@@ -113,8 +113,8 @@ public class ProcessorModel implements L2genDataProcessorModel {
     }
 
 
-    public void addParamInfo(String name, String value, int order) {
-        ParamInfo info = new ParamInfo(name, value);
+    public void addParamInfo(String name, String value, ParamInfo.Type type, int order) {
+        ParamInfo info = new ParamInfo(name, value, type);
         info.setOrder(order);
         addParamInfo(info);
     }

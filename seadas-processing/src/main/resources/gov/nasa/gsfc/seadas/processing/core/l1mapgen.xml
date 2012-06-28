@@ -236,25 +236,25 @@
             <default>[1,1,1]</default>
             <description>bands to use for red, green and blue</description>
         </option>
-        <option type="int">
+        <option type="string">
             <name>outmode</name>
             <value></value>
-            <type>int</type>
-            <default>0</default>
+            <type>string</type>
+            <default>ppm</default>
             <description>format of the output file   0: PPM  1: PNG  2: GeoTIFF
             </description>
             <source>default</source>
             <validValue>
-                <value>0</value>
-                <description>PPM image file</description>
+                <value>ppm</value>
+                <description>PPM image file (alias 0)</description>
             </validValue>
             <validValue>
-                <value>1</value>
-                <description>PNG color or grayscale image file</description>
+                <value>png</value>
+                <description>PNG color or grayscale image file (alias 2)</description>
             </validValue>
             <validValue>
-                <value>2</value>
-                <description>GeoTIFF color or grayscale geo tiff image file</description>
+                <value>tiff</value>
+                <description>GeoTIFF color or grayscale geo tiff image file (alias 2)</description>
             </validValue>
         </option>
     </options>

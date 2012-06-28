@@ -908,7 +908,7 @@ public class L2genData implements L2genDataProcessorModel {
 
         ProcessorModel processorModel = new ProcessorModel("getanc.py");
         processorModel.setAcceptsParFile(false);
-        processorModel.addParamInfo("ifile", ifile, 1);
+        processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, 1);
 
         try {
             Process p = processorModel.executeProcess();
