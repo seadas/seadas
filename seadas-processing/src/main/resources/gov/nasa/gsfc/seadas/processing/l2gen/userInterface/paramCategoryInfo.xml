@@ -12,7 +12,7 @@
     </category>
 
 
-    <category name="Subsetting Options">
+    <category name="Subsetting Options" tooltips="tooltips TBD">
         <autoTab>1</autoTab>
         <param>spixl</param>
         <param>epixl</param>

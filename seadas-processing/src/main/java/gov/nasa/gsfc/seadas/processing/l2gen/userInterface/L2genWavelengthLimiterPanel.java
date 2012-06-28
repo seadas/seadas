@@ -44,7 +44,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
             SELECT_ALL_VISIBLE = "Select All Visible",
             DESELECT_ALL_VISIBLE = "Deselect All Visible";
 
-  //  private InfraredButton infraredButton = new InfraredButton();
+    //  private InfraredButton infraredButton = new InfraredButton();
 
 
     L2genWavelengthLimiterPanel(L2genData l2genData) {
@@ -66,17 +66,28 @@ public class L2genWavelengthLimiterPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Wavelength Limiter"));
         setToolTipText("The wavelengths selected here are applied when you check a wavelength dependent product.  Not that any subsequent change ...");
 
-        add(visibleButton,
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+        JPanel innerPanel = new JPanel(new GridBagLayout());
 
-        add(nearInfraredButton,
-                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+        innerPanel.add(visibleButton,
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
 
-        add(infraredButton,
-                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+        innerPanel.add(nearInfraredButton,
+                new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
 
-        add(waveLimiterJPanel,
-                new GridBagConstraintsCustom(0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH));
+        innerPanel.add(infraredButton,
+                new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+
+        innerPanel.add(waveLimiterJPanel,
+                new GridBagConstraintsCustom(0, 3, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE));
+
+                innerPanel.add(new JPanel(),
+                new GridBagConstraintsCustom(0, 4, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH));
+
+        JScrollPane innerScroll = new JScrollPane(innerPanel);
+        innerScroll.setBorder(null);
+
+        add(innerScroll,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
     }
 
 
@@ -378,7 +389,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
         // some GridBagLayout formatting variables
         int gridyCnt = 0;
         int gridxCnt = 0;
-        int NUMBER_OF_COLUMNS = 1;
+        int NUMBER_OF_COLUMNS = 2;
 
 
         for (JCheckBox wavelengthGroupCheckbox : wavelengthGroupCheckboxes) {

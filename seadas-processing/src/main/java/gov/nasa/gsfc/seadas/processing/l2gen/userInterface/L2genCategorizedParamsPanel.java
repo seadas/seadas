@@ -26,7 +26,6 @@ public class L2genCategorizedParamsPanel extends JPanel {
     private JButton restoreDefaultsButton;
 
 
-
     L2genCategorizedParamsPanel(L2genData l2genData, L2genParamCategoryInfo paramCategoryInfo) {
 
         this.l2genData = l2genData;
@@ -44,7 +43,7 @@ public class L2genCategorizedParamsPanel extends JPanel {
         paramsPanel.setLayout(new GridBagLayout());
 
 
-        restoreDefaultsButton = new JButton("Restore Defaults (this tab only)");
+        restoreDefaultsButton = new JButton("Restore Defaults ("+paramCategoryInfo.getName()+ " only)");
         restoreDefaultsButton.setEnabled(!l2genData.isParamCategoryDefault(paramCategoryInfo));
 
         restoreDefaultsButton.addActionListener(new ActionListener() {
@@ -79,10 +78,10 @@ public class L2genCategorizedParamsPanel extends JPanel {
             } else {
                 if (paramInfo.getType() == ParamInfo.Type.BOOLEAN) {
                     L2genParamCheckBox paramCheckBox = new L2genParamCheckBox(l2genData, paramInfo);
-                  //  L2genParamCheckBoxKit paramCheckBox = new L2genParamCheckBoxKit(l2genData, paramInfo.getName(), paramInfo.getDescription());
+                    //  L2genParamCheckBoxKit paramCheckBox = new L2genParamCheckBoxKit(l2genData, paramInfo.getName(), paramInfo.getDescription());
                     jLabel = paramCheckBox.getjLabel();
                     rightSideComponent = paramCheckBox.getjCheckBox();
-                  //  rightSideComponent = paramCheckBox.getComponent();
+                    //  rightSideComponent = paramCheckBox.getComponent();
                     rightSideComponentFill = GridBagConstraints.NONE;
                 } else if (paramInfo.getType() == ParamInfo.Type.IFILE || paramInfo.getType() == ParamInfo.Type.OFILE) {
                     L2genParamFileSelector paramFileSelector = new L2genParamFileSelector(l2genData, paramInfo);
@@ -136,25 +135,33 @@ public class L2genCategorizedParamsPanel extends JPanel {
          */
 
         paramsPanel.add(new JPanel(),
-                new GridBagConstraintsCustom(0, gridy, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH));
+                new GridBagConstraintsCustom(2, gridy, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH));
 
 
     }
 
     public void addComponents() {
 
-        setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
-        setPreferredSize(new Dimension(1000, 800));
-
 
         final JScrollPane paramsScroll = new JScrollPane(paramsPanel);
+        paramsScroll.setBorder(null);
 
-        add(paramsScroll,
+
+        JPanel innerPanel = new JPanel(new GridBagLayout());
+        innerPanel.setBorder(BorderFactory.createTitledBorder(paramCategoryInfo.getName()));
+
+        innerPanel.add(paramsScroll,
                 new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH));
 
-        add(restoreDefaultsButton,
+        innerPanel.add(restoreDefaultsButton,
                 new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+
+
+        setLayout(new GridBagLayout());
+        setPreferredSize(new Dimension(1000, 800));
+
+        add(innerPanel,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 3));
     }
 
 }

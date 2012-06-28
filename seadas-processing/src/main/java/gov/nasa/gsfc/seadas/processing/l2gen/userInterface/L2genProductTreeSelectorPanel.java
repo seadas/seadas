@@ -52,7 +52,9 @@ public class L2genProductTreeSelectorPanel extends JPanel {
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createTitledBorder("Product Selector"));
 
-        add(new JScrollPane(productJTree),
+        JScrollPane jScrollPane = new JScrollPane(productJTree);
+        jScrollPane.setBorder(null);
+        add(jScrollPane,
                 new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
     }
 
