@@ -120,7 +120,7 @@ public abstract class SeadasFileReader {
                     }
                     Section section = new Section(start, count, stride);
                     Array array;
-                    int[] newshape = {sourceHeight, sourceWidth};
+                    int[] newshape = {1, sourceWidth};
 
                     synchronized (ncFile) {
                         array = variable.read(section);

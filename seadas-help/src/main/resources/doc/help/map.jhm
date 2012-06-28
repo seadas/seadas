@@ -99,28 +99,29 @@
     <mapID target="vectorDataManagement" url="visat/VectorDataManagement.html"/>
 
 
-    <mapID target="l1aextract_modis" url="visat/ProcessL1aextract_modis.html"/>
-    <mapID target="l1aextract_seawifs" url="visat/ProcessL1aextract_seawifs.html"/>
+    <mapID target="extractor" url="processors/ProcessExtractors.html"/>
+    <mapID target="l1aextract_modis" url="processors/ProcessL1aextract_modis.html"/>
+    <mapID target="l1aextract_seawifs" url="processors/ProcessL1aextract_seawifs.html"/>
     <!--<mapID target="l1agen" url="visat/ProcessL1agen.html"/>-->
-    <mapID target="modis_GEO.py" url="visat/ProcessModis_GEO.py.html"/>
-    <mapID target="l1bgen" url="visat/ProcessL1bgen.html"/>
-    <mapID target="modis_L1B.py" url="visat/ProcessModis_L1B.py.html"/>
-    <mapID target="modis_L1A.py" url="visat/ProcessModis_L1A.py.html"/>
-    <mapID target="l1mapgen" url="visat/ProcessL1mapgen.html"/>
-    <mapID target="l1brsgen" url="visat/ProcessL1brsgen.html"/>
-    <mapID target="l2extract" url="visat/ProcessL2extract.html"/>
-    <mapID target="l2gen" url="visat/ProcessL2gen.html"/>
-    <mapID target="l2genSimple" url="visat/ProcessL2genSimple.html"/>
-    <mapID target="l2mapgen" url="visat/ProcessL2mapgen.html"/>
-    <mapID target="l2brsgen" url="visat/ProcessL2brsgen.html"/>
-    <mapID target="l2bin" url="visat/ProcessL2bin.html"/>
-    <mapID target="l3bin" url="visat/ProcessL3bin.html"/>
-    <mapID target="smigen" url="visat/ProcessSmigen.html"/>
+    <mapID target="modis_GEO.py" url="processors/ProcessModis_GEO.py.html"/>
+    <mapID target="l1bgen" url="processors/ProcessL1bgen.html"/>
+    <mapID target="modis_L1B.py" url="processors/ProcessModis_L1B.py.html"/>
+    <mapID target="modis_L1A.py" url="processors/ProcessModis_L1A.py.html"/>
+    <mapID target="l1mapgen" url="processors/ProcessL1mapgen.html"/>
+    <mapID target="l1brsgen" url="processors/ProcessL1brsgen.html"/>
+    <mapID target="l2extract" url="processors/ProcessL2extract.html"/>
+    <mapID target="l2gen" url="processors/ProcessL2gen.html"/>
+    <mapID target="l2genSimple" url="processors/ProcessL2genSimple.html"/>
+    <mapID target="l2mapgen" url="processors/ProcessL2mapgen.html"/>
+    <mapID target="l2brsgen" url="processors/ProcessL2brsgen.html"/>
+    <mapID target="l2bin" url="processors/ProcessL2bin.html"/>
+    <mapID target="l3bin" url="processors/ProcessL3bin.html"/>
+    <mapID target="smigen" url="processors/ProcessSmigen.html"/>
 
 
-    <mapID target="processOverview" url="visat/ProcessOverview.html"/>
-    <mapID target="l2genProductSelector" url="visat/ProcessL2genProductSelector.html"/>
-    <mapID target="l2genSubsettingOptions" url="visat/ProcessL2genSubsettingOptions.html"/>
+    <mapID target="processOverview" url="processors/ProcessOverview.html"/>
+    <mapID target="l2genProductSelector" url="processors/ProcessL2genProductSelector.html"/>
+    <mapID target="l2genSubsettingOptions" url="processors/ProcessL2genSubsettingOptions.html"/>
 
 
     <mapID target="reprojectionAction" url="visat/Reprojection.html"/>

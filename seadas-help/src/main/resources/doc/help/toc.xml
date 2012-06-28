@@ -97,36 +97,6 @@
 
 
 
-
-
-            <tocitem text="Processing Tools">
-                <tocitem text="Introduction" target="processOverview"/>
-
-                <tocitem text="l1aextract_modis" target="l1aextract_modis"/>
-                <tocitem text="l1aextract_seawifs" target="l1aextract_seawifs"/>
-                <tocitem text="l1agen" target="l1agen"/>
-                <!--<tocitem text="geogen" target="geogen"/>-->
-                <tocitem text="l1bgen" target="l1bgen"/>
-                <tocitem text="l1mapgen" target="l1mapgen"/>
-                <tocitem text="l1brsgen" target="l1brsgen"/>
-                <tocitem text="l2extract" target="l2extract"/>
-                <tocitem text="L2gen Deluxe">
-                    <tocitem text="Introduction" target="l2gen"/>
-                    <tocitem text="Product Selector" target="l2genProductSelector"/>
-                    <tocitem text="Subsetting Options" target="l2genSubsettingOptions"/>
-                </tocitem>
-                <tocitem text="l2gen Simple" target="l2genSimple"/>
-                <tocitem text="l2mapgen" target="l2mapgen"/>
-                <tocitem text="l2brsgen" target="l2brsgen"/>
-                <tocitem text="l2bin" target="l2bin"/>
-                <tocitem text="l3bin" target="l3bin"/>
-                <tocitem text="smigen" target="smigen"/>
-                <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
-                <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
-                <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
-
-            </tocitem>
-
             <tocitem text="Product Generation Tools">
                 <tocitem text="Band Maths" target="bandArithmetic"/>
                 <tocitem text="Band Maths Expression Editor" target="expressionEditor"/>
@@ -174,7 +144,35 @@
     </tocitem>
 
     <tocitem text="Data Processors">
-        <tocitem text="Introduction" target="dataProcessors"/>
+        <tocitem text="Beam Processors" target="dataProcessors"/>
+        <tocitem text="SeaDAS Processors">
+            <tocitem text="Introduction" target="processOverview"/>
+
+            <tocitem text="Product Extractors">
+                <tocitem text="Introduction" target="extractor"/>
+                <tocitem text="l1aextract_modis" target="l1aextract_modis"/>
+                <tocitem text="l1aextract_seawifs" target="l1aextract_seawifs"/>
+                <tocitem text="l2extract" target="l2extract"/>
+            </tocitem>
+            <!--<tocitem text="l1agen" target="l1agen"/>-->
+            <tocitem text="l1bgen" target="l1bgen"/>
+            <tocitem text="l1mapgen" target="l1mapgen"/>
+            <tocitem text="l1brsgen" target="l1brsgen"/>
+            <tocitem text="L2gen">
+                <tocitem text="Introduction" target="l2gen"/>
+                <tocitem text="Product Selector" target="l2genProductSelector"/>
+                <tocitem text="Subsetting Options" target="l2genSubsettingOptions"/>
+            </tocitem>
+            <tocitem text="l2mapgen" target="l2mapgen"/>
+            <tocitem text="l2brsgen" target="l2brsgen"/>
+            <tocitem text="l2bin" target="l2bin"/>
+            <tocitem text="l3bin" target="l3bin"/>
+            <tocitem text="smigen" target="smigen"/>
+            <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
+            <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
+            <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
+
+        </tocitem>
 
     </tocitem>
 
