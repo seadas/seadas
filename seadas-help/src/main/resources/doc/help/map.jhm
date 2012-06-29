@@ -125,6 +125,7 @@
 
 
     <mapID target="reprojectionAction" url="visat/Reprojection.html"/>
+    <mapID target="resamplingMethods" url="visat/ResamplingMethods.html"/>
     <mapID target="orthorectificationAction" url="visat/Orthorectification.html"/>
     <mapID target="orthorectificationAlgo" url="visat/OrthorectificationAlgo.html"/>
     <mapID target="mosaicAction" url="visat/Mosaic.html"/>
