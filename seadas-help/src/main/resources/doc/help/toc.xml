@@ -22,22 +22,22 @@
             <tocitem text="Import and Export Tools">
                 <tocitem text="Import Raster Data">
                     <tocitem text="ATSR" target="importAtsrProduct"/>
-                    <tocitem text="ALOS/AVNIR-2" target="importAvnir2Product"/>
-                    <tocitem text="ALOS/PRISM" target="importPrismProduct"/>
+                    <!--<tocitem text="ALOS/AVNIR-2" target="importAvnir2Product"/>-->
+                    <!--<tocitem text="ALOS/PRISM" target="importPrismProduct"/>-->
                     <tocitem text="BEAM-DIMAP" target="importDimapProduct"/>
-                    <tocitem text="CHRIS" target="importChrisProduct"/>
+                    <!--<tocitem text="CHRIS" target="importChrisProduct"/>-->
                     <tocitem text="CSV" target="importCsvProduct"/>
                     <tocitem text="ENVISAT" target="importEnvisatProduct"/>
                     <tocitem text="ERS1/2" target="importErsProduct"/>
                     <tocitem text="GETASSE30 Tile" target="importGETASSE30"/>
-                    <tocitem text="HDF-EOS" target="importNetCdfProduct"/>
+                    <tocitem text="HDF-EOS" target="importGETASSE30"/>
                     <tocitem text="LANDSAT 5 TM" target="importLandsatTMProduct"/>
                     <tocitem text="MERIS Binned Level-3" target="importMerisBinnedL3Product"/>
                     <tocitem text="MODIS" target="importModisProduct"/>
                     <tocitem text="NASA Ocean Color" target="importNasaObpgProduct"/>
                     <tocitem text="NOAA-AVHRR/3 Level-1b" target="importAVHRR"/>
                     <tocitem text="NetCDF" target="importNetCdfProduct"/>
-                    <tocitem text="SPOT VEGETATION" target="importSpotVgtProduct"/>
+                    <!--<tocitem text="SPOT VEGETATION" target="importSpotVgtProduct"/>-->
                 </tocitem>
                 <tocitem text="Import Vector Data">
                     <tocitem text="CSV" target="importCSV"/>
