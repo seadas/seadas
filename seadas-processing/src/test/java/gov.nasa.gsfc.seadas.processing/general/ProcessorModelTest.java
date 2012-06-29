@@ -13,12 +13,12 @@ import static org.junit.Assert.*;
  * To change this template use File | Settings | File Templates.
  */
 public class ProcessorModelTest {
-    @Test
-    public void testIsValidProcessor() throws Exception {
-        ProcessorModel pm = new ProcessorModel("userInterface", "l2gen.xml");
-        //pm.setDefaultEnv();
-        assertTrue(pm.isValidProcessor() );
-    }
+//    @Test
+//    public void testIsValidProcessor() throws Exception {
+//        ProcessorModel pm = new ProcessorModel("userInterface", "l2gen.xml");
+//        //pm.setDefaultEnv();
+//        assertTrue(pm.isValidProcessor() );
+//    }
 
     @Test
     public void testGetProgramName() throws Exception {
