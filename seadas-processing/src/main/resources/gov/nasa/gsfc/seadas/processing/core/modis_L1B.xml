@@ -15,7 +15,7 @@
             <name>ifile</name>
             <value></value>
             <default></default>
-            <description>Input file</description>
+            <description>Input L1A file</description>
             <source>command line</source>
             <usedAs>argument</usedAs>
             <order>1</order>

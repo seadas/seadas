@@ -199,7 +199,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
-                File outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()));
+                //File outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()));
+                File outputFile = new File(processorModel.getOfileName());
                 if (openOutputInApp) {
                     getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile));
                 }

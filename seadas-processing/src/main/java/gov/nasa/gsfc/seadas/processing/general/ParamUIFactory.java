@@ -26,6 +26,8 @@ public class ParamUIFactory {
 
     ProcessorModel processorModel;
 
+    private String emptySpace = "  ";
+
     ParamUIFactory(ProcessorModel pm) {
         this.processorModel = pm;
 
@@ -183,10 +185,12 @@ public class ParamUIFactory {
 
         final JPanel optionPanel = new JPanel();
         TableLayout booleanLayout = new TableLayout(1);
-        booleanLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
+        //booleanLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
+
         optionPanel.setLayout(booleanLayout);
-        optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        optionPanel.add(new JLabel(ParamUtils.removePreceedingDashes(optionName)));
+        optionPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        optionPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+        optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace) );
 
 
         final PropertyContainer vc = new PropertyContainer();

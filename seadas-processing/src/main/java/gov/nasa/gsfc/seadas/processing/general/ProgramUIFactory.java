@@ -26,7 +26,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
     private ParFileUI parFileUI;
 
     public ProgramUIFactory(String programName, String xmlFileName) {
-        processorModel = new ProcessorModel(programName, xmlFileName);
+        processorModel = ProcessorModel.valueOf(programName, xmlFileName);
         parFileUI = new ParFileUI(processorModel);
         ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
 

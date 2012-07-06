@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
 
 import java.io.File;
@@ -39,6 +40,7 @@ public class SeadasFileUtils {
 
     public static String getDefaultOFileNameFromIFile(String ifileName, String programName) {
         debug("Program name is " + programName);
+        Debug.assertNotNull(ifileName);
         ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
         String ofileName = ifileName + "_" + programName + ".out";
         switch (processorID) {
@@ -77,11 +79,12 @@ public class SeadasFileUtils {
                 ;
                 break;
             case SMIGEN:
-                ofileName = ofileName.replaceAll("L3b", "L3m");
+                ofileName = ifileName.replaceAll("L3B", "L3M");
+                ofileName = ofileName.replaceAll("L3b", "L3M");
                 ofileName = ofileName.replaceAll(".main", "");
                 break;
             case SMITOPPM:
-                ofileName = ifileName + ".ppm";
+                ofileName = ifileName.trim().length() > 0 ? ifileName + ".ppm" : "";
                 break;
         }
         return ofileName;

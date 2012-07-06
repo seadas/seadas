@@ -36,9 +36,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -414,7 +412,8 @@ public class SourceProductFileSelector {
             // todo - (mp, 2008/04/22)check if product file filter is applicable
             fileChooser.setAcceptAllFileFilterUsed(true);
             fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
-        }
+          }
+
 
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -449,6 +448,13 @@ public class SourceProductFileSelector {
                     }
 
                     if (productFilter.accept(product) && regexFileFilter.accept(file)) {
+                        files = fileChooser.getSelectedFiles();
+                        Product p;
+                        for (File f: files) {
+                            p = new Product(f.getName(), "DummyType", 10, 10);
+                            p.setFileLocation(f);
+                             productListModel.addElement(p);
+                        }
                         setSelectedProduct(product);
                         //productListModel.addElement(product);
                     } else {
@@ -471,16 +477,15 @@ public class SourceProductFileSelector {
                 currentDirectory = fileChooser.getCurrentDirectory();
                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         currentDirectory.getAbsolutePath());
-                files = fileChooser.getSelectedFiles();
             }
         }
 
         private void handleError(final Component component, final String message) {
             SwingUtilities.invokeLater(new Runnable() {
-                @Override
                 public void run() {
-                    JOptionPane.showMessageDialog(component, message, "Error",
-                            JOptionPane.ERROR_MESSAGE);
+                //@Override
+                    //JOptionPane.showMessageDialog(component, message, "Error", JOptionPane.ERROR_MESSAGE);
+                    //JOptionPane.showMessageDialog(<Window>component, message, "test", JOptionPane.ERROR_MESSAGE);
                 }
             });
         }
@@ -578,7 +583,7 @@ public class SourceProductFileSelector {
             if (regex == null) {
                 return true;
             }
-            SeadasLogger.getLogger().info("regex: " + (pathname.isFile() && pathname.getName().matches(this.regex)))  ;
+            SeadasLogger.getLogger().info("regex: " + (pathname.isFile() && pathname.getName().matches(this.regex)));
             return (pathname.isFile() && pathname.getName().matches(this.regex));
         }
 
