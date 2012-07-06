@@ -24,9 +24,9 @@ public class L2genIfileSelector {
 
     private SourceProductFileSelector sourceProductSelector;
     private boolean controlHandlerEnabled = true;
+    private boolean eventHandlerEnabled = true;
 
-    public
-    L2genIfileSelector(L2genDataProcessorModel l2genDataProcessorModel) {
+    public L2genIfileSelector(L2genDataProcessorModel l2genDataProcessorModel) {
         this.l2genDataProcessorModel = l2genDataProcessorModel;
 
         sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), l2genDataProcessorModel.getPrimaryInputFileOptionName());
@@ -46,9 +46,9 @@ public class L2genIfileSelector {
             public void selectionChanged(SelectionChangeEvent event) {
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
-                    disableControlHandler();
+                    disableEventHandler();
                     l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), iFile.getAbsolutePath());
-                    enableControlHandler();
+                    enableEventHandler();
                 }
             }
         });
@@ -61,10 +61,12 @@ public class L2genIfileSelector {
                 File iFile = new File(l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
 
                 disableControlHandler();
-                if (iFile != null && iFile.exists()) {
-                    sourceProductSelector.setSelectedFile(iFile);
-                } else {
-                    sourceProductSelector.releaseProducts();
+                if (isEventHandlerEnabled()) {
+                    if ( iFile != null && iFile.exists()) {
+                        sourceProductSelector.setSelectedFile(iFile);
+                    } else {
+                        sourceProductSelector.releaseProducts();
+                    }
                 }
                 enableControlHandler();
 
@@ -76,12 +78,24 @@ public class L2genIfileSelector {
         return controlHandlerEnabled;
     }
 
+    private boolean isEventHandlerEnabled() {
+        return eventHandlerEnabled;
+    }
+
     private void enableControlHandler() {
         controlHandlerEnabled = true;
     }
 
     private void disableControlHandler() {
         controlHandlerEnabled = false;
+    }
+
+    private void enableEventHandler() {
+        eventHandlerEnabled = true;
+    }
+
+    private void disableEventHandler() {
+        eventHandlerEnabled = false;
     }
 
     public File getSelectedIFile() {
