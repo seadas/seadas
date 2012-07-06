@@ -73,7 +73,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
         SeadasLogger.getLogger().info("updating ofile change listener ...  processorModel   " + processorModel.getPrimaryOutputFileOptionName());
 
-        lonlat2pixline = new ProcessorModel("lonlat2pixline", "lonlat2pixline.xml");
+        lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml");
 
         paramUIFactory = new ParamUIFactory(processorModel);
         pixelPanel = paramUIFactory.createParamPanel(processorModel);

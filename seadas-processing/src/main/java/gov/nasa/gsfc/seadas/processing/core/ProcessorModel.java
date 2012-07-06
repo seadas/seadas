@@ -794,7 +794,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
         }
 
         public boolean updateOFileInfo(String ofileName) {
-            return false;
+            return true;
         }
     }
 }
