@@ -88,7 +88,7 @@ public class L2genData implements L2genDataProcessorModel {
     private L2genProductsParamInfo l2prodParamInfo = null;
 
 
-    public boolean retainCurrentIfile = true;
+    public boolean retainCurrentIfile = false;
     private boolean showDefaultsInParString = false;
 
     public L2genData() {
@@ -513,12 +513,15 @@ public class L2genData implements L2genDataProcessorModel {
         return paramInfos;
     }
 
-
     public void setParString(String parString, boolean ignoreIfile) {
-        setParString(parString, ignoreIfile, false);
+        setParString(parString, ignoreIfile, false, null);
     }
 
     public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode) {
+        setParString(parString, ignoreIfile, false, null);
+    }
+
+    public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode, File parFileDir) {
 
         disableEvent(PARSTRING);
         ArrayList<ParamInfo> parfileParamInfos = parseParString(parString);
@@ -529,7 +532,15 @@ public class L2genData implements L2genDataProcessorModel {
         if (!ignoreIfile) {
             for (ParamInfo parfileParamInfo : parfileParamInfos) {
                 if (parfileParamInfo.getName().toLowerCase().equals(IFILE)) {
-                    setParamValue(getParamInfo(IFILE), parfileParamInfo.getValue());
+                    String ifileStr = parfileParamInfo.getValue();
+                    if(parFileDir != null) {
+                        File ifile = new File(ifileStr);
+                        if(!ifile.isAbsolute()) {
+                            ifile = new File(parFileDir, ifileStr);
+                            ifileStr = ifile.getAbsolutePath();
+                        }
+                    }
+                    setParamValue(getParamInfo(IFILE), ifileStr);
                     break;
                 }
             }

@@ -62,6 +62,9 @@ public class L2genRetainIfileSpecifier {
             l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
+                    if(!l2genData.isValidIfile()) {
+                        l2genData.setRetainCurrentIfile(false);
+                    }
                     jCheckBox.setEnabled(l2genData.isValidIfile());
                 }
             });

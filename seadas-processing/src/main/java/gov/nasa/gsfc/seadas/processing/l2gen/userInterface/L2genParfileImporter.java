@@ -6,6 +6,7 @@ import gov.nasa.gsfc.seadas.processing.general.SeadasGuiUtils;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,7 +38,13 @@ public class L2genParfileImporter {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String contents = SeadasGuiUtils.importFile(jFileChooser);
-                    l2genData.setParString(contents, l2genData.isRetainCurrentIfile());
+                    File parFileDir;
+                    if(contents == null) {
+                        parFileDir = null;
+                    } else {
+                        parFileDir = jFileChooser.getSelectedFile().getParentFile();
+                    }
+                    l2genData.setParString(contents, l2genData.isRetainCurrentIfile(), false, parFileDir);
                 }
             });
         }
