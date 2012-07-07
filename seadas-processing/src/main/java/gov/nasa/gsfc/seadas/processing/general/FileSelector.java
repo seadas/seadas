@@ -150,8 +150,8 @@ public class FileSelector {
         return fileTextfield;
     }
 
-    public void setFilename(String filename) {
-        fileTextfield.setText(filename);
+    public void setFilename(String fileName) {
+        fileTextfield.setText(fileName);
         //fileTextfield.postActionEvent();
         handleFileTextfield();
     }

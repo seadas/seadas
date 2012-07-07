@@ -52,7 +52,7 @@ public class ExtractorUI extends ProgramUIFactory {
             BufferedReader br = new BufferedReader(isr);
             String line;
             String[] tmp;
-             line = br.readLine();
+            line = br.readLine();
             while ((line = br.readLine()) != null) {
                 SeadasLogger.getLogger().info(line);
                 if (line.indexOf("=") != -1) {
@@ -73,7 +73,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
         SeadasLogger.getLogger().info("updating ofile change listener ...  processorModel   " + processorModel.getPrimaryOutputFileOptionName());
 
-        lonlat2pixline = new ProcessorModel("lonlat2pixline", "lonlat2pixline.xml");
+        lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml");
 
         paramUIFactory = new ParamUIFactory(processorModel);
         pixelPanel = paramUIFactory.createParamPanel(processorModel);
@@ -211,9 +211,13 @@ public class ExtractorUI extends ProgramUIFactory {
                     (ifileInfo.getMissionName().indexOf("OCTS") != -1 && (ifileInfo.getTypeName().indexOf("L1") != -1 || ifileInfo.getTypeName().indexOf("Level 1") != -1))) {
                 programName = "l2extract";
             }
-            //l1a modis files needs geo files to get pixels from lon lat. Need to get geo file name and check for its existence.
+        }
+        //l1a modis files needs geo files to get pixels from lon lat. Need to get geo file name and check for its existence.
+
+        if (programName != null) {
             lonlat2pixline.updateIFileInfo(getLonLattoPixelsIFileName(ifileName, programName));
         }
+
         return programName;
     }
 

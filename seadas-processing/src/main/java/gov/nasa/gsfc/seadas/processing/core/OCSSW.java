@@ -1,10 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import com.bc.ceres.core.runtime.RuntimeConfig;
 import com.bc.ceres.core.runtime.RuntimeContext;
-import org.esa.beam.util.SystemUtils;
-import sun.plugin2.util.SystemUtil;
-import sun.security.krb5.Config;
 
 import java.io.File;
 import java.io.IOException;

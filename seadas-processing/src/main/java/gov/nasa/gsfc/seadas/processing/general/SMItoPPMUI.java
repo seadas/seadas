@@ -44,11 +44,33 @@ public class SMItoPPMUI {
 
         ppmFile = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, "ppm file");
         ppmFile.getFileTextField().setColumns(20);
+
+//        ppmFile.getFileTextField().addPropertyChangeListener(new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                ppmFile.getFileTextField().postActionEvent();
+//            }
+//        });
+
         ppmFile.addPropertyChangeListener(ppmFile.getPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                if (ppmFile.getFileName() != null) {
-                    processorModel.setReadyToRun(true);
+                if (ppmFile.getFileName().trim().length() != 0) {
+                    processorModel.setReadyToRun(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()).trim().length() > 0);
+                } else {
+                    processorModel.setReadyToRun(false);
+                }
+            }
+        });
+
+        processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                if (smitoppmCheckBox.isSelected()) {
+                    ppmFile.setFilename(SeadasFileUtils.getDefaultOFileNameFromIFile(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm"));
+                    smitoppmPanel.add(ppmFile.getjPanel());
+                    smitoppmPanel.validate();
+                    smitoppmPanel.repaint();
                 }
             }
         });
@@ -58,14 +80,16 @@ public class SMItoPPMUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (smitoppmCheckBox.isSelected()) {
+                    ppmFile.setFilename(SeadasFileUtils.getDefaultOFileNameFromIFile(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm"));
                     smitoppmPanel.add(ppmFile.getjPanel());
-                    processorModel.setReadyToRun(false);
+                    processorModel.setReadyToRun(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()).trim().length() > 0 && ppmFile.getFileName().trim().length() > 0);
                     smitoppmPanel.validate();
                     smitoppmPanel.repaint();
                 } else {
                     smitoppmPanel.remove(ppmFile.getjPanel());
                     smitoppmPanel.validate();
                     smitoppmPanel.repaint();
+                    processorModel.setReadyToRun(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()).trim().length() > 0);
                 }
 
             }

@@ -48,6 +48,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
     ProcessorTypeInfo.ProcessorID processorID;
 
+
     public ProcessorModel(String name) {
         this(name, null);
     }
@@ -75,6 +76,18 @@ public class ProcessorModel implements L2genDataProcessorModel {
         progressPattern = Pattern.compile(progressRegex);
     }
 
+    public static ProcessorModel valueOf(String programName, String xmlFileName) {
+        ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
+        switch (processorID) {
+            case MODIS_L1B_PY:
+                return new Modis_L1B_Processor(programName, xmlFileName);
+            case LONlAT2PIXLINE:
+                return new LonLat2Pixels_Processor(programName, xmlFileName);
+            default:
+        }
+        return new ProcessorModel(programName, xmlFileName);
+    }
+
     public void addParamInfo(ParamInfo info) {
         getParamList().add(info);
 
@@ -92,6 +105,10 @@ public class ProcessorModel implements L2genDataProcessorModel {
 //                || processorID == ProcessorTypeInfo.ProcessorID.L3BIN ) {
 //
 //        }
+    }
+
+    public String getOfileName(){
+        return getParamValue(getPrimaryOutputFileOptionName() );
     }
 
     public void createsmitoppmProcessorModel(String ofileName) {
@@ -321,9 +338,9 @@ public class ProcessorModel implements L2genDataProcessorModel {
         if ((processorID == ProcessorTypeInfo.ProcessorID.L1BRSGEN
                 || processorID == ProcessorTypeInfo.ProcessorID.L1MAPGEN
                 || processorID == ProcessorTypeInfo.ProcessorID.MODIS_L1B_PY) && (new FileInfo(ifileName)).getMissionName().indexOf("MODIS") != -1) {
-                setHasGeoFile(true);
+            setHasGeoFile(true);
 
-        }                         else {
+        } else {
             setHasGeoFile(false);
         }
     }
@@ -332,21 +349,32 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
         if (verifyIFilePath(ifileName)) {
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
-
-            updateGeoFileStatus(ifileName);
-            if (hasGeoFile()) {
-                updateParamInfo("geofile", SeadasFileUtils.getGeoFileNameFromIFile(ifileName));
-            }
-            if (hasPrimaryOutputFile()) {
-                updateParamInfo(getPrimaryOutputFileOptionName(), SeadasFileUtils.getDefaultOFileNameFromIFile(ifileName, programName));
-                setReadyToRun(true);
-            }
+            updateGeoFileInfo(ifileName);
+//            updateGeoFileStatus(ifileName);
+//            if (hasGeoFile()) {
+//                updateParamInfo("geofile", SeadasFileUtils.getGeoFileNameFromIFile(ifileName));
+//            }
+            //if (hasPrimaryOutputFile()) {
+            updateOFileInfo(SeadasFileUtils.getDefaultOFileNameFromIFile(ifileName, programName));
+            //updateParamInfo(getPrimaryOutputFileOptionName(), SeadasFileUtils.getDefaultOFileNameFromIFile(ifileName, programName));
+            //setReadyToRun(true);
+            // }
             return true;
         } else {
             return false;
         }
 
     }
+
+    public boolean updateGeoFileInfo(String ifileName) {
+        updateGeoFileStatus(ifileName);
+        if (hasGeoFile()) {
+            updateParamInfo("geofile", SeadasFileUtils.getGeoFileNameFromIFile(ifileName));
+            return true;
+        }
+        return false;
+    }
+
 
     public boolean updateOFileInfo(String newValue) {
 
@@ -731,5 +759,42 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
     public Pattern getProgressPattern() {
         return progressPattern;
+    }
+
+    private static class Modis_L1B_Processor extends ProcessorModel {
+        Modis_L1B_Processor(String programName, String xmlFileName) {
+            super(programName, xmlFileName);
+        }
+
+        public boolean updateOFileInfo(String ofileName) {
+            updateParamInfo("--okm", ofileName.replaceAll("LAC", "OKM"));
+            updateParamInfo("--hkm", ofileName.replaceAll("LAC", "HKM"));
+            updateParamInfo("--qkm", ofileName.replaceAll("LAC", "QKM"));
+            updateParamInfo("--obc", ofileName.replaceAll("LAC", "OBC"));
+            setReadyToRun(true);
+            return true;
+
+        }
+
+        public String getOfileName() {
+
+            StringBuilder ofileNameList = new StringBuilder();
+            ofileNameList.append("\n " + getParamValue("--okm") );
+            ofileNameList.append("\n " + getParamValue("--hkm") );
+            ofileNameList.append("\n " + getParamValue("--qkm") );
+            ofileNameList.append("\n " + getParamValue("--obc") );
+            System.out.println(ofileNameList.toString());
+            return ofileNameList.toString();
+        }
+    }
+
+    private static class LonLat2Pixels_Processor extends ProcessorModel {
+        LonLat2Pixels_Processor(String programName, String xmlFileName) {
+            super(programName, xmlFileName);
+        }
+
+        public boolean updateOFileInfo(String ofileName) {
+            return true;
+        }
     }
 }

@@ -61,20 +61,6 @@ public class ParamUtils {
         IFILE, OFILE, PAR, GEOFILE
     }
 
-
-    public static void parseXMLForProcessor(String programXMLFileName) {
-
-        XmlReader xmlReader = new XmlReader();
-        InputStream xmlFileStream = ParamUtils.class.getResourceAsStream(programXMLFileName);
-        Element rootElement = xmlReader.parseAndGetRootElement(xmlFileStream);
-
-        NodeList optionNodelist = rootElement.getElementsByTagName("option");
-        if (optionNodelist == null || optionNodelist.getLength() == 0) {
-            return;
-        }
-
-    }
-
     public static Set<String> getPrimaryOptions(String parXMLFileName) {
 
         Set<String> primaryOptions = new HashSet<String>();
