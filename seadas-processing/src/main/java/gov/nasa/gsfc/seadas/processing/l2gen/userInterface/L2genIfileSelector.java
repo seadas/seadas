@@ -116,13 +116,4 @@ public class L2genIfileSelector {
     public SourceProductFileSelector getSourceProductSelector() {
         return sourceProductSelector;
     }
-
-    public String getFileList() {
-        File[] selectedFiles = getSourceProductSelector().getSelectedMultiFiles();
-        StringBuilder fileNames = new StringBuilder();
-        for (File file : selectedFiles) {
-            fileNames.append(file.getAbsolutePath() + "\n");
-        }
-        return fileNames.toString();
-    }
 }
