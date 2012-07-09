@@ -4,9 +4,9 @@ import com.bc.ceres.core.CoreException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
+import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.datamodel.Product;
@@ -199,7 +199,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
-                //File outputFile = new File(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()));
+
                 File outputFile = new File(processorModel.getOfileName());
                 if (openOutputInApp) {
                     getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile));
@@ -215,13 +215,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected void done() {
                 try {
                     final File outputFile = get();
+
                     VisatApp.getApp().showInfoDialog(programName, programName + " done!\nOutput written to:\n" + outputFile, null);
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ProgramExecutor pe = new ProgramExecutor();
-
                         int exitCode = pe.executeProgram(secondaryProcessor.getProgramCmdArray());
-
                         if (exitCode == 0) {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);
@@ -231,12 +230,20 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {
-                    VisatApp.getApp().showErrorDialog(programName, "execution exception: " + e.getMessage() + "\n" + processorModel.getExecutionLogMessage());
+                    //VisatApp.getApp().showErrorDialog(programName, "execution exception: " + e.getMessage() + "\n" + processorModel.getExecutionLogMessage());
+                    displayMessage(programName, "execution exception: " + e.getMessage() + "\n" + processorModel.getExecutionLogMessage());
+
+
                 }
             }
         };
 
         swingWorker.execute();
+    }
+
+    private void displayMessage(String programName, String message) {
+        ScrolledPane messagePane = new ScrolledPane(programName, message, this.getAppContext().getApplicationWindow());
+        messagePane.setVisible(true);
     }
 
     /**
@@ -322,5 +329,24 @@ public class CallCloProgramAction extends AbstractVisatAction {
             }
         }
     }
+
+    private class ScrolledPane extends JFrame {
+        private JScrollPane scrollPane;
+
+        public ScrolledPane(String programName, String message, Window window) {
+            setTitle(programName);
+            setSize(500, 500);
+            setBackground(Color.gray);
+            setLocationRelativeTo(window);
+            JPanel topPanel = new JPanel();
+            topPanel.setLayout(new BorderLayout());
+            getContentPane().add(topPanel);
+            JTextArea text = new JTextArea(message);
+            scrollPane = new JScrollPane();
+            scrollPane.getViewport().add(text);
+            topPanel.add(scrollPane, BorderLayout.CENTER);
+        }
+    }
+
 
 }
