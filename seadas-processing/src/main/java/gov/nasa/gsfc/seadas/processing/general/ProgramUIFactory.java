@@ -7,6 +7,11 @@ import org.esa.beam.framework.datamodel.Product;
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,6 +66,15 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
             processorModel.updateIFileInfo(ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct().getFileLocation().toString());
         }
 
+        if (processorModel.getProgramName().indexOf("bin") != -1) {
+            processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    processorModel.updateIFileInfo(computeIFileOptionValue());
+                }
+            });
+        }
+
         final JPanel parFilePanel = parFileUI.getParStringPanel();
 
         this.setLayout(new GridBagLayout());
@@ -97,5 +111,46 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         }
     }
 
+    private String computeIFileOptionValue() {
+        String ifileOptionValue = "";
+        if (hasMultipleFiles()) {
+            ifileOptionValue = getSelectedFilesList();
+
+
+        } else {
+            ifileOptionValue = ioFilesSelector.getIfileSelector().getSelectedIFile().getAbsolutePath();
+        }
+
+        return ifileOptionValue;
+    }
+
+    private boolean hasMultipleFiles() {
+        File[] selectedFiles = ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedMultiFiles();
+        if (selectedFiles.length > 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getSelectedFilesList() {
+
+        File fileListFile = new File(processorModel.getRootDir(), processorModel.getProgramName() + "_inputFiles.lst");
+
+        File[] selectedFiles = ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedMultiFiles();
+        StringBuilder fileNames = new StringBuilder();
+        for (File file : selectedFiles) {
+            fileNames.append(file.getAbsolutePath() + "\n");
+        }
+        FileWriter fileWriter = null;
+        try {
+
+            fileWriter = new FileWriter(fileListFile);
+            fileWriter.write(fileNames.toString());
+            fileWriter.close();
+            ioFilesSelector.getIfileSelector().getSourceProductSelector().setSelectedFile(fileListFile);
+        } catch (IOException ioe) {
+        }
+        return fileListFile.getAbsolutePath();
+    }
 
 }

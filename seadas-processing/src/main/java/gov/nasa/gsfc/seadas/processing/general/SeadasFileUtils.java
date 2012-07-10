@@ -72,10 +72,10 @@ public class SeadasFileUtils {
                 ofileName = ifileName + "_" + programName + ".out";
                 break;
             case L2BIN:
-                ofileName = ifileName.replaceAll("L2_/?/?/?", "L3d_" + getCurrentDate("yyyyMMdd"));
+                ofileName = ifileName.replaceAll("L2_.{3,}", "L3b_DAY");
                 break;
             case L3BIN:
-                ofileName = ifileName.replaceAll("L2_/?/?/?", "L3d_" + getCurrentDate("yyyyMMdd"));
+                ofileName = ifileName.replaceAll("L2_.{3,}", "L3b_DAY");
                 ;
                 break;
             case SMIGEN:

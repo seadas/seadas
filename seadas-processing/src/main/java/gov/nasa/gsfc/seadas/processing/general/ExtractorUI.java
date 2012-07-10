@@ -122,6 +122,7 @@ public class ExtractorUI extends ProgramUIFactory {
                 String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 if (programName == null) {
                     VisatApp.getApp().showErrorDialog("No extractor found for " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
+                    //processorModel.updateIFileInfo("");
                     return;
                 }
                 updateParamPanel(programName);
@@ -135,6 +136,7 @@ public class ExtractorUI extends ProgramUIFactory {
                 String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 if (programName == null) {
                     VisatApp.getApp().showErrorDialog("No extractor found for " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
+                    //processorModel.updateIFileInfo("");
                     return;
                 }
                 updateParamPanel(programName);
