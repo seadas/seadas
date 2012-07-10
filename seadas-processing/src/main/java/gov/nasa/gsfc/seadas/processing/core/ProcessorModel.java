@@ -48,6 +48,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
     ProcessorTypeInfo.ProcessorID processorID;
 
+    private boolean hasMultipleInputFiles;
 
     public ProcessorModel(String name) {
         this(name, null);
@@ -72,6 +73,7 @@ public class ProcessorModel implements L2genDataProcessorModel {
             acceptsParFile = false;
             hasGeoFile = false;
         }
+        hasMultipleInputFiles = false;
         processorID = ProcessorTypeInfo.getProcessorID(programName);
         progressPattern = Pattern.compile(progressRegex);
     }
@@ -83,6 +85,8 @@ public class ProcessorModel implements L2genDataProcessorModel {
                 return new Modis_L1B_Processor(programName, xmlFileName);
             case LONlAT2PIXLINE:
                 return new LonLat2Pixels_Processor(programName, xmlFileName);
+            case SMIGEN:
+                return new SMIGEN_Processor(programName, xmlFileName);
             default:
         }
         return new ProcessorModel(programName, xmlFileName);
@@ -107,8 +111,16 @@ public class ProcessorModel implements L2genDataProcessorModel {
 //        }
     }
 
-    public String getOfileName(){
-        return getParamValue(getPrimaryOutputFileOptionName() );
+    public String getOfileName() {
+        return getParamValue(getPrimaryOutputFileOptionName());
+    }
+
+    public boolean isHasMultipleInputFiles() {
+        return hasMultipleInputFiles;
+    }
+
+    public void setHasMultipleInputFiles(boolean hasMultipleInputFiles) {
+        this.hasMultipleInputFiles = hasMultipleInputFiles;
     }
 
     public void createsmitoppmProcessorModel(String ofileName) {
@@ -332,8 +344,6 @@ public class ProcessorModel implements L2genDataProcessorModel {
     }
 
     private void updateGeoFileStatus(String ifileName) {
-
-        //ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
 
         if ((processorID == ProcessorTypeInfo.ProcessorID.L1BRSGEN
                 || processorID == ProcessorTypeInfo.ProcessorID.L1MAPGEN
@@ -779,10 +789,10 @@ public class ProcessorModel implements L2genDataProcessorModel {
         public String getOfileName() {
 
             StringBuilder ofileNameList = new StringBuilder();
-            ofileNameList.append("\n " + getParamValue("--okm") );
-            ofileNameList.append("\n " + getParamValue("--hkm") );
-            ofileNameList.append("\n " + getParamValue("--qkm") );
-            ofileNameList.append("\n " + getParamValue("--obc") );
+            ofileNameList.append("\n " + getParamValue("--okm"));
+            ofileNameList.append("\n " + getParamValue("--hkm"));
+            ofileNameList.append("\n " + getParamValue("--qkm"));
+            ofileNameList.append("\n " + getParamValue("--obc"));
             System.out.println(ofileNameList.toString());
             return ofileNameList.toString();
         }
@@ -797,4 +807,38 @@ public class ProcessorModel implements L2genDataProcessorModel {
             return true;
         }
     }
+
+    private static class L2Bin_Processor extends ProcessorModel {
+        L2Bin_Processor(String programName, String xmlFileName) {
+            super(programName, xmlFileName);
+            setHasMultipleInputFiles(true);
+        }
+
+        public boolean updateIFileInfo(String ifileName) {
+            return true;
+        }
+    }
+
+    private static class SMIGEN_Processor extends ProcessorModel {
+        SMIGEN_Processor(String programName, String xmlFileName) {
+            super(programName, xmlFileName);
+            addPropertyChangeListener("prod", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+                    String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+                    if (oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
+                        ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
+                    } else {
+                        ofileName = ofileName + "_" + newProdValue;
+                    }
+
+                    updateOFileInfo(ofileName);
+
+                }
+            });
+        }
+    }
+
 }

@@ -104,8 +104,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
         if (programName.indexOf("extract") != -1) {
             return new ExtractorUI(programName, xmlFileName);
         }
-
-        //return new CloProgramUIImpl(programName, xmlFileName);
         return new ProgramUIFactory(programName, xmlFileName);
     }
 

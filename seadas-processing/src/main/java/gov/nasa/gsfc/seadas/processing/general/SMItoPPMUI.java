@@ -74,6 +74,18 @@ public class SMItoPPMUI {
                 }
             }
         });
+
+        processorModel.addPropertyChangeListener(processorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                if (smitoppmCheckBox.isSelected()) {
+                    ppmFile.setFilename(SeadasFileUtils.getDefaultOFileNameFromIFile(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm"));
+                    smitoppmPanel.add(ppmFile.getjPanel());
+                    smitoppmPanel.validate();
+                    smitoppmPanel.repaint();
+                }
+            }
+        });
         smitoppmPanel.add(smitoppmLabel);
         smitoppmPanel.add(smitoppmCheckBox);
         smitoppmCheckBox.addActionListener(new ActionListener() {
