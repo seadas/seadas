@@ -6,7 +6,6 @@ import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.PixelGeoCoding;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
-import ucar.ma2.Array;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 
@@ -118,7 +117,8 @@ public class BrowseProductReader extends SeadasFileReader {
                 String name = variable.getShortName();
                 boolean isBrs = false;
                 try {
-                    isBrs = variable.findAttribute("long_name").getStringValue().contains("brs_data") ? true : false;
+                    if (variable.findAttribute("long_name").getStringValue().contains("brs_data")) isBrs = true;
+                    else isBrs = false;
                 } catch (Exception ignored) { }
                 if (isBrs){
                     try {
@@ -161,7 +161,6 @@ public class BrowseProductReader extends SeadasFileReader {
         return band;
     }
     public void addGeocoding(final Product product) throws ProductIOException {
-        String navGroup = "Navigation";
         final String longitude = "longitude";
         final String latitude = "latitude";
         Band latBand = null;

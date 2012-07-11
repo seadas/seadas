@@ -20,7 +20,6 @@ import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
 import org.esa.beam.util.io.BeamFileFilter;
 import ucar.nc2.Attribute;
-import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -101,7 +100,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                 Boolean isSeadasMapped = false;
                 try {
                     isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
 
                 if (titleAttribute != null ) {

@@ -12,13 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: seadas
- * Date: 11/14/11
- * Time: 2:23 PM
- * To change this template use File | Settings | File Templates.
- */
 public class L1ASeawifsFileReader extends SeadasFileReader {
 
     static final int[] SEAWIFS_WVL = new int[]{412, 443, 490, 510, 555, 670, 765, 865};
@@ -95,7 +88,7 @@ public class L1ASeawifsFileReader extends SeadasFileReader {
                 final int width = dimensions[1];
 
                 if (height == sceneRasterHeight && width == sceneRasterWidth) {
-                    final List<Attribute> list = variable.getAttributes();
+                   // final List<Attribute> list = variable.getAttributes();
 
                     String units = "radiance counts";
                     String description = "Level-1A data";

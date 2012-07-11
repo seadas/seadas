@@ -137,7 +137,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                     }
 
                     band.setNoDataValue((double) variable.findAttribute("_FillValue").getNumericValue().floatValue());
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }

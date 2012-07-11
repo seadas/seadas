@@ -195,7 +195,6 @@ public class SeadasProductReader extends AbstractProductReader {
 
     public ProductType checkMEaSUREs() {
         try {
-            List<Variable> seadasMappedVariables = ncfile.getVariables();
             Attribute indexes = ncfile.findGlobalAttribute("Data_Bins");
             if (indexes != null) {
                 return ProductType.MEaSUREs_Bin;
@@ -203,7 +202,7 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.MEaSUREs;
             }
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return ProductType.UNKNOWN;
     }
@@ -227,7 +226,7 @@ public class SeadasProductReader extends AbstractProductReader {
 
             }
 
-        } catch (Exception e) {}
+        } catch (Exception ignored) {}
         return ProductType.UNKNOWN;
     }
 
