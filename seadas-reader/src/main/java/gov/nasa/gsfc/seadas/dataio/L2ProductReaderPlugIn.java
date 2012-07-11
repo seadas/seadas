@@ -101,6 +101,7 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
                             if (DEBUG) {
                                 System.out.println(file);
                             }
+                            ncfile.close();
                             return DecodeQualification.INTENDED;
                         } else {
                             if (DEBUG) {

@@ -196,15 +196,13 @@ public class SeadasProductReader extends AbstractProductReader {
     public ProductType checkMEaSUREs() {
         try {
             List<Variable> seadasMappedVariables = ncfile.getVariables();
-            Attribute seam_lon = ncfile.findGlobalAttribute("Seam_Lon");
-            Attribute data_bins = ncfile.findGlobalAttribute("Data_Bins");
-            if (seam_lon != null && !seadasMappedVariables.get(0).getName().contains("l3m_data")) {
-                if (data_bins != null) {
-                    return ProductType.MEaSUREs_Bin;
-                } else {
-                    return ProductType.MEaSUREs;
-                }
+            Attribute indexes = ncfile.findGlobalAttribute("Data_Bins");
+            if (indexes != null) {
+                return ProductType.MEaSUREs_Bin;
+            } else {
+                return ProductType.MEaSUREs;
             }
+
         } catch (Exception e) {
         }
         return ProductType.UNKNOWN;
@@ -264,6 +262,8 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.SMI;
             } else if (title.contains("Level-3 Binned Data")) {
                 return ProductType.Level3_Bin;
+            } else if (title.contains("GSM") && (tmp = checkMEaSUREs()) != ProductType.UNKNOWN) {
+                return tmp;
             }
 
         } else if (checkModisL1B()) {
@@ -272,8 +272,6 @@ public class SeadasProductReader extends AbstractProductReader {
             return tmp;
         }  else if (checkSeadasMapped()) {
             return ProductType.SeadasMapped;
-        }  else if ((tmp = checkMEaSUREs()) != ProductType.UNKNOWN) {
-            return tmp;
         }
 
         throw new ProductIOException("Unrecognized product type");
