@@ -87,6 +87,10 @@ public class ProcessorModel implements L2genDataProcessorModel {
                 return new LonLat2Pixels_Processor(programName, xmlFileName);
             case SMIGEN:
                 return new SMIGEN_Processor(programName, xmlFileName);
+            case L2BIN:
+                return new L2Bin_Processor(programName, xmlFileName);
+            case L3BIN:
+                return new L3Bin_Processor(programName, xmlFileName);
             default:
         }
         return new ProcessorModel(programName, xmlFileName);
@@ -123,19 +127,6 @@ public class ProcessorModel implements L2genDataProcessorModel {
         this.hasMultipleInputFiles = hasMultipleInputFiles;
     }
 
-    public void createsmitoppmProcessorModel(String ofileName) {
-        ProcessorModel smitoppm = new ProcessorModel("smitoppm_4_ui");
-        smitoppm.setAcceptsParFile(false);
-        ParamInfo pi1 = new ParamInfo("ifile", getParamValue(getPrimaryOutputFileOptionName()));
-        pi1.setOrder(1);
-        ParamInfo pi2 = new ParamInfo("ofile", ofileName);
-        pi2.setOrder(2);
-        smitoppm.addParamInfo(pi1);
-        smitoppm.addParamInfo(pi2);
-        setSecondaryProcessor(smitoppm);
-
-    }
-
     public void addParamInfo(String name, String value, ParamInfo.Type type) {
         ParamInfo info = new ParamInfo(name, value, type);
         addParamInfo(info);
@@ -146,23 +137,6 @@ public class ProcessorModel implements L2genDataProcessorModel {
         ParamInfo info = new ParamInfo(name, value, type);
         info.setOrder(order);
         addParamInfo(info);
-    }
-
-    public String getParFileOptionName() {
-
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-
-            option = itr.next();
-            if (option.getType() != null) {
-                if (option.getType().equals(ParamInfo.Type.IFILE) && getPrimaryOptions().contains(option.getName())) {
-
-                    return option.getName();
-                }
-            }
-        }
-        return ParamUtils.DEFAULT_PAR_FILE_NAME;
     }
 
     public String getPrimaryInputFileOptionName() {
@@ -594,51 +568,12 @@ public class ProcessorModel implements L2genDataProcessorModel {
         }
     }
 
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        EventInfo eventInfo = getEventInfo(propertyName);
-        if (eventInfo == null) {
-            getPropertyChangeSupport().removePropertyChangeListener(propertyName, listener);
-        } else {
-            eventInfo.removePropertyChangeListener(listener);
-        }
-    }
-
-    public void disableEvent(String name) {
-        EventInfo eventInfo = getEventInfo(name);
-        if (eventInfo == null) {
-            SeadasLogger.getLogger().severe("disableEvent - eventInfo not found for " + name);
-        } else {
-            eventInfo.setEnabled(false);
-        }
-    }
-
-    public void enableEvent(String name) {
-        EventInfo eventInfo = getEventInfo(name);
-        if (eventInfo == null) {
-            SeadasLogger.getLogger().severe("enableEvent - eventInfo not found for " + name);
-        } else {
-            eventInfo.setEnabled(true);
-        }
-    }
-
-    public void fireEvent(String name) {
-        fireEvent(name, null, null);
-    }
-
     public void fireEvent(String name, Object oldValue, Object newValue) {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
             getPropertyChangeSupport().firePropertyChange(new PropertyChangeEvent(this, name, oldValue, newValue));
         } else {
             eventInfo.fireEvent(oldValue, newValue);
-        }
-    }
-
-    public void fireAllParamEvents() {
-        for (ParamInfo paramInfo : getParamList()) {
-            if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals("none")) {
-                fireEvent(paramInfo.getName());
-            }
         }
     }
 
@@ -725,10 +660,6 @@ public class ProcessorModel implements L2genDataProcessorModel {
         }
     }
 
-    public void setPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
-        this.propertyChangeSupport = propertyChangeSupport;
-    }
-
     public Set<String> getPrimaryOptions() {
         return primaryOptions;
     }
@@ -761,10 +692,6 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
     public void setExecutionLogMessage(String executionLogMessage) {
         this.executionLogMessage = executionLogMessage;
-    }
-
-    public void setProgressPattern(Pattern progressPattern) {
-        this.progressPattern = progressPattern;
     }
 
     public Pattern getProgressPattern() {
@@ -814,10 +741,39 @@ public class ProcessorModel implements L2genDataProcessorModel {
             setHasMultipleInputFiles(true);
         }
 
-        public boolean updateIFileInfo(String ifileName) {
-            return true;
+
+    }
+
+    private static class L3Bin_Processor extends ProcessorModel {
+        L3Bin_Processor(String programName, String xmlFileName) {
+            super(programName, xmlFileName);
+            addPropertyChangeListener("out_parm", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+                    String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+                    if (oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
+                        ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
+                    } else {
+                        ofileName = ofileName + "_" + newProdValue;
+                    }
+
+                    updateOFileInfo(ofileName);
+
+                }
+            });
+        }
+
+        public String getOfileName() {
+
+            if (!(getParamValue("noext").equals("1") || getParamValue("noext").equals("1"))) {
+                return getParamValue(getPrimaryOutputFileOptionName()) + ".main";
+            }
+            return getParamValue(getPrimaryOutputFileOptionName());
         }
     }
+
 
     private static class SMIGEN_Processor extends ProcessorModel {
         SMIGEN_Processor(String programName, String xmlFileName) {
@@ -832,6 +788,23 @@ public class ProcessorModel implements L2genDataProcessorModel {
                         ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
                     } else {
                         ofileName = ofileName + "_" + newProdValue;
+                    }
+
+                    updateOFileInfo(ofileName);
+
+                }
+            });
+
+            addPropertyChangeListener("resolution", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+                    String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+                    if (newResolutionValue.trim().length() > 0 && ofileName.indexOf(newResolutionValue) != -1) {
+                        ofileName = ofileName.replaceAll(oldResolutionValue, newResolutionValue);
+                    } else {
+                        ofileName = ofileName + "_" + newResolutionValue;
                     }
 
                     updateOFileInfo(ofileName);

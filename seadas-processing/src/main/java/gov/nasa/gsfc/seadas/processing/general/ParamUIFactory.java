@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
+import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.binding.ValueRange;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
@@ -175,13 +176,12 @@ public class ParamUIFactory {
         optionPanel.add(field);
 
         return optionPanel;
-
     }
 
     private JPanel makeBooleanOptionField(final ParamInfo pi) {
 
         final String optionName = pi.getName();
-        final boolean optionValue = pi.getValue() == "true" || pi.getValue() == "1" ? true : false;
+        final boolean optionValue = pi.getValue().equals( "true" ) || pi.getValue().equals( "1") ? true : false;
 
         final JPanel optionPanel = new JPanel();
         TableLayout booleanLayout = new TableLayout(1);
@@ -193,7 +193,7 @@ public class ParamUIFactory {
         optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace) );
 
 
-        final PropertyContainer vc = new PropertyContainer();
+        final PropertySet vc = new PropertyContainer();
         vc.addProperty(Property.create(optionName, optionValue));
         vc.getDescriptor(optionName).setDisplayName(optionName);
 
@@ -225,7 +225,7 @@ public class ParamUIFactory {
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                field.setSelected(pi.getValue() == "true" || pi.getValue() == "1" ? true : false);
+                field.setSelected(pi.getValue().equals("true") || pi.getValue().equals("1") ? true : false);
             }
         });
 
@@ -313,7 +313,7 @@ public class ParamUIFactory {
         ioFileSelector.addPropertyChangeListener(ioFileSelector.getPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String iofile = null;
+                String iofile;
                 if (ioFileSelector.getFileName() != null) {
                     iofile = ioFileSelector.getFileName();
                     processorModel.updateParamInfo(pi, iofile);

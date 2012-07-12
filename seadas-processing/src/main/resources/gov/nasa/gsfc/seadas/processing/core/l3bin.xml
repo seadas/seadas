@@ -73,12 +73,10 @@
             <description>Southernmost latitude (default=-90)</description>
             <order>5</order>
         </option>
-
-
         <option type="boolean">
             <name>noext</name>
-            <value></value>
-            <default>false</default>
+            <value>1</value>
+            <default></default>
             <description>set to 1 to suppress generation of external files
                 [default=0, (1 for "regional" prodtype)]
             </description>

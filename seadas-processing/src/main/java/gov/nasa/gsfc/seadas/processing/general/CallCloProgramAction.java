@@ -56,49 +56,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
         super.configure(config);
     }
 
-    private String getXMLFileName() {
-        String xmlFileName = programName + "_paramInfo.xml";
-        ProcessorModel pm = new ProcessorModel(programName);
-        ParamInfo pi;
-        pi = new ParamInfo("dumpOption", "-dump_options_xmlfile");
-        //pi.setOrder(1);
-        pm.addParamInfo(pi);
-        pi = new ParamInfo("ofile", xmlFileName);
-        //pi.setOrder(2);
-        pm.addParamInfo(pi);
-
-
-        ProgramExecutor pe = new ProgramExecutor();
-        pe.executeProgram(pm);
-        SeadasLogger.getLogger().info("xml file name: " + xmlFileName);
-        return xmlFileName;
-    }
-
-    public String getProgramName() {
-        return programName;
-    }
 
     public String getXmlFileName() {
         return xmlFileName;
     }
-
-    public String getDialogTitle() {
-        return dialogTitle;
-    }
-
-
-    public void setProgramName(String programName) {
-        this.programName = programName;
-    }
-
-    public void setDialogTitle(String dialogTitle) {
-        this.dialogTitle = dialogTitle;
-    }
-
-    public void setXmlFileName(String xmlFileName) {
-        this.xmlFileName = xmlFileName;
-    }
-
 
     public CloProgramUI getProgramUI(AppContext appContext) {
         if (programName.indexOf("extract") != -1) {
@@ -157,10 +118,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             VisatApp.getApp().showErrorDialog(programName, "No product selected.");
             return;
         }
-
-        if (selectedProduct != null) {
-            modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
-        }
+        modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
 
         final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
         openOutputInApp = cloProgramUI.isOpenOutputInApp();
@@ -179,7 +137,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         }
 
-        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running" + programName + " ...") {
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
@@ -204,7 +162,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 }
 
                 SeadasLogger.getLogger().finest("Final output file name: " + outputFile);
-
 
                 return outputFile;
             }
