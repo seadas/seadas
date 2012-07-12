@@ -4,7 +4,6 @@ import com.bc.ceres.core.CoreException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
@@ -71,7 +70,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     @Override
     public void actionPerformed(CommandEvent event) {
 
-        SeadasLogger.initLogger("ProcessingGUI_log", printLogToConsole);
+        SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
         SeadasLogger.getLogger().setLevel(Level.INFO);
 
         final AppContext appContext = getAppContext();
