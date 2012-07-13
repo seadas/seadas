@@ -38,7 +38,17 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws IOException {
 
-        grid = new ISINGrid(ISINGrid.DEFAULT_ROW_COUNT);
+        String resolution = "9 km";
+        try {
+            resolution = getStringAttribute("Bin Resolution");
+        } catch (Exception ignored) {
+
+        }
+        int rowcnt = 2160;
+        if (resolution.contains("4 km")){
+            rowcnt = 4320;
+        }
+        grid = new ISINGrid(rowcnt);
         sceneWidth = grid.getRowCount() * 2;
         sceneHeight = grid.getRowCount();
 
@@ -216,7 +226,7 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
             lastRowIndex = rowIndex;
         }
 
-        if (lineLength > 0) {
+        if (lineLength > 0 && lastRowIndex > 0) {
             binLines[lastRowIndex] = new RowInfo(lineOffset, lineLength);
         }
 
