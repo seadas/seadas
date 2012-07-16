@@ -79,8 +79,8 @@ public class SeadasFileUtils {
                 ;
                 break;
             case SMIGEN:
-                ofileName = ifileName.replaceAll("L3B", "L3M");
-                ofileName = ofileName.replaceAll("L3b", "L3M");
+                ofileName = ifileName.replaceAll("L3B", "L3m");
+                ofileName = ofileName.replaceAll("L3b", "L3m");
                 ofileName = ofileName.replaceAll(".main", "");
                 break;
             case SMITOPPM:
