@@ -95,6 +95,7 @@ public class SMItoPPMUI {
                     ppmFile.setFilename(SeadasFileUtils.getDefaultOFileNameFromIFile(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm"));
                     smitoppmPanel.add(ppmFile.getjPanel());
                     processorModel.setReadyToRun(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()).trim().length() > 0 && ppmFile.getFileName().trim().length() > 0);
+                    processorModel.createsmitoppmProcessorModel(ppmFile.getFileName());
                     smitoppmPanel.validate();
                     smitoppmPanel.repaint();
                 } else {
@@ -102,6 +103,7 @@ public class SMItoPPMUI {
                     smitoppmPanel.validate();
                     smitoppmPanel.repaint();
                     processorModel.setReadyToRun(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()).trim().length() > 0);
+                    processorModel.setSecondaryProcessor(null);
                 }
 
             }
