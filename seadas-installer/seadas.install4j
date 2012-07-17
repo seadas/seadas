@@ -271,6 +271,7 @@
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="aquarius" fileType="regular" />
+          <entry location="viirsn" fileType="regular" />
         </exclude>
       </dirEntry>
       <fileEntry mountPoint="5132" file="../../../ocssw/README" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
