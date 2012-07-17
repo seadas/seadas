@@ -20,7 +20,6 @@ import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
 import org.esa.beam.util.io.BeamFileFilter;
 import ucar.nc2.Attribute;
-import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -47,6 +46,9 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
             "CZCS Level-3 Standard Mapped Image",
             "HMODISA Level-3 Standard Mapped Image",
             "HMODIST Level-3 Standard Mapped Image",
+            "MODISA Level-3 Standard Mapped Image",
+            "MODIST Level-3 Standard Mapped Image",
+            "MODIS Level-3 Standard Mapped Image",
             "OCM2 Level-3 Standard Mapped Image",
             "OCTS Level-3 Standard Mapped Image",
             "SeaWiFS Level-3 Standard Mapped Image",
@@ -58,12 +60,16 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
             "OCTS Level-3 Binned Data",
             "HMODISA Level-3 Binned Data",
             "HMODIST Level-3 Binned Data",
+            "MODISA Level-3 Binned Data",
+            "MODIST Level-3 Binned Data",
             "MERIS Level-3 Binned Data",
             "MODIS Level-3 Binned Data",
             "OSMI Level-3 Binned Data",
             "OCM2 Level-3 Binned Data",
             "Level-3 Binned Data",
             "VIIRS Level-3 Binned Data",
+            "GSM bin composite",
+            "GSM mapped",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
@@ -94,13 +100,12 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
-                Attribute seam_lon = ncfile.findGlobalAttribute("Seam_Lon");
 
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
                 Boolean isSeadasMapped = false;
                 try {
                     isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
 
                 if (titleAttribute != null ) {
@@ -110,6 +115,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                                 if (DEBUG) {
                                     System.out.println(file);
                                 }
+                                ncfile.close();
                                 return DecodeQualification.INTENDED;
                             } else {
                                 if (DEBUG) {
@@ -117,9 +123,8 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                                 }
                             }
                         }
-                } else if (seam_lon != null) {
-                    return DecodeQualification.INTENDED;
                 } else if (isSeadasMapped) {
+                    ncfile.close();
                     return DecodeQualification.INTENDED;
                 } else {
                     if (DEBUG) {

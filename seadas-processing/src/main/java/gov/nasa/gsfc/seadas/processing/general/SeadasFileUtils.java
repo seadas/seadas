@@ -18,6 +18,27 @@ public class SeadasFileUtils {
 
     private static boolean debug = false;
 
+    public static File createFile(String parent, String fileName) {
+        File pFile;
+        if(parent == null) {
+            pFile = null;
+        } else {
+            pFile = new File(parent);
+        }
+        return createFile(pFile, fileName);
+    }
+
+    public static File createFile(File parent, String fileName) {
+        if(fileName == null) {
+            return null;
+        }
+        File file = new File(fileName);
+        if(!file.isAbsolute() && parent != null) {
+            file = new File(parent, fileName);
+        }
+        return file;
+    }
+
     public static String getCurrentDate(String dateFormat) {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);

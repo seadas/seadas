@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.dataop.maptransf.Datum;
@@ -14,13 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: seadas
- * Date: 11/14/11
- * Time: 2:23 PM
- * To change this template use File | Settings | File Templates.
- */
 public class L1AOctsFileReader extends SeadasFileReader {
 
     static final int[] OCTS_WVL = new int[]{412, 443, 490, 520, 560, 670, 765, 865};

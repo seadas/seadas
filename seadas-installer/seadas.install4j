@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="5.0.11" transformSequenceNumber="3">
-  <directoryPresets config="../../../ocssw/OCSSW.env" />
-  <application name="SeaDAS" distributionSourceDir="" applicationId="0750-9059-9532-8589" mediaDir="../../installers" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.version}_${compiler:sys.platform}_installer" compression="7" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="true" createMd5Sums="true" shrinkRuntime="true" shortName="seadas" publisher="NASA Ocean Biogeochemical Processing Group" publisherWeb="http://seadas.gsfc.nasa.gov/" version="7.0" allPathsRelative="true" backupOnSave="true" autoSave="true" convertDotsToUnderscores="false" macSignature="????" installerName="" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="true" jdkMode="runtimeJre" jdkName="">
+  <directoryPresets config="./src/main/resources/images" />
+  <application name="SeaDAS" distributionSourceDir="" applicationId="0750-9059-9532-8589" mediaDir="../../installers" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.version}_${compiler:sys.platform}_installer" compression="7" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="true" createMd5Sums="true" shrinkRuntime="true" shortName="seadas" publisher="NASA Ocean Biogeochemical Processing Group" publisherWeb="http://seadas.gsfc.nasa.gov/" version="7.0-beta" allPathsRelative="true" backupOnSave="true" autoSave="true" convertDotsToUnderscores="false" macSignature="????" installerName="" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="true" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
       <additionalLanguages />
@@ -14,7 +14,7 @@
     <variables />
     <mergedProjects />
   </application>
-  <files keepModificationTimes="true" missingFilesStrategy="warn" globalExcludeSuffixes=".svn" defaultOverwriteMode="4" defaultUninstallMode="0" launcherOverwriteMode="3" defaultFileMode="644" defaultDirMode="755">
+  <files keepModificationTimes="true" missingFilesStrategy="warn" globalExcludeSuffixes=".svn" defaultOverwriteMode="4" defaultUninstallMode="3" launcherOverwriteMode="3" defaultFileMode="644" defaultDirMode="755">
     <filesets>
       <fileset name="Data Processing" id="5130" customizedId="" />
       <fileset name="Source Files" id="5285" customizedId="" />
@@ -47,8 +47,7 @@
       <dirEntry mountPoint="17" file="../target/seadas-bin" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="seadas-bin" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
-      <fileEntry mountPoint="5132" file="../../../ocssw/README" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
-      <dirEntry mountPoint="5134" file="../../../OCSSW/run/bin" overwriteMode="4" shared="false" fileMode="755" uninstallMode="0" overrideFileMode="true" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="bin" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="5134" file="../../../OCSSW/run/bin" overwriteMode="4" shared="false" fileMode="755" uninstallMode="3" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="bin" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="linux/.svn" fileType="regular" />
@@ -124,17 +123,19 @@
           <entry location="macosx_intel/wgrib2" fileType="regular" />
         </exclude>
       </dirEntry>
-      <dirEntry mountPoint="5135" file="../../../OCSSW/run/bin3" overwriteMode="4" shared="false" fileMode="755" uninstallMode="0" overrideFileMode="true" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="bin3" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="5135" file="../../../OCSSW/run/bin3" overwriteMode="4" shared="false" fileMode="755" uninstallMode="3" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="bin3" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="linux/.svn" fileType="regular" />
           <entry location="linux_64/.svn" fileType="regular" />
         </exclude>
       </dirEntry>
-      <dirEntry mountPoint="5136" file="../../../OCSSW/run/data" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="data" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="5136" file="../../../OCSSW/run/data" overwriteMode="5" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="data" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="aquarius" fileType="regular" />
+          <entry location="czcs/.svn" fileType="regular" />
+          <entry location="czcs/aerosol/.svn" fileType="regular" />
           <entry location="czcs/nav.tar" fileType="regular" />
           <entry location="eval/.svn" fileType="regular" />
           <entry location="seawifs/.svn" fileType="regular" />
@@ -211,9 +212,19 @@
           <entry location="seawifs/aerosol/seawifs_hzc_v45_r150_i010_z20_s00.dat" fileType="regular" />
           <entry location="seawifs/aerosol/seawifs_hzc_v45_r150_i030_z20_s00.dat" fileType="regular" />
           <entry location="seawifs/aerosol/seawifs_hzc_v45_r150_i040_z20_s00.dat" fileType="regular" />
+          <entry location="viirsn/.svn" fileType="regular" />
+          <entry location="viirsn/aerosol/.svn" fileType="regular" />
+          <entry location="viirsn/cal/.svn" fileType="regular" />
+          <entry location="viirsn/rayleigh/.svn" fileType="regular" />
+          <entry location="viirsn/sim" fileType="regular" />
+          <entry location="viirsn/viirs_sim_sdr_defaults.par" fileType="regular" />
+          <entry location="viirsn/viirs_sim_sdr_defaults_EMPTY.par" fileType="regular" />
+          <entry location="viirsn/viirs_sim_sdr_defaults_FILL_run1.par" fileType="regular" />
+          <entry location="viirsn/viirs_sim_sdr_defaults_FILL_run2.par" fileType="regular" />
+          <entry location="viirsn/viirs_sim_sdr_defaults_FILLED.par" fileType="regular" />
         </exclude>
       </dirEntry>
-      <dirEntry mountPoint="5137" file="../../../OCSSW/run/scripts" overwriteMode="4" shared="false" fileMode="755" uninstallMode="0" overrideFileMode="true" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="scripts" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="5137" file="../../../OCSSW/run/scripts" overwriteMode="4" shared="false" fileMode="755" uninstallMode="3" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="scripts" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="check_eph_times.csh" fileType="regular" />
@@ -262,22 +273,23 @@
           <entry location="aquarius" fileType="regular" />
         </exclude>
       </dirEntry>
+      <fileEntry mountPoint="5132" file="../../../ocssw/README" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
       <fileEntry mountPoint="5132" file="../../../ocssw/OCSSW.env" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
       <fileEntry mountPoint="5132" file="../../../ocssw/OCSSW_bash.env" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="true" overrideOverwriteMode="false" overrideUninstallMode="false" />
-      <dirEntry mountPoint="5426" file="../../../OCSSW/build/lib3/src" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="subdir" subDirectory="src" excludeSuffixes="" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="5426" file="../../../OCSSW/build/lib3/src" overwriteMode="4" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="src" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="zlib" fileType="regular" />
         </exclude>
       </dirEntry>
-      <dirEntry mountPoint="5425" file="../../../OCSSW/build/inc" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="subdir" subDirectory="inc" excludeSuffixes=".svn" dirMode="755" overrideDirMode="true">
+      <dirEntry mountPoint="5425" file="../../../OCSSW/build/inc" overwriteMode="4" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="inc" excludeSuffixes=".svn" dirMode="755" overrideDirMode="true">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="aquarius" fileType="regular" />
           <entry location="utils/.svn" fileType="regular" />
         </exclude>
       </dirEntry>
-      <dirEntry mountPoint="5425" file="../../../OCSSW/build/src" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="subdir" subDirectory="src" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="5425" file="../../../OCSSW/build/src" overwriteMode="4" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="src" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="afocn" fileType="regular" />
@@ -316,7 +328,7 @@
         </include>
         <dependencies />
       </component>
-      <folder name="Processing" id="5150" customizedId="" displayDescription="true" hideHelpButton="true" expanded="false">
+      <folder name="Processing" id="5150" customizedId="" displayDescription="true" hideHelpButton="true" expanded="true">
         <description>Optional data processing resources</description>
         <components>
           <component name="Linux64" id="5000" customizedId="linux64-binaries" displayDescription="false" hideHelpButton="false" selected="false" changeable="true" downloadable="true" hidden="false">
@@ -354,7 +366,16 @@
             <include all="false">
               <entry location=".i4j_external_5131/Processing/run/data/common" fileType="regular" />
               <entry location=".i4j_external_5131/Processing/run/data/eval/common" fileType="regular" />
+              <entry location=".i4j_external_5131/Processing/run/data/seawifs/cal/seawifs_cal_2010.hdf" fileType="regular" />
+              <entry location=".i4j_external_5131/Processing/run/data/seawifs/msl12_defaults.par" fileType="regular" />
+              <entry location=".i4j_external_5131/Processing/run/data/seawifs/msl12_defaults_OC.par" fileType="regular" />
+              <entry location=".i4j_external_5131/Processing/run/data/seawifs/msl12_defaults_seawifs_gac.par" fileType="regular" />
+              <entry location=".i4j_external_5131/Processing/run/data/seawifs/msl12_sensor_info.dat" fileType="regular" />
+              <entry location=".i4j_external_5131/Processing/run/data/seawifs/seawifs_gac_filter.dat" fileType="regular" />
               <entry location=".i4j_external_5131/Processing/run/scripts" fileType="regular" />
+              <entry location=".i4j_external_5131/Processing/README" fileType="regular" />
+              <entry location=".i4j_external_5131/Processing/OCSSW.env" fileType="regular" />
+              <entry location=".i4j_external_5131/Processing/OCSSW_bash.env" fileType="regular" />
             </include>
             <dependencies />
           </component>
@@ -512,7 +533,7 @@ You need only select the data files for the sensors for which processing is desi
           <versionLine x="20" y="40" text="version ${compiler:sys.version}" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
         </text>
       </splashScreen>
-      <java mainClass="com.bc.ceres.launcher.Launcher" vmParameters="-Dceres.context=beam" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
+      <java mainClass="com.bc.ceres.launcher.Launcher" vmParameters="-Dceres.context=seadas" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
         <classPath>
           <archive location="bin/ceres-launcher.jar" failOnError="false" />
         </classPath>
@@ -530,6 +551,7 @@ You need only select the data files for the sensors for which processing is desi
         <file path="./src/main/resources/images/seadas-icon-16.png" />
         <file path="./src/main/resources/images/seadas-icon-32.png" />
         <file path="./src/main/resources/images/seadas-icon-48.png" />
+        <file path="./src/main/resources/images/seadas-icon-128.png" />
       </iconImageFiles>
     </launcher>
   </launchers>
@@ -760,10 +782,10 @@ You need only select the data files for the sensors for which processing is desi
                             <string>-Xmx${installer:maxHeapSize}</string>
                           </void>
                           <void index="1">
-                            <string>-Dbeam.home=${installer:sys.installationDir}</string>
+                            <string>-Dseadas.home=${installer:sys.installationDir}</string>
                           </void>
                           <void index="2">
-                            <string>-Dbeam.splash.image=${installer:sys.installationDir}/bin/splash.png</string>
+                            <string>-Dseadas.splash.image=${installer:sys.installationDir}/bin/splash.png</string>
                           </void>
                           <void index="3">
                             <string>-Dbeam.build.date=${compiler:sys.date}</string>
@@ -2014,7 +2036,7 @@ if (wizardContext != null) {
     </applications>
   </installerGui>
   <mediaSets>
-    <windows name="Win32 JRE" id="20" customizedId="" mediaFileName="${compiler:sys.shortName}_${compiler:sys.version}_win32_installer" installDir="${compiler:sys.shortName}-${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" directDownload="false" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="3" downloadURL="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/data/" verifyIntegrity="true">
+    <windows name="Win32 JRE" id="20" customizedId="" mediaFileName="${compiler:sys.shortName}_${compiler:sys.version}_win32_installer" installDir="${compiler:sys.shortName}-${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="windows-x86-1.6.0_32" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" directDownload="false" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="3" downloadURL="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/data/" verifyIntegrity="true">
       <excludedLaunchers />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
@@ -2087,7 +2109,6 @@ if (wizardContext != null) {
       <excludedComponents>
         <component id="5000" />
         <component id="4999" />
-        <component id="5291" />
       </excludedComponents>
       <includedDownloadableComponents />
     </macosFolder>
@@ -2104,7 +2125,6 @@ if (wizardContext != null) {
       <excludedComponents>
         <component id="5000" />
         <component id="4973" />
-        <component id="5291" />
       </excludedComponents>
       <includedDownloadableComponents />
       <installerScript mode="1" file="">
@@ -2124,7 +2144,6 @@ if (wizardContext != null) {
       <excludedComponents>
         <component id="4999" />
         <component id="4973" />
-        <component id="5291" />
       </excludedComponents>
       <includedDownloadableComponents />
       <installerScript mode="1" file="">
@@ -2132,9 +2151,8 @@ if (wizardContext != null) {
       </installerScript>
     </unixInstaller>
   </mediaSets>
-  <buildIds buildAll="false">
-    <mediaSet refId="126" />
-    <mediaSet refId="128" />
+  <buildIds buildAll="true">
+    <mediaSet refId="20" />
   </buildIds>
   <buildOptions verbose="false" faster="true" debug="false" />
 </install4j>

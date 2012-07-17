@@ -127,11 +127,9 @@ public class ParFileUI {
                                         return;
                                     } else if (option[0].equals(processorModel.getPrimaryInputFileOptionName())) {
                                         // make a relative ifile relative to the par file
-                                        File tmpFile = new File(option[1]);
-                                        if(!tmpFile.isAbsolute()) {
-                                            tmpFile = new File(file.getParentFile(), option[1]);
-                                            option[1] = tmpFile.getAbsolutePath();
-                                        }
+                                        File tmpFile = SeadasFileUtils.createFile(file.getParentFile(), option[1]);
+                                        option[1] = tmpFile.getAbsolutePath();
+
                                         if (!processorModel.updateIFileInfo(option[1])) {
                                             JOptionPane.showMessageDialog(parent,
                                                 "ifile " + option[1] + " is not found. Please include absolute path in the ifile name or select ifile through file chooser.",

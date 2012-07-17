@@ -19,15 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: seadas
- * Date: 11/14/11
- * Time: 2:23 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class L3BinFileReader extends SeadasFileReader {
-    public static final String COL_INDEX_BAND_NAME = "bins";
 
     private ISINGrid grid;
     private RowInfo[] rowInfo;

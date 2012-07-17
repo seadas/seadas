@@ -23,15 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: seadas
- * Date: 11/14/11
- * Time: 2:23 PM
- * To change this template use File | Settings | File Templates.
- */
 public class MeasuresL3BinFileReader extends SeadasFileReader {
-    public static final String COL_INDEX_BAND_NAME = "bins";
 
     private ISINGrid grid;
     private RowInfo[] rowInfo;
@@ -46,7 +38,17 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws IOException {
 
-        grid = new ISINGrid(ISINGrid.DEFAULT_ROW_COUNT);
+        String resolution = "9 km";
+        try {
+            resolution = getStringAttribute("Bin Resolution");
+        } catch (Exception ignored) {
+
+        }
+        int rowcnt = 2160;
+        if (resolution.contains("4 km")){
+            rowcnt = 4320;
+        }
+        grid = new ISINGrid(rowcnt);
         sceneWidth = grid.getRowCount() * 2;
         sceneHeight = grid.getRowCount();
 
@@ -54,7 +56,7 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
         String productName = nameparts[nameparts.length-1];
         try {
                 productName = getStringAttribute("Product Name");
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         SeadasProductReader.ProductType productType = productReader.getProductType();
@@ -64,9 +66,8 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
 
         addGlobalMetadata(product);
 
-        final Variable idxVariable = ncFile.getRootGroup().findVariable("Indexes");
         List<Variable> l3ProdVars = ncFile.getVariables();
-        variableMap = addBands(product, idxVariable, l3ProdVars);
+        variableMap = addBands(product, l3ProdVars);
 
         if (product.getNumBands() == 0) {
             throw new ProductIOException("No bands found.");
@@ -84,7 +85,6 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
                              ProgressMonitor pm) throws IOException, InvalidRangeException {
 
         final Variable variable = variableMap.get(destBand);
-        int rank = variable.getRank();
         DataType prodtype = variable.getDataType();
         float[] fbuffer;
         short[] ibuffer;
@@ -108,16 +108,8 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
         final int width = sceneWidth;
         final ISINGrid grid = this.grid;
 
-
         // loop over lines
         try {
-
-//            int[] lineOffsets = new int[1];
-//            int[] lineLengths = new int[1];
-//            int[] stride = new int[1];
-//            stride[0] = 1;
-
-
             for (int y = sourceOffsetY; y < sourceOffsetY + sourceHeight; y++) {
                 if (pm.isCanceled()) {
                     break;
@@ -129,16 +121,12 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
                     final int lineOffset = rowInfo.offset;
                     final int lineLength = rowInfo.length;
                     final int[] start = new int[]{lineOffset,0};
-                    final int[] stride = new int[]{1, 0};
-                    final int[] count = new int[]{lineLength,0};
-                    //lineOffsets[0] = lineOffset;
-                    //lineLengths[0] = lineLength;
+                    final int[] stride = new int[]{1, 1};
+                    final int[] count = new int[]{lineLength,1};
                     final Object bindata;
-                    //Section section = new Section(lineOffsets, lineLengths, stride);
                     Section section = new Section(start, count, stride);
                     synchronized (ncFile) {
-                        //bindata = variable.read().section(lineOffsets, lineLengths, stride).reduce().copyTo1DJavaArray();
-                        bindata = variable.read(section);//.reduce().copyTo1DJavaArray();
+                        bindata = variable.read(section).reduce().copyTo1DJavaArray();
                     }
                     int lineIndex0 = 0;
                     for (int x = sourceOffsetX; x < sourceOffsetX + sourceWidth; x++) {
@@ -238,61 +226,12 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
             lastRowIndex = rowIndex;
         }
 
-        if (lineLength > 0) {
+        if (lineLength > 0 && lastRowIndex > 0) {
             binLines[lastRowIndex] = new RowInfo(lineOffset, lineLength);
         }
 
         return binLines;
     }
-
-//    private RowInfo[] createRowInfos() throws IOException {
-//        final ISINGrid grid = this.grid;
-//        final RowInfo[] binLines = new RowInfo[sceneHeight];
-//        final Variable idxVariable = ncFile.getRootGroup().findVariable("Indexes");
-//        final Structure idxStructure = (Structure) idxVariable;
-//        final Variable idx = idxStructure.findVariable("n");
-//        final int[] idxValues;
-//        synchronized (ncFile) {
-//            idxValues = (int[]) idx.read().getStorage();
-//        }
-//        if (bins == null) {
-//            bins = idxValues;//(int[]) idxVariable.read().copyTo1DJavaArray();
-//        }
-//        final Point gridPoint = new Point();
-//        int lastBinIndex = -1;
-//        int lastRowIndex = -1;
-//        int lineOffset = 0;
-//        int lineLength = 0;
-//        for (int i = 0; i < idxValues.length; i++) {
-//
-//            final int binIndex = idxValues[i];
-//            if (binIndex < lastBinIndex) {
-//                throw new IOException(
-//                        "Unrecognized level-3 format. Bins numbers expected to appear in ascending order.");
-//            }
-//            lastBinIndex = binIndex;
-//
-//            grid.getGridPoint(binIndex, gridPoint);
-//            final int rowIndex = gridPoint.y;
-//
-//            if (rowIndex != lastRowIndex) {
-//                if (lineLength > 0) {
-//                    binLines[lastRowIndex] = new RowInfo(lineOffset, lineLength);
-//                }
-//                lineOffset = i;
-//                lineLength = 0;
-//            }
-//
-//            lineLength++;
-//            lastRowIndex = rowIndex;
-//        }
-//
-//        if (lineLength > 0) {
-//            binLines[lastRowIndex] = new RowInfo(lineOffset, lineLength);
-//        }
-//
-//        return binLines;
-//    }
 
     private static final class RowInfo {
 
@@ -307,7 +246,7 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
         }
     }
 
-    public Map<Band, Variable> addBands(Product product, Variable idxVariable, List<Variable> l3ProdVars) {
+    public Map<Band, Variable> addBands(Product product, List<Variable> l3ProdVars) {
 
         final Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
 

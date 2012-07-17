@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.FileInfo;
 import gov.nasa.gsfc.seadas.processing.general.FileTypeInfo;
+import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.general.SeadasProcessorInfo;
 
 import java.io.File;
@@ -101,16 +102,8 @@ public class ParamInfo implements Comparable {
 
 
     public File getFile(File rootDir) {
-        if (type == Type.IFILE && value != null && value.length() > 0) {
-            File file = new File(value);
-            if (file != null) {
-                if (file.isAbsolute()) {
-                    return file;
-                } else if (!file.isAbsolute() && rootDir != null) {
-                    File fileWithRootDir = new File(rootDir.getAbsolutePath(), value);
-                    return fileWithRootDir;
-                }
-            }
+        if (type == Type.IFILE) {
+            return SeadasFileUtils.createFile(rootDir, value);
         }
         return null;
     }

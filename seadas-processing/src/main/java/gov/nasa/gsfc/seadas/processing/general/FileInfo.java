@@ -34,57 +34,20 @@ public class FileInfo {
     public FileInfo(String defaultParent, String child, boolean missionAndFileTypeEnabled) {
 
         this.missionAndFileTypeEnabled = missionAndFileTypeEnabled;
-
-        if (defaultParent != null) {
-            defaultParent.trim();
-        }
-        if (child != null) {
-            child.trim();
-        }
-
-        StringBuilder filename = new StringBuilder();
-
-        if (child != null) {
-            filename.append(child);
-
-            if (!isAbsolute(child) && defaultParent != null) {
-                filename.insert(0, defaultParent + System.getProperty("file.separator"));
-            }
-        } else {
-            if (defaultParent != null) {
-                filename.append(defaultParent);
-            }
-        }
-
-
-        if (filename.toString().length() > 0) {
-            file = new File(filename.toString());
-
-            if (missionAndFileTypeEnabled && new File(filename.toString()).exists()) {
-                initMissionAndFileTypeInfos();
-            }
+        file = SeadasFileUtils.createFile(defaultParent, child);
+        if(file != null && file.exists()) {
+            initMissionAndFileTypeInfos();
         }
     }
 
     public FileInfo(String filename) {
-        filename.trim();
-
         if (filename != null) {
             file = new File(filename);
-            if (new File(filename).exists()) {
+            if (file.exists()) {
                 initMissionAndFileTypeInfos();
             }
         }
     }
-
-    private boolean isAbsolute(String filename) {
-        if (filename.indexOf(System.getProperty("file.separator")) == 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 
     public void clear() {
         file = null;
@@ -93,7 +56,6 @@ public class FileInfo {
     }
 
     private void initMissionAndFileTypeInfos() {
-
 
         ProcessorModel processorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
         processorModel.setAcceptsParFile(false);

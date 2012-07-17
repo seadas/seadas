@@ -5,11 +5,13 @@ Author: Danny Knowles
 
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
+import gov.nasa.gsfc.seadas.SeadasApp;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
+import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
@@ -174,10 +176,12 @@ public class L2genForm extends JPanel implements CloProgramUI {
         }
     }
 
-
     public ProcessorModel getProcessorModel() {
+        File ifile = new File(getL2genData().getParamValue(L2genData.IFILE));
+        File ofile = SeadasFileUtils.createFile(ifile.getParentFile(), getL2genData().getParamValue(L2genData.OFILE));
+        processorModel.updateParamInfo("ifile", getL2genData().getParamValue(L2genData.IFILE));
+        processorModel.updateParamInfo("ofile", ofile.getAbsolutePath());
         processorModel.setParString(getL2genData().getParString(false));
-        processorModel.updateParamInfo("ofile", getL2genData().getParamValue(L2genData.OFILE));
         return processorModel;
     }
 

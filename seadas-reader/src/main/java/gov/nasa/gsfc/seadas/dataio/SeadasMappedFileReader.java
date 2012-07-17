@@ -9,13 +9,7 @@ import org.opengis.referencing.operation.TransformException;
 import ucar.ma2.Array;
 import ucar.nc2.Attribute;
 
-/**
- * Created by IntelliJ IDEA.
- * User: seadas
- * Date: 11/14/11
- * Time: 2:23 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class SeadasMappedFileReader extends SeadasFileReader {
 
 

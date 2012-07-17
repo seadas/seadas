@@ -35,7 +35,7 @@ public class SMIFileReader extends SeadasFileReader {
         String productName = productReader.getInputFile().getName();
         try {
                 productName = getStringAttribute("Product Name");
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
@@ -89,13 +89,13 @@ public class SMIFileReader extends SeadasFileReader {
                             band.setNoDataValue((double) variable.findAttribute("Fill").getNumericValue().floatValue());
                         }
                         band.setNoDataValueUsed(true);
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
 
                     }
                     // Set units, if defined
                     try {
                         band.setUnit(getStringAttribute("Units"));
-                    }  catch (Exception e){
+                    }  catch (Exception ignored){
 
                     }
 

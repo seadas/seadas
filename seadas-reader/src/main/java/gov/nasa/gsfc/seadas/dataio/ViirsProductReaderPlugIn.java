@@ -72,6 +72,7 @@ public class ViirsProductReaderPlugIn implements ProductReaderPlugIn {
                         Group dataProduct = ncfile.findGroup("Data_Products");
                         String dataProductList0 = dataProduct.getGroups().get(0).getShortName();
                         if (dataProductList0.matches("VIIRS.*DR")) {
+                            ncfile.close();
                             return DecodeQualification.INTENDED;
                         }
                     } else {

@@ -640,7 +640,7 @@ public abstract class SeadasFileReader {
                     String milliSeconds = timeString.substring(timeString.length() - 3);
                     return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
                 }
-            } catch (ParseException e) {
+            } catch (ParseException ignored) {
             }
         }
         return null;
