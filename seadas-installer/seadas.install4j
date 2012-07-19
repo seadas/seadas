@@ -130,7 +130,7 @@
           <entry location="linux_64/.svn" fileType="regular" />
         </exclude>
       </dirEntry>
-      <dirEntry mountPoint="5136" file="../../../OCSSW/run/data" overwriteMode="5" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="data" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="5136" file="../../../OCSSW/run/data" overwriteMode="5" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="data" excludeSuffixes="*.tar, .svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="aquarius" fileType="regular" />
@@ -138,6 +138,10 @@
           <entry location="czcs/aerosol/.svn" fileType="regular" />
           <entry location="czcs/nav.tar" fileType="regular" />
           <entry location="eval/.svn" fileType="regular" />
+          <entry location="eval/czcs/afrt_czcs.tar" fileType="regular" />
+          <entry location="eval/modist/afrt_modist.tar" fileType="regular" />
+          <entry location="eval/octs/afrt_octs.tar" fileType="regular" />
+          <entry location="eval/viirsn/afrt_viirsn.tar" fileType="regular" />
           <entry location="seawifs/.svn" fileType="regular" />
           <entry location="seawifs/aerosol/.svn" fileType="regular" />
           <entry location="seawifs/aerosol/seawifs_hzc_v20_r133_i000_z20_s00.dat" fileType="regular" />
@@ -2161,9 +2165,7 @@ if (wizardContext != null) {
       </installerScript>
     </unixInstaller>
   </mediaSets>
-  <buildIds buildAll="true">
-    <mediaSet refId="126" />
-    <mediaSet refId="4713" />
+  <buildIds buildAll="false">
     <mediaSet refId="128" />
   </buildIds>
   <buildOptions verbose="false" faster="true" debug="false" />
