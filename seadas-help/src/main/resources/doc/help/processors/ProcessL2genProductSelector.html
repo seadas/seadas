@@ -23,7 +23,7 @@
 <p>
     The l2gen product parameter '<b>l2prod</b>' is initially set to the default value. At any time <b>l2prod</b> can be
     restored to
-    the default value by clicking '<b>Apply Defaults</b>' on the <b>L2gen:Products</b> tab). <b>l2prod</b> can be
+    the default value by clicking '<b>Restore Defaults</b>' on the <b>L2gen:Products</b> tab). <b>l2prod</b> can be
     specified in a
     multitude of ways. Note that a change within any of
     one these product specifier controls will automatically update the others.
@@ -32,7 +32,7 @@
     </li>
     <li>The '<b>Selected Products</b>' textfield (located within the <b>l2gen:Products</b> tab)<br>
     </li>
-    <li>The '<b>Parameters</b>' textfield (located within the <b>l2gen:Overview</b> tab)<br>
+    <li>The '<b>Parfile</b>' textfield (located within the <b>l2gen:Overview</b> tab)<br>
     </li>
     <li>A '<b>Parameter File</b>' (which can be uploaded within the <b>l2gen:Overview</b> tab)<br>
     </li>
@@ -43,7 +43,7 @@ This selector is located within the <b>l2gen:Products</b> tab. The products are 
 this tree-based selector. Any branch may be fully unwound and an individual
 product may then be selected. Selection at any parent level will result in the selection of all the child level
 products.
-By default checking/unchecking a parent behaves in a dual state manner, respectfully checking/unchecking all of it's
+By default, checking/unchecking a parent behaves in a dual state manner, respectfully checking/unchecking all of it's
 children.
 For selecting products which have a multitude of wavelength options, the '<b>Wavelength Limiter</b>' tool is available
 (located at the
@@ -55,19 +55,15 @@ but only effects the behaviour of the '<b>Product Selector</b>'.
 
 <h4>Selected Products</h4>
 This textfield located within the <b>L2gen:Products</b> tab displays the current selection of '<b>l2prod</b>'. This field
-is editable: click '<b>Edit</b>', then once edits are complete click '<b>Load</b>'. Note that until '<b>Load</b>' is clicked
-the edits are not final and do not appear in the other controls. Clicking '<b>Cancel</b>' during the edit will restore the
-values
-prior to the edit.
+is editable.
 
-<h4>Parameters</h4>
-This textfield located within the <b>l2gen:Overview</b> tab displays the current specified parameters, one of which can
-be <b>l2prod</b>. This field
-is editable. ... more text TBD regarding Load which is not yet implemented.
+<h4>Parfile</h4>
+This textarea located within the <b>l2gen:Main</b> tab displays the current specified parameters, one of which can
+be <b>l2prod</b>. This field is editable.
 
 <h4>Parameter File</h4>
 A parameter file which can contain a specified <b>l2prod</b> can be loaded into SeaDaS via the <b>l2gen:Overview</b>
-tab.
+tab which can contain the l2prod field.
 
 
 <h4>Example</h4>
