@@ -130,7 +130,7 @@
           <entry location="linux_64/.svn" fileType="regular" />
         </exclude>
       </dirEntry>
-      <dirEntry mountPoint="5136" file="../../../OCSSW/run/data" overwriteMode="5" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="data" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
+      <dirEntry mountPoint="5136" file="../../../OCSSW/run/data" overwriteMode="5" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="data" excludeSuffixes="*.tar, .svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="aquarius" fileType="regular" />
@@ -138,6 +138,10 @@
           <entry location="czcs/aerosol/.svn" fileType="regular" />
           <entry location="czcs/nav.tar" fileType="regular" />
           <entry location="eval/.svn" fileType="regular" />
+          <entry location="eval/czcs/afrt_czcs.tar" fileType="regular" />
+          <entry location="eval/modist/afrt_modist.tar" fileType="regular" />
+          <entry location="eval/octs/afrt_octs.tar" fileType="regular" />
+          <entry location="eval/viirsn/afrt_viirsn.tar" fileType="regular" />
           <entry location="seawifs/.svn" fileType="regular" />
           <entry location="seawifs/aerosol/.svn" fileType="regular" />
           <entry location="seawifs/aerosol/seawifs_hzc_v20_r133_i000_z20_s00.dat" fileType="regular" />
@@ -271,6 +275,7 @@
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="aquarius" fileType="regular" />
+          <entry location="viirsn" fileType="regular" />
         </exclude>
       </dirEntry>
       <fileEntry mountPoint="5132" file="../../../ocssw/README" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
@@ -511,6 +516,7 @@ You need only select the data files for the sensors for which processing is desi
                 <include all="false">
                   <entry location=".i4j_external_5131/Processing/run/data/eval/viirsn" fileType="regular" />
                   <entry location=".i4j_external_5131/Processing/run/data/viirsn" fileType="regular" />
+                  <entry location=".i4j_external_5131/Processing/run/var/modis/leapsec.dat" fileType="regular" />
                 </include>
                 <dependencies>
                   <component id="4974" />
@@ -572,6 +578,9 @@ You need only select the data files for the sensors for which processing is desi
                 <object class="com.install4j.api.beans.ExternalFile">
                   <string>./src/main/resources/images/seadas-installer.png</string>
                 </object>
+              </void>
+              <void property="frameHeight">
+                <int>450</int>
               </void>
               <void property="frameSizeClientArea">
                 <boolean>false</boolean>
@@ -820,7 +829,7 @@ You need only select the data files for the sensors for which processing is desi
                           </void>
                           <void index="3">
                             <object class="java.io.File">
-                              <string>config/beam.config</string>
+                              <string>config/seadas.config</string>
                             </object>
                           </void>
                         </array>
@@ -967,6 +976,11 @@ You need only select the data files for the sensors for which processing is desi
                       </void>
                       <void property="launcherId">
                         <string>19</string>
+                      </void>
+                      <void property="macIconFile">
+                        <object class="com.install4j.api.beans.ExternalFile">
+                          <string>./src/main/resources/images/seadas-icon.icns</string>
+                        </object>
                       </void>
                       <void property="windowsIconFile">
                         <object class="com.install4j.api.beans.ExternalFile">
@@ -1202,7 +1216,7 @@ You need only select the data files for the sensors for which processing is desi
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.formcomponents.CheckboxComponent">
                       <void property="checkboxText">
-                        <string>Remove BEAM application data</string>
+                        <string>Remove SeaDAS application data</string>
                       </void>
                       <void property="initiallySelected">
                         <boolean>true</boolean>
@@ -1221,8 +1235,8 @@ You need only select the data files for the sensors for which processing is desi
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent">
                       <void property="labelText">
-                        <string>BEAM application data such as user preferences and caches are stored in
-the directory '${installer:sys.userHome}/.beam'. 
+                        <string>SeaDAS application data such as user preferences and caches are 
+stored in the directory '${installer:sys.userHome}/.seadas' 
 This directory will be entirely removed if you select this option.</string>
                       </void>
                     </object>
@@ -1285,8 +1299,8 @@ This directory will be entirely removed if you select this option.</string>
               <void property="executableName">
                 <string>updater</string>
               </void>
-              <void property="frameSizeClientArea">
-                <boolean>false</boolean>
+              <void property="frameHeight">
+                <int>450</int>
               </void>
               <void property="useCustomIcon">
                 <boolean>true</boolean>
@@ -2151,8 +2165,8 @@ if (wizardContext != null) {
       </installerScript>
     </unixInstaller>
   </mediaSets>
-  <buildIds buildAll="true">
-    <mediaSet refId="20" />
+  <buildIds buildAll="false">
+    <mediaSet refId="128" />
   </buildIds>
   <buildOptions verbose="false" faster="true" debug="false" />
 </install4j>

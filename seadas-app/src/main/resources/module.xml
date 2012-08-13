@@ -15,8 +15,10 @@
             <applicationId>SeaDAS</applicationId>
             <displayName>SeaDAS</displayName>
             <version>7.0-beta</version>
-            <buildId>${beam.build.id}</buildId>
-            <buildDate>${beam.build.date}</buildDate>
+            <buildId>2012.07.002</buildId>
+            <buildDate>July 2012</buildDate>
+            <!--<buildId>${beam.build.id}</buildId>-->
+            <!--<buildDate>${beam.build.date}</buildDate>-->
             <excludedActions>
                 <!-- place action IDs here you wish to exclude from your application -->
                 <!-- e.g. <id>helpTopics</id> -->
@@ -42,7 +44,7 @@
 
     <vendor>NASA Ocean Biology Processing Group</vendor>
     <contactAddress>NASA GSFC, Code 616</contactAddress>
-    <copyright>(c) copyright - Not sure??</copyright>
+    <copyright>(C) 2012 United States Government as represented by the Administrator of the National Aeronautics and Space Administration.</copyright>
     <url>http://oceancolor.gsfc.nasa.gov/seadas</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
 
