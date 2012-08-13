@@ -62,7 +62,6 @@
         -->
         <module>seadas-installer</module>
         <module>seadas-bootstrap</module>
-
     </modules>
 
     <licenses>

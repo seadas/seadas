@@ -5,7 +5,6 @@ import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genPrimaryIOFilesSe
 import org.esa.beam.framework.datamodel.Product;
 
 import javax.swing.*;
-import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -24,7 +23,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
     private L2genPrimaryIOFilesSelector ioFilesSelector;
 
-    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
+    //private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
     ProcessorModel processorModel;
 

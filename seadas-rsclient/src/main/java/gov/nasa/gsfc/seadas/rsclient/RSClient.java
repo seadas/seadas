@@ -1,4 +1,12 @@
-package gov.nasa.gsfc.seadas.processing.general;
+package gov.nasa.gsfc.seadas.rsclient;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: Aynur Abdurazik (aabduraz)
+ * Date: 8/7/12
+ * Time: 12:17 PM
+ * To change this template use File | Settings | File Templates.
+ */
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -14,35 +22,23 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Aynur Abdurazik (aabduraz)
- * Date: 8/7/12
- * Time: 3:17 PM
- * To change this template use File | Settings | File Templates.
- */
-public class RSClient {
+public class RSClient
 
+{
+    WebResource resource;
 
     public RSClient() {
+
     }
 
     private static URI getBaseURI() {
         return UriBuilder.fromUri("http://localhost:9998").build();
     }
 
-    public WebResource getOCSSWService(){
-        final ClientConfig config = new DefaultClientConfig();
-        final  Client client = Client.create(config);
-        final WebResource resource = client.resource(getBaseURI())
-                .path("file")
-                .path("upload");
-        return resource;
-    }
 
     public boolean uploadFile(String[] filesToUpload) {
         final ClientConfig config = new DefaultClientConfig();
-        final  Client client = Client.create(config);
+        final Client client = Client.create(config);
         final WebResource resource = client.resource(getBaseURI())
                 .path("file")
                 .path("upload");
@@ -55,32 +51,15 @@ public class RSClient {
                 multiPart.bodyPart(fileDataBodyPart);
             }
             final ClientResponse clientResp = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
-                                                       .post(ClientResponse.class, multiPart);
-            if (!clientResp.getClientResponseStatus().equals(ClientResponse.Status.OK)) {
-                System.out.println("Not accepted Response: " + clientResp.getClientResponseStatus());
-                System.out.println("Not accepted Response: " +  clientResp.toString());
+                    .post(ClientResponse.class, multiPart);
+            if (!clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED)) {
                 return false;
             }
-            System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
+
         }
-
-        client.destroy();
-
         return true;
     }
 
-    public boolean uploadParam(String params) {
-        final ClientConfig config = new DefaultClientConfig();
-        final Client client = Client.create(config);
-        final WebResource resource = client.resource(getBaseURI())
-                .path("file")
-                .path("params");
-
-         final ClientResponse clientResp = resource.type(MediaType.TEXT_PLAIN_TYPE)
-                .post(ClientResponse.class, params);
-        System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
-        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
-    }
 
     public boolean uploadFile(String fileName) {
         final ClientConfig config = new DefaultClientConfig();
@@ -99,12 +78,12 @@ public class RSClient {
         return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
     }
 
-    public Process runOCSSW() {
+    public Process runOCSSW(){
         final ClientConfig config = new DefaultClientConfig();
-        final Client client = Client.create(config);
-        final WebResource ocsswService = client.resource(getBaseURI())
-                .path("ocssw")
-                .path("output");
+         final Client client = Client.create(config);
+         final WebResource ocsswService = client.resource(getBaseURI())
+                 .path("ocssw")
+                 .path("output");
         ClientResponse response = ocsswService.accept(MediaType.MULTIPART_FORM_DATA_TYPE)
                 .get(ClientResponse.class);
         if (response.getStatus() != 200) {
@@ -149,29 +128,28 @@ public class RSClient {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        String[] cmdTestArray = new String[]{"/Users/aabduraz/get_obpg_file_type.py", "/Users/aabduraz/soapui-settings.xml"}; //, "/Users/aabduraz/soapui-settings.xml"
-        //uploadFile(cmdTestArray);
-//        final ClientConfig config = new DefaultClientConfig();
-//        final Client client = Client.create(config);
-//        final WebResource resource = client.resource(getBaseURI())
-//                .path("file")
-//                .path("upload");
-//
-//        final File fileToUpload = new File("/Users/Shared/ocssw/test/l2gen/A2003080085000.L1B_LAC");
-//        final FormDataMultiPart multiPart = new FormDataMultiPart();
-//
-//        if (fileToUpload != null)
-//
-//        {
-//            final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", fileToUpload, MediaType.APPLICATION_OCTET_STREAM_TYPE);
-//            multiPart.bodyPart(fileDataBodyPart);
-//        }
-//
-//        final ClientResponse clientResp = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
-//                .post(ClientResponse.class, multiPart);
-//
-//
-//       System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
-//        client.destroy();
+        final ClientConfig config = new DefaultClientConfig();
+        final Client client = Client.create(config);
+        final WebResource resource = client.resource(getBaseURI())
+                .path("upload")
+                .path("file");
+
+        final File fileToUpload = new File("/Users/Shared/ocssw/test/l2gen/A2003080085000.L1B_LAC");
+        final FormDataMultiPart multiPart = new FormDataMultiPart();
+
+        if (fileToUpload != null)
+
+        {
+            final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", fileToUpload, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+            multiPart.bodyPart(fileDataBodyPart);
+        }
+
+        final ClientResponse clientResp = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
+                .post(ClientResponse.class, multiPart);
+
+
+        System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
+        client.destroy();
     }
 }
+
