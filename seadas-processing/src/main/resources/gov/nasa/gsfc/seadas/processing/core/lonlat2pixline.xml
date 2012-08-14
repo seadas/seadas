@@ -25,7 +25,7 @@
             <name>SWlon</name>
             <value></value>
             <default></default>
-            <description>south</description>
+            <description>Longitude of southwest corner of the box to be extracted</description>
             <usedAs>argument</usedAs>
             <order>2</order>
         </option>
@@ -33,7 +33,7 @@
             <name>SWlat</name>
             <value></value>
             <default></default>
-            <description>end pixel number (-1=the last pixel)</description>
+            <description>Latitude of southwest corner of the box to be extracted.</description>
             <usedAs>argument</usedAs>
             <order>3</order>
         </option>
@@ -41,7 +41,7 @@
             <name>NElon</name>
             <value></value>
             <default></default>
-            <description>start line number</description>
+            <description>Longitude of northeast corner of the box to be extracted.</description>
             <usedAs>argument</usedAs>
             <order>4</order>
         </option>
@@ -49,7 +49,7 @@
             <name>NElat</name>
             <value></value>
             <default></default>
-            <description>end line number (-1=the last line)</description>
+            <description>Latitude of northeast corner of the box to be extracted.</description>
             <usedAs>argument</usedAs>
             <order>5</order>
         </option>

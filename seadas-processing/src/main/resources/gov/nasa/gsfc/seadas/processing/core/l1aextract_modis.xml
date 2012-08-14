@@ -12,7 +12,7 @@
     <options>
         <option type="ifile">
             <name>ifile</name>
-            <value>q</value>
+            <value></value>
             <default></default>
             <description>input MODIS L1A datafile</description>
             <source>command line</source>
@@ -24,8 +24,8 @@
         </option>
         <option type="int">
             <name>spixl</name>
-            <value>1</value>
-            <default>1</default>
+            <value></value>
+            <default></default>
             <description>start pixel number</description>
             <order>2</order>
             <source>lonlat2pixline</source>
@@ -33,8 +33,8 @@
         </option>
         <option type="int">
             <name>epixl</name>
-            <value>-1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>end pixel number (-1=the last pixel)</description>
             <order>3</order>
             <source>lonlat2pixline</source>
@@ -42,8 +42,8 @@
         </option>
         <option type="int">
             <name>sline</name>
-            <value>1</value>
-            <default>1</default>
+            <value></value>
+            <default></default>
             <description>start line number</description>
             <order>4</order>
             <source>lonlat2pixline</source>
@@ -51,8 +51,8 @@
         </option>
         <option type="int">
             <name>eline</name>
-            <value>-1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>end line number (-1=the last line)</description>
             <order>5</order>
             <source>lonlat2pixline</source>
