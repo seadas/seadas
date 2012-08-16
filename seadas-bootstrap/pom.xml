@@ -104,6 +104,7 @@
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-avhrr-reader</artifactId>
         </dependency>
+        <!-- Jersey RESTful client dependency -->
         <dependency>
              <groupId>com.sun.jersey</groupId>
              <artifactId>jersey-client</artifactId>
