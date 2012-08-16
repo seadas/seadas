@@ -36,16 +36,14 @@
 <<a name="details"><h4>Details</h4></a>
 
 <p>
-    <b>l1brsgen</b> creates small subsetted bitmap samples of the larger datasets.
-     The default SeaWiFS browse product is an 8-bit true color image created from the subsampled and Rayleigh corrected L1A bands.
-    A 24-bit true color image can also be generated.
+    <b>l2mapgen</b> takes a product from a L2 file, maps it using a Plate Carree cylindrical projection, and produces a gray scale PGM or color PPM file.
 <p></p>
 <hr>
 <center>
     <table class="image">
         <caption align="top"><b>l2mapgen GUI</b></caption>
         <tr>
-            <td><img src="../processors/images/l2mapgen.png" width="640" height="620"></td>
+            <td><img src="../processors/images/l2mapgen.png"></td>
         </tr>
     </table>
 </center>
@@ -69,14 +67,6 @@
         <td>Input Level 1 data product.
         </td>
         <td>Required</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><b>geofile</b></td>
-        <td> Text Field</td>
-        <td>input L1 geolocation file name
-        </td>
-        <td>Conditional - MODIS only</td>
         <td></td>
     </tr>
     <tr>
