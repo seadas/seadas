@@ -111,7 +111,6 @@
     <mapID target="l1brsgen" url="processors/ProcessL1brsgen.html"/>
     <mapID target="l2extract" url="processors/ProcessL2extract.html"/>
     <mapID target="l2gen" url="processors/ProcessL2gen.html"/>
-    <mapID target="l2genSimple" url="processors/ProcessL2genSimple.html"/>
     <mapID target="l2mapgen" url="processors/ProcessL2mapgen.html"/>
     <mapID target="l2brsgen" url="processors/ProcessL2brsgen.html"/>
     <mapID target="l2bin" url="processors/ProcessL2bin.html"/>
