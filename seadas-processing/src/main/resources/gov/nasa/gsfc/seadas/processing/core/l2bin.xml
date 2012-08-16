@@ -45,11 +45,45 @@
             <description>end datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
             <order>4</order>
         </option>
+        <!--<option type="int">-->
+            <!--<name>resolve</name>-->
+            <!--<value>1</value>-->
+            <!--<default>1</default>-->
+            <!--<description>bin resolution (H,1,2,4,9,36)</description>-->
+            <!--<order>5</order>-->
+        <!--</option>-->
         <option type="int">
             <name>resolve</name>
-            <value>1</value>
-            <default>1</default>
-            <description>bin resolution (H,1,2,4,9,36)</description>
+            <value></value>
+            <type>int</type>
+            <default>9</default>
+            <description>bin resolution (H,1,2,4,9,36)
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>H</value>
+                <description>500m</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>1km</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>2km</description>
+            </validValue>
+            <validValue>
+                <value>4</value>
+                <description>4km</description>
+            </validValue>
+            <validValue>
+                <value>9</value>
+                <description>9km</description>
+            </validValue>
+            <validValue>
+                <value>36</value>
+                <description>36km</description>
+            </validValue>
             <order>5</order>
         </option>
         <option type="string">
@@ -88,8 +122,7 @@
             <name>noext</name>
             <value></value>
             <default>false</default>
-            <description>set to 1 to suppress generation of external files
-                [default=0, (1 for "regional" prodtype)]
+            <description>set to 1 to suppress generation of external files [default=0, (1 for "regional" prodtype)]
             </description>
             <order>10</order>
         </option>

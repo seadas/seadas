@@ -156,7 +156,7 @@ public class ParamUIFactory {
         field.setMinimumSize(field.getPreferredSize());
 
         if (pi.getDescription() != null) {
-            field.setToolTipText(pi.getDescription());
+            field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
         ctx.bind(optionName, field);
 
@@ -206,7 +206,7 @@ public class ParamUIFactory {
         final JCheckBox field = new JCheckBox();
         field.setHorizontalAlignment(JFormattedTextField.LEFT);
         if (pi.getDescription() != null) {
-            field.setToolTipText(pi.getDescription());
+            field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
         SeadasLogger.getLogger().finest(optionName + "  " + pi.getValue());
         ctx.bind(optionName, field);
@@ -252,15 +252,22 @@ public class ParamUIFactory {
 
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
         String[] values = new String[validValues.size()];
+        ArrayList<String> toolTips = new ArrayList<String>();
 
         Iterator itr = validValues.iterator();
         int i = 0;
+        ParamValidValueInfo paramValidValueInfo;
         while (itr.hasNext()) {
-            values[i] = ((ParamValidValueInfo) itr.next()).getValue();
+            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+            values[i] = paramValidValueInfo.getValue();
+            toolTips.add(paramValidValueInfo.getDescription());
             i++;
         }
 
         final JComboBox inputList = new JComboBox(values);
+        ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
+        inputList.setRenderer(renderer);
+        renderer.setTooltips(toolTips);
         inputList.setEditable(true);
         inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
                 inputList.getPreferredSize().height));
@@ -328,6 +335,27 @@ public class ParamUIFactory {
             }
         });
         return ioFileSelector.getjPanel();
+    }
+
+    private class ComboboxToolTipRenderer extends DefaultListCellRenderer {
+        ArrayList tooltips;
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value,
+                            int index, boolean isSelected, boolean cellHasFocus) {
+
+            JComponent comp = (JComponent) super.getListCellRendererComponent(list,
+                    value, index, isSelected, cellHasFocus);
+
+            if (-1 < index && null != value && null != tooltips) {
+                        list.setToolTipText((String)tooltips.get(index));
+                    }
+            return comp;
+        }
+
+        public void setTooltips(ArrayList tooltips) {
+            this.tooltips = tooltips;
+        }
     }
 
 }

@@ -53,6 +53,8 @@ public class ProcessorModel implements L2genDataProcessorModel {
     ArrayList<String> filesToDownload;
     ArrayList<String> finalCmdArray;
 
+    boolean tmpFlagForLocalRemote;
+
     public ProcessorModel(String name) {
         this(name, null);
     }

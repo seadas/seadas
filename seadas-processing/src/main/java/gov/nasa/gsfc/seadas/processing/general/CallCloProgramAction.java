@@ -129,8 +129,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         }
 
-        //executeProgram(processorModel);
-        remoteExecuteProgram(processorModel);
+        executeProgram(processorModel);
+        //remoteExecuteProgram(processorModel);
 
         SeadasLogger.deleteLoggerOnExit(true);
 

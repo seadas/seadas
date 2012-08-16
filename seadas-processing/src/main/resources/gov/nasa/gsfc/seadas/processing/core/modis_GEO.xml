@@ -67,7 +67,7 @@
             <usedAs>option</usedAs>
             <order>6</order>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>--ancdir</name>
             <value></value>
             <default>ANCDIR</default>
@@ -75,7 +75,7 @@
             <usedAs>option</usedAs>
             <order>7</order>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>--ancdb</name>
             <value></value>
             <default>ANCDB</default>
