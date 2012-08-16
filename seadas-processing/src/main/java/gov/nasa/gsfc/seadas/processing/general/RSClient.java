@@ -150,6 +150,7 @@ public class RSClient {
 
     public static void main(String[] args) throws FileNotFoundException {
         String[] cmdTestArray = new String[]{"/Users/aabduraz/get_obpg_file_type.py", "/Users/aabduraz/soapui-settings.xml"}; //, "/Users/aabduraz/soapui-settings.xml"
+
         //uploadFile(cmdTestArray);
 //        final ClientConfig config = new DefaultClientConfig();
 //        final Client client = Client.create(config);
