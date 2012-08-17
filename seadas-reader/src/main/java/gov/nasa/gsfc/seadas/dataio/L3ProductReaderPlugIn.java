@@ -68,6 +68,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
             "OCM2 Level-3 Binned Data",
             "Level-3 Binned Data",
             "VIIRS Level-3 Binned Data",
+            "OCRVC Level-3 Binned Data",
             "GSM bin composite",
             "GSM mapped",
     };
