@@ -49,6 +49,11 @@ public class ProcessorModel implements L2genDataProcessorModel {
     ProcessorTypeInfo.ProcessorID processorID;
 
     private boolean hasMultipleInputFiles;
+    ArrayList<String> filesToUpload;
+    ArrayList<String> filesToDownload;
+    ArrayList<String> finalCmdArray;
+
+    boolean tmpFlagForLocalRemote;
 
     public ProcessorModel(String name) {
         this(name, null);
@@ -76,6 +81,9 @@ public class ProcessorModel implements L2genDataProcessorModel {
         hasMultipleInputFiles = false;
         processorID = ProcessorTypeInfo.getProcessorID(programName);
         progressPattern = Pattern.compile(progressRegex);
+        filesToUpload = null;
+        filesToDownload = null;
+        finalCmdArray = null;
     }
 
     public static ProcessorModel valueOf(String programName, String xmlFileName) {
@@ -439,46 +447,92 @@ public class ProcessorModel implements L2genDataProcessorModel {
                 getProgramName(),
                 parFileOptionName + "=" + computeParFile()
         };
+
         for (int i = 0; i < cmdArray.length; i++) {
             SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
         }
+        finalCmdArray.add(0, "programLocation : " + cmdArray[0]);
+        finalCmdArray.add(1, "programName : " + cmdArray[1]);
         return cmdArray;
     }
 
+    public String getCmdArrayString() {
+        Iterator itr = finalCmdArray.iterator();
+        StringBuilder cmdArray = new StringBuilder();
+        String tmpString;
+        while (itr.hasNext()) {
+            tmpString = (String) itr.next();
+            if (tmpString.indexOf(File.separator) != -1) {
+                tmpString = tmpString.replaceAll(tmpString.substring(tmpString.indexOf(File.separator), tmpString.lastIndexOf(File.separator) + 1), "");
+            }
+            cmdArray.append(tmpString + ";");
+        }
+
+        return cmdArray.toString();
+    }
+
     private String[] getCmdArrayWithArguments() {
+
+//        filesToUpload = new ArrayList<String>();
+//        filesToDownload = new ArrayList<String>();
+
         String[] cmdArray = new String[getParamList().size() + 2];
+
         cmdArray[0] = programLocation + "ocssw_runner";
         cmdArray[1] = getProgramName();
 
         Iterator itr = getParamList().iterator();
         ParamInfo option;
+        String cmdString = null;
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
 
             if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
-                cmdArray[option.getOrder() + 1] = option.getValue();
+                if (option.getValue() != null && option.getValue().length() > 0) {
+                    cmdArray[option.getOrder() + 1] = option.getValue();
+                    cmdString = "argument : " + option.getValue();
+                }
             } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
                 cmdArray[option.getOrder() + 1] = option.getName() + "=" + option.getValue();
+                cmdString = "option : " + option.getName() + "=" + option.getValue();
             } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
-                cmdArray[option.getOrder() + 1] = option.getName();
+                if (option.getName() != null && option.getName().length() > 0) {
+                    cmdArray[option.getOrder() + 1] = option.getName();
+                    cmdString = "flag : " + option.getName();
+                }
             }
 
+            if (option.getType().equals(ParamInfo.Type.IFILE)) {
+                filesToUpload.add(option.getValue());
+                cmdString = cmdString.replaceAll("argument", "ifile");
+                cmdString = cmdString.replaceAll("option", "ifile");
+            } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
+                filesToDownload.add(option.getValue());
+                cmdString = cmdString.replaceAll("argument", "ofile");
+                cmdString = cmdString.replaceAll("option", "ofile");
+            }
+            finalCmdArray.add(cmdString);
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
 
-        ArrayList<String> finalCommandArgList = new ArrayList<String>();
-        for (String s : cmdArray) {
-            if (s != null && s.length() > 0) {
-
-                finalCommandArgList.add(s);
-            }
-        }
-
-        cmdArray = finalCommandArgList.toArray(new String[finalCommandArgList.size()]);
-
-        for (int i = 0; i < cmdArray.length; i++) {
-            SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
-        }
+//        ArrayList<String> finalCommandArgList = new ArrayList<String>();
+//        for (String s : cmdArray) {
+//            if (s != null && s.length() > 0) {
+//
+//                finalCommandArgList.add(s);
+//            }
+//        }
+//
+//        cmdArray = finalCommandArgList.toArray(new String[finalCommandArgList.size()]);
+//        String tmpString;
+//        for (int i = 0; i < cmdArray.length; i++) {
+//            SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
+////            tmpString = cmdArray[i];
+////            if (tmpString.indexOf(File.separator) != -1) {
+////                tmpString = tmpString.replaceAll(tmpString.substring(tmpString.indexOf(File.separator), tmpString.lastIndexOf(File.separator)), "");
+////            }
+//            finalCmdArray.add(cmdArray[i]);
+//        }
 
         return cmdArray;
     }
@@ -493,6 +547,10 @@ public class ProcessorModel implements L2genDataProcessorModel {
      */
     public String[] getProgramCmdArray() {
 
+        filesToUpload = new ArrayList<String>();
+        filesToDownload = new ArrayList<String>();
+        finalCmdArray = new ArrayList<String>();
+
         if (acceptsParFile) {
             return getCmdArrayWithParFile();
 
@@ -505,6 +563,10 @@ public class ProcessorModel implements L2genDataProcessorModel {
     public String[] getProgramEnv() {
         return processorEnv;
 
+    }
+
+    public String[] getFilesToUpload() {
+        return filesToUpload.toArray(new String[filesToUpload.size()]);
     }
 
     private File computeParFile() {
@@ -535,7 +597,6 @@ public class ProcessorModel implements L2genDataProcessorModel {
             return parString;
         }
 
-
         StringBuilder parString = new StringBuilder("");
         Iterator itr = getParamList().iterator();
         ParamInfo option;
@@ -548,6 +609,19 @@ public class ProcessorModel implements L2genDataProcessorModel {
 
                 if (!option.getDefaultValue().equals(option.getValue())) {
                     parString = parString.append(option.getName() + "=" + option.getValue() + "\n");
+                    if (option.getType().equals(ParamInfo.Type.IFILE)) {
+                        finalCmdArray.add("ifile : " + option.getName() + "=" + option.getValue());
+                    } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
+                        finalCmdArray.add("ofile : " + option.getName() + "=" + option.getValue());
+                    } else {
+                        finalCmdArray.add("option : " + option.getName() + "=" + option.getValue());
+                    }
+                }
+
+                if (option.getType().equals(ParamInfo.Type.IFILE)) {
+                    filesToUpload.add(option.getValue());
+                } else if (option.getType().equals(ParamInfo.PARAM_TYPE_OFILE)) {
+                    filesToDownload.add(option.getValue());
                 }
             }
 
@@ -890,5 +964,4 @@ public class ProcessorModel implements L2genDataProcessorModel {
             });
         }
     }
-
 }

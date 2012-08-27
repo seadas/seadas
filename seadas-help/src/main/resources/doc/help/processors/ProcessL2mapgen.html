@@ -23,15 +23,276 @@
     Creates a Level 2 mapped image.
 </p>
 
-<h4>Location</h4>
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
 <p>Tools -> OCSSW Processing -> l2mapgen</p>
 
 
-<h4>Details</h4>
+<<a name="details"><h4>Details</h4></a>
+
 <p>
-    TBD
-</p>
-<h5>Command Line Usage</h5>
+    <b>l2mapgen</b> takes a product from a L2 file, maps it using a Plate Carree cylindrical projection, and produces a gray scale PGM or color PPM file.
+<p></p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>l2mapgen GUI</b></caption>
+        <tr>
+            <td><img src="../processors/images/l2mapgen.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>ifile</b></td>
+        <td>Text Field</td>
+        <td>Input Level 1 data product.
+        </td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>ofile</b></td>
+        <td> Text Field</td>
+        <td>Output filename for generated Level-1B data product.
+        </td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>ofile[#]</b></td>
+        <td> Text Field</td>
+        <td>additional output L2 file name</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>pversion</b></td>
+        <td> Text Field</td>
+        <td>processing version string</td>
+        <td>Optional</td>
+        <td>Unspecified</td>
+    </tr>
+    <tr>
+        <td><b>suite</b></td>
+        <td> Text Field</td>
+        <td>product suite string for loading suite-specific defaults</td>
+        <td>Optional</td>
+        <td>OC</td>
+    </tr>
+
+    <tr>
+        <td><b>resolution</b></td>
+        <td> int</td>
+        <td>processing resolution
+    <pre>
+       -1: standard ocean 1km processing
+     1000: 1km resolution including aggregated 250 and 500m land bands
+      500: 500m resolution including aggregated 250 land bands and replication for lower resolution bands
+      250: 250m resolution with replication for lower resolution bands
+    </pre>
+        </td>
+        <td>Conditional - Required for processing MODIS products</td>
+        <td>-1</td>
+    </tr>
+    <tr>
+         <td><b>spixl</b></td>
+         <td> int</td>
+         <td>start pixel number</td>
+         <td>Optional</td>
+         <td>1</td>
+     </tr>
+     <tr>
+         <td><b>epixl</b></td>
+         <td> int</td>
+         <td>end pixel number</td>
+         <td>Optional</td>
+         <td>-1</td>
+     </tr>
+     <tr>
+         <td><b>sline</b></td>
+         <td> int</td>
+         <td>start line number</td>
+         <td>Optional</td>
+         <td>1</td>
+     </tr>
+     <tr>
+         <td><b>eline</b></td>
+         <td> int</td>
+         <td>end line number</td>
+         <td>Optional</td>
+         <td>-1</td>
+     </tr>
+    <tr>
+         <td><b>subsamp</b></td>
+         <td> int</td>
+         <td>subsampling interval</td>
+         <td>Optional</td>
+         <td>1</td>
+     </tr>
+    <tr>
+        <td><b>rgb</b></td>
+        <td> int </td>
+        <td>bands to use for red, green and blue</td>
+        <td>Optional</td>
+        <td>[1,1,1]</td>
+    </tr>
+    <tr>
+         <td><b>atmocor</b></td>
+         <td> boolean</td>
+         <td>toggle atmospheric correction</td>
+         <td>Optional</td>
+         <td>on</td>
+     </tr>
+    <tr>
+         <td><b>mask</b></td>
+         <td> boolean</td>
+         <td>apply mask to land, cloud and glint</td>
+         <td>Optional</td>
+         <td>no</td>
+     </tr>
+    <tr>
+         <td><b>quality</b></td>
+         <td> int</td>
+         <td>minimum allowable quality level for SST.  Valid only for SST  and only if qual_sst or qual_sst4 SDS exist</td>
+         <td>Optional</td>
+         <td>2</td>
+     </tr>
+    <tr>
+        <td><b>datamin</b></td>
+        <td> float</td>
+        <td>minimum value for data scaling</td>
+        <td>Optional</td>
+        <td>0.0</td>
+    </tr>
+    <tr>
+        <td><b>datamax</b></td>
+        <td> float</td>
+        <td>maximum value for data scaling</td>
+        <td>Optional</td>
+        <td>0.0</td>
+    </tr>
+    <tr>
+        <td><b>stype</b></td>
+        <td> int</td>
+        <td>scaling type:
+    <pre>
+        1: linear
+        2: log
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td><b>outmode</b></td>
+        <td> int</td>
+        <td>defines output format:
+    <pre>
+        1: PPM or PGM image file
+        2: PNG color or grayscale image file
+        3: TIFF color or grayscale geo tiff image file
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>0</td>
+    </tr>
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects infile/ofile
+        </td>
+    </tr>
+    <tr>
+        <td><b>Compute PixLines from LonLat</b></td>
+        <td>Button</td>
+        <td>Derives spixl, epixl, sline, and eline arguments from swlon, swlat, nelon, and nelat
+            arguments
+            by internally executing the <i><b>lonlat2pixline</b></i> program.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Load Parameters ...</b></td>
+        <td> Button</td>
+        <td>Reads in previously saved parameters and populates the fields in
+            GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Store Parameters ...</b></td>
+        <td> Button</td>
+        <td>Saves the current arguments in GUI in a file.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes the l1aextract_modis command with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Open in SeaDAS</b></td>
+        <td> Checkbox</td>
+        <td>If selected, the ofile will be added to the open products list right after its generation.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
 <pre>
 Usage: l2mapgen argument-list
 

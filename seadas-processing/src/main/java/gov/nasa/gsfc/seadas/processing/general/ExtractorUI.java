@@ -50,9 +50,8 @@ public class ExtractorUI extends ProgramUIFactory {
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
-            String line;
+            String line = br.readLine();
             String[] tmp;
-            line = br.readLine();
             while ((line = br.readLine()) != null) {
                 SeadasLogger.getLogger().info(line);
                 if (line.indexOf("=") != -1) {

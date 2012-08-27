@@ -24,15 +24,224 @@
     Creates a MODIS Level 1B file from an input Level 0 file.
 </p>
 
-<h4>Location</h4>
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
 <p>Tools -> OCSSW Processing -> modis_L1B.py</p>
 
 
-<h4>Details</h4>
+<<a name="details"><h4>Details</h4></a>
+
 <p>
-    TBD
-</p>
-<h5>Command Line Usage</h5>
+    <b>modis_L1B.py</b> creates a MODIS Level 1B file from an input Level 0 file.
+
+<p></p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>modis_L1B.py GUI</b></caption>
+        <tr>
+            <td><img src="../processors/images/modis_l1b.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>ifile</b></td>
+        <td>text</td>
+        <td>MODIS_L0_file name</td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>geofile</b></td>
+        <td> Text Field</td>
+        <td>L1A GEO file name</td>
+        <td>Optional</td>
+        <td>if GEOFILE is not provided, assumed to be basename of L1AFILE + '.GEO'</td>
+    </tr>
+    <tr>
+        <td><b>okm</b></td>
+        <td>text</td>
+        <td>Output MODIS L1B 1KM HDF filename</td>
+        <td>Optional</td>
+        <td>Derived from the ifile </td>
+    </tr>
+    <tr>
+        <td><b>hkm</b></td>
+        <td>text</td>
+        <td>Output MODIS L1B HKM HDF filename</td>
+        <td>Optional</td>
+        <td>Derived from the ifile</td>
+    </tr>
+    <tr>
+        <td><b>qkm</b></td>
+        <td>text</td>
+        <td>Output MODIS L1B QKM HDF filename</td>
+        <td>Optional</td>
+        <td>Derived from the ifile </td>
+    </tr>
+    <tr>
+        <td><b>obc</b></td>
+        <td>text</td>
+        <td>Output MODIS L1B OBC HDF filename</td>
+        <td>Optional</td>
+        <td>Derived from the ifile </td>
+    </tr>
+
+    <tr>
+        <td><b>lutver</b></td>
+        <td>text</td>
+        <td> L1B LUT version number</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>lutdir</b></td>
+        <td>text</td>
+        <td>Path of directory containing LUT files</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+
+   <tr>
+        <td><b>del-okm</b></td>
+        <td> boolean</td>
+        <td>Delete 1km  resolution L1B file</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+         <td><b>del-hkm</b></td>
+         <td> boolean</td>
+         <td>Delete 500m  resolution L1B file</td>
+         <td>Optional</td>
+         <td>false</td>
+     </tr>
+    <tr>
+         <td><b>del-qkm</b></td>
+         <td> boolean</td>
+         <td>Delete 250m  resolution L1B file</td>
+         <td>Optional</td>
+         <td>false</td>
+     </tr>
+    <tr>
+        <td><b>keep_obc</b></td>
+        <td> boolean</td>
+        <td>Save onboard calibration file</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>verbose</b></td>
+        <td> boolean</td>
+        <td>Print status messages</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>log</b></td>
+        <td> boolean</td>
+        <td>Save processing log file(s)</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects infile/ofile
+        </td>
+    </tr>
+    <tr>
+        <td><b>Compute PixLines from LonLat</b></td>
+        <td>Button</td>
+        <td>Derives spixl, epixl, sline, and eline arguments from swlon, swlat, nelon, and nelat
+            arguments
+            by internally executing the <i><b>lonlat2pixline</b></i> program.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Load Parameters ...</b></td>
+        <td> Button</td>
+        <td>Reads in previously saved parameters and populates the fields in
+            GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Store Parameters ...</b></td>
+        <td> Button</td>
+        <td>Saves the current arguments in GUI in a file.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes the l1aextract_modis command with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Open in SeaDAS</b></td>
+        <td> Checkbox</td>
+        <td>If selected, the ofile will be added to the open products list right after its generation.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
 <pre>
     Usage:
         modis_L1B.py [OPTIONS] L1AFILE [GEOFILE]

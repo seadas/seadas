@@ -68,7 +68,7 @@
             <name>pversion</name>
             <value></value>
             <type>string</type>
-            <default>Unspecified</default>
+            <default></default>
             <description>processing version string</description>
             <source>default</source>
         </option>
@@ -77,8 +77,7 @@
             <value></value>
             <type>string</type>
             <default>OC</default>
-            <description>product suite string for loading
-                suite-specific defaults
+            <description>product suite string for loading suite-specific defaults
             </description>
             <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
         </option>
@@ -110,7 +109,39 @@
             <source>default</source>
             <alias>ofile1</alias>
         </option>
-
+        <option type="ofile">
+             <name>ofile[#]</name>
+             <value/>
+             <type>string</type>
+             <default>output</default>
+             <description>additional output L2 file name</description>
+             <source>default</source>
+         </option>
+        <option type="int">
+             <name>resolution</name>
+             <value></value>
+             <type>int</type>
+             <default>-1</default>
+             <description>processing resolution (MODIS only)</description>
+             <validValue>
+                 <value>1000</value>
+                 <description>1km resolution including aggregated 250 and 500m land bands</description>
+             </validValue>
+             <validValue>
+                 <value>500</value>
+                 <description>500m resolution including aggregated 250 land bands and
+                     replication for lower resolution bands
+                 </description>
+             </validValue>
+             <validValue>
+                 <value>250</value>
+                 <description>250m resolution with replication for lower resolution bands</description>
+             </validValue>
+             <validValue>
+                 <value>-1</value>
+                 <description>standard ocean 1km processing</description>
+             </validValue>
+         </option>
         <option type="int">
             <name>spixl</name>
             <value></value>

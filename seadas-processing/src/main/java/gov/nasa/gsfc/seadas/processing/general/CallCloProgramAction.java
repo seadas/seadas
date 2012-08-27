@@ -122,19 +122,48 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
         openOutputInApp = cloProgramUI.isOpenOutputInApp();
 
+
+        if (!processorModel.isValidProcessor()) {
+            VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
+            return;
+
+        }
+
         executeProgram(processorModel);
+        //remoteExecuteProgram(processorModel);
+
         SeadasLogger.deleteLoggerOnExit(true);
+
+    }
+
+    public void remoteExecuteProgram(ProcessorModel pm){
+
+        RSClient ocsswClient = new RSClient();
+        pm.getProgramCmdArray();
+
+        String paramString = pm.getCmdArrayString();
+        String[] filesToUpload = pm.getFilesToUpload();
+
+        boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
+
+        if( fileUploadSuccess ) {
+            System.out.println("file upload is successful!");
+            ocsswClient.uploadParam(paramString);
+            //ocsswClient.runOCSSW();
+        }  else {
+            System.out.println("file upload failed!");
+        }
 
     }
 
     public void executeProgram(ProcessorModel pm) {
 
         final ProcessorModel processorModel = pm;
-        if (!processorModel.isValidProcessor()) {
-            VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
-            return;
-
-        }
+//        if (!processorModel.isValidProcessor()) {
+//            VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
+//            return;
+//
+//        }
 
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
             @Override

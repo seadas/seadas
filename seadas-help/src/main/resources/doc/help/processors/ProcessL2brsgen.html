@@ -24,16 +24,284 @@
     Creates a Level 2 Browse file.
 </p>
 
-<h4>Location</h4>
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
 <p>Tools -> OCSSW Processing -> l2brsgen</p>
 
 
-<h4>Details</h4>
+<<a name="details"><h4>Details</h4></a>
+
 <p>
-    TBD
-</p>
-<h5>Command Line Usage</h5>
-<pre>
+    <b>l2brsgen</b> takes a product from a L2 file, subsamples the file and writes a browse file.
+
+<p></p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>l2brsgen GUI</b></caption>
+        <tr>
+            <td><img src="../processors/images/l2brsgen.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>ifile</b></td>
+        <td>Text Field</td>
+        <td>Input L1 file name. Please provide the full path name when manually enter the file name.
+        </td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>ofile</b></td>
+        <td> Text Field</td>
+        <td>Output filename for generated browse file. Please provide the full path name when manually enter the file name.
+        </td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>quality</b></td>
+        <td> int</td>
+        <td>highest quality value acceptable</td>
+        <td>Optional</td>
+        <td>999</td>
+    </tr>
+    <tr>
+        <td><b>rflag</b></td>
+        <td> Text Field</td>
+        <td>replacement flag</td>
+        <td>Optional</td>
+        <td>ORIGINAL</td>
+    </tr>
+    <tr>
+        <td><b>rflaguse</b></td>
+        <td> Text Field</td>
+        <td>Flags used to mask data</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>chl_flags</b></td>
+        <td> Text Field</td>
+        <td>Flags used to mask data for chl product if flaguse not set</td>
+        <td>Optional</td>
+        <td>ATMFAIL,HILT,STRAYLIGHT,CLDICE,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,NAVFAIL,FILTER,HIGLINT</td>
+    </tr>
+    <tr>
+        <td><b>sst_flags</b></td>
+        <td> Text Field</td>
+        <td>Flags used to mask data for sst product if flaguse not set</td>
+        <td>Optional</td>
+        <td>SSTFAIL</td>
+    </tr>
+    <tr>
+        <td><b>spixl</b></td>
+        <td> int</td>
+        <td>start pixel number</td>
+        <td>Optional</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td><b>epixl</b></td>
+        <td> int</td>
+        <td>end pixel number (-1=the last pixel)</td>
+        <td>Optional</td>
+        <td>-1</td>
+    </tr>
+    <tr>
+        <td><b>dpixl</b></td>
+        <td> int</td>
+        <td>pixel subsampling interval</td>
+        <td>Optional</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td><b>sline</b></td>
+        <td> int</td>
+        <td>start line number</td>
+        <td>Optional</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td><b>eline</b></td>
+        <td> int</td>
+        <td>end line number(-1=the last line)</td>
+        <td>Optional</td>
+        <td>-1</td>
+    </tr>
+    <tr>
+        <td><b>dline</b></td>
+        <td> int</td>
+        <td>line subsampling interval</td>
+        <td>Optional</td>
+        <td>1</td>
+    </tr>
+     <tr>
+        <td><b>apply_pal</b></td>
+        <td> boolean</td>
+        <td>apply color palette, grayscale is used when apply_pal is left unchecked</td>
+        <td>Optional</td>
+        <td>no</td>
+    </tr>
+    <tr>
+         <td><b>palfile</b></td>
+         <td>input file</td>
+         <td>palette filename.  "default" means the palette is chosen using the product table file. The value of this field is used when apply_pal is checked. </td>
+         <td>optional</td>
+         <td>default</td>
+     </tr>
+    <tr>
+         <td><b>palette_dir</b></td>
+         <td>input file</td>
+         <td>directory containing the palette files </td>
+         <td>Optional</td>
+         <td>$OCDATAROOT/common/palette</td>
+     </tr>
+    <tr>
+         <td><b>product_table</b></td>
+         <td>input file</td>
+         <td>product table </td>
+         <td>Optional</td>
+         <td>$OCDATAROOT/common/l2brsgen_product_table.dat</td>
+     </tr>
+
+    <tr>
+        <td><b>datamin</b></td>
+        <td> float</td>
+        <td>minimum value for data scaling.</td>
+        <td>Optional</td>
+        <td>0.0 or derived from the default product_table.dat</td>
+    </tr>
+    <tr>
+        <td><b>datamax</b></td>
+        <td> float</td>
+        <td>maximum value for data scaling</td>
+        <td>Optional</td>
+        <td>0.0 or derived from the default product_table.dat</td>
+    </tr>
+    <tr>
+        <td><b>stype</b></td>
+        <td> int</td>
+        <td>scaling type:
+    <pre>
+        1: linear
+        2: log
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td><b>outmode</b></td>
+        <td> int</td>
+        <td>defines output format:
+    <pre>
+        0: HDF browse file
+        1: PPM color or PGM grayscale image file
+        2: PNG color or grayscale image file
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>0</td>
+    </tr>
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects infile/ofile
+        </td>
+    </tr>
+    <tr>
+        <td><b>Compute PixLines from LonLat</b></td>
+        <td>Button</td>
+        <td>Derives spixl, epixl, sline, and eline arguments from swlon, swlat, nelon, and nelat
+            arguments
+            by internally executing the <i><b>lonlat2pixline</b></i> program.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Load Parameters ...</b></td>
+        <td> Button</td>
+        <td>Reads in previously saved parameters and populates the fields in
+            GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Store Parameters ...</b></td>
+        <td> Button</td>
+        <td>Saves the current arguments in GUI in a file.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes the l1aextract_modis command with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Open in SeaDAS</b></td>
+        <td> Checkbox</td>
+        <td>If selected, the ofile will be added to the open products list right after its generation.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a><pre>
 Usage: l2brsgen argument-list
 
   This program takes a product from a L2 file, subsamples the file
