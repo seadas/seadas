@@ -5,7 +5,6 @@ Author: Danny Knowles
 
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
-import gov.nasa.gsfc.seadas.SeadasApp;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
@@ -40,12 +39,27 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private final JTabbedPane jTabbedPane = new JTabbedPane();
     private int tabIndex;
 
-    L2genForm(AppContext appContext, String xmlFileName) {
+
+    L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields) {
 
         processorModel = new ProcessorModel(GUI_NAME, xmlFileName);
 
         setOpenInAppCheckBox(new JCheckBox("Open in " + appContext.getApplicationName()));
         getOpenInAppCheckBox().setSelected(true);
+
+        initXML(iFile, showIOFields);
+    }
+
+
+    L2genForm(AppContext appContext, String xmlFileName) {
+
+        this(appContext, xmlFileName, null, true);
+    }
+
+
+    private void initXML(File iFile, boolean showIOFields) {
+
+        l2genData.showIOFields = showIOFields;
 
         if (getL2genData().initXmlBasedObjects()) {
 
@@ -82,7 +96,12 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
             getL2genData().disableEvent(L2genData.PARSTRING);
             getL2genData().disableEvent(L2genData.L2PROD);
-            getL2genData().setInitialValues(getInitialSelectedSourceFile());
+
+            if (iFile != null) {
+                getL2genData().setInitialValues(iFile);
+            } else {
+                getL2genData().setInitialValues(getInitialSelectedSourceFile());
+            }
 
             getL2genData().fireAllParamEvents();
             getL2genData().enableEvent(L2genData.L2PROD);

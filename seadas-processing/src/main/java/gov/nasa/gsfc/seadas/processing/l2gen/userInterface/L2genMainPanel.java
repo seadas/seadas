@@ -27,6 +27,8 @@ public class L2genMainPanel {
         primaryIOFilesPanel = new L2genPrimaryIOFilesSelector(l2genData);
         parfilePanel = new L2genParfilePanel(l2genData, tabIndex);
 
+        primaryIOFilesPanel.getjPanel().setVisible(l2genData.showIOFields);
+
         createJPanel();
     }
 
