@@ -128,14 +128,21 @@
             <usedAs>flag</usedAs>
             <order>13</order>
         </option>
-
+        <option type="boolean">
+             <name>--entrained</name>
+             <value></value>
+             <default></default>
+             <description>Use entrained attitude for Terra</description>
+             <usedAs>flag</usedAs>
+             <order>14</order>
+         </option>
         <option type="boolean">
             <name>--log</name>
             <value></value>
             <default></default>
             <description>Save processing log files</description>
             <usedAs>flag</usedAs>
-            <order>14</order>
+            <order>15</order>
         </option>
     </options>
 </paramInfo>
