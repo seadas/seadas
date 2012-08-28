@@ -67,6 +67,7 @@ public class L2genData implements L2genDataProcessorModel {
 
     public FileInfo iFileInfo = null;
     public boolean initializingParamsWithXml = false;
+    public boolean showIOFields = true;
 
 
     public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
@@ -419,12 +420,17 @@ public class L2genData implements L2genDataProcessorModel {
         StringBuilder par = new StringBuilder("");
 
         for (L2genParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
+
+            boolean iOCategory = false;
+
             StringBuilder currCategoryEntries = new StringBuilder("");
 
             for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
                 if (paramInfo.getName().equals(IFILE)) {
+                    iOCategory = true;
                     currCategoryEntries.append(makeParEntry(paramInfo));
                 } else if (paramInfo.getName().equals(OFILE)) {
+                    iOCategory = true;
                     currCategoryEntries.append(makeParEntry(paramInfo));
                 } else if (paramInfo.getName().equals(GEOFILE)) {
                     if (isRequiresGeofile()) {
@@ -446,7 +452,8 @@ public class L2genData implements L2genDataProcessorModel {
                 }
             }
 
-            if (currCategoryEntries.toString().length() > 0) {
+
+            if (currCategoryEntries.toString().length() > 0 && !(iOCategory && !showIOFields)) {
                 par.append("# " + paramCategoryInfo.getName().toUpperCase() + "\n");
                 par.append(currCategoryEntries.toString());
                 par.append("\n");
