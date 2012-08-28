@@ -32,42 +32,42 @@
         <option type="string">
             <name>pversion</name>
             <value></value>
-            <default>Unspecified</default>
+            <default></default>
             <description>processing version string</description>
             <order>3</order>
         </option>
         <option type="string">
             <name>suite</name>
             <value></value>
-            <default>OC</default>
+            <default></default>
             <description>product suite string for loading suite-specific defaults</description>
             <order>4</order>
         </option>
         <option type="int">
             <name>spixl</name>
-            <value>1</value>
-            <default>1</default>
-            <description>start pixel number</description>
+            <value></value>
+            <default></default>
+            <description>start pixel number (default is 1)</description>
             <order>5</order>
         </option>
         <option type="int">
             <name>epixl</name>
-            <value>-1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>end pixel number (-1=the last pixel)</description>
             <order>6</order>
         </option>
         <option type="int">
             <name>sline</name>
-            <value>1</value>
-            <default>1</default>
+            <value></value>
+            <default></default>
             <description>start line number</description>
             <order>7</order>
         </option>
         <option type="int">
             <name>eline</name>
-            <value>-1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>end line number (-1=the last line)</description>
             <order>8</order>
         </option>
@@ -89,29 +89,29 @@
         <option type="float">
             <name>gain</name>
             <value></value>
-            <default>output</default>
+            <default></default>
             <description>calibration gain multiplier</description>
             <order>11</order>
         </option>
         <option type="float">
             <name>offset</name>
             <value></value>
-            <default>output</default>
+            <default></default>
             <description>calibration offset adjustment</description>
             <order>12</order>
         </option>
         <option type="int">
             <name>sl_pixl</name>
-            <value>-1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>SeaWiFS only, number of LAC pixels for straylight flagging</description>
             <order>13</order>
         </option>
         <option type="float">
             <name>sl_frac</name>
-            <value>0.25</value>
-            <default>0.25</default>
-            <description>= SeaWiFS only, straylight fractional threshold on Ltypical</description>
+            <value></value>
+            <default></default>
+            <description>= SeaWiFS only, straylight fractional threshold on Ltypical, default = 0.25</description>
             <order>14</order>
         </option>
     </options>
