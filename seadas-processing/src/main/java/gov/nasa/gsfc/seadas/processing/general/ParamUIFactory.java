@@ -60,6 +60,8 @@ public class ParamUIFactory {
                 }
             });
         }
+        parameterComponent.setMaximumSize(parameterComponent.getPreferredSize());
+        parameterComponent.setMinimumSize(parameterComponent.getPreferredSize());
         return parameterComponent;
     }
 

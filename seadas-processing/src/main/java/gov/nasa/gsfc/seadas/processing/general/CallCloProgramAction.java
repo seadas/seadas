@@ -69,7 +69,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     @Override
     public void actionPerformed(CommandEvent event) {
-
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
         SeadasLogger.getLogger().setLevel(Level.INFO);
 
@@ -82,6 +81,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
         modalDialog.getButton(ModalDialog.ID_OK).setEnabled(cloProgramUI.getProcessorModel().isReadyToRun());
 
+        modalDialog.getJDialog().setMaximumSize(modalDialog.getJDialog().getPreferredSize());
+
         cloProgramUI.getProcessorModel().addPropertyChangeListener(cloProgramUI.getProcessorModel().getRunButtonPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -90,6 +91,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 } else {
                     modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
                 }
+                modalDialog.getJDialog().pack();
+            }
+        });
+
+        cloProgramUI.getProcessorModel().addPropertyChangeListener("geofile", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                modalDialog.getJDialog().validate();
                 modalDialog.getJDialog().pack();
             }
         });
@@ -136,7 +145,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     }
 
-    public void remoteExecuteProgram(ProcessorModel pm){
+    public void remoteExecuteProgram(ProcessorModel pm) {
 
         RSClient ocsswClient = new RSClient();
         pm.getProgramCmdArray();
@@ -146,11 +155,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
 
-        if( fileUploadSuccess ) {
+        if (fileUploadSuccess) {
             System.out.println("file upload is successful!");
+
+            ocsswClient.uploadParFile(pm.getParString());
             ocsswClient.uploadParam(paramString);
             //ocsswClient.runOCSSW();
-        }  else {
+        } else {
             System.out.println("file upload failed!");
         }
 

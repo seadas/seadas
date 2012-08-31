@@ -21,6 +21,7 @@
             <aliases>
                 <alias>ifile1</alias>
             </aliases>
+            <multiFile>true</multiFile>
             <order>1</order>
         </option>
         <option type="ofile">

@@ -99,6 +99,19 @@ public class RSClient {
         return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
     }
 
+    public boolean uploadParFile(String parString) {
+        final ClientConfig config = new DefaultClientConfig();
+        final Client client = Client.create(config);
+        final WebResource resource = client.resource(getBaseURI())
+                .path("file")
+                .path("parFile");
+        final ClientResponse clientResp = resource.type(MediaType.TEXT_PLAIN_TYPE)
+                   .post(ClientResponse.class, parString);
+           System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
+           return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
+    }
+
+
     public Process runOCSSW() {
         final ClientConfig config = new DefaultClientConfig();
         final Client client = Client.create(config);

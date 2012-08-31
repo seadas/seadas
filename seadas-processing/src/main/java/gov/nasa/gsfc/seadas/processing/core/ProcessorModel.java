@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * Time: 2:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ProcessorModel implements L2genDataProcessorModel {
+public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private String programName;
     private String programLocation;
     private ArrayList<ParamInfo> paramList;
@@ -216,7 +216,9 @@ public class ProcessorModel implements L2genDataProcessorModel {
     }
 
     public void setHasGeoFile(boolean hasGeoFile) {
+        boolean oldValue = this.hasGeoFile;
         this.hasGeoFile = hasGeoFile;
+        propertyChangeSupport.firePropertyChange("geofile", oldValue,  hasGeoFile);
     }
 
     public boolean isValidProcessor() {
@@ -514,25 +516,6 @@ public class ProcessorModel implements L2genDataProcessorModel {
             finalCmdArray.add(cmdString);
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
-
-//        ArrayList<String> finalCommandArgList = new ArrayList<String>();
-//        for (String s : cmdArray) {
-//            if (s != null && s.length() > 0) {
-//
-//                finalCommandArgList.add(s);
-//            }
-//        }
-//
-//        cmdArray = finalCommandArgList.toArray(new String[finalCommandArgList.size()]);
-//        String tmpString;
-//        for (int i = 0; i < cmdArray.length; i++) {
-//            SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
-////            tmpString = cmdArray[i];
-////            if (tmpString.indexOf(File.separator) != -1) {
-////                tmpString = tmpString.replaceAll(tmpString.substring(tmpString.indexOf(File.separator), tmpString.lastIndexOf(File.separator)), "");
-////            }
-//            finalCmdArray.add(cmdArray[i]);
-//        }
 
         return cmdArray;
     }
@@ -964,4 +947,5 @@ public class ProcessorModel implements L2genDataProcessorModel {
             });
         }
     }
+
 }

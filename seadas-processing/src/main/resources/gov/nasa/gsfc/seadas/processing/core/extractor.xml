@@ -3,7 +3,6 @@
            xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
     <programMetaData>
         <hasParFile>false</hasParFile>
-        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
             <primaryOption>infile</primaryOption>
             <primaryOption>ofile</primaryOption>
@@ -12,7 +11,7 @@
     <options>
         <option type="ifile">
             <name>infile</name>
-            <value>q</value>
+            <value></value>
             <default></default>
             <description>input SEAWIFS L1A datafile</description>
             <source>command line</source>

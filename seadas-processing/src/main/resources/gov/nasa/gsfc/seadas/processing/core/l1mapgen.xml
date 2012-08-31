@@ -4,7 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <hasGeoFile>true</hasGeoFile>
+        <hasGeoFile>false</hasGeoFile>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>geofile</primaryOption>
@@ -91,24 +91,26 @@
             <type>int</type>
             <default>-1</default>
             <description>processing resolution (MODIS only)</description>
-            <validValue>
-                <value>1000</value>
-                <description>1km resolution including aggregated 250 and 500m land bands</description>
-            </validValue>
-            <validValue>
-                <value>500</value>
-                <description>500m resolution including aggregated 250 land bands and
-                    replication for lower resolution bands
-                </description>
-            </validValue>
-            <validValue>
-                <value>250</value>
-                <description>250m resolution with replication for lower resolution bands</description>
-            </validValue>
-            <validValue>
-                <value>-1</value>
-                <description>standard ocean 1km processing</description>
-            </validValue>
+            <validValues>
+                <validValue>
+                    <value>1000</value>
+                    <description>1km resolution including aggregated 250 and 500m land bands</description>
+                </validValue>
+                <validValue>
+                    <value>500</value>
+                    <description>500m resolution including aggregated 250 land bands and
+                        replication for lower resolution bands
+                    </description>
+                </validValue>
+                <validValue>
+                    <value>250</value>
+                    <description>250m resolution with replication for lower resolution bands</description>
+                </validValue>
+                <validValue>
+                    <value>-1</value>
+                    <description>standard ocean 1km processing</description>
+                </validValue>
+            </validValues>
         </option>
         <option type="ofile">
             <name>ofile</name>
@@ -167,7 +169,7 @@
             <value></value>
             <type>int</type>
             <default>0</default>
-            <description>scaling type  0: log 1: linear
+            <description>scaling type 0: log 1: linear
             </description>
             <source>default</source>
             <validValue>
@@ -178,7 +180,7 @@
                 <value>1</value>
                 <description>linear</description>
             </validValue>
-         </option>
+        </option>
         <option type="float">
             <name>east</name>
             <value></value>
@@ -193,7 +195,7 @@
             <value></value>
             <type>float</type>
             <default>-999</default>
-            <description>west boundary </description>
+            <description>west boundary</description>
             <source>default</source>
         </option>
         <option type="float">
@@ -241,21 +243,23 @@
             <value></value>
             <type>string</type>
             <default>ppm</default>
-            <description>format of the output file   0: PPM  1: PNG  2: GeoTIFF
+            <description>format of the output file 0: PPM 1: PNG 2: GeoTIFF
             </description>
             <source>default</source>
-            <validValue>
-                <value>ppm</value>
-                <description>PPM image file (alias 0)</description>
-            </validValue>
-            <validValue>
-                <value>png</value>
-                <description>PNG color or grayscale image file (alias 2)</description>
-            </validValue>
-            <validValue>
-                <value>tiff</value>
-                <description>GeoTIFF color or grayscale geo tiff image file (alias 2)</description>
-            </validValue>
+            <validValues>
+                <validValue>
+                    <value>ppm</value>
+                    <description>PPM image file (alias 0)</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>PNG color or grayscale image file (alias 2)</description>
+                </validValue>
+                <validValue>
+                    <value>tiff</value>
+                    <description>GeoTIFF color or grayscale geo tiff image file (alias 2)</description>
+                </validValue>
+            </validValues>
         </option>
     </options>
 </paramInfo>

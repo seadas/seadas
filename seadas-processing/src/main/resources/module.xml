@@ -185,6 +185,7 @@
             <shortDescr>Create a L3 bin file from L2 file(s)</shortDescr>
             <programName>l2bin</programName>
             <dialogTitle>l2bin</dialogTitle>
+            <multiIFile>true</multiIFile>
             <xmlFileName>l2bin.xml</xmlFileName>
         </action>
         <action>
@@ -197,6 +198,7 @@
             <shortDescr>Create a L3 bin file from L3 file(s)</shortDescr>
             <programName>l3bin</programName>
             <dialogTitle>l3bin</dialogTitle>
+            <multiIFile>true</multiIFile>
             <xmlFileName>l3bin.xml</xmlFileName>
         </action>
         <action>

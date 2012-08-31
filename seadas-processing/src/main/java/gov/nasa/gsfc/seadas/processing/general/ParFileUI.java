@@ -79,6 +79,8 @@ public class ParFileUI {
 //                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
         parStringPanel.add(openInAppCheckBox,
                 new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        parStringPanel.setMaximumSize(parStringPanel.getPreferredSize());
+        parStringPanel.setMinimumSize(parStringPanel.getPreferredSize());
     }
 
     private ActionListener createLoadParameterAction() {

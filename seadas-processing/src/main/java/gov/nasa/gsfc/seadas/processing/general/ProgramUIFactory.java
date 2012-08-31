@@ -33,7 +33,6 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
         parFileUI = new ParFileUI(processorModel);
         ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
-
         createUserInterface();
     }
 
@@ -50,7 +49,24 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
     }
 
     protected void createUserInterface() {
-        JPanel ioPanel = ioFilesSelector.getjPanel();
+        final JPanel ioPanel = ioFilesSelector.getjPanel();
+        processorModel.addPropertyChangeListener("geofile", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                if (!processorModel.hasGeoFile() && ioPanel.getComponentCount() > 1) {
+                    ioPanel.remove(1);
+                } else {
+                    ioPanel.add(ioFilesSelector.getGeofileSelector().getJPanel(),
+                            new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL), 1);
+                    Component[] c = ((JPanel) ioPanel.getComponent(1)).getComponents();
+                    for (Component ci : c) {
+                        ci.setEnabled(true);
+                    }
+                }
+                ioPanel.repaint();
+                ioPanel.validate();
+            }
+        });
         if (!processorModel.hasGeoFile()) {
             ioPanel.remove(1);
         } else if (!processorModel.hasPrimaryOutputFile()) {
@@ -85,8 +101,11 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
         add(parFilePanel,
                 new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        setPreferredSize(getPreferredSize());
-        setSize(getPreferredSize().width, getPreferredSize().height + 200);
+
+        //setSize(getPreferredSize().width, getPreferredSize().height + 200);
+        //setPreferredSize(getPreferredSize());
+        setMinimumSize(getPreferredSize());
+        setMaximumSize(getPreferredSize());
     }
 
     protected JPanel getParamPanel() {
