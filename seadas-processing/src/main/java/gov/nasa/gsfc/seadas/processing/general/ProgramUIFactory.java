@@ -47,7 +47,6 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
     public boolean isOpenOutputInApp() {
         return parFileUI.isOpenOutputInApp();
     }
-
     protected void createUserInterface() {
         final JPanel ioPanel = ioFilesSelector.getjPanel();
         processorModel.addPropertyChangeListener("geofile", new PropertyChangeListener() {
