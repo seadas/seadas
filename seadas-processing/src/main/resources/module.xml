@@ -225,5 +225,10 @@
         <!--</action>-->
 
     </extension>
-
+    <extension point="beam-ui:helpSets">
+        <helpSet>
+            <parent>seadas-help</parent>
+            <path>doc/help/seadas-processing.hs</path>
+        </helpSet>
+    </extension>
 </module>

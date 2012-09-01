@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>SeaDAS Help - Data Processing Tools - l1aextract_modis</title>
+    <title>SeaDAS Help - Data Processing Tools - l1aextract_seawifs</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,17 +10,18 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            l1aextract_modis
+            l1aextract_seawifs
         </td>
         <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
                                                                                        border=0></a></td>
     </tr>
 </table>
 
-<h3>l1aextract_modis</h3>
+
+<h3>l1aextract_seawifs</h3>
 
 <p>
-    Creates an extracted L1A MODIS file.
+    Creates an extracted L1A SeaWiFS file.
 </p>
 
 <p>
@@ -31,24 +32,26 @@
 
 <a name="location"><h4>Location</h4></a>
 
-<p>Tools -> OCSSW Processing -> l1aextract_modis</p>
+<p>Tools -> OCSSW Processing -> l1aextract_seawifs</p>
 
 
 <a name="details"><h4>Details</h4></a>
 
 <p>
-    <b>l1aextract_modis</b> extracts a MODIS Level 1A sub-scene from an input Aqua or Terra L1A and GEO file.
-    Users can specify a sub-scene either using longitude/latitude of
-    southwest and northeast corners (swlon, swlat, nelon, nelat) or using start/end pixel numbers in conjunction with
-    start/end lines. The former is referred to as lon/lat arguments and the latter is referred as pixel arguments.
-    <font style="background-color: yellow;">
-        <Note>Once a user choose to specify the sub-scene using the lon/lat option, all four arguments must be
-            specified. The program will fail to extract
-            if any argument is missing.
-        </Note>
-    </font>
+    <b>l1aextract_seawifs</b> is used to create a sub-scene file by extracting and/or sub-sampling from an original
+    SeaWiFS L1A file.
+    The output file is an HDF file and has the same format as the original L1A file.
+</p>
+
 <p>
-    Alternatively, users can directly specify pixel arguments to extract a sub-scene.
+    The <b><i>l1aextract_seawifs GUI</i></b> allows
+    <!--the user to display any band in original or sub-sampled resolution and -->
+    <!--to interactively change or move a box over the displayed image for subscene area selection. -->
+    <!--The command mode allows -->
+    the user to specify either the pixel/line ranges, the lat/lon ranges,
+    or the two lat/lon corner points for the subscene to be extracted.
+    <!--<p>-->
+    <!--Alternatively, users can directly specify pixel arguments to extract a sub-scene.-->
 
     <!--<p>-->
 
@@ -57,13 +60,14 @@
 
     <!--<div>l1aextract_modis GUI</div>-->
     <!--</div>-->
+</p>
 
 <p></p>
 <hr>
 <table class="image">
-    <caption align="top"><b>l1aextract_modis GUI</b></caption>
+    <caption align="top"><b>l1aextract_seawifs GUI</b></caption>
     <tr>
-        <td><img src="../processors/images/l1aextract_modis.png"></td>
+        <td><img src="../images/l1aextract_seawifs.png"></td>
     </tr>
 </table>
 
@@ -128,34 +132,47 @@
         <td></td>
     </tr>
     <tr>
-        <td><b>spixl</b></td>
-        <td> int</td>
+        <td><b>spix</b></td>
+        <td> Text Field</td>
         <td>Starting pixel in infile for extracting.</td>
         <td>Conditional</td>
         <td></td>
     </tr>
     <tr>
-        <td><b>epixl</b></td>
-        <td> int</td>
+        <td><b>epix</b></td>
+        <td> Text Field</td>
         <td>Ending pixel in infile for extracting.</td>
         <td>Conditional</td>
         <td></td>
     </tr>
     <tr>
-        <td><b>sline</b></td>
-        <td> int</td>
+        <td><b>sscan</b></td>
+        <td> Text Field</td>
         <td>Starting line in infile for extracting.</td>
         <td>Conditional</td>
         <td></td>
     </tr>
     <tr>
-        <td><b>eline</b></td>
-        <td> int</td>
+        <td><b>escan</b></td>
+        <td> Text Field</td>
         <td>Ending line in infile for extracting.</td>
         <td>Conditional</td>
         <td></td>
     </tr>
-
+    <tr>
+        <td><b>pix_sub</b></td>
+        <td> Text Field</td>
+        <td>Pixel sub-sampling rate.</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>sc_sub</b></td>
+        <td> Text Field</td>
+        <td>Scan line sub-sampling rate.</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
 </table>
 
 
@@ -234,18 +251,20 @@
 
 <a name="cl"><h4>Command Line Usage</h4></a>
 <pre>
-Usage: l1aextract_modis infile spixl epixl sline eline outfile
-   where:
-        infile   - input MODIS L1A datafile
-        spixl    - start pixel number (1-based)
-        epixl    - end pixel number (1-based)
-        sline    - start line (1-based)
-        eline    - end line (1-based)
+    Usage: l1aextract_seawifs infile spix epix sscan escan pix_sub sc_sub outfile
+       where:
+        infile   - input l1a data HDF file
+        spix     - start pixel number
+        epix     - end pixel number
+        sscan    - start scan line
+        escan    - end scan line
+        pix_sub  - pixel subsampling rate
+        sc_sub   - scan line subsampling rate
         outfile  - output file name
 
-Note: Enter line number NOT scan number!
+    NOTE: Start and End pixel/scanline will be set to input file's nsamp
+         and nrec respectively, if, the given values are out of range
 </pre>
-
 <hr>
 </body>
 </html>

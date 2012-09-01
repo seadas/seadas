@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>SeaDAS Help - Data Processing Tools - l1aextract_seawifs</title>
+    <title>SeaDAS Help - Data Processing Tools - l2extract</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,7 +10,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            l1aextract_seawifs
+            l2extract
         </td>
         <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
                                                                                        border=0></a></td>
@@ -18,10 +18,10 @@
 </table>
 
 
-<h3>l1aextract_seawifs</h3>
+<h3>l2extract</h3>
 
 <p>
-    Creates an extracted L1A SeaWiFS file.
+    Creates an extracted Level 2 file.
 </p>
 
 <p>
@@ -32,51 +32,31 @@
 
 <a name="location"><h4>Location</h4></a>
 
-<p>Tools -> OCSSW Processing -> l1aextract_seawifs</p>
-
+<p>Tools -> OCSSW Processing -> l2extract</p>
 
 <a name="details"><h4>Details</h4></a>
 
 <p>
-    <b>l1aextract_seawifs</b> is used to create a sub-scene file by extracting and/or sub-sampling from an original
-    SeaWiFS L1A file.
-    The output file is an HDF file and has the same format as the original L1A file.
-</p>
-
-<p>
-    The <b><i>l1aextract_seawifs GUI</i></b> allows
-    <!--the user to display any band in original or sub-sampled resolution and -->
-    <!--to interactively change or move a box over the displayed image for subscene area selection. -->
-    <!--The command mode allows -->
-    the user to specify either the pixel/line ranges, the lat/lon ranges,
-    or the two lat/lon corner points for the subscene to be extracted.
-    <!--<p>-->
-    <!--Alternatively, users can directly specify pixel arguments to extract a sub-scene.-->
-
-    <!--<p>-->
-
-    <!--<div class="image">-->
-    <!--<img src="../processors/images/l1aextract_modis.png" width="560" height="500">-->
-
-    <!--<div>l1aextract_modis GUI</div>-->
-    <!--</div>-->
+    <b>l2extract</b>   is used to create subscene files by extracting from SeaDAS created L2 files (SeaWiFS, MODIS, CZCS, OCTS).
+    The output files are HDF files and have the same format as the original L2 files.
 </p>
 
 <p></p>
 <hr>
-<table class="image">
-    <caption align="top"><b>l1aextract_seawifs GUI</b></caption>
-    <tr>
-        <td><img src="../processors/images/l1aextract_seawifs.png"></td>
-    </tr>
-</table>
-
+<center>
+    <table class="image">
+        <caption align="top"><b>l2extract GUI</b></caption>
+        <tr>
+            <td><img src="../images/l2extract.png"></td>
+        </tr>
+    </table>
+</center>
 <p></p>
 <hr>
 
 <center><b>Arguments/Keywords</b></center>
 
-<table border WIDTH="100%" bgcolor="#C3FDB8">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
 
     <tr>
         <td><b>UI Element Name</b></td>
@@ -173,6 +153,13 @@
         <td>Optional</td>
         <td></td>
     </tr>
+    <tr>
+         <td><b>prodlist</b></td>
+         <td> Text Field</td>
+         <td>Comma separated product list.</td>
+         <td>Optional</td>
+         <td></td>
+     </tr>
 </table>
 
 
@@ -181,7 +168,7 @@
 
 <center><b>Actions/Buttons</b></center>
 
-<table border WIDTH="100%" bgcolor="#A9D0F5">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
 
     <tr>
         <td><b>UI Element Name</b></td>
@@ -193,14 +180,6 @@
         <td><b>Browser Button</b></td>
         <td>Button</td>
         <td>Selects infile/ofile
-        </td>
-    </tr>
-    <tr>
-        <td><b>Compute PixLines from LonLat</b></td>
-        <td>Button</td>
-        <td>Derives spixl, epixl, sline, and eline arguments from swlon, swlat, nelon, and nelat
-            arguments
-            by internally executing the <i><b>lonlat2pixline</b></i> program.
         </td>
     </tr>
     <tr>
@@ -250,21 +229,22 @@
 
 
 <a name="cl"><h4>Command Line Usage</h4></a>
-<pre>
-    Usage: l1aextract_seawifs infile spix epix sscan escan pix_sub sc_sub outfile
-       where:
-        infile   - input l1a data HDF file
-        spix     - start pixel number
-        epix     - end pixel number
-        sscan    - start scan line
-        escan    - end scan line
-        pix_sub  - pixel subsampling rate
-        sc_sub   - scan line subsampling rate
-        outfile  - output file name
 
-    NOTE: Start and End pixel/scanline will be set to input file's nsamp
-         and nrec respectively, if, the given values are out of range
-</pre>
+<pre>
+ Usage: l2extract infile spix epix sscan escan pix_sub sc_sub outfile [prodlist]
+   where:
+	infile   - input l2 data HDF file
+	spix     - start pixel number (1-based)
+	epix     - end pixel number (1-based)
+	sscan    - start line (1-based)
+	escan    - end line (1-based)
+	pix_sub  - pixel subsampling rate
+	sc_sub   - scan line subsampling rate
+	outfile  - output file name
+	prodlist  - product list (optional)
+
+Note: Enter line number NOT scan number!</pre>
+
 <hr>
 </body>
 </html>
