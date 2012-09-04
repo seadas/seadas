@@ -261,5 +261,12 @@
                 </validValue>
             </validValues>
         </option>
+        <option type="boolean">
+            <name>atmocor</name>
+            <value></value>
+            <type>boolean</type>
+            <default>true</default>
+            <description>toggle atmospheric correction</description>
+        </option>
     </options>
 </paramInfo>
