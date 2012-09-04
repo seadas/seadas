@@ -13,6 +13,7 @@
     <artifactId>seadas-processing</artifactId>
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <name>SeaDAS Processing</name>
+    <version>1.0.1</version>
     <description>
         Integrates the OBPG OCSSW processing software into SeaDAS.
     </description>
