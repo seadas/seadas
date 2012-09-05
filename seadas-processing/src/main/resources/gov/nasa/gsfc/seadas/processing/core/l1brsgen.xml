@@ -110,38 +110,38 @@
             <alias>ofile1</alias>
         </option>
         <option type="ofile">
-             <name>ofile[#]</name>
-             <value/>
-             <type>string</type>
-             <default>output</default>
-             <description>additional output L2 file name</description>
-             <source>default</source>
-         </option>
+            <name>ofile[#]</name>
+            <value/>
+            <type>string</type>
+            <default>output</default>
+            <description>additional output L2 file name</description>
+            <source>default</source>
+        </option>
         <option type="int">
-             <name>resolution</name>
-             <value></value>
-             <type>int</type>
-             <default>-1</default>
-             <description>processing resolution (MODIS only)</description>
-             <validValue>
-                 <value>1000</value>
-                 <description>1km resolution including aggregated 250 and 500m land bands</description>
-             </validValue>
-             <validValue>
-                 <value>500</value>
-                 <description>500m resolution including aggregated 250 land bands and
-                     replication for lower resolution bands
-                 </description>
-             </validValue>
-             <validValue>
-                 <value>250</value>
-                 <description>250m resolution with replication for lower resolution bands</description>
-             </validValue>
-             <validValue>
-                 <value>-1</value>
-                 <description>standard ocean 1km processing</description>
-             </validValue>
-         </option>
+            <name>resolution</name>
+            <value></value>
+            <type>int</type>
+            <default>-1</default>
+            <description>processing resolution (MODIS only)</description>
+            <validValue>
+                <value>1000</value>
+                <description>1km resolution including aggregated 250 and 500m land bands</description>
+            </validValue>
+            <validValue>
+                <value>500</value>
+                <description>500m resolution including aggregated 250 land bands and
+                    replication for lower resolution bands
+                </description>
+            </validValue>
+            <validValue>
+                <value>250</value>
+                <description>250m resolution with replication for lower resolution bands</description>
+            </validValue>
+            <validValue>
+                <value>-1</value>
+                <description>standard ocean 1km processing</description>
+            </validValue>
+        </option>
         <option type="int">
             <name>spixl</name>
             <value></value>
@@ -174,7 +174,7 @@
             <description>end line number (-1=the last line)</description>
             <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
         </option>
-               <option type="int">
+        <option type="int">
             <name>subsamp</name>
             <value></value>
             <type>int</type>
@@ -182,14 +182,14 @@
             <description>sub-sampling interval</description>
             <source></source>
         </option>
-               <option type="int">
+        <option type="int">
             <name>rgb</name>
             <value></value>
             <type>int</type>
             <default>[1,1,1]</default>
             <description>bands to use for red, green and blue</description>
         </option>
-               <option type="boolean">
+        <option type="boolean">
             <name>atmocor</name>
             <value></value>
             <type>boolean</type>
@@ -206,8 +206,8 @@
             </description>
             <source>default</source>
             <!--<validValue>-->
-                <!--<value>(default</value>-->
-                <!--<description>see product_table)</description>-->
+            <!--<value>(default</value>-->
+            <!--<description>see product_table)</description>-->
             <!--</validValue>-->
         </option>
         <option type="float">
@@ -220,8 +220,8 @@
             </description>
             <source>default</source>
             <!--<validValue>-->
-                <!--<value>(default</value>-->
-                <!--<description>see product_table)</description>-->
+            <!--<value>(default</value>-->
+            <!--<description>see product_table)</description>-->
             <!--</validValue>-->
         </option>
         <option type="int">

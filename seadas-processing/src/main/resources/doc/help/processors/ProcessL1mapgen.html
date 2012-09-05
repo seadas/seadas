@@ -37,20 +37,33 @@
 <a name="details"><h4>Details</h4></a>
 
 <p>
-    <b>l1mapgen</b> creates a Level 1 mapped image.
+    <b>l1mapgen</b> creates a Level 1 mapped image.    The following image shows the default GUI for l1mapgen.
 
 <p></p>
 <hr>
 <center>
     <table class="image">
-        <caption align="top"><b>l1mapgen GUI</b></caption>
+        <caption align="top"><b>l1mapgen GUI without GEOFILE</b></caption>
         <tr>
-            <td><img src="../images/l1mapgen.png"></td>
+            <td><img src="../images/l1mapgen_without_geofile.png"></td>
         </tr>
     </table>
 </center>
 <p></p>
 <hr>
+
+When l1mapgen requires a geofile to create a level 1 mapped image, such as in the case of modis data,
+the geofile gui element is dynamically added, as shown in the image below.
+
+<center>
+    <table class="image">
+        <caption align="top"><b>l1mapgen GUI with GEOFILE</b></caption>
+        <tr>
+            <td><img src="../images/l1mapgen_with_geofile.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
 
 <center><b>Arguments/Keywords</b></center>
 
@@ -74,8 +87,7 @@
     <tr>
         <td><b>geofile</b></td>
         <td> Text Field</td>
-        <td>input L1 geolocation file name
-        </td>
+        <td>input L1 geolocation file name</td>
         <td>Conditional - MODIS only</td>
         <td></td>
     </tr>
@@ -210,6 +222,13 @@
         <td>Optional</td>
         <td>0</td>
     </tr>
+    <tr>
+         <td><b>atmocor</b></td>
+         <td> boolean</td>
+         <td>toggle atmospheric correction</td>
+         <td>Optional</td>
+         <td>on</td>
+     </tr>
 </table>
 
 
