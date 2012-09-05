@@ -11,7 +11,7 @@ import java.awt.*;
  */
 public class GridBagConstraintsCustom extends GridBagConstraints {
 
-        public GridBagConstraintsCustom(int gridx, int gridy) {
+    public GridBagConstraintsCustom(int gridx, int gridy) {
         this.gridx = gridx;
         this.gridy = gridy;
     }
