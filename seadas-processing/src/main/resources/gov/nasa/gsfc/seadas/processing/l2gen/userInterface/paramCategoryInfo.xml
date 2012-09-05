@@ -11,75 +11,6 @@
         <param>l2prod</param>
     </category>
 
-
-    <category name="Subsetting Options">
-        <autoTab>1</autoTab>
-        <param>spixl</param>
-        <param>epixl</param>
-        <param>dpixl</param>
-        <param>sline</param>
-        <param>eline</param>
-        <param>dline</param>
-        <param>north</param>
-        <param>south</param>
-        <param>east</param>
-        <param>west</param>
-        <param>xbox</param>
-        <param>ybox</param>
-        <param>subsamp</param>
-    </category>
-
-    <category name="Thresholds">
-        <autoTab>1</autoTab>
-        <param>aotthreshold</param>
-        <param>chlthreshold</param>
-        <param>cirrus_thresh</param>
-        <param>cloud_eps</param>
-        <param>cloud_thresh</param>
-        <param>cloud_wave</param>
-        <param>epsmax</param>
-        <param>epsmin</param>
-        <param>flh_offset</param>
-        <param>glint_thresh</param>
-        <param>ice_threshold</param>
-        <param>nlwmin</param>
-        <param>rhoamin</param>
-        <param>satzen</param>
-        <param>sunzen</param>
-        <param>tauamax</param>
-        <param>threshold</param>
-        <param>wsmax</param>
-    </category>
-
-    <category name="IOP Options">
-        <autoTab>1</autoTab>
-        <param>giop_adg_file</param>
-        <param>giop_adg_opt</param>
-        <param>giop_adg_s</param>
-        <param>giop_aph_file</param>
-        <param>giop_aph_opt</param>
-        <param>giop_aph_s</param>
-        <param>giop_bbp_file</param>
-        <param>giop_bbp_opt</param>
-        <param>giop_bbp_s</param>
-        <param>giop_fit_opt</param>
-        <param>giop_grd</param>
-        <param>giop_maxiter</param>
-        <param>giop_rrs_opt</param>
-        <param>giop_rrs_unc</param>
-        <param>giop_ts_opt</param>
-        <param>giop_wave</param>
-        <param>gsm_adg_s</param>
-        <param>gsm_aphs</param>
-        <param>gsm_aphw</param>
-        <param>gsm_bbp_s</param>
-        <param>gsm_fit</param>
-        <param>gsm_opt</param>
-        <param>iop_opt</param>
-        <param>qaa_adg_s</param>
-        <param>qaa_wave</param>
-    </category>
-
     <category name="Processing Options">
         <autoTab>1</autoTab>
         <param>absaer_opt</param>
@@ -129,6 +60,47 @@
         <param>taua</param>
     </category>
 
+    <category name="Subsetting Options">
+        <autoTab>1</autoTab>
+        <param>spixl</param>
+        <param>epixl</param>
+        <param>dpixl</param>
+        <param>sline</param>
+        <param>eline</param>
+        <param>dline</param>
+        <param>north</param>
+        <param>south</param>
+        <param>east</param>
+        <param>west</param>
+        <param>xbox</param>
+        <param>ybox</param>
+        <param>subsamp</param>
+    </category>
+
+    <category name="Thresholds">
+        <autoTab>1</autoTab>
+        <param>aotthreshold</param>
+        <param>chlthreshold</param>
+        <param>cirrus_thresh</param>
+        <param>cloud_eps</param>
+        <param>cloud_thresh</param>
+        <param>cloud_wave</param>
+        <param>epsmax</param>
+        <param>epsmin</param>
+        <param>flh_offset</param>
+        <param>glint_thresh</param>
+        <param>ice_threshold</param>
+        <param>nlwmin</param>
+        <param>rhoamin</param>
+        <param>satzen</param>
+        <param>sunzen</param>
+        <param>tauamax</param>
+        <param>threshold</param>
+        <param>wsmax</param>
+    </category>
+
+
+
     <category name="Ancillary Inputs">
         <autoTab>1</autoTab>
         <param>alphafile</param>
@@ -164,6 +136,35 @@
         <param>watervapor</param>
         <param>windangle</param>
         <param>windspeed</param>
+    </category>
+
+    <category name="IOP Options">
+        <autoTab>1</autoTab>
+        <param>giop_adg_file</param>
+        <param>giop_adg_opt</param>
+        <param>giop_adg_s</param>
+        <param>giop_aph_file</param>
+        <param>giop_aph_opt</param>
+        <param>giop_aph_s</param>
+        <param>giop_bbp_file</param>
+        <param>giop_bbp_opt</param>
+        <param>giop_bbp_s</param>
+        <param>giop_fit_opt</param>
+        <param>giop_grd</param>
+        <param>giop_maxiter</param>
+        <param>giop_rrs_opt</param>
+        <param>giop_rrs_unc</param>
+        <param>giop_ts_opt</param>
+        <param>giop_wave</param>
+        <param>gsm_adg_s</param>
+        <param>gsm_aphs</param>
+        <param>gsm_aphw</param>
+        <param>gsm_bbp_s</param>
+        <param>gsm_fit</param>
+        <param>gsm_opt</param>
+        <param>iop_opt</param>
+        <param>qaa_adg_s</param>
+        <param>qaa_wave</param>
     </category>
 
     <category name="Miscellaneous">
