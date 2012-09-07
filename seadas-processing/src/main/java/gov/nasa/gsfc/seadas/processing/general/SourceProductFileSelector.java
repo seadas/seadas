@@ -398,9 +398,54 @@ public class SourceProductFileSelector {
         private String APPROVE_BUTTON_TEXT = "Select";
         private JFileChooser fileChooser;
 
+        private JTextField fileNameField;
+        //private String fileName;
+
         private ProductFileChooserAction() {
             super("...");
             fileChooser = new BeamFileChooser();
+            fileNameField = (JTextField) findJTextField(fileChooser);
+            //findJList(fileChooser);
+//            fileNameField.addPropertyChangeListener("text", new PropertyChangeListener() {
+//                @Override
+//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                    System.out.println(fileNameField.getText());
+//                    regexFileFilter = new RegexFileFilter(fileNameField.getText());
+//                    SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+//                }
+//            });
+
+            fileNameField.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent documentEvent) {
+                    //To change body of implemented methods use File | Settings | File Templates.
+                    System.out.println(fileNameField.getText());
+                    regexFileFilter = new RegexFileFilter(fileNameField.getText());
+                    fileChooser.addChoosableFileFilter(regexFileFilter);
+                    //fileChooser.removeChoosableFileFilter();
+                    SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent documentEvent) {
+                    //To change body of implemented methods use File | Settings | File Templates.
+                    System.out.println(fileNameField.getText());
+                    regexFileFilter = new RegexFileFilter(fileNameField.getText());
+                    fileChooser.addChoosableFileFilter(regexFileFilter);
+                    //fileChooser.removeChoosableFileFilter();
+                    SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent documentEvent) {
+                    //To change body of implemented methods use File | Settings | File Templates.
+                    System.out.println(fileNameField.getText());
+                    regexFileFilter = new RegexFileFilter(fileNameField.getText());
+                    fileChooser.addChoosableFileFilter(regexFileFilter);
+                    //fileChooser.removeChoosableFileFilter();
+                    SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+                }
+            });
             fileChooser.setMultiSelectionEnabled(true);
             fileChooser.setDialogTitle("Select Input File");
             final Iterator<ProductReaderPlugIn> iterator = ProductIOPlugInManager.getInstance().getAllReaderPlugIns();
@@ -412,8 +457,36 @@ public class SourceProductFileSelector {
             // todo - (mp, 2008/04/22)check if product file filter is applicable
             fileChooser.setAcceptAllFileFilterUsed(true);
             fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
-          }
+            //new TypeAheadSelector(fileChooser);
+        }
 
+        private Component findJTextField(Component comp) {
+            System.out.println(comp.getClass());
+            if (comp.getClass() == JTextField.class) return comp;
+            if (comp instanceof Container) {
+                Component[] components = ((Container) comp).getComponents();
+                for (int i = 0; i < components.length; i++) {
+                    Component child = findJTextField(components[i]);
+                    if (child != null)
+                        return child;
+                }
+            }
+            return null;
+        }
+
+        private Component findJList(Component comp) {
+            System.out.println(comp.getClass());
+            if (comp.getClass() == JList.class) return comp;
+            if (comp instanceof Container) {
+                Component[] components = ((Container) comp).getComponents();
+                for (int i = 0; i < components.length; i++) {
+                    Component child = findJList(components[i]);
+                    if (child != null)
+                        return child;
+                }
+            }
+            return null;
+        }
 
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -450,10 +523,10 @@ public class SourceProductFileSelector {
                     if (productFilter.accept(product) && regexFileFilter.accept(file)) {
                         files = fileChooser.getSelectedFiles();
                         Product p;
-                        for (File f: files) {
+                        for (File f : files) {
                             p = new Product(f.getName(), "DummyType", 10, 10);
                             p.setFileLocation(f);
-                             productListModel.addElement(p);
+                            productListModel.addElement(p);
                         }
                         setSelectedProduct(product);
                         //productListModel.addElement(product);
@@ -483,13 +556,16 @@ public class SourceProductFileSelector {
         private void handleError(final Component component, final String message) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                //@Override
+                    //@Override
                     //JOptionPane.showMessageDialog(component, message, "Error", JOptionPane.ERROR_MESSAGE);
                     //JOptionPane.showMessageDialog(<Window>component, message, "test", JOptionPane.ERROR_MESSAGE);
                 }
             });
         }
+
+
     }
+
 
     private static class ProductListCellRenderer extends DefaultListCellRenderer {
 
@@ -565,7 +641,15 @@ public class SourceProductFileSelector {
 
         public RegexFileFilter(String regex) throws IllegalStateException {
             SeadasLogger.getLogger().info("regular expression: " + regex);
-            if (regex == null || regex.trim().length() == 0) {
+
+            if (regex == null )  {
+                return;
+            }
+            if (regex.indexOf("*") != -1) {
+                regex = regex.replaceAll("\\*", ".*");
+            }
+
+            if (regex.trim().length() == 0) {
 
                 //throw new IllegalStateException();
                 return;

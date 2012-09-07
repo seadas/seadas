@@ -143,7 +143,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
     private boolean hasMultipleFiles() {
         File[] selectedFiles = ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedMultiFiles();
-        if (selectedFiles.length > 1) {
+        if (selectedFiles != null && selectedFiles.length > 1) {
             return true;
         }
         return false;
