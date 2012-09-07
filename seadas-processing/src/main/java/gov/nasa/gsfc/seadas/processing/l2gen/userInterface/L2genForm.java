@@ -168,6 +168,9 @@ public class L2genForm extends JPanel implements CloProgramUI {
                 jTabbedPane.addTab(paramCategoryInfo.getName(), l2genCategorizedParamsPanel);
                 final int tabIndex = jTabbedPane.getTabCount() - 1;
 
+                /*
+                    Add titles to each of the tabs, adding (*) where tab contains a non-default parameter
+                 */
                 for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
                     getL2genData().addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
                         @Override

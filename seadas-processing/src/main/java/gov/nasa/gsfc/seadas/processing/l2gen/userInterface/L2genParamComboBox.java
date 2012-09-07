@@ -40,12 +40,24 @@ public class L2genParamComboBox {
 
         for (ParamValidValueInfo paramValidValueInfo : paramInfo.getValidValueInfos()) {
             if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().length() > 0) {
-                jComboBoxArrayList.add(paramValidValueInfo);
 
-                if (paramValidValueInfo.getDescription().length() > 70) {
-                    validValuesToolTipsArrayList.add(paramValidValueInfo.getDescription());
-                } else {
-                    validValuesToolTipsArrayList.add(null);
+                boolean addThisValidValue = true;
+
+                /*
+                    Special hardcoded entry to override any known strange xml entries
+                */
+                if (paramValidValueInfo.getValue().equals(">0") || paramValidValueInfo.getValue().equals("<0")) {
+                    addThisValidValue = false;
+                }
+
+                if (addThisValidValue) {
+                    jComboBoxArrayList.add(paramValidValueInfo);
+
+                    if (paramValidValueInfo.getDescription().length() > 70) {
+                        validValuesToolTipsArrayList.add(paramValidValueInfo.getDescription());
+                    } else {
+                        validValuesToolTipsArrayList.add(null);
+                    }
                 }
             }
         }
