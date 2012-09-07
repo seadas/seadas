@@ -525,7 +525,7 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
     public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode) {
-        setParString(parString, ignoreIfile, false, null);
+        setParString(parString, ignoreIfile, addParamsMode, null);
     }
 
     public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode, File parFileDir) {
