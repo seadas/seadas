@@ -645,10 +645,11 @@ public class SourceProductFileSelector {
             if (regex == null )  {
                 return;
             }
+
+            //Replace wildcards with regular expression.
             if (regex.indexOf("*") != -1) {
                 regex = regex.replaceAll("\\*", ".*");
             }
-
             if (regex.trim().length() == 0) {
 
                 //throw new IllegalStateException();
