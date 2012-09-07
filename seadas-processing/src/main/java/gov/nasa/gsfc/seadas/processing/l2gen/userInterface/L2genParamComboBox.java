@@ -46,7 +46,7 @@ public class L2genParamComboBox {
                 /*
                     Special hardcoded entry to override any known strange xml entries
                 */
-                if (paramInfo.getName().equals("aer_opt") && paramValidValueInfo.getValue().equals(">0")) {
+                if (paramValidValueInfo.getValue().equals(">0") || paramValidValueInfo.getValue().equals("<0")) {
                     addThisValidValue = false;
                 }
 
