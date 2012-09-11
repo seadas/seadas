@@ -36,13 +36,16 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * WARNING: This class belongs to a preliminary API and may change in future releases.
@@ -51,6 +54,7 @@ import java.util.Iterator;
  *
  * @author Ralf Quast
  * @author Don Shea
+ * @author Aynur Abdurazik
  * @version $Revision$ $Date$
  */
 public class SourceProductFileSelector {
@@ -297,9 +301,6 @@ public class SourceProductFileSelector {
                 new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
         mainPanel.add(getProductFileChooserButton(),
                 new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-        mainPanel.add(createFilterPane(),
-                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-
         return mainPanel;
     }
 
@@ -334,27 +335,10 @@ public class SourceProductFileSelector {
         filterRegexField.setMinimumSize(filterRegexField.getPreferredSize());
         filterRegexField.setMaximumSize(filterRegexField.getPreferredSize());
         filterRegexField.setText("");
+        filterRegexField.setName("filterRegexField");
 
-        filterRegexField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent documentEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-                regexFileFilter = new RegexFileFilter(filterRegexField.getText());
-                SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
-            }
 
-            @Override
-            public void removeUpdate(DocumentEvent documentEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent documentEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        });
-
-        filterRegexLabel = new JLabel("filter:");
+        filterRegexLabel = new JLabel("Filter:");
         filterRegexLabel.setPreferredSize(filterRegexLabel.getPreferredSize());
         filterRegexLabel.setMinimumSize(filterRegexLabel.getPreferredSize());
         filterRegexLabel.setMaximumSize(filterRegexLabel.getPreferredSize());
@@ -399,51 +383,44 @@ public class SourceProductFileSelector {
         private JFileChooser fileChooser;
 
         private JTextField fileNameField;
-        //private String fileName;
 
         private ProductFileChooserAction() {
             super("...");
             fileChooser = new BeamFileChooser();
             fileNameField = (JTextField) findJTextField(fileChooser);
-            //findJList(fileChooser);
-//            fileNameField.addPropertyChangeListener("text", new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    System.out.println(fileNameField.getText());
-//                    regexFileFilter = new RegexFileFilter(fileNameField.getText());
-//                    SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
-//                }
-//            });
 
-            fileNameField.getDocument().addDocumentListener(new DocumentListener() {
+            JPanel filterPanel = createFilterPane();
+            fileNameField.getParent().add(filterPanel);
+
+            final Vector<RegexFileFilter> regexFilters = new Vector<RegexFileFilter>();
+
+            final JTextField filterRegexField = (JTextField) filterPanel.getComponent(1);
+
+            filterRegexField.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent documentEvent) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                    System.out.println(fileNameField.getText());
-                    regexFileFilter = new RegexFileFilter(fileNameField.getText());
+
+                    regexFileFilter = new RegexFileFilter(filterRegexField.getText());
+                    removePreviousFilters(regexFilters);
                     fileChooser.addChoosableFileFilter(regexFileFilter);
-                    //fileChooser.removeChoosableFileFilter();
+                    regexFilters.add(regexFileFilter);
                     SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent documentEvent) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                    System.out.println(fileNameField.getText());
-                    regexFileFilter = new RegexFileFilter(fileNameField.getText());
+                    regexFileFilter = new RegexFileFilter(filterRegexField.getText());
+                    removePreviousFilters(regexFilters);
                     fileChooser.addChoosableFileFilter(regexFileFilter);
-                    //fileChooser.removeChoosableFileFilter();
-                    SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+                    regexFilters.add(regexFileFilter);
                 }
 
                 @Override
                 public void changedUpdate(DocumentEvent documentEvent) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                    System.out.println(fileNameField.getText());
-                    regexFileFilter = new RegexFileFilter(fileNameField.getText());
+                    regexFileFilter = new RegexFileFilter(filterRegexField.getText());
+                    removePreviousFilters(regexFilters);
                     fileChooser.addChoosableFileFilter(regexFileFilter);
-                    //fileChooser.removeChoosableFileFilter();
-                    SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+                    regexFilters.add(regexFileFilter);
                 }
             });
             fileChooser.setMultiSelectionEnabled(true);
@@ -455,9 +432,15 @@ public class SourceProductFileSelector {
             }
 
             // todo - (mp, 2008/04/22)check if product file filter is applicable
-            fileChooser.setAcceptAllFileFilterUsed(true);
+            fileChooser.setAcceptAllFileFilterUsed(false);
             fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
-            //new TypeAheadSelector(fileChooser);
+            fileChooser.setFileHidingEnabled(true);
+        }
+
+        private void removePreviousFilters(Vector<RegexFileFilter> filters) {
+            for (RegexFileFilter rff : filters) {
+                fileChooser.removeChoosableFileFilter(rff);
+            }
         }
 
         private Component findJTextField(Component comp) {
@@ -467,8 +450,9 @@ public class SourceProductFileSelector {
                 Component[] components = ((Container) comp).getComponents();
                 for (int i = 0; i < components.length; i++) {
                     Component child = findJTextField(components[i]);
-                    if (child != null)
+                    if (child != null) {
                         return child;
+                    }
                 }
             }
             return null;
@@ -642,7 +626,7 @@ public class SourceProductFileSelector {
         public RegexFileFilter(String regex) throws IllegalStateException {
             SeadasLogger.getLogger().info("regular expression: " + regex);
 
-            if (regex == null )  {
+            if (regex == null) {
                 return;
             }
 
@@ -674,6 +658,11 @@ public class SourceProductFileSelector {
 
         public String getDescription() {
             return "Files matching regular expression: '" + regex + "'";
+        }
+
+        public void ensureFileIsVisible(JFileChooser fc, File f) {
+            ensureFileIsVisible(fc, f);
+            //ensureFileIsVisible(f, true);
         }
     }
 
