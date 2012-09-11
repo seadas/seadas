@@ -319,6 +319,61 @@ public abstract class SeadasFileReader {
                     FailRed, 0.1));
 
         }
+        Band QFBandSST = product.getBand("qual_sst");
+        if (QFBandSST != null) {
+//            FlagCoding flagCoding = new FlagCoding("SSTFlags");
+//            product.getFlagCodingGroup().add(flagCoding);
+//
+//            QFBandSST.setSampleCoding(flagCoding);
+    
+            product.getMaskGroup().add(Mask.BandMathsType.create("Best", "Highest quality SST retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst == 0",
+                    SeadasFileReader.Cornflower, 0.6));
+            product.getMaskGroup().add(Mask.BandMathsType.create("Good", "Good quality SST retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst == 1",
+                    SeadasFileReader.LightPurple, 0.6));
+            product.getMaskGroup().add(Mask.BandMathsType.create("Questionable", "Questionable quality SST retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst == 2",
+                    SeadasFileReader.BurntUmber, 0.6));
+            product.getMaskGroup().add(Mask.BandMathsType.create("Bad", "Bad quality SST retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst == 3",
+                    SeadasFileReader.FailRed, 0.6));
+            product.getMaskGroup().add(Mask.BandMathsType.create("No SST Retrieval", "No SST retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst == 4",
+                    SeadasFileReader.FailRed, 0.6));
+        }
+        Band QFBandSST4 = product.getBand("qual_sst4");
+        if (QFBandSST4 != null) {
+//            FlagCoding flagCoding = new FlagCoding("SST4Flags");
+//            product.getFlagCodingGroup().add(flagCoding);
+//            QFBandSST4.setSampleCoding(flagCoding);
+
+            product.getMaskGroup().add(Mask.BandMathsType.create("Best", "Highest quality SST4 retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst4 == 0",
+                    SeadasFileReader.Cornflower, 0.6));
+            product.getMaskGroup().add(Mask.BandMathsType.create("Good", "Good quality SST4 retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst4 == 1",
+                    SeadasFileReader.LightPurple, 0.6));
+            product.getMaskGroup().add(Mask.BandMathsType.create("Questionable", "Questionable quality SST4 retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst4 == 2",
+                    SeadasFileReader.BurntUmber, 0.6));
+            product.getMaskGroup().add(Mask.BandMathsType.create("Bad", "Bad quality SST4 retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst4 == 3",
+                    SeadasFileReader.FailRed, 0.6));
+            product.getMaskGroup().add(Mask.BandMathsType.create("No SST Retrieval", "No SST retrieval",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "qual_sst4 == 4",
+                    SeadasFileReader.FailRed, 0.6));
+        }
     }
 
     public Map<Band, Variable> addBands(Product product,

@@ -42,11 +42,11 @@
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat-rcp</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-watermask-operator</artifactId>
-            <version>1.2</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-watermask-operator</artifactId>-->
+            <!--<version>1.2</version>-->
+        <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>org.esa.beam</groupId>-->
             <!--<artifactId>beam-help</artifactId>-->
@@ -85,8 +85,7 @@
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
-            <artifactId>beam-watermask</artifactId>
-            <version>1.2</version>
+            <artifactId>beam-watermask-operator</artifactId>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>org.esa.beam</groupId>-->
