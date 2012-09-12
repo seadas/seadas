@@ -17,19 +17,7 @@ import java.util.Collections;
  * @author Aynur Abdurazik
  * @since SeaDAS 7.0
  */
-public class ParamInfo implements Comparable {
-
-    private String name = NULL_STRING;
-    private String value = NULL_STRING;
-    private Type type = Type.STRING;
-    private String defaultValue = NULL_STRING;
-    private String description = NULL_STRING;
-    private String source = NULL_STRING;
-    private boolean isBit = false;
-    private int order;
-
-
-    private String validationComment = null;
+public class ParamInfo implements Comparable, Cloneable {
 
     public static final String PARAM_TYPE_IFILE = "ifile";
     public static final String PARAM_TYPE_OFILE = "ofile";
@@ -39,51 +27,37 @@ public class ParamInfo implements Comparable {
     public static final String PARAM_TYPE_INT = "int";
     public static final String PARAM_TYPE_BOOLEAN = "boolean";
 
+    public static final String NULL_STRING = "";
+    public static final String BOOLEAN_TRUE = "1";
+    public static final String BOOLEAN_FALSE = "0";
+
     public static final String USED_IN_COMMAND_AS_ARGUMENT = "argument";
     public static final String USED_IN_COMMAND_AS_OPTION = "option";
     public static final String USED_IN_COMMAND_AS_FLAG = "flag";
-
-    private String usedAs = USED_IN_COMMAND_AS_ARGUMENT;
-
-
-    private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
-
-    public String getValidationComment() {
-        return validationComment;
-    }
-
-    private void setValidationComment(String validationComment) {
-        this.validationComment = validationComment;
-    }
-
-    private void clearValidationComment() {
-        this.validationComment = null;
-    }
-
-
-    public boolean isValid() {
-        if (getValidationComment() == null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public String getUsedAs() {
-        return usedAs;
-    }
-
-    public void setUsedAs(String usedAs) {
-        this.usedAs = usedAs;
-    }
 
     public static enum Type {
         BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP
     }
 
-    public static String NULL_STRING = "";
-    public static String BOOLEAN_TRUE = "1";
-    public static String BOOLEAN_FALSE = "0";
+    private String name = NULL_STRING;
+    private String value = NULL_STRING;
+    private Type type = Type.STRING;
+    private String defaultValue = NULL_STRING;
+    private String description = NULL_STRING;
+    private String source = NULL_STRING;
+    private boolean isBit = false;
+    private int order = 0;
+    private String validationComment = null;
+    private String usedAs = USED_IN_COMMAND_AS_ARGUMENT;
+
+    private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
+
+    public ParamInfo(String name, String value, Type type, String defaultValue) {
+        setName(name);
+        setValue(value);
+        setType(type);
+        setDefaultValue(defaultValue);
+    }
 
     public ParamInfo(String name, String value, Type type) {
         setName(name);
@@ -100,6 +74,33 @@ public class ParamInfo implements Comparable {
         setName(name);
     }
 
+    public String getValidationComment() {
+        return validationComment;
+    }
+
+    private void setValidationComment(String validationComment) {
+        this.validationComment = validationComment;
+    }
+
+    private void clearValidationComment() {
+        this.validationComment = null;
+    }
+
+    public boolean isValid() {
+        if (getValidationComment() == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String getUsedAs() {
+        return usedAs;
+    }
+
+    public void setUsedAs(String usedAs) {
+        this.usedAs = usedAs;
+    }
 
     public File getFile(File rootDir) {
         if (type == Type.IFILE) {
@@ -120,7 +121,6 @@ public class ParamInfo implements Comparable {
         }
         name = name.trim();
 
-
         if (name.length() == 0) {
             this.name = NULL_STRING;
         } else {
@@ -131,7 +131,6 @@ public class ParamInfo implements Comparable {
     public String getValue() {
         return value;
     }
-
 
     protected void setValue(String value) {
         // Clean up and handle input exceptions
@@ -152,7 +151,6 @@ public class ParamInfo implements Comparable {
 
 
     }
-
 
     public static String getStandardizedBooleanString(String booleanString) {
 
@@ -177,7 +175,6 @@ public class ParamInfo implements Comparable {
 
         return NULL_STRING;
     }
-
 
     public Type getType() {
         return type;
@@ -297,9 +294,6 @@ public class ParamInfo implements Comparable {
         isBit = bit;
     }
 
-
-
-
     public FileInfo validateIfileValue(String defaultFileParent, SeadasProcessorInfo.Id processorInfoId) {
         clearValidationComment();
 
@@ -339,9 +333,7 @@ public class ParamInfo implements Comparable {
         }
 
         return fileInfo;
-
     }
-
 
     protected void setOrder(int order) {
         this.order = order;
@@ -360,4 +352,36 @@ public class ParamInfo implements Comparable {
     public int compareTo(Object o) {
         return getName().compareToIgnoreCase(((ParamInfo) o).getName());
     }
+
+    @Override
+    public Object clone() {
+        ParamInfo info = new ParamInfo(name);
+        info.value = value;
+        info.type = type;
+        info.defaultValue = defaultValue;
+        info.description = description;
+        info.source = source;
+        info.isBit = isBit;
+        info.order = order;
+        info.validationComment = validationComment;
+        info.usedAs = usedAs;
+        for (ParamValidValueInfo validValueInfo : validValueInfos) {
+            info.validValueInfos.add((ParamValidValueInfo) validValueInfo.clone());
+        }
+        return info;
+    }
+
+    // get a string representation of this ParamInfo usable as a param string
+    public String getParamString() {
+        if (value.contains(" ")) {
+            return name + "=\"" + value + "\"";
+        } else {
+            return name + "=" + value;
+        }
+    }
+
+    public boolean isTrue() {
+        return getStandardizedBooleanString(value).equals(BOOLEAN_TRUE);
+    }
+
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>ifile</name>
+            <value/>
+            <default></default>
+            <description>input datafiles or list of files</description>
+        </option>
+        <option type="boolean">
+            <name>verbose</name>
+            <value>false</value>
+            <default>false</default>
+            <description>print out verbose status</description>
+        </option>
+        <option type="boolean">
+            <name>overwrite</name>
+            <value>false</value>
+            <default>false</default>
+            <description>overwrite existing intermediate and output files</description>
+        </option>
+        <option type="boolean">
+            <name>use_existing</name>
+            <value>false</value>
+            <default>false</default>
+            <description>do not re-create intermediate files if they already exist</description>
+        </option>
+    </options>
+</paramInfo>

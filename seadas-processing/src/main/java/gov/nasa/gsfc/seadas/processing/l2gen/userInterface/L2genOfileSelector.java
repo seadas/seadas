@@ -16,16 +16,22 @@ import java.beans.PropertyChangeListener;
  * To change this template use File | Settings | File Templates.
  */
 public class L2genOfileSelector {
+    public static final String DEFAULT_OUTPUT_FILE_OPTION_NAME = "ofile";
 
     final private L2genDataProcessorModel l2genDataProcessorModel;
-
     final private FileSelector fileSelector;
     private boolean controlHandlerEnabled = true;
+    private String outputFileOptionName;
 
     public L2genOfileSelector(L2genDataProcessorModel l2genDataProcessorModel) {
         this.l2genDataProcessorModel = l2genDataProcessorModel;
-
-        fileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, l2genDataProcessorModel.getPrimaryOutputFileOptionName().replaceAll("--", ""));
+        outputFileOptionName = l2genDataProcessorModel.getPrimaryOutputFileOptionName();
+        if(outputFileOptionName == null) {
+            outputFileOptionName = DEFAULT_OUTPUT_FILE_OPTION_NAME;
+        } else {
+            outputFileOptionName = outputFileOptionName.replaceAll("--", "");
+        }
+        fileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, outputFileOptionName);
 
         addControlListeners();
         addEventListeners();
@@ -36,7 +42,7 @@ public class L2genOfileSelector {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (isControlHandlerEnabled()) {
-                    l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryOutputFileOptionName(), fileSelector.getFileName());
+                    l2genDataProcessorModel.setParamValue(outputFileOptionName, fileSelector.getFileName());
                 }
             }
         });
@@ -44,16 +50,16 @@ public class L2genOfileSelector {
     }
 
     private void addEventListeners() {
-        l2genDataProcessorModel.addPropertyChangeListener(l2genDataProcessorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
+        l2genDataProcessorModel.addPropertyChangeListener(outputFileOptionName, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 disableControlHandler();
-                fileSelector.setFilename(l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryOutputFileOptionName()));
+                fileSelector.setFilename(l2genDataProcessorModel.getParamValue(outputFileOptionName));
                 enableControlHandler();
             }
         });
 
-        l2genDataProcessorModel.addPropertyChangeListener(l2genDataProcessorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
+        l2genDataProcessorModel.addPropertyChangeListener(outputFileOptionName, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 fileSelector.setEnabled(l2genDataProcessorModel.isValidIfile());

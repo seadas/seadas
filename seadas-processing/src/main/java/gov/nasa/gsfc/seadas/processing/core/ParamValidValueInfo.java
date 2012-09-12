@@ -6,12 +6,10 @@ package gov.nasa.gsfc.seadas.processing.core;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class ParamValidValueInfo implements Comparable {
+public class ParamValidValueInfo implements Comparable, Cloneable {
 
     private String value = null;
     private String description = null;
-    private ParamInfo parent = null;
-
 
 
     public ParamValidValueInfo(String value) {
@@ -44,19 +42,12 @@ public class ParamValidValueInfo implements Comparable {
         this.description = description;
     }
 
-    public ParamInfo getParent() {
-        return parent;
-    }
-
-    public void setParent(ParamInfo parent) {
-        this.parent = parent;
-    }
-
     @Override
     public int compareTo(Object object) {
         return getValue().compareToIgnoreCase(((ParamValidValueInfo) object).getValue());
     }
 
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("");
 
@@ -71,14 +62,11 @@ public class ParamValidValueInfo implements Comparable {
         return stringBuilder.toString();
     }
 
-//    public static final Comparator<ParamValidValueInfo> SORT_BY_VALUE
-//            = new ValueComparator();
-//
-//
-//    public static class ValueComparator implements Comparator<ParamValidValueInfo> {
-//
-//        public int compare(ParamValidValueInfo s1, ParamValidValueInfo s2) {
-//            return s1.getValue().compareToIgnoreCase(s2.getValue());
-//        }
-//    }
+    @Override
+    public Object clone() {
+        ParamValidValueInfo validValueInfo = new ParamValidValueInfo(value);
+        validValueInfo.description = description;
+        return validValueInfo;
+    }
+
 }

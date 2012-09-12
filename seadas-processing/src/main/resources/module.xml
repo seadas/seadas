@@ -36,7 +36,20 @@
 
         <action>
             <parent>seadasProcessing</parent>
+            <id>seadas_processor.py</id>
+            <placeBefore>extractor</placeBefore>
+            <class>gov.nasa.gsfc.seadas.processing.processor.SPAction</class>
+            <text>seadas_processor.py...</text>
+            <shortDescr>Process a file through many levels</shortDescr>
+            <programName>seadas_processor.py</programName>
+            <dialogTitle>seadas_processor.py</dialogTitle>
+            <xmlFileName>seadas_processor.xml</xmlFileName>
+        </action>
+
+        <action>
+            <parent>seadasProcessing</parent>
             <id>extractor</id>
+            <placeAfter>seadas_processor</placeAfter>
             <placeBefore>modis_L1A.py</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>extractor...</text>

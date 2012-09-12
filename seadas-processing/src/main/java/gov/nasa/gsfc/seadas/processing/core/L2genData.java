@@ -1212,16 +1212,16 @@ public class L2genData implements L2genDataProcessorModel {
 
     public File getTinyIFile() {
         if (tinyIFile == null) {
-            installTinyIFile();
+            tinyIFile = installTinyIFile();
         }
         return tinyIFile;
     }
 
-    private void installTinyIFile() {
+    public static File installTinyIFile() {
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), "l2gen");
-        tinyIFile = new File(dataDir, TINY_IFILE_NAME);
-        if (tinyIFile.canRead()) {
-            return;
+        File theFile = new File(dataDir, TINY_IFILE_NAME);
+        if (theFile.canRead()) {
+            return theFile;
         }
         final URL codeSourceUrl = L2genData.class.getProtectionDomain().getCodeSource().getLocation();
         final ResourceInstaller resourceInstaller = new ResourceInstaller(codeSourceUrl, "gov/nasa/gsfc/seadas/processing/l2gen/userInterface/",
@@ -1258,6 +1258,7 @@ public class L2genData implements L2genDataProcessorModel {
         };
 
         swingWorker.executeWithBlocking();
+        return theFile;
     }
 
 }

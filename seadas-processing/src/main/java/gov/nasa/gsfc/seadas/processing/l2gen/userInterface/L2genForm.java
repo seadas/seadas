@@ -5,12 +5,12 @@ Author: Danny Knowles
 
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
-import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
-import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
@@ -22,7 +22,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
+import java.io.File;
 
 
 public class L2genForm extends JPanel implements CloProgramUI {
@@ -32,32 +32,15 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private final L2genData l2genData = new L2genData();
 
     private L2genMainPanel l2genMainPanel;
-    private ProcessorModel processorModel;
-
     private JCheckBox openInAppCheckBox;
-
     private final JTabbedPane jTabbedPane = new JTabbedPane();
     private int tabIndex;
 
 
-    L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields) {
-
-        processorModel = new ProcessorModel(GUI_NAME, xmlFileName);
+    public L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields) {
 
         setOpenInAppCheckBox(new JCheckBox("Open in " + appContext.getApplicationName()));
         getOpenInAppCheckBox().setSelected(true);
-
-        initXML(iFile, showIOFields);
-    }
-
-
-    L2genForm(AppContext appContext, String xmlFileName) {
-
-        this(appContext, xmlFileName, null, true);
-    }
-
-
-    private void initXML(File iFile, boolean showIOFields) {
 
         l2genData.showIOFields = showIOFields;
 
@@ -72,17 +55,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
             getjTabbedPane().addChangeListener(new ChangeListener() {
                 public void stateChanged(ChangeEvent evt) {
                     tabChangeHandler();
-                }
-            });
-
-            l2genData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    if (l2genData.isValidIfile()) {
-                        processorModel.setReadyToRun(true);
-                    } else {
-                        processorModel.setReadyToRun(false);
-                    }
                 }
             });
 
@@ -112,13 +84,17 @@ public class L2genForm extends JPanel implements CloProgramUI {
         }
     }
 
+    public L2genForm(AppContext appContext, String xmlFileName) {
+
+        this(appContext, xmlFileName, null, true);
+    }
+
     private void tabChangeHandler() {
         int oldTabIndex = tabIndex;
         int newTabIndex = jTabbedPane.getSelectedIndex();
         tabIndex = newTabIndex;
         getL2genData().fireEvent(L2genData.TAB_CHANGE, oldTabIndex, newTabIndex);
     }
-
 
     private void createMainTab() {
 
@@ -198,15 +174,28 @@ public class L2genForm extends JPanel implements CloProgramUI {
         }
     }
 
+    @Override
+    public JPanel getParamPanel() {
+        return this;
+    }
+
     public ProcessorModel getProcessorModel() {
-        File ifile = new File(getL2genData().getParamValue(L2genData.IFILE));
-        File ofile = SeadasFileUtils.createFile(ifile.getParentFile(), getL2genData().getParamValue(L2genData.OFILE));
-        processorModel.updateParamInfo("ifile", getL2genData().getParamValue(L2genData.IFILE));
-        processorModel.updateParamInfo("ofile", ofile.getAbsolutePath());
-        processorModel.setParString(getL2genData().getParString(false));
+        ProcessorModel processorModel = new ProcessorModel(GUI_NAME, l2genData.getParamInfos());
+        if (l2genData.isValidIfile()) {
+             processorModel.setReadyToRun(true);
+        } else {
+             processorModel.setReadyToRun(false);
+        }
         return processorModel;
     }
 
+    public String getParamString() {
+        return l2genData.getParString();
+    }
+
+    public void setParamString(String paramString) {
+        l2genData.setParString(paramString, false);
+    }
 
     public Product getInitialSelectedSourceProduct() {
         return VisatApp.getApp().getSelectedProduct();

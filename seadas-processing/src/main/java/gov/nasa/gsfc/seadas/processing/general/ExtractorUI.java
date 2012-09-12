@@ -68,7 +68,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
     }
 
-    protected JPanel getParamPanel() {
+    public JPanel getParamPanel() {
 
         SeadasLogger.getLogger().info("updating ofile change listener ...  processorModel   " + processorModel.getPrimaryOutputFileOptionName());
 
@@ -180,8 +180,6 @@ public class ExtractorUI extends ProgramUIFactory {
         processorModel.appendPropertyChangeSupport(extractor.getPropertyChangeSupport());
 
         processorModel.setHasGeoFile(extractor.hasGeoFile());
-        processorModel.setPrimaryInputFileOptionName(extractor.getPrimaryInputFileOptionName());
-        processorModel.setPrimaryOutputFileOptionName(extractor.getPrimaryOutputFileOptionName());
         processorModel.setPrimaryOptions(extractor.getPrimaryOptions());
 
         return new ParamUIFactory(processorModel).createParamPanel(processorModel);

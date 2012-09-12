@@ -146,10 +146,14 @@ public class ParamUtils {
 
         XmlReader xmlReader = new XmlReader();
         InputStream paramStream = ParamUtils.class.getResourceAsStream(paramXmlFileName);
+        if (paramStream == null) {
+            VisatApp.getApp().showErrorDialog("XML file " + paramXmlFileName + " not found.");
+            return null;
+        }
 
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         if (rootElement == null) {
-            VisatApp.getApp().showErrorDialog("XML file " + paramXmlFileName + " not found.");
+            VisatApp.getApp().showErrorDialog("XML file " + paramXmlFileName + " root element not found.");
             return null;
         }
         NodeList optionNodelist = rootElement.getElementsByTagName("option");
@@ -241,7 +245,6 @@ public class ParamUtils {
                     ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(validValueValue);
 
                     paramValidValueInfo.setDescription(validValueDescription);
-                    paramValidValueInfo.setParent(paramInfo);      // why need a parent?
                     paramInfo.addValidValueInfo(paramValidValueInfo);
                 }
 

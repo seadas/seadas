@@ -254,7 +254,6 @@ public class L2genReader {
                             ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(validValueValue);
 
                             paramValidValueInfo.setDescription(validValueDescription);
-                            paramValidValueInfo.setParent(paramInfo);
                             paramInfo.addValidValueInfo(paramValidValueInfo);
                         }
                     }

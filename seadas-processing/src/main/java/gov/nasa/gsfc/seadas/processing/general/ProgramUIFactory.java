@@ -47,6 +47,15 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
     public boolean isOpenOutputInApp() {
         return parFileUI.isOpenOutputInApp();
     }
+
+    public String getParamString() {
+        return processorModel.getParamList().getParamString();
+    }
+
+    public void setParamString(String paramString) {
+        processorModel.getParamList().setParamString(paramString);
+    }
+
     protected void createUserInterface() {
         final JPanel ioPanel = ioFilesSelector.getjPanel();
         processorModel.addPropertyChangeListener("geofile", new PropertyChangeListener() {
@@ -66,10 +75,13 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
                 ioPanel.validate();
             }
         });
+        int primaryOutputIndex = 2;
         if (!processorModel.hasGeoFile()) {
             ioPanel.remove(1);
-        } else if (!processorModel.hasPrimaryOutputFile()) {
-            ioPanel.remove(2);
+            primaryOutputIndex--;
+        }
+        if (!processorModel.hasPrimaryOutputFile()) {
+            ioPanel.remove(primaryOutputIndex);
         }
 
         ioPanel.repaint();
@@ -107,7 +119,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         setMaximumSize(getPreferredSize());
     }
 
-    protected JPanel getParamPanel() {
+    public JPanel getParamPanel() {
         return new ParamUIFactory(processorModel).createParamPanel();
     }
 

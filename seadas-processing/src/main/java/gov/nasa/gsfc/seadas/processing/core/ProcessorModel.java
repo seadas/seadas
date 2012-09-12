@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -25,14 +26,12 @@ import java.util.regex.Pattern;
 public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private String programName;
     private String programLocation;
-    private ArrayList<ParamInfo> paramList;
+    private ParamList paramList;
     private boolean acceptsParFile;
     private String[] processorEnv;
     private String errorMessage;
-    private String parString;
 
     private boolean hasGeoFile;
-    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
     private Set<String> primaryOptions;
     private String parFileOptionName;
@@ -41,49 +40,52 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
     private final String allparamInitializedPropertyName = "ALL_PARAMS_INITIALIZED";
 
-    private String primaryInputFileOptionName;
-    private String primaryOutputFileOptionName;
     private ProcessorModel secondaryProcessor;
     private Pattern progressPattern;
 
-    ProcessorTypeInfo.ProcessorID processorID;
+    private ProcessorTypeInfo.ProcessorID processorID;
 
     private boolean hasMultipleInputFiles;
-    ArrayList<String> filesToUpload;
-    ArrayList<String> filesToDownload;
-    ArrayList<String> finalCmdArray;
+    private ArrayList<String> filesToUpload;
+    private ArrayList<String> filesToDownload;
+    private ArrayList<String> finalCmdArray;
 
     boolean tmpFlagForLocalRemote;
 
     public ProcessorModel(String name) {
-        this(name, null);
+        acceptsParFile = false;
+        hasGeoFile = false;
+        readyToRun = false;
+        hasMultipleInputFiles = false;
+        paramList = new ParamList();
+        parFileOptionName = ParamUtils.DEFAULT_PAR_FILE_NAME;
+
+        programName = name;
+        processorID = ProcessorTypeInfo.getProcessorID(programName);
+        computeProcessorEnv();
+
+        primaryOptions = new HashSet<String>();
+        primaryOptions.add("ifile");
+        primaryOptions.add("ofile");
+
+        progressPattern = Pattern.compile(ParamUtils.DEFAULT_PROGRESS_REGEX);
     }
 
     public ProcessorModel(String name, String parXMLFileName) {
-        this.setProgramName(name);
-        computeProcessorEnv();
-        String progressRegex = ParamUtils.DEFAULT_PROGRESS_REGEX;
-        if (parXMLFileName != null) {
+        this(name);
+        if (parXMLFileName != null && parXMLFileName.length() > 0) {
             setParamList(ParamUtils.computeParamList(parXMLFileName));
             acceptsParFile = ParamUtils.getOptionStatus(parXMLFileName, "hasParFile");
             parFileOptionName = ParamUtils.getParFileOptionName(parXMLFileName);
-            progressRegex = ParamUtils.getProgressRegex(parXMLFileName);
+            progressPattern = Pattern.compile(ParamUtils.getProgressRegex(parXMLFileName));
             hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
             setPrimaryOptions(ParamUtils.getPrimaryOptions(parXMLFileName));
-            setPrimaryInputFileOptionName(getPrimaryInputFileOptionName());
-            setPrimaryOutputFileOptionName(getPrimaryOutputFileOptionName());
-        } else {
-            setParamList(new ArrayList<ParamInfo>());
-            parFileOptionName = ParamUtils.DEFAULT_PAR_FILE_NAME;
-            acceptsParFile = false;
-            hasGeoFile = false;
         }
-        hasMultipleInputFiles = false;
-        processorID = ProcessorTypeInfo.getProcessorID(programName);
-        progressPattern = Pattern.compile(progressRegex);
-        filesToUpload = null;
-        filesToDownload = null;
-        finalCmdArray = null;
+    }
+
+    public ProcessorModel(String name, ArrayList<ParamInfo> paramList) {
+        this(name);
+        setParamList(paramList);
     }
 
     public static ProcessorModel valueOf(String programName, String xmlFileName) {
@@ -105,8 +107,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void addParamInfo(ParamInfo info) {
-        getParamList().add(info);
-
+        paramList.addInfo(info);
     }
 
     public boolean isReadyToRun() {
@@ -160,55 +161,24 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         addParamInfo(info);
     }
 
-    public String getParFileOptionName() {
-
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-
-            option = itr.next();
-            if (option.getType() != null) {
-                if (option.getType().equals(ParamInfo.Type.IFILE) && getPrimaryOptions().contains(option.getName())) {
-
-                    return option.getName();
-                }
-            }
-        }
-        return ParamUtils.DEFAULT_PAR_FILE_NAME;
-    }
-
     public String getPrimaryInputFileOptionName() {
-
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-
-            option = itr.next();
-            if (option.getType() != null) {
-                if (option.getType().equals(ParamInfo.Type.IFILE) && getPrimaryOptions().contains(option.getName())) {
-
-                    return option.getName();
-                }
+        for (String name : primaryOptions) {
+            ParamInfo param = paramList.getInfo(name);
+            if ((param != null) && (param.getType() == ParamInfo.Type.IFILE)) {
+                return name;
             }
         }
         return null;
     }
 
     public String getPrimaryOutputFileOptionName() {
-
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-
-            option = itr.next();
-            if (option.getType() != null) {
-                if (option.getType().equals(ParamInfo.Type.OFILE) && getPrimaryOptions().contains(option.getName())) {
-
-                    return option.getName();
-                }
+        for (String name : primaryOptions) {
+            ParamInfo param = paramList.getInfo(name);
+            if ((param != null) && (param.getType() == ParamInfo.Type.OFILE)) {
+                return name;
             }
         }
-        return "";
+        return null;
     }
 
     public boolean hasGeoFile() {
@@ -218,7 +188,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     public void setHasGeoFile(boolean hasGeoFile) {
         boolean oldValue = this.hasGeoFile;
         this.hasGeoFile = hasGeoFile;
-        propertyChangeSupport.firePropertyChange("geofile", oldValue,  hasGeoFile);
+        paramList.getPropertyChangeSupport().firePropertyChange("geofile", oldValue, hasGeoFile);
     }
 
     public boolean isValidProcessor() {
@@ -230,28 +200,17 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return programName;
     }
 
+    public ArrayList<ParamInfo> getProgramParamList() {
+        return paramList.getParamArray();
+    }
+
     public boolean hasPrimaryOutputFile() {
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-
-            option = itr.next();
-            if (option.getType().equals(ParamInfo.Type.OFILE) && getPrimaryOptions().contains(option.getName())) {
-
-                return true;
-            }
+        String name = getPrimaryOutputFileOptionName();
+        if (name == null) {
+            return false;
+        } else {
+            return true;
         }
-        return false;
-    }
-
-
-    public ArrayList getProgramParamList() {
-        return getParamList();
-    }
-
-
-    public void setParString(String parString) {
-        this.parString = parString;
     }
 
     public void setAcceptsParFile(boolean acceptsParFile) {
@@ -267,19 +226,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void updateParamInfo(ParamInfo currentOption, String newValue) {
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-            option = itr.next();
-            SeadasLogger.getLogger().info(option.getName() + "|  " + currentOption.getName() + "|");
-            if (option.getName().equals(currentOption.getName())) {
-                String oldValue = option.getValue();
-                option.setValue(newValue);
-                checkCompleteness();
-                getPropertyChangeSupport().firePropertyChange(option.getName(), oldValue, newValue);
-                return;
-            }
-        }
+        paramList.setValue(currentOption.getName(), newValue);
     }
 
     public void propertyChange() {
@@ -288,11 +235,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private void checkCompleteness() {
         boolean complete = true;
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-            option = itr.next();
-            if (option.getValue() == null || option.getValue().trim().length() == 0) {
+
+        for (ParamInfo param : paramList.getParamArray()) {
+            if (param.getValue() == null || param.getValue().trim().length() == 0) {
                 complete = false;
                 break;
             }
@@ -304,24 +249,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public ParamInfo getParamInfo(String paramName) {
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-            option = itr.next();
-            if (option.getName().equals(paramName.trim())) {
-                return option;
-            }
-        }
-        return null;
+        return paramList.getInfo(paramName);
     }
 
     public boolean isAllParamsValid() {
-
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-            option = itr.next();
-            if (option.getValue() == null) {
+        for (ParamInfo param : paramList.getParamArray()) {
+            if (param.getValue() == null) {
                 return false;
             }
         }
@@ -329,31 +262,20 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public String getParamValue(String paramName) {
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-            option = itr.next();
-            if (option.getName().equals(paramName)) {
-                return option.getValue();
-            }
+        ParamInfo option = getParamInfo(paramName);
+        if (option != null) {
+            return option.getValue();
         }
         return null;
     }
 
     public void updateParamInfo(String paramName, String newValue) {
-        Guardian.assertNotNull("parameter name", paramName);
-        Iterator<ParamInfo> itr = getParamList().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-            option = itr.next();
-            if (option.getName().equals(paramName.trim())) {
-                String oldValue = option.getValue();
-                //newValue = "";
-                option.setValue(newValue);
-                checkCompleteness();
-                getPropertyChangeSupport().firePropertyChange(paramName, oldValue, newValue);
-                return;
-            }
+        ParamInfo option = getParamInfo(paramName);
+        if (option != null) {
+            String oldValue = option.getValue();
+            option.setValue(newValue);
+            checkCompleteness();
+            getPropertyChangeSupport().firePropertyChange(option.getName(), oldValue, newValue);
         }
     }
 
@@ -478,12 +400,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 //        filesToUpload = new ArrayList<String>();
 //        filesToDownload = new ArrayList<String>();
 
-        String[] cmdArray = new String[getParamList().size() + 2];
+        String[] cmdArray = new String[paramList.getParamArray().size() + 2];
 
         cmdArray[0] = programLocation + "ocssw_runner";
         cmdArray[1] = getProgramName();
 
-        Iterator itr = getParamList().iterator();
+        Iterator itr = paramList.getParamArray().iterator();
         ParamInfo option;
         String cmdString = null;
         while (itr.hasNext()) {
@@ -576,12 +498,18 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public String getParString() {
 
-        if (parString != null) {
-            return parString;
+        if (filesToUpload == null) {
+            filesToUpload = new ArrayList<String>();
+        }
+        if (filesToDownload == null) {
+            filesToDownload = new ArrayList<String>();
+        }
+        if (finalCmdArray == null) {
+            finalCmdArray = new ArrayList<String>();
         }
 
         StringBuilder parString = new StringBuilder("");
-        Iterator itr = getParamList().iterator();
+        Iterator itr = paramList.getParamArray().iterator();
         ParamInfo option;
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
@@ -591,7 +519,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             if (!option.getType().equals(ParamInfo.Type.HELP) && option.getValue().length() > 0) {
 
                 if (!option.getDefaultValue().equals(option.getValue())) {
-                    parString = parString.append(option.getName() + "=" + option.getValue() + "\n");
+                    parString.append(option.getName() + "=" + option.getValue() + "\n");
                     if (option.getType().equals(ParamInfo.Type.IFILE)) {
                         finalCmdArray.add("ifile : " + option.getName() + "=" + option.getValue());
                     } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
@@ -610,7 +538,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         }
         SeadasLogger.getLogger().info("parString: " + parString);
-        return parString.toString();
+        // return parString.toString();
+        return paramList.getParamString("\n");
     }
 
     public Process executeProcess() throws IOException {
@@ -696,7 +625,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void fireAllParamEvents() {
-        for (ParamInfo paramInfo : getParamList()) {
+        for (ParamInfo paramInfo : paramList.getParamArray()) {
             if (paramInfo.getName() != null && !paramInfo.getName().toLowerCase().equals("none")) {
                 fireEvent(paramInfo.getName());
             }
@@ -767,27 +696,27 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         this.programName = programName;
     }
 
-    public ArrayList<ParamInfo> getParamList() {
+    public ParamList getParamList() {
         return paramList;
     }
 
-    public void setParamList(ArrayList<ParamInfo> paramList) {
+    public void setParamList(ParamList paramList) {
         this.paramList = paramList;
     }
 
-    public SwingPropertyChangeSupport getPropertyChangeSupport() {
-        return propertyChangeSupport;
-    }
-
-    public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
-        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-        for (int i = 0; i < pr.length; i++) {
-            this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
+    public void setParamList(ArrayList<ParamInfo> paramArray) {
+        paramList.clear();
+        for (ParamInfo param : paramArray) {
+            paramList.addInfo(param);
         }
     }
 
-    public void setPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
-        this.propertyChangeSupport = propertyChangeSupport;
+    public SwingPropertyChangeSupport getPropertyChangeSupport() {
+        return paramList.getPropertyChangeSupport();
+    }
+
+    public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
+        paramList.appendPropertyChangeSupport(propertyChangeSupport);
     }
 
     public Set<String> getPrimaryOptions() {
@@ -796,14 +725,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public void setPrimaryOptions(Set<String> primaryOptions) {
         this.primaryOptions = primaryOptions;
-    }
-
-    public void setPrimaryInputFileOptionName(String primaryInputFileOptionName) {
-        this.primaryInputFileOptionName = primaryInputFileOptionName;
-    }
-
-    public void setPrimaryOutputFileOptionName(String primaryOutputFileOptionName) {
-        this.primaryOutputFileOptionName = primaryOutputFileOptionName;
     }
 
     public String getRunButtonPropertyName() {

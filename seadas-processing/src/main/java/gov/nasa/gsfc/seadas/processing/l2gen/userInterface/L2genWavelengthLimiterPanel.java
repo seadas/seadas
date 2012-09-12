@@ -27,7 +27,7 @@ public class L2genWavelengthLimiterPanel extends JPanel {
 
     private JPanel waveLimiterJPanel;
 
-    private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = null;
+    private ArrayList<JCheckBox> wavelengthsJCheckboxArrayList = new ArrayList<JCheckBox>();
 
     private boolean waveLimiterControlHandlersEnabled = false;
 
@@ -339,8 +339,6 @@ public class L2genWavelengthLimiterPanel extends JPanel {
 
 
     private void updateWavelengthLimiterPanel() {
-
-        wavelengthsJCheckboxArrayList = new ArrayList<JCheckBox>();
 
         waveLimiterJPanel.removeAll();
 
