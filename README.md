@@ -25,7 +25,7 @@ Installation Guide
 1.  Need to checkout the correct version for ceres
 
         cd ceres
-        git checkout -b 0.13.1
+        git checkout tags/0.13.1
 
 1.  Build Ceres from source and install in local Maven repository: 
 
