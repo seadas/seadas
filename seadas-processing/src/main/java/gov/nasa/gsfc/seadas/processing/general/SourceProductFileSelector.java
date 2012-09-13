@@ -351,11 +351,13 @@ public class SourceProductFileSelector {
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
-        mainPanel.add(filterRegexLabel,
-                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        mainPanel.add(filterRegexField,
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
+       // mainPanel.add(filterRegexLabel,
+       //         new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+       // mainPanel.add(filterRegexField,
+        //        new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        mainPanel.setLayout(new FlowLayout());
+        mainPanel.add(filterRegexLabel);
+        mainPanel.add(filterRegexField);
         return mainPanel;
 
     }
@@ -411,7 +413,7 @@ public class SourceProductFileSelector {
 
             //filePanel.setLayout(new TableLayout(3));
 
-            filePanel.add(filterPanel, Component.CENTER_ALIGNMENT, 1);
+            filePanel.add(filterPanel, Component.CENTER_ALIGNMENT, 0);
 
                         //filePanel.getComponent(0).getParent().add(filterPanel);
             //System.out.println("number of components: " + filePanel.getComponents().length);
