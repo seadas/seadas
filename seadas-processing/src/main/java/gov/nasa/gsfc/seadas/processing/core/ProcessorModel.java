@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.*;
-import org.esa.beam.util.Guardian;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -45,7 +44,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private ProcessorTypeInfo.ProcessorID processorID;
 
-    private boolean hasMultipleInputFiles;
+    private boolean multipleInputFiles;
     private ArrayList<String> filesToUpload;
     private ArrayList<String> filesToDownload;
     private ArrayList<String> finalCmdArray;
@@ -56,7 +55,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         acceptsParFile = false;
         hasGeoFile = false;
         readyToRun = false;
-        hasMultipleInputFiles = false;
+        multipleInputFiles = false;
         paramList = new ParamList();
         parFileOptionName = ParamUtils.DEFAULT_PAR_FILE_NAME;
 
@@ -128,12 +127,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return getParamValue(getPrimaryOutputFileOptionName());
     }
 
-    public boolean isHasMultipleInputFiles() {
-        return hasMultipleInputFiles;
+    public boolean isMultipleInputFiles() {
+        return multipleInputFiles;
     }
 
-    public void setHasMultipleInputFiles(boolean hasMultipleInputFiles) {
-        this.hasMultipleInputFiles = hasMultipleInputFiles;
+    public void setMultipleInputFiles(boolean multipleInputFiles) {
+        this.multipleInputFiles = multipleInputFiles;
     }
 
     public void createsmitoppmProcessorModel(String ofileName) {
@@ -793,7 +792,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private static class L2Bin_Processor extends ProcessorModel {
         L2Bin_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
-            setHasMultipleInputFiles(true);
+            setMultipleInputFiles(true);
         }
 
 

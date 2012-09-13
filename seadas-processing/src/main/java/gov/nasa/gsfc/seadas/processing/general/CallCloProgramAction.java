@@ -39,6 +39,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private String programName;
     private String dialogTitle;
     private String xmlFileName;
+    private String multiIFile;
 
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
@@ -51,7 +52,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
-
+        multiIFile = getValue(config, "dialogTitle", "false");
         super.configure(config);
     }
 
@@ -64,7 +65,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         if (programName.indexOf("extract") != -1) {
             return new ExtractorUI(programName, xmlFileName);
         }
-        return new ProgramUIFactory(programName, xmlFileName);
+        return new ProgramUIFactory(programName, xmlFileName, multiIFile);
     }
 
     @Override
@@ -75,6 +76,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final AppContext appContext = getAppContext();
 
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
+        //cloProgramUI.getProcessorModel().setMultipleInputFiles(multiIFile.equals("true") ? true : false);
 
         final Window parent = appContext.getApplicationWindow();
 

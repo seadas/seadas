@@ -118,7 +118,7 @@ public class IFileSelector {
 
     private String computeIFileOptionValue() {
         String ifileOptionValue = "";
-        if ( processorModel.isHasMultipleInputFiles() )  {
+        if ( processorModel.isMultipleInputFiles() )  {
             ifileOptionValue = getSelectedFilesList();
 
 

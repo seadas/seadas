@@ -108,6 +108,10 @@ public class L2genData implements L2genDataProcessorModel {
         }
     }
 
+    public boolean isMultipleInputFiles(){
+        return false;
+    }
+
     public boolean isShowDefaultsInParString() {
         return showDefaultsInParString;
     }

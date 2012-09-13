@@ -29,8 +29,7 @@ public class L2genIfileSelector {
     public L2genIfileSelector(L2genDataProcessorModel l2genDataProcessorModel) {
         this.l2genDataProcessorModel = l2genDataProcessorModel;
 
-        sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), l2genDataProcessorModel.getPrimaryInputFileOptionName());
-
+        sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), l2genDataProcessorModel.getPrimaryInputFileOptionName(), l2genDataProcessorModel.isMultipleInputFiles());
         sourceProductSelector.initProducts();
         sourceProductSelector.setProductNameLabel(new JLabel(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
         sourceProductSelector.getProductNameComboBox().setPrototypeDisplayValue(

@@ -73,9 +73,15 @@ public class SourceProductFileSelector {
     private JTextField filterRegexField;
     private JLabel filterRegexLabel;
     private JTextField ifileTextfield;
+    private boolean selectMultipleIFiles;
 
 
     public SourceProductFileSelector(AppContext appContext, String labelText) {
+        this(appContext, labelText, false);
+    }
+
+    public SourceProductFileSelector(AppContext appContext, String labelText, boolean selectMultipleIFiles) {
+        this.selectMultipleIFiles = selectMultipleIFiles;
         this.appContext = appContext;
 
         setIfileTextfield(new JTextField(""));
@@ -84,9 +90,6 @@ public class SourceProductFileSelector {
 
         productNameLabel = new JLabel(labelText);
         productFileChooserButton = new JButton(new ProductFileChooserAction());
-        //    final Dimension size = new Dimension(26, 16);
-        //     productFileChooserButton.setPreferredSize(size);
-        //    productFileChooserButton.setMinimumSize(size);
 
         productNameComboBox = new JComboBox(productListModel);
         productNameComboBox.setPrototypeDisplayValue("[1] 123456789 123456789 123456789 123456789 123456789");
@@ -207,6 +210,7 @@ public class SourceProductFileSelector {
             productListModel.setSelectedItem(product);
         } else {
             if (productFilter.accept(product) && regexFileFilter.accept(product.getFileLocation())) {
+                product.setDescription("this is a test");
                 productListModel.addElement(product);
                 productListModel.setSelectedItem(product);
                 if (extraProduct != null) {
@@ -305,22 +309,22 @@ public class SourceProductFileSelector {
     }
 
 
-    public JPanel createIfilePanel(boolean includeLabel) {
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-
-        if (includeLabel) {
-            addLabelToMainPanel(mainPanel);
-        }
-
-        mainPanel.add(ifileTextfield,
-                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
-        mainPanel.add(getProductFileChooserButton(),
-                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-        mainPanel.add(createFilterPane(),
-                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-
-        return mainPanel;
-    }
+//    public JPanel createIfilePanel(boolean includeLabel) {
+//        JPanel mainPanel = new JPanel(new GridBagLayout());
+//
+//        if (includeLabel) {
+//            addLabelToMainPanel(mainPanel);
+//        }
+//
+//        mainPanel.add(ifileTextfield,
+//                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
+//        mainPanel.add(getProductFileChooserButton(),
+//                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+//        mainPanel.add(createFilterPane(),
+//                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+//
+//        return mainPanel;
+//    }
 
 
     private void addLabelToMainPanel(JPanel jPanel) {
@@ -377,6 +381,14 @@ public class SourceProductFileSelector {
         return files;
     }
 
+    public boolean isSelectMultipleIFiles() {
+        return selectMultipleIFiles;
+    }
+
+    public void setSelectMultipleIFiles(boolean selectMultipleIFiles) {
+        this.selectMultipleIFiles = selectMultipleIFiles;
+    }
+
     private class ProductFileChooserAction extends AbstractAction {
 
         private String APPROVE_BUTTON_TEXT = "Select";
@@ -387,10 +399,26 @@ public class SourceProductFileSelector {
         private ProductFileChooserAction() {
             super("...");
             fileChooser = new BeamFileChooser();
-            fileNameField = (JTextField) findJTextField(fileChooser);
+            //fileNameField = (JTextField) findJTextField(fileChooser);
 
+            //findJList(fileChooser, 0);
             JPanel filterPanel = createFilterPane();
-            fileNameField.getParent().add(filterPanel);
+
+           // fileChooser.add(filterPanel,Component.CENTER_ALIGNMENT, 1);
+            JPanel filePanel = (JPanel)fileChooser.getComponent(1);
+
+           // System.out.println(filePanel.getLayout().getClass());
+
+            //filePanel.setLayout(new TableLayout(3));
+
+            filePanel.add(filterPanel, Component.CENTER_ALIGNMENT, 1);
+
+                        //filePanel.getComponent(0).getParent().add(filterPanel);
+            //System.out.println("number of components: " + filePanel.getComponents().length);
+            //System.out.println ((filePanel.getComponents())[0].getClass().toString() + (filePanel.getComponents())[1].getClass().toString());
+
+            //fileNameField.getParent().add(filterPanel);
+            //((JPanel)findFileField(fileChooser)).add(filterPanel);
 
             final Vector<RegexFileFilter> regexFilters = new Vector<RegexFileFilter>();
 
@@ -423,7 +451,8 @@ public class SourceProductFileSelector {
                     regexFilters.add(regexFileFilter);
                 }
             });
-            fileChooser.setMultiSelectionEnabled(true);
+
+            fileChooser.setMultiSelectionEnabled(selectMultipleIFiles);
             fileChooser.setDialogTitle("Select Input File");
             final Iterator<ProductReaderPlugIn> iterator = ProductIOPlugInManager.getInstance().getAllReaderPlugIns();
             while (iterator.hasNext()) {
@@ -451,6 +480,7 @@ public class SourceProductFileSelector {
                 for (int i = 0; i < components.length; i++) {
                     Component child = findJTextField(components[i]);
                     if (child != null) {
+                        System.out.println(i);
                         return child;
                     }
                 }
@@ -458,19 +488,39 @@ public class SourceProductFileSelector {
             return null;
         }
 
-        private Component findJList(Component comp) {
-            System.out.println(comp.getClass());
-            if (comp.getClass() == JList.class) return comp;
-            if (comp instanceof Container) {
-                Component[] components = ((Container) comp).getComponents();
-                for (int i = 0; i < components.length; i++) {
-                    Component child = findJList(components[i]);
-                    if (child != null)
-                        return child;
-                }
-            }
-            return null;
-        }
+        private Component findJList(Component comp, int j) {
+             System.out.println(comp.getClass() + "  " + j);
+             if (comp.getClass() == JList.class) return comp;
+             if (comp instanceof Container) {
+                 Component[] components = ((Container) comp).getComponents();
+                 System.out.println("number of comps: " + components.length);
+                 for (int i = 0; i < components.length; i++) {
+
+                     Component child = findJList(components[i], i);
+                     if (child != null) {
+
+                         return child;
+                     }
+                 }
+             }
+             return null;
+         }
+
+
+        private Component findFileField(Component comp) {
+             System.out.println(comp.getClass());
+             if (comp.getClass() == JPanel.class) return comp;
+             if (comp instanceof Container) {
+                 Component[] components = ((Container) comp).getComponents();
+                 for (int i = 0; i < components.length; i++) {
+                     Component child = findFileField(components[i]);
+                     if (child != null) {
+                         return child;
+                     }
+                 }
+             }
+             return null;
+         }
 
         @Override
         public void actionPerformed(ActionEvent event) {

@@ -17,4 +17,5 @@ public interface L2genDataProcessorModel {
     public boolean isRequiresGeofile();
     public String getPrimaryInputFileOptionName();
     public String getPrimaryOutputFileOptionName();
+    public boolean isMultipleInputFiles();
 }
