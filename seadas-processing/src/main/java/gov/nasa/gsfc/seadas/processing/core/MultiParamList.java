@@ -152,7 +152,7 @@ public class MultiParamList extends ParamList {
             list = entry.getValue();
             if (list != null && !list.isDefault()) {
                 sb.append(separator);
-                sb.append("[").append(entry.getKey()).append("]");
+                sb.append("\n[").append(entry.getKey()).append("]");
                 sb.append(separator);
                 sb.append(list.getParamString(separator));
             }
