@@ -81,6 +81,11 @@ public class SourceProductFileSelector {
     }
 
     public SourceProductFileSelector(AppContext appContext, String labelText, boolean selectMultipleIFiles) {
+//        try {
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         this.selectMultipleIFiles = selectMultipleIFiles;
         this.appContext = appContext;
 
@@ -170,7 +175,6 @@ public class SourceProductFileSelector {
         }
         final Product selectedProduct = appContext.getSelectedProduct();
         if (selectedProduct != null && productFilter.accept(selectedProduct) && regexFileFilter.accept(selectedProduct.getFileLocation())) {
-            //productListModel.setSelectedItem(selectedProduct);
             ifileTextfield.setText(selectedProduct.getName());
             setSelectedProduct(selectedProduct);
 
@@ -231,6 +235,14 @@ public class SourceProductFileSelector {
         }
     }
 
+    public void setSelectedFile(File file, String fileContent) {
+        if (file != null && file.canRead()) {
+            Product product = new Product(file.getName(), "DummyType", 10, 10);
+            product.setFileLocation(file);
+            product.setDescription(fileContent);
+            setSelectedProduct(product);
+        }
+    }
 
     public synchronized void releaseProducts() {
         appContext.getProductManager().removeListener(productManagerListener);
@@ -308,25 +320,6 @@ public class SourceProductFileSelector {
         return mainPanel;
     }
 
-
-//    public JPanel createIfilePanel(boolean includeLabel) {
-//        JPanel mainPanel = new JPanel(new GridBagLayout());
-//
-//        if (includeLabel) {
-//            addLabelToMainPanel(mainPanel);
-//        }
-//
-//        mainPanel.add(ifileTextfield,
-//                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
-//        mainPanel.add(getProductFileChooserButton(),
-//                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-//        mainPanel.add(createFilterPane(),
-//                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-//
-//        return mainPanel;
-//    }
-
-
     private void addLabelToMainPanel(JPanel jPanel) {
         jPanel.add(getProductNameLabel(),
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
@@ -341,7 +334,6 @@ public class SourceProductFileSelector {
         filterRegexField.setText("");
         filterRegexField.setName("filterRegexField");
 
-
         filterRegexLabel = new JLabel("Filter:");
         filterRegexLabel.setPreferredSize(filterRegexLabel.getPreferredSize());
         filterRegexLabel.setMinimumSize(filterRegexLabel.getPreferredSize());
@@ -350,20 +342,11 @@ public class SourceProductFileSelector {
 
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
-
-       // mainPanel.add(filterRegexLabel,
-       //         new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-       // mainPanel.add(filterRegexField,
-        //        new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         mainPanel.setLayout(new FlowLayout());
         mainPanel.add(filterRegexLabel);
         mainPanel.add(filterRegexField);
         return mainPanel;
 
-    }
-
-    public JTextField getIfileTextfield() {
-        return ifileTextfield;
     }
 
     public void setIfileTextfield(JTextField ifileTextfield) {
@@ -383,44 +366,17 @@ public class SourceProductFileSelector {
         return files;
     }
 
-    public boolean isSelectMultipleIFiles() {
-        return selectMultipleIFiles;
-    }
-
-    public void setSelectMultipleIFiles(boolean selectMultipleIFiles) {
-        this.selectMultipleIFiles = selectMultipleIFiles;
-    }
-
     private class ProductFileChooserAction extends AbstractAction {
 
         private String APPROVE_BUTTON_TEXT = "Select";
         private JFileChooser fileChooser;
 
-        private JTextField fileNameField;
-
         private ProductFileChooserAction() {
             super("...");
             fileChooser = new BeamFileChooser();
-            //fileNameField = (JTextField) findJTextField(fileChooser);
-
-            //findJList(fileChooser, 0);
             JPanel filterPanel = createFilterPane();
-
-           // fileChooser.add(filterPanel,Component.CENTER_ALIGNMENT, 1);
-            JPanel filePanel = (JPanel)fileChooser.getComponent(1);
-
-           // System.out.println(filePanel.getLayout().getClass());
-
-            //filePanel.setLayout(new TableLayout(3));
-
-            filePanel.add(filterPanel, Component.CENTER_ALIGNMENT, 0);
-
-                        //filePanel.getComponent(0).getParent().add(filterPanel);
-            //System.out.println("number of components: " + filePanel.getComponents().length);
-            //System.out.println ((filePanel.getComponents())[0].getClass().toString() + (filePanel.getComponents())[1].getClass().toString());
-
-            //fileNameField.getParent().add(filterPanel);
-            //((JPanel)findFileField(fileChooser)).add(filterPanel);
+            JPanel filePanel = (JPanel) fileChooser.getComponent(1);
+            filePanel.add(filterPanel, BorderLayout.CENTER, 0);
 
             final Vector<RegexFileFilter> regexFilters = new Vector<RegexFileFilter>();
 
@@ -429,28 +385,17 @@ public class SourceProductFileSelector {
             filterRegexField.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent documentEvent) {
-
-                    regexFileFilter = new RegexFileFilter(filterRegexField.getText());
-                    removePreviousFilters(regexFilters);
-                    fileChooser.addChoosableFileFilter(regexFileFilter);
-                    regexFilters.add(regexFileFilter);
-                    SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+                    updateFileFilter();
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent documentEvent) {
-                    regexFileFilter = new RegexFileFilter(filterRegexField.getText());
-                    removePreviousFilters(regexFilters);
-                    fileChooser.addChoosableFileFilter(regexFileFilter);
-                    regexFilters.add(regexFileFilter);
+                    updateFileFilter();
                 }
 
                 @Override
                 public void changedUpdate(DocumentEvent documentEvent) {
-                    regexFileFilter = new RegexFileFilter(filterRegexField.getText());
-                    removePreviousFilters(regexFilters);
-                    fileChooser.addChoosableFileFilter(regexFileFilter);
-                    regexFilters.add(regexFileFilter);
+                    updateFileFilter();
                 }
             });
 
@@ -491,38 +436,49 @@ public class SourceProductFileSelector {
         }
 
         private Component findJList(Component comp, int j) {
-             System.out.println(comp.getClass() + "  " + j);
-             if (comp.getClass() == JList.class) return comp;
-             if (comp instanceof Container) {
-                 Component[] components = ((Container) comp).getComponents();
-                 System.out.println("number of comps: " + components.length);
-                 for (int i = 0; i < components.length; i++) {
+            System.out.println(comp.getClass() + "  " + j);
+            if (comp.getClass() == JList.class) return comp;
+            if (comp instanceof Container) {
+                Component[] components = ((Container) comp).getComponents();
+                System.out.println("number of comps: " + components.length);
+                for (int i = 0; i < components.length; i++) {
 
-                     Component child = findJList(components[i], i);
-                     if (child != null) {
+                    Component child = findJList(components[i], i);
+                    if (child != null) {
 
-                         return child;
-                     }
-                 }
-             }
-             return null;
-         }
+                        return child;
+                    }
+                }
+            }
+            return null;
+        }
 
 
         private Component findFileField(Component comp) {
-             System.out.println(comp.getClass());
-             if (comp.getClass() == JPanel.class) return comp;
-             if (comp instanceof Container) {
-                 Component[] components = ((Container) comp).getComponents();
-                 for (int i = 0; i < components.length; i++) {
-                     Component child = findFileField(components[i]);
-                     if (child != null) {
-                         return child;
-                     }
-                 }
-             }
-             return null;
-         }
+            System.out.println(comp.getClass());
+            if (comp.getClass() == JTextField.class || comp.getClass() == JComboBox.class) return comp;
+            if (comp instanceof Container) {
+                Component[] components = ((Container) comp).getComponents();
+                for (int i = 0; i < components.length; i++) {
+                    Component child = findFileField(components[i]);
+                    if (child != null) {
+                        return child;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private void updateFileFilter() {
+            regexFileFilter = new RegexFileFilter(filterRegexField.getText());
+            //removePreviousFilters(regexFilters);
+            fileChooser.resetChoosableFileFilters();
+            fileChooser.addChoosableFileFilter(regexFileFilter);
+            fileChooser.getUI().rescanCurrentDirectory(fileChooser);
+
+            //regexFilters.add(regexFileFilter);
+            SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+        }
 
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -562,6 +518,7 @@ public class SourceProductFileSelector {
                         for (File f : files) {
                             p = new Product(f.getName(), "DummyType", 10, 10);
                             p.setFileLocation(f);
+                            p.setDescription(f.getAbsolutePath());
                             productListModel.addElement(p);
                         }
                         setSelectedProduct(product);
@@ -615,6 +572,7 @@ public class SourceProductFileSelector {
                 final JLabel label = (JLabel) cellRendererComponent;
                 final Product product = (Product) value;
                 label.setText(product.getDisplayName());
+                label.setToolTipText(product.getDescription());
             }
 
             return cellRendererComponent;
@@ -715,62 +673,6 @@ public class SourceProductFileSelector {
         public void ensureFileIsVisible(JFileChooser fc, File f) {
             ensureFileIsVisible(fc, f);
             //ensureFileIsVisible(f, true);
-        }
-    }
-
-    public class MultiFileChooser extends JFileChooser {
-        public MultiFileChooser() {
-        }
-
-        public File[] getSelectedFiles() {
-            Container c1 = (Container) getComponent(3);
-            JList list = null;
-            while (c1 != null) {
-                Container c = (Container) c1.getComponent(0);
-                if (c instanceof JList) {
-                    list = (JList) c;
-                    break;
-                }
-                c1 = c;
-            }
-            Object[] entries = list.getSelectedValues();
-            File[] files = new File[entries.length];
-            for (int k = 0; k < entries.length; k++) {
-                if (entries[k] instanceof File)
-                    files[k] = (File) entries[k];
-            }
-            return files;
-        }
-    }
-
-    private class MyComboBoxRenderer extends DefaultListCellRenderer {
-
-        private String[] items;
-        private boolean[] selected;
-
-        public MyComboBoxRenderer(String[] items) {
-            this.items = items;
-            this.selected = new boolean[items.length];
-        }
-
-        public Component getListCellRendererComponent(JList list, Object value,
-                                                      boolean isSelected, boolean cellHasFocus, int index) {
-            final Component cellRendererComponent =
-                    super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-            if (cellRendererComponent instanceof JLabel && value instanceof Product) {
-                final JLabel label = (JLabel) cellRendererComponent;
-                final Product product = (Product) value;
-                label.setText(product.getDisplayName());
-            }
-
-//            return cellRendererComponent;
-//        }
-            return this;
-        }
-
-        public void setSelected(int i, boolean flag) {
-            this.selected[i] = flag;
         }
     }
 }
