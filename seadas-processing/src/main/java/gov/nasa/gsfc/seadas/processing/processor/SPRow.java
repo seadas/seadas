@@ -37,14 +37,15 @@ public class SPRow {
     public static final String PARAM_STRING_EVENT = "paramString";
     public static final String KEEPFILES_PARAM = "keepfiles";
 
+    private static final String LONGEST_LABEL = "modis_GEO.py";
+
     private String name;
     private CloProgramUI cloProgramUI;
     private SPForm parentForm;
 
-    private JLabel nameLabel;
+    private JButton configButton;
     private JCheckBox keepCheckBox;
     private JTextField paramTextField;
-    private JButton configButton;
     private JPanel configPanel;
     private ParamList paramList;
     private SwingPropertyChangeSupport propertyChangeSupport;
@@ -56,7 +57,15 @@ public class SPRow {
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
         paramList = new ParamList();
-        nameLabel = new JLabel(name);
+        configButton = new JButton(LONGEST_LABEL);
+        configButton.setPreferredSize(configButton.getPreferredSize());
+        configButton.setText(name);
+        configButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleButtonEvent();
+            }
+        });
         keepCheckBox = new JCheckBox();
         keepCheckBox.setSelected(false);
         keepCheckBox.addChangeListener(new ChangeListener() {
@@ -84,13 +93,6 @@ public class SPRow {
             }
         });
 
-        configButton = new JButton("...");
-        configButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleButtonEvent();
-            }
-        });
 
     }
 
@@ -100,14 +102,12 @@ public class SPRow {
 
     // this method assumes the the JPanel passed in is using a grid bag layout
     public void attachComponents(JPanel base, int row) {
-        base.add(nameLabel,
+        base.add(configButton,
                 new GridBagConstraintsCustom(0, row, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         base.add(keepCheckBox,
                 new GridBagConstraintsCustom(1, row, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
         base.add(paramTextField,
                 new GridBagConstraintsCustom(2, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-        base.add(configButton,
-                new GridBagConstraintsCustom(3, row, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
     }
 
     private void createConfigPanel() {
@@ -116,7 +116,7 @@ public class SPRow {
                 cloProgramUI = new ProgramUIFactory("seadas_processor.py", "seadas_processor.xml");
                 configPanel = (JPanel)cloProgramUI;
             } else if (name.equals("l2gen")) {
-                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", L2genData.installTinyIFile(), false);
+                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", L2genData.installTinyIFile(), true);
                 configPanel = cloProgramUI.getParamPanel();
             } else {
                 String xmlFile = name.replace(".py", "").concat(".xml");

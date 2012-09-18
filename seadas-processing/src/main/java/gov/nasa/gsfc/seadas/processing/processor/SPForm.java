@@ -40,13 +40,15 @@ public class SPForm extends JPanel implements CloProgramUI {
                         importParfileButton
                         retainParfileCheckbox
                     exportParfileButton
-                    parfileTextArea
-            chainPanel
-                nameLabel
-                keepLabel
-                paramsLabel
-                configLabel
-                progRowPanel
+                    parfileScrollPane
+                        parfileTextArea
+            chainScrollPane
+                chainPanel
+                    nameLabel
+                    keepLabel
+                    paramsLabel
+                    configLabel
+                    progRowPanel
 
 
      */
@@ -58,6 +60,7 @@ public class SPForm extends JPanel implements CloProgramUI {
     private JPanel mainPanel;
     private JPanel primaryIOPanel;
     private SourceProductFileSelector sourceProductFileSelector;
+    private JScrollPane parfileScrollPane;
     private JPanel parfilePanel;
     private JPanel importPanel;
     private JButton importParfileButton;
@@ -65,11 +68,12 @@ public class SPForm extends JPanel implements CloProgramUI {
     private JButton exportParfileButton;
     private JTextArea parfileTextArea;
 
+    private JScrollPane chainScrollPane;
     private JPanel chainPanel;
     private JLabel nameLabel;
     private JLabel keepLabel;
     private JLabel paramsLabel;
-    private JLabel configLabel;
+
     private JPanel spacer;
 
     private ArrayList<SPRow> rows;
@@ -123,6 +127,8 @@ public class SPForm extends JPanel implements CloProgramUI {
                 handleParamStringChange();
             }
         });
+        parfileScrollPane = new JScrollPane(parfileTextArea);
+        parfileScrollPane.setBorder(null);
 
         parfilePanel = new JPanel(new GridBagLayout());
         parfilePanel.setBorder(BorderFactory.createTitledBorder("Parfile"));
@@ -130,7 +136,7 @@ public class SPForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         parfilePanel.add(exportParfileButton,
                 new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        parfilePanel.add(parfileTextArea,
+        parfilePanel.add(parfileScrollPane,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 2));
 
         mainPanel = new JPanel(new GridBagLayout());
@@ -147,8 +153,6 @@ public class SPForm extends JPanel implements CloProgramUI {
         keepLabel.setFont(font);
         paramsLabel = new JLabel("Params");
         paramsLabel.setFont(font);
-        configLabel = new JLabel("Config");
-        configLabel.setFont(font);
         spacer = new JPanel();
 
         chainPanel = new JPanel(new GridBagLayout());
@@ -158,8 +162,6 @@ public class SPForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 4));
         chainPanel.add(paramsLabel,
                 new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 4));
-        chainPanel.add(configLabel,
-                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 4));
         createRows();
         int rowNum = 1;
         for (SPRow row : rows) {
@@ -169,10 +171,12 @@ public class SPForm extends JPanel implements CloProgramUI {
         chainPanel.add(spacer,
                 new GridBagConstraintsCustom(0, rowNum, 0, 1, GridBagConstraints.WEST, GridBagConstraints.VERTICAL));
 
+        chainScrollPane = new JScrollPane(chainPanel);
+        chainScrollPane.setBorder(null);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.add("Main", mainPanel);
-        tabbedPane.add("Program Chain", chainPanel);
+        tabbedPane.add("Program Chain", chainScrollPane);
 
         // add the tabbed pane
         setLayout(new GridBagLayout());
