@@ -24,7 +24,8 @@
 
 
     <mapID target="processOverview" url="processors/ProcessOverview.html"/>
-    <mapID target="l2genProductSelector" url="processors/ProcessL2genProductSelector.html"/>
-    <mapID target="l2genSubsettingOptions" url="processors/ProcessL2genSubsettingOptions.html"/>
+
+
+    <mapID target="auxiliary_masks" url="tools/AuxiliaryMasks.html"/>
 
 </map>

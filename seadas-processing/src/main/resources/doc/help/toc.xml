@@ -20,10 +20,10 @@
                 <tocitem text="l1bgen" target="l1bgen"/>
                 <tocitem text="l1mapgen" target="l1mapgen"/>
                 <tocitem text="l1brsgen" target="l1brsgen"/>
-                <tocitem text="L2gen">
-                    <tocitem text="Introduction" target="l2gen"/>
-                    <tocitem text="Product Selector" target="l2genProductSelector"/>
-                    <tocitem text="Subsetting Options" target="l2genSubsettingOptions"/>
+                <tocitem text="L2gen" target="l2gen">
+                    <!--<tocitem text="Introduction" target="l2gen"/>-->
+                    <!--<tocitem text="Product Selector" target="l2genProductSelector"/>-->
+                    <!--<tocitem text="Subsetting Options" target="l2genSubsettingOptions"/>-->
                 </tocitem>
                 <tocitem text="l2mapgen" target="l2mapgen"/>
                 <tocitem text="l2brsgen" target="l2brsgen"/>
@@ -35,6 +35,12 @@
                 <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
 
             </tocitem>
+
         </tocitem>
+        <tocitem text="Tools">
+            <tocitem text="Auxiliary Masks" target="auxiliary_masks">
+            </tocitem>
+        </tocitem>
+
     </tocitem>
 </toc>
