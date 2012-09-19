@@ -28,6 +28,7 @@ public class ProcessorTypeInfo {
         SMITOPPM,
         LONlAT2PIXLINE,
         SEADAS_PROCESSOR_PY,
+        SEADAS_PROCESSOR_MAIN,
         NOID
     }
 
@@ -51,6 +52,7 @@ public class ProcessorTypeInfo {
         put("smitoppm", ProcessorID.SMITOPPM);
         put("lonlat2pixline", ProcessorID.LONlAT2PIXLINE);
         put("seadas_processor.py", ProcessorID.SEADAS_PROCESSOR_PY);
+        put("seadas_processor_main", ProcessorID.SEADAS_PROCESSOR_MAIN);
 
 
     }};

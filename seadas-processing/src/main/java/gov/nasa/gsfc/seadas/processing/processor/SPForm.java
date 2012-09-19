@@ -24,6 +24,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -78,8 +79,12 @@ public class SPForm extends JPanel implements CloProgramUI {
 
     private ArrayList<SPRow> rows;
 
+    String xmlFileName;
+    ProcessorModel processorModel;
+
     SPForm(AppContext appContext, String xmlFileName) {
         this.appContext = appContext;
+        this.xmlFileName = xmlFileName;
 
         // create main panel
         sourceProductFileSelector = new SourceProductFileSelector(VisatApp.getApp(), "ifile");
@@ -188,7 +193,7 @@ public class SPForm extends JPanel implements CloProgramUI {
         String[] rowNames = {
                 "main",
                 "modis_L1A.py",
-                "modis_GEO.py",
+                "geo",
                 "modis_L1B.py",
                 "l1bgen",
                 "l1brsgen",
@@ -227,14 +232,21 @@ public class SPForm extends JPanel implements CloProgramUI {
     public ParamList getParamList() {
         MultiParamList paramList = new MultiParamList();
         for (SPRow row : rows) {
-            paramList.addParamList(row.getName(), row.getParamList());
+            String name = row.getName();
+            if(name.equals("modis_GEO.py")) {
+                name = "geo";
+            }
+            paramList.addParamList(name, row.getParamList());
         }
         return paramList;
     }
 
     @Override
     public ProcessorModel getProcessorModel() {
-        ProcessorModel processorModel = new ProcessorModel("seadas_processor.py");
+        if (processorModel == null) {
+            processorModel = new ProcessorModel("seadas_processor.py", xmlFileName);
+            processorModel.setReadyToRun(true);
+        }
         processorModel.setParamList(getParamList());
         return processorModel;
     }
@@ -316,12 +328,12 @@ public class SPForm extends JPanel implements CloProgramUI {
                     row.setParamString(sb.toString());
                 }
             }
-
         }
-        parfileTextArea.setText(getParamString());
+        updateParamString();
     }
 
     private void updateParamString() {
+        sourceProductFileSelector.setSelectedFile(new File(getRow("main").getParamList().getValue("ifile")));
         parfileTextArea.setText(getParamString());
     }
 
@@ -333,7 +345,7 @@ public class SPForm extends JPanel implements CloProgramUI {
     private void handleIFileChanged() {
         String ifileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
         getRow("main").setParamValue("ifile", ifileName);
-        updateParamString();
+        parfileTextArea.setText(getParamString());
     }
 
 }

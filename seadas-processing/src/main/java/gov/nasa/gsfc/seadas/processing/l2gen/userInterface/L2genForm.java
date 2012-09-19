@@ -36,6 +36,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private final JTabbedPane jTabbedPane = new JTabbedPane();
     private int tabIndex;
 
+    ProcessorModel processorModel;
 
     public L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields) {
 
@@ -180,11 +181,13 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
     public ProcessorModel getProcessorModel() {
-        ProcessorModel processorModel = new ProcessorModel(GUI_NAME, l2genData.getParamInfos());
-        if (l2genData.isValidIfile()) {
-             processorModel.setReadyToRun(true);
-        } else {
-             processorModel.setReadyToRun(false);
+        if (processorModel == null) {
+            processorModel = new ProcessorModel(GUI_NAME, l2genData.getParamInfos());
+            if (l2genData.isValidIfile()) {
+                processorModel.setReadyToRun(true);
+            } else {
+                processorModel.setReadyToRun(false);
+            }
         }
         return processorModel;
     }

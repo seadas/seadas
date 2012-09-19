@@ -364,11 +364,19 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         programLocation = ocsswRoot.getPath() + "/run/scripts/";
     }
 
+    private String getParFileCommandLineOption() {
+        if(parFileOptionName.equals("none")) {
+            return computeParFile().toString();
+        } else {
+            return parFileOptionName + "=" + computeParFile();
+        }
+    }
+
     private String[] getCmdArrayWithParFile() {
         final String[] cmdArray = {
                 programLocation + "ocssw_runner",
                 getProgramName(),
-                parFileOptionName + "=" + computeParFile()
+                getParFileCommandLineOption()
         };
 
         for (int i = 0; i < cmdArray.length; i++) {

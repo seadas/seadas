@@ -94,6 +94,10 @@ public class SPRow {
         });
 
 
+        if(name.equals("main")) {
+            createConfigPanel();
+        }
+
     }
 
     public String getName() {
@@ -113,8 +117,11 @@ public class SPRow {
     private void createConfigPanel() {
         if (configPanel == null) {
             if (name.equals("main")) {
-                cloProgramUI = new ProgramUIFactory("seadas_processor.py", "seadas_processor.xml");
+                cloProgramUI = new ProgramUIFactory("seadas_processor_main", "seadas_processor_main.xml");
                 configPanel = (JPanel)cloProgramUI;
+            } else if (name.equals("geo")) {
+                cloProgramUI = new ProgramUIFactory("modis_geo.py", "modis_GEO.xml");
+                configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("l2gen")) {
                 cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", L2genData.installTinyIFile(), true);
                 configPanel = cloProgramUI.getParamPanel();
