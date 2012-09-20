@@ -4,10 +4,7 @@ import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
-import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
-import gov.nasa.gsfc.seadas.processing.general.ProgramUIFactory;
-import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.general.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.ModalDialog;
@@ -18,10 +15,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
@@ -68,9 +62,9 @@ public class SPRow {
         });
         keepCheckBox = new JCheckBox();
         keepCheckBox.setSelected(false);
-        keepCheckBox.addChangeListener(new ChangeListener() {
+        keepCheckBox.addItemListener(new ItemListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
+            public void itemStateChanged(ItemEvent e) {
                 handleKeepCheckBox();
             }
         });
@@ -94,7 +88,7 @@ public class SPRow {
         });
 
 
-        if(name.equals("main")) {
+        if (name.equals("main")) {
             createConfigPanel();
         }
 
@@ -118,12 +112,12 @@ public class SPRow {
         if (configPanel == null) {
             if (name.equals("main")) {
                 cloProgramUI = new ProgramUIFactory("seadas_processor_main", "seadas_processor_main.xml");
-                configPanel = (JPanel)cloProgramUI;
+                configPanel = (JPanel) cloProgramUI;
             } else if (name.equals("geo")) {
-                cloProgramUI = new ProgramUIFactory("modis_geo.py", "modis_GEO.xml");
+                cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml");
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("l2gen")) {
-                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", L2genData.installTinyIFile(), true);
+                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), true);
                 configPanel = cloProgramUI.getParamPanel();
             } else {
                 String xmlFile = name.replace(".py", "").concat(".xml");
@@ -286,5 +280,28 @@ public class SPRow {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
     }
 
+    private File getTinyIFile() {
+        String ifileName = parentForm.getIFile();
+        FileInfo fileInfo;
+        String missionName = (new MissionInfo(MissionInfo.Id.SEAWIFS)).getName();
+
+        if (ifileName != null) {
+            fileInfo = new FileInfo(ifileName);
+            MissionInfo.Id missionId = fileInfo.getMissionId();
+            if (missionId == MissionInfo.Id.SEAWIFS ||
+                    missionId == MissionInfo.Id.MODISA ||
+                    missionId == MissionInfo.Id.MODIST ||
+                    missionId == MissionInfo.Id.MERIS ||
+                    missionId == MissionInfo.Id.CZCS ||
+                    missionId == MissionInfo.Id.OCTS) {
+                missionName = fileInfo.getMissionName();
+            }
+        }
+
+        missionName = missionName.replace(' ', '_');
+        String tinyFileName = "tiny_" + missionName;
+
+        return L2genData.installTinyIFile(tinyFileName);
+    }
 
 }

@@ -1222,8 +1222,12 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
     public static File installTinyIFile() {
+        return installTinyIFile(TINY_IFILE_NAME);
+    }
+
+    public static File installTinyIFile(String fileName) {
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), "l2gen");
-        File theFile = new File(dataDir, TINY_IFILE_NAME);
+        File theFile = new File(dataDir, fileName);
         if (theFile.canRead()) {
             return theFile;
         }

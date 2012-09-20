@@ -193,12 +193,15 @@ public class SPForm extends JPanel implements CloProgramUI {
         String[] rowNames = {
                 "main",
                 "modis_L1A.py",
+                "l1aextract_modis",
+                "l1aextract_seawifs",
                 "geo",
                 "modis_L1B.py",
                 "l1bgen",
                 "l1brsgen",
                 "l1mapgen",
                 "l2gen",
+                "l2extract",
                 "l2brsgen",
                 "l2mapgen",
                 "l2bin",
@@ -346,6 +349,10 @@ public class SPForm extends JPanel implements CloProgramUI {
         String ifileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
         getRow("main").setParamValue("ifile", ifileName);
         parfileTextArea.setText(getParamString());
+    }
+
+    public String getIFile() {
+        return getRow("main").getParamList().getValue("ifile");
     }
 
 }

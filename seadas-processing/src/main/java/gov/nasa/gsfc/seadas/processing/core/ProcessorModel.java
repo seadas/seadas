@@ -163,7 +163,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     public String getPrimaryInputFileOptionName() {
         for (String name : primaryOptions) {
             ParamInfo param = paramList.getInfo(name);
-            if ((param != null) && (param.getType() == ParamInfo.Type.IFILE)) {
+            if ((param != null) &&
+                    (param.getType() == ParamInfo.Type.IFILE) &&
+                    (!param.getName().toLowerCase().contains("geo"))) {
                 return name;
             }
         }

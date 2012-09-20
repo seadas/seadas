@@ -197,7 +197,6 @@ public class ParamUtils {
 
             String value = XmlReader.getTextValue(optionElement, "value");
 
-
             if (name != null) {
                 String nullValueOverrides[] = {ParamUtils.IFILE, ParamUtils.OFILE, ParamUtils.PAR, ParamUtils.GEOFILE};
                 for (String nullValueOverride : nullValueOverrides) {
@@ -207,22 +206,15 @@ public class ParamUtils {
                 }
             }
 
-
             String description = XmlReader.getTextValue(optionElement, "description");
             String source = XmlReader.getTextValue(optionElement, "source");
             String order = XmlReader.getTextValue(optionElement, "order");
             String usedAs = XmlReader.getTextValue(optionElement, "usedAs");
 
-            ParamInfo paramInfo = new ParamInfo(name, value, type);
-
+            // set the value and the default to the current value from the XML file
+            ParamInfo paramInfo = new ParamInfo(name, value, type, value);
             paramInfo.setDescription(description);
-
-            String defaultValue = XmlReader.getTextValue(optionElement, "default");
-            if (defaultValue != null || defaultValue == null) {
-                paramInfo.setDefaultValue(defaultValue);
-            }
             paramInfo.setSource(source);
-
 
             if (order != null) {
                 paramInfo.setOrder(new Integer(order).intValue());

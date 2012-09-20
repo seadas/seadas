@@ -31,7 +31,7 @@
             <name>--att1</name>
             <value></value>
             <type>string</type>
-            <default>ATT1</default>
+            <default></default>
             <description>Input attitude file 1 (chronological)</description>
             <source>default</source>
             <usedAs>option</usedAs>
@@ -41,7 +41,7 @@
             <name>--att2</name>
             <value></value>
             <type>string</type>
-            <default>ATT2</default>
+            <default></default>
             <description>Input attitude file 2 (chronological)</description>
             <source>default</source>
             <usedAs>option</usedAs>
@@ -51,7 +51,7 @@
             <name>--eph1</name>
             <value></value>
             <type>string</type>
-            <default>EPH1</default>
+            <default></default>
             <description>Input ephemeris file 1 (chronological)</description>
             <source>default</source>
             <usedAs>option</usedAs>
@@ -61,7 +61,7 @@
             <name>--eph2</name>
             <value></value>
             <type>string</type>
-            <default>EPH2</default>
+            <default></default>
             <description>Input ephemeris file 2 (chronological)</description>
             <source>default</source>
             <usedAs>option</usedAs>
@@ -70,7 +70,7 @@
         <option type="ifile">
             <name>--ancdir</name>
             <value></value>
-            <default>ANCDIR</default>
+            <default></default>
             <description>Use a custom directory tree for ancillary files</description>
             <usedAs>option</usedAs>
             <order>7</order>
@@ -78,7 +78,7 @@
         <option type="ifile">
             <name>--ancdb</name>
             <value></value>
-            <default>ANCDB</default>
+            <default></default>
             <description>Use a custom file for ancillary database. If full path
                 not given, ANCDB is assumed to exist (or will be
                 created) under $OCSSWROOT/log/. If $OCSSWROOT/log/
@@ -91,7 +91,7 @@
         <option type="string">
             <name>--threshold</name>
             <value></value>
-            <default>THRESHOLD</default>
+            <default></default>
             <description>% of geo-populated pixels required to pass geocheck validation test</description>
             <usedAs>option</usedAs>
             <order>9</order>
