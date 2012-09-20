@@ -38,7 +38,7 @@
 
         </tocitem>
         <tocitem text="Tools">
-            <tocitem text="Auxiliary Masks" target="auxiliary_masks">
+            <tocitem text="Land Masks" target="land_masks">
             </tocitem>
         </tocitem>
 
