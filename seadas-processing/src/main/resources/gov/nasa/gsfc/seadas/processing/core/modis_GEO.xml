@@ -4,6 +4,7 @@
     <programMetaData>
         <hasParFile>false</hasParFile>
         <parFileOptionName>--parfile</parFileOptionName>
+        <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
         <primaryOptions>
             <primaryOption>file</primaryOption>
             <primaryOption>--output</primaryOption>
