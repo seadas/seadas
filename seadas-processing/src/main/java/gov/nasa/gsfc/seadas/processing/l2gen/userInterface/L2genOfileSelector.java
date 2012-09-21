@@ -29,7 +29,7 @@ public class L2genOfileSelector {
         if(outputFileOptionName == null) {
             outputFileOptionName = DEFAULT_OUTPUT_FILE_OPTION_NAME;
         } else {
-            outputFileOptionName = outputFileOptionName.replaceAll("--", "");
+            //outputFileOptionName = outputFileOptionName.replaceAll("--", "");
         }
         fileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, outputFileOptionName);
 

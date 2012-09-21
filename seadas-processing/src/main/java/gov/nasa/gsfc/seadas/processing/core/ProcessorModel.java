@@ -448,6 +448,15 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
 
+        // get rid of the null strings
+        ArrayList<String> cmdList = new ArrayList<String>();
+        for(String s : cmdArray) {
+            if(s != null) {
+                cmdList.add(s);
+            }
+        }
+
+        cmdArray = cmdList.toArray(new String[cmdList.size()]);
         return cmdArray;
     }
 
