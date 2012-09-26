@@ -12,6 +12,7 @@ import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
+import gov.nasa.gsfc.seadas.processing.general.SeadasGuiUtils;
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
@@ -20,6 +21,8 @@ import sun.beans.editors.StringEditor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
@@ -56,6 +59,8 @@ public class SPForm extends JPanel implements CloProgramUI {
 
     private AppContext appContext;
 
+    private JFileChooser jFileChooser;
+
     private final JTabbedPane tabbedPane;
 
     private JPanel mainPanel;
@@ -86,6 +91,8 @@ public class SPForm extends JPanel implements CloProgramUI {
         this.appContext = appContext;
         this.xmlFileName = xmlFileName;
 
+        jFileChooser = new JFileChooser();
+
         // create main panel
         sourceProductFileSelector = new SourceProductFileSelector(VisatApp.getApp(), "ifile");
         sourceProductFileSelector.initProducts();
@@ -110,6 +117,21 @@ public class SPForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         importParfileButton = new JButton("Import Parfile");
+        importParfileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String contents = SeadasGuiUtils.importFile(jFileChooser);
+                File parFileDir;
+                if(contents == null) {
+                    parFileDir = null;
+                } else {
+                    parFileDir = jFileChooser.getSelectedFile().getParentFile();
+                }
+//                l2genData.setParString(contents, l2genData.isRetainCurrentIfile(), false, parFileDir);
+                setParamString(contents, retainIFileCheckbox.isSelected());
+            }
+        });
+
         retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
 
         importPanel = new JPanel(new GridBagLayout());
@@ -120,6 +142,14 @@ public class SPForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         exportParfileButton = new JButton("Export Parfile");
+        exportParfileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String contents = getParamString();
+                SeadasGuiUtils.exportFile(jFileChooser, contents);
+            }
+        });
+
         parfileTextArea = new JTextArea();
         parfileTextArea.addFocusListener(new FocusListener() {
             @Override
@@ -199,11 +229,9 @@ public class SPForm extends JPanel implements CloProgramUI {
                 "modis_L1B.py",
                 "l1bgen",
                 "l1brsgen",
-                "l1mapgen",
                 "l2gen",
                 "l2extract",
                 "l2brsgen",
-                "l2mapgen",
                 "l2bin",
                 "l3bin",
                 "smigen",
@@ -297,6 +325,10 @@ public class SPForm extends JPanel implements CloProgramUI {
     }
 
     public void setParamString(String str) {
+        setParamString(str, false);
+    }
+
+    public void setParamString(String str, boolean retainIFile) {
         String[] lines = str.split("\n");
 
         String sectionName = "main";
@@ -309,7 +341,7 @@ public class SPForm extends JPanel implements CloProgramUI {
                     if (sb.length() > 0) {
                         SPRow row = getRow(sectionName);
                         if (row != null) {
-                            row.setParamString(sb.toString());
+                            row.setParamString(sb.toString(), retainIFile);
                         }
                         sb.setLength(0);
                     }
@@ -328,7 +360,7 @@ public class SPForm extends JPanel implements CloProgramUI {
             if (sb.length() > 0) {
                 SPRow row = getRow(sectionName);
                 if (row != null) {
-                    row.setParamString(sb.toString());
+                    row.setParamString(sb.toString(), retainIFile);
                 }
             }
         }

@@ -236,9 +236,9 @@ public class SPRow {
         return paramList.getParamString();
     }
 
-    public void setParamString(String str) {
+    public void setParamString(String str, boolean retainIFile) {
         String oldParamString = getParamString();
-        paramList.setParamString(str);
+        paramList.setParamString(str, retainIFile, true);
         str = getParamString();
         if (!oldParamString.equals(str)) {
             updateParamList();

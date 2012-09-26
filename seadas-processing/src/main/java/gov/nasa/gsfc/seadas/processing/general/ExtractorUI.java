@@ -33,6 +33,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
     public ExtractorUI(String programName, String xmlFileName) {
         super(programName, xmlFileName);
+        processorModel.setReadyToRun(true);
     }
 
     private void computePixelsFromLonLat() {

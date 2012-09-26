@@ -194,7 +194,7 @@ public class ParamList {
         return params;
     }
 
-    public void setParamString(String str, boolean setDefaults) {
+    public void setParamString(String str, boolean retainIFile, boolean setDefaults) {
         ArrayList<ParamInfo> params = makeParamInfoArray(str);
 
         // loop through params creating a lookup map
@@ -205,6 +205,9 @@ public class ParamList {
 
         // loop through all parameters setting to default value or new value
         for(ParamInfo param : paramArray) {
+            if(retainIFile && param.getName().equals("ifile")) {
+                continue;
+            }
             ParamInfo newParam = map.get(param.getName());
             if(newParam == null) {
                 // not in map so set to default value if needed
@@ -219,7 +222,7 @@ public class ParamList {
     }
 
     public void setParamString(String str) {
-        setParamString(str, true);
+        setParamString(str, false, true);
     }
 
     public void clear() {
