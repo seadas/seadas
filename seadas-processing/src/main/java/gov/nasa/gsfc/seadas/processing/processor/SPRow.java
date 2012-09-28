@@ -117,7 +117,7 @@ public class SPRow {
                 cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml");
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("l2gen")) {
-                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), true);
+                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), false);
                 configPanel = cloProgramUI.getParamPanel();
             } else {
                 String xmlFile = name.replace(".py", "").concat(".xml");
@@ -129,6 +129,13 @@ public class SPRow {
             getParamListFromCloProgramUI();
             paramList.setParamString("");
         }
+    }
+
+    public void clearConfigPanel() {
+        cloProgramUI = null;
+        configPanel = null;
+        paramTextField.setText("");
+        paramList = new ParamList();
     }
 
     private void getParamListFromCloProgramUI() {
@@ -237,6 +244,7 @@ public class SPRow {
     }
 
     public void setParamString(String str, boolean retainIFile) {
+        createConfigPanel();
         String oldParamString = getParamString();
         paramList.setParamString(str, retainIFile, true);
         str = getParamString();
@@ -282,7 +290,7 @@ public class SPRow {
 
     private File getTinyIFile() {
         String ifileName = parentForm.getIFile();
-        FileInfo fileInfo;
+        FileInfo fileInfo = null;
         String missionName = (new MissionInfo(MissionInfo.Id.SEAWIFS)).getName();
 
         if (ifileName != null) {
@@ -291,7 +299,7 @@ public class SPRow {
             if (missionId == MissionInfo.Id.SEAWIFS ||
                     missionId == MissionInfo.Id.MODISA ||
                     missionId == MissionInfo.Id.MODIST ||
-                    missionId == MissionInfo.Id.MERIS ||
+                    //missionId == MissionInfo.Id.MERIS ||
                     missionId == MissionInfo.Id.CZCS ||
                     missionId == MissionInfo.Id.OCTS) {
                 missionName = fileInfo.getMissionName();
@@ -301,7 +309,10 @@ public class SPRow {
         missionName = missionName.replace(' ', '_');
         String tinyFileName = "tiny_" + missionName;
 
+        if (fileInfo != null && fileInfo.isGeofileRequired()) {
+            L2genData.installTinyIFile(tinyFileName + ".GEO");
+        }
+
         return L2genData.installTinyIFile(tinyFileName);
     }
-
 }

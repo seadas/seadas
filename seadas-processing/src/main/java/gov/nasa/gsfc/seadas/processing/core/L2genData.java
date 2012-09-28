@@ -1226,6 +1226,7 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
     public static File installTinyIFile(String fileName) {
+        final String tinyFileName = fileName;
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), "l2gen");
         File theFile = new File(dataDir, fileName);
         if (theFile.canRead()) {
@@ -1239,7 +1240,7 @@ public class L2genData implements L2genDataProcessorModel {
                 "Installing Auxdata...") {
             @Override
             protected Object doInBackground(ProgressMonitor progressMonitor) throws Exception {
-                resourceInstaller.install(TINY_IFILE_NAME, progressMonitor);
+                resourceInstaller.install(tinyFileName, progressMonitor);
                 return Boolean.TRUE;
             }
 

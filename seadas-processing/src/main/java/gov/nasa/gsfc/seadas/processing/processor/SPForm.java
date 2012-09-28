@@ -116,6 +116,8 @@ public class SPForm extends JPanel implements CloProgramUI {
         primaryIOPanel.add(sourceProductFileSelector.createDefaultPanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
+        retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
+
         importParfileButton = new JButton("Import Parfile");
         importParfileButton.addActionListener(new ActionListener() {
             @Override
@@ -132,8 +134,6 @@ public class SPForm extends JPanel implements CloProgramUI {
             }
         });
 
-        retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
-
         importPanel = new JPanel(new GridBagLayout());
         importPanel.setBorder(BorderFactory.createEtchedBorder());
         importPanel.add(importParfileButton,
@@ -146,7 +146,7 @@ public class SPForm extends JPanel implements CloProgramUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String contents = getParamString();
-                SeadasGuiUtils.exportFile(jFileChooser, contents);
+                SeadasGuiUtils.exportFile(jFileChooser, contents + "\n");
             }
         });
 
@@ -356,14 +356,15 @@ public class SPForm extends JPanel implements CloProgramUI {
                     sb.append(line).append("\n");
                 }
             }
+        }
 
-            if (sb.length() > 0) {
-                SPRow row = getRow(sectionName);
-                if (row != null) {
-                    row.setParamString(sb.toString(), retainIFile);
-                }
+        if (sb.length() > 0) {
+            SPRow row = getRow(sectionName);
+            if (row != null) {
+                row.setParamString(sb.toString(), retainIFile);
             }
         }
+
         updateParamString();
     }
 
@@ -373,15 +374,26 @@ public class SPForm extends JPanel implements CloProgramUI {
     }
 
     private void handleParamStringChange() {
-        String str = parfileTextArea.getText();
-        setParamString(str);
+        String newStr = parfileTextArea.getText();
+        String oldStr = getParamString();
+        if(!newStr.equals(oldStr)) {
+            setParamString(newStr);
+        }
     }
 
     private void handleIFileChanged() {
         String ifileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
-        getRow("main").setParamValue("ifile", ifileName);
-        parfileTextArea.setText(getParamString());
+        SPRow row = getRow("main");
+        String oldIFile = row.getParamList().getValue("ifile");
+        if(!ifileName.equals(oldIFile)) {
+
+            getRow("l2gen").clearConfigPanel();
+
+            row.setParamValue("ifile", ifileName);
+            parfileTextArea.setText(getParamString());
+        }
     }
+    
 
     public String getIFile() {
         return getRow("main").getParamList().getValue("ifile");

@@ -87,11 +87,7 @@ public class ParamInfo implements Comparable, Cloneable {
     }
 
     public boolean isValid() {
-        if (getValidationComment() == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return getValidationComment() == null;
     }
 
     public String getUsedAs() {
@@ -189,11 +185,7 @@ public class ParamInfo implements Comparable, Cloneable {
     }
 
     public boolean isDefault() {
-        if (getValue().equals(getDefaultValue())) {
-            return true;
-        } else {
-            return false;
-        }
+        return getValue().equals(getDefaultValue());
     }
 
     protected void setDefaultValue(String defaultValue) {
@@ -217,11 +209,7 @@ public class ParamInfo implements Comparable, Cloneable {
         int intParamValue = Integer.parseInt(value);
         int intParamValidValue = Integer.parseInt(paramValidValueInfo.getValue());
 
-        if ((intParamValue & intParamValidValue) > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return (intParamValue & intParamValidValue) > 0;
     }
 
     public String getDescription() {
@@ -279,11 +267,7 @@ public class ParamInfo implements Comparable, Cloneable {
     }
 
     public boolean hasValidValueInfos() {
-        if (validValueInfos.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return validValueInfos.size() > 0;
     }
 
     public boolean isBit() {
@@ -373,10 +357,18 @@ public class ParamInfo implements Comparable, Cloneable {
 
     // get a string representation of this ParamInfo usable as a param string
     public String getParamString() {
-        if (value.contains(" ")) {
-            return name + "=\"" + value + "\"";
+        if(usedAs.equals(USED_IN_COMMAND_AS_FLAG)) {
+            if(isTrue()) {
+                return name;
+            } else {
+                return "";
+            }
         } else {
-            return name + "=" + value;
+            if (value.contains(" ")) {
+                return name + "=\"" + value + "\"";
+            } else {
+                return name + "=" + value;
+            }
         }
     }
 

@@ -89,7 +89,7 @@ public class FilenamePatterns {
                     String end = iFileInfo.getFile().getName().substring((index + string_to_be_replaced.length()), iFileInfo.getFile().getName().length());
 
                     for (String string_to_insert : STRING_TO_INSERT) {
-                        StringBuilder possibleGeofile = new StringBuilder(geofileDirectory + "/" + start + string_to_insert + end);
+                        StringBuilder possibleGeofile = new StringBuilder(geofileDirectory + start + string_to_insert + end);
                         possibleGeoFiles.add(new File(possibleGeofile.toString()));
                     }
 
@@ -98,7 +98,7 @@ public class FilenamePatterns {
             }
 
             for (String string_to_insert : STRING_TO_INSERT) {
-                StringBuilder possibleGeofile = new StringBuilder(iFileInfo.toString() + "." + string_to_insert);
+                StringBuilder possibleGeofile = new StringBuilder(geofileDirectory + iFileInfo.getFile().getName() + "." + string_to_insert);
                 possibleGeoFiles.add(new File(possibleGeofile.toString()));
             }
 

@@ -205,7 +205,7 @@ public class ParamList {
 
         // loop through all parameters setting to default value or new value
         for(ParamInfo param : paramArray) {
-            if(retainIFile && param.getName().equals("ifile")) {
+            if(retainIFile && (param.getName().equals("ifile") || param.getName().equals("infile") || param.getName().equals("geofile"))) {
                 continue;
             }
             ParamInfo newParam = map.get(param.getName());
