@@ -45,9 +45,18 @@ public class L2genIfileSelector {
             public void selectionChanged(SelectionChangeEvent event) {
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
-                    disableEventHandler();
+                    System.out.println(l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
+                    System.out.println(iFile.getAbsolutePath());
+                    //if (l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(iFile.getAbsolutePath())) {
+                        disableEventHandler();
+                    //}
+                    System.out.println("ifile updated: " + iFile.getAbsolutePath());
                     l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), iFile.getAbsolutePath());
-                    enableEventHandler();
+
+                    if (!l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(iFile.getAbsolutePath())) {
+                        enableEventHandler();
+                    }
+
                 }
             }
         });
@@ -61,13 +70,15 @@ public class L2genIfileSelector {
 
                 disableControlHandler();
                 if (isEventHandlerEnabled()) {
-                    if ( iFile != null && iFile.exists()) {
+                    if (iFile != null && iFile.exists() && !l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(getSelectedIFile())) {
+                        System.out.println("file selection updated: " + iFile.getAbsolutePath());
                         sourceProductSelector.setSelectedFile(iFile);
+
                     } else {
                         sourceProductSelector.releaseProducts();
                     }
                 }
-                enableControlHandler();
+               enableControlHandler();
 
             }
         });
@@ -115,4 +126,5 @@ public class L2genIfileSelector {
     public SourceProductFileSelector getSourceProductSelector() {
         return sourceProductSelector;
     }
+
 }

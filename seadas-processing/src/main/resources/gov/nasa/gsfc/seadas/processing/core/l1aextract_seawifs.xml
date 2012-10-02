@@ -5,13 +5,14 @@
         <hasParFile>false</hasParFile>
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
-            <primaryOption>infile</primaryOption>
+            <!--<primaryOption>infile</primaryOption>-->
+            <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
         <option type="ifile">
-            <name>infile</name>
+            <name>ifile</name>
             <value></value>
             <default></default>
             <description>input SEAWIFS L1A datafile</description>

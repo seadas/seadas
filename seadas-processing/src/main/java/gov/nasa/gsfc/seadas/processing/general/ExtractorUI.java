@@ -20,7 +20,6 @@ import java.io.*;
  */
 public class ExtractorUI extends ProgramUIFactory {
 
-    private ProcessorModel extractor;
     private ProcessorModel lonlat2pixline;
 
     private JPanel pixelPanel;
@@ -119,20 +118,7 @@ public class ExtractorUI extends ProgramUIFactory {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 //File iFile = new File(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-                String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-                if (programName == null) {
-                    VisatApp.getApp().showErrorDialog("No extractor found for " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-                    //processorModel.updateIFileInfo("");
-                    return;
-                }
-                updateParamPanel(programName);
-            }
-        });
-
-        processorModel.addPropertyChangeListener("infile", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                //File iFile = new File(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
+                System.out.println("update param panel: " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 if (programName == null) {
                     VisatApp.getApp().showErrorDialog("No extractor found for " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
@@ -172,28 +158,18 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private JPanel getPixelPanel(String processorName, String xmlFileName) {
         ProcessorModel extractor = new ProcessorModel(processorName, xmlFileName);
-        extractor.updateIFileInfo(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-        extractor.updateOFileInfo(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()));
-        updateOfilePropertyChangeListeners(extractor.getPrimaryOutputFileOptionName());
+        extractor.appendPropertyChangeSupport(processorModel.getPropertyChangeSupport());
+        extractor.removeParamInfo(extractor.getParamInfo(extractor.getPrimaryInputFileOptionName()));
+        extractor.removeParamInfo(extractor.getParamInfo(extractor.getPrimaryOutputFileOptionName()));
+        extractor.addParamInfo(processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()));
+        extractor.addParamInfo(processorModel.getParamInfo(processorModel.getPrimaryOutputFileOptionName()));
         processorModel.setProgramName(processorName);
         processorModel.setParamList(extractor.getParamList());
         processorModel.setAcceptsParFile(extractor.acceptsParFile());
-        processorModel.appendPropertyChangeSupport(extractor.getPropertyChangeSupport());
-
         processorModel.setHasGeoFile(extractor.hasGeoFile());
         processorModel.setPrimaryOptions(extractor.getPrimaryOptions());
-
         return new ParamUIFactory(processorModel).createParamPanel(processorModel);
 
-    }
-
-    private void updateOfilePropertyChangeListeners(String ofileOptionName) {
-        SeadasLogger.getLogger().info("updating ofile change listener ... " + ofileOptionName + "  " + processorModel.getPrimaryOutputFileOptionName());
-
-        PropertyChangeListener[] pcl = processorModel.getPropertyChangeSupport().getPropertyChangeListeners(processorModel.getPrimaryOutputFileOptionName());
-        for (int i = 0; i < pcl.length; i++) {
-            processorModel.addPropertyChangeListener(ofileOptionName, pcl[i]);
-        }
     }
 
     private String getExtractorProgramName(String ifileName) {

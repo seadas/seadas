@@ -26,7 +26,7 @@ public class ProcessorTypeInfo {
         L3BIN,
         SMIGEN,
         SMITOPPM,
-        LONlAT2PIXLINE,
+        LONLAT2PIXLINE,
         SEADAS_PROCESSOR_PY,
         SEADAS_PROCESSOR_MAIN,
         NOID
@@ -50,7 +50,7 @@ public class ProcessorTypeInfo {
         put("l3bin", ProcessorID.L3BIN);
         put("smigen", ProcessorID.SMIGEN);
         put("smitoppm", ProcessorID.SMITOPPM);
-        put("lonlat2pixline", ProcessorID.LONlAT2PIXLINE);
+        put("lonlat2pixline", ProcessorID.LONLAT2PIXLINE);
         put("seadas_processor.py", ProcessorID.SEADAS_PROCESSOR_PY);
         put("seadas_processor_main", ProcessorID.SEADAS_PROCESSOR_MAIN);
 

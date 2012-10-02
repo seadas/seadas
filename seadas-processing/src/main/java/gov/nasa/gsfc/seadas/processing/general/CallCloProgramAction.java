@@ -52,7 +52,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
-        multiIFile = getValue(config, "dialogTitle", "false");
+        multiIFile = getValue(config, "multiIFile", "false");
         super.configure(config);
     }
 

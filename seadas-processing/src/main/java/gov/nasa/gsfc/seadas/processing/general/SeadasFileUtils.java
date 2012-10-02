@@ -97,7 +97,6 @@ public class SeadasFileUtils {
                 break;
             case L3BIN:
                 ofileName = ifileName.replaceAll("L2_.{3,}", "L3b_DAY");
-                ;
                 break;
             case SMIGEN:
                 ofileName = ifileName.replaceAll("L3B", "L3m");

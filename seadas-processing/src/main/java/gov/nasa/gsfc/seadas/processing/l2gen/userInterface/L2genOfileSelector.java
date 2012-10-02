@@ -29,7 +29,7 @@ public class L2genOfileSelector {
         if(outputFileOptionName == null) {
             outputFileOptionName = DEFAULT_OUTPUT_FILE_OPTION_NAME;
         } else {
-            //outputFileOptionName = outputFileOptionName.replaceAll("--", "");
+            outputFileOptionName = outputFileOptionName.replaceAll("--", "");
         }
         fileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, outputFileOptionName);
 
@@ -42,7 +42,7 @@ public class L2genOfileSelector {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (isControlHandlerEnabled()) {
-                    l2genDataProcessorModel.setParamValue(outputFileOptionName, fileSelector.getFileName());
+                    l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryOutputFileOptionName(), fileSelector.getFileName());
                 }
             }
         });
@@ -54,7 +54,7 @@ public class L2genOfileSelector {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 disableControlHandler();
-                fileSelector.setFilename(l2genDataProcessorModel.getParamValue(outputFileOptionName));
+                fileSelector.setFilename(l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryOutputFileOptionName()));
                 enableControlHandler();
             }
         });

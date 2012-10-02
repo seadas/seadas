@@ -31,8 +31,6 @@ public class ParamUIFactory {
 
     ParamUIFactory(ProcessorModel pm) {
         this.processorModel = pm;
-
-
     }
 
     protected JPanel createParamPanel() {

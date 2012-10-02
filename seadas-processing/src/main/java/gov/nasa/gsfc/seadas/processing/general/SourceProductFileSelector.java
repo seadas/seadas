@@ -39,11 +39,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -72,7 +72,7 @@ public class SourceProductFileSelector {
     private RegexFileFilter regexFileFilter;
     private JTextField filterRegexField;
     private JLabel filterRegexLabel;
-    private JTextField ifileTextfield;
+    //private JTextField ifileTextfield;
     private boolean selectMultipleIFiles;
 
 
@@ -89,7 +89,7 @@ public class SourceProductFileSelector {
         this.selectMultipleIFiles = selectMultipleIFiles;
         this.appContext = appContext;
 
-        setIfileTextfield(new JTextField(""));
+        //setIfileTextfield(new JTextField(""));
 
         productListModel = new DefaultComboBoxModel();
 
@@ -147,7 +147,7 @@ public class SourceProductFileSelector {
         productFileChooserButton.setEnabled(enabled);
         filterRegexField.setEnabled(enabled);
         filterRegexLabel.setEnabled(enabled);
-        ifileTextfield.setEnabled(enabled);
+        //ifileTextfield.setEnabled(enabled);
     }
 
     public SourceProductFileSelector(AppContext appContext) {
@@ -175,7 +175,7 @@ public class SourceProductFileSelector {
         }
         final Product selectedProduct = appContext.getSelectedProduct();
         if (selectedProduct != null && productFilter.accept(selectedProduct) && regexFileFilter.accept(selectedProduct.getFileLocation())) {
-            ifileTextfield.setText(selectedProduct.getName());
+            //ifileTextfield.setText(selectedProduct.getName());
             setSelectedProduct(selectedProduct);
 
 
@@ -214,7 +214,6 @@ public class SourceProductFileSelector {
             productListModel.setSelectedItem(product);
         } else {
             if (productFilter.accept(product) && regexFileFilter.accept(product.getFileLocation())) {
-                product.setDescription("this is a test");
                 productListModel.addElement(product);
                 productListModel.setSelectedItem(product);
                 if (extraProduct != null) {
@@ -225,6 +224,8 @@ public class SourceProductFileSelector {
                 extraProduct = product;
             }
         }
+        productNameComboBox.validate();
+        productNameComboBox.repaint();
     }
 
     public void setSelectedFile(File file) {
@@ -254,7 +255,7 @@ public class SourceProductFileSelector {
     }
 
     public void addFocusListener(FocusListener listener) {
-        ifileTextfield.addFocusListener(listener);
+        //ifileTextfield.addFocusListener(listener);
     }
 
     public void addSelectionChangeListener(SelectionChangeListener listener) {
@@ -349,17 +350,6 @@ public class SourceProductFileSelector {
 
     }
 
-    public void setIfileTextfield(JTextField ifileTextfield) {
-        this.ifileTextfield = ifileTextfield;
-
-        this.ifileTextfield.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        });
-    }
-
     private File[] files;
 
     public File[] getSelectedMultiFiles() {
@@ -413,62 +403,6 @@ public class SourceProductFileSelector {
             fileChooser.setFileHidingEnabled(true);
         }
 
-        private void removePreviousFilters(Vector<RegexFileFilter> filters) {
-            for (RegexFileFilter rff : filters) {
-                fileChooser.removeChoosableFileFilter(rff);
-            }
-        }
-
-        private Component findJTextField(Component comp) {
-            System.out.println(comp.getClass());
-            if (comp.getClass() == JTextField.class) return comp;
-            if (comp instanceof Container) {
-                Component[] components = ((Container) comp).getComponents();
-                for (int i = 0; i < components.length; i++) {
-                    Component child = findJTextField(components[i]);
-                    if (child != null) {
-                        System.out.println(i);
-                        return child;
-                    }
-                }
-            }
-            return null;
-        }
-
-        private Component findJList(Component comp, int j) {
-            System.out.println(comp.getClass() + "  " + j);
-            if (comp.getClass() == JList.class) return comp;
-            if (comp instanceof Container) {
-                Component[] components = ((Container) comp).getComponents();
-                System.out.println("number of comps: " + components.length);
-                for (int i = 0; i < components.length; i++) {
-
-                    Component child = findJList(components[i], i);
-                    if (child != null) {
-
-                        return child;
-                    }
-                }
-            }
-            return null;
-        }
-
-
-        private Component findFileField(Component comp) {
-            System.out.println(comp.getClass());
-            if (comp.getClass() == JTextField.class || comp.getClass() == JComboBox.class) return comp;
-            if (comp instanceof Container) {
-                Component[] components = ((Container) comp).getComponents();
-                for (int i = 0; i < components.length; i++) {
-                    Component child = findFileField(components[i]);
-                    if (child != null) {
-                        return child;
-                    }
-                }
-            }
-            return null;
-        }
-
         private void updateFileFilter() {
             regexFileFilter = new RegexFileFilter(filterRegexField.getText());
             //removePreviousFilters(regexFilters);
@@ -490,16 +424,16 @@ public class SourceProductFileSelector {
             currentDirectory = new File(openDir);
             fileChooser.setCurrentDirectory(currentDirectory);
 
-            fileChooser.addChoosableFileFilter(regexFileFilter);
+            //fileChooser.addChoosableFileFilter(regexFileFilter);
 
             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
-                final File file = fileChooser.getSelectedFile();
 
-                if (file != null) {
-                    ifileTextfield.setText(file.getAbsolutePath());
-                } else {
-                    ifileTextfield.setText("");
+                if (selectMultipleIFiles && fileChooser.getSelectedFiles().length > 1) {
+                    handleMultipFileSelection(window);
+                    return;
                 }
+
+                final File file = fileChooser.getSelectedFile();
                 Product product = null;
                 try {
                     product = ProductIO.readProduct(file);
@@ -513,16 +447,7 @@ public class SourceProductFileSelector {
                     }
 
                     if (productFilter.accept(product) && regexFileFilter.accept(file)) {
-                        files = fileChooser.getSelectedFiles();
-                        Product p;
-                        for (File f : files) {
-                            p = new Product(f.getName(), "DummyType", 10, 10);
-                            p.setFileLocation(f);
-                            p.setDescription(f.getAbsolutePath());
-                            productListModel.addElement(p);
-                        }
                         setSelectedProduct(product);
-                        //productListModel.addElement(product);
                     } else {
                         final String message = String.format("Product [%s] is not a valid source.",
                                 product.getFileLocation().getCanonicalPath());
@@ -544,6 +469,73 @@ public class SourceProductFileSelector {
                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         currentDirectory.getAbsolutePath());
             }
+        }
+
+        private void handleMultipFileSelection(Window window) {
+            File[] tmpFiles = fileChooser.getSelectedFiles();
+            ArrayList<File> tmpArrayList = new ArrayList<File>();
+            Product product = null;
+            for (File file : tmpFiles) {
+                try {
+                    product = ProductIO.readProduct(file);
+                    if (product == null) {
+                        if (file.canRead()) {
+                            product = new Product(file.getName(), "DummyType", 10, 10);
+                            product.setFileLocation(file);
+                            product.setDescription(file.getAbsolutePath());
+                        } else {
+                            throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
+                        }
+                    }
+
+                    if (productFilter.accept(product) && regexFileFilter.accept(file)) {
+                        tmpArrayList.add(file);
+                    } else {
+                        final String message = String.format("Product [%s] is not a valid source.",
+                                product.getFileLocation().getCanonicalPath());
+                        handleError(window, message);
+                        SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
+                        product.dispose();
+                    }
+                } catch (IOException e) {
+
+                    handleError(window, e.getMessage());
+                } catch (Exception e) {
+                    if (product != null) {
+                        product.dispose();
+                    }
+                    handleError(window, e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            setSelectedMultiFileList(tmpArrayList);
+        }
+
+        private void setSelectedMultiFileList(ArrayList<File> tmpArrayList) {
+            files = new File[tmpArrayList.size()];
+             tmpArrayList.toArray(files);
+
+            File fileListFile = new File(currentDirectory, "_inputFiles.lst");
+
+              StringBuilder fileNames = new StringBuilder();
+              for (File file : files) {
+                  fileNames.append(file.getAbsolutePath() + "  \n");
+              }
+              FileWriter fileWriter = null;
+              try {
+
+                  fileWriter = new FileWriter(fileListFile);
+                  fileWriter.write(fileNames.toString());
+                  fileWriter.close();
+              } catch (IOException ioe) {
+              }
+            Product product = new Product(fileListFile.getName(), "DummyType", 10, 10);
+                                        product.setFileLocation(fileListFile);
+            product.setDescription(fileNames.toString());
+            setSelectedProduct(product);
+            currentDirectory = fileChooser.getCurrentDirectory();
+            appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                    currentDirectory.getAbsolutePath());
         }
 
         private void handleError(final Component component, final String message) {

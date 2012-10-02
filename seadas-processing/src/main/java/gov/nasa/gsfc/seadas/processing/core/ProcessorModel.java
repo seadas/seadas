@@ -92,7 +92,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         switch (processorID) {
             case MODIS_L1B_PY:
                 return new Modis_L1B_Processor(programName, xmlFileName);
-            case LONlAT2PIXLINE:
+            case LONLAT2PIXLINE:
                 return new LonLat2Pixels_Processor(programName, xmlFileName);
             case SMIGEN:
                 return new SMIGEN_Processor(programName, xmlFileName);
@@ -107,6 +107,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public void addParamInfo(ParamInfo info) {
         paramList.addInfo(info);
+    }
+
+    public void removeParamInfo(ParamInfo paramInfo){
+        paramList.removeInfo(paramInfo.getName());
     }
 
     public boolean isReadyToRun() {
@@ -276,7 +280,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             String oldValue = option.getValue();
             option.setValue(newValue);
             checkCompleteness();
-            getPropertyChangeSupport().firePropertyChange(option.getName(), oldValue, newValue);
+            if (!oldValue.equals(newValue)) {
+                getPropertyChangeSupport().firePropertyChange(option.getName(), oldValue, newValue);
+            }
         }
     }
 
@@ -297,15 +303,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         if (verifyIFilePath(ifileName)) {
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
             updateGeoFileInfo(ifileName);
-//            updateGeoFileStatus(ifileName);
-//            if (hasGeoFile()) {
-//                updateParamInfo("geofile", SeadasFileUtils.getGeoFileNameFromIFile(ifileName));
-//            }
-            //if (hasPrimaryOutputFile()) {
             updateOFileInfo(SeadasFileUtils.getDefaultOFileNameFromIFile(ifileName, programName));
-            //updateParamInfo(getPrimaryOutputFileOptionName(), SeadasFileUtils.getDefaultOFileNameFromIFile(ifileName, programName));
-            //setReadyToRun(true);
-            // }
             return true;
         } else {
             return false;
@@ -367,7 +365,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private String getParFileCommandLineOption() {
-        if(parFileOptionName.equals("none")) {
+        if (parFileOptionName.equals("none")) {
             return computeParFile().toString();
         } else {
             return parFileOptionName + "=" + computeParFile();
@@ -450,8 +448,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         // get rid of the null strings
         ArrayList<String> cmdList = new ArrayList<String>();
-        for(String s : cmdArray) {
-            if(s != null) {
+        for (String s : cmdArray) {
+            if (s != null) {
                 cmdList.add(s);
             }
         }
@@ -596,7 +594,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         SeadasLogger.getLogger().info("added property name: " + propertyName);
         EventInfo eventInfo = getEventInfo(propertyName);
         if (eventInfo == null) {
-            getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
+            paramList.addPropertyChangeListener(propertyName, listener);
         } else {
             eventInfo.addPropertyChangeListener(listener);
         }
@@ -605,7 +603,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         EventInfo eventInfo = getEventInfo(propertyName);
         if (eventInfo == null) {
-            getPropertyChangeSupport().removePropertyChangeListener(propertyName, listener);
+            paramList.removePropertyChangeListener(propertyName, listener);
         } else {
             eventInfo.removePropertyChangeListener(listener);
         }
@@ -886,7 +884,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             });
         }
     }
-
 
 
 }
