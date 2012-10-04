@@ -926,7 +926,7 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, 1);
 
         try {
-            Process p = processorModel.executeProcess();
+            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             String line = stdInput.readLine();
@@ -1048,7 +1048,7 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            Process p = processorModel.executeProcess();
+            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
             p.waitFor();
             ofile.delete();
             if (p.exitValue() != 0) {
@@ -1084,7 +1084,7 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            Process p = processorModel.executeProcess();
+            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
             p.waitFor();
             if (p.exitValue() != 0) {
                 System.out.println("ERROR - Problem creating Parameter XML file");

@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.visat.VisatApp;
 
@@ -39,7 +40,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
 
         try {
-            final Process process = lonlat2pixline.executeProcess();
+            final Process process = OCSSWRunner.execute(lonlat2pixline.getProgramCmdArray(), lonlat2pixline.getIFileDir());
 
             try {
                 int exitValue = process.waitFor();

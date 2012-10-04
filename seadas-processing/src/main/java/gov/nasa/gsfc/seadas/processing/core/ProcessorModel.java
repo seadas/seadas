@@ -109,7 +109,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         paramList.addInfo(info);
     }
 
-    public void removeParamInfo(ParamInfo paramInfo){
+    public void removeParamInfo(ParamInfo paramInfo) {
         paramList.removeInfo(paramInfo.getName());
     }
 
@@ -481,10 +481,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
     }
 
-    public String[] getProgramEnv() {
-        return processorEnv;
-
-    }
+//    public String[] getProgramEnv() {
+//        return processorEnv;
+//
+//    }
 
     public String[] getFilesToUpload() {
         return filesToUpload.toArray(new String[filesToUpload.size()]);
@@ -558,24 +558,24 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return paramList.getParamString("\n");
     }
 
-    public Process executeProcess() throws IOException {
-        try {
-            return executeProcess(getRootDir());
-        } catch (Exception e) {
-            SeadasLogger.getLogger().severe(e.getMessage());
-            return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv());
-        }
-
-    }
-
-    public Process executeProcess(File rootDir) throws IOException {
-
-        SeadasLogger.getLogger().info("Executing processor " + getProgramName() + "...");
-
-        //return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
-
-        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), rootDir);
-    }
+//    public Process executeProcess() throws IOException {
+//        try {
+//            return executeProcess(getRootDir());
+//        } catch (Exception e) {
+//            SeadasLogger.getLogger().severe(e.getMessage());
+//            return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv());
+//        }
+//
+//    }
+//
+//    public Process executeProcess(File rootDir) throws IOException {
+//
+//        SeadasLogger.getLogger().info("Executing processor " + getProgramName() + "...");
+//
+//        //return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
+//
+//        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), rootDir);
+//    }
 
     public EventInfo[] eventInfos = {
             new EventInfo("none", this),
@@ -689,19 +689,28 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return false;
     }
 
-    private String getIfileDir() {
+    private String getIfileDirString() {
 
         String ifileDir = getParamValue(getPrimaryInputFileOptionName());
         ifileDir = ifileDir.substring(0, ifileDir.lastIndexOf(System.getProperty("file.separator")));
         return ifileDir;
     }
 
+    public File getIFileDir() {
+
+        if (new File(getIfileDirString()).isDirectory()) {
+            return new File(getIfileDirString());
+        } else {
+            return null;
+        }
+    }
+
     private String getOFileFullPath(String fileName) {
 
         if (fileName.indexOf(System.getProperty("file.separator")) == 0 && new File(fileName).getParentFile().exists()) {
             return fileName;
-        } else if (new File(getIfileDir(), fileName).getParentFile().exists()) {
-            return getIfileDir() + System.getProperty("file.separator") + fileName;
+        } else if (new File(getIfileDirString(), fileName).getParentFile().exists()) {
+            return getIfileDirString() + System.getProperty("file.separator") + fileName;
 
         } else {
             return null;

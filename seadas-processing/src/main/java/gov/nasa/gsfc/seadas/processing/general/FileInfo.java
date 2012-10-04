@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 
@@ -63,7 +64,7 @@ public class FileInfo {
         processorModel.getParamInfo("file").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
 
         try {
-            Process p = processorModel.executeProcess();
+            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray());
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             String line = stdInput.readLine();

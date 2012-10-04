@@ -4,6 +4,7 @@ import com.bc.ceres.core.CoreException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
@@ -182,7 +183,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
             @Override
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
-                final Process process = processorModel.executeProcess();
+                //final Process process = processorModel.executeProcess();
+                final Process process = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
                 processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
@@ -216,7 +218,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ProgramExecutor pe = new ProgramExecutor();
-                        int exitCode = pe.executeProgram(secondaryProcessor.getProgramCmdArray());
+                        int exitCode = OCSSWRunner.execute(secondaryProcessor.getProgramCmdArray()).exitValue();
                         if (exitCode == 0) {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);

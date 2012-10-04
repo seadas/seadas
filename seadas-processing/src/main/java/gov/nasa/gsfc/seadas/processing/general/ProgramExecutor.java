@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
@@ -65,7 +66,7 @@ public class ProgramExecutor {
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
                 //final Process process = Runtime.getRuntime().exec(processorModel.getProgramCmdArray(), processorModel.getProgramEnv(), processorModel.getProgramRoot() );
-                final Process process = processorModel.executeProcess();
+                final Process process = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
                 final ProcessObserver processObserver = new ProcessObserver(process, processorModel.getProgramName(), pm);
                 processObserver.addHandler(new ProgressHandler(processorModel.getProgramName(), progressPattern));
                 processObserver.addHandler(new ConsoleHandler(processorModel.getProgramName()));
