@@ -145,13 +145,13 @@
             <usedAs>flag</usedAs>
             <order>15</order>
         </option>
-        <option type="button">
-              <name>update luts</name>
-              <value></value>
-              <default></default>
-              <description>update luts for a given mission. MISSION is either seawifs, aqua, terra, or aquarius</description>
-              <usedAs>button</usedAs>
-              <order>16</order>
-          </option>
+        <!--<option type="button">-->
+              <!--<name>update luts</name>-->
+              <!--<value></value>-->
+              <!--<default></default>-->
+              <!--<description>update luts for a given mission. MISSION is either seawifs, aqua, terra, or aquarius</description>-->
+              <!--<usedAs>button</usedAs>-->
+              <!--<order>16</order>-->
+          <!--</option>-->
     </options>
 </paramInfo>

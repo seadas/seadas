@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import org.esa.beam.visat.VisatApp;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,14 +22,48 @@ public class OCSSW {
         //String dirPath = System.getProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
         if (dirPath == null) {
             throw new IOException(String.format("Either environment variable '%s' or\n" +
-                                                        "configuration parameter '%s' must be given.", OCSSWROOT_ENVVAR, OCSSWROOT_PROPERTY));
+                    "configuration parameter '%s' must be given.", OCSSWROOT_ENVVAR, OCSSWROOT_PROPERTY));
         }
         final File dir = new File(dirPath);
         if (!dir.isDirectory()) {
             throw new IOException(String.format("The directory pointed to by the environment variable  '%s' or\n" +
-                                                        "configuration parameter '%s' seems to be invalid.", OCSSWROOT_ENVVAR, OCSSWROOT_PROPERTY));
+                    "configuration parameter '%s' seems to be invalid.", OCSSWROOT_ENVVAR, OCSSWROOT_PROPERTY));
         }
         return dir;
     }
+
+
+    public static String getOcsswScriptPath() {
+        final File ocsswRoot = getOcsswRootFile();
+        if (ocsswRoot != null) {
+            return ocsswRoot.getPath() + "/run/scripts/ocssw_runner";
+        } else {
+            return null;
+        }
+
+    }
+
+    public static String[] getOcsswEnv() {
+        final File ocsswRoot = getOcsswRootFile();
+        if (ocsswRoot != null) {
+            final String[] envp = {"OCSSWROOT=" + ocsswRoot.getPath()};
+            return envp;
+        } else {
+            return null;
+        }
+    }
+
+    private static File getOcsswRootFile() {
+        final File ocsswRoot;
+        try {
+            ocsswRoot = OCSSW.getOcsswRoot();
+        } catch (IOException e) {
+            if (VisatApp.getApp() != null)
+                VisatApp.getApp().showErrorDialog(e.getMessage());
+            return null;
+        }
+        return ocsswRoot;
+    }
+
 
 }

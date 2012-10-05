@@ -319,7 +319,7 @@ public class ParamInfo implements Comparable, Cloneable {
         return fileInfo;
     }
 
-    protected void setOrder(int order) {
+    public void setOrder(int order) {
         this.order = order;
     }
 

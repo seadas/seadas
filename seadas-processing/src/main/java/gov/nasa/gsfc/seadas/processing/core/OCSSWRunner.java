@@ -2,6 +2,8 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,17 +15,24 @@ import java.io.IOException;
 public class OCSSWRunner {
 
     //private static ProcessBuilder processBuilder;
-
+    private static HashMap environment = new HashMap();
+    private final String OCSSW_ROOT_VAR = "OCSSWROOT";
     public OCSSWRunner() {
 
+       environment.put(OCSSW_ROOT_VAR, OCSSW.getOcsswEnv());
     }
 
     public static Process execute(String[] cmdArray, File ifileDir) {
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
+
+        Map<String, String> env = processBuilder.environment();
+         if (environment != null)
+            env.putAll(environment);
+
         if (ifileDir != null) {
             processBuilder.directory(ifileDir);
         } else  {
-            processBuilder.directory(getDefaultDir());
+            //processBuilder.directory(getDefaultDir());
         }
         Process process = null;
         try {

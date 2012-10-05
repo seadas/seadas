@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.*;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
@@ -24,12 +23,9 @@ import java.util.regex.Pattern;
  */
 public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private String programName;
-    private String programLocation;
+
     private ParamList paramList;
     private boolean acceptsParFile;
-    private String[] processorEnv;
-    private String errorMessage;
-
     private boolean hasGeoFile;
 
     private Set<String> primaryOptions;
@@ -49,8 +45,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private ArrayList<String> filesToDownload;
     private ArrayList<String> finalCmdArray;
 
-    boolean tmpFlagForLocalRemote;
-
     public ProcessorModel(String name) {
         acceptsParFile = false;
         hasGeoFile = false;
@@ -61,7 +55,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         programName = name;
         processorID = ProcessorTypeInfo.getProcessorID(programName);
-        computeProcessorEnv();
+        //computeProcessorEnv();
 
         primaryOptions = new HashSet<String>();
         primaryOptions.add("ifile");
@@ -197,8 +191,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public boolean isValidProcessor() {
-        SeadasLogger.getLogger().info("program location: " + programLocation);
-        return programLocation != null;
+        SeadasLogger.getLogger().info("program location: " + OCSSW.getOcsswScriptPath());
+        return OCSSW.getOcsswScriptPath() != null;
     }
 
     public String getProgramName() {
@@ -226,16 +220,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return acceptsParFile;
     }
 
-    public String getProgramErrorMessage() {
-        return errorMessage;
-    }
-
     public void updateParamInfo(ParamInfo currentOption, String newValue) {
         paramList.setValue(currentOption.getName(), newValue);
-    }
-
-    public void propertyChange() {
-        //addPropertyChangeListener();
+        checkCompleteness();
     }
 
     private void checkCompleteness() {
@@ -344,26 +331,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
     }
 
-    private void computeProcessorEnv() {
-
-        final File ocsswRoot;
-        try {
-            ocsswRoot = OCSSW.getOcsswRoot();
-        } catch (IOException e) {
-            errorMessage = e.getMessage();
-            if (VisatApp.getApp() != null)
-                VisatApp.getApp().showErrorDialog(getProgramName(), e.getMessage());
-            return;
-        }
-
-        final String[] envp = {
-                "OCSSWROOT=" + ocsswRoot.getPath()
-        };
-
-        processorEnv = envp;
-        programLocation = ocsswRoot.getPath() + "/run/scripts/";
-    }
-
     private String getParFileCommandLineOption() {
         if (parFileOptionName.equals("none")) {
             return computeParFile().toString();
@@ -374,7 +341,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private String[] getCmdArrayWithParFile() {
         final String[] cmdArray = {
-                programLocation + "ocssw_runner",
+                OCSSW.getOcsswScriptPath(),
                 getProgramName(),
                 getParFileCommandLineOption()
         };
@@ -404,12 +371,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private String[] getCmdArrayWithArguments() {
 
-//        filesToUpload = new ArrayList<String>();
-//        filesToDownload = new ArrayList<String>();
-
         String[] cmdArray = new String[paramList.getParamArray().size() + 2];
 
-        cmdArray[0] = programLocation + "ocssw_runner";
+        cmdArray[0] = OCSSW.getOcsswScriptPath();
         cmdArray[1] = getProgramName();
 
         Iterator itr = paramList.getParamArray().iterator();
@@ -557,25 +521,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         // return parString.toString();
         return paramList.getParamString("\n");
     }
-
-//    public Process executeProcess() throws IOException {
-//        try {
-//            return executeProcess(getRootDir());
-//        } catch (Exception e) {
-//            SeadasLogger.getLogger().severe(e.getMessage());
-//            return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv());
-//        }
-//
-//    }
-//
-//    public Process executeProcess(File rootDir) throws IOException {
-//
-//        SeadasLogger.getLogger().info("Executing processor " + getProgramName() + "...");
-//
-//        //return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), getProgramRoot());
-//
-//        return Runtime.getRuntime().exec(getProgramCmdArray(), getProgramEnv(), rootDir);
-//    }
 
     public EventInfo[] eventInfos = {
             new EventInfo("none", this),

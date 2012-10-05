@@ -55,7 +55,7 @@ public class ProgramExecutor {
 
         final ProcessorModel processorModel = pm;
         if (!processorModel.isValidProcessor()) {
-            VisatApp.getApp().showErrorDialog(processorModel.getProgramName(), processorModel.getProgramErrorMessage());
+            //VisatApp.getApp().showErrorDialog(processorModel.getProgramName(), processorModel.getProgramErrorMessage());
             return;
 
         }

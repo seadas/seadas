@@ -65,6 +65,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
     public CloProgramUI getProgramUI(AppContext appContext) {
         if (programName.indexOf("extract") != -1) {
             return new ExtractorUI(programName, xmlFileName);
+        } else if (programName.indexOf("modis_GEO") != -1 || programName.indexOf("modis_L1B") != -1) {
+            return new ModisGEO_L1B_UI(programName, xmlFileName);
         }
         return new ProgramUIFactory(programName, xmlFileName, multiIFile);
     }
@@ -136,7 +138,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
 
         if (!processorModel.isValidProcessor()) {
-            VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
+            //VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
             return;
 
         }
@@ -173,11 +175,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
     public void executeProgram(ProcessorModel pm) {
 
         final ProcessorModel processorModel = pm;
-//        if (!processorModel.isValidProcessor()) {
-//            VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
-//            return;
-//
-//        }
 
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
             @Override

@@ -33,7 +33,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
     public ExtractorUI(String programName, String xmlFileName) {
         super(programName, xmlFileName);
-        processorModel.setReadyToRun(true);
+        //processorModel.setReadyToRun(true);
     }
 
     private void computePixelsFromLonLat() {
@@ -69,6 +69,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
     }
 
+    @Override
     public JPanel getParamPanel() {
 
         SeadasLogger.getLogger().info("updating ofile change listener ...  processorModel   " + processorModel.getPrimaryOutputFileOptionName());
@@ -118,7 +119,6 @@ public class ExtractorUI extends ProgramUIFactory {
         processorModel.addPropertyChangeListener("ifile", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                //File iFile = new File(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 System.out.println("update param panel: " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 if (programName == null) {
@@ -150,20 +150,17 @@ public class ExtractorUI extends ProgramUIFactory {
         paramPanel.validate();
     }
 
-    protected void handleParamChanged() {
-        if (lonlat2pixline.isAllParamsValid()) {
-            pixellonlatSwitch.setEnabled(true);
-            pixellonlatSwitch.setBorderPainted(true);
-        }
-    }
-
     private JPanel getPixelPanel(String processorName, String xmlFileName) {
         ProcessorModel extractor = new ProcessorModel(processorName, xmlFileName);
         extractor.appendPropertyChangeSupport(processorModel.getPropertyChangeSupport());
+        int ifileOrder = extractor.getParamInfo(extractor.getPrimaryInputFileOptionName()).getOrder();
+        int ofileOrder = extractor.getParamInfo(extractor.getPrimaryOutputFileOptionName()).getOrder();
         extractor.removeParamInfo(extractor.getParamInfo(extractor.getPrimaryInputFileOptionName()));
         extractor.removeParamInfo(extractor.getParamInfo(extractor.getPrimaryOutputFileOptionName()));
         extractor.addParamInfo(processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()));
         extractor.addParamInfo(processorModel.getParamInfo(processorModel.getPrimaryOutputFileOptionName()));
+        extractor.getParamInfo(extractor.getPrimaryInputFileOptionName()).setOrder(ifileOrder);
+        extractor.getParamInfo(extractor.getPrimaryOutputFileOptionName()).setOrder(ofileOrder);
         processorModel.setProgramName(processorName);
         processorModel.setParamList(extractor.getParamList());
         processorModel.setAcceptsParFile(extractor.acceptsParFile());

@@ -66,9 +66,13 @@ public class ParamUIFactory {
     protected JPanel createParamPanel(ProcessorModel processorModel) {
         ArrayList<ParamInfo> paramList = processorModel.getProgramParamList();
         JPanel paramPanel = new JPanel();
+        paramPanel.setName("param panel");
         JPanel textFieldPanel = new JPanel();
+        textFieldPanel.setName("text field panel");
         JPanel booleanParamPanel = new JPanel();
+        booleanParamPanel.setName("boolean field panel");
         JPanel fileParamPanel = new JPanel();
+        fileParamPanel.setName("file parameter panel");
 
         TableLayout booelanParamLayout = new TableLayout(3);
         booleanParamPanel.setLayout(booelanParamLayout);
