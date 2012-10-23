@@ -53,6 +53,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
             "OCTS Level-3 Standard Mapped Image",
             "SeaWiFS Level-3 Standard Mapped Image",
             "VIIRS Level-3 Standard Mapped Image",
+            "OCRVC Level-3 Standard Mapped Image",
             "Level-3 Standard Mapped Image",
             " Level-3 Standard Mapped Image",
             "SeaWiFS Level-3 Binned Data",
@@ -137,7 +138,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                     System.out.println("# Can't open as NetCDF: " + file);
                 }
             }
-        } catch (IOException ignore) {
+        } catch (Exception ignore) {
             if (DEBUG) {
                 System.out.println("# I/O exception caught: " + file);
             }

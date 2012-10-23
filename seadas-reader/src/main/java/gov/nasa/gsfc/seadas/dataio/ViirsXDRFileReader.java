@@ -121,14 +121,15 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                             String facvar = v + "Factors";
                             Group group = ncFile.getRootGroup().findGroup("All_Data").getGroups().get(0);
                             Variable factor = group.findVariable(facvar);
+                            if (factor != null)     {
+                                Array slpoff = factor.read();
+                                float slope = slpoff.getFloat(0);
 
-                            Array slpoff = factor.read();
-                            float slope = slpoff.getFloat(0);
+                                float intercept = slpoff.getFloat(1);
 
-                            float intercept = slpoff.getFloat(1);
-
-                            band.setScalingFactor((double) slope);
-                            band.setScalingOffset((double) intercept);
+                                band.setScalingFactor((double) slope);
+                                band.setScalingOffset((double) intercept);
+                            }
                         }
                     }
                     //todo Add valid expression - _FillValue is not working properly
@@ -186,6 +187,13 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             }
 
             NetcdfFile geofile = NetcdfFile.open(geocheck.getPath());
+            List<Group> navGroups = geofile.findGroup("All_Data").getGroups();
+            for (Group ng : navGroups) {
+                if (ng.getShortName().contains("GEO")){
+                    navGroup = ng.getName();
+                    break;
+                }
+            }
 
             final String longitude = "Longitude";
             final String latitude = "Latitude";

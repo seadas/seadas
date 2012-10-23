@@ -120,7 +120,7 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
                     System.out.println("# Can't open as NetCDF: " + file);
                 }
             }
-        } catch (IOException ignore) {
+        } catch (Exception ignore) {
             if (DEBUG) {
                 System.out.println("# I/O exception caught: " + file);
             }
