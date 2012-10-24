@@ -2,65 +2,60 @@
 
     <category name="Radiances/Reflectances">
         <makeVisible>1</makeVisible>
-        <product>Es</product>
-        <product>La</product>
-        <product>L_q</product>
-        <product>Lr</product>
         <product>Lt</product>
         <product>L_u</product>
+        <product>L_q</product>
+        <product>Lr</product>
+        <product>La</product>
         <product>Lw</product>
-        <product>nLw</product>
-        <product>rho_cirrus</product>
-        <product>rhom</product>
-        <product>rhos</product>
-        <product>rhot</product>
-        <product>Rrs</product>
         <product>tLf</product>
         <product>TLg</product>
-    </category>
-
-
-    <category name="Derived Geophysical Parameters">
-        <makeVisible>1</makeVisible>
-        <product>alpha</product>
-        <product>angstrom</product>
-        <product>aot</product>
+        <product>Es</product>
+        <product>nLw</product>
+        <product>Rrs</product>
+        <product>rhom</product>
+        <product>rhot</product>
+        <product>rhos</product>
+        <product>rho_cirrus</product>
         <product>BT</product>
         <product>BT_11</product>
         <product>BT_12</product>
         <product>BT_39</product>
         <product>BT_40</product>
-        <product>calcite</product>
-        <product>cdom_index</product>
-        <product>cdom_percent</product>
-        <product>chl1_meris</product>
-        <product>chl2_meris</product>
+    </category>
+
+
+    <category name="Derived Geophysical Parameters">
+        <makeVisible>1</makeVisible>
         <product>chlor_a</product>
-        <product>depth</product>
-        <product>dom</product>
-        <product>evi</product>
-        <product>fdiff</product>
+        <product>aot</product>
+        <product>angstrom</product>
+        <product>cdom_index</product>
+        <product>calcite</product>
+        <product>Kd</product>
+        <product>Kd_PAR</product>
+        <product>pic</product>
+        <product>poc</product>
+        <product>par</product>
+        <product>sst</product>
+        <product>nflh</product>
         <product>flh</product>
         <product>fqy</product>
         <product>fqy2</product>
+        <product>fdiff</product>
         <product>fsat</product>
         <product>ipar</product>
         <product>ipar2</product>
-        <product>Kd</product>
-        <product>Kd_PAR</product>
         <product>logchl</product>
+        <product>alpha</product>
+        <product>cdom_percent</product>
+        <product>depth</product>
+        <product>dom</product>
+        <product>evi</product>
         <product>ndvi</product>
-        <product>nflh</product>
-        <product>par</product>
-        <product>par_meris</product>
-        <product>pcentcdm</product>
-        <product>pic</product>
-        <product>poc</product>
         <product>smoke</product>
-        <product>sst</product>
-        <product>taua</product>
+        <product>pcentcdm</product>
         <product>tsm</product>
-        <product>tsm_meris</product>
         <product>Zeu</product>
         <product>Zhl</product>
         <product>Zp</product>
@@ -90,30 +85,30 @@
 
     <category name="Ancillary/Meterological/Geometric Parameters">
         <makeVisible>1</makeVisible>
-        <product>detnum</product>
-        <product>height</product>
-        <product>humidity</product>
-        <product>ice_frac</product>
-        <product>mside</product>
-        <product>mwind</product>
-        <product>no2_frac</product>
-        <product>no2_strat</product>
-        <product>no2_tropo</product>
-        <product>ozone</product>
-        <product>pixnum</product>
-        <product>pressure</product>
-        <product>relaz</product>
-        <product>scattang</product>
         <product>sena</product>
         <product>senz</product>
         <product>sola</product>
         <product>solz</product>
+        <product>relaz</product>
+        <product>scattang</product>
+        <product>ozone</product>
+        <product>pressure</product>
+        <product>water_vapor</product>
+        <product>no2_frac</product>
+        <product>no2_strat</product>
+        <product>no2_tropo</product>
+        <product>windspeed</product>
+        <product>mwind</product>
+        <product>zwind</product>
+        <product>windangle</product>
+        <product>detnum</product>
+        <product>pixnum</product>
+        <product>mside</product>
+        <product>height</product>
+        <product>humidity</product>
+        <product>ice_frac</product>
         <product>sssref</product>
         <product>sstref</product>
-        <product>water_vapor</product>
-        <product>windangle</product>
-        <product>windspeed</product>
-        <product>zwind</product>
     </category>
 
 
@@ -124,7 +119,6 @@
         <product>aer_model_min</product>
         <product>aer_model_ratio</product>
         <product>aer_num_iter</product>
-        <product>angstrom_meris</product>
         <product>brdf</product>
         <product>cloud_albedo</product>
         <product>dpol</product>
@@ -134,7 +128,6 @@
         <product>iter</product>
         <product>ms_epsilon</product>
         <product>polcor</product>
-        <product>Taua_meris</product>
         <product>tg_sen</product>
         <product>tg_sol</product>
         <product>t_h2o</product>
@@ -172,7 +165,6 @@
     </category>
 
 
-
     <category name="Calibration Parameters (Inverse mode)">
         <makeVisible>0</makeVisible>
         <product>vbsat</product>
@@ -187,6 +179,13 @@
 
     <category name="Hidden Stuff">
         <makeVisible>0</makeVisible>
+        <product>chl1_meris</product>
+        <product>chl2_meris</product>
+        <product>par_meris</product>
+        <product>tsm_meris</product>
+        <product>angstrom_meris</product>
+        <product>Taua_meris</product>
+        <product>taua</product>
         <product>l2_flags</product>
         <product>myprod1</product>
         <product>myprod10</product>
