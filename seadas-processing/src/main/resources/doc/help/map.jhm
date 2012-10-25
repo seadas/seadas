@@ -25,7 +25,4 @@
 
     <mapID target="processOverview" url="processors/ProcessOverview.html"/>
 
-
-    <mapID target="land_masks" url="tools/LandMasks.html"/>
-
 </map>

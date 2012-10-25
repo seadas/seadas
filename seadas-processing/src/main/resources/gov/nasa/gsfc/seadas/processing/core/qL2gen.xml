@@ -1,0 +1,929 @@
+<productList>
+    <product name="rad_TaV">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta V polarization</description>
+        </algorithm>
+    </product>
+    <product name="rad_TaH">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta H polarization</description>
+        </algorithm>
+    </product>
+    <product name="rad_Ta3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta 3rd Stokes</description>
+        </algorithm>
+    </product>
+    <product name="rad_TfV">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta V polarization (rfi filtered)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TfH">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta H polarization (rfi filtered)</description>
+        </algorithm>
+    </product>
+    <product name="rad_Tf3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta 3rd Stokes (rfi filtered)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TaV0">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta V polar (no exp drift)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TaH0">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta H polar (no exp drift)</description>
+        </algorithm>
+    </product>
+    <product name="rad_Ta30">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta 3rd Stokes (no exp drift)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TfV0">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta V (rfi filtered</description>
+        </algorithm>
+    </product>
+    <product name="rad_TfH0">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta H (rfi filtered</description>
+        </algorithm>
+    </product>
+    <product name="rad_Tf30">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta 3 (rfi filtered</description>
+        </algorithm>
+    </product>
+    <product name="rad_toi_V">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer TOI Tb V polarization</description>
+        </algorithm>
+    </product>
+    <product name="rad_toi_H">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer TOI Tb H polarization</description>
+        </algorithm>
+    </product>
+    <product name="rad_toi_3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer TOI Tb 3rd Stokes</description>
+        </algorithm>
+    </product>
+    <product name="rad_toa_V_nolc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer TOA Tb V polarization (nolc)</description>
+        </algorithm>
+    </product>
+    <product name="rad_toa_H_nolc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer TOA Tb H polarization (nolc)</description>
+        </algorithm>
+    </product>
+    <product name="rad_toa_V">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer TOA Tb V polarization</description>
+        </algorithm>
+    </product>
+    <product name="rad_toa_H">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer TOA Tb H polarization</description>
+        </algorithm>
+    </product>
+    <product name="rad_far_TaH">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Degrees</units>
+            <description>Radiometer Faraday Angle</description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_dir_V">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Galactic Direct Corr V polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_dir_H">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Galactic Direct Corr H polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_dir_3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Galactic Direct Corr 3rd Stokes</description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_ref_V">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Galactic Reflect Corr V polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_ref_H">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Galactic Reflect Corr H polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_ref_3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Galactic Reflect Corr 3rd Stokes</description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_dir_V">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Solar Direct Corr V polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_dir_H">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Solar Direct Corr H polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_dir_3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Solar Direct Corr 3rd Stokes</description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_ref_V">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Solar Reflect Corr V polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_ref_H">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Solar Reflect Corr H polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_ref_3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Solar Reflect Corr 3rd Stokes</description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_bak_V">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Solar Back Scattered V polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_bak_H">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Solar Back Scattered H polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_bak_3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Solar Back Scattered 3rd Stokes</description>
+        </algorithm>
+    </product>
+    <product name="rad_moon_Ta_ref_V">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Lunar Reflect Corr V polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_moon_Ta_ref_H">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Lunar Reflect Corr H polar</description>
+        </algorithm>
+    </product>
+    <product name="rad_moon_Ta_ref_3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Lunar Reflect Corr 3rd Stokes</description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_nolc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Earth surface Tb V polarization (no lc)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TbH_nolc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Earth surface Tb H polarization (nolc)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_rc_nolc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Tb V polarization (roughness corr, nolc)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TbH_rc_nolc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Tb H polarization (roughness corr, nolc)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_rc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Tb V polarization (rough corr)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TbH_rc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Tb H polarization (rough corr)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Tb V polarization (no rough corr)</description>
+        </algorithm>
+    </product>
+    <product name="rad_TbH">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Tb H polarization (no rough corr)</description>
+        </algorithm>
+    </product>
+    <product name="rad_Tb_consistency_nolc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Tb consistency check (nolc)</description>
+        </algorithm>
+    </product>
+    <product name="rad_Tb_consistency">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Tb consistency check</description>
+        </algorithm>
+    </product>
+    <product name="SSS_nolc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>PSU</units>
+            <description>Sea Surface Salinity (nolc)</description>
+        </algorithm>
+    </product>
+    <product name="SSS_error_nolc">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>PSU</units>
+            <description>Sea Surface Salinity error (nolc)</description>
+        </algorithm>
+    </product>
+    <product name="SSS">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>PSU</units>
+            <description>Sea Surface Salinity</description>
+        </algorithm>
+    </product>
+    <product name="SSS_error">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>PSU</units>
+            <description>Sea Surface Salinity error</description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TaV">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta V (expected)</description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TaH">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta H (expected)</description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_Ta3">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Ta 3rd Stokes (expected)</description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TbV">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Tb V (expected)</description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TbH">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Tb H (expected)</description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TbV0">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Tb V (expected smooth)</description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TbH0">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Radiometer Tb H (expected smooth)</description>
+        </algorithm>
+    </product>
+    <product name="scat_VV_ant">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>TOI Scatterometer NRCS for VV polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_HH_ant">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>TOI Scatterometer NRCS for HH polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_HV_ant">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>TOI Scatterometer NRCS for HV polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_VH_ant">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>TOI Scatterometer NRCS for VH polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_VV_toa">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>TOA Scatterometer NRCS for VV polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_HH_toa">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>TOA Scatterometer NRCS for HH polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_HV_toa">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>TOA Scatterometer NRCS for HV polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_VH_toa">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>TOA Scatterometer NRCS for VH polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_VV_exp">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>Expected Sigma0 for VV polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_HH_exp">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>Expected Sigma0 for HH polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_HV_exp">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>Expected Sigma0 for HV polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_VH_exp">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>Expected Sigma0 for VH polarization</description>
+        </algorithm>
+    </product>
+    <product name="scat_tot_toa">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>db</units>
+            <description>TOA Scatterometer (Total)</description>
+        </algorithm>
+    </product>
+    <product name="Kpc_VV_ant">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Kpc statistical uncertainty for ANT VV NRCS</description>
+        </algorithm>
+    </product>
+    <product name="Kpc_HH_ant">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Kpc statistical uncertainty for ANT HH NRCS</description>
+        </algorithm>
+    </product>
+    <product name="Kpc_HV_ant">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Kpc statistical uncertainty for ANT HV NRCS</description>
+        </algorithm>
+    </product>
+    <product name="Kpc_VH_ant">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Kpc statistical uncertainty for ANT VH NRCS</description>
+        </algorithm>
+    </product>
+    <product name="Kpc_VV_toa">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Kpc statistical uncertainty for TOA VV NRCS</description>
+        </algorithm>
+    </product>
+    <product name="Kpc_HH_toa">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Kpc statistical uncertainty for TOA HH NRCS</description>
+        </algorithm>
+    </product>
+    <product name="Kpc_HV_toa">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Kpc statistical uncertainty for TOA HV NRCS</description>
+        </algorithm>
+    </product>
+    <product name="Kpc_VH_toa">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Kpc statistical uncertainty for TOA VH NRCS</description>
+        </algorithm>
+    </product>
+    <product name="Kpc_total">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Statistical uncertainty for total power NRCS</description>
+        </algorithm>
+    </product>
+    <product name="wind_uncertainty">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>meters</units>
+            <description>Estimated wind speed error</description>
+        </algorithm>
+    </product>
+    <product name="scat_wind_speed">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>meters</units>
+            <description>Scatterometer Wind Speed</description>
+        </algorithm>
+    </product>
+    <product name="scat_esurf_V">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>excess surface scatterometer emissivity (V pol)</description>
+        </algorithm>
+    </product>
+    <product name="scat_esurf_H">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>excess surface scatterometer emissivity (H pol)</description>
+        </algorithm>
+    </product>
+    <product name="scat_esurf_V_uncertainty">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Uncertainty in surface emmissivity (V-pol)</description>
+        </algorithm>
+    </product>
+    <product name="scat_esurf_H_uncertainty">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Uncertainty in surface emmissivity (H-pol)</description>
+        </algorithm>
+    </product>
+    <product name="anc_wind_speed">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>meters</units>
+            <description>Ancillary Wind Speed 10m above surface</description>
+        </algorithm>
+    </product>
+    <product name="anc_wind_dir">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>degrees</units>
+            <description>Ancillary Wind Direction 10m above surface</description>
+        </algorithm>
+    </product>
+    <product name="anc_surface_temp">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Surface Temperature</description>
+        </algorithm>
+    </product>
+    <product name="anc_surface_pressure">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Pascals</units>
+            <description>Surface Pressure</description>
+        </algorithm>
+    </product>
+    <product name="anc_cwat">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>kg m-2</units>
+            <description>Cloud Water</description>
+        </algorithm>
+    </product>
+    <product name="anc_sm">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Soil Moisture</description>
+        </algorithm>
+    </product>
+    <product name="anc_swe">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>kg</units>
+            <description>Snow Water Equivalent</description>
+        </algorithm>
+    </product>
+    <product name="anc_SSS">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>PSU</units>
+            <description>Sea surface salinity climatology</description>
+        </algorithm>
+    </product>
+    <product name="anc_trans">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Atmospheric Transmittance</description>
+        </algorithm>
+    </product>
+    <product name="anc_Tb_up">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Upwelling atmospheric brightness temperature</description>
+        </algorithm>
+    </product>
+    <product name="anc_Tb_dw">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units>Kelvin</units>
+            <description>Downwelling atmospheric brightness temperature</description>
+        </algorithm>
+    </product>
+    <product name="rad_land_frac">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Fraction of land contamination (radiometer)</description>
+        </algorithm>
+    </product>
+    <product name="rad_ice_frac">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Fraction of ice contamination (radiometer)</description>
+        </algorithm>
+    </product>
+    <product name="rad_gice">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Gain-smoothed ice fraction (radiometer)</description>
+        </algorithm>
+    </product>
+    <product name="scat_land_frac">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Fraction of land contamination (scatterometer)</description>
+        </algorithm>
+    </product>
+    <product name="scat_ice_frac">
+        <algorithm>
+            <prefix></prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description>Fraction of ice contamination (scatterometer)</description>
+        </algorithm>
+    </product>
+</productList>

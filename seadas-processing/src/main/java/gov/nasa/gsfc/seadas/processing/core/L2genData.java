@@ -31,6 +31,11 @@ import java.util.logging.Level;
 public class L2genData implements L2genDataProcessorModel {
 
 
+    public static enum Mode {
+        L2GEN,
+        L2GEN_AQUARIUS
+    }
+
     //  private static final String OCDATAROOT = System.getenv("OCDATAROOT");
     private static final String TINY_IFILE_NAME = "S2002032172026.L1A_GAC.reallysmall";
     private static File tinyIFile;
@@ -39,7 +44,10 @@ public class L2genData implements L2genDataProcessorModel {
             PRODUCT_INFO_XML = "productInfo.xml",
             PARAM_INFO_XML = "paramInfo.xml",
             PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml",
-            PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml";
+            PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml",
+            PARAM_CATEGORY_INFO_AQUARIUS_XML = "paramCategoryInfoAquarius.xml",
+            PRODUCT_CATEGORY_INFO_AQUARIUS_XML = "productCategoryInfoAquarius.xml";
+
 
     public static final String
             PAR = "par",
@@ -69,6 +77,9 @@ public class L2genData implements L2genDataProcessorModel {
     public boolean initializingParamsWithXml = false;
     public boolean showIOFields = true;
 
+    private Mode mode;
+    private String paramCategoryXml;
+    private String productCategoryXml;
 
     public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
 
@@ -92,7 +103,45 @@ public class L2genData implements L2genDataProcessorModel {
     public boolean retainCurrentIfile = false;
     private boolean showDefaultsInParString = false;
 
-    public L2genData() {
+    public L2genData(Mode mode) {
+        setMode(mode);
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+
+        this.mode = mode;
+
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                setParamCategoryXml(PARAM_CATEGORY_INFO_AQUARIUS_XML);
+                setProductCategoryXml(PRODUCT_CATEGORY_INFO_AQUARIUS_XML);
+                break;
+            default:
+                setParamCategoryXml(PARAM_CATEGORY_INFO_XML);
+                setProductCategoryXml(PRODUCT_CATEGORY_INFO_XML);
+                break;
+        }
+
+    }
+
+    public String getParamCategoryXml() {
+        return paramCategoryXml;
+    }
+
+    public void setParamCategoryXml(String paramCategoryXml) {
+        this.paramCategoryXml = paramCategoryXml;
+    }
+
+    public String getProductCategoryXml() {
+        return productCategoryXml;
+    }
+
+    public void setProductCategoryXml(String productCategoryXml) {
+        this.productCategoryXml = productCategoryXml;
     }
 
 
@@ -108,7 +157,7 @@ public class L2genData implements L2genDataProcessorModel {
         }
     }
 
-    public boolean isMultipleInputFiles(){
+    public boolean isMultipleInputFiles() {
         return false;
     }
 
@@ -140,12 +189,27 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    public boolean isRequiresGeofile() {
-        if (iFileInfo != null) {
-            return iFileInfo.isGeofileRequired();
-        }
+    public boolean isGeofileRequired() {
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                return false;
+            default:
+                if (iFileInfo != null) {
+                    return iFileInfo.isGeofileRequired();
+                }
 
-        return false;
+                return false;
+        }
+    }
+
+    @Override
+    public boolean isWavelengthRequired() {
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                return false;
+            default:
+                return true;
+        }
     }
 
 
@@ -437,7 +501,7 @@ public class L2genData implements L2genDataProcessorModel {
                     iOCategory = true;
                     currCategoryEntries.append(makeParEntry(paramInfo));
                 } else if (paramInfo.getName().equals(GEOFILE)) {
-                    if (isRequiresGeofile()) {
+                    if (isGeofileRequired()) {
                         currCategoryEntries.append(makeParEntry(paramInfo));
                     }
                 } else if (paramInfo.getName().equals(PAR)) {
@@ -870,7 +934,7 @@ public class L2genData implements L2genDataProcessorModel {
         paramInfo.setValue(value);
         paramInfo.setDefaultValue(value);
 
-       iFileInfo = paramInfo.validateIfileValue(null, SeadasProcessorInfo.Id.L2GEN);
+        iFileInfo = paramInfo.validateIfileValue(null, SeadasProcessorInfo.Id.L2GEN);
 
 
         if (iFileInfo != null && isValidIfile()) {
@@ -1036,25 +1100,46 @@ public class L2genData implements L2genDataProcessorModel {
 
     private InputStream getProductInfoInputStream(File file) {
         File dataDir = SystemUtils.getApplicationDataDir();
-        File l2genDir = new File(dataDir, "l2gen");
+        File l2genDir;
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                l2genDir = new File(dataDir, "l2gen_aquarius");
+                break;
+            default:
+                l2genDir = new File(dataDir, "l2gen");
+                break;
+        }
+
         l2genDir.mkdirs();
         File xmlFile = new File(l2genDir, PRODUCT_INFO_XML);
         File ofile = new File(l2genDir, PRODUCT_INFO_XML + ".out");
 
-        ProcessorModel processorModel = new ProcessorModel("l2gen");
+        ProcessorModel processorModel;
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                processorModel = new ProcessorModel("l2gen_aquarius");
+                break;
+            default:
+                processorModel = new ProcessorModel("l2gen");
+                break;
+        }
+
         processorModel.setAcceptsParFile(true);
         processorModel.addParamInfo("ifile", file.getAbsolutePath(), ParamInfo.Type.IFILE);
         processorModel.addParamInfo("ofile", ofile.getAbsolutePath(), ParamInfo.Type.OFILE);
         processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
-            p.waitFor();
-            ofile.delete();
-            if (p.exitValue() != 0) {
-                System.out.println("ERROR - Problem creating Product XML file");
-                System.out.println("Exit value = " + Integer.toString(p.exitValue()));
-                return null;
+            //todo temporary short circuit
+            if (mode != Mode.L2GEN_AQUARIUS) {
+                Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
+                p.waitFor();
+                ofile.delete();
+                if (p.exitValue() != 0) {
+                    System.out.println("ERROR - Problem creating Product XML file");
+                    System.out.println("Exit value = " + Integer.toString(p.exitValue()));
+                    return null;
+                }
             }
             return new FileInputStream(xmlFile);
         } catch (IOException e) {
@@ -1072,24 +1157,46 @@ public class L2genData implements L2genDataProcessorModel {
 
     private InputStream getParamInfoInputStream(File file) {
         File dataDir = SystemUtils.getApplicationDataDir();
-        File l2genDir = new File(dataDir, "l2gen");
+        File l2genDir;
+
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                l2genDir = new File(dataDir, "l2gen_aquarius");
+                break;
+            default:
+                l2genDir = new File(dataDir, "l2gen");
+                break;
+        }
+
         l2genDir.mkdirs();
         File xmlFile = new File(l2genDir, PARAM_INFO_XML);
 //        File ofile = new File(l2genDir, PARAM_INFO_XML+".out");
 
-        ProcessorModel processorModel = new ProcessorModel("l2gen");
+        ProcessorModel processorModel;
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                processorModel = new ProcessorModel("l2gen_aquarius");
+                break;
+            default:
+                processorModel = new ProcessorModel("l2gen");
+                break;
+        }
+
         processorModel.setAcceptsParFile(true);
         processorModel.addParamInfo("ifile", file.getAbsolutePath(), ParamInfo.Type.IFILE);
 //        processorModel.addParamInfo("ofile", ofile.getAbsolutePath(), ParamInfo.Type.OFILE);
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
-            p.waitFor();
-            if (p.exitValue() != 0) {
-                System.out.println("ERROR - Problem creating Parameter XML file");
-                System.out.println("Exit value = " + Integer.toString(p.exitValue()));
-                return null;
+            //todo temporary short circuit
+            if (mode != Mode.L2GEN_AQUARIUS) {
+                Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
+                p.waitFor();
+                if (p.exitValue() != 0) {
+                    System.out.println("ERROR - Problem creating Parameter XML file");
+                    System.out.println("Exit value = " + Integer.toString(p.exitValue()));
+                    return null;
+                }
             }
             return new FileInputStream(xmlFile);
         } catch (IOException e) {
@@ -1124,7 +1231,7 @@ public class L2genData implements L2genDataProcessorModel {
 
             l2genReader.readParamInfoXml(paramInfoStream);
 
-            InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(PARAM_CATEGORY_INFO_XML);
+            InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(getParamCategoryXml());
             l2genReader.readParamCategoryXml(paramCategoryInfoStream);
             setParamCategoryInfos();
 
@@ -1196,7 +1303,7 @@ public class L2genData implements L2genDataProcessorModel {
 
         l2prodParamInfo.setValue(value);
 
-        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(PRODUCT_CATEGORY_INFO_XML);
+        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(getProductCategoryXml());
         l2genReader.readProductCategoryXml(productCategoryInfoStream);
         setProductCategoryInfos();
 

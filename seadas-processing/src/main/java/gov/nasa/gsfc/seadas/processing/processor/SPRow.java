@@ -117,7 +117,7 @@ public class SPRow {
                 cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml");
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("l2gen")) {
-                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), false);
+                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), false, L2genData.Mode.L2GEN);
                 configPanel = cloProgramUI.getParamPanel();
             } else {
                 String xmlFile = name.replace(".py", "").concat(".xml");

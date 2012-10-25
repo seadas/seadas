@@ -37,10 +37,5 @@
             </tocitem>
 
         </tocitem>
-        <tocitem text="Tools">
-            <tocitem text="Land Masks" target="land_masks">
-            </tocitem>
-        </tocitem>
-
     </tocitem>
 </toc>

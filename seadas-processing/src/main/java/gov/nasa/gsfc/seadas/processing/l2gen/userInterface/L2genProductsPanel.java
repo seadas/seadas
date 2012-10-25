@@ -4,7 +4,6 @@ import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -78,11 +77,12 @@ public class L2genProductsPanel extends JPanel {
         JPanel innerPanel = new JPanel(new GridBagLayout());
 
         innerPanel.add(productSelectorJPanel,
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,3));
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 3));
 
-        innerPanel.add(wavelengthsLimitorJPanel,
-                new GridBagConstraintsCustom(1, 0, 1, 0.3, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,3));
-
+        if (l2genData.isWavelengthRequired()) {
+            innerPanel.add(wavelengthsLimitorJPanel,
+                    new GridBagConstraintsCustom(1, 0, 1, 0.3, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 3));
+        }
 
         setLayout(new GridBagLayout());
 
@@ -91,7 +91,7 @@ public class L2genProductsPanel extends JPanel {
                 new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.BOTH));
 
         add(selectedProductsJPanel,
-                new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,3));
+                new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, 3));
 
         add(restoreDefaultsButton,
                 new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
@@ -129,9 +129,6 @@ public class L2genProductsPanel extends JPanel {
         selectedProductsJScrollPane.setPreferredSize(selectedProductsJScrollPane.getPreferredSize());
         selectedProductsJScrollPane.setMinimumSize(selectedProductsJScrollPane.getPreferredSize());
         selectedProductsJScrollPane.setMaximumSize(selectedProductsJScrollPane.getPreferredSize());
-
-
-
 
 
         selectedProductsJTextArea.addFocusListener(new FocusListener() {

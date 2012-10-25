@@ -620,8 +620,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return true;
     }
 
-    public boolean isRequiresGeofile() {
+    public boolean isGeofileRequired() {
         return hasGeoFile;
+    }
+
+    @Override
+    public boolean isWavelengthRequired() {
+        return true;
     }
 
     private boolean verifyIFilePath(String ifileName) {

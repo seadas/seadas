@@ -133,6 +133,19 @@ public class FileSelector {
     }
 
 
+    public void setVisible(boolean enabled) {
+        jPanel.setVisible(enabled);
+        nameLabel.setVisible(enabled);
+        fileChooserButton.setVisible(enabled);
+        fileTextfield.setVisible(enabled);
+
+        if (type == Type.IFILE) {
+            filterRegexField.setVisible(enabled);
+            filterRegexLabel.setVisible(enabled);
+
+        }
+    }
+
     public void setName(String name) {
         this.name = name;
         nameLabel.setText(name);

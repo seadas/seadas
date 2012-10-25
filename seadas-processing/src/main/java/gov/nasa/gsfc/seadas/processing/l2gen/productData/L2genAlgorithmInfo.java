@@ -143,6 +143,9 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
     }
 
     private static ParameterType convertWavetype(String str) {
+        if (str == null) {
+            return ParameterType.NONE;
+        }
         if (str.compareToIgnoreCase(PARAMTYPE_VISIBLE) == 0) {
             return ParameterType.VISIBLE;
         } else if (str.compareToIgnoreCase(PARAMTYPE_IR) == 0) {
@@ -152,7 +155,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
         } else if (str.compareToIgnoreCase(PARAMTYPE_NONE) == 0) {
             return ParameterType.NONE;
         } else {
-            return null;
+            return ParameterType.NONE;
         }
     }
 

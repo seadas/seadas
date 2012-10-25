@@ -14,7 +14,8 @@ public interface L2genDataProcessorModel {
     public void setParamValue(String name, String value);
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
     public boolean isValidIfile();
-    public boolean isRequiresGeofile();
+    public boolean isGeofileRequired();
+    public boolean isWavelengthRequired();
     public String getPrimaryInputFileOptionName();
     public String getPrimaryOutputFileOptionName();
     public boolean isMultipleInputFiles();

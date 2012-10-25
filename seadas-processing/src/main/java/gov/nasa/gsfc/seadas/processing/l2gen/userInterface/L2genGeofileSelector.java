@@ -55,7 +55,8 @@ public class L2genGeofileSelector {
         l2genDataProcessorModel.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                fileSelector.setEnabled(l2genDataProcessorModel.isValidIfile() && l2genDataProcessorModel.isRequiresGeofile());
+                fileSelector.setEnabled(l2genDataProcessorModel.isValidIfile() && l2genDataProcessorModel.isGeofileRequired());
+                fileSelector.setVisible(l2genDataProcessorModel.isValidIfile() && l2genDataProcessorModel.isGeofileRequired());
             }
         });
     }

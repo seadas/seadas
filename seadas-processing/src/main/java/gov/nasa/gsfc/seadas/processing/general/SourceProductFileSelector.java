@@ -437,6 +437,9 @@ public class SourceProductFileSelector {
                 Product product = null;
                 try {
                     product = ProductIO.readProduct(file);
+                } catch (Exception e) { }
+
+                try {
                     if (product == null) {
                         if (file.canRead()) {
                             product = new Product(file.getName(), "DummyType", 10, 10);
@@ -455,9 +458,6 @@ public class SourceProductFileSelector {
                         SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
                         product.dispose();
                     }
-                } catch (IOException e) {
-
-                    handleError(window, e.getMessage());
                 } catch (Exception e) {
                     if (product != null) {
                         product.dispose();

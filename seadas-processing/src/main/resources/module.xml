@@ -140,7 +140,7 @@
             <parent>seadasProcessing</parent>
             <id>l2gen</id>
             <placeAfter>l1mapgen</placeAfter>
-            <placeBefore>l2brsgen</placeBefore>
+            <placeBefore>l2gen_aquarius</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genAction</class>
             <text>l2gen...</text>
             <shortDescr>Process a L1 file to L2</shortDescr>
@@ -150,6 +150,22 @@
             <xmlFileName>l2gen.xml</xmlFileName>
 
         </action>
+
+        <action>
+            <parent>seadasProcessing</parent>
+            <id>l2gen_aquarius</id>
+            <placeAfter>l2gen</placeAfter>
+            <placeBefore>l2brsgen</placeBefore>
+            <class>gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genAquariusAction</class>
+            <text>l2gen_aquarius...</text>
+            <shortDescr>Process an Aquarius L1 file to L2</shortDescr>
+            <shortDescr>Aquarius L2 File Generation</shortDescr>
+            <programName>l2gen_aquarius</programName>
+            <dialogTitle>l2gen_aquarius</dialogTitle>
+            <xmlFileName>l2gen_aquarius.xml</xmlFileName>
+
+        </action>
+
 
         <action>
             <parent>seadasProcessing</parent>

@@ -23,26 +23,31 @@ public class L2genPrimaryIOFilesSelector {
     private L2genGeofileSelector geofileSelector;
     private L2genOfileSelector ofileSelector;
 
+
     public L2genPrimaryIOFilesSelector(L2genDataProcessorModel l2genDataProcessorModel) {
         ifileSelector = new L2genIfileSelector(l2genDataProcessorModel);
         geofileSelector = new L2genGeofileSelector(l2genDataProcessorModel);
         ofileSelector = new L2genOfileSelector(l2genDataProcessorModel);
-        createJPanel();
+        createJPanel(l2genDataProcessorModel);
     }
 
 
-    public void createJPanel() {
+    public void createJPanel(L2genDataProcessorModel l2genDataProcessorModel) {
         jPanel = new JPanel(new GridBagLayout());
         jPanel.setBorder(BorderFactory.createTitledBorder("Primary I/O Files"));
 
+        int gridy = 0;
+
         jPanel.add(ifileSelector.getJPanel(),
-                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                new GridBagConstraintsCustom(0, gridy, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        gridy++;
 
         jPanel.add(geofileSelector.getJPanel(),
-                new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                new GridBagConstraintsCustom(0, gridy, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        gridy++;
 
         jPanel.add(ofileSelector.getJPanel(),
-                new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                new GridBagConstraintsCustom(0, gridy, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
     }
 
 

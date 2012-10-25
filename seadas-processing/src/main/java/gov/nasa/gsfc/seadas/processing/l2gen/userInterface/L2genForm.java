@@ -28,17 +28,33 @@ import java.io.File;
 public class L2genForm extends JPanel implements CloProgramUI {
 
     private static final String GUI_NAME = "l2gen";
+    private static final String GUI_NAME_AQUARIUS = "l2gen_aquarius";
 
-    private final L2genData l2genData = new L2genData();
+    private L2genData l2genData;
 
     private L2genMainPanel l2genMainPanel;
     private JCheckBox openInAppCheckBox;
     private final JTabbedPane jTabbedPane = new JTabbedPane();
     private int tabIndex;
+    private String guiName;
+    private L2genData.Mode mode;
 
     ProcessorModel processorModel;
 
-    public L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields) {
+    public L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields, L2genData.Mode mode) {
+
+        this.mode = mode;
+
+        l2genData = new L2genData(mode);
+
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                setGuiName(GUI_NAME_AQUARIUS);
+                break;
+            default:
+                setGuiName(GUI_NAME);
+                break;
+        }
 
         setOpenInAppCheckBox(new JCheckBox("Open in " + appContext.getApplicationName()));
         getOpenInAppCheckBox().setSelected(true);
@@ -70,11 +86,16 @@ public class L2genForm extends JPanel implements CloProgramUI {
             getL2genData().disableEvent(L2genData.PARSTRING);
             getL2genData().disableEvent(L2genData.L2PROD);
 
-            if (iFile != null) {
-                getL2genData().setInitialValues(iFile);
+            if (mode == L2genData.Mode.L2GEN_AQUARIUS) {
+                l2genData.fireEvent(L2genData.IFILE);
             } else {
-                getL2genData().setInitialValues(getInitialSelectedSourceFile());
+                if (iFile != null) {
+                    getL2genData().setInitialValues(iFile);
+                } else {
+                    getL2genData().setInitialValues(getInitialSelectedSourceFile());
+                }
             }
+
 
             getL2genData().fireAllParamEvents();
             getL2genData().enableEvent(L2genData.L2PROD);
@@ -87,8 +108,14 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public L2genForm(AppContext appContext, String xmlFileName) {
 
-        this(appContext, xmlFileName, null, true);
+        this(appContext, xmlFileName, null, true, L2genData.Mode.L2GEN);
     }
+
+    public L2genForm(AppContext appContext, String xmlFileName, L2genData.Mode mode) {
+
+        this(appContext, xmlFileName, null, true, mode);
+    }
+
 
     private void tabChangeHandler() {
         int oldTabIndex = tabIndex;
@@ -261,5 +288,13 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public L2genData getL2genData() {
         return l2genData;
+    }
+
+    public String getGuiName() {
+        return guiName;
+    }
+
+    public void setGuiName(String guiName) {
+        this.guiName = guiName;
     }
 }

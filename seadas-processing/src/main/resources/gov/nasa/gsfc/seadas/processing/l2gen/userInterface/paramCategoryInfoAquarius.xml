@@ -1,0 +1,32 @@
+<categoryList>
+    <category name="Primary Input Output Fields">
+        <autoTab>0</autoTab>
+        <param>ifile</param>
+        <param>ofile</param>
+    </category>
+
+    <category name="Products">
+        <autoTab>0</autoTab>
+        <param>l2prod</param>
+    </category>
+
+
+<category name="Processing Options">
+        <autoTab>1</autoTab>
+        <param>yancfile1</param>
+        <param>yancfile2</param>
+        <param>yancfile3</param>
+    </category>
+
+    <category name="Miscellaneous">
+        <autoTab>1</autoTab>
+        <defaultBucket>1</defaultBucket>
+    </category>
+
+
+    <category name="Params Not Supported in GUI">
+        <autoTab>0</autoTab>
+        <param>par</param>
+    </category>
+
+</categoryList>

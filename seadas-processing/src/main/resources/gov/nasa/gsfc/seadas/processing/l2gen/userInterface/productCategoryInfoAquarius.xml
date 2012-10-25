@@ -1,0 +1,142 @@
+<categoryList>
+
+    <category name="Ancillary">
+        <makeVisible>1</makeVisible>
+        <product>anc_cwat</product>
+        <product>anc_sm</product>
+        <product>anc_SSS</product>
+        <product>anc_surface_pressure</product>
+        <product>anc_surface_temp</product>
+        <product>anc_swe</product>
+        <product>anc_Tb_dw</product>
+        <product>anc_Tb_up</product>
+        <product>anc_trans</product>
+        <product>anc_wind_dir</product>
+        <product>anc_wind_speed</product>
+    </category>
+
+    <category name="Scatterometer">
+        <makeVisible>1</makeVisible>
+        <product>Kpc_HH_ant</product>
+        <product>Kpc_HH_toa</product>
+        <product>Kpc_HV_ant</product>
+        <product>Kpc_HV_toa</product>
+        <product>Kpc_total</product>
+        <product>Kpc_VH_ant</product>
+        <product>Kpc_VH_toa</product>
+        <product>Kpc_VV_ant</product>
+        <product>Kpc_VV_toa</product>
+        <product>scat_esurf_H</product>
+        <product>scat_esurf_H_uncertainty</product>
+        <product>scat_esurf_V</product>
+        <product>scat_esurf_V_uncertainty</product>
+        <product>scat_HH_ant</product>
+        <product>scat_HH_exp</product>
+        <product>scat_HH_toa</product>
+        <product>scat_HV_ant</product>
+        <product>scat_HV_exp</product>
+        <product>scat_HV_toa</product>
+        <product>scat_ice_frac</product>
+        <product>scat_land_frac</product>
+        <product>scat_tot_toa</product>
+        <product>scat_VH_ant</product>
+        <product>scat_VH_exp</product>
+        <product>scat_VH_toa</product>
+        <product>scat_VV_ant</product>
+        <product>scat_VV_exp</product>
+        <product>scat_VV_toa</product>
+        <product>scat_wind_speed</product>
+        <product>wind_uncertainty</product>
+    </category>
+
+    <category name="Radiometer">
+        <makeVisible>1</makeVisible>
+        <product>rad_exp_Ta3</product>
+        <product>rad_exp_TaH</product>
+        <product>rad_exp_TaV</product>
+        <product>rad_exp_TbH0</product>
+        <product>rad_exp_TbH</product>
+        <product>rad_exp_TbV0</product>
+        <product>rad_exp_TbV</product>
+        <product>rad_far_TaH</product>
+        <product>rad_galact_Ta_dir_3</product>
+        <product>rad_galact_Ta_dir_H</product>
+        <product>rad_galact_Ta_dir_V</product>
+        <product>rad_galact_Ta_ref_3</product>
+        <product>rad_galact_Ta_ref_H</product>
+        <product>rad_galact_Ta_ref_V</product>
+        <product>rad_gice</product>
+        <product>rad_ice_frac</product>
+        <product>rad_land_frac</product>
+        <product>rad_moon_Ta_ref_3</product>
+        <product>rad_moon_Ta_ref_H</product>
+        <product>rad_moon_Ta_ref_V</product>
+        <product>rad_solar_Ta_bak_3</product>
+        <product>rad_solar_Ta_bak_H</product>
+        <product>rad_solar_Ta_bak_V</product>
+        <product>rad_solar_Ta_dir_3</product>
+        <product>rad_solar_Ta_dir_H</product>
+        <product>rad_solar_Ta_dir_V</product>
+        <product>rad_solar_Ta_ref_3</product>
+        <product>rad_solar_Ta_ref_H</product>
+        <product>rad_solar_Ta_ref_V</product>
+        <product>rad_Ta30</product>
+        <product>rad_Ta3</product>
+        <product>rad_TaH0</product>
+        <product>rad_TaH</product>
+        <product>rad_TaV0</product>
+        <product>rad_TaV</product>
+        <product>rad_Tb_consistency_nolc</product>
+        <product>rad_Tb_consistency</product>
+        <product>rad_TbH_nolc</product>
+        <product>rad_TbH</product>
+        <product>rad_TbH_rc_nolc</product>
+        <product>rad_TbH_rc</product>
+        <product>rad_TbV_nolc</product>
+        <product>rad_TbV</product>
+        <product>rad_TbV_rc_nolc</product>
+        <product>rad_TbV_rc</product>
+        <product>rad_Tf30</product>
+        <product>rad_Tf3</product>
+        <product>rad_TfH0</product>
+        <product>rad_TfH</product>
+        <product>rad_TfV0</product>
+        <product>rad_TfV</product>
+        <product>rad_toa_H_nolc</product>
+        <product>rad_toa_H</product>
+        <product>rad_toa_V_nolc</product>
+        <product>rad_toa_V</product>
+        <product>rad_toi_3</product>
+        <product>rad_toi_H</product>
+        <product>rad_toi_V</product>
+        <product>SSS_error_nolc</product>
+        <product>SSS_error</product>
+        <product>SSS_nolc</product>
+        <product>SSS</product>
+
+    </category>
+
+
+    <!--ancillary-->
+    <!--    anc_-->
+    <!--scatterometer-->
+    <!--    scat_-->
+    <!--    Kpc_-->
+    <!--    wind_uncertainty-->
+    <!--radiometer-->
+    <!--    SSS_-->
+    <!--    rad_-->
+
+
+    <category name="Hidden Stuff">
+        <makeVisible>0</makeVisible>
+    </category>
+
+
+    <category name="Miscellaneous">
+        <makeVisible>1</makeVisible>
+        <defaultBucket>1</defaultBucket>
+    </category>
+
+</categoryList>
+
