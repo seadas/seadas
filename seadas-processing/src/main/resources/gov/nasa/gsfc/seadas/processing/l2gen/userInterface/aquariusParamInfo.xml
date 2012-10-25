@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>par</name>
+            <value/>
+            <source>default</source>
+            <description>input parameter file</description>
+        </option>
+        <option type="ifile">
+            <name>ifile</name>
+            <value/>
+            <source>default</source>
+            <description>input L1 file name</description>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value/>
+            <source>default</source>
+            <description>output L2 file name,</description>
+        </option>
+        <option type="string">
+            <name>l2prod</name>
+            <value/>
+            <source>default</source>
+            <description>L2 products to be included in ofile l2prod = L2 products to be included in ofile</description>
+        </option>
+        <option type="ifile">
+            <name>yancfile1</name>
+            <value/>
+            <source>default</source>
+            <description>radiometer ancillary file 1</description>
+        </option>
+        <option type="ifile">
+            <name>yancfile2</name>
+            <value/>
+            <source>default</source>
+            <description>radiometer ancillary file 2</description>
+        </option>
+        <option type="ifile">
+            <name>yancfile3</name>
+            <value/>
+            <source>default</source>
+            <description>radiometer ancillary file 3</description>
+        </option>
+    </options>
+</paramInfo>

@@ -44,9 +44,13 @@ public class L2genData implements L2genDataProcessorModel {
             PRODUCT_INFO_XML = "productInfo.xml",
             PARAM_INFO_XML = "paramInfo.xml",
             PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml",
-            PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml",
-            PARAM_CATEGORY_INFO_AQUARIUS_XML = "paramCategoryInfoAquarius.xml",
-            PRODUCT_CATEGORY_INFO_AQUARIUS_XML = "productCategoryInfoAquarius.xml";
+            PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml";
+
+    private static final String
+            AQUARIUS_PRODUCT_INFO_XML = "aquariusProductInfo.xml",
+            AQUARIUS_PARAM_INFO_XML = "aquariusParamInfo.xml",
+            AQUARIUS_PARAM_CATEGORY_INFO_XML = "aquariusParamCategoryInfo.xml",
+            AQUARIUS_PRODUCT_CATEGORY_INFO_XML = "aquariusProductCategoryInfo.xml";
 
 
     public static final String
@@ -117,8 +121,8 @@ public class L2genData implements L2genDataProcessorModel {
 
         switch (mode) {
             case L2GEN_AQUARIUS:
-                setParamCategoryXml(PARAM_CATEGORY_INFO_AQUARIUS_XML);
-                setProductCategoryXml(PRODUCT_CATEGORY_INFO_AQUARIUS_XML);
+                setParamCategoryXml(AQUARIUS_PARAM_CATEGORY_INFO_XML);
+                setProductCategoryXml(AQUARIUS_PRODUCT_CATEGORY_INFO_XML);
                 break;
             default:
                 setParamCategoryXml(PARAM_CATEGORY_INFO_XML);
@@ -1100,29 +1104,27 @@ public class L2genData implements L2genDataProcessorModel {
 
     private InputStream getProductInfoInputStream(File file) {
         File dataDir = SystemUtils.getApplicationDataDir();
-        File l2genDir;
-        switch (mode) {
-            case L2GEN_AQUARIUS:
-                l2genDir = new File(dataDir, "l2gen_aquarius");
-                break;
-            default:
-                l2genDir = new File(dataDir, "l2gen");
-                break;
-        }
+        File l2genDir = new File(dataDir, "l2gen");
 
         l2genDir.mkdirs();
-        File xmlFile = new File(l2genDir, PRODUCT_INFO_XML);
-        File ofile = new File(l2genDir, PRODUCT_INFO_XML + ".out");
 
+        File xmlFile;
+        File ofile;
         ProcessorModel processorModel;
+
         switch (mode) {
             case L2GEN_AQUARIUS:
+                xmlFile = new File(l2genDir, AQUARIUS_PRODUCT_INFO_XML);
+                ofile = new File(l2genDir, AQUARIUS_PRODUCT_INFO_XML + ".out");
                 processorModel = new ProcessorModel("l2gen_aquarius");
                 break;
             default:
+                xmlFile = new File(l2genDir, PRODUCT_INFO_XML);
+                ofile = new File(l2genDir, PRODUCT_INFO_XML + ".out");
                 processorModel = new ProcessorModel("l2gen");
                 break;
         }
+
 
         processorModel.setAcceptsParFile(true);
         processorModel.addParamInfo("ifile", file.getAbsolutePath(), ParamInfo.Type.IFILE);
@@ -1157,27 +1159,21 @@ public class L2genData implements L2genDataProcessorModel {
 
     private InputStream getParamInfoInputStream(File file) {
         File dataDir = SystemUtils.getApplicationDataDir();
-        File l2genDir;
+        File l2genDir = new File(dataDir, "l2gen");
 
-        switch (mode) {
-            case L2GEN_AQUARIUS:
-                l2genDir = new File(dataDir, "l2gen_aquarius");
-                break;
-            default:
-                l2genDir = new File(dataDir, "l2gen");
-                break;
-        }
 
         l2genDir.mkdirs();
-        File xmlFile = new File(l2genDir, PARAM_INFO_XML);
+        File xmlFile;
 //        File ofile = new File(l2genDir, PARAM_INFO_XML+".out");
 
         ProcessorModel processorModel;
         switch (mode) {
             case L2GEN_AQUARIUS:
+                xmlFile = new File(l2genDir, AQUARIUS_PARAM_INFO_XML);
                 processorModel = new ProcessorModel("l2gen_aquarius");
                 break;
             default:
+                xmlFile = new File(l2genDir, PARAM_INFO_XML);
                 processorModel = new ProcessorModel("l2gen");
                 break;
         }
