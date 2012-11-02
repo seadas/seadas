@@ -9,6 +9,7 @@ import ucar.nc2.Dimension;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -150,14 +151,21 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         //todo: refine logic to get correct navGroup
         File inputFile = productReader.getInputFile();
         String navGroup = "All_Data/VIIRS-MOD-GEO-TC_All";
-        String geoFileName;
+        String geoFileName = null;
+        int strlen = inputFile.getName().length();
 
         Attribute geoRef = findAttribute("N_GEO_Ref");
         if (geoRef != null) {
             geoFileName = geoRef.getStringValue().trim();
         } else {
-            int strlen = inputFile.getName().length();
-            geoFileName = "GMTCO" + inputFile.getName().substring(5, strlen);
+//            int strlen = inputFile.getName().length();
+            if (inputFile.getName().startsWith("SVDNB")){
+                geoFileName = "GDNBO" + inputFile.getName().substring(5, strlen);
+            } else if (inputFile.getName().startsWith("SVI")){
+                geoFileName = "GITCO" + inputFile.getName().substring(5, strlen);
+            } else if (inputFile.getName().startsWith("SVM")){
+                geoFileName = "GMTCO" + inputFile.getName().substring(5, strlen);
+            }
         }
         try {
 
@@ -165,27 +173,48 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             File geocheck = new File(path, geoFileName);
             // remove the create time segment and try again
             if (!geocheck.exists() || geoFileName == null) {
-                String geoFileName_noctime = geoFileName;
-                if (!inputFile.getName().matches("_c\\d{20}_")) {
-                    geoFileName_noctime = geoFileName_noctime.replaceFirst("_c\\d{20}_", "_");
+                File geodir = new File(path);
+                final String geoFileName_filter = inputFile.getName().substring(5, strlen).split("_c\\d{20}_")[0];
+                
+                FilenameFilter filter = new FilenameFilter(){
+                    public boolean accept
+                    (File dir, String name) {
+                        return name.contains(geoFileName_filter);
+                    }
+                };
+                String[] geofilelist = geodir.list(filter);
+
+                for (String gf:geofilelist){
+                    if (!gf.startsWith("G")){
+                        continue;
+                    }
+                    if (inputFile.getName().startsWith("SVDNB") && gf.startsWith("GDNBO")){
+                        geocheck = new File(path,  gf);
+                        break;
+                    } else if (inputFile.getName().startsWith("SVI")){
+                        if ( gf.startsWith("GITCO")){
+                            geocheck = new File(path,  gf);
+                            break;
+                        } else if ( gf.startsWith("GIMGO")){
+                            geocheck = new File(path,  gf);
+//                          prefer the GITCO, so keep looking just in case;
+                        }
+
+                    } else if (inputFile.getName().startsWith("SVM")){
+                        if ( gf.startsWith("GMTCO")){
+                            geocheck = new File(path,  gf);
+                            break;
+                        } else if ( gf.startsWith("GMODO")){
+                            geocheck = new File(path,  gf);
+//                          prefer the GMTCO, so keep looking just in case;
+                        }
+
+                    }
                 }
-
-                geocheck = new File(path, geoFileName_noctime);
-
-                if (!geocheck.exists()) {
-                    if (geoFileName.contains("GMODO")) {
-                        geoFileName = geoFileName.replaceFirst("GMODO", "GMTCO");
-                    } else {
-                        geoFileName = geoFileName.replaceFirst("GMTCO", "GMODO");
-
-                    }
-                    geocheck = new File(path, geoFileName);
-                    if (!geocheck.exists()) {
-                            return;
-                    }
+                if (!geocheck.exists()){
+                    return;
                 }
             }
-
             NetcdfFile geofile = NetcdfFile.open(geocheck.getPath());
             List<Group> navGroups = geofile.findGroup("All_Data").getGroups();
             for (Group ng : navGroups) {
