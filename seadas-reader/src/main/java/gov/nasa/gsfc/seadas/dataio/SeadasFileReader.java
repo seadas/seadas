@@ -459,6 +459,35 @@ public abstract class SeadasFileReader {
         metadataRoot.addElement(globalElement);
     }
 
+    public void addInputParamMetadata(Product product) throws ProductIOException {
+
+        Variable inputParams = ncFile.findVariable("Input Parameters");
+        if (inputParams != null) {
+            final MetadataElement inputParamsMeta = new MetadataElement("Input_Parameters");
+
+            final String name = inputParams.getShortName();
+            final int dataType = ProductData.TYPE_ASCII;//getProductDataType(inputParams);
+            Array array;
+            try {
+                array = inputParams.read();
+            } catch (IOException e) {
+                throw new ProductIOException(e.getMessage());
+            }
+            //todo parse the "array" into an array using the newline as a separator
+            // then load each element as a separate metadata element
+            String stuff =  array.toString();
+            final ProductData data = ProductData.createInstance(dataType, array.getStorage());
+            final MetadataAttribute attribute = new MetadataAttribute("data", data, true);
+
+            final MetadataElement sdsElement = new MetadataElement(name);
+            sdsElement.addAttribute(attribute);
+            inputParamsMeta.addElement(sdsElement);
+
+            final MetadataElement metadataRoot = product.getMetadataRoot();
+            metadataRoot.addElement(inputParamsMeta);
+        }
+    }
+
     public void addScientificMetadata(Product product) throws ProductIOException {
 
         Group group = ncFile.findGroup("Scan-Line Attributes");
