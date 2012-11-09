@@ -22,7 +22,6 @@ public class L2genProductsParamInfo extends ParamInfo {
     private ArrayList<L2genProductCategoryInfo> productCategoryInfos = new ArrayList<L2genProductCategoryInfo>();
 
 
-
     public L2genProductsParamInfo() {
         super(L2genData.L2PROD);
         setType(Type.STRING);
@@ -70,6 +69,21 @@ public class L2genProductsParamInfo extends ParamInfo {
 
         if (!value.equals(getValue())) {
             HashSet<String> inProducts = new HashSet<String>();
+
+            // todo this is the l2prod separators adjustment
+            if (value.contains(",")) {
+                value = value.replaceAll(",", " ");
+            }
+
+//            if (value.contains(";")) {
+//                value = value.replaceAll(";", " ");
+//            }
+//
+//
+//            if (value.contains(":")) {
+//                value = value.replaceAll(":", " ");
+//            }
+
             for (String prodEntry : value.split(" ")) {
                 prodEntry.trim();
                 inProducts.add(prodEntry);

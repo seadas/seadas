@@ -16,7 +16,7 @@
     </category>
 
     <category name="Scatterometer">
-        <makeVisible>1</makeVisible>
+        <makeVisible>0</makeVisible>
         <product>Kpc_HH_ant</product>
         <product>Kpc_HH_toa</product>
         <product>Kpc_HV_ant</product>

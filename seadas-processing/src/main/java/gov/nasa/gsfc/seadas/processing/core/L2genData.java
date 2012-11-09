@@ -21,6 +21,8 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A ...
@@ -542,7 +544,7 @@ public class L2genData implements L2genDataProcessorModel {
     private String makeParEntry(ParamInfo paramInfo, boolean commented) {
         StringBuilder line = new StringBuilder();
 
-        if (paramInfo.getValue().length() > 0) {
+        if (paramInfo.getValue().length() > 0 || paramInfo.getName().equals(L2PROD)) {
             if (commented) {
                 line.append("# ");
             }
@@ -617,10 +619,33 @@ public class L2genData implements L2genDataProcessorModel {
                 }
             }
         }
+
         /*
-        Set all params contained in parString
-        Ignore IFILE (handled earlier) and PAR (which is todo)
+        Handle L2PROD
          */
+
+        ArrayList<String> l2prods = null;
+
+        for (ParamInfo test : parfileParamInfos) {
+            if (test.getName().toLowerCase().startsWith(L2PROD)) {
+                if (l2prods == null) {
+                    l2prods = new ArrayList<String>();
+                }
+
+                l2prods.add(test.getValue());
+            }
+        }
+
+        if (l2prods != null) {
+            StringUtils.join(l2prods, " ");
+            setParamValue(L2PROD, StringUtils.join(l2prods, " "));
+        }
+
+
+        /*
+       Set all params contained in parString
+       Ignore IFILE (handled earlier) and PAR (which is todo)
+        */
         for (ParamInfo newParamInfo : parfileParamInfos) {
 
 
@@ -640,8 +665,8 @@ public class L2genData implements L2genDataProcessorModel {
                 continue;
             }
 
-            if (newParamInfo.getName().toLowerCase().equals(L2PROD)) {
-                newParamInfo.setValue(sortStringList(newParamInfo.getValue()));
+            if (newParamInfo.getName().toLowerCase().startsWith(L2PROD)) {
+                continue;
             }
 
             setParamValue(newParamInfo.getName(), newParamInfo.getValue());
@@ -655,7 +680,7 @@ public class L2genData implements L2genDataProcessorModel {
            Except: L2PROD and IFILE  remain at current value
             */
             for (ParamInfo paramInfo : paramInfos) {
-                if (!paramInfo.getName().equals(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE) && !paramInfo.getName().equals(GEOFILE)) {
+                if (!paramInfo.getName().startsWith(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE) && !paramInfo.getName().equals(GEOFILE)) {
                     boolean paramHandled = false;
                     for (ParamInfo parfileParamInfo : parfileParamInfos) {
                         if (paramInfo.getName().toLowerCase().equals(parfileParamInfo.getName().toLowerCase())) {
@@ -1372,5 +1397,8 @@ public class L2genData implements L2genDataProcessorModel {
         swingWorker.executeWithBlocking();
         return theFile;
     }
+
+
+
 
 }

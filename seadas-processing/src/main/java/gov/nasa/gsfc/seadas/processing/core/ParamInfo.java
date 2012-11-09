@@ -9,6 +9,9 @@ import gov.nasa.gsfc.seadas.processing.general.SeadasProcessorInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A ...
@@ -130,17 +133,19 @@ public class ParamInfo implements Comparable, Cloneable {
 
     protected void setValue(String value) {
         // Clean up and handle input exceptions
-
         if (value == null) {
             this.value = NULL_STRING;
             return;
         }
         value = value.trim();
 
+
         if (value.length() == 0) {
             this.value = NULL_STRING;
         } else if (getType() == Type.BOOLEAN) {
             this.value = getStandardizedBooleanString(value);
+        } else if (getType() == Type.IFILE || getType() == Type.OFILE) {
+            this.value = expandEnvVars(value);
         } else {
             this.value = value;
         }
@@ -357,8 +362,8 @@ public class ParamInfo implements Comparable, Cloneable {
 
     // get a string representation of this ParamInfo usable as a param string
     public String getParamString() {
-        if(usedAs.equals(USED_IN_COMMAND_AS_FLAG)) {
-            if(isTrue()) {
+        if (usedAs.equals(USED_IN_COMMAND_AS_FLAG)) {
+            if (isTrue()) {
                 return name;
             } else {
                 return "";
@@ -376,4 +381,23 @@ public class ParamInfo implements Comparable, Cloneable {
         return getStandardizedBooleanString(value).equals(BOOLEAN_TRUE);
     }
 
+    public static String expandEnvVars(String text) {
+        Map<String, String> envMap = System.getenv();
+        String pattern = "\\$\\{([A-Za-z0-9]+)\\}";
+        Pattern expr = Pattern.compile(pattern);
+        Matcher matcher = expr.matcher(text);
+        if (matcher.matches()) {
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                String envValue = envMap.get(matcher.group(i).toUpperCase());
+                if (envValue == null) {
+                    envValue = "";
+                } else {
+                    envValue = envValue.replace("\\", "\\\\");
+                }
+                Pattern subexpr = Pattern.compile("\\$\\{" + matcher.group(i) + "\\}");
+                text = subexpr.matcher(text).replaceAll(envValue);
+            }
+        }
+        return text;
+    }
 }
