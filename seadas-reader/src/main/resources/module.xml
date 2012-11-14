@@ -123,6 +123,15 @@
             </description>
             <helpId>importSeadasBrowseProduct</helpId>
         </action>
+
+        <action>
+            <id>importSeabass</id>
+            <class>gov.nasa.gsfc.seadas.dataio.ImportSeabassAction</class>
+            <text>SeaBASS Data</text>
+            <parent>importVectorData</parent>
+            <helpId>importSeabass</helpId>
+        </action>
+
     </extension>
 
     <extension point="beam-core:rgbProfiles">
