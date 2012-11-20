@@ -50,13 +50,15 @@
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
+            <artifactId>beam-modis-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
             <artifactId>beam-ui</artifactId>
-            <version>4.10.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat-rcp</artifactId>
-            <version>4.10.4-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

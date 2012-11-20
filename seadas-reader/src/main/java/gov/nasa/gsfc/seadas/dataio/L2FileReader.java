@@ -1,11 +1,10 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
+import org.esa.beam.dataio.modis.ModisPixelGeoCoding;
+import org.esa.beam.dataio.modis.ModisTiePointGeoCoding;
 import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.PixelGeoCoding;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
 import ucar.nc2.Variable;
 
@@ -92,18 +91,60 @@ public class L2FileReader extends SeadasFileReader {
     }
 
     public void addGeocoding(final Product product) throws ProductIOException {
+        // see if bowtie geocoding is needed
+        String res = null;
+        String sensor = null;
+        try {
+            sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor Name").getData().getElemString();
+            res = product.getMetadataRoot().getElement("Input_Parameters").getAttribute("RESOLUTION").getData().getElemString();
+        } catch(Exception e) {}
+
+        if(sensor != null) {
+            sensor = sensor.toLowerCase();
+            if(sensor.contains("viirs")) {
+                addBowtieGeocoding(product, 16);
+                return;
+            } else if(sensor.contains("modis")) {
+                int scanHeight = 10;
+                if(res != null) {
+                    if(res.equals("500")) {
+                        scanHeight = 20;
+                    } else if(res.equals("250")) {
+                        scanHeight = 40;
+                    }
+                }
+                addBowtieGeocoding(product, scanHeight);
+                return;
+            } // modis
+        }
+        addPixelGeocoding(product);
+    }
+
+    public void addBowtieGeocoding(final Product product, int scanHeight) throws ProductIOException {
+        final String longitude = "longitude";
+        final String latitude = "latitude";
+        Band latBand;
+        Band lonBand;
+
+        if (product.containsBand(latitude) && product.containsBand(longitude)) {
+            latBand = product.getBand(latitude);
+            lonBand = product.getBand(longitude);
+            latBand.setNoDataValue(-999.);
+            lonBand.setNoDataValue(-999.);
+            latBand.setNoDataValueUsed(true);
+            lonBand.setNoDataValueUsed(true);
+            product.setGeoCoding(new ModisPixelGeoCoding(latBand, lonBand, scanHeight, 0));
+        }
+
+    }
+
+    public void addPixelGeocoding(final Product product) throws ProductIOException {
         String navGroup = "Navigation Data";
         final String longitude = "longitude";
         final String latitude = "latitude";
         final String cntlPoints = "cntl_pt_cols";
         Band latBand = null;
         Band lonBand = null;
-
-        if (ncFile.findGroup(navGroup) == null) {
-            if (ncFile.findGroup("Navigation") != null) {
-                navGroup = "Navigation";
-            }
-        }
 
         if (product.containsBand(latitude) && product.containsBand(longitude)) {
             latBand = product.getBand(latitude);
@@ -113,6 +154,11 @@ public class L2FileReader extends SeadasFileReader {
             latBand.setNoDataValueUsed(true);
             lonBand.setNoDataValueUsed(true);
         } else {
+            if (ncFile.findGroup(navGroup) == null) {
+                if (ncFile.findGroup("Navigation") != null) {
+                    navGroup = "Navigation";
+                }
+            }
             Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
             Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
             Variable cntlPointVar = ncFile.findVariable(navGroup + "/" + cntlPoints);
@@ -138,9 +184,9 @@ public class L2FileReader extends SeadasFileReader {
             }
         }
         try {
-        if (latBand != null && lonBand != null) {
+            if (latBand != null && lonBand != null) {
                 product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-        }
+            }
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage());
         }

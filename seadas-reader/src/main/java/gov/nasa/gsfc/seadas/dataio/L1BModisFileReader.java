@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
+import org.esa.beam.dataio.modis.ModisPixelGeoCoding;
+import org.esa.beam.dataio.modis.ModisTiePointGeoCoding;
 import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.HdfEosUtils;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
@@ -25,7 +27,7 @@ import static ucar.nc2.NetcdfFile.*;
  * User: seadas
  * Date: 11/14/11
  * Time: 2:23 PM
-  */
+ */
 public class L1BModisFileReader extends SeadasFileReader {
     L1BModisFileReader(SeadasProductReader productReader) {
         super(productReader);
@@ -63,7 +65,7 @@ public class L1BModisFileReader extends SeadasFileReader {
 
         ProductData.UTC utcStart = getUTCAttribute("Start Time");
         if (utcStart != null) {
-            if (mustFlipY){
+            if (mustFlipY) {
                 product.setEndTime(utcStart);
             } else {
                 product.setStartTime(utcStart);
@@ -128,7 +130,7 @@ public class L1BModisFileReader extends SeadasFileReader {
                         Array intercept = null;
                         for (Attribute hdfAttribute : list) {
                             final String attribName = hdfAttribute.getName();
-                           if ("units".equals(attribName)) {
+                            if ("units".equals(attribName)) {
                                 units = hdfAttribute.getStringValue();
                             } else if ("long_name".equals(attribName)) {
                                 description = hdfAttribute.getStringValue();
@@ -192,99 +194,86 @@ public class L1BModisFileReader extends SeadasFileReader {
 
     public void addGeocoding(final Product product) throws ProductIOException {
 
-        String navGroupMODIS = "MODIS_SWATH_Type_L1B/Geolocation Fields";
         // read latitudes and longitudes
         int cntl_lat_ix;
         int cntl_lon_ix;
+        float offsetY;
         boolean externalGeo = false;
-        String resolution = getStringAttribute("MODIS Resolution");
-        if (resolution.equals("500m")) {
-            cntl_lat_ix = 2;
-            cntl_lon_ix = 2;
-        } else if (resolution.equals("250m")) {
-            cntl_lat_ix = 4;
-            cntl_lon_ix = 4;
-        } else {
-            cntl_lat_ix = 5;
-            cntl_lon_ix = 5;
+        NetcdfFile geoNcFile = null;
+        Variable lats = null;
+        Variable lons = null;
+        int scanHeight;
 
-            File inputFile = productReader.getInputFile();
-            String geoFileName = getStringAttribute("Geolocation File");
-            String path = inputFile.getParent();
-            File geocheck = new File(path, geoFileName);
-            if (geocheck.exists()) {
-                externalGeo = true;
-                //Use external lat/lon with PixelGeoCoding
-                try {
-                    NetcdfFile geofile;
-                    geofile = open(geocheck.getPath());
-                    navGroupMODIS = "MODIS_Swath_Type_GEO/Geolocation Fields";
-                    final String longitude = "Longitude";
-                    final String latitude = "Latitude";
+        try {
+            String resolution = getStringAttribute("MODIS Resolution");
+            if (resolution.equals("500m")) {
+                scanHeight = 20;
+                cntl_lat_ix = 2;
+                cntl_lon_ix = 2;
+                offsetY = 0.5f;
+            } else if (resolution.equals("250m")) {
+                scanHeight = 40;
+                cntl_lat_ix = 4;
+                cntl_lon_ix = 4;
+                offsetY = 1.5f;
+            } else {
+                scanHeight = 10;
+                cntl_lat_ix = 5;
+                cntl_lon_ix = 5;
+                offsetY = 0f;
 
-                    Band latBand = new Band("latitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
-                    Band lonBand = new Band("longitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
-                    product.addBand(latBand);
-                    product.addBand(lonBand);
-
-                    Array latarr = geofile.findVariable(navGroupMODIS + "/" + latitude).read();
-                    Array lonarr = geofile.findVariable(navGroupMODIS + "/" + longitude).read();
-                    float[] latitudes;
-                    float[] longitudes;
-                    if (mustFlipX && mustFlipY) {
-                        latitudes = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
-                        longitudes = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
-                    } else {
-                        latitudes = (float[]) latarr.getStorage();
-                        longitudes = (float[]) lonarr.getStorage();
-                    }
-
-                    ProductData lats = ProductData.createInstance(latitudes);
-                    latBand.setData(lats);
-                    ProductData lons = ProductData.createInstance(longitudes);
-                    lonBand.setData(lons);
-                    product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-                } catch (IOException e) {
-                    throw new ProductIOException(e.getMessage());
+                File inputFile = productReader.getInputFile();
+                String geoFileName = getStringAttribute("Geolocation File");
+                String path = inputFile.getParent();
+                File geocheck = new File(path, geoFileName);
+                if (geocheck.exists()) {
+                    externalGeo = true;
+                    cntl_lat_ix = 1;
+                    cntl_lon_ix = 1;
+                    offsetY = 0f;
+                    geoNcFile = open(geocheck.getPath());
                 }
             }
-        }
-        //Use embedded lat/lon with TiePointGeoCoding
-        if (!externalGeo){
-            Variable lats = ncFile.findVariable(navGroupMODIS + "/" + "Latitude");
-            Variable lons = ncFile.findVariable(navGroupMODIS + "/" + "Longitude");
-            int[] dims = lats.getShape();
 
+            if (externalGeo) {
+                lats = geoNcFile.findVariable("MODIS_Swath_Type_GEO/Geolocation Fields/Latitude");
+                lons = geoNcFile.findVariable("MODIS_Swath_Type_GEO/Geolocation Fields/Longitude");
+            } else {
+                lats = ncFile.findVariable("MODIS_SWATH_Type_L1B/Geolocation Fields/Latitude");
+                lons = ncFile.findVariable("MODIS_SWATH_Type_L1B/Geolocation Fields/Longitude");
+            }
+
+            //Use lat/lon with TiePointGeoCoding
+            int[] dims = lats.getShape();
             float[] latTiePoints;
             float[] lonTiePoints;
-
-            try {
-                Array latarr = lats.read();
-
-                Array lonarr = lons.read();
-                if (mustFlipX && mustFlipY) {
-                    latTiePoints = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
-                    lonTiePoints = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
-                } else {
-                    latTiePoints = (float[]) latarr.getStorage();
-                    lonTiePoints = (float[]) lonarr.getStorage();
-                }
-
-                final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1], dims[0], 0, 0,
-                        cntl_lat_ix, cntl_lon_ix, latTiePoints);
-
-                product.addTiePointGrid(latGrid);
-
-                final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1], dims[0], 0, 0,
-                        cntl_lat_ix, cntl_lon_ix, lonTiePoints);
-
-                product.addTiePointGrid(lonGrid);
-
-                product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
-
-            } catch (IOException e) {
-                throw new ProductIOException(e.getMessage());
+            Array latarr = lats.read();
+            Array lonarr = lons.read();
+            if (mustFlipX && mustFlipY) {
+                latTiePoints = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
+                lonTiePoints = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
+            } else {
+                latTiePoints = (float[]) latarr.getStorage();
+                lonTiePoints = (float[]) lonarr.getStorage();
             }
+
+            if (externalGeo) {
+                geoNcFile.close();
+            }
+
+            final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1], dims[0], 0, offsetY,
+                    cntl_lat_ix, cntl_lon_ix, latTiePoints);
+            product.addTiePointGrid(latGrid);
+
+            final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1], dims[0], 0, offsetY,
+                    cntl_lat_ix, cntl_lon_ix, lonTiePoints);
+            product.addTiePointGrid(lonGrid);
+
+            product.setGeoCoding(new ModisTiePointGeoCoding(latGrid, lonGrid, scanHeight));
+            //product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
+
+        } catch (IOException e) {
+            throw new ProductIOException(e.getMessage());
         }
     }
 

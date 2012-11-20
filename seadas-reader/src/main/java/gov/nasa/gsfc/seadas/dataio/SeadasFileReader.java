@@ -464,27 +464,32 @@ public abstract class SeadasFileReader {
         Variable inputParams = ncFile.findVariable("Input Parameters");
         if (inputParams != null) {
             final MetadataElement inputParamsMeta = new MetadataElement("Input_Parameters");
-
-            final String name = inputParams.getShortName();
-            final int dataType = ProductData.TYPE_ASCII;//getProductDataType(inputParams);
             Array array;
             try {
                 array = inputParams.read();
             } catch (IOException e) {
                 throw new ProductIOException(e.getMessage());
             }
-            //todo parse the "array" into an array using the newline as a separator
-            // then load each element as a separate metadata element
-            String stuff =  array.toString();
-            final ProductData data = ProductData.createInstance(dataType, array.getStorage());
-            final MetadataAttribute attribute = new MetadataAttribute("data", data, true);
 
-            final MetadataElement sdsElement = new MetadataElement(name);
-            sdsElement.addAttribute(attribute);
-            inputParamsMeta.addElement(sdsElement);
+            String[] lines =  array.toString().split("\n");
+            for(String line : lines) {
+                String[] parts = line.split("=");
+                if(parts.length == 2) {
+                    final String name = parts[0].trim();
+                    final String value = parts[1].trim();
+                    final ProductData data = ProductData.createInstance(ProductData.TYPE_ASCII, value);
+                    final MetadataAttribute attribute = new MetadataAttribute(name, data, true);
+                    inputParamsMeta.addAttribute(attribute);
+
+
+                }
+            }
 
             final MetadataElement metadataRoot = product.getMetadataRoot();
             metadataRoot.addElement(inputParamsMeta);
+
+
+
         }
     }
 

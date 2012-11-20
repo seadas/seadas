@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
+import org.esa.beam.dataio.modis.ModisPixelGeoCoding;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
@@ -10,6 +11,7 @@ import ucar.nc2.Dimension;
 import java.awt.*;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -153,12 +155,22 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         String navGroup = "All_Data/VIIRS-MOD-GEO-TC_All";
         String geoFileName = null;
         int strlen = inputFile.getName().length();
+        int detectorsInScan;
+
+        try {
+            String CollectionShortName = getCollectionShortName();
+            String varName = "All_Data/" + CollectionShortName + "_All/NumberOfScans";
+            Variable nscans = ncFile.findVariable(varName);
+            Array ns = nscans.read();
+            detectorsInScan = product.getSceneRasterHeight() / ns.getInt(0);
+        } catch (IOException e) {
+            throw new ProductIOException("Could not find the number of detectors in a scan");
+        }
 
         Attribute geoRef = findAttribute("N_GEO_Ref");
         if (geoRef != null) {
             geoFileName = geoRef.getStringValue().trim();
         } else {
-//            int strlen = inputFile.getName().length();
             if (inputFile.getName().startsWith("SVDNB")){
                 geoFileName = "GDNBO" + inputFile.getName().substring(5, strlen);
             } else if (inputFile.getName().startsWith("SVI")){
@@ -250,7 +262,9 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             latBand.setData(lats);
             ProductData lons = ProductData.createInstance(longitudes);
             lonBand.setData(lons);
-            product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
+
+            //product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
+            product.setGeoCoding(new ModisPixelGeoCoding(latBand, lonBand, detectorsInScan, 0));
 
         } catch (Exception e) {
             throw new ProductIOException(e.getMessage());
