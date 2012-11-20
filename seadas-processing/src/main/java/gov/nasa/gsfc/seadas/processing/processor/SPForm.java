@@ -123,14 +123,9 @@ public class SPForm extends JPanel implements CloProgramUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String contents = SeadasGuiUtils.importFile(jFileChooser);
-                File parFileDir;
-                if(contents == null) {
-                    parFileDir = null;
-                } else {
-                    parFileDir = jFileChooser.getSelectedFile().getParentFile();
+                if(contents != null) {
+                    setParamString(contents, retainIFileCheckbox.isSelected());
                 }
-//                l2genData.setParString(contents, l2genData.isRetainCurrentIfile(), false, parFileDir);
-                setParamString(contents, retainIFileCheckbox.isSelected());
             }
         });
 
@@ -398,5 +393,22 @@ public class SPForm extends JPanel implements CloProgramUI {
     public String getIFile() {
         return getRow("main").getParamList().getValue("ifile");
     }
+
+    public String getFirstIFile() {
+        String fileName = getIFile();
+        if(fileName.contains(",")) {
+            String[] files = fileName.split(",");
+            fileName = files[0].trim();
+        } else if(fileName.contains(" ")) {
+            String[] files = fileName.trim().split(" ");
+            fileName = files[0].trim();
+        }
+
+        // todo : need to check for file being a list of files.
+
+        return fileName;
+    }
+
+
 
 }

@@ -172,7 +172,7 @@ public class ParamUtils {
             String tmpType = XmlReader.getAttributeTextValue(optionElement, OPTION_TYPE);
             debug("option type: " + tmpType);
 
-            ParamInfo.Type type = null;
+            ParamInfo.Type type = ParamInfo.Type.HELP;
 
             if (tmpType != null) {
                 if (tmpType.toLowerCase().equals("boolean")) {

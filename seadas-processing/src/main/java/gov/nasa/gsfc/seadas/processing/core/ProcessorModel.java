@@ -511,7 +511,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
                 if (option.getType().equals(ParamInfo.Type.IFILE)) {
                     filesToUpload.add(option.getValue());
-                } else if (option.getType().equals(ParamInfo.PARAM_TYPE_OFILE)) {
+                } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
                     filesToDownload.add(option.getValue());
                 }
             }
@@ -640,9 +640,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private String getIfileDirString() {
-
-        String ifileDir = getParamValue(getPrimaryInputFileOptionName());
-        ifileDir = ifileDir.substring(0, ifileDir.lastIndexOf(System.getProperty("file.separator")));
+        String ifileDir;
+        try {
+            ifileDir = getParamValue(getPrimaryInputFileOptionName());
+            ifileDir = ifileDir.substring(0, ifileDir.lastIndexOf(System.getProperty("file.separator")));
+        } catch (Exception e) {
+            ifileDir = System.getProperty("user.dir");
+        }
         return ifileDir;
     }
 

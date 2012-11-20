@@ -33,5 +33,11 @@
             <default>false</default>
             <description>do not re-create intermediate files if they already exist</description>
         </option>
+        <option type="boolean">
+             <name>ocproc_getanc</name>
+             <value>false</value>
+             <default>false</default>
+             <description>Get the ancillary data for l2gen processing</description>
+         </option>
     </options>
 </paramInfo>

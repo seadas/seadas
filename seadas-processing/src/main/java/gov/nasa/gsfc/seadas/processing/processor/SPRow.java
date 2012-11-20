@@ -3,22 +3,17 @@ package gov.nasa.gsfc.seadas.processing.processor;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.general.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
-import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.framework.ui.UIUtils;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,7 +26,7 @@ public class SPRow {
     public static final String PARAM_STRING_EVENT = "paramString";
     public static final String KEEPFILES_PARAM = "keepfiles";
 
-    private static final String LONGEST_LABEL = "modis_GEO.py";
+    private static final String LONGEST_BUTTON_LABEL = "l1aextract_seawifs";
 
     private String name;
     private CloProgramUI cloProgramUI;
@@ -51,7 +46,7 @@ public class SPRow {
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
         paramList = new ParamList();
-        configButton = new JButton(LONGEST_LABEL);
+        configButton = new JButton(LONGEST_BUTTON_LABEL);
         configButton.setPreferredSize(configButton.getPreferredSize());
         configButton.setText(name);
         configButton.addActionListener(new ActionListener() {
@@ -289,7 +284,7 @@ public class SPRow {
     }
 
     private File getTinyIFile() {
-        String ifileName = parentForm.getIFile();
+        String ifileName = parentForm.getFirstIFile();
         FileInfo fileInfo = null;
         String missionName = (new MissionInfo(MissionInfo.Id.SEAWIFS)).getName();
 
@@ -299,7 +294,7 @@ public class SPRow {
             if (missionId == MissionInfo.Id.SEAWIFS ||
                     missionId == MissionInfo.Id.MODISA ||
                     missionId == MissionInfo.Id.MODIST ||
-                    //missionId == MissionInfo.Id.MERIS ||
+                    missionId == MissionInfo.Id.MERIS ||
                     missionId == MissionInfo.Id.CZCS ||
                     missionId == MissionInfo.Id.OCTS) {
                 missionName = fileInfo.getMissionName();
