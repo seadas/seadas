@@ -46,10 +46,11 @@ import java.io.Reader;
 
 
 /**
- * Action that lets a user load a SeaBASS file
+ * Action that lets a user load a SeaBASS file.
  *
  * @author Don Shea
  * @since SeaDAS 7.0
+ * @see <a href="http://seabass.gsfc.nasa.gov/wiki/article.cgi?article=Data_Submission#Data%20Format">SeaBASS File Format Description</a>
  */
 public class ImportSeabassAction extends ExecCommand {
 
@@ -79,7 +80,7 @@ public class ImportSeabassAction extends ExecCommand {
             return;
         }
 
-        String name = FileUtils.getFilenameWithoutExtension(file);
+        String name = file.getName();
         final PlacemarkDescriptor placemarkDescriptor = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptor(featureCollection.getSchema());
         placemarkDescriptor.setUserDataOf(featureCollection.getSchema());
         VectorDataNode vectorDataNode = new VectorDataNode(name, featureCollection, placemarkDescriptor);
@@ -108,93 +109,8 @@ public class ImportSeabassAction extends ExecCommand {
     }
 
     static FeatureCollection<SimpleFeatureType, SimpleFeature> readTrack(Reader reader, GeoCoding geoCoding) throws IOException {
-        CsvReader csvReader = new CsvReader(reader, new char[]{'\t', ' '}, true, "#");
-        SimpleFeatureType trackFeatureType = createTrackFeatureType(geoCoding);
-        FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = new ListFeatureCollection(trackFeatureType);
-        double[] record;
-        int pointIndex = 0;
-        while ((record = csvReader.readDoubleRecord()) != null) {
-            if (record.length < 4) {
-                throw new IOException("Illegal track file format.\n" +
-                        "Expecting tab-separated lines containing 4 values: lat, lon, data, data2.");
-            }
-
-            float lat = (float) record[0];
-            float lon = (float) record[1];
-            double data = record[2];
-            double data2 = record[3];
-
-            final SimpleFeature feature = createFeature(trackFeatureType, geoCoding, pointIndex, lat, lon, data, data2);
-            if (feature != null) {
-                featureCollection.add(feature);
-            }
-
-            pointIndex++;
-        }
-
-        if (featureCollection.isEmpty()) {
-            throw new IOException("No track point found or all of them are located outside the scene boundaries.");
-        }
-
-        final CoordinateReferenceSystem mapCRS = geoCoding.getMapCRS();
-        if (!mapCRS.equals(DefaultGeographicCRS.WGS84)) {
-            try {
-                transformFeatureCollection(featureCollection, mapCRS);
-            } catch (TransformException e) {
-                throw new IOException("Cannot transform the ship track onto CRS '" + mapCRS.toWKT() + "'.", e);
-            }
-        }
-
-        return featureCollection;
-    }
-
-    private static void transformFeatureCollection(FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection, CoordinateReferenceSystem targetCRS) throws TransformException {
-        final GeometryCoordinateSequenceTransformer transform = FeatureUtils.getTransform(DefaultGeographicCRS.WGS84, targetCRS);
-        final FeatureIterator<SimpleFeature> features = featureCollection.features();
-        final GeometryFactory geometryFactory = new GeometryFactory();
-        while (features.hasNext()) {
-            final SimpleFeature simpleFeature = features.next();
-            final Point sourcePoint = (Point) simpleFeature.getDefaultGeometry();
-            final Point targetPoint = transform.transformPoint(sourcePoint, geometryFactory);
-            simpleFeature.setDefaultGeometry(targetPoint);
-        }
-    }
-
-    private static SimpleFeatureType createTrackFeatureType(GeoCoding geoCoding) {
-        SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
-        ftb.setName("org.esa.beam.TrackPoint1");
-        /*0*/
-        ftb.add("pixelPos", Point.class, geoCoding.getImageCRS());
-        /*1*/
-        ftb.add("geoPos", Point.class, DefaultGeographicCRS.WGS84);
-        /*2*/
-        ftb.add("data", Double.class);
-        /*3*/
-        ftb.add("data2", Double.class);
-        ftb.setDefaultGeometry(geoCoding instanceof CrsGeoCoding ? "geoPos" : "pixelPos");
-        // GeoTools Bug: this doesn't work
-        // ftb.userData("trackPoints", "true");
-        final SimpleFeatureType ft = ftb.buildFeatureType();
-        ft.getUserData().put("trackPoints", "true");
-        return ft;
-    }
-
-    private static SimpleFeature createFeature(SimpleFeatureType type, GeoCoding geoCoding, int pointIndex, float lat, float lon, double data, double data2) {
-        PixelPos pixelPos = geoCoding.getPixelPos(new GeoPos(lat, lon), null);
-        if (!pixelPos.isValid()) {
-            return null;
-        }
-        SimpleFeatureBuilder fb = new SimpleFeatureBuilder(type);
-        GeometryFactory gf = new GeometryFactory();
-        /*0*/
-        fb.add(gf.createPoint(new Coordinate(pixelPos.x, pixelPos.y)));
-        /*1*/
-        fb.add(gf.createPoint(new Coordinate(lon, lat)));
-        /*2*/
-        fb.add(data);
-        /*3*/
-        fb.add(data2);
-        return fb.buildFeature(String.format("ID%08d", pointIndex));
+        SeabassReader seabassReader = new SeabassReader(reader, geoCoding);
+        return seabassReader.createFeatureCollection();
     }
 
 
