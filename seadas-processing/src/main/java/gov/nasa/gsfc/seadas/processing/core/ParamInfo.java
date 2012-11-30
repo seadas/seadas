@@ -142,7 +142,7 @@ public class ParamInfo implements Comparable, Cloneable {
         } else if (getType() == Type.BOOLEAN) {
             this.value = getStandardizedBooleanString(value);
         } else if (getType() == Type.IFILE || getType() == Type.OFILE) {
-            this.value = EnvironmentVariablesExpander.getExpandedFilename(value);
+            this.value = value;
             System.out.println("");
         } else {
             this.value = value;
@@ -203,12 +203,7 @@ public class ParamInfo implements Comparable, Cloneable {
             this.defaultValue = NULL_STRING;
         } else if (getType() == Type.BOOLEAN) {
             this.defaultValue = getStandardizedBooleanString(defaultValue);
-        }
-//        else if (getType() == Type.IFILE || getType() == Type.OFILE) {
-//            this.value = EnvironmentVariablesExpander.getExpandedFilename(defaultValue);
-//            System.out.println("");
-//        }
-        else {
+        } else {
             this.defaultValue = defaultValue;
         }
     }
@@ -294,8 +289,8 @@ public class ParamInfo implements Comparable, Cloneable {
         if (getType() == ParamInfo.Type.IFILE) {
 
             if (getName().equals(L2genData.IFILE) || getName().equals(L2genData.GEOFILE)) {
-
-                fileInfo = new FileInfo(defaultFileParent, getValue(), true);
+                String value = SeadasFileUtils.getExpandedEnvironmentVariableFilename(getValue());
+                fileInfo = new FileInfo(defaultFileParent, value, true);
                 if (fileInfo.getFile() != null) {
                     if (fileInfo.getFile().exists()) {
                         if (getName().equals(L2genData.GEOFILE)) {
@@ -383,7 +378,6 @@ public class ParamInfo implements Comparable, Cloneable {
     public boolean isTrue() {
         return getStandardizedBooleanString(value).equals(BOOLEAN_TRUE);
     }
-
 
 
 }
