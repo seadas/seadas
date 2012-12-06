@@ -23,7 +23,7 @@ public class SeadasFileUtils {
 
     public static File createFile(String parent, String fileName) {
         File pFile;
-        if(parent == null) {
+        if (parent == null) {
             pFile = null;
         } else {
             pFile = new File(parent);
@@ -32,13 +32,13 @@ public class SeadasFileUtils {
     }
 
     public static File createFile(File parent, String fileName) {
-        if(fileName == null) {
+        if (fileName == null) {
             return null;
         }
 
-        String expandedFilename = SeadasFileUtils.getExpandedEnvironmentVariableFilename(fileName);
+        String expandedFilename = SeadasFileUtils.expandEnvironment(fileName);
         File file = new File(expandedFilename);
-        if(!file.isAbsolute() && parent != null) {
+        if (!file.isAbsolute() && parent != null) {
             file = new File(parent, expandedFilename);
         }
         return file;
@@ -129,44 +129,94 @@ public class SeadasFileUtils {
     }
 
 
-    public static String getExpandedEnvironmentVariableFilename(String filename) {
+//    public static String expandEnvironment(String string) {
+//
+//
+//        //     Pattern pattern = Pattern.compile("(.+)\\$\\{{0,1}([A-Za-z0-9_]+)\\}{0,1}(.+)");
+//        Pattern pattern = Pattern.compile("([.]*)\\$\\{{0,1}([A-Za-z0-9_]+)\\}{0,1}([.]*)");
+//        Matcher matcher = pattern.matcher(string);
+//
+//
+//        if (matcher.find()) {
+//            String s0 = matcher.group(0);
+//            String s1 = matcher.group(1);
+//            String s2 = matcher.group(2);
+//            String s3 = s2;
+//        }
+//
+//
+//        return string;
+//    }
+//
+//
 
-        String envVarNamePattern = "([A-Za-z0-9_]+)";
 
-        filename = expandEnvironmentVariableFilenameWithPattern("\\$" + envVarNamePattern, filename);
-        filename = expandEnvironmentVariableFilenameWithPattern("\\$\\{" + envVarNamePattern + "\\}", filename);
+    public static String expandEnvironment(String string1) {
 
-        return filename;
+        if (string1 == null) {
+            return string1;
+        }
+
+        String environmentPattern = "([A-Za-z0-9_]+)";
+        Pattern pattern1 = Pattern.compile("\\$\\{" + environmentPattern + "\\}");
+        Pattern pattern2 = Pattern.compile("\\$" + environmentPattern);
+
+
+        String string2 = null;
+
+        while (!string1.equals(string2)) {
+            if (string2 != null) {
+                string1 = string2;
+            }
+
+            string2 = expandEnvironment(pattern1, string1);
+            string2 = expandEnvironment(pattern2, string2);
+
+            if (string2 == null) {
+                return string2;
+            }
+        }
+
+        return string2;
     }
 
 
-    private static String expandEnvironmentVariableFilenameWithPattern(String patternString, String filename) {
 
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(filename);
+    private static String expandEnvironment(Pattern pattern, String string) {
+
+
+        if (string == null || pattern == null) {
+            return string;
+        }
+
+        Matcher matcher = pattern.matcher(string);
         Map<String, String> envMap = null;
 
         while (matcher.find()) {
+
             // Retrieve environment variables
             if (envMap == null) {
                 envMap = System.getenv();
             }
 
-            String envNameOnly = matcher.group(1).toUpperCase();
+            String envNameOnly = matcher.group(1);
 
             if (envMap.containsKey(envNameOnly)) {
                 String envValue = envMap.get(envNameOnly);
 
                 if (envValue != null) {
-                    envValue = envValue.replace("\\", "\\\\");
-                    String envNameClause = matcher.group(0);
-                    Pattern envNameClausePattern = Pattern.compile(Pattern.quote(envNameClause));
-                    filename = envNameClausePattern.matcher(filename).replaceAll(envValue);
+                    String escapeStrings[] = {"\\", "$", "{", "}"};
+                    for (String escapeString : escapeStrings) {
+                        envValue = envValue.replace(escapeString, "\\"+escapeString);
+                    }
+
+                    Pattern envNameClausePattern = Pattern.compile(Pattern.quote(matcher.group(0)));
+                    string = envNameClausePattern.matcher(string).replaceAll(envValue);
                 }
             }
         }
 
-        return filename;
+        return string;
     }
 
 

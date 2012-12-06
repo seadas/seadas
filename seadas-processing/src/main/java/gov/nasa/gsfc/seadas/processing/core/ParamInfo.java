@@ -6,9 +6,6 @@ import gov.nasa.gsfc.seadas.processing.general.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A ...
@@ -289,7 +286,7 @@ public class ParamInfo implements Comparable, Cloneable {
         if (getType() == ParamInfo.Type.IFILE) {
 
             if (getName().equals(L2genData.IFILE) || getName().equals(L2genData.GEOFILE)) {
-                String value = SeadasFileUtils.getExpandedEnvironmentVariableFilename(getValue());
+                String value = SeadasFileUtils.expandEnvironment(getValue());
                 fileInfo = new FileInfo(defaultFileParent, value, true);
                 if (fileInfo.getFile() != null) {
                     if (fileInfo.getFile().exists()) {
