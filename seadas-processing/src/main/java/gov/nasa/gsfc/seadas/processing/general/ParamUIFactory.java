@@ -140,6 +140,7 @@ public class ParamUIFactory {
         TableLayout fieldLayout = new TableLayout(1);
         fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         optionPanel.setLayout(fieldLayout);
+        optionPanel.setName(optionName);
         optionPanel.add(new JLabel(ParamUtils.removePreceedingDashes(optionName)));
 
 
@@ -158,6 +159,7 @@ public class ParamUIFactory {
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
         field.setMinimumSize(field.getPreferredSize());
+        field.setName(pi.getName());
 
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
@@ -209,6 +211,7 @@ public class ParamUIFactory {
         final BindingContext ctx = new BindingContext(vc);
         final JCheckBox field = new JCheckBox();
         field.setHorizontalAlignment(JFormattedTextField.LEFT);
+        field.setName(pi.getName());
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
@@ -273,6 +276,7 @@ public class ParamUIFactory {
         inputList.setRenderer(renderer);
         renderer.setTooltips(toolTips);
         inputList.setEditable(true);
+        inputList.setName(pi.getName());
         inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
                 inputList.getPreferredSize().height));
         if (pi.getDescription() != null) {
@@ -285,6 +289,7 @@ public class ParamUIFactory {
         }
 
         String optionName = pi.getName();
+
 
         final PropertyContainer vc = new PropertyContainer();
         vc.addProperty(Property.create(optionName, pi.getValue()));

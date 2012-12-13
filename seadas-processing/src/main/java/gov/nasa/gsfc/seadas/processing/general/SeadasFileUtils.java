@@ -1,9 +1,11 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.core.OCSSW;
+import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
 
-import java.io.File;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
@@ -20,6 +22,8 @@ import java.util.regex.Pattern;
 public class SeadasFileUtils {
 
     private static boolean debug = false;
+    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
+    private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
 
     public static File createFile(String parent, String fileName) {
         File pFile;
@@ -63,6 +67,45 @@ public class SeadasFileUtils {
             return null;
         }
     }
+
+    public static String findNextLevelFileName(String ifileName, String programName) {
+        debug("Program name is " + programName);
+        Debug.assertNotNull(ifileName);
+        String[] cmdArray = {OCSSW.getOcsswScriptPath(), NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
+        Process process = OCSSWRunner.execute(cmdArray);
+
+        int exitCode = process.exitValue();
+        InputStream is;
+        if (exitCode == 0) {
+            is = process.getInputStream();
+        } else {
+            is = process.getErrorStream();
+        }
+
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+
+        try {
+            String line = br.readLine();
+            if (exitCode == 0 && line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
+                return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+            } else {
+
+                StringBuilder errorMessage = new StringBuilder(line);
+                while ((line = br.readLine()) != null) {
+                    errorMessage.append(line + "\n");
+                }
+                VisatApp.getApp().showErrorDialog("Error in computing the output file name! \n" + errorMessage.toString());
+            }
+
+        } catch (IOException ioe) {
+
+            VisatApp.getApp().showErrorDialog(ioe.getMessage());
+        }
+
+        return null;
+    }
+
 
     public static String getDefaultOFileNameFromIFile(String ifileName, String programName) {
         debug("Program name is " + programName);

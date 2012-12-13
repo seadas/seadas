@@ -82,6 +82,30 @@ public class RSClient {
         return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
     }
 
+    public boolean uploadCmdArrayString(String cmdArrayString) {
+        final ClientConfig config = new DefaultClientConfig();
+        final Client client = Client.create(config);
+        final WebResource resource = client.resource(getBaseURI())
+                .path("file")
+                .path("cmdArrayString");
+
+         final ClientResponse clientResp = resource.type(MediaType.TEXT_PLAIN_TYPE)
+                .post(ClientResponse.class, cmdArrayString);
+        System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
+        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
+    }
+    public boolean uploadCmdArray(String[] cmdArray) {
+        final ClientConfig config = new DefaultClientConfig();
+        final Client client = Client.create(config);
+        final WebResource resource = client.resource(getBaseURI())
+                .path("file")
+                .path("cmdArray");
+        final ClientResponse clientResp = resource.type(MediaType.APPLICATION_JSON_TYPE)
+                .post(ClientResponse.class, cmdArray);
+        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
+    }
+
+
     public boolean uploadFile(String fileName) {
         final ClientConfig config = new DefaultClientConfig();
         final Client client = Client.create(config);

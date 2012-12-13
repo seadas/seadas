@@ -50,7 +50,7 @@ public class L2genOfileSelector {
     }
 
     private void addEventListeners() {
-        l2genDataProcessorModel.addPropertyChangeListener(outputFileOptionName, new PropertyChangeListener() {
+        l2genDataProcessorModel.addPropertyChangeListener(l2genDataProcessorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 disableControlHandler();
@@ -59,7 +59,7 @@ public class L2genOfileSelector {
             }
         });
 
-        l2genDataProcessorModel.addPropertyChangeListener(outputFileOptionName, new PropertyChangeListener() {
+        l2genDataProcessorModel.addPropertyChangeListener(l2genDataProcessorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 fileSelector.setEnabled(l2genDataProcessorModel.isValidIfile());

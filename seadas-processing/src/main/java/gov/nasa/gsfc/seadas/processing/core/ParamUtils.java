@@ -212,7 +212,7 @@ public class ParamUtils {
             String usedAs = XmlReader.getTextValue(optionElement, "usedAs");
 
             // set the value and the default to the current value from the XML file
-            ParamInfo paramInfo = new ParamInfo(name, value, type, value);
+            ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE))?new OFileParamInfo(name, value, type, value):new ParamInfo(name, value, type, value);
             paramInfo.setDescription(description);
             paramInfo.setSource(source);
 

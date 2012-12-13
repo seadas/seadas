@@ -43,11 +43,21 @@ public class OCSSW {
 
     }
 
-    public static String[] getOcsswEnv() {
+    public static String[] getOcsswEnvArray() {
         final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
-            final String[] envp = {"OCSSWROOT=" + ocsswRoot.getPath()};
+            //final String[] envp = {"OCSSWROOT=" + ocsswRoot.getPath()};
+            final String[] envp = {ocsswRoot.getPath()};
             return envp;
+        } else {
+            return null;
+        }
+    }
+
+    public static String getOcsswEnv() {
+        final File ocsswRoot = getOcsswRootFile();
+        if (ocsswRoot != null) {
+            return ocsswRoot.getPath();
         } else {
             return null;
         }

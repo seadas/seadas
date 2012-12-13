@@ -73,6 +73,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     @Override
     public void actionPerformed(CommandEvent event) {
+        String s = (String)getProperty("seadas.ocssw.location");
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
         SeadasLogger.getLogger().setLevel(Level.INFO);
 
@@ -150,6 +151,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     }
 
+
     public void remoteExecuteProgram(ProcessorModel pm) {
 
         RSClient ocsswClient = new RSClient();
@@ -159,17 +161,16 @@ public class CallCloProgramAction extends AbstractVisatAction {
         String[] filesToUpload = pm.getFilesToUpload();
 
         boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
-
+        boolean t =  ocsswClient.uploadCmdArray(pm.getProgramCmdArray());
         if (fileUploadSuccess) {
             System.out.println("file upload is successful!");
 
-            ocsswClient.uploadParFile(pm.getParString());
+            ocsswClient.uploadParFile(pm.getParStringForRemoteServer());
             ocsswClient.uploadParam(paramString);
-            //ocsswClient.runOCSSW();
+            ocsswClient.runOCSSW();
         } else {
             System.out.println("file upload failed!");
         }
-
     }
 
     public void executeProgram(ProcessorModel pm) {
@@ -181,7 +182,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected File doInBackground(ProgressMonitor pm) throws Exception {
 
                 //final Process process = processorModel.executeProcess();
-                final Process process = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());
+                final Process process = OCSSWRunner.execute(processorModel);
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
                 processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
