@@ -6,6 +6,12 @@
         <param>ofile</param>
     </category>
 
+    <category name="Suite">
+        <autoTab>0</autoTab>
+        <param>suite</param>
+    </category>
+
+
     <category name="Products">
         <autoTab>0</autoTab>
         <param>l2prod</param>
@@ -193,7 +199,6 @@
         <param>resolution</param>
         <param>rgb</param>
         <param>stype</param>
-        <param>suite</param>
         <param>width</param>
     </category>
 

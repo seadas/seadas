@@ -33,6 +33,11 @@ public class OCSSW {
     }
 
 
+    public static File getOcsswDataRoot() throws IOException {
+        return new File(new File(getOcsswRoot(), "run"), "data");
+    }
+
+
     public static String getOcsswScriptPath() {
         final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
