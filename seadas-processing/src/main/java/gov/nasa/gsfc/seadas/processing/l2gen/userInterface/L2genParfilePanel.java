@@ -1,15 +1,10 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
-import gov.nasa.gsfc.seadas.processing.general.SeadasGuiUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,6 +27,7 @@ public class L2genParfilePanel {
     private L2genGetAncillaryFilesSpecifier getAncillaryFilesSpecifier;
     private L2genShowDefaultsSpecifier showDefaultsSpecifier;
     private L2genParStringSpecifier parStringSpecifier;
+    private L2genSuiteComboBox suiteComboBox;
 
     L2genParfilePanel(L2genData l2genData, int tabIndex) {
 
@@ -44,6 +40,7 @@ public class L2genParfilePanel {
         getAncillaryFilesSpecifier = new L2genGetAncillaryFilesSpecifier(l2genData);
         showDefaultsSpecifier = new L2genShowDefaultsSpecifier(l2genData);
         parStringSpecifier = new L2genParStringSpecifier(l2genData, tabIndex);
+        suiteComboBox = new L2genSuiteComboBox(l2genData);
 
         createJPanel();
     }
@@ -68,10 +65,31 @@ public class L2genParfilePanel {
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         subPanel.add(getAncillaryFilesSpecifier.getjButton(),
                 new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-        subPanel.add(showDefaultsSpecifier.getjCheckBox(),
+
+
+        final JPanel defaultsPanel = new JPanel(new GridBagLayout());
+        defaultsPanel.setBorder(BorderFactory.createEtchedBorder());
+        defaultsPanel.add(showDefaultsSpecifier.getjCheckBox(),
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        subPanel.add(defaultsPanel,
                 new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+
+
+//        final JPanel suitePanel = new JPanel(new GridBagLayout());
+//        suitePanel.setBorder(BorderFactory.createEtchedBorder());
+//        suitePanel.add(suiteComboBox.getjLabel(),
+//                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+//        suitePanel.add(suiteComboBox.getjComboBox(),
+//                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+
+
+//        subPanel.add(suitePanel,
+//                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+
         subPanel.add(parfileExporter.getjButton(),
-                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(4, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
         jPanel.add(subPanel,

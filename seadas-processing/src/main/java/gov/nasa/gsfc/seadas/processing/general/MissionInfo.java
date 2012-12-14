@@ -1,5 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.core.OCSSW;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -11,8 +15,6 @@ import java.util.Iterator;
  * To change this template use File | Settings | File Templates.
  */
 public class MissionInfo {
-
-    private static final String OCDATAROOT = System.getenv("OCDATAROOT");
 
 
     public static enum Id {
@@ -81,7 +83,7 @@ public class MissionInfo {
     private Id id;
 
     private boolean geofileRequired;
-    private String directory;
+    private File directory;
 
 
     public MissionInfo() {
@@ -202,28 +204,24 @@ public class MissionInfo {
     }
 
 
-    private void setMissionDirectoryName() {
-
+    private void setMissionDirectoryName(){
         if (directories.containsKey(id)) {
             String missionPiece = directories.get(id);
-
-            // determine the filename which contains the wavelengths
-            final StringBuilder directory = new StringBuilder();
-            directory.append(OCDATAROOT);
-            directory.append("/");
-            directory.append(missionPiece);
-
-            setDirectory(directory.toString());
+            try{
+                setDirectory(new File(OCSSW.getOcsswDataRoot(), missionPiece));
+            } catch (IOException e) {
+                setDirectory(null);
+            }
         } else {
             setDirectory(null);
         }
     }
 
-    public String getDirectory() {
+    public File getDirectory() {
         return directory;
     }
 
-    private void setDirectory(String directory) {
+    private void setDirectory(File directory) {
         this.directory = directory;
     }
 

@@ -101,7 +101,7 @@ public class FileInfo {
         return missionInfo.getName();
     }
 
-    public String getMissionDirectory() {
+    public File getMissionDirectory() {
         return missionInfo.getDirectory();
     }
 

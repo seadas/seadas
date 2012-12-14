@@ -21,7 +21,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -68,7 +67,8 @@ public class L2genData implements L2genDataProcessorModel {
             EAST = "east",
             IFILE = "ifile",
             OFILE = "ofile",
-            L2PROD = "l2prod";
+            L2PROD = "l2prod",
+            SUITE = "suite";
 
     public static final String
             INVALID_IFILE = "INVALID_IFILE_EVENT",
@@ -495,21 +495,24 @@ public class L2genData implements L2genDataProcessorModel {
 
         for (L2genParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
 
-            boolean iOCategory = false;
+            boolean alwaysDisplay = false;
 
             StringBuilder currCategoryEntries = new StringBuilder("");
 
             for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
                 if (paramInfo.getName().equals(IFILE)) {
-                    iOCategory = true;
+                    alwaysDisplay = true;
                     currCategoryEntries.append(makeParEntry(paramInfo));
                 } else if (paramInfo.getName().equals(OFILE)) {
-                    iOCategory = true;
+                    alwaysDisplay = true;
                     currCategoryEntries.append(makeParEntry(paramInfo));
                 } else if (paramInfo.getName().equals(GEOFILE)) {
                     if (isGeofileRequired()) {
                         currCategoryEntries.append(makeParEntry(paramInfo));
                     }
+                } else if (paramInfo.getName().equals(SUITE)) {
+                    alwaysDisplay = true;
+                    currCategoryEntries.append(makeParEntry(paramInfo));
                 } else if (paramInfo.getName().equals(PAR)) {
                     // right ignore and do not print todo
                 } else {
@@ -527,7 +530,7 @@ public class L2genData implements L2genDataProcessorModel {
             }
 
 
-            if (currCategoryEntries.toString().length() > 0 && !(iOCategory && !showIOFields)) {
+            if (currCategoryEntries.toString().length() > 0 && !(alwaysDisplay && !showIOFields)) {
                 par.append("# " + paramCategoryInfo.getName().toUpperCase() + "\n");
                 par.append(currCategoryEntries.toString());
                 par.append("\n");
@@ -607,21 +610,36 @@ public class L2genData implements L2genDataProcessorModel {
         disableEvent(PARSTRING);
         ArrayList<ParamInfo> parfileParamInfos = parseParString(parString);
 
+        String ifile = null;
+        String suite = null;
+
         /*
-        Handle IFILE first
+        Handle IFILE and SUITE first
          */
         if (!ignoreIfile) {
             for (ParamInfo parfileParamInfo : parfileParamInfos) {
                 if (parfileParamInfo.getName().toLowerCase().equals(IFILE)) {
-                    setParamValue(IFILE, parfileParamInfo.getValue());
+                    ifile = parfileParamInfo.getValue();
                     break;
                 }
             }
         }
 
+        for (ParamInfo parfileParamInfo : parfileParamInfos) {
+            if (parfileParamInfo.getName().toLowerCase().equals(SUITE)) {
+                suite = parfileParamInfo.getValue();
+                break;
+            }
+        }
+
+        if (ifile != null || suite != null) {
+            setIfileAndSuiteParamValues(ifile, suite);
+        }
+
+
         /*
-        Handle L2PROD
-         */
+       Handle L2PROD
+        */
 
         ArrayList<String> l2prods = null;
 
@@ -792,6 +810,8 @@ public class L2genData implements L2genDataProcessorModel {
 
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
                 setIfileParamValue(paramInfo, value);
+            } else if (paramInfo.getName().toLowerCase().equals(SUITE)) {
+                setIfileAndSuiteParamValues(null, value);
             } else {
                 if (value.length() > 0 || paramInfo.getName().toLowerCase().equals(L2PROD)) {
                     paramInfo.setValue(value);
@@ -814,6 +834,10 @@ public class L2genData implements L2genDataProcessorModel {
         setParamValue(getParamInfo(name), value);
     }
 
+
+    private void setIfileAndSuiteParamValues(String ifileValue, String suiteValue) {
+        setIfileandSuiteParamValues(getParamInfo(IFILE), ifileValue, suiteValue);
+    }
 
     private void setParamValue(ParamInfo paramInfo, boolean selected) {
         if (selected) {
@@ -895,15 +919,48 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    private String getSensorInfoFilename() {
+    private File getSensorInfoFilename() {
+
+        getSuiteList();
 
         if (iFileInfo != null && iFileInfo.getMissionDirectory() != null) {
             // determine the filename which contains the wavelengths
-            final StringBuilder sensorInfoFilename = new StringBuilder("");
-            sensorInfoFilename.append(iFileInfo.getMissionDirectory());
-            sensorInfoFilename.append("/");
-            sensorInfoFilename.append("msl12_sensor_info.dat");
-            return sensorInfoFilename.toString();
+            File filename = new File(iFileInfo.getMissionDirectory().getAbsolutePath(), "msl12_sensor_info.dat");
+            return filename;
+
+        } else {
+            return null;
+        }
+    }
+
+
+    public String[] getSuiteList() {
+
+        if (iFileInfo != null && iFileInfo.getMissionDirectory() != null) {
+
+            ArrayList<String> suitesArrayList = new ArrayList<String>();
+
+            File missionDirectoryFiles[] = iFileInfo.getMissionDirectory().listFiles();
+
+            for (File file : missionDirectoryFiles) {
+                String filename = file.getName();
+                if (filename.startsWith("msl12_defaults_") && filename.endsWith(".par")) {
+                    String filenameTrimmed = filename.replaceFirst("msl12_defaults_", "");
+                    filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
+                    suitesArrayList.add(filenameTrimmed);
+                }
+            }
+
+            final String[] suitesArray = new String[suitesArrayList.size()];
+
+            int i = 0;
+            for (String suite : suitesArrayList) {
+                suitesArray[i] = suite;
+                i++;
+            }
+
+            return suitesArray;
+
         } else {
             return null;
         }
@@ -914,7 +971,7 @@ public class L2genData implements L2genDataProcessorModel {
         waveLimiterInfos.clear();
 
         // determine the filename which contains the wavelengths
-        String sensorInfoFilename = getSensorInfoFilename();
+        File sensorInfoFilename = getSensorInfoFilename();
 
         if (sensorInfoFilename != null) {
             // read in the mission's datafile which contains the wavelengths
@@ -952,24 +1009,41 @@ public class L2genData implements L2genDataProcessorModel {
     // runs this if IFILE changes
     // it will reset missionString
     // it will reset and make new wavelengthInfoArray
+
+
     private void setIfileParamValue(ParamInfo paramInfo, String value) {
+        setIfileandSuiteParamValues(paramInfo, value, null);
+    }
+
+    private void setIfileandSuiteParamValues(ParamInfo ifileParamInfo, String ifileValue, String suiteValue) {
+
+        if (ifileParamInfo == null) {
+            return;
+        }
+
+        if (ifileValue == null) {
+            ifileValue = ifileParamInfo.getValue();
+            if (ifileValue == null) {
+                return;
+            }
+        }
 
         disableEvent(PARSTRING);
         disableEvent(L2PROD);
 
         String oldIfile = getParamValue(getParamInfo(IFILE));
 
-        paramInfo.setValue(value);
-        paramInfo.setDefaultValue(value);
+        ifileParamInfo.setValue(ifileValue);
+        ifileParamInfo.setDefaultValue(ifileValue);
 
-        iFileInfo = paramInfo.validateIfileValue(null, SeadasProcessorInfo.Id.L2GEN);
+        iFileInfo = ifileParamInfo.validateIfileValue(null, SeadasProcessorInfo.Id.L2GEN);
 
 
         if (iFileInfo != null && isValidIfile()) {
 
             resetWaveLimiter();
             l2prodParamInfo.resetProductInfos();
-            updateXmlBasedObjects(iFileInfo.getFile());
+            updateXmlBasedObjects(iFileInfo.getFile(), suiteValue);
 
             FileInfo oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
             if (oFileInfo != null) {
@@ -993,11 +1067,26 @@ public class L2genData implements L2genDataProcessorModel {
         setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
 
 
-        fireEvent(IFILE, oldIfile, value);
+        fireEvent(IFILE, oldIfile, ifileValue);
 
         fireEvent(PARSTRING);
         enableEvent(L2PROD);
         enableEvent(PARSTRING);
+
+    }
+
+
+    private void setSuiteParamValue(ParamInfo paramInfo, String value) {
+
+
+        String oldIfile = getParamValue(getParamInfo(IFILE));
+
+        paramInfo.setValue(value);
+        paramInfo.setDefaultValue(value);
+
+        // todo run l2gen with suite=suite
+
+        fireEvent(SUITE, oldIfile, value);
 
     }
 
@@ -1119,8 +1208,12 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     private void updateXmlBasedObjects(File iFile) {
+        updateXmlBasedObjects(iFile, null);
+    }
 
-        InputStream paramInfoStream = getParamInfoInputStream(iFile);
+    private void updateXmlBasedObjects(File iFile, String suite) {
+
+        InputStream paramInfoStream = getParamInfoInputStream(iFile, suite);
 
         l2genReader.updateParamInfosWithXml(paramInfoStream);
     }
@@ -1181,7 +1274,14 @@ public class L2genData implements L2genDataProcessorModel {
 //        return L2genForm.class.getResourceAsStream(PRODUCT_INFO_XML);
     }
 
+
     private InputStream getParamInfoInputStream(File file) {
+        return getParamInfoInputStream(file, null);
+    }
+
+
+    private InputStream getParamInfoInputStream(File file, String suite) {
+
         File dataDir = SystemUtils.getApplicationDataDir();
         File l2genDir = new File(dataDir, "l2gen");
 
@@ -1204,6 +1304,11 @@ public class L2genData implements L2genDataProcessorModel {
 
         processorModel.setAcceptsParFile(true);
         processorModel.addParamInfo("ifile", file.getAbsolutePath(), ParamInfo.Type.IFILE);
+
+        if (suite != null) {
+            processorModel.addParamInfo("suite", suite, ParamInfo.Type.STRING);
+        }
+
 //        processorModel.addParamInfo("ofile", ofile.getAbsolutePath(), ParamInfo.Type.OFILE);
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
@@ -1396,8 +1501,6 @@ public class L2genData implements L2genDataProcessorModel {
         swingWorker.executeWithBlocking();
         return theFile;
     }
-
-
 
 
 }
