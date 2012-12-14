@@ -32,7 +32,7 @@ public class ParFileUI {
     public ParFileUI(ProcessorModel pm) {
         processorModel = pm;
         openInAppCheckBox = new JCheckBox("Open in " + VisatApp.getApp().getApplicationName());
-        openInAppCheckBox.setSelected(true);
+        openInAppCheckBox.setSelected(pm.isOpenInSeadas());
         parStringPanel = new JPanel(new GridBagLayout());
         showDefaultCheckBox = new JCheckBox("Show Default Values");
         createParStringButtonPanel();

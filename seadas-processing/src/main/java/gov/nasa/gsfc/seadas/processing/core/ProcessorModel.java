@@ -45,6 +45,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private ArrayList<String> filesToDownload;
     private ArrayList<String> finalCmdArray;
 
+    private boolean openInSeadas;
+
     public ProcessorModel(String name) {
         acceptsParFile = false;
         hasGeoFile = false;
@@ -61,6 +63,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         primaryOptions.add("ofile");
 
         progressPattern = Pattern.compile(ParamUtils.DEFAULT_PROGRESS_REGEX);
+        setOpenInSeadas(false);
     }
 
     public ProcessorModel(String name, String parXMLFileName) {
@@ -72,6 +75,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             progressPattern = Pattern.compile(ParamUtils.getProgressRegex(parXMLFileName));
             hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
             setPrimaryOptions(ParamUtils.getPrimaryOptions(parXMLFileName));
+            setOpenInSeadas(false);
         }
     }
 
@@ -801,6 +805,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return progressPattern;
     }
 
+    public boolean isOpenInSeadas() {
+        return openInSeadas;
+    }
+
+    public void setOpenInSeadas(boolean openInSeadas) {
+        this.openInSeadas = openInSeadas;
+    }
+
 
     private static class Extractor_Processor extends ProcessorModel {
         Extractor_Processor(String programName, String xmlFileName) {
@@ -959,6 +971,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
                 }
             });
+             setOpenInSeadas(true);
         }
     }
 
