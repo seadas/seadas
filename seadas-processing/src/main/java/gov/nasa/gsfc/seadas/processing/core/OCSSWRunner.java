@@ -4,7 +4,6 @@ import com.bc.ceres.core.runtime.RuntimeContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import gov.nasa.gsfc.seadas.processing.general.CmdArrayManager;
 import gov.nasa.gsfc.seadas.processing.general.RSClient;
 import org.esa.beam.visat.VisatApp;
 
@@ -111,8 +110,6 @@ public class OCSSWRunner {
     }
 
     public static Process executeRemote(String[] cmdArray, File ifileDir) {
-
-        CmdArrayManager cam = new CmdArrayManager();
 
         Gson gson = new Gson();
         String json = gson.toJson(cmdArray);
