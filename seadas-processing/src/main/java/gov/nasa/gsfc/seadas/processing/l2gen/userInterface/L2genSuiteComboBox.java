@@ -61,12 +61,14 @@ public class L2genSuiteComboBox {
                 disableControlHandler();
                 String[] suiteList = l2genData.getSuiteList();
                 if (suiteList != null) {
-                    jComboBox.setEnabled(true);
                     jLabel.setEnabled(true);
+                    jComboBox.setEnabled(true);
+
                     jComboBox.setModel(new DefaultComboBoxModel(l2genData.getSuiteList()));
                 } else {
-                    jComboBox.setEnabled(false);
                     jLabel.setEnabled(false);
+                    jComboBox.setEnabled(false);
+
                 }
                 jComboBox.setSelectedItem(l2genData.getParamValue(L2genData.SUITE));
                 enableControlHandler();
