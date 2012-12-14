@@ -59,7 +59,15 @@ public class L2genSuiteComboBox {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 disableControlHandler();
-                jComboBox.setModel(new DefaultComboBoxModel(l2genData.getSuiteList()));
+                String[] suiteList = l2genData.getSuiteList();
+                if (suiteList != null) {
+                    jComboBox.setEnabled(true);
+                    jLabel.setEnabled(true);
+                    jComboBox.setModel(new DefaultComboBoxModel(l2genData.getSuiteList()));
+                } else {
+                    jComboBox.setEnabled(false);
+                    jLabel.setEnabled(false);
+                }
                 jComboBox.setSelectedItem(l2genData.getParamValue(L2genData.SUITE));
                 enableControlHandler();
 
