@@ -299,7 +299,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 updateGeoFileInfo(ifileName);
 
                 //updateOFileInfo(SeadasFileUtils.getDefaultOFileNameFromIFile(ifileName, programName));
-                updateOFileInfo(ofileName);
+                updateOFileInfo(getOFileFullPath(ofileName));
 
                 return true;
             }
@@ -322,7 +322,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     public boolean updateOFileInfo(String newValue) {
         System.out.println("next level ofile name: " + newValue);
         if (newValue != null) {
-            updateParamInfo(getPrimaryOutputFileOptionName(), getOFileFullPath(newValue));
+            updateParamInfo(getPrimaryOutputFileOptionName(), newValue);
             setReadyToRun(true);
             return true;
         }
@@ -862,22 +862,29 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
 
         public boolean updateOFileInfo(String ofileName) {
-            updateParamInfo("--okm", ofileName.replaceAll("LAC", "OKM"));
+            updateParamInfo("--okm", ofileName.replaceAll("LAC", "LAC"));
             updateParamInfo("--hkm", ofileName.replaceAll("LAC", "HKM"));
             updateParamInfo("--qkm", ofileName.replaceAll("LAC", "QKM"));
             updateParamInfo("--obc", ofileName.replaceAll("LAC", "OBC"));
             setReadyToRun(true);
             return true;
-
         }
 
         public String getOfileName() {
 
             StringBuilder ofileNameList = new StringBuilder();
-            ofileNameList.append("\n " + getParamValue("--okm"));
-            ofileNameList.append("\n " + getParamValue("--hkm"));
-            ofileNameList.append("\n " + getParamValue("--qkm"));
-            ofileNameList.append("\n " + getParamValue("--obc"));
+            if (!(getParamInfo("--del-okm").getValue().equals( "true" ) || getParamInfo("--del-okm").getValue().equals( "1"))) {
+                ofileNameList.append("\n" + getParamValue("--okm"));
+            }
+            if (!(getParamInfo("--del-hkm").getValue().equals( "true" ) || getParamInfo("--del-hkm").getValue().equals( "1"))) {
+                ofileNameList.append("\n" + getParamValue("--hkm"));
+            }
+            if (!(getParamInfo("--del-qkm").getValue().equals( "true" ) || getParamInfo("--del-qkm").getValue().equals( "1"))) {
+                ofileNameList.append("\n" + getParamValue("--qkm"));
+            }
+            if (getParamInfo("--keep-obc").getValue().equals( "true" ) || getParamInfo("--keep-obc").getValue().equals( "1")) {
+                ofileNameList.append("\n" + getParamValue("--obc"));
+            }
             System.out.println(ofileNameList.toString());
             return ofileNameList.toString();
         }
@@ -971,7 +978,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
                 }
             });
-             setOpenInSeadas(true);
+            setOpenInSeadas(true);
         }
     }
 

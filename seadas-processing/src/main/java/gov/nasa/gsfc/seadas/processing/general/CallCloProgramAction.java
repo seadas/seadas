@@ -23,6 +23,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -73,14 +74,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     @Override
     public void actionPerformed(CommandEvent event) {
-        String s = (String)getProperty("seadas.ocssw.location");
+        String s = (String) getProperty("seadas.ocssw.location");
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
         SeadasLogger.getLogger().setLevel(Level.INFO);
 
         final AppContext appContext = getAppContext();
 
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
-        //cloProgramUI.getProcessorModel().setMultipleInputFiles(multiIFile.equals("true") ? true : false);
 
         final Window parent = appContext.getApplicationWindow();
 
@@ -139,9 +139,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
 
         if (!processorModel.isValidProcessor()) {
-            //VisatApp.getApp().showErrorDialog(programName, processorModel.getProgramErrorMessage());
             return;
-
         }
 
         executeProgram(processorModel);
@@ -161,7 +159,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         String[] filesToUpload = pm.getFilesToUpload();
 
         boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
-        boolean t =  ocsswClient.uploadCmdArray(pm.getProgramCmdArray());
+        boolean t = ocsswClient.uploadCmdArray(pm.getProgramCmdArray());
         if (fileUploadSuccess) {
             System.out.println("file upload is successful!");
 
@@ -177,11 +175,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final ProcessorModel processorModel = pm;
 
-        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<File, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
             @Override
-            protected File doInBackground(ProgressMonitor pm) throws Exception {
-
-                //final Process process = processorModel.executeProcess();
+            protected String doInBackground(ProgressMonitor pm) throws Exception {
                 final Process process = OCSSWRunner.execute(processorModel);
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
@@ -197,22 +193,22 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
 
-                File outputFile = new File(processorModel.getOfileName());
+                String ofileName = processorModel.getOfileName();
                 if (openOutputInApp) {
-                    getAppContext().getProductManager().addProduct(ProductIO.readProduct(outputFile));
+                    StringTokenizer st = new StringTokenizer(ofileName);
+                    while (st.hasMoreTokens()) {
+                        getAppContext().getProductManager().addProduct(ProductIO.readProduct(new File(st.nextToken())));
+                    }
                 }
-
-                SeadasLogger.getLogger().finest("Final output file name: " + outputFile);
-
-                return outputFile;
+                return ofileName;
             }
 
             @Override
             protected void done() {
                 try {
-                    final File outputFile = get();
-
-                    VisatApp.getApp().showInfoDialog(programName, programName + " done!\nOutput written to:\n" + outputFile, null);
+                    final String outputFileName = get();
+                    System.out.println(outputFileName);
+                    VisatApp.getApp().showInfoDialog(programName, programName + " done!\nOutput written to:\n" + outputFileName, null);
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ProgramExecutor pe = new ProgramExecutor();
@@ -226,10 +222,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {
-                    //VisatApp.getApp().showErrorDialog(programName, "execution exception: " + e.getMessage() + "\n" + processorModel.getExecutionLogMessage());
                     displayMessage(programName, "execution exception: " + e.getMessage() + "\n" + processorModel.getExecutionLogMessage());
-
-
                 }
             }
         };
