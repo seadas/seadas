@@ -25,7 +25,7 @@ public class L2genParfilePanel {
     private L2genParfileExporter parfileExporter;
     private L2genRetainIfileSpecifier retainIfileSpecifier;
     private L2genGetAncillaryFilesSpecifier getAncillaryFilesSpecifier;
-//    private L2genGetAncillaryDropDownButton getAncillaryDropDownButton;
+    private L2genGetAncillarySplitButton getAncillarySplitButton;
     private L2genShowDefaultsSpecifier showDefaultsSpecifier;
     private L2genParStringSpecifier parStringSpecifier;
     private L2genSuiteComboBox suiteComboBox;
@@ -39,7 +39,7 @@ public class L2genParfilePanel {
         parfileExporter = new L2genParfileExporter(l2genData);
         retainIfileSpecifier = new L2genRetainIfileSpecifier(l2genData);
         getAncillaryFilesSpecifier = new L2genGetAncillaryFilesSpecifier(l2genData);
-//        getAncillaryDropDownButton = new L2genGetAncillaryDropDownButton(l2genData);
+        getAncillarySplitButton = new L2genGetAncillarySplitButton(l2genData);
         showDefaultsSpecifier = new L2genShowDefaultsSpecifier(l2genData);
         parStringSpecifier = new L2genParStringSpecifier(l2genData, tabIndex);
         suiteComboBox = new L2genSuiteComboBox(l2genData);
@@ -65,10 +65,10 @@ public class L2genParfilePanel {
         final JPanel subPanel = new JPanel(new GridBagLayout());
         subPanel.add(openButtonRetainPanel,
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        subPanel.add(getAncillaryFilesSpecifier.getjButton(),
-                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-//        subPanel.add(getAncillaryDropDownButton.getDropDownButton(),
+//        subPanel.add(getAncillaryFilesSpecifier.getjButton(),
 //                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+        subPanel.add(getAncillarySplitButton.getAncillarySplitButton(),
+                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
 
         final JPanel defaultsPanel = new JPanel(new GridBagLayout());

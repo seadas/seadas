@@ -1091,6 +1091,15 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
+    public void clearAncillaryFiles() {
+        //todo
+    }
+
+
+    public void refreshAncillaryFiles() {
+        //todo
+    }
+
     public void setAncillaryFiles() {
 
         if (!isValidIfile()) {
