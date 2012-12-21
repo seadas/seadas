@@ -4,9 +4,17 @@ import com.jidesoft.swing.JideSwingUtilities;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 
 import javax.swing.*;
+//import javax.swing.border.BevelBorder;
+//import javax.swing.BorderFactory;
+//
+//import javax.swing.border.Border;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
+//import javax.swing.plaf.ButtonUI;
+
 
 import com.jidesoft.swing.JideSplitButton;
+import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -33,9 +41,11 @@ public class L2genGetAncillarySplitButton {
 
     private JideSplitButton ancillarySplitButton;
 
+
     JMenuItem getAncillaryJMenuItem = new JMenuItem("Get Ancillary");
-    JMenuItem clearAncillaryJMenuItem = new JMenuItem("Clear Ancillary");
-    JMenuItem refreshAncillaryJMenuItem = new JMenuItem("Refresh Ancillary");
+    JMenuItem refreshAncillaryJMenuItem = new JMenuItem("Refresh");
+    JMenuItem nearRealTimeNO2AncillaryJMenuItem = new JMenuItem("Near Real-Time NO2");
+    JMenuItem forceDownloadAncillaryJMenuItem = new JMenuItem("Force Download");
 
     public L2genGetAncillarySplitButton(L2genData l2genData) {
 
@@ -43,14 +53,20 @@ public class L2genGetAncillarySplitButton {
 
         ancillarySplitButton = new JideSplitButton();
         ancillarySplitButton.setFont((Font) JideSwingUtilities.getMenuFont(Toolkit.getDefaultToolkit(), UIManager.getDefaults()));
-        ancillarySplitButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+    //    ancillarySplitButton.setBorder(BorderFactory.createTitledBorder(""));
+        ancillarySplitButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+   //     ancillarySplitButton.setButtonStyle(ButtonStyle.TOOLBOX_STYLE);
+
+
+
         ancillarySplitButton.setBorderPainted(true);
         ancillarySplitButton.setHorizontalAlignment(SwingConstants.CENTER);
 
 
         ancillarySplitButton.add(getAncillaryJMenuItem);
-        ancillarySplitButton.add(clearAncillaryJMenuItem);
         ancillarySplitButton.add(refreshAncillaryJMenuItem);
+        ancillarySplitButton.add(nearRealTimeNO2AncillaryJMenuItem);
+        ancillarySplitButton.add(forceDownloadAncillaryJMenuItem);
 
 
         ancillarySplitButton.setText(getAncillaryJMenuItem.getText() + " ");
@@ -58,6 +74,8 @@ public class L2genGetAncillarySplitButton {
         ancillarySplitButton.setMaximumSize(ancillarySplitButton.getPreferredSize());
         ancillarySplitButton.setMinimumSize(ancillarySplitButton.getPreferredSize());
         ancillarySplitButton.setText(getAncillaryJMenuItem.getText());
+
+
 
         addControlListeners();
         addEventListeners();
@@ -69,7 +87,7 @@ public class L2genGetAncillarySplitButton {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                l2genData.setAncillaryFiles();
+                l2genData.setAncillaryFiles(false,false,false);
             }
         });
 
@@ -78,25 +96,32 @@ public class L2genGetAncillarySplitButton {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                l2genData.setAncillaryFiles();
+                l2genData.setAncillaryFiles(false,false,false);
             }
         });
 
 
-
-        clearAncillaryJMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                l2genData.clearAncillaryFiles();
-            }
-        });
 
         refreshAncillaryJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                l2genData.refreshAncillaryFiles();
+                l2genData.setAncillaryFiles(true,false,false);
+            }
+        });
+
+        forceDownloadAncillaryJMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                l2genData.setAncillaryFiles(false,true,false);
+            }
+        });
+
+        nearRealTimeNO2AncillaryJMenuItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                l2genData.setAncillaryFiles(false,false,true);
             }
         });
 
@@ -117,4 +142,6 @@ public class L2genGetAncillarySplitButton {
     public JideSplitButton getAncillarySplitButton() {
         return ancillarySplitButton;
     }
+
+
 }

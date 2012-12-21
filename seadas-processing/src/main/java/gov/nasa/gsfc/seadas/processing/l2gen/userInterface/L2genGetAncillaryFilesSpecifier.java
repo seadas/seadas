@@ -36,7 +36,7 @@ public class L2genGetAncillaryFilesSpecifier {
         jButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                l2genData.setAncillaryFiles();
+                l2genData.setAncillaryFiles(false,false,false);
             }
         });
 

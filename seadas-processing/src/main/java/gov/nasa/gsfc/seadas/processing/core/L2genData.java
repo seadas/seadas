@@ -1076,31 +1076,24 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    private void setSuiteParamValue(ParamInfo paramInfo, String value) {
+//    private void setSuiteParamValue(ParamInfo paramInfo, String value) {
+//
+//
+//        String oldIfile = getParamValue(getParamInfo(IFILE));
+//
+//        paramInfo.setValue(value);
+//        paramInfo.setDefaultValue(value);
+//
+//        // todo run l2gen with suite=suite
+//
+//        fireEvent(SUITE, oldIfile, value);
+//
+//    }
 
 
-        String oldIfile = getParamValue(getParamInfo(IFILE));
 
-        paramInfo.setValue(value);
-        paramInfo.setDefaultValue(value);
-
-        // todo run l2gen with suite=suite
-
-        fireEvent(SUITE, oldIfile, value);
-
-    }
-
-
-    public void clearAncillaryFiles() {
-        //todo
-    }
-
-
-    public void refreshAncillaryFiles() {
-        //todo
-    }
-
-    public void setAncillaryFiles() {
+    public void setAncillaryFiles(boolean refreshDB, boolean forceDownload, boolean getNO2) {
+        //   getanc.py --refreshDB <FILE>
 
         if (!isValidIfile()) {
             System.out.println("ERROR - Can not run getanc.py without a valid ifile.");
@@ -1113,7 +1106,22 @@ public class L2genData implements L2genDataProcessorModel {
 
         ProcessorModel processorModel = new ProcessorModel("getanc.py");
         processorModel.setAcceptsParFile(false);
-        processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, 1);
+
+        int position = 1;
+        if(refreshDB) {
+            processorModel.addParamInfo("refreshDB", "--refreshDB", ParamInfo.Type.STRING, position);
+            position++;
+        }
+        if(forceDownload) {
+            processorModel.addParamInfo("force-download", "--force-download", ParamInfo.Type.STRING, position);
+            position++;
+        }
+        if(getNO2) {
+            processorModel.addParamInfo("no2", "--no2", ParamInfo.Type.STRING, position);
+            position++;
+        }
+
+        processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, position);
 
         try {
             Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
@@ -1134,8 +1142,45 @@ public class L2genData implements L2genDataProcessorModel {
         }
 
         setParString(ancillaryFiles.toString(), true, true);
+
     }
 
+//    public void setAncillaryFiles() {
+//
+//        if (!isValidIfile()) {
+//            System.out.println("ERROR - Can not run getanc.py without a valid ifile.");
+//            return;
+//        }
+//
+//        // get the ifile
+//        String ifile = getParamValue(getParamInfo(IFILE));
+//        StringBuilder ancillaryFiles = new StringBuilder("");
+//
+//        ProcessorModel processorModel = new ProcessorModel("getanc.py");
+//        processorModel.setAcceptsParFile(false);
+//        processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, 1);
+//
+//        try {
+//            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
+//            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//
+//            String line = stdInput.readLine();
+//            while (line != null) {
+//                if (line.contains("=")) {
+//                    ancillaryFiles.append(line);
+//                    ancillaryFiles.append("\n");
+//                }
+//                line = stdInput.readLine();
+//            }
+//        } catch (IOException e) {
+//            System.out.println("ERROR - Problem running getanc.py");
+//            System.out.println(e.getMessage());
+//            return;
+//        }
+//
+//        setParString(ancillaryFiles.toString(), true, true);
+//    }
+//
 
     private void debug(String string) {
 
