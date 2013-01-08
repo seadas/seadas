@@ -1041,6 +1041,11 @@ public class L2genData implements L2genDataProcessorModel {
 
         if (iFileInfo != null && isValidIfile()) {
 
+
+            if (iFileInfo.getMissionId() == MissionInfo.Id.AQUARIUS || iFileInfo.getMissionId() == MissionInfo.Id.VIIRS) {
+                updateLuts(iFileInfo.getMissionDirectory().getAbsolutePath());
+            }
+
             resetWaveLimiter();
             l2prodParamInfo.resetProductInfos();
             updateXmlBasedObjects(iFileInfo.getFile(), suiteValue);
@@ -1091,6 +1096,29 @@ public class L2genData implements L2genDataProcessorModel {
 //    }
 
 
+    public void updateLuts(String missionName) {
+
+        String UPDATE_LUTS_SCRIPT = "update_luts.py";
+
+        ProcessorModel processorModel = new ProcessorModel(UPDATE_LUTS_SCRIPT);
+        processorModel.setAcceptsParFile(false);
+
+        processorModel.addParamInfo("mission", missionName, ParamInfo.Type.STRING, 1);
+
+        try {
+            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line = stdInput.readLine();
+
+        } catch (IOException e) {
+            System.out.println("ERROR - Problem running "+UPDATE_LUTS_SCRIPT);
+            System.out.println(e.getMessage());
+            return;
+        }
+
+    }
+
 
     public void setAncillaryFiles(boolean refreshDB, boolean forceDownload, boolean getNO2) {
         //   getanc.py --refreshDB <FILE>
@@ -1108,15 +1136,15 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.setAcceptsParFile(false);
 
         int position = 1;
-        if(refreshDB) {
+        if (refreshDB) {
             processorModel.addParamInfo("refreshDB", "--refreshDB", ParamInfo.Type.STRING, position);
             position++;
         }
-        if(forceDownload) {
+        if (forceDownload) {
             processorModel.addParamInfo("force-download", "--force-download", ParamInfo.Type.STRING, position);
             position++;
         }
-        if(getNO2) {
+        if (getNO2) {
             processorModel.addParamInfo("no2", "--no2", ParamInfo.Type.STRING, position);
             position++;
         }
