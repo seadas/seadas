@@ -14,7 +14,7 @@ fi
 java \
     -Xmx1024M \
     -Dceres.context=seadas \
-    "-Dbeam.mainClass=org.esa.beam.framework.gpf.main.Main" \
+    "-Dbeam.mainClass=org.esa.beam.framework.gpf.main.GPT" \
     "-Dbeam.home=$SEADAS_HOME" \
     "-Dncsa.hdf.hdflib.HDFLibrary.hdflib=$SEADAS_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf.jnilib" \
     "-Dncsa.hdf.hdf5lib.H5.hdf5lib=$SEADAS_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf5.jnilib" \

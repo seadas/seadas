@@ -135,6 +135,11 @@ public class SMIFileReader extends SeadasFileReader {
         float pixelSizeX = (easting - westing) / product.getSceneRasterWidth();
         float northing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(north).getData().getElemDouble();
         float southing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(south).getData().getElemDouble();
+        if (northing < southing){
+            mustFlipY=true;
+            northing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(south).getData().getElemDouble();
+            southing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(north).getData().getElemDouble();
+        }
         float pixelSizeY = (northing - southing) / product.getSceneRasterHeight();
 
         try {
