@@ -32,6 +32,10 @@
     <description>A reader for NASA Ocean Color (OBPG) Data Products</description>
 
     <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-modis-reader</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-core</artifactId>
@@ -47,10 +51,6 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-netcdf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-modis-reader</artifactId>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>

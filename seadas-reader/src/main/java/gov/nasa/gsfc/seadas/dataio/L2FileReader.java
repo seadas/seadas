@@ -1,8 +1,6 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.dataio.modis.ModisPixelGeoCoding;
-import org.esa.beam.dataio.modis.ModisTiePointGeoCoding;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
@@ -133,7 +131,7 @@ public class L2FileReader extends SeadasFileReader {
             lonBand.setNoDataValue(-999.);
             latBand.setNoDataValueUsed(true);
             lonBand.setNoDataValueUsed(true);
-            product.setGeoCoding(new ModisPixelGeoCoding(latBand, lonBand, scanHeight, 0));
+            product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, scanHeight, 0));
         }
 
     }

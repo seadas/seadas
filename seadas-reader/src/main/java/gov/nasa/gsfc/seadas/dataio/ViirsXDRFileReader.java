@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.dataio.modis.ModisPixelGeoCoding;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
@@ -264,7 +262,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             lonBand.setData(lons);
 
             //product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-            product.setGeoCoding(new ModisPixelGeoCoding(latBand, lonBand, detectorsInScan, 0));
+            product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, detectorsInScan, 0));
 
         } catch (Exception e) {
             throw new ProductIOException(e.getMessage());

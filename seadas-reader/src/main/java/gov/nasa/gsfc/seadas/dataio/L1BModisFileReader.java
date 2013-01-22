@@ -1,12 +1,11 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.dataio.modis.ModisPixelGeoCoding;
-import org.esa.beam.dataio.modis.ModisTiePointGeoCoding;
 import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.HdfEosUtils;
 import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.dataop.maptransf.Datum;
+import org.esa.beam.framework.datamodel.Band;
+import org.esa.beam.framework.datamodel.Product;
+import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.beam.framework.datamodel.TiePointGrid;
 import org.jdom.Element;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
@@ -20,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static ucar.nc2.NetcdfFile.*;
+import static ucar.nc2.NetcdfFile.open;
 
 /**
  * Created by IntelliJ IDEA.
@@ -269,12 +268,13 @@ public class L1BModisFileReader extends SeadasFileReader {
                     cntl_lat_ix, cntl_lon_ix, lonTiePoints);
             product.addTiePointGrid(lonGrid);
 
-            product.setGeoCoding(new ModisTiePointGeoCoding(latGrid, lonGrid, scanHeight));
+            product.setGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanHeight));
             //product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ProductIOException(e.getMessage());
         }
+
     }
 
     public boolean mustFlipMODIS() throws ProductIOException {

@@ -64,10 +64,10 @@
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-merisl3-reader</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-modis-reader</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-modis-reader</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-envisat-reader</artifactId>
