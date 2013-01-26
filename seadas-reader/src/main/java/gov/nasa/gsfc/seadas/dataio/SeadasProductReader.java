@@ -43,11 +43,12 @@ public class SeadasProductReader extends AbstractProductReader {
         Level1A_Aquarius("Aquarius Level 1A"),
         Level2_Aquarius("Aquarius Level 2"),
         Level1A_CZCS("CZCS Level 1A"),
-        Level1A_OCTS("OCTS Level 1A"),
         Level2_CZCS("Level 2"),
+        Level1A_OCTS("OCTS Level 1A"),
         Level1A_Seawifs("SeaWiFS Level 1A"),
         Level1B("Generic Level 1B"),
         Level1B_Modis("MODIS Level 1B"),
+        Level1B_HICO("HICO L1B"),
         Level2("Level 2"),
         Level3_Bin("Level 3 Binned"),
         SMI("Level 3 Mapped"),
@@ -112,6 +113,9 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case Level1B_Modis:
                     seadasFileReader = new L1BModisFileReader(this);
+                    break;
+                case Level1B_HICO:
+                    seadasFileReader = new L1BHicoFileReader(this);
                     break;
                 case Level3_Bin:
                     seadasFileReader = new L3BinFileReader(this);
@@ -267,6 +271,8 @@ public class SeadasProductReader extends AbstractProductReader {
 
         } else if (checkModisL1B()) {
             return ProductType.Level1B_Modis;
+        } else if (checkHicoL1B()) {
+            return ProductType.Level1B_HICO;
         } else if ((tmp = checkViirsXDR()) != ProductType.UNKNOWN) {
             return tmp;
         }  else if (checkSeadasMapped()) {
@@ -275,6 +281,11 @@ public class SeadasProductReader extends AbstractProductReader {
 
         throw new ProductIOException("Unrecognized product type");
 
+    }
+
+    private boolean checkHicoL1B() {
+        Attribute hicol1bName = ncfile.findGlobalAttribute("metadata/FGDC/Instrument_Information/Instrument_Name");
+        return hicol1bName != null;
     }
 
     public static File getInputFile(Object input) {
