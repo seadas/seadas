@@ -796,7 +796,7 @@ public abstract class SeadasFileReader {
         }
     }
 
-    private void addAttributeToElement(final MetadataElement element, final Attribute attribute) {
+    protected void addAttributeToElement(final MetadataElement element, final Attribute attribute) {
         final MetadataAttribute metadataAttribute = attributeToMetadata(attribute);
         element.addAttribute(metadataAttribute);
     }

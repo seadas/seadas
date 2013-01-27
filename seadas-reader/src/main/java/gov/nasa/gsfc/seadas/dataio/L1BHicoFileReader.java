@@ -2,17 +2,19 @@ package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.PixelGeoCoding;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
+import ucar.nc2.Group;
 import ucar.nc2.Variable;
 
+import java.awt.*;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,15 +40,6 @@ public class L1BHicoFileReader extends SeadasFileReader {
         int sceneWidth = dims[1];
         int sceneHeight = dims[0];
 
-        String navGroup = "navigation";
-        final String latitude = "latitudes";
-
-//        final float[] wvls = new float[wavlengths];
-//        for (int i=0; i < strings.length; i++) {
-//            ints[i] = Integer.parseInt(strings[i]);
-//        }
-//        final int[] HICO_WVL = ncFile.findVariable("products/Lt").findAttribute("wavelengths");
-//        String productName = getStringAttribute("Dataset_Identifier");
         String productName = getStringAttribute("metadata/FGDC/Identification_Information/Dataset_Identifier");
 
         mustFlipX = mustFlipY = getDefaultFlip();
@@ -54,23 +47,23 @@ public class L1BHicoFileReader extends SeadasFileReader {
 
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
-//todo create method to populate time attributes
-//        ProductData.UTC utcStart = getUTCAttribute("Start Time");
-//        if (utcStart != null) {
-//            if (mustFlipY){
-//                product.setEndTime(utcStart);
-//            } else {
-//                product.setStartTime(utcStart);
-//            }
-//        }
-//        ProductData.UTC utcEnd = getUTCAttribute("End Time");
-//        if (utcEnd != null) {
-//            if (mustFlipY) {
-//                product.setStartTime(utcEnd);
-//            } else {
-//                product.setEndTime(utcEnd);
-//            }
-//        }
+
+        ProductData.UTC utcStart = getUTCAttribute("Start",globalAttributes);
+        if (utcStart != null) {
+            if (mustFlipY){
+                product.setEndTime(utcStart);
+            } else {
+                product.setStartTime(utcStart);
+            }
+        }
+        ProductData.UTC utcEnd = getUTCAttribute("End",globalAttributes);
+        if (utcEnd != null) {
+            if (mustFlipY) {
+                product.setStartTime(utcEnd);
+            } else {
+                product.setEndTime(utcEnd);
+            }
+        }
 
         product.setFileLocation(productReader.getInputFile());
         product.setProductReader(productReader);
@@ -79,15 +72,152 @@ public class L1BHicoFileReader extends SeadasFileReader {
         variableMap = addHicoBands(product, ncFile.getVariables());
 
         addGeocoding(product);
-        addBandMetadata(product);
-        // todo create method to add metadata from the various groups (data, navigation, images, etc)
-        // todo add ability to read the true_color image inculded in the file
-        //todo read in the flag bit variable
+        addMetadata(product, "products", "Band_Metadata");
+        addMetadata(product, "navigation", "Navigation_Metadata");
+        addMetadata(product, "images", "Image_Metadata");
+        addMetadata(product,"quality","Quality_Metadata");
 
-//        addFlagsAndMasks(product);
+        /*
+        todo add ability to read the true_color image inculded in the file
+        todo the flag bit variable is in width x height not height x width as the other bands...so need to figure
+             out how to read it...
+        */
+//        addQualityFlags(product);
+
+
         product.setAutoGrouping("Lt");
 
         return product;
+    }
+
+//    f_01_name	LAND	ascii
+//    f_02_name	NAVFAIL	ascii
+//    f_03_name	NAVWARN	ascii
+//    f_04_name	HISOLZEN	ascii
+//    f_05_name	HISATZEN	ascii
+//    f_07_name	CALFAIL	ascii
+//    f_08_name	CLOUD	ascii
+
+    private void addQualityFlags(Product product) {
+        Variable quality_flags = ncFile.findVariable("quality/flags");
+        final int sceneRasterWidth = product.getSceneRasterWidth();
+        final int sceneRasterHeight = product.getSceneRasterHeight();
+        final int[] dimensions = quality_flags.getShape();
+        final int height = dimensions[1] - leadLineSkip - tailLineSkip;
+        final int width = dimensions[0];
+
+        if (height == sceneRasterHeight && width == sceneRasterWidth) {
+            final String name = "HICO_flags";
+//            final String name = quality_flags.getShortName();
+            final int dataType = getProductDataType(quality_flags);
+            Band QFband = new Band(name, dataType, width, height);
+
+            product.addBand(QFband);
+
+            FlagCoding flagCoding = new FlagCoding("Quality_Flags");
+            flagCoding.addFlag("LAND", 0x01, "Land");
+            flagCoding.addFlag("NAVFAIL", 0x02, "Navigation failure");
+            flagCoding.addFlag("NAVWARN", 0x04, "Navigation suspect");
+            flagCoding.addFlag("HISOLZEN", 0x08, "High solar zenith angle");
+            flagCoding.addFlag("HISATZEN", 0x10, "Large satellite zenith angle");
+            flagCoding.addFlag("SPARE", 0x20, "Unused");
+            flagCoding.addFlag("CALFAIL", 0x40, "Calibration failure");
+            flagCoding.addFlag("CLOUD", 0x80, "Cloud determined");
+
+            product.getFlagCodingGroup().add(flagCoding);
+            QFband.setSampleCoding(flagCoding);
+            variableMap.put(QFband,quality_flags);
+
+            product.getMaskGroup().add(Mask.BandMathsType.create("LAND", "Land",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags.LAND",
+                    LandBrown, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("HISATZEN", "Large satellite zenith angle",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags.HISATZEN",
+                    LightCyan, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("CLOUD", "Cloud determined",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags.CLOUD",
+                    Color.WHITE, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("HISOLZEN", "High solar zenith angle",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags.HISOLZEN",
+                    Purple, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("CALFAIL", "Calibration failure",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags.CALFAIL",
+                    FailRed, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("NAVWARN", "Navigation suspect",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags.NAVWARN",
+                    Color.MAGENTA, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("NAVFAIL", "Navigation failure",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags.NAVFAIL",
+                    FailRed, 0.0));
+        }
+    }
+
+    private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
+        String timeString = null;
+        try {
+            if (key.equals("Start")){
+                Attribute date_attribute = findAttribute("metadata/FGDC/Identification_Information/Time_Period_of_Content/Beginning_Date", globalAttributes);
+                Attribute time_attribute = findAttribute("metadata/FGDC/Identification_Information/Time_Period_of_Content/Beginning_Time", globalAttributes);
+                StringBuilder tstring = new StringBuilder(date_attribute.getStringValue().trim());
+                tstring.append(time_attribute.getStringValue().trim());
+                tstring.append("000");
+                timeString = tstring.toString();
+            }
+            if (key.equals("End")){
+                Attribute date_attribute = findAttribute("metadata/FGDC/Identification_Information/Time_Period_of_Content/Ending_Date", globalAttributes);
+                Attribute time_attribute = findAttribute("metadata/FGDC/Identification_Information/Time_Period_of_Content/Ending_Time", globalAttributes);
+                StringBuilder tstring = new StringBuilder(date_attribute.getStringValue().trim());
+                tstring.append(time_attribute.getStringValue().trim());
+                tstring.append("000");
+                timeString = tstring.toString();
+            }
+        } catch (Exception ignored) {
+        }
+
+        if (timeString != null) {
+
+            final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
+            try {
+                final Date date = dateFormat.parse(timeString);
+                String milliSeconds = timeString.substring(timeString.length() - 3);
+                return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
+
+            } catch (ParseException ignored) {
+            }
+        }
+        return null;
+    }
+
+    public void addMetadata(Product product, String groupname, String meta_element) throws ProductIOException {
+        Group group =  ncFile.findGroup(groupname);
+
+        if (group != null) {
+            final MetadataElement bandAttributes = new MetadataElement(meta_element);
+            List<Variable> variables = group.getVariables();
+            for (Variable variable : variables) {
+                final String name = variable.getShortName();
+                final MetadataElement sdsElement = new MetadataElement(name + ".attributes");
+                final int dataType = getProductDataType(variable);
+                final MetadataAttribute prodtypeattr = new MetadataAttribute("data_type", dataType);
+
+                sdsElement.addAttribute(prodtypeattr);
+                bandAttributes.addElement(sdsElement);
+
+                final List<Attribute> list = variable.getAttributes();
+                for (Attribute varAttribute : list) {
+                    addAttributeToElement(sdsElement, varAttribute);
+                }
+            }
+            final MetadataElement metadataRoot = product.getMetadataRoot();
+            metadataRoot.addElement(bandAttributes);
+        }
     }
 
     private Map<Band, Variable> addHicoBands(Product product, List<Variable> variables) {
