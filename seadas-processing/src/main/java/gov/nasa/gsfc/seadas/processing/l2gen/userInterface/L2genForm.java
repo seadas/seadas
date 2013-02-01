@@ -39,8 +39,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private String guiName;
     private L2genData.Mode mode;
 
-    ProcessorModel processorModel;
-
     public L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields, L2genData.Mode mode) {
 
         this.mode = mode;
@@ -208,15 +206,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
     public ProcessorModel getProcessorModel() {
-        if (processorModel == null) {
-            processorModel = new ProcessorModel(GUI_NAME, l2genData.getParamInfos());
-            if (l2genData.isValidIfile()) {
-                processorModel.setReadyToRun(true);
-            } else {
-                processorModel.setReadyToRun(false);
-            }
-        }
-        return processorModel;
+        return l2genData.getProcessorModel();
     }
 
     public String getParamString() {

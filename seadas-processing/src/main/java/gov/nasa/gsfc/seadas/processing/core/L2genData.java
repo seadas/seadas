@@ -109,8 +109,13 @@ public class L2genData implements L2genDataProcessorModel {
     public boolean retainCurrentIfile = false;
     private boolean showDefaultsInParString = false;
 
+    private ProcessorModel processorModel;
+
+
     public L2genData(Mode mode) {
         setMode(mode);
+        processorModel = new ProcessorModel("l2gen", getParamInfos());
+        processorModel.setAcceptsParFile(true);
     }
 
     public Mode getMode() {
@@ -1034,10 +1039,10 @@ public class L2genData implements L2genDataProcessorModel {
         String oldIfile = getParamValue(getParamInfo(IFILE));
 
         ifileParamInfo.setValue(ifileValue);
-        ifileParamInfo.setDefaultValue(ifileValue);
+//        ifileParamInfo.setDefaultValue(ifileValue);
 
         iFileInfo = ifileParamInfo.validateIfileValue(null, SeadasProcessorInfo.Id.L2GEN);
-
+        processorModel.setReadyToRun(isValidIfile());
 
         if (iFileInfo != null && isValidIfile()) {
 
@@ -1052,19 +1057,19 @@ public class L2genData implements L2genDataProcessorModel {
 
             FileInfo oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
             if (oFileInfo != null) {
-                setParamValueAndDefault(OFILE, oFileInfo.getFile().getAbsolutePath());
+                setParamValue(OFILE, oFileInfo.getFile().getAbsolutePath());
             }
 
             if (iFileInfo.isGeofileRequired()) {
                 FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo);
                 if (geoFileInfo != null) {
-                    setParamValueAndDefault(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
+                    setParamValue(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
                 }
             } else {
                 setParamValueAndDefault(GEOFILE, null);
             }
         } else {
-            setParamValueAndDefault(OFILE, null);
+            setParamToDefaults(OFILE);
             setParamValueAndDefault(GEOFILE, null);
             fireEvent(INVALID_IFILE);
         }
@@ -1421,10 +1426,10 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     public void setInitialValues(File iFile) {
+        ParamInfo info = getParamInfo(IFILE);
+        setParamValueAndDefault(info, ParamInfo.NULL_STRING);
         if (iFile != null) {
-            setParamValueAndDefault(IFILE, iFile.toString());
-        } else {
-            setParamValueAndDefault(IFILE, ParamInfo.NULL_STRING);
+            setParamValue(info, iFile.toString());
         }
     }
 
@@ -1437,6 +1442,7 @@ public class L2genData implements L2genDataProcessorModel {
             disableEvent(L2PROD);
 
             l2genReader.readParamInfoXml(paramInfoStream);
+            processorModel.setParamList(paramInfos);
 
             InputStream paramCategoryInfoStream = L2genForm.class.getResourceAsStream(getParamCategoryXml());
             l2genReader.readParamCategoryXml(paramCategoryInfoStream);
@@ -1583,6 +1589,12 @@ public class L2genData implements L2genDataProcessorModel {
         swingWorker.executeWithBlocking();
         return theFile;
     }
+
+    public ProcessorModel getProcessorModel() {
+        processorModel.setReadyToRun(isValidIfile());
+        return processorModel;
+    }
+
 
 
 }
