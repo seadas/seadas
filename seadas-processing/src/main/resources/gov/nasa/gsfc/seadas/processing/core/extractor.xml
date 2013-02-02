@@ -23,48 +23,48 @@
         </option>
         <option type="int">
             <name>spixl</name>
-            <value>1</value>
-            <default>1</default>
+            <value></value>
+            <default></default>
             <description>start pixel number</description>
             <usedAs>argument</usedAs>
             <order>2</order>
         </option>
         <option type="int">
             <name>epixl</name>
-            <value>-1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>end pixel number (-1=the last pixel)</description>
             <usedAs>argument</usedAs>
             <order>3</order>
         </option>
         <option type="int">
             <name>sline</name>
-            <value>1</value>
-            <default>1</default>
+            <value></value>
+            <default></default>
             <description>start line number</description>
             <usedAs>argument</usedAs>
             <order>4</order>
         </option>
         <option type="int">
             <name>eline</name>
-            <value>-1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>end line number (-1=the last line)</description>
             <usedAs>argument</usedAs>
             <order>5</order>
         </option>
         <option type="int">
             <name>pix_sub</name>
-            <value>1</value>
-            <default>1</default>
+            <value></value>
+            <default></default>
             <description>start line number</description>
             <usedAs>argument</usedAs>
             <order>6</order>
         </option>
         <option type="int">
             <name>sc_sub</name>
-            <value>1</value>
-            <default>-1</default>
+            <value></value>
+            <default></default>
             <description>end line number (-1=the last line)</description>
             <usedAs>argument</usedAs>
             <order>7</order>

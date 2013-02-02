@@ -532,7 +532,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return paramList.getParamString("\n");
     }
 
-
     public String getParStringForRemoteServer() {
         if (filesToUpload == null) {
             filesToUpload = new ArrayList<String>();

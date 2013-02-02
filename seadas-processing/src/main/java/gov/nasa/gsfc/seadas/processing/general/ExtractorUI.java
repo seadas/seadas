@@ -1,16 +1,16 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,6 +34,7 @@ public class ExtractorUI extends ProgramUIFactory {
     public ExtractorUI(String programName, String xmlFileName) {
         super(programName, xmlFileName);
         //processorModel.setReadyToRun(true);
+        paramCounter = new HashMap();
     }
 
     private void computePixelsFromLonLat() {
@@ -80,36 +81,48 @@ public class ExtractorUI extends ProgramUIFactory {
         pixelPanel = paramUIFactory.createParamPanel(processorModel);
 
         newsPanel = new ParamUIFactory(lonlat2pixline).createParamPanel(lonlat2pixline);
+        newsPanel.setBorder(BorderFactory.createTitledBorder("Lon/Lat"));
+        pixelPanel.setBorder(BorderFactory.createTitledBorder("Pixels"));
+
 
         pixelPanel.setName("pixelPanel");
         newsPanel.setName("newsPanel");
 
-        pixellonlatSwitch = new JToggleButton();
-        pixellonlatSwitch.setText("<html><center>" + "Compute" + "<br>" + " PixLines" + "<br>" + "from LonLat" + "</center></html>");
-        pixellonlatSwitch.setBorderPainted(false);
-        pixellonlatSwitch.setEnabled(false);
-        pixellonlatSwitch.setSelected(false);
-
-        pixellonlatSwitch.addActionListener(new ActionListener() {
+        lonlat2pixline.addPropertyChangeListener("all_lon_lat_params_complete", new PropertyChangeListener() {
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-
-                if (pixellonlatSwitch.isSelected()) {
-                    pixellonlatSwitch.setBorderPainted(true);
-                    computePixelsFromLonLat();
-                } else {
-                    pixellonlatSwitch.setBorderPainted(false);
-                }
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                computePixelsFromLonLat();
             }
         });
+//        pixellonlatSwitch = new JToggleButton();
+//        pixellonlatSwitch.setText("<html><center>" + "Compute" + "<br>" + " PixLines" + "<br>" + "from LonLat" + "</center></html>");
+//        pixellonlatSwitch.setBorderPainted(false);
+//        pixellonlatSwitch.setEnabled(false);
+//        pixellonlatSwitch.setSelected(false);
+//
+//        pixellonlatSwitch.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//
+//                if (pixellonlatSwitch.isSelected()) {
+//                    pixellonlatSwitch.setBorderPainted(true);
+//                    computePixelsFromLonLat();
+//                } else {
+//                    pixellonlatSwitch.setBorderPainted(false);
+//                }
+//            }
+//        });
 
         paramPanel = new JPanel(new GridBagLayout());
         paramPanel.setBorder(BorderFactory.createTitledBorder("Parameters"));
         paramPanel.setPreferredSize(new Dimension(700, 400));
         paramPanel.add(newsPanel,
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-        paramPanel.add(pixellonlatSwitch,
-                new GridBagConstraintsCustom(1, 1, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+//        paramPanel.add(pixellonlatSwitch,
+//                new GridBagConstraintsCustom(1, 1, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        //The following statement will create a space between two panels.
+        paramPanel.add(Box.createRigidArea(new Dimension(100,50)),
+                new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         paramPanel.add(pixelPanel,
                 new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
@@ -133,9 +146,10 @@ public class ExtractorUI extends ProgramUIFactory {
         lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                pixellonlatSwitch.setEnabled(true);
-                pixellonlatSwitch.setBorderPainted(true);
-                processorModel.setReadyToRun(true);
+//                pixellonlatSwitch.setEnabled(true);
+//                pixellonlatSwitch.setBorderPainted(true);
+//                processorModel.setReadyToRun(true);
+                computePixelsFromLonLat();
             }
         });
         return paramPanel;
@@ -211,4 +225,46 @@ public class ExtractorUI extends ProgramUIFactory {
         return ifileName;
     }
 
+    private void addEventListeners() {
+
+        boolean allParamsComplete = false;
+
+        for (final ParamInfo pi : lonlat2pixline.getParamList().getParamArray()) {
+
+            paramCounter.put(pi.getName(), false);
+            lonlat2pixline.getParamList().addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    if (validInput(pi.getValue())) {
+                        paramCounter.put(pi.getName(), true);
+                        updateAllParamsCompleteFlag();
+                    }
+                }
+            });
+        }
+
+    }
+
+    private void updateAllParamsCompleteFlag() {
+        allParamsComplete = true;
+        for (boolean value : paramCounter.values()) {
+            allParamsComplete = value && allParamsComplete;
+        }
+        if (allParamsComplete) {
+            computePixelsFromLonLat();
+        }
+    }
+
+    private boolean validInput(String input) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    boolean allParamsComplete;
+    HashMap<String, Boolean> paramCounter;
 }

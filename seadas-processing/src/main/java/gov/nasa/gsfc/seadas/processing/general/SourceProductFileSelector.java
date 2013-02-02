@@ -519,7 +519,7 @@ public class SourceProductFileSelector {
 
               StringBuilder fileNames = new StringBuilder();
               for (File file : files) {
-                  fileNames.append(file.getAbsolutePath() + "  \n");
+                  fileNames.append(file.getAbsolutePath() + "\n");
               }
               FileWriter fileWriter = null;
               try {
