@@ -140,7 +140,7 @@ public class ParamInfo implements Comparable, Cloneable {
             this.value = getStandardizedBooleanString(value);
         } else if (getType() == Type.IFILE || getType() == Type.OFILE) {
             this.value = value;
-            System.out.println("");
+//            System.out.println("");
         } else {
             this.value = value;
         }

@@ -61,7 +61,6 @@ public abstract class AbstractBowtieGeoCoding extends AbstractGeoCoding {
      * @param scanlineOffsetY the Y offset into the stripe where the data starts
      */
     public AbstractBowtieGeoCoding(int scanlineHeight, int scanlineOffsetY) {
-        System.out.println("constructor AbstractBowtieGeoCoding");
         _lastCenterLineIndex = 0;
         _scanlineHeight = scanlineHeight;
         _scanlineOffsetY = scanlineOffsetY;
@@ -302,7 +301,7 @@ public abstract class AbstractBowtieGeoCoding extends AbstractGeoCoding {
 
         public void moveTo(final float x, final float y) {
             if (_started) {
-                throw new IllegalStateException("Polyline alredy started");
+                throw new IllegalStateException("Polyline already started");
             }
             setXY1(x, y);
             _lines = new ArrayList<Line2D.Float>();

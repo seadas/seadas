@@ -513,6 +513,9 @@ public abstract class SeadasFileReader {
         if (productReader.getProductType() == SeadasProductReader.ProductType.Level2_Aquarius) {
             group = ncFile.findGroup("Aquarius Data");
         }
+        if (productReader.getProductType() == SeadasProductReader.ProductType.Level1B_HICO){
+            group = ncFile.findGroup("products");
+        }
         if (group != null) {
             final MetadataElement bandAttributes = new MetadataElement("Band_Attributes");
             List<Variable> variables = group.getVariables();
@@ -793,7 +796,7 @@ public abstract class SeadasFileReader {
         }
     }
 
-    private void addAttributeToElement(final MetadataElement element, final Attribute attribute) {
+    protected void addAttributeToElement(final MetadataElement element, final Attribute attribute) {
         final MetadataAttribute metadataAttribute = attributeToMetadata(attribute);
         element.addAttribute(metadataAttribute);
     }
