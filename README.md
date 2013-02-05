@@ -59,6 +59,9 @@ Installation Guide
       +   Check the box: *default tools*
       +   Click *Next* 
       +   Click *Finish*
+      +   edit file $SEADAS/.idea/vcs.xml 
+         - delete CERES line 
+         - this stop idea from complaining about the detached head
    * Eclipse:
       +   Build Eclipse project files for BEAM:
          cd $SEADAS/seadas
