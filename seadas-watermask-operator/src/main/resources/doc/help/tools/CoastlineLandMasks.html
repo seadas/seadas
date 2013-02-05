@@ -1,0 +1,121 @@
+<html>
+<head>
+    <title>SeaDAS Help - Coastline, Land and Water Masks</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Tools
+        </td>
+        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h2>Coastline, Land and Water Masks</h2>
+
+<p>
+    Creates the following masks for the currently loaded product: WaterMask, LandMask, and Coastline.
+</p>
+
+<h3>Location</h3>
+
+<table>
+    <tr>
+        <td style="border-width:0" valign="top"><a name="MaskManager"><img src="../images/coastline_24.png"
+                                                                           alt="Coastline, Land and Water Masks"></a>
+        </td>
+        <td style="border-width:0">
+            To bring up the <b>"Coastline, Land and Water Masks"</b> window click this tool button
+            in the <b>"Layers"</b> tool bar or select the
+            corresponding menu item in <b>"Tools -> Coastline, Land and Water Masks"</b>.
+            <p class="inote"><b>NOTE:</b> this tool can only be accessed if a SeaDAS file is currently selected. </p>
+        </td>
+    </tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>
+    This tool creates coastline, land and water masks within a selected product.
+    Normally masks are made one mask at a time and enabled independently for each band. This tool
+    allows the making and configuring of these masks all at one go. Additionally the masks can be
+    set to enabled (visible) in a bands all at once.
+    <br><br>
+
+    The <b>"Coastline, Land and Water Masks"</b> window is divided into 4 sections. The top section enables the
+    specification of the <a href="CoastlineLandMasks.html#SHORELINE_SOURCE_DATASET">Shoreline Source Dataset</a>
+    and the <a href="CoastlineLandMasks.html#SUPER_SAMPLING_FACTOR">Super Sampling Factor</a>. This criteria
+    is used when generating all of the masks. The next 3 sections allow the setting of the parameters
+    <a href="CoastlineLandMasks.html#COLOR">Color</a>,
+    <a href="CoastlineLandMasks.html#TRANSPARENCY">Transparency</a>, and
+    <a href="CoastlineLandMasks.html#ENABLED">Enabled in all Bands</a>
+    for each mask.
+
+
+</p>
+
+<a name="SHORELINE_SOURCE_DATASET"></a>
+<h4>Coastline Source Data</h4>
+
+<p>
+    Each of these datasets is a rasterized file whose filename
+    can be observed in the tooltip when hovering the mouse. If a selection entry is greyed out ("not enabled"),
+    then it's corresponding file is not installed currently on your system. To install any of these files see ......<br>
+
+    The current sources of this data are:
+<ol>
+    <li>SRTM_GC: <br>
+        (Shuttle Radar Topography Mission) latitude range {-60S to 60N}<br>
+        (GlobCover world map) latitude range {-90S to -60S}, {60N to 90N}
+    </li>
+    <li>GSHHS: <br>
+        (Global Self-consistent, Hierarchical, High-resolution Shoreline database)
+    </li>
+</ol>
+
+</p>
+
+<a name="SUPER_SAMPLING_FACTOR"></a>
+<h4>Super Sampling Factor</h4>
+If the resolution of the selected shorelineSourceDataset is greater than the resolution of the currently
+loaded product then setting this parameter greater than 1 will be desirable.  Something on the order of at least
+(productResolution/coastlineSourceDatasetResolution)^2 should be sufficient.  The higher the value the slower
+the processing time.
+
+<p>
+    Text
+</p>
+
+
+<a name="COLOR"></a>
+<h4>Color</h4>
+
+<p>
+    Text
+</p>
+
+<a name="TRANSPARENCY"></a>
+<h4>Transparency</h4>
+
+<p>
+    Text
+</p>
+
+<a name="ENABLED"></a>
+<h4>Enabled in all Bands</h4>
+
+<p>
+    Text
+</p>
+
+
+</body>
+</html>
