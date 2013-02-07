@@ -16,9 +16,9 @@ import java.net.URL;
  */
 public class ResourceInstallationUtils {
 
-    public static String MODULE_NAME = "beam-watermask-operator";
+    public static String MODULE_NAME = "seadas-watermask-operator";
     public static String AUXDIR = "auxdata";
-    public static String AUXPATH = "org/esa/beam/watermask/operator/"+AUXDIR+"/";
+    public static String AUXPATH = "gov/nasa/gsfc/seadas/watermask/operator/"+AUXDIR+"/";
 
 
 

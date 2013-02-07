@@ -5,6 +5,8 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 /**
@@ -91,9 +93,29 @@ public class ResolutionComboBox {
         jLabel.setToolTipText("Determines which shoreline source dataset to use when generating the masks");
 
         addControlListeners();
+        addEventHandlers();
+
 
     }
 
+
+    private void addEventHandlers() {
+        landMasksData.addPropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                updateJComboBox();
+            }
+        });
+
+
+        landMasksData.addPropertyChangeListener(LandMasksData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                SourceFileInfo sourceFileInfo = (SourceFileInfo) jComboBox.getSelectedItem();
+                jComboBox.setSelectedIndex(getValidSelectedIndex());
+            }
+        });
+    }
 
     private void addControlListeners() {
         jComboBox.addActionListener(new ActionListener() {

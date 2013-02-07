@@ -192,21 +192,6 @@ class LandMasksDialog extends JDialog {
 
         JComboBox jComboBox = resolutionComboBox.getjComboBox();
 
-        landMasksData.addPropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                    resolutionComboBox.updateJComboBox();
-            }
-        });
-
-
-        landMasksData.addPropertyChangeListener(LandMasksData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                SourceFileInfo sourceFileInfo = (SourceFileInfo) resolutionComboBox.getjComboBox().getSelectedItem();
-                resolutionComboBox.getjComboBox().setSelectedIndex(resolutionComboBox.getValidSelectedIndex());
-            }
-        });
 
 
         landMasksData.addPropertyChangeListener(LandMasksData.PROMPT_REQUEST_TO_INSTALL_FILE_EVENT, new PropertyChangeListener() {

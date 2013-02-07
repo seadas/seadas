@@ -23,11 +23,11 @@ public class MissionInfo {
         MERIS,
         MODISA,
         MODIST,
+        MOS,
         OCTS,
+        OSMI,
         SEAWIFS,
         VIIRS,
-        OSMI,
-        MOS,
         UNKNOWN
     }
 
@@ -139,8 +139,10 @@ public class MissionInfo {
     public void setId(Id id) {
         clear();
         this.id = id;
-        setRequiresGeofile();
-        setMissionDirectoryName();
+        if (isSupported()) {
+            setRequiresGeofile();
+            setMissionDirectoryName();
+        }
     }
 
     public boolean isId(Id id) {
@@ -180,12 +182,15 @@ public class MissionInfo {
         if (names.containsKey(id)) {
             return names.get(id)[0];
         } else {
-            return names.get(Id.UNKNOWN)[0];
+            return null;
         }
     }
 
 
     private void setRequiresGeofile() {
+        if (id == null) {
+            return;
+        }
 
         if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRS)) {
             setGeofileRequired(true);
@@ -204,10 +209,10 @@ public class MissionInfo {
     }
 
 
-    private void setMissionDirectoryName(){
+    private void setMissionDirectoryName() {
         if (directories.containsKey(id)) {
             String missionPiece = directories.get(id);
-            try{
+            try {
                 setDirectory(new File(OCSSW.getOcsswDataRoot(), missionPiece));
             } catch (IOException e) {
                 setDirectory(null);
@@ -226,11 +231,15 @@ public class MissionInfo {
     }
 
     public boolean isSupported() {
-        for (Id id : SUPPORTED_IDS) {
-            if (id == this.id) {
+        if (id == null) {
+            return false;
+        }
+        for (Id supportedId : SUPPORTED_IDS) {
+            if (supportedId == this.id) {
                 return true;
             }
         }
         return false;
     }
+
 }
