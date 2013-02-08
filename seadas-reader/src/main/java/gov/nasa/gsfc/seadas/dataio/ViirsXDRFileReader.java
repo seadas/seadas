@@ -600,6 +600,10 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.Cirrus",
                     Color.BLUE, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("CloudShadow", "Cloud shadow detected.",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.Shadow",
+                    Color.GRAY, 0.5));
             product.getMaskGroup().add(Mask.BandMathsType.create("HighAer", "Non-cloud obstruction (heavy aerosol load) detected.",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "QF5_VIIRSOCCEDR.HighAer",

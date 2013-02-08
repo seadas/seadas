@@ -39,7 +39,7 @@ public abstract class SeadasFileReader {
     protected static final SkipBadNav LAT_SKIP_BAD_NAV = new SkipBadNav() {
         @Override
         public final boolean isBadNav(double value) {
-            return value > 90.0 || value < -90.0 || Double.isNaN(value);
+            return Double.isNaN(value) || value > 90.0 || value < -90.0;
         }
     };
 
@@ -913,8 +913,8 @@ public abstract class SeadasFileReader {
                     break;
                 }
             }
-        } catch (InvalidRangeException ignored) {
-            // cannot happen
+        } catch (InvalidRangeException e) {
+            throw new IOException(e.getMessage());
         }
     }
 
