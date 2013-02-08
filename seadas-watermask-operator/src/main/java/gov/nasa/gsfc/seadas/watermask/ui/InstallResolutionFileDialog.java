@@ -41,6 +41,17 @@ class InstallResolutionFileDialog extends JDialog {
         }
     }
 
+//    private static class InstallationThread
+//            implements   Runnable {
+//
+//        public void run() {
+//
+//
+//            ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
+//
+//        }
+//    }
+
 
     public final void installationUI() {
         JButton installButton = new JButton("Install File");
@@ -62,22 +73,27 @@ class InstallResolutionFileDialog extends JDialog {
 
                     String filename = sourceFileInfo.getFile().getName().toString();
                     URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
-                    ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
+   //                 ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
+
+
+                    FileInstallationThread fileInstallationThread = new FileInstallationThread(sourceUrl, filename);
+
+                    fileInstallationThread.run();
+
+                    InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(landMasksData, sourceFileInfo, Step.CONFIRMATION);
+                    dialog.setVisible(true);
+                    dialog.setEnabled(true);
+
+                    if (sourceFileInfo.isEnabled()) {
+                        jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
+                    } else {
+                        jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
+                    }
+
                     landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(landMasksData, sourceFileInfo, Step.CONFIRMATION);
-                dialog.setVisible(true);
-                dialog.setEnabled(true);
-
-                if (sourceFileInfo.isEnabled()) {
-                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
-                } else {
-                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
-                }
-
 
             }
         });

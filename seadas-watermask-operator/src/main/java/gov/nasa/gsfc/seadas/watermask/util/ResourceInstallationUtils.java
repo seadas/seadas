@@ -18,33 +18,40 @@ public class ResourceInstallationUtils {
 
     public static String MODULE_NAME = "seadas-watermask-operator";
     public static String AUXDIR = "auxdata";
-    public static String AUXPATH = "gov/nasa/gsfc/seadas/watermask/operator/"+AUXDIR+"/";
-
-
-
+    public static String AUXPATH = "gov/nasa/gsfc/seadas/watermask/operator/" + AUXDIR + "/";
 
 
     public static void writeFileFromUrl(URL sourceUrl, File targetFile) throws Exception {
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(sourceUrl.openStream()));
 
-        boolean exist = targetFile.createNewFile();
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(sourceUrl.openStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-        if (!exist) {
-            // file already exists
-        } else {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(targetFile));
 
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                bufferedWriter.write(line);
+            boolean exist = targetFile.createNewFile();
+
+            if (!exist) {
+                // file already exists
+            } else {
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(targetFile));
+
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    bufferedWriter.write(line);
+                }
+
+                bufferedWriter.close();
             }
 
-            bufferedWriter.close();
+
+            bufferedReader.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
-        bufferedReader.close();
     }
 
 
