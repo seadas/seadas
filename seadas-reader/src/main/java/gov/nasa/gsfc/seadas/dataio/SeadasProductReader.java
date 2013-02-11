@@ -49,6 +49,7 @@ public class SeadasProductReader extends AbstractProductReader {
         Level1B("Generic Level 1B"),
         Level1B_Modis("MODIS Level 1B"),
         Level1B_HICO("HICO L1B"),
+        Level1B_OCM2("OCM2_L1B"),
         Level2("Level 2"),
         Level3_Bin("Level 3 Binned"),
         SMI("Level 3 Mapped"),
@@ -116,6 +117,9 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case Level1B_HICO:
                     seadasFileReader = new L1BHicoFileReader(this);
+                    break;
+                case Level1B_OCM2:
+                    seadasFileReader = new L1BOcm2FileReader(this);
                     break;
                 case Level3_Bin:
                     seadasFileReader = new L3BinFileReader(this);
@@ -219,18 +223,19 @@ public class SeadasProductReader extends AbstractProductReader {
     public ProductType checkViirsXDR() {
         Attribute platformShortName = ncfile.findGlobalAttribute("Platform_Short_Name");
         try {
-            if(platformShortName.getStringValue().equals("NPP")) {
+            if (platformShortName.getStringValue().equals("NPP")) {
                 Group dataProduct = ncfile.findGroup("Data_Products");
-                if(dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*SDR")) {
+                if (dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*SDR")) {
                     return ProductType.VIIRS_SDR;
                 }
-                if(dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*EDR")) {
+                if (dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*EDR")) {
                     return ProductType.VIIRS_EDR;
                 }
 
             }
 
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return ProductType.UNKNOWN;
     }
 
@@ -241,23 +246,25 @@ public class SeadasProductReader extends AbstractProductReader {
         ProductType tmp;
         if (titleAttr != null) {
             title = titleAttr.getStringValue().trim();
-            if (title.equals("CZCS Level-2 Data")) {
+            if (title.equals("Oceansat OCM2 Level-1B Data")) {
+                return ProductType.Level1B_OCM2;
+            } else if (title.equals("CZCS Level-2 Data")) {
                 return ProductType.Level2_CZCS;
             } else if (title.contains("Aquarius Level 1A Data")) {
                 return ProductType.Level1A_Aquarius;
             } else if (title.contains("Aquarius Level 2 Data")) {
                 return ProductType.Level2_Aquarius;
-            }else if (title.contains("Level-1B")) {
+            } else if (title.contains("Level-1B")) {
                 return ProductType.Level1B;
-            } else if (title.equals("CZCS Level-1A Data")){
+            } else if (title.equals("CZCS Level-1A Data")) {
                 return ProductType.Level1A_CZCS;
-            } else if (title.equals("OCTS Level-1A GAC Data")){
+            } else if (title.equals("OCTS Level-1A GAC Data")) {
                 return ProductType.Level1A_OCTS;
             } else if (title.contains("Browse")) {
                 return ProductType.BrowseFile;
-            }  else if (title.contains("Level-2")) {
+            } else if (title.contains("Level-2")) {
                 return ProductType.Level2;
-            }else if (title.contains("Level 2")) {
+            } else if (title.contains("Level 2")) {
                 return ProductType.Level2;
             } else if (title.equals("SeaWiFS Level-1A Data")) {
                 return ProductType.Level1A_Seawifs;
@@ -275,7 +282,7 @@ public class SeadasProductReader extends AbstractProductReader {
             return ProductType.Level1B_HICO;
         } else if ((tmp = checkViirsXDR()) != ProductType.UNKNOWN) {
             return tmp;
-        }  else if (checkSeadasMapped()) {
+        } else if (checkSeadasMapped()) {
             return ProductType.SeadasMapped;
         }
 
