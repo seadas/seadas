@@ -30,9 +30,9 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         int sceneWidth = getIntAttribute("Pixels per Scan Line");
         int sceneHeight = getIntAttribute("Number of Scan Lines");
         try {
-            String navGroup = "variables";
-            final String latitude = "latitude(Scans, Pixels)";
-            final Variable variable = ncFile.findVariable("Pixels");
+            String navGroup = "Navigation_Data";
+            final String latitude = "latitude";
+            final Variable variable = ncFile.findGroup(navGroup).findVariable(latitude);
             invalidateLines(LAT_SKIP_BAD_NAV,variable);
 
             sceneHeight -= leadLineSkip;
@@ -45,9 +45,6 @@ public class L1BOcm2FileReader extends SeadasFileReader {
 
         mustFlipX = mustFlipY = getDefaultFlip();
         SeadasProductReader.ProductType productType = productReader.getProductType();
-        if (productType == SeadasProductReader.ProductType.Level1A_CZCS ||
-                productType == SeadasProductReader.ProductType.Level2_CZCS)
-            mustFlipX = false;
 
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
