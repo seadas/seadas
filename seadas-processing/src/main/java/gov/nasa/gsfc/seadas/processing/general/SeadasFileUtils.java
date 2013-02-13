@@ -69,6 +69,9 @@ public class SeadasFileUtils {
     }
 
     public static String findNextLevelFileName(String ifileName, String programName) {
+        if (ifileName == null || programName == null) {
+            return null;
+        }
         debug("Program name is " + programName);
         Debug.assertNotNull(ifileName);
         String[] cmdArray = {OCSSW.getOcsswScriptPath(), NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
@@ -87,15 +90,9 @@ public class SeadasFileUtils {
 
         try {
             String line = br.readLine();
-            if (exitCode == 0 && line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
+            if (exitCode == 0 && line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN) && !line.contains("Error")) {
                 return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
             } else {
-
-                StringBuilder errorMessage = new StringBuilder(line);
-                while ((line = br.readLine()) != null) {
-                    errorMessage.append(line + "\n");
-                }
-                VisatApp.getApp().showErrorDialog("Error in computing the output file name! \n" + errorMessage.toString());
             }
 
         } catch (IOException ioe) {
