@@ -10,6 +10,7 @@ import ucar.ma2.Array;
 import ucar.nc2.Variable;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +25,16 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         super(productReader);
     }
 
+    private void fixBandNames() {
+        String navGroup = "Geophysical Data";
+        List<Variable> variables = ncFile.findGroup(navGroup).getVariables();
+        String varName;
+        for (Variable variable : variables) {
+            varName = variable.getShortName().replace("L", "Lt");
+            variable.setName(varName);
+        }
+    }
+
     @Override
     public Product createProduct() throws ProductIOException {
 
@@ -33,7 +44,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
             String navGroup = "Navigation_Data";
             final String latitude = "latitude";
             final Variable variable = ncFile.findGroup(navGroup).findVariable(latitude);
-            invalidateLines(LAT_SKIP_BAD_NAV,variable);
+            invalidateLines(LAT_SKIP_BAD_NAV, variable);
 
             sceneHeight -= leadLineSkip;
             sceneHeight -= tailLineSkip;
@@ -41,6 +52,9 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         } catch (IOException ignore) {
 
         }
+
+        fixBandNames();
+
         String productName = getStringAttribute("Product Name");
 
         mustFlipX = mustFlipY = getDefaultFlip();
@@ -51,7 +65,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
 
         ProductData.UTC utcStart = getUTCAttribute("Start Time");
         if (utcStart != null) {
-            if (mustFlipY){
+            if (mustFlipY) {
                 product.setEndTime(utcStart);
             } else {
                 product.setStartTime(utcStart);
@@ -91,19 +105,20 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         try {
             sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor").getData().getElemString();
             res = product.getMetadataRoot().getElement("Input_Parameters").getAttribute("RESOLUTION").getData().getElemString();
-        } catch(Exception e) {}
+        } catch (Exception e) {
+        }
 
-        if(sensor != null) {
+        if (sensor != null) {
             sensor = sensor.toLowerCase();
-            if(sensor.contains("viirs")) {
+            if (sensor.contains("viirs")) {
                 addBowtieGeocoding(product, 16);
                 return;
-            } else if(sensor.contains("modis")) {
+            } else if (sensor.contains("modis")) {
                 int scanHeight = 10;
-                if(res != null) {
-                    if(res.equals("500")) {
+                if (res != null) {
+                    if (res.equals("500")) {
                         scanHeight = 20;
-                    } else if(res.equals("250")) {
+                    } else if (res.equals("250")) {
                         scanHeight = 40;
                     }
                 }
@@ -173,7 +188,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
                     int[] colPoints = (int[]) cntArray.getStorage();
                     computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints);
                 } catch (IOException e) {
-                   throw new ProductIOException(e.getMessage());
+                    throw new ProductIOException(e.getMessage());
                 }
             }
         }
