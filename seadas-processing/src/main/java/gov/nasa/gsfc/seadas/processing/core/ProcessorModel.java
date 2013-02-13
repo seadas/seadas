@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.*;
+import org.esa.beam.visat.VisatApp;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
@@ -230,7 +231,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         checkCompleteness();
     }
 
-    private void checkCompleteness() {
+    protected void checkCompleteness() {
         boolean complete = true;
 
         for (ParamInfo param : paramList.getParamArray()) {
@@ -304,6 +305,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 return true;
             }
         }
+        VisatApp.getApp().showErrorDialog("Cannot compute output file name. Please select a correct input file for " + ((programName == null ) ? "this processor." : programName ));
         updateParamInfo(getPrimaryInputFileOptionName(), "");    //use an empty string
         return false;
 
@@ -322,7 +324,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     public boolean updateOFileInfo(String newValue) {
         System.out.println("next level ofile name: " + newValue);
         if (newValue != null) {
-            updateParamInfo(getPrimaryOutputFileOptionName(), newValue);
+            updateParamInfo(getPrimaryOutputFileOptionName(), newValue + "\n");
             setReadyToRun(true);
             return true;
         }
@@ -872,16 +874,16 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         public String getOfileName() {
 
             StringBuilder ofileNameList = new StringBuilder();
-            if (!(getParamInfo("--del-okm").getValue().equals( "true" ) || getParamInfo("--del-okm").getValue().equals( "1"))) {
+            if (!(getParamInfo("--del-okm").getValue().equals("true") || getParamInfo("--del-okm").getValue().equals("1"))) {
                 ofileNameList.append("\n" + getParamValue("--okm"));
             }
-            if (!(getParamInfo("--del-hkm").getValue().equals( "true" ) || getParamInfo("--del-hkm").getValue().equals( "1"))) {
+            if (!(getParamInfo("--del-hkm").getValue().equals("true") || getParamInfo("--del-hkm").getValue().equals("1"))) {
                 ofileNameList.append("\n" + getParamValue("--hkm"));
             }
-            if (!(getParamInfo("--del-qkm").getValue().equals( "true" ) || getParamInfo("--del-qkm").getValue().equals( "1"))) {
+            if (!(getParamInfo("--del-qkm").getValue().equals("true") || getParamInfo("--del-qkm").getValue().equals("1"))) {
                 ofileNameList.append("\n" + getParamValue("--qkm"));
             }
-            if (getParamInfo("--keep-obc").getValue().equals( "true" ) || getParamInfo("--keep-obc").getValue().equals( "1")) {
+            if (getParamInfo("--keep-obc").getValue().equals("true") || getParamInfo("--keep-obc").getValue().equals("1")) {
                 ofileNameList.append("\n" + getParamValue("--obc"));
             }
             System.out.println(ofileNameList.toString());
@@ -892,6 +894,56 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private static class LonLat2Pixels_Processor extends ProcessorModel {
         LonLat2Pixels_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
+            addPropertyChangeListener("ifile", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+                    System.out.println("property ifile changed");
+                    checkCompleteness();
+
+                }
+            });
+            addPropertyChangeListener("SWlon", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+                    System.out.println("property SWlon changed");
+                    checkCompleteness();
+
+                }
+            });
+            addPropertyChangeListener("SWlat", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+                    System.out.println("property SWlat changed");
+                    checkCompleteness();
+
+                }
+            });
+            addPropertyChangeListener("NElon", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+                    System.out.println("property NElon changed");
+                    checkCompleteness();
+
+                }
+            });
+            addPropertyChangeListener("NElat", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+                    System.out.println("property NElat changed");
+                    checkCompleteness();
+
+                }
+            });
         }
 
         public boolean updateIFileInfo(String ifileName) {
