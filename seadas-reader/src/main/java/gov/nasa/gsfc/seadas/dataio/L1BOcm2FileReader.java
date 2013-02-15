@@ -6,7 +6,6 @@ import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.PixelGeoCoding;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
-import ucar.ma2.Array;
 import ucar.nc2.Variable;
 
 import java.io.IOException;
@@ -40,18 +39,6 @@ public class L1BOcm2FileReader extends SeadasFileReader {
 
         int sceneWidth = getIntAttribute("Pixels per Scan Line");
         int sceneHeight = getIntAttribute("Number of Scan Lines");
-        try {
-            String navGroup = "Navigation_Data";
-            final String latitude = "latitude";
-            final Variable variable = ncFile.findGroup(navGroup).findVariable(latitude);
-            invalidateLines(LAT_SKIP_BAD_NAV, variable);
-
-            sceneHeight -= leadLineSkip;
-            sceneHeight -= tailLineSkip;
-
-        } catch (IOException ignore) {
-
-        }
 
         fixBandNames();
 
@@ -93,105 +80,23 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         addGeocoding(product);
 
         addFlagsAndMasks(product);
-        product.setAutoGrouping("Rrs:nLw:Lt:La:Lr:Lw:L_q:L_u:Es:TLg:rhom:rhos:rhot:Taua:Kd:aot:adg:aph:bbp:vgain:BT:tg_sol:tg_sen");
+        product.setAutoGrouping("Lt");
 
         return product;
     }
 
     public void addGeocoding(final Product product) throws ProductIOException {
-        // see if bowtie geocoding is needed
-        String res = null;
-        String sensor = null;
-        try {
-            sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor").getData().getElemString();
-            res = product.getMetadataRoot().getElement("Input_Parameters").getAttribute("RESOLUTION").getData().getElemString();
-        } catch (Exception e) {
-        }
-
-        if (sensor != null) {
-            sensor = sensor.toLowerCase();
-            if (sensor.contains("viirs")) {
-                addBowtieGeocoding(product, 16);
-                return;
-            } else if (sensor.contains("modis")) {
-                int scanHeight = 10;
-                if (res != null) {
-                    if (res.equals("500")) {
-                        scanHeight = 20;
-                    } else if (res.equals("250")) {
-                        scanHeight = 40;
-                    }
-                }
-                addBowtieGeocoding(product, scanHeight);
-                return;
-            } // modis
-        }
-        addPixelGeocoding(product);
-    }
-
-    public void addBowtieGeocoding(final Product product, int scanHeight) throws ProductIOException {
         final String longitude = "longitude";
         final String latitude = "latitude";
-        Band latBand;
-        Band lonBand;
 
-        if (product.containsBand(latitude) && product.containsBand(longitude)) {
-            latBand = product.getBand(latitude);
-            lonBand = product.getBand(longitude);
-            latBand.setNoDataValue(-999.);
-            lonBand.setNoDataValue(-999.);
-            latBand.setNoDataValueUsed(true);
-            lonBand.setNoDataValueUsed(true);
-            product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, scanHeight, 0));
-        }
+        Band latBand = product.getBand(latitude);
+        Band lonBand = product.getBand(longitude);
 
-    }
+        latBand.setNoDataValue(-999.);
+        lonBand.setNoDataValue(-999.);
+        latBand.setNoDataValueUsed(true);
+        lonBand.setNoDataValueUsed(true);
 
-    public void addPixelGeocoding(final Product product) throws ProductIOException {
-        String navGroup = "Navigation Data";
-        final String longitude = "longitude";
-        final String latitude = "latitude";
-        final String cntlPoints = "cntl_pt_cols";
-        Band latBand = null;
-        Band lonBand = null;
-
-        if (product.containsBand(latitude) && product.containsBand(longitude)) {
-            latBand = product.getBand(latitude);
-            lonBand = product.getBand(longitude);
-            latBand.setNoDataValue(-999.);
-            lonBand.setNoDataValue(-999.);
-            latBand.setNoDataValueUsed(true);
-            lonBand.setNoDataValueUsed(true);
-        } else {
-            if (ncFile.findGroup(navGroup) == null) {
-                if (ncFile.findGroup("Navigation") != null) {
-                    navGroup = "Navigation";
-                }
-            }
-            Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
-            Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
-            Variable cntlPointVar = ncFile.findVariable(navGroup + "/" + cntlPoints);
-            if (latVar != null && lonVar != null && cntlPointVar != null) {
-                final ProductData lonRawData = readData(lonVar);
-                final ProductData latRawData = readData(latVar);
-
-                latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
-                lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
-                latBand.setNoDataValue(-999.);
-                lonBand.setNoDataValue(-999.);
-                latBand.setNoDataValueUsed(true);
-                lonBand.setNoDataValueUsed(true);
-
-                Array cntArray;
-                try {
-                    cntArray = cntlPointVar.read();
-                    int[] colPoints = (int[]) cntArray.getStorage();
-                    computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints);
-                } catch (IOException e) {
-                    throw new ProductIOException(e.getMessage());
-                }
-            }
-        }
         try {
             if (latBand != null && lonBand != null) {
                 product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
@@ -199,8 +104,6 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage());
         }
-
     }
-
 }
 
