@@ -1117,7 +1117,7 @@ public class L2genData implements L2genDataProcessorModel {
             String line = stdInput.readLine();
 
         } catch (IOException e) {
-            System.out.println("ERROR - Problem running "+UPDATE_LUTS_SCRIPT);
+            System.out.println("ERROR - Problem running " + UPDATE_LUTS_SCRIPT);
             System.out.println(e.getMessage());
             return;
         }
@@ -1326,27 +1326,31 @@ public class L2genData implements L2genDataProcessorModel {
                 xmlFile = new File(l2genDir, PRODUCT_INFO_XML);
                 ofile = new File(l2genDir, PRODUCT_INFO_XML + ".out");
                 processorModel = new ProcessorModel("l2gen");
+
                 break;
         }
 
 
         processorModel.setAcceptsParFile(true);
+
         processorModel.addParamInfo("ifile", file.getAbsolutePath(), ParamInfo.Type.IFILE);
-        processorModel.addParamInfo("ofile", ofile.getAbsolutePath(), ParamInfo.Type.OFILE);
+   //     processorModel.addParamInfo("ofile", ofile.getAbsolutePath(), ParamInfo.Type.OFILE);
         processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            //todo temporary short circuit
-            if (mode != Mode.L2GEN_AQUARIUS) {
-                Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
-                p.waitFor();
-                ofile.delete();
-                if (p.exitValue() != 0) {
-                    System.out.println("ERROR - Problem creating Product XML file");
-                    System.out.println("Exit value = " + Integer.toString(p.exitValue()));
-                    return null;
-                }
+            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
+            p.waitFor();
+            ofile.delete();
+            if (p.exitValue() != 0) {
+                System.out.println("ERROR - Problem creating Product XML file");
+                System.out.println("Exit value = " + Integer.toString(p.exitValue()));
+                return null;
             }
+
+            if (!xmlFile.exists()) {
+                return null;
+            }
+
             return new FileInputStream(xmlFile);
         } catch (IOException e) {
             System.out.println("ERROR - Problem creating Product XML file");
@@ -1400,16 +1404,18 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            //todo temporary short circuit
-            if (mode != Mode.L2GEN_AQUARIUS) {
-                Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
-                p.waitFor();
-                if (p.exitValue() != 0) {
-                    System.out.println("ERROR - Problem creating Parameter XML file");
-                    System.out.println("Exit value = " + Integer.toString(p.exitValue()));
-                    return null;
-                }
+            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
+            p.waitFor();
+            if (p.exitValue() != 0) {
+                System.out.println("ERROR - Problem creating Parameter XML file");
+                System.out.println("Exit value = " + Integer.toString(p.exitValue()));
+                return null;
             }
+
+            if (!xmlFile.exists()) {
+                return null;
+            }
+
             return new FileInputStream(xmlFile);
         } catch (IOException e) {
             System.out.println("ERROR - Problem creating Parameter XML file");
@@ -1594,7 +1600,6 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.setReadyToRun(isValidIfile());
         return processorModel;
     }
-
 
 
 }

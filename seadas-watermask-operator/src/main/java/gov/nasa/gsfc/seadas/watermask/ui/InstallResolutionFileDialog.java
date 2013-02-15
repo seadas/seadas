@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
 
 /**
@@ -71,14 +72,32 @@ class InstallResolutionFileDialog extends JDialog {
                 try {
                     landMasksData.fireEvent(LandMasksData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
 
-                    String filename = sourceFileInfo.getFile().getName().toString();
-                    URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
-   //                 ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
+                    final String filename = sourceFileInfo.getFile().getName().toString();
+                    final URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
+                    //                 ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
 
 
-                    FileInstallationThread fileInstallationThread = new FileInstallationThread(sourceUrl, filename);
+//                    SwingUtilities.invokeLater(new Runnable() {
+//                        public void run() {
+//                            new FileInstallationThread(sourceUrl, filename);
+//                        }
+//                    });
 
-                    fileInstallationThread.run();
+//                    new Runnable() {
+//                        public void run() {
+//                            new FileInstallationThread(sourceUrl, filename);
+//                        }
+//                    };
+
+
+                    //      new FileInstallationThread(sourceUrl, filename);
+                    File targetDir = ResourceInstallationUtils.getTargetDir();
+                    ProcessBuilder pb = new ProcessBuilder("wget.py", sourceUrl.toString(), targetDir.getAbsolutePath());
+                    pb.start();
+
+//                    FileInstallationThread fileInstallationThread = new FileInstallationThread(sourceUrl, filename);
+//                    fileInstallationThread.setDaemon(true);
+//                    fileInstallationThread.run();
 
                     InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(landMasksData, sourceFileInfo, Step.CONFIRMATION);
                     dialog.setVisible(true);

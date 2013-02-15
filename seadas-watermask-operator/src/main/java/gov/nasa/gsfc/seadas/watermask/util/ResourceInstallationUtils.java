@@ -55,6 +55,15 @@ public class ResourceInstallationUtils {
     }
 
 
+
+    public static File getTargetDir() {
+        File targetModuleDir = new File(SystemUtils.getApplicationDataDir(), MODULE_NAME);
+        File targetDir = new File(targetModuleDir, AUXDIR);
+
+        return targetDir;
+    }
+
+
     public static File getTargetFile(String filename) {
         File targetModuleDir = new File(SystemUtils.getApplicationDataDir(), MODULE_NAME);
         File targetDir = new File(targetModuleDir, AUXDIR);

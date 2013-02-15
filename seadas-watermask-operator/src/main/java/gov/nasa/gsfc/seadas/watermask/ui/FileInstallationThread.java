@@ -11,7 +11,7 @@ import java.net.URL;
  * Time: 3:22 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FileInstallationThread  extends Thread  {
+public class FileInstallationThread extends Thread {
 
     URL sourceUrl;
     String filename;
@@ -19,6 +19,13 @@ public class FileInstallationThread  extends Thread  {
     public FileInstallationThread(URL sourceUrl, String filename) {
         this.sourceUrl = sourceUrl;
         this.filename = filename;
+//        setDaemon(true);
+//
+//        try {
+//            ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void run() {
