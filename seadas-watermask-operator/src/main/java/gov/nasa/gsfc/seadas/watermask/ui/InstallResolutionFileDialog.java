@@ -1,12 +1,11 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
-import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 
 /**
@@ -74,46 +73,39 @@ class InstallResolutionFileDialog extends JDialog {
 
                     final String filename = sourceFileInfo.getFile().getName().toString();
                     final URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
-                    //                 ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
+
+                    Thread t = new Thread(new FileInstallRunnable(sourceUrl, filename, landMasksData));
+                    t.start();
+
+//                    File targetDir = ResourceInstallationUtils.getTargetDir();
+//                    ProcessBuilder pb = new ProcessBuilder("wget.py", sourceUrl.toString(), targetDir.getAbsolutePath());
+//                    pb.start();
 
 
-//                    SwingUtilities.invokeLater(new Runnable() {
-//                        public void run() {
-//                            new FileInstallationThread(sourceUrl, filename);
-//                        }
-//                    });
 
-//                    new Runnable() {
-//                        public void run() {
-//                            new FileInstallationThread(sourceUrl, filename);
-//                        }
-//                    };
-
-
-                    //      new FileInstallationThread(sourceUrl, filename);
-                    File targetDir = ResourceInstallationUtils.getTargetDir();
-                    ProcessBuilder pb = new ProcessBuilder("wget.py", sourceUrl.toString(), targetDir.getAbsolutePath());
-                    pb.start();
-
-//                    FileInstallationThread fileInstallationThread = new FileInstallationThread(sourceUrl, filename);
-//                    fileInstallationThread.setDaemon(true);
-//                    fileInstallationThread.run();
-
-                    InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(landMasksData, sourceFileInfo, Step.CONFIRMATION);
-                    dialog.setVisible(true);
-                    dialog.setEnabled(true);
-
-                    if (sourceFileInfo.isEnabled()) {
-                        jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
-                    } else {
-                        jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
-                    }
-
-                    landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
+            }
+        });
+
+        landMasksData.addPropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+
+                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(landMasksData, sourceFileInfo, Step.CONFIRMATION);
+                dialog.setVisible(true);
+                dialog.setEnabled(true);
+
+                if (sourceFileInfo.isEnabled()) {
+                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
+                    landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT2);
+                } else {
+                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
+                }
+
+                landMasksData.removePropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, this);
             }
         });
 
@@ -169,6 +161,30 @@ class InstallResolutionFileDialog extends JDialog {
         setSize(getPreferredSize());
 
     }
+
+
+//    private class FileInstallRunnable
+//            implements Runnable {
+//        URL sourceUrl;
+//        String filename;
+//        LandMasksData landMasksData;
+//
+//        public FileInstallRunnable(URL sourceUrl, String filename, LandMasksData landMasksData) {
+//            this.sourceUrl = sourceUrl;
+//            this.filename = filename;
+//            this.landMasksData = landMasksData;
+//        }
+//
+//        public void run() {
+//            try {
+//                ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
+//                landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT);
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
 
     public final void confirmationUI() {

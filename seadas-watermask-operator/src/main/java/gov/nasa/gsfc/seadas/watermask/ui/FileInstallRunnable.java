@@ -7,34 +7,29 @@ import java.net.URL;
 /**
  * Created with IntelliJ IDEA.
  * User: knowles
- * Date: 2/7/13
- * Time: 3:22 PM
+ * Date: 2/18/13
+ * Time: 4:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FileInstallationThread extends Thread {
-
+class FileInstallRunnable
+        implements Runnable {
     URL sourceUrl;
     String filename;
+    LandMasksData landMasksData;
 
-    public FileInstallationThread(URL sourceUrl, String filename) {
+    public FileInstallRunnable(URL sourceUrl, String filename, LandMasksData landMasksData) {
         this.sourceUrl = sourceUrl;
         this.filename = filename;
-//        setDaemon(true);
-//
-//        try {
-//            ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        this.landMasksData = landMasksData;
     }
 
     public void run() {
         try {
             ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
+            landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT, null, filename);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 }
