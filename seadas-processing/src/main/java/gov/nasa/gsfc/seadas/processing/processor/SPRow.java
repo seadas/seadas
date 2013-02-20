@@ -305,9 +305,9 @@ public class SPRow {
         String tinyFileName = "tiny_" + missionName;
 
         if (fileInfo != null && fileInfo.isGeofileRequired()) {
-            L2genData.installTinyIFile(tinyFileName + ".GEO");
+            L2genData.installResource(tinyFileName + ".GEO");
         }
 
-        return L2genData.installTinyIFile(tinyFileName);
+        return L2genData.installResource(tinyFileName);
     }
 }

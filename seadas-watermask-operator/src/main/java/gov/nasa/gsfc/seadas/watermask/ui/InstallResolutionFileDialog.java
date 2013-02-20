@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.net.URL;
 
 /**
@@ -35,25 +33,14 @@ class InstallResolutionFileDialog extends JDialog {
 
 
         if (step == Step.INSTALLATION) {
-            installationUI();
+            installationRequestUI();
         } else if (step == Step.CONFIRMATION) {
-            confirmationUI();
+            installationResultsUI();
         }
     }
 
-//    private static class InstallationThread
-//            implements   Runnable {
-//
-//        public void run() {
-//
-//
-//            ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
-//
-//        }
-//    }
 
-
-    public final void installationUI() {
+    public final void installationRequestUI() {
         JButton installButton = new JButton("Install File");
         installButton.setPreferredSize(installButton.getPreferredSize());
         installButton.setMinimumSize(installButton.getPreferredSize());
@@ -74,13 +61,12 @@ class InstallResolutionFileDialog extends JDialog {
                     final String filename = sourceFileInfo.getFile().getName().toString();
                     final URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
 
-                    Thread t = new Thread(new FileInstallRunnable(sourceUrl, filename, landMasksData));
+                    Thread t = new Thread(new FileInstallRunnable(sourceUrl, sourceFileInfo, landMasksData));
                     t.start();
 
 //                    File targetDir = ResourceInstallationUtils.getTargetDir();
 //                    ProcessBuilder pb = new ProcessBuilder("wget.py", sourceUrl.toString(), targetDir.getAbsolutePath());
 //                    pb.start();
-
 
 
                 } catch (Exception e) {
@@ -90,25 +76,26 @@ class InstallResolutionFileDialog extends JDialog {
             }
         });
 
-        landMasksData.addPropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-
-                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(landMasksData, sourceFileInfo, Step.CONFIRMATION);
-                dialog.setVisible(true);
-                dialog.setEnabled(true);
-
-                if (sourceFileInfo.isEnabled()) {
-                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
-                    landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT2);
-                } else {
-                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
-                }
-
-                landMasksData.removePropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, this);
-            }
-        });
-
+//        this.addPropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                SourceFileInfo sourceFileInfo = (SourceFileInfo) evt.getNewValue();
+//
+//                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(this, sourceFileInfo, InstallResolutionFileDialog.Step.CONFIRMATION);
+//                dialog.setVisible(true);
+//                dialog.setEnabled(true);
+//
+//                if (sourceFileInfo.isEnabled()) {
+//                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
+//                    landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT2);
+//                } else {
+//                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
+//                }
+//
+//                landMasksData.removePropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, this);
+//            }
+//        });
+//
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(cancelButton.getPreferredSize());
         cancelButton.setMinimumSize(cancelButton.getPreferredSize());
@@ -163,31 +150,9 @@ class InstallResolutionFileDialog extends JDialog {
     }
 
 
-//    private class FileInstallRunnable
-//            implements Runnable {
-//        URL sourceUrl;
-//        String filename;
-//        LandMasksData landMasksData;
-//
-//        public FileInstallRunnable(URL sourceUrl, String filename, LandMasksData landMasksData) {
-//            this.sourceUrl = sourceUrl;
-//            this.filename = filename;
-//            this.landMasksData = landMasksData;
-//        }
-//
-//        public void run() {
-//            try {
-//                ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
-//                landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT);
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
 
-    public final void confirmationUI() {
+    public final void installationResultsUI() {
         JButton okayButton = new JButton("Okay");
         okayButton.setPreferredSize(okayButton.getPreferredSize());
         okayButton.setMinimumSize(okayButton.getPreferredSize());
@@ -197,18 +162,16 @@ class InstallResolutionFileDialog extends JDialog {
         okayButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 dispose();
-
-
             }
         });
 
 
         if (sourceFileInfo.isEnabled()) {
             jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
+            landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT2);
         } else {
             jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
         }
-
 
         JPanel jPanel = new JPanel(new GridBagLayout());
         jPanel.add(jLabel,

@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.watermask.ui;
 
 import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
 
+import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -11,25 +12,36 @@ import java.net.URL;
  * Time: 4:07 PM
  * To change this template use File | Settings | File Templates.
  */
-class FileInstallRunnable
-        implements Runnable {
+class FileInstallRunnable implements Runnable {
     URL sourceUrl;
-    String filename;
     LandMasksData landMasksData;
+    SourceFileInfo sourceFileInfo;
+    boolean valid = true;
 
-    public FileInstallRunnable(URL sourceUrl, String filename, LandMasksData landMasksData) {
+    public FileInstallRunnable(URL sourceUrl, SourceFileInfo sourceFileInfo, LandMasksData landMasksData) {
+        if (sourceUrl== null ||  sourceFileInfo == null  || landMasksData == null) {
+            valid = false;
+            return;
+        }
+
         this.sourceUrl = sourceUrl;
-        this.filename = filename;
+        this.sourceFileInfo = sourceFileInfo;
         this.landMasksData = landMasksData;
     }
 
     public void run() {
+        if (!valid) {
+            return;
+        }
+
+        final String filename = sourceFileInfo.getFile().getName().toString();
+
         try {
             ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
-            landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT, null, filename);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            sourceFileInfo.setStatus(false, e.getMessage());
         }
+
+        landMasksData.fireEvent(LandMasksData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, null, sourceFileInfo);
     }
 }

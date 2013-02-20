@@ -17,7 +17,9 @@ import java.util.ArrayList;
  */
 class LandMasksData {
 
-    public static String FILE_INSTALLED_EVENT = "FILE_INSTALLED_EVENT";
+    LandMasksData landMasksData = this;
+
+    public static String NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT = "NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT";
     public static String FILE_INSTALLED_EVENT2 = "FILE_INSTALLED_EVENT2";
     public static String PROMPT_REQUEST_TO_INSTALL_FILE_EVENT = "REQUEST_TO_INSTALL_FILE_EVENT";
     public static String CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT = "CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT";
@@ -108,6 +110,16 @@ class LandMasksData {
                 WatermaskClassifier.FILENAME_GSHHS_10km);
         getSourceFileInfos().add(sourceFileInfo);
 
+        this.addPropertyChangeListener(LandMasksData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                SourceFileInfo sourceFileInfo = (SourceFileInfo) evt.getNewValue();
+
+                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(landMasksData, sourceFileInfo, InstallResolutionFileDialog.Step.CONFIRMATION);
+                dialog.setVisible(true);
+                dialog.setEnabled(true);
+            }
+        });
     }
 
 
@@ -323,9 +335,11 @@ class LandMasksData {
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, propertyName, null, null));
     }
 
-    public void fireEvent(String propertyName, String oldValue, String newValue) {
+    public void fireEvent(String propertyName, SourceFileInfo oldValue, SourceFileInfo newValue) {
         propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
     }
+
+
 }
 
 
