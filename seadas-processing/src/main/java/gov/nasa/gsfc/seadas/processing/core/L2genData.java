@@ -1090,8 +1090,6 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    
-
 //    private void setSuiteParamValue(ParamInfo paramInfo, String value) {
 //
 //
@@ -1174,7 +1172,15 @@ public class L2genData implements L2genDataProcessorModel {
 
         processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, position);
 
+        File iFile = new File(ifile);
         try {
+
+
+//            System.setProperty("user.dir", iFile.getAbsolutePath());
+//            String test = iFile.getAbsolutePath();
+//            File test2 = processorModel.getIFileDir();
+//            String test22 = test2.getAbsolutePath();
+
             Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
@@ -1187,7 +1193,7 @@ public class L2genData implements L2genDataProcessorModel {
                 line = stdInput.readLine();
             }
         } catch (IOException e) {
-            System.out.println("ERROR - Problem running "+ getanc);
+            System.out.println("ERROR - Problem running " + getanc);
             System.out.println(e.getMessage());
             return;
         }

@@ -11,11 +11,13 @@
     </category>
 
 
-<category name="Processing Options">
+    <category name="Processing Options">
         <autoTab>1</autoTab>
         <param>yancfile1</param>
         <param>yancfile2</param>
         <param>yancfile3</param>
+        <param>xrayfile1</param>
+        <param>xrayfile2</param>
     </category>
 
     <category name="Miscellaneous">
