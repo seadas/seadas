@@ -28,6 +28,7 @@ public class MissionInfo {
         OSMI,
         SEAWIFS,
         VIIRS,
+        OCM2,
         UNKNOWN
     }
 
@@ -42,6 +43,7 @@ public class MissionInfo {
             Id.OSMI,
             Id.SEAWIFS,
             Id.VIIRS,
+            Id.OCM2
     };
 
 
@@ -74,6 +76,9 @@ public class MissionInfo {
 
     public final static String[] MOS_NAMES = {"MOS"};
     public final static String MOS_DIRECTORY = "mos";
+
+    public final static String[] OCM2_NAMES = {"OCM2"};
+    public final static String OCM2_DIRECTORY = "ocm2";
 
 
     private final HashMap<Id, String[]> names = new HashMap<Id, String[]>();
@@ -115,6 +120,7 @@ public class MissionInfo {
         directories.put(Id.OCTS, OCTS_DIRECTORY);
         directories.put(Id.OSMI, OSMI_DIRECTORY);
         directories.put(Id.MOS, MOS_DIRECTORY);
+        directories.put(Id.OCM2, OCM2_DIRECTORY);
     }
 
 
@@ -129,6 +135,7 @@ public class MissionInfo {
         names.put(Id.OCTS, OCTS_NAMES);
         names.put(Id.OSMI, OSMI_NAMES);
         names.put(Id.MOS, MOS_NAMES);
+        names.put(Id.OCM2, OCM2_NAMES);
     }
 
 
@@ -185,7 +192,6 @@ public class MissionInfo {
             return null;
         }
     }
-
 
     private void setRequiresGeofile() {
         if (id == null) {
