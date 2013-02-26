@@ -21,13 +21,11 @@ public class ResourceInstallationUtils {
     public static String AUXPATH = "gov/nasa/gsfc/seadas/watermask/operator/" + AUXDIR + "/";
 
 
-    public static void writeFileFromUrl(URL sourceUrl, File targetFile) throws Exception {
-
+    public static void writeFileFromUrl(URL sourceUrl, File targetFile) throws IOException {
 
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(sourceUrl.openStream());
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
 
             boolean exist = targetFile.createNewFile();
 
@@ -48,10 +46,17 @@ public class ResourceInstallationUtils {
             bufferedReader.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IOException("failed to write file from url: " + e.getMessage() );
         }
+    }
 
 
+
+    public static File getTargetDir() {
+        File targetModuleDir = new File(SystemUtils.getApplicationDataDir(), MODULE_NAME);
+        File targetDir = new File(targetModuleDir, AUXDIR);
+
+        return targetDir;
     }
 
 
@@ -64,17 +69,14 @@ public class ResourceInstallationUtils {
     }
 
 
-    public static void installAuxdata(URL sourceUrl, String filename) {
+    public static void installAuxdata(URL sourceUrl, String filename) throws IOException {
         File targetFile = getTargetFile(filename);
 
-        try {
             writeFileFromUrl(sourceUrl, targetFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
-    public static File installAuxdata(Class sourceClass, String filename) {
+    public static File installAuxdata(Class sourceClass, String filename) throws IOException {
         File targetFile = getTargetFile(filename);
 
         if (!targetFile.canRead()) {
@@ -83,7 +85,7 @@ public class ResourceInstallationUtils {
             try {
                 resourceInstaller.install(filename, ProgressMonitor.NULL);
             } catch (Exception e) {
-                System.out.printf("resource not copied - %s", e.getMessage());
+               throw new IOException("file failed: " + e.getMessage());
             }
         }
         return targetFile;

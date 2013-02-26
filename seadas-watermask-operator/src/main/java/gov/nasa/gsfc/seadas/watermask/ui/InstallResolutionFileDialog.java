@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
-import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -35,25 +33,14 @@ class InstallResolutionFileDialog extends JDialog {
 
 
         if (step == Step.INSTALLATION) {
-            installationUI();
+            installationRequestUI();
         } else if (step == Step.CONFIRMATION) {
-            confirmationUI();
+            installationResultsUI();
         }
     }
 
-//    private static class InstallationThread
-//            implements   Runnable {
-//
-//        public void run() {
-//
-//
-//            ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
-//
-//        }
-//    }
 
-
-    public final void installationUI() {
+    public final void installationRequestUI() {
         JButton installButton = new JButton("Install File");
         installButton.setPreferredSize(installButton.getPreferredSize());
         installButton.setMinimumSize(installButton.getPreferredSize());
@@ -71,26 +58,17 @@ class InstallResolutionFileDialog extends JDialog {
                 try {
                     landMasksData.fireEvent(LandMasksData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
 
-                    String filename = sourceFileInfo.getFile().getName().toString();
-                    URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
-   //                 ResourceInstallationUtils.installAuxdata(sourceUrl, filename);
+                    final String filename = sourceFileInfo.getFile().getName().toString();
+                    final URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
+
+                    Thread t = new Thread(new FileInstallRunnable(sourceUrl, sourceFileInfo, landMasksData));
+                    t.start();
+
+//                    File targetDir = ResourceInstallationUtils.getTargetDir();
+//                    ProcessBuilder pb = new ProcessBuilder("wget.py", sourceUrl.toString(), targetDir.getAbsolutePath());
+//                    pb.start();
 
 
-                    FileInstallationThread fileInstallationThread = new FileInstallationThread(sourceUrl, filename);
-
-                    fileInstallationThread.run();
-
-                    InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(landMasksData, sourceFileInfo, Step.CONFIRMATION);
-                    dialog.setVisible(true);
-                    dialog.setEnabled(true);
-
-                    if (sourceFileInfo.isEnabled()) {
-                        jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
-                    } else {
-                        jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
-                    }
-
-                    landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -98,6 +76,26 @@ class InstallResolutionFileDialog extends JDialog {
             }
         });
 
+//        this.addPropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                SourceFileInfo sourceFileInfo = (SourceFileInfo) evt.getNewValue();
+//
+//                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(this, sourceFileInfo, InstallResolutionFileDialog.Step.CONFIRMATION);
+//                dialog.setVisible(true);
+//                dialog.setEnabled(true);
+//
+//                if (sourceFileInfo.isEnabled()) {
+//                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
+//                    landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT2);
+//                } else {
+//                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
+//                }
+//
+//                landMasksData.removePropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, this);
+//            }
+//        });
+//
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(cancelButton.getPreferredSize());
         cancelButton.setMinimumSize(cancelButton.getPreferredSize());
@@ -152,7 +150,9 @@ class InstallResolutionFileDialog extends JDialog {
     }
 
 
-    public final void confirmationUI() {
+
+
+    public final void installationResultsUI() {
         JButton okayButton = new JButton("Okay");
         okayButton.setPreferredSize(okayButton.getPreferredSize());
         okayButton.setMinimumSize(okayButton.getPreferredSize());
@@ -162,18 +162,16 @@ class InstallResolutionFileDialog extends JDialog {
         okayButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 dispose();
-
-
             }
         });
 
 
         if (sourceFileInfo.isEnabled()) {
             jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
+            landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT2);
         } else {
             jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
         }
-
 
         JPanel jPanel = new JPanel(new GridBagLayout());
         jPanel.add(jLabel,

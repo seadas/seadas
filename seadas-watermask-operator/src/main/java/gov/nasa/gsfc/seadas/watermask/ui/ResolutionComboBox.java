@@ -100,7 +100,7 @@ public class ResolutionComboBox {
 
 
     private void addEventHandlers() {
-        landMasksData.addPropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, new PropertyChangeListener() {
+        landMasksData.addPropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT2, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updateJComboBox();

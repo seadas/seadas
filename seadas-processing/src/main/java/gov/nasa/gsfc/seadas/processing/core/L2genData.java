@@ -21,7 +21,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 /**
  * A ...
@@ -53,6 +52,11 @@ public class L2genData implements L2genDataProcessorModel {
             AQUARIUS_PARAM_CATEGORY_INFO_XML = "aquariusParamCategoryInfo.xml",
             AQUARIUS_PRODUCT_CATEGORY_INFO_XML = "aquariusProductCategoryInfo.xml";
 
+    private static final String
+            GETANC = "getanc",
+            GETANC_AQUARIUS = "getanc_aquarius.py";
+
+    private static File aquariusProductXmlFile;
 
     public static final String
             PAR = "par",
@@ -1117,7 +1121,7 @@ public class L2genData implements L2genDataProcessorModel {
             String line = stdInput.readLine();
 
         } catch (IOException e) {
-            System.out.println("ERROR - Problem running "+UPDATE_LUTS_SCRIPT);
+            System.out.println("ERROR - Problem running " + UPDATE_LUTS_SCRIPT);
             System.out.println(e.getMessage());
             return;
         }
@@ -1137,8 +1141,20 @@ public class L2genData implements L2genDataProcessorModel {
         String ifile = getParamValue(getParamInfo(IFILE));
         StringBuilder ancillaryFiles = new StringBuilder("");
 
-        ProcessorModel processorModel = new ProcessorModel("getanc.py");
+        String getanc;
+
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                getanc = GETANC_AQUARIUS;
+                break;
+            default:
+                getanc = GETANC;
+                break;
+        }
+
+        ProcessorModel processorModel = new ProcessorModel(getanc);
         processorModel.setAcceptsParFile(false);
+
 
         int position = 1;
         if (refreshDB) {
@@ -1156,7 +1172,15 @@ public class L2genData implements L2genDataProcessorModel {
 
         processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, position);
 
+        File iFile = new File(ifile);
         try {
+
+
+//            System.setProperty("user.dir", iFile.getAbsolutePath());
+//            String test = iFile.getAbsolutePath();
+//            File test2 = processorModel.getIFileDir();
+//            String test22 = test2.getAbsolutePath();
+
             Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
@@ -1169,7 +1193,7 @@ public class L2genData implements L2genDataProcessorModel {
                 line = stdInput.readLine();
             }
         } catch (IOException e) {
-            System.out.println("ERROR - Problem running getanc.py");
+            System.out.println("ERROR - Problem running " + getanc);
             System.out.println(e.getMessage());
             return;
         }
@@ -1316,27 +1340,18 @@ public class L2genData implements L2genDataProcessorModel {
         File ofile;
         ProcessorModel processorModel;
 
-        switch (mode) {
-            case L2GEN_AQUARIUS:
-                xmlFile = new File(l2genDir, AQUARIUS_PRODUCT_INFO_XML);
-                ofile = new File(l2genDir, AQUARIUS_PRODUCT_INFO_XML + ".out");
-                processorModel = new ProcessorModel("l2gen_aquarius");
-                break;
-            default:
-                xmlFile = new File(l2genDir, PRODUCT_INFO_XML);
-                ofile = new File(l2genDir, PRODUCT_INFO_XML + ".out");
-                processorModel = new ProcessorModel("l2gen");
-                break;
-        }
+        xmlFile = new File(l2genDir, PRODUCT_INFO_XML);
+        ofile = new File(l2genDir, PRODUCT_INFO_XML + ".out");
+        processorModel = new ProcessorModel("l2gen");
 
 
         processorModel.setAcceptsParFile(true);
+
         processorModel.addParamInfo("ifile", file.getAbsolutePath(), ParamInfo.Type.IFILE);
-        processorModel.addParamInfo("ofile", ofile.getAbsolutePath(), ParamInfo.Type.OFILE);
+        //     processorModel.addParamInfo("ofile", ofile.getAbsolutePath(), ParamInfo.Type.OFILE);
         processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            //todo temporary short circuit
             if (mode != Mode.L2GEN_AQUARIUS) {
                 Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
                 p.waitFor();
@@ -1347,6 +1362,11 @@ public class L2genData implements L2genDataProcessorModel {
                     return null;
                 }
             }
+
+            if (!xmlFile.exists()) {
+                return null;
+            }
+
             return new FileInputStream(xmlFile);
         } catch (IOException e) {
             System.out.println("ERROR - Problem creating Product XML file");
@@ -1359,6 +1379,26 @@ public class L2genData implements L2genDataProcessorModel {
         }
 
 //        return L2genForm.class.getResourceAsStream(PRODUCT_INFO_XML);
+    }
+
+    private InputStream getAquariusProductInfoInputStream() {
+        File file = getAquariusProductXmlFile();
+        File dataDir = SystemUtils.getApplicationDataDir();
+        File l2genDir = new File(dataDir, "l2gen");
+        l2genDir.mkdirs();
+
+        try {
+            if (file == null || !file.exists()) {
+                return null;
+            }
+
+            return new FileInputStream(file);
+        } catch (IOException e) {
+            System.out.println("ERROR - Problem creating Aquarius Product XML file");
+            System.out.println(e.getMessage());
+            return null;
+
+        }
     }
 
 
@@ -1400,16 +1440,18 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            //todo temporary short circuit
-            if (mode != Mode.L2GEN_AQUARIUS) {
-                Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
-                p.waitFor();
-                if (p.exitValue() != 0) {
-                    System.out.println("ERROR - Problem creating Parameter XML file");
-                    System.out.println("Exit value = " + Integer.toString(p.exitValue()));
-                    return null;
-                }
+            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir());//processorModel.executeProcess();
+            p.waitFor();
+            if (p.exitValue() != 0) {
+                System.out.println("ERROR - Problem creating Parameter XML file");
+                System.out.println("Exit value = " + Integer.toString(p.exitValue()));
+                return null;
             }
+
+            if (!xmlFile.exists()) {
+                return null;
+            }
+
             return new FileInputStream(xmlFile);
         } catch (IOException e) {
             System.out.println("ERROR - Problem creating Parameter XML file");
@@ -1507,7 +1549,18 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
     public L2genProductsParamInfo createL2prodParamInfo(String value) {
-        InputStream productInfoStream = getProductInfoInputStream(getTinyIFile());
+
+        InputStream productInfoStream;
+
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                productInfoStream = getAquariusProductInfoInputStream();
+                break;
+            default:
+                productInfoStream = getProductInfoInputStream(getTinyIFile());
+                break;
+        }
+
 
         L2genProductsParamInfo l2prodParamInfo = new L2genProductsParamInfo();
         setL2prodParamInfo(l2prodParamInfo);
@@ -1534,19 +1587,23 @@ public class L2genData implements L2genDataProcessorModel {
         return StringUtils.join(productArrayList, " ");
     }
 
+
     public File getTinyIFile() {
         if (tinyIFile == null) {
-            tinyIFile = installTinyIFile();
+            tinyIFile = installResource(TINY_IFILE_NAME);
         }
         return tinyIFile;
     }
 
-    public static File installTinyIFile() {
-        return installTinyIFile(TINY_IFILE_NAME);
+    public File getAquariusProductXmlFile() {
+        if (aquariusProductXmlFile == null) {
+            aquariusProductXmlFile = installResource(AQUARIUS_PRODUCT_INFO_XML);
+        }
+        return aquariusProductXmlFile;
     }
 
-    public static File installTinyIFile(String fileName) {
-        final String tinyFileName = fileName;
+
+    public static File installResource(final String fileName) {
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), "l2gen");
         File theFile = new File(dataDir, fileName);
         if (theFile.canRead()) {
@@ -1560,7 +1617,7 @@ public class L2genData implements L2genDataProcessorModel {
                 "Installing Auxdata...") {
             @Override
             protected Object doInBackground(ProgressMonitor progressMonitor) throws Exception {
-                resourceInstaller.install(tinyFileName, progressMonitor);
+                resourceInstaller.install(fileName, progressMonitor);
                 return Boolean.TRUE;
             }
 
@@ -1594,7 +1651,6 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.setReadyToRun(isValidIfile());
         return processorModel;
     }
-
 
 
 }

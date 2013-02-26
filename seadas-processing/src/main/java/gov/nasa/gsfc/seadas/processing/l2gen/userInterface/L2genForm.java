@@ -84,15 +84,15 @@ public class L2genForm extends JPanel implements CloProgramUI {
             getL2genData().disableEvent(L2genData.PARSTRING);
             getL2genData().disableEvent(L2genData.L2PROD);
 
-            if (mode == L2genData.Mode.L2GEN_AQUARIUS) {
-                l2genData.fireEvent(L2genData.IFILE);
-            } else {
+//            if (mode == L2genData.Mode.L2GEN_AQUARIUS) {
+//                l2genData.fireEvent(L2genData.IFILE);
+//            } else {
                 if (iFile != null) {
                     getL2genData().setInitialValues(iFile);
                 } else {
                     getL2genData().setInitialValues(getInitialSelectedSourceFile());
                 }
-            }
+//            }
 
 
             getL2genData().fireAllParamEvents();

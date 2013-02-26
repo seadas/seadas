@@ -48,5 +48,17 @@
             <source>default</source>
             <description>radiometer ancillary file 3</description>
         </option>
+        <option type="ifile">
+            <name>xrayfile1</name>
+            <value/>
+            <source>default</source>
+            <description>radiometer xray ancillary file 1</description>
+        </option>
+        <option type="ifile">
+            <name>xrayfile2</name>
+            <value/>
+            <source>default</source>
+            <description>radiometer xray ancillary file 2</description>
+        </option>
     </options>
 </paramInfo>
