@@ -118,7 +118,11 @@ public class L2genData implements L2genDataProcessorModel {
 
     public L2genData(Mode mode) {
         setMode(mode);
-        processorModel = new ProcessorModel("l2gen", getParamInfos());
+        if (mode == Mode.L2GEN_AQUARIUS) {
+            processorModel = new ProcessorModel("l2gen_aquarius", getParamInfos());
+        } else {
+            processorModel = new ProcessorModel("l2gen", getParamInfos());
+        }
         processorModel.setAcceptsParFile(true);
     }
 
@@ -1362,7 +1366,11 @@ public class L2genData implements L2genDataProcessorModel {
 
         xmlFile = new File(l2genDir, PRODUCT_INFO_XML);
         ofile = new File(l2genDir, PRODUCT_INFO_XML + ".out");
-        processorModel = new ProcessorModel("l2gen");
+        if (mode == Mode.L2GEN_AQUARIUS) {
+            processorModel = new ProcessorModel("l2gen_aquarius");
+        } else {
+            processorModel = new ProcessorModel("l2gen");
+        }
 
 
         processorModel.setAcceptsParFile(true);
