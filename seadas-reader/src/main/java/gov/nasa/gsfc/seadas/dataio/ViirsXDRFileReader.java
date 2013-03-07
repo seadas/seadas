@@ -155,15 +155,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         int strlen = inputFile.getName().length();
         int detectorsInScan;
 
-        try {
-            String CollectionShortName = getCollectionShortName();
-            String varName = "All_Data/" + CollectionShortName + "_All/NumberOfScans";
-            Variable nscans = ncFile.findVariable(varName);
-            Array ns = nscans.read();
-            detectorsInScan = product.getSceneRasterHeight() / ns.getInt(0);
-        } catch (IOException e) {
-            throw new ProductIOException("Could not find the number of detectors in a scan");
-        }
+
 
         Attribute geoRef = findAttribute("N_GEO_Ref");
         if (geoRef != null) {
@@ -177,6 +169,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 geoFileName = "GMTCO" + inputFile.getName().substring(5, strlen);
             }
         }
+
         try {
 
             String path = inputFile.getParent();
@@ -210,7 +203,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 //                          prefer the GITCO, so keep looking just in case;
                         }
 
-                    } else if (inputFile.getName().startsWith("SVM")){
+                    } else if (inputFile.getName().startsWith("SVM") ||inputFile.getName().startsWith("VO") ){
                         if ( gf.startsWith("GMTCO")){
                             geocheck = new File(path,  gf);
                             break;
@@ -233,7 +226,15 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                     break;
                 }
             }
-
+            try {
+                String CollectionShortName = getCollectionShortName();
+                String varName = "All_Data/" + CollectionShortName + "_All/NumberOfScans";
+                Variable nscans = geofile.findVariable(varName);
+                Array ns = nscans.read();
+                detectorsInScan = product.getSceneRasterHeight() / ns.getInt(0);
+            } catch (IOException e) {
+                throw new ProductIOException("Could not find the number of detectors in a scan");
+            }
             final String longitude = "Longitude";
             final String latitude = "Latitude";
 
