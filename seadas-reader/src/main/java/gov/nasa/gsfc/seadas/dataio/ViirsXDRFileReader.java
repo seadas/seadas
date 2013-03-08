@@ -169,9 +169,12 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             String startTime;
             String endDate;
             String endTime;
+            String createDate = findAttribute("N_HDF_Creation_Date").toString();
+            String createTime = findAttribute("N_HDF_Creation_Time").toString();
             List<Variable> dataProductList = ncFile.getRootGroup().findGroup("Data_Products").getGroups().get(0).getVariables();
             for (Variable var : dataProductList) {
                 if (var.getShortName().contains("DR_Aggr")) {
+                    orbitnum = var.findAttribute("AggregateBeginningOrbitNumber").getStringValue().trim();
                     startDate = var.findAttribute("AggregateBeginningDate").getStringValue().trim();
                     startTime = var.findAttribute("AggregateBeginningTime").getStringValue().trim().substring(0, 6);
                     endDate = var.findAttribute("AggregateEndingDate").getStringValue().trim();
