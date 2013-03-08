@@ -156,12 +156,33 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         int detectorsInScan;
 
 
-
         Attribute geoRef = findAttribute("N_GEO_Ref");
         if (geoRef != null) {
             geoFileName = geoRef.getStringValue().trim();
         } else {
-            if (inputFile.getName().startsWith("SVDNB")){
+            String geoBase = "GMTCO";
+            String dsType = findAttribute("N_Dataset_Type_Tag").toString();
+            String procdomain = findAttribute("N_Processing_Domain").toString();
+            String datasource = findAttribute("N_Dataset_Source").toString();
+            String orbitnum;
+            String startDate;
+            String startTime;
+            String endDate;
+            String endTime;
+            List<Variable> dataProductList = ncFile.getRootGroup().findGroup("Data_Products").getGroups().get(0).getVariables();
+            for (Variable var : dataProductList) {
+                if (var.getShortName().contains("DR_Aggr")) {
+                    startDate = var.findAttribute("AggregateBeginningDate").getStringValue().trim();
+                    startTime = var.findAttribute("AggregateBeginningTime").getStringValue().trim().substring(0, 6);
+                    endDate = var.findAttribute("AggregateEndingDate").getStringValue().trim();
+                    endTime = var.findAttribute("AggregateEndingTime").getStringValue().trim().substring(0, 6);
+                }
+            }
+//            if (inputFile.getName().startsWith("SVDNB")){
+            if (dsType.equals("EDR")){
+
+                //VIIRS-OCC-EDR_Aggr
+                //N_GEO_Ref = "GMTCO_npp_d20130204_t1833430_e1835072_b06603_c20130205010629191404_noaa_ops.h5"
                 geoFileName = "GDNBO" + inputFile.getName().substring(5, strlen);
             } else if (inputFile.getName().startsWith("SVI")){
                 geoFileName = "GITCO" + inputFile.getName().substring(5, strlen);
