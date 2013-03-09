@@ -161,37 +161,59 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             geoFileName = geoRef.getStringValue().trim();
         } else {
             String geoBase = "GMTCO";
-            String dsType = findAttribute("N_Dataset_Type_Tag").toString();
-            String procdomain = findAttribute("N_Processing_Domain").toString();
+            Group collection = ncFile.getRootGroup().findGroup("Data_Products").getGroups().get(0);
+
+            String dsType = collection.findAttribute("N_Dataset_Type_Tag").toString();
+            String platform =  findAttribute("Platform_Short_Name").toString().toLowerCase();
+            String procdomain = collection.findAttribute("N_Processing_Domain").toString();
             String datasource = findAttribute("N_Dataset_Source").toString();
-            String orbitnum;
-            String startDate;
-            String startTime;
-            String endDate;
-            String endTime;
+            long orbitnum = 0;
+            String startDate = null;
+            String startTime = null;
+            String endDate = null;
+            String endTime = null;
             String createDate = findAttribute("N_HDF_Creation_Date").toString();
             String createTime = findAttribute("N_HDF_Creation_Time").toString();
-            List<Variable> dataProductList = ncFile.getRootGroup().findGroup("Data_Products").getGroups().get(0).getVariables();
+            List<Variable> dataProductList = collection.getVariables();
             for (Variable var : dataProductList) {
                 if (var.getShortName().contains("DR_Aggr")) {
-                    orbitnum = var.findAttribute("AggregateBeginningOrbitNumber").getStringValue().trim();
+                    orbitnum = var.findAttribute("AggregateBeginningOrbitNumber").getNumericValue().longValue();
                     startDate = var.findAttribute("AggregateBeginningDate").getStringValue().trim();
-                    startTime = var.findAttribute("AggregateBeginningTime").getStringValue().trim().substring(0, 6);
+                    startTime = var.findAttribute("AggregateBeginningTime").getStringValue().trim().substring(0, 8);
                     endDate = var.findAttribute("AggregateEndingDate").getStringValue().trim();
-                    endTime = var.findAttribute("AggregateEndingTime").getStringValue().trim().substring(0, 6);
+                    endTime = var.findAttribute("AggregateEndingTime").getStringValue().trim().substring(0, 8);
                 }
             }
 //            if (inputFile.getName().startsWith("SVDNB")){
-            if (dsType.equals("EDR")){
+            StringBuilder geoFile = new StringBuilder();
 
-                //VIIRS-OCC-EDR_Aggr
+            if (dsType.equals("DNB")){
+                geoFile.append("GDNBO");
                 //N_GEO_Ref = "GMTCO_npp_d20130204_t1833430_e1835072_b06603_c20130205010629191404_noaa_ops.h5"
-                geoFileName = "GDNBO" + inputFile.getName().substring(5, strlen);
+//                geoFileName = "GDNBO" + inputFile.getName().substring(5, strlen);
             } else if (inputFile.getName().startsWith("SVI")){
-                geoFileName = "GITCO" + inputFile.getName().substring(5, strlen);
-            } else if (inputFile.getName().startsWith("SVM")){
-                geoFileName = "GMTCO" + inputFile.getName().substring(5, strlen);
+                geoFile.append("GITCO");
+            } else if (dsType.equals("EDR") || dsType.equals("SVM")){
+                geoFile.append("GMTCO");
             }
+            geoFile.append('_');
+            geoFile.append(platform);
+            geoFile.append("_d");
+            geoFile.append(startDate);
+            geoFile.append("_t");
+            geoFile.append(startTime);
+            geoFile.append("_e");
+            geoFile.append(endTime);
+            geoFile.append("_b");
+            geoFile.append(String.format("%05d",orbitnum));
+            geoFile.append("_c");
+            geoFile.append(createDate+createTime);
+            geoFile.append("_");
+            geoFile.append(datasource);
+            geoFile.append("_");
+            geoFile.append(procdomain);
+            geoFile.append(".h5");
+            geoFileName =  geoFile.toString();
         }
 
         try {
