@@ -154,26 +154,26 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         String geoFileName = null;
         int strlen = inputFile.getName().length();
         int detectorsInScan;
+        Group collection = ncFile.getRootGroup().findGroup("Data_Products").getGroups().get(0);
+        String shortName = getCollectionShortName();
 
+        String dsType = collection.findAttribute("N_Dataset_Type_Tag").getStringValue();
 
         Attribute geoRef = findAttribute("N_GEO_Ref");
         if (geoRef != null) {
             geoFileName = geoRef.getStringValue().trim();
         } else {
             String geoBase = "GMTCO";
-            Group collection = ncFile.getRootGroup().findGroup("Data_Products").getGroups().get(0);
-
-            String dsType = collection.findAttribute("N_Dataset_Type_Tag").toString();
-            String platform =  findAttribute("Platform_Short_Name").toString().toLowerCase();
-            String procdomain = collection.findAttribute("N_Processing_Domain").toString();
-            String datasource = findAttribute("N_Dataset_Source").toString();
+            String platform =  findAttribute("Platform_Short_Name").getStringValue().toLowerCase();
+            String procdomain = collection.findAttribute("N_Processing_Domain").getStringValue().toLowerCase();
+            String datasource = findAttribute("N_Dataset_Source").getStringValue().toLowerCase();
             long orbitnum = 0;
             String startDate = null;
             String startTime = null;
             String endDate = null;
             String endTime = null;
-            String createDate = findAttribute("N_HDF_Creation_Date").toString();
-            String createTime = findAttribute("N_HDF_Creation_Time").toString();
+            String createDate = findAttribute("N_HDF_Creation_Date").getStringValue();
+            String createTime = findAttribute("N_HDF_Creation_Time").getStringValue();
             List<Variable> dataProductList = collection.getVariables();
             for (Variable var : dataProductList) {
                 if (var.getShortName().contains("DR_Aggr")) {
@@ -187,13 +187,13 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 //            if (inputFile.getName().startsWith("SVDNB")){
             StringBuilder geoFile = new StringBuilder();
 
-            if (dsType.equals("DNB")){
+            if (shortName.contains("DNB")){
                 geoFile.append("GDNBO");
                 //N_GEO_Ref = "GMTCO_npp_d20130204_t1833430_e1835072_b06603_c20130205010629191404_noaa_ops.h5"
 //                geoFileName = "GDNBO" + inputFile.getName().substring(5, strlen);
-            } else if (inputFile.getName().startsWith("SVI")){
+            } else if (shortName.contains("VIIRS-I")){
                 geoFile.append("GITCO");
-            } else if (dsType.equals("EDR") || dsType.equals("SVM")){
+            } else if (dsType.equals("EDR") || shortName.contains("VIIRS-M")){
                 geoFile.append("GMTCO");
             }
             geoFile.append('_');
@@ -202,12 +202,16 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             geoFile.append(startDate);
             geoFile.append("_t");
             geoFile.append(startTime);
+            geoFile.deleteCharAt(geoFile.toString().length()-2);
             geoFile.append("_e");
             geoFile.append(endTime);
+            geoFile.deleteCharAt(geoFile.toString().length()-2);
             geoFile.append("_b");
             geoFile.append(String.format("%05d",orbitnum));
             geoFile.append("_c");
             geoFile.append(createDate+createTime);
+            geoFile.deleteCharAt(geoFile.toString().length()-1);
+            geoFile.deleteCharAt(geoFile.toString().length()-7);
             geoFile.append("_");
             geoFile.append(datasource);
             geoFile.append("_");
@@ -237,10 +241,10 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                     if (!gf.startsWith("G")){
                         continue;
                     }
-                    if (inputFile.getName().startsWith("SVDNB") && gf.startsWith("GDNBO")){
+                    if (shortName.contains("DNB") && gf.startsWith("GDNBO")){
                         geocheck = new File(path,  gf);
                         break;
-                    } else if (inputFile.getName().startsWith("SVI")){
+                    } else if (shortName.contains("VIIRS-I")){
                         if ( gf.startsWith("GITCO")){
                             geocheck = new File(path,  gf);
                             break;
@@ -249,7 +253,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 //                          prefer the GITCO, so keep looking just in case;
                         }
 
-                    } else if (inputFile.getName().startsWith("SVM") ||inputFile.getName().startsWith("VO") ){
+                    } else if (dsType.equals("EDR") || shortName.contains("VIIRS-M")){
                         if ( gf.startsWith("GMTCO")){
                             geocheck = new File(path,  gf);
                             break;
@@ -273,9 +277,10 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 }
             }
             try {
-                String CollectionShortName = getCollectionShortName();
-                String varName = "All_Data/" + CollectionShortName + "_All/NumberOfScans";
-                Variable nscans = geofile.findVariable(varName);
+//                String CollectionShortName = getCollectionShortName();
+                Group geocollection = geofile.getRootGroup().findGroup("All_Data").getGroups().get(0);
+//                String varName = "All_Data/" + shortName + "_All/NumberOfScans";
+                Variable nscans = geocollection.findVariable("NumberOfScans");
                 Array ns = nscans.read();
                 detectorsInScan = product.getSceneRasterHeight() / ns.getInt(0);
             } catch (IOException e) {
