@@ -94,6 +94,9 @@ public class BrowseProductReader extends SeadasFileReader {
         final int sceneRasterHeight = product.getSceneRasterHeight();
         Band band;
         Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
+        String description = "Level-1A Browse data";
+        String units = "Relative Reflectance units";
+
         for (Variable variable : variables) {
             int variableRank = variable.getRank();
             if (variableRank == 2) {
@@ -109,6 +112,7 @@ public class BrowseProductReader extends SeadasFileReader {
                     if (isBrs){
                         try {
                             name = getStringAttribute("Parameter");
+                            description = name;
                         } catch (Exception ignore) { }
                     }
                     final int dataType = getProductDataType(variable);
@@ -123,9 +127,11 @@ public class BrowseProductReader extends SeadasFileReader {
                         try {
                             band.setScalingFactor(getFloatAttribute("Slope"));
                             band.setScalingOffset(getFloatAttribute("Intercept"));
+//                            band.setUnit(units);
                             band.setNoDataValue(253.);// * band.getScalingFactor() + band.getScalingOffset()));
                             band.setNoDataValueUsed(true);
                         } catch (Exception ignored) { }
+                        band.setDescription(description);
                     } else {
                         final List<Attribute> list = variable.getAttributes();
                         for (Attribute hdfAttribute : list) {
@@ -154,8 +160,6 @@ public class BrowseProductReader extends SeadasFileReader {
                 if (height == sceneRasterHeight && width == sceneRasterWidth) {
                     // final List<Attribute> list = variable.getAttributes();
 
-                    String units = "RGB units";
-                    String description = "Level-1A Browse data";
 
                     for (int i = 0; i < bands; i++) {
                         final String name = bandnames[i];

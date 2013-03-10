@@ -15,12 +15,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: seadas
- * Date: 11/14/11
- * Time: 2:23 PM
- */
 public class ViirsXDRFileReader extends SeadasFileReader {
 
     ViirsXDRFileReader(SeadasProductReader productReader) {
@@ -31,7 +25,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
     public Product createProduct() throws ProductIOException {
 
         try {
-            List<Dimension> dims = null;
+            List<Dimension> dims;
             String CollectionShortName = getCollectionShortName();
 
             if (productReader.getProductType() == SeadasProductReader.ProductType.VIIRS_EDR) {
@@ -86,7 +80,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 
             addGeocoding(product);
 
-            product.setAutoGrouping("IOP:QF:nLw");
+            product.setAutoGrouping("IOP:QF:nLw:Radiance:radiance:Reflectance");
             addFlagsAndMasks(product);
 
             setSpectralBand(product);
@@ -154,7 +148,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                             }
                         }
                     }
-                    //todo Add valid expression - _FillValue is not working properly
+                    //todo Add valid expression - _FillValue is not working properly - viirs uses more than one...ugh.
                     if (varname.equals("Chlorophyll_a")) {
                         band.setValidPixelExpression("Chlorophyll_a > 0.0 && Chlorophyll_a < 100.0");
                     }
@@ -176,7 +170,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         String geoFileName = null;
         int strlen = inputFile.getName().length();
         int detectorsInScan;
-        Group geocollection;
+        Group geocollection = null;
         Group collection = ncFile.getRootGroup().findGroup("Data_Products").getGroups().get(0);
         String shortName = getCollectionShortName();
 
@@ -187,14 +181,12 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             if (geoRef != null) {
                 geoFileName = geoRef.getStringValue().trim();
             } else {
-                String geoBase = "GMTCO";
                 String platform =  findAttribute("Platform_Short_Name").getStringValue().toLowerCase();
                 String procdomain = collection.findAttribute("N_Processing_Domain").getStringValue().toLowerCase();
                 String datasource = findAttribute("N_Dataset_Source").getStringValue().toLowerCase();
                 long orbitnum = 0;
                 String startDate = null;
                 String startTime = null;
-                String endDate = null;
                 String endTime = null;
                 String createDate = findAttribute("N_HDF_Creation_Date").getStringValue();
                 String createTime = findAttribute("N_HDF_Creation_Time").getStringValue();
@@ -204,7 +196,6 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                         orbitnum = var.findAttribute("AggregateBeginningOrbitNumber").getNumericValue().longValue();
                         startDate = var.findAttribute("AggregateBeginningDate").getStringValue().trim();
                         startTime = var.findAttribute("AggregateBeginningTime").getStringValue().trim().substring(0, 8);
-                        endDate = var.findAttribute("AggregateEndingDate").getStringValue().trim();
                         endTime = var.findAttribute("AggregateEndingTime").getStringValue().trim().substring(0, 8);
                     }
                 }
@@ -233,7 +224,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 geoFile.append("_b");
                 geoFile.append(String.format("%05d",orbitnum));
                 geoFile.append("_c");
-                geoFile.append(createDate+createTime);
+                geoFile.append(createDate).append(createTime);
                 geoFile.deleteCharAt(geoFile.toString().length()-1);
                 geoFile.deleteCharAt(geoFile.toString().length()-7);
                 geoFile.append("_");
@@ -316,13 +307,17 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             if (dsType.equals("GEO")){
                 geocollection = ncFile.getRootGroup().findGroup("All_Data").getGroups().get(0);
             } else {
-                geocollection = geofile.getRootGroup().findGroup("All_Data").getGroups().get(0);
+                if (geofile != null) {
+                    geocollection = geofile.getRootGroup().findGroup("All_Data").getGroups().get(0);
+                }
             }
-            Variable nscans = geocollection.findVariable("NumberOfScans");
-            if (nscans == null){
-                nscans = geocollection.findVariable("act_scans");
+            Variable nscans = null;
+            if (geocollection != null){
+                nscans = geocollection.findVariable("NumberOfScans");
+                if (nscans == null){
+                    nscans = geocollection.findVariable("act_scans");
+                }
             }
-
             Array ns = nscans.read();
             detectorsInScan = product.getSceneRasterHeight() / ns.getInt(0);
         } catch (IOException e) {
@@ -340,7 +335,6 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 
 
                 Array latarr = geofile.findVariable(navGroup + "/" + latitude).read();
-
                 Array lonarr = geofile.findVariable(navGroup + "/" + longitude).read();
 
                 float[] latitudes;
@@ -435,7 +429,8 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 
         for (Group dpgroup : DataProductGroups) {
             String groupname = dpgroup.getShortName();
-            if (groupname.matches("VIIRS-.*DR$")) {
+//            if (groupname.matches("VIIRS-.*DR$")) {
+            if (groupname.matches("VIIRS-")) {
                 List<Variable> vars = dpgroup.getVariables();
                 for (Variable var : vars) {
                     String varname = var.getShortName();
