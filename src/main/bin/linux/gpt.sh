@@ -23,8 +23,8 @@ fi
 "$JAVA_HOME/bin/java" \
     -Xmx1024M \
     -Dceres.context=seadas \
-    "-Dbeam.mainClass=org.esa.beam.framework.gpf.main.GPT" \
-    "-Dbeam.home=$SEADAS_HOME" \
+    "-Dseadas.mainClass=org.esa.beam.framework.gpf.main.GPT" \
+    "-Dseadas.home=$SEADAS_HOME" \
     "-Dncsa.hdf.hdflib.HDFLibrary.hdflib=$SEADAS_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf.so" \
     "-Dncsa.hdf.hdf5lib.H5.hdf5lib=$SEADAS_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf5.so" \
     -jar "$SEADAS_HOME/bin/ceres-launcher.jar" "$@"
