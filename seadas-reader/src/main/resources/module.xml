@@ -205,5 +205,11 @@
         </rgbProfile>
     </extension>
 
+    <extension point="beam-ui:helpSets">
+        <helpSet>
+            <parent>seadas-help</parent>
+            <path>doc/help/importNasaObpgProduct.hs</path>
+        </helpSet>
+    </extension>
 
 </module>
