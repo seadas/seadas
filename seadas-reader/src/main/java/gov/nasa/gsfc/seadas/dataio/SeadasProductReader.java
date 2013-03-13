@@ -167,16 +167,15 @@ public class SeadasProductReader extends AbstractProductReader {
     }
 
     @Override
-    protected void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth,
-                                          int sourceHeight,
+    protected void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight,
                                           int sourceStepX, int sourceStepY, Band destBand, int destOffsetX,
-                                          int destOffsetY, int destWidth, int destHeight,
-                                          ProductData destBuffer,
+                                          int destOffsetY, int destWidth, int destHeight, ProductData destBuffer,
                                           ProgressMonitor pm) throws IOException {
 
 
         try {
-            seadasFileReader.readBandData(destBand, sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight, destBuffer, pm);
+            seadasFileReader.readBandData(destBand, sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight,
+                    sourceStepX, sourceStepY,destBuffer, pm);
         } catch (Exception e) {
             final ProductIOException exception = new ProductIOException(e.getMessage());
             exception.setStackTrace(e.getStackTrace());

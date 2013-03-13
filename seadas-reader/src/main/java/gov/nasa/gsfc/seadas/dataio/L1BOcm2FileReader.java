@@ -16,7 +16,6 @@ import java.util.List;
  * User: Aynur Abdurazik (aabduraz)
  * Date: 2/8/13
  * Time: 1:03 PM
- * To change this template use File | Settings | File Templates.
  */
 public class L1BOcm2FileReader extends SeadasFileReader {
 
@@ -82,6 +81,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         addFlagsAndMasks(product);
         product.setAutoGrouping("Lt");
 
+        product.setPreferredTileSize(256, 256);
         return product;
     }
 
@@ -98,9 +98,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         lonBand.setNoDataValueUsed(true);
 
         try {
-            if (latBand != null && lonBand != null) {
-                product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-            }
+            product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage());
         }

@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.System.arraycopy;
+
 public abstract class SeadasFileReader {
     protected boolean mustFlipX;
     protected boolean mustFlipY;
@@ -32,7 +34,10 @@ public abstract class SeadasFileReader {
     protected NetcdfFile ncFile;
     protected SeadasProductReader productReader;
     protected Map<String, String> bandInfoMap = getL2BandInfoMap();
-//    protected Map<String, String> flagsInfoMap = getL2FlagsInfoMap();
+    //    protected Map<String, String> flagsInfoMap = getL2FlagsInfoMap();
+    protected int[] start = new int[2];
+    protected int[] stride = new int[2];
+    protected int[] count = new int[2];
 
     protected int leadLineSkip = 0;
     protected int tailLineSkip = 0;
@@ -61,7 +66,7 @@ public abstract class SeadasFileReader {
     public abstract Product createProduct() throws IOException;
 
     public void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
-                             int sourceHeight, ProductData destBuffer,
+                             int sourceHeight, int sourceStepX, int sourceStepY, ProductData destBuffer,
                              ProgressMonitor pm) throws IOException, InvalidRangeException {
 
         if (mustFlipY) {
@@ -71,79 +76,43 @@ public abstract class SeadasFileReader {
             sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
         }
         sourceOffsetY += leadLineSkip;
-        final int[] start = new int[]{sourceOffsetY, sourceOffsetX};
-        final int[] stride = new int[]{1, 1};
-        final int[] count = new int[]{1, sourceWidth};
+        start[0] = sourceOffsetY;
+        start[1] = sourceOffsetX;
+        stride[0] = sourceStepY;
+        stride[1] = sourceStepX;
+        count[0] = sourceHeight;
+        count[1] = sourceWidth;
         Object buffer = destBuffer.getElems();
         Variable variable = variableMap.get(destBand);
 
-        int targetIndex = 0;
         pm.beginTask("Reading band '" + variable.getShortName() + "'...", sourceHeight);
-        // loop over lines
-        if (mustFlipY) {
-            start[0] += sourceHeight - 1;
-            try {
-                for (int y = sourceHeight - 1; y >= 0; y--) {
-                    if (pm.isCanceled()) {
-                        break;
-                    }
-                    Section section = new Section(start, count, stride);
-                    Array array;
-                    int[] newshape = {1, sourceWidth};
-                    synchronized (ncFile) {
-                        array = variable.read(section);
-                    }
-                    if (array.getRank() == 3) {
-                        array = array.reshapeNoCopy(newshape);
-                    }
-                    Object storage;
+        try {
+            Section section = new Section(start, count, stride);
 
-                    if (mustFlipX) {
-                        storage = array.flip(1).copyTo1DJavaArray();
-                    } else {
-                        storage = array.copyTo1DJavaArray();
-                    }
+            Array array;
+            int[] newshape = {sourceHeight, sourceWidth};
 
-                    System.arraycopy(storage, 0, buffer, targetIndex, sourceWidth);
-                    start[0]--;
-                    targetIndex += sourceWidth;
-                    pm.worked(1);
-                }
-            } finally {
-                pm.done();
+            synchronized (ncFile) {
+                array = variable.read(section);
             }
-        } else {
-            try {
-                for (int y = 0; y < sourceHeight; y++) {
-                    if (pm.isCanceled()) {
-                        break;
-                    }
-                    Section section = new Section(start, count, stride);
-                    Array array;
-                    int[] newshape = {1, sourceWidth};
-
-                    synchronized (ncFile) {
-                        array = variable.read(section);
-                    }
-                    if (array.getRank() == 3) {
-                        array = array.reshapeNoCopy(newshape);
-                    }
-                    Object storage;
-
-                    if (mustFlipX) {
-                        storage = array.flip(1).copyTo1DJavaArray();
-                    } else {
-                        storage = array.copyTo1DJavaArray();
-                    }
-
-                    System.arraycopy(storage, 0, buffer, targetIndex, sourceWidth);
-                    start[0]++;
-                    targetIndex += sourceWidth;
-                    pm.worked(1);
-                }
-            } finally {
-                pm.done();
+            if (array.getRank() == 3) {
+                array = array.reshapeNoCopy(newshape);
             }
+            Object storage;
+
+            if (mustFlipX && !mustFlipY) {
+                storage = array.flip(0).copyTo1DJavaArray();
+            } else if (!mustFlipX && mustFlipY) {
+                storage = array.flip(1).copyTo1DJavaArray();
+            } else if (mustFlipX && mustFlipY) {
+                storage = array.flip(0).flip(1).copyTo1DJavaArray();
+            } else {
+                storage = array.copyTo1DJavaArray();
+            }
+
+            arraycopy(storage, 0, buffer, 0, destBuffer.getNumElems());
+        } finally {
+            pm.done();
         }
 
     }
@@ -325,7 +294,7 @@ public abstract class SeadasFileReader {
 //            product.getFlagCodingGroup().add(flagCoding);
 //
 //            QFBandSST.setSampleCoding(flagCoding);
-    
+
             product.getMaskGroup().add(Mask.BandMathsType.create("Best", "Highest quality SST retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst == 0",
@@ -471,10 +440,10 @@ public abstract class SeadasFileReader {
                 throw new ProductIOException(e.getMessage());
             }
 
-            String[] lines =  array.toString().split("\n");
-            for(String line : lines) {
+            String[] lines = array.toString().split("\n");
+            for (String line : lines) {
                 String[] parts = line.split("=");
-                if(parts.length == 2) {
+                if (parts.length == 2) {
                     final String name = parts[0].trim();
                     final String value = parts[1].trim();
                     final ProductData data = ProductData.createInstance(ProductData.TYPE_ASCII, value);
@@ -487,7 +456,6 @@ public abstract class SeadasFileReader {
 
             final MetadataElement metadataRoot = product.getMetadataRoot();
             metadataRoot.addElement(inputParamsMeta);
-
 
 
         }
@@ -513,7 +481,7 @@ public abstract class SeadasFileReader {
         if (productReader.getProductType() == SeadasProductReader.ProductType.Level2_Aquarius) {
             group = ncFile.findGroup("Aquarius Data");
         }
-        if (productReader.getProductType() == SeadasProductReader.ProductType.Level1B_HICO){
+        if (productReader.getProductType() == SeadasProductReader.ProductType.Level1B_HICO) {
             group = ncFile.findGroup("products");
         }
         if (group != null) {
@@ -579,8 +547,8 @@ public abstract class SeadasFileReader {
             reverse(lonFloats);
         }
 
-        latBand.setSynthetic(true);
-        lonBand.setSynthetic(true);
+//        latBand.setSynthetic(true);
+//        lonBand.setSynthetic(true);
         latBand.getSourceImage();
         lonBand.getSourceImage();
     }
@@ -872,7 +840,7 @@ public abstract class SeadasFileReader {
         float[] flatArray = new float[twoDimArray.length * twoDimArray[0].length];
         for (int row = 0; row < twoDimArray.length; row++) {
             int offset = row * twoDimArray[row].length;
-            System.arraycopy(twoDimArray[row], 0, flatArray, offset, twoDimArray[row].length);
+            arraycopy(twoDimArray[row], 0, flatArray, offset, twoDimArray[row].length);
         }
         return flatArray;
     }
@@ -891,7 +859,7 @@ public abstract class SeadasFileReader {
                 synchronized (ncFile) {
                     array = latitude.read(section);
                 }
-                //todo array needs to be converted to float.
+                // todo array needs to be converted to float.
                 float val = array.getFloat(i);
                 if (skipBadNav.isBadNav(val)) {
                     leadLineSkip++;

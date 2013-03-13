@@ -60,21 +60,7 @@
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat-rcp</artifactId>
         </dependency>
-        <dependency>
-            <groupId>HEALpix</groupId>
-            <artifactId>healpix</artifactId>
-            <version>3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>HEALpix</groupId>
-            <artifactId>healpix</artifactId>
-            <version>3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>HEALpix</groupId>
-            <artifactId>healpix</artifactId>
-            <version>3.0</version>
-        </dependency>
+
     </dependencies>
 
 </project>

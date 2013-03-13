@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-//import HEALpix;
-//healpix.essentials;
 
 
 public class L3BinFileReader extends SeadasFileReader {
@@ -66,7 +64,7 @@ public class L3BinFileReader extends SeadasFileReader {
 
     @Override
     public void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
-                             int sourceHeight, ProductData destBuffer,
+                             int sourceHeight, int sourceStepX, int sourceStepY, ProductData destBuffer,
                              ProgressMonitor pm) throws IOException, InvalidRangeException {
 
         final Variable variable = variableMap.get(destBand);
