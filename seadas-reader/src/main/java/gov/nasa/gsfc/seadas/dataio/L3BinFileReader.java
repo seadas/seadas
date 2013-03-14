@@ -72,6 +72,7 @@ public class L3BinFileReader extends SeadasFileReader {
         float[] fbuffer;
         short[] sbuffer;
         int [] ibuffer;
+        byte [] bbuffer;
         Object buffer;
 
         if (prodtype == DataType.FLOAT) {
@@ -82,6 +83,10 @@ public class L3BinFileReader extends SeadasFileReader {
             sbuffer = (short[]) destBuffer.getElems();
             Arrays.fill(sbuffer, (short) -999);
             buffer = sbuffer;
+        } else if (prodtype == DataType.BYTE) {
+            bbuffer = (byte[]) destBuffer.getElems();
+            Arrays.fill(bbuffer, (byte) 255);
+            buffer = bbuffer;
         } else {
             ibuffer = (int[]) destBuffer.getElems();
             Arrays.fill(ibuffer, -999);
@@ -254,13 +259,18 @@ public class L3BinFileReader extends SeadasFileReader {
         bandToVariableMap.put(addBand(product, "weights", ProductData.TYPE_FLOAT32), binListStruc.select("weights").findVariable("weights"));
         bandToVariableMap.put(addBand(product, "nobs", ProductData.TYPE_UINT16), binListStruc.select("nobs").findVariable("nobs"));
         bandToVariableMap.put(addBand(product, "nscenes", ProductData.TYPE_UINT16), binListStruc.select("nscenes").findVariable("nscenes"));
+//        ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("BinList");
+        if (ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("qual_l3") != null){
+            bandToVariableMap.put(addBand(product, "qual_l3", ProductData.TYPE_UINT8), ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("qual_l3"));
+        }
         String groupnames = "";
         for (Variable l3Var : l3ProdVars) {
             String varName = l3Var.getShortName();
             final int dataType = ProductData.TYPE_FLOAT32;
 
 
-            if (!varName.contains("Bin") && (!varName.equalsIgnoreCase("SEAGrid")) &&
+            if (!varName.contains("Bin") && (!varName.startsWith("qual")) &&
+                    (!varName.equalsIgnoreCase("SEAGrid")) &&
                     (!varName.equalsIgnoreCase("Input Files"))) {
                 final Structure binStruc = (Structure) l3Var;
                 if (groupnames.length() == 0) {
