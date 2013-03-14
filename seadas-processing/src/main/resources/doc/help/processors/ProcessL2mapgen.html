@@ -68,7 +68,7 @@
     <tr>
         <td><b>ifile</b></td>
         <td>Text Field</td>
-        <td>Input Level 1 data product.
+        <td>Input Level 2 data product.
         </td>
         <td>Required</td>
         <td></td>
@@ -76,106 +76,50 @@
     <tr>
         <td><b>ofile</b></td>
         <td> Text Field</td>
-        <td>Output filename for generated Level-1B data product.
+        <td>Output filename for generated level 2 image file.
         </td>
         <td>Required</td>
         <td></td>
     </tr>
     <tr>
-        <td><b>ofile[#]</b></td>
+        <td><b>palfile</b></td>
         <td> Text Field</td>
-        <td>additional output L2 file name</td>
+        <td>palette file name</td>
         <td>Optional</td>
         <td></td>
     </tr>
     <tr>
-        <td><b>pversion</b></td>
+        <td><b>palette_dir</b></td>
         <td> Text Field</td>
-        <td>processing version string</td>
+        <td>palette directory</td>
         <td>Optional</td>
-        <td>Unspecified</td>
+        <td>$OCDATAROOT/common/palette</td>
     </tr>
     <tr>
-        <td><b>suite</b></td>
+        <td><b>product_table</b></td>
         <td> Text Field</td>
-        <td>product suite string for loading suite-specific defaults</td>
+        <td>product table</td>
         <td>Optional</td>
-        <td>OC</td>
+        <td>$OCDATAROOT/common/smigen_product_table.dat</td>
     </tr>
 
     <tr>
-        <td><b>resolution</b></td>
-        <td> int</td>
-        <td>processing resolution
-    <pre>
-       -1: standard ocean 1km processing
-     1000: 1km resolution including aggregated 250 and 500m land bands
-      500: 500m resolution including aggregated 250 land bands and replication for lower resolution bands
-      250: 250m resolution with replication for lower resolution bands
-    </pre>
-        </td>
-        <td>Conditional - Required for processing MODIS products</td>
-        <td>-1</td>
+        <td><b>prod</b></td>
+        <td>Text Field</td>
+        <td>product name</td>
+        <td>Optional</td>
+        <td></td>
     </tr>
     <tr>
-        <td><b>spixl</b></td>
-        <td> int</td>
-        <td>start pixel number</td>
+        <td><b>flaguse</b></td>
+        <td>Text Field</td>
+        <td>flags to be masked</td>
         <td>Optional</td>
-        <td>1</td>
-    </tr>
-    <tr>
-        <td><b>epixl</b></td>
-        <td> int</td>
-        <td>end pixel number</td>
-        <td>Optional</td>
-        <td>-1</td>
-    </tr>
-    <tr>
-        <td><b>sline</b></td>
-        <td> int</td>
-        <td>start line number</td>
-        <td>Optional</td>
-        <td>1</td>
-    </tr>
-    <tr>
-        <td><b>eline</b></td>
-        <td> int</td>
-        <td>end line number</td>
-        <td>Optional</td>
-        <td>-1</td>
-    </tr>
-    <tr>
-        <td><b>subsamp</b></td>
-        <td> int</td>
-        <td>subsampling interval</td>
-        <td>Optional</td>
-        <td>1</td>
-    </tr>
-    <tr>
-        <td><b>rgb</b></td>
-        <td> int</td>
-        <td>bands to use for red, green and blue</td>
-        <td>Optional</td>
-        <td>[1,1,1]</td>
-    </tr>
-    <tr>
-        <td><b>atmocor</b></td>
-        <td> boolean</td>
-        <td>toggle atmospheric correction</td>
-        <td>Optional</td>
-        <td>on</td>
-    </tr>
-    <tr>
-        <td><b>mask</b></td>
-        <td> boolean</td>
-        <td>apply mask to land, cloud and glint</td>
-        <td>Optional</td>
-        <td>no</td>
+        <td></td>
     </tr>
     <tr>
         <td><b>quality</b></td>
-        <td> int</td>
+        <td>int</td>
         <td>minimum allowable quality level for SST. Valid only for SST and only if qual_sst or qual_sst4 SDS exist</td>
         <td>Optional</td>
         <td>2</td>
@@ -185,14 +129,14 @@
         <td> float</td>
         <td>minimum value for data scaling</td>
         <td>Optional</td>
-        <td>0.0</td>
+        <td>0.0 or see SMI product table</td>
     </tr>
     <tr>
         <td><b>datamax</b></td>
         <td> float</td>
         <td>maximum value for data scaling</td>
         <td>Optional</td>
-        <td>0.0</td>
+        <td>0.0 or see SMI product table</td>
     </tr>
     <tr>
         <td><b>stype</b></td>
@@ -204,21 +148,82 @@
     </pre>
         </td>
         <td>Optional</td>
-        <td>0</td>
+        <td>0 or see SMI product table</td>
     </tr>
     <tr>
-        <td><b>outmode</b></td>
-        <td> int</td>
-        <td>defines output format:
-    <pre>
-        1: PPM or PGM image file
-        2: PNG color or grayscale image file
-        3: TIFF color or grayscale geo tiff image file
-    </pre>
+        <td><b>east</b></td>
+        <td>float</td>
+        <td>Map East longitude</td>
+        <td>Optional</td>
+        <td>0.0 or scene(s) Easternmost Longitude</td>
+    </tr>
+    <tr>
+        <td><b>west</b></td>
+        <td>float</td>
+        <td>Map West longitude</td>
+        <td>Optional</td>
+        <td>0.0 or scene(s) Westernmost Longitude</td>
+    </tr>
+    <tr>
+        <td><b>north</b></td>
+        <td>float</td>
+        <td>Map North longitude</td>
+        <td>Optional</td>
+        <td>0.0 or scene(s) Northernmost Longitude</td>
+    </tr>
+    <tr>
+        <td><b>south</b></td>
+        <td>float</td>
+        <td>Map South longitude</td>
+        <td>Optional</td>
+        <td>0.0 or scene(s) Southernmost Longitude</td>
+    </tr>
+    <tr>
+        <td><b>width</b></td>
+        <td>int</td>
+        <td>width of the output image</td>
+        <td>Optional</td>
+        <td>800</td>
+    </tr>
+    <tr>
+        <td><b>threshold</b></td>
+        <td>float</td>
+        <td>minimum percentage of the area of interest that must receive valid pixel data before an image is generated
         </td>
         <td>Optional</td>
-        <td>0</td>
+        <td>5</td>
     </tr>
+
+    <tr>
+        <td><b>outmode</b></td>
+        <td>Text Field (String)</td>
+        <td>format of the output file :
+            <pre>
+                ppm: PPM or PGM image file (alias 1)
+                png: PNG color or grayscale image file (alias 2)
+                tiff: TIFF color or grayscale geo tiff image file (alias 3)
+            </pre>
+        </td>
+        <td>Optional</td>
+        <td>ppm</td>
+    </tr>
+
+    <tr>
+        <td><b>apply_pal</b></td>
+        <td>boolean</td>
+        <td>apply color palette</td>
+        <td>Optional</td>
+        <td>false (gray scale)</td>
+    </tr>
+
+    <tr>
+         <td><b>mask</b></td>
+         <td>boolean</td>
+         <td>apply mask to land, cloud and glint</td>
+         <td>Optional</td>
+         <td>no</td>
+     </tr>
+
 </table>
 
 

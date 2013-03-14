@@ -36,6 +36,18 @@
 
         <action>
             <parent>seadasProcessing</parent>
+            <id>install_ocssw.py</id>
+            <placeBefore>seadas_processor.py</placeBefore>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>ocssw_installer...</text>
+            <shortDescr>Install ocssw</shortDescr>
+            <programName>install_ocssw.py</programName>
+            <dialogTitle>ocssw installer</dialogTitle>
+            <xmlFileName>ocssw_installer.xml</xmlFileName>
+        </action>
+
+        <action>
+            <parent>seadasProcessing</parent>
             <id>seadas_processor.py</id>
             <placeBefore>extractor</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.processor.SPAction</class>

@@ -4,13 +4,13 @@
     <programMetaData>
         <hasParFile>false</hasParFile>
         <primaryOptions>
-            <primaryOption>ifile</primaryOption>
+            <primaryOption>infile</primaryOption>
             <primaryOption>ofile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
         <option type="ifile">
-            <name>ifile</name>
+            <name>infile</name>
             <value></value>
             <default></default>
             <description>input SEAWIFS L1A datafile</description>

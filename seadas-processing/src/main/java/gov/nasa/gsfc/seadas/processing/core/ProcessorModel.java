@@ -307,8 +307,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
         VisatApp.getApp().showErrorDialog("Cannot compute output file name. Please select a correct input file for " + ((programName == null ) ? "this processor." : programName ));
         updateParamInfo(getPrimaryInputFileOptionName(), "");    //use an empty string
+        updateOFileInfo("");
         return false;
-
     }
 
     public boolean updateGeoFileInfo(String ifileName) {
@@ -325,7 +325,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         System.out.println("next level ofile name: " + newValue);
         if (newValue != null) {
             updateParamInfo(getPrimaryOutputFileOptionName(), newValue + "\n");
-            setReadyToRun(true);
+            setReadyToRun(newValue.trim().length() == 0 ? false : true);
             return true;
         }
         return false;
@@ -474,7 +474,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             FileWriter fileWriter = null;
             try {
                 fileWriter = new FileWriter(tempFile);
-                fileWriter.write(getParString());
+                fileWriter.write(getParString() + "\n");
             } finally {
                 if (fileWriter != null) {
                     fileWriter.close();
@@ -832,9 +832,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
             setProgramName(getExtractorProgramName(ifileName));
             return super.updateIFileInfo(ifileName);
-
         }
-
 
         private String getExtractorProgramName(String ifileName) {
 
@@ -852,7 +850,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     programName = "l2extract";
                 }
             }
-
             return programName;
         }
     }
@@ -864,10 +861,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         public boolean updateOFileInfo(String ofileName) {
             updateParamInfo("--okm", ofileName.replaceAll("LAC", "LAC"));
+            getParamInfo("--okm").setDefaultValue(getParamValue("--okm"));
             updateParamInfo("--hkm", ofileName.replaceAll("LAC", "HKM"));
+            getParamInfo("--hkm").setDefaultValue(getParamValue("--hkm"));
             updateParamInfo("--qkm", ofileName.replaceAll("LAC", "QKM"));
+            getParamInfo("--qkm").setDefaultValue(getParamValue("--qkm"));
             updateParamInfo("--obc", ofileName.replaceAll("LAC", "OBC"));
-            setReadyToRun(true);
+            getParamInfo("--obc").setDefaultValue(getParamValue("--obc"));
+            setReadyToRun(ofileName.trim().length() == 0 ? false : true);
             return true;
         }
 
@@ -886,7 +887,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             if (getParamInfo("--keep-obc").getValue().equals("true") || getParamInfo("--keep-obc").getValue().equals("1")) {
                 ofileNameList.append("\n" + getParamValue("--obc"));
             }
-            System.out.println(ofileNameList.toString());
             return ofileNameList.toString();
         }
     }
@@ -897,9 +897,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("ifile", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-                    System.out.println("property ifile changed");
+//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                    //System.out.println("property ifile changed");
                     checkCompleteness();
 
                 }
@@ -907,9 +907,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("SWlon", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-                    System.out.println("property SWlon changed");
+//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                    System.out.println("property SWlon changed");
                     checkCompleteness();
 
                 }
@@ -917,9 +917,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("SWlat", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-                    System.out.println("property SWlat changed");
+//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                    System.out.println("property SWlat changed");
                     checkCompleteness();
 
                 }
@@ -927,9 +927,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("NElon", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-                    System.out.println("property NElon changed");
+//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                    System.out.println("property NElon changed");
                     checkCompleteness();
 
                 }
@@ -937,11 +937,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("NElat", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-                    System.out.println("property NElat changed");
+//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                    System.out.println("property NElat changed");
                     checkCompleteness();
-
                 }
             });
         }
@@ -958,8 +957,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             super(programName, xmlFileName);
             setMultipleInputFiles(true);
         }
-
-
     }
 
     private static class L3Bin_Processor extends ProcessorModel {
@@ -976,15 +973,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     } else {
                         ofileName = ofileName + "_" + newProdValue;
                     }
-
                     updateOFileInfo(ofileName);
-
                 }
             });
         }
 
         public String getOfileName() {
-
             if (!(getParamValue("noext").equals("1") || getParamValue("noext").equals("1"))) {
                 return getParamValue(getPrimaryOutputFileOptionName()) + ".main";
             }
@@ -1007,9 +1001,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     } else {
                         ofileName = ofileName + "_" + newProdValue;
                     }
-
                     updateOFileInfo(ofileName);
-
                 }
             });
 
@@ -1024,14 +1016,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     } else {
                         ofileName = ofileName + "_" + newResolutionValue;
                     }
-
                     updateOFileInfo(ofileName);
-
                 }
             });
             setOpenInSeadas(true);
         }
     }
-
-
 }
