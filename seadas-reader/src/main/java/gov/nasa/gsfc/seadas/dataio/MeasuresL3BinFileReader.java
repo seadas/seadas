@@ -80,7 +80,7 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
     }
 
     @Override
-    public void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
+    public synchronized void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
                              int sourceHeight, int sourceStepX, int sourceStepY, ProductData destBuffer,
                              ProgressMonitor pm) throws IOException, InvalidRangeException {
 

@@ -34,7 +34,6 @@ public abstract class SeadasFileReader {
     protected NetcdfFile ncFile;
     protected SeadasProductReader productReader;
     protected Map<String, String> bandInfoMap = getL2BandInfoMap();
-    //    protected Map<String, String> flagsInfoMap = getL2FlagsInfoMap();
     protected int[] start = new int[2];
     protected int[] stride = new int[2];
     protected int[] count = new int[2];
@@ -58,14 +57,11 @@ public abstract class SeadasFileReader {
     protected synchronized static HashMap<String, String> getL2BandInfoMap() {
         return readTwoColumnTable("l2-band-info.csv");
     }
-//
-//    protected synchronized static HashMap<String, String> getL2FlagsInfoMap() {
-//        return readTwoColumnTable("l2-flags-info.csv");
-//    }
+
 
     public abstract Product createProduct() throws IOException;
 
-    public void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
+    public synchronized void  readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
                              int sourceHeight, int sourceStepX, int sourceStepY, ProductData destBuffer,
                              ProgressMonitor pm) throws IOException, InvalidRangeException {
 
@@ -92,9 +88,7 @@ public abstract class SeadasFileReader {
             Array array;
             int[] newshape = {sourceHeight, sourceWidth};
 
-            synchronized (ncFile) {
-                array = variable.read(section);
-            }
+            array = variable.read(section);
             if (array.getRank() == 3) {
                 array = array.reshapeNoCopy(newshape);
             }
@@ -845,7 +839,7 @@ public abstract class SeadasFileReader {
         return flatArray;
     }
 
-    protected void invalidateLines(SkipBadNav skipBadNav, Variable latitude) throws IOException {
+    protected synchronized void invalidateLines(SkipBadNav skipBadNav, Variable latitude) throws IOException {
         final int[] shape = latitude.getShape();
         try {
             int lineCount = shape[0];
@@ -871,9 +865,8 @@ public abstract class SeadasFileReader {
                 start[0] = i;
                 Section section = new Section(start, count, stride);
                 Array array;
-                synchronized (ncFile) {
-                    array = latitude.read(section);
-                }
+                array = latitude.read(section);
+
                 float val = array.getFloat(lineCount - i);
                 if (skipBadNav.isBadNav(val)) {
                     tailLineSkip++;
