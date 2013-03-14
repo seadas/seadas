@@ -9,6 +9,7 @@ import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.command.CommandAdapter;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.ExecCommand;
+import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.visat.AbstractVisatPlugIn;
 import org.esa.beam.visat.VisatApp;
 
@@ -22,6 +23,8 @@ import java.awt.event.WindowEvent;
 import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +56,8 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
     public static final String COMMAND_ID = "Coastline, Land and Water Masks";
     public static final String TOOL_TIP = "Shortcut for adding coastline, land and water masks";
 //    public static final String ICON = "/org/esa/beam/watermask/ui/icons/coastline_24.png";
-    public static final String ICON = "icons/Coastline24.png";
+  //  public static final String ICON = "icons/Coastline24.png";
+    public static final String ICON = "coastline_24.png";
 
     public static final String LAND_WATER_MASK_OP_ALIAS = "LandWaterMask";
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
@@ -64,7 +68,20 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
         final ExecCommand action = visatApp.getCommandManager().createExecCommand(COMMAND_ID,
                 new ToolbarCommand(visatApp));
 
-        action.setLargeIcon(UIUtils.loadImageIcon(ICON));
+        URL sourceUrl = ResourceInstaller.getSourceUrl(WaterMaskVPI.class);
+        String ICON_RELATIVE_PATH = "gov/nasa/gsfc/seadas/watermask/ui/icons";
+        String iconFilename =  sourceUrl.toString() + ICON_RELATIVE_PATH + "/" + ICON;
+
+      //  action.setLargeIcon(UIUtils.loadImageIcon(icon, WaterMaskVPI.class));
+        try {
+            URL iconUrl = new URL(iconFilename);
+            ImageIcon imageIcon = new ImageIcon(iconUrl);
+            action.setLargeIcon(imageIcon);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();  
+        }
+
+
 
         final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
         lwcButton.setToolTipText(TOOL_TIP);
