@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>none</parFileOptionName>
+    </programMetaData>
+    <options>
+        <option type="boolean">
+            <name>--verbose</name>
+            <value>false</value>
+            <default>false</default>
+            <description>print out verbose status</description>
+        </option>
+        <option type="boolean">
+            <name>--src</name>
+            <value>true</value>
+            <default>true</default>
+            <description>install source code</description>
+        </option>
+        <option type="boolean">
+            <name>--aquarius</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install Aquarius files</description>
+        </option>
+        <option type="boolean">
+            <name>--avhrr</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install AVHRR files</description>
+        </option>
+        <option type="boolean">
+            <name>--czcs</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install CZCS files</description>
+        </option>
+        <option type="boolean">
+            <name>--goci</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install GOCI files</description>
+        </option>
+        <option type="boolean">
+            <name>--hico</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install HICO files</description>
+        </option>
+        <option type="boolean">
+            <name>--meris</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install MERIS files</description>
+        </option>
+        <option type="boolean">
+            <name>--aqua</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install AQUA files</description>
+        </option>
+        <option type="boolean">
+            <name>--terra</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install TERRA files</description>
+        </option>
+        <option type="boolean">
+            <name>--mos</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install MOS files</description>
+        </option>
+        <option type="boolean">
+            <name>--ocm1</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install OCM1 files</description>
+        </option>
+        <option type="boolean">
+            <name>--ocm2</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install OCM2 files</description>
+        </option>
+        <option type="boolean">
+            <name>--ocrvc</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install OCRVC files</description>
+        </option>
+        <option type="boolean">
+            <name>--octs</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install OCTS files</description>
+        </option>
+        <option type="boolean">
+            <name>--osmi</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install OSMI files</description>
+        </option>
+        <option type="boolean">
+            <name>--seawifs</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install SeaWIFS files</description>
+        </option>
+        <option type="boolean">
+            <name>--viirsn</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install VIIRSN files</description>
+        </option>
+        <option type="boolean">
+            <name>--direct-broadcast</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install direct broadcast files</description>
+        </option>
+        <option type="boolean">
+            <name>--eval</name>
+            <value>false</value>
+            <default>false</default>
+            <description>install evaluation sensor files</description>
+        </option>
+    </options>
+</paramInfo>

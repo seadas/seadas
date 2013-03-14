@@ -29,6 +29,7 @@ public class ProcessorTypeInfo {
         LONLAT2PIXLINE,
         SEADAS_PROCESSOR_PY,
         SEADAS_PROCESSOR_MAIN,
+        OCSSW_INSTALLER,
         NOID
     }
 
@@ -53,6 +54,7 @@ public class ProcessorTypeInfo {
         put("lonlat2pixline", ProcessorID.LONLAT2PIXLINE);
         put("seadas_processor.py", ProcessorID.SEADAS_PROCESSOR_PY);
         put("seadas_processor_main", ProcessorID.SEADAS_PROCESSOR_MAIN);
+        put("install_ocssw.py", ProcessorID.OCSSW_INSTALLER);
 
 
     }};

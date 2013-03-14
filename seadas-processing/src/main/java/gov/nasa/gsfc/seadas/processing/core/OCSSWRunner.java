@@ -95,11 +95,12 @@ public class OCSSWRunner {
 //        if (environment != null)
 //            env.putAll(environment);
 
-//        if (ifileDir != null) {
-//            processBuilder.directory(ifileDir);
-//        } else {
-//            //processBuilder.directory(getDefaultDir());
-//        }
+        if (ifileDir != null) {
+            processBuilder.directory(ifileDir);
+        } else {
+            processBuilder.directory(getDefaultDir());
+        }
+
         Process process = null;
         try {
             process = processBuilder.start();

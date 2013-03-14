@@ -76,6 +76,7 @@ public class ExtractorUI extends ProgramUIFactory {
         SeadasLogger.getLogger().info("updating ofile change listener ...  processorModel   " + processorModel.getPrimaryOutputFileOptionName());
 
         lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml");
+         initLonLatIFile();
 
         paramUIFactory = new ParamUIFactory(processorModel);
         pixelPanel = paramUIFactory.createParamPanel(processorModel);
@@ -129,7 +130,9 @@ public class ExtractorUI extends ProgramUIFactory {
         disableJPanel(paramPanel);
 
 
-        processorModel.addPropertyChangeListener("ifile", new PropertyChangeListener() {
+
+
+        processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println("update param panel: " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
@@ -152,6 +155,12 @@ public class ExtractorUI extends ProgramUIFactory {
                 computePixelsFromLonLat();
             }
         });
+
+        String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
+        if (! programName.equals("extractor"))   {
+            updateParamPanel(programName);
+        }
+
         return paramPanel;
     }
 
@@ -207,6 +216,12 @@ public class ExtractorUI extends ProgramUIFactory {
         }
 
         return programName;
+    }
+
+    private void initLonLatIFile(){
+        if (processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()).getValue().trim().length() > 0 ) {
+            lonlat2pixline.updateIFileInfo(processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()).getValue().trim());
+        }
     }
 
     private String getLonLattoPixelsIFileName(String ifileName, String programName) {
