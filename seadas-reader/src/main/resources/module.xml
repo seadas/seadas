@@ -1,9 +1,9 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-reader</symbolicName>
-    <version>1.3</version>
+    <version>1.4</version>
     <name>NASA OBPG Ocean Color Product Reader</name>
-    <description>A reader for NASA Ocean Color (HDF) Level-2 Data Products</description>
+    <description>A reader for Ocean Color Data Products supported the NASA Ocean Biology Processing Group</description>
 
     <vendor>NASA Ocean Biogeochemical Processing Group</vendor>
     <contactAddress>NASA GSFC, Greenbelt, Maryland, MD, USA</contactAddress>
@@ -14,6 +14,12 @@
 
     <changelog>
         <![CDATA[
+        Changes in 1/4:<br>
+        Include support for OCM2 and HICO L1B files
+        Improved support for VIIRS products
+        Added support for 24bit L1BRS files (Todo: display bands as TC image)
+        Implemented a bowtie correction for affected products (MODIS, VIIRS)
+        Include a vector import for SeaBASS formatted files
         Changes in 1.3:<br/>
         Module development taken over by NASA GSFC, Ocean Biogeochemical Processing Group.<br/>
         Readers added for VIIRS, Aquarius, MODIS L1B and SeaDAS L1, L2, L3 and browse products.<br/>
@@ -92,6 +98,16 @@
             <helpId>importAquariusProduct</helpId>
         </action>
         <action>
+            <id>importHICOL1BProduct</id>
+            <class>org.esa.beam.visat.actions.ProductImportAction</class>
+            <formatName>HICO-L1B</formatName>
+            <useAllFileFilter>true</useAllFileFilter>
+            <text>HICO L1B</text>
+            <shortDescr>Import an HICO L1B data product.</shortDescr>
+            <description>Import an HICO L1B data product.</description>
+            <helpId>importHICOL1BProduct</helpId>
+        </action>
+        <action>
             <id>importModisL1BProduct</id>
             <class>org.esa.beam.visat.actions.ProductImportAction</class>
             <formatName>MODIS-L1B</formatName>
@@ -101,6 +117,16 @@
             <description>Import a MODIS Level 1B data product.
             </description>
             <helpId>importModisL1BProduct</helpId>
+        </action>
+        <action>
+            <id>importOCM2L1BProduct</id>
+            <class>org.esa.beam.visat.actions.ProductImportAction</class>
+            <formatName>OCM2-L1B</formatName>
+            <useAllFileFilter>true</useAllFileFilter>
+            <text>OCM2 L1B</text>
+            <shortDescr>Import an OCM2 L1B data product.</shortDescr>
+            <description>Import an OCM2 L1B data product.</description>
+            <helpId>importOCM2L1BProduct</helpId>
         </action>
         <action>
             <id>importViirsProduct</id>
@@ -179,5 +205,11 @@
         </rgbProfile>
     </extension>
 
+    <extension point="beam-ui:helpSets">
+        <helpSet>
+            <parent>seadas-help</parent>
+            <path>doc/help/importNasaObpgProduct.hs</path>
+        </helpSet>
+    </extension>
 
 </module>

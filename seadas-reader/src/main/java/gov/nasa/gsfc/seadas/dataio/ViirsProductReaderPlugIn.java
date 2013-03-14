@@ -71,10 +71,13 @@ public class ViirsProductReaderPlugIn implements ProductReaderPlugIn {
                     if (platformName.equals("NPP")) {
                         Group dataProduct = ncfile.findGroup("Data_Products");
                         String dataProductList0 = dataProduct.getGroups().get(0).getShortName();
-                        if (dataProductList0.matches("VIIRS.*DR")) {
+                        if (dataProductList0.matches("VIIRS.*DR")
+                                || dataProductList0.matches("VIIRS.*IP")
+                                || dataProductList0.matches("VIIRS.*GEO.*")) {
                             ncfile.close();
                             return DecodeQualification.INTENDED;
                         }
+
                     } else {
                         if (DEBUG) {
                             System.out.println("# Unrecognized platform=[" + platformName + "]: " + file);

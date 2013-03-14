@@ -44,6 +44,7 @@ public class L2genParfilePanel {
         parStringSpecifier = new L2genParStringSpecifier(l2genData, tabIndex);
         suiteComboBox = new L2genSuiteComboBox(l2genData);
 
+
         createJPanel();
     }
 
@@ -62,13 +63,14 @@ public class L2genParfilePanel {
                 new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
 
+        int subPanelGridx = 0;
         final JPanel subPanel = new JPanel(new GridBagLayout());
         subPanel.add(openButtonRetainPanel,
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(++subPanelGridx, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 //        subPanel.add(getAncillaryFilesSpecifier.getjButton(),
 //                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
         subPanel.add(getAncillarySplitButton.getAncillarySplitButton(),
-                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
 
         final JPanel defaultsPanel = new JPanel(new GridBagLayout());
@@ -78,7 +80,9 @@ public class L2genParfilePanel {
 
 
         subPanel.add(defaultsPanel,
-                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+
+
 
 
         final JPanel suitePanel = new JPanel(new GridBagLayout());
@@ -89,11 +93,14 @@ public class L2genParfilePanel {
                 new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
 
-        subPanel.add(suitePanel,
-                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+        if (l2genData.getMode() != L2genData.Mode.L2GEN_AQUARIUS) {
+            subPanel.add(suitePanel,
+                    new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+        }
+
 
         subPanel.add(parfileExporter.getjButton(),
-                new GridBagConstraintsCustom(4, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(++subPanelGridx, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
         jPanel.add(subPanel,

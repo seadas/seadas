@@ -118,7 +118,11 @@ public class L2genData implements L2genDataProcessorModel {
 
     public L2genData(Mode mode) {
         setMode(mode);
-        processorModel = new ProcessorModel("l2gen", getParamInfos());
+        if (mode == Mode.L2GEN_AQUARIUS) {
+            processorModel = new ProcessorModel("l2gen_aquarius", getParamInfos());
+        } else {
+            processorModel = new ProcessorModel("l2gen", getParamInfos());
+        }
         processorModel.setAcceptsParFile(true);
     }
 
@@ -1174,14 +1178,20 @@ public class L2genData implements L2genDataProcessorModel {
 
         File iFile = new File(ifile);
         try {
-
-
-//            System.setProperty("user.dir", iFile.getAbsolutePath());
-//            String test = iFile.getAbsolutePath();
-//            File test2 = processorModel.getIFileDir();
-//            String test22 = test2.getAbsolutePath();
-
             Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
+
+            // Determine exploded filenames
+            File runDirectoryFiles[] = processorModel.getIFileDir().listFiles();
+
+            for (File file : runDirectoryFiles) {
+                if (file.getName().startsWith(iFile.getName().substring(0, 13))) {
+                    if (file.getName().endsWith(".txt") || file.getName().endsWith(".anc")) {
+                        file.delete();
+                    }
+                }
+            }
+
+
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             String line = stdInput.readLine();
@@ -1189,6 +1199,20 @@ public class L2genData implements L2genDataProcessorModel {
                 if (line.contains("=")) {
                     ancillaryFiles.append(line);
                     ancillaryFiles.append("\n");
+
+                    // Delete all ancillary files in operational (IFILE) directory on program exit
+                    String[] splitLine = line.split("=");
+                    if (splitLine.length == 2) {
+                        File currentFile = new File(splitLine[1]);
+                        if (currentFile.isAbsolute()) {
+                            if (currentFile.getParent() != null && currentFile.getParent().equals(iFile.getParent())) {
+                                currentFile.deleteOnExit();
+                            }
+                        } else {
+                            File absoluteCurrentFile = new File(processorModel.getIFileDir().getAbsolutePath(), currentFile.getName());
+                            absoluteCurrentFile.deleteOnExit();
+                        }
+                    }
                 }
                 line = stdInput.readLine();
             }
@@ -1342,7 +1366,11 @@ public class L2genData implements L2genDataProcessorModel {
 
         xmlFile = new File(l2genDir, PRODUCT_INFO_XML);
         ofile = new File(l2genDir, PRODUCT_INFO_XML + ".out");
-        processorModel = new ProcessorModel("l2gen");
+        if (mode == Mode.L2GEN_AQUARIUS) {
+            processorModel = new ProcessorModel("l2gen_aquarius");
+        } else {
+            processorModel = new ProcessorModel("l2gen");
+        }
 
 
         processorModel.setAcceptsParFile(true);

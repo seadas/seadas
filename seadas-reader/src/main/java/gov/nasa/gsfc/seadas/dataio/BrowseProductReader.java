@@ -6,6 +6,7 @@ import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.PixelGeoCoding;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
+import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 
@@ -31,23 +32,7 @@ public class BrowseProductReader extends SeadasFileReader {
 
         int sceneWidth = getIntAttribute("Pixels per Scan Line");
         int sceneHeight = getIntAttribute("Number of Scan Lines");
-//        try {
-//            String navGroup = "Navigation";
-//            final String latitude = "latitude";
-//            if (ncFile.findGroup(navGroup) == null) {
-//                if (ncFile.findGroup("Navigation") != null) {
-//                    navGroup = "Navigation";
-//                }
-//            }
-//            final Variable variable = ncFile.findVariable(navGroup + "/" + latitude);
-//            invalidateLines(LAT_SKIP_BAD_NAV,variable);
-//
-//            sceneHeight -= leadLineSkip;
-//            sceneHeight -= tailLineSkip;
-//
-//        } catch (IOException ignore) {
-//
-//       }
+
         String productName = getStringAttribute("Product Name");
 
         mustFlipX = mustFlipY = getDefaultFlip();
@@ -81,90 +66,132 @@ public class BrowseProductReader extends SeadasFileReader {
 
         addGlobalMetadata(product);
 //        addBandMetadata(product);
-
-        variableMap = addBands(product, ncFile.getVariables());
+        variableMap = addBrsBands(product, ncFile.getVariables());
+//        variableMap = addNewBrsBand(product, ncFile.getVariables());
 
         addGeocoding(product);
 
         return product;
     }
 
-    @Override
-    public Map<Band, Variable> addBands(Product product,
-                                        List<Variable> variables) {
-        final Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
-        for (Variable variable : variables) {
-            Band band = addNewBand(product, variable);
-            if (band != null) {
-                bandToVariableMap.put(band, variable);
-            }
-        }
+//    @Override
+//    public Map<Band, Variable> addBands(Product product,
+//                                        List<Variable> variables) {
+//        final Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
+//        for (Variable variable : variables) {
+//            Map<Band, Variable> band = addNewBrsBand(product, variable);
+//            if (band != null) {
+//                bandToVariableMap.put(band, variable);
+//            }
+//        }
+//
+//        return bandToVariableMap;
+//    }
+//    @Override
 
-        return bandToVariableMap;
-    }
-    @Override
-    protected Band addNewBand(Product product, Variable variable) {
+    protected Map<Band, Variable>  addBrsBands(Product product,  List<Variable>  variables) {
         final int sceneRasterWidth = product.getSceneRasterWidth();
         final int sceneRasterHeight = product.getSceneRasterHeight();
-        Band band = null;
+        Band band;
+        Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
+        String description = "Level-1A Browse data";
+        String units = "Relative Reflectance units";
 
-        int variableRank = variable.getRank();
-        if (variableRank == 2) {
-            final int[] dimensions = variable.getShape();
-            final int height = dimensions[0] - leadLineSkip - tailLineSkip;
-            final int width = dimensions[1];
-            if (height == sceneRasterHeight && width == sceneRasterWidth) {
-                String name = variable.getShortName();
-                boolean isBrs = false;
-                try {
-                    if (variable.findAttribute("long_name").getStringValue().contains("brs_data")) isBrs = true;
-                    else isBrs = false;
-                } catch (Exception ignored) { }
-                if (isBrs){
+        for (Variable variable : variables) {
+            int variableRank = variable.getRank();
+            if (variableRank == 2) {
+                final int[] dimensions = variable.getShape();
+                final int height = dimensions[0] - leadLineSkip - tailLineSkip;
+                final int width = dimensions[1];
+                if (height == sceneRasterHeight && width == sceneRasterWidth) {
+                    String name = variable.getShortName();
+                    boolean isBrs = false;
                     try {
-                        name = getStringAttribute("Parameter");
-                    } catch (Exception ignore) { }
-                }
-                final int dataType = getProductDataType(variable);
-                band = new Band(name, dataType, width, height);
-                final String validExpression = bandInfoMap.get(name);
-                if (validExpression != null && !validExpression.equals("")) {
-                    band.setValidPixelExpression(validExpression);
-                }
-                product.addBand(band);
-
-
-                if (isBrs){
-                    try {
-                        band.setScalingFactor(getFloatAttribute("Slope"));
-                        band.setScalingOffset(getFloatAttribute("Intercept"));
-                        band.setNoDataValue(253.);// * band.getScalingFactor() + band.getScalingOffset()));
-                        band.setNoDataValueUsed(true);
+                        isBrs = variable.findAttribute("long_name").getStringValue().contains("brs_data");
                     } catch (Exception ignored) { }
-                } else {
-                    final List<Attribute> list = variable.getAttributes();
-                    for (Attribute hdfAttribute : list) {
-                        final String attribName = hdfAttribute.getName();
-                        if ("units".equals(attribName)) {
-                            band.setUnit(hdfAttribute.getStringValue());
-                        } else if ("long_name".equals(attribName)) {
-                            band.setDescription(hdfAttribute.getStringValue());
-                        } else if ("slope".equals(attribName)) {
-                            band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
-                        } else if ("intercept".equals(attribName)) {
-                            band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
+                    if (isBrs){
+                        try {
+                            name = getStringAttribute("Parameter");
+                            description = name;
+                        } catch (Exception ignore) { }
+                    }
+                    final int dataType = getProductDataType(variable);
+                    band = new Band(name, dataType, width, height);
+                    final String validExpression = bandInfoMap.get(name);
+                    if (validExpression != null && !validExpression.equals("")) {
+                        band.setValidPixelExpression(validExpression);
+                    }
+                    product.addBand(band);
+
+                    if (isBrs){
+                        try {
+                            band.setScalingFactor(getFloatAttribute("Slope"));
+                            band.setScalingOffset(getFloatAttribute("Intercept"));
+//                            band.setUnit(units);
+                            band.setNoDataValue(253.);// * band.getScalingFactor() + band.getScalingOffset()));
+                            band.setNoDataValueUsed(true);
+                        } catch (Exception ignored) { }
+                        band.setDescription(description);
+                    } else {
+                        final List<Attribute> list = variable.getAttributes();
+                        for (Attribute hdfAttribute : list) {
+                            final String attribName = hdfAttribute.getName();
+                            if ("units".equals(attribName)) {
+                                band.setUnit(hdfAttribute.getStringValue());
+                            } else if ("long_name".equals(attribName)) {
+                                band.setDescription(hdfAttribute.getStringValue());
+                            } else if ("slope".equals(attribName)) {
+                                band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
+                            } else if ("intercept".equals(attribName)) {
+                                band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
+                            }
                         }
                     }
+                    bandToVariableMap.put(band, variable);
+                }
+            } else if (variable.getRank() == 3) {
+                final int[] dimensions = variable.getShape();
+                final int bands = dimensions[2];
+                final int height = dimensions[0] - leadLineSkip - tailLineSkip;
+                final int width = dimensions[1];
+
+
+                final String bandnames[] = {"Red", "Green", "Blue"};
+                if (height == sceneRasterHeight && width == sceneRasterWidth) {
+                    // final List<Attribute> list = variable.getAttributes();
+
+
+                    for (int i = 0; i < bands; i++) {
+                        final String name = bandnames[i];
+                        final int dataType = getProductDataType(variable);
+                        band = new Band(name, dataType, width, height);
+                        product.addBand(band);
+
+                        Variable sliced = null;
+                        try {
+                            sliced = variable.slice(2, i);
+                        } catch (InvalidRangeException e) {
+                            e.printStackTrace();  //Todo change body of catch statement.
+                        }
+
+                        bandToVariableMap.put(band, sliced);
+                        band.setUnit(units);
+                        band.setDescription(description);
+
+                    }
+
+
                 }
             }
         }
-        return band;
+        return bandToVariableMap;
     }
+
     public void addGeocoding(final Product product) throws ProductIOException {
         final String longitude = "longitude";
         final String latitude = "latitude";
-        Band latBand = null;
-        Band lonBand = null;
+        Band latBand;
+        Band lonBand;
 
         latBand = product.getBand(latitude);
         lonBand = product.getBand(longitude);
@@ -174,11 +201,11 @@ public class BrowseProductReader extends SeadasFileReader {
         lonBand.setNoDataValueUsed(true);
 
         try {
-            if (latBand != null && lonBand != null) {
-                    product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-            }
+
+            product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
+
         } catch (IOException e) {
-                throw new ProductIOException(e.getMessage());
+            throw new ProductIOException(e.getMessage());
         }
     }
 }

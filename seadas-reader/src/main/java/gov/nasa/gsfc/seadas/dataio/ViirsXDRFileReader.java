@@ -15,12 +15,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: seadas
- * Date: 11/14/11
- * Time: 2:23 PM
- */
 public class ViirsXDRFileReader extends SeadasFileReader {
 
     ViirsXDRFileReader(SeadasProductReader productReader) {
@@ -38,11 +32,30 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 String groupName = "All_Data/" + CollectionShortName + "_All";
                 Group edrGroup = ncFile.findGroup(groupName);
                 dims = edrGroup.getVariables().get(0).getDimensions();
-            } else {
+            } else if (productReader.getProductType() == SeadasProductReader.ProductType.VIIRS_SDR) {
                 String varName = "All_Data/" + CollectionShortName + "_All/Radiance";
                 Variable exampleRadiance = ncFile.findVariable(varName);
                 dims = exampleRadiance.getDimensions();
+            } else if (productReader.getProductType() == SeadasProductReader.ProductType.VIIRS_GEO) {
+                String varName = "All_Data/" + CollectionShortName + "_All/Height";
+                Variable exampleRadiance = ncFile.findVariable(varName);
+                dims = exampleRadiance.getDimensions();
+            } else if (productReader.getProductType() == SeadasProductReader.ProductType.VIIRS_IP) {
+                if (CollectionShortName.equals("VIIRS-DualGain-Cal-IP")) {
+                    String varName = "All_Data/" + CollectionShortName + "_All/radiance_0";
+                    Variable exampleRadiance = ncFile.findVariable(varName);
+                    dims = exampleRadiance.getDimensions();
+                }
+//                todo: One day, maybe, add support for the OBC files.
+                else {
+                    String message = "Unsupported VIIRS Product: " + CollectionShortName;
+                    throw new ProductIOException(message);
+                }
+            } else {
+                String message = "Unsupported VIIRS Product: " + CollectionShortName;
+                throw new ProductIOException(message);
             }
+
 
             int sceneHeight = dims.get(0).getLength();
             int sceneWidth = dims.get(1).getLength();
@@ -67,7 +80,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 
             addGeocoding(product);
 
-            product.setAutoGrouping("IOP:QF:nLw");
+            product.setAutoGrouping("IOP:QF:nLw:Radiance:radiance:Reflectance");
             addFlagsAndMasks(product);
 
             setSpectralBand(product);
@@ -84,15 +97,17 @@ public class ViirsXDRFileReader extends SeadasFileReader {
         for (String name : product.getBandNames()) {
             Band band = product.getBandAt(product.getBandIndex(name));
             if (name.matches(".*\\w+_\\d+.*")) {
-                String wvlstr = "";
+                String wvlstr = null;
                 if (name.matches("IOP.*_\\d+.*")) {
                     wvlstr = name.split("_")[2].split("nm")[0];
                 } else if (name.matches("nLw_\\d+nm")) {
                     wvlstr = name.split("_")[1].split("nm")[0];
                 }
-                final float wavelength = Float.parseFloat(wvlstr);
-                band.setSpectralWavelength(wavelength);
-                band.setSpectralBandIndex(spectralBandIndex++);
+                if (wvlstr != null){
+                    final float wavelength = Float.parseFloat(wvlstr);
+                    band.setSpectralWavelength(wavelength);
+                    band.setSpectralBandIndex(spectralBandIndex++);
+                }
             }
         }
     }
@@ -133,7 +148,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                             }
                         }
                     }
-                    //todo Add valid expression - _FillValue is not working properly
+                    //todo Add valid expression - _FillValue is not working properly - viirs uses more than one...ugh.
                     if (varname.equals("Chlorophyll_a")) {
                         band.setValidPixelExpression("Chlorophyll_a > 0.0 && Chlorophyll_a < 100.0");
                     }
@@ -150,129 +165,208 @@ public class ViirsXDRFileReader extends SeadasFileReader {
     public void addGeocoding(final Product product) throws ProductIOException {
         //todo: refine logic to get correct navGroup
         File inputFile = productReader.getInputFile();
+        NetcdfFile geofile = null;
         String navGroup = "All_Data/VIIRS-MOD-GEO-TC_All";
         String geoFileName = null;
         int strlen = inputFile.getName().length();
         int detectorsInScan;
+        Group geocollection = null;
+        Group collection = ncFile.getRootGroup().findGroup("Data_Products").getGroups().get(0);
+        String shortName = getCollectionShortName();
 
+        String dsType = collection.findAttribute("N_Dataset_Type_Tag").getStringValue();
+
+        if (!dsType.equals("GEO")){
+            Attribute geoRef = findAttribute("N_GEO_Ref");
+            if (geoRef != null) {
+                geoFileName = geoRef.getStringValue().trim();
+            } else {
+                String platform =  findAttribute("Platform_Short_Name").getStringValue().toLowerCase();
+                String procdomain = collection.findAttribute("N_Processing_Domain").getStringValue().toLowerCase();
+                String datasource = findAttribute("N_Dataset_Source").getStringValue().toLowerCase();
+                long orbitnum = 0;
+                String startDate = null;
+                String startTime = null;
+                String endTime = null;
+                String createDate = findAttribute("N_HDF_Creation_Date").getStringValue();
+                String createTime = findAttribute("N_HDF_Creation_Time").getStringValue();
+                List<Variable> dataProductList = collection.getVariables();
+                for (Variable var : dataProductList) {
+                    if (var.getShortName().contains("_Aggr")) {
+                        orbitnum = var.findAttribute("AggregateBeginningOrbitNumber").getNumericValue().longValue();
+                        startDate = var.findAttribute("AggregateBeginningDate").getStringValue().trim();
+                        startTime = var.findAttribute("AggregateBeginningTime").getStringValue().trim().substring(0, 8);
+                        endTime = var.findAttribute("AggregateEndingTime").getStringValue().trim().substring(0, 8);
+                    }
+                }
+                StringBuilder geoFile = new StringBuilder();
+
+                if (shortName.contains("DNB")){
+                    geoFile.append("GDNBO");
+                } else if (shortName.contains("VIIRS-I")){
+                    geoFile.append("GITCO");
+                } else if (dsType.equals("EDR") || shortName.contains("VIIRS-M")){
+                    geoFile.append("GMTCO");
+                }
+                else if (shortName.contains("VIIRS-DualGain")){
+                    geoFile.append("ICDBG");
+                }
+                geoFile.append('_');
+                geoFile.append(platform);
+                geoFile.append("_d");
+                geoFile.append(startDate);
+                geoFile.append("_t");
+                geoFile.append(startTime);
+                geoFile.deleteCharAt(geoFile.toString().length()-2);
+                geoFile.append("_e");
+                geoFile.append(endTime);
+                geoFile.deleteCharAt(geoFile.toString().length()-2);
+                geoFile.append("_b");
+                geoFile.append(String.format("%05d",orbitnum));
+                geoFile.append("_c");
+                geoFile.append(createDate).append(createTime);
+                geoFile.deleteCharAt(geoFile.toString().length()-1);
+                geoFile.deleteCharAt(geoFile.toString().length()-7);
+                geoFile.append("_");
+                geoFile.append(datasource);
+                geoFile.append("_");
+                geoFile.append(procdomain);
+                geoFile.append(".h5");
+                geoFileName =  geoFile.toString();
+            }
+
+            try {
+
+                String path = inputFile.getParent();
+                File geocheck = new File(path, geoFileName);
+                // remove the create time segment and try again
+                if (!geocheck.exists() || geoFileName == null) {
+                    File geodir = new File(path);
+                    final String geoFileName_filter = inputFile.getName().substring(5, strlen).split("_c\\d{20}_")[0];
+
+                    FilenameFilter filter = new FilenameFilter(){
+                        public boolean accept
+                        (File dir, String name) {
+                            return name.contains(geoFileName_filter);
+                        }
+                    };
+                    String[] geofilelist = geodir.list(filter);
+
+                    for (String gf:geofilelist){
+                        if (!gf.startsWith("ICDBG")){
+                            if (!gf.startsWith("G")){
+                                continue;
+                            }
+                        }
+                        if (shortName.contains("DNB") && gf.startsWith("GDNBO")){
+                            geocheck = new File(path,  gf);
+                            break;
+                        } else if (shortName.contains("VIIRS-I")){
+                            if ( gf.startsWith("GITCO")){
+                                geocheck = new File(path,  gf);
+                                break;
+                            } else if ( gf.startsWith("GIMGO")){
+                                geocheck = new File(path,  gf);
+                                // prefer the GITCO, so keep looking just in case;
+                            }
+
+                        } else if (shortName.contains("VIIRS-DualGain")){
+                            if ( gf.startsWith("ICDBG")){
+                                geocheck = new File(path,  gf);
+                                break;
+                            }
+                        } else if (dsType.equals("EDR") || shortName.contains("VIIRS-M")){
+                            if ( gf.startsWith("GMTCO")){
+                                geocheck = new File(path,  gf);
+                                break;
+                            } else if ( gf.startsWith("GMODO")){
+                                geocheck = new File(path,  gf);
+                                //prefer the GMTCO, so keep looking just in case;
+                            }
+
+                        }
+                    }
+                    if (!geocheck.exists()){
+                        return;
+                    }
+                }
+                geofile = NetcdfFile.open(geocheck.getPath());
+                List<Group> navGroups = geofile.findGroup("All_Data").getGroups();
+                for (Group ng : navGroups) {
+                    if (ng.getShortName().contains("GEO")){
+                        navGroup = ng.getName();
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                throw new ProductIOException(e.getMessage());
+            }
+        }
         try {
-            String CollectionShortName = getCollectionShortName();
-            String varName = "All_Data/" + CollectionShortName + "_All/NumberOfScans";
-            Variable nscans = ncFile.findVariable(varName);
+
+            if (dsType.equals("GEO")){
+                geocollection = ncFile.getRootGroup().findGroup("All_Data").getGroups().get(0);
+            } else {
+                if (geofile != null) {
+                    geocollection = geofile.getRootGroup().findGroup("All_Data").getGroups().get(0);
+                }
+            }
+            Variable nscans = null;
+            if (geocollection != null){
+                nscans = geocollection.findVariable("NumberOfScans");
+                if (nscans == null){
+                    nscans = geocollection.findVariable("act_scans");
+                }
+            }
             Array ns = nscans.read();
             detectorsInScan = product.getSceneRasterHeight() / ns.getInt(0);
         } catch (IOException e) {
             throw new ProductIOException("Could not find the number of detectors in a scan");
         }
-
-        Attribute geoRef = findAttribute("N_GEO_Ref");
-        if (geoRef != null) {
-            geoFileName = geoRef.getStringValue().trim();
-        } else {
-            if (inputFile.getName().startsWith("SVDNB")){
-                geoFileName = "GDNBO" + inputFile.getName().substring(5, strlen);
-            } else if (inputFile.getName().startsWith("SVI")){
-                geoFileName = "GITCO" + inputFile.getName().substring(5, strlen);
-            } else if (inputFile.getName().startsWith("SVM")){
-                geoFileName = "GMTCO" + inputFile.getName().substring(5, strlen);
-            }
-        }
-        try {
-
-            String path = inputFile.getParent();
-            File geocheck = new File(path, geoFileName);
-            // remove the create time segment and try again
-            if (!geocheck.exists() || geoFileName == null) {
-                File geodir = new File(path);
-                final String geoFileName_filter = inputFile.getName().substring(5, strlen).split("_c\\d{20}_")[0];
-                
-                FilenameFilter filter = new FilenameFilter(){
-                    public boolean accept
-                    (File dir, String name) {
-                        return name.contains(geoFileName_filter);
-                    }
-                };
-                String[] geofilelist = geodir.list(filter);
-
-                for (String gf:geofilelist){
-                    if (!gf.startsWith("G")){
-                        continue;
-                    }
-                    if (inputFile.getName().startsWith("SVDNB") && gf.startsWith("GDNBO")){
-                        geocheck = new File(path,  gf);
-                        break;
-                    } else if (inputFile.getName().startsWith("SVI")){
-                        if ( gf.startsWith("GITCO")){
-                            geocheck = new File(path,  gf);
-                            break;
-                        } else if ( gf.startsWith("GIMGO")){
-                            geocheck = new File(path,  gf);
-//                          prefer the GITCO, so keep looking just in case;
-                        }
-
-                    } else if (inputFile.getName().startsWith("SVM")){
-                        if ( gf.startsWith("GMTCO")){
-                            geocheck = new File(path,  gf);
-                            break;
-                        } else if ( gf.startsWith("GMODO")){
-                            geocheck = new File(path,  gf);
-//                          prefer the GMTCO, so keep looking just in case;
-                        }
-
-                    }
-                }
-                if (!geocheck.exists()){
-                    return;
-                }
-            }
-            NetcdfFile geofile = NetcdfFile.open(geocheck.getPath());
-            List<Group> navGroups = geofile.findGroup("All_Data").getGroups();
-            for (Group ng : navGroups) {
-                if (ng.getShortName().contains("GEO")){
-                    navGroup = ng.getName();
-                    break;
-                }
-            }
-
+        try{
             final String longitude = "Longitude";
             final String latitude = "Latitude";
 
-            Band latBand = new Band("latitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
-            Band lonBand = new Band("longitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
-            product.addBand(latBand);
-            product.addBand(lonBand);
+            if (!dsType.equals("GEO")){
+                Band latBand = new Band("latitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
+                Band lonBand = new Band("longitude", ProductData.TYPE_FLOAT32, product.getSceneRasterWidth(), product.getSceneRasterHeight());
+                product.addBand(latBand);
+                product.addBand(lonBand);
 
 
-            Array latarr = geofile.findVariable(navGroup + "/" + latitude).read();
+                Array latarr = geofile.findVariable(navGroup + "/" + latitude).read();
+                Array lonarr = geofile.findVariable(navGroup + "/" + longitude).read();
 
-            Array lonarr = geofile.findVariable(navGroup + "/" + longitude).read();
-            float[] latitudes;
-            float[] longitudes;
-            if (mustFlipX && mustFlipY) {
-                latitudes = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
-                longitudes = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
+                float[] latitudes;
+                float[] longitudes;
+                if (mustFlipX && mustFlipY) {
+                    latitudes = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
+                    longitudes = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
+                } else {
+                    latitudes = (float[]) latarr.getStorage();
+                    longitudes = (float[]) lonarr.getStorage();
+                }
+
+                ProductData lats = ProductData.createInstance(latitudes);
+                latBand.setData(lats);
+                ProductData lons = ProductData.createInstance(longitudes);
+                lonBand.setData(lons);
+
+                //product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
+                product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, detectorsInScan, 0));
             } else {
-                latitudes = (float[]) latarr.getStorage();
-                longitudes = (float[]) lonarr.getStorage();
+                product.setGeoCoding(new BowtiePixelGeoCoding(product.getBand(latitude), product.getBand(longitude), detectorsInScan, 0));
             }
-
-            ProductData lats = ProductData.createInstance(latitudes);
-            latBand.setData(lats);
-            ProductData lons = ProductData.createInstance(longitudes);
-            lonBand.setData(lons);
-
-            //product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-            product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, detectorsInScan, 0));
-
-        } catch (Exception e) {
+        }catch (Exception e) {
             throw new ProductIOException(e.getMessage());
         }
+
     }
 
     public boolean mustFlipVIIRS() throws ProductIOException {
         List<Variable> vars = ncFile.getVariables();
         for (Variable var : vars) {
-            if (var.getShortName().contains("DR_Gran_")) {
+            if (var.getShortName().contains("_Gran_")) {
                 List<Attribute> attrs = var.getAttributes();
                 for (Attribute attr : attrs) {
                     if (attr.getName().equals("Ascending/Descending_Indicator")) {
@@ -335,7 +429,8 @@ public class ViirsXDRFileReader extends SeadasFileReader {
 
         for (Group dpgroup : DataProductGroups) {
             String groupname = dpgroup.getShortName();
-            if (groupname.matches("VIIRS-.*DR$")) {
+//            if (groupname.matches("VIIRS-.*DR$")) {
+            if (groupname.matches("VIIRS-")) {
                 List<Variable> vars = dpgroup.getVariables();
                 for (Variable var : vars) {
                     String varname = var.getShortName();

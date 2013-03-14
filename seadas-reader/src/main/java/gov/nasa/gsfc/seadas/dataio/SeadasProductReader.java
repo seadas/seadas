@@ -57,8 +57,10 @@ public class SeadasProductReader extends AbstractProductReader {
         MEaSUREs("MEaSUREs Mapped"),
         MEaSUREs_Bin("MEaSUREs Binned"),
         SeadasMapped("SeaDAS Mapped"),
+        VIIRS_IP("VIIRS IP"),
         VIIRS_SDR("VIIRS SDR"),
         VIIRS_EDR("VIIRS EDR"),
+        VIIRS_GEO("VIIRS GEO"),
         UNKNOWN("WHATUTALKINBOUTWILLIS");
 
 
@@ -137,8 +139,10 @@ public class SeadasProductReader extends AbstractProductReader {
                 case SeadasMapped:
                     seadasFileReader = new SeadasMappedFileReader(this);
                     break;
+                case VIIRS_IP:
                 case VIIRS_SDR:
                 case VIIRS_EDR:
+                case VIIRS_GEO:
                     seadasFileReader = new ViirsXDRFileReader(this);
                     break;
                 case UNKNOWN:
@@ -163,16 +167,15 @@ public class SeadasProductReader extends AbstractProductReader {
     }
 
     @Override
-    protected void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth,
-                                          int sourceHeight,
+    protected void readBandRasterDataImpl(int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight,
                                           int sourceStepX, int sourceStepY, Band destBand, int destOffsetX,
-                                          int destOffsetY, int destWidth, int destHeight,
-                                          ProductData destBuffer,
+                                          int destOffsetY, int destWidth, int destHeight, ProductData destBuffer,
                                           ProgressMonitor pm) throws IOException {
 
 
         try {
-            seadasFileReader.readBandData(destBand, sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight, destBuffer, pm);
+            seadasFileReader.readBandData(destBand, sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight,
+                    sourceStepX, sourceStepY,destBuffer, pm);
         } catch (Exception e) {
             final ProductIOException exception = new ProductIOException(e.getMessage());
             exception.setStackTrace(e.getStackTrace());
@@ -225,13 +228,18 @@ public class SeadasProductReader extends AbstractProductReader {
         try {
             if (platformShortName.getStringValue().equals("NPP")) {
                 Group dataProduct = ncfile.findGroup("Data_Products");
+                if (dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*IP")) {
+                    return ProductType.VIIRS_IP;
+                }
                 if (dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*SDR")) {
                     return ProductType.VIIRS_SDR;
                 }
                 if (dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*EDR")) {
                     return ProductType.VIIRS_EDR;
                 }
-
+                if (dataProduct.getGroups().get(0).getShortName().matches("VIIRS.*GEO.*")) {
+                    return ProductType.VIIRS_GEO;
+                }
             }
 
         } catch (Exception ignored) {

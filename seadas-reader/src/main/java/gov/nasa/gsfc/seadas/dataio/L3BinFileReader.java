@@ -63,8 +63,8 @@ public class L3BinFileReader extends SeadasFileReader {
     }
 
     @Override
-    public void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
-                             int sourceHeight, ProductData destBuffer,
+    public synchronized void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
+                             int sourceHeight, int sourceStepX, int sourceStepY, ProductData destBuffer,
                              ProgressMonitor pm) throws IOException, InvalidRangeException {
 
         final Variable variable = variableMap.get(destBand);
@@ -105,8 +105,9 @@ public class L3BinFileReader extends SeadasFileReader {
             stride[0] = 1;
 
 
-            for (int y = sourceOffsetY; y < sourceOffsetY + sourceHeight; y++) {
-                if (pm.isCanceled()) {
+//            for (int y = sourceOffsetY; y < sourceOffsetY + sourceHeight; y++) {
+            for (int y = sourceOffsetY; y < sourceOffsetY + sourceHeight; y+=sourceStepY) {
+                    if (pm.isCanceled()) {
                     break;
                 }
                 final int rowIndex = (height - 1) - y;
