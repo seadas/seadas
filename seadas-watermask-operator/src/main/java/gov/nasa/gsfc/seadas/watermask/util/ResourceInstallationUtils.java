@@ -4,7 +4,9 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.util.SystemUtils;
 
+import javax.swing.*;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -18,7 +20,18 @@ public class ResourceInstallationUtils {
 
     public static String MODULE_NAME = "seadas-watermask-operator";
     public static String AUXDIR = "auxdata";
-    public static String AUXPATH = "gov/nasa/gsfc/seadas/watermask/operator/" + AUXDIR + "/";
+    public static String WATERMASK_PATH = "gov/nasa/gsfc/seadas/watermask/";
+    public static String AUXPATH = WATERMASK_PATH + "operator/" + AUXDIR + "/";
+    public static String ICON_PATH = WATERMASK_PATH + "ui/icons/";
+
+public static String getIconFilename(String icon, Class sourceClass) {
+
+    URL sourceUrl = ResourceInstaller.getSourceUrl(sourceClass);
+    String iconFilename =  sourceUrl.toString() + ICON_PATH + icon;
+
+    return iconFilename;
+}
+
 
 
     public static void writeFileFromUrl(URL sourceUrl, File targetFile) throws IOException {
