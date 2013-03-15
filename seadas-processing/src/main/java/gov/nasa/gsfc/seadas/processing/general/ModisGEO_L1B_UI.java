@@ -65,21 +65,21 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
     }
 
     private Component findJPanel(Component comp, String panelName) {
-        System.out.println(comp.getClass() + "  " + panelName);
-        if (comp.getClass() == JPanel.class) return comp;
-        if (comp instanceof Container) {
-            Component[] components = ((Container) comp).getComponents();
-            System.out.println("number of comps: " + components.length);
-            for (int i = 0; i < components.length; i++) {
+            System.out.println(comp.getClass() + "  " + panelName);
+            if (comp.getClass() == JPanel.class) return comp;
+            if (comp instanceof Container) {
+                Component[] components = ((Container) comp).getComponents();
+                System.out.println("number of comps: " + components.length);
+                for (int i = 0; i < components.length; i++) {
 
-                Component child = findJPanel(components[i], components[i].getName());
-                if (child != null) {
+                    Component child = findJPanel(components[i], components[i].getName());
+                    if (child != null) {
 
-                    return child;
+                        return child;
+                    }
                 }
             }
-        }
-        return null;
+            return null;
 
-    }
+        }
 }

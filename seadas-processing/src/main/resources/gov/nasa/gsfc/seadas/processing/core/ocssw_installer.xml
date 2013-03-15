@@ -6,16 +6,16 @@
         <parFileOptionName>none</parFileOptionName>
     </programMetaData>
     <options>
-        <option type="boolean">
-            <name>--verbose</name>
-            <value>false</value>
-            <default>false</default>
-            <description>print out verbose status</description>
-        </option>
+        <!--<option type="boolean">-->
+            <!--<name>-verbose</name>-->
+            <!--<value>false</value>-->
+            <!--<default>false</default>-->
+            <!--<description>print out verbose status</description>-->
+        <!--</option>-->
         <option type="boolean">
             <name>--src</name>
-            <value>true</value>
-            <default>true</default>
+            <value>false</value>
+            <default>false</default>
             <description>install source code</description>
         </option>
         <option type="boolean">
@@ -58,13 +58,13 @@
             <name>--aqua</name>
             <value>false</value>
             <default>false</default>
-            <description>install AQUA files</description>
+            <description>install MODIS Aqua files</description>
         </option>
         <option type="boolean">
             <name>--terra</name>
             <value>false</value>
             <default>false</default>
-            <description>install TERRA files</description>
+            <description>install MODIS Terra files</description>
         </option>
         <option type="boolean">
             <name>--mos</name>
@@ -114,12 +114,12 @@
             <default>false</default>
             <description>install VIIRSN files</description>
         </option>
-        <option type="boolean">
-            <name>--direct-broadcast</name>
-            <value>false</value>
-            <default>false</default>
-            <description>install direct broadcast files</description>
-        </option>
+        <!--<option type="boolean">-->
+            <!--<name>-direct-broadcast</name>-->
+            <!--<value>false</value>-->
+            <!--<default>false</default>-->
+            <!--<description>install direct broadcast files</description>-->
+        <!--</option>-->
         <option type="boolean">
             <name>--eval</name>
             <value>false</value>
