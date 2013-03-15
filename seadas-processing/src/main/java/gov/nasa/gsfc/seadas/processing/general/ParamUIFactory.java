@@ -29,11 +29,11 @@ public class ParamUIFactory {
 
     private String emptySpace = "  ";
 
-    ParamUIFactory(ProcessorModel pm) {
+    public ParamUIFactory(ProcessorModel pm) {
         this.processorModel = pm;
     }
 
-    protected JPanel createParamPanel() {
+    public JPanel createParamPanel() {
         //final JScrollPane textScrollPane = new JScrollPane(parameterTextArea);
         final JScrollPane textScrollPane = new JScrollPane(createParamPanel(processorModel));
 
@@ -137,6 +137,7 @@ public class ParamUIFactory {
 
         final String optionName = pi.getName();
         final JPanel optionPanel = new JPanel();
+        optionPanel.setName(optionName );
         TableLayout fieldLayout = new TableLayout(1);
         fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         optionPanel.setLayout(fieldLayout);
@@ -190,13 +191,14 @@ public class ParamUIFactory {
         final boolean optionValue = pi.getValue().equals( "true" ) || pi.getValue().equals( "1") ? true : false;
 
         final JPanel optionPanel = new JPanel();
+        optionPanel.setName( optionName );
         TableLayout booleanLayout = new TableLayout(1);
         //booleanLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
 
         optionPanel.setLayout(booleanLayout);
         optionPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         optionPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-        optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace) );
+        optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace));
 
 
         final PropertySet vc = new PropertyContainer();

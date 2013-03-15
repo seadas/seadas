@@ -94,15 +94,6 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         if (ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct() != null) {
             processorModel.updateIFileInfo(ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct().getFileLocation().toString());
         }
-//
-//        if (processorModel.getProgramName().indexOf("bin") != -1) {
-//            processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    processorModel.updateIFileInfo(computeIFileOptionValue());
-//                }
-//            });
-//        }
 
         final JPanel parFilePanel = parFileUI.getParStringPanel();
 
@@ -142,47 +133,4 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
             com[a].setEnabled(true);
         }
     }
-
-//    private String computeIFileOptionValue() {
-//        String ifileOptionValue = "";
-//        if (hasMultipleFiles()) {
-//            ifileOptionValue = getSelectedFilesList();
-//
-//
-//        } else {
-//            ifileOptionValue = ioFilesSelector.getIfileSelector().getSelectedIFile().getAbsolutePath();
-//        }
-//
-//        return ifileOptionValue;
-//    }
-//
-//    private boolean hasMultipleFiles() {
-//        File[] selectedFiles = ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedMultiFiles();
-//        if (selectedFiles != null && selectedFiles.length > 1) {
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    public String getSelectedFilesList() {
-//
-//        File fileListFile = new File(processorModel.getRootDir(), processorModel.getProgramName() + "_inputFiles.lst");
-//
-//        File[] selectedFiles = ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedMultiFiles();
-//        StringBuilder fileNames = new StringBuilder();
-//        for (File file : selectedFiles) {
-//            fileNames.append(file.getAbsolutePath() + "\n");
-//        }
-//        FileWriter fileWriter = null;
-//        try {
-//
-//            fileWriter = new FileWriter(fileListFile);
-//            fileWriter.write(fileNames.toString());
-//            fileWriter.close();
-//            ioFilesSelector.getIfileSelector().getSourceProductSelector().setSelectedFile(fileListFile, fileNames.toString());
-//        } catch (IOException ioe) {
-//        }
-//        return fileListFile.getAbsolutePath();
-//    }
-
 }

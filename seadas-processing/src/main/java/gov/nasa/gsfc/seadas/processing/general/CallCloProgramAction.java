@@ -9,7 +9,6 @@ import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.framework.dataio.ProductIO;
-import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.framework.ui.UIUtils;
@@ -68,6 +67,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return new ExtractorUI(programName, xmlFileName);
         } else if (programName.indexOf("modis_GEO") != -1 || programName.indexOf("modis_L1B") != -1) {
             return new ModisGEO_L1B_UI(programName, xmlFileName);
+        }  else if (programName.indexOf("install_ocssw.py") != -1 )  {
+           return new OCSSWInstallerForm(appContext, programName, xmlFileName);
         }
         return new ProgramUIFactory(programName, xmlFileName, multiIFile);
     }
@@ -126,17 +127,16 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
 
 
-        final Product selectedProduct = cloProgramUI.getSelectedSourceProduct();
-
-        if (selectedProduct == null) {
-            VisatApp.getApp().showErrorDialog(programName, "No product selected.");
-            return;
-        }
+//        final Product selectedProduct = cloProgramUI.getSelectedSourceProduct();
+//
+//        if (selectedProduct == null) {
+//            VisatApp.getApp().showErrorDialog(programName, "No product selected.");
+//            return;
+//        }
         modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
 
         final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
         openOutputInApp = cloProgramUI.isOpenOutputInApp();
-
 
         if (!processorModel.isValidProcessor()) {
             return;
