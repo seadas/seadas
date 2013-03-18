@@ -979,7 +979,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
 
         public String getOfileName() {
-            if (!(getParamValue("noext").equals("1") || getParamValue("noext").equals("1"))) {
+            if ( ! ( getParamValue("noext").equals("1") ) ) {
                 return getParamValue(getPrimaryOutputFileOptionName()) + ".main";
             }
             return getParamValue(getPrimaryOutputFileOptionName());

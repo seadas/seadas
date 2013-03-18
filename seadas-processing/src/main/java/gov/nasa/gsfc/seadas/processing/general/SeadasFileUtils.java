@@ -75,7 +75,8 @@ public class SeadasFileUtils {
         debug("Program name is " + programName);
         Debug.assertNotNull(ifileName);
         String[] cmdArray = {OCSSW.getOcsswScriptPath(), NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
-        Process process = OCSSWRunner.execute(cmdArray);
+        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
+        Process process = OCSSWRunner.execute(cmdArray, new File(ifileDir));
 
         int exitCode = process.exitValue();
         InputStream is;
