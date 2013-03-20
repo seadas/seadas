@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.BasicApp;
 import org.esa.beam.util.SystemUtils;
@@ -32,18 +33,20 @@ public class FileSelector {
 
 
     private JPanel jPanel = new JPanel(new GridBagLayout());
+    private boolean isDir = false;
 
 
-    public enum Type {
-        IFILE,
-        OFILE
-    }
+//    public enum Type {
+//        IFILE,
+//        OFILE,
+//        DIR
+//    }
 
     private String propertyName = "FILE_SELECTOR_PANEL_CHANGED";
 
     private AppContext appContext;
 
-    private Type type;
+    private ParamInfo.Type type;
     private String name;
     private JLabel nameLabel;
     private JTextField fileTextfield;
@@ -69,7 +72,7 @@ public class FileSelector {
     }
 
 
-    public FileSelector(AppContext appContext, Type type) {
+    public FileSelector(AppContext appContext, ParamInfo.Type type) {
         this.appContext = appContext;
         setType(type);
 
@@ -78,7 +81,7 @@ public class FileSelector {
     }
 
 
-    public FileSelector(AppContext appContext, Type type, String name) {
+    public FileSelector(AppContext appContext, ParamInfo.Type type, String name) {
         this(appContext, type);
         setName(name);
     }
@@ -114,7 +117,7 @@ public class FileSelector {
         jPanel.add(filterPane,
                 new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
-        if (type != Type.IFILE) {
+        if (type != ParamInfo.Type.IFILE) {
             filterPane.setVisible(false);
         }
     }
@@ -125,7 +128,7 @@ public class FileSelector {
         fileChooserButton.setEnabled(enabled);
         fileTextfield.setEnabled(enabled);
 
-        if (type == Type.IFILE) {
+        if (type == ParamInfo.Type.IFILE) {
             filterRegexField.setEnabled(enabled);
             filterRegexLabel.setEnabled(enabled);
 
@@ -139,7 +142,7 @@ public class FileSelector {
         fileChooserButton.setVisible(enabled);
         fileTextfield.setVisible(enabled);
 
-        if (type == Type.IFILE) {
+        if (type == ParamInfo.Type.IFILE) {
             filterRegexField.setVisible(enabled);
             filterRegexLabel.setVisible(enabled);
 
@@ -266,22 +269,25 @@ public class FileSelector {
     }
 
 
-    public Type getType() {
+    public ParamInfo.Type getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(ParamInfo.Type type) {
         this.type = type;
-
-
-        if (type == Type.IFILE) {
+        if (type == ParamInfo.Type.IFILE) {
             regexFileFilter = new RegexFileFilter();
             createFilterPane(filterPane);
             filterPane.setVisible(true);
-        } else {
+        } else if (type == ParamInfo.Type.OFILE) {
             regexFileFilter = null;
             filterPane.removeAll();
             filterPane.setVisible(false);
+        } else if (type == ParamInfo.Type.DIR) {
+            regexFileFilter = null;
+            filterPane.removeAll();
+            filterPane.setVisible(false);
+            isDir = true;
         }
     }
 
@@ -307,6 +313,9 @@ public class FileSelector {
 
             fileChooser.setAcceptAllFileFilterUsed(true);
             fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
+            if (isDir) {
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            }
         }
 
         private FileChooserAction(String dialogTitle) {
@@ -329,7 +338,8 @@ public class FileSelector {
             currentDirectory = new File(openDir);
             fileChooser.setCurrentDirectory(currentDirectory);
 
-            if (type == Type.IFILE) {
+
+            if (type == ParamInfo.Type.IFILE) {
                 fileChooser.addChoosableFileFilter(regexFileFilter);
             }
 
@@ -339,13 +349,10 @@ public class FileSelector {
                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         currentDirectory.getAbsolutePath());
 
-
                 String filename = null;
                 if (file != null) {
                     filename = file.getAbsolutePath();
                 }
-
-
                 setFilename(filename);
             }
         }

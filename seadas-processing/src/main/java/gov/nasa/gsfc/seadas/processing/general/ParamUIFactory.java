@@ -109,6 +109,9 @@ public class ParamUIFactory {
                         case OFILE:
                             fileParamPanel.add(createIOFileOptionField(pi));
                             break;
+                        case DIR:
+                            fileParamPanel.add(createIOFileOptionField(pi));
+                            break;
                         case STRING:
                             textFieldPanel.add(makeOptionField(pi));
                             break;
@@ -327,15 +330,15 @@ public class ParamUIFactory {
 
     private JPanel createIOFileOptionField(final ParamInfo pi) {
 
-        final FileSelector ioFileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, ParamUtils.removePreceedingDashes(pi.getName()));
+        final FileSelector ioFileSelector = new FileSelector(VisatApp.getApp(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
         ioFileSelector.getFileTextField().setColumns(40);
         ioFileSelector.addPropertyChangeListener(ioFileSelector.getPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String iofile;
+                String iofileName;
                 if (ioFileSelector.getFileName() != null) {
-                    iofile = ioFileSelector.getFileName();
-                    processorModel.updateParamInfo(pi, iofile);
+                    iofileName = ioFileSelector.getFileName();
+                    processorModel.updateParamInfo(pi, iofileName);
                 }
             }
         });
@@ -346,6 +349,8 @@ public class ParamUIFactory {
                 ioFileSelector.setFilename(pi.getValue());
             }
         });
+
+        ioFileSelector.getjPanel().setName(pi.getName());
         return ioFileSelector.getjPanel();
     }
 

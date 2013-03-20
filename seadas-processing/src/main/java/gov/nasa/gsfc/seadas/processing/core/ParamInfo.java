@@ -33,7 +33,7 @@ public class ParamInfo implements Comparable, Cloneable {
     public static final String USED_IN_COMMAND_AS_FLAG = "flag";
 
     public static enum Type {
-        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP
+        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP,DIR
     }
 
     private String name = NULL_STRING;

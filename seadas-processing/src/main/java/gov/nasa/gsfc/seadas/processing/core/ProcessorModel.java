@@ -100,6 +100,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 return new L2Bin_Processor(programName, xmlFileName);
             case L3BIN:
                 return new L3Bin_Processor(programName, xmlFileName);
+            case OCSSW_INSTALLER:
+                return new OCSSWInstaller_Processor(programName, xmlFileName);
             default:
         }
         return new ProcessorModel(programName, xmlFileName);
@@ -305,7 +307,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 return true;
             }
         }
-        VisatApp.getApp().showErrorDialog("Cannot compute output file name. Please select a correct input file for " + ((programName == null ) ? "this processor." : programName ));
+        VisatApp.getApp().showErrorDialog("Cannot compute output file name. Please select a correct input file for " + ((programName == null) ? "this processor." : programName));
         updateParamInfo(getPrimaryInputFileOptionName(), "");    //use an empty string
         updateOFileInfo("");
         return false;
@@ -979,7 +981,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
 
         public String getOfileName() {
-            if ( ! ( getParamValue("noext").equals("1") ) ) {
+            if (!(getParamValue("noext").equals("1"))) {
                 return getParamValue(getPrimaryOutputFileOptionName()) + ".main";
             }
             return getParamValue(getPrimaryOutputFileOptionName());
@@ -1020,6 +1022,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 }
             });
             setOpenInSeadas(true);
+        }
+    }
+
+    private static class OCSSWInstaller_Processor extends ProcessorModel {
+        OCSSWInstaller_Processor(String programName, String xmlFileName) {
+            super(programName, xmlFileName);
         }
     }
 }

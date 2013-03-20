@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.visat.VisatApp;
 
@@ -42,7 +43,7 @@ public class SMItoPPMUI {
         smitoppmCheckBox = new JCheckBox();
         smitoppmCheckBox.setSelected(false);
 
-        ppmFile = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, "ppm file");
+        ppmFile = new FileSelector(VisatApp.getApp(), ParamInfo.Type.OFILE, "ppm file");
         ppmFile.getFileTextField().setColumns(20);
 
 //        ppmFile.getFileTextField().addPropertyChangeListener(new PropertyChangeListener() {

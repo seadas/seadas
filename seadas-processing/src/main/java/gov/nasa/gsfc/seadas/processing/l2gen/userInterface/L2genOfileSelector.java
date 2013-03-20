@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.general.FileSelector;
 import org.esa.beam.visat.VisatApp;
 
@@ -31,7 +32,7 @@ public class L2genOfileSelector {
         } else {
             outputFileOptionName = outputFileOptionName.replaceAll("--", "");
         }
-        fileSelector = new FileSelector(VisatApp.getApp(), FileSelector.Type.OFILE, outputFileOptionName);
+        fileSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.OFILE, outputFileOptionName);
 
         addControlListeners();
         addEventListeners();

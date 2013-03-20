@@ -35,16 +35,15 @@ public class L2genParamFileSelector {
         jLabel = new JLabel(paramInfo.getName());
         jLabel.setToolTipText(paramInfo.getDescription());
 
-        FileSelector.Type type = null;
-        if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-            type = FileSelector.Type.IFILE;
-        } else if (paramInfo.getType() == ParamInfo.Type.OFILE) {
-            type = FileSelector.Type.OFILE;
-        }
+//        FileSelector.Type type = null;
+//        if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+//            type = FileSelector.Type.IFILE;
+//        } else if (paramInfo.getType() == ParamInfo.Type.OFILE) {
+//            type = FileSelector.Type.OFILE;
+//        }
 
-        if (type != null) {
-            fileSelectorPanel = new FileSelector(VisatApp.getApp(), type);
-
+        if (paramInfo.getType() != null) {
+            fileSelectorPanel = new FileSelector(VisatApp.getApp(), paramInfo.getType());
             jPanel = fileSelectorPanel.getjPanel();
         }
 

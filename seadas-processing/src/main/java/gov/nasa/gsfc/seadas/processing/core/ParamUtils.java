@@ -52,7 +52,7 @@ public class ParamUtils {
 
     public final String DEFAULTS_CHANGED_EVENT = "DEFAULTS_CHANGED_EVENT";
 
-    public final static String DEFAULT_PAR_FILE_NAME  = "par";
+    public final static String DEFAULT_PAR_FILE_NAME = "par";
     public final static String DEFAULT_PROGRESS_REGEX = "Processing scan .+?\\((\\d+) of (\\d+)\\)";
 
     private static int longestIFileNameLength;
@@ -192,6 +192,8 @@ public class ParamUtils {
                     type = ParamInfo.Type.OFILE;
                 } else if (tmpType.toLowerCase().equals("help")) {
                     type = ParamInfo.Type.HELP;
+                } else if (tmpType.toLowerCase().equals("dir")) {
+                    type = ParamInfo.Type.DIR;
                 }
             }
 
@@ -212,7 +214,7 @@ public class ParamUtils {
             String usedAs = XmlReader.getTextValue(optionElement, "usedAs");
 
             // set the value and the default to the current value from the XML file
-            ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE))?new OFileParamInfo(name, value, type, value):new ParamInfo(name, value, type, value);
+            ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, value) : new ParamInfo(name, value, type, value);
             paramInfo.setDescription(description);
             paramInfo.setSource(source);
 
