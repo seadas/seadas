@@ -17,6 +17,8 @@ public class OCSSW {
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
 
+    private static boolean ocsswExist = false;
+
     public static File getOcsswRoot() throws IOException {
         String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
         //String dirPath = System.getProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
@@ -34,6 +36,10 @@ public class OCSSW {
 
     public static boolean isOCSSWExist() {
 
+        if (ocsswExist) {
+            return ocsswExist;
+        }
+
         String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
 
         if (dirPath == null ) {
@@ -45,7 +51,8 @@ public class OCSSW {
         if (!dir.isDirectory()) {
             return false;
         }
-        return true;
+        ocsswExist = true;
+        return ocsswExist;
     }
 
 

@@ -14,6 +14,7 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -260,7 +261,7 @@ public class ParamUIFactory {
 
 
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
-        String[] values = new String[validValues.size()];
+        final String[] values = new String[validValues.size()];
         ArrayList<String> toolTips = new ArrayList<String>();
 
         Iterator itr = validValues.iterator();
@@ -284,7 +285,7 @@ public class ParamUIFactory {
         if (pi.getDescription() != null) {
             inputList.setToolTipText(pi.getDescription());
         }
-        int defaultValuePosition = validValues.indexOf(optionDefaultValue);
+        int defaultValuePosition =  new ArrayList(Arrays.asList(values)).indexOf(optionDefaultValue);
 
         if (defaultValuePosition != -1) {
             inputList.setSelectedIndex(defaultValuePosition);
@@ -314,7 +315,7 @@ public class ParamUIFactory {
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                int currentChoicePosition = validValues.indexOf(pi.getValue());
+                int currentChoicePosition = new ArrayList(Arrays.asList(values)).indexOf(pi.getValue());
                 if (currentChoicePosition != -1) {
                     inputList.setSelectedIndex(currentChoicePosition);
                 }

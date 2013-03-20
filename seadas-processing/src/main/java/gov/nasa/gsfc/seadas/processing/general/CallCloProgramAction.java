@@ -4,10 +4,8 @@ import com.bc.ceres.core.CoreException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
-import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
-import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.OCSSW;
+import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.ModalDialog;
@@ -45,6 +43,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
 
+    private static String OCSSW_INSTALLER = "install_ocssw.py";
+
+
     @Override
     public void configure(ConfigurationElement config) throws CoreException {
         programName = getConfigString(config, "programName");
@@ -54,9 +55,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
         multiIFile = getValue(config, "multiIFile", "false");
-        super.configure(config);
-    }
 
+        super.configure(config);
+        super.setEnabled( programName.equals(OCSSW_INSTALLER) || OCSSW.isOCSSWExist() );
+    }
 
     public String getXmlFileName() {
         return xmlFileName;
@@ -67,7 +69,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return new ExtractorUI(programName, xmlFileName);
         } else if (programName.indexOf("modis_GEO") != -1 || programName.indexOf("modis_L1B") != -1) {
             return new ModisGEO_L1B_UI(programName, xmlFileName);
-        }  else if (programName.indexOf("install_ocssw.py") != -1 )  {
+        }  else if (programName.indexOf(OCSSW_INSTALLER) != -1 )  {
            return new OCSSWInstallerForm(appContext, programName, xmlFileName);
         }
         return new ProgramUIFactory(programName, xmlFileName, multiIFile);
@@ -75,7 +77,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     @Override
     public void actionPerformed(CommandEvent event) {
-        String s = (String) getProperty("seadas.ocssw.location");
+
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
         SeadasLogger.getLogger().setLevel(Level.INFO);
 
@@ -126,13 +128,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return;
         }
 
-
-//        final Product selectedProduct = cloProgramUI.getSelectedSourceProduct();
-//
-//        if (selectedProduct == null) {
-//            VisatApp.getApp().showErrorDialog(programName, "No product selected.");
-//            return;
-//        }
         modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
 
         final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
@@ -143,10 +138,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
 
         executeProgram(processorModel);
-        //remoteExecuteProgram(processorModel);
-
         SeadasLogger.deleteLoggerOnExit(true);
-
     }
 
 
@@ -217,8 +209,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);
                         }
-
-                    }
+                                                                                           }
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {
