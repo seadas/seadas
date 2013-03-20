@@ -46,7 +46,11 @@ public class OCSSW {
             return false;
         }
 
-        final File dir = new File(dirPath);
+        // Check if ${ocssw.root}/run/scripts directory exists in the system.
+        // Precondition to detect the existing installation:
+        // the user needs to provide "ocssw.root" value in seadas.config
+        // or set OCSSWROOT in the system env.
+        final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
 
         if (!dir.isDirectory()) {
             return false;
