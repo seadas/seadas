@@ -32,6 +32,22 @@ public class OCSSW {
         return dir;
     }
 
+    public static boolean isOCSSWExist() {
+
+        String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
+
+        if (dirPath == null ) {
+            return false;
+        }
+
+        final File dir = new File(dirPath);
+
+        if (!dir.isDirectory()) {
+            return false;
+        }
+        return true;
+    }
+
 
     public static File getOcsswDataRoot() throws IOException {
         return new File(new File(getOcsswRoot(), "run"), "data");
