@@ -132,8 +132,65 @@ public class L2FileReader extends SeadasFileReader {
             latBand.setNoDataValueUsed(true);
             lonBand.setNoDataValueUsed(true);
             product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, scanHeight, 0));
-        }
+        } else {
+            String navGroup = "Navigation Data";
+            final String cntlPoints = "cntl_pt_cols";
+            int cntl_lat_ix;
+            int cntl_lon_ix;
+            float offsetY;
+            if (ncFile.findGroup(navGroup) == null) {
+                if (ncFile.findGroup("Navigation") != null) {
+                    navGroup = "Navigation";
+                }
+            }
+            int scanCntlPts = getIntAttribute("Number of Scan Control Points");
+            int pixelCntlPts = getIntAttribute("Number of Pixel Control Points");
+            cntl_lat_ix = product.getSceneRasterHeight() / scanCntlPts;
+            cntl_lon_ix = Math.round((float) product.getSceneRasterWidth() / pixelCntlPts);
+            if (scanHeight == 20) {
+                offsetY = 0.5f;
+            } else if (scanHeight == 40) {
 
+                offsetY = 1.5f;
+            } else {
+                offsetY = 0f;
+            }
+            try {
+                Variable lats = ncFile.findVariable(navGroup + "/" + latitude);
+                Variable lons = ncFile.findVariable(navGroup + "/" + longitude);
+                Variable cntlPointVar = ncFile.findVariable(navGroup + "/" + cntlPoints);
+                if (lats != null && lons != null && cntlPointVar != null) {
+
+                    int[] dims = lats.getShape();
+                    float[] latTiePoints;
+                    float[] lonTiePoints;
+                    Array latarr = lats.read();
+                    Array lonarr = lons.read();
+
+
+                    if (mustFlipX && mustFlipY) {
+                        latTiePoints = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
+                        lonTiePoints = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
+                    } else {
+                        latTiePoints = (float[]) latarr.getStorage();
+                        lonTiePoints = (float[]) lonarr.getStorage();
+                    }
+
+                    final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1], dims[0], 0, offsetY,
+                            cntl_lon_ix, cntl_lat_ix, latTiePoints);
+                    product.addTiePointGrid(latGrid);
+
+                    final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1], dims[0], 0, offsetY,
+                            cntl_lon_ix, cntl_lat_ix, lonTiePoints);
+                    product.addTiePointGrid(lonGrid);
+
+                    product.setGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanHeight));
+
+                }
+            } catch (IOException e) {
+                throw new ProductIOException(e.getMessage());
+            }
+        }
     }
 
     public void addPixelGeocoding(final Product product) throws ProductIOException {
