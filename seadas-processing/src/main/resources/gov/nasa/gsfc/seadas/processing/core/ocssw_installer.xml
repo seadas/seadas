@@ -105,6 +105,7 @@
             <name>--ocm1</name>
             <value>false</value>
             <default>false</default>
+            <usedAs>flag</usedAs>
             <description>install OCM1 files</description>
             <order>12</order>
         </option>

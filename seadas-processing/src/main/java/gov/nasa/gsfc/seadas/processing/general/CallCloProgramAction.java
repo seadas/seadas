@@ -200,7 +200,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 try {
                     final String outputFileName = get();
                     System.out.println(outputFileName);
-                    VisatApp.getApp().showInfoDialog(programName, programName + " done!\nOutput written to:\n" + outputFileName, null);
+                    VisatApp.getApp().showInfoDialog(programName, programName + " done!\n"  +
+                                                    (programName.equals(OCSSW_INSTALLER)?"":("Output written to:\n" + outputFileName)), null);
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ProgramExecutor pe = new ProgramExecutor();
