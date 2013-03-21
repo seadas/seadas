@@ -36,6 +36,8 @@ public class L2genData implements L2genDataProcessorModel {
         L2GEN_AQUARIUS
     }
 
+    public static final String AQUARIUS_SUITE_DEFAULT = "V2.0.0";
+
     //  private static final String OCDATAROOT = System.getenv("OCDATAROOT");
     private static final String TINY_IFILE_NAME = "S2002032172026.L1A_GAC.reallysmall";
     private static File tinyIFile;
@@ -730,6 +732,9 @@ public class L2genData implements L2genDataProcessorModel {
         enableEvent(PARSTRING);
     }
 
+    public boolean hasParamValue(String name) {
+        return paramInfoLookup.containsValue(name);
+    }
 
     public ParamInfo getParamInfo(String name) {
 
@@ -957,11 +962,25 @@ public class L2genData implements L2genDataProcessorModel {
 
             for (File file : missionDirectoryFiles) {
                 String filename = file.getName();
-                if (filename.startsWith("msl12_defaults_") && filename.endsWith(".par")) {
-                    String filenameTrimmed = filename.replaceFirst("msl12_defaults_", "");
-                    filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
-                    suitesArrayList.add(filenameTrimmed);
+
+                switch (mode) {
+                    case L2GEN_AQUARIUS:
+                        if (filename.startsWith("l2gen_aquarius_defaults_") && filename.endsWith(".par")) {
+                            String filenameTrimmed = filename.replaceFirst("l2gen_aquarius_defaults_", "");
+                            filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
+                            suitesArrayList.add(filenameTrimmed);
+                        }
+                        break;
+                    default:
+                        if (filename.startsWith("msl12_defaults_") && filename.endsWith(".par")) {
+                            String filenameTrimmed = filename.replaceFirst("msl12_defaults_", "");
+                            filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
+                            suitesArrayList.add(filenameTrimmed);
+                        }
+                        break;
                 }
+
+
             }
 
             final String[] suitesArray = new String[suitesArrayList.size()];
@@ -1054,6 +1073,11 @@ public class L2genData implements L2genDataProcessorModel {
 
         if (iFileInfo != null && isValidIfile()) {
 
+            //  todo temporary more Joel updates
+            if (suiteValue != null) {
+                 getParamInfo(SUITE).setValue(suiteValue);
+            }
+
 
             if (iFileInfo.getMissionId() == MissionInfo.Id.AQUARIUS || iFileInfo.getMissionId() == MissionInfo.Id.VIIRS) {
                 updateLuts(iFileInfo.getMissionDirectory().getAbsolutePath());
@@ -1082,6 +1106,7 @@ public class L2genData implements L2genDataProcessorModel {
             fireEvent(INVALID_IFILE);
         }
 
+
         setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
 
 
@@ -1094,19 +1119,7 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-//    private void setSuiteParamValue(ParamInfo paramInfo, String value) {
-//
-//
-//        String oldIfile = getParamValue(getParamInfo(IFILE));
-//
-//        paramInfo.setValue(value);
-//        paramInfo.setDefaultValue(value);
-//
-//        // todo run l2gen with suite=suite
-//
-//        fireEvent(SUITE, oldIfile, value);
-//
-//    }
+
 
 
     public void updateLuts(String missionName) {
@@ -1463,6 +1476,9 @@ public class L2genData implements L2genDataProcessorModel {
         if (suite != null) {
             processorModel.addParamInfo("suite", suite, ParamInfo.Type.STRING);
         }
+
+
+
 
 //        processorModel.addParamInfo("ofile", ofile.getAbsolutePath(), ParamInfo.Type.OFILE);
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);

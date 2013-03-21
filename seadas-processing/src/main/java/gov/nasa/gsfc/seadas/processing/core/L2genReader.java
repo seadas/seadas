@@ -210,6 +210,7 @@ public class L2genReader {
                     String description = XmlReader.getTextValue(optionElement, "description");
                     String source = XmlReader.getTextValue(optionElement, "source");
 
+
                     ParamInfo paramInfo;
                     if (name.equals(l2genData.L2PROD)) {
                         paramInfo = l2genData.createL2prodParamInfo(value);
@@ -260,6 +261,16 @@ public class L2genReader {
 
                     l2genData.addParamInfo(paramInfo);
                 }
+            }
+        }
+
+
+//todo this is temporary until Joel adds suite
+        if (!l2genData.hasParamValue(L2genData.SUITE)) {
+            if (l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS) {
+                ParamInfo suiteParamInfo = new ParamInfo(L2genData.SUITE, L2genData.AQUARIUS_SUITE_DEFAULT, ParamInfo.Type.STRING);
+                suiteParamInfo.setDefaultValue(L2genData.AQUARIUS_SUITE_DEFAULT);
+                l2genData.addParamInfo(suiteParamInfo);
             }
         }
 
@@ -384,13 +395,13 @@ public class L2genReader {
     }
 
 
-     public ArrayList<String> readFileIntoArrayList(String filename) {
-         File file = null;
-         if (filename != null) {
-             file = new File(filename);
-         }
-         return readFileIntoArrayList(file);
-     }
+    public ArrayList<String> readFileIntoArrayList(String filename) {
+        File file = null;
+        if (filename != null) {
+            file = new File(filename);
+        }
+        return readFileIntoArrayList(file);
+    }
 
     public ArrayList<String> readFileIntoArrayList(File file) {
         String lineData;
