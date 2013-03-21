@@ -234,6 +234,10 @@ public class SourceProductFileSelector {
             product.setFileLocation(file);
             setSelectedProduct(product);
         }
+
+        if (file == null) {
+            setSelectedProduct(null);
+        }
     }
 
     public void setSelectedFile(File file, String fileContent) {

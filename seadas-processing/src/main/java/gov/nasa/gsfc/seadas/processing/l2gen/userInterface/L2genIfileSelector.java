@@ -75,7 +75,7 @@ public class L2genIfileSelector {
                         sourceProductSelector.setSelectedFile(iFile);
 
                     } else {
-                        sourceProductSelector.releaseProducts();
+                        sourceProductSelector.setSelectedFile(null);
                     }
                 }
                enableControlHandler();
