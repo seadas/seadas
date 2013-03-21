@@ -75,7 +75,9 @@ public class L2genIfileSelector {
                         sourceProductSelector.setSelectedFile(iFile);
 
                     } else {
-                        sourceProductSelector.releaseProducts();
+                        // todo Dan fixed this fact that the file selector in l2_gen did not show all the products by commenting out this line.  This should be fine, but maybe revisit it.
+
+                  //      sourceProductSelector.releaseProducts();
                     }
                 }
                enableControlHandler();
