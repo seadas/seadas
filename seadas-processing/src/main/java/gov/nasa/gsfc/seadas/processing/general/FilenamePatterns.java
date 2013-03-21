@@ -42,6 +42,16 @@ public class FilenamePatterns {
 
 
     static public FileInfo getGeoFileInfo(FileInfo fileInfo) {
+        if (fileInfo == null) {
+            return null;
+        }
+
+        File geoFile = getGeoFile(fileInfo);
+
+        if (geoFile == null) {
+            return null;
+        }
+
         return new FileInfo(fileInfo.getFile().getParent(), getGeoFile(fileInfo).getAbsolutePath(), false);
     }
 
@@ -106,6 +116,14 @@ public class FilenamePatterns {
                 if (possibleGeoFile.exists()) {
                     geoFile = possibleGeoFile;
                     continue;
+                }
+            }
+
+            if (geoFile == null) {
+                if (possibleGeoFiles.size() > 0) {
+                    geoFile = possibleGeoFiles.get(0);
+                } else {
+                    geoFile = new File ("yourGeoFilename.geo");
                 }
             }
         }
