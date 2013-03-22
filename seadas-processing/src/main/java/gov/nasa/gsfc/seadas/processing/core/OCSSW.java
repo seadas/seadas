@@ -19,6 +19,8 @@ public class OCSSW {
 
     public static final String OCSSWROOT_PROPERTY = "seadas.ocssw.root";
 
+    public static final String SEADAS_CONFIG_UPDATE_PROGRAM_NAME = "rewrite_seadas_config.py";
+
     private static boolean ocsswExist = false;
 
     public static File getOcsswRoot() throws IOException {

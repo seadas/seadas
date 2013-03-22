@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 import com.bc.ceres.core.CoreException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
+import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.*;
@@ -57,7 +58,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         multiIFile = getValue(config, "multiIFile", "false");
 
         super.configure(config);
-        super.setEnabled( programName.equals(OCSSW_INSTALLER) || OCSSW.isOCSSWExist() );
+        super.setEnabled(programName.equals(OCSSW_INSTALLER) || OCSSW.isOCSSWExist());
     }
 
     public String getXmlFileName() {
@@ -69,8 +70,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return new ExtractorUI(programName, xmlFileName);
         } else if (programName.indexOf("modis_GEO") != -1 || programName.indexOf("modis_L1B") != -1) {
             return new ModisGEO_L1B_UI(programName, xmlFileName);
-        }  else if (programName.indexOf(OCSSW_INSTALLER) != -1 )  {
-           return new OCSSWInstallerForm(appContext, programName, xmlFileName);
+        } else if (programName.indexOf(OCSSW_INSTALLER) != -1) {
+            return new OCSSWInstallerForm(appContext, programName, xmlFileName);
         }
         return new ProgramUIFactory(programName, xmlFileName, multiIFile);
     }
@@ -199,9 +200,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected void done() {
                 try {
                     final String outputFileName = get();
-                    System.out.println(outputFileName);
-                    VisatApp.getApp().showInfoDialog(programName, programName + " done!\n"  +
-                                                    (programName.equals(OCSSW_INSTALLER)?"":("Output written to:\n" + outputFileName)), null);
+                    //System.out.println(outputFileName);
+                    VisatApp.getApp().showInfoDialog(programName, programName + " done!\n" +
+                            (programName.equals(OCSSW_INSTALLER) ? "" : ("Output written to:\n" + outputFileName)), null);
+                    if (programName.equals(OCSSW_INSTALLER)) {
+                        OCSSWRunner.execute(new String[]{OCSSW.getOcsswScriptPath(),
+                                                        OCSSW.SEADAS_CONFIG_UPDATE_PROGRAM_NAME,
+                                                        RuntimeContext.getConfig().getConfigFilePath(),
+                                                        processorModel.getParamValue("--install-dir")});
+                    }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ProgramExecutor pe = new ProgramExecutor();
@@ -210,7 +217,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);
                         }
-                                                                                           }
+                    }
                 } catch (InterruptedException e) {
                     //
                 } catch (ExecutionException e) {
