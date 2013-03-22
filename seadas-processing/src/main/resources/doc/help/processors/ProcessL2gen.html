@@ -129,7 +129,8 @@
                 parameters already specified and wish to save these, then the best route would be to save
                 them in a
                 parfile,
-                select a new IFILE, then reload the parfile.
+                select a new IFILE, then reload the parfile.  An alternate way to try to keep your currently
+            selected parameters, is to type the ifile name into the parfile textarea in the GUI.
 
             <p>
 
@@ -164,6 +165,15 @@
                 feature is useful to understand not only what are the defaults but also to be able to view
                 all the
                 possible l2gen parameters in a single textarea.
+
+            <p>
+
+                <b>Suite</b> <br>
+            Selects the suite which will essentially define all the parameter defaults.  Please note that selection of a new suite
+            will result in the GUI being reset, similar to what happens when a new IFILE is selected, so any prior
+            information which you entered will be lost, and restored with all the new defaults.  If you wish
+            to retain your current information (at least as much as is possible), then type the suite into the parfile
+            textarea instead.  This will result in the suite being set, but then the rest of the parfile will be read in.
 
             <p>
 

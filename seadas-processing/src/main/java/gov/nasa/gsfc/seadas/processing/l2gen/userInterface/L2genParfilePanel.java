@@ -83,8 +83,6 @@ public class L2genParfilePanel {
                 new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
 
-
-
         final JPanel suitePanel = new JPanel(new GridBagLayout());
         suitePanel.setBorder(BorderFactory.createEtchedBorder());
         suitePanel.add(suiteComboBox.getjLabel(),
@@ -93,10 +91,8 @@ public class L2genParfilePanel {
                 new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
 
 
-        if (l2genData.getMode() != L2genData.Mode.L2GEN_AQUARIUS) {
-            subPanel.add(suitePanel,
-                    new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-        }
+        subPanel.add(suitePanel,
+                new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
 
         subPanel.add(parfileExporter.getjButton(),

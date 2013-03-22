@@ -85,8 +85,8 @@ public class FilenamePatterns {
         } else {
             ArrayList<File> possibleGeoFiles = new ArrayList<File>();
 
-            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC"};
-            String STRING_TO_INSERT[] = {"geo", "GEO"};
+            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC"};
+            String STRING_TO_INSERT[] = {"GEO", "geo"};
 
             /**
              * replace last occurrence of instance of STRING_TO_BE_REPLACED[]
@@ -123,7 +123,7 @@ public class FilenamePatterns {
                 if (possibleGeoFiles.size() > 0) {
                     geoFile = possibleGeoFiles.get(0);
                 } else {
-                    geoFile = new File ("yourGeoFilename.geo");
+                    geoFile = new File ("YourGeoFilename.GEO");
                 }
             }
         }

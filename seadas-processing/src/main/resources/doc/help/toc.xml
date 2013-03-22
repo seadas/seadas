@@ -20,12 +20,8 @@
                 <tocitem text="l1bgen" target="l1bgen"/>
                 <tocitem text="l1mapgen" target="l1mapgen"/>
                 <tocitem text="l1brsgen" target="l1brsgen"/>
-                <tocitem text="L2gen" target="l2gen">
-                <tocitem text="L2gen_aquarius" target="l2gen_aquarius">
-                    <!--<tocitem text="Introduction" target="l2gen"/>-->
-                    <!--<tocitem text="Product Selector" target="l2genProductSelector"/>-->
-                    <!--<tocitem text="Subsetting Options" target="l2genSubsettingOptions"/>-->
-                </tocitem>
+                <tocitem text="L2gen" target="l2gen"/>
+                <tocitem text="L2gen_aquarius" target="l2gen_aquarius"/>
                 <tocitem text="l2mapgen" target="l2mapgen"/>
                 <tocitem text="l2brsgen" target="l2brsgen"/>
                 <tocitem text="l2bin" target="l2bin"/>

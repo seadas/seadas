@@ -5,6 +5,11 @@
         <param>ofile</param>
     </category>
 
+    <category name="Suite">
+        <autoTab>0</autoTab>
+        <param>suite</param>
+    </category>
+
     <category name="Products">
         <autoTab>0</autoTab>
         <param>l2prod</param>
@@ -19,6 +24,7 @@
         <param>xrayfile1</param>
         <param>xrayfile2</param>
     </category>
+
 
     <category name="Miscellaneous">
         <autoTab>1</autoTab>
