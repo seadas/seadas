@@ -10,12 +10,14 @@ import java.io.IOException;
  * A ...
  *
  * @author Norman Fomferra
+ * @author Aynur Abdurazik
  * @since SeaDAS 7.0
  */
 public class OCSSW {
 
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
-    public static final String OCSSWROOT_PROPERTY = "ocssw.root";
+
+    public static final String OCSSWROOT_PROPERTY = "seadas.ocssw.root";
 
     private static boolean ocsswExist = false;
 
@@ -48,7 +50,7 @@ public class OCSSW {
 
         // Check if ${ocssw.root}/run/scripts directory exists in the system.
         // Precondition to detect the existing installation:
-        // the user needs to provide "ocssw.root" value in seadas.config
+        // the user needs to provide "seadas.ocssw.root" value in seadas.config
         // or set OCSSWROOT in the system env.
         final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
 
@@ -106,6 +108,4 @@ public class OCSSW {
         }
         return ocsswRoot;
     }
-
-
 }
