@@ -141,7 +141,11 @@ public class ParFileUI {
                                             return;
                                         }
                                     } else if (option[0].equals(processorModel.getPrimaryOutputFileOptionName())) {
-                                        if (!processorModel.updateOFileInfo(option[1])) {
+                                        String ofileName = option[1];
+                                        if ( ! ofileName.startsWith(System.getProperty("file.separator")))  {
+                                            ofileName = processorModel.getIFileDir().getAbsolutePath() + ofileName;
+                                        }
+                                        if (!processorModel.updateOFileInfo(ofileName)) {
                                             showErrorMessage(parent, "ofile directory does not exist!");
                                             return;
                                         }

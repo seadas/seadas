@@ -39,7 +39,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private String programName;
     private String dialogTitle;
     private String xmlFileName;
-    private String multiIFile;
+    //private String multiIFile;
 
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
@@ -55,7 +55,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
-        multiIFile = getValue(config, "multiIFile", "false");
+        //multiIFile = getValue(config, "multiIFile", "false");
 
         super.configure(config);
         super.setEnabled(programName.equals(OCSSW_INSTALLER) || OCSSW.isOCSSWExist());
@@ -73,7 +73,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         } else if (programName.indexOf(OCSSW_INSTALLER) != -1) {
             return new OCSSWInstallerForm(appContext, programName, xmlFileName);
         }
-        return new ProgramUIFactory(programName, xmlFileName, multiIFile);
+        return new ProgramUIFactory(programName, xmlFileName);//, multiIFile);
     }
 
     @Override
@@ -189,6 +189,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 String ofileName = processorModel.getOfileName();
                 if (openOutputInApp) {
                     StringTokenizer st = new StringTokenizer(ofileName);
+                    System.out.print("opening the resulted product in the seadas browser ... ");
                     while (st.hasMoreTokens()) {
                         getAppContext().getProductManager().addProduct(ProductIO.readProduct(new File(st.nextToken())));
                     }

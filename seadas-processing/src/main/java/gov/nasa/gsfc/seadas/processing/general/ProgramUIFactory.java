@@ -26,18 +26,18 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
     private ParFileUI parFileUI;
 
-    public ProgramUIFactory(String programName, String xmlFileName, String multiIFile) {
+    public ProgramUIFactory(String programName, String xmlFileName) { //}, String multiIFile) {
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
-        processorModel.setMultipleInputFiles(multiIFile.equals("true") ? true : false);
+        //processorModel.setMultipleInputFiles(multiIFile.equals("true") ? true : false);
         parFileUI = new ParFileUI(processorModel);
         ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
         createUserInterface();
     }
 
-    public ProgramUIFactory(String programName, String xmlFileName) {
-        this(programName, xmlFileName, "false");
-
-    }
+//    public ProgramUIFactory(String programName, String xmlFileName) {
+//        this(programName, xmlFileName, "false");
+//
+//    }
 
     public ProcessorModel getProcessorModel() {
         return processorModel;

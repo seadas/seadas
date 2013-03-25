@@ -75,8 +75,8 @@
         </option>
         <option type="boolean">
             <name>noext</name>
-            <value>1</value>
-            <default></default>
+            <value></value>
+            <default>false</default>
             <description>set to 1 to suppress generation of external files
                 [default=0, (1 for "regional" prodtype)]
             </description>

@@ -61,7 +61,6 @@ public class OCSSWRunner {
         }
 
         if (processorModel.getIFileDir() != null) {
-
             processBuilder.directory(processorModel.getIFileDir());
         } else {
             //processBuilder.directory(getDefaultDir());

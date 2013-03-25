@@ -157,7 +157,7 @@ public class ExtractorUI extends ProgramUIFactory {
         });
 
         String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-        if (! programName.equals("extractor"))   {
+        if (programName != null && ! programName.equals("extractor"))   {
             updateParamPanel(programName);
         }
 

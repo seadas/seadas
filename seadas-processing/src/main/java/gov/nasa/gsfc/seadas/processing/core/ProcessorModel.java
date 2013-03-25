@@ -964,6 +964,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private static class L3Bin_Processor extends ProcessorModel {
         L3Bin_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
+            setMultipleInputFiles(true);
             addPropertyChangeListener("out_parm", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
