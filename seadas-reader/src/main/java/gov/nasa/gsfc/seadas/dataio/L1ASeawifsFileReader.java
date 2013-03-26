@@ -55,8 +55,13 @@ public class L1ASeawifsFileReader extends SeadasFileReader {
         float[] longitudes = flatten2DimArray(geonavCalculator.getLongitudes());
         Band latBand = new Band("latitude", ProductData.TYPE_FLOAT32, sceneWidth, sceneHeight);
         Band lonBand = new Band("longitude", ProductData.TYPE_FLOAT32, sceneWidth, sceneHeight);
+        latBand.setNoDataValue(999.0);
+        latBand.setNoDataValueUsed(true);
+        lonBand.setNoDataValue(999.0);
+        lonBand.setNoDataValueUsed(true);
         product.addBand(latBand);
         product.addBand(lonBand);
+
         ProductData lats = ProductData.createInstance(latitudes);
         latBand.setData(lats);
         ProductData lons = ProductData.createInstance(longitudes);
