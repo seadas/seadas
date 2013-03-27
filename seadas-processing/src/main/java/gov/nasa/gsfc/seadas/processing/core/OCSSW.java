@@ -17,9 +17,10 @@ public class OCSSW {
 
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
 
-    public static final String OCSSWROOT_PROPERTY = "seadas.ocssw.root";
+    public static final String OCSSWROOT_PROPERTY = "ocssw.root";
 
     public static final String SEADAS_CONFIG_UPDATE_PROGRAM_NAME = "rewrite_seadas_config.py";
+    public static String OCSSW_INSTALLER = "install_ocssw.py";
 
     private static boolean ocsswExist = false;
 
