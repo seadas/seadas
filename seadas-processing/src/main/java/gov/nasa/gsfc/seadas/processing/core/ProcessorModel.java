@@ -387,7 +387,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         String[] cmdArray = new String[paramList.getParamArray().size() + 2];
 
-        cmdArray[0] = programName.equals(OCSSW.OCSSW_INSTALLER)? "" : OCSSW.getOcsswScriptPath();
+        cmdArray[0] = programName.equals(OCSSW.OCSSW_INSTALLER) ? null : OCSSW.getOcsswScriptPath();
         cmdArray[1] = getProgramName();
 
         Iterator itr = paramList.getParamArray().iterator();
@@ -1029,6 +1029,15 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private static class OCSSWInstaller_Processor extends ProcessorModel {
         OCSSWInstaller_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
+        }
+
+        @Override
+        public String[] getProgramCmdArray() {
+            String[] cmdArray = super.getProgramCmdArray();
+            if (!OCSSW.isOCSSWExist()) {
+                cmdArray[0] = OCSSW.TMP_OCSSW_INSTALLER;
+            }
+            return cmdArray;
         }
     }
 }

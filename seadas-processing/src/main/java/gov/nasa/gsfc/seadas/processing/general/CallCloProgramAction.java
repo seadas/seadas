@@ -58,6 +58,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
         //multiIFile = getValue(config, "multiIFile", "false");
 
         super.configure(config);
+        if ( programName.equals(OCSSW.OCSSW_INSTALLER) ) {
+            OCSSW.checkOCSSW();
+        }
         super.setEnabled(programName.equals(OCSSW.OCSSW_INSTALLER) || OCSSW.isOCSSWExist());
     }
 
@@ -201,7 +204,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected void done() {
                 try {
                     final String outputFileName = get();
-                    //System.out.println(outputFileName);
                     VisatApp.getApp().showInfoDialog(programName, programName + " done!\n" +
                             (programName.equals(OCSSW.OCSSW_INSTALLER) ? "" : ("Output written to:\n" + outputFileName)), null);
                     if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
