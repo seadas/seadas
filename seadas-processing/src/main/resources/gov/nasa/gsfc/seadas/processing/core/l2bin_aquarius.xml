@@ -16,7 +16,7 @@
             <default></default>
             <description>Input file</description>
             <source>command line</source>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>1</order>
         </option>
         <option type="ofile">
@@ -24,7 +24,7 @@
             <value></value>
             <default></default>
             <description>L3B output filename</description>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>2</order>
         </option>
         <option type="string">
@@ -32,7 +32,7 @@
             <value></value>
             <default></default>
             <description>the bin resolution (typically '1D')</description>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>3</order>
         </option>
         <option type="string">
@@ -40,7 +40,7 @@
             <value></value>
             <default></default>
             <description>product list</description>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>4</order>
         </option>
         <option type="string">
@@ -48,7 +48,20 @@
             <value></value>
             <default></default>
             <description>the radiometer beam (1-3)</description>
-            <usedAs>argument</usedAs>
+            <validValue>
+                <value>1</value>
+                <description>the radiometer beam 1</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>the radiometer beam 2</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>the radiometer beam 3</description>
+            </validValue>
+
+            <usedAs>option</usedAs>
             <order>5</order>
         </option>
         <option type="string">
@@ -56,7 +69,7 @@
             <value></value>
             <default></default>
             <description>flaguse</description>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>6</order>
         </option>
         <option type="string">
@@ -64,7 +77,7 @@
             <value></value>
             <default></default>
             <description>the angular radius in degrees of the cutoff filter</description>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>7</order>
         </option>
         <option type="int">
@@ -80,7 +93,7 @@
                 <value>1</value>
                 <description>1 - fill undefined bins</description>
             </validValue>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>8</order>
         </option>
         <option type="string">
@@ -109,7 +122,7 @@
                 <value>Q</value>
                 <description>quadratic fit (4 parameters)</description>
             </validValue>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>9</order>
         </option>
         <option type="string">
@@ -117,7 +130,7 @@
             <value></value>
             <default></default>
             <description>pversion</description>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>10</order>
         </option>
     </options>
