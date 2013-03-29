@@ -98,6 +98,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 return new SMIGEN_Processor(programName, xmlFileName);
             case L2BIN:
                 return new L2Bin_Processor(programName, xmlFileName);
+            case L2BIN_AQUARIUS:
+                return new L2Bin_Processor(programName, xmlFileName);
             case L3BIN:
                 return new L3Bin_Processor(programName, xmlFileName);
             case OCSSW_INSTALLER:
@@ -956,6 +958,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private static class L2Bin_Processor extends ProcessorModel {
         L2Bin_Processor(String programName, String xmlFileName) {
+            super(programName, xmlFileName);
+            setMultipleInputFiles(true);
+        }
+    }
+
+    private static class L2BinAquarius_Processor extends ProcessorModel {
+        L2BinAquarius_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
             setMultipleInputFiles(true);
         }

@@ -146,11 +146,11 @@ public class OCSSW {
             FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
         } catch (MalformedURLException malformedURLException) {
-
+            VisatApp.getApp().showInfoDialog("URL for downloading install_ocssw.py is not correct!", null);
         } catch (FileNotFoundException fileNotFoundException) {
-
+            VisatApp.getApp().showInfoDialog(fileNotFoundException.getMessage(), null);
         } catch (IOException ioe) {
-
+            VisatApp.getApp().showInfoDialog(ioe.getMessage(), null);
         }
     }
 }

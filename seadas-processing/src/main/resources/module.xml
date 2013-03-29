@@ -233,9 +233,22 @@
             <xmlFileName>l2bin.xml</xmlFileName>
         </action>
         <action>
+             <parent>seadasProcessing</parent>
+             <id>l2bin_aquarius</id>
+             <placeAfter>l2bin</placeAfter>
+             <placeBefore>l3bin</placeBefore>
+             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+             <text>l2bin_aquarius...</text>
+             <shortDescr>Create a L3 bin file from Aquarius L2 file(s)</shortDescr>
+             <programName>l2bin_aquarius</programName>
+             <dialogTitle>l2bin_aquarius</dialogTitle>
+             <multiIFile>true</multiIFile>
+             <xmlFileName>l2bin_aquarius.xml</xmlFileName>
+         </action>
+        <action>
             <parent>seadasProcessing</parent>
             <id>l3bin</id>
-            <placeAfter>l2bin</placeAfter>
+            <placeAfter>l2bin_aquarius</placeAfter>
             <placeBefore>smigen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l3bin...</text>

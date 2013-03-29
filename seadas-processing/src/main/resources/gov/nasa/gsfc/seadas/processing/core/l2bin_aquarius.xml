@@ -44,57 +44,81 @@
             <order>4</order>
         </option>
         <option type="string">
-             <name>beam</name>
-             <value></value>
-             <default></default>
-             <description>the radiometer beam (1-3)</description>
-             <usedAs>argument</usedAs>
-             <order>5</order>
-         </option>
+            <name>beam</name>
+            <value></value>
+            <default></default>
+            <description>the radiometer beam (1-3)</description>
+            <usedAs>argument</usedAs>
+            <order>5</order>
+        </option>
         <option type="string">
-             <name>flaguse</name>
-             <value></value>
-             <default></default>
-             <description>flaguse</description>
-             <usedAs>argument</usedAs>
-             <order>6</order>
-         </option>
+            <name>flaguse</name>
+            <value></value>
+            <default></default>
+            <description>flaguse</description>
+            <usedAs>argument</usedAs>
+            <order>6</order>
+        </option>
         <option type="string">
-             <name>filter_width</name>
-             <value></value>
-             <default></default>
-             <description>the angular radius in degrees of the cutoff filter</description>
-             <usedAs>argument</usedAs>
-             <order>7</order>
-         </option>
+            <name>filter_width</name>
+            <value></value>
+            <default></default>
+            <description>the angular radius in degrees of the cutoff filter</description>
+            <usedAs>argument</usedAs>
+            <order>7</order>
+        </option>
         <option type="int">
-             <name>fill</name>
-             <value></value>
-             <default></default>
-             <description>{0,1} {0 - no fill of undefined bins, 1 - fill undefined bins}</description>
-             <usedAs>argument</usedAs>
-             <order>8</order>
-         </option>
+            <name>fill</name>
+            <value></value>
+            <default></default>
+            <description>{0,1} {0 - no fill of undefined bins, 1 - fill undefined bins}</description>
+            <validValue>
+                <value>0</value>
+                <description>0 - no fill of undefined bins</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>1 - fill undefined bins</description>
+            </validValue>
+            <usedAs>argument</usedAs>
+            <order>8</order>
+        </option>
         <option type="string">
-             <name>fit</name>
-             <value></value>
-             <default></default>
-             <description> {"C", "L", "B", "Q"}
-                   "C" - constant fit  (1 parameter)
-                   "L" - linear fit    (2 parameters)
-                   "B" - bilinear fit  (3 parameters)
-                   "C" - quadratic fit (4 parameters)
-             </description>
-             <usedAs>argument</usedAs>
-             <order>9</order>
-         </option>
+            <name>fit</name>
+            <value></value>
+            <default></default>
+            <description>{"C", "L", "B", "Q"}
+                "C" - constant fit (1 parameter)
+                "L" - linear fit (2 parameters)
+                "B" - bilinear fit (3 parameters)
+                "Q" - quadratic fit (4 parameters)
+            </description>
+            <validValue>
+                <value>C</value>
+                <description>constant fit (1 parameter)</description>
+            </validValue>
+            <validValue>
+                <value>L</value>
+                <description>linear fit (2 parameters)</description>
+            </validValue>
+            <validValue>
+                <value>B</value>
+                <description>bilinear fit (3 parameters)</description>
+            </validValue>
+            <validValue>
+                <value>Q</value>
+                <description>quadratic fit (4 parameters)</description>
+            </validValue>
+            <usedAs>argument</usedAs>
+            <order>9</order>
+        </option>
         <option type="string">
-             <name>pversion</name>
-             <value></value>
-             <default></default>
-             <description>pversion</description>
-             <usedAs>argument</usedAs>
-             <order>10</order>
-         </option>
+            <name>pversion</name>
+            <value></value>
+            <default></default>
+            <description>pversion</description>
+            <usedAs>argument</usedAs>
+            <order>10</order>
+        </option>
     </options>
 </paramInfo>
