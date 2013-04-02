@@ -48,7 +48,9 @@ public class AquariusProductReaderPlugIn implements ProductReaderPlugIn {
     private static final String[] supportedProductTypes = {
 //            "Aquarius Level 1A Data",
             "Aquarius Level 2 Data",
-            "Aquarius Level 3 Binned Data"
+            "Aquarius Level 3 Binned Data",
+            "Aquarius Level-3 Binned Data"
+
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
