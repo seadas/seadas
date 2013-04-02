@@ -10,7 +10,7 @@
         <tocitem text="Data Processors">
             <tocitem text="SeaDAS Processors">
                 <tocitem text="Introduction" target="processOverview"/>
-
+                <tocitem text="install_ocssw.py" target="install_ocssw.py"/>
                 <tocitem text="Product Extractors">
                     <tocitem text="Introduction" target="extractor"/>
                     <tocitem text="l1aextract_modis" target="l1aextract_modis"/>
@@ -25,6 +25,7 @@
                 <tocitem text="l2mapgen" target="l2mapgen"/>
                 <tocitem text="l2brsgen" target="l2brsgen"/>
                 <tocitem text="l2bin" target="l2bin"/>
+                <tocitem text="l2bin_aquarius" target="l2bin_aquarius"/>
                 <tocitem text="l3bin" target="l3bin"/>
                 <tocitem text="smigen" target="smigen"/>
                 <tocitem text="modis_L1A.py" target="modis_L1A.py"/>

@@ -4,6 +4,7 @@
         "http://java.sun.com/products/javahelp/map_2_0.dtd">
 
 <map version="2.0">
+    <mapID target="install_ocssw.py" url="processors/InstallOCSSW.html"/>
     <mapID target="extractor" url="processors/ProcessExtractors.html"/>
     <mapID target="l1aextract_modis" url="processors/ProcessL1aextract_modis.html"/>
     <mapID target="l1aextract_seawifs" url="processors/ProcessL1aextract_seawifs.html"/>
@@ -20,6 +21,7 @@
     <mapID target="l2mapgen" url="processors/ProcessL2mapgen.html"/>
     <mapID target="l2brsgen" url="processors/ProcessL2brsgen.html"/>
     <mapID target="l2bin" url="processors/ProcessL2bin.html"/>
+    <mapID target="l2bin_aquarius" url="processors/ProcessL2binAquarius.html"/>
     <mapID target="l3bin" url="processors/ProcessL3bin.html"/>
     <mapID target="smigen" url="processors/ProcessSmigen.html"/>
 
