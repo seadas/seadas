@@ -137,7 +137,6 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                 for (Component c : bps) {
                     tmpString = ParamUtils.removePreceedingDashes(c.getName()).toUpperCase();
                     if (MISSIONS.contains(tmpString)) {
-                        System.out.println(c.getName());
                         if (!DEFAULT_MISSIONS.contains(tmpString)) {
                             missionPanel.add(c);
                         }
@@ -163,21 +162,16 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
     }
 
     private Component findJPanel(Component comp, String panelName) {
-        System.out.println(comp.getClass() + "  " + panelName);
         if (comp.getClass() == JPanel.class) return comp;
         if (comp instanceof Container) {
             Component[] components = ((Container) comp).getComponents();
-            //System.out.println("number of comps: " + components.length);
             for (int i = 0; i < components.length; i++) {
-
                 Component child = findJPanel(components[i], components[i].getName());
                 if (child != null) {
-
                     return child;
                 }
             }
         }
         return null;
-
     }
 }
