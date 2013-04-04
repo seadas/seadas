@@ -121,9 +121,9 @@
         </option>
         <option type="boolean">
             <name>noext</name>
-            <value></value>
-            <default>false</default>
-            <description>set to 1 to suppress generation of external files [default=0, (1 for "regional" prodtype)]
+            <value>true</value>
+            <default>true</default>
+            <description>set to 1 to suppress generation of external files [default=1, (1 for "regional" prodtype)]
             </description>
             <order>10</order>
         </option>
@@ -158,9 +158,9 @@
         </option>
         <option type="boolean">
             <name>verbose</name>
-            <value></value>
-            <default>false</default>
-            <description>Allow more verbose screen messages [default=0]</description>
+            <value>true</value>
+            <default></default>
+            <description>Allow more verbose screen messages [default shoulbe true for GUI]</description>
             <order>15</order>
         </option>
     </options>

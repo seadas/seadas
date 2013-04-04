@@ -91,7 +91,9 @@ public class ParamUIFactory {
             final ParamInfo pi = (ParamInfo) itr.next();
             if (!(pi.getName().equals(processorModel.getPrimaryInputFileOptionName()) ||
                     pi.getName().equals(processorModel.getPrimaryOutputFileOptionName()) ||
-                    pi.getName().equals(L2genData.GEOFILE))) {
+                    pi.getName().equals(L2genData.GEOFILE) ||
+                    pi.getName().equals("verbose") ||
+                    pi.getName().equals("--verbose") ) ) {
 
                 SeadasLogger.getLogger().fine(pi.getName());
                 if (pi.hasValidValueInfos()) {

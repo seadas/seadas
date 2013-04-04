@@ -119,7 +119,7 @@
         </option>
         <option type="boolean">
             <name>--verbose</name>
-            <value></value>
+            <value>true</value>
             <default></default>
             <description>Path of directory containing LUT files</description>
             <usedAs>flag</usedAs>

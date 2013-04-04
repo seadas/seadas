@@ -79,7 +79,7 @@
         </option>
         <option type="boolean">
             <name>--verbose</name>
-            <value></value>
+            <value>true</value>
             <default></default>
             <description>print status messages</description>
             <usedAs>flag</usedAs>

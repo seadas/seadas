@@ -84,7 +84,7 @@
         </option>
         <option type="boolean">
             <name>verbose</name>
-            <value></value>
+            <value>true</value>
             <default>false</default>
             <description>Allow more verbose screen messages [default=0]</description>
             <order>15</order>

@@ -171,5 +171,12 @@
             <description>install evaluation sensor files</description>
             <order>19</order>
         </option>
+        <option type="boolean">
+            <name>verbose</name>
+            <value>true</value>
+            <default></default>
+            <description>Allow more verbose screen messages [default shoulbe true for GUI]</description>
+            <order>20</order>
+        </option>
     </options>
 </paramInfo>
