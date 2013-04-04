@@ -48,19 +48,19 @@ public class WatermaskOpTest {
         GPF.getDefaultInstance().getOperatorSpiRegistry().loadOperatorSpis();
     }
 
-    @Test
-    public void testWithSubsampling() throws Exception {
-        parameters.put("subSamplingFactorX", 10);
-        parameters.put("subSamplingFactorY", 10);
-        Product lwProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(WatermaskOp.class), parameters, sourceProduct);
-        actualTest(lwProduct);
-    }
-
-    @Test
-    public void testWithoutSubsampling() throws Exception {
-        Product lwProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(WatermaskOp.class), parameters, sourceProduct);
-        actualTest(lwProduct);
-    }
+//    @Test
+//    public void testWithSubsampling() throws Exception {
+//        parameters.put("subSamplingFactorX", 10);
+//        parameters.put("subSamplingFactorY", 10);
+//        Product lwProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(WatermaskOp.class), parameters, sourceProduct);
+//        actualTest(lwProduct);
+//    }
+//
+//    @Test
+//    public void testWithoutSubsampling() throws Exception {
+//        Product lwProduct = GPF.createProduct(OperatorSpi.getOperatorAlias(WatermaskOp.class), parameters, sourceProduct);
+//        actualTest(lwProduct);
+//    }
 
     private void actualTest(Product lwProduct) {
         Band band = lwProduct.getBand("land_water_fraction");

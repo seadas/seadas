@@ -30,8 +30,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <beam.version>4.10.3</beam.version>
-        <ceres.version>0.13.1</ceres.version>
+        <beam.version>4.11</beam.version>
+        <ceres.version>[0.13,0.14-SNAPSHOT)</ceres.version>
         <seadas.version>7.0-beta</seadas.version>
         <netcdf.version>4.2.20</netcdf.version>
         <!--<geotools.version>2.6.5</geotools.version>-->
