@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,6 +32,8 @@ public class ProcessorTypeInfo {
         SEADAS_PROCESSOR_PY,
         SEADAS_PROCESSOR_MAIN,
         OCSSW_INSTALLER,
+        L2GEN,
+        L2GEN_AQUARIUS,
         NOID
     }
 
@@ -50,6 +53,8 @@ public class ProcessorTypeInfo {
         put("l2mapgen", ProcessorID.L2MAPGEN);
         put("l2bin", ProcessorID.L2BIN);
         put("l2bin_aquarius", ProcessorID.L2BIN_AQUARIUS);
+        put("l2gen", ProcessorID.L2GEN);
+        put("l2gen_aquarius", ProcessorID.L2GEN_AQUARIUS);
         put("l3bin", ProcessorID.L3BIN);
         put("smigen", ProcessorID.SMIGEN);
         put("smitoppm", ProcessorID.SMITOPPM);
@@ -58,8 +63,19 @@ public class ProcessorTypeInfo {
         put("seadas_processor_main", ProcessorID.SEADAS_PROCESSOR_MAIN);
         put("install_ocssw.py", ProcessorID.OCSSW_INSTALLER);
 
-
     }};
+
+    protected static Set<String> getProcessorNames() {
+        Set<String> keySet = processorHashMap.keySet();
+        keySet.remove("seadas_processor_main");
+        keySet.remove("smitoppm");
+        keySet.remove("l1aextract_modis");
+        keySet.remove("l1aextract_seawifs");
+        keySet.remove("l2extract");
+        keySet.remove("lonlat2pixline");
+        return keySet;
+        //return processorHashMap.keySet();
+    }
 
     public static ProcessorID getProcessorID(String processorName) {
         return processorHashMap.get(processorName);

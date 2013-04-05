@@ -10,6 +10,7 @@ import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.command.CommandEvent;
+import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractVisatAction;
 
@@ -42,7 +43,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
 
-   // private static String OCSSW_INSTALLER = "install_ocssw.py";
+    // private static String OCSSW_INSTALLER = "install_ocssw.py";
 
 
     @Override
@@ -56,7 +57,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         //multiIFile = getValue(config, "multiIFile", "false");
 
         super.configure(config);
-        if ( programName.equals(OCSSW.OCSSW_INSTALLER) ) {
+        if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
             OCSSW.checkOCSSW();
         }
         super.setEnabled(programName.equals(OCSSW.OCSSW_INSTALLER) || OCSSW.isOCSSWExist());
@@ -135,12 +136,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
         openOutputInApp = cloProgramUI.isOpenOutputInApp();
 
-        if ( ! programName.equals(OCSSW.OCSSW_INSTALLER) && !processorModel.isValidProcessor()) {
+        if (!programName.equals(OCSSW.OCSSW_INSTALLER) && !processorModel.isValidProcessor()) {
             return;
         }
 
         executeProgram(processorModel);
         SeadasLogger.deleteLoggerOnExit(true);
+
+
     }
 
 
@@ -206,7 +209,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
                             (programName.equals(OCSSW.OCSSW_INSTALLER) ? "" : ("Output written to:\n" + outputFileName)), null);
                     if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
                         OCSSW.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
-                           }
+                        if ( !OCSSW.isOCSSWExist() ) {
+                            enableProcessors();
+                        }
+                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ProgramExecutor pe = new ProgramExecutor();
@@ -225,6 +231,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
         };
 
         swingWorker.execute();
+    }
+
+    private void enableProcessors() {
+
+        CommandManager commandManager = getAppContext().getApplicationPage().getCommandManager();
+
+        for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
+            commandManager.getCommand(processorName).setEnabled(true);
+        }
     }
 
     private void displayMessage(String programName, String message) {

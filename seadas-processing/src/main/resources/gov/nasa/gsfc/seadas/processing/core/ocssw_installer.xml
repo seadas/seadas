@@ -6,7 +6,7 @@
         <parFileOptionName>none</parFileOptionName>
     </programMetaData>
     <options>
-         <option type="dir">
+        <option type="dir">
             <name>--install-dir</name>
             <value></value>
             <default></default>
@@ -165,11 +165,12 @@
             <order>19</order>
         </option>
         <option type="boolean">
-         <name>-verbose</name>
-         <value>false</value>
-         <default>false</default>
-         <description>print out verbose status</description>
-         <order>20</order>
-         </option>
+            <name>--verbose</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>print out verbose status</description>
+            <order>20</order>
+        </option>
     </options>
 </paramInfo>

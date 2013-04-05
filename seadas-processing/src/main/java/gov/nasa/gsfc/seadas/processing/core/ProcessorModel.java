@@ -1045,6 +1045,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             String[] cmdArray = super.getProgramCmdArray();
             if (!OCSSW.isOCSSWExist()) {
                 cmdArray[0] = OCSSW.TMP_OCSSW_INSTALLER;
+            } else {
+                cmdArray[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
             }
             return cmdArray;
         }
