@@ -55,7 +55,7 @@ public class L2genData implements L2genDataProcessorModel {
             AQUARIUS_PRODUCT_CATEGORY_INFO_XML = "aquariusProductCategoryInfo.xml";
 
     private static final String
-            GETANC = "getanc",
+            GETANC = "getanc.py",
             GETANC_AQUARIUS = "getanc_aquarius.py";
 
     private static File aquariusProductXmlFile;
@@ -127,6 +127,7 @@ public class L2genData implements L2genDataProcessorModel {
         }
         processorModel.setAcceptsParFile(true);
     }
+
 
     public Mode getMode() {
         return mode;
@@ -1199,7 +1200,7 @@ public class L2genData implements L2genDataProcessorModel {
             for (File file : runDirectoryFiles) {
                 if (file.getName().startsWith(iFile.getName().substring(0, 13))) {
                     if (file.getName().endsWith(".txt") || file.getName().endsWith(".anc")) {
-                        file.delete();
+                        file.deleteOnExit();
                     }
                 }
             }
