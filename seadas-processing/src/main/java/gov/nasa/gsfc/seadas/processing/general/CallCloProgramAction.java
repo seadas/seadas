@@ -3,9 +3,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 import com.bc.ceres.core.CoreException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
-import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.processing.core.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.ui.AppContext;
@@ -207,11 +205,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     VisatApp.getApp().showInfoDialog(programName, programName + " done!\n" +
                             (programName.equals(OCSSW.OCSSW_INSTALLER) ? "" : ("Output written to:\n" + outputFileName)), null);
                     if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
-                        OCSSWRunner.execute(new String[]{OCSSW.getOcsswScriptPath(),
-                                                        OCSSW.SEADAS_CONFIG_UPDATE_PROGRAM_NAME,
-                                                        RuntimeContext.getConfig().getConfigFilePath(),
-                                                        processorModel.getParamValue("--install-dir")});
-                    }
+                        OCSSW.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
+                           }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ProgramExecutor pe = new ProgramExecutor();

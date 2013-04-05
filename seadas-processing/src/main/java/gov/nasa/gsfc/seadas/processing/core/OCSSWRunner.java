@@ -9,7 +9,6 @@ import org.esa.beam.visat.VisatApp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,12 +50,12 @@ public class OCSSWRunner {
     }
 
     public static Process executeLocal(ProcessorModel processorModel) {
-        System.out.println("local execution!" + " "  + Arrays.toString(processorModel.getProgramCmdArray()));
+        //System.out.println("local execution!" + " "  + Arrays.toString(processorModel.getProgramCmdArray()));
         ProcessBuilder processBuilder = new ProcessBuilder(processorModel.getProgramCmdArray());
         Map<String, String> env = processBuilder.environment();
 
         if (!env.containsKey(OCSSW_ROOT_VAR)) {
-            System.out.println("error checkpoint!");
+            //System.out.println("error checkpoint!");
             env.put(OCSSW_ROOT_VAR, OCSSW.getOcsswEnv());
         }
 
@@ -75,7 +74,7 @@ public class OCSSWRunner {
     }
 
     public static Process executeRemote(ProcessorModel processorModel) {
-        System.out.println("remote execution!");
+        //System.out.println("remote execution!");
         Process process = null;
 
         Gson gson = new Gson();
@@ -85,15 +84,12 @@ public class OCSSWRunner {
     }
 
     public static Process executeLocal(String[] cmdArray, File ifileDir) {
-        System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
+        //System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
         Map<String, String> env = processBuilder.environment();
         if (!env.containsKey(OCSSW_ROOT_VAR)) {
             env.put(OCSSW_ROOT_VAR, OCSSW.getOcsswEnv());
         }
-//        if (environment != null)
-//            env.putAll(environment);
-
         if (ifileDir != null) {
             processBuilder.directory(ifileDir);
         } else {
@@ -106,6 +102,7 @@ public class OCSSWRunner {
             int exitValue = process.waitFor();
         } catch (Exception e) {
             VisatApp.getApp().showErrorDialog("OCSSW execution error from SeaDAS application! \n" + cmdArray[0] + "  program is not executed correctly.");
+            e.printStackTrace();
         }
         return process;
     }
@@ -118,7 +115,7 @@ public class OCSSWRunner {
         JsonArray array = parser.parse(json).getAsJsonArray();
 
 
-        System.out.println("remote execution!");
+        //System.out.println("remote execution!");
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
 
         Map<String, String> env = processBuilder.environment();
@@ -159,13 +156,13 @@ public class OCSSWRunner {
         boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
 
         if (fileUploadSuccess) {
-            System.out.println("file upload is successful!");
+            //System.out.println("file upload is successful!");
 
             ocsswClient.uploadParFile(pm.getParStringForRemoteServer());
             ocsswClient.uploadParam(paramString);
             //ocsswClient.runOCSSW();
         } else {
-            System.out.println("file upload failed!");
+            //System.out.println("file upload failed!");
         }
     }
 }

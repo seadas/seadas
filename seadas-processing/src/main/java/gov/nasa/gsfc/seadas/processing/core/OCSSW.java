@@ -3,10 +3,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import org.esa.beam.visat.VisatApp;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -28,6 +25,7 @@ public class OCSSW {
     public static final String SEADAS_CONFIG_UPDATE_PROGRAM_NAME = "rewrite_seadas_config.py";
     public static String OCSSW_INSTALLER = "install_ocssw.py";
     public static String TMP_OCSSW_INSTALLER = "/tmp/install_ocssw.py";
+    public static String OCSSW_INSTALLER_URL = "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     private static boolean ocsswExist = false;
 
@@ -73,6 +71,7 @@ public class OCSSW {
 
     public static void checkOCSSW() {
         String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
+
 
         if (!(dirPath == null)) {
 
@@ -141,16 +140,47 @@ public class OCSSW {
 
     public static void downloadOCSSWInstaller() {
         try {
-            URL website = new URL(" http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py");
+            URL website = new URL("http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py");
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
             FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
         } catch (MalformedURLException malformedURLException) {
             VisatApp.getApp().showInfoDialog("URL for downloading install_ocssw.py is not correct!", null);
         } catch (FileNotFoundException fileNotFoundException) {
             VisatApp.getApp().showInfoDialog(fileNotFoundException.getMessage(), null);
         } catch (IOException ioe) {
             VisatApp.getApp().showInfoDialog(ioe.getMessage(), null);
+        }
+    }
+
+    private static void handleException(String errorMessage) {
+        VisatApp.getApp().showInfoDialog(errorMessage, null);
+    }
+
+    public static void updateOCSSWRoot(String installDir) {
+        FileWriter fileWriter = null;
+        try {
+            final FileReader reader = new FileReader(new File(RuntimeContext.getConfig().getConfigFilePath()));
+            final BufferedReader br = new BufferedReader(reader);
+
+            StringBuilder text = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("seadas.ocssw.root")) {
+                    line = "seadas.ocssw.root = " + installDir;
+                }
+                text.append(line);
+                text.append("\n");
+            }
+            fileWriter = new FileWriter(new File(RuntimeContext.getConfig().getConfigFilePath()));
+            fileWriter.write(text.toString());
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        } catch (IOException ioe) {
+            handleException(ioe.getMessage());
         }
     }
 }

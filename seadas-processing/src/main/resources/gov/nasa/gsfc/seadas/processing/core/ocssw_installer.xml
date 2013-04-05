@@ -6,14 +6,7 @@
         <parFileOptionName>none</parFileOptionName>
     </programMetaData>
     <options>
-        <!--<option type="boolean">-->
-        <!--<name>-verbose</name>-->
-        <!--<value>false</value>-->
-        <!--<default>false</default>-->
-        <!--<description>print out verbose status</description>-->
-        <!--<order>1</order>
-        </option>-->
-        <option type="dir">
+         <option type="dir">
             <name>--install-dir</name>
             <value></value>
             <default></default>
@@ -172,11 +165,11 @@
             <order>19</order>
         </option>
         <option type="boolean">
-            <name>verbose</name>
-            <value>true</value>
-            <default></default>
-            <description>Allow more verbose screen messages [default shoulbe true for GUI]</description>
-            <order>20</order>
-        </option>
+         <name>-verbose</name>
+         <value>false</value>
+         <default>false</default>
+         <description>print out verbose status</description>
+         <order>20</order>
+         </option>
     </options>
 </paramInfo>
