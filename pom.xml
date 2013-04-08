@@ -533,15 +533,55 @@
     <developers>
 
         <developer>
+            <id>swbailey</id>
+            <name>Sean Bailey</name>
+            <email>sean.w.bailey@nasa.gov</email>
+            <organization>NASA OBPG</organization>
+            <roles>
+                <role>Project Lead</role>
+                <role>Java Developer</role>
+                <role>Python Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>aynur</id>
+            <name>Aynur Abdurazik</name>
+            <email>aynur.abdurazik@nasa.gov</email>
+            <organization>NASA OBPG</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>dknowles</id>
+            <name>Danny Knowles</name>
+            <email>daniel.s.knowles@nasa.gov</email>
+            <organization>NASA OBPG</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
             <id>dshea</id>
             <name>Don Shea</name>
             <email>don.shea@nasa.gov</email>
             <organization>NASA OBPG</organization>
             <roles>
                 <role>Java Developer</role>
+                <role>C Developer</role>
             </roles>
         </developer>
 
+        <developer>
+            <id>melliot</id>
+            <name>Matt Elliott</name>
+            <email>matthew.h.elliott@nasa.gov</email>
+            <organization>NASA OBPG</organization>
+            <roles>
+                <role>Java Developer</role>
+                <role>Python Developer</role>
+            </roles>
+        </developer>
         <developer>
             <id>forman</id>
             <name>Norman Fomferra</name>
