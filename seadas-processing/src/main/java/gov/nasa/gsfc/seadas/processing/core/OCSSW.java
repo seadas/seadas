@@ -22,12 +22,12 @@ public class OCSSW {
 
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
 
-    public static final String SEADAS_CONFIG_UPDATE_PROGRAM_NAME = "rewrite_seadas_config.py";
     public static String OCSSW_INSTALLER = "install_ocssw.py";
     public static String TMP_OCSSW_INSTALLER = "/tmp/install_ocssw.py";
     public static String OCSSW_INSTALLER_URL = "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     private static boolean ocsswExist = false;
+
 
     public static File getOcsswRoot() throws IOException {
         String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));

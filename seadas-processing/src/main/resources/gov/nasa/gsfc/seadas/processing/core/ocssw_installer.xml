@@ -12,7 +12,7 @@
             <default></default>
             <usedAs>option</usedAs>
             <description>install directory</description>
-            <order>1</order>
+            <order>0</order>
         </option>
         <option type="boolean">
             <name>--src</name>
@@ -20,7 +20,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install source code</description>
-            <order>2</order>
+            <order>1</order>
         </option>
         <option type="boolean">
             <name>--aquarius</name>
@@ -28,7 +28,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install Aquarius files</description>
-            <order>3</order>
+            <order>2</order>
         </option>
         <option type="boolean">
             <name>--avhrr</name>
@@ -36,7 +36,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install AVHRR files</description>
-            <order>4</order>
+            <order>3</order>
         </option>
         <option type="boolean">
             <name>--czcs</name>
@@ -44,7 +44,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install CZCS files</description>
-            <order>5</order>
+            <order>4</order>
         </option>
         <option type="boolean">
             <name>--goci</name>
@@ -52,7 +52,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install GOCI files</description>
-            <order>6</order>
+            <order>5</order>
         </option>
         <option type="boolean">
             <name>--hico</name>
@@ -60,7 +60,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install HICO files</description>
-            <order>7</order>
+            <order>6</order>
         </option>
         <option type="boolean">
             <name>--meris</name>
@@ -68,7 +68,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MERIS files</description>
-            <order>8</order>
+            <order>7</order>
         </option>
         <option type="boolean">
             <name>--aqua</name>
@@ -76,7 +76,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MODIS Aqua files</description>
-            <order>9</order>
+            <order>8</order>
         </option>
         <option type="boolean">
             <name>--terra</name>
@@ -84,7 +84,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MODIS Terra files</description>
-            <order>10</order>
+            <order>9</order>
         </option>
         <option type="boolean">
             <name>--mos</name>
@@ -92,7 +92,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MOS files</description>
-            <order>11</order>
+            <order>10</order>
         </option>
         <option type="boolean">
             <name>--ocm1</name>
@@ -100,7 +100,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCM1 files</description>
-            <order>12</order>
+            <order>11</order>
         </option>
         <option type="boolean">
             <name>--ocm2</name>
@@ -108,7 +108,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCM2 files</description>
-            <order>13</order>
+            <order>12</order>
         </option>
         <option type="boolean">
             <name>--ocrvc</name>
@@ -116,7 +116,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCRVC files</description>
-            <order>14</order>
+            <order>13</order>
         </option>
         <option type="boolean">
             <name>--octs</name>
@@ -124,7 +124,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCTS files</description>
-            <order>15</order>
+            <order>14</order>
         </option>
         <option type="boolean">
             <name>--osmi</name>
@@ -132,7 +132,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OSMI files</description>
-            <order>16</order>
+            <order>15</order>
         </option>
         <option type="boolean">
             <name>--seawifs</name>
@@ -140,7 +140,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install SeaWIFS files</description>
-            <order>17</order>
+            <order>16</order>
         </option>
         <option type="boolean">
             <name>--viirsn</name>
@@ -148,21 +148,15 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install VIIRSN files</description>
-            <order>18</order>
+            <order>17</order>
         </option>
-        <!--<option type="boolean">-->
-        <!--<name>-direct-broadcast</name>-->
-        <!--<value>false</value>-->
-        <!--<default>false</default>-->
-        <!--<description>install direct broadcast files</description>-->
-        <!--<order>1</order> </option>-->
         <option type="boolean">
             <name>--eval</name>
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install evaluation sensor files</description>
-            <order>19</order>
+            <order>18</order>
         </option>
         <option type="boolean">
             <name>--verbose</name>
@@ -170,7 +164,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>print out verbose status</description>
-            <order>20</order>
+            <order>19</order>
         </option>
     </options>
 </paramInfo>

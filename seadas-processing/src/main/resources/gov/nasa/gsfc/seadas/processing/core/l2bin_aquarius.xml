@@ -17,7 +17,7 @@
             <description>Input file</description>
             <source>command line</source>
             <usedAs>option</usedAs>
-            <order>1</order>
+            <order>0</order>
         </option>
         <option type="ofile">
             <name>ofile</name>
@@ -25,7 +25,7 @@
             <default></default>
             <description>L3B output filename</description>
             <usedAs>option</usedAs>
-            <order>2</order>
+            <order>1</order>
         </option>
         <option type="string">
             <name>resolve</name>
@@ -33,7 +33,7 @@
             <default></default>
             <description>the bin resolution (typically '1D')</description>
             <usedAs>option</usedAs>
-            <order>3</order>
+            <order>2</order>
         </option>
         <option type="string">
             <name>l3bprod</name>
@@ -41,7 +41,7 @@
             <default></default>
             <description>product list</description>
             <usedAs>option</usedAs>
-            <order>4</order>
+            <order>3</order>
         </option>
         <option type="string">
             <name>suite</name>
@@ -49,7 +49,7 @@
             <default></default>
             <description>suite</description>
             <usedAs>option</usedAs>
-            <order>5</order>
+            <order>4</order>
         </option>
         <option type="string">
             <name>beam</name>
@@ -70,7 +70,7 @@
             </validValue>
 
             <usedAs>option</usedAs>
-            <order>6</order>
+            <order>5</order>
         </option>
         <option type="string">
             <name>flaguse</name>
@@ -78,7 +78,7 @@
             <default></default>
             <description>flaguse</description>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>6</order>
         </option>
         <option type="string">
             <name>filter_width</name>
@@ -86,7 +86,7 @@
             <default></default>
             <description>the angular radius in degrees of the cutoff filter</description>
             <usedAs>option</usedAs>
-            <order>8</order>
+            <order>7</order>
         </option>
         <option type="int">
             <name>fill</name>
@@ -102,7 +102,7 @@
                 <description>1 - fill undefined bins</description>
             </validValue>
             <usedAs>option</usedAs>
-            <order>9</order>
+            <order>8</order>
         </option>
         <option type="string">
             <name>fit</name>
@@ -131,7 +131,7 @@
                 <description>quadratic fit (4 parameters)</description>
             </validValue>
             <usedAs>option</usedAs>
-            <order>10</order>
+            <order>9</order>
         </option>
         <option type="string">
             <name>pversion</name>
@@ -139,7 +139,7 @@
             <default></default>
             <description>pversion</description>
             <usedAs>option</usedAs>
-            <order>11</order>
+            <order>10</order>
         </option>
     </options>
 </paramInfo>

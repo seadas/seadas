@@ -9,10 +9,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -35,7 +32,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private boolean readyToRun;
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
     private final String allparamInitializedPropertyName = "ALL_PARAMS_INITIALIZED";
-
+    private final int NUMBER_OF_PREFIX_ELEMENTS = 4;
     private ProcessorModel secondaryProcessor;
     private Pattern progressPattern;
 
@@ -385,12 +382,36 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return cmdArray.toString();
     }
 
-    private String[] getCmdArrayWithArguments() {
+    public static <T> T[] concat(T[] first, T[] second) {
+      T[] result = Arrays.copyOf(first, first.length + second.length);
+      System.arraycopy(second, 0, result, first.length, second.length);
+      return result;
+    }
 
-        String[] cmdArray = new String[paramList.getParamArray().size() + 2];
+    private String[] getCmdArrayPrefix(){
+        String[] cmdArrayPrefix;
 
-        cmdArray[0] = programName.equals(OCSSW.OCSSW_INSTALLER) ? null : OCSSW.getOcsswScriptPath();
-        cmdArray[1] = getProgramName();
+        if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
+            cmdArrayPrefix = new String[paramList.getParamArray().size() + 1];
+            cmdArrayPrefix[0] = getProgramName();
+            if (!OCSSW.isOCSSWExist()) {
+                cmdArrayPrefix[0] = OCSSW.TMP_OCSSW_INSTALLER;
+            } else {
+                cmdArrayPrefix[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
+            }
+        } else {
+            cmdArrayPrefix = new String[paramList.getParamArray().size() + 4];
+            cmdArrayPrefix[0] = OCSSW.getOcsswScriptPath();
+            cmdArrayPrefix[1] = "--ocsswroot";
+            cmdArrayPrefix[2] = OCSSW.getOcsswEnv();
+            cmdArrayPrefix[3] = getProgramName();
+        }
+        return cmdArrayPrefix;
+    }
+
+    private String[] getCmdArrayParam(){
+
+        String[] cmdArrayParam = new String[paramList.getParamArray().size()];
 
         Iterator itr = paramList.getParamArray().iterator();
         ParamInfo option;
@@ -400,15 +421,15 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
             if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
                 if (option.getValue() != null && option.getValue().length() > 0) {
-                    cmdArray[option.getOrder() + 1] = option.getValue();
+                    cmdArrayParam[option.getOrder()] = option.getValue();
                     cmdString = "argument : " + option.getValue();
                 }
             } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
-                cmdArray[option.getOrder() + 1] = option.getName() + "=" + option.getValue();
+                cmdArrayParam[option.getOrder()] = option.getName() + "=" + option.getValue();
                 cmdString = "option : " + option.getName() + "=" + option.getValue();
             } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
                 if (option.getName() != null && option.getName().length() > 0) {
-                    cmdArray[option.getOrder() + 1] = option.getName();
+                    cmdArrayParam[option.getOrder()] = option.getName();
                     cmdString = "flag : " + option.getName();
                 }
             }
@@ -425,16 +446,61 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             finalCmdArray.add(cmdString);
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
+          return cmdArrayParam;
+    }
 
-        // get rid of the null strings
-        ArrayList<String> cmdList = new ArrayList<String>();
-        for (String s : cmdArray) {
-            if (s != null) {
-                cmdList.add(s);
-            }
-        }
+    private String[] getCmdArrayWithArguments() {
 
-        cmdArray = cmdList.toArray(new String[cmdList.size()]);
+        String[] cmdArrayPrefix = getCmdArrayPrefix();
+
+        String[] cmdArray = concat(getCmdArrayPrefix(), getCmdArrayParam());
+
+//
+//        String[] cmdArrayParam = new String[paramList.getParamArray().size()];
+//
+//        Iterator itr = paramList.getParamArray().iterator();
+//        ParamInfo option;
+//        String cmdString = null;
+//        while (itr.hasNext()) {
+//            option = (ParamInfo) itr.next();
+//
+//            if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
+//                if (option.getValue() != null && option.getValue().length() > 0) {
+//                    cmdArray[option.getOrder() + cmdArrayParamIndex] = option.getValue();
+//                    cmdString = "argument : " + option.getValue();
+//                }
+//            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
+//                cmdArray[option.getOrder() + cmdArrayParamIndex] = option.getName() + "=" + option.getValue();
+//                cmdString = "option : " + option.getName() + "=" + option.getValue();
+//            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
+//                if (option.getName() != null && option.getName().length() > 0) {
+//                    cmdArray[option.getOrder() + cmdArrayParamIndex] = option.getName();
+//                    cmdString = "flag : " + option.getName();
+//                }
+//            }
+//
+//            if (option.getType().equals(ParamInfo.Type.IFILE) && option.getValue() != null && option.getValue().trim().length() > 0) {
+//                filesToUpload.add(option.getValue());
+//                cmdString = cmdString.replaceAll("argument", "ifile");
+//                cmdString = cmdString.replaceAll("option", "ifile");
+//            } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
+//                filesToDownload.add(option.getValue());
+//                cmdString = cmdString.replaceAll("argument", "ofile");
+//                cmdString = cmdString.replaceAll("option", "ofile");
+//            }
+//            finalCmdArray.add(cmdString);
+//            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
+//        }
+//
+//        // get rid of the null strings
+//        ArrayList<String> cmdList = new ArrayList<String>();
+//        for (String s : cmdArray) {
+//            if (s != null) {
+//                cmdList.add(s);
+//            }
+//        }
+//
+//        cmdArray = cmdList.toArray(new String[cmdList.size()]);
         return cmdArray;
     }
 

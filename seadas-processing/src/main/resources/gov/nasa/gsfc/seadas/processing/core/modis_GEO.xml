@@ -18,7 +18,7 @@
             <description>Input file</description>
             <source>command line</source>
             <usedAs>argument</usedAs>
-            <order>1</order>
+            <order>0</order>
         </option>
         <option type="ofile">
             <name>--output</name>
@@ -26,7 +26,7 @@
             <default></default>
             <description>generated GEO file</description>
             <usedAs>option</usedAs>
-            <order>2</order>
+            <order>1</order>
         </option>
         <option type="string">
             <name>--att1</name>
@@ -36,7 +36,7 @@
             <description>Input attitude file 1 (chronological)</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>3</order>
+            <order>2</order>
         </option>
         <option type="string">
             <name>--att2</name>
@@ -46,7 +46,7 @@
             <description>Input attitude file 2 (chronological)</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>4</order>
+            <order>3</order>
         </option>
         <option type="string">
             <name>--eph1</name>
@@ -56,7 +56,7 @@
             <description>Input ephemeris file 1 (chronological)</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>5</order>
+            <order>4</order>
         </option>
         <option type="string">
             <name>--eph2</name>
@@ -66,7 +66,7 @@
             <description>Input ephemeris file 2 (chronological)</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>6</order>
+            <order>5</order>
         </option>
         <option type="ifile">
             <name>--ancdir</name>
@@ -74,7 +74,7 @@
             <default></default>
             <description>Use a custom directory tree for ancillary files</description>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>6</order>
         </option>
         <option type="ifile">
             <name>--ancdb</name>
@@ -87,7 +87,7 @@
                 under the current working directory
             </description>
             <usedAs>option</usedAs>
-            <order>8</order>
+            <order>7</order>
         </option>
         <option type="string">
             <name>--threshold</name>
@@ -95,7 +95,7 @@
             <default></default>
             <description>% of geo-populated pixels required to pass geocheck validation test</description>
             <usedAs>option</usedAs>
-            <order>9</order>
+            <order>8</order>
         </option>
         <option type="boolean">
             <name>--refreshDB</name>
@@ -103,15 +103,15 @@
             <default></default>
             <description>Remove existing database records and re-query for ancillary files</description>
             <usedAs>flag</usedAs>
-            <order>10</order>
+            <order>9</order>
         </option>
         <option type="boolean">
             <name>--disable-download</name>
             <value></value>
             <default></default>
             <description>Disable download of ancillary files not found on hard disk</description>
-              <usedAs>flag</usedAs>
-            <order>11</order>
+            <usedAs>flag</usedAs>
+            <order>10</order>
         </option>
         <option type="boolean">
             <name>--enable-dem</name>
@@ -119,7 +119,7 @@
             <default></default>
             <description>Enable MODIS terrain elevation correction</description>
             <usedAs>flag</usedAs>
-            <order>12</order>
+            <order>11</order>
         </option>
         <option type="boolean">
             <name>--verbose</name>
@@ -127,31 +127,31 @@
             <default></default>
             <description>print status messages</description>
             <usedAs>flag</usedAs>
-            <order>13</order>
+            <order>12</order>
         </option>
         <option type="boolean">
-             <name>--entrained</name>
-             <value></value>
-             <default></default>
-             <description>Use entrained attitude for Terra</description>
-             <usedAs>flag</usedAs>
-             <order>14</order>
-         </option>
+            <name>--entrained</name>
+            <value></value>
+            <default></default>
+            <description>Use entrained attitude for Terra</description>
+            <usedAs>flag</usedAs>
+            <order>13</order>
+        </option>
         <option type="boolean">
             <name>--log</name>
             <value></value>
             <default></default>
             <description>Save processing log files</description>
             <usedAs>flag</usedAs>
-            <order>15</order>
+            <order>14</order>
         </option>
         <!--<option type="button">-->
-              <!--<name>update luts</name>-->
-              <!--<value></value>-->
-              <!--<default></default>-->
-              <!--<description>update luts for a given mission. MISSION is either seawifs, aqua, terra, or aquarius</description>-->
-              <!--<usedAs>button</usedAs>-->
-              <!--<order>16</order>-->
-          <!--</option>-->
+        <!--<name>update luts</name>-->
+        <!--<value></value>-->
+        <!--<default></default>-->
+        <!--<description>update luts for a given mission. MISSION is either seawifs, aqua, terra, or aquarius</description>-->
+        <!--<usedAs>button</usedAs>-->
+        <!--<order>15</order> -->
+        <!--</option>-->
     </options>
 </paramInfo>

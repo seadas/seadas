@@ -20,14 +20,14 @@
                 <alias>ifile1</alias>
             </aliases>
             <usedAs>argument</usedAs>
-            <order>1</order>
+            <order>0</order>
         </option>
         <option type="int">
             <name>spixl</name>
             <value></value>
             <default></default>
             <description>start pixel number</description>
-            <order>2</order>
+            <order>1</order>
             <source>lonlat2pixline</source>
             <usedAs>argument</usedAs>
         </option>
@@ -36,7 +36,7 @@
             <value></value>
             <default></default>
             <description>end pixel number (-1=the last pixel)</description>
-            <order>3</order>
+            <order>2</order>
             <source>lonlat2pixline</source>
             <usedAs>argument</usedAs>
         </option>
@@ -45,7 +45,7 @@
             <value></value>
             <default></default>
             <description>start line number</description>
-            <order>4</order>
+            <order>3</order>
             <source>lonlat2pixline</source>
             <usedAs>argument</usedAs>
         </option>
@@ -54,7 +54,7 @@
             <value></value>
             <default></default>
             <description>end line number (-1=the last line)</description>
-            <order>5</order>
+            <order>4</order>
             <source>lonlat2pixline</source>
             <usedAs>argument</usedAs>
         </option>
@@ -64,7 +64,7 @@
             <default>output</default>
             <description>output L2 file name</description>
             <usedAs>argument</usedAs>
-            <order>6</order>
+            <order>5</order>
         </option>
     </options>
 </paramInfo>

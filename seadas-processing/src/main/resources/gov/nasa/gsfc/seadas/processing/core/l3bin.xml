@@ -21,7 +21,7 @@
             <aliases>
                 <alias>ifile1</alias>
             </aliases>
-            <order>1</order>
+            <order>0</order>
         </option>
         <option type="ofile">
             <name>ofile</name>
@@ -29,49 +29,49 @@
             <default>output</default>
             <description>output bin filename</description>
             <alias>ofile1</alias>
-            <order>2</order>
+            <order>1</order>
         </option>
         <option type="string">
             <name>out_parm</name>
             <value></value>
             <default></default>
             <description>data products list</description>
-            <order>3</order>
+            <order>2</order>
         </option>
         <option type="string">
             <name>reduce_fac</name>
             <value></value>
             <default></default>
             <description>scale reduction factor (power of 2)</description>
-            <order>4</order>
+            <order>3</order>
         </option>
         <option type="float">
             <name>loneast</name>
             <value></value>
             <default>+180</default>
             <description>Easternmost longitude (default=+180)</description>
-            <order>5</order>
+            <order>4</order>
         </option>
-               <option type="float">
+        <option type="float">
             <name>lonwest</name>
             <value></value>
             <default>-180</default>
             <description>Westernmost longitude (default=-180)</description>
             <order>5</order>
         </option>
-               <option type="float">
+        <option type="float">
             <name>latnorth</name>
             <value></value>
             <default>+90</default>
             <description>Northernmost latitude (default=+90)</description>
-            <order>5</order>
+            <order>6</order>
         </option>
-                       <option type="float">
+        <option type="float">
             <name>latsouth</name>
             <value></value>
             <default>-90</default>
             <description>Southernmost latitude (default=-90)</description>
-            <order>5</order>
+            <order>7</order>
         </option>
         <option type="boolean">
             <name>noext</name>
@@ -80,21 +80,21 @@
             <description>set to 1 to suppress generation of external files
                 [default=0, (1 for "regional" prodtype)]
             </description>
-            <order>10</order>
+            <order>8</order>
         </option>
         <option type="boolean">
             <name>verbose</name>
             <value>true</value>
             <default>false</default>
             <description>Allow more verbose screen messages [default=0]</description>
-            <order>15</order>
+            <order>9</order>
         </option>
-               <option type="string">
+        <option type="string">
             <name>pversion</name>
             <value></value>
             <default></default>
             <description>production version [default=Unspecified]</description>
-            <order>9</order>
+            <order>10</order>
         </option>
     </options>
 </paramInfo>

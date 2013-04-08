@@ -68,13 +68,24 @@ public class SeadasFileUtils {
         }
     }
 
+
     public static String findNextLevelFileName(String ifileName, String programName) {
         if (ifileName == null || programName == null) {
             return null;
         }
         debug("Program name is " + programName);
         Debug.assertNotNull(ifileName);
-        String[] cmdArray = {OCSSW.getOcsswScriptPath(), NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
+
+
+        String[] cmdArray = new String[6];
+        cmdArray[0] = OCSSW.getOcsswScriptPath();
+        cmdArray[1] = "--ocsswroot";
+        cmdArray[2] = OCSSW.getOcsswEnv();
+        cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
+        cmdArray[4] = ifileName;
+        cmdArray[5] = programName;
+
+
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
         Process process = OCSSWRunner.execute(cmdArray, new File(ifileDir));
 
@@ -103,7 +114,6 @@ public class SeadasFileUtils {
 
         return null;
     }
-
 
     public static String getDefaultOFileNameFromIFile(String ifileName, String programName) {
         debug("Program name is " + programName);
@@ -222,7 +232,6 @@ public class SeadasFileUtils {
     }
 
 
-
     private static String expandEnvironment(Pattern pattern, String string) {
 
 
@@ -248,7 +257,7 @@ public class SeadasFileUtils {
                 if (envValue != null) {
                     String escapeStrings[] = {"\\", "$", "{", "}"};
                     for (String escapeString : escapeStrings) {
-                        envValue = envValue.replace(escapeString, "\\"+escapeString);
+                        envValue = envValue.replace(escapeString, "\\" + escapeString);
                     }
 
                     Pattern envNameClausePattern = Pattern.compile(Pattern.quote(matcher.group(0)));

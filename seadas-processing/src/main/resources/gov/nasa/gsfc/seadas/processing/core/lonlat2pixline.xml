@@ -19,7 +19,7 @@
                 <alias>ifile1</alias>
             </aliases>
             <usedAs>argument</usedAs>
-            <order>1</order>
+            <order>0</order>
         </option>
         <option type="int">
             <name>SWlon</name>
@@ -27,7 +27,7 @@
             <default></default>
             <description>Longitude of southwest corner of the box to be extracted</description>
             <usedAs>argument</usedAs>
-            <order>2</order>
+            <order>1</order>
         </option>
         <option type="int">
             <name>SWlat</name>
@@ -35,7 +35,7 @@
             <default></default>
             <description>Latitude of southwest corner of the box to be extracted.</description>
             <usedAs>argument</usedAs>
-            <order>3</order>
+            <order>2</order>
         </option>
         <option type="int">
             <name>NElon</name>
@@ -43,7 +43,7 @@
             <default></default>
             <description>Longitude of northeast corner of the box to be extracted.</description>
             <usedAs>argument</usedAs>
-            <order>4</order>
+            <order>3</order>
         </option>
         <option type="int">
             <name>NElat</name>
@@ -51,7 +51,7 @@
             <default></default>
             <description>Latitude of northeast corner of the box to be extracted.</description>
             <usedAs>argument</usedAs>
-            <order>5</order>
+            <order>4</order>
         </option>
     </options>
 </paramInfo>

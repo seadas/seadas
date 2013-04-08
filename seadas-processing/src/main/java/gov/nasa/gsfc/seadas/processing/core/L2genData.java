@@ -1130,7 +1130,7 @@ public class L2genData implements L2genDataProcessorModel {
         ProcessorModel processorModel = new ProcessorModel(UPDATE_LUTS_SCRIPT);
         processorModel.setAcceptsParFile(false);
 
-        processorModel.addParamInfo("mission", missionName, ParamInfo.Type.STRING, 1);
+        processorModel.addParamInfo("mission", missionName, ParamInfo.Type.STRING, 0);
 
         try {
             Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
@@ -1173,8 +1173,8 @@ public class L2genData implements L2genDataProcessorModel {
         ProcessorModel processorModel = new ProcessorModel(getanc);
         processorModel.setAcceptsParFile(false);
 
-
-        int position = 1;
+        //position is changed from 1 to 0.
+        int position = 0;
         if (refreshDB) {
             processorModel.addParamInfo("refreshDB", "--refreshDB", ParamInfo.Type.STRING, position);
             position++;

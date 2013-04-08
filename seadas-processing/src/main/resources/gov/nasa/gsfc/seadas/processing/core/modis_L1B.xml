@@ -18,7 +18,7 @@
             <description>Input L1A file</description>
             <source>command line</source>
             <usedAs>argument</usedAs>
-            <order>1</order>
+            <order>0</order>
         </option>
         <option type="ifile">
             <name>geofile</name>
@@ -27,7 +27,7 @@
             <description>geo file</description>
             <source>command line</source>
             <usedAs>argument</usedAs>
-            <order>2</order>
+            <order>1</order>
         </option>
         <option type="ofile">
             <name>--okm</name>
@@ -35,7 +35,7 @@
             <default></default>
             <description>Output MODIS L1B 1KM HDF filename</description>
             <usedAs>option</usedAs>
-            <order>3</order>
+            <order>2</order>
         </option>
         <option type="ofile">
             <name>--hkm</name>
@@ -43,7 +43,7 @@
             <default></default>
             <description>Output MODIS L1B HKM HDF filename</description>
             <usedAs>option</usedAs>
-            <order>4</order>
+            <order>3</order>
         </option>
         <option type="ofile">
             <name>--qkm</name>
@@ -51,7 +51,7 @@
             <default></default>
             <description>Output MODIS L1B QKM HDF filename</description>
             <usedAs>option</usedAs>
-            <order>5</order>
+            <order>4</order>
         </option>
         <option type="ofile">
             <name>--obc</name>
@@ -59,7 +59,7 @@
             <default></default>
             <description>Output MODIS L1B OBC HDF filename</description>
             <usedAs>option</usedAs>
-            <order>6</order>
+            <order>5</order>
         </option>
         <option type="string">
             <name>--lutver</name>
@@ -67,7 +67,7 @@
             <default></default>
             <description>L1B LUT version number</description>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>6</order>
         </option>
         <option type="ifile">
             <name>--lutdir</name>
@@ -75,7 +75,7 @@
             <default></default>
             <description>Path of directory containing LUT files</description>
             <usedAs>option</usedAs>
-            <order>8</order>
+            <order>7</order>
         </option>
         <option type="boolean">
             <name>--del-okm</name>
@@ -83,7 +83,7 @@
             <default></default>
             <description>Path of directory containing LUT files</description>
             <usedAs>flag</usedAs>
-            <order>9</order>
+            <order>8</order>
         </option>
         <option type="boolean">
             <name>--del-hkm</name>
@@ -91,7 +91,7 @@
             <default></default>
             <description>Path of directory containing LUT files</description>
             <usedAs>flag</usedAs>
-            <order>10</order>
+            <order>9</order>
         </option>
         <option type="boolean">
             <name>--del-qkm</name>
@@ -99,7 +99,7 @@
             <default></default>
             <description>Path of directory containing LUT files</description>
             <usedAs>flag</usedAs>
-            <order>11</order>
+            <order>10</order>
         </option>
         <option type="boolean">
             <name>--keep-obc</name>
@@ -107,7 +107,7 @@
             <default></default>
             <description>Path of directory containing LUT files</description>
             <usedAs>flag</usedAs>
-            <order>12</order>
+            <order>11</order>
         </option>
         <option type="boolean">
             <name>--log</name>
@@ -115,7 +115,7 @@
             <default></default>
             <description>Path of directory containing LUT files</description>
             <usedAs>flag</usedAs>
-            <order>13</order>
+            <order>12</order>
         </option>
         <option type="boolean">
             <name>--verbose</name>
@@ -123,7 +123,7 @@
             <default></default>
             <description>Path of directory containing LUT files</description>
             <usedAs>flag</usedAs>
-            <order>14</order>
+            <order>13</order>
         </option>
     </options>
 </paramInfo>

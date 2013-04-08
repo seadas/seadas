@@ -9,8 +9,11 @@ import org.esa.beam.visat.VisatApp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.System.getProperty;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +53,7 @@ public class OCSSWRunner {
     }
 
     public static Process executeLocal(ProcessorModel processorModel) {
-        //System.out.println("local execution!" + " "  + Arrays.toString(processorModel.getProgramCmdArray()));
+        System.out.println("local execution!" + " " + Arrays.toString(processorModel.getProgramCmdArray()));
         ProcessBuilder processBuilder = new ProcessBuilder(processorModel.getProgramCmdArray());
         Map<String, String> env = processBuilder.environment();
 
@@ -84,7 +87,7 @@ public class OCSSWRunner {
     }
 
     public static Process executeLocal(String[] cmdArray, File ifileDir) {
-        //System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
+        System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
         Map<String, String> env = processBuilder.environment();
         if (!env.containsKey(OCSSW_ROOT_VAR)) {
@@ -141,7 +144,7 @@ public class OCSSWRunner {
     }
 
     private static File getDefaultDir() {
-        File rootDir = new File(System.getProperty("user.dir"));
+        File rootDir = new File(getProperty("user.dir"));
         return rootDir;
     }
 

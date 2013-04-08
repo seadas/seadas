@@ -22,7 +22,7 @@
                 <alias>ifile1</alias>
             </aliases>
             <multiFile>true</multiFile>
-            <order>1</order>
+            <order>0</order>
         </option>
         <option type="ofile">
             <name>ofile</name>
@@ -30,28 +30,28 @@
             <default>output</default>
             <description>output L2 file #1 name, output vicarious L1B for inverse mode</description>
             <alias>ofile1</alias>
-            <order>2</order>
+            <order>1</order>
         </option>
         <option type="string">
             <name>sday</name>
             <value></value>
             <default></default>
             <description>start datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
-            <order>3</order>
+            <order>2</order>
         </option>
         <option type="string">
             <name>eday</name>
             <value></value>
             <default></default>
             <description>end datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
-            <order>4</order>
+            <order>3</order>
         </option>
         <!--<option type="int">-->
-            <!--<name>resolve</name>-->
-            <!--<value>1</value>-->
-            <!--<default>1</default>-->
-            <!--<description>bin resolution (H,1,2,4,9,36)</description>-->
-            <!--<order>5</order>-->
+        <!--<name>resolve</name>-->
+        <!--<value>1</value>-->
+        <!--<default>1</default>-->
+        <!--<description>bin resolution (H,1,2,4,9,36)</description>-->
+        <order>4</order>
         <!--</option>-->
         <option type="int">
             <name>resolve</name>
@@ -85,14 +85,14 @@
                 <value>36</value>
                 <description>36km</description>
             </validValue>
-            <order>5</order>
+            <order>4</order>
         </option>
         <option type="string">
             <name>flaguse</name>
             <value></value>
             <default></default>
             <description>flags masked [see /SENSOR/l2bin_defaults.par]</description>
-            <order>6</order>
+            <order>5</order>
         </option>
         <option type="string">
             <name>l3bprod</name>
@@ -103,21 +103,21 @@
                 Use ':' or ',' or ' ' as delimiters.
                 Use ';' or '=' to delineate minimum values.
             </description>
-            <order>7</order>
+            <order>6</order>
         </option>
         <option type="string">
             <name>prodtype</name>
             <value></value>
             <default>day</default>
             <description>product type (Set to "regional" to bin all scans.) [default=day]</description>
-            <order>8</order>
+            <order>7</order>
         </option>
         <option type="string">
             <name>pversion</name>
             <value></value>
             <default></default>
             <description>production version [default=Unspecified]</description>
-            <order>9</order>
+            <order>8</order>
         </option>
         <option type="boolean">
             <name>noext</name>
@@ -125,7 +125,7 @@
             <default>true</default>
             <description>set to 1 to suppress generation of external files [default=1, (1 for "regional" prodtype)]
             </description>
-            <order>10</order>
+            <order>9</order>
         </option>
 
         <option type="int">
@@ -133,35 +133,35 @@
             <value></value>
             <default></default>
             <description># of bin rows to process at once</description>
-            <order>11</order>
+            <order>10</order>
         </option>
         <option type="boolean">
             <name>night</name>
             <value></value>
             <default>false</default>
             <description>set to 1 for SST night processing [default=0]</description>
-            <order>12</order>
+            <order>11</order>
         </option>
         <option type="string">
             <name>qual_prod</name>
             <value></value>
             <default></default>
             <description>quality product field name</description>
-            <order>13</order>
+            <order>12</order>
         </option>
         <option type="int">
             <name>qual_max</name>
             <value></value>
             <default>2</default>
             <description>maximum acceptable quality [default=2]</description>
-            <order>14</order>
+            <order>13</order>
         </option>
         <option type="boolean">
             <name>verbose</name>
             <value>true</value>
             <default></default>
             <description>Allow more verbose screen messages [default shoulbe true for GUI]</description>
-            <order>15</order>
+            <order>14</order>
         </option>
     </options>
 </paramInfo>
