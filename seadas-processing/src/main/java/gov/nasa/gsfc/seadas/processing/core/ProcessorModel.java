@@ -353,12 +353,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private String[] getCmdArrayWithParFile() {
-        final String[] cmdArray = {
-                OCSSW.getOcsswScriptPath(),
-                getProgramName(),
-                getParFileCommandLineOption()
-        };
+//        final String[] cmdArray = {
+//                OCSSW.getOcsswScriptPath(),
+//                getProgramName(),
+//                getParFileCommandLineOption()
+//        };
 
+        final String[] cmdArray = concat(getCmdArrayPrefix(), new String[]{getParFileCommandLineOption()});
         for (int i = 0; i < cmdArray.length; i++) {
             SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
         }
@@ -450,8 +451,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private String[] getCmdArrayWithArguments() {
-
-        String[] cmdArrayPrefix = getCmdArrayPrefix();
 
         String[] cmdArray = concat(getCmdArrayPrefix(), getCmdArrayParam());
 

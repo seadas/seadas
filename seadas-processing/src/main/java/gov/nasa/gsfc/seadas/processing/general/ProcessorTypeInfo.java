@@ -65,16 +65,26 @@ public class ProcessorTypeInfo {
 
     }};
 
+    protected static String getExcludedProcessorNames() {
+       return     "seadas_processor_main" +
+                  "smitoppm" +
+                  "l1aextract_modis" +
+                  "l1aextract_seawifs" +
+                  "l2extract" +
+                  "lonlat2pixline";
+    }
+
+
     protected static Set<String> getProcessorNames() {
-        Set<String> keySet = processorHashMap.keySet();
-        keySet.remove("seadas_processor_main");
-        keySet.remove("smitoppm");
-        keySet.remove("l1aextract_modis");
-        keySet.remove("l1aextract_seawifs");
-        keySet.remove("l2extract");
-        keySet.remove("lonlat2pixline");
-        return keySet;
-        //return processorHashMap.keySet();
+//        Set<String> keySet = processorHashMap.keySet();
+//        keySet.remove("seadas_processor_main");
+//        keySet.remove("smitoppm");
+//        keySet.remove("l1aextract_modis");
+//        keySet.remove("l1aextract_seawifs");
+//        keySet.remove("l2extract");
+//        keySet.remove("lonlat2pixline");
+//        return keySet;
+        return processorHashMap.keySet();
     }
 
     public static ProcessorID getProcessorID(String processorName) {

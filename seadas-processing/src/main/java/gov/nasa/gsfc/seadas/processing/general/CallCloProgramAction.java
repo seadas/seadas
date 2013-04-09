@@ -26,6 +26,8 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//import java.awt.*;
+
 /**
  * A ...
  *
@@ -209,10 +211,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
                             (programName.equals(OCSSW.OCSSW_INSTALLER) ? "" : ("Output written to:\n" + outputFileName)), null);
                     if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
                         OCSSW.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
-                        if ( !OCSSW.isOCSSWExist() ) {
+                        if (!OCSSW.isOCSSWExist()) {
                             enableProcessors();
                         }
-                     }
+                    }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ProgramExecutor pe = new ProgramExecutor();
@@ -236,9 +238,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private void enableProcessors() {
 
         CommandManager commandManager = getAppContext().getApplicationPage().getCommandManager();
-
+        String namesToExclude =  ProcessorTypeInfo.getExcludedProcessorNames();
+//        Set<List<String>> s = new HashSet<List<String>>();
+//        s.add(Arrays.asList("seadas_processor_main", "smitoppm", "l1aextract_modis", "l1aextract_seawifs", "l2extract", "lonlat2pixline"));
         for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
-            commandManager.getCommand(processorName).setEnabled(true);
+            if (!namesToExclude.contains(processorName)) {
+                System.out.println(processorName);
+                commandManager.getCommand(processorName).setEnabled(true);
+            }
         }
     }
 

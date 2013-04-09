@@ -105,6 +105,7 @@ public class SeadasFileUtils {
             if (exitCode == 0 && line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN) && !line.contains("Error")) {
                 return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
             } else {
+                System.out.println("execution error in finding ofile name: " + line);
             }
 
         } catch (IOException ioe) {
