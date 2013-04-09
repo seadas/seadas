@@ -239,8 +239,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         CommandManager commandManager = getAppContext().getApplicationPage().getCommandManager();
         String namesToExclude =  ProcessorTypeInfo.getExcludedProcessorNames();
-//        Set<List<String>> s = new HashSet<List<String>>();
-//        s.add(Arrays.asList("seadas_processor_main", "smitoppm", "l1aextract_modis", "l1aextract_seawifs", "l2extract", "lonlat2pixline"));
         for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
             if (!namesToExclude.contains(processorName)) {
                 System.out.println(processorName);

@@ -76,14 +76,6 @@ public class ProcessorTypeInfo {
 
 
     protected static Set<String> getProcessorNames() {
-//        Set<String> keySet = processorHashMap.keySet();
-//        keySet.remove("seadas_processor_main");
-//        keySet.remove("smitoppm");
-//        keySet.remove("l1aextract_modis");
-//        keySet.remove("l1aextract_seawifs");
-//        keySet.remove("l2extract");
-//        keySet.remove("lonlat2pixline");
-//        return keySet;
         return processorHashMap.keySet();
     }
 

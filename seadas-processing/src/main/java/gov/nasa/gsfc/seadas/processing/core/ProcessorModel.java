@@ -144,9 +144,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         ProcessorModel smitoppm = new ProcessorModel("smitoppm_4_ui");
         smitoppm.setAcceptsParFile(false);
         ParamInfo pi1 = new ParamInfo("ifile", getParamValue(getPrimaryOutputFileOptionName()));
-        pi1.setOrder(1);
+        pi1.setOrder(0);
+        pi1.setType(ParamInfo.Type.IFILE);
         ParamInfo pi2 = new ParamInfo("ofile", ofileName);
-        pi2.setOrder(2);
+        pi2.setOrder(1);
+        pi2.setType(ParamInfo.Type.OFILE);
         smitoppm.addParamInfo(pi1);
         smitoppm.addParamInfo(pi2);
         setSecondaryProcessor(smitoppm);
