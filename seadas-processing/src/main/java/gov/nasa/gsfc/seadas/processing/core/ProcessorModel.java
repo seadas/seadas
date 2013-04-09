@@ -392,7 +392,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         String[] cmdArrayPrefix;
 
         if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
-            cmdArrayPrefix = new String[paramList.getParamArray().size() + 1];
+            cmdArrayPrefix = new String[1];
             cmdArrayPrefix[0] = getProgramName();
             if (!OCSSW.isOCSSWExist()) {
                 cmdArrayPrefix[0] = OCSSW.TMP_OCSSW_INSTALLER;
@@ -400,7 +400,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 cmdArrayPrefix[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
             }
         } else {
-            cmdArrayPrefix = new String[paramList.getParamArray().size() + 4];
+            cmdArrayPrefix = new String[4];
             cmdArrayPrefix[0] = OCSSW.getOcsswScriptPath();
             cmdArrayPrefix[1] = "--ocsswroot";
             cmdArrayPrefix[2] = OCSSW.getOcsswEnv();
@@ -492,15 +492,15 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 //            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
 //        }
 //
-//        // get rid of the null strings
-//        ArrayList<String> cmdList = new ArrayList<String>();
-//        for (String s : cmdArray) {
-//            if (s != null) {
-//                cmdList.add(s);
-//            }
-//        }
-//
-//        cmdArray = cmdList.toArray(new String[cmdList.size()]);
+        // get rid of the null strings
+        ArrayList<String> cmdList = new ArrayList<String>();
+        for (String s : cmdArray) {
+            if (s != null) {
+                cmdList.add(s);
+            }
+        }
+
+        cmdArray = cmdList.toArray(new String[cmdList.size()]);
         return cmdArray;
     }
 
