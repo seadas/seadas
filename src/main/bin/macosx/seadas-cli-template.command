@@ -14,7 +14,8 @@ fi
 java \
     -Xmx${installer:maxHeapSize} \
     -Dceres.context=seadas \
-    "-Dseadas.mainClass=org.esa.beam.framework.gpf.main.GPT" \
+    "-Dseadas.mainClass=${seadas.mainClass}" \
+    "-Dseadas.processorClass=${seadas.processorClass}" \
     "-Dseadas.home=$SEADAS_HOME" \
     "-Dncsa.hdf.hdflib.HDFLibrary.hdflib=$SEADAS_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf.jnilib" \
     "-Dncsa.hdf.hdf5lib.H5.hdf5lib=$SEADAS_HOME/modules/lib-hdf-${hdf.version}/lib/libjhdf5.jnilib" \

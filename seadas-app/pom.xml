@@ -5,90 +5,28 @@
 
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <artifactId>seadas</artifactId>
+        <artifactId>seadas-system</artifactId>
         <version>7.0</version>
+        <relativePath>../seadas-system/pom.xml</relativePath>
     </parent>
 
-    <artifactId>seadas-app</artifactId>
+    <name>SeaDAS Application</name>
     <groupId>gov.nasa.gsfc.seadas</groupId>
+    <artifactId>seadas-app</artifactId>
+    <description>The SeaDAS Application</description>
 
     <packaging>jar</packaging>
-    
-    <name>SeaDAS Application</name>
-    <description>
-       The SeaDAS Application.
-    </description>
-
-    <url>http://maven.apache.org</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.esa.beam</groupId>
-            <artifactId>beam-visat-rcp</artifactId>
+            <artifactId>beam-visat</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.esa.beam</groupId>-->
-            <!--<artifactId>beam-help</artifactId>-->
-        <!--</dependency>-->
-        <dependency>
-             <groupId>org.esa.beam</groupId>
-             <artifactId>blue-marble-worldmap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-pixel-extraction</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-hdf5-writer</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-mosaic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-scripting</artifactId>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.esa.beam</groupId>-->
-            <!--<artifactId>beam-binning</artifactId>-->
-        <!--</dependency>-->
-
-        <!--Beam readers to import-->
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-merisl3-reader</artifactId>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.esa.beam</groupId>-->
-            <!--<artifactId>beam-modis-reader</artifactId>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-envisat-reader</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-landsat-reader</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-avhrr-reader</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-geotiff</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
         <resources>
+            <!-- make sure, a given "seadas.build.id" property is replaced in module.xml -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>

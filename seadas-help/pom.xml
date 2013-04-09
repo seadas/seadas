@@ -22,8 +22,9 @@
 
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <artifactId>seadas</artifactId>
+        <artifactId>seadas-system</artifactId>
         <version>7.0</version>
+        <relativePath>../seadas-system/pom.xml</relativePath>
     </parent>
 
     <packaging>jar</packaging>

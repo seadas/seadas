@@ -15,27 +15,165 @@
   -->
 
 <project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+xmlns="http://maven.apache.org/POM/4.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>gov.nasa.gsfc.seadas</groupId>
-        <artifactId>seadas</artifactId>
-        <version>7.0</version>
-    </parent>
-
-    <name>SeaDAS Installer</name>
+<parent>
     <groupId>gov.nasa.gsfc.seadas</groupId>
-    <artifactId>seadas-installer</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>seadas-system</artifactId>
+    <version>7.0</version>
+    <relativePath>../seadas-system/pom.xml</relativePath>
+</parent>
 
-    <build>
-        <directory>target</directory>
-        <outputDirectory>target/classes</outputDirectory>
-        <finalName>${project.artifactId}</finalName>
-    </build>
+<name>SeaDAS Installer</name>
+<groupId>gov.nasa.gsfc.seadas</groupId>
+<artifactId>seadas-installer</artifactId>
+
+<packaging>jar</packaging>
+
+<dependencies>
+
+    <dependency>
+        <groupId>com.install4j</groupId>
+        <artifactId>i4jruntime</artifactId>
+        <version>5.1.5</version>
+    </dependency>
+
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.9</version>
+        <scope>test</scope>
+    </dependency>
+
+</dependencies>
+
+<build>
+    <directory>target</directory>
+    <outputDirectory>target/classes</outputDirectory>
+    <finalName>${project.artifactId}</finalName>
+
+    <plugins>
+        <plugin>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+                <skip>true</skip>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>com.bc.maven.plugins</groupId>
+            <artifactId>maven-template-plugin</artifactId>
+            <version>1.2</version>
+            <executions>
+                <execution>
+                    <phase>process-sources</phase>
+                    <goals>
+                        <goal>template</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <templates>
+                    <template>
+                        <source>${basedir}/../src/main/bin/win/seadas-cli-template.bat</source>
+                        <lineEnding>dos</lineEnding>
+                        <outputDirectory>${basedir}/../target/seadas-bin/bin</outputDirectory>
+                        <outputFileNamePattern>@{filterBaseName}.@{sourceExtension}</outputFileNamePattern>
+                        <filterSet>
+                            <directory>${basedir}/../src/main/filters</directory>
+                            <includes>
+                                <include>*.properties</include>
+                            </includes>
+                        </filterSet>
+                    </template>
+                    <template>
+                        <source>${basedir}/../src/main/bin/linux/seadas-cli-template.sh</source>
+                        <lineEnding>unix</lineEnding>
+                        <outputDirectory>${basedir}/../target/seadas-bin/bin</outputDirectory>
+                        <outputFileNamePattern>@{filterBaseName}.@{sourceExtension}</outputFileNamePattern>
+                        <filterSet>
+                            <directory>${basedir}/../src/main/filters</directory>
+                            <includes>
+                                <include>*.properties</include>
+                            </includes>
+                        </filterSet>
+                    </template>
+                    <template>
+                        <source>${basedir}/../src/main/bin/macosx/seadas-cli-template.command</source>
+                        <lineEnding>unix</lineEnding>
+                        <outputDirectory>${basedir}/../target/seadas-bin/bin</outputDirectory>
+                        <outputFileNamePattern>@{filterBaseName}.@{sourceExtension}</outputFileNamePattern>
+                        <filterSet>
+                            <directory>${basedir}/../src/main/filters</directory>
+                            <includes>
+                                <include>*.properties</include>
+                            </includes>
+                        </filterSet>
+                    </template>
+                </templates>
+            </configuration>
+        </plugin>
+        <!--<plugin>-->
+            <!--<artifactId>maven-dependency-plugin</artifactId>-->
+            <!--<executions>-->
+                <!--<execution>-->
+                    <!--<id>copy-case2-modules</id>-->
+                    <!--<phase>process-sources</phase>-->
+                    <!--<goals>-->
+                        <!--<goal>copy</goal>-->
+                    <!--</goals>-->
+                    <!--<configuration>-->
+                        <!--<artifactItems>-->
+                            <!--<artifactItem>-->
+                                <!--<groupId>org.esa.beam</groupId>-->
+                                <!--<artifactId>beam-meris-case2-regional</artifactId>-->
+                                <!--<version>1.5.8</version>-->
+                                <!--<outputDirectory>${basedir}/../target/seadas-bin/modules</outputDirectory>-->
+                            <!--</artifactItem>-->
+                            <!--<artifactItem>-->
+                                <!--<groupId>org.esa.beam</groupId>-->
+                                <!--<artifactId>beam-meris-l2auxdata</artifactId>-->
+                                <!--<version>1.2.2</version>-->
+                                <!--<outputDirectory>${basedir}/../target/seadas-bin/modules</outputDirectory>-->
+                            <!--</artifactItem>-->
+                            <!--<artifactItem>-->
+                                <!--<groupId>org.esa.beam</groupId>-->
+                                <!--<artifactId>beam-meris-sdr</artifactId>-->
+                                <!--<version>2.3.2</version>-->
+                                <!--<outputDirectory>${basedir}/../target/seadas-bin/modules</outputDirectory>-->
+                            <!--</artifactItem>-->
+                            <!--<artifactItem>-->
+                                <!--<groupId>org.esa.beam</groupId>-->
+                                <!--<artifactId>beam-meris-brr</artifactId>-->
+                                <!--<version>2.3.2</version>-->
+                                <!--<outputDirectory>${basedir}/../target/seadas-bin/modules</outputDirectory>-->
+                            <!--</artifactItem>-->
+                            <!--<artifactItem>-->
+                                <!--<groupId>org.esa.beam</groupId>-->
+                                <!--<artifactId>beam-meris-glint</artifactId>-->
+                                <!--<version>1.2.2</version>-->
+                                <!--<outputDirectory>${basedir}/../target/seadas-bin/modules</outputDirectory>-->
+                            <!--</artifactItem>-->
+                            <!--<artifactItem>-->
+                                <!--<groupId>org.esa.beam.glint</groupId>-->
+                                <!--<artifactId>flint-processor</artifactId>-->
+                                <!--<version>1.2</version>-->
+                                <!--<outputDirectory>${basedir}/../target/seadas-bin/modules</outputDirectory>-->
+                            <!--</artifactItem>-->
+
+                        <!--</artifactItems>-->
+                    <!--</configuration>-->
+                <!--</execution>-->
+            <!--</executions>-->
+        <!--</plugin>-->
+
+
+    </plugins>
+</build>
+
 
 </project>

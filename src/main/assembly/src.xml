@@ -25,6 +25,7 @@
                 <exclude>testdata/**</exclude>
                 <exclude>log/**</exclude>
                 <exclude>seadas-installer/**</exclude>
+                <exclude>beam-integration-tests/**</exclude>
             </excludes>
         </fileSet>
     </fileSets>

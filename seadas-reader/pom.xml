@@ -21,8 +21,9 @@
 
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <artifactId>seadas</artifactId>
-        <version>7.0</version>
+        <artifactId>seadas-plugin-parent</artifactId>
+        <version>1.0</version>
+        <relativePath>../seadas-plugin-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
@@ -31,36 +32,38 @@
     <version>1.4.1</version>
     <description>A reader for NASA Ocean Color (OBPG) Data Products</description>
 
+
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>org.esa.beam</groupId>-->
-            <!--<artifactId>beam-modis-reader</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-core</artifactId>
+            <version>${beam.version}</version>
         </dependency>
         <dependency>
             <groupId>edu.ucar</groupId>
             <artifactId>netcdf</artifactId>
+            <version>${netcdf.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-merisl3-reader</artifactId>
+            <version>1.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-netcdf</artifactId>
+            <version>1.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-ui</artifactId>
+            <version>${beam.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat-rcp</artifactId>
+            <version>${beam.version}</version>
         </dependency>
-
     </dependencies>
 
 </project>

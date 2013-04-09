@@ -5,9 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>seadas</artifactId>
+        <artifactId>seadas-plugin-parent</artifactId>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <version>7.0</version>
+        <version>1.0</version>
+        <relativePath>../seadas-plugin-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>seadas-processing</artifactId>
@@ -20,16 +21,25 @@
 
     <packaging>jar</packaging>
 
-    <url>http://maven.apache.org</url>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-app</artifactId>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-ui</artifactId>
+            <version>${beam.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-visat</artifactId>
+            <version>${beam.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-gpf</artifactId>
+            <version>${beam.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -37,12 +47,6 @@
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>com.sun.jersey</groupId>-->
-        <!--<artifactId>jersey-server</artifactId>-->
-        <!--<version>1.10</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
@@ -68,31 +72,6 @@
           <artifactId>gson</artifactId>
           <version>2.2.2</version>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.0</version>
-        </dependency>
-        <!--<dependency>-->
-        <!--<groupId>com.sun.jersey</groupId>-->
-        <!--<artifactId>jersey-bundle</artifactId>-->
-        <!--<version>1.13</version>-->
-        <!--</dependency>-->
     </dependencies>
 
 </project>
