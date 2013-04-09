@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< Updated upstream
 <install4j version="5.0.11" transformSequenceNumber="3">
   <directoryPresets config="./src/main/resources/images" />
+=======
+<install4j version="5.1.3" transformSequenceNumber="4">
+  <directoryPresets config="../../../ocssw/build" />
+>>>>>>> Stashed changes
   <application name="SeaDAS" distributionSourceDir="" applicationId="0750-9059-9532-8589" mediaDir="../../installers" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.version}_${compiler:sys.platform}_installer" compression="7" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="true" createMd5Sums="true" shrinkRuntime="true" shortName="seadas" publisher="NASA Ocean Biogeochemical Processing Group" publisherWeb="http://seadas.gsfc.nasa.gov/" version="7.0" allPathsRelative="true" backupOnSave="true" autoSave="true" convertDotsToUnderscores="false" macSignature="????" installerName="" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="true" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
@@ -134,7 +139,10 @@
       <dirEntry mountPoint="5136" file="../../../OCSSW/run/data" overwriteMode="5" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="direct" subDirectory="data" excludeSuffixes="*.tar, .svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
-          <entry location="aquarius" fileType="regular" />
+          <entry location="aquarius/.svn" fileType="regular" />
+          <entry location="aquarius/nav/.svn" fileType="regular" />
+          <entry location="aquarius/radiometer/.svn" fileType="regular" />
+          <entry location="aquarius/scatterometer" fileType="regular" />
           <entry location="czcs/.svn" fileType="regular" />
           <entry location="czcs/aerosol/.svn" fileType="regular" />
           <entry location="czcs/nav.tar" fileType="regular" />
@@ -275,7 +283,7 @@
       <dirEntry mountPoint="5138" file="../../../OCSSW/run/var" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="var" excludeSuffixes=".svn" dirMode="755" overrideDirMode="false">
         <exclude>
           <entry location=".svn" fileType="regular" />
-          <entry location="aquarius" fileType="regular" />
+          <entry location="aquarius/.svn" fileType="regular" />
           <entry location="viirsn" fileType="regular" />
         </exclude>
       </dirEntry>
@@ -288,7 +296,7 @@
           <entry location="zlib" fileType="regular" />
         </exclude>
       </dirEntry>
-      <dirEntry mountPoint="5425" file="../../../OCSSW/build/inc" overwriteMode="4" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="inc" excludeSuffixes=".svn" dirMode="755" overrideDirMode="true">
+      <dirEntry mountPoint="5425" file="../../../ocssw/build/inc" overwriteMode="4" shared="false" fileMode="644" uninstallMode="3" overrideFileMode="false" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="inc" excludeSuffixes=".svn" dirMode="755" overrideDirMode="true">
         <exclude>
           <entry location=".svn" fileType="regular" />
           <entry location="aquarius" fileType="regular" />
