@@ -26,12 +26,10 @@ public class OCSSWRunner {
     //private static ProcessBuilder processBuilder;
     private static HashMap environment = new HashMap();
     private static final String OCSSW_ROOT_VAR = "OCSSWROOT";
-    private static final String SEADAS_OCSSW_LOCATION = "seadas.ocssw.location";
+    private static final String SEADAS_OCSSW_LOCATION = "ocssw.location";
 
-    private static enum ocsswLocation {
-        local,
-        remote
-    }
+    private static final String LOCAL = "local";
+    private static final String REMOTE = "remote";
 
     public OCSSWRunner() {
 
@@ -40,8 +38,8 @@ public class OCSSWRunner {
 
     public static Process execute(ProcessorModel processorModel) {
 
-        String ocsswLoc = RuntimeContext.getConfig().getContextProperty(SEADAS_OCSSW_LOCATION);
-        if (ocsswLoc == null || ocsswLoc.trim().equals(ocsswLocation.local)) {
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(SEADAS_OCSSW_LOCATION);
+        if (ocsswLocation == null || ocsswLocation.trim().equals(LOCAL)) {
             return executeLocal(processorModel);
         } else {
             return executeRemote(processorModel);
@@ -49,8 +47,8 @@ public class OCSSWRunner {
     }
 
     public static Process execute(String[] cmdArray, File ifileDir) {
-        String ocsswLoc = RuntimeContext.getConfig().getContextProperty(SEADAS_OCSSW_LOCATION);
-        if (ocsswLoc == null || ocsswLoc.trim().equals(ocsswLocation.local)) {
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(SEADAS_OCSSW_LOCATION);
+        if (ocsswLocation == null || ocsswLocation.trim().equals(LOCAL)) {
             return executeLocal(cmdArray, ifileDir);
         } else {
             return executeRemote(cmdArray, ifileDir);
