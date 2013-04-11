@@ -160,13 +160,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
         boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
         boolean t = ocsswClient.uploadCmdArray(pm.getProgramCmdArray());
         if (fileUploadSuccess) {
-            System.out.println("file upload is successful!");
-
             ocsswClient.uploadParFile(pm.getParStringForRemoteServer());
             ocsswClient.uploadParam(paramString);
             ocsswClient.runOCSSW();
         } else {
-            System.out.println("file upload failed!");
         }
     }
 
@@ -195,7 +192,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 String ofileName = processorModel.getOfileName();
                 if (openOutputInApp) {
                     StringTokenizer st = new StringTokenizer(ofileName);
-                    System.out.print("opening the resulted product in the seadas browser ... ");
                     while (st.hasMoreTokens()) {
                         getAppContext().getProductManager().addProduct(ProductIO.readProduct(new File(st.nextToken())));
                     }
@@ -238,10 +234,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private void enableProcessors() {
 
         CommandManager commandManager = getAppContext().getApplicationPage().getCommandManager();
-        String namesToExclude =  ProcessorTypeInfo.getExcludedProcessorNames();
+        String namesToExclude = ProcessorTypeInfo.getExcludedProcessorNames();
         for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
             if (!namesToExclude.contains(processorName)) {
-                System.out.println(processorName);
                 commandManager.getCommand(processorName).setEnabled(true);
             }
         }
