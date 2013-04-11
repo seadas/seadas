@@ -133,19 +133,15 @@ public class ParamInfo implements Comparable, Cloneable {
         }
         value = value.trim();
 
-
         if (value.length() == 0) {
             this.value = NULL_STRING;
         } else if (getType() == Type.BOOLEAN) {
             this.value = getStandardizedBooleanString(value);
         } else if (getType() == Type.IFILE || getType() == Type.OFILE) {
             this.value = value;
-//            System.out.println("");
         } else {
             this.value = value;
         }
-
-
     }
 
     public static String getStandardizedBooleanString(String booleanString) {

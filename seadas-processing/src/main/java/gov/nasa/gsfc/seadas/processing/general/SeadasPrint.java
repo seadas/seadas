@@ -33,7 +33,7 @@ public class SeadasPrint {
         if (dt == DebugType.DANNY && danny) {
              System.out.println(message);
         }  else if (dt ==DebugType.AYNUR && aynur) {
-                                                  System.out.println(message);;
+            System.out.println(message);;
         }
     }
 

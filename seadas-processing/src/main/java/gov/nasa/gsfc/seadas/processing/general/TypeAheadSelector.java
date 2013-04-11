@@ -77,7 +77,7 @@ public class TypeAheadSelector extends KeyAdapter
         }
     }
     private Component findJList(Component comp) {
-        System.out.println(comp.getClass());
+        //System.out.println(comp.getClass());
         if (comp.getClass() == JList.class) return comp;
         if (comp instanceof Container) {
             Component[] components = ((Container) comp).getComponents();
@@ -91,7 +91,7 @@ public class TypeAheadSelector extends KeyAdapter
     }
 
     private Component findJTextField(Component comp) {
-         System.out.println(comp.getClass() + "     " + JTextField.class);
+         //System.out.println(comp.getClass() + "     " + JTextField.class);
          if (comp.getClass().equals(JTextField.class)) return comp;
          if (comp instanceof Container) {
              Component[] components = ((Container) comp).getComponents();

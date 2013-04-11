@@ -34,7 +34,6 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 String missionName = getMissionName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 if (missionName != null && missionName.trim().length() > 0) {
-                    System.out.println("mission name: " + missionName);
                     lutManager.enableLUTButton(missionName);
                 } else {
                     lutManager.disableLUTButton();
@@ -65,21 +64,16 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
     }
 
     private Component findJPanel(Component comp, String panelName) {
-            System.out.println(comp.getClass() + "  " + panelName);
-            if (comp.getClass() == JPanel.class) return comp;
-            if (comp instanceof Container) {
-                Component[] components = ((Container) comp).getComponents();
-                System.out.println("number of comps: " + components.length);
-                for (int i = 0; i < components.length; i++) {
-
-                    Component child = findJPanel(components[i], components[i].getName());
-                    if (child != null) {
-
-                        return child;
-                    }
+        if (comp.getClass() == JPanel.class) return comp;
+        if (comp instanceof Container) {
+            Component[] components = ((Container) comp).getComponents();
+            for (int i = 0; i < components.length; i++) {
+                Component child = findJPanel(components[i], components[i].getName());
+                if (child != null) {
+                    return child;
                 }
             }
-            return null;
-
         }
+        return null;
+    }
 }

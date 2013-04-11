@@ -135,7 +135,7 @@ public class IFileSelector {
         for (File file : selectedFiles) {
 
             fi = new FileInfo(file.getAbsolutePath());
-            System.out.println(fi.getTypeName());
+            //System.out.println(fi.getTypeName());
             fileNames.append(file.getAbsolutePath() + "\n");
         }
         return fileNames.toString();

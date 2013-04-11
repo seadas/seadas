@@ -135,7 +135,6 @@ public class ExtractorUI extends ProgramUIFactory {
         processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println("update param panel: " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 if (programName == null) {
                     VisatApp.getApp().showErrorDialog("No extractor found for " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
