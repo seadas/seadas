@@ -177,8 +177,6 @@ public class SourceProductFileSelector {
         if (selectedProduct != null && productFilter.accept(selectedProduct) && regexFileFilter.accept(selectedProduct.getFileLocation())) {
             //ifileTextfield.setText(selectedProduct.getName());
             setSelectedProduct(selectedProduct);
-
-
         }
         appContext.getProductManager().addListener(productManagerListener);
     }
@@ -238,6 +236,8 @@ public class SourceProductFileSelector {
         if (file == null) {
             setSelectedProduct(null);
         }
+        productNameComboBox.validate();
+        productNameComboBox.repaint();
     }
 
     public void setSelectedFile(File file, String fileContent) {
@@ -441,7 +441,8 @@ public class SourceProductFileSelector {
                 Product product = null;
                 try {
                     product = ProductIO.readProduct(file);
-                } catch (Exception e) { }
+                } catch (Exception e) {
+                }
 
                 try {
                     if (product == null) {
@@ -517,24 +518,24 @@ public class SourceProductFileSelector {
 
         private void setSelectedMultiFileList(ArrayList<File> tmpArrayList) {
             files = new File[tmpArrayList.size()];
-             tmpArrayList.toArray(files);
+            tmpArrayList.toArray(files);
 
             File fileListFile = new File(currentDirectory, "_inputFiles.lst");
 
-              StringBuilder fileNames = new StringBuilder();
-              for (File file : files) {
-                  fileNames.append(file.getAbsolutePath() + "\n");
-              }
-              FileWriter fileWriter = null;
-              try {
+            StringBuilder fileNames = new StringBuilder();
+            for (File file : files) {
+                fileNames.append(file.getAbsolutePath() + "\n");
+            }
+            FileWriter fileWriter = null;
+            try {
 
-                  fileWriter = new FileWriter(fileListFile);
-                  fileWriter.write(fileNames.toString());
-                  fileWriter.close();
-              } catch (IOException ioe) {
-              }
+                fileWriter = new FileWriter(fileListFile);
+                fileWriter.write(fileNames.toString());
+                fileWriter.close();
+            } catch (IOException ioe) {
+            }
             Product product = new Product(fileListFile.getName(), "DummyType", 10, 10);
-                                        product.setFileLocation(fileListFile);
+            product.setFileLocation(fileListFile);
             product.setDescription(fileNames.toString());
             setSelectedProduct(product);
             currentDirectory = fileChooser.getCurrentDirectory();

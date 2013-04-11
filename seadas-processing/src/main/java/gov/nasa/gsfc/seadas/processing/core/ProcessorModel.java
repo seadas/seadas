@@ -299,7 +299,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         if (verifyIFilePath(ifileName)) {
             String ofileName = SeadasFileUtils.findNextLevelFileName(ifileName, programName);
             if (ofileName != null) {
-                updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
+                updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
                 updateGeoFileInfo(ifileName);
 
                 //updateOFileInfo(SeadasFileUtils.getDefaultOFileNameFromIFile(ifileName, programName));
@@ -309,7 +309,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             }
         }
         VisatApp.getApp().showErrorDialog("Cannot compute output file name. Please select a correct input file for " + ((programName == null) ? "this processor." : programName));
-        updateParamInfo(getPrimaryInputFileOptionName(), "");    //use an empty string
+        updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");    //use an empty string
         updateOFileInfo("");
         return false;
     }

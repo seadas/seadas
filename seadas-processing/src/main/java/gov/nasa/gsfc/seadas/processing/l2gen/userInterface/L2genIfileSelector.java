@@ -49,7 +49,6 @@ public class L2genIfileSelector {
                         disableEventHandler();
                     //}
                     l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), iFile.getAbsolutePath());
-
                     if (!l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(iFile.getAbsolutePath())) {
                         enableEventHandler();
                     }

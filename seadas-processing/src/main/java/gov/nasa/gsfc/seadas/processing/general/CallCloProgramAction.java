@@ -213,7 +213,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
-                        ProgramExecutor pe = new ProgramExecutor();
                         int exitCode = OCSSWRunner.execute(secondaryProcessor.getProgramCmdArray()).exitValue();
                         if (exitCode == 0) {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
