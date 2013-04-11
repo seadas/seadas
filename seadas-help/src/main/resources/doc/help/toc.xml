@@ -15,10 +15,10 @@
         <!--<tocitem text="Related Links" target="beamRelatedLinks"/>-->
         <!--<tocitem text="BEAM-DIMAP Format" target="beamDimapFormat"/>-->
         <!--<tocitem text="ENVISAT Products" target="envisatProducts"/>-->
-        <tocitem text="The 'pconvert' Tool" target="pconvertTool"/>
+
     </tocitem>
 
-    <tocitem text="VISAT">
+    <tocitem text="SeaDAS">
         <tocitem text="Introduction" target="visat"/>
         <tocitem text="Tools">
             <tocitem text="Import and Export Tools">
@@ -33,7 +33,6 @@
                     <tocitem text="LANDSAT 5 TM" target="importLandsatTMProduct"/>
                     <tocitem text="MERIS Binned Level-3" target="importMerisBinnedL3Product"/>
                     <tocitem text="MODIS" target="importModisProduct"/>
-                    <!--<tocitem text="NASA Ocean Color" target="importNasaObpgProduct"/>-->
                     <tocitem text="NOAA-AVHRR/3 Level-1b" target="importAVHRR"/>
                     <tocitem text="NetCDF" target="importNetCdfProduct"/>
                 </tocitem>
@@ -60,6 +59,7 @@
                     <tocitem text="Product Metadata" target="exportProductMetadata"/>
                     <tocitem text="Transect Pixels" target="exportTransectPixels"/>
                 </tocitem>
+                <tocitem text="The 'pconvert' Tool" target="pconvertTool"/>
                 <tocitem text="Product Subset Dialog" target="subsetDialog"/>
                 <tocitem text="Product Grabber" target="productGrabber"/>
             </tocitem>

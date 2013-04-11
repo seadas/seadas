@@ -1,10 +1,11 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-watermask</symbolicName>
-    <version>1.2</version>
+    <version>1.2.1</version>
     <name>Land-Water mask</name>
 
     <description>Accurate Land/Water-mask based on shape files.</description>
+    <packaging>dir</packaging>
 
     <vendor>Brockmann Consult GmbH</vendor>
     <contactAddress>
