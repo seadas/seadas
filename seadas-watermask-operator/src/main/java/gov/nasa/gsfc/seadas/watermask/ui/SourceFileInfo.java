@@ -127,7 +127,12 @@ public class SourceFileInfo {
 
     public boolean isEnabled() {
 
-        return file.exists() && getStatus();
+        if (getMode() == WatermaskClassifier.Mode.SRTM_GC) {
+            File gcFile = ResourceInstallationUtils.getTargetFile(WatermaskClassifier.GC_WATER_MASK_FILE);
+            return gcFile.exists() && file.exists() && getStatus();
+        } else {
+            return file.exists() && getStatus();
+        }
     }
 
     public boolean isStatus() {

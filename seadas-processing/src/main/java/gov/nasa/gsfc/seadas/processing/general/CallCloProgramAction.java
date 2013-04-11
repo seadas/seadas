@@ -191,9 +191,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
                 String ofileName = processorModel.getOfileName();
                 if (openOutputInApp) {
+                    File ifileDir = processorModel.getIFileDir();
+
                     StringTokenizer st = new StringTokenizer(ofileName);
                     while (st.hasMoreTokens()) {
-                        getAppContext().getProductManager().addProduct(ProductIO.readProduct(new File(st.nextToken())));
+                        File ofile = SeadasFileUtils.createFile(ifileDir, st.nextToken());
+                        getAppContext().getProductManager().addProduct(ProductIO.readProduct(ofile));
                     }
                 }
                 return ofileName;

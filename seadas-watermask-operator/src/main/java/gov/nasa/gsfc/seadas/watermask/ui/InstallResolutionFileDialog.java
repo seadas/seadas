@@ -1,9 +1,13 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
+import gov.nasa.gsfc.seadas.watermask.operator.WatermaskClassifier;
+import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
 
 /**
@@ -59,10 +63,28 @@ class InstallResolutionFileDialog extends JDialog {
                     landMasksData.fireEvent(LandMasksData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
 
                     final String filename = sourceFileInfo.getFile().getName().toString();
+
                     final URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
 
-                    Thread t = new Thread(new FileInstallRunnable(sourceUrl, sourceFileInfo, landMasksData));
-                    t.start();
+                    File targetFile = ResourceInstallationUtils.getTargetFile(filename);
+
+                    if (!targetFile.exists()) {
+                        Thread t = new Thread(new FileInstallRunnable(sourceUrl, filename, sourceFileInfo, landMasksData));
+                        t.start();
+                    }
+
+
+//                    if (sourceFileInfo.getMode() == WatermaskClassifier.Mode.SRTM_GC) {
+//                        File gcFile = ResourceInstallationUtils.getTargetFile(WatermaskClassifier.GC_WATER_MASK_FILE);
+//
+//                        if (!gcFile.exists()) {
+//                            final URL northSourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + gcFile.getName());
+//
+//                            Thread t2 = new Thread(new FileInstallRunnable(northSourceUrl, gcFile.getName(), sourceFileInfo, landMasksData));
+//                            t2.start();
+//                        }
+//                    }
+
 
 //                    File targetDir = ResourceInstallationUtils.getTargetDir();
 //                    ProcessBuilder pb = new ProcessBuilder("wget.py", sourceUrl.toString(), targetDir.getAbsolutePath());
@@ -148,8 +170,6 @@ class InstallResolutionFileDialog extends JDialog {
         setSize(getPreferredSize());
 
     }
-
-
 
 
     public final void installationResultsUI() {

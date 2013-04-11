@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * The <code>ModisTiePointGeoCoding</code> class is a special geo-coding for
+ * The <code>BowtiePixelGeoCoding</code> class is a special geo-coding for
  * MODIS Level-1B and Level-2 swath products.
  * <p/>
  * <p>It enables BEAM to transform the MODIS swaths to uniformly gridded
@@ -40,21 +40,8 @@ import java.util.ArrayList;
  * (off-nadir) scan angle is performed (correction for bow-tie effect).
  */
 public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
-    private final int NUM_DETECTORS_IN_STRIPE = 10;
-
     private Band _latBand;
     private Band _lonBand;
-
-    /**
-     * Constructs geo-coding based on two given tie-point grids.
-     *
-     * @param latBand the latitude band, must not be <code>null</code>
-     * @param lonBand the longitude band, must not be <code>null</code>
-     */
-    public BowtiePixelGeoCoding(Band latBand, Band lonBand) {
-        this(latBand, lonBand, 10, 0);
-    }
-
 
     /**
      * Constructs geo-coding based on two given tie-point grids.

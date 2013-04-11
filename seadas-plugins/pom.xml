@@ -23,7 +23,7 @@
         <module>../seadas-reader</module>
         <module>../seadas-processing</module>
         <module>../seadas-watermask-operator</module>
-        <module>../../beam/beam-aatsr-sst</module>
+        <!--<module>../../beam/beam-aatsr-sst</module>-->
         <module>../../beam/beam-alos-reader</module>
         <module>../../beam/beam-atsr-reader</module>
         <module>../../beam/beam-avhrr-reader</module>

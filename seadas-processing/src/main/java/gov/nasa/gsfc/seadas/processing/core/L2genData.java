@@ -635,7 +635,8 @@ public class L2genData implements L2genDataProcessorModel {
         if (!ignoreIfile) {
             for (ParamInfo parfileParamInfo : parfileParamInfos) {
                 if (parfileParamInfo.getName().toLowerCase().equals(IFILE)) {
-                    ifile = parfileParamInfo.getValue();
+                    File tmpFile = SeadasFileUtils.createFile(parFileDir, parfileParamInfo.getValue());
+                    ifile = tmpFile.getAbsolutePath();
                     break;
                 }
             }

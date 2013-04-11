@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The <code>ModisTiePointGeoCoding</code> class is a special geo-coding for
+ * The <code>AbstractBowtieGeoCoding</code> class is a special geo-coding for
  * MODIS Level-1B and Level-2 swath products.
  * <p/>
  * <p>It enables BEAM to transform the MODIS swaths to uniformly gridded

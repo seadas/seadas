@@ -55,6 +55,8 @@ public class WatermaskClassifier {
     public static final String FILENAME_GSHHS_1km = "GSHHS_water_mask_1km.zip";
     public static final String FILENAME_GSHHS_10km = "GSHHS_water_mask_10km.zip";
 
+    public static String GC_WATER_MASK_FILE = "GC_water_mask.zip";
+
 
     public enum Mode {
         MODIS("MODIS"),
@@ -168,22 +170,12 @@ public class WatermaskClassifier {
 
         final File auxdataDir = ResourceInstallationUtils.installAuxdata(WatermaskClassifier.class, filename).getParentFile();
 
-//        ImageDescriptor gshhsDescriptor = getNorthDescriptor(auxdataDir);
-//        ImageDescriptor northDescriptor = getNorthDescriptor(auxdataDir);
-//        ImageDescriptor southDescriptor = getSouthDescriptor(auxdataDir);
-//        gshhsImage = createImage(gshhsDescriptor);
-//
-//        centerImage = null;
-//        if (mode == Mode.SRTM_GC) {
-//            centerImage = createSrtmImage(auxdataDir);
-//        }
-//        aboveSixtyNorthImage = createImage(northDescriptor);
-//        belowSixtySouthImage = createImage(southDescriptor);
-
 
         if (mode == Mode.GSHHS) {
-            ImageDescriptor gshhsDescriptor = getNorthDescriptor(auxdataDir);
-            gshhsImage = createImage(auxdataDir, gshhsDescriptor);
+            ImageDescriptor gshhsDescriptor = getGshhsDescriptor(auxdataDir);
+            if (gshhsDescriptor != null) {
+                gshhsImage = createImage(auxdataDir, gshhsDescriptor);
+            }
         } else if (mode == Mode.SRTM_GC) {
             centerImage = createSrtmImage(auxdataDir);
 
@@ -197,17 +189,76 @@ public class WatermaskClassifier {
 
     }
 
+    private ImageDescriptor getGshhsDescriptor(File auxdataDir) {
+
+        ImageDescriptor imageDescriptor = null;
+
+        String zipname = filename;
+        if (resolution == RESOLUTION_1km) {
+            imageDescriptor = new ImageDescriptorBuilder()
+                    .width(GSHHS_1_IMAGE_WIDTH)
+                    .height(GSHHS_1_IMAGE_HEIGHT)
+                    .tileWidth(GSHHS_1_TILE_WIDTH)
+                    .tileHeight(GSHHS_1_TILE_HEIGHT)
+                    .auxdataDir(auxdataDir)
+                    .zipFileName(zipname)
+                    .build();
+        } else if (resolution == RESOLUTION_10km) {
+            imageDescriptor = new ImageDescriptorBuilder()
+                    .width(GSHHS_10_IMAGE_WIDTH)
+                    .height(GSHHS_10_IMAGE_HEIGHT)
+                    .tileWidth(GSHHS_10_TILE_WIDTH)
+                    .tileHeight(GSHHS_10_TILE_HEIGHT)
+                    .auxdataDir(auxdataDir)
+                    .zipFileName(zipname)
+                    .build();
+        }
+
+        return imageDescriptor;
+    }
+
 
     private ImageDescriptor getSouthDescriptor(File auxdataDir) {
-        return new ImageDescriptorBuilder()
-                .width(MODIS_IMAGE_WIDTH)
-                .height(MODIS_IMAGE_HEIGHT)
-                .tileWidth(MODIS_TILE_WIDTH)
-                .tileHeight(MODIS_TILE_HEIGHT)
-                .auxdataDir(auxdataDir)
-                .zipFileName("MODIS_south_water_mask.zip")
-                .build();
+        ImageDescriptor southDescriptor;
+        switch (mode) {
+            case MODIS:
+                southDescriptor = new ImageDescriptorBuilder()
+                        .width(MODIS_IMAGE_WIDTH)
+                        .height(MODIS_IMAGE_HEIGHT)
+                        .tileWidth(MODIS_TILE_WIDTH)
+                        .tileHeight(MODIS_TILE_HEIGHT)
+                        .auxdataDir(auxdataDir)
+                        .zipFileName("MODIS_south_water_mask.zip")
+                        .build();
+                break;
+            case SRTM_GC:
+                southDescriptor = new ImageDescriptorBuilder()
+                        .width(GC_IMAGE_WIDTH)
+                        .height(GC_IMAGE_HEIGHT)
+                        .tileWidth(GC_TILE_WIDTH)
+                        .tileHeight(GC_TILE_HEIGHT)
+                        .auxdataDir(auxdataDir)
+                        .zipFileName(GC_WATER_MASK_FILE)
+                        .build();
+                break;
+            default:
+                String msg = String.format("Unknown mode '%d'. Known modes are {%d, %d, %d}", mode, Mode.MODIS, Mode.SRTM_GC, Mode.GSHHS);
+                throw new IllegalArgumentException(msg);
+        }
+        return southDescriptor;
     }
+
+//
+//    private ImageDescriptor getSouthDescriptor(File auxdataDir) {
+//        return new ImageDescriptorBuilder()
+//                .width(MODIS_IMAGE_WIDTH)
+//                .height(MODIS_IMAGE_HEIGHT)
+//                .tileWidth(MODIS_TILE_WIDTH)
+//                .tileHeight(MODIS_TILE_HEIGHT)
+//                .auxdataDir(auxdataDir)
+//                .zipFileName("MODIS_south_water_mask.zip")
+//                .build();
+//    }
 
     private ImageDescriptor getNorthDescriptor(File auxdataDir) {
         ImageDescriptor northDescriptor;
@@ -229,31 +280,8 @@ public class WatermaskClassifier {
                         .tileWidth(GC_TILE_WIDTH)
                         .tileHeight(GC_TILE_HEIGHT)
                         .auxdataDir(auxdataDir)
-                        .zipFileName("GC_water_mask.zip")
+                        .zipFileName(GC_WATER_MASK_FILE)
                         .build();
-                break;
-            case GSHHS:
-                //  String zipname = String.format("GSHHS_water_mask_%skm.zip", String.valueOf(resolution / 1000));
-                String zipname = filename;
-                if (resolution == 1000) {
-                    northDescriptor = new ImageDescriptorBuilder()
-                            .width(GSHHS_1_IMAGE_WIDTH)
-                            .height(GSHHS_1_IMAGE_HEIGHT)
-                            .tileWidth(GSHHS_1_TILE_WIDTH)
-                            .tileHeight(GSHHS_1_TILE_HEIGHT)
-                            .auxdataDir(auxdataDir)
-                            .zipFileName(zipname)
-                            .build();
-                } else {
-                    northDescriptor = new ImageDescriptorBuilder()
-                            .width(GSHHS_10_IMAGE_WIDTH)
-                            .height(GSHHS_10_IMAGE_HEIGHT)
-                            .tileWidth(GSHHS_10_TILE_WIDTH)
-                            .tileHeight(GSHHS_10_TILE_HEIGHT)
-                            .auxdataDir(auxdataDir)
-                            .zipFileName(zipname)
-                            .build();
-                }
                 break;
             default:
                 String msg = String.format("Unknown mode '%d'. Known modes are {%d, %d, %d}", mode, Mode.MODIS, Mode.SRTM_GC, Mode.GSHHS);
@@ -280,7 +308,7 @@ public class WatermaskClassifier {
         return SRTMOpImage.create(properties, zipFile);
     }
 
-    private PNGSourceImage createImage(File auxdataDir2,  ImageDescriptor descriptor) throws IOException {
+    private PNGSourceImage createImage(File auxdataDir2, ImageDescriptor descriptor) throws IOException {
         int width = descriptor.getImageWidth();
         int tileWidth = descriptor.getTileWidth();
         int height = descriptor.getImageHeight();

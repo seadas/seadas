@@ -57,8 +57,8 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
 
     public static final String COMMAND_ID = "Coastline, Land and Water Masks";
     public static final String TOOL_TIP = "Shortcut for adding coastline, land and water masks";
-//    public static final String ICON = "/org/esa/beam/watermask/ui/icons/coastline_24.png";
-  //  public static final String ICON = "icons/Coastline24.png";
+    //    public static final String ICON = "/org/esa/beam/watermask/ui/icons/coastline_24.png";
+    //  public static final String ICON = "icons/Coastline24.png";
     public static final String ICON = "coastline_24.png";
 
     public static final String LAND_WATER_MASK_OP_ALIAS = "LandWaterMask";
@@ -71,7 +71,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                 new ToolbarCommand(visatApp));
 
         String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, WaterMaskVPI.class);
-      //  action.setLargeIcon(UIUtils.loadImageIcon(ICON));
+        //  action.setLargeIcon(UIUtils.loadImageIcon(ICON));
         try {
             URL iconUrl = new URL(iconFilename);
             ImageIcon imageIcon = new ImageIcon(iconUrl);
@@ -79,7 +79,6 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
 
 
         final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
@@ -186,121 +185,124 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                 }
 
                 if (landMasksData.isCreateMasks()) {
-                    ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                            "Computing Masks") {
+                    final SourceFileInfo sourceFileInfo = landMasksData.getSourceFileInfo();
 
-                        @Override
-                        protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+                    if (sourceFileInfo.isEnabled()) {
 
-                            pm.beginTask("Creating land, water, coastline masks", 2);
+                        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                                "Computing Masks") {
 
-                            try {
-                                //  Product landWaterProduct = GPF.createProduct("LandWaterMask", GPF.NO_PARAMS, product);
+                            @Override
+                            protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                                SourceFileInfo sourceFileInfo = landMasksData.getSourceFileInfo();
+                                pm.beginTask("Creating land, water, coastline masks", 2);
 
-                                Map<String, Object> parameters = new HashMap<String, Object>();
-
-                                parameters.put("subSamplingFactorX", new Integer(landMasksData.getSuperSampling()));
-                                parameters.put("subSamplingFactorY", new Integer(landMasksData.getSuperSampling()));
-                                parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
-                                parameters.put("mode", sourceFileInfo.getMode().toString());
-                                parameters.put("filename", sourceFileInfo.getFile().getName());
-                                //                             parameters.put("sourceFileInfo", sourceFileInfo);
-                                /*
-                                    Create a new product, which will contain the land_water_fraction band
-                                 */
+                                try {
+                                    //  Product landWaterProduct = GPF.createProduct("LandWaterMask", GPF.NO_PARAMS, product);
 
 
-                                Product landWaterProduct = GPF.createProduct(LAND_WATER_MASK_OP_ALIAS, parameters, product);
+                                    Map<String, Object> parameters = new HashMap<String, Object>();
+
+                                    parameters.put("subSamplingFactorX", new Integer(landMasksData.getSuperSampling()));
+                                    parameters.put("subSamplingFactorY", new Integer(landMasksData.getSuperSampling()));
+                                    parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
+                                    parameters.put("mode", sourceFileInfo.getMode().toString());
+                                    parameters.put("filename", sourceFileInfo.getFile().getName());
+                                    //                             parameters.put("sourceFileInfo", sourceFileInfo);
+                                    /*
+                                       Create a new product, which will contain the land_water_fraction band
+                                    */
 
 
-                                Band waterFractionBand = landWaterProduct.getBand("land_water_fraction");
-                                Band coastBand = landWaterProduct.getBand("coast");
+                                    Product landWaterProduct = GPF.createProduct(LAND_WATER_MASK_OP_ALIAS, parameters, product);
 
-                                // PROBLEM WITH TILE SIZES
-                                // Example: product has tileWidth=498 and tileHeight=611
-                                // resulting image has tileWidth=408 and tileHeight=612
-                                // Why is this happening and where?
-                                // For now we change the image layout here.
-                                reformatSourceImage(waterFractionBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                reformatSourceImage(coastBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
 
-                                pm.worked(1);
-                                waterFractionBand.setName(landMasksData.getWaterFractionBandName());
+                                    Band waterFractionBand = landWaterProduct.getBand("land_water_fraction");
+                                    Band coastBand = landWaterProduct.getBand("coast");
 
-                                product.addBand(waterFractionBand);
+                                    // PROBLEM WITH TILE SIZES
+                                    // Example: product has tileWidth=498 and tileHeight=611
+                                    // resulting image has tileWidth=408 and tileHeight=612
+                                    // Why is this happening and where?
+                                    // For now we change the image layout here.
+                                    reformatSourceImage(waterFractionBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                    reformatSourceImage(coastBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
 
-                                //todo BEAM folks left this as a placeholder
+                                    pm.worked(1);
+                                    waterFractionBand.setName(landMasksData.getWaterFractionBandName());
+
+                                    product.addBand(waterFractionBand);
+
+                                    //todo BEAM folks left this as a placeholder
 //                    product.addBand(coastBand);
 
-                                //todo replace with JAI operator "GeneralFilter" which uses a GeneralFilterFunction
+                                    //todo replace with JAI operator "GeneralFilter" which uses a GeneralFilterFunction
 
 
-                                final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
-                                        new double[]{
-                                                +1, +1, +1,
-                                                +1, +1, +1,
-                                                +1, +1, +1,
-                                        });
+                                    final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
+                                            new double[]{
+                                                    +1, +1, +1,
+                                                    +1, +1, +1,
+                                                    +1, +1, +1,
+                                            });
 
-                                final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
-                                        landMasksData.getWaterFractionSmoothedName(),
-                                        waterFractionBand,
-                                        arithmeticMean3x3Kernel);
+                                    final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
+                                            landMasksData.getWaterFractionSmoothedName(),
+                                            waterFractionBand,
+                                            arithmeticMean3x3Kernel);
 
-                                product.addBand(filteredCoastlineBand);
-
-
-                                Mask coastlineMask = Mask.BandMathsType.create(
-                                        landMasksData.getCoastlineMaskName(),
-                                        landMasksData.getCoastlineMaskDescription(),
-                                        product.getSceneRasterWidth(),
-                                        product.getSceneRasterHeight(),
-                                        landMasksData.getCoastlineMath(),
-                                        landMasksData.getCoastlineMaskColor(),
-                                        landMasksData.getCoastlineMaskTransparency());
-                                maskGroup.add(coastlineMask);
+                                    product.addBand(filteredCoastlineBand);
 
 
-                                Mask waterMask = Mask.BandMathsType.create(
-                                        landMasksData.getWaterMaskName(),
-                                        landMasksData.getWaterMaskDescription(),
-                                        product.getSceneRasterWidth(),
-                                        product.getSceneRasterHeight(),
-                                        landMasksData.getWaterMaskMath(),
-                                        landMasksData.getWaterMaskColor(),
-                                        landMasksData.getWaterMaskTransparency());
-                                maskGroup.add(waterMask);
+                                    Mask coastlineMask = Mask.BandMathsType.create(
+                                            landMasksData.getCoastlineMaskName(),
+                                            landMasksData.getCoastlineMaskDescription(),
+                                            product.getSceneRasterWidth(),
+                                            product.getSceneRasterHeight(),
+                                            landMasksData.getCoastlineMath(),
+                                            landMasksData.getCoastlineMaskColor(),
+                                            landMasksData.getCoastlineMaskTransparency());
+                                    maskGroup.add(coastlineMask);
 
 
-                                Mask landMask = Mask.BandMathsType.create(
-                                        landMasksData.getLandMaskName(),
-                                        landMasksData.getLandMaskDescription(),
-                                        product.getSceneRasterWidth(),
-                                        product.getSceneRasterHeight(),
-                                        landMasksData.getLandMaskMath(),
-                                        landMasksData.getLandMaskColor(),
-                                        landMasksData.getLandMaskTransparency());
+                                    Mask waterMask = Mask.BandMathsType.create(
+                                            landMasksData.getWaterMaskName(),
+                                            landMasksData.getWaterMaskDescription(),
+                                            product.getSceneRasterWidth(),
+                                            product.getSceneRasterHeight(),
+                                            landMasksData.getWaterMaskMath(),
+                                            landMasksData.getWaterMaskColor(),
+                                            landMasksData.getWaterMaskTransparency());
+                                    maskGroup.add(waterMask);
 
-                                maskGroup.add(landMask);
+
+                                    Mask landMask = Mask.BandMathsType.create(
+                                            landMasksData.getLandMaskName(),
+                                            landMasksData.getLandMaskDescription(),
+                                            product.getSceneRasterWidth(),
+                                            product.getSceneRasterHeight(),
+                                            landMasksData.getLandMaskMath(),
+                                            landMasksData.getLandMaskColor(),
+                                            landMasksData.getLandMaskTransparency());
+
+                                    maskGroup.add(landMask);
 
 
-                                pm.worked(1);
+                                    pm.worked(1);
 
-                                String[] bandNames = product.getBandNames();
-                                for (String bandName : bandNames) {
-                                    RasterDataNode raster = product.getRasterDataNode(bandName);
-                                    if (landMasksData.isShowCoastlineMaskAllBands()) {
-                                        raster.getOverlayMaskGroup().add(coastlineMask);
+                                    String[] bandNames = product.getBandNames();
+                                    for (String bandName : bandNames) {
+                                        RasterDataNode raster = product.getRasterDataNode(bandName);
+                                        if (landMasksData.isShowCoastlineMaskAllBands()) {
+                                            raster.getOverlayMaskGroup().add(coastlineMask);
+                                        }
+                                        if (landMasksData.isShowLandMaskAllBands()) {
+                                            raster.getOverlayMaskGroup().add(landMask);
+                                        }
+                                        if (landMasksData.isShowWaterMaskAllBands()) {
+                                            raster.getOverlayMaskGroup().add(waterMask);
+                                        }
                                     }
-                                    if (landMasksData.isShowLandMaskAllBands()) {
-                                        raster.getOverlayMaskGroup().add(landMask);
-                                    }
-                                    if (landMasksData.isShowWaterMaskAllBands()) {
-                                        raster.getOverlayMaskGroup().add(waterMask);
-                                    }
-                                }
 
 
 //                    visatApp.setSelectedProductNode(waterFractionBand);
@@ -315,19 +317,26 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
 //        }
 
 
-                            } finally {
-                                pm.done();
+                                } finally {
+                                    pm.done();
+                                }
+                                return null;
                             }
-                            return null;
-                        }
 
 
-                    };
+                        };
 
-                    pmSwingWorker.executeWithBlocking();
+                        pmSwingWorker.executeWithBlocking();
+
+
+                    } else {
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "Cannot Create Masks: Resolution File Doesn't Exist");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+
+                    }
                 }
             }
-
 
 
         }

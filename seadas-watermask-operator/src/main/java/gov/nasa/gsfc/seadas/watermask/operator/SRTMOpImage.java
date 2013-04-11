@@ -35,6 +35,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 /**
@@ -58,15 +59,27 @@ public class SRTMOpImage extends SourcelessOpImage {
 
     private SRTMOpImage(ImageHeader imageHeader, File zipFile) throws IOException {
         super(imageHeader.getImageLayout(),
-              null,
-              ImageUtils.createSingleBandedSampleModel(DataBuffer.TYPE_BYTE,
-                                                       imageHeader.getImageLayout().getSampleModel(null).getWidth(),
-                                                       imageHeader.getImageLayout().getSampleModel(null).getHeight()),
-              imageHeader.getImageLayout().getMinX(null),
-              imageHeader.getImageLayout().getMinY(null),
-              imageHeader.getImageLayout().getWidth(null),
-              imageHeader.getImageLayout().getHeight(null));
-        this.zipFile = new ZipFile(zipFile);
+                null,
+                ImageUtils.createSingleBandedSampleModel(DataBuffer.TYPE_BYTE,
+                        imageHeader.getImageLayout().getSampleModel(null).getWidth(),
+                        imageHeader.getImageLayout().getSampleModel(null).getHeight()),
+                imageHeader.getImageLayout().getMinX(null),
+                imageHeader.getImageLayout().getMinY(null),
+                imageHeader.getImageLayout().getWidth(null),
+                imageHeader.getImageLayout().getHeight(null));
+
+      //  this.zipFile = new ZipFile(zipFile);
+
+
+        try {
+            this.zipFile = new ZipFile(zipFile);
+        } catch (ZipException e) {
+            throw new ZipException();
+        } catch (IOException e) {
+            throw new IOException();
+        }
+
+
         missingTiles = new Properties();
         missingTiles.load(getClass().getResourceAsStream("MissingTiles.properties"));
         // this image uses its own tile cache in order not to disturb the GPF tile cache.
