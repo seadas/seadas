@@ -167,12 +167,19 @@ public class OCSSW {
 
             StringBuilder text = new StringBuilder();
             String line;
+            boolean isOCSSWRootSpecified = false;
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("seadas.ocssw.root")) {
                     line = "seadas.ocssw.root = " + installDir;
+                    isOCSSWRootSpecified = true;
                 }
                 text.append(line);
                 text.append("\n");
+            }
+            //Append "seadas.ocssw.root = " + installDir + "\n" to the runtime config file if it is not exist
+            if ( !isOCSSWRootSpecified )
+            {
+                text.append("seadas.ocssw.root = " + installDir + "\n");
             }
             fileWriter = new FileWriter(new File(RuntimeContext.getConfig().getConfigFilePath()));
             fileWriter.write(text.toString());
