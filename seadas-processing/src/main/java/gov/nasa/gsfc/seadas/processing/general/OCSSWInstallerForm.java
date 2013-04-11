@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.TableLayout;
+import gov.nasa.gsfc.seadas.processing.core.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.framework.datamodel.Product;
@@ -63,7 +65,8 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
         processorModel.setReadyToRun(true);
         createUserInterface();
-        processorModel.updateParamInfo("--install-dir", System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
+        //processorModel.updateParamInfo("--install-dir", System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
+        processorModel.updateParamInfo("--install-dir",RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWROOT_PROPERTY, System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw"));
     }
 
     public ProcessorModel getProcessorModel() {
