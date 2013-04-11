@@ -10,15 +10,15 @@
     <mapID target="folder" url="images/HelpFolder.jpg"/>
     <mapID target="doc" url="images/HelpDoc.jpg"/>
 
-    <mapID target="seadasOverview" url="general/SeaDASOverview.html"/>
-    <mapID target="seadasWhatsNew" url="general/SeaDASWhatsNew.html"/>
-    <!--<mapID target="beamDefinitions" url="general/BeamDefinitions.html"/>-->
-    <!--<mapID target="beamDataSources" url="general/BeamDataSources.html"/>-->
-    <!--<mapID target="beamRelatedLinks" url="general/BeamRelatedLinks.html"/>-->
-    <!--<mapID target="beamDimapFormat" url="general/BeamDimapFormat.html"/>-->
-    <!--<mapID target="pconvertTool" url="general/PConvertUsage.html"/>-->
-    <!--<mapID target="resamplingMethods" url="general/ResamplingMethods.html"/>-->
-    <!--<mapID target="envisatProducts" url="general/envisat-products/index.html"/>-->
+    <mapID target="beamOverview" url="general/BeamOverview.html"/>
+    <mapID target="beamWhatsNew" url="general/BeamWhatsNew.html"/>
+    <mapID target="beamDefinitions" url="general/BeamDefinitions.html"/>
+    <mapID target="beamDataSources" url="general/BeamDataSources.html"/>
+    <mapID target="beamRelatedLinks" url="general/BeamRelatedLinks.html"/>
+    <mapID target="beamDimapFormat" url="general/BeamDimapFormat.html"/>
+    <mapID target="pconvertTool" url="general/PConvertUsage.html"/>
+    <mapID target="resamplingMethods" url="general/ResamplingMethods.html"/>
+    <mapID target="envisatProducts" url="general/envisat-products/index.html"/>
     <!-- todo -->
 
     <mapID target="visat" url="visat/index.html"/>
@@ -52,12 +52,12 @@
     <mapID target="importShapefile" url="visat/ImportShapefile.html"/>
     <mapID target="importLandsatTMProduct" url="visat/ImportLandsatTM.html"/>
     <mapID target="importAVHRR" url="visat/ImportAVHRR.html"/>
-    <!--<mapID target="importAvnir2Product" url="visat/ImportAVNIR2.html"/>-->
-    <!--<mapID target="importNasaObpgProduct" url="visat/ImportNasaObpgHDF.html"/>-->
-    <!--<mapID target="importChrisProduct" url="visat/ImportChris.html"/>-->
-    <!--<mapID target="importPrismProduct" url="visat/ImportPRISM.html"/>-->
+    <mapID target="importAvnir2Product" url="visat/ImportAVNIR2.html"/>
+    <mapID target="importNasaObpgProduct" url="visat/ImportNasaObpgHDF.html"/>
+    <mapID target="importChrisProduct" url="visat/ImportChris.html"/>
+    <mapID target="importPrismProduct" url="visat/ImportPRISM.html"/>
     <mapID target="importNetCdfProduct" url="visat/ImportNetCdf.html"/>
-    <!--<mapID target="importSpotVgtProduct" url="visat/ImportSpotVgt.html"/>-->
+    <mapID target="importSpotVgtProduct" url="visat/ImportSpotVgt.html"/>
     <mapID target="exportDimapProduct" url="visat/ExportDimapProduct.html"/>
     <mapID target="exportNetCdfProduct" url="visat/ExportNetCdfProduct.html"/>
     <mapID target="exportCsv" url="visat/ExportCSV.html"/>
@@ -99,10 +99,7 @@
     <mapID target="vectorDataManagement" url="visat/VectorDataManagement.html"/>
 
 
-
-
     <mapID target="reprojectionAction" url="visat/Reprojection.html"/>
-    <mapID target="resamplingMethods" url="visat/ResamplingMethods.html"/>
     <mapID target="orthorectificationAction" url="visat/Orthorectification.html"/>
     <mapID target="orthorectificationAlgo" url="visat/OrthorectificationAlgo.html"/>
     <mapID target="mosaicAction" url="visat/Mosaic.html"/>
