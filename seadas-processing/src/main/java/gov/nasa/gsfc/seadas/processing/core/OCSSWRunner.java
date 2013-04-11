@@ -9,7 +9,6 @@ import org.esa.beam.visat.VisatApp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +26,12 @@ public class OCSSWRunner {
     //private static ProcessBuilder processBuilder;
     private static HashMap environment = new HashMap();
     private static final String OCSSW_ROOT_VAR = "OCSSWROOT";
-    private static final String OCSSW_REMOTE = "ocssw.remote";
+    private static final String SEADAS_OCSSW_LOCATION = "seadas.ocssw.location";
+
+    private static enum ocsswLocation {
+        local,
+        remote
+    }
 
     public OCSSWRunner() {
 
@@ -36,24 +40,25 @@ public class OCSSWRunner {
 
     public static Process execute(ProcessorModel processorModel) {
 
-        if (Boolean.parseBoolean(RuntimeContext.getConfig().getContextProperty(OCSSW_REMOTE))) {
-            return executeRemote(processorModel);
-        } else {
+        String ocsswLoc = RuntimeContext.getConfig().getContextProperty(SEADAS_OCSSW_LOCATION);
+        if (ocsswLoc == null || ocsswLoc.trim().equals(ocsswLocation.local)) {
             return executeLocal(processorModel);
+        } else {
+            return executeRemote(processorModel);
         }
     }
 
     public static Process execute(String[] cmdArray, File ifileDir) {
-
-        if (Boolean.parseBoolean(RuntimeContext.getConfig().getContextProperty(OCSSW_REMOTE))) {
-            return executeRemote(cmdArray, ifileDir);
-        } else {
+        String ocsswLoc = RuntimeContext.getConfig().getContextProperty(SEADAS_OCSSW_LOCATION);
+        if (ocsswLoc == null || ocsswLoc.trim().equals(ocsswLocation.local)) {
             return executeLocal(cmdArray, ifileDir);
+        } else {
+            return executeRemote(cmdArray, ifileDir);
         }
     }
 
     public static Process executeLocal(ProcessorModel processorModel) {
-        System.out.println("local execution!" + " " + Arrays.toString(processorModel.getProgramCmdArray()));
+        //System.out.println("local execution!" + " " + Arrays.toString(processorModel.getProgramCmdArray()));
         ProcessBuilder processBuilder = new ProcessBuilder(processorModel.getProgramCmdArray());
         Map<String, String> env = processBuilder.environment();
 
@@ -87,7 +92,7 @@ public class OCSSWRunner {
     }
 
     public static Process executeLocal(String[] cmdArray, File ifileDir) {
-        System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
+        //System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
         Map<String, String> env = processBuilder.environment();
         if (!env.containsKey(OCSSW_ROOT_VAR)) {
@@ -117,8 +122,6 @@ public class OCSSWRunner {
         JsonParser parser = new JsonParser();
         JsonArray array = parser.parse(json).getAsJsonArray();
 
-
-        //System.out.println("remote execution!");
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
 
         Map<String, String> env = processBuilder.environment();
