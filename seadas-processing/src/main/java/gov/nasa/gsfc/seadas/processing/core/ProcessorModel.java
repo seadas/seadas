@@ -325,7 +325,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
 
     public boolean updateOFileInfo(String newValue) {
-        System.out.println("next level ofile name: " + newValue);
+        //System.out.println("next level ofile name: " + newValue);
         if (newValue != null) {
             updateParamInfo(getPrimaryOutputFileOptionName(), newValue + "\n");
             setReadyToRun(newValue.trim().length() == 0 ? false : true);
@@ -456,43 +456,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         String[] cmdArray = concat(getCmdArrayPrefix(), getCmdArrayParam());
 
-//
-//        String[] cmdArrayParam = new String[paramList.getParamArray().size()];
-//
-//        Iterator itr = paramList.getParamArray().iterator();
-//        ParamInfo option;
-//        String cmdString = null;
-//        while (itr.hasNext()) {
-//            option = (ParamInfo) itr.next();
-//
-//            if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
-//                if (option.getValue() != null && option.getValue().length() > 0) {
-//                    cmdArray[option.getOrder() + cmdArrayParamIndex] = option.getValue();
-//                    cmdString = "argument : " + option.getValue();
-//                }
-//            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
-//                cmdArray[option.getOrder() + cmdArrayParamIndex] = option.getName() + "=" + option.getValue();
-//                cmdString = "option : " + option.getName() + "=" + option.getValue();
-//            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
-//                if (option.getName() != null && option.getName().length() > 0) {
-//                    cmdArray[option.getOrder() + cmdArrayParamIndex] = option.getName();
-//                    cmdString = "flag : " + option.getName();
-//                }
-//            }
-//
-//            if (option.getType().equals(ParamInfo.Type.IFILE) && option.getValue() != null && option.getValue().trim().length() > 0) {
-//                filesToUpload.add(option.getValue());
-//                cmdString = cmdString.replaceAll("argument", "ifile");
-//                cmdString = cmdString.replaceAll("option", "ifile");
-//            } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
-//                filesToDownload.add(option.getValue());
-//                cmdString = cmdString.replaceAll("argument", "ofile");
-//                cmdString = cmdString.replaceAll("option", "ofile");
-//            }
-//            finalCmdArray.add(cmdString);
-//            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
-//        }
-//
         // get rid of the null strings
         ArrayList<String> cmdList = new ArrayList<String>();
         for (String s : cmdArray) {
@@ -500,7 +463,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 cmdList.add(s);
             }
         }
-
         cmdArray = cmdList.toArray(new String[cmdList.size()]);
         return cmdArray;
     }
@@ -968,9 +930,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("ifile", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-//                    //System.out.println("property ifile changed");
                     checkCompleteness();
 
                 }
@@ -978,9 +937,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("SWlon", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-//                    System.out.println("property SWlon changed");
                     checkCompleteness();
 
                 }
@@ -988,9 +944,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("SWlat", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-//                    System.out.println("property SWlat changed");
                     checkCompleteness();
 
                 }
@@ -998,9 +951,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("NElon", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-//                    System.out.println("property NElon changed");
                     checkCompleteness();
 
                 }
@@ -1008,9 +958,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("NElat", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-//                    System.out.println("property NElat changed");
                     checkCompleteness();
                 }
             });

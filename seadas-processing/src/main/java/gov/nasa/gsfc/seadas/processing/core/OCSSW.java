@@ -72,7 +72,6 @@ public class OCSSW {
     public static void checkOCSSW() {
         String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
 
-
         if (!(dirPath == null)) {
 
             // Check if ${ocssw.root}/run/scripts directory exists in the system.

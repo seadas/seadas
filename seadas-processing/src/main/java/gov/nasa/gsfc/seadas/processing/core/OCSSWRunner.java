@@ -60,7 +60,7 @@ public class OCSSWRunner {
         ProcessBuilder processBuilder = new ProcessBuilder(processorModel.getProgramCmdArray());
         Map<String, String> env = processBuilder.environment();
 
-        if (!env.containsKey(OCSSW_ROOT_VAR)) {
+        if (!env.containsKey(OCSSW_ROOT_VAR) && OCSSW.isOCSSWExist()) {
             //System.out.println("error checkpoint!");
             env.put(OCSSW_ROOT_VAR, OCSSW.getOcsswEnv());
         }
@@ -93,7 +93,7 @@ public class OCSSWRunner {
         //System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
         Map<String, String> env = processBuilder.environment();
-        if (!env.containsKey(OCSSW_ROOT_VAR)) {
+        if (!env.containsKey(OCSSW_ROOT_VAR) && OCSSW.isOCSSWExist()) {
             env.put(OCSSW_ROOT_VAR, OCSSW.getOcsswEnv());
         }
         if (ifileDir != null) {
