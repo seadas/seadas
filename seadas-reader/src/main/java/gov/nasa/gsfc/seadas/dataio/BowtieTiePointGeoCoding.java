@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * The <code>ModisTiePointGeoCoding</code> class is a special geo-coding for
+ * The <code>BowtieTiePointGeoCoding</code> class is a special geo-coding for
  * MODIS Level-1B and Level-2 swath products.
  * <p/>
  * <p>It enables BEAM to transform the MODIS swaths to uniformly gridded
@@ -49,7 +49,6 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
      */
     public BowtieTiePointGeoCoding(TiePointGrid latGrid, TiePointGrid lonGrid, int scanlineHeight) {
         super(scanlineHeight);
-        System.out.println("constructor ModisTiePointGeoCoding");
         Guardian.assertNotNull("latGrid", latGrid);
         Guardian.assertNotNull("lonGrid", lonGrid);
         if (latGrid.getRasterWidth() != lonGrid.getRasterWidth() ||
@@ -64,7 +63,6 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
         _lonGrid = lonGrid;
         setGridOwner(_lonGrid.getOwner());
         init();
-        System.out.println("done constructor ModisTiePointGeoCoding");
     }
 
     @Override
