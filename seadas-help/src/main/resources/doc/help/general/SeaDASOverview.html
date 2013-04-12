@@ -54,17 +54,19 @@ these data between the various processing levels (i.e. Level 0 through Level 3)<
         to <a href="../visat/ExportHDF.html">HDF-5</a> or to RGB images.
 
     </li>
-    <li>A Java&#153; API which provides ready-to-use components for remote sensing related application
-        development and plug-in points for new BEAM extension modules.
+    <li>A <b>Java&#153; API</b> which provides ready-to-use components for remote sensing related application
+        development and plug-in points for new BEAM extension modules. Besides a number of extension points such as
+        product reader and writers, the BEAM API comprises the <b>Graph Processing Framework</b> (GPF) which is
+        used to rapidly create raster data processors. The <b>VISAT Rich Client Platform</b>
+        is used to develop rich GUI user interface applications based on BEAM VISAT.
     </li>
 </ul>
 
 <h4>Supported Product Formats</h4>
 
-<p>This following table lists the data product formats which are supported by BEAM
+<p>This following table lists the data product formats which are supported
     using the reader modules provided in the standard installation.
-    Information about access to these products
-    is given on the <a href="BeamDataSources.html">Data Sources page</a>.</p>
+</p>
 
 <table align="center">
     <tr valign="top">
@@ -138,8 +140,38 @@ these data between the various processing levels (i.e. Level 0 through Level 3)<
         <td>Fast Format<br>GeoTIFF</td>
     </tr>
     <tr valign="top">
-        <td>NASA Ocean Color (OBPG)</td>
-        <td>MODIS A/T, SeaWiFS, OCTS, CZCS</td>
+        <td>MODIS</td>
+        <td>on-board both the Aqua and Terra spacecraft</td>
+        <td>HDF</td>
+    </tr>
+    <tr valign="top">
+        <td>SeaWiFS</td>
+        <td>Orbview-2</td>
+        <td>HDF</td>
+    </tr>
+    <tr valign="top">
+        <td>OCTS</td>
+        <td>ADEOS</td>
+        <td>HDF</td>
+    </tr>
+    <tr valign="top">
+        <td>CZCS</td>
+        <td>NIMBUS-7</td>
+        <td>HDF</td>
+    </tr>
+    <tr valign="top">
+        <td>VIIRS</td>
+        <td>Suomi NPP</td>
+        <td>HDF-5</td>
+    </tr>
+    <tr valign="top">
+        <td>HICO</td>
+        <td>International Space Station</td>
+        <td>(L1B) HDF-5</td>
+    </tr>
+    <tr valign="top">
+        <td>OCM-2</td>
+        <td>OceanSat</td>
         <td>HDF</td>
     </tr>
     <tr valign="top">
@@ -164,29 +196,17 @@ these data between the various processing levels (i.e. Level 0 through Level 3)<
     </tr>
 </table>
 
-<h4>Standard Product Format</h4>
-
-<p>VISAT and the scientific data processors use a simple data input/output format,
-    which makes it easy to import ENVISAT data in other imaging applications. The
-    format is called <a href="http://www.spotimage.fr/dimap/spec/dimap.htm">DIMAP<sup>&reg;</sup></a>
-    and has been developed by SPOT-Image, France. The BEAM software uses a special
-    DIMAP profile called <a href="BeamDimapFormat.html">BEAM-DIMAP</a>, which has
-    the following characteristics:</p>
-<ul>
-    <li>A single product header (XML) containing the product meta-data</li>
-    <li>An associated data directory containing ENVI<sup>&reg;</sup>-compatible images for each band.</li>
-    <li>Each image in the directory is composed of a header file (ASCII text) and an image data file (flat binary)</li>
-</ul>
-
 <h4>Source Code</h4>
 
-<p>The complete BEAM software has been developed under the GNU public license
+<p>The  SeaDAS/BEAM visualization software has been developed under the GNU public license
     and comes with full source code (Java<sup>TM</sup>).</p>
+<p>The SeaDAS processing components have been developed under the NASA Open Source Agreement<br>
+    http://ti.arc.nasa.gov/opensource/nosa/</p>
 
 <h4>Supported Platforms</h4>
 
-<p>BEAM is programmed in pure Java&#153; to allow a maximum portability. The
-    BEAM software has been successfully tested under MS Windows&#153;&nbsp;XP<sup>&reg;</sup>,
+<p>SeaDAS/BEAM is programmed in pure Java&#153; to allow a maximum portability. The
+    software has been successfully tested under MS Windows&#153;&nbsp;XP<sup>&reg;</sup>,
     Windows&#153;&nbsp;Vista, Windows&#153;&nbsp;7 and also Mac&nbsp;OS&nbsp;X and
     as well as under Linux and Solaris<sup>&reg;</sup> operating systems.</p>
 
