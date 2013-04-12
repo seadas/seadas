@@ -27,45 +27,14 @@ public class OCSSW {
     public static String OCSSW_INSTALLER_URL = "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     private static boolean ocsswExist = false;
+    private static File ocsswRoot = null;
 
 
     public static File getOcsswRoot() throws IOException {
-        String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
-        //String dirPath = System.getProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
-        if (dirPath == null) {
-            throw new IOException(String.format("Either environment variable '%s' or\n" +
-                    "configuration parameter '%s' must be given.", OCSSWROOT_ENVVAR, OCSSWROOT_PROPERTY));
-        }
-        final File dir = new File(dirPath);
-        if (!dir.isDirectory()) {
-            throw new IOException(String.format("The directory pointed to by the environment variable  '%s' or\n" +
-                    "configuration parameter '%s' seems to be invalid.", OCSSWROOT_ENVVAR, OCSSWROOT_PROPERTY));
-        }
-        return dir;
+        return ocsswRoot;
     }
 
     public static boolean isOCSSWExist() {
-
-//        if (ocsswExist) {
-//            return ocsswExist;
-//        }
-//
-//        String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
-//
-//        if (dirPath == null) {
-//            return false;
-//        }
-//
-//        // Check if ${ocssw.root}/run/scripts directory exists in the system.
-//        // Precondition to detect the existing installation:
-//        // the user needs to provide "seadas.ocssw.root" value in seadas.config
-//        // or set OCSSWROOT in the system env.
-//        final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
-//
-//        if (!dir.isDirectory()) {
-//            return false;
-//        }
-//        ocsswExist = true;
         return ocsswExist;
     }
 
@@ -81,11 +50,11 @@ public class OCSSW {
             final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
 
             if (dir.isDirectory()) {
+                ocsswRoot = new File(dirPath);
                 ocsswExist = true;
                 return;
             }
         }
-
         downloadOCSSWInstaller();
     }
 
@@ -96,7 +65,7 @@ public class OCSSW {
 
 
     public static String getOcsswScriptPath() {
-        final File ocsswRoot = getOcsswRootFile();
+        //final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
             return ocsswRoot.getPath() + "/run/scripts/ocssw_runner";
         } else {
@@ -106,9 +75,7 @@ public class OCSSW {
     }
 
     public static String[] getOcsswEnvArray() {
-        final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
-            //final String[] envp = {"OCSSWROOT=" + ocsswRoot.getPath()};
             final String[] envp = {ocsswRoot.getPath()};
             return envp;
         } else {
@@ -117,7 +84,6 @@ public class OCSSW {
     }
 
     public static String getOcsswEnv() {
-        final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
             return ocsswRoot.getPath();
         } else {
@@ -126,14 +92,6 @@ public class OCSSW {
     }
 
     private static File getOcsswRootFile() {
-        final File ocsswRoot;
-        try {
-            ocsswRoot = OCSSW.getOcsswRoot();
-        } catch (IOException e) {
-            if (VisatApp.getApp() != null)
-                VisatApp.getApp().showErrorDialog(e.getMessage());
-            return null;
-        }
         return ocsswRoot;
     }
 
@@ -176,8 +134,7 @@ public class OCSSW {
                 text.append("\n");
             }
             //Append "seadas.ocssw.root = " + installDir + "\n" to the runtime config file if it is not exist
-            if ( !isOCSSWRootSpecified )
-            {
+            if (!isOCSSWRootSpecified) {
                 text.append("seadas.ocssw.root = " + installDir + "\n");
             }
             fileWriter = new FileWriter(new File(RuntimeContext.getConfig().getConfigFilePath()));
@@ -185,8 +142,11 @@ public class OCSSW {
             if (fileWriter != null) {
                 fileWriter.close();
             }
+            ocsswRoot = new File(installDir);
         } catch (IOException ioe) {
             handleException(ioe.getMessage());
         }
     }
 }
+
+
