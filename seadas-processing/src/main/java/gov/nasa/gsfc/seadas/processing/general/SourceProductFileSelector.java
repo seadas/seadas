@@ -432,6 +432,10 @@ public class SourceProductFileSelector {
 
             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
 
+                currentDirectory = fileChooser.getCurrentDirectory();
+                appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                        currentDirectory.getAbsolutePath());
+
                 if (selectMultipleIFiles && fileChooser.getSelectedFiles().length > 1) {
                     handleMultipFileSelection(window);
                     return;
@@ -470,9 +474,6 @@ public class SourceProductFileSelector {
                     handleError(window, e.getMessage());
                     e.printStackTrace();
                 }
-                currentDirectory = fileChooser.getCurrentDirectory();
-                appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
-                        currentDirectory.getAbsolutePath());
             }
         }
 
