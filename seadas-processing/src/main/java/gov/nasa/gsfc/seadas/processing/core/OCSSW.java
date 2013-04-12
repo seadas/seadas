@@ -21,6 +21,7 @@ public class OCSSW {
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
 
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
+    public static final String SEADASHOME_PROPERTY = "home";
 
     public static String OCSSW_INSTALLER = "install_ocssw.py";
     public static String TMP_OCSSW_INSTALLER = "/tmp/install_ocssw.py";
@@ -41,16 +42,17 @@ public class OCSSW {
     public static void checkOCSSW() {
         String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
 
-        if (!(dirPath == null)) {
-
-            // Check if ${ocssw.root}/run/scripts directory exists in the system.
+        if ( dirPath == null ) {
+            dirPath = RuntimeContext.getConfig().getContextProperty(SEADASHOME_PROPERTY, System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
+        }
+        if ( dirPath != null ) {
+             // Check if ${ocssw.root}/run/scripts directory exists in the system.
             // Precondition to detect the existing installation:
             // the user needs to provide "seadas.ocssw.root" value in seadas.config
             // or set OCSSWROOT in the system env.
+             ocsswRoot = new File(dirPath);
             final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
-
             if (dir.isDirectory()) {
-                ocsswRoot = new File(dirPath);
                 ocsswExist = true;
                 return;
             }

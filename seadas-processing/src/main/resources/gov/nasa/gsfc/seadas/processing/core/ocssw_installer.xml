@@ -4,6 +4,7 @@
     <programMetaData>
         <hasParFile>false</hasParFile>
         <parFileOptionName>none</parFileOptionName>
+        <progressRegex>Installing +(\d+) out of +(\d+)</progressRegex>
     </programMetaData>
     <options>
         <option type="dir">
