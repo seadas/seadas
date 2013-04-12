@@ -10,7 +10,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Tools
+            Coastline, Land and Water Masks
         </td>
         <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
                                                                                        border=0></a></td>
@@ -85,13 +85,12 @@
 
 <a name="SUPER_SAMPLING_FACTOR"></a>
 <h4>Super Sampling Factor</h4>
+<p>
 If the resolution of the selected shorelineSourceDataset is greater than the resolution of the currently
 loaded product then setting this parameter greater than 1 will be desirable.  Something on the order of at least
 (productResolution/coastlineSourceDatasetResolution)^2 should be sufficient.  The higher the value the slower
-the processing time.
-
-<p>
-    Text
+the processing time.<br>
+    The defaults are sufficient for the 1km default shoreline dataset.
 </p>
 
 
@@ -99,21 +98,21 @@ the processing time.
 <h4>Color</h4>
 
 <p>
-    Text
+    Sets the color for the mask in the Mask Manager.
 </p>
 
 <a name="TRANSPARENCY"></a>
 <h4>Transparency</h4>
 
 <p>
-    Text
+    Sets the transparency level for the mask in the <a href="../../../../../../../seadas-help/src/main/resources/doc/help/visat/MaskManagement.html">Mask Manager</a>.
 </p>
 
 <a name="ENABLED"></a>
 <h4>Enabled in all Bands</h4>
 
 <p>
-    Text
+    Applies the masks to all displayed bands.
 </p>
 
 
