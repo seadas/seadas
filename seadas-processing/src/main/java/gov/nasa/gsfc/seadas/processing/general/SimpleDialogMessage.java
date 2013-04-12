@@ -1,14 +1,9 @@
-package gov.nasa.gsfc.seadas.watermask.ui;
-
-import gov.nasa.gsfc.seadas.watermask.operator.WatermaskClassifier;
-import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
+package gov.nasa.gsfc.seadas.processing.general;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.net.URL;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,9 +34,9 @@ public class SimpleDialogMessage extends JDialog {
 
         JPanel jPanel = new JPanel(new GridBagLayout());
         jPanel.add(jLabel,
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
         jPanel.add(okayButton,
-                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
 
         add(jPanel);

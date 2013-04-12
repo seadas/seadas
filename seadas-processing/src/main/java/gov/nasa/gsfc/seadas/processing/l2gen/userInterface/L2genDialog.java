@@ -20,9 +20,11 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.*;
 import org.esa.beam.framework.ui.AppContext;
 
+import java.io.IOException;
+
 class L2genDialog extends SingleTargetProductDialog {
 
-    private final L2genForm form;
+    private L2genForm form;
 
     public static void main(String[] args) {
         final DefaultAppContext context = new DefaultAppContext("L2gen");
@@ -35,6 +37,7 @@ class L2genDialog extends SingleTargetProductDialog {
         super(appContext, title, ID_APPLY_CLOSE_HELP, helpID);
         //form = new L2genForm(getTargetProductSelector(), appContext);
         form = new L2genForm(appContext, "test");
+
     }
 
     @Override

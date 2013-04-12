@@ -168,7 +168,7 @@ public class L2genReader {
     }
 
 
-    public void readParamInfoXml(InputStream stream) {
+    public void readParamInfoXml(InputStream stream) throws IOException {
         XmlReader reader = new XmlReader();
         Element rootElement = reader.parseAndGetRootElement(stream);
 
@@ -279,7 +279,7 @@ public class L2genReader {
         if (!l2genData.hasParamValue(L2genData.SUITE)) {
             if (l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS) {
                 ParamInfo suiteParamInfo = new ParamInfo(L2genData.SUITE, L2genData.AQUARIUS_SUITE_DEFAULT, ParamInfo.Type.STRING);
-                suiteParamInfo.setDefaultValue(L2genData.AQUARIUS_SUITE_DEFAULT);
+                suiteParamInfo.setDefaultValue("");
                 l2genData.addParamInfo(suiteParamInfo);
             }
         }

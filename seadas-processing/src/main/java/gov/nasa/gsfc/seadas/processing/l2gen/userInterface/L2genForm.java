@@ -9,9 +9,7 @@ import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
-import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
-import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
+import gov.nasa.gsfc.seadas.processing.general.*;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.visat.VisatApp;
@@ -23,9 +21,10 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 
 
-public class L2genForm extends JPanel implements CloProgramUI {
+public class L2genForm  extends JPanel implements CloProgramUI {
 
     private static final String GUI_NAME = "l2gen";
     private static final String GUI_NAME_AQUARIUS = "l2gen_aquarius";
@@ -39,7 +38,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private String guiName;
     private L2genData.Mode mode;
 
-    public L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields, L2genData.Mode mode) {
+    public L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields, L2genData.Mode mode){
 
         this.mode = mode;
 
@@ -59,7 +58,11 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
         l2genData.showIOFields = showIOFields;
 
-        if (getL2genData().initXmlBasedObjects()) {
+
+        StatusInfo statusInfo;
+
+        try {
+            statusInfo = getL2genData().initXmlBasedObjects();
 
             createMainTab();
             createProductsTab();
@@ -87,11 +90,11 @@ public class L2genForm extends JPanel implements CloProgramUI {
 //            if (mode == L2genData.Mode.L2GEN_AQUARIUS) {
 //                l2genData.fireEvent(L2genData.IFILE);
 //            } else {
-                if (iFile != null) {
-                    getL2genData().setInitialValues(iFile);
-                } else {
-                    getL2genData().setInitialValues(getInitialSelectedSourceFile());
-                }
+            if (iFile != null) {
+                getL2genData().setInitialValues(iFile);
+            } else {
+                getL2genData().setInitialValues(getInitialSelectedSourceFile());
+            }
 //            }
 
 
@@ -99,9 +102,16 @@ public class L2genForm extends JPanel implements CloProgramUI {
             getL2genData().enableEvent(L2genData.L2PROD);
             getL2genData().enableEvent(L2genData.PARSTRING);
 
-        } else {
-            add(new JLabel("Problem initializing userInterface"));
+        } catch (IOException e) {
+//            add(new JLabel("Problem initializing userInterface: "+e.getMessage()));
+
+
+
+            SimpleDialogMessage dialog = new SimpleDialogMessage(null, e.getMessage());
+            dialog.setVisible(true);
+            dialog.setEnabled(true);
         }
+
     }
 
     public L2genForm(AppContext appContext, String xmlFileName) {

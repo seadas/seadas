@@ -20,6 +20,8 @@ import gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
 import org.esa.beam.framework.ui.AppContext;
 
+import java.io.IOException;
+
 /**
  * Geographic collocation action.
  *
@@ -31,7 +33,9 @@ public class L2genAction extends CallCloProgramAction {
 
     @Override
     public CloProgramUI getProgramUI(AppContext appContext) {
+
         return new L2genForm(appContext, getXmlFileName());
+
     }
 
 }
