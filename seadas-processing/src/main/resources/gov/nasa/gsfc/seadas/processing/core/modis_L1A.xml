@@ -8,6 +8,7 @@
             <primaryOption>file</primaryOption>
             <primaryOption>--output</primaryOption>
         </primaryOptions>
+        <progressRegex>Scan Number: +(\d+) out of +(\d+)</progressRegex>
     </programMetaData>
     <options>
         <option type="ifile">

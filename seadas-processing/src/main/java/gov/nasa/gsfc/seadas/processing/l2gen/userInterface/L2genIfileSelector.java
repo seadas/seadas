@@ -46,13 +46,13 @@ public class L2genIfileSelector {
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
                     //if (l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(iFile.getAbsolutePath())) {
-                        disableEventHandler();
+                    disableEventHandler();
                     //}
                     l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), iFile.getAbsolutePath());
                     if (!l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(iFile.getAbsolutePath())) {
                         enableEventHandler();
                     }
-
+                    l2genDataProcessorModel.updateParamValues(sourceProductSelector.getSelectedProduct());
                 }
             }
         });
@@ -62,20 +62,23 @@ public class L2genIfileSelector {
         l2genDataProcessorModel.addPropertyChangeListener(l2genDataProcessorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                File iFile = new File(l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
-
+                String ifileName = l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName());
+                File iFile = new File(ifileName);
+                String selectedIfileName = getSelectedIFile().getAbsolutePath();
                 disableControlHandler();
                 if (isEventHandlerEnabled()) {
-                    if (iFile != null && iFile.exists() && !l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(getSelectedIFile())) {
-                        sourceProductSelector.setSelectedFile(iFile);
+                    if (iFile != null && iFile.exists()) {
+                        if (!l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(getSelectedIFile().getAbsolutePath())) {
+                            sourceProductSelector.setSelectedFile(iFile);
+                        }
                     } else {
                         sourceProductSelector.setSelectedFile(null);
                     }
                 }
-               enableControlHandler();
-
+                enableControlHandler();
             }
-        });
+        }
+        );
     }
 
     private boolean isControlHandlerEnabled() {
@@ -120,5 +123,4 @@ public class L2genIfileSelector {
     public SourceProductFileSelector getSourceProductSelector() {
         return sourceProductSelector;
     }
-
 }

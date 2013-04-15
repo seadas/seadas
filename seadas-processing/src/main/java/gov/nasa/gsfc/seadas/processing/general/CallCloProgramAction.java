@@ -286,6 +286,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
+               pm.setSubTaskName(line);
         }
     }
 

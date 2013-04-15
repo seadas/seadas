@@ -9,6 +9,7 @@ import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genWavelengthInfo;
+import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.util.StringUtils;
 import org.esa.beam.util.SystemUtils;
@@ -1703,6 +1704,10 @@ public class L2genData implements L2genDataProcessorModel {
     public ProcessorModel getProcessorModel() {
         processorModel.setReadyToRun(isValidIfile());
         return processorModel;
+    }
+
+    public void updateParamValues(Product selectedProduct) {
+
     }
 
 

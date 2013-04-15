@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.*;
+import org.esa.beam.framework.datamodel.Band;
+import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -93,6 +95,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 return new LonLat2Pixels_Processor(programName, xmlFileName);
             case SMIGEN:
                 return new SMIGEN_Processor(programName, xmlFileName);
+            case L2MAPGEN:
+                return new L2MapGen_Processor(programName, xmlFileName);
             case L2BIN:
                 return new L2Bin_Processor(programName, xmlFileName);
             case L2BIN_AQUARIUS:
@@ -386,12 +390,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public static <T> T[] concat(T[] first, T[] second) {
-      T[] result = Arrays.copyOf(first, first.length + second.length);
-      System.arraycopy(second, 0, result, first.length, second.length);
-      return result;
+        T[] result = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, result, first.length, second.length);
+        return result;
     }
 
-    private String[] getCmdArrayPrefix(){
+    private String[] getCmdArrayPrefix() {
         String[] cmdArrayPrefix;
 
         if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
@@ -412,7 +416,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return cmdArrayPrefix;
     }
 
-    private String[] getCmdArrayParam(){
+    private String[] getCmdArrayParam() {
 
         String[] cmdArrayParam = new String[paramList.getParamArray().size()];
 
@@ -449,7 +453,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             finalCmdArray.add(cmdString);
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
-          return cmdArrayParam;
+        return cmdArrayParam;
     }
 
     private String[] getCmdArrayWithArguments() {
@@ -847,6 +851,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         this.openInSeadas = openInSeadas;
     }
 
+    public void updateParamValues(Product selectedProduct) {
+
+    }
+
 
     private static class Extractor_Processor extends ProcessorModel {
         Extractor_Processor(String programName, String xmlFileName) {
@@ -967,6 +975,30 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
             updateGeoFileInfo(ifileName);
             return true;
+        }
+    }
+
+    private static class L2MapGen_Processor extends ProcessorModel {
+        L2MapGen_Processor(String programName, String xmlFileName) {
+            super(programName, xmlFileName);
+        }
+
+        @Override
+        public void updateParamValues(Product selectedProduct) {
+            String[] bandNames = selectedProduct.getBandNames();
+            ParamInfo pi = getParamInfo("prod");
+            ParamValidValueInfo paramValidValueInfo;
+            Band band;
+            for (String bandName : bandNames) {
+                paramValidValueInfo = new ParamValidValueInfo(bandName);
+                band =  selectedProduct.getBand(bandName);
+                paramValidValueInfo.setDescription(band.getDescription());
+                pi.addValidValueInfo(paramValidValueInfo);
+                if (band.getImageInfo() != null) {
+                    pi.setValue(bandName);
+                }
+            }
+            fireEvent("prod");
         }
     }
 

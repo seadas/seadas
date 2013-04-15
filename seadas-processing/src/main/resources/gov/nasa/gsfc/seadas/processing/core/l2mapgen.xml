@@ -89,6 +89,10 @@
             <type>string</type>
             <description>product name</description>
             <source>default</source>
+            <validValue>
+                <value></value>
+                <description></description>
+            </validValue>
         </option>
         <option type="boolean">
             <name>apply_pal</name>
@@ -156,7 +160,7 @@
                 (default: see SMI product table)
             </description>
             <source>default</source>
-          </option>
+        </option>
         <option type="float">
             <name>datamax</name>
             <value></value>
@@ -166,7 +170,7 @@
                 (default: see SMI product table)
             </description>
             <source>default</source>
-         </option>
+        </option>
         <option type="int">
             <name>stype</name>
             <value></value>

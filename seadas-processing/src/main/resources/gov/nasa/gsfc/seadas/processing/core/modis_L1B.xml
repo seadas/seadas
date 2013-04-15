@@ -9,6 +9,7 @@
             <primaryOption>ifile</primaryOption>
             <primaryOption>geofile</primaryOption>
         </primaryOptions>
+        <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
     </programMetaData>
     <options>
         <option type="ifile">

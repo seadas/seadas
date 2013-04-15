@@ -49,7 +49,7 @@ import java.util.Vector;
 
 /**
  * WARNING: This class belongs to a preliminary API and may change in future releases.
- * todo - add capability to select/add/remove multiple soures (nf - 27.11.2007)
+ * todo - add capability to select/add/remove multiple sources (nf - 27.11.2007)
  * todo - add capability to specify optional sources
  *
  * @author Ralf Quast

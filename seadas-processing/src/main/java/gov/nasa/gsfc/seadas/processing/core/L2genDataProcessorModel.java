@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import org.esa.beam.framework.datamodel.Product;
+
 import java.beans.PropertyChangeListener;
 
 /**
@@ -19,4 +21,5 @@ public interface L2genDataProcessorModel {
     public String getPrimaryInputFileOptionName();
     public String getPrimaryOutputFileOptionName();
     public boolean isMultipleInputFiles();
+    public void updateParamValues(Product selectedProduct);
 }
