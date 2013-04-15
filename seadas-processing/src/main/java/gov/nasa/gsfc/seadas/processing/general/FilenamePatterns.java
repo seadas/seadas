@@ -14,9 +14,34 @@ import java.util.GregorianCalendar;
 public class FilenamePatterns {
 
 
-
     static public FileInfo getOFileInfo(FileInfo fileInfo) {
         return new FileInfo(fileInfo.getFile().getParent(), getOFile(fileInfo).getAbsolutePath(), false);
+    }
+
+    static public FileInfo getAquariusOFileInfo(FileInfo fileInfo, String suite) {
+        return new FileInfo(fileInfo.getFile().getParent(), getAquariusOFile(fileInfo, suite).getAbsolutePath(), false);
+    }
+
+
+    static public File getAquariusOFile(FileInfo iFileInfo, String suite) {
+        if (iFileInfo == null
+                || iFileInfo.getFile() == null
+                || iFileInfo.getFile().getAbsolutePath() == null
+                || iFileInfo.getFile().getAbsolutePath().length() == 0) {
+            return null;
+        }
+
+
+        File oFile = getStandardOfile(iFileInfo.getFile());
+
+        // add on the suite
+        StringBuilder ofile = new StringBuilder(oFile.getAbsolutePath());
+
+        ofile.append("_").append(suite);
+
+        oFile = new File(ofile.toString());
+
+        return oFile;
     }
 
 
@@ -123,7 +148,7 @@ public class FilenamePatterns {
                 if (possibleGeoFiles.size() > 0) {
                     geoFile = possibleGeoFiles.get(0);
                 } else {
-                    geoFile = new File ("YourGeoFilename.GEO");
+                    geoFile = new File("YourGeoFilename.GEO");
                 }
             }
         }

@@ -229,7 +229,7 @@ public class L2genReader {
                         paramInfo.setDefaultValue(paramInfo.getValue());
                     }
 
-                    //todo this code takes care of the suite setting for l2gen_aquarius (see Joel)
+//                    //todo this code takes care of the suite setting for l2gen_aquarius (see Joel)
                     if (name.equals(L2genData.SUITE)) {
                         if (l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS) {
                             if (value == null || value.length() == 0) {

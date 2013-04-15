@@ -830,7 +830,8 @@ public class L2genData implements L2genDataProcessorModel {
 
 
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
-                setIfileParamValue(paramInfo, value);
+            //    setIfileParamValue(paramInfo, value);
+                setIfileAndSuiteParamValues(value, getParamValue(SUITE));
             } else if (paramInfo.getName().toLowerCase().equals(SUITE)) {
                 setIfileAndSuiteParamValues(null, value);
             } else {
@@ -1098,8 +1099,13 @@ public class L2genData implements L2genDataProcessorModel {
             }
 
 
+            FileInfo oFileInfo;
 
-            FileInfo oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
+            if (iFileInfo.isMissionId(MissionInfo.Id.AQUARIUS)) {
+                oFileInfo = FilenamePatterns.getAquariusOFileInfo(iFileInfo, suiteValue);
+            } else {
+                oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
+            }
             if (oFileInfo != null) {
                 setParamValue(OFILE, oFileInfo.getFile().getAbsolutePath());
             }
@@ -1364,11 +1370,11 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    private void updateXmlBasedObjects(File iFile) throws IOException{
+    private void updateXmlBasedObjects(File iFile) throws IOException {
         updateXmlBasedObjects(iFile, null);
     }
 
-    private void updateXmlBasedObjects(File iFile, String suite) throws IOException{
+    private void updateXmlBasedObjects(File iFile, String suite) throws IOException {
 
         InputStream paramInfoStream = getParamInfoInputStream(iFile, suite);
 
@@ -1451,12 +1457,12 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    private InputStream getParamInfoInputStream (File file) throws  IOException{
+    private InputStream getParamInfoInputStream(File file) throws IOException {
         return getParamInfoInputStream(file, null);
     }
 
 
-    private InputStream getParamInfoInputStream(File file, String suite) throws  IOException{
+    private InputStream getParamInfoInputStream(File file, String suite) throws IOException {
 
         File dataDir = SystemUtils.getApplicationDataDir();
         File l2genDir = new File(dataDir, "l2gen");
@@ -1512,15 +1518,20 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     public void setInitialValues(File iFile) {
-        ParamInfo info = getParamInfo(IFILE);
-        setParamValueAndDefault(info, ParamInfo.NULL_STRING);
+        ParamInfo ifileParamInfo = getParamInfo(IFILE);
+        setParamValueAndDefault(ifileParamInfo, ParamInfo.NULL_STRING);
         if (iFile != null) {
-            setParamValue(info, iFile.toString());
+            setParamValue(ifileParamInfo, iFile.toString());
+
+            // reset suite and ifile to same value because this fires needed GUI updates events
+//            if (iFileInfo.isMissionId(MissionInfo.Id.AQUARIUS)) {
+//                setIfileAndSuiteParamValues(iFile.getAbsolutePath(), getParamValue(SUITE));
+//            }
         }
     }
 
 
-    public StatusInfo initXmlBasedObjects() throws IOException{
+    public StatusInfo initXmlBasedObjects() throws IOException {
 
         StatusInfo myStatusInfo = new StatusInfo(StatusInfo.Id.SUCCEED);
 
@@ -1598,34 +1609,34 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    public L2genProductsParamInfo createL2prodParamInfo (String value) throws IOException {
+    public L2genProductsParamInfo createL2prodParamInfo(String value) throws IOException {
 
-            InputStream productInfoStream;
+        InputStream productInfoStream;
 
-            switch (mode) {
-                case L2GEN_AQUARIUS:
-                    productInfoStream = getAquariusProductInfoInputStream();
-                    break;
-                default:
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                productInfoStream = getAquariusProductInfoInputStream();
+                break;
+            default:
 
-                    productInfoStream = getProductInfoInputStream(getTinyIFile());
+                productInfoStream = getProductInfoInputStream(getTinyIFile());
 
-                    break;
-            }
+                break;
+        }
 
 
-            L2genProductsParamInfo l2prodParamInfo = new L2genProductsParamInfo();
-            setL2prodParamInfo(l2prodParamInfo);
+        L2genProductsParamInfo l2prodParamInfo = new L2genProductsParamInfo();
+        setL2prodParamInfo(l2prodParamInfo);
 
-            l2genReader.readProductsXml(productInfoStream);
+        l2genReader.readProductsXml(productInfoStream);
 
-            l2prodParamInfo.setValue(value);
+        l2prodParamInfo.setValue(value);
 
-            InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(getProductCategoryXml());
-            l2genReader.readProductCategoryXml(productCategoryInfoStream);
-            setProductCategoryInfos();
+        InputStream productCategoryInfoStream = L2genForm.class.getResourceAsStream(getProductCategoryXml());
+        l2genReader.readProductCategoryXml(productCategoryInfoStream);
+        setProductCategoryInfos();
 
-            return l2prodParamInfo;
+        return l2prodParamInfo;
 
     }
 
