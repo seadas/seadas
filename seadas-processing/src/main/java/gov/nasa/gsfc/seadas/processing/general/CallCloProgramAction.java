@@ -175,6 +175,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
             @Override
             protected String doInBackground(ProgressMonitor pm) throws Exception {
                 final Process process = OCSSWRunner.execute(processorModel);
+                if (process == null) {
+                    throw new IOException(programName + " failed to create process.");
+                }
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
                 processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
@@ -286,7 +289,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-               pm.setSubTaskName(line);
+            pm.setSubTaskName(line);
         }
     }
 
