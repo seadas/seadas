@@ -830,8 +830,12 @@ public class L2genData implements L2genDataProcessorModel {
 
 
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
-            //    setIfileParamValue(paramInfo, value);
-                setIfileAndSuiteParamValues(value, getParamValue(SUITE));
+
+                if (getMode() == Mode.L2GEN_AQUARIUS) {
+                    setIfileAndSuiteParamValues(value, AQUARIUS_SUITE_DEFAULT);
+                } else {
+                    setIfileParamValue(paramInfo, value);
+                }
             } else if (paramInfo.getName().toLowerCase().equals(SUITE)) {
                 setIfileAndSuiteParamValues(null, value);
             } else {
