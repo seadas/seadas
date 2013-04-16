@@ -5,10 +5,8 @@ Author: Danny Knowles
 
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
-import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.general.*;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
@@ -20,11 +18,13 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 
-public class L2genForm  extends JPanel implements CloProgramUI {
+public class L2genForm extends JPanel implements CloProgramUI {
 
     private static final String GUI_NAME = "l2gen";
     private static final String GUI_NAME_AQUARIUS = "l2gen_aquarius";
@@ -38,7 +38,7 @@ public class L2genForm  extends JPanel implements CloProgramUI {
     private String guiName;
     private L2genData.Mode mode;
 
-    public L2genForm(AppContext appContext, String xmlFileName, File iFile, boolean showIOFields, L2genData.Mode mode){
+    public L2genForm(AppContext appContext, String xmlFileName, final File iFile, boolean showIOFields, L2genData.Mode mode) {
 
         this.mode = mode;
 
@@ -59,58 +59,72 @@ public class L2genForm  extends JPanel implements CloProgramUI {
         l2genData.showIOFields = showIOFields;
 
 
-        StatusInfo statusInfo;
+        VisatApp visatApp = VisatApp.getApp();
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                getGuiName()) {
 
-        try {
-            statusInfo = getL2genData().initXmlBasedObjects();
+            @Override
+            protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-            createMainTab();
-            createProductsTab();
-            createCategoryParamTabs();
+                pm.beginTask("Initializing " + getGuiName(), 2);
 
-            tabIndex = jTabbedPane.getSelectedIndex();
+                try {
 
-            getjTabbedPane().addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent evt) {
-                    tabChangeHandler();
+                    StatusInfo statusInfo = getL2genData().initXmlBasedObjects();
+
+                    createMainTab();
+                    createProductsTab();
+                    createCategoryParamTabs();
+
+                    tabIndex = jTabbedPane.getSelectedIndex();
+
+                    getjTabbedPane().addChangeListener(new ChangeListener() {
+                        public void stateChanged(ChangeEvent evt) {
+                            tabChangeHandler();
+                        }
+                    });
+
+                    setLayout(new GridBagLayout());
+
+                    add(getjTabbedPane(),
+                            new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
+                    add(getOpenInAppCheckBox(),
+                            new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+
+                    getL2genData().disableEvent(L2genData.PARSTRING);
+                    getL2genData().disableEvent(L2genData.L2PROD);
+
+                    if (iFile != null) {
+                        getL2genData().setInitialValues(iFile);
+                    } else {
+                        getL2genData().setInitialValues(getInitialSelectedSourceFile());
+                    }
+
+
+                    getL2genData().fireAllParamEvents();
+                    getL2genData().enableEvent(L2genData.L2PROD);
+                    getL2genData().enableEvent(L2genData.PARSTRING);
+                    pm.worked(1);
+
+                } catch (IOException e) {
+                    pm.done();
+                    SimpleDialogMessage dialog = new SimpleDialogMessage(null, "ERROR - Problem " + e.getMessage());
+                    dialog.setVisible(true);
+                    dialog.setEnabled(true);
+
+
+                } finally {
+                    pm.done();
                 }
-            });
-
-            setLayout(new GridBagLayout());
-
-            add(getjTabbedPane(),
-                    new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
-            add(getOpenInAppCheckBox(),
-                    new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-
-            getL2genData().disableEvent(L2genData.PARSTRING);
-            getL2genData().disableEvent(L2genData.L2PROD);
-
-//            if (mode == L2genData.Mode.L2GEN_AQUARIUS) {
-//                l2genData.fireEvent(L2genData.IFILE);
-//            } else {
-            if (iFile != null) {
-                getL2genData().setInitialValues(iFile);
-            } else {
-                getL2genData().setInitialValues(getInitialSelectedSourceFile());
+                return null;
             }
-//            }
 
 
-            getL2genData().fireAllParamEvents();
-            getL2genData().enableEvent(L2genData.L2PROD);
-            getL2genData().enableEvent(L2genData.PARSTRING);
+        };
 
-        } catch (IOException e) {
-//            add(new JLabel("Problem initializing userInterface: "+e.getMessage()));
+        pmSwingWorker.executeWithBlocking();
 
-
-
-            SimpleDialogMessage dialog = new SimpleDialogMessage(null, e.getMessage());
-            dialog.setVisible(true);
-            dialog.setEnabled(true);
-        }
 
     }
 
