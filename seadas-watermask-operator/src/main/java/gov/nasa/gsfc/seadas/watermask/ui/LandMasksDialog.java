@@ -54,14 +54,14 @@ import java.beans.PropertyChangeListener;
 class LandMasksDialog extends JDialog {
 
     public LandMasksData landMasksData = null;
-    private JButton helpButton = null;
+    private Component helpButton = null;
     private String HELP_ID = "coastlineLandMasks";
 
 
     public LandMasksDialog(LandMasksData landMasksData, boolean masksCreated) {
         this.landMasksData = landMasksData;
 
-        helpButton = (JButton) getHelpButton(HELP_ID);
+        helpButton =  getHelpButton(HELP_ID);
 
         if (masksCreated) {
             createNotificationUI();
@@ -79,7 +79,10 @@ class LandMasksDialog extends JDialog {
 //        mainPanel.add(helpPanel,
 //                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, 0, 2));
 
-    protected AbstractButton getHelpButton(String helpId) {
+
+
+
+    protected Component getHelpButton(String helpId) {
         if (helpId != null) {
             final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon("icons/Help24.gif"),
                     false);
@@ -87,12 +90,17 @@ class LandMasksDialog extends JDialog {
             helpButton.setName("helpButton");
             HelpSys.enableHelpOnButton(helpButton, helpId);
             //  HelpSys.enableHelpKey(getParentDialogContentPane(), getHelpId());
+
             return helpButton;
         }
 
         return null;
     }
 
+    public void close() {
+    //    HelpSys.getHelpBroker().setDisplayed(false);
+        dispose();
+    }
 
     public final void createNotificationUI() {
         JButton createMasks = new JButton("Create New Masks");
@@ -105,7 +113,7 @@ class LandMasksDialog extends JDialog {
 
             public void actionPerformed(ActionEvent event) {
                 landMasksData.setDeleteMasks(true);
-                dispose();
+                close();
             }
         });
 
@@ -117,7 +125,7 @@ class LandMasksDialog extends JDialog {
         cancelButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                dispose();
+                close();
             }
         });
 
@@ -150,7 +158,7 @@ class LandMasksDialog extends JDialog {
 
 
         setTitle("Land Masks");
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
 
@@ -191,7 +199,6 @@ class LandMasksDialog extends JDialog {
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         JComboBox jComboBox = resolutionComboBox.getjComboBox();
-
 
 
         landMasksData.addPropertyChangeListener(LandMasksData.PROMPT_REQUEST_TO_INSTALL_FILE_EVENT, new PropertyChangeListener() {
