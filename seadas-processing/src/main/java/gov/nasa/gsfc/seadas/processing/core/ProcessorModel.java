@@ -985,20 +985,22 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         @Override
         public void updateParamValues(Product selectedProduct) {
-            String[] bandNames = selectedProduct.getBandNames();
-            ParamInfo pi = getParamInfo("prod");
-            ParamValidValueInfo paramValidValueInfo;
-            Band band;
-            for (String bandName : bandNames) {
-                paramValidValueInfo = new ParamValidValueInfo(bandName);
-                band =  selectedProduct.getBand(bandName);
-                paramValidValueInfo.setDescription(band.getDescription());
-                pi.addValidValueInfo(paramValidValueInfo);
-                if (band.getImageInfo() != null) {
-                    pi.setValue(bandName);
+            if (selectedProduct != null) {
+                String[] bandNames = selectedProduct.getBandNames();
+                ParamInfo pi = getParamInfo("prod");
+                ParamValidValueInfo paramValidValueInfo;
+                Band band;
+                for (String bandName : bandNames) {
+                    paramValidValueInfo = new ParamValidValueInfo(bandName);
+                    band = selectedProduct.getBand(bandName);
+                    paramValidValueInfo.setDescription(band.getDescription());
+                    pi.addValidValueInfo(paramValidValueInfo);
+                    if (band.getImageInfo() != null) {
+                        pi.setValue(bandName);
+                    }
                 }
+                fireEvent("prod");
             }
-            fireEvent("prod");
         }
     }
 
