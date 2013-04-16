@@ -1174,8 +1174,8 @@ public class L2genData implements L2genDataProcessorModel {
         }
 
         // get the ifile
-        String ifile = getParamValue(getParamInfo(IFILE));
-        StringBuilder ancillaryFiles = new StringBuilder("");
+        final String ifile = getParamValue(getParamInfo(IFILE));
+        final StringBuilder ancillaryFiles = new StringBuilder("");
 
         String getanc;
 
@@ -1188,7 +1188,7 @@ public class L2genData implements L2genDataProcessorModel {
                 break;
         }
 
-        ProcessorModel processorModel = new ProcessorModel(getanc);
+        final ProcessorModel processorModel = new ProcessorModel(getanc);
         processorModel.setAcceptsParFile(false);
 
         //position is changed from 1 to 0.
@@ -1208,51 +1208,79 @@ public class L2genData implements L2genDataProcessorModel {
 
         processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, position);
 
-        File iFile = new File(ifile);
-        try {
-            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
-
-            // Determine exploded filenames
-            File runDirectoryFiles[] = processorModel.getIFileDir().listFiles();
-
-            for (File file : runDirectoryFiles) {
-                if (file.getName().startsWith(iFile.getName().substring(0, 13))) {
-                    if (file.getName().endsWith(".txt") || file.getName().endsWith(".anc")) {
-                        file.deleteOnExit();
-                    }
-                }
-            }
+        final File iFile = new File(ifile);
+        final String getancFinal = getanc;
 
 
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        VisatApp visatApp = VisatApp.getApp();
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                "GetAnc") {
 
-            String line = stdInput.readLine();
-            while (line != null) {
-                if (line.contains("=")) {
-                    ancillaryFiles.append(line);
-                    ancillaryFiles.append("\n");
+            @Override
+            protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                    // Delete all ancillary files in operational (IFILE) directory on program exit
-                    String[] splitLine = line.split("=");
-                    if (splitLine.length == 2) {
-                        File currentFile = new File(splitLine[1]);
-                        if (currentFile.isAbsolute()) {
-                            if (currentFile.getParent() != null && currentFile.getParent().equals(iFile.getParent())) {
-                                currentFile.deleteOnExit();
+                pm.beginTask("Retrieving ancillary files", 2);
+
+                try {
+                    Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
+
+                    // Determine exploded filenames
+                    File runDirectoryFiles[] = processorModel.getIFileDir().listFiles();
+
+                    for (File file : runDirectoryFiles) {
+                        if (file.getName().startsWith(iFile.getName().substring(0, 13))) {
+                            if (file.getName().endsWith(".txt") || file.getName().endsWith(".anc")) {
+                                file.deleteOnExit();
                             }
-                        } else {
-                            File absoluteCurrentFile = new File(processorModel.getIFileDir().getAbsolutePath(), currentFile.getName());
-                            absoluteCurrentFile.deleteOnExit();
                         }
                     }
+
+
+                    BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                    String line = stdInput.readLine();
+                    while (line != null) {
+                        if (line.contains("=")) {
+                            ancillaryFiles.append(line);
+                            ancillaryFiles.append("\n");
+
+                            // Delete all ancillary files in operational (IFILE) directory on program exit
+                            String[] splitLine = line.split("=");
+                            if (splitLine.length == 2) {
+                                File currentFile = new File(splitLine[1]);
+                                if (currentFile.isAbsolute()) {
+                                    if (currentFile.getParent() != null && currentFile.getParent().equals(iFile.getParent())) {
+                                        currentFile.deleteOnExit();
+                                    }
+                                } else {
+                                    File absoluteCurrentFile = new File(processorModel.getIFileDir().getAbsolutePath(), currentFile.getName());
+                                    absoluteCurrentFile.deleteOnExit();
+                                }
+                            }
+                        }
+                        line = stdInput.readLine();
+                    }
+
+                    pm.worked(1);
+
+                } catch (IOException e) {
+                    pm.done();
+                    SimpleDialogMessage dialog = new SimpleDialogMessage(null, "ERROR - Problem running " + getancFinal + " " + e.getMessage());
+                    dialog.setVisible(true);
+                    dialog.setEnabled(true);
+
+
+                } finally {
+                    pm.done();
                 }
-                line = stdInput.readLine();
+                return null;
             }
-        } catch (IOException e) {
-            System.out.println("ERROR - Problem running " + getanc);
-            System.out.println(e.getMessage());
-            return;
-        }
+
+
+        };
+
+        pmSwingWorker.executeWithBlocking();
+
 
         setParString(ancillaryFiles.toString(), true, true);
 
