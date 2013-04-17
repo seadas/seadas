@@ -61,6 +61,8 @@ public class L2genData implements L2genDataProcessorModel {
 
     private static File aquariusProductXmlFile;
 
+    public static final String ANCILLARY_FILES_CATEGORY_NAME = "Ancillary Inputs";
+
     public static final String
             PAR = "par",
             GEOFILE = "geofile",
@@ -547,7 +549,11 @@ public class L2genData implements L2genDataProcessorModel {
             }
 
 
-            if (currCategoryEntries.toString().length() > 0 && !(alwaysDisplay && !showIOFields)) {
+            if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName())) {
+                par.append("# " + paramCategoryInfo.getName().toUpperCase() + " Default = climatology (select GetAnc to download ancillary files)\n");
+                par.append(currCategoryEntries.toString());
+                par.append("\n");
+            } else if (currCategoryEntries.toString().length() > 0 && !(alwaysDisplay && !showIOFields)) {
                 par.append("# " + paramCategoryInfo.getName().toUpperCase() + "\n");
                 par.append(currCategoryEntries.toString());
                 par.append("\n");

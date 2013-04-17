@@ -4,12 +4,16 @@ import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 
+import javax.help.DefaultHelpBroker;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,15 +57,22 @@ import java.beans.PropertyChangeListener;
 
 class LandMasksDialog extends JDialog {
 
-    public LandMasksData landMasksData = null;
+    private LandMasksData landMasksData = null;
     private Component helpButton = null;
-    private String HELP_ID = "coastlineLandMasks";
+    private HelpBroker helpBroker = null;
+
+    private final static String HELP_ID = "coastlineLandMasks";
+    private final static String HELP_ICON = "icons/Help24.gif";
 
 
     public LandMasksDialog(LandMasksData landMasksData, boolean masksCreated) {
         this.landMasksData = landMasksData;
 
-        helpButton =  getHelpButton(HELP_ID);
+        initHelpBroker();
+
+        if (helpBroker != null) {
+            helpButton = getHelpButton(HELP_ID);
+        }
 
         if (masksCreated) {
             createNotificationUI();
@@ -71,25 +82,21 @@ class LandMasksDialog extends JDialog {
     }
 
 
-    // HELP EXAMPLE
-
-//        final JPanel helpPanel = new JPanel(new GridBagLayout());
-//        helpPanel.add(getHelpButton("l2gen"), BorderLayout.EAST);
-//
-//        mainPanel.add(helpPanel,
-//                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, 0, 2));
-
-
-
-
     protected Component getHelpButton(String helpId) {
         if (helpId != null) {
-            final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon("icons/Help24.gif"),
+
+            final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon(HELP_ICON),
                     false);
-            helpButton.setToolTipText("Help");
-            helpButton.setName("helpButton");
-            HelpSys.enableHelpOnButton(helpButton, helpId);
-            //  HelpSys.enableHelpKey(getParentDialogContentPane(), getHelpId());
+
+            HelpSet helpSet = helpBroker.getHelpSet();
+            helpBroker.setCurrentID(helpId);
+
+            if (helpButton != null) {
+                helpButton.setToolTipText("Help");
+                helpButton.setName("helpButton");
+                helpBroker.enableHelpKey(helpButton, helpId, helpSet);
+                helpBroker.enableHelpOnButton(helpButton, helpId, helpSet);
+            }
 
             return helpButton;
         }
@@ -97,10 +104,20 @@ class LandMasksDialog extends JDialog {
         return null;
     }
 
-    public void close() {
-    //    HelpSys.getHelpBroker().setDisplayed(false);
-        dispose();
+
+    private void initHelpBroker() {
+        HelpSet helpSet = HelpSys.getHelpSet();
+        if (helpSet != null) {
+            helpBroker = helpSet.createHelpBroker();
+            if (helpBroker instanceof DefaultHelpBroker) {
+                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
+                defaultHelpBroker.setActivationWindow(this);
+            }
+        }
     }
+
+
+
 
     public final void createNotificationUI() {
         JButton createMasks = new JButton("Create New Masks");
@@ -113,7 +130,7 @@ class LandMasksDialog extends JDialog {
 
             public void actionPerformed(ActionEvent event) {
                 landMasksData.setDeleteMasks(true);
-                close();
+                dispose();
             }
         });
 
@@ -125,7 +142,7 @@ class LandMasksDialog extends JDialog {
         cancelButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                close();
+                dispose();
             }
         });
 
@@ -158,7 +175,7 @@ class LandMasksDialog extends JDialog {
 
 
         setTitle("Land Masks");
-        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
 
