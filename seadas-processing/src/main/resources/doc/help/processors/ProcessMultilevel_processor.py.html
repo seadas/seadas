@@ -1,0 +1,181 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - Multi-level Processor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Multi-level Processor
+        </td>
+        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>Multi-level Processor</h3>
+
+<p>
+    Processes a file or list of files through multiple levels.
+</p>
+
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
+<p>Tools -> SeaDAS Processing -> Multi-level Processor</p>
+
+
+<a name="details"><h4>Details</h4></a>
+
+<p>
+    <b>multilevel_processor.py</b> is a work in progress.
+</p>
+<p></p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>install_ocssw.py GUI</b></caption>
+        <tr>
+            <td><img src="../images/install_ocssw.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>install-dir</b></td>
+        <td>text</td>
+        <td>destination directory for install. Defaults to $OCSSWROOT or "$HOME/ocssw" if neither are given.</td>
+        <td>Optional. The default installation directory is $USER_HOME/ocssw.</td>
+        <td>$OCSSWROOT if it exists, otherwise "$HOME/ocssw"</td>
+    </tr>
+    <tr>
+        <td><b>aquarius</b></td>
+        <td> boolean</td>
+        <td>install Aquarius files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects installation directory
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes <b><i>install_ocssw.py</i></b> with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
+<pre>
+    Usage: multilevel_processor.py [options] parameter_file
+
+    The parameter_file is similar to, but not exactly like, parameter files for
+    OCSSW processing programs:
+     - It has sections separated by headers which are denoted by "[" and "]".
+    The section named "main" is required.  Its allowed options are:
+        ifile - Required entry naming the input file(s) to be processed.
+        use_nrt_anc - use near real time ancillary data
+        keepfiles - keep all the data files generated
+        overwrite - overwrite any data files which already exist
+        use_existing  - use any data files which already exist
+
+        Simultaneous use of both the overwrite and use_existing options is
+        not permitted.
+
+    The names for other sections are the programs for which that section's
+    entries are to be applied.  Intermediate sections which are required for the
+    final level of processing do not need to be defined if their default options
+    are acceptable.  A section can be empty.  The final level of processing
+    must have a section header, even if no entries appear within that section.
+     - Entries within a section appear as key=value.  Comma separated lists of
+    values can be used when appropriate.
+     - Comments are marked by "#"; anything appearing on a line after that
+    character is ignored.  A line beginning with a "#" is completely ignored.
+
+    Example:
+
+    # Sample par file for multilevel_processor.py.
+    [main]
+    ifile=2010345034027.L1A_LAC
+    [l2gen]
+    l2prod=chlor_a
+    # final processing level
+
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -v, --verbose         print status messages to stdout
+  -k, --keepfiles       keep files created during processing
+  --overwrite           overwrite files which already exist (default = stop
+                        processing if file already exists)
+  --use_existing        use files which already exist (default = stop
+                        processing if file already exists)
+</pre>
+
+</body>
+</html>

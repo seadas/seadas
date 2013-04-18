@@ -30,6 +30,7 @@
                 <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
                 <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
                 <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
+                <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
 
             </tocitem>
 

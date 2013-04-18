@@ -59,7 +59,7 @@ public class ProcessorTypeInfo {
         put("smigen", ProcessorID.SMIGEN);
         put("smitoppm", ProcessorID.SMITOPPM);
         put("lonlat2pixline", ProcessorID.LONLAT2PIXLINE);
-        put("seadas_processor.py", ProcessorID.SEADAS_PROCESSOR_PY);
+        put("multilevel_processor.py", ProcessorID.SEADAS_PROCESSOR_PY);
         put("seadas_processor_main", ProcessorID.SEADAS_PROCESSOR_MAIN);
         put("install_ocssw.py", ProcessorID.OCSSW_INSTALLER);
 

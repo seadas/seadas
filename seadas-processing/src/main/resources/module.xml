@@ -260,15 +260,15 @@
 
         <action>
             <parent>seadasProcessing</parent>
-            <id>seadas_processor.py</id>
+            <id>multilevel_processor.py</id>
             <!--<placeBefore>extractor</placeBefore>-->
             <placeAfter>smigen</placeAfter>
             <class>gov.nasa.gsfc.seadas.processing.processor.SPAction</class>
             <text>multi-level processor...</text>
             <shortDescr>Process a file through many levels</shortDescr>
-            <programName>seadas_processor.py</programName>
-            <dialogTitle>seadas_processor.py</dialogTitle>
-            <xmlFileName>seadas_processor.xml</xmlFileName>
+            <programName>multilevel_processor.py</programName>
+            <dialogTitle>multilevel_processor.py</dialogTitle>
+            <xmlFileName>multilevel_processor.xml</xmlFileName>
         </action>
         <!--<action>-->
         <!--<parent>seadasProcessing</parent>-->

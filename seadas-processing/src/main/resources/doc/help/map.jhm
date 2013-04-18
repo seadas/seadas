@@ -24,7 +24,7 @@
     <mapID target="l2bin_aquarius" url="processors/ProcessL2binAquarius.html"/>
     <mapID target="l3bin" url="processors/ProcessL3bin.html"/>
     <mapID target="smigen" url="processors/ProcessSmigen.html"/>
-
+    <mapID target="multilevel_processor.py" url="processors/ProcessMultilevel_processor.py.html"/>
 
     <mapID target="processOverview" url="processors/ProcessOverview.html"/>
 
