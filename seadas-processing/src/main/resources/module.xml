@@ -28,7 +28,7 @@
             <placeAfter>orthorectificationAction</placeAfter>
             <id>seadasProcessing</id>
             <class>org.esa.beam.visat.actions.ActionGroup</class>
-            <text>OCSSW Processing</text>
+            <text>SeaDAS Processing</text>
             <mnemonic>P</mnemonic>
             <shortDescr>SeaDAS Processing Programs.</shortDescr>
             <longDescr>SeaDAS Processing Programs.</longDescr>
@@ -39,32 +39,19 @@
         <action>
             <parent>seadasProcessing</parent>
             <id>install_ocssw.py</id>
-            <placeBefore>seadas_processor.py</placeBefore>
+            <placeBefore>extractor</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>install/update ocssw</text>
-            <shortDescr>Install ocssw</shortDescr>
+            <text>Install/Update</text>
+            <shortDescr>Install/Update SeaDAS Processing Software</shortDescr>
             <programName>install_ocssw.py</programName>
-            <dialogTitle>ocssw installer</dialogTitle>
+            <dialogTitle>SeaDAS Processing Software Installer</dialogTitle>
             <xmlFileName>ocssw_installer.xml</xmlFileName>
             <separatorAfter>true</separatorAfter>
         </action>
-
-        <action>
-            <parent>seadasProcessing</parent>
-            <id>seadas_processor.py</id>
-            <placeBefore>extractor</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.processor.SPAction</class>
-            <text>seadas_processor.py...</text>
-            <shortDescr>Process a file through many levels</shortDescr>
-            <programName>seadas_processor.py</programName>
-            <dialogTitle>seadas_processor.py</dialogTitle>
-            <xmlFileName>seadas_processor.xml</xmlFileName>
-        </action>
-
         <action>
             <parent>seadasProcessing</parent>
             <id>extractor</id>
-            <placeAfter>seadas_processor</placeAfter>
+            <placeAfter>install_ocssw.py</placeAfter>
             <placeBefore>modis_L1A.py</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>extractor...</text>
@@ -80,7 +67,7 @@
             <placeAfter>extractor</placeAfter>
             <placeBefore>modis_GEO.py</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>modis_L1A.py...</text>
+            <text>modis_L1A...</text>
             <shortDescr>Process MODIS L0 to L1A</shortDescr>
             <programName>modis_L1A.py</programName>
             <dialogTitle>modis_L1A.py Processor</dialogTitle>
@@ -93,7 +80,7 @@
             <placeAfter>modis_L1A.py</placeAfter>
             <placeBefore>modis_L1B.py</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>modis_GEO.py...</text>
+            <text>modis_GEO...</text>
             <shortDescr>Process MODIS Geolocation</shortDescr>
             <programName>modis_GEO.py</programName>
             <dialogTitle>modis_GEO.py Processor</dialogTitle>
@@ -106,7 +93,7 @@
             <placeAfter>modis_GEO.py</placeAfter>
             <placeBefore>l1bgen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>modis_L1B.py...</text>
+            <text>modis_L1B...</text>
             <shortDescr>Process MODIS L1A to L1B</shortDescr>
             <programName>modis_L1B.py</programName>
             <dialogTitle>modis_L1B.py Processor</dialogTitle>
@@ -262,7 +249,7 @@
             <parent>seadasProcessing</parent>
             <id>smigen</id>
             <placeAfter>l3bin</placeAfter>
-            <!--<placeBefore>l3gen</placeBefore>-->
+            <placeBefore>seadas_processor.py</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>smigen...</text>
             <shortDescr>Create a L3 SMI file</shortDescr>
@@ -271,6 +258,18 @@
             <xmlFileName>smigen.xml</xmlFileName>
         </action>
 
+        <action>
+            <parent>seadasProcessing</parent>
+            <id>seadas_processor.py</id>
+            <!--<placeBefore>extractor</placeBefore>-->
+            <placeAfter>smigen</placeAfter>
+            <class>gov.nasa.gsfc.seadas.processing.processor.SPAction</class>
+            <text>multi-level processor...</text>
+            <shortDescr>Process a file through many levels</shortDescr>
+            <programName>seadas_processor.py</programName>
+            <dialogTitle>seadas_processor.py</dialogTitle>
+            <xmlFileName>seadas_processor.xml</xmlFileName>
+        </action>
         <!--<action>-->
         <!--<parent>seadasProcessing</parent>-->
         <!--<id>l3gen</id>-->

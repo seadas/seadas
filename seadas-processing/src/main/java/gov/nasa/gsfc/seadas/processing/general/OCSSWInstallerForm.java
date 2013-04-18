@@ -9,7 +9,9 @@ import org.esa.beam.framework.ui.AppContext;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +34,10 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
     private JPanel dirPanel;
     private JPanel missionPanel;
     private JPanel otherPanel;
+
+    public static final String missionDataDir = OCSSW.getOcsswEnv() + System.getProperty("file.separator") + "run"
+            + System.getProperty("file.separator") + "data"
+            + System.getProperty("file.separator");
 
     private static final Set<String> MISSIONS = new HashSet<String>(Arrays.asList(
             new String[]{"AQUARIUS",
@@ -58,6 +64,24 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                     "OCRVC"
             }
     ));
+
+    private static final HashMap<String, String> MISSION_DIRECTORIES;
+     static {
+        MISSION_DIRECTORIES = new HashMap<String, String>();
+         MISSION_DIRECTORIES.put("SEAWIFS", "seawifs");
+         MISSION_DIRECTORIES.put("AQUA", "modisa");
+         MISSION_DIRECTORIES.put("TERRA", "modist");
+         MISSION_DIRECTORIES.put("VIIRS", "viirsn");
+         MISSION_DIRECTORIES.put("MERIS", "meris");
+         MISSION_DIRECTORIES.put("CZCS", "czcs");
+         MISSION_DIRECTORIES.put("AQUARIUS", "aquarius");
+         MISSION_DIRECTORIES.put("OCTS", "octs");
+         MISSION_DIRECTORIES.put("OSMI", "osmi");
+         MISSION_DIRECTORIES.put("MOS", "mos");
+         MISSION_DIRECTORIES.put("OCM2", "ocm2");
+         MISSION_DIRECTORIES.put("OCM1", "ocm1");
+         MISSION_DIRECTORIES.put("AVHRR", "avhrr");
+    }
 
     public OCSSWInstallerForm(AppContext appContext, String programName, String xmlFileName) {
         this.appContext = appContext;
@@ -149,8 +173,15 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                     tmpString = ParamUtils.removePreceedingDashes(c.getName()).toUpperCase();
                     if (MISSIONS.contains(tmpString)) {
                         if (!DEFAULT_MISSIONS.contains(tmpString)) {
+                            if (new File(missionDataDir + MISSION_DIRECTORIES.get(tmpString)).exists()) {
+                                c.setEnabled(false);
+                                ((JPanel) c).getComponents()[0].setEnabled(false);
+                                ((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
+                                ((JPanel) c).getComponents()[1].setEnabled(false);
+                            }
                             missionPanel.add(c);
                         }
+
                     } else {
                         if (tmpString.equals("SRC")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Source Code");

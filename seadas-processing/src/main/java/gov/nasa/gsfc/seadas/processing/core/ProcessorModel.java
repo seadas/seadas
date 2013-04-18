@@ -95,8 +95,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 return new LonLat2Pixels_Processor(programName, xmlFileName);
             case SMIGEN:
                 return new SMIGEN_Processor(programName, xmlFileName);
-            case L2MAPGEN:
-                return new L2MapGen_Processor(programName, xmlFileName);
+//            case L2MAPGEN:
+//                return new L2MapGen_Processor(programName, xmlFileName);
             case L2BIN:
                 return new L2Bin_Processor(programName, xmlFileName);
             case L2BIN_AQUARIUS:
@@ -852,7 +852,24 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void updateParamValues(Product selectedProduct) {
-
+        if (selectedProduct != null) {
+            String[] bandNames = selectedProduct.getBandNames();
+            ParamInfo pi = getParamInfo("prod");
+            ParamValidValueInfo paramValidValueInfo;
+            Band band;
+            if (bandNames != null && pi != null) {
+                for (String bandName : bandNames) {
+                    paramValidValueInfo = new ParamValidValueInfo(bandName);
+                    band = selectedProduct.getBand(bandName);
+                    paramValidValueInfo.setDescription(band.getDescription());
+                    pi.addValidValueInfo(paramValidValueInfo);
+                    if (band.getImageInfo() != null) {
+                        pi.setValue(bandName);
+                    }
+                }
+                fireEvent("prod");
+            }
+        }
     }
 
 
@@ -978,31 +995,33 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
     }
 
-    private static class L2MapGen_Processor extends ProcessorModel {
-        L2MapGen_Processor(String programName, String xmlFileName) {
-            super(programName, xmlFileName);
-        }
-
-        @Override
-        public void updateParamValues(Product selectedProduct) {
-            if (selectedProduct != null) {
-                String[] bandNames = selectedProduct.getBandNames();
-                ParamInfo pi = getParamInfo("prod");
-                ParamValidValueInfo paramValidValueInfo;
-                Band band;
-                for (String bandName : bandNames) {
-                    paramValidValueInfo = new ParamValidValueInfo(bandName);
-                    band = selectedProduct.getBand(bandName);
-                    paramValidValueInfo.setDescription(band.getDescription());
-                    pi.addValidValueInfo(paramValidValueInfo);
-                    if (band.getImageInfo() != null) {
-                        pi.setValue(bandName);
-                    }
-                }
-                fireEvent("prod");
-            }
-        }
-    }
+//    private static class L2MapGen_Processor extends ProcessorModel {
+//        L2MapGen_Processor(String programName, String xmlFileName) {
+//            super(programName, xmlFileName);
+//        }
+//
+//        @Override
+//        public void updateParamValues(Product selectedProduct) {
+//            if (selectedProduct != null) {
+//                String[] bandNames = selectedProduct.getBandNames();
+//                ParamInfo pi = getParamInfo("prod");
+//                ParamValidValueInfo paramValidValueInfo;
+//                Band band;
+//                if (bandNames != null && pi != null) {
+//                    for (String bandName : bandNames) {
+//                        paramValidValueInfo = new ParamValidValueInfo(bandName);
+//                        band = selectedProduct.getBand(bandName);
+//                        paramValidValueInfo.setDescription(band.getDescription());
+//                        pi.addValidValueInfo(paramValidValueInfo);
+//                        if (band.getImageInfo() != null) {
+//                            pi.setValue(bandName);
+//                        }
+//                    }
+//                    fireEvent("prod");
+//                }
+//            }
+//        }
+//    }
 
     private static class L2Bin_Processor extends ProcessorModel {
         L2Bin_Processor(String programName, String xmlFileName) {
@@ -1081,6 +1100,26 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             });
             setOpenInSeadas(true);
         }
+//
+//        @Override
+//        public void updateParamValues(Product selectedProduct) {
+//            if (selectedProduct != null) {
+//                String[] bandNames = selectedProduct.getBandNames();
+//                ParamInfo pi = getParamInfo("prod");
+//                ParamValidValueInfo paramValidValueInfo;
+//                Band band;
+//                for (String bandName : bandNames) {
+//                    paramValidValueInfo = new ParamValidValueInfo(bandName);
+//                    band = selectedProduct.getBand(bandName);
+//                    paramValidValueInfo.setDescription(band.getDescription());
+//                    pi.addValidValueInfo(paramValidValueInfo);
+//                    if (band.getImageInfo() != null) {
+//                        pi.setValue(bandName);
+//                    }
+//                }
+//                fireEvent("prod");
+//            }
+//        }
     }
 
     private static class OCSSWInstaller_Processor extends ProcessorModel {

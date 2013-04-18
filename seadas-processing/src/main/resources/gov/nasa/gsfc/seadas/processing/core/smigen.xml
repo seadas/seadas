@@ -8,6 +8,7 @@
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>
         </primaryOptions>
+        <progressRegex>out_row: +(\d+) out of +(\d+)</progressRegex>
     </programMetaData>
     <options>
         <option type="ifile">

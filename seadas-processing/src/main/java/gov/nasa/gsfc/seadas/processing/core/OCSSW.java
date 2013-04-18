@@ -24,7 +24,7 @@ public class OCSSW {
     public static final String SEADASHOME_PROPERTY = "home";
 
     public static String OCSSW_INSTALLER = "install_ocssw.py";
-    public static String TMP_OCSSW_INSTALLER = System.getProperty("user.home") + "install_ocssw.py";
+    public static String TMP_OCSSW_INSTALLER = System.getProperty("user.home") + System.getProperty("file.separator") + "install_ocssw.py";
     public static String OCSSW_INSTALLER_URL = "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     private static boolean ocsswExist = false;

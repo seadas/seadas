@@ -209,7 +209,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected void done() {
                 try {
                     final String outputFileName = get();
-                    VisatApp.getApp().showInfoDialog(programName, programName + " done!\n" +
+                    VisatApp.getApp().showInfoDialog(dialogTitle, "Program execution completed!\n" +
                             (programName.equals(OCSSW.OCSSW_INSTALLER) ? "" : ("Output written to:\n" + outputFileName)), null);
                     if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
                         OCSSW.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
@@ -291,9 +291,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-            int len =  line.length();
-            if((len > 7) && (line.charAt(0) == '#') && (line.charAt(len-1) == '%')) {
-                pm.setSubTaskName(currentText + " - " + line.substring(len-6, len));
+            int len = line.length();
+            if ((len > 7) && (line.charAt(0) == '#') && (line.charAt(len - 1) == '%')) {
+                pm.setSubTaskName(currentText + " - " + line.substring(len - 6, len));
             } else {
                 pm.setSubTaskName(line);
             }
