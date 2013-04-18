@@ -16,6 +16,7 @@
 package gov.nasa.gsfc.seadas;
 
 import com.bc.ceres.core.ProgressMonitor;
+import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.core.runtime.RuntimeRunnable;
 import com.jidesoft.utils.Lm;
 import com.jidesoft.utils.SystemInfo;
@@ -25,6 +26,8 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.BasicApp;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
+import org.esa.beam.framework.ui.command.Command;
+import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.actions.session.OpenSessionAction;
 
@@ -113,13 +116,33 @@ public class SeadasMain implements RuntimeRunnable {
                 }
             });
         }
-
         SeadasApp app = createApplication(applicationDescriptor);
         app.startUp(progressMonitor);
         openSession(app, sessionFile);
         openProducts(app, productFilepathList);
+        CommandManager commandManager = app.getApplicationPage().getCommandManager();
+        Command c = commandManager.getCommand("install_ocssw.py");
+        if (isOCSSWExist()) {
+            c.setText("Update Processors");
+        } else {
+            c.setText("Install Processors");
+        }
     }
 
+    private boolean isOCSSWExist() {
+        String dirPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));
+
+        if (dirPath == null) {
+            dirPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
+        }
+        if (dirPath != null) {
+            final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
+            if (dir.isDirectory()) {
+                return true;
+            }
+        }
+        return false;
+    }
     protected SeadasApp createApplication(ApplicationDescriptor applicationDescriptor) {
         return new SeadasApp(applicationDescriptor);
     }
