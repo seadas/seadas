@@ -113,9 +113,7 @@
             </tocitem>
             <tocitem text="Module Manager" target="moduleManager"/>
         </tocitem>
-        <tocitem text="Data Processors">
-            <!--<tocitem text="Beam Processors" target="dataProcessors"/>-->
-        </tocitem>
+
         <tocitem text="Reference">
             <tocitem text="Product Browser" target="productBrowser"/>
             <tocitem text="Pixel Info View" target="pixelInfoView"/>
@@ -132,4 +130,8 @@
             <tocitem text="No-Data Value" target="noDataValue"/>
         </tocitem>
     </tocitem>
+    <tocitem text="Data Processors">
+        <!--<tocitem text="Beam Processors" target="dataProcessors"/>-->
+    </tocitem>
+
 </toc>

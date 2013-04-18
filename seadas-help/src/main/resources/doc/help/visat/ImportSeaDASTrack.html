@@ -16,7 +16,7 @@
 
 <html>
 <head>
-    <title>VISAT Help - Import SeaDAS Track Data</title>
+    <title>SeaDAS Help - Import SeaDAS Track Data</title>
     <link rel="stylesheet" href="../style.css">
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
@@ -36,16 +36,11 @@
 <h2>Import SeaDAS Track Data</h2>
 
 <p>
-    As another special case of CSV import,
-    BEAM/Visat supports the import of  <a href="http://seadas.gsfc.nasa.gov/">SeaDAS</a>
-    (<b>Sea</b>WiFS <b>D</b>ata <b>A</b>nalysis <b>S</b>ystem) ship track data.
-    SeaDAS is a comprehensive image analysis package for the processing, display,
-    analysis, and quality control of ocean color data. It has been developed within the
-    NASA SeaWiFS (<b>Sea</b>-viewing <b>Wi</b>de <b>F</b>ield-of-view <b>S</b>ensor) Project.
-    Note that BEAM only supports the import of track data generated with the SeaDAS versions 6.x.
+    As another special case of the CSV import,
+    SeaDAS supports the import of the ship track data generated with SeaDAS versions 6.x and prior.
 </p>
 <p>
-    In principle, these ship track files are also CSV files, but have an extremely simple layout with three columns only:
+    In principle, these ship track files are CSV files, but have an extremely simple layout with three columns only:
     The first two columns contain the vertex points latitudes and longitudes, respectively, and the third column
     gives the values of a single data quantity (such as a ship-based radiometer measurement). These files contain
     <b>no</b> header, all numbers are separated by the 'tab' character.
