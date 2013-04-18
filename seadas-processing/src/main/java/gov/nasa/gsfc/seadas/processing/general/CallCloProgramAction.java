@@ -245,6 +245,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 commandManager.getCommand(processorName).setEnabled(true);
             }
         }
+        commandManager.getCommand("install_ocssw.py").setText("Update Processors");
     }
 
     private void displayMessage(String programName, String message) {
