@@ -32,8 +32,10 @@ public class ParamInfo implements Comparable, Cloneable {
     public static final String USED_IN_COMMAND_AS_OPTION = "option";
     public static final String USED_IN_COMMAND_AS_FLAG = "flag";
 
+    public static final String[] FILE_COMPRESSION_SUFFIXES = {"bz2", "bzip2", "gz", "gzip", "zip", "tar"};
+
     public static enum Type {
-        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP,DIR
+        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP, DIR
     }
 
     private String name = NULL_STRING;
@@ -286,15 +288,27 @@ public class ParamInfo implements Comparable, Cloneable {
                 fileInfo = new FileInfo(defaultFileParent, value, true);
                 if (fileInfo.getFile() != null) {
                     if (fileInfo.getFile().exists()) {
-                        if (getName().equals(L2genData.GEOFILE)) {
+                        String filename = fileInfo.getFile().getAbsolutePath();
+
+                        boolean isCompressedFile = false;
+
+                        for (String compressionSuffix : FILE_COMPRESSION_SUFFIXES) {
+                            if (filename.toLowerCase().endsWith("." + compressionSuffix)) {
+                                isCompressedFile = true;
+                            }
+                        }
+
+                        if (isCompressedFile) {
+                            setValidationComment("WARNING!!! File '" + filename + "' is compressed (please decompress it)");
+                        } else if (getName().equals(L2genData.GEOFILE)) {
                             if (!fileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
-                                setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' is not a GEO file");
+                                setValidationComment("WARNING!!! File '" + filename + "' is not a GEO file");
                             }
                         } else if (getName().equals(L2genData.IFILE)) {
                             if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
-                                setValidationComment("# WARNING!!! file " + getValue() + " is not a valid input mission" + "\n");
+                                setValidationComment("# WARNING!!! file " + filename + " is not a valid input mission" + "\n");
                             } else if (!SeadasProcessorInfo.isValidFileType(fileInfo, processorInfoId)) {
-                                setValidationComment("# WARNING!!! file " + getValue() + " is not a valid input file type" + "\n");
+                                setValidationComment("# WARNING!!! file " + filename + " is not a valid input file type" + "\n");
                             }
                         }
                     } else {

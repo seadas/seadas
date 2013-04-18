@@ -14,7 +14,7 @@
                     </tocitem>
                 </tocitem>
                 <tocitem text="Import Vector Data">
-                    <tocitem text="Seabass" target="importSeabass">
+                    <tocitem text="SeaBASS File Format" target="importSeabass">
                     </tocitem>
                 </tocitem>
             </tocitem>

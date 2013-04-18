@@ -4,12 +4,16 @@ import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 
+import javax.help.DefaultHelpBroker;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,15 +57,22 @@ import java.beans.PropertyChangeListener;
 
 class LandMasksDialog extends JDialog {
 
-    public LandMasksData landMasksData = null;
-    private JButton helpButton = null;
-    private String HELP_ID = "coastlineLandMasks";
+    private LandMasksData landMasksData = null;
+    private Component helpButton = null;
+    private HelpBroker helpBroker = null;
+
+    private final static String HELP_ID = "coastlineLandMasks";
+    private final static String HELP_ICON = "icons/Help24.gif";
 
 
     public LandMasksDialog(LandMasksData landMasksData, boolean masksCreated) {
         this.landMasksData = landMasksData;
 
-        helpButton = (JButton) getHelpButton(HELP_ID);
+        initHelpBroker();
+
+        if (helpBroker != null) {
+            helpButton = getHelpButton(HELP_ID);
+        }
 
         if (masksCreated) {
             createNotificationUI();
@@ -71,27 +82,41 @@ class LandMasksDialog extends JDialog {
     }
 
 
-    // HELP EXAMPLE
-
-//        final JPanel helpPanel = new JPanel(new GridBagLayout());
-//        helpPanel.add(getHelpButton("l2gen"), BorderLayout.EAST);
-//
-//        mainPanel.add(helpPanel,
-//                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, 0, 2));
-
-    protected AbstractButton getHelpButton(String helpId) {
+    protected Component getHelpButton(String helpId) {
         if (helpId != null) {
-            final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon("icons/Help24.gif"),
+
+            final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon(HELP_ICON),
                     false);
-            helpButton.setToolTipText("Help");
-            helpButton.setName("helpButton");
-            HelpSys.enableHelpOnButton(helpButton, helpId);
-            //  HelpSys.enableHelpKey(getParentDialogContentPane(), getHelpId());
+
+            HelpSet helpSet = helpBroker.getHelpSet();
+            helpBroker.setCurrentID(helpId);
+
+            if (helpButton != null) {
+                helpButton.setToolTipText("Help");
+                helpButton.setName("helpButton");
+                helpBroker.enableHelpKey(helpButton, helpId, helpSet);
+                helpBroker.enableHelpOnButton(helpButton, helpId, helpSet);
+            }
+
             return helpButton;
         }
 
         return null;
     }
+
+
+    private void initHelpBroker() {
+        HelpSet helpSet = HelpSys.getHelpSet();
+        if (helpSet != null) {
+            helpBroker = helpSet.createHelpBroker();
+            if (helpBroker instanceof DefaultHelpBroker) {
+                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
+                defaultHelpBroker.setActivationWindow(this);
+            }
+        }
+    }
+
+
 
 
     public final void createNotificationUI() {
@@ -191,7 +216,6 @@ class LandMasksDialog extends JDialog {
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         JComboBox jComboBox = resolutionComboBox.getjComboBox();
-
 
 
         landMasksData.addPropertyChangeListener(LandMasksData.PROMPT_REQUEST_TO_INSTALL_FILE_EVENT, new PropertyChangeListener() {

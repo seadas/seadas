@@ -150,6 +150,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                     landMasksData.setDeleteMasks(false);
                     LandMasksDialog landMasksDialog = new LandMasksDialog(landMasksData, masksCreated[0]);
                     landMasksDialog.setVisible(true);
+                    landMasksDialog.dispose();
 
                 }
 

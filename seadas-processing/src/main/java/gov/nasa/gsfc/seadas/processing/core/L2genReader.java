@@ -159,7 +159,9 @@ public class L2genReader {
                         value = XmlReader.getTextValue(optionElement, "default");
                     }
 
-                    if (!name.equals(l2genData.IFILE)) {
+                    if (name.equals(L2genData.SUITE) && l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS && value == null) {
+                        l2genData.setParamValue(L2genData.SUITE, L2genData.AQUARIUS_SUITE_DEFAULT);
+                    } else if (!name.equals(l2genData.IFILE)) {
                         l2genData.setParamValueAndDefault(name, value);
                     }
                 }

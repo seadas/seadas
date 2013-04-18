@@ -260,6 +260,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         private int lastScan = 0;
         private String programName;
         private Pattern progressPattern;
+        private String currentText = "Part 1 - ";
 
         ProgressHandler(String programName, Pattern progressPattern) {
             this.programName = programName;
@@ -281,6 +282,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 scan = (scan * 1000) / numScans;
                 pm.worked(scan - lastScan);
                 lastScan = scan;
+                currentText = line;
             }
 
             pm.setTaskName(programName);
@@ -289,7 +291,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-            pm.setSubTaskName(line);
+            int len =  line.length();
+            if((len > 7) && (line.charAt(0) == '#') && (line.charAt(len-1) == '%')) {
+                pm.setSubTaskName(currentText + " - " + line.substring(len-6, len));
+            } else {
+                pm.setSubTaskName(line);
+            }
         }
     }
 
