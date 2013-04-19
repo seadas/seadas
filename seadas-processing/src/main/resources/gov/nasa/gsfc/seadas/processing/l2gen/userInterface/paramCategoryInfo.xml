@@ -38,6 +38,7 @@
         <param>brdf_opt</param>
         <param>filter_file</param>
         <param>filter_opt</param>
+        <param>fmtofile</param>
         <param>gain</param>
         <param>gas_opt</param>
         <param>glint_opt</param>
@@ -114,6 +115,8 @@
         <param>cldfile</param>
         <param>degc</param>
         <param>demfile</param>
+        <param>elevfile</param>
+        <param>elev_auxfile</param>
         <param>hipol</param>
         <param>icefile</param>
         <param>land</param>
@@ -127,6 +130,7 @@
         <param>ozone2</param>
         <param>ozone3</param>
         <param>ozone</param>
+        <param>picfile</param>
         <param>pressure</param>
         <param>relhumid</param>
         <param>sssfile</param>
@@ -138,6 +142,7 @@
         <param>sstmirrfile</param>
         <param>sstssesfile</param>
         <param>tauafile</param>
+        <param>vcnnfile</param>
         <param>water</param>
         <param>watervapor</param>
         <param>windangle</param>
@@ -160,6 +165,7 @@
         <param>giop_maxiter</param>
         <param>giop_rrs_opt</param>
         <param>giop_rrs_unc</param>
+        <param>giop_rrs_diff</param>
         <param>giop_ts_opt</param>
         <param>giop_wave</param>
         <param>gsm_adg_s</param>
@@ -171,6 +177,7 @@
         <param>iop_opt</param>
         <param>qaa_adg_s</param>
         <param>qaa_wave</param>
+        <param>seawater_opt</param>
     </category>
 
     <category name="Miscellaneous">
@@ -194,6 +201,7 @@
         <param>kd2_wave</param>
         <param>metafile</param>
         <param>outmode</param>
+        <param>ocrvc_opt</param>
         <param>prodxmlfile</param>
         <param>pversion</param>
         <param>resolution</param>

@@ -32,7 +32,7 @@ public class ParamInfo implements Comparable, Cloneable {
     public static final String USED_IN_COMMAND_AS_OPTION = "option";
     public static final String USED_IN_COMMAND_AS_FLAG = "flag";
 
-    public static final String[] FILE_COMPRESSION_SUFFIXES = {"bz2", "bzip2", "gz", "gzip", "zip", "tar"};
+    public static final String[] FILE_COMPRESSION_SUFFIXES = {"bz2", "bzip2", "gz", "gzip", "zip", "tar", "tgz", "z"};
 
     public static enum Type {
         BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP, DIR
@@ -299,7 +299,7 @@ public class ParamInfo implements Comparable, Cloneable {
                         }
 
                         if (isCompressedFile) {
-                            setValidationComment("WARNING!!! File '" + filename + "' is compressed (please decompress it)");
+                            setValidationComment("WARNING!!! File '" + filename + "' is compressed (please uncompress it)");
                         } else if (getName().equals(L2genData.GEOFILE)) {
                             if (!fileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
                                 setValidationComment("WARNING!!! File '" + filename + "' is not a GEO file");
