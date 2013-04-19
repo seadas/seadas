@@ -27,6 +27,7 @@
 <p>
     <a href="#location">Location</a> <br/>
     <a href="#details">Details</a> <br/>
+    <a href="#sub-programs">Sub-Programs</a> <br/>
     <a href="#cl">Command Line Usage</a> <br/>
 </p>
 
@@ -42,11 +43,12 @@
 </p>
 <p></p>
 <hr>
+
 <center>
     <table class="image">
-        <caption align="top"><b>install_ocssw.py GUI</b></caption>
+        <caption align="top"><b>multilevel_processor.py - Main Tab</b></caption>
         <tr>
-            <td><img src="../images/install_ocssw.png"></td>
+            <td><img src="../images/multilevel_processor_main.png"></td>
         </tr>
     </table>
 </center>
@@ -65,18 +67,18 @@
         <td><b>Default Value</b></td>
     </tr>
     <tr>
-        <td><b>install-dir</b></td>
-        <td>text</td>
-        <td>destination directory for install. Defaults to $OCSSWROOT or "$HOME/ocssw" if neither are given.</td>
-        <td>Optional. The default installation directory is $USER_HOME/ocssw.</td>
-        <td>$OCSSWROOT if it exists, otherwise "$HOME/ocssw"</td>
+        <td><b>ifile</b></td>
+        <td>file name</td>
+        <td>Input file or list of files</td>
+        <td>Required</td>
+        <td>none</td>
     </tr>
     <tr>
-        <td><b>aquarius</b></td>
-        <td> boolean</td>
-        <td>install Aquarius files</td>
-        <td>Optional</td>
-        <td>false</td>
+        <td><b>Parfile</b></td>
+        <td>text</td>
+        <td>all parameters for each section</td>
+        <td>Required</td>
+        <td>none</td>
     </tr>
 
 </table>
@@ -91,42 +93,140 @@
 
     <tr>
         <td><b>UI Element Name</b></td>
-        <td><b> Type</b></td>
-        <td><b> Description</b></td>
+        <td><b>Type</b></td>
+        <td><b>Description</b></td>
 
     </tr>
     <tr>
         <td><b>Browser Button</b></td>
         <td>Button</td>
-        <td>Selects installation directory
-        </td>
+        <td>Selects the input file</td>
+    </tr>
+    <tr>
+        <td><b>Import Parfile</b></td>
+        <td>Button</td>
+        <td>Selects a parfile to load</td>
+    </tr>
+    <tr>
+        <td><b>Retain Selected IFILE</b></td>
+        <td>Check Box</td>
+        <td>When loading a parfile, use the ifile above instead of the ifile in the parfile</td>
+    </tr>
+    <tr>
+        <td><b>Export Parfile</b></td>
+        <td>Button</td>
+        <td>Write the current parfile to a file</td>
     </tr>
     <tr>
         <td><b>Run</b></td>
         <td> Button</td>
-        <td>Executes <b><i>install_ocssw.py</i></b> with arguments provided in the UI.
-        </td>
+        <td> Executes <b><i>multilevel_processor.py</i></b> with arguments provided in the UI</td>
     </tr>
     <tr>
         <td><b>Cancel</b></td>
-        <td> Button</td>
-        <td>Closes current processor GUI.
-        </td>
+        <td>Button</td>
+        <td>Closes current processor GUI</td>
     </tr>
     <tr>
         <td><b>Apply</b></td>
-        <td> Button</td>
-        <td>Makes current arguments effective.
-        </td>
+        <td>Button</td>
+        <td>Makes current arguments effective</td>
     </tr>
     <tr>
         <td><b>?</b></td>
-        <td> Button</td>
-        <td>Displays the help content of the current command.
-        </td>
+        <td>Button</td>
+        <td>Displays the help content of the current command</td>
     </tr>
 </table>
 
+<p> </p>
+
+<hr>
+
+<center>
+    <table class="image">
+        <caption align="top"><b>multilevel_processor.py - Chain Tab</b></caption>
+        <tr>
+            <td><img src="../images/multilevel_processor_chain.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!--#CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b>Type</b></td>
+        <td><b>Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Program Buttons</b></td>
+        <td>Button</td>
+        <td>Opens a GUI window to configure the individual step/program</td>
+    </tr>
+    <tr>
+        <td><b>Keep</b></td>
+        <td>Check Box</td>
+        <td>When selected the output files produced by this step/program will be kept on disk and not deleted</td>
+    </tr>
+    <tr>
+        <td><b>Params</b></td>
+        <td>Text</td>
+        <td>Parameters passed to this step/program</td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td> Executes <b><i>multilevel_processor.py</i></b> with arguments provided in the UI</td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td>Button</td>
+        <td>Closes current processor GUI</td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td>Button</td>
+        <td>Makes current arguments effective</td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td>Button</td>
+        <td>Displays the help content of the current command</td>
+    </tr>
+</table>
+
+<p></p>
+
+<hr>
+
+<a name="sub-programs"><h4>Sub-Programs</h4></a>
+
+<ul>
+    <li><a href="ProcessModis_L1A.py.html">modis_L1A.py</a></li>
+    <li><a href="ProcessL1aextract_modis.html">l1aextract_modis</a></li>
+    <li><a href="ProcessL1aextract_seawifs.html">l1aextract_seawifs</a></li>
+    <li><a href="ProcessModis_GEO.py.html">geo</a></li>
+    <li><a href="ProcessModis_L1B.py.html">modis_L1B.py</a></li>
+    <li><a href="ProcessL1bgen.html">l1bgen</a></li>
+    <li><a href="ProcessL1brsgen.html">l1brsgen</a></li>
+    <li><a href="ProcessL2gen.html">l2gen</a></li>
+    <li><a href="ProcessL2extract.html">l2extract</a></li>
+    <li><a href="ProcessL2brsgen.html">l2brsgen</a></li>
+    <li><a href="ProcessL2bin.html">l2bin</a></li>
+    <li><a href="ProcessL3bin.html">l3bin</a></li>
+    <li><a href="ProcessSmigen.html">smigen</a></li>
+</ul>
+
+<p></p>
+
+<hr>
 
 <a name="cl"><h4>Command Line Usage</h4></a>
 
