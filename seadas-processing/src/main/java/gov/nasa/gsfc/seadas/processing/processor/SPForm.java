@@ -17,7 +17,6 @@ import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.visat.VisatApp;
-import sun.beans.editors.StringEditor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -94,7 +93,7 @@ public class SPForm extends JPanel implements CloProgramUI {
         jFileChooser = new JFileChooser();
 
         // create main panel
-        sourceProductFileSelector = new SourceProductFileSelector(VisatApp.getApp(), "ifile");
+        sourceProductFileSelector = new SourceProductFileSelector(VisatApp.getApp(), "ifile", true);
         sourceProductFileSelector.initProducts();
         //sourceProductFileSelector.setProductNameLabel(new JLabel("ifile"));
         sourceProductFileSelector.getProductNameComboBox().setPrototypeDisplayValue(
