@@ -98,11 +98,26 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
         final JPanel parFilePanel = parFileUI.getParStringPanel();
 
+        final JPanel paramPanel = getParamPanel();
+
+        processorModel.addPropertyChangeListener("prod", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                JPanel prodPanel = (JPanel)findJPanel(paramPanel, "prod");
+                if (prodPanel != null) {
+                    prodPanel.repaint();
+                    prodPanel.validate();
+                }
+                paramPanel.repaint();
+                paramPanel.validate();
+            }
+        });
+
         this.setLayout(new GridBagLayout());
 
         add(ioPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        add(getParamPanel(),
+        add(paramPanel,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         add(parFilePanel,
@@ -133,5 +148,19 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         for (int a = 0; a < com.length; a++) {
             com[a].setEnabled(true);
         }
+    }
+
+    private Component findJPanel(Component comp, String panelName) {
+        if (comp.getClass() == JPanel.class && comp.getName() != null && comp.getName().equals(panelName)) return comp;
+        if (comp instanceof Container) {
+            Component[] components = ((Container) comp).getComponents();
+            for (int i = 0; i < components.length; i++) {
+                Component child = findJPanel(components[i], panelName);
+                if (child != null && child.getName() != null && child.getName().equals(panelName)) {
+                    return child;
+                }
+            }
+        }
+        return null;
     }
 }

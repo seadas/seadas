@@ -260,7 +260,7 @@ public class ParamUIFactory {
         final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
 
         singlePanel.add(optionNameLabel);
-
+        singlePanel.setName( pi.getName() );
 
         String optionDefaultValue = pi.getValue();
 
@@ -320,6 +320,7 @@ public class ParamUIFactory {
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //values = updateValidValues(pi);
                 int currentChoicePosition = new ArrayList(Arrays.asList(values)).indexOf(pi.getValue());
                 if (currentChoicePosition != -1) {
                     inputList.setSelectedIndex(currentChoicePosition);
@@ -328,6 +329,23 @@ public class ParamUIFactory {
         });
         singlePanel.add(inputList);
         return singlePanel;
+    }
+
+    private String[] updateValidValues(ParamInfo pi){
+        final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
+        final String[] values = new String[validValues.size()];
+        ArrayList<String> toolTips = new ArrayList<String>();
+
+        Iterator itr = validValues.iterator();
+        int i = 0;
+        ParamValidValueInfo paramValidValueInfo;
+        while (itr.hasNext()) {
+            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+            values[i] = paramValidValueInfo.getValue();
+            toolTips.add(paramValidValueInfo.getDescription());
+            i++;
+        }
+        return values;
     }
 
     private JPanel createIOFileOptionField(final ParamInfo pi) {
