@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 /**
@@ -30,6 +31,9 @@ import java.util.logging.Level;
  * @since SeaDAS 7.0
  */
 public class L2genData implements L2genDataProcessorModel {
+
+    public static final String GUI_NAME = "l2gen";
+    public static final String GUI_NAME_AQUARIUS = "l2gen_aquarius";
 
 
     public static enum Mode {
@@ -89,12 +93,14 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     public FileInfo iFileInfo = null;
-    public boolean initializingParamsWithXml = false;
+    private boolean initialized = false;
     public boolean showIOFields = true;
 
     private Mode mode;
     private String paramCategoryXml;
     private String productCategoryXml;
+
+    private String guiName = GUI_NAME;
 
     public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
 
@@ -868,7 +874,7 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     private void setIfileAndSuiteParamValues(String ifileValue, String suiteValue) {
-        setIfileandSuiteParamValues(getParamInfo(IFILE), ifileValue, suiteValue);
+        setIfileandSuiteParamValuesWrapper(getParamInfo(IFILE), ifileValue, suiteValue);
     }
 
     private void setParamValue(ParamInfo paramInfo, boolean selected) {
@@ -1058,8 +1064,45 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     private void setIfileParamValue(ParamInfo paramInfo, String value) {
-        setIfileandSuiteParamValues(paramInfo, value, null);
+        setIfileandSuiteParamValuesWrapper(paramInfo, value, null);
     }
+
+
+    private void setIfileandSuiteParamValuesWrapper(final ParamInfo ifileParamInfo, final String ifileValue, final String suiteValue) {
+
+        if (isInitialized()) {
+            VisatApp visatApp = VisatApp.getApp();
+            ProgressMonitorSwingWorker worker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                    GUI_NAME) {
+
+                @Override
+                protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+
+                    pm.beginTask("Re-initializing " + GUI_NAME, 2);
+
+                    setIfileandSuiteParamValues(ifileParamInfo, ifileValue, suiteValue);
+                    pm.done();
+
+                    return null;
+                }
+
+
+            };
+
+            worker.executeWithBlocking();
+
+            try {
+                worker.get();
+            } catch (Exception e) {
+
+            }
+        } else {
+            setIfileandSuiteParamValues(ifileParamInfo, ifileValue, suiteValue);
+        }
+
+
+    }
+
 
     private void setIfileandSuiteParamValues(ParamInfo ifileParamInfo, String ifileValue, String suiteValue) {
 
@@ -1760,4 +1803,19 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    public String getGuiName() {
+        return guiName;
+    }
+
+    public void setGuiName(String guiName) {
+        this.guiName = guiName;
+    }
 }

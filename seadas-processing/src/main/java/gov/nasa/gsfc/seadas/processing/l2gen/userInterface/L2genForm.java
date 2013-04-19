@@ -26,8 +26,6 @@ import java.io.InputStreamReader;
 
 public class L2genForm extends JPanel implements CloProgramUI {
 
-    private static final String GUI_NAME = "l2gen";
-    private static final String GUI_NAME_AQUARIUS = "l2gen_aquarius";
 
     private L2genData l2genData;
 
@@ -35,21 +33,18 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private JCheckBox openInAppCheckBox;
     private final JTabbedPane jTabbedPane = new JTabbedPane();
     private int tabIndex;
-    private String guiName;
-    private L2genData.Mode mode;
+
 
     public L2genForm(AppContext appContext, String xmlFileName, final File iFile, boolean showIOFields, L2genData.Mode mode) {
-
-        this.mode = mode;
 
         l2genData = new L2genData(mode);
 
         switch (mode) {
             case L2GEN_AQUARIUS:
-                setGuiName(GUI_NAME_AQUARIUS);
+                l2genData.setGuiName(L2genData.GUI_NAME_AQUARIUS);
                 break;
             default:
-                setGuiName(GUI_NAME);
+              l2genData.setGuiName(L2genData.GUI_NAME);
                 break;
         }
 
@@ -61,16 +56,16 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
         VisatApp visatApp = VisatApp.getApp();
         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                getGuiName()) {
+               l2genData.getGuiName()) {
 
             @Override
             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                pm.beginTask("Initializing " + getGuiName(), 2);
+                pm.beginTask("Initializing " + l2genData.getGuiName(), 2);
 
                 try {
 
-                    StatusInfo statusInfo = getL2genData().initXmlBasedObjects();
+                    getL2genData().initXmlBasedObjects();
 
                     createMainTab();
                     createProductsTab();
@@ -125,6 +120,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
         pmSwingWorker.executeWithBlocking();
 
+        l2genData.setInitialized(true);
 
     }
 
@@ -304,11 +300,5 @@ public class L2genForm extends JPanel implements CloProgramUI {
         return l2genData;
     }
 
-    public String getGuiName() {
-        return guiName;
-    }
 
-    public void setGuiName(String guiName) {
-        this.guiName = guiName;
-    }
 }
