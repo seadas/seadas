@@ -556,7 +556,7 @@ public class L2genData implements L2genDataProcessorModel {
 
 
             if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName())) {
-                par.append("# " + paramCategoryInfo.getName().toUpperCase() + " Default = climatology (select GetAnc to download ancillary files)\n");
+                par.append("# " + paramCategoryInfo.getName().toUpperCase() + " Default = climatology (select 'Get Ancillary' to download ancillary files)\n");
                 par.append(currCategoryEntries.toString());
                 par.append("\n");
             } else if (currCategoryEntries.toString().length() > 0 && !(alwaysDisplay && !showIOFields)) {
@@ -662,7 +662,7 @@ public class L2genData implements L2genDataProcessorModel {
             }
         }
 
-        if (ifile != null || suite != null) {
+        if ((!ignoreIfile && ifile != null) || suite != null) {
             setIfileAndSuiteParamValues(ifile, suite);
         }
 
@@ -1069,6 +1069,14 @@ public class L2genData implements L2genDataProcessorModel {
 
 
     private void setIfileandSuiteParamValuesWrapper(final ParamInfo ifileParamInfo, final String ifileValue, final String suiteValue) {
+
+        String currIfile = getParamValue(IFILE);
+        String currSuite = getParamValue(SUITE);
+        if (currIfile != null && currSuite != null) {
+            if (currIfile.equals(ifileValue) && currSuite.equals(suiteValue)) {
+                return;
+            }
+        }
 
         if (isInitialized()) {
             VisatApp visatApp = VisatApp.getApp();

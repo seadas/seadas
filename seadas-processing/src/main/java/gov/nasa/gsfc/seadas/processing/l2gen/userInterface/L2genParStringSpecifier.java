@@ -98,6 +98,7 @@ public class L2genParStringSpecifier {
 
 
     private void controlHandler() {
+
         l2genData.setParString(jTextArea.getText(), false);
     }
 

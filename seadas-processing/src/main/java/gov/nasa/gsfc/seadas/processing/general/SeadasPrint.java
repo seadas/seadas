@@ -9,8 +9,8 @@ package gov.nasa.gsfc.seadas.processing.general;
 public class SeadasPrint {
 
 
-    private static boolean debug = true;
-    private static boolean admin = true;
+    private static boolean debug = false;
+    private static boolean admin = false;
     private static boolean user = true;
 
     private static boolean danny = false;
