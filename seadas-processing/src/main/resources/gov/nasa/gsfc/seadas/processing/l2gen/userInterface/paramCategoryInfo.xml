@@ -109,7 +109,7 @@
 
 
     <category name="Ancillary Inputs">
-        <autoTab>0</autoTab>
+        <autoTab>1</autoTab>
         <param>alphafile</param>
         <param>btfile</param>
         <param>cldfile</param>
