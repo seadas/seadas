@@ -41,7 +41,7 @@ public class L2genData implements L2genDataProcessorModel {
         L2GEN_AQUARIUS
     }
 
-    public static final String AQUARIUS_SUITE_DEFAULT = "V2.0.0";
+    public static final String AQUARIUS_SUITE_DEFAULT = "V2.0";
 
     //  private static final String OCDATAROOT = System.getenv("OCDATAROOT");
     private static final String TINY_IFILE_NAME = "S2002032172026.L1A_GAC.reallysmall";
