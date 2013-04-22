@@ -180,7 +180,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 }
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
-                processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
+                if(programName.equals(OCSSW.OCSSW_INSTALLER)) {
+                    processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));
+                } else {
+                    processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
+                }
                 processObserver.addHandler(ch);
                 processObserver.startAndWait();
                 processorModel.setExecutionLogMessage(ch.getExecutionErrorLog());
@@ -261,7 +265,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         private int lastScan = 0;
         private String programName;
         private Pattern progressPattern;
-        private String currentText = "Part 1 - ";
+        protected String currentText = "Part 1 - ";
 
         ProgressHandler(String programName, Pattern progressPattern) {
             this.programName = programName;
@@ -292,12 +296,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-            int len = line.length();
-            if ((len > 7) && (line.charAt(0) == '#') && (line.charAt(len - 1) == '%')) {
-                pm.setSubTaskName(currentText + " - " + line.substring(len - 6, len));
-            } else {
-                pm.setSubTaskName(line);
-            }
         }
     }
 
@@ -344,6 +342,33 @@ public class CallCloProgramAction extends AbstractVisatAction {
             }
         }
     }
+
+    /**
+     * Handler that tries to extract progress from stderr of ocssw_installer.py
+     */
+    private static class InstallerHandler extends ProgressHandler {
+
+        InstallerHandler(String programName, Pattern progressPattern) {
+            super(programName, progressPattern);
+        }
+
+        @Override
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
+            int len = line.length();
+            if (len > 70) {
+                String[] parts = line.trim().split("\\s+", 2);
+                try {
+                    int percent = Integer.parseInt(parts[0]);
+                    pm.setSubTaskName(currentText + " - " + parts[0] + "%");
+                } catch (Exception e) {
+                    pm.setSubTaskName(line);
+                }
+            } else {
+                pm.setSubTaskName(line);
+            }
+        }
+    }
+
 
     private class ScrolledPane extends JFrame {
         private JScrollPane scrollPane;
