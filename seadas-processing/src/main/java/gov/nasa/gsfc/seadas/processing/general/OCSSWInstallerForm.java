@@ -177,11 +177,10 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                                 c.setEnabled(false);
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                                 ((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
-                                ((JPanel) c).getComponents()[1].setEnabled(false);
+                                //((JPanel) c).getComponents()[1].setEnabled(false);
                             }
                             missionPanel.add(c);
                         }
-
                     } else {
                         if (tmpString.equals("SRC")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Source Code");
