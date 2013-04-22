@@ -83,12 +83,14 @@ public class SMIFileReader extends SeadasFileReader {
                     product.addBand(band);
 
                     try {
-                        if (productReader.getProductType() == ProductType.MEaSUREs){
-                            band.setNoDataValue((double) variable.findAttribute("_FillValue").getNumericValue().floatValue());
-                        } else {
-                            band.setNoDataValue((double) variable.findAttribute("Fill").getNumericValue().floatValue());
+                        Attribute fillvalue = variable.findAttribute("_FillValue");
+                        if (fillvalue == null){
+                            fillvalue = variable.findAttribute("Fill");
                         }
-                        band.setNoDataValueUsed(true);
+                        if (fillvalue != null){
+                            band.setNoDataValue((double) fillvalue.getNumericValue().floatValue());
+                            band.setNoDataValueUsed(true);
+                        }
                     } catch (Exception ignored) {
 
                     }

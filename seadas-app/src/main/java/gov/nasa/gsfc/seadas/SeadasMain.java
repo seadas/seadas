@@ -122,10 +122,12 @@ public class SeadasMain implements RuntimeRunnable {
         openProducts(app, productFilepathList);
         CommandManager commandManager = app.getApplicationPage().getCommandManager();
         Command c = commandManager.getCommand("install_ocssw.py");
-        if (isOCSSWExist()) {
-            c.setText("Update Processors");
-        } else {
-            c.setText("Install Processors");
+        if (c != null) {
+            if (isOCSSWExist()) {
+                c.setText("Update Processors");
+            } else {
+                c.setText("Install Processors");
+            }
         }
     }
 
