@@ -222,7 +222,7 @@ public class SourceProductFileSelector {
                 extraProduct = product;
             }
         }
-        productNameComboBox.validate();
+        productNameComboBox.revalidate();
         productNameComboBox.repaint();
     }
 
