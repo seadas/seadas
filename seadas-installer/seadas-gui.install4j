@@ -1608,6 +1608,29 @@ if (wizardContext != null) {
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude>
+        <entry location="bin/aatsr-sst.bat" fileType="regular" />
+        <entry location="bin/aatsr-sst.command" fileType="regular" />
+        <entry location="bin/aatsr-sst.sh" fileType="regular" />
+        <entry location="bin/binning.command" fileType="regular" />
+        <entry location="bin/binning.sh" fileType="regular" />
+        <entry location="bin/detect_java.sh" fileType="regular" />
+        <entry location="bin/flhmci.bat" fileType="regular" />
+        <entry location="bin/flhmci.command" fileType="regular" />
+        <entry location="bin/flhmci.sh" fileType="regular" />
+        <entry location="bin/gpt.command" fileType="regular" />
+        <entry location="bin/gpt.sh" fileType="regular" />
+        <entry location="bin/meris-cloud.bat" fileType="regular" />
+        <entry location="bin/meris-cloud.command" fileType="regular" />
+        <entry location="bin/meris-cloud.sh" fileType="regular" />
+        <entry location="bin/meris-smac.bat" fileType="regular" />
+        <entry location="bin/meris-smac.command" fileType="regular" />
+        <entry location="bin/meris-smac.sh" fileType="regular" />
+        <entry location="bin/pconvert.command" fileType="regular" />
+        <entry location="bin/pconvert.sh" fileType="regular" />
+        <entry location="bin/seadas-cli.command" fileType="regular" />
+        <entry location="bin/seadas-cli.sh" fileType="regular" />
+        <entry location="bin/seadas-d.command" fileType="regular" />
+        <entry location="bin/seadas-d.sh" fileType="regular" />
         <entry location="modules/seadas-processing-1.1.jar" fileType="regular" />
       </exclude>
       <variables />
@@ -1623,6 +1646,29 @@ if (wizardContext != null) {
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude>
+        <entry location="bin/aatsr-sst.bat" fileType="regular" />
+        <entry location="bin/aatsr-sst.command" fileType="regular" />
+        <entry location="bin/aatsr-sst.sh" fileType="regular" />
+        <entry location="bin/binning.command" fileType="regular" />
+        <entry location="bin/binning.sh" fileType="regular" />
+        <entry location="bin/detect_java.sh" fileType="regular" />
+        <entry location="bin/flhmci.bat" fileType="regular" />
+        <entry location="bin/flhmci.command" fileType="regular" />
+        <entry location="bin/flhmci.sh" fileType="regular" />
+        <entry location="bin/gpt.command" fileType="regular" />
+        <entry location="bin/gpt.sh" fileType="regular" />
+        <entry location="bin/meris-cloud.bat" fileType="regular" />
+        <entry location="bin/meris-cloud.command" fileType="regular" />
+        <entry location="bin/meris-cloud.sh" fileType="regular" />
+        <entry location="bin/meris-smac.bat" fileType="regular" />
+        <entry location="bin/meris-smac.command" fileType="regular" />
+        <entry location="bin/meris-smac.sh" fileType="regular" />
+        <entry location="bin/pconvert.command" fileType="regular" />
+        <entry location="bin/pconvert.sh" fileType="regular" />
+        <entry location="bin/seadas-cli.command" fileType="regular" />
+        <entry location="bin/seadas-cli.sh" fileType="regular" />
+        <entry location="bin/seadas-d.command" fileType="regular" />
+        <entry location="bin/seadas-d.sh" fileType="regular" />
         <entry location="modules/seadas-processing-1.1.jar" fileType="regular" />
       </exclude>
       <variables />
@@ -1630,30 +1676,38 @@ if (wizardContext != null) {
         <commentFiles />
         <customAttributes />
       </autoUpdate>
-      <excludedComponents>
-        <component id="5150" />
-        <component id="5000" />
-        <component id="4999" />
-        <component id="4973" />
-        <component id="4974" />
-        <component id="4991" />
-        <component id="4992" />
-        <component id="4993" />
-        <component id="5139" />
-        <component id="4994" />
-        <component id="4995" />
-        <component id="4996" />
-        <component id="4997" />
-        <component id="4998" />
-        <component id="5289" />
-      </excludedComponents>
+      <excludedComponents />
       <includedDownloadableComponents />
     </windows>
     <macosFolder name="MacOSX" id="126" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}-${compiler:sys.version}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreShared="false" directDownload="false" installOnlyIfNecessary="false" appleJre="true" customInstallBaseDir="" contentFilesType="1" downloadURL="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/data/${compiler:sys.version}" signLaunchers="false">
       <excludedLaunchers />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude />
+      <exclude>
+        <entry location="bin/aatsr-sst.bat" fileType="regular" />
+        <entry location="bin/aatsr-sst.command" fileType="regular" />
+        <entry location="bin/aatsr-sst.sh" fileType="regular" />
+        <entry location="bin/binning.bat" fileType="regular" />
+        <entry location="bin/binning.sh" fileType="regular" />
+        <entry location="bin/detect_java.sh" fileType="regular" />
+        <entry location="bin/flhmci.bat" fileType="regular" />
+        <entry location="bin/flhmci.command" fileType="regular" />
+        <entry location="bin/flhmci.sh" fileType="regular" />
+        <entry location="bin/gpt.bat" fileType="regular" />
+        <entry location="bin/gpt.sh" fileType="regular" />
+        <entry location="bin/meris-cloud.bat" fileType="regular" />
+        <entry location="bin/meris-cloud.command" fileType="regular" />
+        <entry location="bin/meris-cloud.sh" fileType="regular" />
+        <entry location="bin/meris-smac.bat" fileType="regular" />
+        <entry location="bin/meris-smac.command" fileType="regular" />
+        <entry location="bin/meris-smac.sh" fileType="regular" />
+        <entry location="bin/pconvert.bat" fileType="regular" />
+        <entry location="bin/pconvert.sh" fileType="regular" />
+        <entry location="bin/seadas-cli.bat" fileType="regular" />
+        <entry location="bin/seadas-cli.sh" fileType="regular" />
+        <entry location="bin/seadas-d.bat" fileType="regular" />
+        <entry location="bin/seadas-d.sh" fileType="regular" />
+      </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
         <commentFiles />
@@ -1666,7 +1720,30 @@ if (wizardContext != null) {
       <excludedLaunchers />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude />
+      <exclude>
+        <entry location="bin/aatsr-sst.bat" fileType="regular" />
+        <entry location="bin/aatsr-sst.command" fileType="regular" />
+        <entry location="bin/aatsr-sst.sh" fileType="regular" />
+        <entry location="bin/binning.bat" fileType="regular" />
+        <entry location="bin/binning.command" fileType="regular" />
+        <entry location="bin/flhmci.bat" fileType="regular" />
+        <entry location="bin/flhmci.command" fileType="regular" />
+        <entry location="bin/flhmci.sh" fileType="regular" />
+        <entry location="bin/gpt.bat" fileType="regular" />
+        <entry location="bin/gpt.command" fileType="regular" />
+        <entry location="bin/meris-cloud.bat" fileType="regular" />
+        <entry location="bin/meris-cloud.command" fileType="regular" />
+        <entry location="bin/meris-cloud.sh" fileType="regular" />
+        <entry location="bin/meris-smac.bat" fileType="regular" />
+        <entry location="bin/meris-smac.command" fileType="regular" />
+        <entry location="bin/meris-smac.sh" fileType="regular" />
+        <entry location="bin/pconvert.bat" fileType="regular" />
+        <entry location="bin/pconvert.command" fileType="regular" />
+        <entry location="bin/seadas-cli.bat" fileType="regular" />
+        <entry location="bin/seadas-cli.command" fileType="regular" />
+        <entry location="bin/seadas-d.bat" fileType="regular" />
+        <entry location="bin/seadas-d.command" fileType="regular" />
+      </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
         <commentFiles />
@@ -1685,7 +1762,30 @@ if (wizardContext != null) {
       <excludedLaunchers />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude />
+      <exclude>
+        <entry location="bin/aatsr-sst.bat" fileType="regular" />
+        <entry location="bin/aatsr-sst.command" fileType="regular" />
+        <entry location="bin/aatsr-sst.sh" fileType="regular" />
+        <entry location="bin/binning.bat" fileType="regular" />
+        <entry location="bin/binning.command" fileType="regular" />
+        <entry location="bin/flhmci.bat" fileType="regular" />
+        <entry location="bin/flhmci.command" fileType="regular" />
+        <entry location="bin/flhmci.sh" fileType="regular" />
+        <entry location="bin/gpt.bat" fileType="regular" />
+        <entry location="bin/gpt.command" fileType="regular" />
+        <entry location="bin/meris-cloud.bat" fileType="regular" />
+        <entry location="bin/meris-cloud.command" fileType="regular" />
+        <entry location="bin/meris-cloud.sh" fileType="regular" />
+        <entry location="bin/meris-smac.bat" fileType="regular" />
+        <entry location="bin/meris-smac.command" fileType="regular" />
+        <entry location="bin/meris-smac.sh" fileType="regular" />
+        <entry location="bin/pconvert.bat" fileType="regular" />
+        <entry location="bin/pconvert.command" fileType="regular" />
+        <entry location="bin/seadas-cli.bat" fileType="regular" />
+        <entry location="bin/seadas-cli.command" fileType="regular" />
+        <entry location="bin/seadas-d.bat" fileType="regular" />
+        <entry location="bin/seadas-d.command" fileType="regular" />
+      </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
         <commentFiles />
