@@ -26,6 +26,8 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
     private ParFileUI parFileUI;
 
+    private JPanel paramPanel;
+
     public ProgramUIFactory(String programName, String xmlFileName) { //}, String multiIFile) {
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
         //processorModel.setMultipleInputFiles(multiIFile.equals("true") ? true : false);
@@ -98,18 +100,24 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
         final JPanel parFilePanel = parFileUI.getParStringPanel();
 
-        final JPanel paramPanel = getParamPanel();
+        paramPanel = getParamPanel();
 
         processorModel.addPropertyChangeListener("prod", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                JPanel prodPanel = (JPanel)findJPanel(paramPanel, "prod");
-                if (prodPanel != null) {
-                    prodPanel.repaint();
-                    prodPanel.validate();
-                }
+//                JPanel prodPanel = (JPanel)findJPanel(paramPanel, "prod");
+//                if (prodPanel != null) {
+//                    prodPanel.repaint();
+//                    prodPanel.validate();
+//                }
+                paramPanel = getParamPanel();
                 paramPanel.repaint();
-                paramPanel.validate();
+                paramPanel.revalidate();
+                remove(1);
+                add(paramPanel,
+                                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                revalidate();
+                repaint();
             }
         });
 
@@ -119,8 +127,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
         add(paramPanel,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-
-        add(parFilePanel,
+         add(parFilePanel,
                 new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         //setSize(getPreferredSize().width, getPreferredSize().height + 200);

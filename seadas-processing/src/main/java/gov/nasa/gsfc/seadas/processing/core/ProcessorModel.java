@@ -855,6 +855,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         if (selectedProduct != null) {
             String[] bandNames = selectedProduct.getBandNames();
             ParamInfo pi = getParamInfo("prod");
+            ArrayList<ParamValidValueInfo> oldValidVlues = pi.getValidValueInfos();
             ParamValidValueInfo paramValidValueInfo;
             Band band;
             if (bandNames != null && pi != null) {
@@ -867,7 +868,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                         pi.setValue(bandName);
                     }
                 }
+                ArrayList<ParamValidValueInfo> newValidVlues = pi.getValidValueInfos();
                 fireEvent("prod");
+                paramList.getPropertyChangeSupport().firePropertyChange("prod", oldValidVlues, newValidVlues);
             }
         }
     }
