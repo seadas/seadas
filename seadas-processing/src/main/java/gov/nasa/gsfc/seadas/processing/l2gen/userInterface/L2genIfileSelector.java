@@ -64,10 +64,14 @@ public class L2genIfileSelector {
             public void propertyChange(PropertyChangeEvent evt) {
                 String ifileName = l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName());
                 File iFile = new File(ifileName);
+                String selectedIfileName = getSelectedIFile().getAbsolutePath();
                 disableControlHandler();
-                if (isEventHandlerEnabled()) {
-                    if(iFile.exists()) {
-                        sourceProductSelector.setSelectedFile(iFile);
+                if (isEventHandlerEnabled() ||
+                        !l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(selectedIfileName)) {
+                    if (iFile != null && iFile.exists()) {
+                        if (!l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName()).equals(getSelectedIFile().getAbsolutePath())) {
+                            sourceProductSelector.setSelectedFile(iFile);
+                        }
                     } else {
                         sourceProductSelector.setSelectedFile(null);
                     }
