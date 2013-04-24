@@ -71,7 +71,7 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
          MISSION_DIRECTORIES.put("SEAWIFS", "seawifs");
          MISSION_DIRECTORIES.put("AQUA", "modisa");
          MISSION_DIRECTORIES.put("TERRA", "modist");
-         MISSION_DIRECTORIES.put("VIIRS", "viirsn");
+         MISSION_DIRECTORIES.put("VIIRSN", "viirsn");
          MISSION_DIRECTORIES.put("MERIS", "meris");
          MISSION_DIRECTORIES.put("CZCS", "czcs");
          MISSION_DIRECTORIES.put("AQUARIUS", "aquarius");
@@ -177,15 +177,25 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                                 c.setEnabled(false);
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                                 ((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
-                                //((JPanel) c).getComponents()[1].setEnabled(false);
+                                processorModel.setParamValue("--" + tmpString.toLowerCase(), "1");
                             }
                             missionPanel.add(c);
                         }
                     } else {
                         if (tmpString.equals("SRC")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Source Code");
+                            if (new File(OCSSW.getOcsswEnv() + System.getProperty("file.separator") + "build").exists()) {
+                                ((JPanel) c).getComponents()[0].setEnabled(false);
+                                ((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
+                                processorModel.setParamValue("--src", "1");
+                            }
                         } else if (tmpString.equals("EVAL")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Evaluation Data Files");
+                            if (new File(missionDataDir + "eval").exists()) {
+                                ((JPanel) c).getComponents()[0].setEnabled(false);
+                                ((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
+                                processorModel.setParamValue("--eval", "1");
+                            }
                         }
                         otherPanel.add(c);
                         otherPanel.add(new JLabel("      "));
