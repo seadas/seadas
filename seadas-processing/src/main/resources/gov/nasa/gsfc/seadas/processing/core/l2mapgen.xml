@@ -89,10 +89,6 @@
             <type>string</type>
             <description>product name</description>
             <source>default</source>
-            <validValue>
-                <value></value>
-                <description></description>
-            </validValue>
         </option>
         <option type="boolean">
             <name>apply_pal</name>
