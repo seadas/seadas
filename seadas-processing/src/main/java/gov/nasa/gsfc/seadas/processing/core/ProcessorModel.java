@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.*;
-import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 
@@ -852,27 +851,27 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void updateParamValues(Product selectedProduct) {
-        if (selectedProduct != null) {
-            String[] bandNames = selectedProduct.getBandNames();
-            ParamInfo pi = getParamInfo("prod");
-            ArrayList<ParamValidValueInfo> oldValidVlues = pi.getValidValueInfos();
-            ParamValidValueInfo paramValidValueInfo;
-            Band band;
-            if (bandNames != null && pi != null) {
-                for (String bandName : bandNames) {
-                    paramValidValueInfo = new ParamValidValueInfo(bandName);
-                    band = selectedProduct.getBand(bandName);
-                    paramValidValueInfo.setDescription(band.getDescription());
-                    pi.addValidValueInfo(paramValidValueInfo);
-                    if (band.getImageInfo() != null) {
-                        pi.setValue(bandName);
-                    }
-                }
-                ArrayList<ParamValidValueInfo> newValidVlues = pi.getValidValueInfos();
-                fireEvent("prod");
-                paramList.getPropertyChangeSupport().firePropertyChange("prod", oldValidVlues, newValidVlues);
-            }
-        }
+//        if (selectedProduct != null) {
+//            String[] bandNames = selectedProduct.getBandNames();
+//            ParamInfo pi = getParamInfo("prod");
+//            ArrayList<ParamValidValueInfo> oldValidVlues = pi.getValidValueInfos();
+//            ParamValidValueInfo paramValidValueInfo;
+//            Band band;
+//            if (bandNames != null && pi != null) {
+//                for (String bandName : bandNames) {
+//                    paramValidValueInfo = new ParamValidValueInfo(bandName);
+//                    band = selectedProduct.getBand(bandName);
+//                    paramValidValueInfo.setDescription(band.getDescription());
+//                    pi.addValidValueInfo(paramValidValueInfo);
+//                    if (band.getImageInfo() != null) {
+//                        pi.setValue(bandName);
+//                    }
+//                }
+//                ArrayList<ParamValidValueInfo> newValidVlues = pi.getValidValueInfos();
+//                fireEvent("prod");
+//                paramList.getPropertyChangeSupport().firePropertyChange("prod", oldValidVlues, newValidVlues);
+//            }
+//        }
     }
 
 
@@ -890,7 +889,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
 
         public boolean updateIFileInfo(String ifileName) {
-
             setProgramName(getExtractorProgramName(ifileName));
             return super.updateIFileInfo(ifileName);
         }
