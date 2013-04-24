@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.general;
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.binding.PropertySet;
-import com.bc.ceres.binding.ValueRange;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
@@ -211,11 +210,6 @@ public class ParamUIFactory {
         vc.addProperty(Property.create(optionName, optionValue));
         vc.getDescriptor(optionName).setDisplayName(optionName);
 
-        final ValueRange valueRange = new ValueRange(0, 1);
-
-
-        vc.getDescriptor(optionName).setValueRange(valueRange);
-
         final BindingContext ctx = new BindingContext(vc);
         final JCheckBox field = new JCheckBox();
         field.setHorizontalAlignment(JFormattedTextField.LEFT);
@@ -230,7 +224,6 @@ public class ParamUIFactory {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
-
                 processorModel.updateParamInfo(pi, (new Boolean(field.isSelected())).toString());
                 SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
 
@@ -241,6 +234,8 @@ public class ParamUIFactory {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 field.setSelected(pi.getValue().equals("true") || pi.getValue().equals("1") ? true : false);
+                //optionValue = field.isSelected();
+
             }
         });
 

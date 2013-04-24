@@ -176,7 +176,7 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                             if (new File(missionDataDir + MISSION_DIRECTORIES.get(tmpString)).exists()) {
                                 c.setEnabled(false);
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
-                                ((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
+                                //((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
                                 processorModel.setParamValue("--" + tmpString.toLowerCase(), "1");
                             }
                             missionPanel.add(c);
