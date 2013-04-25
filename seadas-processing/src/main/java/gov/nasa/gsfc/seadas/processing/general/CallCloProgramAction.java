@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,7 +83,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     public void actionPerformed(CommandEvent event) {
 
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
-        SeadasLogger.getLogger().setLevel(Level.INFO);
+        SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(System.getProperty("seadas.logLevel")));
 
         final AppContext appContext = getAppContext();
 

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.*;
 
 /**
@@ -26,6 +27,27 @@ public class SeadasLogger {
 
     private static String _loggerFileName = "seadasLog";
 
+    /**
+     * The log level, must be one of
+     * OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL.
+     * Default is 'OFF'.
+     */
+
+    private static HashMap logLevels;
+
+    static {
+        logLevels = new HashMap();
+        logLevels.put("OFF", Level.OFF);
+        logLevels.put("SEVERE", Level.SEVERE);
+        logLevels.put("WARNING", Level.WARNING);
+        logLevels.put("INFO", Level.INFO);
+        logLevels.put("CONFIG", Level.CONFIG);
+        logLevels.put("FINE", Level.FINE);
+        logLevels.put("FINER", Level.FINER);
+        logLevels.put("FINEST", Level.FINEST);
+        logLevels.put("ALL", Level.ALL);
+    }
+
     public static void setLoggerFileName(String loggerFileName) {
         Guardian.assertNotNull("loggerFileName", loggerFileName);
 
@@ -34,8 +56,8 @@ public class SeadasLogger {
 
 
     public static Logger getLogger() {
-        if (logger == null){
-             initLogger(true);
+        if (logger == null) {
+            initLogger(true);
         }
         return logger;
     }
@@ -96,22 +118,28 @@ public class SeadasLogger {
         BeamLogManager.setSystemLoggerName("seadas");
         BeamLogManager.configureSystemLogger((new SimpleFormatter()), true);
         logger = BeamLogManager.getSystemLogger();
-
         logger.setLevel(Level.SEVERE);
-
     }
 
-       public static void deleteLoggerOnExit(boolean delete) {
+    public static void deleteLoggerOnExit(boolean delete) {
         if (delete) {
-           File txtFile = new File(System.getProperty("user.dir")+_loggerFileName + ".txt");
+            File txtFile = new File(System.getProperty("user.dir") + _loggerFileName + ".txt");
             if (txtFile.exists()) {
                 txtFile.deleteOnExit();
             }
-            File xmlFile = new File(System.getProperty("user.dir")+_loggerFileName + ".txt");
+            File xmlFile = new File(System.getProperty("user.dir") + _loggerFileName + ".txt");
             if (xmlFile.exists()) {
                 xmlFile.deleteOnExit();
             }
         }
+    }
+
+    public static Level convertStringToLogger(String seadasConfigLogLevel) {
+        Level log = (Level) logLevels.get(seadasConfigLogLevel.toUpperCase());
+        if (log == null) {
+            log = Level.OFF;
+        }
+        return log;
     }
 
     //This custom formatter formats parts of a log record to a single line
