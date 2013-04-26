@@ -46,8 +46,8 @@ public class L2genIfileSelector {
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
                     disableEventHandler();
-                    l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), iFile.getAbsolutePath());
                     l2genDataProcessorModel.updateParamValues(sourceProductSelector.getSelectedProduct());
+                    l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
                     enableEventHandler();
                 }
             }
@@ -105,8 +105,24 @@ public class L2genIfileSelector {
         if (sourceProductSelector.getSelectedProduct() == null) {
             return null;
         }
-
         return sourceProductSelector.getSelectedProduct().getFileLocation();
+    }
+
+    /**
+     *  This method derives uncompressed file name in case the product is compressed.
+     * @return  Selected product file name   after uncompressed.
+     */
+    public String getSelectedIFileName() {
+        if (sourceProductSelector == null) {
+            return null;
+        }
+        if (sourceProductSelector.getSelectedProduct() == null) {
+            return null;
+        }
+
+        File sourceProductFileLocation =  sourceProductSelector.getSelectedProduct().getFileLocation();
+        String sourceProductFileAbsolutePathName = sourceProductFileLocation.getParent() + System.getProperty("file.separator") + sourceProductSelector.getSelectedProduct().getName();
+        return sourceProductFileAbsolutePathName;
     }
 
     public JPanel getJPanel() {

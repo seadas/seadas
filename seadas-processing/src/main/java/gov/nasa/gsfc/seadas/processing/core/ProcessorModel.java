@@ -855,10 +855,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         if (selectedProduct != null) {
             String[] bandNames = selectedProduct.getBandNames();
             ParamInfo pi = getParamInfo("prod");
-            ArrayList<ParamValidValueInfo> oldValidValues = pi.getValidValueInfos();
-            ParamValidValueInfo paramValidValueInfo;
-            Band band;
             if (bandNames != null && pi != null) {
+                ArrayList<ParamValidValueInfo> oldValidValues = pi.getValidValueInfos();
+                ParamValidValueInfo paramValidValueInfo;
+                Band band;
                 for (String bandName : bandNames) {
                     paramValidValueInfo = new ParamValidValueInfo(bandName);
                     band = selectedProduct.getBand(bandName);
