@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 import com.bc.ceres.core.CoreException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
+import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.framework.dataio.ProductIO;
@@ -25,8 +26,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//import java.awt.*;
+import static org.esa.beam.util.SystemUtils.getApplicationContextId;
 
+//import java.awt.*;
 /**
  * A ...
  *
@@ -35,6 +37,9 @@ import java.util.regex.Pattern;
  * @since SeaDAS 7.0
  */
 public class CallCloProgramAction extends AbstractVisatAction {
+
+    public static final String CONTEXT_LOG_LEVEL_PROPERTY = getApplicationContextId()+".logLevel";
+    public static final String LOG_LEVEL_PROPERTY = "logLevel";
 
     private String programName;
     private String dialogTitle;
@@ -83,8 +88,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
     public void actionPerformed(CommandEvent event) {
 
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
-        SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(System.getProperty("seadas.logLevel")));
-
+        SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(RuntimeContext.getConfig().getContextProperty(LOG_LEVEL_PROPERTY, "OFF")));
         final AppContext appContext = getAppContext();
 
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
