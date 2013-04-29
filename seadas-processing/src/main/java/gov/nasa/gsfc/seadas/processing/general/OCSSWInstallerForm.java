@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -87,8 +88,28 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
         this.appContext = appContext;
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
         processorModel.setReadyToRun(true);
+
+        updateMissionValues();
         createUserInterface();
         processorModel.updateParamInfo("--install-dir", getInstallDir());
+    }
+
+    private void updateMissionValues() {
+        for (Map.Entry<String, String> entry : MISSION_DIRECTORIES.entrySet()) {
+            String missionName = entry.getKey();
+            String missionDir = entry.getValue();
+
+            if (new File(missionDataDir + missionDir).exists()) {
+                processorModel.setParamValue("--" + missionName.toLowerCase(), "1");
+            }
+
+        }
+        if (new File(missionDataDir + "eval").exists()) {
+            processorModel.setParamValue("--eval", "1");
+        }
+        if (new File(OCSSW.getOcsswEnv() + System.getProperty("file.separator") + "build").exists()) {
+            processorModel.setParamValue("--src", "1");
+        }
     }
 
     private String getInstallDir() {
@@ -174,10 +195,7 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                     if (MISSIONS.contains(tmpString)) {
                         if (!DEFAULT_MISSIONS.contains(tmpString)) {
                             if (new File(missionDataDir + MISSION_DIRECTORIES.get(tmpString)).exists()) {
-                                c.setEnabled(false);
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
-                                //((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
-                                processorModel.setParamValue("--" + tmpString.toLowerCase(), "1");
                             }
                             missionPanel.add(c);
                         }
@@ -186,15 +204,11 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Source Code");
                             if (new File(OCSSW.getOcsswEnv() + System.getProperty("file.separator") + "build").exists()) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
-                                ((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
-                                processorModel.setParamValue("--src", "1");
                             }
                         } else if (tmpString.equals("EVAL")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Evaluation Data Files");
                             if (new File(missionDataDir + "eval").exists()) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
-                                ((JCheckBox)((JPanel) c).getComponents()[1]).setSelected(true);
-                                processorModel.setParamValue("--eval", "1");
                             }
                         }
                         otherPanel.add(c);
