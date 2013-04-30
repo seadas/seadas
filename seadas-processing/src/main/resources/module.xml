@@ -20,7 +20,7 @@
     </dependency>
 
 
-    <categories>System</categories>
+    <categories>Application,Processor</categories>
 
     <extension point="beam-ui:actions">
         <action>
