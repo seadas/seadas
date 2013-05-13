@@ -159,8 +159,8 @@ public class L2genReader {
                         value = XmlReader.getTextValue(optionElement, "default");
                     }
 
-                    if (name.equals(L2genData.SUITE) && l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS && value == null) {
-                        l2genData.setParamValue(L2genData.SUITE, L2genData.AQUARIUS_SUITE_DEFAULT);
+                    if (name.equals(L2genData.SUITE) && value == null) {
+                        l2genData.setParamValue(L2genData.SUITE, l2genData.getDefaultSuite());
                     } else if (!name.equals(l2genData.IFILE)) {
                         l2genData.setParamValueAndDefault(name, value);
                     }
@@ -231,15 +231,12 @@ public class L2genReader {
                         paramInfo.setDefaultValue(paramInfo.getValue());
                     }
 
-//                    //todo this code takes care of the suite setting for l2gen_aquarius (see Joel)
+                    // add in suite default if it is null
                     if (name.equals(L2genData.SUITE)) {
-                        if (l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS) {
-                            if (value == null || value.length() == 0) {
-                                paramInfo.setValue(L2genData.AQUARIUS_SUITE_DEFAULT);
-                            }
+                        if (value == null || value.length() == 0) {
+                            paramInfo.setValue(l2genData.getDefaultSuite());
                         }
                     }
-
 
                     paramInfo.setDescription(description);
                     paramInfo.setSource(source);
@@ -273,17 +270,18 @@ public class L2genReader {
 
                     l2genData.addParamInfo(paramInfo);
                 }
+                boolean suiteExists = l2genData.hasParamValue(L2genData.SUITE);
+                boolean junk = suiteExists;
+
             }
         }
 
 
-//todo this is temporary until Joel adds suite
+        // add on suite if it was missing from xml
         if (!l2genData.hasParamValue(L2genData.SUITE)) {
-            if (l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS) {
-                ParamInfo suiteParamInfo = new ParamInfo(L2genData.SUITE, L2genData.AQUARIUS_SUITE_DEFAULT, ParamInfo.Type.STRING);
-                suiteParamInfo.setDefaultValue("");
-                l2genData.addParamInfo(suiteParamInfo);
-            }
+            ParamInfo suiteParamInfo = new ParamInfo(L2genData.SUITE, l2genData.getDefaultSuite(), ParamInfo.Type.STRING);
+            suiteParamInfo.setDefaultValue("");
+            l2genData.addParamInfo(suiteParamInfo);
         }
 
 
