@@ -29,6 +29,7 @@ public class OCSSW {
 
     private static boolean ocsswExist = false;
     private static File ocsswRoot = null;
+    private static boolean ocsswInstalScriptDownloadSuccessful = false;
 
 
     public static File getOcsswRoot() throws IOException {
@@ -57,7 +58,6 @@ public class OCSSW {
                 return;
             }
         }
-        downloadOCSSWInstaller();
     }
 
 
@@ -97,7 +97,11 @@ public class OCSSW {
         return ocsswRoot;
     }
 
-    public static void downloadOCSSWInstaller() {
+    public static boolean downloadOCSSWInstaller() {
+
+        if ( isOcsswInstalScriptDownloadSuccessful() ) {
+            return ocsswInstalScriptDownloadSuccessful;
+        }
         try {
             URL website = new URL("http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py");
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
@@ -105,17 +109,28 @@ public class OCSSW {
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
             fos.close();
             (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
+            ocsswInstalScriptDownloadSuccessful = true;
         } catch (MalformedURLException malformedURLException) {
-            VisatApp.getApp().showInfoDialog("URL for downloading install_ocssw.py is not correct!", null);
+            handleException("URL for downloading install_ocssw.py is not correct!");
         } catch (FileNotFoundException fileNotFoundException) {
-            VisatApp.getApp().showInfoDialog(fileNotFoundException.getMessage(), null);
+            handleException("ocssw installation script failed to download. \n" +
+                    "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
+                            "possible cause of error: " + fileNotFoundException.getMessage());
         } catch (IOException ioe) {
-            VisatApp.getApp().showInfoDialog(ioe.getMessage(), null);
+            handleException( "ocssw installation script failed to download. \n" +
+                    "Please check network connection or 'seadas.ocssw.root' variable in the \"seadas.config\" file. \n" +
+                           "possible cause of error: " + ioe.getLocalizedMessage());
+        } finally {
+            return ocsswInstalScriptDownloadSuccessful;
         }
     }
 
     private static void handleException(String errorMessage) {
-        VisatApp.getApp().showInfoDialog(errorMessage, null);
+        VisatApp.getApp().showErrorDialog(errorMessage);
+    }
+
+    public static boolean isOcsswInstalScriptDownloadSuccessful(){
+        return ocsswInstalScriptDownloadSuccessful;
     }
 
     public static void updateOCSSWRoot(String installDir) {

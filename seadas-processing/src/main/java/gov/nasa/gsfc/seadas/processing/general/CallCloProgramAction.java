@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import static org.esa.beam.util.SystemUtils.getApplicationContextId;
 
 //import java.awt.*;
+
 /**
  * A ...
  *
@@ -38,7 +39,7 @@ import static org.esa.beam.util.SystemUtils.getApplicationContextId;
  */
 public class CallCloProgramAction extends AbstractVisatAction {
 
-    public static final String CONTEXT_LOG_LEVEL_PROPERTY = getApplicationContextId()+".logLevel";
+    public static final String CONTEXT_LOG_LEVEL_PROPERTY = getApplicationContextId() + ".logLevel";
     public static final String LOG_LEVEL_PROPERTY = "logLevel";
 
     private String programName;
@@ -79,6 +80,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
         } else if (programName.indexOf("modis_GEO") != -1 || programName.indexOf("modis_L1B") != -1) {
             return new ModisGEO_L1B_UI(programName, xmlFileName);
         } else if (programName.indexOf(OCSSW.OCSSW_INSTALLER) != -1) {
+            OCSSW.downloadOCSSWInstaller();
+            if (!OCSSW.isOcsswInstalScriptDownloadSuccessful()){
+                return null;
+            }
             return new OCSSWInstallerForm(appContext, programName, xmlFileName);
         }
         return new ProgramUIFactory(programName, xmlFileName);//, multiIFile);
@@ -92,6 +97,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
         final AppContext appContext = getAppContext();
 
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
+
+        if (cloProgramUI == null) {
+            return;
+        }
 
         final Window parent = appContext.getApplicationWindow();
 
@@ -145,6 +154,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return;
         }
 
+        if (programName.equals(OCSSW.OCSSW_INSTALLER) && !OCSSW.isOcsswInstalScriptDownloadSuccessful()) {
+            displayMessage(programName, "ocssw installation script does not exist." + "\n" + "Please check network connection and rerun ''Install Processor''");
+            return;
+        }
+
         executeProgram(processorModel);
         SeadasLogger.deleteLoggerOnExit(true);
 
@@ -183,7 +197,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 }
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
-                if(programName.equals(OCSSW.OCSSW_INSTALLER)) {
+                if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
                     processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));
                 } else {
                     processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
