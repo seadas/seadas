@@ -18,10 +18,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 
 public class L2genForm extends JPanel implements CloProgramUI {
@@ -38,15 +36,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
     public L2genForm(AppContext appContext, String xmlFileName, final File iFile, boolean showIOFields, L2genData.Mode mode) {
 
         l2genData = new L2genData(mode);
-
-        switch (mode) {
-            case L2GEN_AQUARIUS:
-                l2genData.setGuiName(L2genData.GUI_NAME_AQUARIUS);
-                break;
-            default:
-              l2genData.setGuiName(L2genData.GUI_NAME);
-                break;
-        }
 
         setOpenInAppCheckBox(new JCheckBox("Open in " + appContext.getApplicationName()));
         getOpenInAppCheckBox().setSelected(true);
@@ -104,7 +93,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
                 } catch (IOException e) {
                     pm.done();
-                    SimpleDialogMessage dialog = new SimpleDialogMessage(null, "ERROR - Problem " + e.getMessage());
+                    SimpleDialogMessage dialog = new SimpleDialogMessage(null, "ERROR: " + e.getMessage());
                     dialog.setVisible(true);
                     dialog.setEnabled(true);
 
