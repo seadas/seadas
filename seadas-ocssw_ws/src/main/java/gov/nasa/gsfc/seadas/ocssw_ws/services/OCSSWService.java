@@ -1,11 +1,12 @@
-package services;
+package gov.nasa.gsfc.seadas.ocssw_ws.services;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.sun.jersey.api.client.ClientResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.xml.ws.Response;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,11 +78,11 @@ public class OCSSWService {
 
         }
 
-        Response.ResponseBuilder response = Response.ok((Object) process);
+        javax.ws.rs.core.Response.ResponseBuilder response = Response.ok((Object) process);
         //Response.Status respStatus = Response.Status.OK;
         //response.header("Content-Disposition",
         //        "attachment; filename=process");
-        return response.build();
+        return (Response) response.build();
         //return Response.status(respStatus).build();
     }
 
@@ -129,7 +130,7 @@ public class OCSSWService {
     @Consumes({MediaType.TEXT_PLAIN})
     public Response uploadCmdArray(String cmdArrayString)
             throws IOException {
-        Response.Status respStatus = Response.Status.OK;
+        ClientResponse.Status respStatus = Response.Status.OK;
         JsonParser parser = new JsonParser();
         JsonArray cmdArray = parser.parse(cmdArrayString).getAsJsonArray();
 

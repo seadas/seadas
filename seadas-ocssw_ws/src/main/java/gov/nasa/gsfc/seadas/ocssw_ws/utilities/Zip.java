@@ -1,3 +1,6 @@
+package gov.nasa.gsfc.seadas.ocssw_ws.utilities;
+
+
 /**
  * Created by IntelliJ IDEA.
  * User: Aynur Abdurazik (aabduraz)

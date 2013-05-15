@@ -1,5 +1,4 @@
-package services;
-
+package gov.nasa.gsfc.seadas.ocssw_ws.services;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;

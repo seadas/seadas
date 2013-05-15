@@ -1,4 +1,4 @@
-package services;
+package gov.nasa.gsfc.seadas.ocssw_ws.services;
 
 /**
  * Created by IntelliJ IDEA.
