@@ -8,21 +8,7 @@
         <version>1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>seadas-ocssw_ws</artifactId>
-    <groupId>gov.nasa.gsfc.seadas</groupId>
-    <name>OCSSW Web Services</name>
-    <version>1.0</version>
-    <description>
-        Provides OCSSW processing capacities as web services.
-    </description>
-
-    <packaging>jar</packaging>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
+    <artifactId>seadas-ocsswws</artifactId>
 </project>

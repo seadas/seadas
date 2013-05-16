@@ -1,12 +1,21 @@
-package gov.nasa.gsfc.seadas.ocssw_ws.services;
+package gov.nasa.gsfc.seadas.ocsswws.services;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: Aynur Abdurazik (aabduraz)
+ * Date: 5/16/13
+ * Time: 10:53 AM
+ * To change this template use File | Settings | File Templates.
+ */
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import com.sun.jersey.api.client.ClientResponse;
+import gov.nasa.gsfc.seadas.ocsswws.utilities.OCSSW;
+import gov.nasa.gsfc.seadas.ocsswws.utilities.ServerSideFileUtilities;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.xml.ws.Response;
+import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -130,7 +139,7 @@ public class OCSSWService {
     @Consumes({MediaType.TEXT_PLAIN})
     public Response uploadCmdArray(String cmdArrayString)
             throws IOException {
-        ClientResponse.Status respStatus = Response.Status.OK;
+        Response.Status respStatus = Response.Status.OK;
         JsonParser parser = new JsonParser();
         JsonArray cmdArray = parser.parse(cmdArrayString).getAsJsonArray();
 
@@ -139,7 +148,8 @@ public class OCSSWService {
         //p = executeProgram(cmdArray, OCSSWService.getProgramEnv());
         //if (p.exitValue() ==1  )
         // System.out.println(p.exitValue());
-        return Response.status(respStatus).build();
+        //return Response.status(respStatus).build();
+        return Response.ok().build();
     }
 
     protected static String[] getProgramEnv() {
@@ -198,3 +208,4 @@ public class OCSSWService {
         return process;
     }
 }
+

@@ -1,4 +1,13 @@
-package gov.nasa.gsfc.seadas.ocssw_ws.services;
+package gov.nasa.gsfc.seadas.ocsswws.utilities;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: Aynur Abdurazik (aabduraz)
+ * Date: 5/16/13
+ * Time: 10:52 AM
+ * To change this template use File | Settings | File Templates.
+ */
+
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
