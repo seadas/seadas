@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.ocssw_ws.utilities;
+package gov.nasa.gsfc.seadas.ocsswws.utilities;
 
 
 /**
@@ -24,7 +24,6 @@ public class Zip {
 
             byte data[] = new byte[BUFFER];
 
-            // get a list of files from current directory
             File f = new File(".");
             String files[] = f.list();
 

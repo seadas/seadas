@@ -71,8 +71,9 @@ public class OCSSWService {
                 cmdArray[i++] = st.nextToken();
             }
         } catch (FileNotFoundException fnfe) {
-
+             System.out.println("fnfe exception");
         } catch (IOException ioe) {
+            System.out.println("ioe exception");
 
         }
 
