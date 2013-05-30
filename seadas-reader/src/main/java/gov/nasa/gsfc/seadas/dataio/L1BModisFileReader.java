@@ -158,7 +158,7 @@ public class L1BModisFileReader extends SeadasFileReader {
                             int wvlidx;
 
                             if (bname_array[i].contains("lo") || bname_array[i].contains("hi")) {
-                                wvlidx = Integer.parseInt(bname_array[i].substring(0, 1)) - 1;
+                                wvlidx = Integer.parseInt(bname_array[i].substring(0, 2)) - 1;
                             } else {
                                 wvlidx = Integer.parseInt(bname_array[i]) - 1;
                             }
