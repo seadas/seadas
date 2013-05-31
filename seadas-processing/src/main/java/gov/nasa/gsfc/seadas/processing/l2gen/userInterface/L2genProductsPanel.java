@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.L2genGlobals;
 import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 
 import javax.swing.*;
@@ -43,6 +44,9 @@ public class L2genProductsPanel extends JPanel {
         productSelectorJPanel = new L2genProductTreeSelectorPanel(l2genData);
 
         wavelengthsLimitorJPanel = new L2genWavelengthLimiterPanel(l2genData);
+        if (L2genGlobals.getL2genGlobals().isIfileIndependentMode()) {
+            wavelengthsLimitorJPanel.setVisible(false);
+        }
 
         createSelectedProductsJTextArea();
 

@@ -32,29 +32,57 @@ import java.util.ArrayList;
 
 public class SPForm extends JPanel implements CloProgramUI {
 
+    public enum Processor {
+        MAIN("main"),
+        MODIS_L1A_PY("modis_L1A.py"),
+        L1AEXTRACT_MODIS("l1aextract_modis"),
+        L1AEXTRACT_SEAWIFS("l1aextract_seawifs"),
+        GEO("geo"),
+        MODIS_L1B("modis_L1B.py"),
+        L1BGEN("l1bgen"),
+        L1BRSGEN("l1brsgen"),
+        L2GEN("l2gen"),
+        L2EXTRACT("l2extract"),
+        L2BRSGEN("l2brsgen"),
+        L2BIN("l2bin"),
+        L3BIN("l3bin"),
+        SMIGEN("smigen");
+
+        private Processor(String name) {
+            this.name = name;
+        }
+
+        private final String name;
+
+        public String toString() {
+            return name;
+        }
+    }
+
+
     /*
-    SPForm
-        tabbedPane
-            mainPanel
-                primaryIOPanel
-                    sourceProductFileSelector (ifile)
-                parfilePanel
-                    importPanel
-                        importParfileButton
-                        retainParfileCheckbox
-                    exportParfileButton
-                    parfileScrollPane
-                        parfileTextArea
-            chainScrollPane
-                chainPanel
-                    nameLabel
-                    keepLabel
-                    paramsLabel
-                    configLabel
-                    progRowPanel
+   SPForm
+       tabbedPane
+           mainPanel
+               primaryIOPanel
+                   sourceProductFileSelector (ifile)
+               parfilePanel
+                   importPanel
+                       importParfileButton
+                       retainParfileCheckbox
+                   exportParfileButton
+                   parfileScrollPane
+                       parfileTextArea
+           chainScrollPane
+               chainPanel
+                   nameLabel
+                   keepLabel
+                   paramsLabel
+                   configLabel
+                   progRowPanel
 
 
-     */
+    */
 
     private AppContext appContext;
 
@@ -122,7 +150,7 @@ public class SPForm extends JPanel implements CloProgramUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String contents = SeadasGuiUtils.importFile(jFileChooser);
-                if(contents != null) {
+                if (contents != null) {
                     setParamString(contents, retainIFileCheckbox.isSelected());
                 }
             }
@@ -175,22 +203,24 @@ public class SPForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
         // create chain panel
-        nameLabel = new JLabel("Program");
+        nameLabel = new JLabel("Level");
         Font font = nameLabel.getFont().deriveFont(Font.BOLD);
         nameLabel.setFont(font);
         keepLabel = new JLabel("Keep");
+        keepLabel.setToolTipText("Keep intermediate output files");
         keepLabel.setFont(font);
-        paramsLabel = new JLabel("Params");
+        paramsLabel = new JLabel("Parameters");
         paramsLabel.setFont(font);
         spacer = new JPanel();
 
         chainPanel = new JPanel(new GridBagLayout());
+
         chainPanel.add(nameLabel,
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 4));
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 2, 2, -8)));
         chainPanel.add(keepLabel,
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 4));
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, -8)));
         chainPanel.add(paramsLabel,
-                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 4));
+                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
         createRows();
         int rowNum = 1;
         for (SPRow row : rows) {
@@ -214,26 +244,26 @@ public class SPForm extends JPanel implements CloProgramUI {
     }
 
     void createRows() {
-        String[] rowNames = {
-                "main",
-                "modis_L1A.py",
-                "l1aextract_modis",
-                "l1aextract_seawifs",
-                "geo",
-                "modis_L1B.py",
-                "l1bgen",
-                "l1brsgen",
-                "l2gen",
-                "l2extract",
-                "l2brsgen",
-                "l2bin",
-                "l3bin",
-                "smigen",
+        Processor[] rowNames = {
+                Processor.MAIN,
+                Processor.MODIS_L1A_PY,
+                Processor.L1AEXTRACT_MODIS,
+                Processor.L1AEXTRACT_SEAWIFS,
+                Processor.GEO,
+                Processor.MODIS_L1B,
+                Processor.L1BGEN,
+                Processor.L1BRSGEN,
+                Processor.L2GEN,
+                Processor.L2EXTRACT,
+                Processor.L2BRSGEN,
+                Processor.L2BIN,
+                Processor.L3BIN,
+                Processor.SMIGEN
         };
         rows = new ArrayList<SPRow>();
 
-        for (String name : rowNames) {
-            SPRow row = new SPRow(name, this);
+        for (Processor processor : rowNames) {
+            SPRow row = new SPRow(processor.toString(), this);
             row.addPropertyChangeListener(SPRow.PARAM_STRING_EVENT, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
@@ -244,6 +274,7 @@ public class SPForm extends JPanel implements CloProgramUI {
 
         }
     }
+
 
     public AppContext getAppContext() {
         return appContext;
@@ -258,7 +289,7 @@ public class SPForm extends JPanel implements CloProgramUI {
         MultiParamList paramList = new MultiParamList();
         for (SPRow row : rows) {
             String name = row.getName();
-            if(name.equals("modis_GEO.py")) {
+            if (name.equals("modis_GEO.py")) {
                 name = "geo";
             }
             paramList.addParamList(name, row.getParamList());
@@ -322,40 +353,61 @@ public class SPForm extends JPanel implements CloProgramUI {
         setParamString(str, false);
     }
 
+
     public void setParamString(String str, boolean retainIFile) {
         String[] lines = str.split("\n");
 
-        String sectionName = "main";
-        StringBuilder sb = new StringBuilder();
+        String section = "main";
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (String line : lines) {
             line = line.trim();
+
+            // get rid of comment lines
             if (line.length() > 0 && line.charAt(0) != '#') {
+
+                // locate new section line
                 if (line.charAt(0) == '[' && line.contains("]")) {
-                    if (sb.length() > 0) {
-                        SPRow row = getRow(sectionName);
-                        if (row != null) {
-                            row.setParamString(sb.toString(), retainIFile);
+
+                    // determine next section
+                    int endIndex = line.indexOf(']');
+                    String nextSection = line.substring(1, endIndex).trim();
+
+
+                    if (nextSection.length() > 0) {
+
+                        // set the params for this section
+                        if (stringBuilder.length() > 0) {
+                            SPRow row = getRow(section);
+                            if (row != null) {
+                                row.setParamString(stringBuilder.toString(), retainIFile);
+                            }
+                            stringBuilder.setLength(0);
                         }
-                        sb.setLength(0);
+
+                        section = nextSection;
                     }
-                    line = line.substring(1).trim();
-                    String[] words = line.split("\\s+", 2);
-                    sectionName = words[0];
-                    int i = sectionName.indexOf(']');
-                    if (i != -1) {
-                        sectionName = sectionName.substring(0, i).trim();
-                    }
+
+
+//                    line = line.substring(1).trim();
+//                    String[] words = line.split("\\s+", 2);
+//                    section = words[0];
+//                    int i = section.indexOf(']');
+//                    if (i != -1) {
+//                        section = section.substring(0, i).trim();
+//                    }
+
+
                 } else {
-                    sb.append(line).append("\n");
+                    stringBuilder.append(line).append("\n");
                 }
             }
         }
 
-        if (sb.length() > 0) {
-            SPRow row = getRow(sectionName);
+        if (stringBuilder.length() > 0) {
+            SPRow row = getRow(section);
             if (row != null) {
-                row.setParamString(sb.toString(), retainIFile);
+                row.setParamString(stringBuilder.toString(), retainIFile);
             }
         }
 
@@ -370,7 +422,7 @@ public class SPForm extends JPanel implements CloProgramUI {
     private void handleParamStringChange() {
         String newStr = parfileTextArea.getText();
         String oldStr = getParamString();
-        if(!newStr.equals(oldStr)) {
+        if (!newStr.equals(oldStr)) {
             setParamString(newStr);
         }
     }
@@ -379,15 +431,15 @@ public class SPForm extends JPanel implements CloProgramUI {
         String ifileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
         SPRow row = getRow("main");
         String oldIFile = row.getParamList().getValue("ifile");
-        if(!ifileName.equals(oldIFile)) {
+        if (!ifileName.equals(oldIFile)) {
 
-            getRow("l2gen").clearConfigPanel();
+//            getRow("l2gen").clearConfigPanel();
 
             row.setParamValue("ifile", ifileName);
             parfileTextArea.setText(getParamString());
         }
     }
-    
+
 
     public String getIFile() {
         return getRow("main").getParamList().getValue("ifile");
@@ -395,10 +447,10 @@ public class SPForm extends JPanel implements CloProgramUI {
 
     public String getFirstIFile() {
         String fileName = getIFile();
-        if(fileName.contains(",")) {
+        if (fileName.contains(",")) {
             String[] files = fileName.split(",");
             fileName = files[0].trim();
-        } else if(fileName.contains(" ")) {
+        } else if (fileName.contains(" ")) {
             String[] files = fileName.trim().split(" ");
             fileName = files[0].trim();
         }
@@ -407,7 +459,6 @@ public class SPForm extends JPanel implements CloProgramUI {
 
         return fileName;
     }
-
 
 
 }

@@ -16,6 +16,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -31,21 +33,42 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private JCheckBox openInAppCheckBox;
     private final JTabbedPane jTabbedPane = new JTabbedPane();
     private int tabIndex;
+    private JCheckBox keepParamsCheckbox;
 
 
-    public L2genForm(AppContext appContext, String xmlFileName, final File iFile, boolean showIOFields, L2genData.Mode mode) {
+    public L2genForm(AppContext appContext, String xmlFileName, final File iFile, boolean showIOFields, L2genData.Mode mode, boolean keepParams, boolean ifileIndependent) {
+
+        L2genGlobals.getL2genGlobals().setIfileIndependentMode(ifileIndependent);
+        boolean j = L2genGlobals.getL2genGlobals().isIfileIndependentMode();
+//
+//        L2genGlobals2.setIfileIndependentMode(ifileIndependent);
+//        boolean k = L2genGlobals2.isIfileIndependentMode();
+
 
         l2genData = new L2genData(mode);
+        l2genData.setKeepParams(keepParams);
+
 
         setOpenInAppCheckBox(new JCheckBox("Open in " + appContext.getApplicationName()));
         getOpenInAppCheckBox().setSelected(true);
+
+        keepParamsCheckbox = new JCheckBox("Keep params when new ifile is selected");
+        keepParamsCheckbox.setSelected(keepParams);
+
+        keepParamsCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                l2genData.setKeepParams(keepParamsCheckbox.isSelected());
+            }
+        });
+
 
         l2genData.showIOFields = showIOFields;
 
 
         VisatApp visatApp = VisatApp.getApp();
         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-               l2genData.getGuiName()) {
+                l2genData.getGuiName()) {
 
             @Override
             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
@@ -72,8 +95,19 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
                     add(getjTabbedPane(),
                             new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
-                    add(getOpenInAppCheckBox(),
-                            new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+//                    add(getOpenInAppCheckBox(),
+//                            new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+
+                    JPanel bottomPanel = new JPanel(new GridBagLayout());
+                    bottomPanel.add(keepParamsCheckbox,
+                            new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                    bottomPanel.add(getOpenInAppCheckBox(),
+                            new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+
+                    add(bottomPanel,
+                            new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
 
                     getL2genData().disableEvent(L2genData.PARSTRING);
@@ -115,12 +149,12 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public L2genForm(AppContext appContext, String xmlFileName) {
 
-        this(appContext, xmlFileName, null, true, L2genData.Mode.L2GEN);
+        this(appContext, xmlFileName, null, true, L2genData.Mode.L2GEN, false, false);
     }
 
     public L2genForm(AppContext appContext, String xmlFileName, L2genData.Mode mode) {
 
-        this(appContext, xmlFileName, null, true, mode);
+        this(appContext, xmlFileName, null, true, mode, false, false);
     }
 
 

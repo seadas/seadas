@@ -4,11 +4,8 @@ package gov.nasa.gsfc.seadas.processing.core;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.general.*;
+import gov.nasa.gsfc.seadas.processing.l2gen.productData.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.*;
-import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductCategoryInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductInfo;
-import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genWavelengthInfo;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.util.StringUtils;
@@ -32,7 +29,6 @@ import java.util.logging.Level;
 public class L2genData implements L2genDataProcessorModel {
 
     public static final String OPER_DIR = "l2gen";
-
 
 
 
@@ -99,6 +95,11 @@ public class L2genData implements L2genDataProcessorModel {
     private boolean initialized = false;
     public boolean showIOFields = true;
     private Mode mode;
+
+    // keepParams: this boolean field denotes whether l2gen keeps the current params when a new ifile is selected.
+    // Params not supported by the new ifile will be deleted.
+     private boolean keepParams = false;
+
 
     // mode dependent fields
     private String
@@ -208,6 +209,18 @@ public class L2genData implements L2genDataProcessorModel {
     public void setProductCategoryXml(String productCategoryXml) {
         this.productCategoryXml = productCategoryXml;
     }
+
+
+
+
+    public boolean isKeepParams() {
+        return keepParams;
+    }
+
+    public void setKeepParams(boolean keepParams) {
+        this.keepParams = keepParams;
+    }
+
 
 
     public String getGetanc() {
@@ -614,10 +627,11 @@ public class L2genData implements L2genDataProcessorModel {
 
 
             if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName())) {
-                par.append("# " + paramCategoryInfo.getName().toUpperCase() + " Default = climatology (select 'Get Ancillary' to download ancillary files)\n");
+                par.append("# " + paramCategoryInfo.getName().toUpperCase() + "  Default = climatology (select 'Get Ancillary' to download ancillary files)\n");
                 par.append(currCategoryEntries.toString());
                 par.append("\n");
-            } else if (currCategoryEntries.toString().length() > 0 && !(alwaysDisplay && !showIOFields)) {
+            }
+            else if (currCategoryEntries.toString().length() > 0 &&  !(alwaysDisplay && !showIOFields)){
                 par.append("# " + paramCategoryInfo.getName().toUpperCase() + "\n");
                 par.append(currCategoryEntries.toString());
                 par.append("\n");
@@ -694,7 +708,18 @@ public class L2genData implements L2genDataProcessorModel {
 
     public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode, File parFileDir) {
 
+        // addParamsMode is a special mode.
+        // this enables a subset parstring to be sent in
+        // essentially this means that you are sending in a list of params to change but leaving anything else untouched
+
         disableEvent(PARSTRING);
+
+        // keepParams variable is tied to selection of ifile by the selector
+        // this variable does not apply for this case where the params are being set be a parString
+        // so disable keepParams and then later put it back to the original value
+        boolean tmpKeepParams = isKeepParams();
+        setKeepParams(false);
+
         ArrayList<ParamInfo> parfileParamInfos = parseParString(parString);
 
         String ifile = null;
@@ -803,6 +828,8 @@ public class L2genData implements L2genDataProcessorModel {
 
         fireEvent(PARSTRING);
         enableEvent(PARSTRING);
+
+        setKeepParams(tmpKeepParams);
     }
 
     public boolean hasParamValue(String name) {
@@ -901,15 +928,28 @@ public class L2genData implements L2genDataProcessorModel {
 
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
 
+//todo Danny is working on this in order to maintain existing params when new ifile is selected
+                String tmpParString = null;
+
+                if (isKeepParams()) {
+                    tmpParString = getParString();
+                }
+
                 if (getMode() == Mode.L2GEN_AQUARIUS) {
                     setIfileAndSuiteParamValues(value, getDefaultSuite());
                 } else {
                     setIfileParamValue(paramInfo, value);
                 }
+
+                if (isKeepParams()) {
+                    setParString(tmpParString, true, true);
+                }
+
             } else if (paramInfo.getName().toLowerCase().equals(SUITE)) {
                 setIfileAndSuiteParamValues(null, value);
             } else {
                 if (value.length() > 0 || paramInfo.getName().toLowerCase().equals(L2PROD)) {
+
                     paramInfo.setValue(value);
 
                     if (paramInfo.getType() == ParamInfo.Type.IFILE) {
@@ -1067,6 +1107,11 @@ public class L2genData implements L2genDataProcessorModel {
     private void resetWaveLimiter() {
         waveLimiterInfos.clear();
 
+        if (L2genGlobals.getL2genGlobals().isIfileIndependentMode()) {
+            L2genWavelengthInfo wavelengthInfo = new L2genWavelengthInfo(L2genProductTools.WAVELENGTH_FOR_IFILE_INDEPENDENT_MODE);
+            waveLimiterInfos.add(wavelengthInfo);
+            return;
+        }
         // determine the filename which contains the wavelengths
         File sensorInfoFilename = getSensorInfoFilename();
 

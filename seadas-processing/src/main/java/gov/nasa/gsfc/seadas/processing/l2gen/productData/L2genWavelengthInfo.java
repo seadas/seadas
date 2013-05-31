@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.productData;
 
+import java.util.ArrayList;
+
 /**
  * A ...
  *
@@ -24,6 +26,10 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
     public L2genWavelengthInfo(int wavelength, L2genAlgorithmInfo algorithmInfo) {
         super(Integer.toString(wavelength), algorithmInfo);
         this.wavelength = wavelength;
+        // correct the name for the special mode
+        if (wavelength == L2genProductTools.WAVELENGTH_FOR_IFILE_INDEPENDENT_MODE) {
+            setName(L2genProductTools.SHORTCUT_NAMEPART_ALL);
+        }
     }
 
     public L2genWavelengthInfo(int wavelength) {
@@ -50,7 +56,11 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
 
     public void setWavelength(int wavelength) {
         this.wavelength = wavelength;
-        setName(Integer.toString(wavelength));
+        if (wavelength == L2genProductTools.WAVELENGTH_FOR_IFILE_INDEPENDENT_MODE) {
+            setName(L2genProductTools.SHORTCUT_NAMEPART_ALL);
+        } else {
+            setName(Integer.toString(wavelength));
+        }
     }
 
     public String getWavelengthString() {
@@ -102,10 +112,10 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
     }
 
 
-        public WaveType getWaveType() {
-        if ( wavelength >= INFRARED_LOWER_LIMIT) {
+    public WaveType getWaveType() {
+        if (wavelength >= INFRARED_LOWER_LIMIT) {
             return WaveType.INFRARED;
-        } else if (  wavelength <= VISIBLE_UPPER_LIMIT) {
+        } else if (wavelength <= VISIBLE_UPPER_LIMIT) {
             return WaveType.VISIBLE;
         } else if (wavelength > VISIBLE_UPPER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
             return WaveType.NEAR_INFRARED;
@@ -113,4 +123,6 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
             return WaveType.NULL;
         }
     }
+
+
 }
