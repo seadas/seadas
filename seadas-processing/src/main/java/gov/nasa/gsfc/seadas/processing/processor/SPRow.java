@@ -95,12 +95,17 @@ public class SPRow {
 
     // this method assumes the the JPanel passed in is using a grid bag layout
     public void attachComponents(JPanel base, int row) {
+        keepCheckBox.setToolTipText(configButton.getText()+ " output file(s) will be kept");
+        configButton.setToolTipText("Open "+ configButton.getText() + " GUI to set params");
         base.add(configButton,
-                new GridBagConstraintsCustom(0, row, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(0, row, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,new Insets(2,2,2,0)));
+
         base.add(keepCheckBox,
-                new GridBagConstraintsCustom(1, row, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+                new GridBagConstraintsCustom(1, row, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2,0,2,0)));
+
+
         base.add(paramTextField,
-                new GridBagConstraintsCustom(2, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                new GridBagConstraintsCustom(2, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(2,0,2,2)));
     }
 
     private void createConfigPanel() {
@@ -112,8 +117,9 @@ public class SPRow {
                 cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml");
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("l2gen")) {
-                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), false, L2genData.Mode.L2GEN);
+                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), false, L2genData.Mode.L2GEN, true, true);
                 configPanel = cloProgramUI.getParamPanel();
+
             } else {
                 String xmlFile = name.replace(".py", "").concat(".xml");
                 cloProgramUI = new ProgramUIFactory(name, xmlFile);
