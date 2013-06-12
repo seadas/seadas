@@ -38,14 +38,9 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public L2genForm(AppContext appContext, String xmlFileName, final File iFile, boolean showIOFields, L2genData.Mode mode, boolean keepParams, boolean ifileIndependent) {
 
-        L2genGlobals.getL2genGlobals().setIfileIndependentMode(ifileIndependent);
-        boolean j = L2genGlobals.getL2genGlobals().isIfileIndependentMode();
-//
-//        L2genGlobals2.setIfileIndependentMode(ifileIndependent);
-//        boolean k = L2genGlobals2.isIfileIndependentMode();
-
-
-        l2genData = new L2genData(mode);
+        l2genData = L2genData.getMe();
+        l2genData.setMode(mode);
+        l2genData.setIfileIndependentMode(ifileIndependent);
         l2genData.setKeepParams(keepParams);
 
 

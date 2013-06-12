@@ -94,7 +94,8 @@ public class L2genData implements L2genDataProcessorModel {
     public FileInfo iFileInfo = null;
     private boolean initialized = false;
     public boolean showIOFields = true;
-    private Mode mode;
+    private Mode mode = Mode.L2GEN;
+    private boolean  ifileIndependentMode = false;
 
     // keepParams: this boolean field denotes whether l2gen keeps the current params when a new ifile is selected.
     // Params not supported by the new ifile will be deleted.
@@ -138,8 +139,18 @@ public class L2genData implements L2genDataProcessorModel {
     private ProcessorModel processorModel;
 
 
-    public L2genData(Mode mode) {
-        setMode(mode);
+    private static L2genData me = null;
+
+    public static L2genData getMe() {
+        if (me == null) {
+            me = new L2genData();
+        }
+
+        return me;
+
+    }
+
+    private L2genData() {
     }
 
 
@@ -178,6 +189,13 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.setAcceptsParFile(true);
     }
 
+    public boolean isIfileIndependentMode() {
+        return ifileIndependentMode;
+    }
+
+    public void setIfileIndependentMode(boolean ifileIndependentMode) {
+        this.ifileIndependentMode = ifileIndependentMode;
+    }
     public String getParamInfoXml() {
         return paramInfoXml;
     }
@@ -1107,7 +1125,7 @@ public class L2genData implements L2genDataProcessorModel {
     private void resetWaveLimiter() {
         waveLimiterInfos.clear();
 
-        if (L2genGlobals.getL2genGlobals().isIfileIndependentMode()) {
+        if (L2genData.getMe().isIfileIndependentMode()) {
             L2genWavelengthInfo wavelengthInfo = new L2genWavelengthInfo(L2genProductTools.WAVELENGTH_FOR_IFILE_INDEPENDENT_MODE);
             waveLimiterInfos.add(wavelengthInfo);
             return;
