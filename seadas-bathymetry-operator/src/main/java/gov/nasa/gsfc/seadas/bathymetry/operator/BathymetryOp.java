@@ -63,17 +63,19 @@ public class BathymetryOp extends Operator {
 
     public static final String LAND_WATER_FRACTION_BAND_NAME = "land_water_fraction";
     public static final String COAST_BAND_NAME = "coast";
+    public static final String BATHYMETRY_BAND_NAME = "bathymetry";
+
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
     private Product sourceProduct;
 
     @Parameter(description = "Specifies on which resolution the water mask shall be based.", unit = "m/pixel",
-            label = "Resolution", defaultValue = "1000", valueSet = {"50", "150", "1000", "10000"})
+            label = "Resolution", defaultValue = "1000", valueSet = {"1000", "10000"})
     private int resolution;
 
     @Parameter(description = "Water mask filename",
             label = "Filename", defaultValue = "50m.zip",
-            valueSet = {"50m.zip", "150m.zip", "GSHHS_water_mask_250m.zip", "GSHHS_water_mask_250m.zip", "GSHHS_water_mask_1km.zip", "GSHHS_water_mask_10km.zip"})
+            valueSet = {"50m.zip", "150m.zip", "GSHHS_water_mask_250m.zip",  "BATHY.DAT", "GSHHS_water_mask_10km.zip"})
     private String filename;
 
 
@@ -88,23 +90,11 @@ public class BathymetryOp extends Operator {
     private int subSamplingFactorY;
 
 
-//    @Parameter(description = "Specifies the watermaskClassifier mode",
-//            label = "Mode", defaultValue = "2", notNull = true)
-//    private int mode;
-
-    @Parameter(description = "Specifies the watermaskClassifier mode",
-            label = "Mode", defaultValue = "GSHHS", notNull = true)
-    private WatermaskClassifier.Mode mode;
-
-
-//    @Parameter(description = "Specifies the resolutionInfo which contains resolution, mode",
-//            label = "Resolution Info", defaultValue = "1 km GSHHS", notNull = true)
-//    private SourceFileInfo resolutionInfo;
 
 
     @TargetProduct
     private Product targetProduct;
-    private WatermaskClassifier classifier;
+    private BathymetryMaskClassifier classifier;
 
     @Override
     public void initialize() throws OperatorException {
@@ -113,9 +103,9 @@ public class BathymetryOp extends Operator {
         initTargetProduct();
 
         try {
-            classifier = new WatermaskClassifier(resolution, mode, filename);
+            classifier = new BathymetryMaskClassifier(resolution, filename);
         } catch (IOException e) {
-            throw new OperatorException("Error creating class WatermaskClassifier.", e);
+            throw new OperatorException("Error creating class BathymetryMaskClassifier.", e);
         }
     }
 
@@ -160,23 +150,17 @@ public class BathymetryOp extends Operator {
             for (int sy = 0; sy < superSamplingY; sy++) {
                 currentPos.y = (float) (pixelPos.y + sy * yStep);
                 geoCoding.getGeoPos(currentPos, geoPos);
-                // Todo: Implement coastline algorithm here
-                //
             }
         }
         return false;
     }
 
     private void validateParameter() {
-        if (resolution != WatermaskClassifier.RESOLUTION_50m &&
-                resolution != WatermaskClassifier.RESOLUTION_150m &&
-                resolution != WatermaskClassifier.RESOLUTION_1km &&
-                resolution != WatermaskClassifier.RESOLUTION_10km) {
-            throw new OperatorException(String.format("Resolution needs to be either %d, %d, %d or %d.",
-                    WatermaskClassifier.RESOLUTION_50m,
-                    WatermaskClassifier.RESOLUTION_150m,
-                    WatermaskClassifier.RESOLUTION_1km,
-                    WatermaskClassifier.RESOLUTION_10km));
+        if (resolution != BathymetryMaskClassifier.RESOLUTION_1km &&
+                resolution != BathymetryMaskClassifier.RESOLUTION_10km) {
+            throw new OperatorException(String.format("Resolution needs to be either %d or %d.",
+                    BathymetryMaskClassifier.RESOLUTION_1km,
+                    BathymetryMaskClassifier.RESOLUTION_10km));
         }
         if (subSamplingFactorX < 1) {
             String message = MessageFormat.format(
@@ -200,7 +184,7 @@ public class BathymetryOp extends Operator {
         targetProduct = new Product("LW-Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
                 sourceProduct.getSceneRasterHeight());
         final Band waterBand = targetProduct.addBand(LAND_WATER_FRACTION_BAND_NAME, ProductData.TYPE_FLOAT32);
-        waterBand.setNoDataValue(WatermaskClassifier.INVALID_VALUE);
+        waterBand.setNoDataValue(BathymetryMaskClassifier.INVALID_VALUE);
         waterBand.setNoDataValueUsed(true);
 
         final Band coastBand = targetProduct.addBand(COAST_BAND_NAME, ProductData.TYPE_FLOAT32);

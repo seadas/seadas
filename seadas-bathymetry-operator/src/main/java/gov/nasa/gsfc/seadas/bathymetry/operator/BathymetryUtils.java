@@ -1,8 +1,8 @@
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
-public class WatermaskUtils {
+public class BathymetryUtils {
 
-    private WatermaskUtils() {
+    private BathymetryUtils() {
     }
 
     /**

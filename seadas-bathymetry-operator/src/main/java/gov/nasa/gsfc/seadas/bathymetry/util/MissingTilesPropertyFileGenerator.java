@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.bathymetry.util;
 
-import gov.nasa.gsfc.seadas.bathymetry.operator.WatermaskClassifier;
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryMaskClassifier;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.GeoPos;
@@ -41,7 +41,7 @@ class MissingTilesPropertyFileGenerator {
                 final String tileFileName = getTileFileName(x, y);
                 final String propertyKey = tileFileName.substring(0, tileFileName.indexOf('.'));
                 if (y >= 60 || y <= -60) {
-                    properties.setProperty(propertyKey, WatermaskClassifier.INVALID_VALUE + "");
+                    properties.setProperty(propertyKey, BathymetryMaskClassifier.INVALID_VALUE + "");
                 } else if (!new File(directory, tileFileName).exists()) {
                     System.out.printf("Not existing: %s%n", tileFileName);
                     final int landWater = getLandWaterValue(land_water, x, y);
@@ -67,7 +67,7 @@ class MissingTilesPropertyFileGenerator {
         final Raster raster = landWaterBand.getSourceImage().getData(
                 new Rectangle((int) pixelPos.getX(), (int) pixelPos.getY(), 1, 1));
         final int sample = raster.getSample((int) pixelPos.getX(), (int) pixelPos.getY(), 0);
-        return sample == 17 ? WatermaskClassifier.WATER_VALUE : WatermaskClassifier.LAND_VALUE;
+        return sample == 17 ? BathymetryMaskClassifier.WATER_VALUE : BathymetryMaskClassifier.LAND_VALUE;
     }
 
     static String getTileFileName(double lon, double lat) {

@@ -25,6 +25,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
+import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
+
 
 /**
  * This VISAT PlugIn registers an action which calls the "LandWaterMask" Operator and based on its generated "water_fraction"
@@ -51,13 +54,11 @@ import java.util.Map;
 public class BathymetryVPI extends AbstractVisatPlugIn {
 
     public static final String COMMAND_ID = "Bathymetry";
-    public static final String TOOL_TIP = "Add bathymetry masks";
-    //    public static final String ICON = "/org/esa/beam/watermask/ui/icons/coastline_24.png";
-    //  public static final String ICON = "icons/Coastline24.png";
+    public static final String TOOL_TIP = "Add bathymetry band and mask";
     public static final String ICON = "bathymetry.jpeg";
 
-    public static final String LAND_WATER_MASK_OP_ALIAS = "LandWaterMask";
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
+    public static final String BATHYMETRY_PRODUCT_NAME = "Bathymetry";
 
 
     @Override
@@ -66,7 +67,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                 new ToolbarCommand(visatApp));
 
         String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, BathymetryVPI.class);
-        //  action.setLargeIcon(UIUtils.loadImageIcon(ICON));
+
         try {
             URL iconUrl = new URL(iconFilename);
             ImageIcon imageIcon = new ImageIcon(iconUrl);
@@ -85,7 +86,6 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                 CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
                 layersBar.add(lwcButton);
             }
-
         });
     }
 
@@ -100,8 +100,6 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
             /*
                A simple boolean switch to enable this to run with or without the intermediate user dialogs
             */
-
-            // todo for Danny: turn this boolean on when it is ready
             boolean useDialogs = true;
 
             final BathymetryData bathymetryData = new BathymetryData();
@@ -120,17 +118,14 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
             final boolean[] masksCreated = {false};
 
             for (String name : maskGroup.getNodeNames()) {
-                if (name.equals(bathymetryData.getMaskName()) ||
-                        name.equals(bathymetryData.getLandMaskName()) ||
-                        name.equals(bathymetryData.getWaterMaskName())) {
+                if (name.equals(bathymetryData.getMaskName())) {
                     masksCreated[0] = true;
                 }
             }
 
 
             for (String name : bandGroup.getNodeNames()) {
-                if (name.equals(bathymetryData.getWaterFractionBandName()) ||
-                        name.equals(bathymetryData.getWaterFractionSmoothedName())) {
+                if (name.equals(bathymetryData.getBathymetryBandName())) {
                     masksCreated[0] = true;
                 }
             }
@@ -146,29 +141,23 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                     BathymetryDialog bathymetryDialog = new BathymetryDialog(bathymetryData, masksCreated[0]);
                     bathymetryDialog.setVisible(true);
                     bathymetryDialog.dispose();
-
                 }
 
                 if (bathymetryData.isDeleteMasks() || !useDialogs) {
                     masksCreated[0] = false;
 
-
                     for (String name : maskGroup.getNodeNames()) {
-                        if (name.equals(bathymetryData.getMaskName()) ||
-                                name.equals(bathymetryData.getLandMaskName()) ||
-                                name.equals(bathymetryData.getWaterMaskName())) {
+                        if (name.equals(bathymetryData.getMaskName())) {
                             maskGroup.remove(maskGroup.get(name));
                         }
                     }
 
                     for (String name : bandGroup.getNodeNames()) {
-                        if (name.equals(bathymetryData.getWaterFractionBandName()) ||
-                                name.equals(bathymetryData.getWaterFractionSmoothedName())) {
+                        if (
+                                name.equals(bathymetryData.getBathymetryBandName())) {
                             bandGroup.remove(bandGroup.get(name));
                         }
                     }
-
-
                 }
             }
 
@@ -186,71 +175,34 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                     if (sourceFileInfo.isEnabled()) {
 
                         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                                "Computing Masks") {
+                                "Creating bathymetry band and mask") {
 
                             @Override
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                                pm.beginTask("Creating land, water, coastline masks", 2);
+                                pm.beginTask("Creating bathymetry band and mask", 2);
 
                                 try {
-                                    //  Product landWaterProduct = GPF.createProduct("LandWaterMask", GPF.NO_PARAMS, product);
-
-
                                     Map<String, Object> parameters = new HashMap<String, Object>();
 
                                     parameters.put("subSamplingFactorX", new Integer(bathymetryData.getSuperSampling()));
                                     parameters.put("subSamplingFactorY", new Integer(bathymetryData.getSuperSampling()));
                                     parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
-                                    parameters.put("mode", sourceFileInfo.getMode().toString());
                                     parameters.put("filename", sourceFileInfo.getFile().getName());
-                                    //                             parameters.put("sourceFileInfo", sourceFileInfo);
+
                                     /*
-                                       Create a new product, which will contain the land_water_fraction band
+                                       Create a new product, which will contain the bathymetry band, then add this band to current product.
                                     */
 
-
-                                    Product landWaterProduct = GPF.createProduct(LAND_WATER_MASK_OP_ALIAS, parameters, product);
-
-
-                                    Band waterFractionBand = landWaterProduct.getBand("land_water_fraction");
-                                    Band coastBand = landWaterProduct.getBand("coast");
-
-                                    // PROBLEM WITH TILE SIZES
-                                    // Example: product has tileWidth=498 and tileHeight=611
-                                    // resulting image has tileWidth=408 and tileHeight=612
-                                    // Why is this happening and where?
-                                    // For now we change the image layout here.
-                                    reformatSourceImage(waterFractionBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                    reformatSourceImage(coastBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-
+                                    Product bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
+                                    Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
+                                    reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
                                     pm.worked(1);
-                                    waterFractionBand.setName(bathymetryData.getWaterFractionBandName());
+                                    bathymetryBand.setName(bathymetryData.getBathymetryBandName());
 
-                                    product.addBand(waterFractionBand);
+                                    product.addBand(bathymetryBand);
 
-                                    //todo BEAM folks left this as a placeholder
-//                    product.addBand(coastBand);
-
-                                    //todo replace with JAI operator "GeneralFilter" which uses a GeneralFilterFunction
-
-
-                                    final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
-                                            new double[]{
-                                                    +1, +1, +1,
-                                                    +1, +1, +1,
-                                                    +1, +1, +1,
-                                            });
-
-                                    final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
-                                            bathymetryData.getWaterFractionSmoothedName(),
-                                            waterFractionBand,
-                                            arithmeticMean3x3Kernel);
-
-                                    product.addBand(filteredCoastlineBand);
-
-
-                                    Mask coastlineMask = Mask.BandMathsType.create(
+                                    Mask bathymetryMask = Mask.BandMathsType.create(
                                             bathymetryData.getMaskName(),
                                             bathymetryData.getMaskDescription(),
                                             product.getSceneRasterWidth(),
@@ -258,31 +210,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                                             bathymetryData.getMaskMath(),
                                             bathymetryData.getMaskColor(),
                                             bathymetryData.getMaskTransparency());
-                                    maskGroup.add(coastlineMask);
-
-
-                                    Mask waterMask = Mask.BandMathsType.create(
-                                            bathymetryData.getWaterMaskName(),
-                                            bathymetryData.getWaterMaskDescription(),
-                                            product.getSceneRasterWidth(),
-                                            product.getSceneRasterHeight(),
-                                            bathymetryData.getWaterMaskMath(),
-                                            bathymetryData.getWaterMaskColor(),
-                                            bathymetryData.getWaterMaskTransparency());
-                                    maskGroup.add(waterMask);
-
-
-                                    Mask landMask = Mask.BandMathsType.create(
-                                            bathymetryData.getLandMaskName(),
-                                            bathymetryData.getLandMaskDescription(),
-                                            product.getSceneRasterWidth(),
-                                            product.getSceneRasterHeight(),
-                                            bathymetryData.getLandMaskMath(),
-                                            bathymetryData.getLandMaskColor(),
-                                            bathymetryData.getLandMaskTransparency());
-
-                                    maskGroup.add(landMask);
-
+                                    maskGroup.add(bathymetryMask);
 
                                     pm.worked(1);
 
@@ -290,40 +218,18 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                                     for (String bandName : bandNames) {
                                         RasterDataNode raster = product.getRasterDataNode(bandName);
                                         if (bathymetryData.isShowMaskAllBands()) {
-                                            raster.getOverlayMaskGroup().add(coastlineMask);
-                                        }
-                                        if (bathymetryData.isShowLandMaskAllBands()) {
-                                            raster.getOverlayMaskGroup().add(landMask);
-                                        }
-                                        if (bathymetryData.isShowWaterMaskAllBands()) {
-                                            raster.getOverlayMaskGroup().add(waterMask);
+                                            raster.getOverlayMaskGroup().add(bathymetryMask);
                                         }
                                     }
-
-
-//                    visatApp.setSelectedProductNode(waterFractionBand);
-
-//        ProductSceneView selectedProductSceneView = visatApp.getSelectedProductSceneView();
-//        if (selectedProductSceneView != null) {
-//            RasterDataNode raster = selectedProductSceneView.getRaster();
-//            raster.getOverlayMaskGroup().add(landMask);
-//            raster.getOverlayMaskGroup().add(coastlineMask);
-//            raster.getOverlayMaskGroup().add(waterMask);
-
-//        }
-
 
                                 } finally {
                                     pm.done();
                                 }
                                 return null;
                             }
-
-
                         };
 
                         pmSwingWorker.executeWithBlocking();
-
 
                     } else {
                         SimpleDialogMessage dialog = new SimpleDialogMessage(null, "Cannot Create Masks: Resolution File Doesn't Exist");
@@ -333,19 +239,15 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                     }
                 }
             }
-
-
         }
-
     }
 
 
     private void reformatSourceImage(Band band, ImageLayout imageLayout) {
         RenderingHints renderingHints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, imageLayout);
-        MultiLevelImage waterFractionSourceImage = band.getSourceImage();
-        int waterFractionDataType = waterFractionSourceImage.getData().getDataBuffer().getDataType();
-        RenderedImage newImage = FormatDescriptor.create(waterFractionSourceImage, waterFractionDataType,
-                renderingHints);
+        MultiLevelImage sourceImage = band.getSourceImage();
+        int dataType = sourceImage.getData().getDataBuffer().getDataType();
+        RenderedImage newImage = FormatDescriptor.create(sourceImage, dataType, renderingHints);
         band.setSourceImage(newImage);
     }
 
@@ -359,14 +261,12 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
         @Override
         public void actionPerformed(
                 CommandEvent event) {
-            showBathymetry(
-                    visatApp);
+            showBathymetry(visatApp);
 
         }
 
         @Override
-        public void updateState(
-                CommandEvent event) {
+        public void updateState(CommandEvent event) {
             Product selectedProduct = visatApp.getSelectedProduct();
             boolean productSelected = selectedProduct != null;
             boolean hasBands = false;
@@ -375,8 +275,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                 hasBands = selectedProduct.getNumBands() > 0;
                 hasGeoCoding = selectedProduct.getGeoCoding() != null;
             }
-            event.getCommand().setEnabled(
-                    productSelected && hasBands && hasGeoCoding);
+            event.getCommand().setEnabled(productSelected && hasBands && hasGeoCoding);
         }
     }
 }

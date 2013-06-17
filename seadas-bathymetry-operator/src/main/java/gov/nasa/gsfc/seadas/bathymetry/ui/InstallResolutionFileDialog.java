@@ -73,8 +73,8 @@ class InstallResolutionFileDialog extends JDialog {
                     }
 
 
-//                    if (sourceFileInfo.getMode() == WatermaskClassifier.Mode.SRTM_GC) {
-//                        File gcFile = ResourceInstallationUtils.getTargetFile(WatermaskClassifier.GC_WATER_MASK_FILE);
+//                    if (sourceFileInfo.getMode() == BathymetryMaskClassifier.Mode.SRTM_GC) {
+//                        File gcFile = ResourceInstallationUtils.getTargetFile(BathymetryMaskClassifier.GC_WATER_MASK_FILE);
 //
 //                        if (!gcFile.exists()) {
 //                            final URL northSourceUrl = new URL(BathymetryData.LANDMASK_URL + "/" + gcFile.getName());

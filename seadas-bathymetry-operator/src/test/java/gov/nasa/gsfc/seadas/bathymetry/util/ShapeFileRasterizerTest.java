@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.bathymetry.util;
 
-import gov.nasa.gsfc.seadas.bathymetry.util.ShapeFileRasterizer;
-import gov.nasa.gsfc.seadas.bathymetry.operator.WatermaskUtils;
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryUtils;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -21,7 +20,7 @@ public class ShapeFileRasterizerTest extends TestCase {
         final ShapeFileRasterizer rasterizer = new ShapeFileRasterizer(targetDir);
         final URL shapeUrl = getClass().getResource("e000n05f.shp");
         final File shapeFile = new File(shapeUrl.getFile());
-        final int resolution = WatermaskUtils.computeSideLength(150);
+        final int resolution = BathymetryUtils.computeSideLength(150);
         final BufferedImage image = rasterizer.createImage(shapeFile, resolution);
 
         // test some known values
@@ -38,7 +37,7 @@ public class ShapeFileRasterizerTest extends TestCase {
         final File targetDir = new File("");
         final ShapeFileRasterizer rasterizer = new ShapeFileRasterizer(targetDir);
         final URL shapeUrl = getClass().getResource("e000n05f.zip");
-         final int tileSize = WatermaskUtils.computeSideLength(150);
+         final int tileSize = BathymetryUtils.computeSideLength(150);
          final List<File> tempFiles;
          final ZipFile zipFile = new ZipFile(shapeUrl.getFile());
          try {

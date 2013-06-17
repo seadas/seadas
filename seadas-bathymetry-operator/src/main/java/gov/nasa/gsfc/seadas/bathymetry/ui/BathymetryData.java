@@ -1,12 +1,13 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
-import gov.nasa.gsfc.seadas.bathymetry.operator.WatermaskClassifier;
+import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryMaskClassifier;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
-import java.awt.geom.Arc2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  * Time: 9:13 AM
  * To change this template use File | Settings | File Templates.
  */
-class BathymetryData {
+public class BathymetryData {
 
     BathymetryData bathymetryData = this;
 
@@ -34,36 +35,21 @@ class BathymetryData {
     private boolean showMaskAllBands = true;
     private Color maskColor = new Color(0, 0, 255);
     private String maskName = "Bathymetry";
-    private String maskMath = getWaterFractionSmoothedName() + " > 25 and " + getWaterFractionSmoothedName() + " < 75";
     private String maskDescription = "Bathymetry pixels";
 
     private double maskMinDepth = 0;
     private double maskMaxDepth = -10923;
-//    private double maskMinDepth = 75;
-//    private double maskMaxDepth = 25;
+
+
+    public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
+    public static final String OCSSWROOT_PROPERTY = "ocssw.root";
 
 
     private int superSampling = 1;
 
-    private double landMaskTransparency = 0.0;
-    private double waterMaskTransparency = 0.5;
 
-    private boolean showLandMaskAllBands = false;
-    private boolean showWaterMaskAllBands = false;
+    private String bathymetryBandName = "bathymetry";
 
-    private Color landMaskColor = new Color(100, 49, 12);
-    private Color waterMaskColor = new Color(0, 0, 255);
-
-    private String waterFractionBandName = "mask_data_water_fraction";
-    private String waterFractionSmoothedName = "mask_data_water_fraction_smoothed";
-
-    private String landMaskName = "LandMask";
-    private String landMaskMath = getWaterFractionBandName() + " == 0";
-    private String landMaskDescription = "Land pixels";
-
-    private String waterMaskName = "WaterMask";
-    private String waterMaskMath = getWaterFractionBandName() + " > 0";
-    private String waterMaskDescription = "Water pixels";
 
 
 
@@ -73,36 +59,30 @@ class BathymetryData {
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
+
+
     public BathymetryData() {
 
         SourceFileInfo sourceFileInfo;
 
-        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_50m,
+        File ocsswRootDir = getOcsswRoot();
+        File ocsswRunDir = new File(ocsswRootDir, "run");
+        File ocsswRunDataDir = new File(ocsswRunDir, "data");
+        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
+        File bathymetryFile = new File(ocsswRunDataCommonDir, BathymetryMaskClassifier.FILENAME_BATHYMETRY);
+
+
+
+        sourceFileInfo = new SourceFileInfo(BathymetryMaskClassifier.RESOLUTION_1km,
                 SourceFileInfo.Unit.METER,
-                WatermaskClassifier.Mode.SRTM_GC,
-                WatermaskClassifier.FILENAME_SRTM_GC_50m);
-        getSourceFileInfos().add(sourceFileInfo);
-
-        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_150m,
-                SourceFileInfo.Unit.METER,
-                WatermaskClassifier.Mode.SRTM_GC,
-                WatermaskClassifier.FILENAME_SRTM_GC_150m);
-        getSourceFileInfos().add(sourceFileInfo);
-
-
-
-        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_1km,
-                SourceFileInfo.Unit.METER,
-                WatermaskClassifier.Mode.GSHHS,
-                WatermaskClassifier.FILENAME_GSHHS_1km);
+                bathymetryFile);
         getSourceFileInfos().add(sourceFileInfo);
         // set the default
         this.sourceFileInfo = sourceFileInfo;
 
-        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_10km,
+        sourceFileInfo = new SourceFileInfo(BathymetryMaskClassifier.RESOLUTION_10km,
                 SourceFileInfo.Unit.METER,
-                WatermaskClassifier.Mode.GSHHS,
-                WatermaskClassifier.FILENAME_GSHHS_10km);
+                BathymetryMaskClassifier.FILENAME_GSHHS_10km);
         getSourceFileInfos().add(sourceFileInfo);
 
         this.addPropertyChangeListener(BathymetryData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, new PropertyChangeListener() {
@@ -118,6 +98,11 @@ class BathymetryData {
     }
 
 
+    public static File getOcsswRoot() {
+        return new File(RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR)));
+    }
+
+
     public boolean isCreateMasks() {
         return createMasks;
     }
@@ -126,21 +111,7 @@ class BathymetryData {
         this.createMasks = closeClicked;
     }
 
-    public double getLandMaskTransparency() {
-        return landMaskTransparency;
-    }
 
-    public void setLandMaskTransparency(double landMaskTransparency) {
-        this.landMaskTransparency = landMaskTransparency;
-    }
-
-    public double getWaterMaskTransparency() {
-        return waterMaskTransparency;
-    }
-
-    public void setWaterMaskTransparency(double waterMaskTransparency) {
-        this.waterMaskTransparency = waterMaskTransparency;
-    }
 
     public double getMaskTransparency() {
         return maskTransparency;
@@ -150,21 +121,7 @@ class BathymetryData {
         this.maskTransparency = maskTransparency;
     }
 
-    public boolean isShowLandMaskAllBands() {
-        return showLandMaskAllBands;
-    }
 
-    public void setShowLandMaskAllBands(boolean showLandMaskAllBands) {
-        this.showLandMaskAllBands = showLandMaskAllBands;
-    }
-
-    public boolean isShowWaterMaskAllBands() {
-        return showWaterMaskAllBands;
-    }
-
-    public void setShowWaterMaskAllBands(boolean showWaterMaskAllBands) {
-        this.showWaterMaskAllBands = showWaterMaskAllBands;
-    }
 
     public boolean isShowMaskAllBands() {
         return showMaskAllBands;
@@ -174,21 +131,7 @@ class BathymetryData {
         this.showMaskAllBands = showMaskAllBands;
     }
 
-    public Color getLandMaskColor() {
-        return landMaskColor;
-    }
 
-    public void setLandMaskColor(Color landMaskColor) {
-        this.landMaskColor = landMaskColor;
-    }
-
-    public Color getWaterMaskColor() {
-        return waterMaskColor;
-    }
-
-    public void setWaterMaskColor(Color waterMaskColor) {
-        this.waterMaskColor = waterMaskColor;
-    }
 
     public Color getMaskColor() {
         return maskColor;
@@ -214,45 +157,17 @@ class BathymetryData {
         this.sourceFileInfo = resolution;
     }
 
-    public String getWaterFractionBandName() {
-        return waterFractionBandName;
+
+
+    public String getBathymetryBandName() {
+        return bathymetryBandName;
     }
 
-    public void setWaterFractionBandName(String waterFractionBandName) {
-        this.waterFractionBandName = waterFractionBandName;
+    public void setBathymetryBandName(String bathymetryBandName) {
+        this.bathymetryBandName = bathymetryBandName;
     }
 
-    public String getWaterFractionSmoothedName() {
-        return waterFractionSmoothedName;
-    }
 
-    public void setWaterFractionSmoothedName(String waterFractionSmoothedName) {
-        this.waterFractionSmoothedName = waterFractionSmoothedName;
-    }
-
-    public String getLandMaskName() {
-        return landMaskName;
-    }
-
-    public void setLandMaskName(String landMaskName) {
-        this.landMaskName = landMaskName;
-    }
-
-    public String getLandMaskMath() {
-        return landMaskMath;
-    }
-
-    public void setLandMaskMath(String landMaskMath) {
-        this.landMaskMath = landMaskMath;
-    }
-
-    public String getLandMaskDescription() {
-        return landMaskDescription;
-    }
-
-    public void setLandMaskDescription(String landMaskDescription) {
-        this.landMaskDescription = landMaskDescription;
-    }
 
     public String getMaskName() {
         return maskName;
@@ -265,21 +180,18 @@ class BathymetryData {
     public String getMaskMath() {
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(getWaterFractionSmoothedName());
+        stringBuilder.append(getBathymetryBandName());
         stringBuilder.append(" > ");
         stringBuilder.append(new Double(getMaskMaxDepth()).toString());
         stringBuilder.append(" and ");
-        stringBuilder.append(getWaterFractionSmoothedName());
+        stringBuilder.append(getBathymetryBandName());
         stringBuilder.append(" < ");
         stringBuilder.append(new Double(getMaskMinDepth()).toString());
 
         return stringBuilder.toString();
-   //     return maskMath;
     }
 
-    public void setMaskMath(String maskMath) {
-        this.maskMath = maskMath;
-    }
+
 
     public String getMaskDescription() {
         return maskDescription;
@@ -289,29 +201,7 @@ class BathymetryData {
         this.maskDescription = maskDescription;
     }
 
-    public String getWaterMaskName() {
-        return waterMaskName;
-    }
 
-    public void setWaterMaskName(String waterMaskName) {
-        this.waterMaskName = waterMaskName;
-    }
-
-    public String getWaterMaskMath() {
-        return waterMaskMath;
-    }
-
-    public void setWaterMaskMath(String waterMaskMath) {
-        this.waterMaskMath = waterMaskMath;
-    }
-
-    public String getWaterMaskDescription() {
-        return waterMaskDescription;
-    }
-
-    public void setWaterMaskDescription(String waterMaskDescription) {
-        this.waterMaskDescription = waterMaskDescription;
-    }
 
     public boolean isDeleteMasks() {
         return deleteMasks;

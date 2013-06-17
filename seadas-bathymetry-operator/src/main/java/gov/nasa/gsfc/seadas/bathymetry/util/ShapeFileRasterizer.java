@@ -16,7 +16,7 @@
 
 package gov.nasa.gsfc.seadas.bathymetry.util;
 
-import gov.nasa.gsfc.seadas.bathymetry.operator.WatermaskUtils;
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
@@ -88,7 +88,7 @@ class ShapeFileRasterizer {
     public static void main(String[] args) throws IOException {
         final File resourceDir = new File(args[0]);
         final File targetDir = new File(args[1]);
-        int sideLength = WatermaskUtils.computeSideLength(Integer.parseInt(args[2]));
+        int sideLength = BathymetryUtils.computeSideLength(Integer.parseInt(args[2]));
         boolean createImage = false;
         if(args.length == 4){
             createImage = Boolean.parseBoolean(args[3]);

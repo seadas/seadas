@@ -45,26 +45,24 @@ import java.util.zip.ZipFile;
 public class PNGSourceImage extends SourcelessOpImage {
 
     private final ZipFile zipFile;
-    private WatermaskClassifier.Mode mode;
     private int resolution;
 
-    static PNGSourceImage create(Properties properties, File zipFile, WatermaskClassifier.Mode mode, int resolution) throws IOException {
+    static PNGSourceImage create(Properties properties, File zipFile, int resolution) throws IOException {
         final ImageHeader imageHeader = ImageHeader.load(properties, null);
-        return new PNGSourceImage(imageHeader, zipFile,mode,resolution);
+        return new PNGSourceImage(imageHeader, zipFile, resolution);
     }
 
-    private PNGSourceImage(ImageHeader imageHeader, File zipFile, WatermaskClassifier.Mode mode, int resolution) throws IOException {
+    private PNGSourceImage(ImageHeader imageHeader, File zipFile, int resolution) throws IOException {
         super(imageHeader.getImageLayout(),
-              null,
-              ImageUtils.createSingleBandedSampleModel(DataBuffer.TYPE_BYTE,
-                                                       imageHeader.getImageLayout().getSampleModel(null).getWidth(),
-                                                       imageHeader.getImageLayout().getSampleModel(null).getHeight()),
-              imageHeader.getImageLayout().getMinX(null),
-              imageHeader.getImageLayout().getMinY(null),
-              imageHeader.getImageLayout().getWidth(null),
-              imageHeader.getImageLayout().getHeight(null));
+                null,
+                ImageUtils.createSingleBandedSampleModel(DataBuffer.TYPE_BYTE,
+                        imageHeader.getImageLayout().getSampleModel(null).getWidth(),
+                        imageHeader.getImageLayout().getSampleModel(null).getHeight()),
+                imageHeader.getImageLayout().getMinX(null),
+                imageHeader.getImageLayout().getMinY(null),
+                imageHeader.getImageLayout().getWidth(null),
+                imageHeader.getImageLayout().getHeight(null));
         this.zipFile = new ZipFile(zipFile);
-        this.mode = mode;
         this.resolution = resolution;
         // this image uses its own tile cache in order not to disturb the GPF tile cache.
         setTileCache(JAI.createTileCache(50L * 1024 * 1024));
@@ -116,11 +114,9 @@ public class PNGSourceImage extends SourcelessOpImage {
     }
 
     private String getFileName(int tileX, int tileY) {
-        if (mode == WatermaskClassifier.Mode.GSHHS){
-            String res = String.valueOf(resolution/1000);
-            return String.format("gshhs_%s_%02d_%02d.png", res, tileY, tileX);
-        } else {
-            return String.format("%d_%d.png", tileX, tileY);
-        }
+
+        String res = String.valueOf(resolution / 1000);
+        return String.format("gshhs_%s_%02d_%02d.png", res, tileY, tileX);
+
     }
 }

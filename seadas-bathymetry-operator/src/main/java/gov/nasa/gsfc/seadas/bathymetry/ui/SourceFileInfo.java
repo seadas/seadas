@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
-import gov.nasa.gsfc.seadas.bathymetry.operator.WatermaskClassifier;
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryMaskClassifier;
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
 
 import java.io.File;
@@ -14,8 +14,6 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class SourceFileInfo {
-
-
 
 
     public enum Unit {
@@ -37,16 +35,21 @@ public class SourceFileInfo {
     private int resolution;
     private Unit unit;
     private String description;
-    private WatermaskClassifier.Mode mode;
     private File file;
     private boolean status;
     private String statusMessage;
 
 
-    public SourceFileInfo(int resolution, Unit unit, WatermaskClassifier.Mode mode, String filename) {
+    public SourceFileInfo(int resolution, Unit unit, File file) {
         setUnit(unit);
         setResolution(resolution);
-        setMode(mode);
+        setFile(file);
+        setDescription();
+    }
+
+    public SourceFileInfo(int resolution, Unit unit,  String filename) {
+        setUnit(unit);
+        setResolution(resolution);
         setFile(filename);
         setDescription();
     }
@@ -88,9 +91,7 @@ public class SourceFileInfo {
 
     private void setDescription() {
 
-        String core = "Filename=" + getFile().getAbsolutePath() +"<br>Uses the " + Integer.toString(getResolution()) + " " + getUnit().toString() +
-                " dataset obtained from the<br> "
-                + getMode().getDescription();
+        String core = "Filename=" + getFile();
 
         if (isEnabled()) {
             this.description = "<html>" + core + "</html>";
@@ -100,23 +101,23 @@ public class SourceFileInfo {
     }
 
 
-    public WatermaskClassifier.Mode getMode() {
-        return mode;
-    }
-
-    private void setMode(WatermaskClassifier.Mode mode) {
-        this.mode = mode;
-    }
 
 
     public File getFile() {
         return file;
     }
 
+
+    private void setFile(File file) {
+        this.file = file;
+
+        setStatus(true, null);
+    }
+
     private void setFile(String filename) {
 
-        try{
-            file = ResourceInstallationUtils.installAuxdata(WatermaskClassifier.class, filename);
+        try {
+            file = ResourceInstallationUtils.installAuxdata(BathymetryMaskClassifier.class, filename);
             setStatus(true, null);
         } catch (IOException e) {
             setStatus(false, e.getMessage());
@@ -127,12 +128,12 @@ public class SourceFileInfo {
 
     public boolean isEnabled() {
 
-        if (getMode() == WatermaskClassifier.Mode.SRTM_GC) {
-            File gcFile = ResourceInstallationUtils.getTargetFile(WatermaskClassifier.GC_WATER_MASK_FILE);
-            return gcFile.exists() && file.exists() && getStatus();
-        } else {
-            return file.exists() && getStatus();
+        if (file == null) {
+            return false;
         }
+
+        return file.exists() && getStatus();
+
     }
 
     public boolean isStatus() {
@@ -143,7 +144,7 @@ public class SourceFileInfo {
         this.status = status;
     }
 
-    public void setStatus(boolean status,String statusMessage) {
+    public void setStatus(boolean status, String statusMessage) {
         this.status = status;
         this.statusMessage = statusMessage;
     }
@@ -164,32 +165,10 @@ public class SourceFileInfo {
 
 
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-
-//        StringBuilder resolutionStringBuilder = new StringBuilder(Integer.toString(getResolution()));
-//
-//        while (resolutionStringBuilder.length() < 5) {
-//            resolutionStringBuilder.insert(0, " ");
-//        }
-//
-//        stringBuilder.append(resolutionStringBuilder.toString());
-
-        if (resolution >= 1000) {
-            stringBuilder.append(String.valueOf(resolution / 1000));
-            stringBuilder.append(" ");
-            stringBuilder.append(Unit.KILOMETER.toString());
-        } else {
-            stringBuilder.append(Integer.toString(getResolution()));
-            stringBuilder.append(" ");
-            stringBuilder.append(getUnit().toString());
+        if (file == null) {
+            return "";
         }
 
-
-
-        stringBuilder.append(" (");
-        stringBuilder.append(getMode().toString());
-        stringBuilder.append(")");
-
-        return stringBuilder.toString();
+        return file.getName();
     }
 }
