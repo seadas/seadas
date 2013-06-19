@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>gov.nasa.gsfc.seadas</groupId>
+        <artifactId>seadas-plugin-parent</artifactId>
+        <version>1.0</version>
+        <relativePath>../seadas-plugin-parent/pom.xml</relativePath>
+    </parent>
+
+    <groupId>gov.nasa.gsfc.seadas</groupId>
+    <artifactId>seadas-bathymetry-operator</artifactId>
+    <version>1.2.1</version>
+
+    <name>SEADAS Bathymetry Operator</name>
+    <description>Provides an API as well as an operator for creating an accurate, shapefile-based land-water mask.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-gpf</artifactId>
+            <version>${beam.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-visat-rcp</artifactId>
+            <version>${beam.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-netcdf</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-render</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-shapefile</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

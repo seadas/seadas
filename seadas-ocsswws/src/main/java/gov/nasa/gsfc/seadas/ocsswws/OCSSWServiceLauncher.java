@@ -15,15 +15,7 @@ package gov.nasa.gsfc.seadas.ocsswws;
  * To change this template use File | Settings | File Templates.
  */
 
-import com.sun.grizzly.http.embed.GrizzlyWebServer;
-import com.sun.grizzly.http.servlet.ServletAdapter;
-import com.sun.jersey.api.core.PackagesResourceConfig;
-import com.sun.jersey.spi.container.servlet.ServletContainer;
-import net.jxta.impl.xindice.core.DBException;
-
-import javax.naming.ConfigurationException;
 import javax.ws.rs.core.UriBuilder;
-import java.io.IOException;
 import java.net.URI;
 
 public class OCSSWServiceLauncher {
@@ -61,25 +53,25 @@ public class OCSSWServiceLauncher {
 //        httpServer.stop();
 //    }
 
-    public static void main(String[] args) throws IOException, ConfigurationException, DBException {
-
-
-        // Create a WebServer that listen on port 8085
-        // @param port The port opened
-        // @param webResourcesPath the path to the web resource (ex: /var/www)
-        // SeaDAS does not have any web resource, so "/var/www" is extra for now
-
-        GrizzlyWebServer gws = new GrizzlyWebServer(8085, "/var/www");
-        ServletAdapter jerseyAdapter = new ServletAdapter();
-
-        jerseyAdapter.addInitParameter(
-                PackagesResourceConfig.PROPERTY_PACKAGES, "gov.nasa.gsfc.seadas.ocsswws.services");
-        jerseyAdapter.setServletInstance(new ServletContainer());
-
-        gws.addGrizzlyAdapter(jerseyAdapter, new String[]{"/"});
-        //start Grizzly server
-        gws.start();
-    }
+//    public static void main(String[] args) throws IOException, ConfigurationException, DBException {
+//
+//
+//        // Create a WebServer that listen on port 8085
+//        // @param port The port opened
+//        // @param webResourcesPath the path to the web resource (ex: /var/www)
+//        // SeaDAS does not have any web resource, so "/var/www" is extra for now
+//
+//        GrizzlyWebServer gws = new GrizzlyWebServer(8085, "/var/www");
+//        ServletAdapter jerseyAdapter = new ServletAdapter();
+//
+//        jerseyAdapter.addInitParameter(
+//                PackagesResourceConfig.PROPERTY_PACKAGES, "gov.nasa.gsfc.seadas.ocsswws.services");
+//        jerseyAdapter.setServletInstance(new ServletContainer());
+//
+//        gws.addGrizzlyAdapter(jerseyAdapter, new String[]{"/"});
+//        //start Grizzly server
+//        gws.start();
+//    }
 
 //    protected static SelectorThread startServer() throws IOException {
 //	        final Map<String, String> initParams = new HashMap<String, String>();

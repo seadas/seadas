@@ -231,12 +231,6 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
 
                         boolean matchIsStillPossible = true;
 
-                        String prefix = getPrefix();
-                        String suffix = getSuffix();
-
-                        if (getSuffix() != null && getSuffix().contains("carder")) {
-                            prefix = prefix;
-                        }
                         if (getPrefix() != null && getPrefix().length() > 0) {
                             if (inProduct.startsWith(getPrefix())) {
                                 inProduct = inProduct.substring((getPrefix().length())); //trim off prefix
