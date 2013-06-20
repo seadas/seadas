@@ -50,8 +50,8 @@ public class MainTest {
         KeyManager mykm[] = null;
 
         try {
-            mytm = new TrustManager[]{new MyX509TrustManager("./truststore_client", "seadas7".toCharArray())};
-            mykm = new KeyManager[]{new MyX509KeyManager("./keystore_client", "seadas7".toCharArray())};
+            mytm = new TrustManager[]{new MyX509TrustManager(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/truststore_client", "seadas7".toCharArray())};
+            mykm = new KeyManager[]{new MyX509KeyManager(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_client", "seadas7".toCharArray())};
         } catch (Exception ex) {
 
         }
@@ -98,8 +98,8 @@ public class MainTest {
         KeyManager mykm[] = null;
 
         try {
-            mytm = new TrustManager[]{new MyX509TrustManager("./truststore_client", "seadas7".toCharArray())};
-            mykm = new KeyManager[]{new MyX509KeyManager("./keystore_client", "seadas7".toCharArray())};
+            mytm = new TrustManager[]{new MyX509TrustManager(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/truststore_client", "seadas7".toCharArray())};
+            mykm = new KeyManager[]{new MyX509KeyManager(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_client", "seadas7".toCharArray())};
         } catch (Exception ex) {
             System.out.println("Something bad happened " + ex.getMessage());
         }
@@ -307,7 +307,7 @@ class MyX509KeyManager implements X509KeyManager {
          ks.load(new FileInputStream(keyStore), password);
 
          KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509", "SunJSSE");
-         kmf.init(ks, "asdfgh".toCharArray());
+         kmf.init(ks, "seadas7".toCharArray());
 
          KeyManager kms[] = kmf.getKeyManagers();
 

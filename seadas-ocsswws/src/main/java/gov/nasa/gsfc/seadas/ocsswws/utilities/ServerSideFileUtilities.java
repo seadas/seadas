@@ -58,5 +58,9 @@ public class ServerSideFileUtilities {
          }
      }
 
+    public static void makeNewJobDirectory(String jobID) {
+
+    }
+
 }
 
