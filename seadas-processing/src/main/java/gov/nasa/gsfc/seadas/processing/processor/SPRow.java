@@ -112,7 +112,8 @@ public class SPRow {
         if (configPanel == null) {
             if (name.equals("main")) {
                 cloProgramUI = new ProgramUIFactory("seadas_processor_main", "seadas_processor_main.xml");
-                configPanel = (JPanel) cloProgramUI;
+              //  configPanel = (JPanel) cloProgramUI;
+                configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("geo")) {
                 cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml");
                 configPanel = cloProgramUI.getParamPanel();
