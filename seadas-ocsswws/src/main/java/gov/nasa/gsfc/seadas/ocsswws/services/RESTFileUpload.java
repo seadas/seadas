@@ -43,7 +43,8 @@ public class RESTFileUpload
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response fileUpload(
             @FormDataParam("file") InputStream uploadedInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileInfo)
+            @FormDataParam("file") FormDataContentDisposition fileInfo,
+            @QueryParam("clientId") String clientID)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
         if (fileInfo == null) {
