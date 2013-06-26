@@ -11,48 +11,36 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>seadas-ocsswws</artifactId>
+    <groupId>gov.nasa.gsfc.seadas</groupId>
+    <name>OCSSW Web Services</name>
+    <version>1.0</version>
+
     <dependencies>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-grizzly2-servlet</artifactId>
-            <version>1.17</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-bundle</artifactId>
-            <version>1.17</version>
-        </dependency>
-        <dependency>
-            <groupId>net.jxta</groupId>
-            <artifactId>jxta-jxse</artifactId>
-            <version>2.6-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.2.4</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-grizzly2-http</artifactId>
-            <version>2.1-SNAPSHOT</version>
+        	<groupId>javax.ws.rs</groupId>
+        	<artifactId>javax.ws.rs-api</artifactId>
+        	<version>2.0</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <version>2.1-SNAPSHOT</version>
+        	<groupId>org.glassfish.jersey</groupId>
+        	<artifactId>jax-rs-ri</artifactId>
+        	<version>2.0-rc1</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <version>2.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <version>2.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+             <groupId>junit</groupId>
+             <artifactId>junit</artifactId>
+             <version>4.8.2</version>
+             <!-- junit is also used in production code e.g. GlobalTestConfig, therefore we
+             can't declare the test scope -->
+             <!--<scope>test</scope>-->
+         </dependency>
+
+   </dependencies>
     <build>
         <resources>
             <resource>
