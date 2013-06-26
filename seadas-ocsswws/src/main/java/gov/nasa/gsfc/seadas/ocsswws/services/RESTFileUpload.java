@@ -17,7 +17,7 @@ package gov.nasa.gsfc.seadas.ocsswws.services;
 
 import com.google.gson.Gson;
 import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

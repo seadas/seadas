@@ -173,15 +173,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         String paramString = pm.getCmdArrayString();
         String[] filesToUpload = pm.getFilesToUpload();
-
-        boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
-        boolean t = ocsswClient.uploadCmdArray(pm.getProgramCmdArray());
-        if (fileUploadSuccess) {
-            ocsswClient.uploadParFile(pm.getParStringForRemoteServer());
-            ocsswClient.uploadParam(paramString);
-            ocsswClient.runOCSSW();
-        } else {
-        }
+         ocsswClient.requestNewJobId();
+//        boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
+//        boolean t = ocsswClient.uploadCmdArray(pm.getProgramCmdArray());
+//        if (fileUploadSuccess) {
+//            ocsswClient.uploadParFile(pm.getParStringForRemoteServer());
+//            ocsswClient.uploadParam(paramString);
+//            ocsswClient.runOCSSW();
+//        } else {
+//        }
     }
 
     public void executeProgram(ProcessorModel pm) {

@@ -16,7 +16,7 @@ package gov.nasa.gsfc.seadas.ocsswws.services;
  */
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
