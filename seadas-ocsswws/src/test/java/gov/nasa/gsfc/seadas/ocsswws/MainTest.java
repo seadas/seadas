@@ -1,10 +1,18 @@
 package gov.nasa.gsfc.seadas.ocsswws;
 
+
+import org.glassfish.jersey.SslConfigurator;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.net.ssl.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.Socket;
@@ -12,6 +20,7 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import static junit.framework.Assert.assertEquals;
 
 
 /**
@@ -25,7 +34,7 @@ public class MainTest {
 
     @Before
     public void setUp() throws Exception {
-        Server.startServer();
+        Server.startServer1();
     }
 
     @After
@@ -189,6 +198,70 @@ public class MainTest {
 //        assertTrue(caught); // solaris throws java.net.SocketException instead of SSLHandshakeException
         // assertTrue(msg.contains("SSLHandshakeException"));
     }
+
+    /**
+     * Test to see that HTTP 401 is returned when client tries to GET without
+     * proper credentials.
+     */
+    @Test
+    public void testHTTPBasicAuth2() {
+        SslConfigurator sslConfig = SslConfigurator.newInstance()
+                .trustStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/truststore_client")
+                .trustStorePassword("seadas7")
+
+                .keyStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_client")
+                .keyPassword("seadas7");
+
+        Client client = ClientBuilder.newBuilder().sslContext(sslConfig.createSSLContext()).build();
+
+        System.out.println("Client: GET " + Server.BASE_URI);
+
+        WebTarget target = client.target(Server.BASE_URI);
+        target.register(new LoggingFilter());
+
+        Response response;
+        System.out.println(target.getUri().toString());
+        WebTarget jobTarget  = target.path("jobs");
+        Invocation.Builder builder = jobTarget.request();
+        Response r = builder.get();
+        String test = jobTarget.request().get().toString();
+        response = target.path("/").request().get(Response.class);
+
+        assertEquals(200, response.getStatus());
+    }
+
+    /**
+     * Test to see that HTTP 401 is returned when client tries to GET without
+     * proper credentials.
+     */
+    @Test
+    public void testRequestNewJobId() {
+        SslConfigurator sslConfig = SslConfigurator.newInstance()
+                .trustStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/truststore_client")
+                .trustStorePassword("seadas7")
+
+                .keyStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_client")
+                .keyPassword("seadas7");
+
+        Client client = ClientBuilder.newBuilder().sslContext(sslConfig.createSSLContext()).build();
+
+        System.out.println("Client: GET " + Server.BASE_URI);
+
+        WebTarget target = client.target(Server.BASE_URI);
+        target.register(new LoggingFilter());
+
+        Response response;
+        WebTarget jobTarget  = target.path("jobs");
+        Invocation.Builder builder = jobTarget.request();
+        Response r = builder.get();
+        String test = jobTarget.request().get().toString();
+        response = target.path("jobs").request().get(Response.class);
+
+        assertEquals(200, response.getStatus());
+        String test1 = (String)response.getEntity();
+        assertEquals(200, response.getEntity());
+    }
+
 
 }
 
