@@ -1,15 +1,12 @@
 package gov.nasa.gsfc.seadas.ocsswws.resource;
 
-import com.sun.jersey.core.util.Base64;
 import gov.nasa.gsfc.seadas.ocsswws.Server;
 import gov.nasa.gsfc.seadas.ocsswws.utilities.Job;
 import gov.nasa.gsfc.seadas.ocsswws.utilities.ServerSideFileUtilities;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.*;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 
 /**
@@ -22,11 +19,11 @@ import java.util.ArrayList;
 
 @Path("/jobs")
 public class JobResource {
-    @Context
-    SecurityContext securityContext;
-
-    @Context
-    UriInfo uriInfo;
+//    @Context
+//    SecurityContext securityContext;
+//
+//    @Context
+//    UriInfo uriInfo;
 
     //    public RootResource(@Context SecurityContext securityContext) {
 //            // this is ok too: the proxy of SecurityContext will be injected
@@ -40,24 +37,25 @@ public class JobResource {
 //        return Response.ok(Server.CONTENT).type(MediaType.TEXT_HTML).build();
 //    }
 
-    private String getUser(HttpHeaders headers) {
-
-        // this is a very minimalistic and "naive" code; if you plan to use it
-        // add necessary checks (see com.sun.jersey.samples.https_grizzly.auth.SecurityFilter)
-        String auth = headers.getRequestHeader("authorization").get(0);
-
-        auth = auth.substring("Basic ".length());
-        String[] values = new String(Base64.base64Decode(auth)).split(":");
-
-        // String username = values[0];
-        // String password = values[1];
-
-        return values[0];
-    }
+//    private String getUser(HttpHeaders headers) {
+//
+//        // this is a very minimalistic and "naive" code; if you plan to use it
+//        // add necessary checks (see com.sun.jersey.samples.https_grizzly.auth.SecurityFilter)
+//        String auth = headers.getRequestHeader("authorization").get(0);
+//
+//        auth = auth.substring("Basic ".length());
+//        String[] values = new String(Base64.base64Decode(auth)).split(":");
+//
+//        // String username = values[0];
+//        // String password = values[1];
+//
+//        return values[0];
+//    }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public Response createNewJob(@QueryParam("clienId") String clientId) {
+    public Response createNewJob(
+            @DefaultValue("0") @QueryParam("clienId") String clientId) {
 
         //create new jobID
         Job newJob = new Job();
@@ -81,22 +79,22 @@ public class JobResource {
         return Response.ok(newJobID).build();
     }
 
-    @GET
-    @Path("/{clientId}/{jobId}/{processorId}")
-    public Response getCurrentJobID(@QueryParam("clienId") String clientId,
-                                    @QueryParam("clienId") String jobId,
-                                    @QueryParam("clienId") String processorId) {
-
-        ArrayList<String> jobList = new ArrayList<String>();
-        if (Server.jobMap.containsKey(clientId)) {
-            jobList = Server.jobMap.get(clientId);
-        }
-
-        for (String job : jobList) {
-        }
-
-        return Response.ok(Server.CONTENT).type(MediaType.TEXT_HTML).build();
-    }
+//    @GET
+//    @Path("/{clientId}/{jobId}/{processorId}")
+//    public Response getCurrentJobID(@QueryParam("clienId") String clientId,
+//                                    @QueryParam("clienId") String jobId,
+//                                    @QueryParam("clienId") String processorId) {
+//
+//        ArrayList<String> jobList = new ArrayList<String>();
+//        if (Server.jobMap.containsKey(clientId)) {
+//            jobList = Server.jobMap.get(clientId);
+//        }
+//
+//        for (String job : jobList) {
+//        }
+//
+//        return Response.ok(Server.CONTENT).type(MediaType.TEXT_HTML).build();
+//    }
 
     @GET
     @Path("/job{jobId}")

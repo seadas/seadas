@@ -16,8 +16,7 @@ package gov.nasa.gsfc.seadas.ocsswws.services;
  */
 
 import com.google.gson.Gson;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -42,8 +41,8 @@ public class RESTFileUpload
     @Path("/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response fileUpload(
-            @FormDataParam("file") InputStream uploadedInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileInfo,
+            @FormParam("file") InputStream uploadedInputStream,
+            @FormParam("file") FormDataContentDisposition fileInfo,
             @QueryParam("clientId") String clientID)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;

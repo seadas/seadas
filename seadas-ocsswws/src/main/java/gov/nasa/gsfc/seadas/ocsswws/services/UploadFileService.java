@@ -15,7 +15,8 @@ package gov.nasa.gsfc.seadas.ocsswws.services;
  * To change this template use File | Settings | File Templates.
  */
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
+
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.ws.rs.Consumes;

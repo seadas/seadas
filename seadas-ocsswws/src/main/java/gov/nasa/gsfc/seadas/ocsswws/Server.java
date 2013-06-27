@@ -8,17 +8,16 @@ package gov.nasa.gsfc.seadas.ocsswws;
  * To change this template use File | Settings | File Templates.
  */
 
-import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
-import com.sun.jersey.api.core.ResourceConfig;
-import com.sun.jersey.spi.container.servlet.ServletContainer;
-import gov.nasa.gsfc.seadas.ocsswws.auth.SecurityFilter;
+import gov.nasa.gsfc.seadas.ocsswws.resource.JobResource;
+import gov.nasa.gsfc.seadas.ocsswws.resource.RootResource;
+import gov.nasa.gsfc.seadas.ocsswws.services.OCSSWService;
 import gov.nasa.gsfc.seadas.ocsswws.utilities.OCSSWRuntimeConfig;
 import gov.nasa.gsfc.seadas.ocsswws.utilities.RuntimeConfigException;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.servlet.ServletRegistration;
-import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.grizzly.ssl.SSLContextConfigurator;
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.File;
@@ -72,48 +71,82 @@ public class Server {
         }
 
     }
+    protected static void startServer1() {
 
-    protected static void startServer() {
+           // Grizzly ssl configuration
+           SSLContextConfigurator sslContext = new SSLContextConfigurator();
 
-        // add Jersey resource servlet
-        WebappContext context = new WebappContext("context");
-        ServletRegistration registration =
-                context.addServlet("ServletContainer", ServletContainer.class);
-        registration.setInitParameter("com.sun.jersey.config.property.packages",
-                "gov.nasa.gsfc.seadas.ocsswws.resource;gov.nasa.gsfc.seadas.ocsswws.auth");
+           // set up security context
+           sslContext.setKeyStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_server"); // contains server keypair
+           sslContext.setKeyStorePass("seadas7");
+           sslContext.setTrustStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/truststore_server"); // contains client certificate
+           sslContext.setTrustStorePass("seadas7");
 
-        // add security filter (which handles http basic authentication)
-        registration.setInitParameter(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS,
-                SecurityFilter.class.getName());
+           ResourceConfig rc = new ResourceConfig();
+           //rc.registerClasses(RootResource.class, SecurityFilter.class, AuthenticationExceptionMapper.class);
+           rc.register(RootResource.class);
+           rc.register(OCSSWService.class);
+           rc.register(JobResource.class);
 
-        // Grizzly ssl configuration
-        SSLContextConfigurator sslContext = new SSLContextConfigurator();
+           try {
+               webServer = GrizzlyHttpServerFactory.createHttpServer(
+                       getBaseURI(),
+                       rc,
+                       true,
+                       new SSLEngineConfigurator(sslContext).setClientMode(false).setNeedClientAuth(false)
+               );
 
-        // set up security context
-        sslContext.setKeyStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_server"); // contains server keypair
-        sslContext.setKeyStorePass("seadas7");
-        sslContext.setTrustStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/truststore_server"); // contains client certificate
-        sslContext.setTrustStorePass("seadas7");
+               // start Grizzly embedded server //
+               System.out.println("Jersey app started. Try out " + BASE_URI + "\nHit CTRL + C to stop it...");
+               webServer.start();
 
-        initJobMap();
-        try {
+           } catch (Exception ex) {
+               System.out.println(ex.getMessage());
+           }
+       }
 
-            webServer = GrizzlyServerFactory.createHttpServer(
-                    getBaseURI(),
-                    null,
-                    true,
-                    new SSLEngineConfigurator(sslContext).setClientMode(false).setNeedClientAuth(true)
-            );
 
-            // start Grizzly embedded server //
-            System.out.println("Jersey app started. Try out " + BASE_URI + "\nHit CTRL + C to stop it...");
-            context.deploy(webServer);
-            webServer.start();
-
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
+//    protected static void startServer() {
+//
+//        // add Jersey resource servlet
+//        WebappContext context = new WebappContext("context");
+//        ServletRegistration registration =
+//                context.addServlet("ServletContainer", ServletContainer.class);
+//        registration.setInitParameter("com.sun.jersey.config.property.packages",
+//                "gov.nasa.gsfc.seadas.ocsswws.resource;gov.nasa.gsfc.seadas.ocsswws.auth");
+//
+//        // add security filter (which handles http basic authentication)
+//        registration.setInitParameter(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS,
+//                SecurityFilter.class.getName());
+//
+//        // Grizzly ssl configuration
+//        SSLContextConfigurator sslContext = new SSLContextConfigurator();
+//
+//        // set up security context
+//        sslContext.setKeyStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_server"); // contains server keypair
+//        sslContext.setKeyStorePass("seadas7");
+//        sslContext.setTrustStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/truststore_server"); // contains client certificate
+//        sslContext.setTrustStorePass("seadas7");
+//
+//        initJobMap();
+//        try {
+//
+//            webServer = GrizzlyServerFactory.createHttpServer(
+//                    getBaseURI(),
+//                    null,
+//                    true,
+//                    new SSLEngineConfigurator(sslContext).setClientMode(false).setNeedClientAuth(true)
+//            );
+//
+//            // start Grizzly embedded server //
+//            System.out.println("Jersey app started. Try out " + BASE_URI + "\nHit CTRL + C to stop it...");
+//            context.deploy(webServer);
+//            webServer.start();
+//
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        }
+//    }
 
     private static void initJobMap() {
 
@@ -153,7 +186,7 @@ public class Server {
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
-        startServer();
+        startServer1();
 
         System.in.read();
     }
