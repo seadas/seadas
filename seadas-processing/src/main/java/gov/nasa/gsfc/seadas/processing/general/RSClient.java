@@ -1,16 +1,13 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.multipart.FormDataMultiPart;
-import com.sun.jersey.multipart.file.FileDataBodyPart;
+import org.glassfish.jersey.SslConfigurator;
+import org.glassfish.jersey.filter.LoggingFilter;
 
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
 
@@ -23,171 +20,220 @@ import java.net.URI;
  */
 public class RSClient {
 
-
+    public static final String RESOURCE_BASE_URI = "https://localhost:4463/";
+    public static final String KEY_FILE_PATH =  "/Users/Shared/seadas7/seadas/seadas-ocsswws/";
     public RSClient() {
     }
 
     private static URI getBaseURI() {
-        return UriBuilder.fromUri("http://localhost:9998").build();
+        return UriBuilder.fromUri("http://localhost:4463").build();
     }
 
-    public WebResource getOCSSWService(){
-        final ClientConfig config = new DefaultClientConfig();
-        final  Client client = Client.create(config);
-        final WebResource resource = client.resource(getBaseURI())
-                .path("file")
-                .path("upload");
-        return resource;
+//    public WebResource getOCSSWService(){
+//        final ClientConfig config = new DefaultClientConfig();
+//        final Client client = Client.create(config);
+//        final WebResource resource = client.resource(getBaseURI())
+//                .path("file")
+//                .path("upload");
+//        return resource;
+//    }
+//
+//    public boolean uploadFile(String[] filesToUpload) {
+//        final ClientConfig config = new DefaultClientConfig();
+//        final  Client client = Client.create(config);
+//        final WebResource resource = client.resource(getBaseURI())
+//                .path("file")
+//                .path("upload");
+//
+//        for (String fileName : filesToUpload) {
+//            final File fileToUpload = new File(fileName);
+//            final FormDataMultiPart multiPart = new FormDataMultiPart();
+//            if (fileToUpload != null) {
+//                final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", fileToUpload, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+//                multiPart.bodyPart(fileDataBodyPart);
+//            }
+//            final ClientResponse clientResp = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
+//                                                       .post(ClientResponse.class, multiPart);
+//            if (!clientResp.getClientResponseStatus().equals(ClientResponse.Status.OK)) {
+//                System.out.println("Not accepted Response: " + clientResp.getClientResponseStatus());
+//                System.out.println("Not accepted Response: " +  clientResp.toString());
+//                return false;
+//            }
+//            System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
+//        }
+//
+//        client.destroy();
+//
+//        return true;
+//    }
+//
+//    public boolean uploadParam(String params) {
+//        final ClientConfig config = new DefaultClientConfig();
+//        final Client client = Client.create(config);
+//        final WebResource resource = client.resource(getBaseURI())
+//                .path("file")
+//                .path("params");
+//
+//         final ClientResponse clientResp = resource.type(MediaType.TEXT_PLAIN_TYPE)
+//                .post(ClientResponse.class, params);
+//        System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
+//        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
+//    }
+//
+//    public boolean uploadCmdArrayString(String cmdArrayString) {
+//        final ClientConfig config = new DefaultClientConfig();
+//        final Client client = Client.create(config);
+//        final WebResource resource = client.resource(getBaseURI())
+//                .path("file")
+//                .path("cmdArrayString");
+//
+//         final ClientResponse clientResp = resource.type(MediaType.TEXT_PLAIN_TYPE)
+//                .post(ClientResponse.class, cmdArrayString);
+//        System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
+//        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
+//    }
+//    public boolean uploadCmdArray(String[] cmdArray) {
+//        final ClientConfig config = new DefaultClientConfig();
+//        final Client client = Client.create(config);
+//        final WebResource resource = client.resource(getBaseURI())
+//                .path("file")
+//                .path("cmdArray");
+//        final ClientResponse clientResp = resource.type(MediaType.APPLICATION_JSON_TYPE)
+//                .post(ClientResponse.class, cmdArray);
+//        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
+//    }
+//
+//
+//    public boolean uploadFile(String fileName) {
+//        final ClientConfig config = new DefaultClientConfig();
+//        final Client client = Client.create(config);
+//        final WebResource resource = client.resource(getBaseURI())
+//                .path("file")
+//                .path("upload");
+//        final File fileToUpload = new File(fileName);
+//        final FormDataMultiPart multiPart = new FormDataMultiPart();
+//        if (fileToUpload != null) {
+//            final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", fileToUpload, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+//            multiPart.bodyPart(fileDataBodyPart);
+//        }
+//        final ClientResponse clientResp = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
+//                .post(ClientResponse.class, multiPart);
+//        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
+//    }
+//
+//    public boolean uploadParFile(String parString) {
+//        final ClientConfig config = new DefaultClientConfig();
+//        final Client client = Client.create(config);
+//        final WebResource resource = client.resource(getBaseURI())
+//                .path("file")
+//                .path("parFile");
+//        final ClientResponse clientResp = resource.type(MediaType.TEXT_PLAIN_TYPE)
+//                   .post(ClientResponse.class, parString);
+//           System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
+//           return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
+//    }
+//
+//
+//    public Process runOCSSW() {
+//        final ClientConfig config = new DefaultClientConfig();
+//        final Client client = Client.create(config);
+//        final WebResource ocsswService = client.resource(getBaseURI())
+//                .path("ocssw")
+//                .path("output");
+//        ClientResponse response = ocsswService.accept(MediaType.MULTIPART_FORM_DATA_TYPE)
+//                .get(ClientResponse.class);
+//        if (response.getStatus() != 200) {
+//            throw new RuntimeException("Failed : HTTP error code : "
+//                    + response.getStatus());
+//        }
+//
+//        Process process = null;
+//        try {
+//            process = response.getEntity(Process.class);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            client.destroy();
+//        }
+//        return process;
+//    }
+//
+//    public boolean downloadFile(String fileName) {
+//
+//        Client client = Client.create();
+//        WebResource webResource = client.resource(getBaseURI())
+//                .path("file")
+//                .path("download");
+//        ClientResponse response = webResource.accept(MediaType.MULTIPART_FORM_DATA_TYPE)
+//                .get(ClientResponse.class);
+//
+//        if (response.getStatus() != 200) {
+//            throw new RuntimeException("Failed : HTTP error code : "
+//                    + response.getStatus());
+//        }
+//        try {
+//            File output = response.getEntity(File.class);
+//            System.out.println("Output from Server .... \n");
+//            System.out.println(output);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            client.destroy();
+//        }
+//        return true;
+//    }
+
+    public String requestNewJobId() {
+        Client client = ClientBuilder.newClient();
+
+        WebTarget webTarget = client.target(RESOURCE_BASE_URI);
+
+        WebTarget jobIdWebTarget = webTarget.path("jobs");
+
+        WebTarget jobIddWebTargetWithQueryParam =
+                jobIdWebTarget.queryParam("gs616-seadas1", "12345", "get_obpg_file_type.py");
+
+        return null;
     }
 
-    public boolean uploadFile(String[] filesToUpload) {
-        final ClientConfig config = new DefaultClientConfig();
-        final  Client client = Client.create(config);
-        final WebResource resource = client.resource(getBaseURI())
-                .path("file")
-                .path("upload");
+    public void testConnection(){
+        SslConfigurator sslConfig = SslConfigurator.newInstance()
+                .trustStoreFile(KEY_FILE_PATH +  "truststore_client")
+                .trustStorePassword("seadas7")
 
-        for (String fileName : filesToUpload) {
-            final File fileToUpload = new File(fileName);
-            final FormDataMultiPart multiPart = new FormDataMultiPart();
-            if (fileToUpload != null) {
-                final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", fileToUpload, MediaType.APPLICATION_OCTET_STREAM_TYPE);
-                multiPart.bodyPart(fileDataBodyPart);
-            }
-            final ClientResponse clientResp = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
-                                                       .post(ClientResponse.class, multiPart);
-            if (!clientResp.getClientResponseStatus().equals(ClientResponse.Status.OK)) {
-                System.out.println("Not accepted Response: " + clientResp.getClientResponseStatus());
-                System.out.println("Not accepted Response: " +  clientResp.toString());
-                return false;
-            }
-            System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
-        }
+                .keyStoreFile(KEY_FILE_PATH + "keystore_client")
+                .keyPassword("seadas7");
 
-        client.destroy();
+        Client client = ClientBuilder.newBuilder().sslContext(sslConfig.createSSLContext()).build();
 
-        return true;
-    }
+        System.out.println("Client: GET " + RESOURCE_BASE_URI);
 
-    public boolean uploadParam(String params) {
-        final ClientConfig config = new DefaultClientConfig();
-        final Client client = Client.create(config);
-        final WebResource resource = client.resource(getBaseURI())
-                .path("file")
-                .path("params");
+        WebTarget target = client.target(RESOURCE_BASE_URI);
+        target.register(new LoggingFilter());
 
-         final ClientResponse clientResp = resource.type(MediaType.TEXT_PLAIN_TYPE)
-                .post(ClientResponse.class, params);
-        System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
-        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
-    }
+        Response response;
 
-    public boolean uploadCmdArrayString(String cmdArrayString) {
-        final ClientConfig config = new DefaultClientConfig();
-        final Client client = Client.create(config);
-        final WebResource resource = client.resource(getBaseURI())
-                .path("file")
-                .path("cmdArrayString");
-
-         final ClientResponse clientResp = resource.type(MediaType.TEXT_PLAIN_TYPE)
-                .post(ClientResponse.class, cmdArrayString);
-        System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
-        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
-    }
-    public boolean uploadCmdArray(String[] cmdArray) {
-        final ClientConfig config = new DefaultClientConfig();
-        final Client client = Client.create(config);
-        final WebResource resource = client.resource(getBaseURI())
-                .path("file")
-                .path("cmdArray");
-        final ClientResponse clientResp = resource.type(MediaType.APPLICATION_JSON_TYPE)
-                .post(ClientResponse.class, cmdArray);
-        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
-    }
-
-
-    public boolean uploadFile(String fileName) {
-        final ClientConfig config = new DefaultClientConfig();
-        final Client client = Client.create(config);
-        final WebResource resource = client.resource(getBaseURI())
-                .path("file")
-                .path("upload");
-        final File fileToUpload = new File(fileName);
-        final FormDataMultiPart multiPart = new FormDataMultiPart();
-        if (fileToUpload != null) {
-            final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", fileToUpload, MediaType.APPLICATION_OCTET_STREAM_TYPE);
-            multiPart.bodyPart(fileDataBodyPart);
-        }
-        final ClientResponse clientResp = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
-                .post(ClientResponse.class, multiPart);
-        return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
-    }
-
-    public boolean uploadParFile(String parString) {
-        final ClientConfig config = new DefaultClientConfig();
-        final Client client = Client.create(config);
-        final WebResource resource = client.resource(getBaseURI())
-                .path("file")
-                .path("parFile");
-        final ClientResponse clientResp = resource.type(MediaType.TEXT_PLAIN_TYPE)
-                   .post(ClientResponse.class, parString);
-           System.out.println("Response: " + clientResp.getClientResponseStatus() + " " + clientResp.toString());
-           return clientResp.getClientResponseStatus().equals(ClientResponse.Status.ACCEPTED);
-    }
-
-
-    public Process runOCSSW() {
-        final ClientConfig config = new DefaultClientConfig();
-        final Client client = Client.create(config);
-        final WebResource ocsswService = client.resource(getBaseURI())
-                .path("ocssw")
-                .path("output");
-        ClientResponse response = ocsswService.accept(MediaType.MULTIPART_FORM_DATA_TYPE)
-                .get(ClientResponse.class);
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                    + response.getStatus());
-        }
-
-        Process process = null;
-        try {
-            process = response.getEntity(Process.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            client.destroy();
-        }
-        return process;
-    }
-
-    public boolean downloadFile(String fileName) {
-
-        Client client = Client.create();
-        WebResource webResource = client.resource(getBaseURI())
-                .path("file")
-                .path("download");
-        ClientResponse response = webResource.accept(MediaType.MULTIPART_FORM_DATA_TYPE)
-                .get(ClientResponse.class);
-
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                    + response.getStatus());
-        }
-        try {
-            File output = response.getEntity(File.class);
-            System.out.println("Output from Server .... \n");
-            System.out.println(output);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            client.destroy();
-        }
-        return true;
+        response = target.path("/").request().get(Response.class);
+        System.out.println("response status: " + response.getStatus());
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        String[] cmdTestArray = new String[]{"/Users/aabduraz/get_obpg_file_type.py", "/Users/aabduraz/soapui-settings.xml"}; //, "/Users/aabduraz/soapui-settings.xml"
 
+        RSClient rsClient = new RSClient();
+        rsClient.testConnection();
+//        String[] cmdTestArray = new String[]{"/Users/aabduraz/get_obpg_file_type.py", "/Users/aabduraz/soapui-settings.xml"}; //, "/Users/aabduraz/soapui-settings.xml"
+//
+//       ClientConfig clientConfig = new ClientConfig();
+////        clientConfig.register(MyClientResponseFilter.class);
+//
+//        Client client = ClientBuilder.newClient(clientConfig);
+//
+//        WebTarget webTarget = client.target(RESOURCE_BASE_URI);
+//
+//        WebTarget jobIdWebTarget = webTarget.path("jobs");
+//
+//        WebTarget jobIdWebTargetWithQueryParam =
+//                jobIdWebTarget.queryParam("gs616-seadas1", "12345", "get_obpg_file_type.py");
         //uploadFile(cmdTestArray);
 //        final ClientConfig config = new DefaultClientConfig();
 //        final Client client = Client.create(config);

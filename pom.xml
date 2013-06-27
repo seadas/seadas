@@ -51,6 +51,7 @@
         <module>seadas-system</module>
         <module>seadas-plugins</module>
         <module>seadas-plugin-parent</module>
+        <module>seadas-ocsswws</module>
     </modules>
 
     <properties>
@@ -64,6 +65,12 @@
     </scm>
 
     <repositories>
+        <repository>
+            <id>release.maven.java.net</id>
+            <name>java.net Maven Release Repository</name>
+            <url>https://maven.java.net/content/groups/public</url>
+        </repository>
+
         <repository>
             <id>bc-mvn</id>
             <name>Public Maven Repository at Brockmann Consult</name>

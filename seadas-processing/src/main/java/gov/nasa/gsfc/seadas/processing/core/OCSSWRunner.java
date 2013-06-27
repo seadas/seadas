@@ -4,7 +4,6 @@ import com.bc.ceres.core.runtime.RuntimeContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import gov.nasa.gsfc.seadas.processing.general.RSClient;
 import org.esa.beam.visat.VisatApp;
 
 import java.io.File;
@@ -149,24 +148,24 @@ public class OCSSWRunner {
         return rootDir;
     }
 
-    public void remoteExecuteProgram(ProcessorModel pm) {
-
-        RSClient ocsswClient = new RSClient();
-        pm.getProgramCmdArray();
-
-        String paramString = pm.getCmdArrayString();
-        String[] filesToUpload = pm.getFilesToUpload();
-
-        boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
-
-        if (fileUploadSuccess) {
-            //System.out.println("file upload is successful!");
-
-            ocsswClient.uploadParFile(pm.getParStringForRemoteServer());
-            ocsswClient.uploadParam(paramString);
-            //ocsswClient.runOCSSW();
-        } else {
-            //System.out.println("file upload failed!");
-        }
-    }
+//    public void remoteExecuteProgram(ProcessorModel pm) {
+//
+//        RSClient ocsswClient = new RSClient();
+//        pm.getProgramCmdArray();
+//
+//        String paramString = pm.getCmdArrayString();
+//        String[] filesToUpload = pm.getFilesToUpload();
+//
+//        boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
+//
+//        if (fileUploadSuccess) {
+//            //System.out.println("file upload is successful!");
+//
+//            ocsswClient.uploadParFile(pm.getParStringForRemoteServer());
+//            ocsswClient.uploadParam(paramString);
+//            //ocsswClient.runOCSSW();
+//        } else {
+//            //System.out.println("file upload failed!");
+//        }
+//    }
 }
