@@ -21,7 +21,6 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
 import org.esa.beam.framework.datamodel.GeoCoding;
 import org.esa.beam.framework.datamodel.GeoPos;
 import org.esa.beam.framework.datamodel.PixelPos;
-import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
 import gov.nasa.gsfc.seadas.bathymetry.util.ImageDescriptor;
 
 import javax.media.jai.OpImage;
@@ -46,6 +45,7 @@ public class BathymetryMaskClassifier {
     public static final int RESOLUTION_1km = 1000;
     public static final int RESOLUTION_10km = 10000;
 
+   // public static final String FILENAME_BATHYMETRY = "bathymetry.dat.gz";
     public static final String FILENAME_BATHYMETRY = "BATHY.DAT";
     public static final String FILENAME_GSHHS_10km = "GSHHS_water_mask_10km.zip";
 
@@ -92,15 +92,15 @@ public class BathymetryMaskClassifier {
        // final File auxdataDir = ResourceInstallationUtils.installAuxdata(BathymetryMaskClassifier.class, filename).getParentFile();
         final File auxdataDir = BathymetryData.getOcsswRoot();
 
-        ImageDescriptor gshhsDescriptor = getGshhsDescriptor(auxdataDir);
-        if (gshhsDescriptor != null) {
-            gshhsImage = createImage(auxdataDir, gshhsDescriptor);
+        ImageDescriptor bathymetryDescriptor = getBathymetryDescriptor(auxdataDir);
+        if (bathymetryDescriptor != null) {
+            gshhsImage = createImage(auxdataDir, bathymetryDescriptor);
         }
 
 
     }
 
-    private ImageDescriptor getGshhsDescriptor(File auxdataDir) {
+    private ImageDescriptor getBathymetryDescriptor(File auxdataDir) {
 
         ImageDescriptor imageDescriptor = null;
 

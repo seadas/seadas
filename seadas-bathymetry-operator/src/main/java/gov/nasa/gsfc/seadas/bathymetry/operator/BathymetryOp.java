@@ -38,27 +38,23 @@ import java.io.IOException;
 import java.text.MessageFormat;
 
 /**
- * The watermask operator is a GPF-Operator. It takes the geographic bounds of the input product and creates a new
+ * The bathymetry operator is a GPF-Operator. It takes the geographic bounds of the input product and creates a new
  * product with the same bounds. The output product contains a single band, which is a land/water fraction mask.
  * For each pixel, it contains the fraction of water; a value of 0.0 indicates land, a value of 100.0 indicates water,
  * and every value in between indicates a mixed pixel.
  * <br/>
- * The water mask is based on data given by SRTM-shapefiles between 60° north and 60° south, and by the GlobCover world
- * map above 60° north.
  * Since the base data may exhibit a higher resolution than the input product, a subsampling &ge;1 may be specified;
  * therefore, mixed pixels may occur.
  *
  * @author Thomas Storm
  */
 @SuppressWarnings({"FieldCanBeLocal"})
-@OperatorMetadata(alias = "LandWaterMask",
+@OperatorMetadata(alias = "bathymetry",
         version = "1.0",
         internal = false,
         authors = "Thomas Storm",
         copyright = "(c) 2011 by Brockmann Consult",
-        description = "Operator creating a target product with a single band containing a land/water-mask," +
-                " which is based on SRTM-shapefiles (between 60° north and 60° south) and the " +
-                "GlobCover world map (above 60° north) and therefore very accurate.")
+        description = "Operator creating a bathymetry band and bathymetry mask")
 public class BathymetryOp extends Operator {
 
     public static final String LAND_WATER_FRACTION_BAND_NAME = "land_water_fraction";
@@ -73,11 +69,10 @@ public class BathymetryOp extends Operator {
             label = "Resolution", defaultValue = "1000", valueSet = {"1000", "10000"})
     private int resolution;
 
-    @Parameter(description = "Water mask filename",
-            label = "Filename", defaultValue = "50m.zip",
-            valueSet = {"50m.zip", "150m.zip", "GSHHS_water_mask_250m.zip",  "BATHY.DAT", "GSHHS_water_mask_10km.zip"})
+    @Parameter(description = "Bathymetry filename",
+            label = "Filename", defaultValue = "BATHY.DAT",
+            valueSet = {"BATHY.DAT", "GSHHS_water_mask_10km.zip"})
     private String filename;
-
 
     @Parameter(description = "Specifies the factor between the resolution of the source product and the watermask in " +
             "x direction. A value of '1' means no subsampling at all.",
