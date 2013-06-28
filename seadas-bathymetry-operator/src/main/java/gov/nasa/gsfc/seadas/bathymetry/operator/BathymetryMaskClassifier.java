@@ -22,13 +22,18 @@ import org.esa.beam.framework.datamodel.GeoCoding;
 import org.esa.beam.framework.datamodel.GeoPos;
 import org.esa.beam.framework.datamodel.PixelPos;
 import gov.nasa.gsfc.seadas.bathymetry.util.ImageDescriptor;
+import org.esa.beam.util.math.Array;
+import ucar.nc2.*;
+import ucar.nc2.Dimension;
 
 import javax.media.jai.OpImage;
+import java.awt.*;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -45,7 +50,7 @@ public class BathymetryMaskClassifier {
     public static final int RESOLUTION_1km = 1000;
     public static final int RESOLUTION_10km = 10000;
 
-   // public static final String FILENAME_BATHYMETRY = "bathymetry.dat.gz";
+    // public static final String FILENAME_BATHYMETRY = "bathymetry.dat.gz";
     public static final String FILENAME_BATHYMETRY = "BATHY.DAT";
     public static final String FILENAME_GSHHS_10km = "GSHHS_water_mask_10km.zip";
 
@@ -64,6 +69,7 @@ public class BathymetryMaskClassifier {
 
     private int resolution;
     private String filename;
+    private NetcdfFile ncFile;
 
     /**
      * Creates a new classifier instance on the given resolution.
@@ -83,18 +89,31 @@ public class BathymetryMaskClassifier {
     public BathymetryMaskClassifier(int resolution, String filename) throws IOException {
         if (resolution != RESOLUTION_1km && resolution != RESOLUTION_10km) {
             throw new IllegalArgumentException(
-                    MessageFormat.format("Resolution needs to be {0} or {1}.",  RESOLUTION_1km, RESOLUTION_10km));
+                    MessageFormat.format("Resolution needs to be {0} or {1}.", RESOLUTION_1km, RESOLUTION_10km));
         }
 
         this.resolution = resolution;
         this.filename = filename;
 
-       // final File auxdataDir = ResourceInstallationUtils.installAuxdata(BathymetryMaskClassifier.class, filename).getParentFile();
-        final File auxdataDir = BathymetryData.getOcsswRoot();
+        try {
+            ncFile = NetcdfFile.open(filename);
 
-        ImageDescriptor bathymetryDescriptor = getBathymetryDescriptor(auxdataDir);
-        if (bathymetryDescriptor != null) {
-            gshhsImage = createImage(auxdataDir, bathymetryDescriptor);
+            // final File auxdataDir = ResourceInstallationUtils.installAuxdata(BathymetryMaskClassifier.class, filename).getParentFile();
+            final File auxdataDir = BathymetryData.getOcsswRoot();
+
+            ImageDescriptor bathymetryDescriptor = getBathymetryDescriptor(auxdataDir);
+            if (bathymetryDescriptor != null) {
+                gshhsImage = createImage(auxdataDir, bathymetryDescriptor);
+            }
+
+        } catch (IOException ioe) {
+            //
+        } finally {
+            if (null != ncFile) try {
+                ncFile.close();
+            } catch (IOException ioe) {
+                //
+            }
         }
 
 
@@ -129,8 +148,6 @@ public class BathymetryMaskClassifier {
     }
 
 
-
-
     private PNGSourceImage createImage(File auxdataDir2, ImageDescriptor descriptor) throws IOException {
         int width = descriptor.getImageWidth();
         int tileWidth = descriptor.getTileWidth();
@@ -158,30 +175,94 @@ public class BathymetryMaskClassifier {
      * @param lon The longitude value.
      * @return 0 if the given position is over land, 1 if it is over water, 2 if no definite statement can be made
      *         about the position.
-     *
-     * TODO: this function will read the data out of the netCDF file
-     *
-     *
-     *     latIndex = round((lat - startLat) / deltaLatof1pixel);
-     *
-     * get lon index the same way
-     *
-     * look at seadasFileReader for netCDF examples.
+     *         <p/>
+     *         TODO: this function will read the data out of the netCDF file
+     *         <p/>
+     *         <p/>
+     *         latIndex = round((lat - startLat) / deltaLatof1pixel);
+     *         <p/>
+     *         get lon index the same way
+     *         <p/>
+     *         look at seadasFileReader for netCDF examples.
+     *         ncdump -h ETOPO1_ocssw.nc
      */
     public int getWaterMaskSample(float lat, float lon) {
-        double tempLon = lon + 180.0;
-        if (tempLon >= 360) {
-            tempLon %= 360;
+
+        List<Attribute> globalAttributes = ncFile.getGlobalAttributes();
+
+        double startLat = 0;
+        double endLat = 0;
+        double startLon = 0;
+        double endLon = 0;
+
+        int dimensionLat = 0;
+        int dimensionLon = 0;
+
+        for (Attribute attribute : globalAttributes) {
+            if (attribute.getName().equals("upper_lat")) {
+                startLat = Double.parseDouble(attribute.getStringValue());
+            }
+            if (attribute.getName().equals("lower_lat")) {
+                endLat = Double.parseDouble(attribute.getStringValue());
+            }
+            if (attribute.getName().equals("left_lon")) {
+                startLon = Double.parseDouble(attribute.getStringValue());
+            }
+            if (attribute.getName().equals("right_lon")) {
+                endLon = Double.parseDouble(attribute.getStringValue());
+            }
         }
 
-        float normLat = Math.abs(lat - 90.0f);
+        List<Dimension> dimensions = ncFile.getDimensions();
 
-        if (tempLon < 0.0 || tempLon > 360.0 || normLat < 0.0 || normLat > 180.0) {
-            return INVALID_VALUE;
+        for (Dimension dimension : dimensions) {
+            if (dimension.getName().equals("lon")) {
+                dimensionLon = dimension.getLength();
+            }
+
+            if (dimension.getName().equals("lat")) {
+                dimensionLat = dimension.getLength();
+            }
         }
 
-        return getSample(normLat, tempLon, 180.0, 360.0, 0.0, gshhsImage);
 
+        double deltaLat = (endLat - startLat) / dimensionLat;
+        double deltaLon = (endLon - startLon) / dimensionLon;
+
+        long latIndex = Math.round((lat - startLat) / deltaLat);
+        long lonIndex = Math.round((lon - startLon) / deltaLon);
+
+        List<Variable> variables =   ncFile.getVariables();
+
+        for (Variable variable : variables) {
+            if (variable.getName().equals("height")) {
+//                try {
+//
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                }
+            }
+        }
+
+
+
+
+//        double tempLon = lon + 180.0;
+//        if (tempLon >= 360) {
+//            tempLon %= 360;
+//        }
+//
+//        float normLat = Math.abs(lat - 90.0f);
+//
+//        if (tempLon < 0.0 || tempLon > 360.0 || normLat < 0.0 || normLat > 180.0) {
+//            return INVALID_VALUE;
+//        }
+//
+//        return getSample(normLat, tempLon, 180.0, 360.0, 0.0, gshhsImage);
+
+
+        return 1;
     }
 
     private int getSample(double lat, double lon, double latDiff, double lonDiff, double offset, OpImage image) {
