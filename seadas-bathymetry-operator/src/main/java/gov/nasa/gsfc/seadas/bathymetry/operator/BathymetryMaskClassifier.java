@@ -158,6 +158,15 @@ public class BathymetryMaskClassifier {
      * @param lon The longitude value.
      * @return 0 if the given position is over land, 1 if it is over water, 2 if no definite statement can be made
      *         about the position.
+     *
+     * TODO: this function will read the data out of the netCDF file
+     *
+     *
+     *     latIndex = round((lat - startLat) / deltaLatof1pixel);
+     *
+     * get lon index the same way
+     *
+     * look at seadasFileReader for netCDF examples.
      */
     public int getWaterMaskSample(float lat, float lon) {
         double tempLon = lon + 180.0;
