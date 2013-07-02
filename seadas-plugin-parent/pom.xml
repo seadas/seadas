@@ -19,8 +19,8 @@
     <properties>
         <seadas.version>7.0</seadas.version>
         <!--<seadas.version>[7.0,7.1-SNAPSHOT)</seadas.version>-->
-        <beam.version>[4.10,5-SNAPSHOT)</beam.version>
-        <ceres.version>[0.13,0.14-SNAPSHOT)</ceres.version>
+        <beam.version>4.11</beam.version>
+        <ceres.version>0.13.2</ceres.version>
         <geotools.version>2.7.4</geotools.version>
         <junit.version>4.9</junit.version>
         <jide.version>3.3.7</jide.version>

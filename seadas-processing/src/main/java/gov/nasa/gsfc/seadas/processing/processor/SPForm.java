@@ -37,6 +37,7 @@ public class SPForm extends JPanel implements CloProgramUI {
         MODIS_L1A_PY("modis_L1A.py"),
         L1AEXTRACT_MODIS("l1aextract_modis"),
         L1AEXTRACT_SEAWIFS("l1aextract_seawifs"),
+        L1MAPGEN("l1mapgen"),
         GEO("geo"),
         MODIS_L1B("modis_L1B.py"),
         L1BGEN("l1bgen"),
@@ -44,6 +45,7 @@ public class SPForm extends JPanel implements CloProgramUI {
         L2GEN("l2gen"),
         L2EXTRACT("l2extract"),
         L2BRSGEN("l2brsgen"),
+        L2MAPGEN("l2mapgen"),
         L2BIN("l2bin"),
         L3BIN("l3bin"),
         SMIGEN("smigen");
@@ -247,16 +249,18 @@ public class SPForm extends JPanel implements CloProgramUI {
         Processor[] rowNames = {
                 Processor.MAIN,
                 Processor.MODIS_L1A_PY,
-                Processor.L1AEXTRACT_MODIS,
                 Processor.L1AEXTRACT_SEAWIFS,
+                Processor.L1BRSGEN,
+                Processor.L1MAPGEN,
                 Processor.GEO,
+                Processor.L1AEXTRACT_MODIS,
                 Processor.MODIS_L1B,
                 Processor.L1BGEN,
-                Processor.L1BRSGEN,
                 Processor.L2GEN,
                 Processor.L2EXTRACT,
-                Processor.L2BRSGEN,
                 Processor.L2BIN,
+                Processor.L2BRSGEN,
+                Processor.L2MAPGEN,
                 Processor.L3BIN,
                 Processor.SMIGEN
         };
