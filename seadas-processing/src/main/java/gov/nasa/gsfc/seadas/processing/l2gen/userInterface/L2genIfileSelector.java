@@ -4,6 +4,8 @@ import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
+import org.esa.beam.framework.dataio.ProductReader;
+import org.esa.beam.framework.dataio.ProductReaderPlugIn;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
@@ -119,11 +121,15 @@ public class L2genIfileSelector {
         if (sourceProductSelector.getSelectedProduct() == null) {
             return null;
         }
-
+        ProductReader productReader = sourceProductSelector.getSelectedProduct().getProductReader();
+        ProductReaderPlugIn netcdfFile = productReader.getReaderPlugIn();
+        Class[] c = netcdfFile.createReaderInstance().getReaderPlugIn().getInputTypes();
         File sourceProductFileLocation =  sourceProductSelector.getSelectedProduct().getFileLocation();
         String sourceProductFileAbsolutePathName = sourceProductFileLocation.getParent() + System.getProperty("file.separator") + sourceProductSelector.getSelectedProduct().getName();
         return sourceProductFileAbsolutePathName;
     }
+
+
 
     public JPanel getJPanel() {
         return sourceProductSelector.createDefaultPanel();

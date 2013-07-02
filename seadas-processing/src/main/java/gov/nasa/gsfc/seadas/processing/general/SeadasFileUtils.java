@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.processing.core.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
 
@@ -55,6 +56,31 @@ public class SeadasFileUtils {
 
     }
 
+    public static String getKeyValueFromParFile(File file, String key) {
+        try {
+            LineNumberReader reader = new LineNumberReader(new FileReader(file));
+            String line;
+            line = reader.readLine();
+            String[] option;
+            ParamInfo pi;
+            while (line != null) {
+                if (line.indexOf("=") != -1) {
+                    option = line.split("=", 2);
+                    option[0] = option[0].trim();
+                    option[1] = option[1].trim();
+                    if (option[0].trim().equals(key)) {
+                        return option[1];
+                    }
+                }
+                line = reader.readLine();
+            }
+        } catch (FileNotFoundException fnfe) {
+
+        } catch (IOException ioe) {
+
+        }
+        return null;
+    }
 
     public static String getGeoFileNameFromIFile(String ifileName) {
 

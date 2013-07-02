@@ -10,6 +10,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -308,7 +309,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
                 //updateOFileInfo(SeadasFileUtils.getDefaultOFileNameFromIFile(ifileName, programName));
                 updateOFileInfo(getOFileFullPath(ofileName));
-
                 return true;
             }
         }
@@ -872,6 +872,15 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 fireEvent("prod");
                 paramList.getPropertyChangeSupport().firePropertyChange("prod", oldValidValues, newValidValues);
             }
+//            pi = getParamInfo("suite");
+//            if (pi != null) {
+//
+//            }
+//
+//            pi = getParamInfo("flaguse");
+//            if (pi!= null) {
+//
+//            }
         }
     }
 
@@ -1026,9 +1035,76 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 //    }
 
     private static class L2Bin_Processor extends ProcessorModel {
+
+        private static final String DEFAULT_PAR_FILE_NAME = "l2bin_defaults.par";
+        private static final String PAR_FILE_PREFIX = "l2bin_defaults_";
+        String DEFAUT_FLAGUSE;
+        File missionDir;
+
         L2Bin_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
             setMultipleInputFiles(true);
+            missionDir = null;
+        }
+
+        @Override
+        public void updateParamValues(Product selectedProduct) {
+            if (selectedProduct != null) {
+                FileInfo ifileInfo = new FileInfo(selectedProduct.getFileLocation().getAbsolutePath());
+                missionDir = ifileInfo.getMissionDirectory();
+                DEFAUT_FLAGUSE = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, DEFAULT_PAR_FILE_NAME), "flaguse");
+                updateSuite();
+            }
+        }
+//        @Override
+//        public boolean updateIFileInfo(String ifileName) {
+//            boolean success = super.updateIFileInfo(ifileName);
+//            if (success) {
+//                FileInfo ifileInfo = new FileInfo(ifileName);
+//                File missionDir = ifileInfo.getMissionDirectory();
+//                updateSuite(missionDir);
+//                ifileInfo.getMissionName();
+//            }
+//            return success;
+//        }
+
+        private void updateSuite() {
+            String[] suites = missionDir.list(new FilenameFilter() {
+                @Override
+                public boolean accept(File file, String s) {
+                    return s.contains("l2bin_defaults_");
+                    //return false;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+            });
+            String suiteName;
+            ArrayList<ParamValidValueInfo> suiteValidValues = new ArrayList<ParamValidValueInfo>();
+            for (String fileName : suites) {
+                suiteName = fileName.substring(fileName.lastIndexOf("_") + 1, fileName.indexOf("."));
+                suiteValidValues.add(new ParamValidValueInfo(suiteName));
+            }
+            ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) getParamInfo("suite").getValidValueInfos().clone();
+            getParamInfo("suite").setValidValueInfos(suiteValidValues);
+            fireEvent("suite", oldValidValues, suiteValidValues);
+            updateFlagUse(DEFAULT_PAR_FILE_NAME);
+        }
+
+        @Override
+        public void updateParamInfo(ParamInfo currentOption, String newValue) {
+
+            if (currentOption.getName().equals("suite")) {
+                updateFlagUse(PAR_FILE_PREFIX + newValue + ".par");
+            }
+            super.updateParamInfo(currentOption, newValue);
+
+        }
+
+        private void updateFlagUse(String parFileName) {
+            String currentFlagUse = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, parFileName), "flaguse");
+            if (currentFlagUse == null) {
+                currentFlagUse = DEFAUT_FLAGUSE;
+            }
+            super.updateParamInfo("flaguse", currentFlagUse);
+            fireEvent("flaguse", null, currentFlagUse);
         }
     }
 
