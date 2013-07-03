@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -208,7 +209,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 int exitCode = process.exitValue();
 
                 pm.done();
-
+                SeadasFileUtils.writeToDisk(processorModel.getIFileDir()+System.getProperty("file.separator")+"OCSSW_LOG_" + programName + ".txt",
+                        "Execution log for " + "\n" + Arrays.toString(processorModel.getProgramCmdArray()) + "\n" + processorModel.getExecutionLogMessage());
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }

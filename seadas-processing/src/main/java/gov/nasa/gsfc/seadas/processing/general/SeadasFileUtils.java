@@ -302,4 +302,17 @@ public class SeadasFileUtils {
             System.out.println("Debugging: " + message);
         }
     }
+
+    public static void writeToDisk(String fileName, String log) throws IOException {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(new File(fileName));
+            fileWriter.write(log);
+        } finally {
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        }
+    }
+
 }
