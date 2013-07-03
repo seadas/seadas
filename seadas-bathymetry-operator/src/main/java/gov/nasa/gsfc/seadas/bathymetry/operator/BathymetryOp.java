@@ -17,12 +17,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.GeoCoding;
-import org.esa.beam.framework.datamodel.GeoPos;
-import org.esa.beam.framework.datamodel.PixelPos;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
@@ -33,7 +28,7 @@ import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.util.ProductUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.IOException;
 import java.text.MessageFormat;
 
@@ -46,19 +41,17 @@ import java.text.MessageFormat;
  * Since the base data may exhibit a higher resolution than the input product, a subsampling &ge;1 may be specified;
  * therefore, mixed pixels may occur.
  *
- * @author Thomas Storm
+ * @author  Danny Knowles
  */
 @SuppressWarnings({"FieldCanBeLocal"})
 @OperatorMetadata(alias = "bathymetry",
         version = "1.0",
         internal = false,
-        authors = "Thomas Storm",
-        copyright = "(c) 2011 by Brockmann Consult",
+        authors = "Danny Knowles",
+        copyright = "",
         description = "Operator creating a bathymetry band and bathymetry mask")
 public class BathymetryOp extends Operator {
 
-    public static final String LAND_WATER_FRACTION_BAND_NAME = "land_water_fraction";
-    public static final String COAST_BAND_NAME = "coast";
     public static final String BATHYMETRY_BAND_NAME = "bathymetry";
 
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
@@ -66,20 +59,20 @@ public class BathymetryOp extends Operator {
     private Product sourceProduct;
 
     @Parameter(description = "Specifies on which resolution the water mask shall be based.", unit = "m/pixel",
-            label = "Resolution", defaultValue = "1000", valueSet = {"1000", "10000"})
+            label = "Resolution", defaultValue = "1000", valueSet = {"1000"})
     private int resolution;
 
     @Parameter(description = "Bathymetry filename",
-            label = "Filename", defaultValue = "BATHY.DAT",
-            valueSet = {"BATHY.DAT", "GSHHS_water_mask_10km.zip"})
+            label = "Filename", defaultValue = "ETOPO1_ocssw.nc",
+            valueSet = {"ETOPO1_ocssw.nc"})
     private String filename;
 
-    @Parameter(description = "Specifies the factor between the resolution of the source product and the watermask in " +
+    @Parameter(description = "Specifies the factor between the resolution of the source product and the bathymetry in " +
             "x direction. A value of '1' means no subsampling at all.",
             label = "Subsampling factor x", defaultValue = "3", notNull = true)
     private int subSamplingFactorX;
 
-    @Parameter(description = "Specifies the factor between the resolution of the source product and the watermask in" +
+    @Parameter(description = "Specifies the factor between the resolution of the source product and the bathymetry in" +
             "y direction. A value of '1' means no subsampling at all.",
             label = "Subsampling factor y", defaultValue = "3", notNull = true)
     private int subSamplingFactorY;
@@ -104,58 +97,12 @@ public class BathymetryOp extends Operator {
         }
     }
 
-    @Override
-    public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
-        final Rectangle rectangle = targetTile.getRectangle();
-        try {
-            final String targetBandName = targetBand.getName();
-            final PixelPos pixelPos = new PixelPos();
-            final GeoCoding geoCoding = sourceProduct.getGeoCoding();
-            for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
-                for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
-                    pixelPos.x = x;
-                    pixelPos.y = y;
-                    int dataValue = 0;
-                    if (targetBandName.equals(LAND_WATER_FRACTION_BAND_NAME)) {
-                        dataValue = classifier.getWaterMaskFraction(geoCoding, pixelPos,
-                                subSamplingFactorX,
-                                subSamplingFactorY);
-                    } else if (targetBandName.equals(COAST_BAND_NAME)) {
-                        final boolean coastline = isCoastline(geoCoding, pixelPos,
-                                subSamplingFactorX,
-                                subSamplingFactorY);
-                        dataValue = coastline ? 1 : 0;
-                    }
-                    targetTile.setSample(x, y, dataValue);
-                }
-            }
 
-        } catch (Exception e) {
-            throw new OperatorException("Error computing tile '" + targetTile.getRectangle().toString() + "'.", e);
-        }
-    }
-
-    private boolean isCoastline(GeoCoding geoCoding, PixelPos pixelPos, int superSamplingX, int superSamplingY) {
-        double xStep = 1.0 / superSamplingX;
-        double yStep = 1.0 / superSamplingY;
-        final GeoPos geoPos = new GeoPos();
-        final PixelPos currentPos = new PixelPos();
-        for (int sx = 0; sx < superSamplingX; sx++) {
-            currentPos.x = (float) (pixelPos.x + sx * xStep);
-            for (int sy = 0; sy < superSamplingY; sy++) {
-                currentPos.y = (float) (pixelPos.y + sy * yStep);
-                geoCoding.getGeoPos(currentPos, geoPos);
-            }
-        }
-        return false;
-    }
 
     private void validateParameter() {
-        if (resolution != BathymetryMaskClassifier.RESOLUTION_1km &&
-                resolution != BathymetryMaskClassifier.RESOLUTION_10km) {
-            throw new OperatorException(String.format("Resolution needs to be either %d or %d.",
-                    BathymetryMaskClassifier.RESOLUTION_1km,
-                    BathymetryMaskClassifier.RESOLUTION_10km));
+        if (resolution != BathymetryMaskClassifier.RESOLUTION_1km) {
+            throw new OperatorException(String.format("Resolution needs to be %d ",
+                    BathymetryMaskClassifier.RESOLUTION_1km));
         }
         if (subSamplingFactorX < 1) {
             String message = MessageFormat.format(
@@ -176,24 +123,64 @@ public class BathymetryOp extends Operator {
     }
 
     private void initTargetProduct() {
-        targetProduct = new Product("LW-Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
+        targetProduct = new Product("Bathymetry Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
                 sourceProduct.getSceneRasterHeight());
-        final Band waterBand = targetProduct.addBand(LAND_WATER_FRACTION_BAND_NAME, ProductData.TYPE_FLOAT32);
+        final Band waterBand = targetProduct.addBand(BATHYMETRY_BAND_NAME, ProductData.TYPE_FLOAT32);
         waterBand.setNoDataValue(BathymetryMaskClassifier.INVALID_VALUE);
         waterBand.setNoDataValueUsed(true);
-
-        final Band coastBand = targetProduct.addBand(COAST_BAND_NAME, ProductData.TYPE_FLOAT32);
-        coastBand.setNoDataValue(0);
-        coastBand.setNoDataValueUsed(true);
 
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public static class Spi extends OperatorSpi {
-
         public Spi() {
             super(BathymetryOp.class);
         }
+    }
+
+
+
+    @Override
+    public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
+        final Rectangle rectangle = targetTile.getRectangle();
+        try {
+            final String targetBandName = targetBand.getName();
+            final PixelPos pixelPos = new PixelPos();
+            final GeoCoding geoCoding = sourceProduct.getGeoCoding();
+            for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
+                for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                    pixelPos.x = x;
+                    pixelPos.y = y;
+                    int dataValue = 0;
+                    if (targetBandName.equals(BATHYMETRY_BAND_NAME)) {
+                        dataValue = classifier.getWaterMaskFraction(geoCoding, pixelPos,
+                                subSamplingFactorX,
+                                subSamplingFactorY);
+                    }
+                    targetTile.setSample(x, y, dataValue);
+                }
+            }
+
+        } catch (Exception e) {
+            throw new OperatorException("Error computing tile '" + targetTile.getRectangle().toString() + "'.", e);
+        }
+    }
+
+    private boolean isCoastline(GeoCoding geoCoding, PixelPos pixelPos, int superSamplingX, int superSamplingY) {
+        double xStep = 1.0 / superSamplingX;
+        double yStep = 1.0 / superSamplingY;
+        final GeoPos geoPos = new GeoPos();
+        final PixelPos currentPos = new PixelPos();
+        for (int sx = 0; sx < superSamplingX; sx++) {
+            currentPos.x = (float) (pixelPos.x + sx * xStep);
+            for (int sy = 0; sy < superSamplingY; sy++) {
+                currentPos.y = (float) (pixelPos.y + sy * yStep);
+                geoCoding.getGeoPos(currentPos, geoPos);
+                // Todo: Implement coastline algorithm here
+                //
+            }
+        }
+        return false;
     }
 }
