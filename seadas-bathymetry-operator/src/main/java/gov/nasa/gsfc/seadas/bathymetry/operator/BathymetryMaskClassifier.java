@@ -16,19 +16,28 @@
 
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
+import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.bathymetry.util.ImageDescriptorBuilder;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
+import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.GeoCoding;
 import org.esa.beam.framework.datamodel.GeoPos;
 import org.esa.beam.framework.datamodel.PixelPos;
 import gov.nasa.gsfc.seadas.bathymetry.util.ImageDescriptor;
+import org.esa.beam.framework.gpf.OperatorException;
+import org.esa.beam.framework.gpf.Tile;
+import org.esa.beam.util.math.Array;
+import ucar.nc2.*;
+import ucar.nc2.Dimension;
 
 import javax.media.jai.OpImage;
+import java.awt.*;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -45,8 +54,7 @@ public class BathymetryMaskClassifier {
     public static final int RESOLUTION_1km = 1000;
     public static final int RESOLUTION_10km = 10000;
 
-   // public static final String FILENAME_BATHYMETRY = "bathymetry.dat.gz";
-    public static final String FILENAME_BATHYMETRY = "BATHY.DAT";
+    public static final String FILENAME_BATHYMETRY = "ETOPO1_ocssw.nc";
     public static final String FILENAME_GSHHS_10km = "GSHHS_water_mask_10km.zip";
 
     static final int GSHHS_1_TILE_WIDTH = 500;
@@ -64,6 +72,7 @@ public class BathymetryMaskClassifier {
 
     private int resolution;
     private String filename;
+    private BathymetryReader bathymetryReader;
 
     /**
      * Creates a new classifier instance on the given resolution.
@@ -81,23 +90,36 @@ public class BathymetryMaskClassifier {
      * @throws java.io.IOException If some IO-error occurs creating the sources.
      */
     public BathymetryMaskClassifier(int resolution, String filename) throws IOException {
-        if (resolution != RESOLUTION_1km && resolution != RESOLUTION_10km) {
+        if (resolution != RESOLUTION_1km) {
             throw new IllegalArgumentException(
-                    MessageFormat.format("Resolution needs to be {0} or {1}.",  RESOLUTION_1km, RESOLUTION_10km));
+                    MessageFormat.format("Resolution needs to be {0}.", RESOLUTION_1km));
         }
 
         this.resolution = resolution;
         this.filename = filename;
 
-       // final File auxdataDir = ResourceInstallationUtils.installAuxdata(BathymetryMaskClassifier.class, filename).getParentFile();
-        final File auxdataDir = BathymetryData.getOcsswRoot();
+        try {
 
-        ImageDescriptor bathymetryDescriptor = getBathymetryDescriptor(auxdataDir);
-        if (bathymetryDescriptor != null) {
-            gshhsImage = createImage(auxdataDir, bathymetryDescriptor);
+
+            final File auxdataDir = BathymetryData.getOcsswRoot();
+            File runDir = new File(auxdataDir,"run");
+            File dataDir = new File(runDir,"data");
+            File commonDir = new File(dataDir,"common");
+            File bathymetryFile = new File(commonDir,filename);
+
+            bathymetryReader = new BathymetryReader(bathymetryFile);
+
+
+            ImageDescriptor bathymetryDescriptor = getBathymetryDescriptor(auxdataDir);
+            if (bathymetryDescriptor != null) {
+                gshhsImage = createImage(auxdataDir, bathymetryDescriptor);
+            }
+
+        } catch (IOException ioe) {
+            //
+        } finally {
+
         }
-
-
     }
 
     private ImageDescriptor getBathymetryDescriptor(File auxdataDir) {
@@ -114,21 +136,10 @@ public class BathymetryMaskClassifier {
                     .auxdataDir(auxdataDir)
                     .zipFileName(zipname)
                     .build();
-        } else if (resolution == RESOLUTION_10km) {
-            imageDescriptor = new ImageDescriptorBuilder()
-                    .width(GSHHS_10_IMAGE_WIDTH)
-                    .height(GSHHS_10_IMAGE_HEIGHT)
-                    .tileWidth(GSHHS_10_TILE_WIDTH)
-                    .tileHeight(GSHHS_10_TILE_HEIGHT)
-                    .auxdataDir(auxdataDir)
-                    .zipFileName(zipname)
-                    .build();
         }
 
         return imageDescriptor;
     }
-
-
 
 
     private PNGSourceImage createImage(File auxdataDir2, ImageDescriptor descriptor) throws IOException {
@@ -151,29 +162,7 @@ public class BathymetryMaskClassifier {
     }
 
 
-    /**
-     * Returns the sample value at the given geo-position, regardless of the source resolution.
-     *
-     * @param lat The latitude value.
-     * @param lon The longitude value.
-     * @return 0 if the given position is over land, 1 if it is over water, 2 if no definite statement can be made
-     *         about the position.
-     */
-    public int getWaterMaskSample(float lat, float lon) {
-        double tempLon = lon + 180.0;
-        if (tempLon >= 360) {
-            tempLon %= 360;
-        }
 
-        float normLat = Math.abs(lat - 90.0f);
-
-        if (tempLon < 0.0 || tempLon > 360.0 || normLat < 0.0 || normLat > 180.0) {
-            return INVALID_VALUE;
-        }
-
-        return getSample(normLat, tempLon, 180.0, 360.0, 0.0, gshhsImage);
-
-    }
 
     private int getSample(double lat, double lon, double latDiff, double lonDiff, double offset, OpImage image) {
         final double pixelSizeX = lonDiff / image.getWidth();
@@ -221,6 +210,12 @@ public class BathymetryMaskClassifier {
             }
         }
 
+        if (bathymetryReader != null) try {
+            bathymetryReader.close();
+        } catch (IOException ioe) {
+            //
+        }
+
         return computeAverage(subsamplingFactorX, subsamplingFactorY, valueSum, invalidCount);
     }
 
@@ -236,24 +231,14 @@ public class BathymetryMaskClassifier {
     private int getWaterMaskSample(GeoPos geoPos) {
         final int waterMaskSample;
         if (geoPos.isValid()) {
-            waterMaskSample = getWaterMaskSample(geoPos.lat, geoPos.lon);
+            waterMaskSample = bathymetryReader.getHeight(geoPos.lat, geoPos.lon);
         } else {
             waterMaskSample = BathymetryMaskClassifier.INVALID_VALUE;
         }
         return waterMaskSample;
     }
 
-    /**
-     * Classifies the given geo-position as water or land.
-     *
-     * @param lat The latitude value.
-     * @param lon The longitude value.
-     * @return true, if the geo-position is over water, false otherwise.
-     * @throws java.io.IOException If some IO-error occurs reading the source file.
-     */
-    public boolean isWater(float lat, float lon) throws IOException {
-        final int waterMaskSample = getWaterMaskSample(lat, lon);
-        return waterMaskSample == WATER_VALUE;
-    }
+
+
 
 }

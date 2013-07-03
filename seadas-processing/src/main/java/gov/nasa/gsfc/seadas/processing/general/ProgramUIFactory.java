@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genPrimaryIOFilesSelector;
 import org.esa.beam.framework.datamodel.Product;
@@ -8,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -101,19 +104,38 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
         paramPanel = getParamPanel();
 
-        processorModel.addPropertyChangeListener("prod", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                paramPanel = getParamPanel();
-                paramPanel.repaint();
-                paramPanel.validate();
-                remove(1);
-                add(paramPanel,
+        ParamList paramList = processorModel.getParamList();
+        ArrayList<ParamInfo> paramInfos = paramList.getParamArray();
+        for (ParamInfo pi : paramInfos) {
+            if (!(pi.getType().equals("ifile") || pi.getType().equals("infile") || pi.getType().equals("ofile") || pi.getType().equals("geofile"))) {
+                processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                        paramPanel = getParamPanel();
+                        paramPanel.repaint();
+                        paramPanel.validate();
+                        remove(1);
+                        add(paramPanel,
                                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-                revalidate();
-                repaint();
+                        revalidate();
+                        repaint();
+                    }
+                });
             }
-        });
+        }
+//        processorModel.addPropertyChangeListener("prod", new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                paramPanel = getParamPanel();
+//                paramPanel.repaint();
+//                paramPanel.validate();
+//                remove(1);
+//                add(paramPanel,
+//                                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+//                revalidate();
+//                repaint();
+//            }
+//        });
 
         this.setLayout(new GridBagLayout());
 
