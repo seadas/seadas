@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.processor.SPForm;
 import org.geotools.referencing.factory.epsg.AbstractEpsgFactory;
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -20,7 +21,7 @@ import java.util.Map;
  * Processor model for the Seadas Processor script
  */
 public class MultiParamList extends ParamList {
-    public static final String MAIN_KEY = "main";
+    public static final String MAIN_KEY = SPForm.Processor.MAIN.toString();
 
     private HashMap<String, ParamList> paramLists;
 
@@ -143,7 +144,7 @@ public class MultiParamList extends ParamList {
         ParamList list;
 
         // let's put main at the top
-        sb.append("[").append(MAIN_KEY).append("]");
+        sb.append("[").append("main").append("]");
         sb.append(separator);
         sb.append(super.getParamString(separator));
 

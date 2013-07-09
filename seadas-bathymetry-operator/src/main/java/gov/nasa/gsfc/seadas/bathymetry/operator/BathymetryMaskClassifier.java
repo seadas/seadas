@@ -16,28 +16,19 @@
 
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
-import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.bathymetry.util.ImageDescriptorBuilder;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
-import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.GeoCoding;
 import org.esa.beam.framework.datamodel.GeoPos;
 import org.esa.beam.framework.datamodel.PixelPos;
 import gov.nasa.gsfc.seadas.bathymetry.util.ImageDescriptor;
-import org.esa.beam.framework.gpf.OperatorException;
-import org.esa.beam.framework.gpf.Tile;
-import org.esa.beam.util.math.Array;
-import ucar.nc2.*;
-import ucar.nc2.Dimension;
 
 import javax.media.jai.OpImage;
-import java.awt.*;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -102,10 +93,10 @@ public class BathymetryMaskClassifier {
 
 
             final File auxdataDir = BathymetryData.getOcsswRoot();
-            File runDir = new File(auxdataDir,"run");
-            File dataDir = new File(runDir,"data");
-            File commonDir = new File(dataDir,"common");
-            File bathymetryFile = new File(commonDir,filename);
+            File runDir = new File(auxdataDir, "run");
+            File dataDir = new File(runDir, "data");
+            File commonDir = new File(dataDir, "common");
+            File bathymetryFile = new File(commonDir, filename);
 
             bathymetryReader = new BathymetryReader(bathymetryFile);
 
@@ -113,6 +104,12 @@ public class BathymetryMaskClassifier {
             ImageDescriptor bathymetryDescriptor = getBathymetryDescriptor(auxdataDir);
             if (bathymetryDescriptor != null) {
                 gshhsImage = createImage(auxdataDir, bathymetryDescriptor);
+            }
+
+            if (bathymetryReader != null) try {
+                bathymetryReader.close();
+            } catch (IOException ioe) {
+                //
             }
 
         } catch (IOException ioe) {
@@ -162,8 +159,6 @@ public class BathymetryMaskClassifier {
     }
 
 
-
-
     private int getSample(double lat, double lon, double latDiff, double lonDiff, double offset, OpImage image) {
         final double pixelSizeX = lonDiff / image.getWidth();
         final double pixelSizeY = latDiff / image.getHeight();
@@ -171,7 +166,7 @@ public class BathymetryMaskClassifier {
         final int y = (int) (Math.round((lat - offset) / pixelSizeY));
         final Raster tile = image.getTile(image.XToTileX(x), image.YToTileY(y));
         if (tile == null) {
-            return INVALID_VALUE;
+            return bathymetryReader.getMissingValue();
         }
         return tile.getSample(x, y, 0);
     }
@@ -189,7 +184,7 @@ public class BathymetryMaskClassifier {
      *                           with M = (source image resolution in m/pixel) / (50 m/pixel)
      * @return The fraction of water in the given geographic rectangle, in the range [0..100].
      */
-    public byte getWaterMaskFraction(GeoCoding geoCoding, PixelPos pixelPos, int subsamplingFactorX, int subsamplingFactorY) {
+    public byte getBathymetryAverage(GeoCoding geoCoding, PixelPos pixelPos, int subsamplingFactorX, int subsamplingFactorY) {
         float valueSum = 0;
         double xStep = 1.0 / subsamplingFactorX;
         double yStep = 1.0 / subsamplingFactorY;
@@ -201,20 +196,15 @@ public class BathymetryMaskClassifier {
             for (int sy = 0; sy < subsamplingFactorY; sy++) {
                 currentPos.y = (float) (pixelPos.y + sy * yStep);
                 geoCoding.getGeoPos(currentPos, geoPos);
-                int waterMaskSample = getWaterMaskSample(geoPos);
-                if (waterMaskSample != BathymetryMaskClassifier.INVALID_VALUE) {
-                    valueSum += waterMaskSample;
+                int bathymetryPoint = getBathymetryPoint(geoPos);
+                if (bathymetryPoint != bathymetryReader.getMissingValue()) {
+                    valueSum += bathymetryPoint;
                 } else {
                     invalidCount++;
                 }
             }
         }
 
-        if (bathymetryReader != null) try {
-            bathymetryReader.close();
-        } catch (IOException ioe) {
-            //
-        }
 
         return computeAverage(subsamplingFactorX, subsamplingFactorY, valueSum, invalidCount);
     }
@@ -222,23 +212,29 @@ public class BathymetryMaskClassifier {
     private byte computeAverage(int subsamplingFactorX, int subsamplingFactorY, float valueSum, int invalidCount) {
         final boolean allValuesInvalid = invalidCount == subsamplingFactorX * subsamplingFactorY;
         if (allValuesInvalid) {
-            return BathymetryMaskClassifier.INVALID_VALUE;
+            return (byte) bathymetryReader.getMissingValue();
         } else {
             return (byte) (100 * valueSum / (subsamplingFactorX * subsamplingFactorY));
         }
     }
 
-    private int getWaterMaskSample(GeoPos geoPos) {
-        final int waterMaskSample;
+    private int getBathymetryPoint(GeoPos geoPos) {
+        final int bathymetryPoint;
         if (geoPos.isValid()) {
-            waterMaskSample = bathymetryReader.getHeight(geoPos.lat, geoPos.lon);
+            int latIndex = bathymetryReader.getLatIndex(geoPos.lat);
+            int lonIndex = bathymetryReader.getLonIndex(geoPos.lon);
+
+            bathymetryPoint = bathymetryReader.getHeight(latIndex, lonIndex);
         } else {
-            waterMaskSample = BathymetryMaskClassifier.INVALID_VALUE;
+            bathymetryPoint = bathymetryReader.getMissingValue();
         }
-        return waterMaskSample;
+        return bathymetryPoint;
     }
 
 
+    public short getMissingValue() {
+        return bathymetryReader.getMissingValue();
+    }
 
 
 }

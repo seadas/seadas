@@ -29,8 +29,8 @@ public class ProcessorTypeInfo {
         SMIGEN,
         SMITOPPM,
         LONLAT2PIXLINE,
-        SEADAS_PROCESSOR_PY,
-        SEADAS_PROCESSOR_MAIN,
+        MULTILEVEL_PROCESSOR_PY,
+        MULTILEVEL_PROCESSOR,
         OCSSW_INSTALLER,
         L2GEN,
         L2GEN_AQUARIUS,
@@ -59,14 +59,14 @@ public class ProcessorTypeInfo {
         put("smigen", ProcessorID.SMIGEN);
         put("smitoppm", ProcessorID.SMITOPPM);
         put("lonlat2pixline", ProcessorID.LONLAT2PIXLINE);
-        put("multilevel_processor.py", ProcessorID.SEADAS_PROCESSOR_PY);
-        put("seadas_processor_main", ProcessorID.SEADAS_PROCESSOR_MAIN);
+        put("multilevel_processor.py", ProcessorID.MULTILEVEL_PROCESSOR_PY);
+        put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR);
         put("install_ocssw.py", ProcessorID.OCSSW_INSTALLER);
 
     }};
 
     protected static String getExcludedProcessorNames() {
-       return     "seadas_processor_main" +
+       return     "multilevel_processor" +
                   "smitoppm" +
                   "l1aextract_modis" +
                   "l1aextract_seawifs" +

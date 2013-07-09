@@ -126,7 +126,7 @@ public class BathymetryOp extends Operator {
         targetProduct = new Product("Bathymetry Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
                 sourceProduct.getSceneRasterHeight());
         final Band waterBand = targetProduct.addBand(BATHYMETRY_BAND_NAME, ProductData.TYPE_FLOAT32);
-        waterBand.setNoDataValue(BathymetryMaskClassifier.INVALID_VALUE);
+        waterBand.setNoDataValue(classifier.getMissingValue());
         waterBand.setNoDataValueUsed(true);
 
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
@@ -154,7 +154,7 @@ public class BathymetryOp extends Operator {
                     pixelPos.y = y;
                     int dataValue = 0;
                     if (targetBandName.equals(BATHYMETRY_BAND_NAME)) {
-                        dataValue = classifier.getWaterMaskFraction(geoCoding, pixelPos,
+                        dataValue = classifier.getBathymetryAverage(geoCoding, pixelPos,
                                 subSamplingFactorX,
                                 subSamplingFactorY);
                     }
