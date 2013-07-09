@@ -162,6 +162,12 @@
 
     <extension point="beam-core:rgbProfiles">
         <rgbProfile>
+            <name>NASA L1 True Color</name>
+            <red>Red</red>
+            <green>Green</green>
+            <blue>Blue</blue>
+        </rgbProfile>
+        <rgbProfile>
             <name>NASA SeaWiFS L2</name>
             <red>Rrs_670</red>
             <green>Rrs_510</green>
