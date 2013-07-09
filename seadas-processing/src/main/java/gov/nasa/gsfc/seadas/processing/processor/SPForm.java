@@ -304,7 +304,7 @@ public class SPForm extends JPanel implements CloProgramUI {
     @Override
     public ProcessorModel getProcessorModel() {
         if (processorModel == null) {
-            processorModel = new ProcessorModel("seadas_processor.py", xmlFileName);
+            processorModel = new ProcessorModel("multilevel_processor.py", xmlFileName);
             processorModel.setReadyToRun(true);
         }
         processorModel.setParamList(getParamList());
