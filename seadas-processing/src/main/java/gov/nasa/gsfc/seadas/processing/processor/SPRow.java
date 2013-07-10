@@ -26,7 +26,7 @@ public class SPRow {
     public static final String PARAM_STRING_EVENT = "paramString";
     public static final String KEEPFILES_PARAM = "keepfiles";
 
-    private static final String LONGEST_BUTTON_LABEL = "l1aextract_seawifs";
+    private static final String LONGEST_BUTTON_LABEL = "multilevel_processor.py";
 
     private String name;
     private CloProgramUI cloProgramUI;
@@ -83,7 +83,7 @@ public class SPRow {
         });
 
 
-        if (name.equals("main")) {
+        if (name.equals(SPForm.Processor.MAIN.toString())) {
             createConfigPanel();
         }
 
@@ -110,8 +110,8 @@ public class SPRow {
 
     private void createConfigPanel() {
         if (configPanel == null) {
-            if (name.equals("main")) {
-                cloProgramUI = new ProgramUIFactory("seadas_processor_main", "seadas_processor_main.xml");
+            if (name.equals(SPForm.Processor.MAIN.toString())) {
+                cloProgramUI = new ProgramUIFactory("multilevel_processor", "multilevel_processor.xml");
               //  configPanel = (JPanel) cloProgramUI;
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("geo")) {
@@ -268,7 +268,7 @@ public class SPRow {
 
 
     private void cleanIOParams(ParamList list) {
-        if (name.equals("main")) {
+        if (name.equals(SPForm.Processor.MAIN.toString())) {
             return;
         }
 

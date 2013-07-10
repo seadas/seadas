@@ -20,6 +20,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -202,6 +203,8 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
 
                                     product.addBand(bathymetryBand);
 
+                                    String maskMath = bathymetryData.getMaskMath();
+
                                     Mask bathymetryMask = Mask.BandMathsType.create(
                                             bathymetryData.getMaskName(),
                                             bathymetryData.getMaskDescription(),
@@ -221,6 +224,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                                             raster.getOverlayMaskGroup().add(bathymetryMask);
                                         }
                                     }
+
 
                                 } finally {
                                     pm.done();

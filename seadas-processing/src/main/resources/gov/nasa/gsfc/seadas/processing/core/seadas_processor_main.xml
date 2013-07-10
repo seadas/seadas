@@ -6,6 +6,7 @@
         <parFileOptionName>par</parFileOptionName>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
+            <primaryOption>odir</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
@@ -15,6 +16,7 @@
             <default></default>
             <description>input datafiles or list of files</description>
         </option>
+
         <option type="boolean">
             <name>verbose</name>
             <value>false</value>

@@ -26,12 +26,12 @@ public class BathymetryData {
     public static String PROMPT_REQUEST_TO_INSTALL_FILE_EVENT = "REQUEST_TO_INSTALL_FILE_EVENT";
     public static String CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT = "CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT";
 
-    public static String LANDMASK_URL =  "http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask";
+    public static String LANDMASK_URL = "http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask";
 
     private boolean createMasks = false;
     private boolean deleteMasks = false;
 
-    private double maskTransparency = 0.0;
+    private double maskTransparency = 0.5;
     private boolean showMaskAllBands = true;
     private Color maskColor = new Color(0, 0, 255);
     private String maskName = "Bathymetry";
@@ -52,13 +52,10 @@ public class BathymetryData {
 
 
 
-
-
     private ArrayList<SourceFileInfo> sourceFileInfos = new ArrayList<SourceFileInfo>();
     private SourceFileInfo sourceFileInfo;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
-
 
 
     public BathymetryData() {
@@ -70,7 +67,6 @@ public class BathymetryData {
         File ocsswRunDataDir = new File(ocsswRunDir, "data");
         File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
         File bathymetryFile = new File(ocsswRunDataCommonDir, BathymetryMaskClassifier.FILENAME_BATHYMETRY);
-
 
 
         sourceFileInfo = new SourceFileInfo(BathymetryMaskClassifier.RESOLUTION_1km,
@@ -112,7 +108,6 @@ public class BathymetryData {
     }
 
 
-
     public double getMaskTransparency() {
         return maskTransparency;
     }
@@ -122,7 +117,6 @@ public class BathymetryData {
     }
 
 
-
     public boolean isShowMaskAllBands() {
         return showMaskAllBands;
     }
@@ -130,7 +124,6 @@ public class BathymetryData {
     public void setShowMaskAllBands(boolean showMaskAllBands) {
         this.showMaskAllBands = showMaskAllBands;
     }
-
 
 
     public Color getMaskColor() {
@@ -158,7 +151,6 @@ public class BathymetryData {
     }
 
 
-
     public String getBathymetryBandName() {
         return bathymetryBandName;
     }
@@ -166,7 +158,6 @@ public class BathymetryData {
     public void setBathymetryBandName(String bathymetryBandName) {
         this.bathymetryBandName = bathymetryBandName;
     }
-
 
 
     public String getMaskName() {
@@ -181,16 +172,15 @@ public class BathymetryData {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getBathymetryBandName());
-        stringBuilder.append(" > ");
+        stringBuilder.append(" >= ");
         stringBuilder.append(new Double(getMaskMaxDepth()).toString());
         stringBuilder.append(" and ");
         stringBuilder.append(getBathymetryBandName());
-        stringBuilder.append(" < ");
+        stringBuilder.append(" <= ");
         stringBuilder.append(new Double(getMaskMinDepth()).toString());
 
         return stringBuilder.toString();
     }
-
 
 
     public String getMaskDescription() {
@@ -200,7 +190,6 @@ public class BathymetryData {
     public void setMaskDescription(String maskDescription) {
         this.maskDescription = maskDescription;
     }
-
 
 
     public boolean isDeleteMasks() {
@@ -224,7 +213,7 @@ public class BathymetryData {
     }
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-            propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
     }
 
     public void fireEvent(String propertyName) {
@@ -269,6 +258,9 @@ public class BathymetryData {
     public void setMaskMaxDepth(String maskMaxDepth) {
         this.maskMaxDepth = Double.parseDouble(maskMaxDepth);
     }
+
+
+
 }
 
 
