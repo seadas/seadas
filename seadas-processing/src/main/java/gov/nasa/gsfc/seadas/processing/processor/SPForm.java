@@ -148,7 +148,7 @@ public class SPForm extends JPanel implements CloProgramUI {
         });
 
 
-        oDirSelector = new ODirSelector(propertyChangeSupport, ODIR_EVENT);
+        oDirSelector = new ODirSelector(propertyChangeSupport, ODIR_EVENT, "odir");
 
 //        odirSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.DIR, "odir");
 //

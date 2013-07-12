@@ -21,18 +21,20 @@ public class ODirSelector {
     private SwingPropertyChangeSupport myPropertyChangeSupport;
 
     private FileSelector odirSelector;
+    private String label;
 
     private String propertyName;
 
     boolean controlHandlerEnabled = true;
 
-    ODirSelector(SwingPropertyChangeSupport callersPropertyChangeSupport, final String propertyName) {
+    ODirSelector(SwingPropertyChangeSupport callersPropertyChangeSupport, final String propertyName, String label) {
         this.callersPropertyChangeSupport = callersPropertyChangeSupport;
         this.propertyName = propertyName;
+        this.label = label;
 
         myPropertyChangeSupport = new SwingPropertyChangeSupport(this);
 
-        odirSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.DIR, "odir");
+        odirSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.DIR, label);
 
         addControlListeners();
         addEventListeners();
@@ -73,7 +75,7 @@ public class ODirSelector {
         controlHandlerEnabled = false;
     }
 
-    private FileSelector getFileSelector() {
+    public FileSelector getFileSelector() {
         return odirSelector;
     }
 
