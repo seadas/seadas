@@ -17,6 +17,7 @@ import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
+import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 public class SPForm extends JPanel implements CloProgramUI {
 
     public enum Processor {
-        MAIN("multilevel_processor.py"),
+        MAIN("main"),
         MODIS_L1A_PY("modis_L1A.py"),
         L1AEXTRACT_MODIS("l1aextract_modis"),
         L1AEXTRACT_SEAWIFS("l1aextract_seawifs"),
@@ -101,6 +102,7 @@ public class SPForm extends JPanel implements CloProgramUI {
     private JButton exportParfileButton;
     private JTextArea parfileTextArea;
     private FileSelector odirSelector;
+    private ODirSelector oDirSelector;
 
     private JScrollPane chainScrollPane;
     private JPanel chainPanel;
@@ -110,14 +112,20 @@ public class SPForm extends JPanel implements CloProgramUI {
 
     private JPanel spacer;
 
+    public String MAIN_PARSTRING_EVENT = "MAIN_PARSTRING_EVENT";
+    static public String ODIR_EVENT = "ODIR";
+
     private ArrayList<SPRow> rows;
 
     String xmlFileName;
     ProcessorModel processorModel;
+    private SwingPropertyChangeSupport propertyChangeSupport;
 
     SPForm(AppContext appContext, String xmlFileName) {
         this.appContext = appContext;
         this.xmlFileName = xmlFileName;
+
+        propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
         jFileChooser = new JFileChooser();
 
@@ -139,16 +147,24 @@ public class SPForm extends JPanel implements CloProgramUI {
             }
         });
 
-        odirSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.DIR, "odir");
 
-        odirSelector.addPropertyChangeListener(new PropertyChangeListener() {
+        oDirSelector = new ODirSelector(propertyChangeSupport, ODIR_EVENT);
+
+//        odirSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.DIR, "odir");
+//
+//        odirSelector.addPropertyChangeListener(new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                handleOdirChanged();
+//            }
+//        });
+
+        oDirSelector.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+            public void propertyChange(PropertyChangeEvent evt) {
                 handleOdirChanged();
             }
         });
-
-
 
 
         primaryIOPanel = new JPanel(new GridBagLayout());
@@ -156,7 +172,7 @@ public class SPForm extends JPanel implements CloProgramUI {
         primaryIOPanel.add(sourceProductFileSelector.createDefaultPanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        primaryIOPanel.add(odirSelector.getjPanel(),
+        primaryIOPanel.add(oDirSelector.getFileSelector().getjPanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
@@ -373,6 +389,10 @@ public class SPForm extends JPanel implements CloProgramUI {
 
 
     public void setParamString(String str, boolean retainIFile) {
+
+        String oldODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
+
+
         String[] lines = str.split("\n");
 
         String section = Processor.MAIN.toString();
@@ -429,12 +449,22 @@ public class SPForm extends JPanel implements CloProgramUI {
             }
         }
 
+        String newODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
+        propertyChangeSupport.firePropertyChange(ODIR_EVENT, oldODir, newODir);
+
+
         updateParamString();
     }
 
     private void updateParamString() {
         sourceProductFileSelector.setSelectedFile(new File(getRow(Processor.MAIN.toString()).getParamList().getValue("ifile")));
-        odirSelector.setFilename(getRow(Processor.MAIN.toString()).getParamList().getValue("odir"));
+        //    odirSelector.setFilename(getRow(Processor.MAIN.toString()).getParamList().getValue("odir"));
+
+        //todo this should not be needed but parfileTextArea doesn't trigger event in this case
+        String newODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
+        propertyChangeSupport.firePropertyChange(ODIR_EVENT, null, newODir);
+
+
         parfileTextArea.setText(getParamString());
     }
 
@@ -461,7 +491,7 @@ public class SPForm extends JPanel implements CloProgramUI {
 
 
     private void handleOdirChanged() {
-        String odirName = odirSelector.getFileName();
+        String odirName = oDirSelector.getFilename();
         SPRow row = getRow(Processor.MAIN.toString());
         String oldOdir = row.getParamList().getValue("odir");
         if (!odirName.equals(oldOdir)) {
@@ -469,7 +499,6 @@ public class SPForm extends JPanel implements CloProgramUI {
             parfileTextArea.setText(getParamString());
         }
     }
-
 
 
     public String getIFile() {
@@ -489,6 +518,14 @@ public class SPForm extends JPanel implements CloProgramUI {
         // todo : need to check for file being a list of files.
 
         return fileName;
+    }
+
+    public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(name, listener);
+    }
+
+    public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(name, listener);
     }
 
 
