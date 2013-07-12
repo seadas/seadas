@@ -102,7 +102,7 @@ public class SPForm extends JPanel implements CloProgramUI {
     private JButton exportParfileButton;
     private JTextArea parfileTextArea;
     private FileSelector odirSelector;
-    private ODirSelector oDirSelector;
+    private ActiveFileSelector activeFileSelector;
 
     private JScrollPane chainScrollPane;
     private JPanel chainPanel;
@@ -148,7 +148,7 @@ public class SPForm extends JPanel implements CloProgramUI {
         });
 
 
-        oDirSelector = new ODirSelector(propertyChangeSupport, ODIR_EVENT, "odir");
+        activeFileSelector = new ActiveFileSelector(propertyChangeSupport, ODIR_EVENT, "odir", ParamInfo.Type.DIR);
 
 //        odirSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.DIR, "odir");
 //
@@ -159,7 +159,7 @@ public class SPForm extends JPanel implements CloProgramUI {
 //            }
 //        });
 
-        oDirSelector.addPropertyChangeListener(new PropertyChangeListener() {
+        activeFileSelector.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 handleOdirChanged();
@@ -172,7 +172,7 @@ public class SPForm extends JPanel implements CloProgramUI {
         primaryIOPanel.add(sourceProductFileSelector.createDefaultPanel(),
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        primaryIOPanel.add(oDirSelector.getFileSelector().getjPanel(),
+        primaryIOPanel.add(activeFileSelector.getJPanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
@@ -491,7 +491,7 @@ public class SPForm extends JPanel implements CloProgramUI {
 
 
     private void handleOdirChanged() {
-        String odirName = oDirSelector.getFilename();
+        String odirName = activeFileSelector.getFilename();
         SPRow row = getRow(Processor.MAIN.toString());
         String oldOdir = row.getParamList().getValue("odir");
         if (!odirName.equals(oldOdir)) {
