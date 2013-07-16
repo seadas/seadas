@@ -48,6 +48,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private boolean openInSeadas;
 
+    private String prodParamName = "prod";
+
     public ProcessorModel(String name) {
         acceptsParFile = false;
         hasGeoFile = false;
@@ -62,7 +64,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         primaryOptions = new HashSet<String>();
         primaryOptions.add("ifile");
         primaryOptions.add("ofile");
-
         progressPattern = Pattern.compile(ParamUtils.DEFAULT_PROGRESS_REGEX);
         setOpenInSeadas(false);
     }
@@ -851,10 +852,18 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         this.openInSeadas = openInSeadas;
     }
 
+    String getProdParamName(){
+        return prodParamName;
+    }
+
+    void setProdPramName(String prodPramName){
+        this.prodParamName = prodPramName;
+    }
     public void updateParamValues(Product selectedProduct) {
+
         if (selectedProduct != null) {
             String[] bandNames = selectedProduct.getBandNames();
-            ParamInfo pi = getParamInfo("prod");
+            ParamInfo pi = getParamInfo(getProdParamName());
             if (bandNames != null && pi != null) {
                 ArrayList<ParamValidValueInfo> oldValidValues = pi.getValidValueInfos();
                 ParamValidValueInfo paramValidValueInfo;
@@ -869,8 +878,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     }
                 }
                 ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
-                fireEvent("prod");
-                paramList.getPropertyChangeSupport().firePropertyChange("prod", oldValidValues, newValidValues);
+                fireEvent(getProdParamName());
+                paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValidValues, newValidValues);
             }
 //            pi = getParamInfo("suite");
 //            if (pi != null) {
@@ -1043,12 +1052,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         L2Bin_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
+            setProdPramName("l3bprod");
             setMultipleInputFiles(true);
             missionDir = null;
         }
 
         @Override
         public void updateParamValues(Product selectedProduct) {
+            //super.updateParamValues(selectedProduct);
             if (selectedProduct != null) {
                 FileInfo ifileInfo = new FileInfo(selectedProduct.getFileLocation().getAbsolutePath());
                 missionDir = ifileInfo.getMissionDirectory();

@@ -93,12 +93,8 @@ public class ParamUIFactory {
                     pi.getName().equals(L2genData.GEOFILE) ||
                     pi.getName().equals("verbose") ||
                     pi.getName().equals("--verbose") ) ) {
-
-                SeadasLogger.getLogger().fine(pi.getName());
                 if (pi.hasValidValueInfos()) {
-
                     textFieldPanel.add(makeComboBoxOptionPanel(pi));
-
                 } else {
                     switch (pi.getType()) {
                         case BOOLEAN:

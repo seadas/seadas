@@ -141,6 +141,34 @@
             <value></value>
             <default>day</default>
             <description>product type (Set to "regional" to bin all scans.) [default=day]</description>
+            <validValue>
+                  <value>Regional</value>
+                  <description>Regional</description>
+              </validValue>
+              <validValue>
+                  <value>Day</value>
+                  <description>Day</description>
+              </validValue>
+              <validValue>
+                  <value>8-day</value>
+                  <description>8-day</description>
+              </validValue>
+              <validValue>
+                  <value>Month</value>
+                  <description>Month</description>
+              </validValue>
+              <validValue>
+                  <value>Season</value>
+                  <description>Season</description>
+              </validValue>
+              <validValue>
+                  <value>Year</value>
+                  <description>Year</description>
+              </validValue>
+            <validValue>
+                <value>Cumulative</value>
+                <description>Cumulative</description>
+            </validValue>
             <order>8</order>
         </option>
         <option type="string">
