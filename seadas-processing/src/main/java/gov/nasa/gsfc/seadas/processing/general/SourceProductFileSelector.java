@@ -16,6 +16,7 @@
 
 package gov.nasa.gsfc.seadas.processing.general;
 
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import com.bc.ceres.swing.selection.SelectionChangeListener;
 import com.bc.ceres.swing.selection.support.ComboBoxSelectionContext;
 import org.esa.beam.framework.dataio.ProductIO;
@@ -28,6 +29,7 @@ import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.BasicApp;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
+import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -442,11 +444,45 @@ public class SourceProductFileSelector {
                 }
 
                 final File file = fileChooser.getSelectedFile();
-                Product product = null;
-                try {
-                    product = ProductIO.readProduct(file);
-                } catch (Exception e) {
-                }
+
+
+                // Added a progress monitor because loading the new product takes to long
+
+                final Product[] productTmp = {null};
+
+                VisatApp visatApp = VisatApp.getApp();
+                ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                        "SeaDAS Product/File Loader") {
+
+                    @Override
+                    protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+
+                        pm.beginTask("Loading file '" + file + "' as a new SeaDAS product ", 2);
+
+                        try {
+                            productTmp[0] = ProductIO.readProduct(file);
+                            pm.worked(1);
+                        } catch (Exception e) {
+                            pm.done();
+                        } finally {
+                            pm.done();
+                        }
+                        return null;
+                    }
+                };
+
+                pmSwingWorker.executeWithBlocking();
+
+
+                Product product = productTmp[0];
+
+
+//
+//                Product product = null;
+//                try {
+//                    product = ProductIO.readProduct(file);
+//                } catch (Exception e) {
+//                }
 
                 try {
                     if (product == null) {

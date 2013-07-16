@@ -3,32 +3,47 @@
            xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
     <programMetaData>
         <hasParFile>true</hasParFile>
-        <parFileOptionName>none</parFileOptionName>
+        <parFileOptionName>par</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+        </primaryOptions>
     </programMetaData>
     <options>
+        <option type="ifile">
+            <name>ifile</name>
+            <value/>
+            <default></default>
+            <description>input datafiles or list of files</description>
+        </option>
+        <option type="ofile">
+            <name>odir</name>
+            <value/>
+            <default></default>
+            <description>output directory</description>
+        </option>
         <option type="boolean">
-            <name>--verbose</name>
+            <name>verbose</name>
             <value>false</value>
             <default>false</default>
             <description>print out verbose status</description>
         </option>
         <option type="boolean">
-            <name>--keepfiles</name>
-            <value>false</value>
-            <default>false</default>
-            <description>keep all of the intermediate files</description>
-        </option>
-        <option type="boolean">
-            <name>--overwrite</name>
+            <name>overwrite</name>
             <value>false</value>
             <default>false</default>
             <description>overwrite existing intermediate and output files</description>
         </option>
         <option type="boolean">
-            <name>--use_existing</name>
+            <name>use_existing</name>
             <value>false</value>
             <default>false</default>
             <description>do not re-create intermediate files if they already exist</description>
+        </option>
+        <option type="boolean">
+            <name>ocproc_getanc</name>
+            <value>false</value>
+            <default>false</default>
+            <description>Get the ancillary data for l2gen processing</description>
         </option>
     </options>
 </paramInfo>
