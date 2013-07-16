@@ -61,7 +61,7 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
     private static final Set<String> DEFAULT_MISSIONS = new HashSet<String>(Arrays.asList(
             new String[]{
                     "GOCI",
-                    "HICO",
+                    //"HICO",
                     "OCRVC"
             }
     ));
@@ -82,6 +82,7 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
          MISSION_DIRECTORIES.put("OCM2", "ocm2");
          MISSION_DIRECTORIES.put("OCM1", "ocm1");
          MISSION_DIRECTORIES.put("AVHRR", "avhrr");
+         MISSION_DIRECTORIES.put("HICO", "hico");
     }
 
     public OCSSWInstallerForm(AppContext appContext, String programName, String xmlFileName) {
