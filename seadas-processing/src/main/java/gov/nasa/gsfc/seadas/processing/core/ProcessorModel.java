@@ -1091,7 +1091,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             String suiteName;
             ArrayList<ParamValidValueInfo> suiteValidValues = new ArrayList<ParamValidValueInfo>();
             for (String fileName : suites) {
-                suiteName = fileName.substring(fileName.lastIndexOf("_") + 1, fileName.indexOf("."));
+                suiteName = fileName.substring(fileName.indexOf("_", fileName.indexOf("_") + 1) + 1, fileName.indexOf("."));
                 suiteValidValues.add(new ParamValidValueInfo(suiteName));
             }
             ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) getParamInfo("suite").getValidValueInfos().clone();
