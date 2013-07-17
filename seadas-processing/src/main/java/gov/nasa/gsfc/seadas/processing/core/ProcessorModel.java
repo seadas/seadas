@@ -865,7 +865,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             String[] bandNames = selectedProduct.getBandNames();
             ParamInfo pi = getParamInfo(getProdParamName());
             if (bandNames != null && pi != null) {
-                ArrayList<ParamValidValueInfo> oldValidValues = pi.getValidValueInfos();
+                ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) pi.getValidValueInfos().clone();
                 ParamValidValueInfo paramValidValueInfo;
                 Band band;
                 for (String bandName : bandNames) {
@@ -1065,6 +1065,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 missionDir = ifileInfo.getMissionDirectory();
                 DEFAUT_FLAGUSE = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, DEFAULT_PAR_FILE_NAME), "flaguse");
                 updateSuite();
+                super.updateParamValues(selectedProduct);
             }
         }
 //        @Override
