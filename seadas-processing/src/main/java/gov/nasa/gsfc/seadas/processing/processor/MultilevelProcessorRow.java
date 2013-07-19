@@ -22,7 +22,7 @@ import java.io.File;
  * Time: 8:21 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SPRow {
+public class MultilevelProcessorRow {
     public static final String PARAM_STRING_EVENT = "paramString";
     public static final String KEEPFILES_PARAM = "keepfiles";
 
@@ -30,7 +30,7 @@ public class SPRow {
 
     private String name;
     private CloProgramUI cloProgramUI;
-    private SPForm parentForm;
+    private MultlevelProcessorForm parentForm;
 
     private JButton configButton;
     private JCheckBox keepCheckBox;
@@ -40,7 +40,7 @@ public class SPRow {
     private SwingPropertyChangeSupport propertyChangeSupport;
 
 
-    public SPRow(String name, SPForm parentForm) {
+    public MultilevelProcessorRow(String name, MultlevelProcessorForm parentForm) {
         this.name = name;
         this.parentForm = parentForm;
 
@@ -83,7 +83,7 @@ public class SPRow {
         });
 
 
-        if (name.equals(SPForm.Processor.MAIN.toString())) {
+        if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString())) {
             createConfigPanel();
         }
 
@@ -110,7 +110,7 @@ public class SPRow {
 
     private void createConfigPanel() {
         if (configPanel == null) {
-            if (name.equals(SPForm.Processor.MAIN.toString())) {
+            if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString())) {
                 cloProgramUI = new ProgramUIFactory("multilevel_processor", "multilevel_processor.xml");
               //  configPanel = (JPanel) cloProgramUI;
                 configPanel = cloProgramUI.getParamPanel();
@@ -268,7 +268,7 @@ public class SPRow {
 
 
     private void cleanIOParams(ParamList list) {
-        if (name.equals(SPForm.Processor.MAIN.toString())) {
+        if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString())) {
             return;
         }
 

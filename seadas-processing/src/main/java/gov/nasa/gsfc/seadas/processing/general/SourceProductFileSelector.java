@@ -553,7 +553,7 @@ public class SourceProductFileSelector {
             setSelectedMultiFileList(tmpArrayList);
         }
 
-        private void setSelectedMultiFileList(ArrayList<File> tmpArrayList) {
+        public void setSelectedMultiFileList(ArrayList<File> tmpArrayList) {
             files = new File[tmpArrayList.size()];
             tmpArrayList.toArray(files);
 
@@ -592,6 +592,7 @@ public class SourceProductFileSelector {
 
 
     }
+
 
 
     private static class ProductListCellRenderer extends DefaultListCellRenderer {

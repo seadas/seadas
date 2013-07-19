@@ -18,7 +18,6 @@ package gov.nasa.gsfc.seadas.processing.processor;
 
 import gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction;
 import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
-import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
 import org.esa.beam.framework.ui.AppContext;
 
 /**
@@ -27,12 +26,12 @@ import org.esa.beam.framework.ui.AppContext;
  * @author Ralf Quast
  * @version $Revision: 2535 $ $Date: 2008-07-09 14:10:01 +0200 (Mi, 09 Jul 2008) $
  */
-public class SPAction extends CallCloProgramAction {
+public class MultilevelProcessorAction extends CallCloProgramAction {
 
 
     @Override
     public CloProgramUI getProgramUI(AppContext appContext) {
-        return new SPForm(appContext, getXmlFileName());
+        return new MultlevelProcessorForm(appContext, getXmlFileName());
     }
 
 }

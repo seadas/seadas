@@ -1,14 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.core.ParamList;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.processor.SPForm;
-import org.geotools.referencing.factory.epsg.AbstractEpsgFactory;
+import gov.nasa.gsfc.seadas.processing.processor.MultlevelProcessorForm;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +16,7 @@ import java.util.Map;
  * Processor model for the Seadas Processor script
  */
 public class MultiParamList extends ParamList {
-    public static final String MAIN_KEY = SPForm.Processor.MAIN.toString();
+    public static final String MAIN_KEY = MultlevelProcessorForm.Processor.MAIN.toString();
 
     private HashMap<String, ParamList> paramLists;
 
