@@ -10,6 +10,7 @@ public class ParamValidValueInfo implements Comparable, Cloneable {
 
     private String value = null;
     private String description = null;
+    private boolean selected;
 
 
     public ParamValidValueInfo(String value) {
@@ -69,4 +70,11 @@ public class ParamValidValueInfo implements Comparable, Cloneable {
         return validValueInfo;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 }

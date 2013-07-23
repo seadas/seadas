@@ -118,7 +118,7 @@
               <!--</validValue>-->
             <order>5</order>
         </option>
-        <option type="string">
+        <option type="flags">
             <name>flaguse</name>
             <value></value>
             <default></default>

@@ -6,10 +6,14 @@ import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
+import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -26,7 +30,7 @@ import java.util.Iterator;
 public class ParamUIFactory {
 
     ProcessorModel processorModel;
-
+    SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
     private String emptySpace = "  ";
 
     public ParamUIFactory(ProcessorModel pm) {
@@ -92,7 +96,7 @@ public class ParamUIFactory {
                     pi.getName().equals(processorModel.getPrimaryOutputFileOptionName()) ||
                     pi.getName().equals(L2genData.GEOFILE) ||
                     pi.getName().equals("verbose") ||
-                    pi.getName().equals("--verbose") ) ) {
+                    pi.getName().equals("--verbose"))) {
                 if (pi.hasValidValueInfos()) {
                     textFieldPanel.add(makeComboBoxOptionPanel(pi));
                 } else {
@@ -118,6 +122,9 @@ public class ParamUIFactory {
                         case FLOAT:
                             textFieldPanel.add(makeOptionField(pi));
                             break;
+                        case FLAGS:
+                            textFieldPanel.add(makeButtonOptionPanel(pi));
+                            break;
                     }
                     //paramPanel.add(makeOptionField(pi));
                 }
@@ -138,7 +145,7 @@ public class ParamUIFactory {
 
         final String optionName = pi.getName();
         final JPanel optionPanel = new JPanel();
-        optionPanel.setName(optionName );
+        optionPanel.setName(optionName);
         TableLayout fieldLayout = new TableLayout(1);
         fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         optionPanel.setLayout(fieldLayout);
@@ -189,10 +196,10 @@ public class ParamUIFactory {
     private JPanel makeBooleanOptionField(final ParamInfo pi) {
 
         final String optionName = pi.getName();
-        final boolean optionValue = pi.getValue().equals( "true" ) || pi.getValue().equals( "1") ? true : false;
+        final boolean optionValue = pi.getValue().equals("true") || pi.getValue().equals("1") ? true : false;
 
         final JPanel optionPanel = new JPanel();
-        optionPanel.setName( optionName );
+        optionPanel.setName(optionName);
         TableLayout booleanLayout = new TableLayout(1);
         //booleanLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
 
@@ -251,7 +258,7 @@ public class ParamUIFactory {
         final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
 
         singlePanel.add(optionNameLabel);
-        singlePanel.setName( pi.getName() );
+        singlePanel.setName(pi.getName());
 
         String optionDefaultValue = pi.getValue();
 
@@ -281,7 +288,7 @@ public class ParamUIFactory {
         if (pi.getDescription() != null) {
             inputList.setToolTipText(pi.getDescription());
         }
-        int defaultValuePosition =  new ArrayList(Arrays.asList(values)).indexOf(optionDefaultValue);
+        int defaultValuePosition = new ArrayList(Arrays.asList(values)).indexOf(optionDefaultValue);
 
         if (defaultValuePosition != -1) {
             inputList.setSelectedIndex(defaultValuePosition);
@@ -322,7 +329,219 @@ public class ParamUIFactory {
         return singlePanel;
     }
 
-    private String[] updateValidValues(ParamInfo pi){
+    private JPanel makeButtonOptionPanel(final ParamInfo pi) {
+        final JPanel singlePanel = new JPanel();
+
+        TableLayout comboParamLayout = new TableLayout(1);
+        comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
+        singlePanel.setLayout(comboParamLayout);
+
+        final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
+        final JButton optionNameButton = new JButton(ParamUtils.removePreceedingDashes(pi.getName()));
+        optionNameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String selectedFlags = chooseValidValues(pi);
+                processorModel.updateParamInfo(pi, selectedFlags);
+            }
+        });
+        //singlePanel.add(optionNameLabel);
+        singlePanel.add(optionNameButton);
+        singlePanel.setName(pi.getName());
+
+        String optionDefaultValue = pi.getValue();
+
+        final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
+        final String[] values = new String[validValues.size()];
+        ArrayList<String> toolTips = new ArrayList<String>();
+
+        Iterator itr = validValues.iterator();
+        int i = 0;
+        ParamValidValueInfo paramValidValueInfo;
+        while (itr.hasNext()) {
+            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+            values[i] = paramValidValueInfo.getValue();
+            toolTips.add(paramValidValueInfo.getDescription());
+            i++;
+        }
+
+        optionNameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                JDialog dialog = new JDialog(VisatApp.getApp().getMainFrame(), true);
+                JPanel jPanel = new JPanel();
+                dialog.getContentPane().add(jPanel);
+                dialog.setMinimumSize(new Dimension(600, 800));
+                dialog.setVisible(true);
+
+            }
+        });
+        final JComboBox inputList = new JComboBox(values);
+        ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
+        inputList.setRenderer(renderer);
+        renderer.setTooltips(toolTips);
+        inputList.setEditable(true);
+        inputList.setName(pi.getName());
+        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
+                inputList.getPreferredSize().height));
+        if (pi.getDescription() != null) {
+            inputList.setToolTipText(pi.getDescription());
+        }
+        int defaultValuePosition = new ArrayList(Arrays.asList(values)).indexOf(optionDefaultValue);
+
+        if (defaultValuePosition != -1) {
+            inputList.setSelectedIndex(defaultValuePosition);
+        }
+
+        String optionName = pi.getName();
+
+
+        final PropertyContainer vc = new PropertyContainer();
+        vc.addProperty(Property.create(optionName, pi.getValue()));
+        vc.getDescriptor(optionName).setDisplayName(optionName);
+
+        final BindingContext ctx = new BindingContext(vc);
+
+        ctx.bind(optionName, inputList);
+
+        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+
+                String newValue = (String) inputList.getSelectedItem();
+                processorModel.updateParamInfo(pi, newValue);
+            }
+        });
+
+        processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //values = updateValidValues(pi);
+                int currentChoicePosition = new ArrayList(Arrays.asList(values)).indexOf(pi.getValue());
+                if (currentChoicePosition != -1) {
+                    inputList.setSelectedIndex(currentChoicePosition);
+                }
+            }
+        });
+        singlePanel.add(inputList);
+        return singlePanel;
+    }
+
+    public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(name, listener);
+    }
+
+    public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(name, listener);
+    }
+
+    public SwingPropertyChangeSupport getPropertyChangeSupport() {
+        return propertyChangeSupport;
+    }
+
+    public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
+        }
+    }
+
+    public void clearPropertyChangeSupport() {
+        propertyChangeSupport = new SwingPropertyChangeSupport(this);
+    }
+
+    private String chooseValidValues(ParamInfo pi) {
+        JPanel validValuesPanel = new JPanel();
+        String choosenValues = null;
+        final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
+        final String[] values = new String[validValues.size()];
+        ArrayList<String> toolTips = new ArrayList<String>();
+
+        Iterator itr = validValues.iterator();
+        int i = 0;
+        ParamValidValueInfo paramValidValueInfo;
+        while (itr.hasNext()) {
+            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+            values[i] = paramValidValueInfo.getValue();
+            toolTips.add(paramValidValueInfo.getDescription());
+            i++;
+        }
+
+        itr = validValues.iterator();
+        while (itr.hasNext()) {
+            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+            validValuesPanel.add(makeValidValueCheckbox(paramValidValueInfo));
+        }
+        final Window parent = VisatApp.getApp().getApplicationWindow();
+        String dialogTitle = null;
+        final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, validValuesPanel, ModalDialog.ID_OK, "test");
+        final int dialogResult = modalDialog.show();
+        if (dialogResult != ModalDialog.ID_OK) {
+
+        }
+        return choosenValues;
+    }
+
+    private JPanel makeValidValueCheckbox(final ParamValidValueInfo paramValidValueInfo) {
+
+        final String optionName = paramValidValueInfo.getValue();
+        final boolean optionValue = paramValidValueInfo.isSelected();
+
+        final JPanel optionPanel = new JPanel();
+        optionPanel.setName(optionName);
+        TableLayout booleanLayout = new TableLayout(1);
+        //booleanLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
+
+        optionPanel.setLayout(booleanLayout);
+        optionPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        optionPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+        optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace));
+
+
+        final PropertySet vc = new PropertyContainer();
+        vc.addProperty(Property.create(optionName, optionValue));
+        vc.getDescriptor(optionName).setDisplayName(optionName);
+
+        final BindingContext ctx = new BindingContext(vc);
+        final JCheckBox field = new JCheckBox();
+        field.setHorizontalAlignment(JFormattedTextField.LEFT);
+        field.setName(optionName);
+        field.setSelected(paramValidValueInfo.isSelected());
+        if (paramValidValueInfo.getDescription() != null) {
+            field.setToolTipText(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+        }
+
+        ctx.bind(optionName, field);
+
+        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+                //processorModel.updateParamInfo(pi, (new Boolean(field.isSelected())).toString());
+                //SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
+                paramValidValueInfo.setSelected(field.isSelected());
+
+            }
+        });
+
+        processorModel.addPropertyChangeListener(paramValidValueInfo.getValue(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                field.setSelected(paramValidValueInfo.isSelected());
+                //optionValue = field.isSelected();
+
+            }
+        });
+
+        optionPanel.add(field);
+
+        return optionPanel;
+
+    }
+
+
+    private String[] updateValidValues(ParamInfo pi) {
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
         final String[] values = new String[validValues.size()];
         ArrayList<String> toolTips = new ArrayList<String>();
@@ -370,19 +589,62 @@ public class ParamUIFactory {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
-                            int index, boolean isSelected, boolean cellHasFocus) {
+                                                      int index, boolean isSelected, boolean cellHasFocus) {
 
             JComponent comp = (JComponent) super.getListCellRendererComponent(list,
                     value, index, isSelected, cellHasFocus);
 
             if (-1 < index && null != value && null != tooltips) {
-                        list.setToolTipText((String)tooltips.get(index));
-                    }
+                list.setToolTipText((String) tooltips.get(index));
+            }
             return comp;
         }
 
         public void setTooltips(ArrayList tooltips) {
             this.tooltips = tooltips;
+        }
+    }
+
+    private class ValidValueChooser extends JPanel {
+
+        String selectedBoxes;
+        JPanel valuesPanel;
+
+        ValidValueChooser(ParamInfo paramInfo) {
+
+        }
+
+
+    }
+
+    private class ValidValuesButtonAction implements ActionListener {
+
+        final JPanel valuesPanel;
+
+        String selectedValues;
+
+        ValidValuesButtonAction(JPanel panel) {
+            valuesPanel = panel;
+        }
+
+        public void actionPerformed(ActionEvent actionEvent) {
+            final Window parent = VisatApp.getApp().getApplicationWindow();
+            String dialogTitle = null;
+            final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, valuesPanel, ModalDialog.ID_OK, "test");
+            final int dialogResult = modalDialog.show();
+            if (dialogResult != ModalDialog.ID_OK) {
+
+            }
+
+        }
+
+        void setSelectedValued(String selectedValues) {
+            this.selectedValues = selectedValues;
+
+        }
+
+        String getSelectedValues() {
+            return selectedValues;
         }
     }
 

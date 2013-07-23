@@ -230,7 +230,16 @@ public class SourceProductFileSelector {
 
     public void setSelectedFile(File file) {
         if (file != null && file.canRead()) {
-            Product product = new Product(file.getName(), "DummyType", 10, 10);
+            //Product product = new Product(file.getName(), "DummyType", 10, 10);
+            Product product = null;
+            try {
+                product = ProductIO.readProduct(file);
+            } catch (IOException ioe) {
+
+            }
+            if (product == null) {
+                product = new Product(file.getName(), "DummyType", 10, 10);
+            }
             product.setFileLocation(file);
             setSelectedProduct(product);
         }
@@ -244,7 +253,15 @@ public class SourceProductFileSelector {
 
     public void setSelectedFile(File file, String fileContent) {
         if (file != null && file.canRead()) {
-            Product product = new Product(file.getName(), "DummyType", 10, 10);
+            Product product = null;
+            try {
+                product = ProductIO.readProduct(file);
+            } catch (IOException ioe) {
+
+            }
+            if (product == null) {
+                product = new Product(file.getName(), "DummyType", 10, 10);
+            }
             product.setFileLocation(file);
             product.setDescription(fileContent);
             setSelectedProduct(product);
