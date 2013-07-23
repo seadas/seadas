@@ -24,6 +24,7 @@ public class ActiveFileSelector {
     private FileSelector fileSelector;
     private String label;
     ParamInfo.Type type;
+    boolean allowReFireOnChange = true;
 
     private String propertyName;
 
