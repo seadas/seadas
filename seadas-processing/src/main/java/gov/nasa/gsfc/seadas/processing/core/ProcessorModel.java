@@ -852,13 +852,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         this.openInSeadas = openInSeadas;
     }
 
-    String getProdParamName(){
+    String getProdParamName() {
         return prodParamName;
     }
 
-    void setProdPramName(String prodPramName){
+    void setProdPramName(String prodPramName) {
         this.prodParamName = prodPramName;
     }
+
     public void updateParamValues(Product selectedProduct) {
 
         if (selectedProduct != null) {
@@ -1047,7 +1048,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         private static final String DEFAULT_PAR_FILE_NAME = "l2bin_defaults.par";
         private static final String PAR_FILE_PREFIX = "l2bin_defaults_";
-        String DEFAUT_FLAGUSE;
+        String DEFAULT_FLAGUSE;
         File missionDir;
 
         L2Bin_Processor(String programName, String xmlFileName) {
@@ -1063,7 +1064,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             if (selectedProduct != null) {
                 FileInfo ifileInfo = new FileInfo(selectedProduct.getFileLocation().getAbsolutePath());
                 missionDir = ifileInfo.getMissionDirectory();
-                DEFAUT_FLAGUSE = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, DEFAULT_PAR_FILE_NAME), "flaguse");
+                DEFAULT_FLAGUSE = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, DEFAULT_PAR_FILE_NAME), "flaguse");
                 updateSuite();
                 super.updateParamValues(selectedProduct);
             }
@@ -1113,11 +1114,28 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         private void updateFlagUse(String parFileName) {
             String currentFlagUse = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, parFileName), "flaguse");
             if (currentFlagUse == null) {
-                currentFlagUse = DEFAUT_FLAGUSE;
+                currentFlagUse = DEFAULT_FLAGUSE;
             }
-            super.updateParamInfo("flaguse", currentFlagUse);
-            fireEvent("flaguse", null, currentFlagUse);
+            if (currentFlagUse != null) {
+                StringTokenizer st = new StringTokenizer(currentFlagUse, ",");
+                String s;
+                ParamInfo pi = getParamInfo("flaguse");
+                pi.clearValidValueInfos();
+                while (st.hasMoreTokens()) {
+                    s = st.nextToken();
+                    ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(s);
+                    paramValidValueInfo.setSelected(true);
+                    paramValidValueInfo.setDescription(s);
+                    paramValidValueInfo.setValue(s);
+                    pi.addValidValueInfo(paramValidValueInfo);
+                }
+                pi.setDescription(currentFlagUse);
+                super.updateParamInfo("flaguse", currentFlagUse);
+                fireEvent("flaguse", null, currentFlagUse);
+            }
         }
+
+
     }
 
     private static class L2BinAquarius_Processor extends ProcessorModel {

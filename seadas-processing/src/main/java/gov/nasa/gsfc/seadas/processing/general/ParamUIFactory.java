@@ -97,7 +97,7 @@ public class ParamUIFactory {
                     pi.getName().equals(L2genData.GEOFILE) ||
                     pi.getName().equals("verbose") ||
                     pi.getName().equals("--verbose"))) {
-                if (pi.hasValidValueInfos()) {
+                if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
                     textFieldPanel.add(makeComboBoxOptionPanel(pi));
                 } else {
                     switch (pi.getType()) {
@@ -351,80 +351,86 @@ public class ParamUIFactory {
 
         String optionDefaultValue = pi.getValue();
 
-        final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
-        final String[] values = new String[validValues.size()];
-        ArrayList<String> toolTips = new ArrayList<String>();
+        JTextField field = new JTextField();
+        field.setText(optionDefaultValue);
+        field.setColumns(8);
+        field.setEditable(false);
+        singlePanel.add(field);
 
-        Iterator itr = validValues.iterator();
-        int i = 0;
-        ParamValidValueInfo paramValidValueInfo;
-        while (itr.hasNext()) {
-            paramValidValueInfo = (ParamValidValueInfo) itr.next();
-            values[i] = paramValidValueInfo.getValue();
-            toolTips.add(paramValidValueInfo.getDescription());
-            i++;
-        }
-
-        optionNameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                JDialog dialog = new JDialog(VisatApp.getApp().getMainFrame(), true);
-                JPanel jPanel = new JPanel();
-                dialog.getContentPane().add(jPanel);
-                dialog.setMinimumSize(new Dimension(600, 800));
-                dialog.setVisible(true);
-
-            }
-        });
-        final JComboBox inputList = new JComboBox(values);
-        ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
-        inputList.setRenderer(renderer);
-        renderer.setTooltips(toolTips);
-        inputList.setEditable(true);
-        inputList.setName(pi.getName());
-        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
-                inputList.getPreferredSize().height));
-        if (pi.getDescription() != null) {
-            inputList.setToolTipText(pi.getDescription());
-        }
-        int defaultValuePosition = new ArrayList(Arrays.asList(values)).indexOf(optionDefaultValue);
-
-        if (defaultValuePosition != -1) {
-            inputList.setSelectedIndex(defaultValuePosition);
-        }
-
-        String optionName = pi.getName();
-
-
-        final PropertyContainer vc = new PropertyContainer();
-        vc.addProperty(Property.create(optionName, pi.getValue()));
-        vc.getDescriptor(optionName).setDisplayName(optionName);
-
-        final BindingContext ctx = new BindingContext(vc);
-
-        ctx.bind(optionName, inputList);
-
-        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent pce) {
-
-                String newValue = (String) inputList.getSelectedItem();
-                processorModel.updateParamInfo(pi, newValue);
-            }
-        });
-
-        processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                //values = updateValidValues(pi);
-                int currentChoicePosition = new ArrayList(Arrays.asList(values)).indexOf(pi.getValue());
-                if (currentChoicePosition != -1) {
-                    inputList.setSelectedIndex(currentChoicePosition);
-                }
-            }
-        });
-        singlePanel.add(inputList);
+//        final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
+//        final String[] values = new String[validValues.size()];
+//        ArrayList<String> toolTips = new ArrayList<String>();
+//
+//        Iterator itr = validValues.iterator();
+//        int i = 0;
+//        ParamValidValueInfo paramValidValueInfo;
+//        while (itr.hasNext()) {
+//            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+//            values[i] = paramValidValueInfo.getValue();
+//            toolTips.add(paramValidValueInfo.getDescription());
+//            i++;
+//        }
+//
+//        optionNameButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent event) {
+//                JDialog dialog = new JDialog(VisatApp.getApp().getMainFrame(), true);
+//                JPanel jPanel = new JPanel();
+//                dialog.getContentPane().add(jPanel);
+//                dialog.setMinimumSize(new Dimension(600, 800));
+//                dialog.setVisible(true);
+//
+//            }
+//        });
+//        final JComboBox inputList = new JComboBox(values);
+//        ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
+//        inputList.setRenderer(renderer);
+//        renderer.setTooltips(toolTips);
+//        inputList.setEditable(true);
+//        inputList.setName(pi.getName());
+//        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
+//                inputList.getPreferredSize().height));
+//        if (pi.getDescription() != null) {
+//            inputList.setToolTipText(pi.getDescription());
+//        }
+//        int defaultValuePosition = new ArrayList(Arrays.asList(values)).indexOf(optionDefaultValue);
+//
+//        if (defaultValuePosition != -1) {
+//            inputList.setSelectedIndex(defaultValuePosition);
+//        }
+//
+//        String optionName = pi.getName();
+//
+//
+//        final PropertyContainer vc = new PropertyContainer();
+//        vc.addProperty(Property.create(optionName, pi.getValue()));
+//        vc.getDescriptor(optionName).setDisplayName(optionName);
+//
+//        final BindingContext ctx = new BindingContext(vc);
+//
+//        ctx.bind(optionName, inputList);
+//
+//        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
+//
+//            @Override
+//            public void propertyChange(PropertyChangeEvent pce) {
+//
+//                String newValue = (String) inputList.getSelectedItem();
+//                processorModel.updateParamInfo(pi, newValue);
+//            }
+//        });
+//
+//        processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                //values = updateValidValues(pi);
+//                int currentChoicePosition = new ArrayList(Arrays.asList(values)).indexOf(pi.getValue());
+//                if (currentChoicePosition != -1) {
+//                    inputList.setSelectedIndex(currentChoicePosition);
+//                }
+//            }
+//        });
+//        singlePanel.add(inputList);
         return singlePanel;
     }
 
@@ -453,26 +459,21 @@ public class ParamUIFactory {
 
     private String chooseValidValues(ParamInfo pi) {
         JPanel validValuesPanel = new JPanel();
+        validValuesPanel.setLayout(new TableLayout(3));
         String choosenValues = null;
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
         final String[] values = new String[validValues.size()];
         ArrayList<String> toolTips = new ArrayList<String>();
 
         Iterator itr = validValues.iterator();
-        int i = 0;
         ParamValidValueInfo paramValidValueInfo;
-        while (itr.hasNext()) {
-            paramValidValueInfo = (ParamValidValueInfo) itr.next();
-            values[i] = paramValidValueInfo.getValue();
-            toolTips.add(paramValidValueInfo.getDescription());
-            i++;
-        }
-
-        itr = validValues.iterator();
         while (itr.hasNext()) {
             paramValidValueInfo = (ParamValidValueInfo) itr.next();
             validValuesPanel.add(makeValidValueCheckbox(paramValidValueInfo));
         }
+        validValuesPanel.repaint();
+        validValuesPanel.validate();
+
         final Window parent = VisatApp.getApp().getApplicationWindow();
         String dialogTitle = null;
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, validValuesPanel, ModalDialog.ID_OK, "test");

@@ -122,6 +122,14 @@
             <name>flaguse</name>
             <value></value>
             <default></default>
+            <validValue>
+                   <value>Regional</value>
+                   <description>Regional</description>
+               </validValue>
+               <validValue>
+                   <value>Day</value>
+                   <description>Day</description>
+               </validValue>
             <description>flags masked [see /SENSOR/l2bin_defaults.par]</description>
             <order>6</order>
         </option>
