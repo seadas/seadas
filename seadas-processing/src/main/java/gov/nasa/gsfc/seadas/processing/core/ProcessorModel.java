@@ -882,15 +882,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 fireEvent(getProdParamName());
                 paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValidValues, newValidValues);
             }
-//            pi = getParamInfo("suite");
-//            if (pi != null) {
-//
-//            }
-//
-//            pi = getParamInfo("flaguse");
-//            if (pi!= null) {
-//
-//            }
         }
     }
 
