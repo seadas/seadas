@@ -1108,25 +1108,18 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 currentFlagUse = DEFAULT_FLAGUSE;
             }
             if (currentFlagUse != null) {
-                StringTokenizer st = new StringTokenizer(currentFlagUse, ",");
-                String s;
-                ParamInfo pi = getParamInfo("flaguse");
-                pi.clearValidValueInfos();
-                while (st.hasMoreTokens()) {
-                    s = st.nextToken();
-                    ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(s);
-                    paramValidValueInfo.setSelected(true);
-                    paramValidValueInfo.setDescription(s);
-                    paramValidValueInfo.setValue(s);
-                    pi.addValidValueInfo(paramValidValueInfo);
+                ArrayList<ParamValidValueInfo> validValues = getParamInfo("flaguse").getValidValueInfos();
+                for (ParamValidValueInfo paramValidValueInfo: validValues) {
+                    if (currentFlagUse.contains(paramValidValueInfo.getValue().trim()) ) {
+                        paramValidValueInfo.setSelected(true);
+                    }  else {
+                        paramValidValueInfo.setSelected(false);
+                    }
                 }
-                pi.setDescription(currentFlagUse);
                 super.updateParamInfo("flaguse", currentFlagUse);
                 fireEvent("flaguse", null, currentFlagUse);
             }
         }
-
-
     }
 
     private static class L2BinAquarius_Processor extends ProcessorModel {

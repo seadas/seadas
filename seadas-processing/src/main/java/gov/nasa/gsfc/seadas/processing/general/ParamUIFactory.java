@@ -397,14 +397,14 @@ public class ParamUIFactory {
         validValuesPanel.setLayout(new TableLayout(3));
         String choosenValues = "";
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
-        final String[] values = new String[validValues.size()];
-        ArrayList<String> toolTips = new ArrayList<String>();
 
         Iterator itr = validValues.iterator();
         ParamValidValueInfo paramValidValueInfo;
         while (itr.hasNext()) {
             paramValidValueInfo = (ParamValidValueInfo) itr.next();
-            validValuesPanel.add(makeValidValueCheckbox(paramValidValueInfo));
+            if (!paramValidValueInfo.getValue().trim().equals("SPARE")) {
+                validValuesPanel.add(makeValidValueCheckbox(paramValidValueInfo));
+            }
         }
         validValuesPanel.repaint();
         validValuesPanel.validate();
@@ -425,7 +425,9 @@ public class ParamUIFactory {
                 choosenValues = choosenValues + paramValidValueInfo.getValue() + ",";
             }
         }
-        choosenValues = choosenValues.substring(0, choosenValues.lastIndexOf(","));
+        if (choosenValues.indexOf(",") != -1) {
+            choosenValues = choosenValues.substring(0, choosenValues.lastIndexOf(","));
+        }
         return choosenValues;
     }
 
