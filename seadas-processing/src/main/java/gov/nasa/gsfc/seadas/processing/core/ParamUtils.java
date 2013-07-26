@@ -194,6 +194,8 @@ public class ParamUtils {
                     type = ParamInfo.Type.HELP;
                 } else if (tmpType.toLowerCase().equals("dir")) {
                     type = ParamInfo.Type.DIR;
+                } else if (tmpType.toLowerCase().equals("flags")) {
+                    type = ParamInfo.Type.FLAGS;
                 }
             }
 

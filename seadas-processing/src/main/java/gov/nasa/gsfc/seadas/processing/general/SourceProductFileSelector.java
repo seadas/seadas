@@ -16,6 +16,7 @@
 
 package gov.nasa.gsfc.seadas.processing.general;
 
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import com.bc.ceres.swing.selection.SelectionChangeListener;
 import com.bc.ceres.swing.selection.support.ComboBoxSelectionContext;
 import org.esa.beam.framework.dataio.ProductIO;
@@ -28,6 +29,7 @@ import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.BasicApp;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
+import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -228,7 +230,16 @@ public class SourceProductFileSelector {
 
     public void setSelectedFile(File file) {
         if (file != null && file.canRead()) {
-            Product product = new Product(file.getName(), "DummyType", 10, 10);
+            //Product product = new Product(file.getName(), "DummyType", 10, 10);
+            Product product = null;
+            try {
+                product = ProductIO.readProduct(file);
+            } catch (IOException ioe) {
+
+            }
+            if (product == null) {
+                product = new Product(file.getName(), "DummyType", 10, 10);
+            }
             product.setFileLocation(file);
             setSelectedProduct(product);
         }
@@ -242,7 +253,15 @@ public class SourceProductFileSelector {
 
     public void setSelectedFile(File file, String fileContent) {
         if (file != null && file.canRead()) {
-            Product product = new Product(file.getName(), "DummyType", 10, 10);
+            Product product = null;
+            try {
+                product = ProductIO.readProduct(file);
+            } catch (IOException ioe) {
+
+            }
+            if (product == null) {
+                product = new Product(file.getName(), "DummyType", 10, 10);
+            }
             product.setFileLocation(file);
             product.setDescription(fileContent);
             setSelectedProduct(product);
@@ -442,11 +461,45 @@ public class SourceProductFileSelector {
                 }
 
                 final File file = fileChooser.getSelectedFile();
-                Product product = null;
-                try {
-                    product = ProductIO.readProduct(file);
-                } catch (Exception e) {
-                }
+
+
+                // Added a progress monitor because loading the new product takes to long
+
+                final Product[] productTmp = {null};
+
+                VisatApp visatApp = VisatApp.getApp();
+                ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                        "SeaDAS Product/File Loader") {
+
+                    @Override
+                    protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+
+                        pm.beginTask("Loading file '" + file + "' as a new SeaDAS product ", 2);
+
+                        try {
+                            productTmp[0] = ProductIO.readProduct(file);
+                            pm.worked(1);
+                        } catch (Exception e) {
+                            pm.done();
+                        } finally {
+                            pm.done();
+                        }
+                        return null;
+                    }
+                };
+
+                pmSwingWorker.executeWithBlocking();
+
+
+                Product product = productTmp[0];
+
+
+//
+//                Product product = null;
+//                try {
+//                    product = ProductIO.readProduct(file);
+//                } catch (Exception e) {
+//                }
 
                 try {
                     if (product == null) {
@@ -517,7 +570,7 @@ public class SourceProductFileSelector {
             setSelectedMultiFileList(tmpArrayList);
         }
 
-        private void setSelectedMultiFileList(ArrayList<File> tmpArrayList) {
+        public void setSelectedMultiFileList(ArrayList<File> tmpArrayList) {
             files = new File[tmpArrayList.size()];
             tmpArrayList.toArray(files);
 
@@ -556,6 +609,7 @@ public class SourceProductFileSelector {
 
 
     }
+
 
 
     private static class ProductListCellRenderer extends DefaultListCellRenderer {

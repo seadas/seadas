@@ -263,7 +263,7 @@
             <id>multilevel_processor.py</id>
             <!--<placeBefore>extractor</placeBefore>-->
             <placeAfter>smigen</placeAfter>
-            <class>gov.nasa.gsfc.seadas.processing.processor.SPAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.processor.MultilevelProcessorAction</class>
             <text>multi-level processor...</text>
             <shortDescr>Process a file through many levels</shortDescr>
             <programName>multilevel_processor.py</programName>
