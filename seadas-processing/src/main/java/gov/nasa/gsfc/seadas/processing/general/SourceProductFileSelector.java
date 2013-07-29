@@ -77,6 +77,8 @@ public class SourceProductFileSelector {
     //private JTextField ifileTextfield;
     private boolean selectMultipleIFiles;
 
+    private Product sampleProductForMultiIfiles;
+
 
     public SourceProductFileSelector(AppContext appContext, String labelText) {
         this(appContext, labelText, false);
@@ -140,6 +142,7 @@ public class SourceProductFileSelector {
             }
         };
         regexFileFilter = new RegexFileFilter();
+        sampleProductForMultiIfiles = null;
 
     }
 
@@ -192,7 +195,15 @@ public class SourceProductFileSelector {
     }
 
     public Product getSelectedProduct() {
+        if (sampleProductForMultiIfiles == null) {
         return (Product) productListModel.getSelectedItem();
+        } else{
+            return sampleProductForMultiIfiles;
+        }
+    }
+
+    public Product getSelectedProductsSample(){
+        return sampleProductForMultiIfiles;
     }
 
     public void setCurrentDirectory(File directory) {
@@ -533,10 +544,12 @@ public class SourceProductFileSelector {
         private void handleMultipFileSelection(Window window) {
             File[] tmpFiles = fileChooser.getSelectedFiles();
             ArrayList<File> tmpArrayList = new ArrayList<File>();
-            Product product = null;
+            //Product product = null;
+            //Product sampleProduct = null;
+            boolean firstTime = true;
             for (File file : tmpFiles) {
                 try {
-                    product = ProductIO.readProduct(file);
+                    Product product = ProductIO.readProduct(file);
                     if (product == null) {
                         if (file.canRead()) {
                             product = new Product(file.getName(), "DummyType", 10, 10);
@@ -544,6 +557,11 @@ public class SourceProductFileSelector {
                             product.setDescription(file.getAbsolutePath());
                         } else {
                             throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
+                        }
+                    }  else {
+                        if (firstTime) {
+                            firstTime = true;
+                            sampleProductForMultiIfiles = product;
                         }
                     }
 
@@ -560,8 +578,8 @@ public class SourceProductFileSelector {
 
                     handleError(window, e.getMessage());
                 } catch (Exception e) {
-                    if (product != null) {
-                        product.dispose();
+                    if (sampleProductForMultiIfiles != null) {
+                        sampleProductForMultiIfiles.dispose();
                     }
                     handleError(window, e.getMessage());
                     e.printStackTrace();
