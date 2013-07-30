@@ -49,16 +49,19 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
 
     private String getMissionName(String ifilePath) {
         FileInfo fileInfo = new FileInfo(ifilePath);
-        String missionName = fileInfo.getMissionName().toLowerCase();
 
-        if (missionName.contains("aqua")) {
-            missionName = "aqua";
-        } else if (missionName.contains("terra")) {
-            missionName = "terra";
-        } else if (missionName.contains("seawifs")) {
-            missionName = "seawifs";
-        } else if (missionName.contains("aquarius")) {
-            missionName = "aquarius";
+        String missionName = fileInfo.getMissionName();
+        if (missionName != null) {
+            missionName = missionName.toLowerCase();
+            if (missionName.contains("aqua")) {
+                missionName = "aqua";
+            } else if (missionName.contains("terra")) {
+                missionName = "terra";
+            } else if (missionName.contains("seawifs")) {
+                missionName = "seawifs";
+            } else if (missionName.contains("aquarius")) {
+                missionName = "aquarius";
+            }
         }
         return missionName;
     }
