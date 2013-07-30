@@ -72,6 +72,7 @@ public class ProgramExecutor {
                 processObserver.addHandler(new ConsoleHandler(processorModel.getProgramName()));
                 processObserver.startAndWait();
 
+                process.getOutputStream();
                 int exitCode = process.exitValue();
 
                 pm.done();
