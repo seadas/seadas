@@ -119,12 +119,13 @@ public class L2genIfileSelector {
         if (sourceProductSelector.getSelectedProduct() == null) {
             return null;
         }
+        return sourceProductSelector.getSelectedProduct().getFileLocation().toString();
 //        ProductReader productReader = sourceProductSelector.getSelectedProduct().getProductReader();
 //        ProductReaderPlugIn netcdfFile = productReader.getReaderPlugIn();
 //        Class[] c = netcdfFile.createReaderInstance().getReaderPlugIn().getInputTypes();
-        File sourceProductFileLocation =  sourceProductSelector.getSelectedProduct().getFileLocation();
-        String sourceProductFileAbsolutePathName = sourceProductFileLocation.getParent() + System.getProperty("file.separator") + sourceProductSelector.getSelectedProduct().getName();
-        return sourceProductFileAbsolutePathName;
+//        File sourceProductFileLocation =  sourceProductSelector.getSelectedProduct().getFileLocation();
+//        String sourceProductFileAbsolutePathName = sourceProductFileLocation.getParent() + System.getProperty("file.separator") + sourceProductSelector.getSelectedProduct().getName();
+//        return sourceProductFileAbsolutePathName;
     }
 
 
