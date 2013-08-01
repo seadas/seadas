@@ -18,25 +18,25 @@ import java.beans.PropertyChangeListener;
  */
 public class ActiveFileSelector {
 
-    private SwingPropertyChangeSupport callersPropertyChangeSupport;
-    private SwingPropertyChangeSupport myPropertyChangeSupport;
+    private SwingPropertyChangeSupport externalPropertyChangeSupport;
+    private SwingPropertyChangeSupport thisPropertyChangeSupport;
 
     private FileSelector fileSelector;
     private String label;
-    ParamInfo.Type type;
-    boolean allowReFireOnChange = true;
+    private ParamInfo.Type type;
+    private boolean allowReFireOnChange = false;
 
     private String propertyName;
 
     boolean controlHandlerEnabled = true;
 
-    ActiveFileSelector(SwingPropertyChangeSupport callersPropertyChangeSupport, final String propertyName, String label, ParamInfo.Type type) {
-        this.callersPropertyChangeSupport = callersPropertyChangeSupport;
+    ActiveFileSelector(SwingPropertyChangeSupport externalPropertyChangeSupport, final String propertyName, String label, ParamInfo.Type type) {
+        this.externalPropertyChangeSupport = externalPropertyChangeSupport;
         this.propertyName = propertyName;
         this.label = label;
         this.type = type;
 
-        myPropertyChangeSupport = new SwingPropertyChangeSupport(this);
+        thisPropertyChangeSupport = new SwingPropertyChangeSupport(this);
 
         fileSelector = new FileSelector(VisatApp.getApp(), type, label);
 
@@ -50,17 +50,19 @@ public class ActiveFileSelector {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (isControlHandlerEnabled()) {
-                    myPropertyChangeSupport.firePropertyChange(propertyName, null, getFileSelector().getFileName());
+                    thisPropertyChangeSupport.firePropertyChange(propertyName, null, getFileSelector().getFileName());
                 }
             }
         });
     }
 
     private void addEventListeners() {
-        callersPropertyChangeSupport.addPropertyChangeListener(propertyName, new PropertyChangeListener() {
+        externalPropertyChangeSupport.addPropertyChangeListener(propertyName, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                disableControlHandler();
+                if (!allowReFireOnChange) {
+                    disableControlHandler();
+                }
                 getFileSelector().setFilename((String) evt.getNewValue());
                 enableControlHandler();
             }
@@ -84,11 +86,11 @@ public class ActiveFileSelector {
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        myPropertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+        thisPropertyChangeSupport.addPropertyChangeListener(propertyName, listener);
     }
 
     public String getFilename() {
-       return getFileSelector().getFileName();
+        return getFileSelector().getFileName();
     }
 
     public JPanel getJPanel() {
