@@ -97,6 +97,7 @@ public class MultilevelProcessorRow {
             createConfigPanel();
         }
 
+
     }
 
     public String getName() {
@@ -143,11 +144,12 @@ public class MultilevelProcessorRow {
 
             // set parameters to default values
             getParamListFromCloProgramUI();
-            if (keepfiles) {
-                paramList.setParamString(KEEPFILES_PARAM + "=" + keepfiles);
-            } else {
-                paramList.setParamString("");
-            }
+//            if (keepfiles) {
+//                paramList.setParamString(KEEPFILES_PARAM + "=" + keepfiles);
+//            } else {
+//                paramList.setParamString("");
+//            }
+            paramList.setParamString("");
         }
     }
 
