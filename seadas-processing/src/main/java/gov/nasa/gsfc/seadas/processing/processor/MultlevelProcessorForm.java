@@ -469,11 +469,18 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             fileArrayList.add(new File(filename));
         }
 
-        if (fileArrayList.size() > 1) {
-           File listFile = setSelectedMultiFileList(fileArrayList);
-            sourceProductFileSelector.setSelectedFile(listFile);
-        } else {
-            sourceProductFileSelector.setSelectedFile(new File(getRow(Processor.MAIN.toString()).getParamList().getValue("ifile")));
+        String oldIfileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
+        String newIfileName = getRow(Processor.MAIN.toString()).getParamList().getValue("ifile");
+
+        if (newIfileName != null && !newIfileName.equals(oldIfileName) || oldIfileName != null && !oldIfileName.equals(newIfileName)) {
+            if (fileArrayList.size() > 1) {
+                File listFile = setSelectedMultiFileList(fileArrayList);
+
+                sourceProductFileSelector.setSelectedFile(listFile);
+            } else {
+                File file = new File(getRow(Processor.MAIN.toString()).getParamList().getValue("ifile"));
+                sourceProductFileSelector.setSelectedFile(file);
+            }
         }
 
         //todo this should not be needed but is needed at the moment because parfileTextArea doesn't trigger event in this case

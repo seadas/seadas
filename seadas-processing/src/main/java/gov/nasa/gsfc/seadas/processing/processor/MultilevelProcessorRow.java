@@ -39,6 +39,8 @@ public class MultilevelProcessorRow {
     private ParamList paramList;
     private SwingPropertyChangeSupport propertyChangeSupport;
 
+    private boolean checkboxControlHandlerEnabled = true;
+
 
     public MultilevelProcessorRow(String name, MultlevelProcessorForm parentForm) {
         this.name = name;
@@ -60,7 +62,11 @@ public class MultilevelProcessorRow {
         keepCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                handleKeepCheckBox();
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handleKeepCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
             }
         });
         paramTextField = new JTextField();
@@ -82,10 +88,15 @@ public class MultilevelProcessorRow {
             }
         });
 
-
+// todo made this change to fix problem where l2gen unchecks the box after user checks the box
+        //      essentially now all config user at startup
+//        if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString()) || name.equals("l2gen")) {
+//            createConfigPanel();
+//        }
         if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString())) {
             createConfigPanel();
         }
+
 
     }
 
@@ -95,24 +106,28 @@ public class MultilevelProcessorRow {
 
     // this method assumes the the JPanel passed in is using a grid bag layout
     public void attachComponents(JPanel base, int row) {
-        keepCheckBox.setToolTipText(configButton.getText()+ " output file(s) will be kept");
-        configButton.setToolTipText("Open "+ configButton.getText() + " GUI to set params");
+        keepCheckBox.setToolTipText(configButton.getText() + " output file(s) will be kept");
+        configButton.setToolTipText("Open " + configButton.getText() + " GUI to set params");
         base.add(configButton,
-                new GridBagConstraintsCustom(0, row, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,new Insets(2,2,2,0)));
+                new GridBagConstraintsCustom(0, row, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 0)));
 
         base.add(keepCheckBox,
-                new GridBagConstraintsCustom(1, row, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2,0,2,0)));
+                new GridBagConstraintsCustom(1, row, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 2, 0)));
 
 
         base.add(paramTextField,
-                new GridBagConstraintsCustom(2, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,new Insets(2,0,2,2)));
+                new GridBagConstraintsCustom(2, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
     }
 
     private void createConfigPanel() {
+        createConfigPanel(false);
+    }
+
+    private void createConfigPanel(boolean keepfiles) {
         if (configPanel == null) {
             if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString())) {
                 cloProgramUI = new ProgramUIFactory("multilevel_processor", "multilevel_processor.xml");
-              //  configPanel = (JPanel) cloProgramUI;
+                //  configPanel = (JPanel) cloProgramUI;
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("geo")) {
                 cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml");
@@ -129,9 +144,15 @@ public class MultilevelProcessorRow {
 
             // set parameters to default values
             getParamListFromCloProgramUI();
+//            if (keepfiles) {
+//                paramList.setParamString(KEEPFILES_PARAM + "=" + keepfiles);
+//            } else {
+//                paramList.setParamString("");
+//            }
             paramList.setParamString("");
         }
     }
+
 
     public void clearConfigPanel() {
         cloProgramUI = null;
@@ -151,7 +172,16 @@ public class MultilevelProcessorRow {
     }
 
     private void handleKeepCheckBox() {
-        createConfigPanel();
+        boolean keepSelected = keepCheckBox.isSelected();
+        boolean test2 = paramList.isValueTrue(KEEPFILES_PARAM);
+        createConfigPanel(keepCheckBox.isSelected());
+
+        if (keepCheckBox.isSelected() != keepSelected) {
+            keepCheckBox.setSelected(keepSelected);
+        }
+//        test1 = keepCheckBox.isSelected();
+//        test2 = paramList.isValueTrue(KEEPFILES_PARAM);
+
         if (keepCheckBox.isSelected() != paramList.isValueTrue(KEEPFILES_PARAM)) {
             String oldParamString = getParamString();
             if (keepCheckBox.isSelected()) {
@@ -316,5 +346,13 @@ public class MultilevelProcessorRow {
         }
 
         return L2genData.installResource(tinyFileName);
+    }
+
+    public boolean isCheckboxControlHandlerEnabled() {
+        return checkboxControlHandlerEnabled;
+    }
+
+    public void setCheckboxControlHandlerEnabled(boolean checkboxControlHandlerEnabled) {
+        this.checkboxControlHandlerEnabled = checkboxControlHandlerEnabled;
     }
 }

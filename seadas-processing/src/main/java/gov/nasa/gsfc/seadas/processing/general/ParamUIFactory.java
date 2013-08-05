@@ -10,6 +10,7 @@ import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -438,6 +439,8 @@ public class ParamUIFactory {
 
         final JPanel optionPanel = new JPanel();
         optionPanel.setName(optionName);
+        optionPanel.setBorder(new EtchedBorder());
+        optionPanel.setPreferredSize(new Dimension(100, 40));
         TableLayout booleanLayout = new TableLayout(1);
         //booleanLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
 

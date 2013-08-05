@@ -8,10 +8,7 @@ import org.esa.beam.visat.VisatApp;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -1055,6 +1052,18 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             if (selectedProduct != null) {
                 FileInfo ifileInfo = new FileInfo(selectedProduct.getFileLocation().getAbsolutePath());
                 missionDir = ifileInfo.getMissionDirectory();
+                if (missionDir == null ) {
+                    try{
+                    LineNumberReader reader = new LineNumberReader(new FileReader(new File(selectedProduct.getFileLocation().getAbsolutePath())));
+                        String sampleFileName = reader.readLine();
+                        missionDir = new FileInfo(sampleFileName).getMissionDirectory();
+                    }  catch (FileNotFoundException fnfe) {
+
+                    }   catch (IOException ioe){
+
+                    }
+
+                }
                 DEFAULT_FLAGUSE = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, DEFAULT_PAR_FILE_NAME), "flaguse");
                 updateSuite();
                 super.updateParamValues(selectedProduct);
