@@ -23,10 +23,10 @@ public class L2FileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
 
-        int sceneWidth = getIntAttribute("Pixels per Scan Line");
-        int sceneHeight = getIntAttribute("Number of Scan Lines");
+        int sceneWidth = getIntAttribute("Pixels_per_Scan_Line");
+        int sceneHeight = getIntAttribute("Number_of_Scan_Lines");
         try {
-            String navGroup = "Navigation Data";
+            String navGroup = "Navigation_Data";
             final String latitude = "latitude";
             if (ncFile.findGroup(navGroup) == null) {
                 if (ncFile.findGroup("Navigation") != null) {
@@ -42,7 +42,7 @@ public class L2FileReader extends SeadasFileReader {
         } catch (IOException ignore) {
 
         }
-        String productName = getStringAttribute("Product Name");
+        String productName = getStringAttribute("Product_Name");
 
         mustFlipX = mustFlipY = getDefaultFlip();
         SeadasProductReader.ProductType productType = productReader.getProductType();
@@ -53,7 +53,7 @@ public class L2FileReader extends SeadasFileReader {
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
 
-        ProductData.UTC utcStart = getUTCAttribute("Start Time");
+        ProductData.UTC utcStart = getUTCAttribute("Start_Time");
         if (utcStart != null) {
             if (mustFlipY){
                 product.setEndTime(utcStart);
@@ -61,7 +61,7 @@ public class L2FileReader extends SeadasFileReader {
                 product.setStartTime(utcStart);
             }
         }
-        ProductData.UTC utcEnd = getUTCAttribute("End Time");
+        ProductData.UTC utcEnd = getUTCAttribute("End_Time");
         if (utcEnd != null) {
             if (mustFlipY) {
                 product.setStartTime(utcEnd);
@@ -93,7 +93,7 @@ public class L2FileReader extends SeadasFileReader {
         String res = null;
         String sensor = null;
         try {
-            sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor Name").getData().getElemString();
+            sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name").getData().getElemString();
             res = product.getMetadataRoot().getElement("Input_Parameters").getAttribute("RESOLUTION").getData().getElemString();
         } catch(Exception e) {}
 
@@ -133,7 +133,7 @@ public class L2FileReader extends SeadasFileReader {
             lonBand.setNoDataValueUsed(true);
             product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, scanHeight, 0));
         } else {
-            String navGroup = "Navigation Data";
+            String navGroup = "Navigation_Data";
             final String cntlPoints = "cntl_pt_cols";
             int cntl_lat_ix;
             int cntl_lon_ix;
@@ -143,8 +143,8 @@ public class L2FileReader extends SeadasFileReader {
                     navGroup = "Navigation";
                 }
             }
-            int scanCntlPts = getIntAttribute("Number of Scan Control Points");
-            int pixelCntlPts = getIntAttribute("Number of Pixel Control Points");
+            int scanCntlPts = getIntAttribute("Number_of_Scan_Control_Points");
+            int pixelCntlPts = getIntAttribute("Number_of_Pixel_Control_Points");
             cntl_lat_ix = product.getSceneRasterHeight() / scanCntlPts;
             cntl_lon_ix = Math.round((float) product.getSceneRasterWidth() / pixelCntlPts);
             if (scanHeight == 20) {
@@ -194,7 +194,7 @@ public class L2FileReader extends SeadasFileReader {
     }
 
     public void addPixelGeocoding(final Product product) throws ProductIOException {
-        String navGroup = "Navigation Data";
+        String navGroup = "Navigation_Data";
         final String longitude = "longitude";
         final String latitude = "latitude";
         final String cntlPoints = "cntl_pt_cols";

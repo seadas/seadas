@@ -398,7 +398,7 @@ public abstract class SeadasFileReader {
 
                 final List<Attribute> list = variable.getAttributes();
                 for (Attribute hdfAttribute : list) {
-                    final String attribName = hdfAttribute.getName();
+                    final String attribName = hdfAttribute.getShortName();
                     if ("units".equals(attribName)) {
                         band.setUnit(hdfAttribute.getStringValue());
                     } else if ("long_name".equals(attribName)) {
@@ -424,7 +424,7 @@ public abstract class SeadasFileReader {
 
     public void addInputParamMetadata(Product product) throws ProductIOException {
 
-        Variable inputParams = ncFile.findVariable("Input Parameters");
+        Variable inputParams = ncFile.findVariable("Input_Parameters");
         if (inputParams != null) {
             final MetadataElement inputParamsMeta = new MetadataElement("Input_Parameters");
             Array array;
@@ -457,13 +457,13 @@ public abstract class SeadasFileReader {
 
     public void addScientificMetadata(Product product) throws ProductIOException {
 
-        Group group = ncFile.findGroup("Scan-Line Attributes");
+        Group group = ncFile.findGroup("Scan-Line_Attributes");
         if (group != null) {
             final MetadataElement scanLineAttrib = getMetadataElementSave(product, "Scan_Line_Attributes");
             handleMetadataGroup(group, scanLineAttrib);
         }
 
-        group = ncFile.findGroup("Sensor Band Parameters");
+        group = ncFile.findGroup("Sensor_Band_Parameters");
         if (group != null) {
             final MetadataElement sensorBandParam = getMetadataElementSave(product, "Sensor_Band_Parameters");
             handleMetadataGroup(group, sensorBandParam);
@@ -471,9 +471,9 @@ public abstract class SeadasFileReader {
     }
 
     public void addBandMetadata(Product product) throws ProductIOException {
-        Group group = ncFile.findGroup("Geophysical Data");
+        Group group = ncFile.findGroup("Geophysical_Data");
         if (productReader.getProductType() == SeadasProductReader.ProductType.Level2_Aquarius) {
-            group = ncFile.findGroup("Aquarius Data");
+            group = ncFile.findGroup("Aquarius_Data");
         }
         if (productReader.getProductType() == SeadasProductReader.ProductType.Level1B_HICO) {
             group = ncFile.findGroup("products");
@@ -566,11 +566,11 @@ public abstract class SeadasFileReader {
         boolean startNodeAscending = false;
         boolean endNodeAscending = false;
         try {
-            String startAttr = getStringAttribute("Start Node");
+            String startAttr = getStringAttribute("Start_Node");
             if (startAttr != null) {
                 startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
             }
-            String endAttr = getStringAttribute("End Node");
+            String endAttr = getStringAttribute("End_Node");
             if (endAttr != null) {
                 endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
             }
@@ -619,7 +619,7 @@ public abstract class SeadasFileReader {
 
     public Attribute findAttribute(String name, List<Attribute> attributesList) {
         for (Attribute a : attributesList) {
-            if (name.equals(a.getName()))
+            if (name.equals(a.getShortName()))
                 return a;
         }
         return null;
@@ -672,7 +672,7 @@ public abstract class SeadasFileReader {
         Attribute attribute = findAttribute(key, globalAttributes);
         Boolean isModis = false;
         try {
-            isModis = findAttribute("MODIS Resolution", globalAttributes).isString();
+            isModis = findAttribute("MODIS_Resolution", globalAttributes).isString();
         } catch (Exception ignored) { }
 
         if (attribute != null) {
@@ -736,7 +736,7 @@ public abstract class SeadasFileReader {
 
             final List<Attribute> list = variable.getAttributes();
             for (Attribute hdfAttribute : list) {
-                final String attribName = hdfAttribute.getName();
+                final String attribName = hdfAttribute.getShortName();
                 if ("units".equals(attribName)) {
                     attribute.setUnit(hdfAttribute.getStringValue());
                 } else if ("long_name".equals(attribName)) {
@@ -751,7 +751,7 @@ public abstract class SeadasFileReader {
     protected void addAttributesToElement(List<Attribute> globalAttributes, final MetadataElement element) {
         for (Attribute attribute : globalAttributes) {
             //if (attribute.getName().contains("EV")) {
-            if (attribute.getName().matches(".*(EV|Value|Bad|Nois|Electronics|Dead|Detector).*")) {
+            if (attribute.getShortName().matches(".*(EV|Value|Bad|Nois|Electronics|Dead|Detector).*")) {
             } else {
                 addAttributeToElement(element, attribute);
             }
@@ -776,7 +776,7 @@ public abstract class SeadasFileReader {
                 productData = ProductData.createInstance(productDataType, 1);
                 productData.setElems(attribute.getValues().getStorage());
             }
-            return new MetadataAttribute(attribute.getName(), productData, true);
+            return new MetadataAttribute(attribute.getShortName(), productData, true);
         }
         return null;
     }

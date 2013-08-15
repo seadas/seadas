@@ -35,12 +35,12 @@ public class L3BinFileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws IOException {
 
-        sceneHeight = ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("BinIndex").getShape(0);
+        sceneHeight = ncFile.getRootGroup().findGroup("Level-3_Binned_Data").findVariable("BinIndex").getShape(0);
         sceneWidth = sceneHeight * 2;
 
         grid = new ISINGrid(sceneHeight);
 
-        String productName = getStringAttribute("Product Name");
+        String productName = getStringAttribute("Product_Name");
 
         Product product = new Product(productName, "NASA-OBPG-L3", sceneWidth, sceneHeight, productReader);
         product.setFileLocation(productReader.getInputFile());
@@ -48,7 +48,7 @@ public class L3BinFileReader extends SeadasFileReader {
 
         addGlobalMetadata(product);
 
-        final Variable idxVariable = ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("BinList");
+        final Variable idxVariable = ncFile.getRootGroup().findGroup("Level-3_Binned_Data").findVariable("BinList");
         List<Variable> l3ProdVars = ncFile.getVariables();
         variableMap = addBands(product, idxVariable, l3ProdVars);
 
@@ -189,7 +189,7 @@ public class L3BinFileReader extends SeadasFileReader {
     private RowInfo[] createRowInfos() throws IOException {
         final ISINGrid grid = this.grid;
         final RowInfo[] binLines = new RowInfo[sceneHeight];
-        final Variable idxVariable = ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("BinList");
+        final Variable idxVariable = ncFile.getRootGroup().findGroup("Level-3_Binned_Data").findVariable("BinList");
         final Structure idxStructure = (Structure) idxVariable;
         final Variable idx = idxStructure.findVariable("bin_num");
         final int[] idxValues;
@@ -260,7 +260,7 @@ public class L3BinFileReader extends SeadasFileReader {
         bandToVariableMap.put(addBand(product, "nobs", ProductData.TYPE_UINT16), binListStruc.select("nobs").findVariable("nobs"));
         bandToVariableMap.put(addBand(product, "nscenes", ProductData.TYPE_UINT16), binListStruc.select("nscenes").findVariable("nscenes"));
 //        ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("BinList");
-        if (ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("qual_l3") != null){
+        if (ncFile.getRootGroup().findGroup("Level-3_Binned_Data").findVariable("qual_l3") != null){
             bandToVariableMap.put(addBand(product, "qual_l3", ProductData.TYPE_UINT8), ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("qual_l3"));
         }
         String groupnames = "";

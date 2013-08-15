@@ -24,7 +24,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
     }
 
     private void fixBandNames() {
-        String navGroup = "Geophysical Data";
+        String navGroup = "Geophysical_Data";
         List<Variable> variables = ncFile.findGroup(navGroup).getVariables();
         String varName;
         for (Variable variable : variables) {
@@ -36,12 +36,12 @@ public class L1BOcm2FileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
 
-        int sceneWidth = getIntAttribute("Pixels per Scan Line");
-        int sceneHeight = getIntAttribute("Number of Scan Lines");
+        int sceneWidth = getIntAttribute("Pixels_per_Scan_Line");
+        int sceneHeight = getIntAttribute("Number_of_Scan_Lines");
 
         fixBandNames();
 
-        String productName = getStringAttribute("Product Name");
+        String productName = getStringAttribute("Product_Name");
 
         mustFlipX = mustFlipY = getDefaultFlip();
         SeadasProductReader.ProductType productType = productReader.getProductType();
@@ -49,7 +49,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
 
-        ProductData.UTC utcStart = getUTCAttribute("Start Time");
+        ProductData.UTC utcStart = getUTCAttribute("Start_Time");
         if (utcStart != null) {
             if (mustFlipY) {
                 product.setEndTime(utcStart);
@@ -57,7 +57,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
                 product.setStartTime(utcStart);
             }
         }
-        ProductData.UTC utcEnd = getUTCAttribute("End Time");
+        ProductData.UTC utcEnd = getUTCAttribute("End_Time");
         if (utcEnd != null) {
             if (mustFlipY) {
                 product.setStartTime(utcEnd);

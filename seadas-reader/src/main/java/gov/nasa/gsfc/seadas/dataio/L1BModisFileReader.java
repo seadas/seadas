@@ -42,7 +42,7 @@ public class L1BModisFileReader extends SeadasFileReader {
         int scanmultiplier = 10;
 
         for (Attribute attribute : globalAttributes) {
-            if (attribute.getName().equals("MODIS Resolution")) {
+            if (attribute.getShortName().equals("MODIS Resolution")) {
                 String resolution = attribute.getStringValue();
                 if (resolution.equals("500m")) {
                     pixelmultiplier = 2;
@@ -128,7 +128,7 @@ public class L1BModisFileReader extends SeadasFileReader {
                         Array slope = null;
                         Array intercept = null;
                         for (Attribute hdfAttribute : list) {
-                            final String attribName = hdfAttribute.getName();
+                            final String attribName = hdfAttribute.getShortName();
                             if ("units".equals(attribName)) {
                                 units = hdfAttribute.getStringValue();
                             } else if ("long_name".equals(attribName)) {

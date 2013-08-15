@@ -24,9 +24,9 @@ public class AquariusL2FileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
 
-        int sceneWidth = getIntAttribute("Number of Beams");
-        int sceneHeight = getIntAttribute("Number of Blocks");
-        String productName = getStringAttribute("Product Name");
+        int sceneWidth = getIntAttribute("Number_of_Beams");
+        int sceneHeight = getIntAttribute("Number_of_Blocks");
+        String productName = getStringAttribute("Product_Name");
 
 
         SeadasProductReader.ProductType productType = productReader.getProductType();
@@ -34,12 +34,12 @@ public class AquariusL2FileReader extends SeadasFileReader {
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
 
-        ProductData.UTC utcStart = getUTCAttribute("Start Time");
+        ProductData.UTC utcStart = getUTCAttribute("Start_Time");
         if (utcStart != null) {
             product.setStartTime(utcStart);
 
         }
-        ProductData.UTC utcEnd = getUTCAttribute("End Time");
+        ProductData.UTC utcEnd = getUTCAttribute("End_Time");
         if (utcEnd != null) {
             product.setEndTime(utcEnd);
         }

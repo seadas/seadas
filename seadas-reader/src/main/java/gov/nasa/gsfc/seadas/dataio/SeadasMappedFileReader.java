@@ -23,9 +23,9 @@ public class SeadasMappedFileReader extends SeadasFileReader {
         //todo figure out if we even need these...
         addGlobalAttributeSeadasMapped();
 
-        int sceneWidth = getIntAttribute("Scene Pixels");
-        int sceneHeight = getIntAttribute("Scene Lines");
-        String productName = getStringAttribute("Product Name");
+        int sceneWidth = getIntAttribute("Scene_Pixels");
+        int sceneHeight = getIntAttribute("Scene_Lines");
+        String productName = getStringAttribute("Product_Name");
 
         SeadasProductReader.ProductType productType = productReader.getProductType();
 
@@ -75,21 +75,21 @@ public class SeadasMappedFileReader extends SeadasFileReader {
     public void addGlobalAttributeSeadasMapped(){
         int [] dims = ncFile.getVariables().get(0).getShape();
         String [] prodname = ncFile.getLocation().split("/");
-        String projname = ncFile.getVariables().get(0).findAttribute("Projection Name").getStringValue();
+        String projname = ncFile.getVariables().get(0).findAttribute("Projection_Name").getStringValue();
         Array projlimits = ncFile.getVariables().get(0).findAttribute("Limit").getValues();
         double north = projlimits.getDouble(2);
         double south = projlimits.getDouble(0);
         double east = projlimits.getDouble(3);
         double west = projlimits.getDouble(1);
 
-        Attribute rasterWidth = new Attribute("Scene Pixels",dims[1]);
-        Attribute rasterHeight = new Attribute("Scene Lines",dims[0]);
-        Attribute productName = new Attribute("Product Name",prodname[prodname.length-1]);
-        Attribute projection = new Attribute("Projection Name",projname);
-        Attribute northing = new Attribute("Northernmost Latitude",north);
-        Attribute southing = new Attribute("Southernmost Latitude",south);
-        Attribute easting = new Attribute("Easternmost Longitude",east);
-        Attribute westing = new Attribute("Westernmost Longitude",west);
+        Attribute rasterWidth = new Attribute("Scene_Pixels",dims[1]);
+        Attribute rasterHeight = new Attribute("Scene_Lines",dims[0]);
+        Attribute productName = new Attribute("Product_Name",prodname[prodname.length-1]);
+        Attribute projection = new Attribute("Projection_Name",projname);
+        Attribute northing = new Attribute("Northernmost_Latitude",north);
+        Attribute southing = new Attribute("Southernmost_Latitude",south);
+        Attribute easting = new Attribute("Easternmost_Longitude",east);
+        Attribute westing = new Attribute("Westernmost_Longitude",west);
         globalAttributes.add(rasterHeight);
         globalAttributes.add(rasterWidth);
         globalAttributes.add(productName);

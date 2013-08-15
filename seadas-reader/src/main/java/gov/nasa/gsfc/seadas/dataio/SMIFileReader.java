@@ -103,7 +103,7 @@ public class SMIFileReader extends SeadasFileReader {
 
                     final List<Attribute> list = variable.getAttributes();
                     for (Attribute hdfAttribute : list) {
-                        final String attribName = hdfAttribute.getName();
+                        final String attribName = hdfAttribute.getShortName();
                          if ("Slope".equals(attribName)) {
                             band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
                         } else if ("Intercept".equals(attribName)) {
@@ -121,26 +121,21 @@ public class SMIFileReader extends SeadasFileReader {
         // Changed after conversation w/ Sean, Norman F., et al.
         float pixelX = 0.5f;
         float pixelY = 0.5f;
-        String east = "Easternmost Longitude";
-        String west = "Westernmost Longitude";
-        String north = "Northernmost Latitude";
-        String south = "Southernmost Latitude";
-        if (productReader.getProductType() == ProductType.MEaSUREs){
-            east = "Easternmost_Longitude";
-            west = "Westernmost_Longitude";
-            north = "Northernmost_Latitude";
-            south = "Southernmost_Latitude";
-        }
+        String east = "Easternmost_Longitude";
+        String west = "Westernmost_Longitude";
+        String north = "Northernmost_Latitude";
+        String south = "Southernmost_Latitude";
 
-        float easting = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(east).getData().getElemDouble();
-        float westing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(west).getData().getElemDouble();
+        final MetadataElement globalAttributes = product.getMetadataRoot().getElement("Global_Attributes");
+        float easting = (float) globalAttributes.getAttribute(east).getData().getElemDouble();
+        float westing = (float) globalAttributes.getAttribute(west).getData().getElemDouble();
         float pixelSizeX = (easting - westing) / product.getSceneRasterWidth();
-        float northing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(north).getData().getElemDouble();
-        float southing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(south).getData().getElemDouble();
+        float northing = (float) globalAttributes.getAttribute(north).getData().getElemDouble();
+        float southing = (float) globalAttributes.getAttribute(south).getData().getElemDouble();
         if (northing < southing){
             mustFlipY=true;
-            northing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(south).getData().getElemDouble();
-            southing = (float) product.getMetadataRoot().getElement("Global_Attributes").getAttribute(north).getData().getElemDouble();
+            northing = (float) globalAttributes.getAttribute(south).getData().getElemDouble();
+            southing = (float) globalAttributes.getAttribute(north).getData().getElemDouble();
         }
         float pixelSizeY = (northing - southing) / product.getSceneRasterHeight();
 
