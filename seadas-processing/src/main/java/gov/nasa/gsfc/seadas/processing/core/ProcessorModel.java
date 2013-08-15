@@ -864,6 +864,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             ParamInfo pi = getParamInfo(getProdParamName());
             if (bandNames != null && pi != null) {
                 ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) pi.getValidValueInfos().clone();
+                String oldValue = pi.getValue();
                 ParamValidValueInfo paramValidValueInfo;
                 Band band;
                 for (String bandName : bandNames) {
@@ -876,8 +877,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     }
                 }
                 ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
-                fireEvent(getProdParamName());
-                paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValidValues, newValidValues);
+                //fireEvent(getProdParamName());
+                String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
+                paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
             }
         }
     }
@@ -1052,14 +1054,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             if (selectedProduct != null) {
                 FileInfo ifileInfo = new FileInfo(selectedProduct.getFileLocation().getAbsolutePath());
                 missionDir = ifileInfo.getMissionDirectory();
-                if (missionDir == null ) {
-                    try{
-                    LineNumberReader reader = new LineNumberReader(new FileReader(new File(selectedProduct.getFileLocation().getAbsolutePath())));
+                if (missionDir == null) {
+                    try {
+                        LineNumberReader reader = new LineNumberReader(new FileReader(new File(selectedProduct.getFileLocation().getAbsolutePath())));
                         String sampleFileName = reader.readLine();
                         missionDir = new FileInfo(sampleFileName).getMissionDirectory();
-                    }  catch (FileNotFoundException fnfe) {
+                    } catch (FileNotFoundException fnfe) {
 
-                    }   catch (IOException ioe){
+                    } catch (IOException ioe) {
 
                     }
 
@@ -1118,10 +1120,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             }
             if (currentFlagUse != null) {
                 ArrayList<ParamValidValueInfo> validValues = getParamInfo("flaguse").getValidValueInfos();
-                for (ParamValidValueInfo paramValidValueInfo: validValues) {
-                    if (currentFlagUse.contains(paramValidValueInfo.getValue().trim()) ) {
+                for (ParamValidValueInfo paramValidValueInfo : validValues) {
+                    if (currentFlagUse.contains(paramValidValueInfo.getValue().trim())) {
                         paramValidValueInfo.setSelected(true);
-                    }  else {
+                    } else {
                         paramValidValueInfo.setSelected(false);
                     }
                 }
@@ -1173,15 +1175,17 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("prod", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                    String newProdValue = (String) propertyChangeEvent.getNewValue();
                     String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-                    if (oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
-                        ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
-                    } else {
-                        ofileName = ofileName + "_" + newProdValue;
+                    if (ofileName != null && ofileName.length() > 0) {
+                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                        String newProdValue = (String) propertyChangeEvent.getNewValue();
+                        if (oldProdValue != null && oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
+                            ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
+                        } else {
+                            ofileName = ofileName + "_" + newProdValue;
+                        }
+                        updateOFileInfo(ofileName);
                     }
-                    updateOFileInfo(ofileName);
                 }
             });
 
@@ -1191,7 +1195,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
                     String newResolutionValue = (String) propertyChangeEvent.getNewValue();
                     String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-                    if (newResolutionValue.trim().length() > 0 && ofileName.indexOf(newResolutionValue) != -1) {
+                    if (newResolutionValue != null && newResolutionValue.trim().length() > 0 && ofileName.indexOf(newResolutionValue) != -1) {
                         ofileName = ofileName.replaceAll(oldResolutionValue, newResolutionValue);
                     } else {
                         ofileName = ofileName + "_" + newResolutionValue;

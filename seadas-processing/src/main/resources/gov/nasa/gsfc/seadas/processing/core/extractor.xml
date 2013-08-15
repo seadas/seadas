@@ -3,6 +3,7 @@
            xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
     <programMetaData>
         <hasParFile>false</hasParFile>
+        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
             <primaryOption>infile</primaryOption>
             <primaryOption>ofile</primaryOption>
@@ -76,6 +77,14 @@
             <description>output L2 file name</description>
             <usedAs>argument</usedAs>
             <order>7</order>
+        </option>
+        <option type="string">
+            <name>prodlist</name>
+            <value></value>
+            <default></default>
+            <description>product list (optional)</description>
+            <usedAs>argument</usedAs>
+            <order>8</order>
         </option>
     </options>
 </paramInfo>
