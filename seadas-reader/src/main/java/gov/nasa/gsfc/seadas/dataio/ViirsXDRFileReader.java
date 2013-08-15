@@ -294,7 +294,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 List<Group> navGroups = geofile.findGroup("All_Data").getGroups();
                 for (Group ng : navGroups) {
                     if (ng.getShortName().contains("GEO")){
-                        navGroup = ng.getName();
+                        navGroup = ng.getFullName();
                         break;
                     }
                 }
@@ -369,7 +369,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
             if (var.getShortName().contains("_Gran_")) {
                 List<Attribute> attrs = var.getAttributes();
                 for (Attribute attr : attrs) {
-                    if (attr.getName().equals("Ascending/Descending_Indicator")) {
+                    if (attr.getShortName().equals("Ascending_Descending_Indicator")) {
                         return attr.getNumericValue().longValue() == 0;
                     }
                 }
@@ -417,7 +417,7 @@ public class ViirsXDRFileReader extends SeadasFileReader {
     private String getCollectionShortName() throws ProductIOException {
         List<Attribute> gattr = ncFile.getGlobalAttributes();
         for (Attribute attr : gattr) {
-            if (attr.getName().endsWith("Collection_Short_Name")) {
+            if (attr.getShortName().endsWith("Collection_Short_Name")) {
                 return attr.getStringValue();
             }
         }

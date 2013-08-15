@@ -23,9 +23,9 @@ public class L1ASeawifsFileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
 
-        int sceneWidth = getIntAttribute("Pixels per Scan Line");
-        int sceneHeight = getIntAttribute("Number of Scan Lines");
-        String productName = getStringAttribute("Product Name");
+        int sceneWidth = getIntAttribute("Pixels_per_Scan_Line");
+        int sceneHeight = getIntAttribute("Number_of_Scan_Lines");
+        String productName = getStringAttribute("Product_Name");
 
         mustFlipX = mustFlipY = getDefaultFlip();
         SeadasProductReader.ProductType productType = productReader.getProductType();
@@ -33,11 +33,11 @@ public class L1ASeawifsFileReader extends SeadasFileReader {
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
 
-        ProductData.UTC utcStart = getUTCAttribute("Start Time");
+        ProductData.UTC utcStart = getUTCAttribute("Start_Time");
         if (utcStart != null) {
             product.setStartTime(utcStart);
         }
-        ProductData.UTC utcEnd = getUTCAttribute("End Time");
+        ProductData.UTC utcEnd = getUTCAttribute("End_Time");
         if (utcEnd != null) {
             product.setEndTime(utcEnd);
         }

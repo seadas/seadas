@@ -45,7 +45,7 @@
         <junit.version>4.9</junit.version>
         <geotools.version>2.7.4</geotools.version>
         <jide.version>3.3.7</jide.version>
-        <netcdf.version>4.2.20</netcdf.version>
+        <netcdf.version>4.3.18</netcdf.version>
         <!--<install4j.project>seadas-installer/seadas.install4j</install4j.project>-->
     </properties>
 
