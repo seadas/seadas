@@ -142,7 +142,7 @@ public class SeaWiFSL1AGeonav {
 
         //Group rootGroup = ncFile.getRootGroup();
         Group navGroup = ncFile.findGroup("Navigation");
-        Group scanLineAttrGroup = ncFile.findGroup("Scan-Line Attributes");
+        Group scanLineAttrGroup = ncFile.findGroup("Scan-Line_Attributes");
 
         ArrayFloat orbitData = readNetcdfDataArray("orb_vec", navGroup);
         ArrayFloat sensorData = readNetcdfDataArray("sen_mat", navGroup);
@@ -396,22 +396,22 @@ public class SeaWiFSL1AGeonav {
     }
 
     public static int determineNumberScanLines(NetcdfFile ncFile) {
-        Attribute numScanLinesAttr = ncFile.findGlobalAttribute("Number of Scan Lines");
+        Attribute numScanLinesAttr = ncFile.findGlobalAttribute("Number_of_Scan_Lines");
         return numScanLinesAttr.getNumericValue().intValue();
     }
 
     private int determinePixelIncrement() {
-        return ncFile.findGlobalAttribute("LAC Pixel Subsampling").getNumericValue().intValue();
+        return ncFile.findGlobalAttribute("LAC_Pixel_Subsampling").getNumericValue().intValue();
     }
 
     private int determinePixelsPerScanLine() {
-        return ncFile.findGlobalAttribute("Pixels per Scan Line").getNumericValue().intValue();
+        return ncFile.findGlobalAttribute("Pixels_per_Scan_Line").getNumericValue().intValue();
     }
 
     public static SeaWiFSL1AGeonav.DataType determineSeawifsDataType(NetcdfFile ncFile) {
         SeaWiFSL1AGeonav.DataType dataType = SeaWiFSL1AGeonav.DataType.LAC;
-        Attribute dataTypeAttr = ncFile.findGlobalAttribute("Data Type");
-        Attribute numScanLinesAttr = ncFile.findGlobalAttribute("Number of Scan Lines");
+        Attribute dataTypeAttr = ncFile.findGlobalAttribute("Data_Type");
+        Attribute numScanLinesAttr = ncFile.findGlobalAttribute("Number_of_Scan_Lines");
         if (dataTypeAttr.getStringValue().equals("GAC")) {
             dataType = SeaWiFSL1AGeonav.DataType.GAC;
         }
@@ -419,7 +419,7 @@ public class SeaWiFSL1AGeonav {
     }
 
     private int determineStartPixel() {
-        return ncFile.findGlobalAttribute("LAC Pixel Start Number").getNumericValue().intValue();
+        return ncFile.findGlobalAttribute("LAC_Pixel_Start_Number").getNumericValue().intValue();
     }
 
     public void doComputations() {

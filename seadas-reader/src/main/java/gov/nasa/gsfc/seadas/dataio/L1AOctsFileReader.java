@@ -24,8 +24,8 @@ public class L1AOctsFileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
 
-        int sceneWidth = getIntAttribute("Pixels per Scan Line");
-        int sceneHeight = getIntAttribute("Number of Scan Lines") * 2;
+        int sceneWidth = getIntAttribute("Pixels_per_Scan_Line");
+        int sceneHeight = getIntAttribute("Number_of_Scan_Lines") * 2;
         String productName = productReader.getInputFile().getName();
 
         SeadasProductReader.ProductType productType = productReader.getProductType();
@@ -59,7 +59,7 @@ public class L1AOctsFileReader extends SeadasFileReader {
     }
 
     public void addGeocoding(final Product product) throws ProductIOException {
-        String navGroup = "Scan-Line Attributes";
+        String navGroup = "Scan-Line_Attributes";
         final String longitude = "lon";
         final String latitude = "lat";
         int susampX = 16;

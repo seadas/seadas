@@ -253,7 +253,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
 
                     final List<Attribute> list = variable.getAttributes();
                     for (Attribute hdfAttribute : list) {
-                        final String attribName = hdfAttribute.getName();
+                        final String attribName = hdfAttribute.getShortName();
                         if ("units".equals(attribName)) {
                             band.setUnit(hdfAttribute.getStringValue());
                         } else if ("long_name".equals(attribName)) {
@@ -304,7 +304,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
 
                         final List<Attribute> list = variable.getAttributes();
                         for (Attribute hdfAttribute : list) {
-                            final String attribName = hdfAttribute.getName();
+                            final String attribName = hdfAttribute.getShortName();
                             if ("units".equals(attribName)) {
                                 band.setUnit(hdfAttribute.getStringValue());
                             } else if ("long_name".equals(attribName)) {
