@@ -5,7 +5,6 @@
         <hasParFile>false</hasParFile>
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
-            <!--<primaryOption>infile</primaryOption>-->
             <primaryOption>infile</primaryOption>
             <primaryOption>ofile</primaryOption>
         </primaryOptions>

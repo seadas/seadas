@@ -79,8 +79,8 @@ public class ParamUIFactory {
         JPanel fileParamPanel = new JPanel();
         fileParamPanel.setName("file parameter panel");
 
-        TableLayout booelanParamLayout = new TableLayout(3);
-        booleanParamPanel.setLayout(booelanParamLayout);
+        TableLayout booleanParamLayout = new TableLayout(3);
+        booleanParamPanel.setLayout(booleanParamLayout);
 
         TableLayout fileParamLayout = new TableLayout(1);
         fileParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
@@ -180,12 +180,14 @@ public class ParamUIFactory {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
+                if (! field.getText().trim().equals(pi.getValue().trim()))
                 processorModel.updateParamInfo(pi, field.getText());
             }
         });
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                if (! field.getText().trim().equals(pi.getValue().trim()))
                 field.setText(pi.getValue());
             }
         });
@@ -337,7 +339,7 @@ public class ParamUIFactory {
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         singlePanel.setLayout(comboParamLayout);
 
-        final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
+        //final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
         final JButton optionNameButton = new JButton(ParamUtils.removePreceedingDashes(pi.getName()));
         optionNameButton.addActionListener(new ActionListener() {
             @Override
@@ -350,7 +352,7 @@ public class ParamUIFactory {
         singlePanel.add(optionNameButton);
         singlePanel.setName(pi.getName());
 
-        String optionDefaultValue = pi.getValue();
+        //String optionDefaultValue = pi.getValue();
 
         final JTextField field = new JTextField();
         field.setText(pi.getValue());
@@ -364,10 +366,6 @@ public class ParamUIFactory {
         //field.setEditable(false);
         singlePanel.add(field);
         return singlePanel;
-    }
-
-    private String getSelectedFlags() {
-        return null;
     }
 
     public void addPropertyChangeListener(String name, PropertyChangeListener listener) {

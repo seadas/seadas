@@ -130,6 +130,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
             }
         });
 
+        cloProgramUI.getProcessorModel().addPropertyChangeListener("infile", new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                        modalDialog.getJDialog().validate();
+                        modalDialog.getJDialog().pack();
+                    }
+                });
+
         modalDialog.getButton(ModalDialog.ID_OK).setText("Run");
         modalDialog.getButton(ModalDialog.ID_HELP).setText("");
         modalDialog.getButton(ModalDialog.ID_HELP).setIcon(UIUtils.loadImageIcon("icons/Help24.gif"));
