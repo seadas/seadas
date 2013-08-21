@@ -138,6 +138,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
         pmSwingWorker.executeWithBlocking();
 
+
         l2genData.setInitialized(true);
 
     }
