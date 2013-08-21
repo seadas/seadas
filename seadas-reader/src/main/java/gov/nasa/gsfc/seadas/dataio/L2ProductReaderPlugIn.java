@@ -66,6 +66,7 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
             "OCM2 Level-2 Data",
             "OCM Level-2 Data",
             "HICO Level-2 Data",
+            "GOCI Level-2 Data",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
