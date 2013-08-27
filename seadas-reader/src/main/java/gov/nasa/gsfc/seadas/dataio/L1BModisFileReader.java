@@ -37,12 +37,12 @@ public class L1BModisFileReader extends SeadasFileReader {
     public Product createProduct() throws ProductIOException {
 
         addGlobalAttributeModisL1B();
-        String productName = getStringAttribute("Product Name");
+        String productName = getStringAttribute("Product_Name");
         int pixelmultiplier = 1;
         int scanmultiplier = 10;
 
         for (Attribute attribute : globalAttributes) {
-            if (attribute.getShortName().equals("MODIS Resolution")) {
+            if (attribute.getShortName().equals("MODIS_Resolution")) {
                 String resolution = attribute.getStringValue();
                 if (resolution.equals("500m")) {
                     pixelmultiplier = 2;
@@ -53,8 +53,8 @@ public class L1BModisFileReader extends SeadasFileReader {
                 }
             }
         }
-        int sceneWidth = getIntAttribute("Max Earth View Frames", globalAttributes) * pixelmultiplier;
-        int sceneHeight = getIntAttribute("Number of Scans", globalAttributes) * scanmultiplier;
+        int sceneWidth = getIntAttribute("Max_Earth_View_Frames", globalAttributes) * pixelmultiplier;
+        int sceneHeight = getIntAttribute("Number_of_Scans", globalAttributes) * scanmultiplier;
 
         mustFlipX = mustFlipY = mustFlipMODIS();
         SeadasProductReader.ProductType productType = productReader.getProductType();
@@ -62,7 +62,7 @@ public class L1BModisFileReader extends SeadasFileReader {
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
 
-        ProductData.UTC utcStart = getUTCAttribute("Start Time");
+        ProductData.UTC utcStart = getUTCAttribute("Start_Time");
         if (utcStart != null) {
             if (mustFlipY) {
                 product.setEndTime(utcStart);
@@ -70,7 +70,7 @@ public class L1BModisFileReader extends SeadasFileReader {
                 product.setStartTime(utcStart);
             }
         }
-        ProductData.UTC utcEnd = getUTCAttribute("End Time");
+        ProductData.UTC utcEnd = getUTCAttribute("End_Time");
         if (utcEnd != null) {
             if (mustFlipY) {
                 product.setStartTime(utcEnd);
@@ -204,7 +204,7 @@ public class L1BModisFileReader extends SeadasFileReader {
         int scanHeight;
 
         try {
-            String resolution = getStringAttribute("MODIS Resolution");
+            String resolution = getStringAttribute("MODIS_Resolution");
             if (resolution.equals("500m")) {
                 scanHeight = 20;
                 cntl_lat_ix = 2;
@@ -222,7 +222,7 @@ public class L1BModisFileReader extends SeadasFileReader {
                 offsetY = 0f;
 
                 File inputFile = productReader.getInputFile();
-                String geoFileName = getStringAttribute("Geolocation File");
+                String geoFileName = getStringAttribute("Geolocation_File");
                 String path = inputFile.getParent();
                 File geocheck = new File(path, geoFileName);
                 if (geocheck.exists()) {
@@ -235,11 +235,11 @@ public class L1BModisFileReader extends SeadasFileReader {
             }
 
             if (externalGeo) {
-                lats = geoNcFile.findVariable("MODIS_Swath_Type_GEO/Geolocation Fields/Latitude");
-                lons = geoNcFile.findVariable("MODIS_Swath_Type_GEO/Geolocation Fields/Longitude");
+                lats = geoNcFile.findVariable("MODIS_Swath_Type_GEO/Geolocation_Fields/Latitude");
+                lons = geoNcFile.findVariable("MODIS_Swath_Type_GEO/Geolocation_Fields/Longitude");
             } else {
-                lats = ncFile.findVariable("MODIS_SWATH_Type_L1B/Geolocation Fields/Latitude");
-                lons = ncFile.findVariable("MODIS_SWATH_Type_L1B/Geolocation Fields/Longitude");
+                lats = ncFile.findVariable("MODIS_SWATH_Type_L1B/Geolocation_Fields/Latitude");
+                lons = ncFile.findVariable("MODIS_SWATH_Type_L1B/Geolocation_Fields/Longitude");
             }
 
             //Use lat/lon with TiePointGeoCoding
@@ -278,7 +278,7 @@ public class L1BModisFileReader extends SeadasFileReader {
     }
 
     public boolean mustFlipMODIS() throws ProductIOException {
-        String platform = getStringAttribute("MODIS Platform");
+        String platform = getStringAttribute("MODIS_Platform");
         String dnflag = getStringAttribute("DayNightFlag");
 
         boolean startNodeAscending = false;
@@ -314,7 +314,7 @@ public class L1BModisFileReader extends SeadasFileReader {
             Element ecsdataElem = inventoryElem.getChild("ECSDATAGRANULE");
             Element granIdElem = ecsdataElem.getChild("LOCALGRANULEID");
             String granId = granIdElem.getValue().substring(1);
-            Attribute granIdAttribute = new Attribute("Product Name", granId);
+            Attribute granIdAttribute = new Attribute("Product_Name", granId);
             globalAttributes.add(granIdAttribute);
             Element dnfElem = ecsdataElem.getChild("DAYNIGHTFLAG");
             String daynightflag = dnfElem.getValue().substring(1);
@@ -326,7 +326,7 @@ public class L1BModisFileReader extends SeadasFileReader {
             Element ancpointerElem = ancgranElem.getChild("ANCILLARYINPUTPOINTER");
             Element ancvalueElem = ancpointerElem.getChild("VALUE");
             String geoFilename = ancvalueElem.getValue();
-            Attribute geoFileAttribute = new Attribute("Geolocation File", geoFilename);
+            Attribute geoFileAttribute = new Attribute("Geolocation_File", geoFilename);
             globalAttributes.add(geoFileAttribute);
 
             //grab granule date-time
@@ -335,14 +335,14 @@ public class L1BModisFileReader extends SeadasFileReader {
             String startTime = startTimeElem.getValue().substring(1);
             Element startDateElem = timeElem.getChild("RANGEBEGINNINGDATE");
             String startDate = startDateElem.getValue().substring(1);
-            Attribute startTimeAttribute = new Attribute("Start Time", startDate + ' ' + startTime);
+            Attribute startTimeAttribute = new Attribute("Start_Time", startDate + ' ' + startTime);
             globalAttributes.add(startTimeAttribute);
 
             Element endTimeElem = timeElem.getChild("RANGEENDINGTIME");
             String endTime = endTimeElem.getValue().substring(1);
             Element endDateElem = timeElem.getChild("RANGEENDINGDATE");
             String endDate = endDateElem.getValue().substring(1);
-            Attribute endTimeAttribute = new Attribute("End Time", endDate + ' ' + endTime);
+            Attribute endTimeAttribute = new Attribute("End_Time", endDate + ' ' + endTime);
             globalAttributes.add(endTimeAttribute);
 
             Element measuredParamElem = inventoryElem.getChild("MEASUREDPARAMETER");
@@ -355,7 +355,7 @@ public class L1BModisFileReader extends SeadasFileReader {
             } else if (param.contains("EV_250")) {
                 resolution = "250m";
             }
-            Attribute paramAttribute = new Attribute("MODIS Resolution", resolution);
+            Attribute paramAttribute = new Attribute("MODIS_Resolution", resolution);
             globalAttributes.add(paramAttribute);
 
             //grab Mission Name
@@ -363,7 +363,7 @@ public class L1BModisFileReader extends SeadasFileReader {
             Element containerElem = platformElem.getChild("ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER");
             Element shortNameElem = containerElem.getChild("ASSOCIATEDPLATFORMSHORTNAME");
             String shortName = shortNameElem.getValue().substring(2);
-            Attribute shortNameAttribute = new Attribute("MODIS Platform", shortName);
+            Attribute shortNameAttribute = new Attribute("MODIS_Platform", shortName);
             globalAttributes.add(shortNameAttribute);
         } catch (Exception ignored) {
 

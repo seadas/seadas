@@ -106,7 +106,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
                 Boolean isSeadasMapped = false;
                 try {
-                    isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
+                    isSeadasMapped = seadasMappedVariables.get(0).findAttribute("Projection_Category").isString();
                 } catch (Exception ignored) {
                 }
 

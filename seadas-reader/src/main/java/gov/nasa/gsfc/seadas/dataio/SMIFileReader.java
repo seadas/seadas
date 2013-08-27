@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import gov.nasa.gsfc.seadas.dataio.SeadasProductReader.ProductType;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -9,7 +8,6 @@ import org.opengis.referencing.operation.TransformException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -34,7 +32,7 @@ public class SMIFileReader extends SeadasFileReader {
         
         String productName = productReader.getInputFile().getName();
         try {
-                productName = getStringAttribute("Product Name");
+                productName = getStringAttribute("Product_Name");
         } catch (Exception ignored) {
 
         }

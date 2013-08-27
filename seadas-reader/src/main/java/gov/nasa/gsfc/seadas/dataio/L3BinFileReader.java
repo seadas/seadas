@@ -271,7 +271,7 @@ public class L3BinFileReader extends SeadasFileReader {
 
             if (!varName.contains("Bin") && (!varName.startsWith("qual")) &&
                     (!varName.equalsIgnoreCase("SEAGrid")) &&
-                    (!varName.equalsIgnoreCase("Input Files"))) {
+                    (!varName.equalsIgnoreCase("Input_Files"))) {
                 final Structure binStruc = (Structure) l3Var;
                 if (groupnames.length() == 0) {
                     groupnames = varName;

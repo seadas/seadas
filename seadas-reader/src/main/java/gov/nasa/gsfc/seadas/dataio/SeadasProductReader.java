@@ -198,7 +198,7 @@ public class SeadasProductReader extends AbstractProductReader {
     public boolean checkSeadasMapped() {
         try {
             List<Variable> seadasMappedVariables = ncfile.getVariables();
-            return seadasMappedVariables.get(0).findAttribute("Projection Category").isString();
+            return seadasMappedVariables.get(0).findAttribute("Projection_Category").isString();
         } catch (Exception e) {
             return false;
         }
