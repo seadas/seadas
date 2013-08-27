@@ -40,12 +40,12 @@
         TODO: Move the sourceEncoding property to the build tag if version 3.0 is released -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <seadas.version>7.0</seadas.version>
-        <beam.version>4.11</beam.version>
-        <ceres.version>0.13.2</ceres.version>
+        <beam.version>4.11.1-SNAPSHOT</beam.version>
+        <ceres.version>0.13.3-SNAPSHOT</ceres.version>
         <junit.version>4.9</junit.version>
         <geotools.version>2.7.4</geotools.version>
         <jide.version>3.3.7</jide.version>
-        <netcdf.version>4.3.18</netcdf.version>
+        <netcdf.version>4.3.16</netcdf.version>
         <!--<install4j.project>seadas-installer/seadas.install4j</install4j.project>-->
     </properties>
 
@@ -114,7 +114,7 @@
             <dependency>
                 <groupId>gov.nasa.gsfc.seadas</groupId>
                 <artifactId>seadas-reader</artifactId>
-                <version>1.4.1</version>
+                <version>1.4.2</version>
             </dependency>
             <dependency>
                 <groupId>gov.nasa.gsfc.seadas</groupId>

@@ -74,12 +74,12 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-binning2</artifactId>
-            <version>0.8.1</version>
+            <version>0.8.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-chris-reader</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
@@ -119,7 +119,7 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-landsat-reader</artifactId>
-            <version>1.3.2</version>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>ncsa.hdf</groupId>-->
@@ -159,17 +159,17 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-merisl3-reader</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-modis-reader</artifactId>
-            <version>1.3.1</version>
+            <version>1.3.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-netcdf</artifactId>
-            <version>1.1.2</version>
+            <version>1.1.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
@@ -184,7 +184,7 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-pixel-extraction</artifactId>
-            <version>1.3</version>
+            <version>1.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
@@ -199,7 +199,7 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-spot-vgt-reader</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
@@ -209,7 +209,7 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-temporal-percentile-op</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>

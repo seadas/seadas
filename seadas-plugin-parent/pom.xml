@@ -19,14 +19,14 @@
     <properties>
         <seadas.version>7.0</seadas.version>
         <!--<seadas.version>[7.0,7.1-SNAPSHOT)</seadas.version>-->
-        <beam.version>4.11</beam.version>
-        <ceres.version>0.13.2</ceres.version>
+        <beam.version>4.11.1-SNAPSHOT</beam.version>
+        <ceres.version>0.13.3-SNAPSHOT</ceres.version>
         <geotools.version>2.7.4</geotools.version>
         <junit.version>4.9</junit.version>
         <jide.version>3.3.7</jide.version>
         <!--&lt;!&ndash; This property is set in beam-parent. Reason? See there!&ndash;&gt;-->
         <!--&lt;!&ndash;<hdf.version>2.7</hdf.version>&ndash;&gt;-->
-        <netcdf.version>4.3.18</netcdf.version>
+        <netcdf.version>4.3.16</netcdf.version>
     </properties>
 
 
