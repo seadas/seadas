@@ -554,20 +554,22 @@ public class SourceProductFileSelector {
 
                  final File file = fileChooser.getSelectedFile();
                  Product product = null;
-                 try {
-                     product = ProductIO.readProduct(file);
-                 } catch (Exception e) {
-                 }
+//                 try {
+//                     product = ProductIO.readProduct(file);
+//
+//                 } catch (Exception e) {
+//                 }
 
                  try {
-                     if (product == null) {
+                     //if (product == null) {
                          if (file.canRead()) {
                              product = new Product(file.getName(), "DummyType", 10, 10);
                              product.setFileLocation(file);
                          } else {
                              throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
                          }
-                     }
+
+                    // }
 
                      if (productFilter.accept(product) && regexFileFilter.accept(file)) {
                          setSelectedProduct(product);
@@ -710,6 +712,7 @@ public class SourceProductFileSelector {
             }
             JComponent scrollPane = (JComponent) ((JPopupMenu) comp)
                     .getComponent(0);
+
             Dimension size = new Dimension();
             size.width = scrollPane.getPreferredSize().width;
             final int boxItemCount = box.getModel().getSize();
