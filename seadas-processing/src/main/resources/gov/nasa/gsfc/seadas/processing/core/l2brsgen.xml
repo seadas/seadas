@@ -216,8 +216,8 @@
             </description>
             <source>default</source>
             <validValue>
-                <value>(default</value>
-                <description>see product_table)</description>
+                <value>0.0</value>
+                <description>(default: see product_table)</description>
             </validValue>
         </option>
         <option type="float">
@@ -230,8 +230,8 @@
             </description>
             <source>default</source>
             <validValue>
-                <value>(default</value>
-                <description>see product_table)</description>
+                <value>0.0</value>
+                <description>(default: see product_table)</description>
             </validValue>
         </option>
         <option type="int">

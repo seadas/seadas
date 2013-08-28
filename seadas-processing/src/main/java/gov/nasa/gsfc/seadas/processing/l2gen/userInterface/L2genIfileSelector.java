@@ -47,6 +47,7 @@ public class L2genIfileSelector {
                 if (isControlHandlerEnabled() && iFile != null) {
                     disableEventHandler();
                     l2genDataProcessorModel.updateParamValues(sourceProductSelector.getSelectedProduct());
+                    //l2genDataProcessorModel.updateParamValues(sourceProductSelector.getSelectedProduct().getFileLocation());
                     l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
                     enableEventHandler();
                 }

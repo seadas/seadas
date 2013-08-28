@@ -18,6 +18,9 @@
     <dependency>
         <module>seadas-app</module>
     </dependency>
+    <dependency>
+        <module>beam-merisl3-reader</module>
+    </dependency>
 
 
     <categories>Application,Processor</categories>

@@ -1,9 +1,10 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.*;
-import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
@@ -32,6 +33,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private boolean readyToRun;
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
     private final String allparamInitializedPropertyName = "ALL_PARAMS_INITIALIZED";
+    private final String l2prodProcessors = "l2mapgen l2brsgen l2bin l2bin_aquarius l3bin smigen" ;
     private final int NUMBER_OF_PREFIX_ELEMENTS = 4;
     private ProcessorModel secondaryProcessor;
     private Pattern progressPattern;
@@ -328,7 +330,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public boolean updateOFileInfo(String newValue) {
         //System.out.println("next level ofile name: " + newValue);
-        if (newValue != null) {
+        if (newValue != null && newValue.trim().length() > 0) {
             updateParamInfo(getPrimaryOutputFileOptionName(), newValue + "\n");
             setReadyToRun(newValue.trim().length() == 0 ? false : true);
             return true;
@@ -858,32 +860,81 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void updateParamValues(Product selectedProduct) {
+        updateParamValues(selectedProduct.getFileLocation());
 
-        if (selectedProduct != null) {
-            String[] bandNames = selectedProduct.getBandNames();
-            ParamInfo pi = getParamInfo(getProdParamName());
-            if (bandNames != null && pi != null) {
-                ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) pi.getValidValueInfos().clone();
-                String oldValue = pi.getValue();
-                ParamValidValueInfo paramValidValueInfo;
-                Band band;
-                for (String bandName : bandNames) {
-                    paramValidValueInfo = new ParamValidValueInfo(bandName);
-                    band = selectedProduct.getBand(bandName);
-                    paramValidValueInfo.setDescription(band.getDescription());
-                    pi.addValidValueInfo(paramValidValueInfo);
-                    if (band.getImageInfo() != null) {
-                        pi.setValue(bandName);
-                    }
+//        if (selectedProduct != null) {
+//            String[] bandNames = selectedProduct.getBandNames();
+//            ParamInfo pi = getParamInfo(getProdParamName());
+//            if (bandNames != null && pi != null) {
+//                ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) pi.getValidValueInfos().clone();
+//                String oldValue = pi.getValue();
+//                ParamValidValueInfo paramValidValueInfo;
+//                Band band;
+//                for (String bandName : bandNames) {
+//                    paramValidValueInfo = new ParamValidValueInfo(bandName);
+//                    band = selectedProduct.getBand(bandName);
+//                    paramValidValueInfo.setDescription(band.getDescription());
+//                    pi.addValidValueInfo(paramValidValueInfo);
+//                    if (band.getImageInfo() != null) {
+//                        pi.setValue(bandName);
+//                    }
+//                }
+//                ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
+//                //fireEvent(getProdParamName());
+//                String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
+//                paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
+//            }
+//        }
+    }
+
+    public void updateParamValues(File selectedFile) {
+
+        if (selectedFile == null  || !l2prodProcessors.contains(programName)) {
+            return;
+        }
+
+        NetcdfFile ncFile = null;
+        try {
+            ncFile = NetcdfFile.open(selectedFile.getAbsolutePath());
+        } catch (IOException ioe) {
+
+        }
+
+        ArrayList<String> products = new ArrayList<String>();
+        if (ncFile != null) {
+            java.util.List<Variable> var = null;
+
+            List<ucar.nc2.Group> groups = ncFile.getRootGroup().getGroups();
+            for (ucar.nc2.Group g : groups) {
+                if (g.getShortName().equals("Geophysical_Data")) {
+                    var = g.getVariables();
                 }
-                ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
-                //fireEvent(getProdParamName());
-                String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
-                paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
+            }
+            if (var != null) {
+                for (Variable v : var) {
+                    //System.out.println(v.getShortName());
+                    products.add(v.getShortName());
+                }
+                String[] bandNames = new String[products.size()];
+                products.toArray(bandNames);
+
+                ParamInfo pi = getParamInfo(getProdParamName());
+                if (bandNames != null && pi != null) {
+                    ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) pi.getValidValueInfos().clone();
+                    String oldValue = pi.getValue();
+                    ParamValidValueInfo paramValidValueInfo;
+                    for (String bandName : bandNames) {
+                        paramValidValueInfo = new ParamValidValueInfo(bandName);
+                        paramValidValueInfo.setDescription(bandName);
+                        pi.addValidValueInfo(paramValidValueInfo);
+                    }
+                    ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
+                    String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
+                    paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
+                }
             }
         }
     }
-
 
     private static class Extractor_Processor extends ProcessorModel {
         Extractor_Processor(String programName, String xmlFileName) {
@@ -1244,3 +1295,5 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
     }
 }
+
+

@@ -16,7 +16,7 @@ public class RSClientTest extends TestCase {
 
     public void testUploadParam() throws Exception {
 
-        RSClient rs = new RSClient();
+        //RSClient rs = new RSClient();
         //rs.uploadParam("test:/Users/Shared/ocssw/run/scripts/ocssw_runner\ntest:l1bgen\ntest:ifile=/Users/Shared/ocssw/test/l2gen/A2002365234500.L1A_LAC\ntest:ofile=/Users/Shared/ocssw/test/l2gen/A2002365234500.L1B_LAC");
 
     }
