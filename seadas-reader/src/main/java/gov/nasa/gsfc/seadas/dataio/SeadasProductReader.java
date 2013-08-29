@@ -299,7 +299,7 @@ public class SeadasProductReader extends AbstractProductReader {
     }
 
     private boolean checkHicoL1B() {
-        Attribute hicol1bName = ncfile.findGlobalAttribute("metadata/FGDC/Instrument_Information/Instrument_Name");
+        Attribute hicol1bName = ncfile.findGlobalAttribute("metadata_FGDC_Instrument_Information_Instrument_Name");
         return hicol1bName != null;
     }
 

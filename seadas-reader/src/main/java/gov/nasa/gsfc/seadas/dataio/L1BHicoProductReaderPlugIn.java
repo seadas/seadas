@@ -73,7 +73,7 @@ public class L1BHicoProductReaderPlugIn implements ProductReaderPlugIn {
         try {
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
-                Attribute instrumentName = ncfile.findGlobalAttribute("metadata/FGDC/Instrument_Information/Instrument_Name");
+                Attribute instrumentName = ncfile.findGlobalAttribute("metadata_FGDC_Instrument_Information_Instrument_Name");
 
                 //metadata/FGDC/Instrument_Information/Instrument_Name = "Hyperspectral Imager for Coastal Oceans"
 
