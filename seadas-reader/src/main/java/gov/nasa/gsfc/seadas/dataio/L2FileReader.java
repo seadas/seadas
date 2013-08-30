@@ -95,7 +95,7 @@ public class L2FileReader extends SeadasFileReader {
         try {
             sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name").getData().getElemString();
             res = product.getMetadataRoot().getElement("Input_Parameters").getAttribute("RESOLUTION").getData().getElemString();
-        } catch(Exception e) {}
+        } catch(Exception ignored) {}
 
         if(sensor != null) {
             sensor = sensor.toLowerCase();
@@ -218,8 +218,30 @@ public class L2FileReader extends SeadasFileReader {
             Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
             Variable cntlPointVar = ncFile.findVariable(navGroup + "/" + cntlPoints);
             if (latVar != null && lonVar != null && cntlPointVar != null) {
-                final ProductData lonRawData = readData(lonVar);
-                final ProductData latRawData = readData(latVar);
+                Array lonRaw;
+                Array latRaw;
+                float[] latRawData;
+                float[] lonRawData;
+                try {
+                    lonRaw = lonVar.read();
+                    latRaw = latVar.read();
+                    if (mustFlipX && !mustFlipY) {
+                        latRawData= (float[]) latRaw.flip(1).copyTo1DJavaArray();
+                        lonRawData= (float[]) lonRaw.flip(1).copyTo1DJavaArray();
+                    } else if (!mustFlipX && mustFlipY) {
+                        latRawData= (float[]) latRaw.flip(0).copyTo1DJavaArray();
+                        lonRawData= (float[]) lonRaw.flip(0).copyTo1DJavaArray();
+                    } else if (mustFlipX && mustFlipY) {
+                        latRawData= (float[]) latRaw.flip(0).flip(1).copyTo1DJavaArray();
+                        lonRawData= (float[]) lonRaw.flip(0).flip(1).copyTo1DJavaArray();
+                    } else {
+                        latRawData= (float[]) latRaw.copyTo1DJavaArray();
+                        lonRawData= (float[]) lonRaw.copyTo1DJavaArray();
+                    }
+                } catch (IOException e) {
+                    throw new ProductIOException(e.getMessage());
+                }
+
 
                 latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
                 lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
@@ -232,14 +254,16 @@ public class L2FileReader extends SeadasFileReader {
                 try {
                     cntArray = cntlPointVar.read();
                     int[] colPoints = (int[]) cntArray.getStorage();
-                    computeLatLonBandData(latBand, lonBand, latRawData, lonRawData, colPoints);
+                    computeLatLonBandData(product.getSceneRasterHeight(),product.getSceneRasterWidth(),latBand, lonBand,
+                            latRawData, lonRawData, colPoints);
+
                 } catch (IOException e) {
                    throw new ProductIOException(e.getMessage());
                 }
             }
         }
         try {
-            if (latBand != null && lonBand != null) {
+            if (latBand != null) {
                 product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
             }
         } catch (IOException e) {

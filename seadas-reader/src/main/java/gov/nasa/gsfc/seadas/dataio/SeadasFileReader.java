@@ -95,9 +95,9 @@ public abstract class SeadasFileReader {
             Object storage;
 
             if (mustFlipX && !mustFlipY) {
-                storage = array.flip(0).copyTo1DJavaArray();
-            } else if (!mustFlipX && mustFlipY) {
                 storage = array.flip(1).copyTo1DJavaArray();
+            } else if (!mustFlipX && mustFlipY) {
+                storage = array.flip(0).copyTo1DJavaArray();
             } else if (mustFlipX && mustFlipY) {
                 storage = array.flip(0).flip(1).copyTo1DJavaArray();
             } else {
@@ -500,23 +500,18 @@ public abstract class SeadasFileReader {
         }
     }
 
-    public void computeLatLonBandData(final Band latBand, final Band lonBand,
-                                      final ProductData latRawData, final ProductData lonRawData,
+    public void computeLatLonBandData(int height, int width, Band latBand, Band lonBand,
+                                      final float[] latRawData, final float[] lonRawData,
                                       final int[] colPoints) {
-        latBand.ensureRasterData();
-        lonBand.ensureRasterData();
 
-        final float[] latRawFloats = (float[]) latRawData.getElems();
-        final float[] lonRawFloats = (float[]) lonRawData.getElems();
-        final float[] latFloats = (float[]) latBand.getDataElems();
-        final float[] lonFloats = (float[]) lonBand.getDataElems();
+        float[] latFloats = new float[height*width];
+        float[] lonFloats = new float[height*width];
         final int rawWidth = colPoints.length;
-        final int width = latBand.getRasterWidth();
-        final int height = latBand.getRasterHeight();
 
         int colPointIdx = 0;
         int p1 = colPoints[colPointIdx] - 1;
         int p2 = colPoints[++colPointIdx] - 1;
+
         for (int x = 0; x < width; x++) {
             if (x == p2 && colPointIdx < rawWidth - 1) {
                 p1 = p2;
@@ -529,22 +524,13 @@ public abstract class SeadasFileReader {
                 final int rawPos2 = y * rawWidth + colPointIdx;
                 final int rawPos1 = rawPos2 - 1;
                 final int pos = y * width + x;
-                latFloats[pos] = computePixel(latRawFloats[rawPos1], latRawFloats[rawPos2], weight);
-                lonFloats[pos] = computePixel(lonRawFloats[rawPos1], lonRawFloats[rawPos2], weight);
+                latFloats[pos] = computePixel(latRawData[rawPos1], latRawData[rawPos2], weight);
+                lonFloats[pos] = computePixel(lonRawData[rawPos1], lonRawData[rawPos2], weight);
             }
         }
 
-        if (mustFlipY) {
-            reverse(latFloats);
-        }
-        if (mustFlipX) {
-            reverse(lonFloats);
-        }
-
-//        latBand.setSynthetic(true);
-//        lonBand.setSynthetic(true);
-        latBand.getSourceImage();
-        lonBand.getSourceImage();
+        latBand.setDataElems(latFloats);
+        lonBand.setDataElems(lonFloats);
     }
 
     public float computePixel(final float a, final float b, final double weight) {
@@ -608,12 +594,10 @@ public abstract class SeadasFileReader {
 
     public static void reverse(float[] data) {
         final int n = data.length;
-        final int nc = n / 2;
-        for (int i1 = 0; i1 < nc; i1++) {
-            int i2 = n - 1 - i1;
-            float temp = data[i1];
-            data[i1] = data[i2];
-            data[i2] = temp;
+        for (int i = 0; i < n/2; i++) {
+            float temp = data[i];
+            data[i] = data[n - i - 1];
+            data[n - i - 1] = temp;
         }
     }
 
@@ -822,6 +806,7 @@ public abstract class SeadasFileReader {
         Array array;
         try {
             array = variable.read();
+
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage());
         }
