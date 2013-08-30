@@ -843,32 +843,30 @@ public abstract class SeadasFileReader {
         final int[] shape = latitude.getShape();
         try {
             int lineCount = shape[0];
-            final int[] start = new int[]{0, 0};
-            final int[] stride = new int[]{1, 1};
-            final int[] count = new int[]{1, shape[1]};
+            final int[] start = new int[]{0,0};
+            // just grab the first and last pixel for each scan line
+            final int[] stride = new int[]{1,shape[1]-1};
+            final int[] count = new int[]{shape[0],shape[1]};
+            Section section = new Section(start, count, stride);
+            Array array;
+            synchronized (ncFile) {
+                array = latitude.read(section);
+            }
             for (int i = 0; i < lineCount; i++) {
-                start[0] = i;
-                Section section = new Section(start, count, stride);
-                Array array;
-                synchronized (ncFile) {
-                    array = latitude.read(section);
-                }
-                // todo array needs to be converted to float.
-                float val = array.getFloat(i);
-                if (skipBadNav.isBadNav(val)) {
+                int ix = i * 2;
+                float valstart = array.getFloat(ix);
+                float valend = array.getFloat(ix+1);
+                if (skipBadNav.isBadNav(valstart) || skipBadNav.isBadNav(valend)) {
                     leadLineSkip++;
                 } else {
                     break;
                 }
             }
             for (int i = lineCount; i-- > 0; ) {
-                start[0] = i;
-                Section section = new Section(start, count, stride);
-                Array array;
-                array = latitude.read(section);
-
-                float val = array.getFloat(lineCount - i);
-                if (skipBadNav.isBadNav(val)) {
+                int ix = i * 2;
+                float valstart = array.getFloat(ix);
+                float valend = array.getFloat(ix+1);
+                if (skipBadNav.isBadNav(valstart) || skipBadNav.isBadNav(valend)) {
                     tailLineSkip++;
                 } else {
                     break;
