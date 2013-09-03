@@ -524,8 +524,8 @@ public abstract class SeadasFileReader {
                 final int rawPos2 = y * rawWidth + colPointIdx;
                 final int rawPos1 = rawPos2 - 1;
                 final int pos = y * width + x;
-                latFloats[pos] = computePixel(latRawData[rawPos1], latRawData[rawPos2], weight);
-                lonFloats[pos] = computePixel(lonRawData[rawPos1], lonRawData[rawPos2], weight);
+                latFloats[pos] = computeGeoPixel(latRawData[rawPos1], latRawData[rawPos2], weight);
+                lonFloats[pos] = computeGeoPixel(lonRawData[rawPos1], lonRawData[rawPos2], weight);
             }
         }
 
@@ -533,7 +533,7 @@ public abstract class SeadasFileReader {
         lonBand.setDataElems(lonFloats);
     }
 
-    public float computePixel(final float a, final float b, final double weight) {
+    public float computeGeoPixel(final float a, final float b, final double weight) {
         if ((b - a) > 180) {
             final float b2 = b - 360;
             final double v = a + (b2 - a) * weight;
