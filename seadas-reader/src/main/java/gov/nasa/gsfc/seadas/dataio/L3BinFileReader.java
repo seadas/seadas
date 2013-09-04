@@ -7,6 +7,7 @@ import org.esa.beam.framework.datamodel.*;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
+import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Structure;
@@ -165,6 +166,7 @@ public class L3BinFileReader extends SeadasFileReader {
         }
     }
 
+    // Don't do this...it hurts.  Too much of a memory hog...
     private void addBandsBinMap (Product product)throws IOException, InvalidRangeException {
         String[] bandList = product.getBandNames();
         if (rowInfo == null) {
@@ -216,7 +218,7 @@ public class L3BinFileReader extends SeadasFileReader {
                     final int rowIndex = (height - 1) - y;
                     final RowInfo rowInfo = this.rowInfo[rowIndex];
                     if (rowInfo != null) {
-                        final Object bindata;
+                        final Array bindata;
 
                         final int lineOffset = rowInfo.offset;
                         final int lineLength = rowInfo.length;
@@ -226,7 +228,7 @@ public class L3BinFileReader extends SeadasFileReader {
                         lineLengths[0] = lineLength;
 
                         synchronized (ncFile) {
-                            bindata = variable.read().section(lineOffsets, lineLengths, stride).copyTo1DJavaArray();
+                            bindata = variable.read().section(lineOffsets, lineLengths, stride);//.copyTo1DJavaArray();
                         }
                         int lineIndex0 = 0;
                         for (int x = 0; x < width; x++) {
@@ -246,13 +248,17 @@ public class L3BinFileReader extends SeadasFileReader {
 
                             if (lineIndex >= 0) {
                                 final int rasterIndex = width * y + x;
-                                if (prodtype == DataType.FLOAT) {
+                                final Array elem;
+                                elem = Array.factory(bindata.copyTo1DJavaArray());
+                                for (int i=0; i<elem.getSize(); i++){
+                                    if (prodtype == DataType.FLOAT) {
 
-                                    buffer.setElemFloatAt(rasterIndex, (Float) bindata);
-                                } else {
-                                    buffer.setElemIntAt(rasterIndex, (Integer) bindata);
+                                        buffer.setElemFloatAt(rasterIndex, elem.getFloat(i));
+                                    } else {
+                                        buffer.setElemIntAt(rasterIndex, elem.getInt(i));
+                                    }
+    //                                System.arraycopy(bindata, lineIndex, buffer, rasterIndex, 1);
                                 }
-//                                System.arraycopy(bindata, lineIndex, buffer, rasterIndex, 1);
                             }
                         }
                     }
