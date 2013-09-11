@@ -193,6 +193,18 @@ public class SourceProductFileSelector {
     }
 
     public Product getSelectedProduct() {
+        return (Product) productListModel.getSelectedItem();
+    }
+//    public Product getSelectedProduct() {
+//
+////        if (sampleProductForMultiIfiles == null) {
+////        return (Product) productListModel.getSelectedItem();
+////        } else{
+////            return sampleProductForMultiIfiles;
+////        }
+//    }
+
+    public Product getSelectedProductSample() {
         if (sampleProductForMultiIfiles == null) {
         return (Product) productListModel.getSelectedItem();
         } else{
@@ -562,7 +574,7 @@ public class SourceProductFileSelector {
 
                  try {
                      //if (product == null) {
-                         if (file.canRead()) {
+                         if (file != null && file.canRead()) {
                              product = new Product(file.getName(), "DummyType", 10, 10);
                              product.setFileLocation(file);
                          } else {

@@ -33,7 +33,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private boolean readyToRun;
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
     private final String allparamInitializedPropertyName = "ALL_PARAMS_INITIALIZED";
-    private final String l2prodProcessors = "l2mapgen l2brsgen l2bin l2bin_aquarius l3bin smigen" ;
+    private final String l2prodProcessors = "l2mapgen l2brsgen l2bin l2bin_aquarius l3bin smigen";
     private final int NUMBER_OF_PREFIX_ELEMENTS = 4;
     private ProcessorModel secondaryProcessor;
     private Pattern progressPattern;
@@ -78,6 +78,70 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             setPrimaryOptions(ParamUtils.getPrimaryOptions(parXMLFileName));
             setOpenInSeadas(false);
         }
+
+        addPropertyChangeListener("prod", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+                if (ofileName != null && ofileName.length() > 0) {
+                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+                    if (oldProdValue != null && oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
+                        ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
+                    } else {
+                        ofileName = ofileName + "_" + newProdValue;
+                    }
+                    updateOFileInfo(ofileName);
+                }
+            }
+        });
+
+        addPropertyChangeListener("outmode", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+                if (ofileName != null && ofileName.length() > 0) {
+                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+                    if (oldProdValue != null && oldProdValue.trim().length() > 0 && ofileName.indexOf(convertToMode(oldProdValue)) != -1) {
+                        ofileName = ofileName.replaceAll(convertToMode(oldProdValue), convertToMode(newProdValue));
+                    } else {
+                        ofileName = ofileName + "_" + convertToMode(newProdValue);
+                    }
+                    updateOFileInfo(ofileName);
+                }
+            }
+        });
+
+        addPropertyChangeListener("resolution", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+                String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+                if (oldResolutionValue != null && oldResolutionValue.trim().length() > 0 && ofileName.indexOf(oldResolutionValue) != -1) {
+                    ofileName = ofileName.replaceAll(oldResolutionValue, newResolutionValue);
+                } else {
+                    ofileName = ofileName + "_" + newResolutionValue;
+                }
+                updateOFileInfo(ofileName);
+            }
+        });
+        addPropertyChangeListener("suite", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                String oldSuiteValue = (propertyChangeEvent.getOldValue() instanceof String) ? (String) propertyChangeEvent.getOldValue() : null; //(String)((ArrayList)propertyChangeEvent.getOldValue()).get(0);
+                String newSuiteValue = (propertyChangeEvent.getNewValue() instanceof String) ? (String) propertyChangeEvent.getNewValue() : null; //(String)((ArrayList)propertyChangeEvent.getNewValue()).get(0);
+                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+                if (oldSuiteValue != null && oldSuiteValue.length() > 0 && ofileName.indexOf(oldSuiteValue) != -1) {
+                    ofileName = ofileName.replaceAll(oldSuiteValue, newSuiteValue);
+                } else {
+                    ofileName = ofileName + "_" + newSuiteValue;
+                }
+                updateOFileInfo(ofileName);
+            }
+        });
+
     }
 
     public ProcessorModel(String name, ArrayList<ParamInfo> paramList) {
@@ -109,6 +173,21 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             default:
         }
         return new ProcessorModel(programName, xmlFileName);
+    }
+
+    private String convertToMode(String outmode) {
+        if (!programName.equals("l2brsgen")) {
+            return outmode;
+        }
+        switch (outmode.toCharArray()[0]) {
+            case '0':
+                return "HDF";
+            case '1':
+                return "PPM";
+            case '2':
+                return "PNG";
+        }
+        return null;
     }
 
     public void addParamInfo(ParamInfo info) {
@@ -889,7 +968,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public void updateParamValues(File selectedFile) {
 
-        if (selectedFile == null  || !l2prodProcessors.contains(programName)) {
+        if (selectedFile == null || !l2prodProcessors.contains(programName)) {
             return;
         }
 
@@ -1101,7 +1180,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         @Override
         public void updateParamValues(Product selectedProduct) {
-            //super.updateParamValues(selectedProduct);
             if (selectedProduct != null) {
                 FileInfo ifileInfo = new FileInfo(selectedProduct.getFileLocation().getAbsolutePath());
                 missionDir = ifileInfo.getMissionDirectory();
@@ -1122,24 +1200,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 super.updateParamValues(selectedProduct);
             }
         }
-//        @Override
-//        public boolean updateIFileInfo(String ifileName) {
-//            boolean success = super.updateIFileInfo(ifileName);
-//            if (success) {
-//                FileInfo ifileInfo = new FileInfo(ifileName);
-//                File missionDir = ifileInfo.getMissionDirectory();
-//                updateSuite(missionDir);
-//                ifileInfo.getMissionName();
-//            }
-//            return success;
-//        }
 
         private void updateSuite() {
             String[] suites = missionDir.list(new FilenameFilter() {
                 @Override
                 public boolean accept(File file, String s) {
                     return s.contains("l2bin_defaults_");
-                    //return false;  //To change body of implemented methods use File | Settings | File Templates.
                 }
             });
             String suiteName;
@@ -1161,7 +1227,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 updateFlagUse(PAR_FILE_PREFIX + newValue + ".par");
             }
             super.updateParamInfo(currentOption, newValue);
-
         }
 
         private void updateFlagUse(String parFileName) {
@@ -1223,59 +1288,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private static class SMIGEN_Processor extends ProcessorModel {
         SMIGEN_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
-            addPropertyChangeListener("prod", new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-                    if (ofileName != null && ofileName.length() > 0) {
-                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                        String newProdValue = (String) propertyChangeEvent.getNewValue();
-                        if (oldProdValue != null && oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
-                            ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
-                        } else {
-                            ofileName = ofileName + "_" + newProdValue;
-                        }
-                        updateOFileInfo(ofileName);
-                    }
-                }
-            });
-
-            addPropertyChangeListener("resolution", new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
-                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
-                    String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-                    if (newResolutionValue != null && newResolutionValue.trim().length() > 0 && ofileName.indexOf(newResolutionValue) != -1) {
-                        ofileName = ofileName.replaceAll(oldResolutionValue, newResolutionValue);
-                    } else {
-                        ofileName = ofileName + "_" + newResolutionValue;
-                    }
-                    updateOFileInfo(ofileName);
-                }
-            });
             setOpenInSeadas(true);
         }
-//
-//        @Override
-//        public void updateParamValues(Product selectedProduct) {
-//            if (selectedProduct != null) {
-//                String[] bandNames = selectedProduct.getBandNames();
-//                ParamInfo pi = getParamInfo("prod");
-//                ParamValidValueInfo paramValidValueInfo;
-//                Band band;
-//                for (String bandName : bandNames) {
-//                    paramValidValueInfo = new ParamValidValueInfo(bandName);
-//                    band = selectedProduct.getBand(bandName);
-//                    paramValidValueInfo.setDescription(band.getDescription());
-//                    pi.addValidValueInfo(paramValidValueInfo);
-//                    if (band.getImageInfo() != null) {
-//                        pi.setValue(bandName);
-//                    }
-//                }
-//                fireEvent("prod");
-//            }
-//        }
     }
 
     private static class OCSSWInstaller_Processor extends ProcessorModel {
