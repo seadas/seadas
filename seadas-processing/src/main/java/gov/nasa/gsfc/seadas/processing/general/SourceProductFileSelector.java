@@ -16,6 +16,7 @@
 
 package gov.nasa.gsfc.seadas.processing.general;
 
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import com.bc.ceres.swing.selection.SelectionChangeListener;
 import com.bc.ceres.swing.selection.support.ComboBoxSelectionContext;
 import org.esa.beam.framework.dataio.ProductIO;
@@ -28,6 +29,7 @@ import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.BasicApp;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
+import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -206,13 +208,13 @@ public class SourceProductFileSelector {
 
     public Product getSelectedProductSample() {
         if (sampleProductForMultiIfiles == null) {
-        return (Product) productListModel.getSelectedItem();
-        } else{
+            return (Product) productListModel.getSelectedItem();
+        } else {
             return sampleProductForMultiIfiles;
         }
     }
 
-    public Product getSelectedProductsSample(){
+    public Product getSelectedProductsSample() {
         return sampleProductForMultiIfiles;
     }
 
@@ -458,149 +460,150 @@ public class SourceProductFileSelector {
             SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
         }
 
-//        @Override
-//        public void actionPerformed(ActionEvent event) {
-//            final Window window = SwingUtilities.getWindowAncestor((JComponent) event.getSource());
-//
-//            String homeDirPath = SystemUtils.getUserHomeDir().getPath();
-//            String openDir = appContext.getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
-//                    homeDirPath);
-//            currentDirectory = new File(openDir);
-//            fileChooser.setCurrentDirectory(currentDirectory);
-//
-//            //fileChooser.addChoosableFileFilter(regexFileFilter);
-//
-//            if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
-//
-//                currentDirectory = fileChooser.getCurrentDirectory();
-//                appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
-//                        currentDirectory.getAbsolutePath());
-//
-//                if (selectMultipleIFiles && fileChooser.getSelectedFiles().length > 1) {
-//                    handleMultipFileSelection(window);
-//                    return;
-//                }
-//
-//                final File file = fileChooser.getSelectedFile();
-//
-//
-//                // Added a progress monitor because loading the new product takes to long
-//
-//                final Product[] productTmp = {null};
-//
-//                VisatApp visatApp = VisatApp.getApp();
-//                ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-//                        "SeaDAS Product/File Loader") {
-//
-//                    @Override
-//                    protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
-//
-//                        pm.beginTask("Loading file '" + file + "' as a new SeaDAS product ", 2);
-//
-//                        try {
-//                            productTmp[0] = ProductIO.readProduct(file);
-//                            pm.worked(1);
-//
-//                            Product product = productTmp[0];
-//                            try {
-//                                if (product == null) {
-//                                    if (file.canRead()) {
-//                                        product = new Product(file.getName(), "DummyType", 10, 10);
-//                                        product.setFileLocation(file);
-//                                    } else {
-//                                        throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
-//                                    }
-//                                }
-//
-//                                if (productFilter.accept(product) && regexFileFilter.accept(file)) {
-//                                    setSelectedProduct(product);
-//                                } else {
-//                                    final String message = String.format("Product [%s] is not a valid source.",
-//                                            product.getFileLocation().getCanonicalPath());
-//                                    handleError(window, message);
-//                                    SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
-//                                    product.dispose();
-//                                }
-//                            } catch (Exception e) {
-//                                if (product != null) {
-//                                    product.dispose();
-//                                }
-//                                handleError(window, e.getMessage());
-//                                e.printStackTrace();
-//                            }
-//                        } catch (Exception e) {
-//                            pm.done();
-//                        } finally {
-//                            pm.done();
-//                        }
-//                        return null;
-//                    }
-//                };
-//
-//                pmSwingWorker.executeWithBlocking();
-//            }
-//        }
-
         @Override
-         public void actionPerformed(ActionEvent event) {
-             final Window window = SwingUtilities.getWindowAncestor((JComponent) event.getSource());
+        public void actionPerformed(ActionEvent event) {
+            final Window window = SwingUtilities.getWindowAncestor((JComponent) event.getSource());
 
-             String homeDirPath = SystemUtils.getUserHomeDir().getPath();
-             String openDir = appContext.getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
-                     homeDirPath);
-             currentDirectory = new File(openDir);
-             fileChooser.setCurrentDirectory(currentDirectory);
+            String homeDirPath = SystemUtils.getUserHomeDir().getPath();
+            String openDir = appContext.getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                    homeDirPath);
+            currentDirectory = new File(openDir);
+            fileChooser.setCurrentDirectory(currentDirectory);
 
-             //fileChooser.addChoosableFileFilter(regexFileFilter);
+            //fileChooser.addChoosableFileFilter(regexFileFilter);
 
-             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
+            if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
 
-                 currentDirectory = fileChooser.getCurrentDirectory();
-                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
-                         currentDirectory.getAbsolutePath());
+                currentDirectory = fileChooser.getCurrentDirectory();
+                appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                        currentDirectory.getAbsolutePath());
 
-                 if (selectMultipleIFiles && fileChooser.getSelectedFiles().length > 1) {
-                     handleMultipFileSelection(window);
-                     return;
-                 }
+                if (selectMultipleIFiles && fileChooser.getSelectedFiles().length > 1) {
+                    handleMultipFileSelection(window);
+                    return;
+                }
 
-                 final File file = fileChooser.getSelectedFile();
-                 Product product = null;
-//                 try {
-//                     product = ProductIO.readProduct(file);
+                final File file = fileChooser.getSelectedFile();
+
+
+                // Added a progress monitor because loading the new product takes to long
+
+                //final Product[] productTmp = {null};
+
+                VisatApp visatApp = VisatApp.getApp();
+                ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                        "SeaDAS Product/File Loader") {
+
+                    @Override
+                    protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+
+                        pm.beginTask("Loading file '" + file + "' as a new SeaDAS product ", 2);
+
+                        try {
+                            //productTmp[0] = ProductIO.readProduct(file);
+                            pm.worked(1);
+
+                            //Product product = productTmp[0];
+                            Product product = null;
+                            try {
+                                //if (product == null) {
+                                if (file.canRead()) {
+                                    product = new Product(file.getName(), "DummyType", 10, 10);
+                                    product.setFileLocation(file);
+                                } else {
+                                    throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
+                                }
+                                //}
+
+                                if (productFilter.accept(product) && regexFileFilter.accept(file)) {
+                                    setSelectedProduct(product);
+                                } else {
+                                    final String message = String.format("Product [%s] is not a valid source.",
+                                            product.getFileLocation().getCanonicalPath());
+                                    handleError(window, message);
+                                    SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
+                                    product.dispose();
+                                }
+                            } catch (Exception e) {
+                                if (product != null) {
+                                    product.dispose();
+                                }
+                                handleError(window, e.getMessage());
+                                e.printStackTrace();
+                            }
+                        } catch (Exception e) {
+                            pm.done();
+                        } finally {
+                            pm.done();
+                        }
+                        return null;
+                    }
+                };
+
+                pmSwingWorker.executeWithBlocking();
+            }
+        }
+
+        //        @Override
+//         public void actionPerformed(ActionEvent event) {
+//             final Window window = SwingUtilities.getWindowAncestor((JComponent) event.getSource());
 //
-//                 } catch (Exception e) {
+//             String homeDirPath = SystemUtils.getUserHomeDir().getPath();
+//             String openDir = appContext.getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+//                     homeDirPath);
+//             currentDirectory = new File(openDir);
+//             fileChooser.setCurrentDirectory(currentDirectory);
+//
+//             //fileChooser.addChoosableFileFilter(regexFileFilter);
+//
+//             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
+//
+//                 currentDirectory = fileChooser.getCurrentDirectory();
+//                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+//                         currentDirectory.getAbsolutePath());
+//
+//                 if (selectMultipleIFiles && fileChooser.getSelectedFiles().length > 1) {
+//                     handleMultipFileSelection(window);
+//                     return;
 //                 }
-
-                 try {
-                     //if (product == null) {
-                         if (file != null && file.canRead()) {
-                             product = new Product(file.getName(), "DummyType", 10, 10);
-                             product.setFileLocation(file);
-                         } else {
-                             throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
-                         }
-
-                    // }
-
-                     if (productFilter.accept(product) && regexFileFilter.accept(file)) {
-                         setSelectedProduct(product);
-                     } else {
-                         final String message = String.format("Product [%s] is not a valid source.",
-                                 product.getFileLocation().getCanonicalPath());
-                         handleError(window, message);
-                         SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
-                         product.dispose();
-                     }
-                 } catch (Exception e) {
-                     if (product != null) {
-                         product.dispose();
-                     }
-                     handleError(window, e.getMessage());
-                     e.printStackTrace();
-                 }
-             }
-         }
+//
+//                 final File file = fileChooser.getSelectedFile();
+//                 Product product = null;
+////                 try {
+////                     product = ProductIO.readProduct(file);
+////
+////                 } catch (Exception e) {
+////                 }
+//
+//                 try {
+//                     //if (product == null) {
+//                         if (file != null && file.canRead()) {
+//                             product = new Product(file.getName(), "DummyType", 10, 10);
+//                             product.setFileLocation(file);
+//                         } else {
+//                             throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
+//                         }
+//
+//                    // }
+//
+//                     if (productFilter.accept(product) && regexFileFilter.accept(file)) {
+//                         setSelectedProduct(product);
+//                     } else {
+//                         final String message = String.format("Product [%s] is not a valid source.",
+//                                 product.getFileLocation().getCanonicalPath());
+//                         handleError(window, message);
+//                         SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
+//                         product.dispose();
+//                     }
+//                 } catch (Exception e) {
+//                     if (product != null) {
+//                         product.dispose();
+//                     }
+//                     handleError(window, e.getMessage());
+//                     e.printStackTrace();
+//                 }
+//             }
+//         }
         private void handleMultipFileSelection(Window window) {
             File[] tmpFiles = fileChooser.getSelectedFiles();
             ArrayList<File> tmpArrayList = new ArrayList<File>();
@@ -618,7 +621,7 @@ public class SourceProductFileSelector {
                         } else {
                             throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
                         }
-                    }  else {
+                    } else {
                         if (firstTime) {
                             firstTime = true;
                             sampleProductForMultiIfiles = product;
@@ -687,7 +690,6 @@ public class SourceProductFileSelector {
 
 
     }
-
 
 
     private static class ProductListCellRenderer extends DefaultListCellRenderer {
