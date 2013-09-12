@@ -972,6 +972,23 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             return;
         }
 
+        if (selectedFile.getName().endsWith(".txt")) {
+            try {
+                LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(selectedFile));
+                String sampleFileName = lineNumberReader.readLine();
+                if (new File(sampleFileName).exists()) {
+                    selectedFile = new File(sampleFileName);
+                    System.out.println("sample file name: " + sampleFileName + System.currentTimeMillis());
+                } else {
+                    return;
+                }
+            } catch (FileNotFoundException fnfe) {
+
+            } catch (IOException ioe) {
+
+            }
+        }
+
         NetcdfFile ncFile = null;
         try {
             ncFile = NetcdfFile.open(selectedFile.getAbsolutePath());
@@ -1181,12 +1198,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         @Override
         public void updateParamValues(Product selectedProduct) {
             if (selectedProduct != null) {
-                FileInfo ifileInfo = new FileInfo(selectedProduct.getFileLocation().getAbsolutePath());
+                String sampleFileName = selectedProduct.getFileLocation().getAbsolutePath();
+                FileInfo ifileInfo = new FileInfo(sampleFileName);
                 missionDir = ifileInfo.getMissionDirectory();
                 if (missionDir == null) {
                     try {
                         LineNumberReader reader = new LineNumberReader(new FileReader(new File(selectedProduct.getFileLocation().getAbsolutePath())));
-                        String sampleFileName = reader.readLine();
+                        sampleFileName = reader.readLine();
                         missionDir = new FileInfo(sampleFileName).getMissionDirectory();
                     } catch (FileNotFoundException fnfe) {
 
@@ -1197,7 +1215,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 }
                 DEFAULT_FLAGUSE = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, DEFAULT_PAR_FILE_NAME), "flaguse");
                 updateSuite();
-                super.updateParamValues(selectedProduct);
+                super.updateParamValues(new File(sampleFileName));
             }
         }
 
