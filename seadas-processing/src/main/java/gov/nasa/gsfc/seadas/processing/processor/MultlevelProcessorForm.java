@@ -469,7 +469,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             fileArrayList.add(new File(filename));
         }
 
-        String oldIfileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
+        String oldIfileName = null;
+        if (sourceProductFileSelector.getSelectedProduct() != null) {
+            oldIfileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
+        }
         String newIfileName = getRow(Processor.MAIN.toString()).getParamList().getValue("ifile");
 
         if (newIfileName != null && !newIfileName.equals(oldIfileName) || oldIfileName != null && !oldIfileName.equals(newIfileName)) {
