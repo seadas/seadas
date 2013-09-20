@@ -382,6 +382,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         if (verifyIFilePath(ifileName)) {
             String ofileName = SeadasFileUtils.findNextLevelFileName(ifileName, programName);
+            //if (ofileName.)
             if (ofileName != null) {
                 updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
                 updateGeoFileInfo(ifileName);
@@ -968,7 +969,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public void updateParamValues(File selectedFile) {
 
-        if (selectedFile == null || !l2prodProcessors.contains(programName)) {
+        if (selectedFile == null || programName != null && !l2prodProcessors.contains(programName)) {
             return;
         }
 
