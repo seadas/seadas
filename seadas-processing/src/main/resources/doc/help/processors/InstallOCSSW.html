@@ -21,7 +21,7 @@
 <h3>install_ocssw.py</h3>
 
 <p>
-    Installs or updates OCSSW.
+    Installs or updates OCSSW processing package.
 </p>
 
 <p>
@@ -32,15 +32,23 @@
 
 <a name="location"><h4>Location</h4></a>
 
-<p>Tools -> OCSSW Processing -> install_ocssw.py</p>
+<p>Tools -> SeaDAS Processing -> Install/Update Processors</p>
 
 
 <<a name="details"><h4>Details</h4></a>
 
 <p>
-    <b>install_ocssw.py</b> installs or updates the OCSSW package for SeaDAS.
+    <b>Install/Update Processors</b> executes <b>install_ocssw.py</b> which installs or updates the OCSSW package for SeaDAS.
+    When SeaDAS first installs OCSSW package,
+    the menu item would display as "Install Processors". Afterwords, it's displayed as "Update Processors".
+</p>
+<p>
 
-<p></p>
+    You can access the OCSSW installer GUI from the <b>Tools/SeaDAS Processing/Install/Update Processors</b> menu.
+    The ocssw install/update GUI initially displays a default window, as shown in the image below, to select installation directory and mission data files to be included in the installation.
+    If the data files of a mission already exists in the system, the checkbox for that mission would be selected in the initial screen.
+    Users can leave it selected for an update or deselect to skip its installation.
+<p>
 <hr>
 <center>
     <table class="image">
@@ -86,9 +94,16 @@
         <td>false</td>
     </tr>
     <tr>
-        <td><b>czcs</b></td>
+            <td><b>czcs</b></td>
+            <td> boolean</td>
+            <td>install CZCS files</td>
+            <td>Optional</td>
+            <td>false</td>
+    </tr>
+    <tr>
+        <td><b>hico</b></td>
         <td> boolean</td>
-        <td>install CZCS files</td>
+        <td>install HICO files</td>
         <td>Optional</td>
         <td>false</td>
     </tr>
