@@ -62,7 +62,7 @@ public class L2genIfileSelector {
                 String ifileName = l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName());
                 File iFile = new File(ifileName);
                 disableControlHandler();
-                if (isEventHandlerEnabled()) {
+                if (isEventHandlerEnabled() || ifileName.isEmpty()) {
                     if (iFile.exists()) {
                         sourceProductSelector.setSelectedFile(iFile);
                     } else {
