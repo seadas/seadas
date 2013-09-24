@@ -96,6 +96,7 @@ public class L2genData implements L2genDataProcessorModel {
     public boolean showIOFields = true;
     private Mode mode = Mode.L2GEN;
     private boolean  ifileIndependentMode = false;
+    private boolean paramsBeingSetViaParstring = false;
 
     // keepParams: this boolean field denotes whether l2gen keeps the current params when a new ifile is selected.
     // Params not supported by the new ifile will be deleted.
@@ -726,6 +727,7 @@ public class L2genData implements L2genDataProcessorModel {
 
     public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode, File parFileDir) {
 
+        setParamsBeingSetViaParstring(true);
         // addParamsMode is a special mode.
         // this enables a subset parstring to be sent in
         // essentially this means that you are sending in a list of params to change but leaving anything else untouched
@@ -848,6 +850,7 @@ public class L2genData implements L2genDataProcessorModel {
         enableEvent(PARSTRING);
 
         setKeepParams(tmpKeepParams);
+        setParamsBeingSetViaParstring(false);
     }
 
     public boolean hasParamValue(String name) {
@@ -1186,7 +1189,7 @@ public class L2genData implements L2genDataProcessorModel {
             }
         }
 
-        if (isInitialized()) {
+        if (isInitialized() && isParamsBeingSetViaParstring()) {
             VisatApp visatApp = VisatApp.getApp();
             ProgressMonitorSwingWorker worker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
                     GUI_NAME) {
@@ -1198,7 +1201,6 @@ public class L2genData implements L2genDataProcessorModel {
 
                     setIfileandSuiteParamValues(ifileParamInfo, ifileValue, suiteValue);
                     pm.done();
-
                     return null;
                 }
 
@@ -1757,6 +1759,15 @@ public class L2genData implements L2genDataProcessorModel {
         l2prodParamInfo.clearProductInfos();
     }
 
+//    public void addIntegerProductInfo(L2genProductInfo productInfo) {
+//        l2prodParamInfo.addIntegerProductInfo(productInfo);
+//    }
+//
+//
+//    public void clearIntegerProductInfos() {
+//        l2prodParamInfo.clearIntegerProductInfos();
+//    }
+
 
     public void sortProductInfos(Comparator<L2genProductInfo> comparator) {
         l2prodParamInfo.sortProductInfos(comparator);
@@ -1900,5 +1911,13 @@ public class L2genData implements L2genDataProcessorModel {
 
     public void setGuiName(String guiName) {
         this.guiName = guiName;
+    }
+
+    public boolean isParamsBeingSetViaParstring() {
+        return paramsBeingSetViaParstring;
+    }
+
+    public void setParamsBeingSetViaParstring(boolean paramsBeingSetViaParstring) {
+        this.paramsBeingSetViaParstring = paramsBeingSetViaParstring;
     }
 }
