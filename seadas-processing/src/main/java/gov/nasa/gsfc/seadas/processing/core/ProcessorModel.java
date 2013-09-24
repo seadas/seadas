@@ -382,6 +382,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         if (verifyIFilePath(ifileName)) {
             String ofileName = SeadasFileUtils.findNextLevelFileName(ifileName, programName);
+            //if (ofileName.)
             if (ofileName != null) {
                 updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
                 updateGeoFileInfo(ifileName);
@@ -391,9 +392,17 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 return true;
             }
         }
-        VisatApp.getApp().showErrorDialog("Cannot compute output file name. Please select a correct input file for " + ((programName == null) ? "this processor." : programName));
-        updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");    //use an empty string
-        updateOFileInfo("");
+        //VisatApp.getApp().showErrorDialog("Cannot compute output file name. Please select a correct input file for " + ((programName == null) ? "this processor." : programName));
+        int result = VisatApp.getApp().showQuestionDialog("Cannot compute output file name. Would you like to continue anyway?", "test");
+        if (result == 0) {
+            updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
+        } else {
+            updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");    //use an empty string
+            updateOFileInfo("");
+        }
+        //System.out.println("result = " + result);
+        //updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");    //use an empty string
+        //updateOFileInfo("");
         return false;
     }
 
@@ -968,7 +977,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public void updateParamValues(File selectedFile) {
 
-        if (selectedFile == null || !l2prodProcessors.contains(programName)) {
+        if (selectedFile == null || programName != null && !l2prodProcessors.contains(programName)) {
             return;
         }
 

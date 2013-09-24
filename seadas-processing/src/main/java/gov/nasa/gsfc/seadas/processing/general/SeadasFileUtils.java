@@ -139,7 +139,9 @@ public class SeadasFileUtils {
             VisatApp.getApp().showErrorDialog(ioe.getMessage());
         }
 
-        VisatApp.getApp().showQuestionDialog("ofile computation", "ofile name is not found", true, "continue");
+//        int choice = VisatApp.getApp().showQuestionDialog("ofile computation", "ofile name is not found", true, "continue");
+//
+//        return String.valueOf(choice);
         return null;
     }
 
