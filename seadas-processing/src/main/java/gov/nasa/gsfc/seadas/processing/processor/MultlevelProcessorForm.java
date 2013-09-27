@@ -118,6 +118,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
     public String MAIN_PARSTRING_EVENT = "MAIN_PARSTRING_EVENT";
     static public String ODIR_EVENT = "ODIR";
+    static public final String IFILE = "ifile";
 
     private ArrayList<MultilevelProcessorRow> rows;
 
@@ -134,9 +135,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         jFileChooser = new JFileChooser();
 
         // create main panel
-        sourceProductFileSelector = new SourceProductFileSelector(VisatApp.getApp(), "ifile", true);
+        sourceProductFileSelector = new SourceProductFileSelector(VisatApp.getApp(), IFILE, true);
         sourceProductFileSelector.initProducts();
-        //sourceProductFileSelector.setProductNameLabel(new JLabel("ifile"));
+        //sourceProductFileSelector.setProductNameLabel(new JLabel(IFILE));
         sourceProductFileSelector.getProductNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
         sourceProductFileSelector.addSelectionChangeListener(new SelectionChangeListener() {
@@ -187,7 +188,11 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             public void actionPerformed(ActionEvent e) {
                 String contents = SeadasGuiUtils.importFile(jFileChooser);
                 if (contents != null) {
-                    setParamString(contents, retainIFileCheckbox.isSelected());
+                    File defaultIFileDirectory = null;
+                    if (jFileChooser.getSelectedFile() != null) {
+                        defaultIFileDirectory = jFileChooser.getSelectedFile().getParentFile();
+                    }
+                    setParamString(contents, retainIFileCheckbox.isSelected(), defaultIFileDirectory);
                 }
             }
         });
@@ -384,15 +389,35 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     }
 
     public String getParamString() {
-        return getParamList().getParamString("\n");
+        String paramString = getParamList().getParamString("\n");
+
+        // This rigged up thingy adds in some comments
+        String[] lines = paramString.split("\n");
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String line : lines) {
+            line = line.trim();
+            stringBuilder.append(line).append("\n");
+
+            if (line.toLowerCase().startsWith(IFILE)) {
+                String iFilename = line.substring(IFILE.length() + 1, line.length()).trim();
+                File iFile = new File(iFilename);
+
+                if (!iFile.exists()) {
+                    stringBuilder.append("## WARNING: ifile '").append(iFilename).append("' does not exist").append("\n");
+                }
+            }
+        }
+
+        return stringBuilder.toString();
     }
 
     public void setParamString(String str) {
-        setParamString(str, false);
+        setParamString(str, false, null);
     }
 
 
-    public void setParamString(String str, boolean retainIFile) {
+    public void setParamString(String str, boolean retainIFile, File defaultIFileDirectory) {
 
         String oldODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
 
@@ -441,7 +466,24 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
 
                 } else {
-                    stringBuilder.append(line).append("\n");
+                    if (line.toLowerCase().startsWith(IFILE)) {
+
+                        String originalIFilename = line.substring(IFILE.length() + 1, line.length()).trim();
+                        File originalIFile = new File(originalIFilename);
+
+                        String absoluteIFilename;
+                        if (originalIFile.isAbsolute()) {
+                            absoluteIFilename = originalIFilename;
+                        } else {
+                            File absoluteFile = new File(defaultIFileDirectory, originalIFilename);
+                            absoluteIFilename = absoluteFile.getAbsolutePath();
+                        }
+
+                        stringBuilder.append(IFILE).append("=").append(absoluteIFilename).append("\n");
+
+                    } else {
+                        stringBuilder.append(line).append("\n");
+                    }
                 }
             }
         }
@@ -463,7 +505,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private void updateParamString() {
 
         ArrayList<File> fileArrayList = new ArrayList<File>();
-        String fileList = getRow(Processor.MAIN.toString()).getParamList().getValue("ifile");
+        String fileList = getRow(Processor.MAIN.toString()).getParamList().getValue(IFILE);
         String filenameArray[] = fileList.split(",");
         for (String filename : filenameArray) {
             fileArrayList.add(new File(filename));
@@ -473,7 +515,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         if (sourceProductFileSelector.getSelectedProduct() != null) {
             oldIfileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
         }
-        String newIfileName = getRow(Processor.MAIN.toString()).getParamList().getValue("ifile");
+        String newIfileName = getRow(Processor.MAIN.toString()).getParamList().getValue(IFILE);
 
         if (newIfileName != null && !newIfileName.equals(oldIfileName) || oldIfileName != null && !oldIfileName.equals(newIfileName)) {
             if (fileArrayList.size() > 1) {
@@ -481,7 +523,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
                 sourceProductFileSelector.setSelectedFile(listFile);
             } else {
-                File file = new File(getRow(Processor.MAIN.toString()).getParamList().getValue("ifile"));
+                File file = new File(getRow(Processor.MAIN.toString()).getParamList().getValue(IFILE));
                 sourceProductFileSelector.setSelectedFile(file);
             }
         }
@@ -534,12 +576,12 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private void handleIFileChanged() {
         String ifileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
         MultilevelProcessorRow row = getRow(Processor.MAIN.toString());
-        String oldIFile = row.getParamList().getValue("ifile");
+        String oldIFile = row.getParamList().getValue(IFILE);
         if (!ifileName.equals(oldIFile)) {
 
 //            getRow("l2gen").clearConfigPanel();
 
-            row.setParamValue("ifile", ifileName);
+            row.setParamValue(IFILE, ifileName);
             parfileTextArea.setText(getParamString());
         }
     }
@@ -557,7 +599,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
 
     public String getIFile() {
-        return getRow(Processor.MAIN.toString()).getParamList().getValue("ifile");
+        return getRow(Processor.MAIN.toString()).getParamList().getValue(IFILE);
     }
 
     public String getFirstIFile() {
