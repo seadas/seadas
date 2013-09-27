@@ -151,6 +151,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
         SeadasLogger.getLogger().info("dialog result: " + dialogResult);
 
         if (dialogResult != ModalDialog.ID_OK) {
+            cloProgramUI.getProcessorModel().getParamList().clearPropertyChangeSupport();
+            cloProgramUI.getProcessorModel().fireEvent("cancel");
             return;
         }
 

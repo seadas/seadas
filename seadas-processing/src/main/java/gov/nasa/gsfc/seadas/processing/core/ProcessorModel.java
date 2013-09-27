@@ -380,6 +380,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public boolean updateIFileInfo(String ifileName) {
 
+        if (programName.equals("multilevel_processor") || programName.equals("multilevel_processor.py"))  {
+            return true;
+        }
         if (verifyIFilePath(ifileName)) {
             String ofileName = SeadasFileUtils.findNextLevelFileName(ifileName, programName);
             //if (ofileName.)

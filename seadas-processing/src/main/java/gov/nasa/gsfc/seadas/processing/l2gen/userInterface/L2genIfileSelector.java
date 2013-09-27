@@ -73,6 +73,14 @@ public class L2genIfileSelector {
             }
         }
         );
+        l2genDataProcessorModel.addPropertyChangeListener("cancel", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //l2genDataProcessorModel = null;
+                sourceProductSelector = null;
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
     }
 
     private boolean isControlHandlerEnabled() {

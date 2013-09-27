@@ -12,11 +12,12 @@ import javax.swing.*;
  * Time: 3:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface CloProgramUI {
+public interface CloProgramUI{
     public JPanel getParamPanel();
     public ProcessorModel getProcessorModel();
     public Product getSelectedSourceProduct();
     public boolean isOpenOutputInApp();
     public String getParamString();
     public void setParamString(String paramString);
+    //public void destroy();
 }

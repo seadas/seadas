@@ -102,7 +102,12 @@ public class ParamList {
     }
 
     public void clearPropertyChangeSupport() {
-        propertyChangeSupport = new SwingPropertyChangeSupport(this);
+        //propertyChangeSupport = new SwingPropertyChangeSupport(this);
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
+        }
+
     }
 
     // this makes a deep copy of the ParamInfo objects, but a shallow copy of the propertyChangeSupport

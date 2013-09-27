@@ -40,7 +40,6 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -300,16 +299,19 @@ public class SourceProductFileSelector {
         productListModel.removeAllElements();
     }
 
-    public void addFocusListener(FocusListener listener) {
-        //ifileTextfield.addFocusListener(listener);
-    }
-
     public void addSelectionChangeListener(SelectionChangeListener listener) {
         selectionContext.addSelectionChangeListener(listener);
     }
 
     public void removeSelectionChangeListener(SelectionChangeListener listener) {
         selectionContext.removeSelectionChangeListener(listener);
+    }
+
+    public void removeListeners(){
+       SelectionChangeListener[] selectionChangeListeners = selectionContext.getSelectionChangeListeners();
+        for (int i = 0; i < selectionChangeListeners.length; i++) {
+            this.selectionContext.removeSelectionChangeListener(selectionChangeListeners[i]);
+        }
     }
 
     private void addProduct(Product product) {
