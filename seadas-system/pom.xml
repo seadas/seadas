@@ -41,7 +41,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <seadas.version>7.0.1</seadas.version>
         <beam.version>4.11.1-SNAPSHOT</beam.version>
-        <ceres.version>0.13.3-SNAPSHOT</ceres.version>
+        <ceres.version>0.13.2</ceres.version>
         <junit.version>4.9</junit.version>
         <geotools.version>2.7.4</geotools.version>
         <jide.version>3.3.7</jide.version>
