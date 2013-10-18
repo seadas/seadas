@@ -116,6 +116,8 @@ public class L1BModisFileReader extends SeadasFileReader {
                 if (!variable.getGroup().getShortName().equals("Data_Fields")) {
                     continue;   // sort out variables from other groups
                 }
+                // Todo! Although deprecated in 4.3.16, the official documentation for 4.3.18 does not state this method as deprecated.
+                // At the moment, we keep it as it runs - should be checked again when updating the NetCDF library. tb 2013-10-18
                 if (variable.getDataType().getSize() != 2) {
                     continue;   // sort out everything that is not 16 bit
                 }
@@ -126,32 +128,28 @@ public class L1BModisFileReader extends SeadasFileReader {
                     if (mustFlipX && mustFlipY) {
                         dataArray.flip(0).flip(1);
                     }
-                    final short[] integer_data = (short[]) dataArray.copyTo1DJavaArray();
-                    final float[] float_data = new float[integer_data.length];
+
+                    final float[] float_data = new float[(int) dataArray.getSize()];
                     for (int i = 0; i < float_data.length; i++) {
-                        float_data[i] = integer_data[i] * scale_factor;
+                        float_data[i] = dataArray.getFloat(i) * scale_factor;
                     }
 
-                    int cntl_lat_ix;
-                    int cntl_lon_ix;
+                    int subSampling;
                     float offsetY;
                     String resolution = getStringAttribute("MODIS_Resolution");
                     if (resolution.equals("500m")) {
-                        cntl_lat_ix = 2;
-                        cntl_lon_ix = 2;
+                        subSampling = 2;
                         offsetY = 0.5f;
                     } else if (resolution.equals("250m")) {
-                        cntl_lat_ix = 4;
-                        cntl_lon_ix = 4;
+                        subSampling = 4;
                         offsetY = 1.5f;
                     } else {
-                        cntl_lat_ix = 5;
-                        cntl_lon_ix = 5;
+                        subSampling = 5;
                         offsetY = 0f;
                     }
 
                     final TiePointGrid tiePointGrid = new TiePointGrid(variable.getShortName(), tpWidth, tpHeight, 0, offsetY,
-                            cntl_lon_ix, cntl_lat_ix, float_data);
+                            subSampling, subSampling, float_data);
                     product.addTiePointGrid(tiePointGrid);
 
                 } catch (IOException e) {
