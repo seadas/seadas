@@ -48,17 +48,16 @@ public class BathymetryReader {
             int length = attribute.getLength();
             Object stringValue = attribute.getValue(0);
 
-
-            if (attribute.getName().equals("right_lon")) {
+            if (attribute.getShortName().equals("right_lon")) {
                 endLon = Double.parseDouble(attribute.getValue(0).toString());
             }
-            if (attribute.getName().equals("upper_lat")) {
+            if (attribute.getShortName().equals("upper_lat")) {
                 startLat = Double.parseDouble(attribute.getValue(0).toString());
             }
-            if (attribute.getName().equals("lower_lat")) {
+            if (attribute.getShortName().equals("lower_lat")) {
                 endLat = Double.parseDouble(attribute.getValue(0).toString());
             }
-            if (attribute.getName().equals("left_lon")) {
+            if (attribute.getShortName().equals("left_lon")) {
                 startLon = Double.parseDouble(attribute.getValue(0).toString());
             }
 
@@ -66,11 +65,11 @@ public class BathymetryReader {
 
 
         for (Dimension dimension : dimensions) {
-            if (dimension.getName().equals("lon")) {
+            if (dimension.getShortName().equals("lon")) {
                 dimensionLon = dimension.getLength();
             }
 
-            if (dimension.getName().equals("lat")) {
+            if (dimension.getShortName().equals("lat")) {
                 dimensionLat = dimension.getLength();
             }
         }
@@ -97,7 +96,6 @@ public class BathymetryReader {
      *         look at seadasFileReader for netCDF examples.
      *         ncdump -h ETOPO1_ocssw.nc
      */
-
 
 
     public short getHeight(int latIndex, int lonIndex) {
@@ -158,12 +156,12 @@ public class BathymetryReader {
 
     public int getLatIndex(float lat) {
         double delta = (endLat - startLat) / dimensionLat;
-        return  (int) Math.round((lat - startLat) / delta);
+        return (int) Math.round((lat - startLat) / delta);
     }
 
     public int getLonIndex(float lon) {
         double delta = (endLat - startLon) / dimensionLon;
-        return  (int) Math.round((lon - startLon) / delta);
+        return (int) Math.round((lon - startLon) / delta);
     }
 
     public short getMissingValue() {
@@ -175,7 +173,14 @@ public class BathymetryReader {
 
         for (Variable variable : variables) {
             if (variable.getShortName().equals("height")) {
-                missingValue = (short) Double.parseDouble(variable.findAttribute("missing_value").getStringValue());
+                List<Attribute> attributes = variable.getAttributes();
+
+                for (Attribute attribute : attributes) {
+                    if (attribute.getShortName().equals("missing_value")) {
+                        missingValue = Short.parseShort(attribute.getValue(0).toString());
+                    }
+                }
+
                 break;
             }
         }

@@ -19,6 +19,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.DataBuffer;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -203,8 +205,6 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
 
                                     product.addBand(bathymetryBand);
 
-                                    String maskMath = bathymetryData.getMaskMath();
-
                                     Mask bathymetryMask = Mask.BandMathsType.create(
                                             bathymetryData.getMaskName(),
                                             bathymetryData.getMaskDescription(),
@@ -250,6 +250,9 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
     private void reformatSourceImage(Band band, ImageLayout imageLayout) {
         RenderingHints renderingHints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, imageLayout);
         MultiLevelImage sourceImage = band.getSourceImage();
+        Raster r = sourceImage.getData();
+        DataBuffer db = r.getDataBuffer();
+        int t = db.getDataType();
         int dataType = sourceImage.getData().getDataBuffer().getDataType();
         RenderedImage newImage = FormatDescriptor.create(sourceImage, dataType, renderingHints);
         band.setSourceImage(newImage);

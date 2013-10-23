@@ -95,6 +95,8 @@ public class BathymetryOp extends Operator {
         } catch (IOException e) {
             throw new OperatorException("Error creating class BathymetryMaskClassifier.", e);
         }
+
+
     }
 
 
@@ -126,7 +128,11 @@ public class BathymetryOp extends Operator {
         targetProduct = new Product("Bathymetry Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
                 sourceProduct.getSceneRasterHeight());
         final Band waterBand = targetProduct.addBand(BATHYMETRY_BAND_NAME, ProductData.TYPE_FLOAT32);
-        waterBand.setNoDataValue(classifier.getMissingValue());
+        // todo Danny is fixing this, commented out because order is different, haven't used reader yet
+   //     waterBand.setNoDataValue(classifier.getMissingValue());
+        waterBand.setNoDataValue(-32767);
+
+
         waterBand.setNoDataValueUsed(true);
 
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
