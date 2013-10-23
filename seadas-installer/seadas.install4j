@@ -71,7 +71,7 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui installerType="1" addOnAppId="" suggestPreviousLocations="true" autoUpdateDescriptorUrl="http://seadas.gsfc.nasa.gov/installers/updates.xml" useAutoUpdateBaseUrl="false" autoUpdateBaseUrl="">
+  <installerGui installerType="1" addOnAppId="" suggestPreviousLocations="true" autoUpdateDescriptorUrl="http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/latest/updates.xml" useAutoUpdateBaseUrl="false" autoUpdateBaseUrl="">
     <customCode>
       <directory location="./target/classes" />
     </customCode>
