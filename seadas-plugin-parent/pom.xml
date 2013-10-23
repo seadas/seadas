@@ -17,7 +17,7 @@
     <description>This POM serves as parent for all internal plugin modules, providing their dependency management.</description>
 
     <properties>
-        <seadas.version>7.0.1</seadas.version>
+        <seadas.version>7.1-SNAPSHOT</seadas.version>
         <beam.version>4.11.1-SNAPSHOT</beam.version>
         <ceres.version>0.13.2</ceres.version>
         <geotools.version>2.7.4</geotools.version>

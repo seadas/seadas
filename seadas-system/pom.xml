@@ -32,14 +32,14 @@
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas-system</artifactId>
     <description>This POM serves as aggregator for all system level modules.</description>
-    <version>7.0.1</version>
+    <version>7.1-SNAPSHOT</version>
 
     <properties>
         <!-- In version 3.0 of Maven the sourceEncoding property will be embedded in the build tag.
         For now the convention is to that it as property.
         TODO: Move the sourceEncoding property to the build tag if version 3.0 is released -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <seadas.version>7.0.1</seadas.version>
+        <seadas.version>7.1-SNAPSHOT</seadas.version>
         <beam.version>4.11.1-SNAPSHOT</beam.version>
         <ceres.version>0.13.2</ceres.version>
         <junit.version>4.9</junit.version>
