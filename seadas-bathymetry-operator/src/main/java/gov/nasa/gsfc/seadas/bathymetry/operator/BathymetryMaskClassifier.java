@@ -209,12 +209,49 @@ public class BathymetryMaskClassifier {
         return computeAverage(subsamplingFactorX, subsamplingFactorY, valueSum, invalidCount);
     }
 
+
+    public int getBathymetryAverageNew(GeoCoding geoCoding, PixelPos pixelPos, int subsamplingFactorX, int subsamplingFactorY) {
+        float valueSum = 0;
+        double xStep = 1.0 / subsamplingFactorX;
+        double yStep = 1.0 / subsamplingFactorY;
+        final GeoPos geoPos = new GeoPos();
+        final PixelPos currentPos = new PixelPos();
+        int invalidCount = 0;
+        for (int sx = 0; sx < subsamplingFactorX; sx++) {
+            currentPos.x = (float) (pixelPos.x + sx * xStep);
+            for (int sy = 0; sy < subsamplingFactorY; sy++) {
+                currentPos.y = (float) (pixelPos.y + sy * yStep);
+                geoCoding.getGeoPos(currentPos, geoPos);
+                int bathymetryPoint = getBathymetryPoint(geoPos);
+                if (bathymetryPoint != bathymetryReader.getMissingValue()) {
+                    valueSum += bathymetryPoint;
+                } else {
+                    invalidCount++;
+                }
+            }
+        }
+
+        int average = computeAverageNew(subsamplingFactorX, subsamplingFactorY, valueSum, invalidCount);
+
+        return computeAverageNew(subsamplingFactorX, subsamplingFactorY, valueSum, invalidCount);
+    }
+
+
     private byte computeAverage(int subsamplingFactorX, int subsamplingFactorY, float valueSum, int invalidCount) {
         final boolean allValuesInvalid = invalidCount == subsamplingFactorX * subsamplingFactorY;
         if (allValuesInvalid) {
             return (byte) bathymetryReader.getMissingValue();
         } else {
             return (byte) (100 * valueSum / (subsamplingFactorX * subsamplingFactorY));
+        }
+    }
+
+    private int computeAverageNew(int subsamplingFactorX, int subsamplingFactorY, float valueSum, int invalidCount) {
+        final boolean allValuesInvalid = invalidCount == subsamplingFactorX * subsamplingFactorY;
+        if (allValuesInvalid) {
+            return (int) bathymetryReader.getMissingValue();
+        } else {
+            return (int) (valueSum / (subsamplingFactorX * subsamplingFactorY));
         }
     }
 

@@ -41,7 +41,7 @@ import java.text.MessageFormat;
  * Since the base data may exhibit a higher resolution than the input product, a subsampling &ge;1 may be specified;
  * therefore, mixed pixels may occur.
  *
- * @author  Danny Knowles
+ * @author Danny Knowles
  */
 @SuppressWarnings({"FieldCanBeLocal"})
 @OperatorMetadata(alias = "bathymetry",
@@ -78,8 +78,6 @@ public class BathymetryOp extends Operator {
     private int subSamplingFactorY;
 
 
-
-
     @TargetProduct
     private Product targetProduct;
     private BathymetryMaskClassifier classifier;
@@ -88,17 +86,17 @@ public class BathymetryOp extends Operator {
     public void initialize() throws OperatorException {
         validateParameter();
         validateSourceProduct();
-        initTargetProduct();
+
 
         try {
             classifier = new BathymetryMaskClassifier(resolution, filename);
         } catch (IOException e) {
             throw new OperatorException("Error creating class BathymetryMaskClassifier.", e);
         }
-
+        //todo this is order dependent, do not have to hardcode missing value if this is here
+        initTargetProduct();
 
     }
-
 
 
     private void validateParameter() {
@@ -129,8 +127,8 @@ public class BathymetryOp extends Operator {
                 sourceProduct.getSceneRasterHeight());
         final Band waterBand = targetProduct.addBand(BATHYMETRY_BAND_NAME, ProductData.TYPE_FLOAT32);
         // todo Danny is fixing this, commented out because order is different, haven't used reader yet
-   //     waterBand.setNoDataValue(classifier.getMissingValue());
-        waterBand.setNoDataValue(-32767);
+        waterBand.setNoDataValue(classifier.getMissingValue());
+    //    waterBand.setNoDataValue(-32767);
 
 
         waterBand.setNoDataValueUsed(true);
@@ -146,7 +144,6 @@ public class BathymetryOp extends Operator {
     }
 
 
-
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
         final Rectangle rectangle = targetTile.getRectangle();
@@ -154,13 +151,16 @@ public class BathymetryOp extends Operator {
             final String targetBandName = targetBand.getName();
             final PixelPos pixelPos = new PixelPos();
             final GeoCoding geoCoding = sourceProduct.getGeoCoding();
-            for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
-                for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+
+//            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y=y++) {
+//                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
+            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y=y+100) {
+                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x=x+100) {
                     pixelPos.x = x;
                     pixelPos.y = y;
                     int dataValue = 0;
                     if (targetBandName.equals(BATHYMETRY_BAND_NAME)) {
-                        dataValue = classifier.getBathymetryAverage(geoCoding, pixelPos,
+                        dataValue = classifier.getBathymetryAverageNew(geoCoding, pixelPos,
                                 subSamplingFactorX,
                                 subSamplingFactorY);
                     }
