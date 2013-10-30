@@ -22,6 +22,7 @@ import org.esa.beam.framework.datamodel.GeoCoding;
 import org.esa.beam.framework.datamodel.GeoPos;
 import org.esa.beam.framework.datamodel.PixelPos;
 import gov.nasa.gsfc.seadas.bathymetry.util.ImageDescriptor;
+import ucar.ma2.Array;
 
 import javax.media.jai.OpImage;
 import java.awt.image.Raster;
@@ -237,6 +238,10 @@ public class BathymetryMaskClassifier {
     }
 
 
+
+
+
+
     private byte computeAverage(int subsamplingFactorX, int subsamplingFactorY, float valueSum, int invalidCount) {
         final boolean allValuesInvalid = invalidCount == subsamplingFactorX * subsamplingFactorY;
         if (allValuesInvalid) {
@@ -266,6 +271,24 @@ public class BathymetryMaskClassifier {
             bathymetryPoint = bathymetryReader.getMissingValue();
         }
         return bathymetryPoint;
+    }
+
+    public short getHeight(int latIndex, int lonIndex) {
+        return bathymetryReader.getHeight(latIndex, lonIndex);
+    }
+
+    public int getLatIndex(float lat) {
+        return bathymetryReader.getLatIndex(lat);
+    }
+
+
+    public int getLonIndex(float lon) {
+        return bathymetryReader.getLonIndex(lon);
+    }
+
+
+    public Array getHeightArray(int[] origin, int[] shape) {
+        return bathymetryReader.getHeightArray(origin, shape);
     }
 
 

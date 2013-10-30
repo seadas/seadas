@@ -68,6 +68,25 @@ public class BathymetryReader {
         }
     }
 
+    public Array getHeightArray(int[] origin, int[] shape) {
+
+        Array heightArray = null;
+
+        try {
+            heightArray = heightVariable.read(origin, shape);
+        } catch (IOException e) {
+
+        } catch (InvalidRangeException e) {
+
+        }
+
+        if (heightArray != null) {
+            return heightArray;
+        } else {
+            return null;
+        }
+    }
+
 
     public short getHeight(int latIndex, int lonIndex) {
 

@@ -27,6 +27,7 @@ import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.util.ProductUtils;
+import ucar.ma2.Array;
 
 import java.awt.*;
 import java.io.IOException;
@@ -53,6 +54,7 @@ import java.text.MessageFormat;
 public class BathymetryOp extends Operator {
 
     public static final String BATHYMETRY_BAND_NAME = "bathymetry";
+    public static final float NULL_COORDINATE = (float) -999;
 
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
@@ -128,7 +130,7 @@ public class BathymetryOp extends Operator {
         final Band waterBand = targetProduct.addBand(BATHYMETRY_BAND_NAME, ProductData.TYPE_FLOAT32);
         // todo Danny is fixing this, commented out because order is different, haven't used reader yet
         waterBand.setNoDataValue(classifier.getMissingValue());
-    //    waterBand.setNoDataValue(-32767);
+        //    waterBand.setNoDataValue(-32767);
 
 
         waterBand.setNoDataValueUsed(true);
@@ -144,6 +146,128 @@ public class BathymetryOp extends Operator {
     }
 
 
+
+    public void computeTileNew(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
+
+        final String targetBandName = targetBand.getName();
+
+        final Rectangle rectangle = targetTile.getRectangle();
+
+        // not sure if this is really needed but just in case
+        if (!targetBandName.equals(BATHYMETRY_BAND_NAME)) {
+            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
+                    int dataValue = 0;
+                    targetTile.setSample(x, y, dataValue);
+                }
+            }
+
+            return;
+        }
+
+
+        try {
+            final GeoCoding geoCoding = sourceProduct.getGeoCoding();
+            final PixelPos pixelPos = new PixelPos();
+            final GeoPos geoPos = new GeoPos();
+
+            // establish 4 locations on the earth to minimize any effects of dateline and pole crossing
+            EarthBox earthBoxNW = new EarthBox();
+            EarthBox earthBoxNE = new EarthBox();
+            EarthBox earthBoxSW = new EarthBox();
+            EarthBox earthBoxSE = new EarthBox();
+
+            // loop through perimeter of tile, adding each pixel geolocation to it's appropriate earthBox
+            // at this point the earthBoxes will be adjusted their mins and maxes of the lats and lons.
+            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
+                    pixelPos.setLocation(x, y);
+
+                    geoCoding.getGeoPos(pixelPos, geoPos);
+
+                    if (geoPos.lat >= 0) {
+                        if (geoPos.lon >= 0) {
+                            earthBoxNE.add(geoPos);
+                        } else {
+                            earthBoxNW.add(geoPos);
+                        }
+                    } else {
+                        if (geoPos.lon >= 0) {
+                            earthBoxSE.add(geoPos);
+                        } else {
+                            earthBoxSW.add(geoPos);
+                        }
+                    }
+                }
+            }
+
+
+
+            // for all applicable earthBoxes add in the dimensions and bathymetry height array which is obtained at
+            // this point from the source in a single chunk call.
+            EarthBox earthBoxes[] = {earthBoxNE, earthBoxNW, earthBoxSE, earthBoxSW};
+
+            for (EarthBox earthBox : earthBoxes) {
+                if (earthBox.getMaxLat() != EarthBox.NULL_COORDINATE) {
+                    // add dimensions to the earthBox
+                    int minLatIndex = classifier.getLatIndex(earthBox.getMinLat());
+                    int minLonIndex = classifier.getLonIndex(earthBox.getMinLon());
+                    int maxLatIndex = classifier.getLatIndex(earthBox.getMaxLat());
+                    int maxLonIndex = classifier.getLonIndex(earthBox.getMaxLon());
+
+                    int dimensionLat = maxLatIndex - minLatIndex + 1;
+                    int dimensionLon = maxLonIndex - minLonIndex + 1;
+
+                    earthBox.setDimensionLat(dimensionLat);
+                    earthBox.setDimensionLon(dimensionLon);
+
+                    // get the bathymetry height array from the source
+                    int[] origin = new int[]{minLatIndex, minLonIndex};
+                    int[] shape = new int[]{dimensionLat, dimensionLon};
+
+                    Array heightArray = classifier.getHeightArray(origin, shape);
+
+                    // add the value array to the earthBox
+                    earthBox.setValueUcarArray(heightArray);
+                }
+            }
+
+
+            // loop through all the tile pixels, geolocate them, and get their bathymetry height from the
+            // appropriate earthBox.
+            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
+                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
+                    pixelPos.setLocation(x, y);
+                    geoCoding.getGeoPos(pixelPos, geoPos);
+
+                    final short bathymetryValue;
+                    if (geoPos.isValid()) {
+                        if (geoPos.lat >= 0) {
+                            if (geoPos.lon >= 0) {
+                                bathymetryValue = earthBoxNE.getValue(geoPos);
+                            } else {
+                                bathymetryValue = earthBoxNW.getValue(geoPos);
+                            }
+                        } else {
+                            if (geoPos.lon >= 0) {
+                                bathymetryValue = earthBoxSE.getValue(geoPos);
+                            } else {
+                                bathymetryValue = earthBoxSW.getValue(geoPos);
+                            }
+                        }
+                    } else {
+                        bathymetryValue = classifier.getMissingValue();
+                    }
+
+                    targetTile.setSample(x, y, bathymetryValue);
+                }
+            }
+
+        } catch (Exception e) {
+            throw new OperatorException("Error computing tile '" + targetTile.getRectangle().toString() + "'.", e);
+        }
+    }
+
     @Override
     public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
         final Rectangle rectangle = targetTile.getRectangle();
@@ -154,8 +278,8 @@ public class BathymetryOp extends Operator {
 
 //            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y=y++) {
 //                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
-            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y=y+100) {
-                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x=x+100) {
+            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y = y + 400) {
+                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x = x + 400) {
                     pixelPos.x = x;
                     pixelPos.y = y;
                     int dataValue = 0;
