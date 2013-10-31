@@ -58,7 +58,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
 
     public static final String COMMAND_ID = "bathymetry";
     public static final String TOOL_TIP = "Add bathymetry band and mask";
-    public static final String ICON = "bathymetry.jpeg";
+    public static final String ICON = "bathymetry.png";
 
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
     public static final String BATHYMETRY_PRODUCT_NAME = "bathymetry";

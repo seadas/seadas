@@ -20,61 +20,45 @@ import java.util.List;
  */
 public class BathymetryReader {
 
+    //  For test purposes here is the command line view:
+    // OCSSW/run/data/common:   ncdump -h ETOPO1_ocssw.nc
+
     private NetcdfFile ncFile;
-    List<Attribute> globalAttributes;
-    List<Dimension> dimensions;
 
     double startLat = 0;
     double endLat = 0;
     double startLon = 0;
     double endLon = 0;
 
+    double deltaLat;
+    double deltaLon;
+
     int dimensionLat = 0;
     int dimensionLon = 0;
+
+    Variable heightVariable;
 
     private short missingValue;
 
     public BathymetryReader(File file) throws IOException {
         ncFile = NetcdfFile.open(file.getAbsolutePath());
-        globalAttributes = ncFile.getGlobalAttributes();
-        dimensions = ncFile.getDimensions();
 
-        init();
-    }
+        startLon = ncFile.findGlobalAttribute("left_lon").getNumericValue().doubleValue();
+        endLon = ncFile.findGlobalAttribute("right_lon").getNumericValue().doubleValue();
 
+        startLat = ncFile.findGlobalAttribute("lower_lat").getNumericValue().doubleValue();
+        endLat = ncFile.findGlobalAttribute("upper_lat").getNumericValue().doubleValue();
 
-    public void init() {
-        for (Attribute attribute : globalAttributes) {
-            int length = attribute.getLength();
-            Object stringValue = attribute.getValue(0);
+        dimensionLat = ncFile.findDimension("lat").getLength();
+        dimensionLon = ncFile.findDimension("lon").getLength();
 
-            if (attribute.getShortName().equals("right_lon")) {
-                endLon = Double.parseDouble(attribute.getValue(0).toString());
-            }
-            if (attribute.getShortName().equals("upper_lat")) {
-                startLat = Double.parseDouble(attribute.getValue(0).toString());
-            }
-            if (attribute.getShortName().equals("lower_lat")) {
-                endLat = Double.parseDouble(attribute.getValue(0).toString());
-            }
-            if (attribute.getShortName().equals("left_lon")) {
-                startLon = Double.parseDouble(attribute.getValue(0).toString());
-            }
+        deltaLat = (endLat - startLat) / dimensionLat;
+        deltaLon = (endLon - startLon) / dimensionLon;
 
-        }
+        heightVariable = ncFile.findVariable("height");
 
+        missingValue = heightVariable.findAttribute("missing_value").getNumericValue().shortValue();
 
-        for (Dimension dimension : dimensions) {
-            if (dimension.getShortName().equals("lon")) {
-                dimensionLon = dimension.getLength();
-            }
-
-            if (dimension.getShortName().equals("lat")) {
-                dimensionLat = dimension.getLength();
-            }
-        }
-
-        setMissingValue();
     }
 
 
@@ -84,105 +68,74 @@ public class BathymetryReader {
         }
     }
 
+    public Array getHeightArray(int[] origin, int[] shape) {
 
-    /**
-     * Returns the sample value at the given geo-position, regardless of the source resolution.
-     *
-     * @param latIndex The latitude index.
-     * @param lonIndex The longitude index.
-     * @return bathymetry height
-     *         <p/>
-     *         <p/>
-     *         look at seadasFileReader for netCDF examples.
-     *         ncdump -h ETOPO1_ocssw.nc
-     */
+        Array heightArray = null;
+
+        try {
+            heightArray = heightVariable.read(origin, shape);
+        } catch (IOException e) {
+
+        } catch (InvalidRangeException e) {
+
+        }
+
+        if (heightArray != null) {
+            return heightArray;
+        } else {
+            return null;
+        }
+    }
 
 
     public short getHeight(int latIndex, int lonIndex) {
 
-        List<Variable> variables = ncFile.getVariables();
+        short height;
+        int[] origin = new int[]{latIndex, lonIndex};
+        int[] shape = new int[]{1, 1};
 
-        Array heightUcarArray = null;
-        short[] height = null;
-
-        for (Variable variable : variables) {
-            if (variable.getShortName().equals("height")) {
-                try {
-                    heightUcarArray = variable.read(new int[]{latIndex, lonIndex}, new int[]{1, 1});
-                    height = (short[]) heightUcarArray.copyTo1DJavaArray();
-                } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (InvalidRangeException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                break;
-            }
-        }
-
-        if (height == null) {
+        try {
+            height = heightVariable.read(origin, shape).getShort(0);
+        } catch (IOException e) {
+            return getMissingValue();
+        } catch (InvalidRangeException e) {
             return getMissingValue();
         }
 
-        return height[0];
+        return height;
     }
 
-    public byte getWaterPresent(int latIndex, int lonIndex) {
-        List<Variable> variables = ncFile.getVariables();
-
-        Array waterPresentUcarArray = null;
-        byte[] waterPresent = null;
-
-        for (Variable variable : variables) {
-            if (variable.getShortName().equals("watermask")) {
-                try {
-                    waterPresentUcarArray = variable.read(new int[]{latIndex, lonIndex}, new int[]{1, 1});
-                    waterPresent = (byte[]) waterPresentUcarArray.copyTo1DJavaArray();
-                } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (InvalidRangeException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                break;
-            }
-        }
-
-        if (waterPresent == null) {
-            //todo get missing value
-            return -1;
-        }
-
-        return waterPresent[0];
-    }
 
     public int getLatIndex(float lat) {
-        double delta = (endLat - startLat) / dimensionLat;
-        return (int) Math.round((lat - startLat) / delta);
+        int latIndex = (int) Math.round((lat - startLat) / deltaLat);
+
+        if (latIndex > dimensionLat - 1) {
+            latIndex = dimensionLat - 1;
+        }
+
+        if (latIndex < 0) {
+            latIndex = 0;
+        }
+
+        return latIndex;
     }
 
     public int getLonIndex(float lon) {
-        double delta = (endLat - startLon) / dimensionLon;
-        return (int) Math.round((lon - startLon) / delta);
+        int lonIndex = (int) Math.round((lon - startLon) / deltaLon);
+
+        if (lonIndex > dimensionLon - 1) {
+            lonIndex = dimensionLon - 1;
+        }
+
+        if (lonIndex < 0) {
+            lonIndex = 0;
+        }
+
+        return lonIndex;
     }
 
     public short getMissingValue() {
         return missingValue;
     }
 
-    public void setMissingValue() {
-        List<Variable> variables = ncFile.getVariables();
-
-        for (Variable variable : variables) {
-            if (variable.getShortName().equals("height")) {
-                List<Attribute> attributes = variable.getAttributes();
-
-                for (Attribute attribute : attributes) {
-                    if (attribute.getShortName().equals("missing_value")) {
-                        missingValue = Short.parseShort(attribute.getValue(0).toString());
-                    }
-                }
-
-                break;
-            }
-        }
-    }
 }
