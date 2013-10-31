@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryMaskClassifier;
+
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
@@ -20,6 +20,9 @@ import java.util.ArrayList;
 public class BathymetryData {
 
     BathymetryData bathymetryData = this;
+
+    public static final int RESOLUTION_BATHYMETRY_FILE = 1855;
+    public static final String FILENAME_BATHYMETRY = "ETOPO1_ocssw.nc";
 
     public static String NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT = "NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT";
     public static String FILE_INSTALLED_EVENT2 = "FILE_INSTALLED_EVENT2";
@@ -66,20 +69,16 @@ public class BathymetryData {
         File ocsswRunDir = new File(ocsswRootDir, "run");
         File ocsswRunDataDir = new File(ocsswRunDir, "data");
         File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
-        File bathymetryFile = new File(ocsswRunDataCommonDir, BathymetryMaskClassifier.FILENAME_BATHYMETRY);
+        File bathymetryFile = new File(ocsswRunDataCommonDir, FILENAME_BATHYMETRY);
 
 
-        sourceFileInfo = new SourceFileInfo(BathymetryMaskClassifier.RESOLUTION_1km,
+        sourceFileInfo = new SourceFileInfo(RESOLUTION_BATHYMETRY_FILE,
                 SourceFileInfo.Unit.METER,
                 bathymetryFile);
         getSourceFileInfos().add(sourceFileInfo);
         // set the default
         this.sourceFileInfo = sourceFileInfo;
 
-        sourceFileInfo = new SourceFileInfo(BathymetryMaskClassifier.RESOLUTION_10km,
-                SourceFileInfo.Unit.METER,
-                BathymetryMaskClassifier.FILENAME_GSHHS_10km);
-        getSourceFileInfos().add(sourceFileInfo);
 
         this.addPropertyChangeListener(BathymetryData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, new PropertyChangeListener() {
             @Override
@@ -260,6 +259,15 @@ public class BathymetryData {
     }
 
 
+    static public File getBathymetryFile(String bathymetryFilename) {
+        File ocsswRootDir = getOcsswRoot();
+        File ocsswRunDir = new File(ocsswRootDir, "run");
+        File ocsswRunDataDir = new File(ocsswRunDir, "data");
+        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
+        File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
+
+        return bathymetryFile;
+    }
 
 }
 

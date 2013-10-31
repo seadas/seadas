@@ -23,29 +23,28 @@ public class EarthBox {
     float deltaLat = NULL_COORDINATE;
     float deltaLon = NULL_COORDINATE;
 
-    private int dimensionLat = 0;
-    private int dimensionLon = 0;
+    private int latDimensionLength = 0;
+    private int lonDimensionLength = 0;
 
-    private Array valueUcarArray;
     private short[][] values;
 
     public EarthBox() {
 
     }
 
-    public void setDeltaLon() {
+    private void setDeltaLon() {
         if (getMinLon() != NULL_COORDINATE) {
-            deltaLon = (getMaxLon() - getMinLon()) / getDimensionLon();
+            deltaLon = (getMaxLon() - getMinLon()) / getLonDimensionLength();
         }
     }
 
-    public void setDeltaLat() {
+    private void setDeltaLat() {
         if (getMinLat() != NULL_COORDINATE) {
-            deltaLat = (getMaxLat() - getMinLat()) / getDimensionLat();
+            deltaLat = (getMaxLat() - getMinLat()) / getLatDimensionLength();
         }
     }
 
-    public float getDeltaLat() {
+    private float getDeltaLat() {
         if (deltaLat == NULL_COORDINATE) {
             setDeltaLat();
         }
@@ -53,7 +52,7 @@ public class EarthBox {
         return deltaLat;
     }
 
-    public float getDeltaLon() {
+    private float getDeltaLon() {
         if (deltaLon == NULL_COORDINATE) {
             setDeltaLon();
         }
@@ -61,10 +60,10 @@ public class EarthBox {
         return deltaLon;
     }
 
-    public int getLatIndex(float lat) {
+    private int getLatIndex(float lat) {
         int latIndex = (int) Math.round((lat - getMinLat()) / getDeltaLat());
-        if (latIndex > dimensionLat -1) {
-            latIndex = dimensionLat - 1;
+        if (latIndex > getLatDimensionLength() - 1) {
+            latIndex = getLatDimensionLength() - 1;
         }
 
         if (latIndex < 0) {
@@ -73,10 +72,10 @@ public class EarthBox {
         return latIndex;
     }
 
-    public int getLonIndex(float lon) {
+    private int getLonIndex(float lon) {
         int lonIndex = (int) Math.round((lon - getMinLon()) / getDeltaLon());
-        if (lonIndex > dimensionLon -1) {
-            lonIndex = dimensionLon - 1;
+        if (lonIndex > getLonDimensionLength() - 1) {
+            lonIndex = getLonDimensionLength() - 1;
         }
 
         if (lonIndex < 0) {
@@ -89,7 +88,7 @@ public class EarthBox {
         return minLat;
     }
 
-    public void setMinLat(float minLat) {
+    private void setMinLat(float minLat) {
         this.minLat = minLat;
         this.deltaLat = NULL_COORDINATE;
     }
@@ -98,7 +97,7 @@ public class EarthBox {
         return maxLat;
     }
 
-    public void setMaxLat(float maxLat) {
+    private void setMaxLat(float maxLat) {
         this.maxLat = maxLat;
         this.deltaLat = NULL_COORDINATE;
     }
@@ -107,7 +106,7 @@ public class EarthBox {
         return minLon;
     }
 
-    public void setMinLon(float minLon) {
+    private void setMinLon(float minLon) {
         this.minLon = minLon;
         this.deltaLon = NULL_COORDINATE;
     }
@@ -116,25 +115,25 @@ public class EarthBox {
         return maxLon;
     }
 
-    public void setMaxLon(float maxLon) {
+    private void setMaxLon(float maxLon) {
         this.maxLon = maxLon;
         this.deltaLon = NULL_COORDINATE;
     }
 
-    public int getDimensionLat() {
-        return dimensionLat;
+    public int getLatDimensionLength() {
+        return latDimensionLength;
     }
 
-    public void setDimensionLat(int dimensionLat) {
-        this.dimensionLat = dimensionLat;
+    private void setLatDimensionLength(int latDimensionLength) {
+        this.latDimensionLength = latDimensionLength;
     }
 
-    public int getDimensionLon() {
-        return dimensionLon;
+    public int getLonDimensionLength() {
+        return lonDimensionLength;
     }
 
-    public void setDimensionLon(int dimensionLon) {
-        this.dimensionLon = dimensionLon;
+    private void setLonDimensionLength(int lonDimensionLength) {
+        this.lonDimensionLength = lonDimensionLength;
     }
 
     public void add(GeoPos geoPos) {
@@ -177,8 +176,14 @@ public class EarthBox {
         return values[latIndex][lonIndex];
     }
 
+    public void setValues(short[][] values) {
+        this.values = values;
+
+        setLatDimensionLength(values.length);
+        setLonDimensionLength(values[0].length);
+    }
+
     public void setValueUcarArray(Array valueUcarArray) {
         values = (short[][]) valueUcarArray.copyToNDJavaArray();
-        this.valueUcarArray = valueUcarArray;
     }
 }

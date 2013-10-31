@@ -18,14 +18,8 @@ package gov.nasa.gsfc.seadas.bathymetry.operator;
 
 import gov.nasa.gsfc.seadas.bathymetry.util.ImageDescriptorBuilder;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
-import org.esa.beam.framework.datamodel.GeoCoding;
-import org.esa.beam.framework.datamodel.GeoPos;
-import org.esa.beam.framework.datamodel.PixelPos;
 import gov.nasa.gsfc.seadas.bathymetry.util.ImageDescriptor;
-import ucar.ma2.Array;
 
-import javax.media.jai.OpImage;
-import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -38,27 +32,14 @@ import java.util.Properties;
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
 public class BathymetryMaskClassifier {
 
-    public static final int WATER_VALUE = 1;
-    public static final int INVALID_VALUE = 127;
-    public static final int LAND_VALUE = 0;
-
-
-    public static final int RESOLUTION_1km = 1000;
-    public static final int RESOLUTION_10km = 10000;
+    public static final int RESOLUTION_BATHYMETRY_FILE = 1855;
 
     public static final String FILENAME_BATHYMETRY = "ETOPO1_ocssw.nc";
-    public static final String FILENAME_GSHHS_10km = "GSHHS_water_mask_10km.zip";
 
-    static final int GSHHS_1_TILE_WIDTH = 500;
-    static final int GSHHS_1_TILE_HEIGHT = 250;
-    static final int GSHHS_1_IMAGE_WIDTH = 36000;
-    static final int GSHHS_1_IMAGE_HEIGHT = 18000;
-
-    static final int GSHHS_10_TILE_WIDTH = 250;
-    static final int GSHHS_10_TILE_HEIGHT = 125;
-    static final int GSHHS_10_IMAGE_WIDTH = 3600;
-    static final int GSHHS_10_IMAGE_HEIGHT = 1800;
-
+    static final int BATHYMETRY_TILE_WIDTH = 500;
+    static final int BATHYMETRY_TILE_HEIGHT = 250;
+    static final int BATHYMETRY_IMAGE_WIDTH = 21601;
+    static final int BATHYMETRY_IMAGE_HEIGHT = 10801;
 
     private PNGSourceImage gshhsImage;
 
@@ -78,13 +59,13 @@ public class BathymetryMaskClassifier {
      *
      * @param resolution The resolution specifying the source data which is to be queried. The units are in meters.
      *                   Needs to be <code>RESOLUTION_50m</code>, <code>RESOLUTION_150m</code>,
-     *                   <code>RESOLUTION_1km</code> or <code>RESOLUTION_10km</code>
+     *                   <code>RESOLUTION_BATHYMETRY_FILE</code> or <code>RESOLUTION_10km</code>
      * @throws java.io.IOException If some IO-error occurs creating the sources.
      */
     public BathymetryMaskClassifier(int resolution, String filename) throws IOException {
-        if (resolution != RESOLUTION_1km) {
+        if (resolution != RESOLUTION_BATHYMETRY_FILE) {
             throw new IllegalArgumentException(
-                    MessageFormat.format("Resolution needs to be {0}.", RESOLUTION_1km));
+                    MessageFormat.format("Resolution needs to be {0}.", RESOLUTION_BATHYMETRY_FILE));
         }
 
         this.resolution = resolution;
@@ -125,12 +106,12 @@ public class BathymetryMaskClassifier {
         ImageDescriptor imageDescriptor = null;
 
         String zipname = filename;
-        if (resolution == RESOLUTION_1km) {
+        if (resolution == RESOLUTION_BATHYMETRY_FILE) {
             imageDescriptor = new ImageDescriptorBuilder()
-                    .width(GSHHS_1_IMAGE_WIDTH)
-                    .height(GSHHS_1_IMAGE_HEIGHT)
-                    .tileWidth(GSHHS_1_TILE_WIDTH)
-                    .tileHeight(GSHHS_1_TILE_HEIGHT)
+                    .width(BATHYMETRY_IMAGE_WIDTH)
+                    .height(BATHYMETRY_IMAGE_HEIGHT)
+                    .tileWidth(BATHYMETRY_TILE_WIDTH)
+                    .tileHeight(BATHYMETRY_TILE_HEIGHT)
                     .auxdataDir(auxdataDir)
                     .zipFileName(zipname)
                     .build();
@@ -160,141 +141,6 @@ public class BathymetryMaskClassifier {
     }
 
 
-    private int getSample(double lat, double lon, double latDiff, double lonDiff, double offset, OpImage image) {
-        final double pixelSizeX = lonDiff / image.getWidth();
-        final double pixelSizeY = latDiff / image.getHeight();
-        final int x = (int) Math.round(lon / pixelSizeX);
-        final int y = (int) (Math.round((lat - offset) / pixelSizeY));
-        final Raster tile = image.getTile(image.XToTileX(x), image.YToTileY(y));
-        if (tile == null) {
-            return bathymetryReader.getMissingValue();
-        }
-        return tile.getSample(x, y, 0);
-    }
-
-    /**
-     * Returns the fraction of water for the given region, considering a subsampling factor.
-     *
-     * @param geoCoding          The geo coding of the product the watermask fraction shall be computed for.
-     * @param pixelPos           The pixel position the watermask fraction shall be computed for.
-     * @param subsamplingFactorX The factor between the high resolution water mask and the - lower resolution -
-     *                           source image in x direction. Only values in [1..M] are sensible,
-     *                           with M = (source image resolution in m/pixel) / (50 m/pixel)
-     * @param subsamplingFactorY The factor between the high resolution water mask and the - lower resolution -
-     *                           source image in y direction. Only values in [1..M] are sensible,
-     *                           with M = (source image resolution in m/pixel) / (50 m/pixel)
-     * @return The fraction of water in the given geographic rectangle, in the range [0..100].
-     */
-    public byte getBathymetryAverage(GeoCoding geoCoding, PixelPos pixelPos, int subsamplingFactorX, int subsamplingFactorY) {
-        float valueSum = 0;
-        double xStep = 1.0 / subsamplingFactorX;
-        double yStep = 1.0 / subsamplingFactorY;
-        final GeoPos geoPos = new GeoPos();
-        final PixelPos currentPos = new PixelPos();
-        int invalidCount = 0;
-        for (int sx = 0; sx < subsamplingFactorX; sx++) {
-            currentPos.x = (float) (pixelPos.x + sx * xStep);
-            for (int sy = 0; sy < subsamplingFactorY; sy++) {
-                currentPos.y = (float) (pixelPos.y + sy * yStep);
-                geoCoding.getGeoPos(currentPos, geoPos);
-                int bathymetryPoint = getBathymetryPoint(geoPos);
-                if (bathymetryPoint != bathymetryReader.getMissingValue()) {
-                    valueSum += bathymetryPoint;
-                } else {
-                    invalidCount++;
-                }
-            }
-        }
-
-
-        return computeAverage(subsamplingFactorX, subsamplingFactorY, valueSum, invalidCount);
-    }
-
-
-    public int getBathymetryAverageNew(GeoCoding geoCoding, PixelPos pixelPos, int subsamplingFactorX, int subsamplingFactorY) {
-        float valueSum = 0;
-        double xStep = 1.0 / subsamplingFactorX;
-        double yStep = 1.0 / subsamplingFactorY;
-        final GeoPos geoPos = new GeoPos();
-        final PixelPos currentPos = new PixelPos();
-        int invalidCount = 0;
-        for (int sx = 0; sx < subsamplingFactorX; sx++) {
-            currentPos.x = (float) (pixelPos.x + sx * xStep);
-            for (int sy = 0; sy < subsamplingFactorY; sy++) {
-                currentPos.y = (float) (pixelPos.y + sy * yStep);
-                geoCoding.getGeoPos(currentPos, geoPos);
-                int bathymetryPoint = getBathymetryPoint(geoPos);
-                if (bathymetryPoint != bathymetryReader.getMissingValue()) {
-                    valueSum += bathymetryPoint;
-                } else {
-                    invalidCount++;
-                }
-            }
-        }
-
-        int average = computeAverageNew(subsamplingFactorX, subsamplingFactorY, valueSum, invalidCount);
-
-        return computeAverageNew(subsamplingFactorX, subsamplingFactorY, valueSum, invalidCount);
-    }
-
-
-
-
-
-
-    private byte computeAverage(int subsamplingFactorX, int subsamplingFactorY, float valueSum, int invalidCount) {
-        final boolean allValuesInvalid = invalidCount == subsamplingFactorX * subsamplingFactorY;
-        if (allValuesInvalid) {
-            return (byte) bathymetryReader.getMissingValue();
-        } else {
-            return (byte) (100 * valueSum / (subsamplingFactorX * subsamplingFactorY));
-        }
-    }
-
-    private int computeAverageNew(int subsamplingFactorX, int subsamplingFactorY, float valueSum, int invalidCount) {
-        final boolean allValuesInvalid = invalidCount == subsamplingFactorX * subsamplingFactorY;
-        if (allValuesInvalid) {
-            return (int) bathymetryReader.getMissingValue();
-        } else {
-            return (int) (valueSum / (subsamplingFactorX * subsamplingFactorY));
-        }
-    }
-
-    private int getBathymetryPoint(GeoPos geoPos) {
-        final int bathymetryPoint;
-        if (geoPos.isValid()) {
-            int latIndex = bathymetryReader.getLatIndex(geoPos.lat);
-            int lonIndex = bathymetryReader.getLonIndex(geoPos.lon);
-
-            bathymetryPoint = bathymetryReader.getHeight(latIndex, lonIndex);
-        } else {
-            bathymetryPoint = bathymetryReader.getMissingValue();
-        }
-        return bathymetryPoint;
-    }
-
-    public short getHeight(int latIndex, int lonIndex) {
-        return bathymetryReader.getHeight(latIndex, lonIndex);
-    }
-
-    public int getLatIndex(float lat) {
-        return bathymetryReader.getLatIndex(lat);
-    }
-
-
-    public int getLonIndex(float lon) {
-        return bathymetryReader.getLonIndex(lon);
-    }
-
-
-    public Array getHeightArray(int[] origin, int[] shape) {
-        return bathymetryReader.getHeightArray(origin, shape);
-    }
-
-
-    public short getMissingValue() {
-        return bathymetryReader.getMissingValue();
-    }
 
 
 }

@@ -107,11 +107,31 @@ public class BathymetryReader {
 
 
     public int getLatIndex(float lat) {
-        return (int) Math.round((lat - startLat) / deltaLat);
+        int latIndex = (int) Math.round((lat - startLat) / deltaLat);
+
+        if (latIndex > dimensionLat - 1) {
+            latIndex = dimensionLat - 1;
+        }
+
+        if (latIndex < 0) {
+            latIndex = 0;
+        }
+
+        return latIndex;
     }
 
     public int getLonIndex(float lon) {
-        return (int) Math.round((lon - startLon) / deltaLon);
+        int lonIndex = (int) Math.round((lon - startLon) / deltaLon);
+
+        if (lonIndex > dimensionLon - 1) {
+            lonIndex = dimensionLon - 1;
+        }
+
+        if (lonIndex < 0) {
+            lonIndex = 0;
+        }
+
+        return lonIndex;
     }
 
     public short getMissingValue() {

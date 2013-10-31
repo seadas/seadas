@@ -17,6 +17,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
 import com.bc.ceres.core.ProgressMonitor;
+import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
@@ -30,6 +31,7 @@ import org.esa.beam.util.ProductUtils;
 import ucar.ma2.Array;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 
@@ -54,14 +56,13 @@ import java.text.MessageFormat;
 public class BathymetryOp extends Operator {
 
     public static final String BATHYMETRY_BAND_NAME = "bathymetry";
-    public static final float NULL_COORDINATE = (float) -999;
 
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
     private Product sourceProduct;
 
     @Parameter(description = "Specifies on which resolution the water mask shall be based.", unit = "m/pixel",
-            label = "Resolution", defaultValue = "1000", valueSet = {"1000"})
+            label = "Resolution", defaultValue = "1855", valueSet = {"1855"})
     private int resolution;
 
     @Parameter(description = "Bathymetry filename",
@@ -82,19 +83,35 @@ public class BathymetryOp extends Operator {
 
     @TargetProduct
     private Product targetProduct;
-    private BathymetryMaskClassifier classifier;
+//    private BathymetryMaskClassifier classifier;
+
+    private BathymetryReader bathymetryReader;
+
+
+
+
+
 
     @Override
     public void initialize() throws OperatorException {
+
+        File bathymetryFile = BathymetryData.getBathymetryFile(filename);
+
+        try {
+            bathymetryReader = new BathymetryReader(bathymetryFile);
+        } catch (IOException e) {
+            //
+        }
+
         validateParameter();
         validateSourceProduct();
 
 
-        try {
-            classifier = new BathymetryMaskClassifier(resolution, filename);
-        } catch (IOException e) {
-            throw new OperatorException("Error creating class BathymetryMaskClassifier.", e);
-        }
+//        try {
+//            classifier = new BathymetryMaskClassifier(resolution, filename);
+//        } catch (IOException e) {
+//            throw new OperatorException("Error creating class BathymetryMaskClassifier.", e);
+//        }
         //todo this is order dependent, do not have to hardcode missing value if this is here
         initTargetProduct();
 
@@ -102,9 +119,9 @@ public class BathymetryOp extends Operator {
 
 
     private void validateParameter() {
-        if (resolution != BathymetryMaskClassifier.RESOLUTION_1km) {
+        if (resolution != BathymetryData.RESOLUTION_BATHYMETRY_FILE) {
             throw new OperatorException(String.format("Resolution needs to be %d ",
-                    BathymetryMaskClassifier.RESOLUTION_1km));
+                    BathymetryData.RESOLUTION_BATHYMETRY_FILE));
         }
         if (subSamplingFactorX < 1) {
             String message = MessageFormat.format(
@@ -129,8 +146,7 @@ public class BathymetryOp extends Operator {
                 sourceProduct.getSceneRasterHeight());
         final Band waterBand = targetProduct.addBand(BATHYMETRY_BAND_NAME, ProductData.TYPE_FLOAT32);
         // todo Danny is fixing this, commented out because order is different, haven't used reader yet
-        waterBand.setNoDataValue(classifier.getMissingValue());
-        //    waterBand.setNoDataValue(-32767);
+        waterBand.setNoDataValue(bathymetryReader.getMissingValue());
 
 
         waterBand.setNoDataValueUsed(true);
@@ -146,8 +162,8 @@ public class BathymetryOp extends Operator {
     }
 
 
-
-    public void computeTileNew(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
+    @Override
+    public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
 
         final String targetBandName = targetBand.getName();
 
@@ -202,7 +218,6 @@ public class BathymetryOp extends Operator {
             }
 
 
-
             // for all applicable earthBoxes add in the dimensions and bathymetry height array which is obtained at
             // this point from the source in a single chunk call.
             EarthBox earthBoxes[] = {earthBoxNE, earthBoxNW, earthBoxSE, earthBoxSW};
@@ -210,25 +225,28 @@ public class BathymetryOp extends Operator {
             for (EarthBox earthBox : earthBoxes) {
                 if (earthBox.getMaxLat() != EarthBox.NULL_COORDINATE) {
                     // add dimensions to the earthBox
-                    int minLatIndex = classifier.getLatIndex(earthBox.getMinLat());
-                    int minLonIndex = classifier.getLonIndex(earthBox.getMinLon());
-                    int maxLatIndex = classifier.getLatIndex(earthBox.getMaxLat());
-                    int maxLonIndex = classifier.getLonIndex(earthBox.getMaxLon());
+                    int minLatIndex = bathymetryReader.getLatIndex(earthBox.getMinLat());
+                    int maxLatIndex = bathymetryReader.getLatIndex(earthBox.getMaxLat());
 
-                    int dimensionLat = maxLatIndex - minLatIndex + 1;
-                    int dimensionLon = maxLonIndex - minLonIndex + 1;
+                    int minLonIndex = bathymetryReader.getLonIndex(earthBox.getMinLon());
+                    int maxLonIndex = bathymetryReader.getLonIndex(earthBox.getMaxLon());
 
-                    earthBox.setDimensionLat(dimensionLat);
-                    earthBox.setDimensionLon(dimensionLon);
+                    // determine length of each dimension for the chunk array to be pulled out of the netcdf source
+                    int latDimensionLength = maxLatIndex - minLatIndex + 1;
+                    int lonDimensionLength = maxLonIndex - minLonIndex + 1;
 
-                    // get the bathymetry height array from the source
+                    // get the bathymetry height array from the netcdf source
                     int[] origin = new int[]{minLatIndex, minLonIndex};
-                    int[] shape = new int[]{dimensionLat, dimensionLon};
+                    int[] shape = new int[]{latDimensionLength, lonDimensionLength};
 
-                    Array heightArray = classifier.getHeightArray(origin, shape);
+                    // retrieve the bathymetry height array from netcdf
+                    Array heightArray = bathymetryReader.getHeightArray(origin, shape);
+
+                    // convert heightArray from ucar.ma2.Array format to regular java array
+                    short heights[][] = (short[][]) heightArray.copyToNDJavaArray();
 
                     // add the value array to the earthBox
-                    earthBox.setValueUcarArray(heightArray);
+                    earthBox.setValues(heights);
                 }
             }
 
@@ -256,7 +274,7 @@ public class BathymetryOp extends Operator {
                             }
                         }
                     } else {
-                        bathymetryValue = classifier.getMissingValue();
+                        bathymetryValue = bathymetryReader.getMissingValue();
                     }
 
                     targetTile.setSample(x, y, bathymetryValue);
@@ -268,49 +286,8 @@ public class BathymetryOp extends Operator {
         }
     }
 
-    @Override
-    public void computeTile(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
-        final Rectangle rectangle = targetTile.getRectangle();
-        try {
-            final String targetBandName = targetBand.getName();
-            final PixelPos pixelPos = new PixelPos();
-            final GeoCoding geoCoding = sourceProduct.getGeoCoding();
 
-//            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y=y++) {
-//                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
-            for (int y = rectangle.y; y < rectangle.y + rectangle.height; y = y + 400) {
-                for (int x = rectangle.x; x < rectangle.x + rectangle.width; x = x + 400) {
-                    pixelPos.x = x;
-                    pixelPos.y = y;
-                    int dataValue = 0;
-                    if (targetBandName.equals(BATHYMETRY_BAND_NAME)) {
-                        dataValue = classifier.getBathymetryAverageNew(geoCoding, pixelPos,
-                                subSamplingFactorX,
-                                subSamplingFactorY);
-                    }
-                    targetTile.setSample(x, y, dataValue);
-                }
-            }
 
-        } catch (Exception e) {
-            throw new OperatorException("Error computing tile '" + targetTile.getRectangle().toString() + "'.", e);
-        }
-    }
 
-    private boolean isCoastline(GeoCoding geoCoding, PixelPos pixelPos, int superSamplingX, int superSamplingY) {
-        double xStep = 1.0 / superSamplingX;
-        double yStep = 1.0 / superSamplingY;
-        final GeoPos geoPos = new GeoPos();
-        final PixelPos currentPos = new PixelPos();
-        for (int sx = 0; sx < superSamplingX; sx++) {
-            currentPos.x = (float) (pixelPos.x + sx * xStep);
-            for (int sy = 0; sy < superSamplingY; sy++) {
-                currentPos.y = (float) (pixelPos.y + sy * yStep);
-                geoCoding.getGeoPos(currentPos, geoPos);
-                // Todo: Implement coastline algorithm here
-                //
-            }
-        }
-        return false;
-    }
+
 }

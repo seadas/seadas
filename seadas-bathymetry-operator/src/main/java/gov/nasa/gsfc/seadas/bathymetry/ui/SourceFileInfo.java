@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
-import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryMaskClassifier;
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
 
 import java.io.File;
@@ -117,7 +117,7 @@ public class SourceFileInfo {
     private void setFile(String filename) {
 
         try {
-            file = ResourceInstallationUtils.installAuxdata(BathymetryMaskClassifier.class, filename);
+            file = ResourceInstallationUtils.installAuxdata(BathymetryOp.class, filename);
             setStatus(true, null);
         } catch (IOException e) {
             setStatus(false, e.getMessage());
