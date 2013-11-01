@@ -1,4 +1,3 @@
-
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
 import com.bc.ceres.core.ProgressMonitor;
@@ -188,6 +187,12 @@ public class BathymetryOp extends Operator {
                 int minLonIndex = bathymetryReader.getLonIndex(earthBox.getMinLon());
                 int maxLonIndex = bathymetryReader.getLonIndex(earthBox.getMaxLon());
 
+                minLatIndex--;
+                maxLatIndex++;
+                minLonIndex--;
+                maxLonIndex++;
+
+
                 // determine length of each dimension for the chunk array to be pulled out of the netcdf source
                 int latDimensionLength = maxLatIndex - minLatIndex + 1;
                 int lonDimensionLength = maxLonIndex - minLonIndex + 1;
@@ -203,7 +208,15 @@ public class BathymetryOp extends Operator {
                 short heights[][] = (short[][]) heightArray.copyToNDJavaArray();
 
                 // add the value array to the earthBox
-                earthBox.setValues(heights);
+
+                float minLat = bathymetryReader.getLat(minLatIndex);
+                float maxLat = bathymetryReader.getLat(maxLatIndex);
+                float minLon = bathymetryReader.getLon(minLonIndex);
+                float maxLon = bathymetryReader.getLon(maxLonIndex);
+                short missingValue = bathymetryReader.getMissingValue();
+
+                earthBox.setValues(minLat, maxLat, minLon, maxLon, heights, missingValue);
+                earthBox.setGetValueAverage(true);
             }
 
 
@@ -228,7 +241,6 @@ public class BathymetryOp extends Operator {
             throw new OperatorException("Error computing tile '" + targetTile.getRectangle().toString() + "'.", e);
         }
     }
-
 
 
     public void computeTileGood(Band targetBand, Tile targetTile, ProgressMonitor pm) throws OperatorException {
@@ -314,7 +326,7 @@ public class BathymetryOp extends Operator {
                     short heights[][] = (short[][]) heightArray.copyToNDJavaArray();
 
                     // add the value array to the earthBox
-                    earthBox.setValues(heights);
+                    //              earthBox.setValues(heights);
                 }
             }
 

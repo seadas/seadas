@@ -149,18 +149,29 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                 if (bathymetryData.isDeleteMasks() || !useDialogs) {
                     masksCreated[0] = false;
 
-                    for (String name : maskGroup.getNodeNames()) {
-                        if (name.equals(bathymetryData.getMaskName())) {
-                            maskGroup.remove(maskGroup.get(name));
-                        }
-                    }
+
 
                     for (String name : bandGroup.getNodeNames()) {
                         if (
                                 name.equals(bathymetryData.getBathymetryBandName())) {
+  //                          Band bathymetryBand = bandGroup.get(name);
+
+//                            product.getBand(name).dispose();
+
                             bandGroup.remove(bandGroup.get(name));
+//                            product.removeBand(bathymetryBand);
+
                         }
                     }
+
+                    for (String name : maskGroup.getNodeNames()) {
+                        if (name.equals(bathymetryData.getMaskName())) {
+//                            maskGroup.get(name).dispose();
+                            maskGroup.remove(maskGroup.get(name));
+                        }
+                    }
+
+
                 }
             }
 

@@ -25,13 +25,13 @@ public class BathymetryReader {
 
     private NetcdfFile ncFile;
 
-    double startLat = 0;
-    double endLat = 0;
-    double startLon = 0;
-    double endLon = 0;
+    float startLat = 0;
+    float endLat = 0;
+    float startLon = 0;
+    float endLon = 0;
 
-    double deltaLat;
-    double deltaLon;
+    float deltaLat;
+    float deltaLon;
 
     int dimensionLat = 0;
     int dimensionLon = 0;
@@ -43,11 +43,11 @@ public class BathymetryReader {
     public BathymetryReader(File file) throws IOException {
         ncFile = NetcdfFile.open(file.getAbsolutePath());
 
-        startLon = ncFile.findGlobalAttribute("left_lon").getNumericValue().doubleValue();
-        endLon = ncFile.findGlobalAttribute("right_lon").getNumericValue().doubleValue();
+        startLon = ncFile.findGlobalAttribute("left_lon").getNumericValue().floatValue();
+        endLon = ncFile.findGlobalAttribute("right_lon").getNumericValue().floatValue();
 
-        startLat = ncFile.findGlobalAttribute("lower_lat").getNumericValue().doubleValue();
-        endLat = ncFile.findGlobalAttribute("upper_lat").getNumericValue().doubleValue();
+        startLat = ncFile.findGlobalAttribute("lower_lat").getNumericValue().floatValue();
+        endLat = ncFile.findGlobalAttribute("upper_lat").getNumericValue().floatValue();
 
         dimensionLat = ncFile.findDimension("lat").getLength();
         dimensionLon = ncFile.findDimension("lon").getLength();
@@ -105,6 +105,32 @@ public class BathymetryReader {
         return height;
     }
 
+
+    public float getLon(int lonIndex) {
+
+        if (lonIndex > dimensionLon - 1) {
+            lonIndex = dimensionLon - 1;
+        }
+
+        if (lonIndex < 0) {
+            lonIndex = 0;
+        }
+
+        return  startLon + lonIndex * deltaLon;
+    }
+
+    public float getLat(int latIndex) {
+
+        if (latIndex > dimensionLat - 1) {
+            latIndex = dimensionLat - 1;
+        }
+
+        if (latIndex < 0) {
+            latIndex = 0;
+        }
+
+        return  startLat + latIndex * deltaLat;
+    }
 
     public int getLatIndex(float lat) {
         int latIndex = (int) Math.round((lat - startLat) / deltaLat);
