@@ -119,6 +119,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
             */
 
             final boolean[] masksCreated = {false};
+            final boolean[] bandCreated = {false};
 
             for (String name : maskGroup.getNodeNames()) {
                 if (name.equals(bathymetryData.getMaskName())) {
@@ -138,10 +139,13 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                 and re-create the products and masks.
              */
 
+
             if (masksCreated[0]) {
+                bandCreated[0] = true;
+
                 if (useDialogs) {
                     bathymetryData.setDeleteMasks(false);
-                    BathymetryDialog bathymetryDialog = new BathymetryDialog(bathymetryData, masksCreated[0]);
+                    BathymetryDialog bathymetryDialog = new BathymetryDialog(bathymetryData, masksCreated[0], bandCreated[0]);
                     bathymetryDialog.setVisible(true);
                     bathymetryDialog.dispose();
                 }
@@ -150,19 +154,18 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                     masksCreated[0] = false;
 
 
-
-                    for (String name : bandGroup.getNodeNames()) {
-                        if (
-                                name.equals(bathymetryData.getBathymetryBandName())) {
-  //                          Band bathymetryBand = bandGroup.get(name);
-
-//                            product.getBand(name).dispose();
-
-                            bandGroup.remove(bandGroup.get(name));
-//                            product.removeBand(bathymetryBand);
-
-                        }
-                    }
+//                    for (String name : bandGroup.getNodeNames()) {
+//                        if (
+//                                name.equals(bathymetryData.getBathymetryBandName())) {
+//  //                          Band bathymetryBand = bandGroup.get(name);
+//
+////                            product.getBand(name).dispose();
+//
+//                            bandGroup.remove(bandGroup.get(name));
+////                            product.removeBand(bathymetryBand);
+//
+//                        }
+//                    }
 
                     for (String name : maskGroup.getNodeNames()) {
                         if (name.equals(bathymetryData.getMaskName())) {
@@ -179,7 +182,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
             if (!masksCreated[0]) {
                 if (useDialogs) {
                     bathymetryData.setCreateMasks(false);
-                    BathymetryDialog bathymetryDialog = new BathymetryDialog(bathymetryData, masksCreated[0]);
+                    BathymetryDialog bathymetryDialog = new BathymetryDialog(bathymetryData, masksCreated[0], bandCreated[0]);
                     bathymetryDialog.setVisible(true);
                 }
 
@@ -188,33 +191,43 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
 
                     if (sourceFileInfo.isEnabled()) {
 
+
+                       final String[] msg = {"Creating bathymetry band and mask"};
+
+                        if (bandCreated[0] == true) {
+                            msg[0] = "recreating bathymetry mask";
+                        }
                         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                                "Creating bathymetry band and mask") {
+                               msg[0]) {
 
                             @Override
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                                pm.beginTask("Creating bathymetry band and mask", 2);
+                                pm.beginTask(msg[0]   , 2);
 
                                 try {
-                                    Map<String, Object> parameters = new HashMap<String, Object>();
 
-                                    parameters.put("subSamplingFactorX", new Integer(bathymetryData.getSuperSampling()));
-                                    parameters.put("subSamplingFactorY", new Integer(bathymetryData.getSuperSampling()));
-                                    parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
-                                    parameters.put("filename", sourceFileInfo.getFile().getName());
+                                    if (bandCreated[0] != true) {
+                                        Map<String, Object> parameters = new HashMap<String, Object>();
 
-                                    /*
-                                       Create a new product, which will contain the bathymetry band, then add this band to current product.
-                                    */
+                                        parameters.put("subSamplingFactorX", new Integer(bathymetryData.getSuperSampling()));
+                                        parameters.put("subSamplingFactorY", new Integer(bathymetryData.getSuperSampling()));
+                                        parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
+                                        parameters.put("filename", sourceFileInfo.getFile().getName());
 
-                                    Product bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
-                                    Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
-                                    reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                    pm.worked(1);
-                                    bathymetryBand.setName(bathymetryData.getBathymetryBandName());
+                                        /*
+                                           Create a new product, which will contain the bathymetry band, then add this band to current product.
+                                        */
 
-                                    product.addBand(bathymetryBand);
+                                        Product bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
+                                        Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
+                                        reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                        pm.worked(1);
+                                        bathymetryBand.setName(bathymetryData.getBathymetryBandName());
+
+                                        product.addBand(bathymetryBand);
+                                    }
+
 
                                     Mask bathymetryMask = Mask.BandMathsType.create(
                                             bathymetryData.getMaskName(),

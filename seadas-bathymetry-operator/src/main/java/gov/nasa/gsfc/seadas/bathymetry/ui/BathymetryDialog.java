@@ -33,7 +33,7 @@ class BathymetryDialog extends JDialog {
     private final static String HELP_ICON = "icons/Help24.gif";
 
 
-    public BathymetryDialog(BathymetryData bathymetryData, boolean masksCreated) {
+    public BathymetryDialog(BathymetryData bathymetryData, boolean masksCreated, boolean bandCreated) {
         this.bathymetryData = bathymetryData;
 
         initHelpBroker();
@@ -45,7 +45,7 @@ class BathymetryDialog extends JDialog {
         if (masksCreated) {
             createNotificationUI();
         } else {
-            createLandMasksUI();
+            createBathymetryUI(bandCreated);
         }
     }
 
@@ -85,10 +85,8 @@ class BathymetryDialog extends JDialog {
     }
 
 
-
-
     public final void createNotificationUI() {
-        JButton createMasks = new JButton("Create Bathymetry");
+        JButton createMasks = new JButton("Recreate Bathymetry Masks");
         createMasks.setPreferredSize(createMasks.getPreferredSize());
         createMasks.setMinimumSize(createMasks.getPreferredSize());
         createMasks.setMaximumSize(createMasks.getPreferredSize());
@@ -155,7 +153,7 @@ class BathymetryDialog extends JDialog {
 
     }
 
-    public final void createLandMasksUI() {
+    public final void createBathymetryUI(boolean bandCreated) {
 
 
         final int rightInset = 5;
@@ -166,35 +164,44 @@ class BathymetryDialog extends JDialog {
         final MaskMaxDepthTextfield maskMaxDepthTextfield = new MaskMaxDepthTextfield(bathymetryData);
         final MaskMinDepthTextfield maskMinDepthTextfield = new MaskMinDepthTextfield(bathymetryData);
 
+        final boolean[] fileSelectorEnabled = {true};
 
+        if (bandCreated) {
+            fileSelectorEnabled[0] = false;
+        } else {
+            fileSelectorEnabled[0] = true;
+        }
 
         final ResolutionComboBox resolutionComboBox = new ResolutionComboBox(bathymetryData);
 
         JPanel resolutionSamplingPanel = new JPanel(new GridBagLayout());
         resolutionSamplingPanel.setBorder(BorderFactory.createTitledBorder(""));
 
-        resolutionSamplingPanel.add(resolutionComboBox.getjLabel(),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+        if (fileSelectorEnabled[0]) {
+            resolutionSamplingPanel.add(resolutionComboBox.getjLabel(),
+                    new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        JComboBox jComboBox = resolutionComboBox.getjComboBox();
+            JComboBox jComboBox = resolutionComboBox.getjComboBox();
+            jComboBox.setEnabled(fileSelectorEnabled[0]);
 
+            bathymetryData.addPropertyChangeListener(BathymetryData.PROMPT_REQUEST_TO_INSTALL_FILE_EVENT, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    SourceFileInfo sourceFileInfo = (SourceFileInfo) resolutionComboBox.getjComboBox().getSelectedItem();
 
-        bathymetryData.addPropertyChangeListener(BathymetryData.PROMPT_REQUEST_TO_INSTALL_FILE_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                SourceFileInfo sourceFileInfo = (SourceFileInfo) resolutionComboBox.getjComboBox().getSelectedItem();
-
-                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(bathymetryData, sourceFileInfo, InstallResolutionFileDialog.Step.INSTALLATION);
-                dialog.setVisible(true);
-                dialog.setEnabled(true);
-            }
-        });
-
-
-        resolutionSamplingPanel.add(jComboBox,
-                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                    InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(bathymetryData, sourceFileInfo, InstallResolutionFileDialog.Step.INSTALLATION);
+                    dialog.setVisible(true);
+                    dialog.setEnabled(true);
+                }
+            });
 
 
+            resolutionSamplingPanel.add(jComboBox,
+                    new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        } else {
+            resolutionSamplingPanel.add(new JLabel("Note: Cannot recreate a different band, only a different mask"),
+                    new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        }
 
         JPanel maskJPanel = new JPanel(new GridBagLayout());
         maskJPanel.setBorder(BorderFactory.createTitledBorder(""));
@@ -242,16 +249,23 @@ class BathymetryDialog extends JDialog {
                 new ExGridBagConstraints(1, 5, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
 
-
-
-
         JPanel mainPanel = new JPanel(new GridBagLayout());
+
+
         mainPanel.add(resolutionSamplingPanel,
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+
+
         mainPanel.add(maskJPanel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
-        JButton createMasks = new JButton("Create Bathymetry");
+        String label;
+        if (bandCreated) {
+            label = "Recreate Bathymetry Mask";
+        } else {
+            label = "Create Bathymetry Band and Mask";
+        }
+        JButton createMasks = new JButton(label);
         createMasks.setPreferredSize(createMasks.getPreferredSize());
         createMasks.setMinimumSize(createMasks.getPreferredSize());
         createMasks.setMaximumSize(createMasks.getPreferredSize());
