@@ -1,7 +1,7 @@
-package gov.nasa.gsfc.seadas.bathymetry.ui;
+package gov.nasa.gsfc.seadas.contour.ui;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-
+import gov.nasa.gsfc.seadas.watermask.ui.SourceFileInfo;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
@@ -11,18 +11,16 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created with IntelliJ IDEA.
- * User: knowles
- * Date: 9/4/12
- * Time: 9:13 AM
+ * Created by IntelliJ IDEA.
+ * User: Aynur Abdurazik (aabduraz)
+ * Date: 9/5/13
+ * Time: 1:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BathymetryData {
+public class ContourData {
 
-    BathymetryData bathymetryData = this;
 
-    public static final int RESOLUTION_BATHYMETRY_FILE = 1855;
-    public static final String FILENAME_BATHYMETRY = "ETOPO1_ocssw.nc";
+    ContourData contourData = this;
 
     public static String NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT = "NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT";
     public static String FILE_INSTALLED_EVENT2 = "FILE_INSTALLED_EVENT2";
@@ -37,8 +35,8 @@ public class BathymetryData {
     private double maskTransparency = 0.5;
     private boolean showMaskAllBands = true;
     private Color maskColor = new Color(0, 0, 255);
-    private String maskName = "Bathymetry";
-    private String maskDescription = "Bathymetry pixels";
+    private String maskName = "Contour";
+    private String maskDescription = "Contour pixels";
 
     private double maskMinDepth = 0;
     private double maskMaxDepth = -10923;
@@ -50,9 +48,7 @@ public class BathymetryData {
 
     private int superSampling = 1;
 
-
     private String bathymetryBandName = "bathymetry";
-
 
 
     private ArrayList<SourceFileInfo> sourceFileInfos = new ArrayList<SourceFileInfo>();
@@ -61,7 +57,7 @@ public class BathymetryData {
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
 
-    public BathymetryData() {
+    public ContourData() {
 
         SourceFileInfo sourceFileInfo;
 
@@ -69,27 +65,31 @@ public class BathymetryData {
         File ocsswRunDir = new File(ocsswRootDir, "run");
         File ocsswRunDataDir = new File(ocsswRunDir, "data");
         File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
-        File bathymetryFile = new File(ocsswRunDataCommonDir, FILENAME_BATHYMETRY);
+        //File bathymetryFile = new File(ocsswRunDataCommonDir, ContourMaskClassifier.FILENAME_BATHYMETRY);
 
 
-        sourceFileInfo = new SourceFileInfo(RESOLUTION_BATHYMETRY_FILE,
-                SourceFileInfo.Unit.METER,
-                bathymetryFile);
-        getSourceFileInfos().add(sourceFileInfo);
-        // set the default
-        this.sourceFileInfo = sourceFileInfo;
-
-
-        this.addPropertyChangeListener(BathymetryData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                SourceFileInfo sourceFileInfo = (SourceFileInfo) evt.getNewValue();
-
-                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(bathymetryData, sourceFileInfo, InstallResolutionFileDialog.Step.CONFIRMATION);
-                dialog.setVisible(true);
-                dialog.setEnabled(true);
-            }
-        });
+//        sourceFileInfo = new SourceFileInfo(ContourMaskClassifier.RESOLUTION_1km,
+//                SourceFileInfo.Unit.METER,
+//                bathymetryFile);
+//        getSourceFileInfos().add(sourceFileInfo);
+//        // set the default
+//        this.sourceFileInfo = sourceFileInfo;
+//
+//        sourceFileInfo = new SourceFileInfo(ContourMaskClassifier.RESOLUTION_10km,
+//                SourceFileInfo.Unit.METER,
+//                ContourMaskClassifier.FILENAME_GSHHS_10km);
+//        getSourceFileInfos().add(sourceFileInfo);
+//
+//        this.addPropertyChangeListener(ContourData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                SourceFileInfo sourceFileInfo = (SourceFileInfo) evt.getNewValue();
+//
+//                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(contourData, sourceFileInfo, InstallResolutionFileDialog.Step.CONFIRMATION);
+//                dialog.setVisible(true);
+//                dialog.setEnabled(true);
+//            }
+//        });
     }
 
 
@@ -150,11 +150,11 @@ public class BathymetryData {
     }
 
 
-    public String getBathymetryBandName() {
+    public String getContourBandName() {
         return bathymetryBandName;
     }
 
-    public void setBathymetryBandName(String bathymetryBandName) {
+    public void setContourBandName(String bathymetryBandName) {
         this.bathymetryBandName = bathymetryBandName;
     }
 
@@ -170,11 +170,11 @@ public class BathymetryData {
     public String getMaskMath() {
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(getBathymetryBandName());
+        stringBuilder.append(getContourBandName());
         stringBuilder.append(" >= ");
         stringBuilder.append(new Double(getMaskMaxDepth()).toString());
         stringBuilder.append(" and ");
-        stringBuilder.append(getBathymetryBandName());
+        stringBuilder.append(getContourBandName());
         stringBuilder.append(" <= ");
         stringBuilder.append(new Double(getMaskMinDepth()).toString());
 
@@ -259,16 +259,7 @@ public class BathymetryData {
     }
 
 
-    static public File getBathymetryFile(String bathymetryFilename) {
-        File ocsswRootDir = getOcsswRoot();
-        File ocsswRunDir = new File(ocsswRootDir, "run");
-        File ocsswRunDataDir = new File(ocsswRunDir, "data");
-        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
-        File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
-
-        return bathymetryFile;
-    }
-
 }
+
 
 

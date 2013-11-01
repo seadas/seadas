@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas-plugin-parent</artifactId>
@@ -12,11 +12,11 @@
     </parent>
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
-    <artifactId>seadas-bathymetry-operator</artifactId>
-    <version>1.2.1</version>
+    <artifactId>seadas-contour-operator</artifactId>
+    <version>1.0</version>
 
-    <name>SEADAS Bathymetry Operator</name>
-    <description>Provides an API as well as an operator for creating bathymetry band and mask.
+    <name>SEADAS Contour Operator</name>
+    <description>Provides an API as well as an operator for creating a contour overlay for a given band from a loaded product.
     </description>
 
     <dependencies>
@@ -45,15 +45,11 @@
             <artifactId>gt-shapefile</artifactId>
             <version>${geotools.version}</version>
         </dependency>
-
-
         <dependency>
-            <artifactId>seadas-processing</artifactId>
             <groupId>gov.nasa.gsfc.seadas</groupId>
-            <version>1.1</version>
+            <artifactId>seadas-watermask-operator</artifactId>
+            <version>1.2.1</version>
         </dependency>
-
-
-    </dependencies>
+     </dependencies>
 
 </project>

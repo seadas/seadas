@@ -1,0 +1,69 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>seadas-contour</symbolicName>
+    <version>1.0</version>
+    <name>Contour</name>
+
+    <description>Contour</description>
+    <packaging>dir</packaging>
+
+    <vendor>NASA Goddard OBPG</vendor>
+    <contactAddress>
+        8800 Greenbelt Road, Greenbelt, MD 20771, USA
+    </contactAddress>
+    <copyright>(C) 2013 by NASA Goddard OBPG</copyright>
+    <url>http://seadas.gsfc.nasa.gov</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+
+    <changelog/>
+
+	<dependency>
+        <module>beam-gpf</module>
+    </dependency>
+	 <dependency>
+        <module>beam-visat</module>
+        <optional>true</optional>
+    </dependency>
+
+    <categories>Application,Processor</categories>
+
+    <!--<extension point="beam-ui:actions">-->
+        <!--<action>-->
+            <!--<id>contour</id>-->
+            <!--<class>org.esa.beam.visat.actions.DefaultOperatorAction</class>-->
+            <!--<operatorName>Contour</operatorName>-->
+            <!--<dialogTitle>Contour Map</dialogTitle>-->
+            <!--<targetProductNameSuffix>_contour</targetProductNameSuffix>-->
+            <!--<text>Contour Map...</text>-->
+            <!--<shortDescr>Contour map</shortDescr>-->
+            <!--<mnemonic/>-->
+            <!--<parent>tool</parent>-->
+            <!--<helpID>contour</helpID>-->
+            <!--<placeAfter/>-->
+        <!--</action>-->
+
+        <!--<action>-->
+            <!--<parent>view</parent>-->
+            <!--<id>Contour</id>-->
+            <!--<class>org.esa.beam.watermask.ui.ContourVPI</class>-->
+            <!--<placeAfter>showGraticuleOverlay</placeAfter>-->
+            <!--<text>Show Landmask/Coastline</text>-->
+            <!--<toggle>false</toggle>-->
+            <!--<separatorAfter>false</separatorAfter>-->
+            <!--<mnemonic>W</mnemonic>-->
+            <!--<shortDescr>Create Landmask/coastline</shortDescr>-->
+            <!--<description>Create Landmask/coastline masks</description>-->
+            <!--<context>image</context>-->
+            <!--<smallIcon>icons/GraticuleOverlay16.gif</smallIcon>-->
+            <!--<largeIcon>icons/GraticuleOverlay24.gif</largeIcon>-->
+            <!--&lt;!&ndash;<helpId>showGraticuleOverlay</helpId>&ndash;&gt;-->
+        <!--</action>-->
+    <!--</extension>-->
+
+    <extension point="beam-ui:helpSets">
+        <helpSet>
+            <parent>seadas-help</parent>
+            <path>doc/help/contourLines.hs</path>
+        </helpSet>
+    </extension>
+</module>

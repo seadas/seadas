@@ -1,9 +1,12 @@
-package gov.nasa.gsfc.seadas.bathymetry.ui;
+package gov.nasa.gsfc.seadas.contour.ui;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import com.jidesoft.action.CommandBar;
-import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
+import gov.nasa.gsfc.seadas.contour.operator.ContourOp;
+import gov.nasa.gsfc.seadas.contour.util.ResourceInstallationUtils;
+import gov.nasa.gsfc.seadas.watermask.ui.SimpleDialogMessage;
+import gov.nasa.gsfc.seadas.watermask.ui.SourceFileInfo;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.GPF;
 import org.esa.beam.framework.ui.command.CommandAdapter;
@@ -19,17 +22,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.DataBuffer;
-import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
-import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
 
 
 /**
@@ -53,15 +50,17 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
  * @author Tonio Fincke
  * @author Danny Knowles
  * @author Marco Peters
+ * @author Aynur Abdurazik
  */
-public class BathymetryVPI extends AbstractVisatPlugIn {
+public class ContourVPI extends AbstractVisatPlugIn {
 
-    public static final String COMMAND_ID = "bathymetry";
-    public static final String TOOL_TIP = "Add bathymetry band and mask";
-    public static final String ICON = "bathymetry.png";
+    public static final String COMMAND_ID = "CONTOUR LINES";
+    public static final String TOOL_TIP = "Add contour lines to a given band";
+    public static final String ICON = "contour_button.gif";
+    //public static final String ICON = "contour_web.png";
 
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
-    public static final String BATHYMETRY_PRODUCT_NAME = "bathymetry";
+    public static final String CONTOUR_PRODUCT_NAME = "contour";
 
 
     @Override
@@ -69,7 +68,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
         final ExecCommand action = visatApp.getCommandManager().createExecCommand(COMMAND_ID,
                 new ToolbarCommand(visatApp));
 
-        String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, BathymetryVPI.class);
+        String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, ContourVPI.class);
 
         try {
             URL iconUrl = new URL(iconFilename);
@@ -93,7 +92,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
     }
 
 
-    private void showBathymetry(final VisatApp visatApp) {
+    private void showContour(final VisatApp visatApp) {
 
         final Product product = visatApp.getSelectedProduct();
         if (product != null) {
@@ -105,11 +104,11 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
             */
             boolean useDialogs = true;
 
-            final BathymetryData bathymetryData = new BathymetryData();
+            final ContourData contourData = new ContourData();
 
 
             if (!useDialogs) {
-                bathymetryData.setCreateMasks(true);
+                contourData.setCreateMasks(true);
             }
 
 
@@ -121,43 +120,43 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
             final boolean[] masksCreated = {false};
 
             for (String name : maskGroup.getNodeNames()) {
-                if (name.equals(bathymetryData.getMaskName())) {
+                if (name.equals(contourData.getMaskName())) {
                     masksCreated[0] = true;
                 }
             }
 
 
             for (String name : bandGroup.getNodeNames()) {
-                if (name.equals(bathymetryData.getBathymetryBandName())) {
+                if (name.equals(contourData.getContourBandName())) {
                     masksCreated[0] = true;
                 }
             }
 
             /*
-                For the case where this is being run a second time, prompt the user to determine whether to delete
-                and re-create the products and masks.
-             */
+               For the case where this is being run a second time, prompt the user to determine whether to delete
+               and re-create the products and masks.
+            */
 
             if (masksCreated[0]) {
                 if (useDialogs) {
-                    bathymetryData.setDeleteMasks(false);
-                    BathymetryDialog bathymetryDialog = new BathymetryDialog(bathymetryData, masksCreated[0]);
-                    bathymetryDialog.setVisible(true);
-                    bathymetryDialog.dispose();
+                    contourData.setDeleteMasks(false);
+                    ContourDialog contourDialog = new ContourDialog(contourData, masksCreated[0]);
+                    contourDialog.setVisible(true);
+                    contourDialog.dispose();
                 }
 
-                if (bathymetryData.isDeleteMasks() || !useDialogs) {
+                if (contourData.isDeleteMasks() || !useDialogs) {
                     masksCreated[0] = false;
 
                     for (String name : maskGroup.getNodeNames()) {
-                        if (name.equals(bathymetryData.getMaskName())) {
+                        if (name.equals(contourData.getMaskName())) {
                             maskGroup.remove(maskGroup.get(name));
                         }
                     }
 
                     for (String name : bandGroup.getNodeNames()) {
                         if (
-                                name.equals(bathymetryData.getBathymetryBandName())) {
+                                name.equals(contourData.getContourBandName())) {
                             bandGroup.remove(bandGroup.get(name));
                         }
                     }
@@ -167,61 +166,63 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
 
             if (!masksCreated[0]) {
                 if (useDialogs) {
-                    bathymetryData.setCreateMasks(false);
-                    BathymetryDialog bathymetryDialog = new BathymetryDialog(bathymetryData, masksCreated[0]);
-                    bathymetryDialog.setVisible(true);
+                    contourData.setCreateMasks(false);
+                    ContourDialog contourDialog = new ContourDialog(contourData, masksCreated[0]);
+                    contourDialog.setVisible(true);
                 }
 
-                if (bathymetryData.isCreateMasks()) {
-                    final SourceFileInfo sourceFileInfo = bathymetryData.getSourceFileInfo();
+                if (contourData.isCreateMasks()) {
+                    final SourceFileInfo sourceFileInfo = contourData.getSourceFileInfo();
 
                     if (sourceFileInfo.isEnabled()) {
 
                         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                                "Creating bathymetry band and mask") {
+                                "Creating contour band and mask") {
 
                             @Override
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                                pm.beginTask("Creating bathymetry band and mask", 2);
+                                pm.beginTask("Creating contour band and mask", 2);
 
                                 try {
                                     Map<String, Object> parameters = new HashMap<String, Object>();
 
-                                    parameters.put("subSamplingFactorX", new Integer(bathymetryData.getSuperSampling()));
-                                    parameters.put("subSamplingFactorY", new Integer(bathymetryData.getSuperSampling()));
+                                    parameters.put("subSamplingFactorX", new Integer(contourData.getSuperSampling()));
+                                    parameters.put("subSamplingFactorY", new Integer(contourData.getSuperSampling()));
                                     parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
                                     parameters.put("filename", sourceFileInfo.getFile().getName());
 
                                     /*
-                                       Create a new product, which will contain the bathymetry band, then add this band to current product.
+                                       Create a new product, which will contain the contour band, then add this band to current product.
                                     */
 
-                                    Product bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
-                                    Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
-                                    reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                    Product contourProduct = GPF.createProduct(CONTOUR_PRODUCT_NAME, parameters, product);
+                                    Band contourBand = contourProduct.getBand(ContourOp.CONTOUR_BAND_NAME);
+                                    reformatSourceImage(contourBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
                                     pm.worked(1);
-                                    bathymetryBand.setName(bathymetryData.getBathymetryBandName());
+                                    contourBand.setName(contourData.getContourBandName());
 
-                                    product.addBand(bathymetryBand);
+                                    product.addBand(contourBand);
 
-                                    Mask bathymetryMask = Mask.BandMathsType.create(
-                                            bathymetryData.getMaskName(),
-                                            bathymetryData.getMaskDescription(),
+                                    String maskMath = contourData.getMaskMath();
+
+                                    Mask contourMask = Mask.BandMathsType.create(
+                                            contourData.getMaskName(),
+                                            contourData.getMaskDescription(),
                                             product.getSceneRasterWidth(),
                                             product.getSceneRasterHeight(),
-                                            bathymetryData.getMaskMath(),
-                                            bathymetryData.getMaskColor(),
-                                            bathymetryData.getMaskTransparency());
-                                    maskGroup.add(bathymetryMask);
+                                            contourData.getMaskMath(),
+                                            contourData.getMaskColor(),
+                                            contourData.getMaskTransparency());
+                                    maskGroup.add(contourMask);
 
                                     pm.worked(1);
 
                                     String[] bandNames = product.getBandNames();
                                     for (String bandName : bandNames) {
                                         RasterDataNode raster = product.getRasterDataNode(bandName);
-                                        if (bathymetryData.isShowMaskAllBands()) {
-                                            raster.getOverlayMaskGroup().add(bathymetryMask);
+                                        if (contourData.isShowMaskAllBands()) {
+                                            raster.getOverlayMaskGroup().add(contourMask);
                                         }
                                     }
 
@@ -250,9 +251,6 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
     private void reformatSourceImage(Band band, ImageLayout imageLayout) {
         RenderingHints renderingHints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, imageLayout);
         MultiLevelImage sourceImage = band.getSourceImage();
-        Raster r = sourceImage.getData();
-        DataBuffer db = r.getDataBuffer();
-        int t = db.getDataType();
         int dataType = sourceImage.getData().getDataBuffer().getDataType();
         RenderedImage newImage = FormatDescriptor.create(sourceImage, dataType, renderingHints);
         band.setSourceImage(newImage);
@@ -268,7 +266,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
         @Override
         public void actionPerformed(
                 CommandEvent event) {
-            showBathymetry(visatApp);
+            showContour(visatApp);
 
         }
 
@@ -286,4 +284,3 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
         }
     }
 }
-
