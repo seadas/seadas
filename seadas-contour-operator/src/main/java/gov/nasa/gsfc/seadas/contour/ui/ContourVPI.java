@@ -17,6 +17,8 @@ import org.esa.beam.visat.VisatApp;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
+import javax.media.jai.ParameterBlockJAI;
+import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.FormatDescriptor;
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +27,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.RenderedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -140,7 +143,7 @@ public class ContourVPI extends AbstractVisatPlugIn {
             if (masksCreated[0]) {
                 if (useDialogs) {
                     contourData.setDeleteMasks(false);
-                    ContourDialog contourDialog = new ContourDialog(contourData, masksCreated[0]);
+                    ContourDialog contourDialog = new ContourDialog(contourData, masksCreated[0], product);
                     contourDialog.setVisible(true);
                     contourDialog.dispose();
                 }
@@ -153,10 +156,8 @@ public class ContourVPI extends AbstractVisatPlugIn {
                             maskGroup.remove(maskGroup.get(name));
                         }
                     }
-
                     for (String name : bandGroup.getNodeNames()) {
-                        if (
-                                name.equals(contourData.getContourBandName())) {
+                        if (name.equals(contourData.getContourBandName())) {
                             bandGroup.remove(bandGroup.get(name));
                         }
                     }
@@ -167,7 +168,7 @@ public class ContourVPI extends AbstractVisatPlugIn {
             if (!masksCreated[0]) {
                 if (useDialogs) {
                     contourData.setCreateMasks(false);
-                    ContourDialog contourDialog = new ContourDialog(contourData, masksCreated[0]);
+                    ContourDialog contourDialog = new ContourDialog(contourData, masksCreated[0], product);
                     contourDialog.setVisible(true);
                 }
 
@@ -255,6 +256,36 @@ public class ContourVPI extends AbstractVisatPlugIn {
         RenderedImage newImage = FormatDescriptor.create(sourceImage, dataType, renderingHints);
         band.setSourceImage(newImage);
     }
+
+    private MultiLevelImage getContourImage(Product product, Band band) {
+
+        ArrayList<Double> contourIntervals = new ArrayList<Double>();
+
+        for (double level = 0.2; level < 1.41; level += 0.2) {
+            contourIntervals.add(level);
+        }
+        ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
+        pb.setSource("source0", band.getSourceImage());
+        pb.setParameter("levels", contourIntervals);
+        RenderedOp dest = JAI.create("Contour", pb);
+//        Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
+//
+//        JTSFrame jtsFrame = new JTSFrame("Contours from source image");
+//        for (LineString contour : contours) {
+//            jtsFrame.addGeometry(contour, Color.BLUE);
+//        }
+//
+//        ImageFrame imgFrame = new ImageFrame(image, "Source image");
+//        imgFrame.setLocation(100, 100);
+//        imgFrame.setVisible(true);
+//
+//        Dimension size = imgFrame.getSize();
+//        jtsFrame.setSize(size);
+//        jtsFrame.setLocation(100 + size.width + 5, 100);
+//        jtsFrame.setVisible(true);
+        return product.getBand("chlor_a").getSourceImage();
+    }
+
 
     private class ToolbarCommand extends CommandAdapter {
         private final VisatApp visatApp;

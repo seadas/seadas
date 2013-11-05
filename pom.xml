@@ -51,6 +51,7 @@
         <module>seadas-system</module>
         <module>seadas-plugins</module>
         <module>seadas-plugin-parent</module>
+        <module>seadas-contour-operator</module>
         <!--<module>seadas-ocsswws</module>-->
     </modules>
 

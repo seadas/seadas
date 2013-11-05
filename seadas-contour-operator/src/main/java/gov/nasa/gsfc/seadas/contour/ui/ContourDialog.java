@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.contour.ui;
 
+import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
@@ -28,8 +29,11 @@ public class ContourDialog extends JDialog {
     private final static String HELP_ID = "contourLines";
     private final static String HELP_ICON = "icons/Help24.gif";
 
-    public ContourDialog(ContourData contourData, boolean masksCreated) {
+    private Product product;
+
+    public ContourDialog(ContourData contourData, boolean masksCreated, Product product) {
         this.contourData = contourData;
+        this.product = product;
 
         initHelpBroker();
 
@@ -78,8 +82,6 @@ public class ContourDialog extends JDialog {
             }
         }
     }
-
-
 
 
     public final void createNotificationUI() {
@@ -158,185 +160,33 @@ public class ContourDialog extends JDialog {
         JPanel contourPanel = new JPanel(new GridBagLayout());
         contourPanel.setBorder(BorderFactory.createTitledBorder(""));
 
-        JTextField minValueField = new JFormattedTextField();
-        minValueField.setColumns(8);
-        minValueField.setPreferredSize(minValueField.getPreferredSize());
-        minValueField.setMaximumSize(minValueField.getPreferredSize());
-        minValueField.setMinimumSize(minValueField.getPreferredSize());
-        minValueField.setName("Start Value");
+        JButton addButton = new JButton("+");
+        addButton.setPreferredSize(addButton.getPreferredSize());
+        addButton.setMinimumSize(addButton.getPreferredSize());
+        addButton.setMaximumSize(addButton.getPreferredSize());
 
-        JTextField maxValueField = new JFormattedTextField();
-        maxValueField.setColumns(8);
-        maxValueField.setPreferredSize(maxValueField.getPreferredSize());
-        maxValueField.setMaximumSize(maxValueField.getPreferredSize());
-        maxValueField.setMinimumSize(maxValueField.getPreferredSize());
-        maxValueField.setName("End Value");
-
-        JTextField numLevelsField = new JFormattedTextField();
-        numLevelsField.setColumns(8);
-        numLevelsField.setPreferredSize(numLevelsField.getPreferredSize());
-        numLevelsField.setMaximumSize(numLevelsField.getPreferredSize());
-        numLevelsField.setMinimumSize(numLevelsField.getPreferredSize());
-        numLevelsField.setName("Start Value");
-
-        final JRadioButton log = new JRadioButton();
-        final JRadioButton linear = new JRadioButton();
-        final JRadioButton custom = new JRadioButton();
-        custom.setSelected(true);
-
-        log.addActionListener(new ActionListener() {
-             @Override
-             public void actionPerformed(ActionEvent actionEvent) {
-                 if (log.isSelected()) {
-                    linear.setSelected(false);
-                     custom.setSelected(false);
-                 }  //else {
-//                     linear.setSelected(true);
-//                 }
-             }
-         });
-
-        linear.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (linear.isSelected()) {
-                    log.setSelected(false);
-                    custom.setSelected(false);
-                } //else {
-                    //log.setSelected(true);
-                //}
-            }
-        });
-
-        custom.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (custom.isSelected()) {
-                    log.setSelected(false);
-                    linear.setSelected(false);
-
-                } //else {
-                    //log.setSelected(true);
-                //}
-            }
-        });
-
-        JPanel selectionPanel = new JPanel(new GridBagLayout());
-//        TableLayout tableLayout = new TableLayout(1);
-//        tableLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
-//        selectionPanel.setLayout(tableLayout);
-//        selectionPanel.add(log);
-//        selectionPanel.add(linear);
-//        selectionPanel.add(custom);
-
-        selectionPanel.add(new JLabel("Log"),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        selectionPanel.add(log,
-                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-        selectionPanel.add(new JLabel("Linear"),
-                new ExGridBagConstraints(2, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        selectionPanel.add(linear,
-                new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-        selectionPanel.add(new JLabel("Custom"),
-                new ExGridBagConstraints(4, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        selectionPanel.add(custom,
-                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-
-        JButton more = new JButton("More...");
-
-         System.out.println(System.getProperty("java.classpath"));
-        contourPanel.add(new JLabel("Number of Contour Levels:"),
-                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        contourPanel.add(numLevelsField,
-                new ExGridBagConstraints(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-        contourPanel.add(new JLabel("Start Value"),
-                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        contourPanel.add(minValueField,
-                new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-        contourPanel.add(new JLabel("End Value"),
-                new ExGridBagConstraints(2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        contourPanel.add(maxValueField,
-                new ExGridBagConstraints(3, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-//        contourPanel.add(new JLabel("Log"),
-//                new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-//
-//        contourPanel.add(log,
-//                new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-//
-//        contourPanel.add(new JLabel("Linear"),
-//                new ExGridBagConstraints(2, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-//
-//        contourPanel.add(linear,
-//                new ExGridBagConstraints(3, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-//
-//
-//        contourPanel.add(new JLabel("Custom"),
-//                new ExGridBagConstraints(4, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-//
-//        contourPanel.add(custom,
-//                new ExGridBagConstraints(5, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-        contourPanel.add(selectionPanel,
-                new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-        JButton createContourLines = new JButton("Create Contour Lines");
-        createContourLines.setPreferredSize(createContourLines.getPreferredSize());
-        createContourLines.setMinimumSize(createContourLines.getPreferredSize());
-        createContourLines.setMaximumSize(createContourLines.getPreferredSize());
-
-
-        createContourLines.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent event) {
-                contourData.setCreateMasks(true);
-                dispose();
-            }
-        });
-
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.setPreferredSize(cancelButton.getPreferredSize());
-        cancelButton.setMinimumSize(cancelButton.getPreferredSize());
-        cancelButton.setMaximumSize(cancelButton.getPreferredSize());
-
-        cancelButton.addActionListener(new ActionListener() {
+        addButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
                 dispose();
             }
         });
-
-        JLabel filler = new JLabel("                            ");
-
-
-        JPanel buttonsJPanel = new JPanel(new GridBagLayout());
-        buttonsJPanel.add(cancelButton,
-                new ExGridBagConstraints(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        buttonsJPanel.add(filler,
-                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-        buttonsJPanel.add(createContourLines,
-                new ExGridBagConstraints(2, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        buttonsJPanel.add(helpButton,
-                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-        createContourLines.setAlignmentX(0.5f);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.add(contourPanel,
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        mainPanel.add(buttonsJPanel,
+
+        JPanel basicPanel = getBasicPanel();
+
+        basicPanel.add(addButton,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+
+        mainPanel.add(getBandPanel(),
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+
+        mainPanel.add(basicPanel,
+                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+
+        mainPanel.add(getControllerPanel(),
+                new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
 
         add(mainPanel);
@@ -355,6 +205,163 @@ public class ContourDialog extends JDialog {
         setMinimumSize(getPreferredSize());
         setMaximumSize(getPreferredSize());
         setSize(getPreferredSize());
+    }
+
+    private JPanel getBandPanel() {
+        final int rightInset = 5;
+
+        JPanel bandPanel = new JPanel(new GridBagLayout());
+
+        String[] productList = product.getBandNames();
+        JLabel bandLabel = new JLabel("Product:");
+        JComboBox bandComboBox = new JComboBox(productList);
+
+        JLabel filler = new JLabel("                                              ");
+
+        bandPanel.add(filler,
+                        new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        bandPanel.add(bandLabel,
+                new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        bandPanel.add(bandComboBox,
+                new ExGridBagConstraints(2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+        return bandPanel;
+    }
+
+
+    private JPanel getControllerPanel(){
+        JPanel controllerPanel = new JPanel(new GridBagLayout());
+
+        JButton createContourLines = new JButton("Create Contour Lines");
+        createContourLines.setPreferredSize(createContourLines.getPreferredSize());
+        createContourLines.setMinimumSize(createContourLines.getPreferredSize());
+        createContourLines.setMaximumSize(createContourLines.getPreferredSize());
+        createContourLines.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                contourData.setCreateMasks(true);
+                dispose();
+            }
+        });
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setPreferredSize(cancelButton.getPreferredSize());
+        cancelButton.setMinimumSize(cancelButton.getPreferredSize());
+        cancelButton.setMaximumSize(cancelButton.getPreferredSize());
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                dispose();
+            }
+        });
+
+
+        JLabel filler = new JLabel("                                        ");
+
+        controllerPanel.add(filler,
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        controllerPanel.add(cancelButton,
+                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        controllerPanel.add(createContourLines,
+                new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        controllerPanel.add(helpButton,
+                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        //createContourLines.setAlignmentX(0.5f);
+        return controllerPanel;
+    }
+
+
+    private JPanel getBasicPanel() {
+
+        final int rightInset = 5;
+
+        JPanel contourPanel = new JPanel(new GridBagLayout());
+        contourPanel.setBorder(BorderFactory.createTitledBorder(""));
+
+        JTextField minValueField = new JFormattedTextField();
+        minValueField.setColumns(4);
+        minValueField.setPreferredSize(minValueField.getPreferredSize());
+        minValueField.setMaximumSize(minValueField.getPreferredSize());
+        minValueField.setMinimumSize(minValueField.getPreferredSize());
+        minValueField.setName("Start Value");
+
+        JTextField maxValueField = new JFormattedTextField();
+        maxValueField.setColumns(4);
+        maxValueField.setPreferredSize(maxValueField.getPreferredSize());
+        maxValueField.setMaximumSize(maxValueField.getPreferredSize());
+        maxValueField.setMinimumSize(maxValueField.getPreferredSize());
+        maxValueField.setName("End Value");
+
+        JTextField numLevelsField = new JFormattedTextField();
+        numLevelsField.setColumns(2);
+        numLevelsField.setPreferredSize(numLevelsField.getPreferredSize());
+        numLevelsField.setMaximumSize(numLevelsField.getPreferredSize());
+        numLevelsField.setMinimumSize(numLevelsField.getPreferredSize());
+        numLevelsField.setName("Start Value");
+
+        final JCheckBox log = new JCheckBox();
+
+        log.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (log.isSelected()) {
+                }
+            }
+        });
+
+
+        JLabel filler = new JLabel("      ");
+        contourPanel.add(new JLabel("Start Value:"),
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        contourPanel.add(minValueField,
+                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        contourPanel.add(filler,
+                new ExGridBagConstraints(2, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        contourPanel.add(new JLabel("End Value:"),
+                new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        contourPanel.add(maxValueField,
+                new ExGridBagConstraints(4, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        contourPanel.add(filler,
+                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        contourPanel.add(new JLabel("# of Levels:"),
+                new ExGridBagConstraints(6, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        contourPanel.add(numLevelsField,
+                new ExGridBagConstraints(7, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        contourPanel.add(filler,
+                new ExGridBagConstraints(8, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        contourPanel.add(new JLabel("Log"),
+                new ExGridBagConstraints(9, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        contourPanel.add(log,
+                new ExGridBagConstraints(10, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        JButton customize = new JButton("Customize");
+        customize.setPreferredSize(customize.getPreferredSize());
+        customize.setMinimumSize(customize.getPreferredSize());
+        customize.setMaximumSize(customize.getPreferredSize());
+
+
+        customize.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent event) {
+                //contourData.setCreateMasks(true);
+                //dispose();
+            }
+        });
+
+        contourPanel.add(filler,
+                new ExGridBagConstraints(11, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
+        contourPanel.add(customize,
+                new ExGridBagConstraints(12, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        return contourPanel;
     }
 
 }
