@@ -50,7 +50,7 @@
         <dependency>
             <artifactId>seadas-processing</artifactId>
             <groupId>gov.nasa.gsfc.seadas</groupId>
-            <version>1.1</version>
+            <version>1.2</version>
         </dependency>
 
 
