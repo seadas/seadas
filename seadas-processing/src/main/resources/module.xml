@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-processing</symbolicName>
-    <version>1.1</version>
+    <version>1.2</version>
 
     <name>SeaDAS Processing</name>
 
@@ -14,7 +14,29 @@
     <copyright>(C) 2012 United States Government as represented by the Administrator of the National Aeronautics and Space Administration.</copyright>
     <url>http://oceancolor.gsfc.nasa.gov/seadas</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
-
+    <changelog>
+        <![CDATA[
+                Changes in 1.2:<br/>
+                Added support for GOCI processing data installation
+                Changes in 1.1:<br/>
+                Improved input file selection performance
+                Improved multi-processors implementation (back-end code and GUI)
+                l2bin:
+                    added ability to specify a product suite
+                    enhanced the selection of the flaguse parameter values
+                        flaguse values are correlated to suite selection, outfile
+                        name reflects selected product, suite, resolution, and
+                        product type
+                ocssw installer - added hico mission data installation
+                extractor GUI - eliminated lon/lat to pixel translation button. Once
+                    all lon/lat values are entered, pixel values are automatically
+                    computed
+                modis_L1A, modis_GEO, modis_L1B GUIs - eliminated "verbose" flag from
+                    the GUI
+                l2mapgen, l2brsgen, smigen GUI - displays available products based on
+                    the input file
+                ]]>
+    </changelog>
     <dependency>
         <module>seadas-app</module>
     </dependency>

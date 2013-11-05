@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.bathymetry.operator;
+package gov.nasa.gsfc.seadas.processing.general;
 
 import org.esa.beam.framework.datamodel.GeoPos;
 
@@ -11,17 +11,17 @@ import java.util.ArrayList;
  * Time: 11:45 AM
  * To change this template use File | Settings | File Templates.
  */
-public class MotherEarthBox {
+public class MotherEarthBox2 {
 
     // establish 4 locations on the earth to minimize any effects of dateline and pole crossing
-    private EarthBox earthBoxNW = new EarthBox();
-    private EarthBox earthBoxNE = new EarthBox();
-    private EarthBox earthBoxSW = new EarthBox();
-    private EarthBox earthBoxSE = new EarthBox();
+    private EarthBox2 earthBoxNW = new EarthBox2();
+    private EarthBox2 earthBoxNE = new EarthBox2();
+    private EarthBox2 earthBoxSW = new EarthBox2();
+    private EarthBox2 earthBoxSE = new EarthBox2();
 
-    private EarthBox[] earthBoxes = {getEarthBoxNE(), getEarthBoxNW(), getEarthBoxSE(), getEarthBoxSW()};
+    private EarthBox2[] earthBoxes = {getEarthBoxNE(), getEarthBoxNW(), getEarthBoxSE(), getEarthBoxSW()};
 
-    public MotherEarthBox() {
+    public MotherEarthBox2() {
     }
 
     public void add(GeoPos geoPos) {
@@ -63,31 +63,31 @@ public class MotherEarthBox {
     }
 
 
-    public EarthBox getEarthBoxNW() {
+    public EarthBox2 getEarthBoxNW() {
         return earthBoxNW;
     }
 
-    public EarthBox getEarthBoxNE() {
+    public EarthBox2 getEarthBoxNE() {
         return earthBoxNE;
     }
 
-    public EarthBox getEarthBoxSW() {
+    public EarthBox2 getEarthBoxSW() {
         return earthBoxSW;
     }
 
-    public EarthBox getEarthBoxSE() {
+    public EarthBox2 getEarthBoxSE() {
         return earthBoxSE;
     }
 
-    public EarthBox[] getEarthBoxes() {
+    public EarthBox2[] getEarthBoxes() {
         return earthBoxes;
     }
 
-    public ArrayList<EarthBox> getFilledEarthBoxes() {
-        ArrayList<EarthBox> filledBoxesArrayList = new ArrayList<EarthBox>();
+    public ArrayList<EarthBox2> getFilledEarthBoxes() {
+        ArrayList<EarthBox2> filledBoxesArrayList = new ArrayList<EarthBox2>();
 
-        for (EarthBox earthBox : earthBoxes) {
-            if (earthBox.getMaxLat() != EarthBox.NULL_COORDINATE) {
+        for (EarthBox2 earthBox : earthBoxes) {
+            if (earthBox.getMaxLat() != EarthBox2.NULL_COORDINATE) {
                 filledBoxesArrayList.add(earthBox);
             }
         }

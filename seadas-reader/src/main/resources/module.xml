@@ -14,7 +14,16 @@
 
     <changelog>
         <![CDATA[
-        Changes in 1/4:<br>
+        Changes in 1.4.3:<br/>
+        Added support for GOCI since the updated java library for netCDF fails to open the files as HDF5EOS due to
+        an error in the file format
+        Added support for reading tie-point bands in MODIS L1B (thanks to Tom Block for the modifications)
+        Changes in 1.4.2:<br/>
+        Improved flagging of invalid geolocation
+        CZCS - corrected issues with geolocation
+        HICO - corrected issues with loading several geometry fields
+             - corrected reading of flag array
+        Changes in 1.4:<br/>
         Include support for OCM2 and HICO L1B files
         Improved support for VIIRS products
         Added support for 24bit L1BRS files (Todo: display bands as TC image)

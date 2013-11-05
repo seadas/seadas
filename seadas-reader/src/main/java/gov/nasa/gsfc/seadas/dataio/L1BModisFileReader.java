@@ -124,14 +124,18 @@ public class L1BModisFileReader extends SeadasFileReader {
 
                 final float scale_factor = getScaleFactor(variable);
                 try {
-                    final Array dataArray = variable.read();
+
+                    short[] float_data_raw;
+                    Array dataArray = variable.read();
                     if (mustFlipX && mustFlipY) {
-                        dataArray.flip(0).flip(1);
+                        float_data_raw = (short[]) dataArray.flip(0).flip(1).copyTo1DJavaArray();
+                    } else {
+                        float_data_raw = (short[]) dataArray.getStorage();
                     }
 
                     final float[] float_data = new float[(int) dataArray.getSize()];
                     for (int i = 0; i < float_data.length; i++) {
-                        float_data[i] = dataArray.getFloat(i) * scale_factor;
+                        float_data[i] = float_data_raw[i] * scale_factor;
                     }
 
                     int subSampling;
