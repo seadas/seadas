@@ -23,7 +23,7 @@
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas-system</artifactId>
-        <version>7.1-SNAPSHOT</version>
+        <version>7.0.2-SNAPSHOT</version>
         <relativePath>../seadas-system/pom.xml</relativePath>
     </parent>
 
@@ -40,10 +40,10 @@
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-app</artifactId>
         </dependency>
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-reader</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
+            <!--<artifactId>seadas-reader</artifactId>-->
+        <!--</dependency>-->
 
         <!-- BEAM plugin bits...for some reason bootstrap needs 'em to have 'em -->
         <!--<dependency>-->

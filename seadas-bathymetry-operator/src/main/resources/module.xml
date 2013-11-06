@@ -1,19 +1,18 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-bathymetry</symbolicName>
-    <version>1.2.1</version>
+    <version>1.0</version>
     <name>Bathymetry</name>
 
-    <description>Accurate Land/Water-mask based on shape files.</description>
+    <description>Generate a Bathymetry band for a loaded, navigated product</description>
     <packaging>dir</packaging>
 
-    <vendor>Brockmann Consult GmbH</vendor>
-    <contactAddress>
-        Max Planck Str.2, 21502 Geesthacht (Germany)
-    </contactAddress>
-    <copyright>(C) 2011 by Brockmann Consult GmbH</copyright>
-    <url>http://envisat.esa.int/beam</url>
+    <vendor>NASA Ocean Biogeochemical Processing Group</vendor>
+    <contactAddress>NASA GSFC, Greenbelt, Maryland, MD, USA</contactAddress>
+    <copyright>(C) 2012 by NASA OBPG</copyright>
+    <url>http://oceancolor.gsfc.nasa.gov/</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+    <funding>NASA GSFC</funding>
 
     <changelog/>
 
@@ -26,39 +25,6 @@
     </dependency>
 
     <categories>Application,Processor</categories>
-
-    <!--<extension point="beam-ui:actions">-->
-        <!--&lt;!&ndash;<action>&ndash;&gt;-->
-            <!--&lt;!&ndash;<id>watermask</id>&ndash;&gt;-->
-            <!--&lt;!&ndash;<class>org.esa.beam.visat.actions.DefaultOperatorAction</class>&ndash;&gt;-->
-            <!--&lt;!&ndash;<operatorName>LandWaterMask</operatorName>&ndash;&gt;-->
-            <!--&lt;!&ndash;<dialogTitle>Accurate Land/Water-mask</dialogTitle>&ndash;&gt;-->
-            <!--&lt;!&ndash;<targetProductNameSuffix>_watermask</targetProductNameSuffix>&ndash;&gt;-->
-            <!--&lt;!&ndash;<text>Land/Water-mask...</text>&ndash;&gt;-->
-            <!--&lt;!&ndash;<shortDescr>Accurate Land/Water-mask based on shape files.</shortDescr>&ndash;&gt;-->
-            <!--&lt;!&ndash;<mnemonic/>&ndash;&gt;-->
-            <!--&lt;!&ndash;<parent>tool</parent>&ndash;&gt;-->
-            <!--&lt;!&ndash;<helpID>watermask</helpID>&ndash;&gt;-->
-            <!--&lt;!&ndash;<placeAfter/>&ndash;&gt;-->
-        <!--&lt;!&ndash;</action>&ndash;&gt;-->
-
-        <!--&lt;!&ndash;<action>&ndash;&gt;-->
-            <!--&lt;!&ndash;<parent>view</parent>&ndash;&gt;-->
-            <!--&lt;!&ndash;<id>Auxiliary Masks</id>&ndash;&gt;-->
-            <!--&lt;!&ndash;<class>org.esa.beam.watermask.ui.BathymetryVPI</class>&ndash;&gt;-->
-            <!--&lt;!&ndash;<placeAfter>showGraticuleOverlay</placeAfter>&ndash;&gt;-->
-            <!--&lt;!&ndash;<text>Show Landmask/Coastline</text>&ndash;&gt;-->
-            <!--&lt;!&ndash;<toggle>false</toggle>&ndash;&gt;-->
-            <!--&lt;!&ndash;<separatorAfter>false</separatorAfter>&ndash;&gt;-->
-            <!--&lt;!&ndash;<mnemonic>W</mnemonic>&ndash;&gt;-->
-            <!--&lt;!&ndash;<shortDescr>Create Landmask/coastline</shortDescr>&ndash;&gt;-->
-            <!--&lt;!&ndash;<description>Create Landmask/coastline masks</description>&ndash;&gt;-->
-            <!--&lt;!&ndash;<context>image</context>&ndash;&gt;-->
-            <!--&lt;!&ndash;<smallIcon>icons/GraticuleOverlay16.gif</smallIcon>&ndash;&gt;-->
-            <!--&lt;!&ndash;<largeIcon>icons/GraticuleOverlay24.gif</largeIcon>&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;<helpId>showGraticuleOverlay</helpId>&ndash;&gt;&ndash;&gt;-->
-        <!--&lt;!&ndash;</action>&ndash;&gt;-->
-    <!--</extension>-->
 
     <extension point="beam-ui:helpSets">
         <helpSet>
