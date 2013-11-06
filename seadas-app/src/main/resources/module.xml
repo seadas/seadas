@@ -14,7 +14,7 @@
         <applicationDescriptor>
             <applicationId>SeaDAS</applicationId>
             <displayName>SeaDAS</displayName>
-            <version>7.1</version>
+            <version>7.0.2</version>
             <buildId>2013.10.23</buildId>
             <buildDate>October 2013</buildDate>
             <!--<buildId>${beam.build.id}</buildId>-->
@@ -36,6 +36,48 @@
 
     <changelog>
         <![CDATA[
+        <p>Changes in 7.0.2:<br/>
+        [Product Readers]
+        Added a GOCI L1B specific reader with geolocation
+        Updated MODIS L1B reader to include tie-point array data sets
+        [SeaDAS Processing GUI]
+        Included GOCI in the install/update GUI
+        <p>Changes in 7.0.1:<br/>
+        [Product Readers]<br/>
+        Improved flagging of invalid geolocation<br/>
+        CZCS - corrected issues with geolocation<br/>
+        HICO - corrected issues with loading several geometry fields<br/>
+             - corrected reading of flag array<br/>
+
+        [Processing code]<br/>
+        GOCI support<br/>
+        Fixed several issues with reading VIIRS L1<br/>
+        Added support for compression with netCDF output<br/>
+        Added healpix binning option<br/>
+        Set NAVWARN for MODIS scans more than 1 degree off nominal pointing<br/>
+        Modified l1info to better handle uncertain navigation<br/>
+        removed products: logchl, chl_clark, tsm_clark<br/>
+        modified l2gen product definition model to use external XML file<br/>
+        updated several third-party libraries<br/>
+        numerous changes to eliminate compiler warnings and resolve minor bugs<br/>
+
+        [SeaDAS Processing GUI]<br/>
+        Improved input file selection performance<br/>
+        Improved multi-processors implementation (back-end code and GUI)<br/>
+        l2bin:<br/>
+            added ability to specify a product suite<br/>
+            enhanced the selection of the flaguse parameter values<br/>
+                flaguse values are correlated to suite selection, outfile<br/>
+                name reflects selected product, suite, resolution, and<br/>
+                product type<br/>
+        ocssw installer - added hico mission data installation<br/>
+        extractor GUI - eliminated lon/lat to pixel translation button. Once<br/>
+            all lon/lat values are entered, pixel values are automatically<br/>
+            computed<br/>
+        modis_L1A, modis_GEO, modis_L1B GUIs - eliminated "verbose" flag from<br/>
+            the GUI<br/>
+        l2mapgen, l2brsgen, smigen GUI - displays available products based on<br/>
+            the input file<br/></p>
         <p>Changes in 7.0:<br/>
           [SEADAS-0] Adding a new SeaDAS app into beam<br/>
         </p>
