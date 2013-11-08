@@ -69,7 +69,7 @@ public class ContourVPI extends AbstractVisatPlugIn {
                 new ToolbarCommand(visatApp));
 
         String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, ContourVPI.class);
-
+        //ParameterBlockJAI pbtest = new ParameterBlockJAI("Contour");
         try {
             URL iconUrl = new URL(iconFilename);
             ImageIcon imageIcon = new ImageIcon(iconUrl);
@@ -259,6 +259,7 @@ public class ContourVPI extends AbstractVisatPlugIn {
 
     private MultiLevelImage getContourImage(Product product, Band band) {
 
+        JAI.setDefaultTileSize(new Dimension(512, 512));
         ArrayList<Double> contourIntervals = new ArrayList<Double>();
 
         for (double level = 0.2; level < 1.41; level += 0.2) {
