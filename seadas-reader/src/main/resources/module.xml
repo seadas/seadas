@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-reader</symbolicName>
-    <version>1.4.3</version>
+    <version>1.4.4</version>
     <name>NASA OBPG Ocean Color Product Reader</name>
     <description>A reader for Ocean Color Data Products supported the NASA Ocean Biology Processing Group</description>
 
@@ -14,6 +14,8 @@
 
     <changelog>
         <![CDATA[
+        Changes in 1.4.4:<br/>
+        Disabled currently unsupported "SeaWiFS Near Real-Time Ancillary Data" products.
         Changes in 1.4.3:<br/>
         Added support for GOCI since the updated java library for netCDF fails to open the files as HDF5EOS due to
         an error in the file format

@@ -56,7 +56,7 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
             "OSMI Level-1A Data",
             "OSMI Level-1B",
             "OCTS Level-1A GAC Data",
-            "SeaWiFS Near Real-Time Ancillary Data",
+//            "SeaWiFS Near Real-Time Ancillary Data",
             "SeaWiFS Level-1B",
             "SeaWiFS Level-1A Data",
     };
