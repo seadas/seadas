@@ -33,31 +33,14 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
 
 
 /**
- * This VISAT PlugIn registers an action which calls the "LandWaterMask" Operator and based on its generated "water_fraction"
- * band, defines 3 masks in the currently selected product:
- * <ol>
- * <li>Water: water_fraction > 90</li>
- * <li>Land: water_fraction < 10</li>
- * <li>Coastline: water_fraction > 0.1 && water_fraction < 99.9 (meaning if water_fraction is not 0 or 100 --> it is a coastline)</li>
- * </ol>
- * <p/>
- * <p/>
- * <i>IMPORTANT Note:
- * This VISAT PlugIn is a workaround.
- * Ideally, users would register an action in BEAM's {@code module.xml} and specify a target toolbar for it.
- * Actions specified in BEAM's {@code module.xml} currently only appear in menus, and not in tool bars
- * (because they are hard-coded in VisatApp).
- * Since this feature is still missing in BEAM, so we have to place the action in its target tool bar
- * ("layersToolBar") manually.</i>
- *
- * @author Tonio Fincke
+ * This VISAT PlugIn registers an action which calls the "bathymetry" Operator
+
  * @author Danny Knowles
- * @author Marco Peters
  */
 public class BathymetryVPI extends AbstractVisatPlugIn {
 
-    public static final String COMMAND_ID = "bathymetry";
-    public static final String TOOL_TIP = "Add bathymetry band and mask";
+    public static final String COMMAND_ID = "Bathymetry-Elevation";
+    public static final String TOOL_TIP = "Add bathymetry-elevation band and mask";
     public static final String ICON = "bathymetry.png";
 
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
@@ -94,7 +77,6 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
 
 
     private void showBathymetry(final VisatApp visatApp) {
-
         final Product product = visatApp.getSelectedProduct();
         if (product != null) {
             final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();

@@ -32,6 +32,8 @@ public class BathymetryReader {
 
     float deltaLat;
     float deltaLon;
+    float deltaLatStrange;
+    float deltaLonStrange;
 
     int dimensionLat = 0;
     int dimensionLon = 0;
@@ -54,6 +56,8 @@ public class BathymetryReader {
 
         deltaLat = (endLat - startLat) / dimensionLat;
         deltaLon = (endLon - startLon) / dimensionLon;
+        deltaLatStrange = (endLat - startLat) / (dimensionLat-1);
+        deltaLonStrange = (endLon - startLon) / (dimensionLon-1);
 
         heightVariable = ncFile.findVariable("height");
 
@@ -116,7 +120,7 @@ public class BathymetryReader {
             lonIndex = 0;
         }
 
-        return  startLon + lonIndex * deltaLon;
+        return  startLon + lonIndex * deltaLonStrange;
     }
 
     public float getLat(int latIndex) {
@@ -129,11 +133,11 @@ public class BathymetryReader {
             latIndex = 0;
         }
 
-        return  startLat + latIndex * deltaLat;
+        return  startLat + latIndex * deltaLatStrange;
     }
 
     public int getLatIndex(float lat) {
-        int latIndex = (int) Math.round((lat - startLat) / deltaLat);
+        int latIndex = (int) ((lat - startLat) / deltaLatStrange);
 
         if (latIndex > dimensionLat - 1) {
             latIndex = dimensionLat - 1;
@@ -147,7 +151,7 @@ public class BathymetryReader {
     }
 
     public int getLonIndex(float lon) {
-        int lonIndex = (int) Math.round((lon - startLon) / deltaLon);
+        int lonIndex = (int) ((lon - startLon) / deltaLonStrange);
 
         if (lonIndex > dimensionLon - 1) {
             lonIndex = dimensionLon - 1;

@@ -230,16 +230,16 @@ class BathymetryDialog extends JDialog {
         maskJPanel.add(maskTransparencySpinner.getjSpinner(),
                 new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        maskJPanel.add(maskMaxDepthTextfield.getjLabel(),
+        maskJPanel.add(maskMinDepthTextfield.getjLabel(),
                 new ExGridBagConstraints(0, 3, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        maskJPanel.add(maskMaxDepthTextfield.getjTextField(),
+        maskJPanel.add(maskMinDepthTextfield.getjTextField(),
                 new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        maskJPanel.add(maskMinDepthTextfield.getjLabel(),
+        maskJPanel.add(maskMaxDepthTextfield.getjLabel(),
                 new ExGridBagConstraints(0, 4, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        maskJPanel.add(maskMinDepthTextfield.getjTextField(),
+        maskJPanel.add(maskMaxDepthTextfield.getjTextField(),
                 new ExGridBagConstraints(1, 4, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
         maskJPanel.add(maskEnabledAllBandsCheckbox.getjLabel(),

@@ -42,7 +42,7 @@ import java.text.MessageFormat;
         description = "Operator creating a bathymetry band and bathymetry mask")
 public class BathymetryOp extends Operator {
 
-    public static final String BATHYMETRY_BAND_NAME = "bathymetry";
+    public static final String BATHYMETRY_BAND_NAME = "bathymetry_elevation";
 
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
@@ -187,10 +187,22 @@ public class BathymetryOp extends Operator {
                 int minLonIndex = bathymetryReader.getLonIndex(earthBox.getMinLon());
                 int maxLonIndex = bathymetryReader.getLonIndex(earthBox.getMaxLon());
 
-                minLatIndex--;
-                maxLatIndex++;
-                minLonIndex--;
-                maxLonIndex++;
+                if (minLatIndex > 0) {
+                    minLatIndex--;
+                }
+
+                if (maxLatIndex < bathymetryReader.dimensionLat - 1) {
+                    maxLatIndex++;
+                }
+
+                if (minLonIndex > 0) {
+                    minLonIndex--;
+                }
+
+                if (maxLonIndex < bathymetryReader.dimensionLon - 1) {
+                    maxLonIndex++;
+                }
+
 
 
                 // determine length of each dimension for the chunk array to be pulled out of the netcdf source

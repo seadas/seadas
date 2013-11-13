@@ -34,7 +34,7 @@ public class BathymetryData {
     private boolean createMasks = false;
     private boolean deleteMasks = false;
 
-    private double maskTransparency = 0.5;
+    private double maskTransparency = 0.7;
     private boolean showMaskAllBands = true;
     private Color maskColor = new Color(0, 0, 255);
     private String maskName = "Bathymetry";
@@ -51,7 +51,7 @@ public class BathymetryData {
     private int superSampling = 1;
 
 
-    private String bathymetryBandName = "bathymetry";
+    private String bathymetryBandName = "bathymetry_elevation";
 
 
 

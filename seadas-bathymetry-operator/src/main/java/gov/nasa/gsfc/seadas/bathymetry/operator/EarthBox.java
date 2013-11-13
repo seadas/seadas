@@ -69,14 +69,14 @@ public class EarthBox {
 
     private void setDeltaLon() {
         if (getMinLon() != NULL_COORDINATE && getMaxLon() != NULL_COORDINATE && getLonDimensionLength() != NULL_LENGTH) {
-            deltaLon = (getMaxLon() - getMinLon()) / getLonDimensionLength();
+            deltaLon = (getMaxLon() - getMinLon()) / (getLonDimensionLength()-1);
         }
     }
 
 
     private void setDeltaLat() {
         if (getMinLat() != NULL_COORDINATE && getMaxLat() != NULL_COORDINATE && getLatDimensionLength() != NULL_LENGTH) {
-            deltaLat = (getMaxLat() - getMinLat()) / getLatDimensionLength();
+            deltaLat = (getMaxLat() - getMinLat()) / (getLatDimensionLength()-1);
         }
     }
 
@@ -344,7 +344,7 @@ public class EarthBox {
     }
 
     private int getLatIndex(float lat) {
-        int latIndex = (int) Math.round((lat - getMinLat()) / getDeltaLat());
+        int latIndex = (int) ((lat - getMinLat()) / getDeltaLat());
 
         if (latIndex > getLatDimensionLength() - 1) {
             latIndex = getLatDimensionLength() - 1;
@@ -357,7 +357,7 @@ public class EarthBox {
     }
 
     private int getLonIndex(float lon) {
-        int lonIndex = (int) Math.round((lon - getMinLon()) / getDeltaLon());
+        int lonIndex = (int) ((lon - getMinLon()) / getDeltaLon());
         if (lonIndex > getLonDimensionLength() - 1) {
             lonIndex = getLonDimensionLength() - 1;
         }
