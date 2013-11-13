@@ -16,6 +16,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
         VISIBLE,
         IR,
         ALL,
+        INT,
         NONE
     }
 
@@ -24,7 +25,8 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             PARAMTYPE_VISIBLE = "VISIBLE",
             PARAMTYPE_IR = "IR",
             PARAMTYPE_ALL = "ALL",
-            PARAMTYPE_NONE = "NONE";
+            PARAMTYPE_NONE = "NONE",
+            PARAMTYPE_INT = "INTEGER";
 
     // These fields are populated according to productInfo.xml
 
@@ -133,7 +135,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
         return result.toString().replaceAll("[_]+", "_").replaceAll("[_]$", "");
     }
 
-    private static ParameterType convertWavetype(String str) {
+    public static ParameterType convertWavetype(String str) {
         if (str == null) {
             return ParameterType.NONE;
         }
@@ -143,6 +145,8 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             return ParameterType.IR;
         } else if (str.compareToIgnoreCase(PARAMTYPE_ALL) == 0) {
             return ParameterType.ALL;
+        } else if (str.compareToIgnoreCase(PARAMTYPE_INT) == 0) {
+            return ParameterType.INT;
         } else if (str.compareToIgnoreCase(PARAMTYPE_NONE) == 0) {
             return ParameterType.NONE;
         } else {
@@ -216,17 +220,19 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
     public void setL2prod(HashSet<String> inProducts) {
 
         if (getParameterType() == L2genAlgorithmInfo.ParameterType.NONE) {
-            if (inProducts.contains(getFullName())) {
-                setState(L2genAlgorithmInfo.State.SELECTED);
+            String thisProduct = getFullName();
+            if (inProducts.contains(thisProduct)) {
+                setState(State.SELECTED);
+                inProducts.remove(thisProduct);
             } else {
-                setState(L2genAlgorithmInfo.State.NOT_SELECTED);
+                setState(State.NOT_SELECTED);
             }
         } else {
             for (L2genBaseInfo wInfo : getChildren()) {
                 L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
 
                 if (wavelengthInfo.getWavelength() == L2genProductTools.WAVELENGTH_FOR_IFILE_INDEPENDENT_MODE) {
-                    boolean matchFound = false;
+                    String inProductFound = null;
                     for (String inProduct : inProducts) {
 
                         boolean matchIsStillPossible = true;
@@ -252,38 +258,47 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                                     || inProduct.equals(L2genProductTools.SHORTCUT_NAMEPART_IR)
                                     || inProduct.equals(L2genProductTools.SHORTCUT_NAMEPART_VISIBLE)
                                     || inProduct.equals(L2genProductTools.SHORTCUT_NAMEPART_ALL)) {
-                                matchFound = true;
+                                inProductFound = inProduct;
                             }
                         }
                     }
 
-                    if (matchFound) {
+                    if (inProductFound != null) {
                         wavelengthInfo.setState(State.SELECTED);
+                        inProducts.remove(inProductFound);
                     } else {
                         wavelengthInfo.setState(State.NOT_SELECTED);
                     }
 
 
                 } else {
-                    if (inProducts.contains(wavelengthInfo.getFullName())) {
-                        wavelengthInfo.setState(L2genWavelengthInfo.State.SELECTED);
+                    String wavelengthProduct = wavelengthInfo.getFullName();
+                    if (inProducts.contains(wavelengthProduct)) {
+                        wavelengthInfo.setState(State.SELECTED);
+                        inProducts.remove(wavelengthProduct);
                     } else {
-                        wavelengthInfo.setState(L2genWavelengthInfo.State.NOT_SELECTED);
+                        wavelengthInfo.setState(State.NOT_SELECTED);
                     }
                 }
 
             }
 
-            if (inProducts.contains(getShortcutFullname(L2genProductTools.ShortcutType.VISIBLE))) {
-                setStateShortcut(L2genProductTools.ShortcutType.VISIBLE, L2genAlgorithmInfo.State.SELECTED);
+            String visibleProduct = getShortcutFullname(L2genProductTools.ShortcutType.VISIBLE);
+            if (inProducts.contains(visibleProduct)) {
+                setStateShortcut(L2genProductTools.ShortcutType.VISIBLE, State.SELECTED);
+                inProducts.remove(visibleProduct);
             }
 
-            if (inProducts.contains(getShortcutFullname(L2genProductTools.ShortcutType.IR))) {
-                setStateShortcut(L2genProductTools.ShortcutType.IR, L2genAlgorithmInfo.State.SELECTED);
+            String irProduct = getShortcutFullname(L2genProductTools.ShortcutType.IR);
+            if (inProducts.contains(irProduct)) {
+                setStateShortcut(L2genProductTools.ShortcutType.IR, State.SELECTED);
+                inProducts.remove(irProduct);
             }
 
-            if (inProducts.contains(getShortcutFullname(L2genProductTools.ShortcutType.ALL))) {
-                setStateShortcut(L2genProductTools.ShortcutType.ALL, L2genAlgorithmInfo.State.SELECTED);
+            String allProduct = getShortcutFullname(L2genProductTools.ShortcutType.ALL);
+            if (inProducts.contains(allProduct)) {
+                setStateShortcut(L2genProductTools.ShortcutType.ALL, State.SELECTED);
+                inProducts.remove(allProduct);
             }
         }
     }

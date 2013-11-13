@@ -133,7 +133,8 @@ public class MultilevelProcessorRow {
                 cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml");
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("l2gen")) {
-                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), false, L2genData.Mode.L2GEN, true, true);
+            //    cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), false, L2genData.Mode.L2GEN, true, true);
+                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", null  , false, L2genData.Mode.L2GEN, true, true);
                 configPanel = cloProgramUI.getParamPanel();
 
             } else {

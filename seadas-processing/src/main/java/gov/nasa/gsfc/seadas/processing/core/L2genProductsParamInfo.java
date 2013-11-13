@@ -21,6 +21,9 @@ public class L2genProductsParamInfo extends ParamInfo {
     private ArrayList<L2genProductInfo> productInfos = new ArrayList<L2genProductInfo>();
     private ArrayList<L2genProductCategoryInfo> productCategoryInfos = new ArrayList<L2genProductCategoryInfo>();
 
+    private ArrayList<L2genProductInfo> integerProductInfos = new ArrayList<L2genProductInfo>();
+
+    ArrayList<String> integerL2prodList = new ArrayList<String>();
 
     public L2genProductsParamInfo() {
         super(L2genData.L2PROD);
@@ -51,6 +54,10 @@ public class L2genProductsParamInfo extends ParamInfo {
                     l2prod.add(l2prodThisAlgorithm);
                 }
             }
+        }
+
+        for (String integerL2prod : integerL2prodList) {
+            l2prod.add(integerL2prod);
         }
 
         Collections.sort(l2prod);
@@ -99,6 +106,30 @@ public class L2genProductsParamInfo extends ParamInfo {
                     algorithmInfo.setL2prod(inProducts);
                 }
             }
+
+            //todo DAN was here
+            //----------------------------------------------------------------------------------------------------
+            // Throw anything valid remaining in the custom integer products
+            //----------------------------------------------------------------------------------------------------
+
+            integerL2prodList.clear();
+
+            for (L2genProductInfo productInfo : integerProductInfos) {
+                for (L2genBaseInfo aInfo : productInfo.getChildren()) {
+                    L2genAlgorithmInfo algorithmInfo = (L2genAlgorithmInfo) aInfo;
+                    String prefix = algorithmInfo.getFullName() + "_";
+                    for (String inProduct : inProducts) {
+                        if (inProduct.startsWith(prefix)) {
+                            String remainingSuffix = inProduct.replaceFirst(prefix, "");
+                            try {
+                                int remainingSuffixInt = Integer.parseInt(remainingSuffix);
+                                integerL2prodList.add(inProduct);
+                            } catch (NumberFormatException e) {
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -111,6 +142,13 @@ public class L2genProductsParamInfo extends ParamInfo {
         productInfos.clear();
     }
 
+    protected void addIntegerProductInfo(L2genProductInfo integerProductInfo) {
+        integerProductInfos.add(integerProductInfo);
+    }
+
+    protected void clearIntegerProductInfos() {
+        integerProductInfos.clear();
+    }
     protected void sortProductInfos(Comparator<L2genProductInfo> comparator) {
         Collections.sort(productInfos, comparator);
     }

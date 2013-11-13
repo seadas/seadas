@@ -1759,14 +1759,14 @@ public class L2genData implements L2genDataProcessorModel {
         l2prodParamInfo.clearProductInfos();
     }
 
-//    public void addIntegerProductInfo(L2genProductInfo productInfo) {
-//        l2prodParamInfo.addIntegerProductInfo(productInfo);
-//    }
-//
-//
-//    public void clearIntegerProductInfos() {
-//        l2prodParamInfo.clearIntegerProductInfos();
-//    }
+    public void addIntegerProductInfo(L2genProductInfo productInfo) {
+        l2prodParamInfo.addIntegerProductInfo(productInfo);
+    }
+
+
+    public void clearIntegerProductInfos() {
+        l2prodParamInfo.clearIntegerProductInfos();
+    }
 
 
     public void sortProductInfos(Comparator<L2genProductInfo> comparator) {

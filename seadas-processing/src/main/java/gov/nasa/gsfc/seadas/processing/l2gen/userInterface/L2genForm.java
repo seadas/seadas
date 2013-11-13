@@ -108,12 +108,18 @@ public class L2genForm extends JPanel implements CloProgramUI {
                     getL2genData().disableEvent(L2genData.PARSTRING);
                     getL2genData().disableEvent(L2genData.L2PROD);
 
-                    if (iFile != null) {
-                        getL2genData().setInitialValues(iFile);
-                    } else {
-                        getL2genData().setInitialValues(getInitialSelectedSourceFile());
+                    if (!getL2genData().isIfileIndependentMode()) {
+                        if (iFile != null) {
+                            getL2genData().setInitialValues(iFile);
+                        } else {
+                            getL2genData().setInitialValues(getInitialSelectedSourceFile());
+                        }
                     }
 
+                    //todo this crazy for multilevel processor
+//                    if (getL2genData().isIfileIndependentMode()) {
+//                        getL2genData().fireEvent(L2genData.IFILE);
+//                    }
 
                     getL2genData().fireAllParamEvents();
                     getL2genData().enableEvent(L2genData.L2PROD);
@@ -227,7 +233,10 @@ public class L2genForm extends JPanel implements CloProgramUI {
                         }
                     });
                 }
-
+// todo new
+                if (getL2genData().isIfileIndependentMode()) {
+                    jTabbedPane.setEnabled(true);
+                }
 
                 getL2genData().addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
                     @Override

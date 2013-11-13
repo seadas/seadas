@@ -339,8 +339,9 @@ public class L2genReader {
                 Element prodElement = (Element) prodNodelist.item(i);
 
                 String prodName = prodElement.getAttribute("name");
-                L2genProductInfo productInfo = new L2genProductInfo(prodName);
-                productInfo.setName(prodName);
+                L2genProductInfo productInfo = null;
+
+                L2genProductInfo integerProductInfo = null;
 
                 NodeList algNodelist = prodElement.getElementsByTagName("algorithm");
 
@@ -356,8 +357,7 @@ public class L2genReader {
                             algorithmInfo.setName(algorithmName);
                         }
 
-                        String parameterTypeStr = XmlReader.getTextValue(algElement, "parameterType");
-                        algorithmInfo.setParameterType(parameterTypeStr);
+
 
                         String suffix = XmlReader.getTextValue(algElement, "suffix");
                         algorithmInfo.setSuffix(suffix);
@@ -375,14 +375,36 @@ public class L2genReader {
                         String dataType = XmlReader.getTextValue(algElement, "dataType");
                         algorithmInfo.setDataType(dataType);
 
-                        productInfo.addChild(algorithmInfo);
-                        algorithmInfo.setProductInfo(productInfo);
+                        String parameterTypeStr = XmlReader.getTextValue(algElement, "parameterType");
+//                        if (prefix.startsWith("smoke")) {
+//                            parameterTypeStr = L2genAlgorithmInfo.PARAMTYPE_INT;
+//                        }
+
+                        algorithmInfo.setParameterType(parameterTypeStr);
+
+
+                        if (algorithmInfo.getParameterType() == L2genAlgorithmInfo.ParameterType.INT) {
+                            integerProductInfo = new L2genProductInfo(prodName);
+                            integerProductInfo.setName(prodName);
+                            integerProductInfo.addChild(algorithmInfo);
+                            algorithmInfo.setProductInfo(integerProductInfo);
+                        } else {
+                            productInfo = new L2genProductInfo(prodName);
+                            productInfo.setName(prodName);
+                            productInfo.addChild(algorithmInfo);
+                            algorithmInfo.setProductInfo(productInfo);
+                        }
 
                     } // for algorithms
 
 
-                    productInfo.sortChildren();
-                    l2genData.addProductInfo(productInfo);
+                    if (productInfo != null) {
+                        productInfo.sortChildren();
+                        l2genData.addProductInfo(productInfo);
+                    }
+                    if (integerProductInfo != null) {
+                        l2genData.addIntegerProductInfo(integerProductInfo);
+                    }
                 }
             } // for products
         }
