@@ -89,7 +89,7 @@ public abstract class SeadasFileReader {
             int[] newshape = {sourceHeight, sourceWidth};
 
             array = variable.read(section);
-            if (array.getRank() == 3) {
+            if (array.getRank() > 2) {
                 array = array.reshapeNoCopy(newshape);
             }
             Object storage;
@@ -392,7 +392,11 @@ public abstract class SeadasFileReader {
                 product.addBand(band);
 
                 try {
-                    band.setNoDataValue((double) variable.findAttribute("bad_value_scaled").getNumericValue().floatValue());
+                    Attribute fillValue = variable.findAttribute("_FillValue");
+                    if (fillValue == null){
+                        fillValue = variable.findAttribute("bad_value_scaled");
+                    }
+                    band.setNoDataValue((double) fillValue.getNumericValue().floatValue());
                     band.setNoDataValueUsed(true);
                 } catch (Exception ignored) { }
 
@@ -555,10 +559,21 @@ public abstract class SeadasFileReader {
             String startAttr = getStringAttribute("Start_Node");
             if (startAttr != null) {
                 startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
+            } else {
+                startAttr = getStringAttribute("startDirection");
+                if (startAttr != null) {
+                    startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
+                }
             }
+
             String endAttr = getStringAttribute("End_Node");
             if (endAttr != null) {
                 endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
+            } else {
+                endAttr = getStringAttribute("endDirection");
+                if (endAttr != null) {
+                    endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
+                }
             }
         } catch (Exception ignored) { }
 
@@ -603,7 +618,7 @@ public abstract class SeadasFileReader {
 
     public Attribute findAttribute(String name, List<Attribute> attributesList) {
         for (Attribute a : attributesList) {
-            if (name.equals(a.getShortName()))
+            if (name.equalsIgnoreCase(a.getShortName()))
                 return a;
         }
         return null;
@@ -655,17 +670,29 @@ public abstract class SeadasFileReader {
     private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
         Attribute attribute = findAttribute(key, globalAttributes);
         Boolean isModis = false;
+        Boolean isISO = false;
         try {
             isModis = findAttribute("MODIS_Resolution", globalAttributes).isString();
+        } catch (Exception ignored) { }
+        try {
+            isISO = findAttribute("time_coverage_start", globalAttributes).isString();
         } catch (Exception ignored) { }
 
         if (attribute != null) {
             String timeString = attribute.getStringValue().trim();
+
             final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
+
+            final DateFormat dateFormatISO = ProductData.UTC.createDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
             final DateFormat dateFormatModis = ProductData.UTC.createDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
             final DateFormat dateFormatOcts = ProductData.UTC.createDateFormat("yyyyMMdd HH:mm:ss.SSSSSS");
             try {
-                if (isModis) {
+                if (isISO) {
+                    final Date date = dateFormatISO.parse(timeString);
+//                    String milliSeconds = timeString.substring(timeString.length());
+                    return ProductData.UTC.create(date, 0);
+                } else if (isModis) {
                     final Date date = dateFormatModis.parse(timeString);
                     String milliSeconds = timeString.substring(timeString.length() - 3);
                     return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
@@ -673,7 +700,7 @@ public abstract class SeadasFileReader {
                     final Date date = dateFormatOcts.parse(timeString);
                     String milliSeconds = timeString.substring(timeString.length() - 3);
                     return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
-                } else {
+                } else  {
                     final Date date = dateFormat.parse(timeString);
                     String milliSeconds = timeString.substring(timeString.length() - 3);
                     return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);

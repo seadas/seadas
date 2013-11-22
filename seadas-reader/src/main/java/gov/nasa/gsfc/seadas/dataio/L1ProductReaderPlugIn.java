@@ -56,7 +56,6 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
             "OSMI Level-1A Data",
             "OSMI Level-1B",
             "OCTS Level-1A GAC Data",
-            "SeaWiFS Near Real-Time Ancillary Data",
             "SeaWiFS Level-1B",
             "SeaWiFS Level-1A Data",
     };
@@ -88,11 +87,13 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
         try {
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
-                Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
+
+                Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase("title");
 
                 if (titleAttribute != null) {
 
-                    final String title = titleAttribute.getStringValue();
+                    String title = titleAttribute.getStringValue();
+
                     if (title != null) {
                         if (supportedProductTypeSet.contains(title.trim())) {
                             if (DEBUG) {

@@ -4,9 +4,12 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
+import ucar.nc2.Dimension;
 import ucar.nc2.Variable;
+import ucar.nc2.Attribute;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,14 +26,35 @@ public class L2FileReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
 
-        int sceneWidth = getIntAttribute("Pixels_per_Scan_Line");
-        int sceneHeight = getIntAttribute("Number_of_Scan_Lines");
+        int sceneHeight = 0;
+        int sceneWidth = 0;
+
+        List<Dimension> dims = ncFile.getDimensions();
+        for (Dimension d: dims){
+            if (d.getShortName().equalsIgnoreCase("Number_of_Scan_Lines")){
+                sceneHeight = d.getLength();
+            }
+            if (d.getShortName().equalsIgnoreCase("Pixels_per_Scan_Line")){
+                sceneWidth = d.getLength();
+            }
+        }
+        if (sceneWidth == 0){
+            sceneWidth = getIntAttribute("Pixels_per_Scan_Line");
+        }
+        if (sceneHeight == 0){
+            sceneHeight = getIntAttribute("Number_of_Scan_Lines");
+        }
         try {
             String navGroup = "Navigation_Data";
             final String latitude = "latitude";
             if (ncFile.findGroup(navGroup) == null) {
                 if (ncFile.findGroup("Navigation") != null) {
                     navGroup = "Navigation";
+                }
+            }
+            if (ncFile.findGroup(navGroup) == null) {
+                if (ncFile.findGroup("navigation_data") != null) {
+                    navGroup = "navigation_data";
                 }
             }
             final Variable variable = ncFile.findVariable(navGroup + "/" + latitude);
@@ -53,7 +77,14 @@ public class L2FileReader extends SeadasFileReader {
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
 
+        Attribute startTime = findAttribute("Start_Time");
         ProductData.UTC utcStart = getUTCAttribute("Start_Time");
+        ProductData.UTC utcEnd = getUTCAttribute("End_Time");
+        if (startTime == null) {
+            utcStart = getUTCAttribute("time_coverage_start");
+            utcEnd = getUTCAttribute("time_coverage_end");
+        }
+
         if (utcStart != null) {
             if (mustFlipY){
                 product.setEndTime(utcStart);
@@ -61,7 +92,7 @@ public class L2FileReader extends SeadasFileReader {
                 product.setStartTime(utcStart);
             }
         }
-        ProductData.UTC utcEnd = getUTCAttribute("End_Time");
+
         if (utcEnd != null) {
             if (mustFlipY) {
                 product.setStartTime(utcEnd);

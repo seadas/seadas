@@ -1,4 +1,5 @@
 gov.nasa.gsfc.seadas.dataio.L1ProductReaderPlugIn
+gov.nasa.gsfc.seadas.dataio.AncillaryProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.L1BModisProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.L1BHicoProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.L1BGociProductReaderPlugIn

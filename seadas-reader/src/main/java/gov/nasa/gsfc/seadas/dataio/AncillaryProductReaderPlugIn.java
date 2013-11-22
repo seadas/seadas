@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
+public class AncillaryProductReaderPlugIn implements ProductReaderPlugIn {
 
     // Set to "true" to output debugging information.
     // Don't forget to setback to "false" in production code!
@@ -37,36 +37,17 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
     private static final boolean DEBUG = false;
 
     private static final String DEFAULT_FILE_EXTENSION = ".hdf";
-
-    private static final String DEFAULT_FILE_EXTENSION_L2 = ".L2";
-    private static final String DEFAULT_FILE_EXTENSION_L2_GAC = DEFAULT_FILE_EXTENSION_L2 + "_GAC";
-    private static final String DEFAULT_FILE_EXTENSION_L2_GAC_OC = DEFAULT_FILE_EXTENSION_L2_GAC + "_OC";
-    private static final String DEFAULT_FILE_EXTENSION_L2_LAC = DEFAULT_FILE_EXTENSION_L2 + "_LAC";
-    private static final String DEFAULT_FILE_EXTENSION_L2_LAC_OC = DEFAULT_FILE_EXTENSION_L2_LAC + "_OC";
-    private static final String DEFAULT_FILE_EXTENSION_L2_LAC_SST = DEFAULT_FILE_EXTENSION_L2_LAC + "_SST";
-    private static final String DEFAULT_FILE_EXTENSION_L2_LAC_SST4 = DEFAULT_FILE_EXTENSION_L2_LAC + "_SST4";
-    private static final String DEFAULT_FILE_EXTENSION_L2_MLAC = DEFAULT_FILE_EXTENSION_L2 + "_MLAC";
-    private static final String DEFAULT_FILE_EXTENSION_L2_MLAC_OC = DEFAULT_FILE_EXTENSION_L2_MLAC + "_OC";
-
-    public static final String READER_DESCRIPTION = "SeaDAS-Supported Level 2 Products";
-    public static final String FORMAT_NAME = "SeaDAS-L2";
+    private static final String DEFAULT_FILE_EXTENSION_NETCDF = ".nc";
+    private static final String DEFAULT_FILE_EXTENSION_MET = ".MET";
+    private static final String DEFAULT_FILE_EXTENSION_OZONE = ".OZONE";
+    public static final String READER_DESCRIPTION = "SeaDAS-Supported Ancillary Products";
+    public static final String FORMAT_NAME = "SeaDAS-ANC";
 
     private static final String[] supportedProductTypes = {
-            "CZCS Level-2 Data",
-            "HMODISA Level-2 Data",
-            "HMODIST Level-2 Data",
-            "MERIS Level-2 Data",
-            "MODISA Level-2 Data",
-            "MODIST Level-2 Data",
-            "MOS Level-2 Data",
-            "OSMI Level-2 Data",
-            "OCTS Level-2 Data",
-            "SeaWiFS Level-2 Data",
-            "VIIRSN Level-2 Data",
-            "OCM2 Level-2 Data",
-            "OCM Level-2 Data",
-            "HICO Level-2 Data",
-            "GOCI Level-2 Data",
+            "SeaWiFS Near Real-Time Ancillary Data",
+            "SeaWiFS Climatological Ancillary Data",
+            "Daily-OI",
+            "ETOPO1 Ice Surface Global Relief Model",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
@@ -76,7 +57,7 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
      */
     @Override
     public DecodeQualification getDecodeQualification(Object input) {
-        final File file = SeadasProductReader.getInputFile(input);
+        final File file = getInputFile(input);
         if (file == null) {
             return DecodeQualification.UNABLE;
         }
@@ -96,25 +77,27 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
         try {
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
-                String titleattr = "title";
-                Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase(titleattr);
+
+                Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase("title");
 
                 if (titleAttribute != null) {
 
-                    final String title = titleAttribute.getStringValue();
-                    if (title != null) {
-                        if (supportedProductTypeSet.contains(title.trim())) {
-                            if (DEBUG) {
-                                System.out.println(file);
-                            }
-                            ncfile.close();
-                            return DecodeQualification.INTENDED;
-                        } else {
-                            if (DEBUG) {
-                                System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
-                            }
+                    String title = titleAttribute.getStringValue();
+                    if (title.contains("Daily-OI")) {
+                        title = "Daily-OI";
+                    }
+                    if (supportedProductTypeSet.contains(title.trim())) {
+                        if (DEBUG) {
+                            System.out.println(file);
+                        }
+                        ncfile.close();
+                        return DecodeQualification.INTENDED;
+                    } else {
+                        if (DEBUG) {
+                            System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
                         }
                     }
+
                 } else {
                     if (DEBUG) {
                         System.out.println("# Missing attribute 'Title': " + file);
@@ -187,11 +170,9 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
         // todo: return regular expression to clean up the extensions.
         return new String[]{
                 DEFAULT_FILE_EXTENSION,
-                DEFAULT_FILE_EXTENSION_L2_GAC_OC,
-                DEFAULT_FILE_EXTENSION_L2_LAC_OC,
-                DEFAULT_FILE_EXTENSION_L2_LAC_SST,
-                DEFAULT_FILE_EXTENSION_L2_LAC_SST4,
-                DEFAULT_FILE_EXTENSION_L2_MLAC_OC
+                DEFAULT_FILE_EXTENSION_NETCDF,
+                DEFAULT_FILE_EXTENSION_MET,
+                DEFAULT_FILE_EXTENSION_OZONE,
         };
     }
 
@@ -218,4 +199,18 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
     public String[] getFormatNames() {
         return new String[]{FORMAT_NAME};
     }
+
+    public File getInputFile(Object input) {
+        File inputFile;
+        if (input instanceof File) {
+            inputFile = (File) input;
+        } else if (input instanceof String) {
+            inputFile = new File((String) input);
+        } else {
+            return null;
+        }
+        return inputFile;
+    }
+
+
 }
