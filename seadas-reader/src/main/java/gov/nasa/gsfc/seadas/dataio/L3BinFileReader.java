@@ -369,7 +369,7 @@ public class L3BinFileReader extends SeadasFileReader {
         bandToVariableMap.put(addBand(product, "nscenes", ProductData.TYPE_UINT16), binListStruc.select("nscenes").findVariable("nscenes"));
 //        ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("BinList");
         if (ncFile.getRootGroup().findGroup("Level-3_Binned_Data").findVariable("qual_l3") != null){
-            bandToVariableMap.put(addBand(product, "qual_l3", ProductData.TYPE_UINT8), ncFile.getRootGroup().findGroup("Level-3 Binned Data").findVariable("qual_l3"));
+            bandToVariableMap.put(addBand(product, "qual_l3", ProductData.TYPE_UINT8), ncFile.getRootGroup().findGroup("Level-3_Binned_Data").findVariable("qual_l3"));
         }
         String groupnames = "";
         for (Variable l3Var : l3ProdVars) {
