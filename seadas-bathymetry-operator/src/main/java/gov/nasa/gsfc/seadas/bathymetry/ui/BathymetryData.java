@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -51,7 +52,7 @@ public class BathymetryData {
     private int superSampling = 1;
 
 
-    private String bathymetryBandName = "bathymetry_elevation";
+    private String bathymetryBandName = "elevation";
 
 
 
@@ -170,11 +171,11 @@ public class BathymetryData {
     public String getMaskMath() {
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(getBathymetryBandName());
+        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
         stringBuilder.append(" >= ");
         stringBuilder.append(new Double(getMaskMaxDepth()).toString());
         stringBuilder.append(" and ");
-        stringBuilder.append(getBathymetryBandName());
+        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
         stringBuilder.append(" <= ");
         stringBuilder.append(new Double(getMaskMinDepth()).toString());
 
