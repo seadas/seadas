@@ -33,7 +33,6 @@ public abstract class SeadasFileReader {
     protected Map<Band, Variable> variableMap;
     protected NetcdfFile ncFile;
     protected SeadasProductReader productReader;
-    protected Map<String, String> bandInfoMap = getL2BandInfoMap();
     protected int[] start = new int[2];
     protected int[] stride = new int[2];
     protected int[] count = new int[2];
@@ -53,11 +52,6 @@ public abstract class SeadasFileReader {
         globalAttributes = ncFile.getGlobalAttributes();
 
     }
-
-    protected synchronized static HashMap<String, String> getL2BandInfoMap() {
-        return readTwoColumnTable("l2-band-info.csv");
-    }
-
 
     public abstract Product createProduct() throws IOException;
 
@@ -385,10 +379,7 @@ public abstract class SeadasFileReader {
                 final String name = variable.getShortName();
                 final int dataType = getProductDataType(variable);
                 band = new Band(name, dataType, width, height);
-                final String validExpression = bandInfoMap.get(name);
-                if (validExpression != null && !validExpression.equals("")) {
-                    band.setValidPixelExpression(validExpression);
-                }
+
                 product.addBand(band);
 
                 try {
@@ -401,6 +392,7 @@ public abstract class SeadasFileReader {
                 } catch (Exception ignored) { }
 
                 final List<Attribute> list = variable.getAttributes();
+                double[] validMinMax = {0.0,0.0};
                 for (Attribute hdfAttribute : list) {
                     final String attribName = hdfAttribute.getShortName();
                     if ("units".equals(attribName)) {
@@ -411,7 +403,25 @@ public abstract class SeadasFileReader {
                         band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
                     } else if ("intercept".equals(attribName)) {
                         band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
+                    } else if ("scale_factor".equals(attribName)) {
+                        band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
+                    } else if ("add_offset".equals(attribName)) {
+                        band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
+                    } else if ("valid_".startsWith(attribName)){
+                        if ("valid_min".equals(attribName)){
+                            validMinMax[0] = hdfAttribute.getNumericValue(0).doubleValue();
+                        } else if ("valid_max".equals(attribName)){
+                            validMinMax[1] = hdfAttribute.getNumericValue(0).doubleValue();
+                        } else if ("valid_range".equals(attribName)){
+                            validMinMax[0] = hdfAttribute.getNumericValue(0).doubleValue();
+                            validMinMax[1] = hdfAttribute.getNumericValue(1).doubleValue();
+                        }
                     }
+                }
+                if (validMinMax[0] < validMinMax[1]){
+                    String validExp = null;
+                    validExp.format("%s >= %f && %s <= %f",name,validMinMax[0],name,validMinMax[1]);
+                    band.setValidPixelExpression(validExp);
                 }
             }
         }
