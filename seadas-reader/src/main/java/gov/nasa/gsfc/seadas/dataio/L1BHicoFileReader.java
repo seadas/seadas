@@ -219,10 +219,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
                     final String name = variable.getShortName();
                     final int dataType = getProductDataType(variable);
                     band = new Band(name, dataType, width, height);
-                    final String validExpression = bandInfoMap.get(name);
-                    if (validExpression != null && !validExpression.equals("")) {
-                        band.setValidPixelExpression(validExpression);
-                    }
+
                     product.addBand(band);
 
                     try {

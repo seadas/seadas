@@ -117,10 +117,7 @@ public class BrowseProductReader extends SeadasFileReader {
                     }
                     final int dataType = getProductDataType(variable);
                     band = new Band(name, dataType, width, height);
-                    final String validExpression = bandInfoMap.get(name);
-                    if (validExpression != null && !validExpression.equals("")) {
-                        band.setValidPixelExpression(validExpression);
-                    }
+
                     product.addBand(band);
 
                     if (isBrs){
