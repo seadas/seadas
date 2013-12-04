@@ -358,7 +358,6 @@ public class L2genReader {
                         }
 
 
-
                         String suffix = XmlReader.getTextValue(algElement, "suffix");
                         algorithmInfo.setSuffix(suffix);
 
@@ -376,20 +375,22 @@ public class L2genReader {
                         algorithmInfo.setDataType(dataType);
 
                         String parameterTypeStr = XmlReader.getTextValue(algElement, "parameterType");
-//                        if (prefix.startsWith("smoke")) {
-//                            parameterTypeStr = L2genAlgorithmInfo.PARAMTYPE_INT;
-//                        }
+
 
                         algorithmInfo.setParameterType(parameterTypeStr);
 
 
                         if (algorithmInfo.getParameterType() == L2genAlgorithmInfo.ParameterType.INT) {
-                            integerProductInfo = new L2genProductInfo(prodName);
+                            if (integerProductInfo == null) {
+                                integerProductInfo = new L2genProductInfo(prodName);
+                            }
                             integerProductInfo.setName(prodName);
                             integerProductInfo.addChild(algorithmInfo);
                             algorithmInfo.setProductInfo(integerProductInfo);
                         } else {
-                            productInfo = new L2genProductInfo(prodName);
+                            if (productInfo == null) {
+                                productInfo = new L2genProductInfo(prodName);
+                            }
                             productInfo.setName(prodName);
                             productInfo.addChild(algorithmInfo);
                             algorithmInfo.setProductInfo(productInfo);
