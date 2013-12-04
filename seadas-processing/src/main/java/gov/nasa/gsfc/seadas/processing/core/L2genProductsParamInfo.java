@@ -117,20 +117,46 @@ public class L2genProductsParamInfo extends ParamInfo {
             for (L2genProductInfo productInfo : integerProductInfos) {
                 for (L2genBaseInfo aInfo : productInfo.getChildren()) {
                     L2genAlgorithmInfo algorithmInfo = (L2genAlgorithmInfo) aInfo;
-                    String prefix = algorithmInfo.getFullName() + "_";
+
+                    String prefix = algorithmInfo.getPrefix();
+                    String suffix = algorithmInfo.getSuffix();
+
                     for (String inProduct : inProducts) {
+                        String remnants = inProduct;
+
                         if (inProduct.startsWith(prefix)) {
-                            String remainingSuffix = inProduct.replaceFirst(prefix, "");
-                            try {
-                                int remainingSuffixInt = Integer.parseInt(remainingSuffix);
-                                integerL2prodList.add(inProduct);
-                            } catch (NumberFormatException e) {
+                            // Strip off prefix
+                            remnants = inProduct.replaceFirst(prefix, "");
+
+                            if (suffix != null) {
+                                if (inProduct.endsWith(suffix)) {
+                                    // Strip off suffix
+                                    remnants = remnants.substring(0, (remnants.length() - suffix.length()));
+                                    if (isInteger(remnants)) {
+                                        integerL2prodList.add(inProduct);
+                                    }
+                                }
+                            } else {
+                                if (isInteger(remnants)) {
+                                    integerL2prodList.add(inProduct);
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
     }
 
 
@@ -149,6 +175,7 @@ public class L2genProductsParamInfo extends ParamInfo {
     protected void clearIntegerProductInfos() {
         integerProductInfos.clear();
     }
+
     protected void sortProductInfos(Comparator<L2genProductInfo> comparator) {
         Collections.sort(productInfos, comparator);
     }
