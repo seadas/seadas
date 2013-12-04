@@ -55,7 +55,7 @@ Spatial Subset Tool
 
 Navigation
 ----------------
-1. Ground COntrol Points
+1. Ground Control Points
 1. Attach geo-coding
 1. Orthorectification
 
