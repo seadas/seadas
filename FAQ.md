@@ -10,15 +10,19 @@ Basic file (product) load and display
 1. Product Grabber
 1. Session Management
 
+Export Data
+-----------------------------
+1. GeoTIFF
+1. HDF5
+1. netCDF
+1. flat binary (DIMAP)
+1. CSV
+1. Shapefile
+1. Google KML/KMZ
+1. Image (png, tiff, jpg, bmp)
 
-1.  Add `$JAVA_HOME/bin`, `$MAVEN_HOME/bin` and `$GIT_HOME/bin` to your `PATH`. (Windows:  `%JAVA_HOME%\bin`, `%MAVEN_HOME%\bin` and `%GIT_HOME%\bin`)
-
-1.  Checkout Ceres, BEAM and SeaDAS using `git`:
-
-        cd $SEADAS
-        git clone git://github.com/bcdev/ceres.git ceres
-        git clone git@github.com:seadas/beam.git beam
-        git clone git@github.com:seadas/seadas.git seadas
+View/Create Masks
+----------------------
 
 1.  Need to checkout the correct version for ceres
 
