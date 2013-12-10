@@ -34,7 +34,7 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
 
 /**
  * This VISAT PlugIn registers an action which calls the "bathymetry" Operator
-
+ *
  * @author Danny Knowles
  */
 public class BathymetryVPI extends AbstractVisatPlugIn {
@@ -174,18 +174,18 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                     if (sourceFileInfo.isEnabled()) {
 
 
-                       final String[] msg = {"Creating bathymetry band and mask"};
+                        final String[] msg = {"Creating bathymetry band and mask"};
 
                         if (bandCreated[0] == true) {
                             msg[0] = "recreating bathymetry mask";
                         }
                         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                               msg[0]) {
+                                msg[0]) {
 
                             @Override
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                                pm.beginTask(msg[0]   , 2);
+                                pm.beginTask(msg[0], 2);
 
                                 try {
 
@@ -218,6 +218,36 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                                         reformatSourceImage(elevationBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
                                         elevationBand.setName(BathymetryOp.ELEVATION_BAND_NAME);
                                         product.addBand(elevationBand);
+
+//  This is iso line stuff - kinda works though not really a tight good line
+
+//                                        final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
+//                                                new double[]{
+//                                                        +1, +1, +1,
+//                                                        +1, +1, +1,
+//                                                        +1, +1, +1,
+//                                                });
+//
+//                                        final ConvolutionFilterBand bathymetrySmoothedBand = new ConvolutionFilterBand(
+//                                                "bathymetrySmoothed",
+//                                               bathymetryBand,
+//                                                arithmeticMean3x3Kernel);
+//
+//                                        product.addBand(bathymetrySmoothedBand);
+//
+//                                        String bathymetryIsoLineMath = "bathymetrySmoothed" + " > -250 and "
+//                                                + "bathymetrySmoothed" + " < -200";
+//
+//                                        Mask bathymetryIsoMask = Mask.BandMathsType.create(
+//                                                "bathymetryIso",
+//                                                "description",
+//                                                product.getSceneRasterWidth(),
+//                                                product.getSceneRasterHeight(),
+//                                                bathymetryIsoLineMath,
+//                                                bathymetryData.getMaskColor(),
+//                                                bathymetryData.getMaskTransparency());
+//                                        maskGroup.add(bathymetryIsoMask);
+//  END OF iso line stuff
 
                                         pm.worked(1);
                                     }
