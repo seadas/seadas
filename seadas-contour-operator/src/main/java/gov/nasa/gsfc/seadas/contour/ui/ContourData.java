@@ -1,14 +1,10 @@
 package gov.nasa.gsfc.seadas.contour.ui;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.watermask.ui.SourceFileInfo;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,15 +47,15 @@ public class ContourData {
     private String bathymetryBandName = "bathymetry";
 
 
-    private ArrayList<SourceFileInfo> sourceFileInfos = new ArrayList<SourceFileInfo>();
-    private SourceFileInfo sourceFileInfo;
+//    private ArrayList<SourceFileInfo> sourceFileInfos = new ArrayList<SourceFileInfo>();
+//    private SourceFileInfo sourceFileInfo;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
 
     public ContourData() {
 
-        SourceFileInfo sourceFileInfo;
+//        SourceFileInfo sourceFileInfo;
 
         File ocsswRootDir = getOcsswRoot();
         File ocsswRunDir = new File(ocsswRootDir, "run");
@@ -141,13 +137,13 @@ public class ContourData {
         this.superSampling = superSampling;
     }
 
-    public SourceFileInfo getSourceFileInfo() {
-        return sourceFileInfo;
-    }
-
-    public void setSourceFileInfo(SourceFileInfo resolution) {
-        this.sourceFileInfo = resolution;
-    }
+//    public SourceFileInfo getSourceFileInfo() {
+//        return sourceFileInfo;
+//    }
+//
+//    public void setSourceFileInfo(SourceFileInfo resolution) {
+//        this.sourceFileInfo = resolution;
+//    }
 
 
     public String getContourBandName() {
@@ -199,29 +195,29 @@ public class ContourData {
         this.deleteMasks = deleteMasks;
     }
 
-    public ArrayList<SourceFileInfo> getSourceFileInfos() {
-        return sourceFileInfos;
-    }
-
-    public void setSourceFileInfos(ArrayList<SourceFileInfo> sourceFileInfos) {
-        this.sourceFileInfos = sourceFileInfos;
-    }
-
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
-    }
-
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
-    }
-
-    public void fireEvent(String propertyName) {
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, propertyName, null, null));
-    }
-
-    public void fireEvent(String propertyName, SourceFileInfo oldValue, SourceFileInfo newValue) {
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
-    }
+//    public ArrayList<SourceFileInfo> getSourceFileInfos() {
+//        return sourceFileInfos;
+//    }
+//
+//    public void setSourceFileInfos(ArrayList<SourceFileInfo> sourceFileInfos) {
+//        this.sourceFileInfos = sourceFileInfos;
+//    }
+//
+//    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+//        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+//    }
+//
+//    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+//        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+//    }
+//
+//    public void fireEvent(String propertyName) {
+//        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, propertyName, null, null));
+//    }
+//
+//    public void fireEvent(String propertyName, SourceFileInfo oldValue, SourceFileInfo newValue) {
+//        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
+//    }
 
 
     public double getMaskMinDepth() {
