@@ -2,6 +2,8 @@ package gov.nasa.gsfc.seadas.contour.ui;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.jidesoft.action.CommandBar;
+import com.vividsolutions.jts.geom.Geometry;
+import gov.nasa.gsfc.seadas.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.util.ResourceInstallationUtils;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
@@ -10,13 +12,11 @@ import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.ExecCommand;
 import org.esa.beam.visat.AbstractVisatPlugIn;
 import org.esa.beam.visat.VisatApp;
-import org.jaitools.media.jai.contour.ContourDescriptor;
-import org.opengis.geometry.coordinate.LineString;
+import org.jaitools.swing.ImageFrame;
+import org.jaitools.swing.JTSFrame;
+import com.vividsolutions.jts.geom.LineString;
 
-import javax.media.jai.ImageLayout;
-import javax.media.jai.JAI;
-import javax.media.jai.ParameterBlockJAI;
-import javax.media.jai.RenderedOp;
+import javax.media.jai.*;
 import javax.media.jai.operator.FormatDescriptor;
 import javax.swing.*;
 import java.awt.*;
@@ -262,29 +262,44 @@ public class ContourVPI extends AbstractVisatPlugIn {
         JAI.setDefaultTileSize(new Dimension(512, 512));
         ArrayList<Double> contourIntervals = new ArrayList<Double>();
 
-        for (double level = 0.2; level < 1.41; level += 0.2) {
+        for (double level = 1; level < 10; level += 2) {
             contourIntervals.add(level);
         }
+
+        //Contour1Spi cspi = new Contour1Spi();
+
+        //cspi.updateRegistry(JAI.getDefaultInstance().getOperationRegistry());
+
+        OperationRegistry or = JAI.getDefaultInstance().getOperationRegistry();
+            String modeName = "rendered";
+            String[] descriptorNames;
+
+            for (String name : or.getDescriptorNames(modeName)) {
+                System.out.println(name);
+            }
+        PlanarImage pi = band.getSourceImage();
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
-        pb.setSource("source0", band.getSourceImage());
+        pb.setSource("source0", band.getGeophysicalImage());
         pb.setParameter("levels", contourIntervals);
         RenderedOp dest = JAI.create("Contour", pb);
         Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
-        return (MultiLevelImage) dest.getRendering();
 
-//        JTSFrame jtsFrame = new JTSFrame("Contours from source image");
-//        for (LineString contour : contours) {
-//            jtsFrame.addGeometry(contour, Color.BLUE);
-//        }
-//
-//        ImageFrame imgFrame = new ImageFrame(image, "Source image");
-//        imgFrame.setLocation(100, 100);
-//        imgFrame.setVisible(true);
-//
-//        Dimension size = imgFrame.getSize();
-//        jtsFrame.setSize(size);
-//        jtsFrame.setLocation(100 + size.width + 5, 100);
-//        jtsFrame.setVisible(true);
+
+        JTSFrame jtsFrame = new JTSFrame("Contours from source image");
+        for (LineString contour : contours) {
+            jtsFrame.addGeometry((Geometry) contour, Color.BLUE);
+        }
+
+        ImageFrame imgFrame = new ImageFrame(dest.getRendering(), "Source image");
+        imgFrame.setLocation(100, 100);
+        imgFrame.setVisible(true);
+
+        Dimension size = imgFrame.getSize();
+        jtsFrame.setSize(size);
+        jtsFrame.setLocation(100 + size.width + 5, 100);
+        jtsFrame.setVisible(true);
+
+        return (MultiLevelImage) dest.getRendering();
 
     }
 
