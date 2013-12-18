@@ -566,25 +566,25 @@ public abstract class SeadasFileReader {
         boolean startNodeAscending = false;
         boolean endNodeAscending = false;
         try {
-            String startAttr = getStringAttribute("Start_Node");
+            Attribute start_node = findAttribute("Start_Node");
+            if (start_node == null){
+                start_node = findAttribute("startDirection");
+            }
+            String startAttr = start_node.getStringValue();
+
             if (startAttr != null) {
                 startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
-            } else {
-                startAttr = getStringAttribute("startDirection");
-                if (startAttr != null) {
-                    startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
-                }
+            }
+            Attribute end_node = findAttribute("End_Node");
+            if (end_node == null){
+                end_node = findAttribute("startDirection");
+            }
+            String endAttr = end_node.getStringValue();
+
+            if (endAttr != null) {
+                endNodeAscending = startAttr.equalsIgnoreCase("Ascending");
             }
 
-            String endAttr = getStringAttribute("End_Node");
-            if (endAttr != null) {
-                endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
-            } else {
-                endAttr = getStringAttribute("endDirection");
-                if (endAttr != null) {
-                    endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
-                }
-            }
         } catch (Exception ignored) { }
 
         return (startNodeAscending && endNodeAscending);
