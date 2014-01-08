@@ -39,8 +39,8 @@ public class SMIFileReader extends SeadasFileReader {
             mustFlipY = true;
         } else if (productReader.getProductType() == SeadasProductReader.ProductType.ANCCLIM) {
             List<Variable> vars = ncFile.getVariables();
-            for(Variable v: vars){
-                if (v.getRank() == 2){
+            for (Variable v : vars) {
+                if (v.getRank() == 2) {
                     dims = v.getShape();
                     sceneHeight = dims[0];
                     sceneWidth = dims[1];
@@ -76,9 +76,9 @@ public class SMIFileReader extends SeadasFileReader {
         } catch (Exception ignored) {
         }
         addFlagsAndMasks(product);
-        if (productReader.getProductType() == SeadasProductReader.ProductType.Bathy){
+        if (productReader.getProductType() == SeadasProductReader.ProductType.Bathy) {
             mustFlipY = true;
-            Dimension tileSize = new Dimension(640,320);
+            Dimension tileSize = new Dimension(640, 320);
             product.setPreferredTileSize(tileSize);
         }
         return product;
@@ -200,9 +200,9 @@ public class SMIFileReader extends SeadasFileReader {
         double northing;
         double pixelSizeX;
         double pixelSizeY;
+        boolean pixelRegistered = true;
         if (productReader.getProductType() == SeadasProductReader.ProductType.ANCNRT) {
-            pixelX = 0.0;
-            pixelY = 0.0;
+            pixelRegistered = false;
         }
         if (productReader.getProductType() == SeadasProductReader.ProductType.OISST) {
 
@@ -210,8 +210,8 @@ public class SMIFileReader extends SeadasFileReader {
             Variable lat = ncFile.findVariable("lat");
             Array lonData = lon.read();
             // TODO: handle the 180 degree shift with the NOAA products - need to modify  SeaDasFileReader:readBandData
-
-            // SPECIAL CASE: check if we have a global geographic lat/lon with lon from 0..360 instead of -180..180
+// Below is a snippet from elsewhere in BEAM that deals with this issue...
+// SPECIAL CASE: check if we have a global geographic lat/lon with lon from 0..360 instead of -180..180
 //            if (isShifted180(lonData)) {
 //                // if this is true, subtract 180 from all longitudes and
 //                // add a global attribute which will be analyzed when setting up the image(s)
@@ -247,6 +247,8 @@ public class SMIFileReader extends SeadasFileReader {
             } else {
                 northing = latData.getDouble(latData.getIndex().set(latSize - 1));
             }
+            northing -= pixelSizeX / 2.0;
+            easting += pixelSizeY / 2.0;
 
             try {
                 product.setGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
@@ -269,14 +271,14 @@ public class SMIFileReader extends SeadasFileReader {
             String north = "Northernmost_Latitude";
             String south = "Southernmost_Latitude";
             Attribute latmax = ncFile.findGlobalAttributeIgnoreCase("geospatial_lat_max");
-            if (latmax != null){
+            if (latmax != null) {
                 east = "geospatial_lon_min";
                 west = "geospatial_lon_max";
                 north = "geospatial_lat_max";
                 south = "geospatial_lat_min";
             } else {
                 latmax = ncFile.findGlobalAttributeIgnoreCase("upper_lat");
-                if (latmax != null){
+                if (latmax != null) {
                     east = "right_lon";
                     west = "left_lon";
                     north = "upper_lat";
@@ -285,9 +287,9 @@ public class SMIFileReader extends SeadasFileReader {
             }
 
             final MetadataElement globalAttributes = product.getMetadataRoot().getElement("Global_Attributes");
-            easting = (float) globalAttributes.getAttribute(east).getData().getElemDouble();
-            float westing = (float) globalAttributes.getAttribute(west).getData().getElemDouble();
-            pixelSizeX = (easting - westing) / product.getSceneRasterWidth();
+            easting = (float) globalAttributes.getAttribute(west).getData().getElemDouble();
+            float westing = (float) globalAttributes.getAttribute(east).getData().getElemDouble();
+            pixelSizeX = (westing - easting) / product.getSceneRasterWidth();
             northing = (float) globalAttributes.getAttribute(north).getData().getElemDouble();
             float southing = (float) globalAttributes.getAttribute(south).getData().getElemDouble();
             if (northing < southing) {
@@ -296,12 +298,18 @@ public class SMIFileReader extends SeadasFileReader {
                 southing = (float) globalAttributes.getAttribute(north).getData().getElemDouble();
             }
             pixelSizeY = (northing - southing) / product.getSceneRasterHeight();
-
+            if (pixelRegistered) {
+                northing -= pixelSizeX / 2.0;
+                easting += pixelSizeY / 2.0;
+            } else {
+                pixelX = 0.0;
+                pixelY = 0.0;
+            }
             try {
                 product.setGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
                         product.getSceneRasterWidth(),
                         product.getSceneRasterHeight(),
-                        westing, northing,
+                        easting, northing,
                         pixelSizeX, pixelSizeY,
                         pixelX, pixelY));
             } catch (FactoryException e) {
