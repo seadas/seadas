@@ -472,12 +472,18 @@ public abstract class SeadasFileReader {
     public void addScientificMetadata(Product product) throws ProductIOException {
 
         Group group = ncFile.findGroup("Scan-Line_Attributes");
+        if (group == null){
+            group = ncFile.findGroup("scan_line_attributes");
+        }
         if (group != null) {
             final MetadataElement scanLineAttrib = getMetadataElementSave(product, "Scan_Line_Attributes");
             handleMetadataGroup(group, scanLineAttrib);
         }
 
         group = ncFile.findGroup("Sensor_Band_Parameters");
+        if (group == null){
+            group = ncFile.findGroup("sensor_band_parameters");
+        }
         if (group != null) {
             final MetadataElement sensorBandParam = getMetadataElementSave(product, "Sensor_Band_Parameters");
             handleMetadataGroup(group, sensorBandParam);
@@ -491,6 +497,9 @@ public abstract class SeadasFileReader {
         }
         if (productReader.getProductType() == SeadasProductReader.ProductType.Level1B_HICO) {
             group = ncFile.findGroup("products");
+        }
+        if (group == null){
+            group = ncFile.findGroup("geophysical_data");
         }
         if (group != null) {
             final MetadataElement bandAttributes = new MetadataElement("Band_Attributes");
@@ -582,7 +591,7 @@ public abstract class SeadasFileReader {
             String endAttr = end_node.getStringValue();
 
             if (endAttr != null) {
-                endNodeAscending = startAttr.equalsIgnoreCase("Ascending");
+                endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
             }
 
         } catch (Exception ignored) { }
