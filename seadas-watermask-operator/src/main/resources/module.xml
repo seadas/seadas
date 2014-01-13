@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-watermask</symbolicName>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>Land-Water mask</name>
 
     <description>Accurate Land/Water-mask based on shape files.</description>
@@ -15,7 +15,11 @@
     <url>http://envisat.esa.int/beam</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
 
-    <changelog/>
+    <changelog>
+        <![CDATA[
+            Fix for lon/lat to x/y conversion
+        ]]>
+    </changelog>
 
 	<dependency>
         <module>beam-gpf</module>
