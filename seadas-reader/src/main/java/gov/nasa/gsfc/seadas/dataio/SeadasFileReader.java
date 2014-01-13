@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.*;
 import static java.lang.System.arraycopy;
 
 public abstract class SeadasFileReader {
@@ -407,7 +408,7 @@ public abstract class SeadasFileReader {
                         band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
                     } else if ("add_offset".equals(attribName)) {
                         band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
-                    } else if ("valid_".startsWith(attribName)){
+                    } else if (attribName.startsWith("valid_")){
                         if ("valid_min".equals(attribName)){
                             validMinMax[0] = hdfAttribute.getNumericValue(0).doubleValue();
                         } else if ("valid_max".equals(attribName)){
@@ -418,10 +419,10 @@ public abstract class SeadasFileReader {
                         }
                     }
                 }
-                if (validMinMax[0] < validMinMax[1]){
-                    String validExp = null;
-                    validExp.format("%s >= %f && %s <= %f",name,validMinMax[0],name,validMinMax[1]);
-                    band.setValidPixelExpression(validExp);
+                if (validMinMax[0] != validMinMax[1]){
+//                    String validExp = "%s >= %.2f && %s <= %.2f";
+                    String validExp = format("%s >= %.2f && %s <= %.2f", name, validMinMax[0], name, validMinMax[1]);
+                    band.setValidPixelExpression(validExp);//.format(name, validMinMax[0], name, validMinMax[1]));
                 }
             }
         }
@@ -491,16 +492,17 @@ public abstract class SeadasFileReader {
     }
 
     public void addBandMetadata(Product product) throws ProductIOException {
-        Group group = ncFile.findGroup("Geophysical_Data");
+        Group group = ncFile.findGroup("geophysical_data");
+        if (group == null){
+            group = ncFile.findGroup("Geophysical_Data");
+        }
         if (productReader.getProductType() == SeadasProductReader.ProductType.Level2_Aquarius) {
             group = ncFile.findGroup("Aquarius_Data");
         }
         if (productReader.getProductType() == SeadasProductReader.ProductType.Level1B_HICO) {
             group = ncFile.findGroup("products");
         }
-        if (group == null){
-            group = ncFile.findGroup("geophysical_data");
-        }
+
         if (group != null) {
             final MetadataElement bandAttributes = new MetadataElement("Band_Attributes");
             List<Variable> variables = group.getVariables();

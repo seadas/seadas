@@ -125,8 +125,14 @@ public class L2FileReader extends SeadasFileReader {
         String sensor = null;
         try {
             sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name").getData().getElemString();
+        } catch (Exception ignore) {
+            try{
+                sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("instrument").getData().getElemString();
+            } catch(Exception ignored) {}
+        }
+        try {
             res = product.getMetadataRoot().getElement("Input_Parameters").getAttribute("RESOLUTION").getData().getElemString();
-        } catch(Exception ignored) {}
+        } catch (Exception ignored) {}
 
         if(sensor != null) {
             sensor = sensor.toLowerCase();
@@ -225,7 +231,7 @@ public class L2FileReader extends SeadasFileReader {
     }
 
     public void addPixelGeocoding(final Product product) throws ProductIOException {
-        String navGroup = "Navigation_Data";
+        String navGroup = "navigation_data";
         final String longitude = "longitude";
         final String latitude = "latitude";
         final String cntlPoints = "cntl_pt_cols";
@@ -241,8 +247,12 @@ public class L2FileReader extends SeadasFileReader {
             lonBand.setNoDataValueUsed(true);
         } else {
             if (ncFile.findGroup(navGroup) == null) {
-                if (ncFile.findGroup("Navigation") != null) {
-                    navGroup = "Navigation";
+                if (ncFile.findGroup("Navigation_Data") != null) {
+                    navGroup = "Navigation_Data";
+                } else {
+                    if (ncFile.findGroup("Navigation") != null) {
+                        navGroup = "Navigation";
+                    }
                 }
             }
             Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
