@@ -10,12 +10,15 @@ import ucar.ma2.Index;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
+import ucar.nc2.Group;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.lang.String.format;
 
 /**
  * Reader for "SMI-like" file formats
@@ -32,6 +35,7 @@ public class SMIFileReader extends SeadasFileReader {
         int[] dims;
         int sceneHeight = 0;
         int sceneWidth = 0;
+        Group geodata = ncFile.findGroup("geophysical_data");
         if (productReader.getProductType() == SeadasProductReader.ProductType.OISST) {
             dims = ncFile.getVariables().get(4).getShape();
             sceneHeight = dims[2];
@@ -47,7 +51,11 @@ public class SMIFileReader extends SeadasFileReader {
                 }
             }
         } else {
-            dims = ncFile.getVariables().get(0).getShape();
+            if (geodata != null){
+                dims = geodata.getVariables().get(0).getShape();
+            } else {
+                dims = ncFile.getVariables().get(0).getShape();
+            }
             sceneHeight = dims[0];
             sceneWidth = dims[1];
         }
@@ -131,13 +139,35 @@ public class SMIFileReader extends SeadasFileReader {
                     }
 
                     final List<Attribute> list = variable.getAttributes();
+                    double[] validMinMax = {0.0,0.0};
                     for (Attribute hdfAttribute : list) {
                         final String attribName = hdfAttribute.getShortName();
-                        if ("Slope".equals(attribName)) {
+                        if ("units".equals(attribName)) {
+                            band.setUnit(hdfAttribute.getStringValue());
+                        } else if ("long_name".equals(attribName)) {
+                            band.setDescription(hdfAttribute.getStringValue());
+                        } else if ("slope".equals(attribName)) {
                             band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
-                        } else if ("Intercept".equals(attribName)) {
+                        } else if ("intercept".equals(attribName)) {
                             band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
+                        } else if ("scale_factor".equals(attribName)) {
+                            band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
+                        } else if ("add_offset".equals(attribName)) {
+                            band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
+                        } else if (attribName.startsWith("valid_")){
+                            if ("valid_min".equals(attribName)){
+                                validMinMax[0] = hdfAttribute.getNumericValue(0).doubleValue();
+                            } else if ("valid_max".equals(attribName)){
+                                validMinMax[1] = hdfAttribute.getNumericValue(0).doubleValue();
+                            } else if ("valid_range".equals(attribName)){
+                                validMinMax[0] = hdfAttribute.getNumericValue(0).doubleValue();
+                                validMinMax[1] = hdfAttribute.getNumericValue(1).doubleValue();
+                            }
                         }
+                    }
+                    if (validMinMax[0] != validMinMax[1]){
+                        String validExp = format("%s >= %.2f && %s <= %.2f", name, validMinMax[0], name, validMinMax[1]);
+                        band.setValidPixelExpression(validExp);//.format(name, validMinMax[0], name, validMinMax[1]));
                     }
                 }
             } else if (variableRank == 4) {

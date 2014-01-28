@@ -77,12 +77,16 @@ public class L2FileReader extends SeadasFileReader {
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
 
-        Attribute startTime = findAttribute("Start_Time");
-        ProductData.UTC utcStart = getUTCAttribute("Start_Time");
-        ProductData.UTC utcEnd = getUTCAttribute("End_Time");
+        Attribute startTime = findAttribute("time_coverage_start");
+        ProductData.UTC utcStart = getUTCAttribute("time_coverage_start");
+        ProductData.UTC utcEnd = getUTCAttribute("time_coverage_end");
         if (startTime == null) {
-            utcStart = getUTCAttribute("time_coverage_start");
-            utcEnd = getUTCAttribute("time_coverage_end");
+            utcStart = getUTCAttribute("Start_Time");
+            utcEnd = getUTCAttribute("End_Time");
+        }
+        // only needed as a stop-gap to handle an intermediate version of l2gen metadata
+        if (utcEnd == null){
+            utcEnd = getUTCAttribute("time_coverage_stop");
         }
 
         if (utcStart != null) {
