@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.*;
 import static java.lang.System.arraycopy;
 
 public abstract class SeadasFileReader {
@@ -407,7 +408,7 @@ public abstract class SeadasFileReader {
                         band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
                     } else if ("add_offset".equals(attribName)) {
                         band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
-                    } else if ("valid_".startsWith(attribName)){
+                    } else if (attribName.startsWith("valid_")){
                         if ("valid_min".equals(attribName)){
                             validMinMax[0] = hdfAttribute.getNumericValue(0).doubleValue();
                         } else if ("valid_max".equals(attribName)){
@@ -418,10 +419,9 @@ public abstract class SeadasFileReader {
                         }
                     }
                 }
-                if (validMinMax[0] < validMinMax[1]){
-                    String validExp = null;
-                    validExp.format("%s >= %f && %s <= %f",name,validMinMax[0],name,validMinMax[1]);
-                    band.setValidPixelExpression(validExp);
+                if (validMinMax[0] != validMinMax[1]){
+                    String validExp = format("%s >= %.2f && %s <= %.2f", name, validMinMax[0], name, validMinMax[1]);
+                    band.setValidPixelExpression(validExp);//.format(name, validMinMax[0], name, validMinMax[1]));
                 }
             }
         }
@@ -472,12 +472,18 @@ public abstract class SeadasFileReader {
     public void addScientificMetadata(Product product) throws ProductIOException {
 
         Group group = ncFile.findGroup("Scan-Line_Attributes");
+        if (group == null){
+            group = ncFile.findGroup("scan_line_attributes");
+        }
         if (group != null) {
             final MetadataElement scanLineAttrib = getMetadataElementSave(product, "Scan_Line_Attributes");
             handleMetadataGroup(group, scanLineAttrib);
         }
 
         group = ncFile.findGroup("Sensor_Band_Parameters");
+        if (group == null){
+            group = ncFile.findGroup("sensor_band_parameters");
+        }
         if (group != null) {
             final MetadataElement sensorBandParam = getMetadataElementSave(product, "Sensor_Band_Parameters");
             handleMetadataGroup(group, sensorBandParam);
@@ -485,13 +491,17 @@ public abstract class SeadasFileReader {
     }
 
     public void addBandMetadata(Product product) throws ProductIOException {
-        Group group = ncFile.findGroup("Geophysical_Data");
+        Group group = ncFile.findGroup("geophysical_data");
+        if (group == null){
+            group = ncFile.findGroup("Geophysical_Data");
+        }
         if (productReader.getProductType() == SeadasProductReader.ProductType.Level2_Aquarius) {
             group = ncFile.findGroup("Aquarius_Data");
         }
         if (productReader.getProductType() == SeadasProductReader.ProductType.Level1B_HICO) {
             group = ncFile.findGroup("products");
         }
+
         if (group != null) {
             final MetadataElement bandAttributes = new MetadataElement("Band_Attributes");
             List<Variable> variables = group.getVariables();
@@ -566,25 +576,25 @@ public abstract class SeadasFileReader {
         boolean startNodeAscending = false;
         boolean endNodeAscending = false;
         try {
-            String startAttr = getStringAttribute("Start_Node");
+            Attribute start_node = findAttribute("Start_Node");
+            if (start_node == null){
+                start_node = findAttribute("startDirection");
+            }
+            String startAttr = start_node.getStringValue();
+
             if (startAttr != null) {
                 startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
-            } else {
-                startAttr = getStringAttribute("startDirection");
-                if (startAttr != null) {
-                    startNodeAscending = startAttr.equalsIgnoreCase("Ascending");
-                }
             }
+            Attribute end_node = findAttribute("End_Node");
+            if (end_node == null){
+                end_node = findAttribute("startDirection");
+            }
+            String endAttr = end_node.getStringValue();
 
-            String endAttr = getStringAttribute("End_Node");
             if (endAttr != null) {
                 endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
-            } else {
-                endAttr = getStringAttribute("endDirection");
-                if (endAttr != null) {
-                    endNodeAscending = endAttr.equalsIgnoreCase("Ascending");
-                }
             }
+
         } catch (Exception ignored) { }
 
         return (startNodeAscending && endNodeAscending);
@@ -694,12 +704,20 @@ public abstract class SeadasFileReader {
             final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
 
             final DateFormat dateFormatISO = ProductData.UTC.createDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            // only needed as a stop-gap to handle an intermediate version of l2gen metadata
+            final DateFormat dateFormatISOnopunc = ProductData.UTC.createDateFormat("yyyyMMdd'T'HHmmss'Z'");
 
             final DateFormat dateFormatModis = ProductData.UTC.createDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
             final DateFormat dateFormatOcts = ProductData.UTC.createDateFormat("yyyyMMdd HH:mm:ss.SSSSSS");
             try {
                 if (isISO) {
-                    final Date date = dateFormatISO.parse(timeString);
+                    Date date;
+                    try {
+                        date = dateFormatISO.parse(timeString);
+                    } catch (Exception e) {
+                        date = dateFormatISOnopunc.parse(timeString);
+                    }
+
 //                    String milliSeconds = timeString.substring(timeString.length());
                     return ProductData.UTC.create(date, 0);
                 } else if (isModis) {

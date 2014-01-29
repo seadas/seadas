@@ -101,7 +101,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
         try {
             if (NetcdfFile.canOpen(file.getPath())) {
                 ncfile = NetcdfFile.open(file.getPath());
-                Attribute titleAttribute = ncfile.findGlobalAttribute("Title");
+                Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase("Title");
 
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
                 Boolean isSeadasMapped = false;

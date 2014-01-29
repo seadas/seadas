@@ -250,7 +250,7 @@ public class L1BModisFileReader extends SeadasFileReader {
                                 band.setScalingFactor(slope.getDouble(i));
 
                                 if (intercept != null)
-                                    band.setScalingOffset(intercept.getDouble(i) * slope.getDouble(i));
+                                    band.setScalingOffset(-intercept.getDouble(i) * slope.getDouble(i));
                             }
                         }
                     }

@@ -19,7 +19,7 @@
 
     <symbolicName>seadas-help</symbolicName>
     <name>SeaDAS Help</name>
-    <version>7.0.2-SNAPSHOT</version>
+    <version>7.0.2</version>
     <packaging>dir</packaging>
 
 

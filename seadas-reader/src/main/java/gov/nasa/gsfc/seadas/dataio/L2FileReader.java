@@ -77,12 +77,16 @@ public class L2FileReader extends SeadasFileReader {
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
 
-        Attribute startTime = findAttribute("Start_Time");
-        ProductData.UTC utcStart = getUTCAttribute("Start_Time");
-        ProductData.UTC utcEnd = getUTCAttribute("End_Time");
+        Attribute startTime = findAttribute("time_coverage_start");
+        ProductData.UTC utcStart = getUTCAttribute("time_coverage_start");
+        ProductData.UTC utcEnd = getUTCAttribute("time_coverage_end");
         if (startTime == null) {
-            utcStart = getUTCAttribute("time_coverage_start");
-            utcEnd = getUTCAttribute("time_coverage_end");
+            utcStart = getUTCAttribute("Start_Time");
+            utcEnd = getUTCAttribute("End_Time");
+        }
+        // only needed as a stop-gap to handle an intermediate version of l2gen metadata
+        if (utcEnd == null){
+            utcEnd = getUTCAttribute("time_coverage_stop");
         }
 
         if (utcStart != null) {
@@ -125,8 +129,14 @@ public class L2FileReader extends SeadasFileReader {
         String sensor = null;
         try {
             sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name").getData().getElemString();
+        } catch (Exception ignore) {
+            try{
+                sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("instrument").getData().getElemString();
+            } catch(Exception ignored) {}
+        }
+        try {
             res = product.getMetadataRoot().getElement("Input_Parameters").getAttribute("RESOLUTION").getData().getElemString();
-        } catch(Exception ignored) {}
+        } catch (Exception ignored) {}
 
         if(sensor != null) {
             sensor = sensor.toLowerCase();
@@ -225,7 +235,7 @@ public class L2FileReader extends SeadasFileReader {
     }
 
     public void addPixelGeocoding(final Product product) throws ProductIOException {
-        String navGroup = "Navigation_Data";
+        String navGroup = "navigation_data";
         final String longitude = "longitude";
         final String latitude = "latitude";
         final String cntlPoints = "cntl_pt_cols";
@@ -241,8 +251,12 @@ public class L2FileReader extends SeadasFileReader {
             lonBand.setNoDataValueUsed(true);
         } else {
             if (ncFile.findGroup(navGroup) == null) {
-                if (ncFile.findGroup("Navigation") != null) {
-                    navGroup = "Navigation";
+                if (ncFile.findGroup("Navigation_Data") != null) {
+                    navGroup = "Navigation_Data";
+                } else {
+                    if (ncFile.findGroup("Navigation") != null) {
+                        navGroup = "Navigation";
+                    }
                 }
             }
             Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);

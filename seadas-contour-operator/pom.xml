@@ -38,7 +38,7 @@
          <dependency>
              <groupId>gov.nasa.gsfc.seadas</groupId>
              <artifactId>seadas-app</artifactId>
-             <version>7.0.2-SNAPSHOT</version>
+             <version>7.0.2</version>
          </dependency>
      </dependencies>
 </project>
