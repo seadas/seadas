@@ -48,7 +48,9 @@ public class ContourDialog extends JDialog {
         }
     }
 
-
+    public ContourDialog(Product product){
+        this(null,false, product);
+    }
     protected Component getHelpButton(String helpId) {
         if (helpId != null) {
 
