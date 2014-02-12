@@ -367,20 +367,20 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private void updateGeoFileStatus(String ifileName) {
-
+        setHasGeoFile(false);
         if ((processorID == ProcessorTypeInfo.ProcessorID.L1BRSGEN
                 || processorID == ProcessorTypeInfo.ProcessorID.L1MAPGEN
-                || processorID == ProcessorTypeInfo.ProcessorID.MODIS_L1B_PY) && (new FileInfo(ifileName)).getMissionName().indexOf("MODIS") != -1) {
-            setHasGeoFile(true);
-
-        } else {
-            setHasGeoFile(false);
+                || processorID == ProcessorTypeInfo.ProcessorID.MODIS_L1B_PY)) {
+            String missionName = (new FileInfo(ifileName)).getMissionName();
+            if (missionName != null && (missionName.indexOf("MODIS") != -1 || missionName.indexOf("VIIRSN") != -1 || missionName.indexOf("VIIRS") != -1 )) {
+                setHasGeoFile(true);
+            }
         }
     }
 
     public boolean updateIFileInfo(String ifileName) {
 
-        if (programName.equals("multilevel_processor") || programName.equals("multilevel_processor.py"))  {
+        if (programName.equals("multilevel_processor") || programName.equals("multilevel_processor.py")) {
             return true;
         }
         if (verifyIFilePath(ifileName)) {
