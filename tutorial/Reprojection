@@ -1,0 +1,23 @@
+##Session Management
+
+###Introduction
+
+SeaDAS can re-project a source product to a target Coordinate Reference System.  The SeaDAS application reads-in an L2 file.
+
+### Objectives
+
+By the end of this tutorial, the user shall be able to
+
+1) Learn about reprojection parameters, such as crs,
+
+2) How to get valid values for parameters, and
+
+3) Reproject a product to a target Coordinate Reference System.
+
+### Steps
+
+Users can reproject a source product to a target CRS in two ways. One easy way is to do it through "Reproject" operation's
+ GUI interface located at "SeaDAS -> Tools -> Reproject" menu. The other slightly complicated but more flexible way is
+ to do it through command line interface. We shall demonstrate operation steps for both approach.
+
+1. Start SeaDAS, open a source product. In this tutorial, we shall use Terra L2 file.
