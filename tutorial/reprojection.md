@@ -20,7 +20,7 @@ Users can reproject a source product to a target CRS in two ways. One easy way i
  GUI interface located at "SeaDAS -> Tools -> Reproject" menu. The other slightly complicated but more flexible way is
  to do it through command line interface. We shall demonstrate operation steps for both approach.
 
-## Using SeaDAS Processing GUI
+#### Using SeaDAS Processing GUI
 
 1. Start SeaDAS, open a source product. In this tutorial, we shall use Terra L2 file, T2005288185000.L2_LAC.
 
