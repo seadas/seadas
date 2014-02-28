@@ -1,12 +1,13 @@
 SeaDAS Frequently Asked Questions
 ==================================
-Basic file (product) load and display
+File (product) load and display
 ------------------
 1. View product info
 1. display band
 1. color manipulation
 1. no-data value
 1. pixel info
+1. layer management
 1. Product Grabber
 1. Session Management
 
