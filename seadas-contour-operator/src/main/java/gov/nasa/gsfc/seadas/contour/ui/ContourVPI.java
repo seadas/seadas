@@ -4,6 +4,7 @@ import com.bc.ceres.glevel.MultiLevelImage;
 import com.jidesoft.action.CommandBar;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
 import gov.nasa.gsfc.seadas.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.util.ResourceInstallationUtils;
 import org.esa.beam.framework.datamodel.Band;
@@ -24,6 +25,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.GeneralPath;
 import java.awt.image.RenderedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -97,7 +99,7 @@ public class ContourVPI extends AbstractVisatPlugIn {
     private void showContour(final VisatApp visatApp) {
 
         final Product product = visatApp.getSelectedProduct();
-        Band band = product.getBand("MyAverageBand");
+        Band band = product.getBand("chlor_a");
 
 
         if (product != null) {
@@ -106,10 +108,10 @@ public class ContourVPI extends AbstractVisatPlugIn {
 
 
             ContourDialog contourDialog = new ContourDialog(product);
-                                contourDialog.setVisible(true);
-                                contourDialog.dispose();
+            contourDialog.setVisible(true);
+            contourDialog.dispose();
             band.setSourceImage(getContourImage(product, band));
-         }
+        }
     }
 
 
@@ -135,26 +137,53 @@ public class ContourVPI extends AbstractVisatPlugIn {
         //cspi.updateRegistry(JAI.getDefaultInstance().getOperationRegistry());
 
         OperationRegistry or = JAI.getDefaultInstance().getOperationRegistry();
-            String modeName = "rendered";
-            String[] descriptorNames;
+        String modeName = "rendered";
+        String[] descriptorNames;
 
-            for (String name : or.getDescriptorNames(modeName)) {
-                System.out.println(name);
-            }
-        Band band1 = product.getBand("MyAverageBand");
-        PlanarImage pi = product.getBand("MyAverageBand").getSourceImage();
+        for (String name : or.getDescriptorNames(modeName)) {
+            System.out.println(name);
+        }
+        Band band1 = product.getBand("chlor_a");
+        PlanarImage pi = product.getBand("chlor_a").getSourceImage();
+        MultiLevelImage mli = band1.getSourceImage();
+        TiledImage ti = new TiledImage(pi.getMinX(), pi.getMinY(), pi.getWidth(), pi.getHeight(), pi.getTileGridXOffset(), pi.getTileGridYOffset(), pi.getSampleModel(), pi.getColorModel());
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
         pb.setSource("source0", band1.getGeophysicalImage());
         pb.setParameter("levels", contourIntervals);
         RenderedOp dest = JAI.create("Contour", pb);
         Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
 
-
+//        BufferedImage g = ti.getAsBufferedImage();     //ti.createGraphics();
+//        Graphics2D g2d = g.createGraphics();
+//        //final Viewport vp = pi.getViewport();
+//        final AffineTransform transformSave = g2d.getTransform();
+//        try {
+//            final AffineTransform transform = new AffineTransform();
+//            transform.concatenate(transformSave);
+//            //transform.concatenate(vp.getModelToViewTransform());
+//            transform.concatenate(((MultiLevelImage) pi).getModel().getImageToModelTransform(0));
+//            g2d.setTransform(transform);
+//            g2d.setColor(Color.ORANGE);
+//            for (LineString contour : contours) {
+//                Coordinate[] coordinates = contour.getCoordinates();
+//                int numCoor = coordinates.length;
+//                for (int i = 0; i < numCoor - 1; i++) {
+//                    g2d.draw(new Line2D.Double(coordinates[i].x, coordinates[i].y, coordinates[i+1].x, coordinates[i+1].y));
+//                }
+//            }
+////            final GeneralPath[] linePaths = graticule.getLinePaths();
+////            if (linePaths != null) {
+////                drawLinePaths(g2d, linePaths);
+////            }
+//        } finally {
+//            g2d.setTransform(transformSave);
+//        }
         JTSFrame jtsFrame = new JTSFrame("Contours from source image");
         for (LineString contour : contours) {
             jtsFrame.addGeometry((Geometry) contour, Color.BLUE);
+            Point p = contour.getPointN(0);
+            contour.getLength();
         }
-
         ImageFrame imgFrame = new ImageFrame(dest.getRendering(), "Source image");
         imgFrame.setLocation(100, 100);
         imgFrame.setVisible(true);
@@ -164,10 +193,56 @@ public class ContourVPI extends AbstractVisatPlugIn {
         jtsFrame.setLocation(100 + size.width + 5, 100);
         jtsFrame.setVisible(true);
 
+//        jtsFrame.update(g2d);
+//        jtsFrame.setLocation(100 + size.width + 15, 100);
+//        jtsFrame.setVisible(true);
+
         return (MultiLevelImage) dest.getRendering();
 
     }
 
+    private void drawLinePaths(Graphics2D g2d, final GeneralPath[] linePaths) {
+        Composite oldComposite = null;
+        if (getLineTransparency() > 0.0) {
+            oldComposite = g2d.getComposite();
+            g2d.setComposite(getAlphaComposite(getLineTransparency()));
+        }
+        g2d.setPaint(getLineColor());
+        g2d.setStroke(new BasicStroke((float) getLineWidth()));
+        for (GeneralPath linePath : linePaths) {
+            g2d.draw(linePath);
+        }
+        if (oldComposite != null) {
+            g2d.setComposite(oldComposite);
+        }
+    }
+
+    private Color getLineColor() {
+        //return getConfigurationProperty(GraticuleLayerType.PROPERTY_NAME_LINE_COLOR,
+        //                                 GraticuleLayerType.DEFAULT_LINE_COLOR);
+        return Color.green;
+    }
+
+    private double getLineTransparency() {
+        //return getConfigurationProperty(GraticuleLayerType.PROPERTY_NAME_LINE_TRANSPARENCY,
+        //                                GraticuleLayerType.DEFAULT_LINE_TRANSPARENCY);
+        return 0.5;
+    }
+
+    private double getLineWidth() {
+        //return getConfigurationProperty(GraticuleLayerType.PROPERTY_NAME_LINE_WIDTH,
+        //                                GraticuleLayerType.DEFAULT_LINE_WIDTH);
+        return 1.0;
+    }
+
+    private AlphaComposite getAlphaComposite(double itemTransparancy) {
+        double combinedAlpha = (1.0 - getTransparency()) * (1.0 - itemTransparancy);
+        return AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) combinedAlpha);
+    }
+
+    private double getTransparency() {
+        return 0.0;
+    }
 
     private class ToolbarCommand extends CommandAdapter {
         private final VisatApp visatApp;

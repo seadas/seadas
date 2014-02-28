@@ -239,8 +239,8 @@ public class ContourDialog extends JDialog {
         createContourLines.setMaximumSize(createContourLines.getPreferredSize());
         createContourLines.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                contourData.setCreateMasks(true);
-                dispose();
+                //contourData.setCreateMasks(true);
+                //dispose();
             }
         });
 
