@@ -22,7 +22,7 @@ Export Data
 1. Google KML/KMZ
 1. Image (png, tiff, jpg, bmp)
 
-View/Create Masks
+Mask Management
 ----------------------
 1. Add coastline/landmask
 1. Create mask from data/flag
@@ -34,7 +34,7 @@ Analysis
 1. Histogram
 1. Scatterplot
 1. Profile
------------------------------------------
+
 
 Band Creation
 --------------
@@ -48,12 +48,12 @@ Point Data
 1. Vector data import
 1. Correlative data (ShipTrack)
 1. Pixel Extraction
+1. Geometries
 
 Custom Product Tools
 -------------------
 1. Reprojection
 1. Mosaic
-1. Pixel Extraction
 1. Collocation
 1. Spatial Subset
 ---------------------
