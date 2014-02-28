@@ -28,14 +28,20 @@ View/Create Masks
 1. Create mask from data/flag
 1. Add geometries
 
-Statistics/Histogram/Scatterplot/Profile
+Analysis
+------------------------
+1. Statistics
+1. Histogram
+1. Scatterplot
+1. Profile
 -----------------------------------------
 
-Band math
----------------------------------
+Band Creation
+--------------
+1. Band math
+1. Filtered bands
 
-Create Filtered Bands
------------------------------
+
 Point Data
 --------------------
 1. Pins
@@ -43,15 +49,13 @@ Point Data
 1. Correlative data (ShipTrack)
 1. Pixel Extraction
 
-Reprojection Tool
---------------------------
-
-Mosaic Tool
----------------------------
-Collocation Tool
----------------------
-
-Spatial Subset Tool
+Custom Product Tools
+-------------------
+1. Reprojection
+1. Mosaic
+1. Pixel Extraction
+1. Collocation
+1. Spatial Subset
 ---------------------
 
 Navigation
