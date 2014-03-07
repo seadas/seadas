@@ -2,23 +2,21 @@ package gov.nasa.gsfc.seadas.contour.ui;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.jidesoft.action.CommandBar;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
-import gov.nasa.gsfc.seadas.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.util.ResourceInstallationUtils;
 import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.Mask;
 import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductNodeGroup;
 import org.esa.beam.framework.ui.command.CommandAdapter;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.ExecCommand;
 import org.esa.beam.visat.AbstractVisatPlugIn;
 import org.esa.beam.visat.VisatApp;
-import org.jaitools.swing.ImageFrame;
-import org.jaitools.swing.JTSFrame;
+// import org.jaitools.media.jai.contour.ContourDescriptor;
+import org.opengis.geometry.coordinate.LineString;
 
-import javax.media.jai.*;
+import javax.media.jai.ImageLayout;
+import javax.media.jai.JAI;
+import javax.media.jai.ParameterBlockJAI;
+import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.FormatDescriptor;
 import javax.swing.*;
 import java.awt.*;
@@ -97,19 +95,157 @@ public class ContourVPI extends AbstractVisatPlugIn {
     private void showContour(final VisatApp visatApp) {
 
         final Product product = visatApp.getSelectedProduct();
-        Band band = product.getBand("MyAverageBand");
-
-
-        if (product != null) {
-            final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
-            final ProductNodeGroup<Band> bandGroup = product.getBandGroup();
-
-
-            ContourDialog contourDialog = new ContourDialog(product);
-                                contourDialog.setVisible(true);
-                                contourDialog.dispose();
-            band.setSourceImage(getContourImage(product, band));
-         }
+        Band band = product.getBand("chlor_a");
+        band.setSourceImage(getContourImage(product, band));
+//
+//        if (product != null) {
+//            final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
+//            final ProductNodeGroup<Band> bandGroup = product.getBandGroup();
+//
+//            /*
+//               A simple boolean switch to enable this to run with or without the intermediate user dialogs
+//            */
+//            boolean useDialogs = true;
+//
+//            final ContourData contourData = new ContourData();
+//
+//
+//            if (!useDialogs) {
+//                contourData.setCreateMasks(true);
+//            }
+//
+//
+//            /*
+//                Determine whether these auxilliary masks and associated products have already be created.
+//                This would be the case when run a second time on the same product.
+//            */
+//
+//            final boolean[] masksCreated = {false};
+//
+//            for (String name : maskGroup.getNodeNames()) {
+//                if (name.equals(contourData.getMaskName())) {
+//                    masksCreated[0] = true;
+//                }
+//            }
+//
+//
+//            for (String name : bandGroup.getNodeNames()) {
+//                if (name.equals(contourData.getContourBandName())) {
+//                    masksCreated[0] = true;
+//                }
+//            }
+//
+//            /*
+//               For the case where this is being run a second time, prompt the user to determine whether to delete
+//               and re-create the products and masks.
+//            */
+//
+//            if (masksCreated[0]) {
+//                if (useDialogs) {
+//                    contourData.setDeleteMasks(false);
+//                    ContourDialog contourDialog = new ContourDialog(contourData, masksCreated[0], product);
+//                    contourDialog.setVisible(true);
+//                    contourDialog.dispose();
+//                }
+//
+//                if (contourData.isDeleteMasks() || !useDialogs) {
+//                    masksCreated[0] = false;
+//
+//                    for (String name : maskGroup.getNodeNames()) {
+//                        if (name.equals(contourData.getMaskName())) {
+//                            maskGroup.remove(maskGroup.get(name));
+//                        }
+//                    }
+//                    for (String name : bandGroup.getNodeNames()) {
+//                        if (name.equals(contourData.getContourBandName())) {
+//                            bandGroup.remove(bandGroup.get(name));
+//                        }
+//                    }
+//                }
+//            }
+//
+//
+//            if (!masksCreated[0]) {
+//                if (useDialogs) {
+//                    contourData.setCreateMasks(false);
+//                    ContourDialog contourDialog = new ContourDialog(contourData, masksCreated[0], product);
+//                    contourDialog.setVisible(true);
+//                }
+//
+//                if (contourData.isCreateMasks()) {
+//                    final SourceFileInfo sourceFileInfo = contourData.getSourceFileInfo();
+//
+//                    if (sourceFileInfo.isEnabled()) {
+//
+//                        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+//                                "Creating contour band and mask") {
+//
+//                            @Override
+//                            protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+//
+//                                pm.beginTask("Creating contour band and mask", 2);
+//
+//                                try {
+//                                    Map<String, Object> parameters = new HashMap<String, Object>();
+//
+//                                    parameters.put("subSamplingFactorX", new Integer(contourData.getSuperSampling()));
+//                                    parameters.put("subSamplingFactorY", new Integer(contourData.getSuperSampling()));
+//                                    parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
+//                                    parameters.put("filename", sourceFileInfo.getFile().getName());
+//
+//                                    /*
+//                                       Create a new product, which will contain the contour band, then add this band to current product.
+//                                    */
+//
+//                                    Product contourProduct = GPF.createProduct(CONTOUR_PRODUCT_NAME, parameters, product);
+//                                    Band contourBand = contourProduct.getBand(ContourOp.CONTOUR_BAND_NAME);
+//                                    reformatSourceImage(contourBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+//                                    pm.worked(1);
+//                                    contourBand.setName(contourData.getContourBandName());
+//
+//                                    product.addBand(contourBand);
+//
+//                                    String maskMath = contourData.getMaskMath();
+//
+//                                    Mask contourMask = Mask.BandMathsType.create(
+//                                            contourData.getMaskName(),
+//                                            contourData.getMaskDescription(),
+//                                            product.getSceneRasterWidth(),
+//                                            product.getSceneRasterHeight(),
+//                                            contourData.getMaskMath(),
+//                                            contourData.getMaskColor(),
+//                                            contourData.getMaskTransparency());
+//                                    maskGroup.add(contourMask);
+//
+//                                    pm.worked(1);
+//
+//                                    String[] bandNames = product.getBandNames();
+//                                    for (String bandName : bandNames) {
+//                                        RasterDataNode raster = product.getRasterDataNode(bandName);
+//                                        if (contourData.isShowMaskAllBands()) {
+//                                            raster.getOverlayMaskGroup().add(contourMask);
+//                                        }
+//                                    }
+//
+//
+//                                } finally {
+//                                    pm.done();
+//                                }
+//                                return null;
+//                            }
+//                        };
+//
+//                        pmSwingWorker.executeWithBlocking();
+//
+//                    } else {
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "Cannot Create Masks: Resolution File Doesn't Exist");
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
+//
+//                    }
+//                }
+//            }
+//        }
     }
 
 
@@ -126,45 +262,29 @@ public class ContourVPI extends AbstractVisatPlugIn {
         JAI.setDefaultTileSize(new Dimension(512, 512));
         ArrayList<Double> contourIntervals = new ArrayList<Double>();
 
-        for (double level = 1; level < 10; level += 2) {
+        for (double level = 0.2; level < 1.41; level += 0.2) {
             contourIntervals.add(level);
         }
-
-        //Contour1Spi cspi = new Contour1Spi();
-
-        //cspi.updateRegistry(JAI.getDefaultInstance().getOperationRegistry());
-
-        OperationRegistry or = JAI.getDefaultInstance().getOperationRegistry();
-            String modeName = "rendered";
-            String[] descriptorNames;
-
-            for (String name : or.getDescriptorNames(modeName)) {
-                System.out.println(name);
-            }
-        Band band1 = product.getBand("MyAverageBand");
-        PlanarImage pi = product.getBand("MyAverageBand").getSourceImage();
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
-        pb.setSource("source0", band1.getGeophysicalImage());
+        pb.setSource("source0", band.getSourceImage());
         pb.setParameter("levels", contourIntervals);
         RenderedOp dest = JAI.create("Contour", pb);
-        Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
-
-
-        JTSFrame jtsFrame = new JTSFrame("Contours from source image");
-        for (LineString contour : contours) {
-            jtsFrame.addGeometry((Geometry) contour, Color.BLUE);
-        }
-
-        ImageFrame imgFrame = new ImageFrame(dest.getRendering(), "Source image");
-        imgFrame.setLocation(100, 100);
-        imgFrame.setVisible(true);
-
-        Dimension size = imgFrame.getSize();
-        jtsFrame.setSize(size);
-        jtsFrame.setLocation(100 + size.width + 5, 100);
-        jtsFrame.setVisible(true);
-
+      //  Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
         return (MultiLevelImage) dest.getRendering();
+
+//        JTSFrame jtsFrame = new JTSFrame("Contours from source image");
+//        for (LineString contour : contours) {
+//            jtsFrame.addGeometry(contour, Color.BLUE);
+//        }
+//
+//        ImageFrame imgFrame = new ImageFrame(image, "Source image");
+//        imgFrame.setLocation(100, 100);
+//        imgFrame.setVisible(true);
+//
+//        Dimension size = imgFrame.getSize();
+//        jtsFrame.setSize(size);
+//        jtsFrame.setLocation(100 + size.width + 5, 100);
+//        jtsFrame.setVisible(true);
 
     }
 
