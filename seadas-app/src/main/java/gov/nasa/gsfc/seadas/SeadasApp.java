@@ -84,14 +84,15 @@ public class SeadasApp extends VisatApp {
                 "showNoDataOverlay",
                 "showShapeOverlay",
                 "showGraticuleOverlay",
-                "showWorldMapOverlay",
-                "collocation",
-                "createSubsetFromView",
-                "bandArithmetic"));
+                "showWorldMapOverlay"));
         Set<PlacemarkDescriptor> placemarkDescriptors = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptors();
         for (PlacemarkDescriptor placemarkDescriptor : placemarkDescriptors) {
             if (placemarkDescriptor.getShowLayerCommandId() != null) {
-                if (!placemarkDescriptor.getBaseFeatureType().getName().equals("http://www.opengiv.net/gml:org.esa.beam.GroundControlPoint")) {
+                String s1 = placemarkDescriptor.getBaseFeatureType().getName().getLocalPart();
+                String s2 = placemarkDescriptor.getBaseFeatureType().getName().toString();
+
+
+                if (!placemarkDescriptor.getBaseFeatureType().getName().getLocalPart().contains("GroundControlPoint")) {
                     commandIdList.add(placemarkDescriptor.getShowLayerCommandId());
                 }
             }
@@ -112,7 +113,6 @@ public class SeadasApp extends VisatApp {
         });
         return toolBar;
     }
-
 
 
     @Override
@@ -157,7 +157,9 @@ public class SeadasApp extends VisatApp {
                     commandIds = new ArrayList<String>(5);
                     toolBar2commandIds.put(toolBarId, commandIds);
                 }
-                commandIds.add(commandId);
+                if (!toolViewDescriptor.getId().contains("LayerManagerToolView")) {
+                    commandIds.add(commandId);
+                }
             }
         }
 
@@ -186,4 +188,32 @@ public class SeadasApp extends VisatApp {
 
         return viewToolBars.toArray(new CommandBar[viewToolBars.size()]);
     }
+
+
+    protected CommandBar createInteractionsToolBar() {
+        final CommandBar toolBar = createToolBar(INTERACTIONS_TOOL_BAR_ID, "Interactions");
+        addCommandsToToolBar(toolBar, new String[]{
+                // These IDs are defined in the module.xml
+                "selectTool",
+                "pannerTool",
+                "zoomTool",
+                "drawLineTool",
+                "drawPolylineTool",
+                "drawRectangleTool",
+                "drawEllipseTool",
+                "drawPolygonTool",
+                "createVectorDataNode",
+                "pinTool",
+                "gcpTool",
+                "rangeFinder",
+                // Magic Wand removed for 4.10 release
+                "true".equalsIgnoreCase(
+                        System.getProperty("beam.magicWandTool.enabled", "false")) ? "magicWandTool" : null,
+        });
+        return toolBar;
+    }
 }
+
+
+
+
