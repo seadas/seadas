@@ -37,6 +37,7 @@ public abstract class SeadasFileReader {
     protected int[] start = new int[2];
     protected int[] stride = new int[2];
     protected int[] count = new int[2];
+    protected String sensor = null;
 
     protected int leadLineSkip = 0;
     protected int tailLineSkip = 0;
@@ -126,6 +127,14 @@ public abstract class SeadasFileReader {
     final static Color Cornflower = new Color(38, 115, 245);
 
     protected void addFlagsAndMasks(Product product) {
+        try {
+            sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name").getData().getElemString();
+        } catch (Exception ignore) {
+            try{
+                sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("instrument").getData().getElemString();
+            } catch(Exception ignored) {}
+        }
+
         Band QFBand = product.getBand("l2_flags");
         if (QFBand != null) {
             FlagCoding flagCoding = new FlagCoding("L2Flags");
@@ -277,26 +286,226 @@ public abstract class SeadasFileReader {
                     FailRed, 0.1));
 
         }
-        Band QFBandSST = product.getBand("qual_sst");
+        Band QFBandSST = product.getBand("flags_sst");
         if (QFBandSST != null) {
-//            FlagCoding flagCoding = new FlagCoding("SSTFlags");
-//            product.getFlagCodingGroup().add(flagCoding);
-//
-//            QFBandSST.setSampleCoding(flagCoding);
+            FlagCoding flagCoding = new FlagCoding("SST_Flags");
+            flagCoding.addFlag("ISMASKED", 0x01, "Pixel was already masked");
+            flagCoding.addFlag("BTBAD", 0x02, "Bad Brightness Temperatures");
+            flagCoding.addFlag("BTRANGE", 0x04, "Brightness Temperatures outside valid range");
+            flagCoding.addFlag("BTDIFF", 0x08, "Brightness Temperatures are too different");
+            flagCoding.addFlag("SSTRANGE", 0x10, "Computed SST outside valid range");
+            flagCoding.addFlag("SSTREFDIFF", 0x20, "Computed SST too different from reference SST");
+            flagCoding.addFlag("SST4DIFF", 0x40, "Computed SST too different from computed 4 micron SST");
+            flagCoding.addFlag("SST4VDIFF", 0x80, "Computed SST very different from computed 4 micron SST");
+//            flagCoding.addFlag("SST3DIFF", 0x40, "Computed SST too different from computed triple-window SST");
+//            flagCoding.addFlag("SST3VDIFF", 0x80, "Computed SST very different from computed triple-window SST");
+            flagCoding.addFlag("BTNONUNIF", 0x100, "Spatially Non-uniform Brightness Temperatures");
+            flagCoding.addFlag("BTVNONUNIF", 0x200, "Very Spatially Non-uniform Brightness Temperatures");
+            flagCoding.addFlag("BT4REFDIFF", 0x400, "4 micron Brightness Temperature differs from reference");
+            flagCoding.addFlag("REDNONUNIF", 0x800, "Spatially Non-uniform red band");
+            flagCoding.addFlag("HISENZ", 0x1000, "High sensor zenith angle");
+            flagCoding.addFlag("VHISENZ", 0x2000, "Very High sensor zenith angle");
+            flagCoding.addFlag("SSTREFVDIFF", 0x4000, "Computed SST very different from reference SST)");
+            flagCoding.addFlag("CLOUD", 0x8000, "Cloud Detected");
+            if (sensor.equalsIgnoreCase("AVHRR")) {
+                flagCoding.addFlag("SUNLIGHT", 0x40, "Stray sunlight detected (AVHRR)");
+                flagCoding.addFlag("ASCEND", 0x80, "AVHRR in ascending node (daytime)");
+                flagCoding.addFlag("GLINT", 0x400, "Sun glint detected (AVHRR)");
+            }
 
-            product.getMaskGroup().add(Mask.BandMathsType.create("Best", "Highest quality SST retrieval",
+            product.getFlagCodingGroup().add(flagCoding);
+            QFBandSST.setSampleCoding(flagCoding);
+
+
+            product.getMaskGroup().add(Mask.BandMathsType.create("ISMASKED", "Pixel was already masked",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.ISMASKED",
+                    LandBrown, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTBAD", "Bad Brightness Temperatures",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTBAD",
+                    FailRed, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTRANGE", "Brightness Temperatures outside valid range",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTRANGE",
+                    DeepBlue, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTDIFF", "Brightness Temperatures are too different",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTDIFF",
+                    Color.GRAY, 0.2));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SSTRANGE", "Computed SST outside valid range",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.SSTRANGE",
+                    BrightPink, 0.2));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SSTREFDIFF", "Computed SST too different from reference SST",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.SSTREFDIFF",
+                    LightCyan, 0.5));
+            if (sensor.equalsIgnoreCase("AVHRR")){
+                product.getMaskGroup().add(Mask.BandMathsType.create("SUNLIGHT", "Stray sunlight detected (AVHRR)",
+                        product.getSceneRasterWidth(),
+                        product.getSceneRasterHeight(), "flags_sst.SUNLIGHT",
+                        BurntUmber, 0.5));
+                product.getMaskGroup().add(Mask.BandMathsType.create("ASCEND", "AVHRR in ascending node (daytime)",
+                        product.getSceneRasterWidth(),
+                        product.getSceneRasterHeight(), "flags_sst.ASCEND",
+                        LightBrown, 0.2));
+                product.getMaskGroup().add(Mask.BandMathsType.create("GLINT", "Sun glint detected (AVHRR)",
+                        product.getSceneRasterWidth(),
+                        product.getSceneRasterHeight(), "flags_sst.GLINT",
+                        Color.YELLOW, 0.5));
+
+            } else {
+                product.getMaskGroup().add(Mask.BandMathsType.create("SST4DIFF", "Computed SST too different from computed 4 micron SST",
+                        product.getSceneRasterWidth(),
+                        product.getSceneRasterHeight(), "flags_sst.SST4DIFF",
+                        BurntUmber, 0.5));
+                product.getMaskGroup().add(Mask.BandMathsType.create("SST4VDIFF", "Computed SST very different from computed 4 micron SST",
+                        product.getSceneRasterWidth(),
+                        product.getSceneRasterHeight(), "flags_sst.SST4VDIFF",
+                        LightBrown, 0.2));
+                product.getMaskGroup().add(Mask.BandMathsType.create("BT4REFDIFF", "4 micron Brightness Temperature differs from reference",
+                        product.getSceneRasterWidth(),
+                        product.getSceneRasterHeight(), "flags_sst.BT4REFDIFF",
+                        Color.YELLOW, 0.5));
+            }
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTNONUNIF", "Spatially Non-uniform Brightness Temperatures",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTNONUNIF",
+                    Color.ORANGE, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTVNONUNIF", "Very Spatially Non-uniform Brightness Temperatures",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTVNONUNIF",
+                    Color.CYAN, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("REDNONUNIF", "Spatially Non-uniform red band",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.REDNONUNIF",
+                    Purple, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("HISENZ", "High sensor zenith angle",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.HISENZ",
+                    Cornflower, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("VHISENZ", "Very High sensor zenith angle",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.VHISENZ",
+                    LightPurple, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SSTREFVDIFF", "Computed SST very different from reference SST",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.SSTREFVDIFF",
+                    Color.MAGENTA, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("CLOUD", "Cloud Detected",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.CLOUD",
+                    Color.WHITE, 0.5));
+        }
+        Band QFBandSST4 = product.getBand("flags_sst4");
+        if (QFBandSST4 != null) {
+            FlagCoding flagCoding = new FlagCoding("SST4_Flags");
+            flagCoding.addFlag("ISMASKED", 0x01, "Pixel was already masked");
+            flagCoding.addFlag("BTBAD", 0x02, "Bad Brightness Temperatures");
+            flagCoding.addFlag("BTRANGE", 0x04, "Brightness Temperatures outside valid range");
+            flagCoding.addFlag("BTDIFF", 0x08, "Brightness Temperatures are too different");
+            flagCoding.addFlag("SSTRANGE", 0x10, "Computed SST outside valid range");
+            flagCoding.addFlag("SSTREFDIFF", 0x20, "Computed SST too different from reference SST");
+            flagCoding.addFlag("SST4DIFF", 0x40, "Computed SST too different from computed 4 micron SST");
+            flagCoding.addFlag("SST4VDIFF", 0x80, "Computed SST very different from computed 4 micron SST");
+//            flagCoding.addFlag("SST3DIFF", 0x40, "Computed SST too different from computed triple-window SST");
+//            flagCoding.addFlag("SST3VDIFF", 0x80, "Computed SST very different from computed triple-window SST");
+            flagCoding.addFlag("BTNONUNIF", 0x100, "Spatially Non-uniform Brightness Temperatures");
+            flagCoding.addFlag("BTVNONUNIF", 0x200, "Very Spatially Non-uniform Brightness Temperatures");
+            flagCoding.addFlag("BT4REFDIFF", 0x400, "4 micron Brightness Temperature differs from reference");
+            flagCoding.addFlag("REDNONUNIF", 0x800, "Spatially Non-uniform red band");
+            flagCoding.addFlag("HISENZ", 0x1000, "High sensor zenith angle");
+            flagCoding.addFlag("VHISENZ", 0x2000, "Very High sensor zenith angle");
+            flagCoding.addFlag("SSTREFVDIFF", 0x4000, "Computed SST very different from reference SST)");
+            flagCoding.addFlag("CLOUD", 0x8000, "Cloud Detected");
+
+            product.getFlagCodingGroup().add(flagCoding);
+            QFBandSST4.setSampleCoding(flagCoding);
+
+
+            product.getMaskGroup().add(Mask.BandMathsType.create("ISMASKED", "Pixel was already masked",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.ISMASKED",
+                    LandBrown, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTBAD", "Bad Brightness Temperatures",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTBAD",
+                    FailRed, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTRANGE", "Brightness Temperatures outside valid range",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTRANGE",
+                    DeepBlue, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTDIFF", "Brightness Temperatures are too different",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTDIFF",
+                    Color.GRAY, 0.2));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SSTRANGE", "Computed SST outside valid range",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.SSTRANGE",
+                    BrightPink, 0.2));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SSTREFDIFF", "Computed SST too different from reference SST",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.SSTREFDIFF",
+                    LightCyan, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SST4DIFF", "Computed SST too different from computed 4 micron SST",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.SST4DIFF",
+                    BurntUmber, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SST4VDIFF", "Computed SST very different from computed 4 micron SST",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.SST4VDIFF",
+                    LightBrown, 0.2));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTNONUNIF", "Spatially Non-uniform Brightness Temperatures",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTNONUNIF",
+                    Color.ORANGE, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BTVNONUNIF", "Very Spatially Non-uniform Brightness Temperatures",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BTVNONUNIF",
+                    Color.CYAN, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("BT4REFDIFF", "4 micron Brightness Temperature differs from reference",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.BT4REFDIFF",
+                    Color.YELLOW, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("REDNONUNIF", "Spatially Non-uniform red band",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.REDNONUNIF",
+                    Purple, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("HISENZ", "High sensor zenith angle",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.HISENZ",
+                    Cornflower, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("VHISENZ", "Very High sensor zenith angle",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.VHISENZ",
+                    LightPurple, 0.0));
+            product.getMaskGroup().add(Mask.BandMathsType.create("SSTREFVDIFF", "Computed SST very different from reference SST",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.SSTREFVDIFF",
+                    Color.MAGENTA, 0.5));
+            product.getMaskGroup().add(Mask.BandMathsType.create("CLOUD", "Cloud Detected",
+                    product.getSceneRasterWidth(),
+                    product.getSceneRasterHeight(), "flags_sst.CLOUD",
+                    Color.WHITE, 0.5));
+        }
+
+        Band QFBandSSTqual = product.getBand("qual_sst");
+        if (QFBandSSTqual != null) {
+
+            product.getMaskGroup().add(Mask.BandMathsType.create("Best (SST)", "Highest quality SST retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst == 0",
                     SeadasFileReader.Cornflower, 0.6));
-            product.getMaskGroup().add(Mask.BandMathsType.create("Good", "Good quality SST retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Good (SST)", "Good quality SST retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst == 1",
                     SeadasFileReader.LightPurple, 0.6));
-            product.getMaskGroup().add(Mask.BandMathsType.create("Questionable", "Questionable quality SST retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Questionable (SST)", "Questionable quality SST retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst == 2",
                     SeadasFileReader.BurntUmber, 0.6));
-            product.getMaskGroup().add(Mask.BandMathsType.create("Bad", "Bad quality SST retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Bad (SST)", "Bad quality SST retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst == 3",
                     SeadasFileReader.FailRed, 0.6));
@@ -305,29 +514,26 @@ public abstract class SeadasFileReader {
                     product.getSceneRasterHeight(), "qual_sst == 4",
                     SeadasFileReader.FailRed, 0.6));
         }
-        Band QFBandSST4 = product.getBand("qual_sst4");
-        if (QFBandSST4 != null) {
-//            FlagCoding flagCoding = new FlagCoding("SST4Flags");
-//            product.getFlagCodingGroup().add(flagCoding);
-//            QFBandSST4.setSampleCoding(flagCoding);
+        Band QFBandSSTqual4 = product.getBand("qual_sst4");
+        if (QFBandSSTqual4 != null) {
 
-            product.getMaskGroup().add(Mask.BandMathsType.create("Best", "Highest quality SST4 retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Best (SST4)", "Highest quality SST4 retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst4 == 0",
                     SeadasFileReader.Cornflower, 0.6));
-            product.getMaskGroup().add(Mask.BandMathsType.create("Good", "Good quality SST4 retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Good (SST4)", "Good quality SST4 retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst4 == 1",
                     SeadasFileReader.LightPurple, 0.6));
-            product.getMaskGroup().add(Mask.BandMathsType.create("Questionable", "Questionable quality SST4 retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Questionable (SST4)", "Questionable quality SST4 retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst4 == 2",
                     SeadasFileReader.BurntUmber, 0.6));
-            product.getMaskGroup().add(Mask.BandMathsType.create("Bad", "Bad quality SST4 retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Bad (SST4)", "Bad quality SST4 retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst4 == 3",
                     SeadasFileReader.FailRed, 0.6));
-            product.getMaskGroup().add(Mask.BandMathsType.create("No SST Retrieval", "No SST retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("No SST4 Retrieval", "No SST4 retrieval",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "qual_sst4 == 4",
                     SeadasFileReader.FailRed, 0.6));
