@@ -153,7 +153,7 @@ public class ContourVPI extends AbstractVisatPlugIn {
         RenderedOp dest = JAI.create("Contour", pb);
         Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
 
-//        BufferedImage g = ti.getAsBufferedImage();     //ti.createGraphics();
+        //BufferedImage g = ti.getAsBufferedImage();     //ti.createGraphics();
 //        Graphics2D g2d = g.createGraphics();
 //        //final Viewport vp = pi.getViewport();
 //        final AffineTransform transformSave = g2d.getTransform();
@@ -216,6 +216,19 @@ public class ContourVPI extends AbstractVisatPlugIn {
             g2d.setComposite(oldComposite);
         }
     }
+
+//    private void updateContours() {
+//        FigureEditor figureEditor = getFigureEditor(event);
+//        figureEditor.getFigureSelection().removeAllFigures();
+//        Point2D referencePoint = toModelPoint(event);
+//
+//        Path2D linePath = new Path2D.Double();
+//        linePath.moveTo(referencePoint.getX(), referencePoint.getY());
+//        linePath.lineTo(referencePoint.getX(), referencePoint.getY());
+//
+//        Figure figure = figureEditor.getFigureFactory().createLineFigure(linePath, figureEditor.getDefaultLineStyle());
+//        figureEditor.getFigureCollection().addFigure(figure);
+//    }
 
     private Color getLineColor() {
         //return getConfigurationProperty(GraticuleLayerType.PROPERTY_NAME_LINE_COLOR,
