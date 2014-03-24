@@ -50,7 +50,7 @@
     <extension point="beam-ui:actions">
         <action>
             <parent>tools</parent>
-            <placeAfter>orthorectificationAction</placeAfter>
+            <placeBefore>bandArithmetic</placeBefore>
             <id>seadasProcessing</id>
             <class>org.esa.beam.visat.actions.ActionGroup</class>
             <text>SeaDAS Processing</text>

@@ -20,6 +20,8 @@ import org.esa.beam.framework.datamodel.PlacemarkDescriptor;
 import org.esa.beam.framework.datamodel.PlacemarkDescriptorRegistry;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
 import org.esa.beam.framework.ui.application.ToolViewDescriptor;
+import org.esa.beam.framework.ui.command.Command;
+import org.esa.beam.framework.ui.command.ToolCommand;
 import org.esa.beam.visat.ProductsToolView;
 import org.esa.beam.visat.VisatActivator;
 import org.esa.beam.visat.VisatApp;
@@ -35,6 +37,7 @@ import org.esa.beam.visat.toolviews.placemark.PlacemarkEditorToolView;
 import org.esa.beam.visat.toolviews.placemark.gcp.GcpManagerToolView;
 import org.esa.beam.visat.toolviews.spectrum.SpectrumToolView;
 import org.esa.beam.visat.toolviews.stat.*;
+import org.esa.beam.visat.toolviews.worldmap.WorldMapToolView;
 
 import javax.swing.*;
 import java.util.*;
@@ -66,7 +69,6 @@ public class SeadasApp extends VisatApp {
     protected CommandBar createMainToolBar() {
         final CommandBar toolBar = createToolBar(MAIN_TOOL_BAR_ID, "Standard");
         addCommandsToToolBar(toolBar, new String[]{
-                "new",
                 "open",
                 null,
                 "collocation",
@@ -118,7 +120,7 @@ public class SeadasApp extends VisatApp {
     @Override
     protected CommandBar[] createViewsToolBars() {
 
-        final HashSet<String> excludedIds = new HashSet<String>(14);
+        final HashSet<String> excludedIds = new HashSet<String>(15);
         // todo - remove bad forward dependencies to tool views (nf - 30.10.2008)
         excludedIds.add(TileCacheDiagnosisToolView.ID);
         excludedIds.add(ProductsToolView.ID);
@@ -128,6 +130,7 @@ public class SeadasApp extends VisatApp {
         excludedIds.add(GcpManagerToolView.ID);
 //        excludedIds.add(LayerManagerToolView.ID);
         excludedIds.add(PixelInfoToolView.ID);
+        excludedIds.add(WorldMapToolView.ID);
         excludedIds.add(PlacemarkEditorToolView.ID);
         excludedIds.add(InformationToolView.ID);
         excludedIds.add(GeoCodingToolView.ID);
@@ -189,7 +192,7 @@ public class SeadasApp extends VisatApp {
         return viewToolBars.toArray(new CommandBar[viewToolBars.size()]);
     }
 
-
+    @Override
     protected CommandBar createInteractionsToolBar() {
         final CommandBar toolBar = createToolBar(INTERACTIONS_TOOL_BAR_ID, "Interactions");
         addCommandsToToolBar(toolBar, new String[]{
@@ -197,12 +200,12 @@ public class SeadasApp extends VisatApp {
                 "selectTool",
                 "pannerTool",
                 "zoomTool",
+                "createVectorDataNode",
+                "drawRectangleTool",
+                "drawPolygonTool",
+                "drawEllipseTool",
                 "drawLineTool",
                 "drawPolylineTool",
-                "drawRectangleTool",
-                "drawEllipseTool",
-                "drawPolygonTool",
-                "createVectorDataNode",
                 "pinTool",
                 "gcpTool",
                 "rangeFinder",
@@ -212,6 +215,21 @@ public class SeadasApp extends VisatApp {
         });
         return toolBar;
     }
+
+    @Override
+    protected void loadCommands() {
+        Command[] commands = VisatActivator.getInstance().getCommands();
+        for (Command command : commands) {
+            addCommand(command, getCommandManager());
+            if ("pannerTool".equals(command.getCommandID())) {
+                ToolCommand toolCommand = (ToolCommand) command;
+                selectionInteractor = toolCommand.getInteractor();
+                setActiveInteractor(selectionInteractor);
+                toolCommand.setSelected(true);
+            }
+        }
+    }
+
 }
 
 
