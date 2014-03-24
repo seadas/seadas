@@ -152,7 +152,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         if (dialogResult != ModalDialog.ID_OK) {
             cloProgramUI.getProcessorModel().getParamList().clearPropertyChangeSupport();
-            cloProgramUI.getProcessorModel().fireEvent("cancel");
+            cloProgramUI.getProcessorModel().fireEvent(L2genData.CANCEL);
             return;
         }
 
@@ -172,7 +172,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         executeProgram(processorModel);
         SeadasLogger.deleteLoggerOnExit(true);
-
+        cloProgramUI.getProcessorModel().fireEvent(L2genData.CANCEL);
 
     }
 
