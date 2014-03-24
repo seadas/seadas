@@ -55,7 +55,7 @@ import java.util.Map;
  */
 public class WaterMaskVPI extends AbstractVisatPlugIn {
 
-    public static final String COMMAND_ID = "Coastline, Land and Water Masks";
+    public static final String COMMAND_ID = "Coastline, Land and Water Masks...";
     public static final String TOOL_TIP = "Shortcut for adding coastline, land and water masks";
     //    public static final String ICON = "/org/esa/beam/watermask/ui/icons/coastline_24.png";
     //  public static final String ICON = "icons/Coastline24.png";
