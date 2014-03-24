@@ -1,0 +1,466 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+
+
+<html>
+<head>
+    <title>Photic Depth Composite Imagery on the Great Barrier Reef</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div id="purplehaze">
+    <h3 style="text-align: center;">SeaDAS-7 in Action: Photic Depth Composite Imagery on the Great Barrier Reef </h3>
+</div>
+<div id="shadesofgray">
+
+
+    <h3>Using SeaDAS 7 to create a custom composite mapped image of satellite-derived photic depth on the Great Barrier
+        Reef.</h3>
+
+    <h3>Objective and Results</h3>
+
+    <p>
+        The above image was created using SeaDAS 7.  This image is essentially a recreation of an image and finding
+        contained with (citation) which observes that this figure "shows strong negative" Secchi depth "anomalies
+        from 12 to 17 September 2008 following intrusions of clear oceanic waters onto the shelf" of the Great
+         Barrier Reef, Australia.
+
+        The primary data used are MODIS AQUA and SeaWIFS level1 files, Feb 12-17 2008. To obtain a nominal mean,
+         MODIS AQUA level1 files are used from Feb 12-17 for the years 2002-2013.
+
+
+
+
+
+        The specifics of this case study is to create a mapped image based on satellite-derived water
+        clarity
+        data for the central-southern Great Barrier Reef. The region of study is limited to areas within the 200m
+        isobath. The primary data being used are MODIS AQUA level1 files, Feb 12-17 2008. In addition,
+        a nominal mean is determined using MODIS AQUA level1 files from Feb 12-17 for the years 2002-2013.
+
+    </p>
+
+    <ul>
+        <li><a href="gbrPhoticDepthExampleTutorial.html#STEP1">Figure 1: Photic depth on S-GBR</a><br>
+        </li>
+        <li><a href="gbrPhoticDepthExampleTutorial.html#FIGURE1">Figure 1: Photic depth on S-GBR (include
+            topography)</a><br>
+        </li>
+        <li><a href="gbrPhoticDepthExampleTutorial.html#FIGURE1">Figure 1: Photic depth anomaly on S-GBR (include
+            topography)</a><br>
+        </li>
+    </ul>
+
+
+    <br>
+    <br>
+
+    <h3>Steps Overview</h3>
+    <ul>
+        <li><a href="tutorial.html#STEP1">Load l3map files into SeaDAS as products</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP2">Merge products into a single product (collocation)</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP3">Save product, close product, reopen product</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP4">Create Secchi depth Zsd product (band maths)</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP5">Create Secchi depth anomalies product (band maths)</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP6">Create (0m to -200m) bathymetry mask</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP8">Create region of interest boundaries shapefile (vector container)</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP7">Create Secchi depth anomalies product (limited by bathymetry mask and region of interest)</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP14">Add custom color palette to Secchi depth anomalies product</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP8">Rotate Secchi depth anomalies product</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP8">Create rotated region of interest boundaries shapefile (vector container)</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP9">Add coastline</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP10">Add -200m and -1000m isobath lines </a><br>
+        </li>
+        <li><a href="tutorial.html#STEP10">Add gridlines</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP10">Create color legend</a><br>
+        </li>
+
+
+        <li><a href="tutorial.html#STEP11">Create topography product</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP12">Create bathymetry product</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP13">Create bathymetry and topography products (further limited by masks)</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP14">Add color palettes to bathymetry, topography</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP14">Layer bathymetry and topography onto Secchi depth anomalies product</a><br>
+        </li>
+        <li><a href="tutorial.html#STEP14">Adjust bathymetry and topography layer transparency</a><br>
+        </li>
+
+
+
+
+
+
+
+
+
+
+    </ul>
+
+
+    <br>
+    <br>
+    <br>
+
+
+    <a name="STEP1"></a>
+
+    <h3 style="text-align: left;">Load the l3map files into SeaDAS as products</h3>
+
+    <p>Files: </p>
+    <ul>
+        <li>L3map_1km_elev_20022013</li>
+        <li>L3map_1km_Zp_10_lee_20022013</li>
+        <li>L3map_1km_Zp_10_lee_2008</li>
+    </ul>
+
+
+    <p>Open the files within SeaDAS using the "Open Product" selector: <span
+            style="color: aqua; ">File -> Open Product</span>. <img src="open_data_products_icon.png"></p>
+
+    <p>* Note that the files can be opened one at a time or all in one go as
+        shown in the figure below.</p>
+
+
+    <img src="open_products.png">
+
+
+    <p>The "Products View" tool window should now look like this:</p>
+
+    <img src="loaded_products.png">
+
+
+    <br><br>
+    <a name="STEP2"></a>
+
+    <h3 style="text-align: left;">Merge the products into a single product </h3>
+
+
+    <p>
+        In order to more easily work with the data, merge these SeaDAS products
+        into a single SeaDAS product. This is done with the
+        collocation tool. <span style="color: aqua; ">[Tools -> Collocation]</span>
+        The collocation tool only merges two products at a time, so it will
+        be necessary to collocate twice in order to get all three products merged.
+        First we merge L3map_1km_elev_20022013 and L3map_1km_Zp_10_lee_20022013 into a
+        single product L3map_1km_composite_tmp.
+        Note that the band names for photic depth
+        are identical in the products L3map_1km_Zp_10_lee_20022013 and L3map_1km_Zp_10_lee_2008,
+        so we modify the resultant band names by adding a suffix in order to retain desired source data
+        information.  Also note that the choice of which product is master can make a difference,
+        Essentially the slave product dimensions will be trimmed down to fit the master products
+        dimensions.
+    </p>
+
+
+    <img src="collocation1.png">
+
+
+    <p>Next we merge the L3map_1km_Zp_10_lee_2008 product with L3map_1km_composite_tmp
+        to produce L3map_1km_composite, again modifying the product names as desired.</p>
+
+
+    <img src="collocation2.png">
+
+
+    <p>The "Products View" tool window should now look like this:</p>
+
+    <img src="collocation3.png">
+
+</div>
+
+
+<table class="header" width="100%">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Case Study Tutorial/Example
+        </td>
+        <td class="header" align="right"><a href="SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                            border=0></a></td>
+    </tr>
+</table>
+
+<h3>Using SeaDAS 7 to create custom composite mapped images of satellite-derived photic depth on the Great Barrier
+    Reef.</h3>
+
+<h4>Details</h4>
+
+<p>
+    The specifics of this case study are to create mapped images and statistics based on satellite-derived water clarity
+    data for the central-southern Great Barrier Reef. The region of study is limited to areas within the 200m
+    isobath. The primary data being used are MODIS AQUA level1 files, Feb 12-17 2008. In addition, for the study of
+    anomalies, a nominal mean is determined using MODIS AQUA level1 files from Feb 12-17 for the years 2002-2013.
+
+<ul>
+    <li><a href="gbrPhoticDepthExampleTutorial.html#STEP1">Figure 1: Photic depth on S-GBR</a><br>
+    </li>
+    <li><a href="gbrPhoticDepthExampleTutorial.html#FIGURE1">Figure 1: Photic depth on S-GBR (include
+        topography)</a><br>
+    </li>
+    <li><a href="gbrPhoticDepthExampleTutorial.html#FIGURE1">Figure 1: Photic depth anomaly on S-GBR (include
+        topography)</a><br>
+    </li>
+</ul>
+
+
+<ul>
+    <li><a href="tutorial.html#STEP1">Load the l3map files into SeaDAS as products</a><br>
+    </li>
+    <li><a href="tutorial.html#STEP2">Merge the products into a single product</a><br>
+    </li>
+</ul>
+
+
+<br><br>
+
+<table border="0">
+    <tr>
+        <td><a name="STEP1"></a><h4>1.</h4></td>
+        <td><h4>Load the l3map files into SeaDAS as products</h4>
+        </td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td>
+            <desc>Files:
+                <li>L3map_1km_elev_20022013</li>
+                <li>L3map_1km_Zp_10_lee_20022013</li>
+                <li>L3map_1km_Zp_10_lee_2008</li>
+                <br>
+
+                <img src="open_data_products_icon.png"> <span style="color: aqua; ">File -> Open Product</span><br>
+                Open the files using the "Open Data Product(s)" selector. The files can be opened one at a time or all
+                in one go as shown in the figure below.
+
+            </desc>
+            <br><br>
+
+            <img src="open_products.png">
+
+            <br><br>
+
+            <desc>The "Products View" tool window should now look like this:</desc>
+            <br><br>
+
+            <img src="loaded_products.png">
+        </td>
+    </tr>
+</table>
+
+
+<br>
+
+
+<table border="0">
+    <tr>
+        <td><a name="STEP1"></a><h4>2. </h4></td>
+        <td><h4>Merge the products into a single product</h4>
+        </td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td>
+            <desc>
+                <span style="color: aqua; ">Tools -> Collocation</span><br>
+                In order to more easily work with the data, merge these SeaDAS products
+                into a single SeaDAS product. This is done with the
+                collocation tool. The collocation tool only merges two products, so it will
+                be necessary to do this twice in order to get all three products merged.
+                First merge L3map_1km_Zp_10_lee_20022013 and L3map_1k_elev_20022013 into a
+                single product L3map_1km_composite_tmp. Note that we modify the product names
+                in order to retain desired date information.
+
+
+            </desc>
+            <br><br>
+
+            <img src="collocation1.png">
+
+            <br><br>
+
+            <desc>Now merge the L3map_2008_1km_Zp_10_lee product in to produce GBR_Composite</desc>
+            <br><br>
+
+            <img src="collocation2.png">
+            <br><br>
+
+            <desc>The "Products View" tool window should now look like this:</desc>
+            <br><br>
+            <img src="GBR_Composite.png">
+
+        </td>
+    </tr>
+</table>
+
+
+<table border="0">
+    <tr>
+        <td><h4>2.</h4></td>
+        <td><h4>Merge the products into a single product</h4>
+        </td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td>
+            <desc>In order to more easily work with the data, merge these SeaDAS products
+                ("L3map2km_Zp_10_lee" and "L3map2km_elev")
+                into a single SeaDAS product ("L3map2km_zp_10_lee_elev"). This is done with the
+                collocation tool. The collocation only merges two products, so it will need to
+                be done twice in order to get all three products merged.
+            </desc>
+            <br>
+            <table border="0">
+                <tr>
+                    <td bgcolor="#ddeeee">
+<span style="font-size: 10pt; font-family: serif; "><pre>
+Tools -> Collocation
+Source Products:
+    Master = L3map_20022013_1km_Zp_10_lee
+    Slave = L3map_20022013_1km_elev
+Target Product:
+    Name = GBR Composite_tmp
+Rename master components = ${ORIGINAL_NAME}_20022013
+Rename slave components = ${ORIGINAL_NAME}_20022013</pre>
+</span></td>
+                </tr>
+            </table>
+
+
+            <desc>Now merge the L3map_2008_1km_Zp_10_lee product in to produce GBR_Composite</desc>
+            <br>
+
+            <table border="0">
+                <tr>
+                    <td bgcolor="#ddeeee">
+<span style="font-size: 10pt; font-family: serif; "><pre>
+Tools -> Collocation
+Source Products:
+    Master = GBR Composite tmp
+    Slave = L3map_2008_1km_Zp_10_lee
+Target Product:
+    Name = GBR Composite
+Rename master components = ${ORIGINAL_NAME}
+Rename slave components = ${ORIGINAL_NAME}_2008</pre>
+</span></td>
+                </tr>
+            </table>
+
+            <br>
+
+            <desc>Now merge the L3map_2008_1km_Zp_10_lee product in to produce GBR_Composite</desc>
+            <br>
+
+            <img src="GBR_Composite.png">
+
+        </td>
+    </tr>
+</table>
+
+
+<table border="0">
+    <tr>
+        <td><h4>2.</h4></td>
+        <td><h4>Merge the products into a single product</h4></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <table border="0">
+                <tr>
+                    <td bgcolor="#ddeeee">
+<span style="font-size: 10pt; font-family: serif; "><pre>
+Tools -> Collocation
+Source Products:
+    Master = L3map2km_Zp_10_lee
+    Slave = L3map2km_elev
+Target Product:
+    Name = L3map2km_zp_10_lee_elev
+Rename master components = no (unchecked)
+Rename slave components = no (unchecked)</pre>
+</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<h4>2. Merge the products into a single product</h4>
+In order to more easily work with the data, merge these SeaDAS products ("L3map2km_Zp_10_lee" and "L3map2km_elev")
+into a single SeaDAS product ("L3map2km_zp_10_lee_elev"). This is done with the
+<a href="">Collocation</a> tool.
+
+<table border="2">
+    <tr>
+        <td bgcolor="#ddddaa"><pre>
+Tools -> Collocation
+Source Products:
+    Master = L3map2km_Zp_10_lee
+    Slave = L3map2km_elev
+Target Product:
+    Name = L3map2km_zp_10_lee_elev
+Rename master components = no (unchecked)
+Rename slave components = no (unchecked)
+</pre>
+        </td>
+    </tr>
+</table>
+<br>
+
+
+Save the composite product.
+<table border="2">
+    <tr>
+        <td bgcolor="#ddddaa">
+            File -> Save Product
+        </td>
+    </tr>
+</table>
+
+Close all products and reopen the composite product
+In the Products View window (View -> Tool Windows -> Products) select each product one at a time and close it.
+
+<table border="2">
+    <tr>
+        <td bgcolor="#ddddaa">
+            File -> Close Product
+        </td>
+    </tr>
+</table>
+
+Then load the composite product back into SeaDAS
+<table border="2">
+    <tr>
+        <td bgcolor="#ddddaa">
+            File -> Open Product
+            File Name = L3map2km_zp_10_lee_elev.dim
+        </td>
+    </tr>
+</table>
+
+
+</body>
+</html>

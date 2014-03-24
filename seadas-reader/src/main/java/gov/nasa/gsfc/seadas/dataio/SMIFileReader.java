@@ -144,11 +144,11 @@ public class SMIFileReader extends SeadasFileReader {
                         final String attribName = hdfAttribute.getShortName();
                         if ("units".equals(attribName)) {
                             band.setUnit(hdfAttribute.getStringValue());
-                        } else if ("long_name".equals(attribName)) {
+                        } else if ("long_name".equalsIgnoreCase(attribName)) {
                             band.setDescription(hdfAttribute.getStringValue());
-                        } else if ("slope".equals(attribName)) {
+                        } else if ("slope".equalsIgnoreCase(attribName)) {
                             band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
-                        } else if ("intercept".equals(attribName)) {
+                        } else if ("intercept".equalsIgnoreCase(attribName)) {
                             band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
                         } else if ("scale_factor".equals(attribName)) {
                             band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
@@ -166,7 +166,20 @@ public class SMIFileReader extends SeadasFileReader {
                         }
                     }
                     if (validMinMax[0] != validMinMax[1]){
-                        String validExp = format("%s >= %.2f && %s <= %.2f", name, validMinMax[0], name, validMinMax[1]);
+                        double[] minmax = {0.0,0.0};
+                        minmax[0] = validMinMax[0];
+                        minmax[1] = validMinMax[1];
+
+                        if (band.getScalingFactor() != 1.0) {
+                            minmax[0] *= band.getScalingFactor();
+                            minmax[1] *= band.getScalingFactor();
+                        }
+                        if (band.getScalingOffset() != 0.0) {
+                            minmax[0] += band.getScalingOffset();
+                            minmax[1] += band.getScalingOffset();
+                        }
+
+                        String validExp = format("%s >= %.2f && %s <= %.2f", name, minmax[0], name, minmax[1]);
                         band.setValidPixelExpression(validExp);//.format(name, validMinMax[0], name, validMinMax[1]));
                     }
                 }

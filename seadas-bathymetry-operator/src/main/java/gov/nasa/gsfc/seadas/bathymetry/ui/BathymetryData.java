@@ -38,7 +38,7 @@ public class BathymetryData {
     private double maskTransparency = 0.7;
     private boolean showMaskAllBands = true;
     private Color maskColor = new Color(0, 0, 255);
-    private String maskName = "Bathymetry";
+    private String maskName = "BathymetryMask";
     private String maskDescription = "Bathymetry pixels";
 
     private double maskMinDepth = 0;

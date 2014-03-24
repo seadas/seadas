@@ -11,6 +11,7 @@
         <tocitem text="Introduction" target="visat"/>
         <tocitem text="Overview" target="seadasOverview"/>
         <tocitem text="What's New" target="seadasWhatsNew"/>
+        <tocitem text="Tutorial Example" target="gbrPhoticDepthExampleTutorial"/>
 
     </tocitem>
 

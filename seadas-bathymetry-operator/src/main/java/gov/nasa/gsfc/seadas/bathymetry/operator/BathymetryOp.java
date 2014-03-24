@@ -43,7 +43,7 @@ import java.text.MessageFormat;
         description = "Operator creating a bathymetry band, elevation band, topography band and bathymetry mask")
 public class BathymetryOp extends Operator {
 
-    public static final String BATHYMETRY_BAND_NAME = "bathymetry";
+    public static final String BATHYMETRY_BAND_NAME = "bathymetryBand";
     public static final String ELEVATION_BAND_NAME = "elevation";
     public static final String TOPOGRAPHY_BAND_NAME = "topography";
 
