@@ -294,6 +294,7 @@
             <programName>multilevel_processor.py</programName>
             <dialogTitle>multilevel_processor.py</dialogTitle>
             <xmlFileName>multilevel_processor.xml</xmlFileName>
+            <separatorBefore>true</separatorBefore>
         </action>
         <!--<action>-->
         <!--<parent>seadasProcessing</parent>-->
