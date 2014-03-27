@@ -50,7 +50,7 @@
     <extension point="beam-ui:actions">
         <action>
             <parent>tools</parent>
-            <placeBefore>bandArithmetic</placeBefore>
+            <placeBefore>mosaicAction</placeBefore>
             <id>seadasProcessing</id>
             <class>org.esa.beam.visat.actions.ActionGroup</class>
             <text>SeaDAS Processing</text>
