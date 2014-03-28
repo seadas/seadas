@@ -1636,7 +1636,7 @@ if (wizardContext != null) {
         <entry location="bin/seadas-cli.sh" fileType="regular" />
         <entry location="bin/seadas-d.command" fileType="regular" />
         <entry location="bin/seadas-d.sh" fileType="regular" />
-        <entry location="modules/seadas-processing-1.1.jar" fileType="regular" />
+        <entry location="modules/seadas-processing-1.2.jar" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -1674,7 +1674,7 @@ if (wizardContext != null) {
         <entry location="bin/seadas-cli.sh" fileType="regular" />
         <entry location="bin/seadas-d.command" fileType="regular" />
         <entry location="bin/seadas-d.sh" fileType="regular" />
-        <entry location="modules/seadas-processing-1.1.jar" fileType="regular" />
+        <entry location="modules/seadas-processing-1.2.jar" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">

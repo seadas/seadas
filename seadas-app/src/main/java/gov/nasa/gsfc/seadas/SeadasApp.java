@@ -16,6 +16,7 @@
 package gov.nasa.gsfc.seadas;
 
 import com.jidesoft.action.CommandBar;
+import com.jidesoft.action.CommandMenuBar;
 import org.esa.beam.framework.datamodel.PlacemarkDescriptor;
 import org.esa.beam.framework.datamodel.PlacemarkDescriptorRegistry;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
@@ -25,17 +26,14 @@ import org.esa.beam.framework.ui.command.ToolCommand;
 import org.esa.beam.visat.ProductsToolView;
 import org.esa.beam.visat.VisatActivator;
 import org.esa.beam.visat.VisatApp;
-import org.esa.beam.visat.actions.CreateSubsetFromViewAction;
 import org.esa.beam.visat.actions.ShowToolBarAction;
 import org.esa.beam.visat.toolviews.diag.TileCacheDiagnosisToolView;
 import org.esa.beam.visat.toolviews.imageinfo.ColorManipulationToolView;
-import org.esa.beam.visat.toolviews.layermanager.LayerManagerToolView;
 import org.esa.beam.visat.toolviews.mask.MaskManagerToolView;
 import org.esa.beam.visat.toolviews.nav.NavigationToolView;
 import org.esa.beam.visat.toolviews.pixelinfo.PixelInfoToolView;
 import org.esa.beam.visat.toolviews.placemark.PlacemarkEditorToolView;
 import org.esa.beam.visat.toolviews.placemark.gcp.GcpManagerToolView;
-import org.esa.beam.visat.toolviews.spectrum.SpectrumToolView;
 import org.esa.beam.visat.toolviews.stat.*;
 import org.esa.beam.visat.toolviews.worldmap.WorldMapToolView;
 
@@ -230,6 +228,34 @@ public class SeadasApp extends VisatApp {
         }
     }
 
+    @Override
+    protected CommandBar createMainMenuBar() {
+        final CommandMenuBar menuBar = new CommandMenuBar("Main Menu");
+        menuBar.setHidable(false);
+        menuBar.setStretch(true);
+
+
+        menuBar.add(createJMenu("file", "File", 'F'));
+        menuBar.add(createJMenu("edit", "Edit", 'E'));
+        menuBar.add(createJMenu("view", "View", 'V'));
+//        menuBar.add(createJMenu("data", "Analysis", 'A',
+//                ScatterPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                GeoCodingToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                HistogramPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                InformationToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                ProfilePlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                DensityPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
+//        ));
+        menuBar.add(createJMenu("tools", "Tools", 'T'));
+        if (!System.getProperty("os.name").contains("Windows")) {
+            menuBar.add(createJMenu("processing", "Processing", 'P'));
+        }
+        menuBar.add(createJMenu("window", "Window", 'W'));
+        menuBar.add(createJMenu("help", "Help", 'H'));
+
+        return menuBar;
+    }
 }
 
 

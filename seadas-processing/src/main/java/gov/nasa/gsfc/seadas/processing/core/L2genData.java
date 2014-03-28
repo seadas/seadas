@@ -29,7 +29,7 @@ import java.util.logging.Level;
 public class L2genData implements L2genDataProcessorModel {
 
     public static final String OPER_DIR = "l2gen";
-
+    public static final String CANCEL = "cancel";
 
 
     public static enum Mode {
@@ -95,12 +95,12 @@ public class L2genData implements L2genDataProcessorModel {
     private boolean initialized = false;
     public boolean showIOFields = true;
     private Mode mode = Mode.L2GEN;
-    private boolean  ifileIndependentMode = false;
+    private boolean ifileIndependentMode = false;
     private boolean paramsBeingSetViaParstring = false;
 
     // keepParams: this boolean field denotes whether l2gen keeps the current params when a new ifile is selected.
     // Params not supported by the new ifile will be deleted.
-     private boolean keepParams = false;
+    private boolean keepParams = false;
 
 
     // mode dependent fields
@@ -113,6 +113,7 @@ public class L2genData implements L2genDataProcessorModel {
     private String defaultsFilePrefix;
     private String guiName;
     private String defaultSuite;
+    private boolean dirty = false;
 
 
     public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
@@ -143,13 +144,17 @@ public class L2genData implements L2genDataProcessorModel {
     private static L2genData me = null;
 
     public static L2genData getMe() {
-        if (me == null) {
-            me = new L2genData();
-        }
+
+        // override this and always make new me
+        //       if (1 == 1 || me == null || me.isDirty()) {
+        me = new L2genData();
+        //        }
+
 
         return me;
 
     }
+
 
     private L2genData() {
     }
@@ -186,7 +191,16 @@ public class L2genData implements L2genDataProcessorModel {
                 break;
         }
 
-        processorModel = new ProcessorModel(getGuiName(), getParamInfos());
+            processorModel = new ProcessorModel(getGuiName(), getParamInfos());
+
+//            getProcessorModel().addPropertyChangeListener(L2genData.CANCEL, new PropertyChangeListener() {
+//                @Override
+//                public void propertyChange(PropertyChangeEvent evt) {
+//                    setDirty(true);
+//                }
+//            });
+
+
         processorModel.setAcceptsParFile(true);
     }
 
@@ -197,6 +211,7 @@ public class L2genData implements L2genDataProcessorModel {
     public void setIfileIndependentMode(boolean ifileIndependentMode) {
         this.ifileIndependentMode = ifileIndependentMode;
     }
+
     public String getParamInfoXml() {
         return paramInfoXml;
     }
@@ -230,8 +245,6 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-
-
     public boolean isKeepParams() {
         return keepParams;
     }
@@ -239,7 +252,6 @@ public class L2genData implements L2genDataProcessorModel {
     public void setKeepParams(boolean keepParams) {
         this.keepParams = keepParams;
     }
-
 
 
     public String getGetanc() {
@@ -649,8 +661,7 @@ public class L2genData implements L2genDataProcessorModel {
                 par.append("# " + paramCategoryInfo.getName().toUpperCase() + "  Default = climatology (select 'Get Ancillary' to download ancillary files)\n");
                 par.append(currCategoryEntries.toString());
                 par.append("\n");
-            }
-            else if (currCategoryEntries.toString().length() > 0 &&  !(alwaysDisplay && !showIOFields)){
+            } else if (currCategoryEntries.toString().length() > 0 && !(alwaysDisplay && !showIOFields)) {
                 par.append("# " + paramCategoryInfo.getName().toUpperCase() + "\n");
                 par.append(currCategoryEntries.toString());
                 par.append("\n");
@@ -1919,5 +1930,13 @@ public class L2genData implements L2genDataProcessorModel {
 
     public void setParamsBeingSetViaParstring(boolean paramsBeingSetViaParstring) {
         this.paramsBeingSetViaParstring = paramsBeingSetViaParstring;
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 }

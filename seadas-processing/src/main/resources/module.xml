@@ -48,25 +48,25 @@
     <categories>Application,Processor</categories>
 
     <extension point="beam-ui:actions">
-        <action>
-            <parent>tools</parent>
-            <placeBefore>bandArithmetic</placeBefore>
-            <id>seadasProcessing</id>
-            <class>org.esa.beam.visat.actions.ActionGroup</class>
-            <text>SeaDAS Processing</text>
-            <mnemonic>P</mnemonic>
-            <shortDescr>SeaDAS Processing Programs.</shortDescr>
-            <longDescr>SeaDAS Processing Programs.</longDescr>
-            <separatorBefore>true</separatorBefore>
-            <separatorAfter>true</separatorAfter>
-        </action>
+        <!--<action>-->
+            <!--<parent>processing</parent>-->
+            <!--<placeBefore>mosaicAction</placeBefore>-->
+            <!--<id>seadasProcessing</id>-->
+            <!--<class>org.esa.beam.visat.actions.ActionGroup</class>-->
+            <!--<text>SeaDAS Processing</text>-->
+            <!--<mnemonic>P</mnemonic>-->
+            <!--&lt;!&ndash;<shortDescr>SeaDAS Processing Programs.</shortDescr>&ndash;&gt;-->
+            <!--<longDescr>SeaDAS Processing Programs.</longDescr>-->
+            <!--&lt;!&ndash;<separatorBefore>true</separatorBefore>&ndash;&gt;-->
+            <!--<separatorAfter>true</separatorAfter>-->
+        <!--</action>-->
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>install_ocssw.py</id>
             <placeBefore>extractor</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>Install/Update</text>
+            <text>Install Processors...</text>
             <shortDescr>Install/Update SeaDAS Processing Software</shortDescr>
             <programName>install_ocssw.py</programName>
             <dialogTitle>SeaDAS Processing Software Installer</dialogTitle>
@@ -74,7 +74,7 @@
             <separatorAfter>true</separatorAfter>
         </action>
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>extractor</id>
             <placeAfter>install_ocssw.py</placeAfter>
             <placeBefore>modis_L1A.py</placeBefore>
@@ -87,7 +87,7 @@
         </action>
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>modis_L1A.py</id>
             <placeAfter>extractor</placeAfter>
             <placeBefore>modis_GEO.py</placeBefore>
@@ -100,7 +100,7 @@
         </action>
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>modis_GEO.py</id>
             <placeAfter>modis_L1A.py</placeAfter>
             <placeBefore>modis_L1B.py</placeBefore>
@@ -113,7 +113,7 @@
         </action>
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>modis_L1B.py</id>
             <placeAfter>modis_GEO.py</placeAfter>
             <placeBefore>l1bgen</placeBefore>
@@ -126,7 +126,7 @@
         </action>
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>l1bgen</id>
             <placeAfter>modis_L1B.py</placeAfter>
             <placeBefore>l1brsgen</placeBefore>
@@ -138,7 +138,7 @@
             <xmlFileName>l1bgen.xml</xmlFileName>
         </action>
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>l1brsgen</id>
             <placeAfter>l1bgen</placeAfter>
             <placeBefore>l1mapgen</placeBefore>
@@ -151,7 +151,7 @@
         </action>
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>l1mapgen</id>
             <placeAfter>l1brsgen</placeAfter>
             <placeBefore>l2gen</placeBefore>
@@ -164,7 +164,7 @@
         </action>
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>l2gen</id>
             <placeAfter>l1mapgen</placeAfter>
             <placeBefore>l2gen_aquarius</placeBefore>
@@ -179,7 +179,7 @@
         </action>
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>l2gen_aquarius</id>
             <placeAfter>l2gen</placeAfter>
             <placeBefore>l2brsgen</placeBefore>
@@ -195,7 +195,7 @@
 
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>l2brsgen</id>
             <placeAfter>l2gen</placeAfter>
             <placeBefore>l2mapgen</placeBefore>
@@ -219,7 +219,7 @@
             <!--<xmlFileName>paramInfo_l2mapgen.xml</xmlFileName>-->
         <!--</action>-->
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>l2mapgen</id>
             <placeAfter>l2brsgen</placeAfter>
             <placeBefore>l2bin</placeBefore>
@@ -232,7 +232,7 @@
         </action>
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>l2bin</id>
             <placeAfter>l2mapgen</placeAfter>
             <placeBefore>l3bin</placeBefore>
@@ -245,7 +245,7 @@
             <xmlFileName>l2bin.xml</xmlFileName>
         </action>
         <action>
-             <parent>seadasProcessing</parent>
+             <parent>processing</parent>
              <id>l2bin_aquarius</id>
              <placeAfter>l2bin</placeAfter>
              <placeBefore>l3bin</placeBefore>
@@ -258,7 +258,7 @@
              <xmlFileName>l2bin_aquarius.xml</xmlFileName>
          </action>
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>l3bin</id>
             <placeAfter>l2bin_aquarius</placeAfter>
             <placeBefore>smigen</placeBefore>
@@ -271,7 +271,7 @@
             <xmlFileName>l3bin.xml</xmlFileName>
         </action>
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>smigen</id>
             <placeAfter>l3bin</placeAfter>
             <placeBefore>seadas_processor.py</placeBefore>
@@ -284,19 +284,20 @@
         </action>
 
         <action>
-            <parent>seadasProcessing</parent>
+            <parent>processing</parent>
             <id>multilevel_processor.py</id>
             <!--<placeBefore>extractor</placeBefore>-->
             <placeAfter>smigen</placeAfter>
             <class>gov.nasa.gsfc.seadas.processing.processor.MultilevelProcessorAction</class>
-            <text>multi-level processor...</text>
+            <text>Multi-Level Processor...</text>
             <shortDescr>Process a file through many levels</shortDescr>
             <programName>multilevel_processor.py</programName>
             <dialogTitle>multilevel_processor.py</dialogTitle>
             <xmlFileName>multilevel_processor.xml</xmlFileName>
+            <separatorBefore>true</separatorBefore>
         </action>
         <!--<action>-->
-        <!--<parent>seadasProcessing</parent>-->
+        <!--<parent>processing</parent>-->
         <!--<id>l3gen</id>-->
         <!--<class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>-->
         <!--<text>l3gen...</text>-->
