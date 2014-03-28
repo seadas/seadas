@@ -16,6 +16,7 @@
 package gov.nasa.gsfc.seadas;
 
 import com.jidesoft.action.CommandBar;
+import com.jidesoft.action.CommandMenuBar;
 import org.esa.beam.framework.datamodel.PlacemarkDescriptor;
 import org.esa.beam.framework.datamodel.PlacemarkDescriptorRegistry;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
@@ -230,6 +231,32 @@ public class SeadasApp extends VisatApp {
         }
     }
 
+    @Override
+    protected CommandBar createMainMenuBar() {
+        final CommandMenuBar menuBar = new CommandMenuBar("Main Menu");
+        menuBar.setHidable(false);
+        menuBar.setStretch(true);
+
+
+        menuBar.add(createJMenu("file", "File", 'F'));
+        menuBar.add(createJMenu("edit", "Edit", 'E'));
+        menuBar.add(createJMenu("view", "View", 'V'));
+//        menuBar.add(createJMenu("data", "Analysis", 'A',
+//                ScatterPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                GeoCodingToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                HistogramPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                InformationToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                ProfilePlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                DensityPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
+//        ));
+        menuBar.add(createJMenu("tools", "Tools", 'T'));
+        menuBar.add(createJMenu("processing", "Processing", 'P'));
+        menuBar.add(createJMenu("window", "Window", 'W'));
+        menuBar.add(createJMenu("help", "Help", 'H'));
+
+        return menuBar;
+    }
 }
 
 
