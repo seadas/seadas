@@ -103,6 +103,10 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase("Title");
 
+                if (ncfile.findGroup("Level-3_Binned_Data") == null) {
+                    return DecodeQualification.UNABLE;
+                }
+
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
                 Boolean isSeadasMapped = false;
                 try {
