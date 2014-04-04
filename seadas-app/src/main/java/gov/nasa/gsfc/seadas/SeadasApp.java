@@ -36,6 +36,7 @@ import org.esa.beam.visat.toolviews.nav.NavigationToolView;
 import org.esa.beam.visat.toolviews.pixelinfo.PixelInfoToolView;
 import org.esa.beam.visat.toolviews.placemark.PlacemarkEditorToolView;
 import org.esa.beam.visat.toolviews.placemark.gcp.GcpManagerToolView;
+import org.esa.beam.visat.toolviews.placemark.pin.PinManagerToolView;
 import org.esa.beam.visat.toolviews.spectrum.SpectrumToolView;
 import org.esa.beam.visat.toolviews.stat.*;
 import org.esa.beam.visat.toolviews.worldmap.WorldMapToolView;
@@ -112,7 +113,8 @@ public class SeadasApp extends VisatApp {
                 HistogramPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
                 DensityPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
                 ScatterPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-                ProfilePlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
+                ProfilePlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                SpectrumToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
         });
         return toolBar;
     }
@@ -129,8 +131,10 @@ public class SeadasApp extends VisatApp {
         excludedIds.add(NavigationToolView.ID);
         excludedIds.add(MaskManagerToolView.ID);
         excludedIds.add(GcpManagerToolView.ID);
+        excludedIds.add(PinManagerToolView.ID);
 //        excludedIds.add(LayerManagerToolView.ID);
         excludedIds.add(PixelInfoToolView.ID);
+        excludedIds.add(SpectrumToolView.ID);
         excludedIds.add(WorldMapToolView.ID);
         excludedIds.add(PlacemarkEditorToolView.ID);
         excludedIds.add(InformationToolView.ID);
