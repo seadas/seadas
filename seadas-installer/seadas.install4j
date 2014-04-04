@@ -948,7 +948,7 @@ This directory will be entirely removed if you select this option.</string>
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.actions.update.CheckForUpdateAction">
                       <void property="updateDescriptorUrl">
-                        <string>http://seadas.gsfc.nasa.gov/installers/updates.xml</string>
+                        <string>http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/latest/updates.xml</string>
                       </void>
                       <void property="variable">
                         <string>updateDescriptor</string>
