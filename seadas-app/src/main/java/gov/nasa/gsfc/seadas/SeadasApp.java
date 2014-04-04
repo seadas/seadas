@@ -26,14 +26,17 @@ import org.esa.beam.framework.ui.command.ToolCommand;
 import org.esa.beam.visat.ProductsToolView;
 import org.esa.beam.visat.VisatActivator;
 import org.esa.beam.visat.VisatApp;
+import org.esa.beam.visat.actions.CreateSubsetFromViewAction;
 import org.esa.beam.visat.actions.ShowToolBarAction;
 import org.esa.beam.visat.toolviews.diag.TileCacheDiagnosisToolView;
 import org.esa.beam.visat.toolviews.imageinfo.ColorManipulationToolView;
+import org.esa.beam.visat.toolviews.layermanager.LayerManagerToolView;
 import org.esa.beam.visat.toolviews.mask.MaskManagerToolView;
 import org.esa.beam.visat.toolviews.nav.NavigationToolView;
 import org.esa.beam.visat.toolviews.pixelinfo.PixelInfoToolView;
 import org.esa.beam.visat.toolviews.placemark.PlacemarkEditorToolView;
 import org.esa.beam.visat.toolviews.placemark.gcp.GcpManagerToolView;
+import org.esa.beam.visat.toolviews.spectrum.SpectrumToolView;
 import org.esa.beam.visat.toolviews.stat.*;
 import org.esa.beam.visat.toolviews.worldmap.WorldMapToolView;
 
@@ -247,10 +250,14 @@ public class SeadasApp extends VisatApp {
 //                DensityPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
 //                StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
 //        ));
+
         menuBar.add(createJMenu("tools", "Tools", 'T'));
+
         if (!System.getProperty("os.name").contains("Windows")) {
-            menuBar.add(createJMenu("processing", "Processing", 'P'));
+            menuBar.add(createJMenu("data", "Processing", 'P'));
         }
+
+
         menuBar.add(createJMenu("window", "Window", 'W'));
         menuBar.add(createJMenu("help", "Help", 'H'));
 
