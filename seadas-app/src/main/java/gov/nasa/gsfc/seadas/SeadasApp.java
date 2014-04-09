@@ -73,8 +73,10 @@ public class SeadasApp extends VisatApp {
         addCommandsToToolBar(toolBar, new String[]{
                 "open",
                 null,
-                "collocation",
                 "createSubsetFromView",
+                "mosaicAction",
+                "collocation",
+
                 "bandArithmetic"
         });
         return toolBar;
@@ -130,7 +132,7 @@ public class SeadasApp extends VisatApp {
         excludedIds.add(ColorManipulationToolView.ID);
         excludedIds.add(NavigationToolView.ID);
         excludedIds.add(MaskManagerToolView.ID);
-        excludedIds.add(GcpManagerToolView.ID);
+//        excludedIds.add(GcpManagerToolView.ID);
         excludedIds.add(PinManagerToolView.ID);
 //        excludedIds.add(LayerManagerToolView.ID);
         excludedIds.add(PixelInfoToolView.ID);
@@ -207,8 +209,8 @@ public class SeadasApp extends VisatApp {
                 "zoomTool",
                 "createVectorDataNode",
                 "drawRectangleTool",
-                "drawPolygonTool",
                 "drawEllipseTool",
+                "drawPolygonTool",
                 "drawLineTool",
                 "drawPolylineTool",
                 "pinTool",
