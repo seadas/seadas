@@ -165,8 +165,8 @@ public abstract class SeadasFileReader {
             flagCoding.addFlag("SEAICE", 0x1000000, "Sea ice determined");
             flagCoding.addFlag("NAVFAIL", 0x2000000, "Navigation failure");
             flagCoding.addFlag("FILTER", 0x4000000, "Insufficient data for smoothing filter");
-            flagCoding.addFlag("SSTWARN", 0x8000000, "Sea surface temperature suspect");
-            flagCoding.addFlag("SSTFAIL", 0x10000000, "Sea surface temperature algorithm failure");
+            flagCoding.addFlag("SPARE28", 0x8000000, "Unused");
+            flagCoding.addFlag("SPARE29", 0x10000000, "Unused");
             flagCoding.addFlag("HIPOL", 0x20000000, "High degree of polariztion determined");
             flagCoding.addFlag("PRODFAIL", 0x40000000, "One (or more) product algorithms produced a failure");
             flagCoding.addFlag("SPARE32", 0x80000000, "Unused");
@@ -268,14 +268,14 @@ public abstract class SeadasFileReader {
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "l2_flags.FILTER",
                     Color.LIGHT_GRAY, 0.5));
-            product.getMaskGroup().add(Mask.BandMathsType.create("SSTWARN", "Sea surface temperature suspect",
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "l2_flags.SSTWARN",
-                    Color.MAGENTA, 0.5));
-            product.getMaskGroup().add(Mask.BandMathsType.create("SSTFAIL", "Sea surface temperature algorithm failure",
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "l2_flags.SSTFAIL",
-                    FailRed, 0.1));
+//            product.getMaskGroup().add(Mask.BandMathsType.create("SSTWARN", "Sea surface temperature suspect",
+//                    product.getSceneRasterWidth(),
+//                    product.getSceneRasterHeight(), "l2_flags.SSTWARN",
+//                    Color.MAGENTA, 0.5));
+//            product.getMaskGroup().add(Mask.BandMathsType.create("SSTFAIL", "Sea surface temperature algorithm failure",
+//                    product.getSceneRasterWidth(),
+//                    product.getSceneRasterHeight(), "l2_flags.SSTFAIL",
+//                    FailRed, 0.1));
             product.getMaskGroup().add(Mask.BandMathsType.create("HIPOL", "High degree of polariztion determined",
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(), "l2_flags.HIPOL",

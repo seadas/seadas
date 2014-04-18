@@ -72,6 +72,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
             "OCRVC Level-3 Binned Data",
             "GSM bin composite",
             "GSM mapped",
+            "HMODISAlevel-3_binned_data",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
