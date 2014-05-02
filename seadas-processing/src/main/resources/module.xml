@@ -282,12 +282,24 @@
             <dialogTitle>smigen</dialogTitle>
             <xmlFileName>smigen.xml</xmlFileName>
         </action>
-
+        <action>
+             <parent>data</parent>
+            <id>l3bindump</id>
+            <!--<placeBefore>extractor</placeBefore>-->
+            <placeAfter>smigen</placeAfter>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallL3BinDumpAction</class>
+            <text>l3bindump...</text>
+            <shortDescr>Dump an XML file of the input options</shortDescr>
+            <programName>l3bindump</programName>
+            <dialogTitle>l3bindump</dialogTitle>
+            <xmlFileName>l3bindump.xml</xmlFileName>
+            <separatorBefore>false</separatorBefore>
+        </action>
         <action>
             <parent>data</parent>
             <id>multilevel_processor.py</id>
             <!--<placeBefore>extractor</placeBefore>-->
-            <placeAfter>smigen</placeAfter>
+            <placeAfter>l3bindump</placeAfter>
             <class>gov.nasa.gsfc.seadas.processing.processor.MultilevelProcessorAction</class>
             <text>Multi-Level Processor...</text>
             <shortDescr>Process a file through many levels</shortDescr>
@@ -296,6 +308,7 @@
             <xmlFileName>multilevel_processor.xml</xmlFileName>
             <separatorBefore>true</separatorBefore>
         </action>
+
         <!--<action>-->
         <!--<parent>data</parent>-->
         <!--<id>l3gen</id>-->

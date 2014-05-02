@@ -34,6 +34,7 @@ public class ProcessorTypeInfo {
         OCSSW_INSTALLER,
         L2GEN,
         L2GEN_AQUARIUS,
+        L3BINDUMP,
         NOID
     }
 
@@ -62,6 +63,7 @@ public class ProcessorTypeInfo {
         put("multilevel_processor.py", ProcessorID.MULTILEVEL_PROCESSOR_PY);
         put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR);
         put("install_ocssw.py", ProcessorID.OCSSW_INSTALLER);
+        put("l3bindump", ProcessorID.L3BINDUMP);
 
     }};
 

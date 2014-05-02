@@ -99,6 +99,9 @@ public class SeadasFileUtils {
         if (ifileName == null || programName == null) {
             return null;
         }
+        if (programName.equals("l3bindump")) {
+            return ifileName + ".xml";
+        }
         debug("Program name is " + programName);
         Debug.assertNotNull(ifileName);
 

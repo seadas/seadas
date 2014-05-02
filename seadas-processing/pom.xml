@@ -67,6 +67,11 @@
              <artifactId>netcdf</artifactId>
              <version>${netcdf.version}</version>
          </dependency>
+        <dependency>
+            <groupId>com.sun.electric</groupId>
+            <artifactId>electric-core</artifactId>
+            <version>9.01-b</version>
+        </dependency>
     </dependencies>
 
 </project>

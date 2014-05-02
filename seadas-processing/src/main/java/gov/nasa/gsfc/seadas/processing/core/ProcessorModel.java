@@ -1,6 +1,12 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.*;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+import jxl.write.*;
+import jxl.write.Number;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 import ucar.nc2.NetcdfFile;
@@ -12,6 +18,7 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.lang.Boolean;
 
 /**
  * Created by IntelliJ IDEA.
@@ -372,7 +379,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 || processorID == ProcessorTypeInfo.ProcessorID.L1MAPGEN
                 || processorID == ProcessorTypeInfo.ProcessorID.MODIS_L1B_PY)) {
             String missionName = (new FileInfo(ifileName)).getMissionName();
-            if (missionName != null && (missionName.indexOf("MODIS") != -1 || missionName.indexOf("VIIRSN") != -1 || missionName.indexOf("VIIRS") != -1 )) {
+            if (missionName != null && (missionName.indexOf("MODIS") != -1 || missionName.indexOf("VIIRSN") != -1 || missionName.indexOf("VIIRS") != -1)) {
                 setHasGeoFile(true);
             }
         }
@@ -1337,6 +1344,45 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             }
             return cmdArray;
         }
+    }
+
+    private static class L3BINDUMP_Processor extends ProcessorModel {
+        L3BINDUMP_Processor(String programName, String xmlFileName) {
+            super(programName, xmlFileName);
+        }
+
+//        @Override
+//        public String[] getProgramCmdArray() {
+//            String[] cmdArray = super.getProgramCmdArray();
+//            if (!OCSSW.isOCSSWExist()) {
+//                cmdArray[0] = OCSSW.TMP_OCSSW_INSTALLER;
+//            } else {
+//                cmdArray[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
+//            }
+//            return cmdArray;
+//        }
+
+        public void createSpreadsheet()throws BiffException, IOException, WriteException
+           {
+              WritableWorkbook wworkbook;
+              wworkbook = Workbook.createWorkbook(new File("output.xls"));
+              WritableSheet wsheet = wworkbook.createSheet("First Sheet", 0);
+              Label label = new Label(0, 2, "A label record");
+              wsheet.addCell(label);
+              Number number = new Number(3, 4, 3.1459);
+              wsheet.addCell(number);
+              wworkbook.write();
+              wworkbook.close();
+
+              Workbook workbook = Workbook.getWorkbook(new File("output.xls"));
+
+              Sheet sheet = workbook.getSheet(0);
+              Cell cell1 = sheet.getCell(0, 2);
+              System.out.println(cell1.getContents());
+              Cell cell2 = sheet.getCell(3, 4);
+              System.out.println(cell2.getContents());
+              workbook.close();
+           }
     }
 }
 

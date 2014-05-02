@@ -4,9 +4,15 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
+        <!--krow:   810 out of   2160  (-22.50 to   0.00) Tue Jun 26 16:14:55 2012-->
+        <progressRegex>krow: +(\d+) out of +(\d+)</progressRegex>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
     </programMetaData>
     <options>
-        <option type="boolean">
+        <option type="help">
             <name>-help</name>
             <value>false</value>
             <default>false</default>
@@ -17,7 +23,7 @@
             </aliases>
             <description>print usage information</description>
         </option>
-        <option type="boolean">
+        <option type="help">
             <name>-version</name>
             <value>false</value>
             <default>false</default>
@@ -27,7 +33,7 @@
             </aliases>
             <description>print the version information</description>
         </option>
-        <option type="boolean">
+        <option type="help">
             <name>-dump_options</name>
             <value>false</value>
             <default>false</default>
@@ -37,16 +43,16 @@
             </aliases>
             <description>print information about each option</description>
         </option>
-        <option type="ofile">
+        <option type="help">
             <name>-dump_options_paramfile</name>
-            <value/>
+            <value>l3bindump_options.txt</value>
             <source>default</source>
             <aliases>
                 <alias>--dump_options_paramfile</alias>
             </aliases>
             <description>print information about each option to paramfile</description>
         </option>
-        <option type="ofile">
+        <option type="help">
             <name>-dump_options_xmlfile</name>
             <value>l3bindump_options.xml</value>
             <source>command line</source>
@@ -55,7 +61,7 @@
             </aliases>
             <description>print information about each option to XML file</description>
         </option>
-        <option type="ifile">
+        <option type="help">
             <name>par</name>
             <value/>
             <source>default</source>
@@ -63,7 +69,7 @@
         </option>
         <option type="ifile">
             <name>ifile</name>
-            <value/>
+            <value></value>
             <source>default</source>
             <description>input L1 file name</description>
         </option>
@@ -86,71 +92,71 @@
         </option>
         <option type="string">
             <name>l3bprod</name>
-            <value>Unspecified</value>
+            <value></value>
             <default>Unspecified</default>
             <source>default</source>
             <description>binned product to extract</description>
         </option>
         <option type="int">
             <name>bin_number</name>
-            <value>-1</value>
+            <value></value>
             <default>-1</default>
             <source>default</source>
             <description>bin number</description>
         </option>
         <option type="float">
             <name>north</name>
-            <value>-999</value>
+            <value></value>
             <default>-999</default>
             <source>default</source>
             <description>north boundary</description>
         </option>
         <option type="float">
             <name>south</name>
-            <value>-999</value>
+            <value></value>
             <default>-999</default>
             <source>default</source>
             <description>south boundary</description>
         </option>
         <option type="float">
             <name>east</name>
-            <value>-999</value>
+            <value></value>
             <default>-999</default>
             <source>default</source>
             <description>east boundary</description>
         </option>
         <option type="float">
             <name>west</name>
-            <value>-999</value>
+            <value></value>
             <default>-999</default>
             <source>default</source>
             <description>west boundary</description>
         </option>
         <option type="float">
             <name>lat</name>
-            <value>-999</value>
+            <value></value>
             <default>-999</default>
             <source>default</source>
             <description>latitude</description>
         </option>
         <option type="float">
             <name>lon</name>
-            <value>-999</value>
+            <value></value>
             <default>-999</default>
             <source>default</source>
             <description>longitude</description>
         </option>
         <option type="float">
             <name>radius</name>
-            <value>-999</value>
+            <value></value>
             <default>-999</default>
             <source>default</source>
             <description>radius</description>
         </option>
         <option type="boolean">
             <name>verbose</name>
-            <value>0</value>
-            <default>0</default>
+            <value>false</value>
+            <default>false</default>
             <source>default</source>
             <description>verbose output</description>
         </option>

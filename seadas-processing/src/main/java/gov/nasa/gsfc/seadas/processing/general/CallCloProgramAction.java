@@ -82,7 +82,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return new ModisGEO_L1B_UI(programName, xmlFileName);
         } else if (programName.indexOf(OCSSW.OCSSW_INSTALLER) != -1) {
             OCSSW.downloadOCSSWInstaller();
-            if (!OCSSW.isOcsswInstalScriptDownloadSuccessful()){
+            if (!OCSSW.isOcsswInstalScriptDownloadSuccessful()) {
                 return null;
             }
             return new OCSSWInstallerForm(appContext, programName, xmlFileName);
@@ -131,12 +131,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
         });
 
         cloProgramUI.getProcessorModel().addPropertyChangeListener("infile", new PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                        modalDialog.getJDialog().validate();
-                        modalDialog.getJDialog().pack();
-                    }
-                });
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                modalDialog.getJDialog().validate();
+                modalDialog.getJDialog().pack();
+            }
+        });
 
         modalDialog.getButton(ModalDialog.ID_OK).setText("Run");
         modalDialog.getButton(ModalDialog.ID_HELP).setText("");
@@ -184,7 +184,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         String paramString = pm.getCmdArrayString();
         String[] filesToUpload = pm.getFilesToUpload();
-         ocsswClient.requestNewJobId();
+        ocsswClient.requestNewJobId();
 //        boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
 //        boolean t = ocsswClient.uploadCmdArray(pm.getProgramCmdArray());
 //        if (fileUploadSuccess) {
@@ -219,30 +219,36 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 int exitCode = process.exitValue();
 
                 pm.done();
-                SeadasFileUtils.writeToDisk(processorModel.getIFileDir()+System.getProperty("file.separator")+"OCSSW_LOG_" + programName + ".txt",
+                SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",
                         "Execution log for " + "\n" + Arrays.toString(processorModel.getProgramCmdArray()) + "\n" + processorModel.getExecutionLogMessage());
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
+                displayOutput(processorModel);
+//                String ofileName = processorModel.getOfileName();
+//                if (openOutputInApp) {
+//                    if (programName.equals("l3bindump")) {
+//
+//                    } else {
+//                        File ifileDir = processorModel.getIFileDir();
+//
+//                        StringTokenizer st = new StringTokenizer(ofileName);
+//                        while (st.hasMoreTokens()) {
+//                            File ofile = SeadasFileUtils.createFile(ifileDir, st.nextToken());
+//                            getAppContext().getProductManager().addProduct(ProductIO.readProduct(ofile));
+//                        }
+//                    }
+//                }
+//                return ofileName;
 
-                String ofileName = processorModel.getOfileName();
-                if (openOutputInApp) {
-                    File ifileDir = processorModel.getIFileDir();
-
-                    StringTokenizer st = new StringTokenizer(ofileName);
-                    while (st.hasMoreTokens()) {
-                        File ofile = SeadasFileUtils.createFile(ifileDir, st.nextToken());
-                        getAppContext().getProductManager().addProduct(ProductIO.readProduct(ofile));
-                    }
-                }
-                return ofileName;
+                return processorModel.getOfileName();
             }
 
             @Override
             protected void done() {
                 try {
                     final String outputFileName = get();
-                    VisatApp.getApp().showInfoDialog(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? "":
+                    VisatApp.getApp().showInfoDialog(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? "" :
                             (programName.equals(OCSSW.OCSSW_INSTALLER) ? "" : ("Output written to:\n" + outputFileName))), null);
                     if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
                         OCSSW.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
@@ -267,6 +273,20 @@ public class CallCloProgramAction extends AbstractVisatAction {
         };
 
         swingWorker.execute();
+    }
+
+    void displayOutput(ProcessorModel processorModel) throws Exception{
+        String ofileName = processorModel.getOfileName();
+        if (openOutputInApp) {
+
+            File ifileDir = processorModel.getIFileDir();
+
+            StringTokenizer st = new StringTokenizer(ofileName);
+            while (st.hasMoreTokens()) {
+                File ofile = SeadasFileUtils.createFile(ifileDir, st.nextToken());
+                getAppContext().getProductManager().addProduct(ProductIO.readProduct(ofile));
+            }
+        }
     }
 
     private void enableProcessors() {
