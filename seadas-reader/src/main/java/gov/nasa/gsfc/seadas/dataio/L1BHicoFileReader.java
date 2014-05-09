@@ -40,8 +40,12 @@ public class L1BHicoFileReader extends SeadasFileReader {
         int sceneHeight = dims[0];
 
         String productName = getStringAttribute("metadata_FGDC_Identification_Information_Dataset_Identifier");
+        String hicoOrientation = getStringAttribute("metadata_HICO_Calibration_hico_orientation_from_quaternion");
 
-        mustFlipX = mustFlipY = getDefaultFlip();
+        mustFlipX = mustFlipY = false;
+        if(hicoOrientation.trim().equals("-XVV")) {
+            mustFlipY = true;
+        }
         SeadasProductReader.ProductType productType = productReader.getProductType();
 
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
@@ -309,7 +313,20 @@ public class L1BHicoFileReader extends SeadasFileReader {
         return wavlengths.getFloat(index);
     }
 
-    public void addGeocoding(final Product product) throws ProductIOException {
+    public ProductData readDataFlip(Variable variable) throws ProductIOException {
+        final int dataType = getProductDataType(variable);
+        Array array;
+        Object storage;
+        try {
+            array = variable.read();
+            storage = array.flip(0).copyTo1DJavaArray();
+        } catch (IOException e) {
+            throw new ProductIOException(e.getMessage());
+        }
+        return ProductData.createInstance(dataType, storage);
+    }
+
+   public void addGeocoding(final Product product) throws ProductIOException {
         final String longitude = "longitudes";
         final String latitude = "latitudes";
         String navGroup = "navigation";
@@ -317,8 +334,16 @@ public class L1BHicoFileReader extends SeadasFileReader {
         Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
         Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
         if (latVar != null && lonVar != null ) {
-            final ProductData lonRawData = readData(lonVar);
-            final ProductData latRawData = readData(latVar);
+            final ProductData lonRawData;
+            final ProductData latRawData;
+            if(mustFlipY) {
+                lonRawData = readDataFlip(lonVar);
+                latRawData = readDataFlip(latVar);
+            } else {
+                lonRawData = readData(lonVar);
+                latRawData = readData(latVar);
+            }
+
             Band latBand = product.addBand(latVar.getShortName(), ProductData.TYPE_FLOAT32);
             Band lonBand = product.addBand(lonVar.getShortName(), ProductData.TYPE_FLOAT32);
             latBand.setNoDataValue(-999.);
