@@ -25,6 +25,7 @@ public class SeadasProcessorInfo {
         L2BRSGEN,
         L2BIN,
         L3BIN,
+        L3GEN,
         SMIGEN
     }
 
@@ -117,6 +118,8 @@ public class SeadasProcessorInfo {
                     return "l2bin";
                 case L3BIN:
                     return "l3bin";
+                case L3GEN:
+                    return "l3gen";
                 case SMIGEN:
                     return "smigen";
                 default:
@@ -164,6 +167,8 @@ public class SeadasProcessorInfo {
                 return iFileInfo.isSupportedMission();
             case L3BIN:
                 return iFileInfo.isSupportedMission();
+            case L3GEN:
+                return iFileInfo.isSupportedMission();
             case SMIGEN:
                 return iFileInfo.isSupportedMission();
             default:
@@ -207,6 +212,8 @@ public class SeadasProcessorInfo {
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L2);
             case L3BIN:
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L3);
+            case L3GEN:
+                return iFileInfo.isTypeId(FileTypeInfo.Id.L3BIN);
             case SMIGEN:
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L3BIN);
             default:

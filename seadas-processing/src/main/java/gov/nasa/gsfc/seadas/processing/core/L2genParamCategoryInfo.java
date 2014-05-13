@@ -14,6 +14,7 @@ public class L2genParamCategoryInfo implements Comparable {
     private String name = null;
     private boolean autoTab = false;
     private boolean defaultBucket = false;
+    private boolean ignore = false;
 
     private ArrayList<String> paramNames = new ArrayList<String>();
     private ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
@@ -92,5 +93,13 @@ public class L2genParamCategoryInfo implements Comparable {
     @Override
     public int compareTo(Object o) {
         return getName().compareToIgnoreCase(((L2genParamCategoryInfo) o).getName());
+    }
+
+    public boolean isIgnore() {
+        return ignore;
+    }
+
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
     }
 }

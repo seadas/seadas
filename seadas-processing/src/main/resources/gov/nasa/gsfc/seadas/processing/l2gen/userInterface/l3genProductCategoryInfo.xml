@@ -1,0 +1,209 @@
+<categoryList>
+
+    <category name="Radiances/Reflectances">
+        <makeVisible>0</makeVisible>
+        <product>Lt</product>
+        <product>L_u</product>
+        <product>L_q</product>
+        <product>Lr</product>
+        <product>La</product>
+        <product>Lw</product>
+        <product>tLf</product>
+        <product>TLg</product>
+        <product>Es</product>
+        <product>nLw</product>
+        <product>Rrs</product>
+        <product>rhom</product>
+        <product>rhot</product>
+        <product>rhos</product>
+        <product>rho_cirrus</product>
+        <product>BT</product>
+        <product>BT_11</product>
+        <product>BT_12</product>
+        <product>BT_39</product>
+        <product>BT_40</product>
+    </category>
+
+
+    <category name="Derived Geophysical Parameters">
+        <makeVisible>1</makeVisible>
+        <product>chlor_a</product>
+        <product>aot</product>
+        <product>angstrom</product>
+        <product>cdom_index</product>
+        <product>calcite</product>
+        <product>Kd</product>
+        <product>Kd_PAR</product>
+        <product>pic</product>
+        <product>poc</product>
+        <product>par</product>
+        <product>sst</product>
+        <product>nflh</product>
+        <product>flh</product>
+        <product>fqy</product>
+        <product>fqy2</product>
+        <product>fdiff</product>
+        <product>fsat</product>
+        <product>ipar</product>
+        <product>ipar2</product>
+        <product>logchl</product>
+        <product>alpha</product>
+        <product>cdom_percent</product>
+        <product>depth</product>
+        <product>dom</product>
+        <product>evi</product>
+        <product>ndvi</product>
+        <product>smoke</product>
+        <product>pcentcdm</product>
+        <product>tsm</product>
+        <product>Zeu</product>
+        <product>Zhl</product>
+        <product>Zp</product>
+        <product>Zsd</product>
+    </category>
+
+    <category name="Inherent Optical Products">
+        <makeVisible>1</makeVisible>
+        <product>a</product>
+        <product>adg</product>
+        <product>adg_meris</product>
+        <product>adg_s</product>
+        <product>aph</product>
+        <product>aph_s</product>
+        <product>b</product>
+        <product>bb</product>
+        <product>bbp</product>
+        <product>bbp_s</product>
+        <product>c</product>
+        <product>class_34k_w_owmc</product>
+        <product>class_k_owmc</product>
+        <product>class_ward_owmc</product>
+        <product>owt</product>
+        <product>owtd</product>
+        <product>owtn</product>
+    </category>
+
+    <category name="Ancillary/Meterological/Geometric Parameters">
+        <makeVisible>0</makeVisible>
+        <product>sena</product>
+        <product>senz</product>
+        <product>sola</product>
+        <product>solz</product>
+        <product>relaz</product>
+        <product>scattang</product>
+        <product>ozone</product>
+        <product>pressure</product>
+        <product>water_vapor</product>
+        <product>no2_frac</product>
+        <product>no2_strat</product>
+        <product>no2_tropo</product>
+        <product>windspeed</product>
+        <product>mwind</product>
+        <product>zwind</product>
+        <product>windangle</product>
+        <product>detnum</product>
+        <product>pixnum</product>
+        <product>mside</product>
+        <product>height</product>
+        <product>humidity</product>
+        <product>ice_frac</product>
+        <product>sssref</product>
+        <product>sstref</product>
+    </category>
+
+
+    <category name="Atmospheric Correction Intermediates">
+        <makeVisible>0</makeVisible>
+        <product>aerindex</product>
+        <product>aer_model_max</product>
+        <product>aer_model_min</product>
+        <product>aer_model_ratio</product>
+        <product>aer_num_iter</product>
+        <product>brdf</product>
+        <product>cloud_albedo</product>
+        <product>dpol</product>
+        <product>epsilon</product>
+        <product>fsol</product>
+        <product>glint_coef</product>
+        <product>iter</product>
+        <product>ms_epsilon</product>
+        <product>polcor</product>
+        <product>tg_sen</product>
+        <product>tg_sol</product>
+        <product>t_h2o</product>
+        <product>tindx_morel</product>
+        <product>tindx_shi</product>
+        <product>t_o2</product>
+        <product>t_sen</product>
+        <product>t_sol</product>
+        <product>v</product>
+        <product>w0</product>
+    </category>
+
+
+    <category name="Uncertainties/Error Estimates">
+        <makeVisible>1</makeVisible>
+        <product>adg_unc</product>
+        <product>aph_unc</product>
+        <product>a_unc</product>
+        <product>bbp_unc</product>
+        <product>bb_unc</product>
+        <product>bias</product>
+        <product>chisqr</product>
+        <product>chl_error</product>
+        <product>chl_unc</product>
+        <product>fit_par</product>
+        <product>flags</product>
+        <product>Lt_unc</product>
+        <product>mod_rss</product>
+        <product>mRrs</product>
+        <product>nLw_unc</product>
+        <product>qual</product>
+        <product>rrsdiff</product>
+        <product>Rrs_unc</product>
+        <product>stdv</product>
+    </category>
+
+
+    <category name="Calibration Parameters (Inverse mode)">
+        <makeVisible>0</makeVisible>
+        <product>vbsat</product>
+        <product>vbtgt</product>
+        <product>vgain</product>
+        <product>vLt</product>
+        <product>vLw</product>
+        <product>vnLw</product>
+        <product>vtLw</product>
+    </category>
+
+
+    <category name="Hidden Stuff">
+        <makeVisible>0</makeVisible>
+        <product>chl1_meris</product>
+        <product>chl2_meris</product>
+        <product>par_meris</product>
+        <product>tsm_meris</product>
+        <product>angstrom_meris</product>
+        <product>Taua_meris</product>
+        <product>taua</product>
+        <product>l2_flags</product>
+        <product>myprod1</product>
+        <product>myprod10</product>
+        <product>myprod2</product>
+        <product>myprod3</product>
+        <product>myprod4</product>
+        <product>myprod5</product>
+        <product>myprod6</product>
+        <product>myprod7</product>
+        <product>myprod8</product>
+        <product>myprod9</product>
+    </category>
+
+
+    <category name="Miscellaneous">
+        <makeVisible>1</makeVisible>
+        <defaultBucket>1</defaultBucket>
+    </category>
+
+</categoryList>
+

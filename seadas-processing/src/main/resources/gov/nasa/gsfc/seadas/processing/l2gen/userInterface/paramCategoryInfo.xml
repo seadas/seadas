@@ -235,6 +235,7 @@
 
 
     <category name="Params Not Supported in GUI">
+        <ignore>1</ignore>
         <autoTab>0</autoTab>
         <param>-help</param>
         <param>ilist</param>

@@ -69,9 +69,10 @@ public class L2genParfilePanel {
                 new GridBagConstraintsCustom(++subPanelGridx, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 //        subPanel.add(getAncillaryFilesSpecifier.getjButton(),
 //                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+        if (l2genData.getMode() != L2genData.Mode.L3GEN) {
         subPanel.add(getAncillarySplitButton.getAncillarySplitButton(),
                 new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-
+        }
 
         final JPanel defaultsPanel = new JPanel(new GridBagLayout());
         defaultsPanel.setBorder(BorderFactory.createEtchedBorder());

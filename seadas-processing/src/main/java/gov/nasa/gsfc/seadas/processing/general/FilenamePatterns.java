@@ -32,7 +32,7 @@ public class FilenamePatterns {
         }
 
 
-        File oFile = getStandardOfile(iFileInfo.getFile());
+        File oFile = getL2genOfile(iFileInfo.getFile());
 
         // add on the suite
         StringBuilder ofile = new StringBuilder(oFile.getAbsolutePath());
@@ -59,8 +59,14 @@ public class FilenamePatterns {
         if (fileInfo.isMissionId(MissionInfo.Id.VIIRS)) {
             oFile = getViirsOfilename(fileInfo.getFile());
         } else {
-            oFile = getStandardOfile(fileInfo.getFile());
+            if (fileInfo.getTypeId() == FileTypeInfo.Id.L3BIN) {
+                oFile = getL3genOfile(fileInfo.getFile());
+            } else {
+                oFile = getL2genOfile(fileInfo.getFile());
+            }
+
         }
+
 
         return oFile;
     }
@@ -183,7 +189,7 @@ public class FilenamePatterns {
     }
 
 
-    static private File getStandardOfile(File iFile) {
+    static private File getL2genOfile(File iFile) {
         if (iFile == null || iFile.getAbsoluteFile().length() == 0) {
             return null;
         }
@@ -219,6 +225,26 @@ public class FilenamePatterns {
 
         return new File(ofile.toString());
     }
+
+    static private File getL3genOfile(File iFile) {
+        if (iFile == null || iFile.getAbsoluteFile().length() == 0) {
+            return null;
+        }
+
+        StringBuilder ofileBasename = new StringBuilder();
+
+
+        if (ofileBasename.toString().length() == 0) {
+            ofileBasename.append(iFile.getName());
+            ofileBasename.append(".out");
+
+        }
+
+        StringBuilder ofile = new StringBuilder(iFile.getParent() + "/" + ofileBasename.toString());
+
+        return new File(ofile.toString());
+    }
+
 
 
     /**
