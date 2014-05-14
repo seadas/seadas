@@ -99,6 +99,8 @@ public class L2genReader {
                 String name = categoryElement.getAttribute("name");
                 String autoTab = XmlReader.getTextValue(categoryElement, "autoTab");
                 String defaultBucketString = XmlReader.getTextValue(categoryElement, "defaultBucket");
+                String ignore = XmlReader.getTextValue(categoryElement, "ignore");
+
 
                 L2genParamCategoryInfo paramCategoryInfo = new L2genParamCategoryInfo(name);
 
@@ -106,6 +108,12 @@ public class L2genReader {
                     paramCategoryInfo.setAutoTab(true);
                 } else {
                     paramCategoryInfo.setAutoTab(false);
+                }
+
+                if (ignore != null && ignore.equals("1")) {
+                    paramCategoryInfo.setIgnore(true);
+                } else {
+                    paramCategoryInfo.setIgnore(false);
                 }
 
                 if (defaultBucketString != null && defaultBucketString.equals("1")) {

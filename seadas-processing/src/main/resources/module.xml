@@ -270,6 +270,23 @@
             <multiIFile>true</multiIFile>
             <xmlFileName>l3bin.xml</xmlFileName>
         </action>
+
+        <action>
+            <parent>data</parent>
+            <id>l3gen</id>
+            <placeAfter>l3bin</placeAfter>
+            <placeBefore>smigen</placeBefore>
+            <class>gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L3genAction</class>
+            <text>l3gen...</text>
+            <shortDescr>Process l3bin</shortDescr>
+            <shortDescr>Process l3bin</shortDescr>
+            <programName>l3gen</programName>
+            <dialogTitle>l3gen</dialogTitle>
+            <xmlFileName>l2gen.xml</xmlFileName>
+
+        </action>
+
+
         <action>
             <parent>data</parent>
             <id>smigen</id>

@@ -30,10 +30,9 @@ public class L2genProductsPanel extends JPanel {
     private JScrollPane selectedProductsJScrollPane;
 
 
+
     L2genProductsPanel(L2genData l2genData) {
-
         this.l2genData = l2genData;
-
 
         initComponents();
         addComponents();
@@ -43,7 +42,7 @@ public class L2genProductsPanel extends JPanel {
         productSelectorJPanel = new L2genProductTreeSelectorPanel(l2genData);
 
         wavelengthsLimitorJPanel = new L2genWavelengthLimiterPanel(l2genData);
-        if (L2genData.getMe().isIfileIndependentMode()) {
+        if (l2genData.isIfileIndependentMode()) {
             wavelengthsLimitorJPanel.setVisible(false);
         }
 

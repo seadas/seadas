@@ -34,7 +34,8 @@ public class L2genData implements L2genDataProcessorModel {
 
     public static enum Mode {
         L2GEN,
-        L2GEN_AQUARIUS
+        L2GEN_AQUARIUS,
+        L3GEN
     }
 
     public static enum Source {
@@ -62,6 +63,17 @@ public class L2genData implements L2genDataProcessorModel {
             AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
             AQUARIUS_GETANC = "getanc_aquarius.py",
             AQUARIUS_DEFAULT_SUITE = "V2.0";
+
+
+    private static final String
+            L3GEN_GUI_NAME = "l3gen",
+            L3GEN_PRODUCT_INFO_XML = "productInfo.xml",
+            L3GEN_PARAM_INFO_XML = "paramInfo.xml",
+            L3GEN_PARAM_CATEGORY_INFO_XML = "l3genParamCategoryInfo.xml",
+            L3GEN_PRODUCT_CATEGORY_INFO_XML = "l3genProductCategoryInfo.xml",
+            L3GEN_DEFAULTS_FILE_PREFIX = "msl12_defaults_",
+            L3GEN_GETANC = "getanc.py",
+            L3GEN_DEFAULT_SUITE = "OC";
 
 
     public static final String ANCILLARY_FILES_CATEGORY_NAME = "Ancillary Inputs";
@@ -94,7 +106,10 @@ public class L2genData implements L2genDataProcessorModel {
     public FileInfo iFileInfo = null;
     private boolean initialized = false;
     public boolean showIOFields = true;
+
     private Mode mode = Mode.L2GEN;
+    private SeadasProcessorInfo.Id processorId = SeadasProcessorInfo.Id.L2GEN;
+
     private boolean ifileIndependentMode = false;
     private boolean paramsBeingSetViaParstring = false;
 
@@ -141,24 +156,32 @@ public class L2genData implements L2genDataProcessorModel {
     private ProcessorModel processorModel;
 
 
-    private static L2genData me = null;
+    private static L2genData L2genData = null;
+    private static L2genData L2genAquariusData = null;
+    private static L2genData L3genData = null;
 
-    public static L2genData getMe() {
-
-        // override this and always make new me
-        //       if (1 == 1 || me == null || me.isDirty()) {
-        me = new L2genData();
-        //        }
-
-
-        return me;
-
+    public static L2genData getNew(Mode mode) {
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                L2genAquariusData = new L2genData(mode);
+                return L2genAquariusData;
+            case L3GEN:
+                L3genData = new L2genData(mode);
+                return L3genData;
+            default:
+                L2genData = new L2genData(mode);
+                return L2genData;
+        }
     }
 
 
-    private L2genData() {
-    }
+//    private L2genData() {
+//        this(Mode.L2GEN);
+//    }
 
+    private L2genData(Mode mode) {
+        setMode(mode);
+    }
 
     public Mode getMode() {
         return mode;
@@ -170,6 +193,7 @@ public class L2genData implements L2genDataProcessorModel {
 
         switch (mode) {
             case L2GEN_AQUARIUS:
+                processorId = SeadasProcessorInfo.Id.L2GEN;
                 setGuiName(AQUARIUS_GUI_NAME);
                 setParamInfoXml(AQUARIUS_PARAM_INFO_XML);
                 setProductInfoXml(AQUARIUS_PRODUCT_INFO_XML);
@@ -179,7 +203,19 @@ public class L2genData implements L2genDataProcessorModel {
                 setDefaultsFilePrefix(AQUARIUS_DEFAULTS_FILE_PREFIX);
                 setDefaultSuite(AQUARIUS_DEFAULT_SUITE);
                 break;
+            case L3GEN:
+                processorId = SeadasProcessorInfo.Id.L3GEN;
+                setGuiName(L3GEN_GUI_NAME);
+                setParamInfoXml(L3GEN_PARAM_INFO_XML);
+                setProductInfoXml(L3GEN_PRODUCT_INFO_XML);
+                setParamCategoryXml(L3GEN_PARAM_CATEGORY_INFO_XML);
+                setProductCategoryXml(L3GEN_PRODUCT_CATEGORY_INFO_XML);
+                setGetanc(L3GEN_GETANC);
+                setDefaultsFilePrefix(L3GEN_DEFAULTS_FILE_PREFIX);
+                setDefaultSuite(L3GEN_DEFAULT_SUITE);
+                break;
             default:
+                processorId = SeadasProcessorInfo.Id.L2GEN;
                 setGuiName(GUI_NAME);
                 setParamInfoXml(PARAM_INFO_XML);
                 setProductInfoXml(PRODUCT_INFO_XML);
@@ -191,7 +227,7 @@ public class L2genData implements L2genDataProcessorModel {
                 break;
         }
 
-            processorModel = new ProcessorModel(getGuiName(), getParamInfos());
+        processorModel = new ProcessorModel(getGuiName(), getParamInfos());
 
 //            getProcessorModel().addPropertyChangeListener(L2genData.CANCEL, new PropertyChangeListener() {
 //                @Override
@@ -325,6 +361,8 @@ public class L2genData implements L2genDataProcessorModel {
     public boolean isGeofileRequired() {
         switch (getMode()) {
             case L2GEN_AQUARIUS:
+                return false;
+            case L3GEN:
                 return false;
             default:
                 if (iFileInfo != null) {
@@ -622,49 +660,55 @@ public class L2genData implements L2genDataProcessorModel {
 
         for (L2genParamCategoryInfo paramCategoryInfo : paramCategoryInfos) {
 
-            boolean alwaysDisplay = false;
+            if (!paramCategoryInfo.isIgnore()) {
+                boolean alwaysDisplay = false;
 
-            StringBuilder currCategoryEntries = new StringBuilder("");
+                StringBuilder currCategoryEntries = new StringBuilder("");
 
-            for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
-                if (paramInfo.getName().equals(IFILE)) {
-                    alwaysDisplay = true;
-                    currCategoryEntries.append(makeParEntry(paramInfo));
-                } else if (paramInfo.getName().equals(OFILE)) {
-                    alwaysDisplay = true;
-                    currCategoryEntries.append(makeParEntry(paramInfo));
-                } else if (paramInfo.getName().equals(GEOFILE)) {
-                    if (isGeofileRequired()) {
+                for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
+
+                    if (paramInfo.getName().equals(IFILE)) {
+                        alwaysDisplay = true;
                         currCategoryEntries.append(makeParEntry(paramInfo));
-                    }
-                } else if (paramInfo.getName().equals(SUITE)) {
-                    alwaysDisplay = true;
-                    currCategoryEntries.append(makeParEntry(paramInfo));
-                } else if (paramInfo.getName().equals(PAR)) {
-                    // right ignore and do not print todo
-                } else {
-                    if (!paramInfo.getName().startsWith("-")) {
-
-                        if (paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
-                            if (showDefaults) {
-                                currCategoryEntries.append(makeParEntry(paramInfo, true));
-                            }
-                        } else {
+                    } else if (paramInfo.getName().equals(OFILE)) {
+                        alwaysDisplay = true;
+                        currCategoryEntries.append(makeParEntry(paramInfo));
+                    } else if (paramInfo.getName().equals(GEOFILE)) {
+                        if (isGeofileRequired()) {
                             currCategoryEntries.append(makeParEntry(paramInfo));
+                        }
+                    } else if (paramInfo.getName().equals(SUITE)) {
+                        alwaysDisplay = true;
+                        currCategoryEntries.append(makeParEntry(paramInfo));
+                    } else if (paramInfo.getName().equals(PAR)) {
+                        // right ignore and do not print todo
+                    } else {
+                        if (!paramInfo.getName().startsWith("-")) {
+
+                            if (paramInfo.getValue().equals(paramInfo.getDefaultValue())) {
+                                if (paramInfo.getName().equals(L2PROD) && getMode() == Mode.L3GEN) {
+
+                                    currCategoryEntries.append(makeParEntry(paramInfo));
+                                } else if (showDefaults) {
+                                    currCategoryEntries.append(makeParEntry(paramInfo, true));
+                                }
+                            } else {
+                                currCategoryEntries.append(makeParEntry(paramInfo));
+                            }
                         }
                     }
                 }
-            }
 
 
-            if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName())) {
-                par.append("# " + paramCategoryInfo.getName().toUpperCase() + "  Default = climatology (select 'Get Ancillary' to download ancillary files)\n");
-                par.append(currCategoryEntries.toString());
-                par.append("\n");
-            } else if (currCategoryEntries.toString().length() > 0 && !(alwaysDisplay && !showIOFields)) {
-                par.append("# " + paramCategoryInfo.getName().toUpperCase() + "\n");
-                par.append(currCategoryEntries.toString());
-                par.append("\n");
+                if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName())) {
+                    par.append("# " + paramCategoryInfo.getName().toUpperCase() + "  Default = climatology (select 'Get Ancillary' to download ancillary files)\n");
+                    par.append(currCategoryEntries.toString());
+                    par.append("\n");
+                } else if (currCategoryEntries.toString().length() > 0 && !(alwaysDisplay && !showIOFields)) {
+                    par.append("# " + paramCategoryInfo.getName().toUpperCase() + "\n");
+                    par.append(currCategoryEntries.toString());
+                    par.append("\n");
+                }
             }
         }
 
@@ -939,7 +983,7 @@ public class L2genData implements L2genDataProcessorModel {
                 paramInfo.setDefaultValue(paramInfo.getValue());
                 setConflictingParams(paramInfo.getName());
                 if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                    paramInfo.validateIfileValue(null, SeadasProcessorInfo.Id.L2GEN);
+                    paramInfo.validateIfileValue(null, processorId);
                 }
                 fireEvent(paramInfo.getName());
             }
@@ -985,7 +1029,7 @@ public class L2genData implements L2genDataProcessorModel {
                     paramInfo.setValue(value);
 
                     if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                        paramInfo.validateIfileValue(iFileInfo.getFile().getParent(), SeadasProcessorInfo.Id.L2GEN);
+                        paramInfo.validateIfileValue(iFileInfo.getFile().getParent(), processorId);
                     }
                     setConflictingParams(paramInfo.getName());
                 } else {
@@ -1139,7 +1183,7 @@ public class L2genData implements L2genDataProcessorModel {
     private void resetWaveLimiter() {
         waveLimiterInfos.clear();
 
-        if (L2genData.getMe().isIfileIndependentMode()) {
+        if (isIfileIndependentMode()) {
             L2genWavelengthInfo wavelengthInfo = new L2genWavelengthInfo(L2genProductTools.WAVELENGTH_FOR_IFILE_INDEPENDENT_MODE);
             waveLimiterInfos.add(wavelengthInfo);
             return;
@@ -1203,12 +1247,12 @@ public class L2genData implements L2genDataProcessorModel {
         if (isInitialized() && isParamsBeingSetViaParstring()) {
             VisatApp visatApp = VisatApp.getApp();
             ProgressMonitorSwingWorker worker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                    GUI_NAME) {
+                    getGuiName()) {
 
                 @Override
                 protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                    pm.beginTask("Re-initializing " + GUI_NAME, 2);
+                    pm.beginTask("Re-initializing " + getGuiName(), 2);
 
                     setIfileandSuiteParamValues(ifileParamInfo, ifileValue, suiteValue);
                     pm.done();
@@ -1254,7 +1298,7 @@ public class L2genData implements L2genDataProcessorModel {
         ifileParamInfo.setValue(ifileValue);
 //        ifileParamInfo.setDefaultValue(ifileValue);
 
-        iFileInfo = ifileParamInfo.validateIfileValue(null, SeadasProcessorInfo.Id.L2GEN);
+        iFileInfo = ifileParamInfo.validateIfileValue(null, processorId);
         processorModel.setReadyToRun(isValidIfile());
 
         if (iFileInfo != null && isValidIfile()) {
@@ -1583,6 +1627,7 @@ public class L2genData implements L2genDataProcessorModel {
                 break;
             default:
                 getProductInfoInputStream(Source.L2GEN, true);
+//                getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
 
@@ -1614,7 +1659,14 @@ public class L2genData implements L2genDataProcessorModel {
             }
         } else if (source == Source.L2GEN) {
             if (!xmlFile.exists() || overwrite) {
-                ProcessorModel processorModel = new ProcessorModel(getGuiName());
+                String executable = getGuiName();
+            //    String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+
+                if (executable.equals("l3gen")) {
+                    executable = "l2gen";
+                }
+                ProcessorModel processorModel = new ProcessorModel(executable);
+
                 processorModel.setAcceptsParFile(false);
                 processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
                 processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
@@ -1679,7 +1731,13 @@ public class L2genData implements L2genDataProcessorModel {
         File xmlFile;
 
         xmlFile = new File(l2genDir, getParamInfoXml());
-        ProcessorModel processorModel = new ProcessorModel(getGuiName());
+
+        String executable = getGuiName();
+       // String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+        if (executable.equals("l3gen")) {
+            executable = "l2gen";
+        }
+        ProcessorModel processorModel = new ProcessorModel(executable);
 
         processorModel.setAcceptsParFile(true);
         processorModel.addParamInfo("ifile", file.getAbsolutePath(), ParamInfo.Type.IFILE);
@@ -1822,6 +1880,7 @@ public class L2genData implements L2genDataProcessorModel {
                 break;
             default:
                 productInfoStream = getProductInfoInputStream(Source.L2GEN, true);
+//              productInfoStream = getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
 

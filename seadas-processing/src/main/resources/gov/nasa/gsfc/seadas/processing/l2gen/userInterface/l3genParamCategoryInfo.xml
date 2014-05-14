@@ -1,0 +1,257 @@
+<categoryList>
+    <category name="Primary Input Output Fields">
+        <autoTab>0</autoTab>
+        <param>ifile</param>
+        <param>geofile</param>
+        <param>ofile</param>
+    </category>
+
+    <category name="Suite">
+        <autoTab>0</autoTab>
+        <param>suite</param>
+    </category>
+
+
+    <category name="Products">
+        <autoTab>0</autoTab>
+        <param>l2prod</param>
+    </category>
+
+
+    <category name="Subsetting Options">
+        <autoTab>1</autoTab>
+        <param>north</param>
+        <param>south</param>
+        <param>east</param>
+        <param>west</param>
+    </category>
+
+
+
+
+    <category name="Ancillary Inputs">
+        <autoTab>1</autoTab>
+        <param>btfile</param>
+        <param>cldfile</param>
+        <param>degc</param>
+        <param>elevfile</param>
+        <param>elev_auxfile</param>
+        <param>hipol</param>
+        <param>land</param>
+        <param>owtchlerrfile</param>
+        <param>owtfile</param>
+        <param>picfile</param>
+        <param>pressure</param>
+        <param>relhumid</param>
+        <param>sssfile</param>
+        <param>vcnnfile</param>
+    </category>
+
+    <category name="IOP Options">
+        <autoTab>1</autoTab>
+        <param>giop_adg_file</param>
+        <param>giop_adg_opt</param>
+        <param>giop_adg_s</param>
+        <param>giop_aph_file</param>
+        <param>giop_aph_opt</param>
+        <param>giop_aph_s</param>
+        <param>giop_bbp_file</param>
+        <param>giop_bbp_opt</param>
+        <param>giop_bbp_s</param>
+        <param>giop_fit_opt</param>
+        <param>giop_grd</param>
+        <param>giop_maxiter</param>
+        <param>giop_rrs_opt</param>
+        <param>giop_rrs_unc</param>
+        <param>giop_rrs_diff</param>
+        <param>giop_ts_opt</param>
+        <param>giop_wave</param>
+        <param>gsm_adg_s</param>
+        <param>gsm_aphs</param>
+        <param>gsm_aphw</param>
+        <param>gsm_bbp_s</param>
+        <param>gsm_fit</param>
+        <param>gsm_opt</param>
+        <param>iop_opt</param>
+        <param>qaa_adg_s</param>
+        <param>qaa_wave</param>
+        <param>seawater_opt</param>
+    </category>
+
+    <category name="Miscellaneous">
+        <autoTab>1</autoTab>
+        <defaultBucket>1</defaultBucket>
+        <param>chlclark_coef</param>
+        <param>chlclark_wave</param>
+        <param>chloc2_coef</param>
+        <param>chloc2_wave</param>
+        <param>chloc3_coef</param>
+        <param>chloc3_wave</param>
+        <param>chloc4_coef</param>
+        <param>chloc4_wave</param>
+        <param>coccolith</param>
+        <param>ctl_pt_incr</param>
+        <param>datamax</param>
+        <param>datamin</param>
+        <param>gain_unc</param>
+        <param>il2file</param>
+        <param>kd2_coef</param>
+        <param>kd2_wave</param>
+        <param>metafile</param>
+        <param>outmode</param>
+        <param>ocrvc_opt</param>
+        <param>prodxmlfile</param>
+        <param>pversion</param>
+        <param>resolution</param>
+        <param>rgb</param>
+        <param>stype</param>
+        <param>width</param>
+    </category>
+
+
+    <category name="Params Not Supported in GUI">
+        <ignore>1</ignore>
+        <autoTab>0</autoTab>
+        <param>-help</param>
+        <param>ilist</param>
+        <param>maxpointdist</param>
+        <param>par</param>
+        <param>vct_fill_pct</param>
+        <param>vct_min_nbin</param>
+        <param>vct_msk_water</param>
+        <param>vct_water</param>
+        <param>-dump_options</param>
+        <param>-dump_options_paramfile</param>
+        <param>-dump_options_xmlfile</param>
+        <param>-version</param>
+        <param>flaguse</param>
+
+
+        <!--Calibration Options-->
+        <param>aerfile</param>
+        <param>calfile</param>
+        <param>eval</param>
+        <param>mode</param>
+        <param>owmcfile</param>
+        <param>tgtfile</param>
+        <param>vcal_chl</param>
+        <param>vcal_lw</param>
+        <param>vcal_nlw</param>
+        <param>vcal_opt</param>
+        <param>vcal_solz</param>
+        <param>xcalboxcenter</param>
+        <param>xcalbox</param>
+        <param>xcalfile</param>
+        <param>xcal_opt</param>
+        <param>xcalpervalid</param>
+        <param>xcalsubsmpl</param>
+        <param>xcal_wave</param>
+
+        <!--Thresholds-->
+        <param>aotthreshold</param>
+        <param>chlthreshold</param>
+        <param>cirrus_thresh</param>
+        <param>cloud_eps</param>
+        <param>cloud_thresh</param>
+        <param>cloud_wave</param>
+        <param>epsmax</param>
+        <param>epsmin</param>
+        <param>flh_offset</param>
+        <param>glint_thresh</param>
+        <param>ice_threshold</param>
+        <param>nlwmin</param>
+        <param>rhoamin</param>
+        <param>satzen</param>
+        <param>sunzen</param>
+        <param>tauamax</param>
+        <param>threshold</param>
+        <param>wsmax</param>
+
+        <!--Processing Options-->
+        <param>absaer_opt</param>
+        <param>absaer</param>
+        <param>aer_angstrom</param>
+        <param>aer_iter_max</param>
+        <param>aermodels</param>
+        <param>aermodmax</param>
+        <param>aermodmin</param>
+        <param>aermodrat</param>
+        <param>aer_opt</param>
+        <param>aer_rrs_long</param>
+        <param>aer_rrs_short</param>
+        <param>aer_swir_long</param>
+        <param>aer_swir_short</param>
+        <param>aer_wave_long</param>
+        <param>aer_wave_short</param>
+        <param>atmocor</param>
+        <param>brdf_opt</param>
+        <param>filter_file</param>
+        <param>filter_opt</param>
+        <param>fmtofile</param>
+        <param>gain</param>
+        <param>gas_opt</param>
+        <param>glint_opt</param>
+        <param>maskbath</param>
+        <param>maskcloud</param>
+        <param>maskglint</param>
+        <param>maskhilt</param>
+        <param>maskland</param>
+        <param>masksatzen</param>
+        <param>maskstlight</param>
+        <param>masksunzen</param>
+        <param>mumm_alpha</param>
+        <param>mumm_epsilon</param>
+        <param>mumm_gamma</param>
+        <param>offset</param>
+        <param>outband_opt</param>
+        <param>oxaband_opt</param>
+        <param>polfile</param>
+        <param>pol_opt</param>
+        <param>proc_land</param>
+        <param>proc_ocean</param>
+        <param>proc_sst</param>
+        <param>rad_opt</param>
+        <param>sl_frac</param>
+        <param>sl_pixl</param>
+        <param>taua</param>
+
+        <!--Subsetting Options-->
+        <param>spixl</param>
+        <param>epixl</param>
+        <param>dpixl</param>
+        <param>sline</param>
+        <param>eline</param>
+        <param>dline</param>
+        <param>xbox</param>
+        <param>ybox</param>
+        <param>subsamp</param>
+
+        <!--Ancillary Inputs-->
+        <param>alphafile</param>
+        <param>demfile</param>
+        <param>icefile</param>
+        <param>met1</param>
+        <param>met2</param>
+        <param>met3</param>
+        <param>no2file</param>
+        <param>ozone1</param>
+        <param>ozone2</param>
+        <param>ozone3</param>
+        <param>ozone</param>
+        <param>sst4coeffile</param>
+        <param>sst4mirrfile</param>
+        <param>sst4ssesfile</param>
+        <param>sstcoeffile</param>
+        <param>sstfile</param>
+        <param>sstmirrfile</param>
+        <param>sstssesfile</param>
+        <param>tauafile</param>
+        <param>water</param>
+        <param>watervapor</param>
+        <param>windangle</param>
+        <param>windspeed</param>
+
+    </category>
+
+
+</categoryList>

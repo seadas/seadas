@@ -27,7 +27,7 @@ import java.io.IOException;
 public class L2genForm extends JPanel implements CloProgramUI {
 
 
-    private L2genData l2genData;
+    private L2genData masterData;
 
     private L2genMainPanel l2genMainPanel;
     private JCheckBox openInAppCheckBox;
@@ -38,10 +38,9 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public L2genForm(AppContext appContext, String xmlFileName, final File iFile, boolean showIOFields, L2genData.Mode mode, boolean keepParams, boolean ifileIndependent) {
 
-        l2genData = L2genData.getMe();
-        l2genData.setMode(mode);
-        l2genData.setIfileIndependentMode(ifileIndependent);
-        l2genData.setKeepParams(keepParams);
+        masterData = L2genData.getNew(mode);
+        masterData.setIfileIndependentMode(ifileIndependent);
+        masterData.setKeepParams(keepParams);
 
 
         setOpenInAppCheckBox(new JCheckBox("Open in " + appContext.getApplicationName()));
@@ -53,26 +52,26 @@ public class L2genForm extends JPanel implements CloProgramUI {
         keepParamsCheckbox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                l2genData.setKeepParams(keepParamsCheckbox.isSelected());
+                masterData.setKeepParams(keepParamsCheckbox.isSelected());
             }
         });
 
 
-        l2genData.showIOFields = showIOFields;
+        masterData.showIOFields = showIOFields;
 
 
         VisatApp visatApp = VisatApp.getApp();
         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                l2genData.getGuiName()) {
+                masterData.getGuiName()) {
 
             @Override
             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                pm.beginTask("Initializing " + l2genData.getGuiName(), 2);
+                pm.beginTask("Initializing " + masterData.getGuiName(), 2);
 
                 try {
 
-                    getL2genData().initXmlBasedObjects();
+                    masterData.initXmlBasedObjects();
 
                     createMainTab();
                     createProductsTab();
@@ -105,25 +104,25 @@ public class L2genForm extends JPanel implements CloProgramUI {
                             new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH));
 
 
-                    getL2genData().disableEvent(L2genData.PARSTRING);
-                    getL2genData().disableEvent(L2genData.L2PROD);
+                    masterData.disableEvent(L2genData.PARSTRING);
+                    masterData.disableEvent(L2genData.L2PROD);
 
-                    if (!getL2genData().isIfileIndependentMode()) {
+                    if (!masterData.isIfileIndependentMode()) {
                         if (iFile != null) {
-                            getL2genData().setInitialValues(iFile);
+                            masterData.setInitialValues(iFile);
                         } else {
-                            getL2genData().setInitialValues(getInitialSelectedSourceFile());
+                            masterData.setInitialValues(getInitialSelectedSourceFile());
                         }
                     }
 
                     //todo this crazy for multilevel processor
-//                    if (getL2genData().isIfileIndependentMode()) {
-//                        getL2genData().fireEvent(L2genData.IFILE);
+//                    if (masterData.isIfileIndependentMode()) {
+//                        masterData.fireEvent(L2genData.IFILE);
 //                    }
 
-                    getL2genData().fireAllParamEvents();
-                    getL2genData().enableEvent(L2genData.L2PROD);
-                    getL2genData().enableEvent(L2genData.PARSTRING);
+                    masterData.fireAllParamEvents();
+                    masterData.enableEvent(L2genData.L2PROD);
+                    masterData.enableEvent(L2genData.PARSTRING);
                     pm.worked(1);
 
                 } catch (IOException e) {
@@ -145,7 +144,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
         pmSwingWorker.executeWithBlocking();
 
 
-        l2genData.setInitialized(true);
+        masterData.setInitialized(true);
 
     }
 
@@ -164,14 +163,14 @@ public class L2genForm extends JPanel implements CloProgramUI {
         int oldTabIndex = tabIndex;
         int newTabIndex = jTabbedPane.getSelectedIndex();
         tabIndex = newTabIndex;
-        getL2genData().fireEvent(L2genData.TAB_CHANGE, oldTabIndex, newTabIndex);
+        masterData.fireEvent(L2genData.TAB_CHANGE, oldTabIndex, newTabIndex);
     }
 
     private void createMainTab() {
 
         final String TAB_NAME = "Main";
         final int tabIndex = jTabbedPane.getTabCount();
-        l2genMainPanel = new L2genMainPanel(l2genData, tabIndex);
+        l2genMainPanel = new L2genMainPanel(masterData, tabIndex);
         jTabbedPane.addTab(TAB_NAME, l2genMainPanel.getjPanel());
     }
 
@@ -179,16 +178,16 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private void createProductsTab() {
 
         final String TAB_NAME = "Products";
-        L2genProductsPanel l2genProductsPanel = new L2genProductsPanel((getL2genData()));
+        L2genProductsPanel l2genProductsPanel = new L2genProductsPanel(masterData);
         jTabbedPane.addTab(TAB_NAME, l2genProductsPanel);
         final int tabIndex = jTabbedPane.getTabCount() - 1;
 
-        getL2genData().addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
+        masterData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 StringBuilder tabname = new StringBuilder(TAB_NAME);
 
-                if (getL2genData().isParamDefault(L2genData.L2PROD)) {
+                if (masterData.isParamDefault(L2genData.L2PROD)) {
                     jTabbedPane.setTitleAt(tabIndex, tabname.toString());
                 } else {
                     jTabbedPane.setTitleAt(tabIndex, tabname.append("*").toString());
@@ -197,10 +196,10 @@ public class L2genForm extends JPanel implements CloProgramUI {
         });
 
 
-        getL2genData().addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+        masterData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                jTabbedPane.setEnabledAt(tabIndex, getL2genData().isValidIfile());
+                jTabbedPane.setEnabledAt(tabIndex, masterData.isValidIfile());
             }
         });
     }
@@ -208,10 +207,10 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     private void createCategoryParamTabs() {
 
-        for (final L2genParamCategoryInfo paramCategoryInfo : getL2genData().getParamCategoryInfos()) {
+        for (final L2genParamCategoryInfo paramCategoryInfo : masterData.getParamCategoryInfos()) {
             if (paramCategoryInfo.isAutoTab() && (paramCategoryInfo.getParamInfos().size() > 0)) {
 
-                L2genCategorizedParamsPanel l2genCategorizedParamsPanel = new L2genCategorizedParamsPanel(getL2genData(), paramCategoryInfo);
+                L2genCategorizedParamsPanel l2genCategorizedParamsPanel = new L2genCategorizedParamsPanel(masterData, paramCategoryInfo);
                 jTabbedPane.addTab(paramCategoryInfo.getName(), l2genCategorizedParamsPanel);
                 final int tabIndex = jTabbedPane.getTabCount() - 1;
 
@@ -219,12 +218,12 @@ public class L2genForm extends JPanel implements CloProgramUI {
                     Add titles to each of the tabs, adding (*) where tab contains a non-default parameter
                  */
                 for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
-                    getL2genData().addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
+                    masterData.addPropertyChangeListener(paramInfo.getName(), new PropertyChangeListener() {
                         @Override
                         public void propertyChange(PropertyChangeEvent evt) {
                             StringBuilder stringBuilder = new StringBuilder(paramCategoryInfo.getName());
 
-                            if (getL2genData().isParamCategoryDefault(paramCategoryInfo)) {
+                            if (masterData.isParamCategoryDefault(paramCategoryInfo)) {
                                 jTabbedPane.setTitleAt(tabIndex, stringBuilder.toString());
                             } else {
                                 jTabbedPane.setTitleAt(tabIndex, stringBuilder.append("*").toString());
@@ -234,14 +233,14 @@ public class L2genForm extends JPanel implements CloProgramUI {
                     });
                 }
 // todo new
-                if (getL2genData().isIfileIndependentMode()) {
+                if (masterData.isIfileIndependentMode()) {
                     jTabbedPane.setEnabled(true);
                 }
 
-                getL2genData().addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+                masterData.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
                     @Override
                     public void propertyChange(PropertyChangeEvent evt) {
-                        jTabbedPane.setEnabledAt(tabIndex, getL2genData().isValidIfile());
+                        jTabbedPane.setEnabledAt(tabIndex, masterData.isValidIfile());
                     }
                 });
             }
@@ -254,15 +253,15 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
     public ProcessorModel getProcessorModel() {
-        return l2genData.getProcessorModel();
+        return masterData.getProcessorModel();
     }
 
     public String getParamString() {
-        return l2genData.getParString();
+        return masterData.getParString();
     }
 
     public void setParamString(String paramString) {
-        l2genData.setParString(paramString, false);
+        masterData.setParString(paramString, false);
     }
 
     public Product getInitialSelectedSourceProduct() {
@@ -323,10 +322,10 @@ public class L2genForm extends JPanel implements CloProgramUI {
         return jTabbedPane;
     }
 
-
-    public L2genData getL2genData() {
-        return l2genData;
-    }
+//
+//    public L2genData getMasterData() {
+//        return masterData;
+//    }
 
 
 }
