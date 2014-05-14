@@ -1626,8 +1626,8 @@ public class L2genData implements L2genDataProcessorModel {
                 getProductInfoInputStream(Source.RESOURCES, false);
                 break;
             default:
-//                getProductInfoInputStream(Source.L2GEN, true);
-                getProductInfoInputStream(Source.RESOURCES, true);
+                getProductInfoInputStream(Source.L2GEN, true);
+//                getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
 
@@ -1659,12 +1659,12 @@ public class L2genData implements L2genDataProcessorModel {
             }
         } else if (source == Source.L2GEN) {
             if (!xmlFile.exists() || overwrite) {
-                // String executable = getGuiName();
-                String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+                String executable = getGuiName();
+            //    String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
 
-//                if (executable.equals("l3gen")) {
-//                    executable = "l2gen";
-//                }
+                if (executable.equals("l3gen")) {
+                    executable = "l2gen";
+                }
                 ProcessorModel processorModel = new ProcessorModel(executable);
 
                 processorModel.setAcceptsParFile(false);
@@ -1732,11 +1732,11 @@ public class L2genData implements L2genDataProcessorModel {
 
         xmlFile = new File(l2genDir, getParamInfoXml());
 
-        //  String executable = getGuiName();
-        String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
-//        if (executable.equals("l3gen")) {
-//            executable = "l2gen";
-//        }
+        String executable = getGuiName();
+       // String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+        if (executable.equals("l3gen")) {
+            executable = "l2gen";
+        }
         ProcessorModel processorModel = new ProcessorModel(executable);
 
         processorModel.setAcceptsParFile(true);
@@ -1879,8 +1879,8 @@ public class L2genData implements L2genDataProcessorModel {
                 productInfoStream = getProductInfoInputStream(Source.RESOURCES, false);
                 break;
             default:
-//                productInfoStream = getProductInfoInputStream(Source.L2GEN, true);
-                productInfoStream = getProductInfoInputStream(Source.RESOURCES, true);
+                productInfoStream = getProductInfoInputStream(Source.L2GEN, true);
+//              productInfoStream = getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
 
