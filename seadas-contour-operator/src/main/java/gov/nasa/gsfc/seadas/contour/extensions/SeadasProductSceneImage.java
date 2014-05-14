@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.contour.extensions;
 import org.esa.beam.framework.ui.product.ProductSceneImage;
 import org.esa.beam.framework.ui.product.ProductSceneView;
 import org.esa.beam.glayer.GraticuleLayer;
+import gov.nasa.gsfc.seadas.contour.layer.ContourLayer;
 
 /**
  * Created by IntelliJ IDEA.

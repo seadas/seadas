@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.contour.action;
 
-import gov.nasa.gsfc.seadas.SeadasProductSceneView;
+import gov.nasa.gsfc.seadas.contour.extensions.SeadasProductSceneView;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.ExecCommand;
 import org.esa.beam.framework.ui.product.ProductSceneView;
@@ -27,13 +27,13 @@ public class ShowContourOverlayAction extends ExecCommand {
         }
     }
 
-    @Override
-    protected void updateEnableState(ProductSceneView view) {
-        setEnabled(ProductUtils.canGetPixelPos(view.getRaster()));
-    }
-
-    @Override
-    protected void updateSelectState(ProductSceneView view) {
-        setSelected(view.isGraticuleOverlayEnabled());
-    }
+//    @Override
+//    protected void updateEnableState(ProductSceneView view) {
+//        setEnabled(ProductUtils.canGetPixelPos(view.getRaster()));
+//    }
+//
+//    @Override
+//    protected void updateSelectState(ProductSceneView view) {
+//        setSelected(view.isGraticuleOverlayEnabled());
+//    }
 }

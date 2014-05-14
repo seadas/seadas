@@ -30,7 +30,7 @@
         <module>../../beam/beam-atsr-reader</module>
         <module>../../beam/beam-avhrr-reader</module>
         <!--<module>../../beam/beam-binning</module>-->
-        <module>../../beam/beam-binning2</module>
+        <module>../../beam/beam-binning</module>
         <module>../../beam/beam-chris-reader</module>
         <module>../../beam/beam-cluster-analysis</module>
         <module>../../beam/beam-collocation</module>
