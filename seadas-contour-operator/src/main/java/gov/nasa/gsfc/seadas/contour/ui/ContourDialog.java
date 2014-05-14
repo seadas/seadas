@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.contour.ui;
 
+import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.UIUtils;
@@ -12,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,7 +33,18 @@ public class ContourDialog extends JDialog {
 
     private Product product;
 
-    public ContourDialog(ContourData contourData, boolean masksCreated, Product product) {
+    Band selectedBand;
+    Double startValue, minValue;
+    Double endValue, maxValue;
+    int numberOfLevels;
+    //boolean log;
+
+    //UI components
+    JTextField minValueField, maxValueField, numLevelsField;
+    JComboBox bandComboBox;
+    JCheckBox logCheckBox;
+
+    public ContourDialog(ContourData contourData, Product product) {
         this.contourData = contourData;
         this.product = product;
 
@@ -40,17 +53,17 @@ public class ContourDialog extends JDialog {
         if (helpBroker != null) {
             helpButton = getHelpButton(HELP_ID);
         }
-
-        if (masksCreated) {
-            createNotificationUI();
-        } else {
-            createContourUI();
-        }
+        selectedBand = product.getBandAt(0);
+        setMaxValue(selectedBand.getStx().getMax());
+        setMinValue(selectedBand.getStx().getMin());
+        numberOfLevels = 1;
+        createContourUI();
     }
 
-    public ContourDialog(Product product){
-        this(null,false, product);
+    public ContourDialog(Product product) {
+        this(null, product);
     }
+
     protected Component getHelpButton(String helpId) {
         if (helpId != null) {
 
@@ -85,74 +98,6 @@ public class ContourDialog extends JDialog {
         }
     }
 
-
-    public final void createNotificationUI() {
-        JButton createMasks = new JButton("Create New Masks");
-        createMasks.setPreferredSize(createMasks.getPreferredSize());
-        createMasks.setMinimumSize(createMasks.getPreferredSize());
-        createMasks.setMaximumSize(createMasks.getPreferredSize());
-
-
-        createMasks.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent event) {
-                contourData.setDeleteMasks(true);
-                dispose();
-            }
-        });
-
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.setPreferredSize(cancelButton.getPreferredSize());
-        cancelButton.setMinimumSize(cancelButton.getPreferredSize());
-        cancelButton.setMaximumSize(cancelButton.getPreferredSize());
-
-        cancelButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent event) {
-                dispose();
-            }
-        });
-
-        JLabel filler = new JLabel("                            ");
-
-
-        JPanel buttonsJPanel = new JPanel(new GridBagLayout());
-        buttonsJPanel.add(cancelButton,
-                new ExGridBagConstraints(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        buttonsJPanel.add(filler,
-                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-        buttonsJPanel.add(createMasks,
-                new ExGridBagConstraints(2, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        buttonsJPanel.add(helpButton,
-                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-
-        JLabel jLabel = new JLabel("Masks have already been created for this product");
-
-        JPanel jPanel = new JPanel(new GridBagLayout());
-        jPanel.add(jLabel,
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-        jPanel.add(buttonsJPanel,
-                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-
-
-        add(jPanel);
-
-        setModalityType(ModalityType.APPLICATION_MODAL);
-
-
-        setTitle("Land Masks");
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        pack();
-
-
-        setPreferredSize(getPreferredSize());
-        setMinimumSize(getPreferredSize());
-        setMaximumSize(getPreferredSize());
-        setSize(getPreferredSize());
-
-    }
 
     public final void createContourUI() {
 
@@ -216,12 +161,22 @@ public class ContourDialog extends JDialog {
 
         String[] productList = product.getBandNames();
         JLabel bandLabel = new JLabel("Product:");
-        JComboBox bandComboBox = new JComboBox(productList);
+        bandComboBox = new JComboBox(productList);
+
+        bandComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                selectedBand = product.getBand((String) bandComboBox.getSelectedItem());
+                setMaxValue(selectedBand.getStx().getMaximum());
+                setMinValue(selectedBand.getStx().getMinimum());
+                contourData.setBand(selectedBand);
+            }
+        });
 
         JLabel filler = new JLabel("                                              ");
 
         bandPanel.add(filler,
-                        new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         bandPanel.add(bandLabel,
                 new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         bandPanel.add(bandComboBox,
@@ -230,7 +185,7 @@ public class ContourDialog extends JDialog {
     }
 
 
-    private JPanel getControllerPanel(){
+    private JPanel getControllerPanel() {
         JPanel controllerPanel = new JPanel(new GridBagLayout());
 
         JButton createContourLines = new JButton("Create Contour Lines");
@@ -239,8 +194,13 @@ public class ContourDialog extends JDialog {
         createContourLines.setMaximumSize(createContourLines.getPreferredSize());
         createContourLines.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                //contourData.setCreateMasks(true);
-                //dispose();
+                if (bandComboBox.getSelectedItem() != null) {
+                    String bandName = (String) bandComboBox.getSelectedItem();
+                    selectedBand = product.getBand((String) bandComboBox.getSelectedItem());
+                }
+                contourData.setBand(selectedBand);
+                contourData.createContourLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
+                dispose();
             }
         });
 
@@ -277,36 +237,66 @@ public class ContourDialog extends JDialog {
         JPanel contourPanel = new JPanel(new GridBagLayout());
         contourPanel.setBorder(BorderFactory.createTitledBorder(""));
 
-        JTextField minValueField = new JFormattedTextField();
+        minValueField = new JFormattedTextField(new DecimalFormat("#0.000"));
         minValueField.setColumns(4);
         minValueField.setPreferredSize(minValueField.getPreferredSize());
         minValueField.setMaximumSize(minValueField.getPreferredSize());
         minValueField.setMinimumSize(minValueField.getPreferredSize());
+        minValueField.setText(minValue.toString());
         minValueField.setName("Start Value");
 
-        JTextField maxValueField = new JFormattedTextField();
+        minValueField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                setMinValue(new Double(minValueField.getText()));
+            }
+        });
+
+        maxValueField = new JFormattedTextField(new DecimalFormat("#0.000"));
         maxValueField.setColumns(4);
         maxValueField.setPreferredSize(maxValueField.getPreferredSize());
         maxValueField.setMaximumSize(maxValueField.getPreferredSize());
         maxValueField.setMinimumSize(maxValueField.getPreferredSize());
+        maxValueField.setText(maxValue.toString());
         maxValueField.setName("End Value");
 
-        JTextField numLevelsField = new JFormattedTextField();
+
+        maxValueField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                setMaxValue(new Double(maxValueField.getText()));
+            }
+        });
+
+        numLevelsField = new JFormattedTextField();
         numLevelsField.setColumns(2);
         numLevelsField.setPreferredSize(numLevelsField.getPreferredSize());
         numLevelsField.setMaximumSize(numLevelsField.getPreferredSize());
         numLevelsField.setMinimumSize(numLevelsField.getPreferredSize());
-        numLevelsField.setName("Start Value");
+        numLevelsField.setName("Number of Levels");
 
-        final JCheckBox log = new JCheckBox();
-
-        log.addActionListener(new ActionListener() {
+        numLevelsField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (log.isSelected()) {
-                }
+                setNumberOfLevels(new Integer(numLevelsField.getText()));
             }
         });
+
+
+        logCheckBox = new JCheckBox();
+        logCheckBox.setName("log checkbox");
+
+//        logCheckBox.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//                if (logCheckBox.isSelected()) {
+//                    log = true;
+//                } else {
+//                    log = false;
+//                }
+//            }
+//        });
 
 
         JLabel filler = new JLabel("      ");
@@ -340,7 +330,7 @@ public class ContourDialog extends JDialog {
         contourPanel.add(new JLabel("Log"),
                 new ExGridBagConstraints(9, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
-        contourPanel.add(log,
+        contourPanel.add(logCheckBox,
                 new ExGridBagConstraints(10, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         JButton customize = new JButton("Customize");
@@ -366,4 +356,43 @@ public class ContourDialog extends JDialog {
         return contourPanel;
     }
 
+    private void setMinValue(Double minValue) {
+        this.minValue = minValue;
+    }
+
+    private Double getMinValue() {
+        Double minValue;
+
+        if (minValueField.getText().trim().isEmpty()) {
+            minValue = selectedBand.getStx().getMaximum();
+        } else {
+            minValue = new Double(minValueField.getText());
+        }
+        return minValue;
+    }
+
+    private void setMaxValue(Double maxValue) {
+        this.maxValue = maxValue;
+    }
+
+    private Double getMaxValue() {
+        Double maxValue;
+        if (maxValueField.getText().trim().isEmpty()) {
+            maxValue = selectedBand.getStx().getMaximum();
+        } else {
+            maxValue = new Double(maxValueField.getText());
+        }
+        return maxValue;
+    }
+
+    private void setNumberOfLevels(int numberOfLevels) {
+        this.numberOfLevels = numberOfLevels;
+    }
+
+    private int getNumberOfLevels() {
+        if (!numLevelsField.getText().trim().isEmpty()) {
+            numberOfLevels = new Integer(numLevelsField.getText());
+        }
+        return numberOfLevels;
+    }
 }

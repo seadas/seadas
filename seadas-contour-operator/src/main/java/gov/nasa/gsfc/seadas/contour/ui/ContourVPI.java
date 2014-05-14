@@ -1,23 +1,25 @@
 package gov.nasa.gsfc.seadas.contour.ui;
 
 import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.swing.figure.support.DefaultFigureStyle;
 import com.jidesoft.action.CommandBar;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import gov.nasa.gsfc.seadas.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.util.ResourceInstallationUtils;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.Mask;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductNodeGroup;
+import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.ui.command.CommandAdapter;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.ExecCommand;
+import org.esa.beam.framework.ui.product.SimpleFeatureShapeFigure;
 import org.esa.beam.visat.AbstractVisatPlugIn;
 import org.esa.beam.visat.VisatApp;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.jaitools.swing.ImageFrame;
 import org.jaitools.swing.JTSFrame;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import javax.media.jai.*;
 import javax.media.jai.operator.FormatDescriptor;
@@ -31,6 +33,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static org.esa.beam.framework.datamodel.PlainFeatureFactory.createPlainFeature;
+import static org.esa.beam.framework.datamodel.PlainFeatureFactory.createPlainFeatureType;
 
 
 /**
@@ -100,6 +105,7 @@ public class ContourVPI extends AbstractVisatPlugIn {
 
         final Product product = visatApp.getSelectedProduct();
         Band band = product.getBand("chlor_a");
+        ProductNodeGroup<VectorDataNode> vectorDataGroup = product.getVectorDataGroup();
 
 
         if (product != null) {
@@ -153,6 +159,19 @@ public class ContourVPI extends AbstractVisatPlugIn {
         RenderedOp dest = JAI.create("Contour", pb);
         Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
 
+        SimpleFeatureType sft = createPlainFeatureType("Geometry", Geometry.class, DefaultGeographicCRS.WGS84);
+
+        Geometry geometry;
+        SimpleFeature feature;
+        SimpleFeatureShapeFigure figure;
+        VectorDataNode vectorDataNode = new VectorDataNode("levels", sft);
+        for (LineString lineString : contours) {
+            //geometry = createLineString();
+            geometry = lineString;
+            feature = createPlainFeature(sft, "_3", geometry, "");
+            figure = new SimpleFeatureShapeFigure(feature, new DefaultFigureStyle());
+            vectorDataNode.getFeatureCollection().add(feature);
+        }
         //BufferedImage g = ti.getAsBufferedImage();     //ti.createGraphics();
 //        Graphics2D g2d = g.createGraphics();
 //        //final Viewport vp = pi.getViewport();
