@@ -247,7 +247,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                                     +1, +1, +1,
                                             });
 //todo: 4th argument to ConvolutionFilterBand is a dummy value added to make it compile...may want to look at this...
-                                    int count=0;
+                                    int count=1;
                                     final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
                                             landMasksData.getWaterFractionSmoothedName(),
                                             waterFractionBand,

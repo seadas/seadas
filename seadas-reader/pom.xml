@@ -43,6 +43,7 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-merisl3-reader</artifactId>
+            <version>${beam.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
