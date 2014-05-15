@@ -22,43 +22,27 @@
     </dependency>
 	 <dependency>
         <module>beam-visat</module>
-        <optional>true</optional>
+        <optional>false</optional>
     </dependency>
 
     <categories>Application,Processor</categories>
 
-    <!--<extension point="beam-ui:actions">-->
-        <!--<action>-->
-            <!--<id>contour</id>-->
-            <!--<class>org.esa.beam.visat.actions.DefaultOperatorAction</class>-->
-            <!--<operatorName>Contour</operatorName>-->
-            <!--<dialogTitle>Contour Map</dialogTitle>-->
-            <!--<targetProductNameSuffix>_contour</targetProductNameSuffix>-->
-            <!--<text>Contour Map...</text>-->
-            <!--<shortDescr>Contour map</shortDescr>-->
-            <!--<mnemonic/>-->
-            <!--<parent>tool</parent>-->
-            <!--<helpID>contour</helpID>-->
-            <!--<placeAfter/>-->
-        <!--</action>-->
-
-        <!--<action>-->
-            <!--<parent>view</parent>-->
-            <!--<id>Contour</id>-->
-            <!--<class>org.esa.beam.watermask.ui.ContourVPI</class>-->
-            <!--<placeAfter>showGraticuleOverlay</placeAfter>-->
-            <!--<text>Show Landmask/Coastline</text>-->
-            <!--<toggle>false</toggle>-->
-            <!--<separatorAfter>false</separatorAfter>-->
-            <!--<mnemonic>W</mnemonic>-->
-            <!--<shortDescr>Create Landmask/coastline</shortDescr>-->
-            <!--<description>Create Landmask/coastline masks</description>-->
-            <!--<context>image</context>-->
-            <!--<smallIcon>icons/GraticuleOverlay16.gif</smallIcon>-->
-            <!--<largeIcon>icons/GraticuleOverlay24.gif</largeIcon>-->
-            <!--&lt;!&ndash;<helpId>showGraticuleOverlay</helpId>&ndash;&gt;-->
-        <!--</action>-->
-    <!--</extension>-->
+    <extension point="beam-ui:actions">
+            <action>
+                <parent>showOverlaysMenu</parent>
+                <id>showContourOverlay</id>
+                <class>gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction</class>
+                <placeAfter>showWorldMapOverlay</placeAfter>
+                <text>Contour</text>
+                <toggle>true</toggle>
+                <separatorAfter>false</separatorAfter>
+                <shortDescr>Show/hide contour overlay</shortDescr>
+                <context>image</context>
+                <smallIcon>icons/ContourOverlay16.gif</smallIcon>
+                <largeIcon>icons/ContourOverlay22.png</largeIcon>
+                <helpId>showContourOverlay</helpId>
+            </action>
+        </extension>
 
     <extension point="beam-ui:helpSets">
         <helpSet>

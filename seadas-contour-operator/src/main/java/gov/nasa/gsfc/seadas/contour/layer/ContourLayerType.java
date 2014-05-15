@@ -13,9 +13,10 @@ import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.glayer.Layer;
 import com.bc.ceres.glayer.LayerContext;
-import com.bc.ceres.glayer.LayerType;
 import com.bc.ceres.glayer.annotations.LayerTypeMetadata;
+import com.bc.ceres.glevel.MultiLevelSource;
 import org.esa.beam.framework.datamodel.RasterDataNode;
+import org.esa.beam.framework.ui.product.VectorDataLayerType;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -28,8 +29,8 @@ import java.awt.geom.AffineTransform;
  * To change this template use File | Settings | File Templates.
  */
 @LayerTypeMetadata(name = "ContourLayerType",
-        aliasNames = {"gov.nasa.gsfc.seadas.contour.layer.ContourLayer.ContourLayerType"})
-public class ContourLayerType extends LayerType {
+        aliasNames = {"gov.nasa.gsfc.seadas.contour.layer.ContourLayerType"})
+public class ContourLayerType extends VectorDataLayerType {
 
     public static final String PROPERTY_NAME_RASTER = "raster";
     public static final String PROPERTY_NAME_RES_AUTO = "contour.res.auto";
@@ -70,6 +71,7 @@ public class ContourLayerType extends LayerType {
     private static final String ALIAS_NAME_TEXT_BG_COLOR = "textBgColor";
     private static final String ALIAS_NAME_TEXT_BG_TRANSPARENCY = "textBgTransparency";
 
+    private volatile MultiLevelSource multiLevelSource;
     /**
      * @deprecated since BEAM 4.7, no replacement; kept for compatibility of sessions
      */
@@ -81,13 +83,69 @@ public class ContourLayerType extends LayerType {
     public boolean isValidFor(LayerContext ctx) {
         return true;
     }
+//    @Override
+//    public Layer createLayer(LayerContext ctx, PropertySet configuration) {
+//        if (multiLevelSource == null) {
+//            synchronized (this) {
+//                if (multiLevelSource == null) {
+//                    multiLevelSource = createMultiLevelSource();
+//                }
+//            }
+//        }
+//        for (final Property model : super.createLayerConfig(ctx).getProperties()) {
+//            if (configuration.getProperty(model.getDescriptor().getName()) == null) {
+//                configuration.addProperty(model);
+//            }
+//        }
+//        configuration.setValue(ImageLayer.PROPERTY_NAME_MULTI_LEVEL_SOURCE, multiLevelSource);
+//
+//        final ImageLayer layer = new ImageLayer(this, multiLevelSource, configuration);
+//        layer.setName(CONTOUR_LAYER_NAME);
+//        layer.setVisible(true);
+//
+//        return layer;
+//    }
+//
+//    private static MultiLevelSource createMultiLevelSource() {
+//        String dirPath = System.getProperty(WORLD_IMAGE_DIR_PROPERTY_NAME);
+//        if (dirPath == null || dirPath.isEmpty()) {
+//            dirPath = getDirPathFromModule();
+//        }
+//        if (dirPath == null) {
+//            throw new IllegalStateException("World image directory not found.");
+//        }
+//        final MultiLevelSource multiLevelSource;
+//        try {
+//            multiLevelSource = TiledFileMultiLevelSource.create(new File(dirPath));
+//        } catch (IOException e) {
+//            throw new IllegalStateException(e);
+//        }
+//        return multiLevelSource;
+//    }
 
     @Override
     public Layer createLayer(LayerContext ctx, PropertySet configuration) {
+        RasterDataNode raster = (RasterDataNode) configuration.getValue(PROPERTY_NAME_RASTER);
         return new ContourLayer(this, (RasterDataNode) configuration.getValue(PROPERTY_NAME_RASTER),
                 configuration);
     }
 
+
+//    @Override
+//    public Layer createContourLayer(LayerContext ctx, PropertySet configuration) {
+//        //return new ContourLayer(this, (RasterDataNode) configuration.getValue(PROPERTY_NAME_RASTER),
+//        //        configuration);
+//
+//    final LayerType layerType = LayerTypeRegistry.getLayerType(ContourLayerType.class);
+//    final PropertySet template = layerType.createLayerConfig(null);
+//    template.setValue(ContourLayerType.PROPERTY_NAME_RASTER, getRaster());
+//    final ContourLayer contourLayer = (ContourLayer) layerType.createLayer(null, template);
+//    contourLayer.setId(ProductSceneView.CONTOUR_LAYER_ID);
+//    contourLayer.setVisible(false);
+//    contourLayer.setName("Graticule");
+//    setContourLayerStyle(configuration, contourLayer);
+//    return contourLayer;
+//    }
     @Override
     public PropertySet createLayerConfig(LayerContext ctx) {
         final PropertyContainer vc = new PropertyContainer();
