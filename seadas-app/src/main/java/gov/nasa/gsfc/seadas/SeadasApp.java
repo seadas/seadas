@@ -238,7 +238,7 @@ public class SeadasApp extends VisatApp {
                 toolCommand.setSelected(true);
             }
         }
-        setSelectToolSelectState(commandManager);
+//        setSelectToolSelectState(commandManager);
     }
 
     @Override
