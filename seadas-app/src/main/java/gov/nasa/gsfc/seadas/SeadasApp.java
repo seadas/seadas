@@ -214,6 +214,7 @@ public class SeadasApp extends VisatApp {
                 "drawPolygonTool",
                 "drawLineTool",
                 "drawPolylineTool",
+                "insertWktAsGeometry",
                 "pinTool",
                 "gcpTool",
                 "rangeFinder",
