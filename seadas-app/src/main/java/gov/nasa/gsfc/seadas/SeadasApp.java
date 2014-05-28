@@ -263,7 +263,8 @@ public class SeadasApp extends VisatApp {
 //        ));
 
         menuBar.add(createJMenu("tools", "Tools", 'T'));
-        menuBar.add(createJMenu("processing", "Processing", 'P'));
+        menuBar.add(createJMenu("processing", "Proc", 'P'));
+        menuBar.add(createJMenu("ocprocessing", "OceancolorProc", 'O'));
         menuBar.add(createJMenu("window", "Window", 'W'));
         menuBar.add(createJMenu("help", "Help", 'H'));
 

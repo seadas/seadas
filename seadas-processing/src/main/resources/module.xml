@@ -50,7 +50,7 @@
     <extension point="beam-ui:actions">
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>install_ocssw.py</id>
             <placeBefore>extractor</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
@@ -62,7 +62,7 @@
             <separatorAfter>true</separatorAfter>
         </action>
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>extractor</id>
             <placeAfter>install_ocssw.py</placeAfter>
             <placeBefore>modis_L1A.py</placeBefore>
@@ -75,7 +75,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>modis_L1A.py</id>
             <placeAfter>extractor</placeAfter>
             <placeBefore>modis_GEO.py</placeBefore>
@@ -88,7 +88,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>modis_GEO.py</id>
             <placeAfter>modis_L1A.py</placeAfter>
             <placeBefore>modis_L1B.py</placeBefore>
@@ -101,7 +101,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>modis_L1B.py</id>
             <placeAfter>modis_GEO.py</placeAfter>
             <placeBefore>l1bgen</placeBefore>
@@ -114,7 +114,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l1bgen</id>
             <placeAfter>modis_L1B.py</placeAfter>
             <placeBefore>l1brsgen</placeBefore>
@@ -126,7 +126,7 @@
             <xmlFileName>l1bgen.xml</xmlFileName>
         </action>
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l1brsgen</id>
             <placeAfter>l1bgen</placeAfter>
             <placeBefore>l1mapgen</placeBefore>
@@ -139,7 +139,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l1mapgen</id>
             <placeAfter>l1brsgen</placeAfter>
             <placeBefore>l2gen</placeBefore>
@@ -152,7 +152,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l2gen</id>
             <placeAfter>l1mapgen</placeAfter>
             <placeBefore>l2gen_aquarius</placeBefore>
@@ -167,7 +167,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l2gen_aquarius</id>
             <placeAfter>l2gen</placeAfter>
             <placeBefore>l2brsgen</placeBefore>
@@ -183,7 +183,7 @@
 
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l2brsgen</id>
             <placeAfter>l2gen</placeAfter>
             <placeBefore>l2mapgen</placeBefore>
@@ -196,7 +196,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l2mapgen</id>
             <placeAfter>l2brsgen</placeAfter>
             <placeBefore>l2bin</placeBefore>
@@ -209,7 +209,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l2bin</id>
             <placeAfter>l2mapgen</placeAfter>
             <placeBefore>l3bin</placeBefore>
@@ -222,7 +222,7 @@
             <xmlFileName>l2bin.xml</xmlFileName>
         </action>
         <action>
-             <parent>processing</parent>
+             <parent>ocprocessing</parent>
              <id>l2bin_aquarius</id>
              <placeAfter>l2bin</placeAfter>
              <placeBefore>l3bin</placeBefore>
@@ -235,7 +235,7 @@
              <xmlFileName>l2bin_aquarius.xml</xmlFileName>
          </action>
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l3bin</id>
             <placeAfter>l2bin_aquarius</placeAfter>
             <placeBefore>smigen</placeBefore>
@@ -249,7 +249,7 @@
         </action>
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>l3gen</id>
             <placeAfter>l3bin</placeAfter>
             <placeBefore>smigen</placeBefore>
@@ -265,7 +265,7 @@
 
 
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>smigen</id>
             <placeAfter>l3bin</placeAfter>
             <placeBefore>seadas_processor.py</placeBefore>
@@ -277,7 +277,7 @@
             <xmlFileName>smigen.xml</xmlFileName>
         </action>
         <action>
-             <parent>processing</parent>
+             <parent>ocprocessing</parent>
             <id>l3bindump</id>
             <!--<placeBefore>extractor</placeBefore>-->
             <placeAfter>smigen</placeAfter>
@@ -290,7 +290,7 @@
             <separatorBefore>false</separatorBefore>
         </action>
         <action>
-            <parent>processing</parent>
+            <parent>ocprocessing</parent>
             <id>multilevel_processor.py</id>
             <!--<placeBefore>extractor</placeBefore>-->
             <placeAfter>l3bindump</placeAfter>
