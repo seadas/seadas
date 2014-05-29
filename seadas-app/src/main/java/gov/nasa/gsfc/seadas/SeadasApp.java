@@ -15,8 +15,10 @@
  */
 package gov.nasa.gsfc.seadas;
 
+import com.bc.ceres.core.*;
 import com.jidesoft.action.CommandBar;
 import com.jidesoft.action.CommandMenuBar;
+import com.jidesoft.action.DockableBarContext;
 import org.esa.beam.framework.datamodel.PlacemarkDescriptor;
 import org.esa.beam.framework.datamodel.PlacemarkDescriptorRegistry;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
@@ -263,13 +265,57 @@ public class SeadasApp extends VisatApp {
 //                StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
 //        ));
 
-        menuBar.add(createJMenu("tools", "Tools", 'T'));
+        menuBar.add(createJMenu("tools", "Tools", 'U'));
         menuBar.add(createJMenu("processing", "Proc", 'P'));
         menuBar.add(createJMenu("ocprocessing", "OCproc", 'O'));
         menuBar.add(createJMenu("window", "Window", 'W'));
         menuBar.add(createJMenu("help", "Help", 'H'));
 
         return menuBar;
+    }
+
+
+    @Override
+    protected void initClientUI(com.bc.ceres.core.ProgressMonitor pm) {
+        try {
+            pm.beginTask(String.format("Initialising %s UI components", getAppName()), 5);
+
+            CommandBar layersToolBar = createLayersToolBar();
+            layersToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            layersToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(layersToolBar);
+            pm.worked(1);
+
+            CommandBar analysisToolBar = createAnalysisToolBar();
+            analysisToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            analysisToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(analysisToolBar);
+            pm.worked(1);
+
+            CommandBar toolsToolBar = createInteractionsToolBar();
+            toolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            toolsToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(toolsToolBar);
+            pm.worked(1);
+
+//            CommandBar[] viewToolBars = createViewsToolBars();
+//            for (CommandBar viewToolBar : viewToolBars) {
+//                if (VIEWS_TOOL_BAR_ID.equals(viewToolBar.getName())) {
+//                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+//                    viewToolBar.getContext().setInitIndex(2);
+//                } else {
+//                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+//                    viewToolBar.getContext().setInitIndex(2);
+//                }
+//                getMainFrame().getDockableBarManager().addDockableBar(viewToolBar);
+//            }
+            pm.worked(1);
+
+            registerForMacOSXEvents();
+            pm.worked(1);
+        } finally {
+            pm.done();
+        }
     }
 
 }
