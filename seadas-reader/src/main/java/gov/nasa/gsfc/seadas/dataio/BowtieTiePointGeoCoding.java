@@ -40,6 +40,8 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
 
     private TiePointGrid _latGrid;
     private TiePointGrid _lonGrid;
+    int _scanlineHeight;
+    int _scanlineOffset;
 
     /**
      * Constructs geo-coding based on two given tie-point grids.
@@ -48,7 +50,7 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
      * @param lonGrid the longitude grid, must not be <code>null</code>
      */
     public BowtieTiePointGeoCoding(TiePointGrid latGrid, TiePointGrid lonGrid, int scanlineHeight) {
-        super(scanlineHeight);
+        super();
         Guardian.assertNotNull("latGrid", latGrid);
         Guardian.assertNotNull("lonGrid", lonGrid);
         if (latGrid.getRasterWidth() != lonGrid.getRasterWidth() ||
@@ -62,7 +64,32 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
         _latGrid = latGrid;
         _lonGrid = lonGrid;
         setGridOwner(_lonGrid.getOwner());
+        _scanlineHeight = scanlineHeight;
         init();
+    }
+
+    /**
+     * get the number of line in the whole scene
+     * @return lines in the scene
+     */
+    public int getSceneHeight() {
+        return _lonGrid.getSceneRasterHeight();
+    }
+
+    /**
+     * get the number of lines (num detectors) in a scan
+     * @return number of lines in a scan
+     */
+    public int getScanlineHeight() {
+        return _scanlineHeight;
+    }
+
+    /**
+     * get the number of lines between the start of a scan and the first line of data
+     * @return scan line offset
+     */
+    public int getScanlineOffset() {
+        return _scanlineOffset;
     }
 
     @Override
