@@ -89,7 +89,7 @@ public class SeadasApp extends VisatApp {
         final CommandBar toolBar = createToolBar(LAYERS_TOOL_BAR_ID, "Layers");
         ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
                 "showNoDataOverlay",
-                "showShapeOverlay",
+//                "showShapeOverlay",
                 "showGraticuleOverlay",
                 "showWorldMapOverlay"));
         Set<PlacemarkDescriptor> placemarkDescriptors = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptors();
@@ -99,7 +99,8 @@ public class SeadasApp extends VisatApp {
                 String s2 = placemarkDescriptor.getBaseFeatureType().getName().toString();
 
 
-                if (!placemarkDescriptor.getBaseFeatureType().getName().getLocalPart().contains("GroundControlPoint")) {
+                if (!placemarkDescriptor.getBaseFeatureType().getName().getLocalPart().contains("GroundControlPoint") &&
+                        !placemarkDescriptor.getBaseFeatureType().getName().getLocalPart().contains("Pin")) {
                     commandIdList.add(placemarkDescriptor.getShowLayerCommandId());
                 }
             }
@@ -132,7 +133,7 @@ public class SeadasApp extends VisatApp {
         excludedIds.add(ColorManipulationToolView.ID);
         excludedIds.add(NavigationToolView.ID);
         excludedIds.add(MaskManagerToolView.ID);
-//        excludedIds.add(GcpManagerToolView.ID);
+        excludedIds.add(GcpManagerToolView.ID);
         excludedIds.add(PinManagerToolView.ID);
 //        excludedIds.add(LayerManagerToolView.ID);
         excludedIds.add(PixelInfoToolView.ID);
