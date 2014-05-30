@@ -17,32 +17,32 @@
 
     <changelog/>
 
-	<dependency>
+    <dependency>
         <module>beam-gpf</module>
     </dependency>
-	 <dependency>
+    <dependency>
         <module>beam-visat</module>
         <optional>false</optional>
     </dependency>
 
-    <categories>Application,Processor</categories>
+    <categories>System, Help</categories>
 
     <extension point="beam-ui:actions">
-            <action>
-                <parent>showOverlaysMenu</parent>
-                <id>showContourOverlay</id>
-                <class>gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction</class>
-                <placeAfter>showWorldMapOverlay</placeAfter>
-                <text>Contour</text>
-                <toggle>true</toggle>
-                <separatorAfter>false</separatorAfter>
-                <shortDescr>Show/hide contour overlay</shortDescr>
-                <context>image</context>
-                <smallIcon>icons/ContourOverlay16.gif</smallIcon>
-                <largeIcon>icons/ContourOverlay22.png</largeIcon>
-                <helpId>showContourOverlay</helpId>
-            </action>
-        </extension>
+        <action>
+            <parent>showOverlaysMenu</parent>
+            <id>showContourOverlay</id>
+            <class>gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction</class>
+            <placeAfter>showWorldMapOverlay</placeAfter>
+            <text>Contour</text>
+            <toggle>true</toggle>
+            <shortDescr>Add contour lines</shortDescr>
+            <description>Add contour lines for the selected image</description>
+            <context>image</context>
+            <smallIcon>icons/ContourOverlay16.gif</smallIcon>
+            <largeIcon>icons/ContourOverlay22.png</largeIcon>
+            <helpId>showContourOverlay</helpId>
+        </action>
+    </extension>
 
     <extension point="beam-ui:helpSets">
         <helpSet>

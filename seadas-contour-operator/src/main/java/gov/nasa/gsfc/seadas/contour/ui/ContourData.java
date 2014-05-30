@@ -15,49 +15,52 @@ import java.util.ArrayList;
 public class ContourData {
 
 
-    ArrayList<Double> contourIntervals;
+    private ArrayList<ContourInterval> contourIntervals;
     Band band;
+    int bandIndex;
+    static final String CONTOUR_LINES_BASE_NAME = "contour_";
+    String contourBaseName;
+    private Double startValue;
+    private Double endValue;
+    private int numOfLevels;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
 
     public ContourData() {
-        contourIntervals = new ArrayList<Double>();
-
+        contourIntervals = new ArrayList<ContourInterval>();
+        contourBaseName = CONTOUR_LINES_BASE_NAME;
+        startValue = 0.0;
+        endValue = 0.0;
     }
 
 
-    public void setLevels() {
-        for (double level = 1; level < 10; level += 2) {
-            contourIntervals.add(level);
-        }
-    }
-
-    public void reset(){
+    public void reset() {
         contourIntervals.clear();
     }
 
-    public void addContourLevel(Double level) {
-        contourIntervals.add(level);
-    }
-
     /**
-     *
-     * @param startValue  start value for the contour levels; i.e., first contour line falls on this level
-     * @param endValue   end value for the contour lines.
-     * @param numberOfLevels  This parameter decides how many levels between start and end values
-     * @param log    This parameter decides the distribution between two levels
+     * @param startValue     start value for the contour levels; i.e., first contour line falls on this level
+     * @param endValue       end value for the contour lines.
+     * @param numberOfLevels This parameter decides how many levels between start and end values
+     * @param log            This parameter decides the distribution between two levels
      */
     public void createContourLevels(Double startValue, Double endValue, int numberOfLevels, boolean log) {
         Double sv;
         Double ev;
         Double interval;
 
+        this.startValue = startValue;
+        this.endValue = endValue;
+        this.numOfLevels = numberOfLevels;
+
+        contourIntervals.clear();
         /**
          * In case start value and end values are the same, there will be only one level. The log value is ignored.
+         * If the numberofIntervals is one (1), the contour line will be based on the start value.
          */
-        if (startValue == endValue || Math.abs(startValue-endValue) < 0.00001 )  {
-            contourIntervals.add(startValue);
+        if (startValue == endValue || Math.abs(startValue - endValue) < 0.00001 || numberOfLevels == 1) {
+            contourIntervals.add(new ContourInterval( contourBaseName, startValue));
             return;
         }
 
@@ -68,40 +71,96 @@ public class ContourData {
             sv = Math.log10(startValue);
             ev = Math.log10(endValue);
             interval = (ev - sv) / (numberOfLevels - 1);
+
+            System.out.println("start value: " + sv + "   end value: " + ev + "   interval: " + interval);
             for (int i = 0; i < numberOfLevels; i++) {
-                contourIntervals.add(Math.pow(10, interval * i));
+                double contourValue = Math.pow(10, sv + interval * i);
+                contourIntervals.add(new ContourInterval( contourBaseName, contourValue));
             }
-        }  else {
+        } else {
             interval = (endValue - startValue) / (numberOfLevels - 1);
+            System.out.println("start value: " + startValue + "   end value: " + endValue + "   interval: " + interval);
             for (int i = 0; i < numberOfLevels; i++) {
-                contourIntervals.add(startValue + interval * i );
+                double contourValue = startValue + interval * i;
+                contourIntervals.add(new ContourInterval( contourBaseName, contourValue));
             }
         }
-    }
 
-    public void addContourLevel(ArrayList<Double> levels) {
-        for (Double level:levels) {
-            contourIntervals.add(level);
+        for (ContourInterval contourInverval : contourIntervals) {
+            System.out.println("contourInterval: " + contourInverval.getContourLevelName());
         }
     }
 
-    public void setBand(Band band){
-        this.band = band;
+//    public void addContourLevel(ArrayList<Double> levels) {
+//        for (Double level : levels) {
+//            contourIntervals.add(level);
+//        }
+//    }
 
+    public void setBand(Band band) {
+        this.band = band;
+        contourBaseName = CONTOUR_LINES_BASE_NAME + band.getName() + "_";
     }
 
-    public Band getBand(){
+    public Band getBand() {
         return band;
     }
 
+    public void setBandIndex(int bandIndex) {
+        this.bandIndex = bandIndex;
 
-    public ArrayList<Double> getLevels() {
+    }
+
+    public int getBandIndex() {
+        return bandIndex;
+    }
+
+    public ArrayList<ContourInterval> getLevels() {
 //        for (double level = 1; level < 10; level += 2) {
 //            contourIntervals.add(level);
 //        }
         return contourIntervals;
     }
 
+    public ArrayList<ContourInterval> getContourIntervals() {
+        return contourIntervals;
+    }
+
+    public void setContourIntervals(ArrayList<ContourInterval> contourIntervals) {
+        this.contourIntervals = contourIntervals;
+    }
+
+    public Double getStartValue() {
+        return startValue;
+    }
+
+    public void setStartValue(Double startValue) {
+        this.startValue = startValue;
+    }
+
+    public Double getEndValue() {
+        return endValue;
+    }
+
+    public void setEndValue(Double endValue) {
+        this.endValue = endValue;
+    }
+
+    public int getNumOfLevels() {
+        return numOfLevels;
+    }
+
+    public void setNumOfLevels(int numOfLevels) {
+        this.numOfLevels = numOfLevels;
+    }
+
+    public ArrayList<ContourInterval> cloneContourIntervals() {
+        ArrayList<ContourInterval> clone = new ArrayList<ContourInterval>(contourIntervals.size());
+        for(ContourInterval interval: contourIntervals) {
+            clone.add(interval.clone());
+        }
+        return clone;
+    }
 }
 
 
