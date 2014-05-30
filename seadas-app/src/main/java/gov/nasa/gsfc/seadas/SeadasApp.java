@@ -138,7 +138,7 @@ public class SeadasApp extends VisatApp {
         excludedIds.add(NavigationToolView.ID);
         excludedIds.add(MaskManagerToolView.ID);
         excludedIds.add(GcpManagerToolView.ID);
-//        excludedIds.add(PinManagerToolView.ID);
+        excludedIds.add(PinManagerToolView.ID);
         excludedIds.add(PixelInfoToolView.ID);
         excludedIds.add(SpectrumToolView.ID);
         excludedIds.add(WorldMapToolView.ID);
@@ -300,14 +300,7 @@ public class SeadasApp extends VisatApp {
             getMainFrame().getDockableBarManager().addDockableBar(analysisToolBar);
             pm.worked(1);
 
-            CommandBar toolsToolBar = createInteractionsToolBar();
-            toolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
-            toolsToolBar.getContext().setInitIndex(2);
-            toolsToolBar.getContext().setInitMode(DockableBarContext.STATE_FLOATING);
-            toolsToolBar.getContext().setUndockedBounds(new Rectangle(200, 200));
-//            toolsToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
-            getMainFrame().getDockableBarManager().addDockableBar(toolsToolBar);
-            pm.worked(1);
+
 
             CommandBar[] viewToolBars = createViewsToolBars();
             for (CommandBar viewToolBar : viewToolBars) {
@@ -322,6 +315,19 @@ public class SeadasApp extends VisatApp {
 
                 getMainFrame().getDockableBarManager().addDockableBar(viewToolBar);
             }
+
+            CommandBar toolsToolBar = createInteractionsToolBar();
+            //    toolsToolBar.setMaximumSize(new Dimension(200,200));
+            toolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            toolsToolBar.getContext().setInitIndex(2);
+            //        toolsToolBar.getContext().setInitMode(DockableBarContext.STATE_FLOATING);
+            //     toolsToolBar.getContext().setUndockedBounds(new Rectangle(200, 200));
+//            toolsToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
+            getMainFrame().getDockableBarManager().addDockableBar(toolsToolBar);
+            pm.worked(1);
+
+     //       getMainFrame().setMinimumSize(new Dimension(750,400));
+            getMainFrame().setPreferredSize(new Dimension(1200, 500));
             pm.worked(1);
 
             registerForMacOSXEvents();
