@@ -5,7 +5,7 @@ Installation Guide
 ------------------
 
 1. Download and install build tools:
- *   Install J2SE 1.6 and set `JAVA_HOME` accordingly.
+ *   Install J2SE 1.7 and set `JAVA_HOME` accordingly.
  *   Install Maven and set `MAVEN_HOME` accordingly.
  *   Install GIT and set `GIT_HOME` accordingly.
       +   On Windows we recommend the `msysGit` package.
