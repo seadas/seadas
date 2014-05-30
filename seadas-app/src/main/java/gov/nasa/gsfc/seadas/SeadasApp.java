@@ -45,7 +45,9 @@ import org.esa.beam.visat.toolviews.stat.*;
 import org.esa.beam.visat.toolviews.worldmap.WorldMapToolView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * The <code>SeadasApp</code> class represents the SeaDAS UI application.
@@ -132,12 +134,11 @@ public class SeadasApp extends VisatApp {
         // todo - remove bad forward dependencies to tool views (nf - 30.10.2008)
         excludedIds.add(TileCacheDiagnosisToolView.ID);
         excludedIds.add(ProductsToolView.ID);
-        excludedIds.add(ColorManipulationToolView.ID);
+//        excludedIds.add(ColorManipulationToolView.ID);
         excludedIds.add(NavigationToolView.ID);
         excludedIds.add(MaskManagerToolView.ID);
         excludedIds.add(GcpManagerToolView.ID);
-        excludedIds.add(PinManagerToolView.ID);
-//        excludedIds.add(LayerManagerToolView.ID);
+//        excludedIds.add(PinManagerToolView.ID);
         excludedIds.add(PixelInfoToolView.ID);
         excludedIds.add(SpectrumToolView.ID);
         excludedIds.add(WorldMapToolView.ID);
@@ -255,6 +256,12 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("file", "File", 'F'));
         menuBar.add(createJMenu("edit", "Edit", 'E'));
         menuBar.add(createJMenu("view", "View", 'V'));
+
+        menuBar.add(createJMenu("tools", "Tools", 'U'));
+        menuBar.add(createJMenu("processing", "Processing", 'P'));
+        menuBar.add(createJMenu("ocprocessing", "OCproc", 'O'));
+
+
 //        menuBar.add(createJMenu("data", "Analysis", 'A',
 //                ScatterPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
 //                GeoCodingToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
@@ -265,9 +272,10 @@ public class SeadasApp extends VisatApp {
 //                StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
 //        ));
 
-        menuBar.add(createJMenu("tools", "Tools", 'U'));
-        menuBar.add(createJMenu("processing", "Proc", 'P'));
-        menuBar.add(createJMenu("ocprocessing", "OCproc", 'O'));
+        menuBar.add(createJMenu("analysis", "Analysis", 'A'));
+        menuBar.add(createJMenu("info", "Info", 'A'));
+
+
         menuBar.add(createJMenu("window", "Window", 'W'));
         menuBar.add(createJMenu("help", "Help", 'H'));
 
@@ -293,22 +301,27 @@ public class SeadasApp extends VisatApp {
             pm.worked(1);
 
             CommandBar toolsToolBar = createInteractionsToolBar();
-            toolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            toolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
             toolsToolBar.getContext().setInitIndex(2);
+            toolsToolBar.getContext().setInitMode(DockableBarContext.STATE_FLOATING);
+            toolsToolBar.getContext().setUndockedBounds(new Rectangle(200, 200));
+//            toolsToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             getMainFrame().getDockableBarManager().addDockableBar(toolsToolBar);
             pm.worked(1);
 
-//            CommandBar[] viewToolBars = createViewsToolBars();
-//            for (CommandBar viewToolBar : viewToolBars) {
-//                if (VIEWS_TOOL_BAR_ID.equals(viewToolBar.getName())) {
-//                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-//                    viewToolBar.getContext().setInitIndex(2);
-//                } else {
-//                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-//                    viewToolBar.getContext().setInitIndex(2);
-//                }
-//                getMainFrame().getDockableBarManager().addDockableBar(viewToolBar);
-//            }
+            CommandBar[] viewToolBars = createViewsToolBars();
+            for (CommandBar viewToolBar : viewToolBars) {
+                if (VIEWS_TOOL_BAR_ID.equals(viewToolBar.getName())) {
+                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+                    viewToolBar.getContext().setInitIndex(2);
+                } else {
+                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+                    viewToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
+                    viewToolBar.getContext().setInitIndex(2);
+                }
+
+                getMainFrame().getDockableBarManager().addDockableBar(viewToolBar);
+            }
             pm.worked(1);
 
             registerForMacOSXEvents();
