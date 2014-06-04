@@ -1,11 +1,9 @@
 package gov.nasa.gsfc.seadas.contour.action;
 
-import com.bc.ceres.glayer.LayerFilter;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import gov.nasa.gsfc.seadas.ContourDescriptor;
-import gov.nasa.gsfc.seadas.contour.layer.ContourVectorDataLayerFilterFactory;
 import gov.nasa.gsfc.seadas.contour.ui.ContourData;
 import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
 import gov.nasa.gsfc.seadas.contour.ui.ContourInterval;
@@ -13,6 +11,7 @@ import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.ExecCommand;
 import org.esa.beam.framework.ui.product.ProductSceneView;
+import org.esa.beam.framework.ui.product.VectorDataFigureEditor;
 import org.esa.beam.util.FeatureUtils;
 import org.esa.beam.visat.VisatApp;
 import org.geotools.data.collection.ListFeatureCollection;
@@ -30,6 +29,7 @@ import org.opengis.referencing.operation.TransformException;
 import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.RenderedOp;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,14 +43,16 @@ import java.util.Collection;
  */
 public class ShowVectorContourOverlayAction extends ExecCommand { //AbstractShowOverlayAction {
 
-    private final LayerFilter contourFilter = ContourVectorDataLayerFilterFactory.createContourFilter();
-    public static final String CONTOUR_LAYER_ID = "gov.nasa.gsfc.seadas.contour";
+    //    private final LayerFilter contourFilter = ContourVectorDataLayerFilterFactory.createContourFilter();
+//    public static final String CONTOUR_LAYER_ID = "gov.nasa.gsfc.seadas.contour";
+    final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; symbol:cross";
 
     @Override
     public void actionPerformed(CommandEvent event) {
         VisatApp visatApp = VisatApp.getApp();
         final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
         Product product = visatApp.getSelectedProduct();
+        VectorDataFigureEditor figureEditor = (VectorDataFigureEditor) sceneView.getFigureEditor();
 
         ContourDialog contourDialog = new ContourDialog(product);
         contourDialog.setVisible(true);
@@ -65,30 +67,11 @@ public class ShowVectorContourOverlayAction extends ExecCommand { //AbstractShow
         double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
 
         ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData, scalingFactor, scalingOffset);
-
-//        FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection;
-//        try {
-//            featureCollection = createContourFeatureCollection(contourData);
-//        } catch (Exception e) {
-//            if (contourData.getLevels().size() != 0)
-//                visatApp.showErrorDialog("failed to create contour lines");
-//            return;
-//        }
-//
-//        if (featureCollection.isEmpty()) {
-//            visatApp.showErrorDialog("Contour Lines", "No records found.");
-//            return;
-//        }
-//
-//        String name = "Contour Lines" + featureCollection.getID();
-//        final PlacemarkDescriptor placemarkDescriptor = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptor(featureCollection.getSchema());
-//        placemarkDescriptor.setUserDataOf(featureCollection.getSchema());
-//        VectorDataNode vectorDataNode = new VectorDataNode(name, featureCollection, placemarkDescriptor);
-
+        figureEditor.getDefaultLineStyle().setValue("stroke", Color.RED
+        );
         for (VectorDataNode vectorDataNode : vectorDataNodes) {
             product.getVectorDataGroup().add(vectorDataNode);
             if (sceneView != null) {
-                //vectorDataNode.setStyleCss("stroke:" + vectorDataNode.get);
                 sceneView.setLayersVisible(vectorDataNode);
             }
         }
@@ -104,24 +87,16 @@ public class ShowVectorContourOverlayAction extends ExecCommand { //AbstractShow
         ArrayList<ContourInterval> contourIntervals = contourData.getLevels();
         ArrayList<VectorDataNode> vectorDataNodes = new ArrayList<VectorDataNode>();
 
-
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
         pb.setSource("source0", contourData.getBand().getSourceImage());
-        String contorVectorBaseName = "contour_lines_" + contourData.getBand().getName() + "_";
-        //contourData.getBand().getSourceImage().getImage(0);
-        //Raster raster = contourData.getBand().getSourceImage().getData();
-        //pb.setParameter("band", contourData.getBandIndex());
         pb.setParameter("levels", contourData.getLevels());
-        pb.setParameter("smooth", Boolean.TRUE);
 
         for (ContourInterval interval : contourIntervals) {
             ArrayList<Double> contourInterval = new ArrayList<Double>();
-            //interval = interval * scalingFactor + scalingOffset;
             String vectorName = interval.getContourLevelName();
             double contourValue = (interval.getContourLevelValue() - scalingOffset) / scalingFactor;
             contourInterval.add(contourValue);
             pb.setParameter("levels", contourInterval);
-            //pb.setParameter("levels", contourData.getLevels());
 
             FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = null;
 
@@ -131,22 +106,22 @@ public class ShowVectorContourOverlayAction extends ExecCommand { //AbstractShow
                 if (contourData.getLevels().size() != 0)
                     VisatApp.getApp().showErrorDialog("failed to create contour lines");
                 System.out.println(e.getMessage());
-                continue
-                        ;
+                continue;
             }
-
             if (featureCollection.isEmpty()) {
                 VisatApp.getApp().showErrorDialog("Contour Lines", "No records found.");
                 continue;
             }
 
-            //String name = "Contour_Lines_" + interval;
             final PlacemarkDescriptor placemarkDescriptor = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptor(featureCollection.getSchema());
             placemarkDescriptor.setUserDataOf(featureCollection.getSchema());
             VectorDataNode vectorDataNode = new VectorDataNode(vectorName, featureCollection, placemarkDescriptor);
-            vectorDataNode.setStyleCss("stroke: " + Integer.toHexString( interval.getLineColor().getRGB() & 0x00ffffff ));
+
+            //convert RGB color to an hexadecimal value
+            //String hex = "#"+Integer.toHexString(interval.getLineColor().getRGB()).substring(2);
+            String hex = String.format("#%02x%02x%02x", interval.getLineColor().getRed(), interval.getLineColor().getGreen(), interval.getLineColor().getBlue());
+            vectorDataNode.setDefaultStyleCss(String.format(DEFAULT_STYLE_FORMAT, hex, hex));
             vectorDataNodes.add(vectorDataNode);
-            //product.getVectorDataGroup().add(vectorDataNode);
         }
         return vectorDataNodes;
     }
@@ -220,13 +195,6 @@ public class ShowVectorContourOverlayAction extends ExecCommand { //AbstractShow
     }
 
     private FeatureCollection<SimpleFeatureType, SimpleFeature> createContourFeatureCollection(ContourData contourData) {
-//        ArrayList<Double> contourIntervals = new ArrayList<Double>();
-//
-//        for (double level = 0.9; level < 3; level += 0.5) {
-//            contourIntervals.add(level);
-//        }
-
-        //Band band1 = product.getBand("chlor_a");
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
         pb.setSource("source0", contourData.getBand().getSourceImage());
         pb.setParameter("levels", contourData.getLevels());

@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.contour.ui;
 import org.esa.beam.framework.datamodel.Band;
 
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -23,6 +24,7 @@ public class ContourData {
     private Double startValue;
     private Double endValue;
     private int numOfLevels;
+    private boolean keepColors;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -49,10 +51,15 @@ public class ContourData {
         Double sv;
         Double ev;
         Double interval;
-
+        ArrayList<Color> colors = new ArrayList<Color>();
         this.startValue = startValue;
         this.endValue = endValue;
         this.numOfLevels = numberOfLevels;
+
+        if (keepColors) {
+            colors = getColors();
+        }
+
 
         contourIntervals.clear();
         /**
@@ -60,7 +67,7 @@ public class ContourData {
          * If the numberofIntervals is one (1), the contour line will be based on the start value.
          */
         if (startValue == endValue || Math.abs(startValue - endValue) < 0.00001 || numberOfLevels == 1) {
-            contourIntervals.add(new ContourInterval( contourBaseName, startValue));
+            contourIntervals.add(new ContourInterval(contourBaseName, startValue));
             return;
         }
 
@@ -75,27 +82,25 @@ public class ContourData {
             System.out.println("start value: " + sv + "   end value: " + ev + "   interval: " + interval);
             for (int i = 0; i < numberOfLevels; i++) {
                 double contourValue = Math.pow(10, sv + interval * i);
-                contourIntervals.add(new ContourInterval( contourBaseName, contourValue));
+                contourIntervals.add(new ContourInterval(contourBaseName, contourValue));
             }
         } else {
             interval = (endValue - startValue) / (numberOfLevels - 1);
             System.out.println("start value: " + startValue + "   end value: " + endValue + "   interval: " + interval);
             for (int i = 0; i < numberOfLevels; i++) {
                 double contourValue = startValue + interval * i;
-                contourIntervals.add(new ContourInterval( contourBaseName, contourValue));
+                contourIntervals.add(new ContourInterval(contourBaseName, contourValue));
             }
         }
 
-        for (ContourInterval contourInverval : contourIntervals) {
-            System.out.println("contourInterval: " + contourInverval.getContourLevelName());
+        if (keepColors) {
+            int i = 0;
+            for (ContourInterval contourInverval : contourIntervals) {
+                contourInverval.setLineColor(colors.get(i++));
+            }
         }
     }
 
-//    public void addContourLevel(ArrayList<Double> levels) {
-//        for (Double level : levels) {
-//            contourIntervals.add(level);
-//        }
-//    }
 
     public void setBand(Band band) {
         this.band = band;
@@ -154,12 +159,28 @@ public class ContourData {
         this.numOfLevels = numOfLevels;
     }
 
+    public ArrayList<Color> getColors() {
+        ArrayList<Color> colors = new ArrayList<Color>();
+        for (ContourInterval interval : contourIntervals) {
+            colors.add(interval.getLineColor());
+        }
+        return colors;
+    }
+
     public ArrayList<ContourInterval> cloneContourIntervals() {
         ArrayList<ContourInterval> clone = new ArrayList<ContourInterval>(contourIntervals.size());
-        for(ContourInterval interval: contourIntervals) {
+        for (ContourInterval interval : contourIntervals) {
             clone.add(interval.clone());
         }
         return clone;
+    }
+
+    public boolean isKeepColors() {
+        return keepColors;
+    }
+
+    public void setKeepColors(boolean keepColors) {
+        this.keepColors = keepColors;
     }
 }
 

@@ -26,16 +26,13 @@ import org.esa.beam.framework.ui.command.ToolCommand;
 import org.esa.beam.visat.ProductsToolView;
 import org.esa.beam.visat.VisatActivator;
 import org.esa.beam.visat.VisatApp;
-import org.esa.beam.visat.actions.CreateSubsetFromViewAction;
 import org.esa.beam.visat.actions.ShowToolBarAction;
 import org.esa.beam.visat.toolviews.diag.TileCacheDiagnosisToolView;
 import org.esa.beam.visat.toolviews.imageinfo.ColorManipulationToolView;
-import org.esa.beam.visat.toolviews.layermanager.LayerManagerToolView;
 import org.esa.beam.visat.toolviews.mask.MaskManagerToolView;
 import org.esa.beam.visat.toolviews.nav.NavigationToolView;
 import org.esa.beam.visat.toolviews.pixelinfo.PixelInfoToolView;
 import org.esa.beam.visat.toolviews.placemark.PlacemarkEditorToolView;
-import org.esa.beam.visat.toolviews.placemark.gcp.GcpManagerToolView;
 import org.esa.beam.visat.toolviews.placemark.pin.PinManagerToolView;
 import org.esa.beam.visat.toolviews.spectrum.SpectrumToolView;
 import org.esa.beam.visat.toolviews.stat.*;
@@ -90,7 +87,8 @@ public class SeadasApp extends VisatApp {
                 "showNoDataOverlay",
                 "showShapeOverlay",
                 "showGraticuleOverlay",
-                "showWorldMapOverlay"));
+                "showWorldMapOverlay",
+                "showContourOverlay"));
         Set<PlacemarkDescriptor> placemarkDescriptors = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptors();
         for (PlacemarkDescriptor placemarkDescriptor : placemarkDescriptors) {
             if (placemarkDescriptor.getShowLayerCommandId() != null) {

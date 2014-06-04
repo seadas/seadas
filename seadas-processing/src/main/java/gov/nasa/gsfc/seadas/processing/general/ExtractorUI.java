@@ -172,15 +172,6 @@ public class ExtractorUI extends ProgramUIFactory {
         return paramPanel;
     }
 
-//    private void updateParamPanel(String programName) {
-//
-//        paramPanel.remove(2);
-//        paramPanel.add(getPixelPanel(programName, programName + ".xml"),
-//                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-//        paramPanel.repaint();
-//        paramPanel.validate();
-//    }
-
     private void updateParamPanel(JPanel currentPanel, String paramsToDisable) {
 
         JPanel newPixelPanel = new JPanel(new TableLayout(4));
@@ -203,25 +194,6 @@ public class ExtractorUI extends ProgramUIFactory {
         paramPanel.validate();
     }
 
-//    private JPanel getPixelPanel(String processorName, String xmlFileName) {
-//        ProcessorModel extractor = new ProcessorModel(processorName, xmlFileName);
-//        extractor.appendPropertyChangeSupport(processorModel.getPropertyChangeSupport());
-//        int ifileOrder = extractor.getParamInfo(extractor.getPrimaryInputFileOptionName()).getOrder();
-//        int ofileOrder = extractor.getParamInfo(extractor.getPrimaryOutputFileOptionName()).getOrder();
-//        extractor.removeParamInfo(extractor.getParamInfo(extractor.getPrimaryInputFileOptionName()));
-//        extractor.removeParamInfo(extractor.getParamInfo(extractor.getPrimaryOutputFileOptionName()));
-//        extractor.addParamInfo(processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()));
-//        extractor.addParamInfo(processorModel.getParamInfo(processorModel.getPrimaryOutputFileOptionName()));
-//        extractor.getParamInfo(extractor.getPrimaryInputFileOptionName()).setOrder(ifileOrder);
-//        extractor.getParamInfo(extractor.getPrimaryOutputFileOptionName()).setOrder(ofileOrder);
-//        processorModel.setProgramName(processorName);
-//        processorModel.setParamList(extractor.getParamList());
-//        processorModel.setAcceptsParFile(extractor.acceptsParFile());
-//        processorModel.setHasGeoFile(extractor.hasGeoFile());
-//        processorModel.setPrimaryOptions(extractor.getPrimaryOptions());
-//        return new ParamUIFactory(processorModel).createParamPanel(processorModel);
-//
-//    }
 
     private String getExtractorProgramName(String ifileName) {
 
