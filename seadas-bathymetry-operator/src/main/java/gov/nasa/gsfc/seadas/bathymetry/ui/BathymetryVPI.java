@@ -86,10 +86,10 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                 CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
                 layersBar.add(lwcButton);
 
-                CommandBar seadasDefaultBar = visatApp.getToolBar("seadasDefaultToolBar");
-                if (seadasDefaultBar != null) {
-                    seadasDefaultBar.add(lwcButton2);
-                }
+//                CommandBar seadasDefaultBar = visatApp.getToolBar("seadasDefaultToolBar");
+//                if (seadasDefaultBar != null) {
+//                    seadasDefaultBar.add(lwcButton2);
+//                }
             }
 
         });

@@ -19,6 +19,7 @@ import com.bc.ceres.core.*;
 import com.jidesoft.action.CommandBar;
 import com.jidesoft.action.CommandMenuBar;
 import com.jidesoft.action.DockableBarContext;
+import com.jidesoft.action.DockableBar;
 import org.esa.beam.framework.datamodel.PlacemarkDescriptor;
 import org.esa.beam.framework.datamodel.PlacemarkDescriptorRegistry;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
@@ -26,6 +27,7 @@ import org.esa.beam.framework.ui.application.ToolViewDescriptor;
 import org.esa.beam.framework.ui.command.Command;
 import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.framework.ui.command.ToolCommand;
+import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 import org.esa.beam.visat.ProductsToolView;
 import org.esa.beam.visat.VisatActivator;
 import org.esa.beam.visat.VisatApp;
@@ -57,6 +59,17 @@ import java.util.List;
 public class SeadasApp extends VisatApp {
 
     public static final String SEADAS_DEFAULT_TOOL_BAR_ID = "seadasDefaultToolBar";
+    public static final String SEADAS_EXTRAS_TOOL_BAR_ID = "seadasExtrasToolBar";
+    public static final String SEADAS_INTERACTIONS_TOOL_BAR_ID = "seadasInteractionsToolBar";
+    public static final String SEADAS_INTERACTIONS_EXTRAS_TOOL_BAR_ID = "seadasInteractionsExtrasToolBar";
+    public static final String SEADAS_GEOMETRY_TOOL_BAR_ID = "seadasGeometryToolBar";
+    public static final String SEADAS_PINS_TOOL_BAR_ID = "seadasPinsToolBar";
+    public static final String SEADAS_GCP_TOOL_BAR_ID = "seadasGcpToolBar";
+    public static final String SEADAS_ANALYSIS_TOOL_BAR_ID = "seadasAnalysisToolBar";
+    public static final String SEADAS_WEST_DOCK_TOOL_BAR_ID = "seadasWestDockToolBar";
+    public static final String SEADAS_BAND_TOOLS_TOOL_BAR_ID = "seadasBandToolsToolBar";
+
+    private final int PADDING = 10;
 
 
     private static final String SHOW_TOOLVIEW_CMD_POSTFIX = ".showCmd";
@@ -73,83 +86,26 @@ public class SeadasApp extends VisatApp {
     }
 
 
-
     /**
      * Overrides the base class version in order to create a tool bar for VISAT.
      */
-//    @Override
-//    protected CommandBar createMainToolBar() {
-//        final CommandBar toolBar = createToolBar(MAIN_TOOL_BAR_ID, "Standard");
-//        addCommandsToToolBar(toolBar, new String[]{
-//                "open",
-//                null,
-//                "createSubsetFromView",
-//                "mosaicAction",
-//                "collocation",
-//
-//                "bandArithmetic"
-//        });
-//
-//        toolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
-//        return toolBar;
-//    }
-
-
-
-//    @Override
-//    protected CommandBar createLayersToolBar() {
-//        final CommandBar toolBar = createToolBar(LAYERS_TOOL_BAR_ID, "Layers");
-//        ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
-//                "showNoDataOverlay",
-////                "showShapeOverlay",
-//                "showGraticuleOverlay",
-//                "showWorldMapOverlay"));
-//        Set<PlacemarkDescriptor> placemarkDescriptors = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptors();
-//        for (PlacemarkDescriptor placemarkDescriptor : placemarkDescriptors) {
-//            if (placemarkDescriptor.getShowLayerCommandId() != null) {
-//                String s1 = placemarkDescriptor.getBaseFeatureType().getName().getLocalPart();
-//                String s2 = placemarkDescriptor.getBaseFeatureType().getName().toString();
-//
-//
-//                if (!placemarkDescriptor.getBaseFeatureType().getName().getLocalPart().contains("GroundControlPoint") &&
-//                        !placemarkDescriptor.getBaseFeatureType().getName().getLocalPart().contains("Pin")) {
-//                    commandIdList.add(placemarkDescriptor.getShowLayerCommandId());
-//                }
-//            }
-//        }
-//        addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
-//        return toolBar;
-//    }
-
-//    @Override
-//    protected CommandBar createAnalysisToolBar() {
-//        final CommandBar toolBar = createToolBar(ANALYSIS_TOOL_BAR_ID, "Analysis");
-//        addCommandsToToolBar(toolBar, new String[]{
-//                StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-//                HistogramPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-//                DensityPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-//                ScatterPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-//                ProfilePlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-//                SpectrumToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
-//        });
-//        return toolBar;
-//    }
-
-
-
-    protected CommandBar createSeadasDefaultToolBar() {
-        final CommandBar toolBar = createToolBar(SEADAS_DEFAULT_TOOL_BAR_ID, "SeaDAS Preferred");
-
+    @Override
+    protected CommandBar createMainToolBar() {
+        final CommandBar toolBar = createToolBar(MAIN_TOOL_BAR_ID, "File");
         addCommandsToToolBar(toolBar, new String[]{
-                "open",
-                null,
-                "createSubsetFromView",
-                "mosaicAction",
-                "collocation",
-
-                "bandArithmetic"
+                "open"
         });
 
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        return toolBar;
+    }
+
+
+    @Override
+    protected CommandBar createLayersToolBar() {
+        final CommandBar toolBar = createToolBar(LAYERS_TOOL_BAR_ID, "Layers");
+        toolBar.add(Box.createHorizontalStrut(PADDING));
         ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
                 "showNoDataOverlay",
 //                "showShapeOverlay",
@@ -168,18 +124,105 @@ public class SeadasApp extends VisatApp {
                 }
             }
         }
+        addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
+
+
+        return toolBar;
+    }
+
+    //    @Override
+//    protected CommandBar createAnalysisToolBar() {
+//        final CommandBar toolBar = createToolBar(ANALYSIS_TOOL_BAR_ID, "Analysis");
+//        addCommandsToToolBar(toolBar, new String[]{
+//                StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                HistogramPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                DensityPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                ScatterPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                ProfilePlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                SpectrumToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
+//        });
+//        return toolBar;
+//    }
+    protected CommandBar createSeadasBandToolsToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_BAND_TOOLS_TOOL_BAR_ID, "Band Tools");
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        addCommandsToToolBar(toolBar, new String[]{
+                "bandArithmetic",
+                "createFilteredBand"
+        });
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        return toolBar;
+    }
+
+
+    protected CommandBar createSeadasDefaultToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_DEFAULT_TOOL_BAR_ID, "Proc");
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+        addCommandsToToolBar(toolBar, new String[]{
+                "createSubsetFromView",
+                "mosaicAction",
+                "collocation"
+        });
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        return toolBar;
+    }
+
+
+    protected CommandBar createSeadasExtrasToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_EXTRAS_TOOL_BAR_ID, "SeaDAS Preferred");
+
+        addCommandsToToolBar(toolBar, new String[]{
+//                "open",
+//                null,
+//                "createSubsetFromView",
+//                "mosaicAction",
+//                "collocation",
+                "createFilteredBand"
+//
+//                "bandArithmetic"
+        });
+//
+        ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
+                "showNoDataOverlay"
+//                "showShapeOverlay",
+                //             "showGraticuleOverlay",
+                //              "showWorldMapOverlay"
+        ));
+        Set<PlacemarkDescriptor> placemarkDescriptors = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptors();
+        for (PlacemarkDescriptor placemarkDescriptor : placemarkDescriptors) {
+            if (placemarkDescriptor.getShowLayerCommandId() != null) {
+                String s1 = placemarkDescriptor.getBaseFeatureType().getName().getLocalPart();
+                String s2 = placemarkDescriptor.getBaseFeatureType().getName().toString();
+
+
+                if (!placemarkDescriptor.getBaseFeatureType().getName().getLocalPart().contains("GroundControlPoint") &&
+                        !placemarkDescriptor.getBaseFeatureType().getName().getLocalPart().contains("Pin")) {
+                    commandIdList.add(placemarkDescriptor.getShowLayerCommandId());
+                }
+            }
+        }
 
         addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
 
-        addCommandsToToolBar(toolBar, new String[]{
-                StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-                HistogramPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-                DensityPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-      //          ScatterPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-                ProfilePlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-                SpectrumToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-        //        ColorManipulationToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
-        });
+//        addCommandsToToolBar(toolBar, new String[]{
+//                //        StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                //       HistogramPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                //        DensityPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                ScatterPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                ProfilePlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                SpectrumToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+//                PinManagerToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
+//                //        ColorManipulationToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
+//        });
+
+
         return toolBar;
     }
 
@@ -274,9 +317,45 @@ public class SeadasApp extends VisatApp {
     protected CommandBar createInteractionsToolBar() {
         final CommandBar toolBar = super.createInteractionsToolBar();
 
-//        final CommandBar toolBar = createToolBar(INTERACTIONS_TOOL_BAR_ID, "Image Interactions");
-//        addCommandsToToolBar(toolBar, new String[]{
-//                // These IDs are defined in the module.xml
+        toolBar.setTitle("Image Interactions");
+        toolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
+        return toolBar;
+    }
+
+
+    protected CommandBar createSeadasInteractionsToolBar() {
+        //      final CommandBar toolBar = super.createInteractionsToolBar();
+
+        final CommandBar toolBar = createToolBar(SEADAS_INTERACTIONS_TOOL_BAR_ID, "Image Interactions");
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+        addCommandsToToolBar(toolBar, new String[]{
+                "selectTool",
+                "pannerTool",
+                "zoomTool"
+        });
+
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        addCommandsToToolBar(toolBar, new String[]{
+                "magicWandTool",
+                "rangeFinder"
+        });
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        toolBar.setTitle("Image Interactions");
+        return toolBar;
+    }
+
+    protected CommandBar createSeadasInteractionsExtrasToolBar() {
+        //      final CommandBar toolBar = super.createInteractionsToolBar();
+
+        final CommandBar toolBar = createToolBar(SEADAS_INTERACTIONS_EXTRAS_TOOL_BAR_ID, "Image Interactions");
+        addCommandsToToolBar(toolBar, new String[]{
+                // These IDs are defined in the module.xml
 //                "selectTool",
 //                "pannerTool",
 //                "zoomTool",
@@ -285,18 +364,124 @@ public class SeadasApp extends VisatApp {
 //                "drawRectangleTool",
 //                "drawEllipseTool",
 //                "drawPolygonTool",
-//                "drawLineTool",
-//                "drawPolylineTool",
+                "drawLineTool",
+                "drawPolylineTool",
 //                "insertWktAsGeometry",
 //                "pinTool",
-//                "gcpTool",
-//                "rangeFinder",
-//        });
+                "gcpTool",
+                "rangeFinder"
+        });
 
-        addCommandsToToolBar(toolBar, new String[]{"insertWktAsGeometry"});
+        //      addCommandsToToolBar(toolBar, new String[]{"insertWktAsGeometry"});
         toolBar.setTitle("Image Interactions");
         return toolBar;
     }
+
+
+    protected CommandBar createSeadasGeometryToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_GEOMETRY_TOOL_BAR_ID, "Geometries");
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+        addCommandsToToolBar(toolBar, new String[]{
+                "createVectorDataNode",
+                "drawRectangleTool",
+                "drawEllipseTool",
+                "drawPolygonTool",
+                "drawLineTool",
+                "drawPolylineTool",
+                "insertWktAsGeometry"
+
+        });
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        return toolBar;
+    }
+
+
+    protected CommandBar createSeadasPinsToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_PINS_TOOL_BAR_ID, "Pins");
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+        addCommandsToToolBar(toolBar, new String[]{
+                PinManagerToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                "pinTool"
+        });
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        return toolBar;
+    }
+
+    protected CommandBar createSeadasGCPToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_GCP_TOOL_BAR_ID, "Ground Control Points");
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+        addCommandsToToolBar(toolBar, new String[]{
+                GcpManagerToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                "gcpTool"
+        });
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        return toolBar;
+    }
+
+    protected void addCommandsToToolBar2(final CommandBar toolBar, final int width, final String[] commandIDs) {
+        for (final String commandID : commandIDs) {
+            if (commandID == null) {
+                toolBar.add(ToolButtonFactory.createToolBarSeparator());
+            } else {
+                final Command command = getCommandManager().getCommand(commandID);
+                if (command != null) {
+                    final AbstractButton toolBarButton = command.createToolBarButton();
+                    toolBarButton.addMouseListener(getMouseOverActionHandler());
+                    toolBar.add(toolBarButton);
+                } else {
+                    getLogger().warning(String.format("Toolbar '%s': No command found for ID = '%s'", toolBar.getName(),
+                            commandID));
+                }
+            }
+            toolBar.add(Box.createHorizontalStrut(width));
+        }
+    }
+
+    protected CommandBar createSeadasWestDockToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_WEST_DOCK_TOOL_BAR_ID, "West Dock");
+
+        String layerManagerToolViewCommandId = null;
+        ToolViewDescriptor[] toolViewDescriptors = VisatActivator.getInstance().getToolViewDescriptors();
+        for (ToolViewDescriptor toolViewDescriptor : toolViewDescriptors) {
+            if (toolViewDescriptor.getId().contains("LayerManagerToolView")) {
+                layerManagerToolViewCommandId = new String(toolViewDescriptor.getId() + ".showCmd");
+            }
+        }
+
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        addCommandsToToolBar2(toolBar, 24, new String[]{
+                ProductsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                MaskManagerToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                layerManagerToolViewCommandId,
+                ColorManipulationToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
+        });
+
+        return toolBar;
+    }
+
+
+    protected CommandBar createSeadasAnalysisToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_ANALYSIS_TOOL_BAR_ID, "Analysis");
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+        addCommandsToToolBar(toolBar, new String[]{
+                StatisticsToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                HistogramPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                DensityPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                ScatterPlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                ProfilePlotToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                SpectrumToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
+        });
+        toolBar.add(Box.createHorizontalStrut(PADDING));
+        return toolBar;
+    }
+
 
     @Override
     protected void loadCommands() {
@@ -325,7 +510,7 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("view", "View", 'V'));
 
         menuBar.add(createJMenu("tools", "Tools", 'U'));
-        menuBar.add(createJMenu("processing", "Processing", 'P'));
+        menuBar.add(createJMenu("processing", "Proc", 'P'));
         menuBar.add(createJMenu("ocprocessing", "OCproc", 'O'));
 
         menuBar.add(createJMenu("analysis", "Analysis", 'A'));
@@ -344,12 +529,18 @@ public class SeadasApp extends VisatApp {
         try {
             pm.beginTask(String.format("Initialising %s UI components", getAppName()), 5);
 
-            CommandBar layersToolBar = createLayersToolBar();
-            layersToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            layersToolBar.getContext().setInitIndex(2);
-            getMainFrame().getDockableBarManager().addDockableBar(layersToolBar);
-            layersToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
-            pm.worked(1);
+            getMainFrame().getDockableBarManager().setRearrangable(false);
+            List<String> namesT = getMainFrame().getDockableBarManager().getAllDockableBarNames();
+
+            DockableBar fileDockableBar = getMainFrame().getDockableBarManager().getDockableBar("mainToolBar");
+            fileDockableBar.setFloatable(false);
+            fileDockableBar.setOpaque(false);
+            fileDockableBar.setStretch(false);
+            fileDockableBar.setRearrangable(false);
+            fileDockableBar.setHidable(false);
+            fileDockableBar.setInitIndex(2);
+            fileDockableBar.setInitSubindex(0);
+
 
             CommandBar analysisToolBar = createAnalysisToolBar();
             analysisToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
@@ -366,43 +557,129 @@ public class SeadasApp extends VisatApp {
             pm.worked(1);
 
 
-
-            CommandBar[] viewToolBars = createViewsToolBars();
-            for (CommandBar viewToolBar : viewToolBars) {
-                if (VIEWS_TOOL_BAR_ID.equals(viewToolBar.getName())) {
-                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-                    viewToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
-
-                    viewToolBar.getContext().setInitIndex(2);
-                } else {
-                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-                    viewToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
-                    viewToolBar.getContext().setInitIndex(2);
-                }
-
-                getMainFrame().getDockableBarManager().addDockableBar(viewToolBar);
-            }
-
-            CommandBar toolsToolBar = createInteractionsToolBar();
-                toolsToolBar.setMinimumSize(new Dimension(500,500));
-            toolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            toolsToolBar.getContext().setInitIndex(2);
- //                   toolsToolBar.getContext().setInitMode(DockableBarContext.STATE_FLOATING);
-//                 toolsToolBar.getContext().setUndockedBounds(new Rectangle(500, 500));
-//            toolsToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
-            getMainFrame().getDockableBarManager().addDockableBar(toolsToolBar);
+            CommandBar seadasBandToolsToolBar = createSeadasBandToolsToolBar();
+            seadasBandToolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            seadasBandToolsToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasBandToolsToolBar);
             pm.worked(1);
 
-     //       getMainFrame().setMinimumSize(new Dimension(750,400));
-            getMainFrame().setPreferredSize(new Dimension(1200, 500));
+            CommandBar layersToolBar = createLayersToolBar();
+            layersToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            layersToolBar.getContext().setInitIndex(2);
+
+            getMainFrame().getDockableBarManager().addDockableBar(layersToolBar);
+//            layersToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             pm.worked(1);
+//
+
+            CommandBar seadasAnalysisToolBar = createSeadasAnalysisToolBar();
+            seadasAnalysisToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            seadasAnalysisToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasAnalysisToolBar);
+            pm.worked(1);
+
+
+            CommandBar seadasWestDockToolBar = createSeadasWestDockToolBar();
+            seadasWestDockToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
+            seadasWestDockToolBar.add(Box.createHorizontalStrut(50));
+            DockableBar westDockableBar = seadasWestDockToolBar;
+            westDockableBar.setFloatable(false);
+            westDockableBar.setOpaque(false);
+            westDockableBar.setStretch(false);
+            westDockableBar.setRearrangable(false);
+            westDockableBar.setHidable(false);
+            westDockableBar.setInitIndex(0);
+            westDockableBar.setInitSubindex(0);
+
+            getMainFrame().getDockableBarManager().addDockableBar(westDockableBar);
+
+
+            pm.worked(1);
+
+            CommandBar seadasInteractionsToolBar = createSeadasInteractionsToolBar();
+            seadasInteractionsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
+            seadasInteractionsToolBar.add(Box.createHorizontalStrut(PADDING));
+
+            DockableBar seadasInteractionsDockableBar = seadasInteractionsToolBar;
+            seadasInteractionsDockableBar.setFloatable(false);
+            seadasInteractionsDockableBar.setOpaque(false);
+            seadasInteractionsDockableBar.setStretch(false);
+            seadasInteractionsDockableBar.setRearrangable(true);
+            seadasInteractionsDockableBar.setHidable(false);
+            seadasInteractionsDockableBar.setInitIndex(0);
+            seadasInteractionsDockableBar.setInitSubindex(0);
+
+            getMainFrame().getDockableBarManager().addDockableBar(seadasInteractionsDockableBar);
+            pm.worked(1);
+
+
+            CommandBar seadasGeometriesToolBar = createSeadasGeometryToolBar();
+            seadasGeometriesToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasGeometriesToolBar);
+            pm.worked(1);
+
+
+            CommandBar seadasPinsToolBar = createSeadasPinsToolBar();
+            seadasPinsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasPinsToolBar);
+            pm.worked(1);
+
+            CommandBar seadasGcpToolBar = createSeadasGCPToolBar();
+            seadasGcpToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasGcpToolBar);
+            pm.worked(1);
+
+
+//            com.jidesoft.action.DockableBarContainer container = getMainFrame().getDockableBarManager().createDockableBarContainer();
+//            container.getDockableBarManager().addDockableBar(seadasGeometriesToolBar);
+//            container.getDockableBarManager().addDockableBar(seadasPinsToolBar);
+//            container.getDockableBarManager().addDockableBar(seadasGcpToolBar);
+//            getMainFrame().getDockableBarManager().addDockableBar(container.);
+
+
+            getMainFrame().setPreferredSize(new Dimension(1000, 500));
+
+
+//
+//            CommandBar[] viewToolBars = createViewsToolBars();
+//            for (CommandBar viewToolBar : viewToolBars) {
+//                if (VIEWS_TOOL_BAR_ID.equals(viewToolBar.getName())) {
+//                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+//                    viewToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
+//
+//                    viewToolBar.getContext().setInitIndex(2);
+//                } else {
+//                    viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+//                    viewToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
+//                    viewToolBar.getContext().setInitIndex(2);
+//                }
+//
+//                getMainFrame().getDockableBarManager().addDockableBar(viewToolBar);
+//            }
+//
+//            CommandBar toolsToolBar = createInteractionsToolBar();
+//            toolsToolBar.setMinimumSize(new Dimension(500, 500));
+//            toolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+//            toolsToolBar.getContext().setInitIndex(2);
+//            pm.worked(1);
+//
+
 
             registerForMacOSXEvents();
             pm.worked(1);
 
-            getMainToolBar().getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
-            getStatusBar().setEnabled(false);
-            getStatusBar().setVisible(false);
+//            getMainToolBar().getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
+//            getStatusBar().setEnabled(false);
+//            getStatusBar().setVisible(false);
+
+            int count = 0;
+            for (Component component : getStatusBar().getComponents()) {
+                if (count > 0) {
+                    component.setVisible(false);
+                }
+                count++;
+            }
+
 
         } finally {
             pm.done();
