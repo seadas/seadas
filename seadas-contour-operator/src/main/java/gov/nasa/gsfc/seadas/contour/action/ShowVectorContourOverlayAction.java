@@ -9,11 +9,11 @@ import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
 import gov.nasa.gsfc.seadas.contour.ui.ContourInterval;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.ui.command.CommandEvent;
-import org.esa.beam.framework.ui.command.ExecCommand;
 import org.esa.beam.framework.ui.product.ProductSceneView;
-import org.esa.beam.framework.ui.product.VectorDataFigureEditor;
 import org.esa.beam.util.FeatureUtils;
+import org.esa.beam.util.ProductUtils;
 import org.esa.beam.visat.VisatApp;
+import org.esa.beam.visat.actions.AbstractShowOverlayAction;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -29,7 +29,6 @@ import org.opengis.referencing.operation.TransformException;
 import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.RenderedOp;
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,10 +40,8 @@ import java.util.Collection;
  * Time: 2:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ShowVectorContourOverlayAction extends ExecCommand { //AbstractShowOverlayAction {
+public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
-    //    private final LayerFilter contourFilter = ContourVectorDataLayerFilterFactory.createContourFilter();
-//    public static final String CONTOUR_LAYER_ID = "gov.nasa.gsfc.seadas.contour";
     final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; symbol:cross";
 
     @Override
@@ -52,7 +49,6 @@ public class ShowVectorContourOverlayAction extends ExecCommand { //AbstractShow
         VisatApp visatApp = VisatApp.getApp();
         final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
         Product product = visatApp.getSelectedProduct();
-        VectorDataFigureEditor figureEditor = (VectorDataFigureEditor) sceneView.getFigureEditor();
 
         ContourDialog contourDialog = new ContourDialog(product);
         contourDialog.setVisible(true);
@@ -67,8 +63,7 @@ public class ShowVectorContourOverlayAction extends ExecCommand { //AbstractShow
         double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
 
         ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData, scalingFactor, scalingOffset);
-        figureEditor.getDefaultLineStyle().setValue("stroke", Color.RED
-        );
+
         for (VectorDataNode vectorDataNode : vectorDataNodes) {
             product.getVectorDataGroup().add(vectorDataNode);
             if (sceneView != null) {
@@ -78,9 +73,13 @@ public class ShowVectorContourOverlayAction extends ExecCommand { //AbstractShow
     }
 
     @Override
-    public void updateState(final CommandEvent event) {
-        setEnabled(VisatApp.getApp().getSelectedProduct() != null
-                && VisatApp.getApp().getSelectedProduct().getGeoCoding() != null);
+    protected void updateEnableState(ProductSceneView view) {
+        setEnabled(ProductUtils.canGetPixelPos(view.getRaster()));
+    }
+
+    @Override
+    protected void updateSelectState(ProductSceneView view) {
+        //setSelected(view.isGraticuleOverlayEnabled());
     }
 
     private ArrayList<VectorDataNode> createVectorDataNodesforContours(ContourData contourData, double scalingFactor, double scalingOffset) {
