@@ -34,10 +34,11 @@
             <class>gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction</class>
             <placeAfter>showWorldMapOverlay</placeAfter>
             <text>Contour</text>
-            <toggle>true</toggle>
+            <toggle>false</toggle>
             <shortDescr>Add contour lines</shortDescr>
             <description>Add contour lines for the selected image</description>
             <context>image</context>
+            <selected>false</selected>
             <smallIcon>icons/ContourOverlay16.gif</smallIcon>
             <largeIcon>icons/ContourOverlay22.png</largeIcon>
             <helpId>showContourOverlay</helpId>
