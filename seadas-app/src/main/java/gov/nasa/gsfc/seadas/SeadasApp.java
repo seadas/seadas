@@ -140,7 +140,7 @@ public class SeadasApp extends VisatApp {
         final CommandBar toolBar = createToolBar(SEADAS_DELUXE_TOOLS_TOOL_BAR_ID, "Deluxe Tools");
         toolBar.add(Box.createHorizontalStrut(PADDING));
         ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
-                "showVectorContourOverlay"));
+                "showContourOverlay"));
 
         addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
         toolBar.add(Box.createHorizontalStrut(PADDING));
