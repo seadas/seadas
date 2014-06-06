@@ -420,11 +420,11 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("file", "File", 'F'));
         menuBar.add(createJMenu("edit", "Edit", 'E'));
         menuBar.add(createJMenu("view", "View", 'V'));
-        menuBar.add(createJMenu("tools", "Tools", 'U'));
+        menuBar.add(createJMenu("tools", "Tools", 'T'));
         menuBar.add(createJMenu("processing", "Proc", 'P'));
         menuBar.add(createJMenu("ocprocessing", "OCproc", 'O'));
         menuBar.add(createJMenu("analysis", "Analysis", 'A'));
-        menuBar.add(createJMenu("info", "Info", 'A'));
+        menuBar.add(createJMenu("info", "Info", 'I'));
         menuBar.add(createJMenu("window", "Window", 'W'));
         menuBar.add(createJMenu("help", "Help", 'H'));
 
