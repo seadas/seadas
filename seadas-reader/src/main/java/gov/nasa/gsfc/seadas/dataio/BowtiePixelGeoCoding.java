@@ -22,6 +22,7 @@ import org.esa.beam.framework.datamodel.GeoCoding;
 import org.esa.beam.framework.datamodel.Scene;
 import org.esa.beam.framework.datamodel.TiePointGeoCoding;
 import org.esa.beam.util.Guardian;
+import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.math.IndexValidator;
 import org.esa.beam.util.math.Range;
 
@@ -257,14 +258,24 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
                 destStripeOffsetY = (srcStripeOffsetY+region.y) % getScanlineHeight();
             }
         }
-        final Band latBand = destScene.getProduct().getBand(latBandName);
-        final Band lonBand = destScene.getProduct().getBand(lonBandName);
 
-        if (latBand != null && lonBand != null) {
-            destScene.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, getScanlineHeight(), destStripeOffsetY));
-            return true;
+        ensureLatLonBands(destScene);
+        Band targetLatBand = destScene.getProduct().getBand(latBandName);
+        Band targetLonBand = destScene.getProduct().getBand(lonBandName);
+        destScene.setGeoCoding(new BowtiePixelGeoCoding(targetLatBand, targetLonBand, getScanlineHeight(), destStripeOffsetY));
+        return true;
+    }
+
+    private void ensureLatLonBands(Scene destScene) {
+        ensureBand(destScene, _latBand);
+        ensureBand(destScene, _lonBand);
+    }
+
+    private static void ensureBand(Scene destScene, Band sourceBand) {
+        Band band = destScene.getProduct().getBand(sourceBand.getName());
+        if (band == null) {
+            ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), destScene.getProduct(), true);
         }
-        return false;
     }
 
 }
