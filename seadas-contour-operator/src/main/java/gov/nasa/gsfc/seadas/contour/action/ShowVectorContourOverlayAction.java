@@ -88,8 +88,8 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         ArrayList<VectorDataNode> vectorDataNodes = new ArrayList<VectorDataNode>();
 
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
-        pb.setSource("source0", contourData.getBand().getSourceImage());
-        //pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
+        //pb.setSource("source0", contourData.getBand().getSourceImage());
+        pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
         pb.setParameter("levels", contourData.getLevels());
 
         for (ContourInterval interval : contourIntervals) {
