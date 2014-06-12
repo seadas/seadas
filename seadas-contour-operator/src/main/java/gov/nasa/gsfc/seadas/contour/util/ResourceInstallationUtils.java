@@ -29,7 +29,7 @@ public class ResourceInstallationUtils {
     public static String AUXDIR = "auxdata";
     public static String CONTOUR_PATH = "gov/nasa/gsfc/seadas/contour/";
     public static String AUXPATH = CONTOUR_PATH + "operator/" + AUXDIR + "/";
-    public static String ICON_PATH = CONTOUR_PATH + "ui/icons/";
+    public static String ICON_PATH = CONTOUR_PATH + "ui/action/";
 
     public static String getIconFilename(String icon, Class sourceClass) {
 

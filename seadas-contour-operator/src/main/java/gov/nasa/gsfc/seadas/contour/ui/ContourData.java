@@ -4,6 +4,7 @@ import org.esa.beam.framework.datamodel.Band;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 /**
@@ -25,20 +26,34 @@ public class ContourData {
     private Double endValue;
     private int numOfLevels;
     private boolean keepColors;
+    private boolean log;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
 
     public ContourData() {
+        this(null);
+    }
+
+    public ContourData(Band band) {
         contourIntervals = new ArrayList<ContourInterval>();
         contourBaseName = CONTOUR_LINES_BASE_NAME;
+        if (band != null) {
+            contourBaseName = contourBaseName + band.getName() + "_";
+        }
         startValue = 0.0;
         endValue = 0.0;
+        this.band = band;
+        log = false;
     }
 
 
     public void reset() {
         contourIntervals.clear();
+    }
+
+    public void createContourLevels(){
+        createContourLevels(startValue, endValue, numOfLevels, log);
     }
 
     /**
@@ -75,6 +90,8 @@ public class ContourData {
          * Normal case.
          */
         if (log) {
+            if ( startValue == 0 ) startValue = Double.MIN_VALUE;
+            if ( endValue == 0 ) endValue = Double.MIN_VALUE;
             sv = Math.log10(startValue);
             ev = Math.log10(endValue);
             interval = (ev - sv) / (numberOfLevels - 1);
@@ -103,8 +120,10 @@ public class ContourData {
 
 
     public void setBand(Band band) {
+        String oldBandName = this.band.getName();
         this.band = band;
         contourBaseName = CONTOUR_LINES_BASE_NAME + band.getName() + "_";
+        propertyChangeSupport.firePropertyChange(ContourDialog.NEW_BAND_SELECTED_PROPERTY, oldBandName, band.getName());
     }
 
     public Band getBand() {
@@ -181,6 +200,41 @@ public class ContourData {
 
     public void setKeepColors(boolean keepColors) {
         this.keepColors = keepColors;
+    }
+
+    public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
+         propertyChangeSupport.addPropertyChangeListener(name, listener);
+     }
+
+     public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
+         propertyChangeSupport.removePropertyChangeListener(name, listener);
+     }
+
+     public SwingPropertyChangeSupport getPropertyChangeSupport() {
+         return propertyChangeSupport;
+     }
+
+     public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
+         PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+         for (int i = 0; i < pr.length; i++) {
+             this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
+         }
+     }
+
+     public void clearPropertyChangeSupport() {
+         PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+         for (int i = 0; i < pr.length; i++) {
+             this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
+         }
+
+     }
+
+    public boolean isLog() {
+        return log;
+    }
+
+    public void setLog(boolean log) {
+        this.log = log;
     }
 }
 

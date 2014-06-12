@@ -30,6 +30,7 @@ import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.RenderedOp;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -88,6 +89,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
         pb.setSource("source0", contourData.getBand().getSourceImage());
+        //pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
         pb.setParameter("levels", contourData.getLevels());
 
         for (ContourInterval interval : contourIntervals) {
@@ -195,7 +197,8 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
     private FeatureCollection<SimpleFeatureType, SimpleFeature> createContourFeatureCollection(ContourData contourData) {
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
-        pb.setSource("source0", contourData.getBand().getSourceImage());
+        //pb.setSource("source0", contourData.getBand().getSourceImage());
+        pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
         pb.setParameter("levels", contourData.getLevels());
         pb.setParameter("smooth", Boolean.TRUE);
 
@@ -234,5 +237,94 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         return featureCollection;
     }
 
+
+    Band getFilteredBand(Band selectedBand){
+        Filter filter = new GeneralFilter("Mean 5x5", 5, 5, GeneralFilterBand.MEAN);
+        Band filteredBand = createFilterBand(filter, selectedBand.getName()+"_filtered");
+        return filteredBand;
+    }
+
+    private static abstract class Filter {
+
+        private String name;
+
+        public Filter(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        @Override
+        public abstract boolean equals(Object obj);
+    }
+
+    private static class KernelFilter extends Filter {
+
+        private Kernel kernel;
+
+        public KernelFilter(String name, Kernel kernel) {
+            super(name);
+            this.kernel = kernel;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            } else if (obj instanceof KernelFilter) {
+                KernelFilter other = (KernelFilter) obj;
+                return toString().equals(other.toString()) && kernel.equals(other.kernel);
+            }
+            return false;
+        }
+    }
+
+    private static class GeneralFilter extends Filter {
+
+        int width;
+        int height;
+        GeneralFilterBand.Operator operator;
+
+        public GeneralFilter(String name, int width, int height, GeneralFilterBand.Operator operator) {
+            super(name);
+            this.width = width;
+            this.height = height;
+            this.operator = operator;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            } else if (obj instanceof GeneralFilter) {
+                GeneralFilter other = (GeneralFilter) obj;
+                return toString().equals(other.toString()) && operator == other.operator;
+            }
+            return false;
+        }
+    }
+
+    private static FilterBand createFilterBand(Filter filter, String bandName) {
+        final RasterDataNode raster = (RasterDataNode) VisatApp.getApp().getSelectedProductNode();
+
+        final FilterBand filterBand;
+        if (filter instanceof KernelFilter) {
+            final KernelFilter kernelFilter = (KernelFilter) filter;
+            filterBand = new ConvolutionFilterBand(bandName, raster, kernelFilter.kernel);
+        } else {
+            final GeneralFilter generalFilter = (GeneralFilter) filter;
+            filterBand = new GeneralFilterBand(bandName, raster, generalFilter.width, generalFilter.operator);
+        }
+        final String descr = MessageFormat.format("Filter ''{0}'' applied to ''{1}''",
+                filter.toString(),
+                raster.getName());
+        filterBand.setDescription(descr);
+        raster.getProduct().addBand(filterBand);
+        filterBand.fireProductNodeDataChanged();
+        return filterBand;
+    }
 }
 
