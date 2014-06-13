@@ -61,8 +61,8 @@ public class ShowContourOverlayAction extends AbstractShowOverlayAction {
 //        //view.getSceneImage().getConfiguration();
         final Product product = VisatApp.getApp().getSelectedProduct();
         //view.getSceneImage().getImageToModelTransform();
-        Band band = product.getBand("chlor_a");
-        ContourDialog contourDialog = new ContourDialog(product);
+        Band band = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
+        ContourDialog contourDialog = new ContourDialog(product, VisatApp.getApp().getSelectedProductNode().getName());
         contourDialog.setVisible(true);
         contourDialog.dispose();
         band.setSourceImage(getContourImage(product, band));

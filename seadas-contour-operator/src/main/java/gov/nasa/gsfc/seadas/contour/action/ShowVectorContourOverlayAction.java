@@ -44,22 +44,22 @@ import java.util.Collection;
 public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
     final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; symbol:cross";
-
+    Product product;
     @Override
     public void actionPerformed(CommandEvent event) {
         VisatApp visatApp = VisatApp.getApp();
         final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
-        Product product = visatApp.getSelectedProduct();
-
-        ContourDialog contourDialog = new ContourDialog(product);
+        product = visatApp.getSelectedProduct();
+        ProductNode productNode = visatApp.getApp().getSelectedProductNode();
+        ContourDialog contourDialog = new ContourDialog(product, productNode.getName());
         contourDialog.setVisible(true);
         contourDialog.dispose();
 
-        ContourData contourData = contourDialog.getContourData();
-
-        if (contourData == null) {
+        if (contourDialog.isContourCanceled()) {
             return;
         }
+
+        ContourData contourData = contourDialog.getContourData();
         double scalingFactor = sceneView.getSceneImage().getRasters()[0].getScalingFactor();
         double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
 
@@ -89,12 +89,20 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
         //pb.setSource("source0", contourData.getBand().getSourceImage());
+        if ( contourData.isFiltered()) {
         pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
+        }  else {
+            pb.setSource("source0", contourData.getBand().getSourceImage());
+        }
+
         pb.setParameter("levels", contourData.getLevels());
 
         for (ContourInterval interval : contourIntervals) {
             ArrayList<Double> contourInterval = new ArrayList<Double>();
             String vectorName = interval.getContourLevelName();
+            if (contourData.isFiltered()) {
+                vectorName = vectorName + "_filtered";
+            }
             double contourValue = (interval.getContourLevelValue() - scalingOffset) / scalingFactor;
             contourInterval.add(contourValue);
             pb.setParameter("levels", contourInterval);
@@ -194,53 +202,57 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         fb.add(lineString);
         return fb.buildFeature(null);
     }
-
-    private FeatureCollection<SimpleFeatureType, SimpleFeature> createContourFeatureCollection(ContourData contourData) {
-        ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
-        //pb.setSource("source0", contourData.getBand().getSourceImage());
-        pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
-        pb.setParameter("levels", contourData.getLevels());
-        pb.setParameter("smooth", Boolean.TRUE);
-
-        RenderedOp dest = JAI.create("Contour", pb);
-        Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
-        GeoCoding geoCoding = VisatApp.getApp().getSelectedProduct().getGeoCoding();
-        SimpleFeatureType featureType = null;
-        FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = null;
-        try {
-            featureType = createFeatureType(geoCoding);
-            featureCollection = new ListFeatureCollection(featureType);
-        } catch (IOException ioe) {
-
-        }
-        for (LineString lineString : contours) {
-            Coordinate[] coordinates = lineString.getCoordinates();
-            for (int i = 0; i < coordinates.length; i++) {
-                coordinates[i].x = coordinates[i].x + 0.5;
-                coordinates[i].y = coordinates[i].y + 0.5;
-            }
-            final SimpleFeature feature = createFeature(featureType, lineString);
-            if (feature != null) {
-                featureCollection.add(feature);
-            }
-        }
-
-        final CoordinateReferenceSystem mapCRS = geoCoding.getMapCRS();
-        if (!mapCRS.equals(DefaultGeographicCRS.WGS84)) {
-            try {
-                transformFeatureCollection(featureCollection, geoCoding.getImageCRS(), mapCRS);
-            } catch (TransformException e) {
-                VisatApp.getApp().showErrorDialog("transformation failed!");
-            }
-        }
-
-        return featureCollection;
-    }
+//
+//    private FeatureCollection<SimpleFeatureType, SimpleFeature> createContourFeatureCollection(ContourData contourData) {
+//        ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
+//        //pb.setSource("source0", contourData.getBand().getSourceImage());
+//        pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
+//        pb.setParameter("levels", contourData.getLevels());
+//        pb.setParameter("smooth", Boolean.TRUE);
+//
+//        RenderedOp dest = JAI.create("Contour", pb);
+//        Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
+//        GeoCoding geoCoding = VisatApp.getApp().getSelectedProduct().getGeoCoding();
+//        SimpleFeatureType featureType = null;
+//        FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = null;
+//        try {
+//            featureType = createFeatureType(geoCoding);
+//            featureCollection = new ListFeatureCollection(featureType);
+//        } catch (IOException ioe) {
+//
+//        }
+//        for (LineString lineString : contours) {
+//            Coordinate[] coordinates = lineString.getCoordinates();
+//            for (int i = 0; i < coordinates.length; i++) {
+//                coordinates[i].x = coordinates[i].x + 0.5;
+//                coordinates[i].y = coordinates[i].y + 0.5;
+//            }
+//            final SimpleFeature feature = createFeature(featureType, lineString);
+//            if (feature != null) {
+//                featureCollection.add(feature);
+//            }
+//        }
+//
+//        final CoordinateReferenceSystem mapCRS = geoCoding.getMapCRS();
+//        if (!mapCRS.equals(DefaultGeographicCRS.WGS84)) {
+//            try {
+//                transformFeatureCollection(featureCollection, geoCoding.getImageCRS(), mapCRS);
+//            } catch (TransformException e) {
+//                VisatApp.getApp().showErrorDialog("transformation failed!");
+//            }
+//        }
+//
+//        return featureCollection;
+//    }
 
 
     Band getFilteredBand(Band selectedBand){
+        String filteredBandName = selectedBand.getName()+"_filtered";
+        if (product.getBand(filteredBandName) != null) {
+            return product.getBand(filteredBandName);
+        }
         Filter filter = new GeneralFilter("Mean 5x5", 5, 5, GeneralFilterBand.MEAN);
-        Band filteredBand = createFilterBand(filter, selectedBand.getName()+"_filtered");
+        Band filteredBand = createFilterBand(filter, filteredBandName);
         return filteredBand;
     }
 

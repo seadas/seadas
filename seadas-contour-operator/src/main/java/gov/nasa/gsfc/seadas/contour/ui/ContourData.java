@@ -27,6 +27,7 @@ public class ContourData {
     private int numOfLevels;
     private boolean keepColors;
     private boolean log;
+    private boolean filtered;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -45,6 +46,7 @@ public class ContourData {
         endValue = 0.0;
         this.band = band;
         log = false;
+        filtered = true;
     }
 
 
@@ -235,6 +237,14 @@ public class ContourData {
 
     public void setLog(boolean log) {
         this.log = log;
+    }
+
+    public boolean isFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(boolean filtered) {
+        this.filtered = filtered;
     }
 }
 
