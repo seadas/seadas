@@ -45,6 +45,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
     final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; symbol:cross";
     Product product;
+
     @Override
     public void actionPerformed(CommandEvent event) {
         VisatApp visatApp = VisatApp.getApp();
@@ -60,10 +61,13 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         }
 
         ContourData contourData = contourDialog.getContourData();
-        double scalingFactor = sceneView.getSceneImage().getRasters()[0].getScalingFactor();
-        double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
-
-        ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData, scalingFactor, scalingOffset);
+        if (contourData.isFiltered()) {
+            Band newBand = getFilteredBand(contourData.getBand());
+            contourData.setBand(newBand);
+         }
+        //double scalingFactor = sceneView.getSceneImage().getRasters()[0].getScalingFactor();
+        //double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
+        ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
 
         for (VectorDataNode vectorDataNode : vectorDataNodes) {
             product.getVectorDataGroup().add(vectorDataNode);
@@ -83,19 +87,23 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         //setSelected(view.isGraticuleOverlayEnabled());
     }
 
-    private ArrayList<VectorDataNode> createVectorDataNodesforContours(ContourData contourData, double scalingFactor, double scalingOffset) {
+    private ArrayList<VectorDataNode> createVectorDataNodesforContours(ContourData contourData) {
+
+
+        double scalingFactor = contourData.getBand().getScalingFactor();
+        double scalingOffset = contourData.getBand().getScalingOffset();
+
         ArrayList<ContourInterval> contourIntervals = contourData.getLevels();
         ArrayList<VectorDataNode> vectorDataNodes = new ArrayList<VectorDataNode>();
 
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
-        //pb.setSource("source0", contourData.getBand().getSourceImage());
-        if ( contourData.isFiltered()) {
-        pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
-        }  else {
-            pb.setSource("source0", contourData.getBand().getSourceImage());
-        }
+        pb.setSource("source0", contourData.getBand().getSourceImage());
 
-        pb.setParameter("levels", contourData.getLevels());
+//        if (contourData.isFiltered()) {
+//            pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
+//        } else {
+//            pb.setSource("source0", contourData.getBand().getSourceImage());
+//        }
 
         for (ContourInterval interval : contourIntervals) {
             ArrayList<Double> contourInterval = new ArrayList<Double>();
@@ -118,7 +126,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
                 continue;
             }
             if (featureCollection.isEmpty()) {
-                VisatApp.getApp().showErrorDialog("Contour Lines", "No records found.");
+                VisatApp.getApp().showErrorDialog("Contour Lines", "No records found for ." + contourData.getBand().getName() + " at " + (contourValue * scalingFactor + scalingOffset));
                 continue;
             }
 
@@ -202,52 +210,9 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         fb.add(lineString);
         return fb.buildFeature(null);
     }
-//
-//    private FeatureCollection<SimpleFeatureType, SimpleFeature> createContourFeatureCollection(ContourData contourData) {
-//        ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
-//        //pb.setSource("source0", contourData.getBand().getSourceImage());
-//        pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
-//        pb.setParameter("levels", contourData.getLevels());
-//        pb.setParameter("smooth", Boolean.TRUE);
-//
-//        RenderedOp dest = JAI.create("Contour", pb);
-//        Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
-//        GeoCoding geoCoding = VisatApp.getApp().getSelectedProduct().getGeoCoding();
-//        SimpleFeatureType featureType = null;
-//        FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = null;
-//        try {
-//            featureType = createFeatureType(geoCoding);
-//            featureCollection = new ListFeatureCollection(featureType);
-//        } catch (IOException ioe) {
-//
-//        }
-//        for (LineString lineString : contours) {
-//            Coordinate[] coordinates = lineString.getCoordinates();
-//            for (int i = 0; i < coordinates.length; i++) {
-//                coordinates[i].x = coordinates[i].x + 0.5;
-//                coordinates[i].y = coordinates[i].y + 0.5;
-//            }
-//            final SimpleFeature feature = createFeature(featureType, lineString);
-//            if (feature != null) {
-//                featureCollection.add(feature);
-//            }
-//        }
-//
-//        final CoordinateReferenceSystem mapCRS = geoCoding.getMapCRS();
-//        if (!mapCRS.equals(DefaultGeographicCRS.WGS84)) {
-//            try {
-//                transformFeatureCollection(featureCollection, geoCoding.getImageCRS(), mapCRS);
-//            } catch (TransformException e) {
-//                VisatApp.getApp().showErrorDialog("transformation failed!");
-//            }
-//        }
-//
-//        return featureCollection;
-//    }
 
-
-    Band getFilteredBand(Band selectedBand){
-        String filteredBandName = selectedBand.getName()+"_filtered";
+    Band getFilteredBand(Band selectedBand) {
+        String filteredBandName = selectedBand.getName() + "_filtered";
         if (product.getBand(filteredBandName) != null) {
             return product.getBand(filteredBandName);
         }

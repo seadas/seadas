@@ -69,9 +69,9 @@ public class ContourDialog extends JDialog {
 //        setMinValue(new Double(CommonUtilities.round(selectedBand.getStx().getMin(), 3)));
         numberOfLevels = 1;
         contours = new ArrayList<ContourData>();
-        addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
-        addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
-        filterBand = true;
+        propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
+        propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
+        filterBand = selectedBandName.indexOf("filtered") == -1 ? true : false;
         createContourUI();
         contourCanceled = false;
     }
@@ -230,9 +230,7 @@ public class ContourDialog extends JDialog {
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         contourPanel.add(addButton,
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-
-
-        mainPanel.add(getBandPanel(),
+        mainPanel.add(getFilterPanel(),
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
         mainPanel.add(contourPanel,
@@ -241,26 +239,13 @@ public class ContourDialog extends JDialog {
         mainPanel.add(getControllerPanel(),
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
-//        mainPanel.addPropertyChangeListener("contourPanel", new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                setPreferredSize(getPreferredSize());
-//                setMinimumSize(getPreferredSize());
-//                setMaximumSize(getPreferredSize());
-//                setSize(getPreferredSize());
-//                repaint();
-//                pack();
-//            }
-//        });
-
-
         add(mainPanel);
 
 
         setModalityType(ModalityType.APPLICATION_MODAL);
 
 
-        setTitle("Contour Lines");
+        setTitle("Contour Lines for " + selectedBand.getName() );
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
@@ -273,6 +258,7 @@ public class ContourDialog extends JDialog {
 
         JPanel bandPanel = new JPanel(new GridBagLayout());
 
+        final JCheckBox filterBox = new JCheckBox("Filter 5x5");
         String[] productList = product.getBandNames();
         JLabel bandLabel = new JLabel("Product:");
         bandComboBox = new JComboBox(productList);
@@ -283,11 +269,13 @@ public class ContourDialog extends JDialog {
                 String oldBandName = selectedBand.getName();
                 selectedBand = product.getBand((String) bandComboBox.getSelectedItem());
                 propertyChangeSupport.firePropertyChange(NEW_BAND_SELECTED_PROPERTY, oldBandName, selectedBand.getName());
+                filterBand =  selectedBand.getName().indexOf("filtered") == -1 ? true : false;
+                filterBox.setSelected(filterBand);
+                filterBox.setEnabled(filterBand);
             }
         });
 
-        final JCheckBox filterBox = new JCheckBox("Filter 5x5");
-        filterBox.setSelected(true);
+        filterBox.setSelected(filterBand);
         filterBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -308,6 +296,22 @@ public class ContourDialog extends JDialog {
         return bandPanel;
     }
 
+
+    private JPanel getFilterPanel(){
+        final JCheckBox filterBox = new JCheckBox("Filter 5x5");
+        filterBox.setSelected(true);
+        filterBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                filterBand = filterBox.isSelected();
+                //contourData.setFiltered(filterBox.isSelected());
+            }
+        });
+
+        JPanel filterPanel = new JPanel(new BorderLayout());
+        filterPanel.add(filterBox, BorderLayout.CENTER);
+        return filterPanel;
+    }
 
     private JPanel getControllerPanel() {
         JPanel controllerPanel = new JPanel(new GridBagLayout());
@@ -380,7 +384,6 @@ public class ContourDialog extends JDialog {
     public ContourData getContourData(ArrayList<ContourData> contours) {
         ContourData mergedContourData = new ContourData(selectedBand);
         ArrayList<ContourInterval> contourIntervals = new ArrayList<ContourInterval>();
-        contours.get(0).isFiltered();
         for (ContourData contourData : contours) {
             contourIntervals.addAll(contourData.getContourIntervals());
         }
