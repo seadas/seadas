@@ -19,12 +19,12 @@ import com.jidesoft.action.CommandBar;
 import com.jidesoft.action.CommandMenuBar;
 import com.jidesoft.action.DockableBarContext;
 import com.jidesoft.action.DockableBar;
-import org.esa.beam.framework.datamodel.PlacemarkDescriptor;
-import org.esa.beam.framework.datamodel.PlacemarkDescriptorRegistry;
+import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
 import org.esa.beam.framework.ui.application.ToolViewDescriptor;
 import org.esa.beam.framework.ui.command.Command;
 import org.esa.beam.framework.ui.command.ToolCommand;
+import org.esa.beam.framework.ui.product.ProductSceneView;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 import org.esa.beam.visat.ProductsToolView;
 import org.esa.beam.visat.VisatActivator;
@@ -52,6 +52,7 @@ import java.util.List;
  */
 public class SeadasApp extends VisatApp {
 
+    public static final String MAIN_MENU_TOOL_BAR_TITLE = "Main Menu";
     public static final String SEADAS_PROC_TOOL_BAR_ID = "seadasProcToolBar";
     public static final String SEADAS_BAND_TOOLS_TOOL_BAR_ID = "seadasBandToolsToolBar";
     public static final String SEADAS_INTERACTIONS_TOOL_BAR_ID = "seadasInteractionsToolBar";
@@ -159,10 +160,11 @@ public class SeadasApp extends VisatApp {
 
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
         ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
+                layerEditorToolViewCommandId,
                 "showWorldMapOverlay",
                 "showNoDataOverlay",
-                "showGraticuleOverlay",
-                layerEditorToolViewCommandId));
+                "showGraticuleOverlay"
+               ));
 
         addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
@@ -444,11 +446,54 @@ public class SeadasApp extends VisatApp {
 //    }
 
     @Override
+    protected void applyPreferences() {
+
+        super.applyPreferences();
+        setHiddenToolbars();
+
+    }
+
+
+    protected void setHiddenToolbars() {
+
+        String visibleToolBars[] = {
+                MAIN_MENU_TOOL_BAR_TITLE,
+                SEADAS_INTERACTIONS_TOOL_BAR_ID,
+                SEADAS_ANALYSIS_TOOL_BAR_ID,
+                SEADAS_BAND_TOOLS_TOOL_BAR_ID,
+                SEADAS_DELUXE_TOOLS_TOOL_BAR_ID,
+                SEADAS_FILE_TOOL_BAR_ID,
+                SEADAS_GEOMETRY_TOOL_BAR_ID,
+                SEADAS_PINS_TOOL_BAR_ID,
+                SEADAS_PROC_TOOL_BAR_ID,
+                SEADAS_STANDARD_LAYERS_TOOL_BAR_ID,
+                SEADAS_BLANK_TOOL_BAR_ID};
+
+        List<String> allDockableBarNames = getMainFrame().getDockableBarManager().getAllDockableBarNames();
+
+        for (String dockableBarName : allDockableBarNames) {
+            boolean hide = true;
+
+            for (String visibleBarName : visibleToolBars) {
+                if (dockableBarName.equals(visibleBarName)) {
+                    hide = false;
+                }
+            }
+
+            if (hide) {
+                DockableBar dockableBar = getMainFrame().getDockableBarManager().getDockableBar(dockableBarName);
+                dockableBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
+            }
+        }
+    }
+
+
+    @Override
     protected CommandBar createMainMenuBar() {
-        final CommandMenuBar menuBar = new CommandMenuBar("Main Menu");
+        final CommandMenuBar menuBar = new CommandMenuBar(MAIN_MENU_TOOL_BAR_TITLE);
         menuBar.setHidable(false);
         menuBar.setStretch(true);
-      //  menuBar.setOpaque(false);
+        //  menuBar.setOpaque(false);
 
         menuBar.add(createJMenu("file", "File", 'F'));
         menuBar.add(createJMenu("edit", "Edit", 'E'));
@@ -469,24 +514,12 @@ public class SeadasApp extends VisatApp {
     @Override
     protected void initClientUI(com.bc.ceres.core.ProgressMonitor pm) {
         try {
-            pm.beginTask(String.format("Initialising %s UI components", getAppName()), 5);
+            pm.beginTask(String.format("Initialising %s UI components", getAppName()), 18);
 
 //            getMainToolBar().getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             getMainToolBar().setTitle("File");
 
             getMainFrame().getDockableBarManager().setRearrangable(true);
-
-//            List<String> namesT = getMainFrame().getDockableBarManager().getAllDockableBarNames();
-//            DockableBar fileDockableBar = getMainFrame().getDockableBarManager().getDockableBar("mainToolBar");
-//            fileDockableBar.setFloatable(false);
-//            fileDockableBar.setOpaque(false);
-//            fileDockableBar.setStretch(false);
-//            fileDockableBar.setRearrangable(false);
-//            fileDockableBar.setHidable(false);
-//            fileDockableBar.setInitIndex(2);
-//            fileDockableBar.setInitSubindex(0);
-
-
 
 
             CommandBar seadasBandToolsToolBar = createSeadasBandToolsToolBar();
@@ -511,8 +544,6 @@ public class SeadasApp extends VisatApp {
             pm.worked(1);
 
 
-
-
             CommandBar seadasDeluxeToolsToolBar = createSeadasDeluxeToolsToolBar();
             seadasDeluxeToolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasDeluxeToolsToolBar.getContext().setInitIndex(2);
@@ -520,93 +551,40 @@ public class SeadasApp extends VisatApp {
             pm.worked(1);
 
 
-            CommandBar seadasAnalysisToolBar = createSeadasAnalysisToolBar();
-            seadasAnalysisToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            seadasAnalysisToolBar.getContext().setInitIndex(2);
-            //    seadasAnalysisToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
-            getMainFrame().getDockableBarManager().addDockableBar(seadasAnalysisToolBar);
-            pm.worked(1);
+
 
             CommandBar seadasVectorLayersToolBar = createSeadasVectorLayersToolBar();
             seadasVectorLayersToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasVectorLayersToolBar.getContext().setInitIndex(2);
-            seadasVectorLayersToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             getMainFrame().getDockableBarManager().addDockableBar(seadasVectorLayersToolBar);
 
             pm.worked(1);
 
 
-
-
             CommandBar seadasWestDockToolBar = createSeadasWestDockToolBar();
             seadasWestDockToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasWestDockToolBar.getContext().setInitIndex(2);
-            seadasWestDockToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             getMainFrame().getDockableBarManager().addDockableBar(seadasWestDockToolBar);
-////            DockableBar westDockableBar = seadasWestDockToolBar;
-////            westDockableBar.setFloatable(false);
-////            westDockableBar.setOpaque(true);
-////            westDockableBar.setBackground(Color.WHITE);
-////            westDockableBar.setStretch(false);
-////            westDockableBar.setRearrangable(false);
-////            //           westDockableBar.setHidable(false);
-////            westDockableBar.setInitIndex(0);
-////            westDockableBar.setInitSubindex(0);
-////
-////            getMainFrame().getDockableBarManager().addDockableBar(westDockableBar);
-//
-//
-//            pm.worked(1);
-//
-//
+           pm.worked(1);
+
             CommandBar seadasEastDockToolBar = createSeadasEastDockToolBar();
             seadasEastDockToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasEastDockToolBar.getContext().setInitIndex(2);
-            seadasEastDockToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             getMainFrame().getDockableBarManager().addDockableBar(seadasEastDockToolBar);
-////            DockableBar eastDockableBar = seadasEastDockToolBar;
-////            eastDockableBar.setFloatable(false);
-////            eastDockableBar.setOpaque(true);
-////            eastDockableBar.setBackground(Color.WHITE);
-////            eastDockableBar.setStretch(false);
-////            eastDockableBar.setRearrangable(false);
-////            //           westDockableBar.setHidable(false);
-////            eastDockableBar.setInitIndex(0);
-////            eastDockableBar.setInitSubindex(0);
-////            eastDockableBar.setLocation(1000, 1000);
-//
-//
-////            com.jidesoft.action.DockableBarContainer container = getMainFrame().getDockableBarManager().createDockableBarContainer();
-////            container.getDockableBarManager().addDockableBar(seadasGeometriesToolBar);
-////            container.getDockableBarManager().addDockableBar(seadasPinsToolBar);
-////            container.getDockableBarManager().addDockableBar(seadasGcpToolBar);
-////            getMainFrame().getDockableBarManager().addDockableBar(container.);
-//
+          pm.worked(1);
+
+
+//            CommandBar seadasBlankToolBar = createSeadasBlankToolBar();
+//            seadasBlankToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
+//            seadasBlankToolBar.getContext().setInitIndex(2);
+//            getMainFrame().getDockableBarManager().addDockableBar(seadasBlankToolBar);
+//            seadasBlankToolBar.setOpaque(false);
 //            pm.worked(1);
-
-
-
-            CommandBar seadasBlankToolBar = createSeadasBlankToolBar();
-            seadasBlankToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
-            getMainFrame().getDockableBarManager().addDockableBar(seadasBlankToolBar);
-            seadasBlankToolBar.setOpaque(false);
-            pm.worked(1);
 
 
             CommandBar seadasInteractionsToolBar = createSeadasInteractionsToolBar();
             seadasInteractionsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasInteractionsToolBar.getContext().setInitIndex(2);
-
-
-//            DockableBar seadasInteractionsDockableBar = seadasInteractionsToolBar;
-//            seadasInteractionsDockableBar.setFloatable(false);
-//            seadasInteractionsDockableBar.setOpaque(false);
-//            seadasInteractionsDockableBar.setStretch(false);
-//            seadasInteractionsDockableBar.setRearrangable(true);
-//  //          seadasInteractionsDockableBar.setHidable(false);
-//            seadasInteractionsDockableBar.setInitIndex(0);
-//            seadasInteractionsDockableBar.setInitSubindex(0);
-
             getMainFrame().getDockableBarManager().addDockableBar(seadasInteractionsToolBar);
             pm.worked(1);
 
@@ -625,18 +603,23 @@ public class SeadasApp extends VisatApp {
             pm.worked(1);
 
             CommandBar seadasGcpToolBar = createSeadasGCPToolBar();
-            seadasGcpToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
-            seadasGcpToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
+            seadasGcpToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            seadasGcpToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(seadasGcpToolBar);
             pm.worked(1);
 
 
             CommandBar seadasInteractionsExtrasToolBar = createSeadasInteractionsExtrasToolBar();
-            seadasInteractionsExtrasToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_SOUTH);
-            seadasInteractionsExtrasToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
+            seadasInteractionsExtrasToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            seadasInteractionsExtrasToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(seadasInteractionsExtrasToolBar);
             pm.worked(1);
 
+            CommandBar seadasAnalysisToolBar = createSeadasAnalysisToolBar();
+            seadasAnalysisToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            seadasAnalysisToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasAnalysisToolBar);
+            pm.worked(1);
 
 
             // this gets all the plugin toolbars like (time series)
@@ -645,17 +628,14 @@ public class SeadasApp extends VisatApp {
             for (CommandBar viewToolBar : viewToolBars) {
                 if (!VIEWS_TOOL_BAR_ID.equals(viewToolBar.getName())) {
                     viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-                    viewToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
                     viewToolBar.getContext().setInitIndex(2);
                     getMainFrame().getDockableBarManager().addDockableBar(viewToolBar);
                 }
             }
 
 
-
             CommandBar beamMainToolBar = createBeamMainToolBar();
             beamMainToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            beamMainToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             beamMainToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(beamMainToolBar);
             pm.worked(1);
@@ -663,7 +643,6 @@ public class SeadasApp extends VisatApp {
             CommandBar layersToolBar = createLayersToolBar();
             layersToolBar.setTitle("BEAM: Layers");
             layersToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            layersToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             layersToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(layersToolBar);
 
@@ -673,7 +652,6 @@ public class SeadasApp extends VisatApp {
             CommandBar analysisToolBar = createAnalysisToolBar();
             analysisToolBar.setTitle("BEAM: Analysis");
             analysisToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            analysisToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             analysisToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(analysisToolBar);
 
@@ -684,7 +662,6 @@ public class SeadasApp extends VisatApp {
                 if (VIEWS_TOOL_BAR_ID.equals(viewToolBar.getName())) {
                     viewToolBar.setTitle("BEAM: Views");
                     viewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-                    viewToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
                     viewToolBar.getContext().setInitIndex(2);
                     getMainFrame().getDockableBarManager().addDockableBar(viewToolBar);
                 }
@@ -693,7 +670,6 @@ public class SeadasApp extends VisatApp {
 
             CommandBar toolsToolBar = createInteractionsToolBar();
             toolsToolBar.setTitle("BEAM: Interactions");
-            toolsToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
             toolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_EAST);
             toolsToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(toolsToolBar);
@@ -726,13 +702,19 @@ public class SeadasApp extends VisatApp {
                 count++;
             }
 
-        //    seadasVectorLayersToolBar.getContext().setInitMode(DockableBarContext.STATE_HIDDEN);
-
-            getMainFrame().setPreferredSize(new Dimension(1000, 500));
+            getMainFrame().setPreferredSize(new Dimension(1500, 700));
+        //    getMainFrame().setMinimumSize(new Dimension(1500, 700));
 
         } finally {
             pm.done();
         }
+    }
+
+    @Override
+    public void clearStatusBarMessage() {
+ //       super.clearStatusBarMessage();
+
+        setStatusBarMessage("");
     }
 
 }
