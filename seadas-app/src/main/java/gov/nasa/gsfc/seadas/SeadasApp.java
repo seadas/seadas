@@ -397,7 +397,7 @@ public class SeadasApp extends VisatApp {
         addCommandsToToolBar(toolBar, new String[]{
                 NavigationToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
                 WorldMapToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
-                PixelInfoToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                PixelInfoToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX
         });
         toolBar.add(Box.createHorizontalStrut(PADDING));
 
@@ -712,7 +712,7 @@ public class SeadasApp extends VisatApp {
 
     @Override
     public void clearStatusBarMessage() {
- //       super.clearStatusBarMessage();
+        super.clearStatusBarMessage();
 
         setStatusBarMessage("");
     }
