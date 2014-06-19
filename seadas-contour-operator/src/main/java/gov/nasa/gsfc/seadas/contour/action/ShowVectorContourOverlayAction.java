@@ -49,32 +49,32 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
     @Override
     public void actionPerformed(CommandEvent event) {
         VisatApp visatApp = VisatApp.getApp();
-        final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
-        product = visatApp.getSelectedProduct();
-        ProductNode productNode = visatApp.getApp().getSelectedProductNode();
-        ContourDialog contourDialog = new ContourDialog(product, productNode.getName());
-        contourDialog.setVisible(true);
-        contourDialog.dispose();
+                final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
+                product = visatApp.getSelectedProduct();
+                ProductNode productNode = visatApp.getApp().getSelectedProductNode();
+                ContourDialog contourDialog = new ContourDialog(product, productNode.getName());
+                contourDialog.setVisible(true);
+                contourDialog.dispose();
 
-        if (contourDialog.isContourCanceled()) {
-            return;
-        }
+                if (contourDialog.isContourCanceled()) {
+                    return;
+                }
 
-        ContourData contourData = contourDialog.getContourData();
-        if (contourData.isFiltered()) {
-            Band newBand = getFilteredBand(contourData.getBand());
-            contourData.setBand(newBand);
-         }
-        //double scalingFactor = sceneView.getSceneImage().getRasters()[0].getScalingFactor();
-        //double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
-        ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
+                ContourData contourData = contourDialog.getContourData();
+                if (contourData.isFiltered()) {
+                    Band newBand = getFilteredBand(contourData.getBand());
+                    contourData.setBand(newBand);
+                 }
+                //double scalingFactor = sceneView.getSceneImage().getRasters()[0].getScalingFactor();
+                //double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
+                ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
 
-        for (VectorDataNode vectorDataNode : vectorDataNodes) {
-            product.getVectorDataGroup().add(vectorDataNode);
-            if (sceneView != null) {
-                sceneView.setLayersVisible(vectorDataNode);
-            }
-        }
+                for (VectorDataNode vectorDataNode : vectorDataNodes) {
+                    product.getVectorDataGroup().add(vectorDataNode);
+                    if (sceneView != null) {
+                        sceneView.setLayersVisible(vectorDataNode);
+                    }
+                }
     }
 
     @Override
