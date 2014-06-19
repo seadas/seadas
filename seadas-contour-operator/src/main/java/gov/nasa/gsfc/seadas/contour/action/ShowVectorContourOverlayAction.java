@@ -7,6 +7,7 @@ import gov.nasa.gsfc.seadas.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.ui.ContourData;
 import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
 import gov.nasa.gsfc.seadas.contour.ui.ContourInterval;
+import org.esa.beam.framework.datamodel.GeneralFilterBand;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.product.ProductSceneView;
@@ -14,6 +15,7 @@ import org.esa.beam.util.FeatureUtils;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractShowOverlayAction;
+import org.esa.beam.visat.actions.imgfilter.model.Filter;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -216,7 +218,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         if (product.getBand(filteredBandName) != null) {
             return product.getBand(filteredBandName);
         }
-        Filter filter = new GeneralFilter("Mean 5x5", 5, 5, GeneralFilterBand.MEAN);
+        Filter filter = new GeneralFilter("Mean 5x5", 5, 5, GeneralFilterBand.OpType.MEAN);
         Band filteredBand = createFilterBand(filter, filteredBandName);
         return filteredBand;
     }
@@ -263,9 +265,9 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
         int width;
         int height;
-        GeneralFilterBand.Operator operator;
+        GeneralFilterBand.OpType operator;
 
-        public GeneralFilter(String name, int width, int height, GeneralFilterBand.Operator operator) {
+        public GeneralFilter(String name, int width, int height, GeneralFilterBand.OpType operator) {
             super(name);
             this.width = width;
             this.height = height;
@@ -284,24 +286,84 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         }
     }
 
-    private static FilterBand createFilterBand(Filter filter, String bandName) {
-        final RasterDataNode raster = (RasterDataNode) VisatApp.getApp().getSelectedProductNode();
+//    private static FilterBand createFilterBand(Filter filter, String bandName) {
+//        final RasterDataNode raster = (RasterDataNode) VisatApp.getApp().getSelectedProductNode();
+//
+//        final FilterBand filterBand;
+//        if (filter instanceof KernelFilter) {
+//            final KernelFilter kernelFilter = (KernelFilter) filter;
+//            filterBand = new ConvolutionFilterBand(bandName, raster, kernelFilter.kernel,1);
+//        } else {
+//            final GeneralFilter generalFilter = (GeneralFilter) filter;
+//            filterBand = new GeneralFilterBand(bandName, raster, generalFilter.operator,generalFilter,1 );
+//        }
+//        final String descr = MessageFormat.format("Filter ''{0}'' applied to ''{1}''",
+//                filter.toString(),
+//                raster.getName());
+//        filterBand.setDescription(descr);
+//        raster.getProduct().addBand(filterBand);
+//        filterBand.fireProductNodeDataChanged();
+//        return filterBand;
+//    }
+    private static FilterBand createFilterBand(org.esa.beam.visat.actions.imgfilter.model.Filter filter, String bandName, int iterationCount) {
+        RasterDataNode sourceRaster = (RasterDataNode) VisatApp.getApp().getSelectedProductNode();
 
-        final FilterBand filterBand;
-        if (filter instanceof KernelFilter) {
-            final KernelFilter kernelFilter = (KernelFilter) filter;
-            filterBand = new ConvolutionFilterBand(bandName, raster, kernelFilter.kernel);
+        FilterBand targetBand;
+        Product product = sourceRaster.getProduct();
+
+        if (filter.getOperation() == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.CONVOLVE) {
+            targetBand = new ConvolutionFilterBand(bandName, sourceRaster, getKernel(filter), iterationCount);
+            if (sourceRaster instanceof Band) {
+                ProductUtils.copySpectralBandProperties((Band) sourceRaster, targetBand);
+            }
         } else {
-            final GeneralFilter generalFilter = (GeneralFilter) filter;
-            filterBand = new GeneralFilterBand(bandName, raster, generalFilter.width, generalFilter.operator);
+            GeneralFilterBand.OpType opType = getOpType(filter.getOperation());
+            targetBand = new GeneralFilterBand(bandName, sourceRaster, opType, getKernel(filter), iterationCount);
+            if (sourceRaster instanceof Band) {
+                ProductUtils.copySpectralBandProperties((Band) sourceRaster, targetBand);
+            }
         }
-        final String descr = MessageFormat.format("Filter ''{0}'' applied to ''{1}''",
-                filter.toString(),
-                raster.getName());
-        filterBand.setDescription(descr);
-        raster.getProduct().addBand(filterBand);
-        filterBand.fireProductNodeDataChanged();
-        return filterBand;
+
+        targetBand.setDescription(String.format("Filter '%s' (=%s) applied to '%s'", filter.getName(), filter.getOperation(), sourceRaster.getName()));
+        if (sourceRaster instanceof Band) {
+            ProductUtils.copySpectralBandProperties((Band) sourceRaster, targetBand);
+        }
+        product.addBand(targetBand);
+        targetBand.fireProductNodeDataChanged();
+        return targetBand;
     }
+
+    private static Kernel getKernel(org.esa.beam.visat.actions.imgfilter.model.Filter filter) {
+        return new Kernel(filter.getKernelWidth(),
+                filter.getKernelHeight(),
+                filter.getKernelOffsetX(),
+                filter.getKernelOffsetY(),
+                1.0 / filter.getKernelQuotient(),
+                filter.getKernelElements());
+    }
+    static GeneralFilterBand.OpType getOpType(org.esa.beam.visat.actions.imgfilter.model.Filter.Operation operation) {
+        if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.OPEN) {
+            return GeneralFilterBand.OpType.OPENING;
+        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.CLOSE) {
+            return GeneralFilterBand.OpType.CLOSING;
+        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.ERODE) {
+            return GeneralFilterBand.OpType.EROSION;
+        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.DILATE) {
+            return GeneralFilterBand.OpType.DILATION;
+        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.MIN) {
+            return GeneralFilterBand.OpType.MIN;
+        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.MAX) {
+            return GeneralFilterBand.OpType.MAX;
+        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.MEAN) {
+            return GeneralFilterBand.OpType.MEAN;
+        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.MEDIAN) {
+            return GeneralFilterBand.OpType.MEDIAN;
+        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.STDDEV) {
+            return GeneralFilterBand.OpType.STDDEV;
+        } else {
+            throw new IllegalArgumentException("illegal operation: " + operation);
+        }
+    }
+
 }
 

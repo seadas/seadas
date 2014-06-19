@@ -83,7 +83,7 @@ public class ContourLayer extends Layer {
                     drawLinePaths(g2d, linePaths);
                 }
                 if (isTextEnabled()) {
-                    final Graticule.TextGlyph[] textGlyphs = graticule.getTextGlyphs();
+                    final Graticule.TextGlyph[] textGlyphs = graticule.getTextGlyphsEast();
                     if (textGlyphs != null) {
                         drawTextLabels(g2d, textGlyphs);
                     }
