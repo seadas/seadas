@@ -10,10 +10,13 @@ import javax.help.DefaultHelpBroker;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.*;
+import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,45 +26,117 @@ import java.text.DecimalFormat;
  * To change this template use File | Settings | File Templates.
  */
 public class ContourDialog extends JDialog {
-
-    private ContourData contourData = null;
+    static final String CONTOUR_LINE_COLOR_PROPERTY = "contourLineColor";
+    static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
+    static final String DELETE_BUTTON_PRESSED_PROPERTY = "deleteButtonPressed";
+    private ContourData contourData;
     private Component helpButton = null;
     private HelpBroker helpBroker = null;
 
     private final static String HELP_ID = "contourLines";
-    private final static String HELP_ICON = "icons/Help24.gif";
+    private final static String HELP_ICON = "action/Help24.gif";
 
     private Product product;
 
     Band selectedBand;
-    Double startValue, minValue;
-    Double endValue, maxValue;
     int numberOfLevels;
-    //boolean log;
 
-    //UI components
-    JTextField minValueField, maxValueField, numLevelsField;
     JComboBox bandComboBox;
-    JCheckBox logCheckBox;
+    ArrayList<ContourData> contours;
 
-    public ContourDialog(ContourData contourData, Product product) {
-        this.contourData = contourData;
+    private SwingPropertyChangeSupport propertyChangeSupport;
+
+    JPanel contourPanel;
+    boolean filterBand;
+    private boolean contourCanceled;
+
+    public ContourDialog(Product product, String selectedBandName) {
         this.product = product;
 
         initHelpBroker();
 
+        propertyChangeSupport = new SwingPropertyChangeSupport(this);
+
         if (helpBroker != null) {
-            helpButton = getHelpButton(HELP_ID);
+            //helpButton = getHelpButton(HELP_ID);
         }
-        selectedBand = product.getBandAt(0);
-        setMaxValue(selectedBand.getStx().getMax());
-        setMinValue(selectedBand.getStx().getMin());
+
+        //selectedBand = product.getBandAt(0);
+        selectedBand = product.getBand(selectedBandName);
+        contourData = new ContourData(selectedBand);
+        //updateContourData();
+//        setMaxValue(new Double(CommonUtilities.round(selectedBand.getStx().getMax(), 3)));
+//        setMinValue(new Double(CommonUtilities.round(selectedBand.getStx().getMin(), 3)));
         numberOfLevels = 1;
+        contours = new ArrayList<ContourData>();
+        propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
+        propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
+        filterBand = selectedBandName.indexOf("filtered") == -1 ? true : false;
         createContourUI();
+        contourCanceled = false;
     }
 
-    public ContourDialog(Product product) {
-        this(null, product);
+    private PropertyChangeListener getBandPropertyListener() {
+        return new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                for (ContourData contourData1:contours) {
+                    contourData1.setBand(selectedBand);
+                }
+            }
+        };
+    }
+
+    private PropertyChangeListener getDeleteButtonPropertyListener() {
+        return new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                Component[] components = contourPanel.getComponents();
+                for (Component component : components) {
+                    if (component instanceof JPanel) {
+
+                        Component[] jPanelComponents = ((JPanel) component).getComponents();
+                        for (Component jPanelComponent : jPanelComponents) {
+                            if (component instanceof JPanel && ((JPanel) jPanelComponent).getComponents().length == 0) {
+                                ((JPanel) component).remove(jPanelComponent);
+                            }
+                        }
+                    }
+                    contourPanel.validate();
+                    contourPanel.repaint();
+                }
+            }
+        };
+    }
+
+        @Override
+        public void addPropertyChangeListener (String name, PropertyChangeListener listener){
+            propertyChangeSupport.addPropertyChangeListener(name, listener);
+        }
+
+        @Override
+        public void removePropertyChangeListener (String name, PropertyChangeListener listener){
+            propertyChangeSupport.removePropertyChangeListener(name, listener);
+        }
+
+
+    public SwingPropertyChangeSupport getPropertyChangeSupport() {
+        return propertyChangeSupport;
+    }
+
+    public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
+        }
+    }
+
+    public void clearPropertyChangeSupport() {
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
+        }
+
     }
 
     protected Component getHelpButton(String helpId) {
@@ -99,42 +174,70 @@ public class ContourDialog extends JDialog {
     }
 
 
-    public final void createContourUI() {
+    public final JPanel createContourUI() {
 
 
         final int rightInset = 5;
 
-        JPanel contourPanel = new JPanel(new GridBagLayout());
+        contourPanel = new JPanel(new GridBagLayout());
+
         contourPanel.setBorder(BorderFactory.createTitledBorder(""));
 
+        final JPanel contourContainerPanel = new JPanel(new GridBagLayout());
+
+        final JPanel basicPanel = getContourPanel();
+
+        contourContainerPanel.add(basicPanel,
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         JButton addButton = new JButton("+");
         addButton.setPreferredSize(addButton.getPreferredSize());
         addButton.setMinimumSize(addButton.getPreferredSize());
         addButton.setMaximumSize(addButton.getPreferredSize());
+        addButton.setName("addButton");
 
         addButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                dispose();
+                JPanel addedPanel = getContourPanel();
+                ((JButton) event.getSource()).getParent().add(addedPanel);
+                JPanel c = (JPanel) ((JButton) event.getSource()).getParent();
+                JPanel jPanel = (JPanel) c.getComponents()[0];
+                int numPanels = jPanel.getComponents().length;
+                jPanel.add(addedPanel,
+                        new ExGridBagConstraints(0, numPanels, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+                repaint();
+                pack();
             }
         });
 
+        contourContainerPanel.addPropertyChangeListener("deleteButtonPressed", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                Component[] components = contourContainerPanel.getComponents();
+                for (Component component : components) {
+                    if (((JPanel) component).getComponents().length == 0) {
+                        contourContainerPanel.remove(component);
+                    }
+                }
+                contourContainerPanel.validate();
+                contourContainerPanel.repaint();
+            }
+        });
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
-        JPanel basicPanel = getBasicPanel();
 
-        basicPanel.add(addButton,
+        contourPanel.add(contourContainerPanel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-
-        mainPanel.add(getBandPanel(),
+        contourPanel.add(addButton,
+                new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        mainPanel.add(getFilterPanel(),
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
-        mainPanel.add(basicPanel,
+        mainPanel.add(contourPanel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
         mainPanel.add(getControllerPanel(),
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-
 
         add(mainPanel);
 
@@ -142,16 +245,12 @@ public class ContourDialog extends JDialog {
         setModalityType(ModalityType.APPLICATION_MODAL);
 
 
-        setTitle("Contour Lines");
+        setTitle("Contour Lines for " + selectedBand.getName() );
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
 
-
-        setPreferredSize(getPreferredSize());
-        setMinimumSize(getPreferredSize());
-        setMaximumSize(getPreferredSize());
-        setSize(getPreferredSize());
+        return mainPanel;
     }
 
     private JPanel getBandPanel() {
@@ -159,20 +258,31 @@ public class ContourDialog extends JDialog {
 
         JPanel bandPanel = new JPanel(new GridBagLayout());
 
+        final JCheckBox filterBox = new JCheckBox("Filter 5x5");
         String[] productList = product.getBandNames();
         JLabel bandLabel = new JLabel("Product:");
         bandComboBox = new JComboBox(productList);
-
+        bandComboBox.setSelectedIndex(product.getBandIndex(selectedBand.getName()));
         bandComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                String oldBandName = selectedBand.getName();
                 selectedBand = product.getBand((String) bandComboBox.getSelectedItem());
-                setMaxValue(selectedBand.getStx().getMaximum());
-                setMinValue(selectedBand.getStx().getMinimum());
-                contourData.setBand(selectedBand);
+                propertyChangeSupport.firePropertyChange(NEW_BAND_SELECTED_PROPERTY, oldBandName, selectedBand.getName());
+                filterBand =  selectedBand.getName().indexOf("filtered") == -1 ? true : false;
+                filterBox.setSelected(filterBand);
+                filterBox.setEnabled(filterBand);
             }
         });
 
+        filterBox.setSelected(filterBand);
+        filterBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                filterBand = filterBox.isSelected();
+                //contourData.setFiltered(filterBox.isSelected());
+            }
+        });
         JLabel filler = new JLabel("                                              ");
 
         bandPanel.add(filler,
@@ -181,9 +291,27 @@ public class ContourDialog extends JDialog {
                 new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         bandPanel.add(bandComboBox,
                 new ExGridBagConstraints(2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+        bandPanel.add(filterBox,
+                        new ExGridBagConstraints(3, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
         return bandPanel;
     }
 
+
+    private JPanel getFilterPanel(){
+        final JCheckBox filterBox = new JCheckBox("Filter 5x5");
+        filterBox.setSelected(true);
+        filterBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                filterBand = filterBox.isSelected();
+                //contourData.setFiltered(filterBox.isSelected());
+            }
+        });
+
+        JPanel filterPanel = new JPanel(new BorderLayout());
+        filterPanel.add(filterBox, BorderLayout.CENTER);
+        return filterPanel;
+    }
 
     private JPanel getControllerPanel() {
         JPanel controllerPanel = new JPanel(new GridBagLayout());
@@ -194,12 +322,9 @@ public class ContourDialog extends JDialog {
         createContourLines.setMaximumSize(createContourLines.getPreferredSize());
         createContourLines.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (bandComboBox.getSelectedItem() != null) {
-                    String bandName = (String) bandComboBox.getSelectedItem();
-                    selectedBand = product.getBand((String) bandComboBox.getSelectedItem());
-                }
-                contourData.setBand(selectedBand);
-                contourData.createContourLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
+//                if (contourData.getContourIntervals().size() == 0) {
+//                    contourData.createContourLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
+//                }
                 dispose();
             }
         });
@@ -210,6 +335,7 @@ public class ContourDialog extends JDialog {
         cancelButton.setMaximumSize(cancelButton.getPreferredSize());
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                contourCanceled = true;
                 dispose();
             }
         });
@@ -223,176 +349,55 @@ public class ContourDialog extends JDialog {
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         controllerPanel.add(createContourLines,
                 new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        controllerPanel.add(helpButton,
-                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+//        controllerPanel.add(helpButton,
+//                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         //createContourLines.setAlignmentX(0.5f);
         return controllerPanel;
     }
 
-
-    private JPanel getBasicPanel() {
-
-        final int rightInset = 5;
-
-        JPanel contourPanel = new JPanel(new GridBagLayout());
-        contourPanel.setBorder(BorderFactory.createTitledBorder(""));
-
-        minValueField = new JFormattedTextField(new DecimalFormat("#0.000"));
-        minValueField.setColumns(4);
-        minValueField.setPreferredSize(minValueField.getPreferredSize());
-        minValueField.setMaximumSize(minValueField.getPreferredSize());
-        minValueField.setMinimumSize(minValueField.getPreferredSize());
-        minValueField.setText(minValue.toString());
-        minValueField.setName("Start Value");
-
-        minValueField.addActionListener(new ActionListener() {
+    private JPanel getContourPanel() {
+        ContourIntervalDialog contourIntervalDialog = new ContourIntervalDialog(selectedBand);
+        contourIntervalDialog.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, new PropertyChangeListener() {
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                setMinValue(new Double(minValueField.getText()));
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                propertyChangeSupport.firePropertyChange(DELETE_BUTTON_PRESSED_PROPERTY, true, false);
             }
         });
-
-        maxValueField = new JFormattedTextField(new DecimalFormat("#0.000"));
-        maxValueField.setColumns(4);
-        maxValueField.setPreferredSize(maxValueField.getPreferredSize());
-        maxValueField.setMaximumSize(maxValueField.getPreferredSize());
-        maxValueField.setMinimumSize(maxValueField.getPreferredSize());
-        maxValueField.setText(maxValue.toString());
-        maxValueField.setName("End Value");
-
-
-        maxValueField.addActionListener(new ActionListener() {
+        contourIntervalDialog.addPropertyChangeListener(ContourIntervalDialog.CONTOUR_DATA_CHANGED_PROPERTY, new PropertyChangeListener() {
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-
-                setMaxValue(new Double(maxValueField.getText()));
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                for (ContourData contourData : contours) {
+                    contourData.createContourLevels();
+                }
             }
         });
-
-        numLevelsField = new JFormattedTextField();
-        numLevelsField.setColumns(2);
-        numLevelsField.setPreferredSize(numLevelsField.getPreferredSize());
-        numLevelsField.setMaximumSize(numLevelsField.getPreferredSize());
-        numLevelsField.setMinimumSize(numLevelsField.getPreferredSize());
-        numLevelsField.setName("Number of Levels");
-
-        numLevelsField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                setNumberOfLevels(new Integer(numLevelsField.getText()));
-            }
-        });
-
-
-        logCheckBox = new JCheckBox();
-        logCheckBox.setName("log checkbox");
-
-//        logCheckBox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//                if (logCheckBox.isSelected()) {
-//                    log = true;
-//                } else {
-//                    log = false;
-//                }
-//            }
-//        });
-
-
-        JLabel filler = new JLabel("      ");
-        contourPanel.add(new JLabel("Start Value:"),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-        contourPanel.add(minValueField,
-                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        contourPanel.add(filler,
-                new ExGridBagConstraints(2, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-        contourPanel.add(new JLabel("End Value:"),
-                new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-        contourPanel.add(maxValueField,
-                new ExGridBagConstraints(4, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        contourPanel.add(filler,
-                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-        contourPanel.add(new JLabel("# of Levels:"),
-                new ExGridBagConstraints(6, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-        contourPanel.add(numLevelsField,
-                new ExGridBagConstraints(7, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        contourPanel.add(filler,
-                new ExGridBagConstraints(8, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-        contourPanel.add(new JLabel("Log"),
-                new ExGridBagConstraints(9, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-        contourPanel.add(logCheckBox,
-                new ExGridBagConstraints(10, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        JButton customize = new JButton("Customize");
-        customize.setPreferredSize(customize.getPreferredSize());
-        customize.setMinimumSize(customize.getPreferredSize());
-        customize.setMaximumSize(customize.getPreferredSize());
-
-
-        customize.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent event) {
-                //contourData.setCreateMasks(true);
-                //dispose();
-            }
-        });
-
-        contourPanel.add(filler,
-                new ExGridBagConstraints(11, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
-        contourPanel.add(customize,
-                new ExGridBagConstraints(12, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-        return contourPanel;
+        contours.add(contourIntervalDialog.getContourData());
+        return contourIntervalDialog.getBasicPanel();
     }
 
-    private void setMinValue(Double minValue) {
-        this.minValue = minValue;
+
+    public ContourData getContourData() {
+
+        return getContourData(contours);
     }
 
-    private Double getMinValue() {
-        Double minValue;
-
-        if (minValueField.getText().trim().isEmpty()) {
-            minValue = selectedBand.getStx().getMaximum();
-        } else {
-            minValue = new Double(minValueField.getText());
+    public ContourData getContourData(ArrayList<ContourData> contours) {
+        ContourData mergedContourData = new ContourData(selectedBand);
+        ArrayList<ContourInterval> contourIntervals = new ArrayList<ContourInterval>();
+        for (ContourData contourData : contours) {
+            contourIntervals.addAll(contourData.getContourIntervals());
         }
-        return minValue;
+        mergedContourData.setContourIntervals(contourIntervals);
+        mergedContourData.setFiltered(filterBand);
+        return mergedContourData;
     }
 
-    private void setMaxValue(Double maxValue) {
-        this.maxValue = maxValue;
+
+    public boolean isContourCanceled() {
+        return contourCanceled;
     }
 
-    private Double getMaxValue() {
-        Double maxValue;
-        if (maxValueField.getText().trim().isEmpty()) {
-            maxValue = selectedBand.getStx().getMaximum();
-        } else {
-            maxValue = new Double(maxValueField.getText());
-        }
-        return maxValue;
-    }
-
-    private void setNumberOfLevels(int numberOfLevels) {
-        this.numberOfLevels = numberOfLevels;
-    }
-
-    private int getNumberOfLevels() {
-        if (!numLevelsField.getText().trim().isEmpty()) {
-            numberOfLevels = new Integer(numLevelsField.getText());
-        }
-        return numberOfLevels;
+    public void setContourCanceled(boolean contourCanceled) {
+        this.contourCanceled = contourCanceled;
     }
 }
