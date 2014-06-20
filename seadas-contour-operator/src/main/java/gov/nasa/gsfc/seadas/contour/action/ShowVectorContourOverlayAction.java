@@ -5,8 +5,8 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import gov.nasa.gsfc.seadas.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
-import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
+import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.framework.ui.command.CommandEvent;
@@ -64,7 +64,9 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         ContourData contourData = contourDialog.getContourData();
         if (contourData.isFiltered()) {
             Band newBand = getFilteredBand(contourData.getBand());
-            contourData.setBand(newBand);
+            if (newBand != null) {
+                contourData.setBand(newBand);
+            }
         }
         //double scalingFactor = sceneView.getSceneImage().getRasters()[0].getScalingFactor();
         //double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
@@ -218,11 +220,11 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
             return product.getBand(filteredBandName);
         }
         final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
-         if (dialogData == null) {
-             return null;
-         }
-         final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
-         return filterBand;
+        if (dialogData == null) {
+            return null;
+        }
+        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
+        return filterBand;
     }
 
 //    private FilterBand createFilteredBand() {
