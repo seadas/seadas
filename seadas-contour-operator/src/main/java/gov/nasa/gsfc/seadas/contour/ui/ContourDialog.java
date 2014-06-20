@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.contour.ui;
 
+import gov.nasa.gsfc.seadas.contour.data.ContourData;
+import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.help.HelpSys;

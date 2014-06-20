@@ -17,20 +17,19 @@ package gov.nasa.gsfc.seadas;
 
 import com.jidesoft.action.CommandBar;
 import com.jidesoft.action.CommandMenuBar;
-import com.jidesoft.action.DockableBarContext;
 import com.jidesoft.action.DockableBar;
-import org.esa.beam.framework.datamodel.*;
+import com.jidesoft.action.DockableBarContext;
+import org.esa.beam.framework.datamodel.PlacemarkDescriptor;
+import org.esa.beam.framework.datamodel.PlacemarkDescriptorRegistry;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
 import org.esa.beam.framework.ui.application.ToolViewDescriptor;
 import org.esa.beam.framework.ui.command.Command;
 import org.esa.beam.framework.ui.command.ToolCommand;
-import org.esa.beam.framework.ui.product.ProductSceneView;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 import org.esa.beam.visat.ProductsToolView;
 import org.esa.beam.visat.VisatActivator;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.toolviews.imageinfo.ColorManipulationToolView;
-import org.esa.beam.visat.toolviews.layermanager.LayerEditorToolView;
 import org.esa.beam.visat.toolviews.mask.MaskManagerToolView;
 import org.esa.beam.visat.toolviews.nav.NavigationToolView;
 import org.esa.beam.visat.toolviews.pixelinfo.PixelInfoToolView;
@@ -42,8 +41,10 @@ import org.esa.beam.visat.toolviews.worldmap.WorldMapToolView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The <code>SeadasApp</code> class represents the SeaDAS UI application.
@@ -163,7 +164,8 @@ public class SeadasApp extends VisatApp {
                 layerEditorToolViewCommandId,
                 "showWorldMapOverlay",
                 "showNoDataOverlay",
-                "showGraticuleOverlay"
+                "showGraticuleOverlay",
+                "showContourOverlay"
                ));
 
         addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));

@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.contour.ui;
+package gov.nasa.gsfc.seadas.contour.data;
 
 import java.awt.*;
 import java.text.DecimalFormat;

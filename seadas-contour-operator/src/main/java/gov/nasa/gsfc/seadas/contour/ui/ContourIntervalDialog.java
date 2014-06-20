@@ -6,6 +6,8 @@ import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.Binding;
 import com.bc.ceres.swing.binding.BindingContext;
 import com.jidesoft.combobox.ColorComboBox;
+import gov.nasa.gsfc.seadas.contour.data.ContourData;
+import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.util.CommonUtilities;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.ui.ColorComboBoxAdapter;
