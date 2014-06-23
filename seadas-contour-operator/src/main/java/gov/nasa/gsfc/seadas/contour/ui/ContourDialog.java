@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.contour.ui;
 
+import gov.nasa.gsfc.seadas.contour.data.ContourData;
+import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.help.HelpSys;
@@ -58,7 +60,7 @@ public class ContourDialog extends JDialog {
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
         if (helpBroker != null) {
-            //helpButton = getHelpButton(HELP_ID);
+            helpButton = getHelpButton(HELP_ID);
         }
 
         //selectedBand = product.getBandAt(0);
@@ -349,9 +351,8 @@ public class ContourDialog extends JDialog {
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         controllerPanel.add(createContourLines,
                 new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-//        controllerPanel.add(helpButton,
-//                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        //createContourLines.setAlignmentX(0.5f);
+        controllerPanel.add(helpButton,
+                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         return controllerPanel;
     }
 

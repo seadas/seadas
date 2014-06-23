@@ -4,9 +4,9 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
+import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.Variable;
-import ucar.nc2.Attribute;
 
 import java.io.IOException;
 import java.util.List;
@@ -128,15 +128,19 @@ public class L2FileReader extends SeadasFileReader {
         String res = null;
         String sensor = null;
         try {
-            sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name").getData().getElemString();
+            sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("instrument").getData().getElemString();
         } catch (Exception ignore) {
             try{
-                sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("instrument").getData().getElemString();
+                sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name").getData().getElemString();
             } catch(Exception ignored) {}
         }
         try {
-            res = product.getMetadataRoot().getElement("Input_Parameters").getAttribute("RESOLUTION").getData().getElemString();
-        } catch (Exception ignored) {}
+            res = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("spatialResolution").getData().getElemString();
+        } catch (Exception ignore) {
+            try{
+                res = product.getMetadataRoot().getElement("Input_Parameters").getAttribute("RESOLUTION").getData().getElemString();
+            } catch(Exception ignored) {}
+        }
 
         if(sensor != null) {
             sensor = sensor.toLowerCase();
@@ -146,9 +150,9 @@ public class L2FileReader extends SeadasFileReader {
             } else if(sensor.contains("modis")) {
                 int scanHeight = 10;
                 if(res != null) {
-                    if(res.equals("500")) {
+                    if(res.equals("500 m") || res.equals("500")) {
                         scanHeight = 20;
-                    } else if(res.equals("250")) {
+                    } else if(res.equals("250 m") || res.equals("250")) {
                         scanHeight = 40;
                     }
                 }
@@ -172,7 +176,7 @@ public class L2FileReader extends SeadasFileReader {
             lonBand.setNoDataValue(-999.);
             latBand.setNoDataValueUsed(true);
             lonBand.setNoDataValueUsed(true);
-            product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, scanHeight, 0));
+            product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, scanHeight));
         } else {
             String navGroup = "Navigation_Data";
             final String cntlPoints = "cntl_pt_cols";
@@ -191,7 +195,6 @@ public class L2FileReader extends SeadasFileReader {
             if (scanHeight == 20) {
                 offsetY = 0.5f;
             } else if (scanHeight == 40) {
-
                 offsetY = 1.5f;
             } else {
                 offsetY = 0f;

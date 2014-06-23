@@ -23,9 +23,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 
 <parent>
     <groupId>gov.nasa.gsfc.seadas</groupId>
-    <artifactId>seadas-system</artifactId>
-    <version>7.0.2</version>
-    <relativePath>../seadas-system/pom.xml</relativePath>
+    <artifactId>seadas</artifactId>
+    <version>7.1</version>
 </parent>
 
 <name>SeaDAS Installer</name>

@@ -5,10 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>seadas-plugin-parent</artifactId>
+        <artifactId>seadas</artifactId>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <version>1.0</version>
-        <relativePath>../seadas-plugin-parent/pom.xml</relativePath>
+        <version>7.1</version>
     </parent>
 
     <artifactId>seadas-processing</artifactId>

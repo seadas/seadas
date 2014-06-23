@@ -61,6 +61,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
 
         VisatApp visatApp = VisatApp.getApp();
+        visatApp.setStatusBarMessage("Initializing L2gen GUI");
         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
                 masterData.getGuiName()) {
 
@@ -145,6 +146,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
 
         masterData.setInitialized(true);
+        visatApp.clearStatusBarMessage();
 
     }
 

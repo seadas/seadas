@@ -104,9 +104,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                 ncfile = NetcdfFile.open(file.getPath());
                 Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase("Title");
 
-                if (ncfile.findGroup("Level-3_Binned_Data") == null) {
-                    return DecodeQualification.UNABLE;
-                }
+
 
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
                 Boolean isSeadasMapped = false;
@@ -117,6 +115,9 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
 
                 if (titleAttribute != null ) {
                         final String title = titleAttribute.getStringValue();
+                        if (!title.contains("Mapped") && ncfile.findGroup("Level-3_Binned_Data") == null) {
+                            return DecodeQualification.UNABLE;
+                        }
                         if (title != null) {
                             if (supportedProductTypeSet.contains(title.trim())) {
                                 if (DEBUG) {

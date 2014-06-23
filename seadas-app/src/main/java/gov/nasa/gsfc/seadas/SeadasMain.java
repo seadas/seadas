@@ -59,14 +59,16 @@ public class SeadasMain implements RuntimeRunnable {
      * @throws Exception if an error occurs
      */
     @Override
-    public void run(Object argument, ProgressMonitor progressMonitor) throws Exception {
+    public void run(Object argument, final ProgressMonitor progressMonitor) throws Exception {
 
         String[] args = new String[0];
         if (argument instanceof String[]) {
             args = (String[]) argument;
         }
 
-        Locale.setDefault(Locale.UK); // Force usage of British English locale
+        Locale.setDefault(Locale.US); // Force usage of US English locale
+
+//        Lm.verifyLicense("Brockmann Consult", "BEAM", "lCzfhklpZ9ryjomwWxfdupxIcuIoCxg2");
 
         Lm.verifyLicense("NASA GSFC", "SeaDAS", "HYG8VYydWJkjk8XvjVYl9n0UaYy61tb2");
         if (SystemInfo.isMacOSX()) {
@@ -88,7 +90,7 @@ public class SeadasMain implements RuntimeRunnable {
         }
 
         boolean debugEnabled = false;
-        ArrayList<String> productFilepathList = new ArrayList<String>();
+        final ArrayList<String> productFilepathList = new ArrayList<>();
         String sessionFile = null;
         for (String arg : args) {
             if (arg.startsWith("-")) {
@@ -116,20 +118,33 @@ public class SeadasMain implements RuntimeRunnable {
                 }
             });
         }
-        SeadasApp app = createApplication(applicationDescriptor);
-        app.startUp(progressMonitor);
-        openSession(app, sessionFile);
-        openProducts(app, productFilepathList);
-        CommandManager commandManager = app.getApplicationPage().getCommandManager();
-        Command c = commandManager.getCommand("install_ocssw.py");
-        if (c != null) {
-            if (isOCSSWExist()) {
-                c.setText("Update Processors");
-            } else {
-                c.setText("Install Processors");
+
+        final String finalSessionFile = sessionFile;
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final SeadasApp app = createApplication(applicationDescriptor);
+        			app.startUp(progressMonitor);
+                    openSession(app, finalSessionFile);
+        			openProducts(app, productFilepathList);
+
+                    CommandManager commandManager = app.getApplicationPage().getCommandManager();
+                    Command c = commandManager.getCommand("install_ocssw.py");
+                    if (c != null) {
+                        if (isOCSSWExist()) {
+                            c.setText("Update Processors");
+                        } else {
+                            c.setText("Install Processors");
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
+        });
     }
+
 
     private boolean isOCSSWExist() {
         String dirPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));

@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.contour.ui;
+package gov.nasa.gsfc.seadas.contour.data;
 
 import org.esa.beam.framework.datamodel.Band;
 
@@ -20,6 +20,7 @@ public class ContourData {
     private ArrayList<ContourInterval> contourIntervals;
     Band band;
     int bandIndex;
+    static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
     static final String CONTOUR_LINES_BASE_NAME = "contour_";
     String contourBaseName;
     private Double startValue;
@@ -125,7 +126,7 @@ public class ContourData {
         String oldBandName = this.band.getName();
         this.band = band;
         contourBaseName = CONTOUR_LINES_BASE_NAME + band.getName() + "_";
-        propertyChangeSupport.firePropertyChange(ContourDialog.NEW_BAND_SELECTED_PROPERTY, oldBandName, band.getName());
+        propertyChangeSupport.firePropertyChange(NEW_BAND_SELECTED_PROPERTY, oldBandName, band.getName());
     }
 
     public Band getBand() {

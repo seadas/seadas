@@ -63,16 +63,41 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
         }
 
 
+//        final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
+//        lwcButton.setToolTipText(TOOL_TIP);
+//
+//        visatApp.getMainFrame().addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowOpened(WindowEvent e) {
+//                CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
+//                layersBar.add(lwcButton);
+//            }
+//        });
+
         final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
         lwcButton.setToolTipText(TOOL_TIP);
+
+        final AbstractButton lwcButton2 = visatApp.createToolButton(COMMAND_ID);
+        lwcButton2.setToolTipText(TOOL_TIP);
 
         visatApp.getMainFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
                 CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
-                layersBar.add(lwcButton);
+                if (layersBar != null) {
+                    layersBar.add(lwcButton);
+                }
+
+
+                CommandBar seadasDefaultBar = visatApp.getToolBar("seadasDeluxeToolsToolBar");
+                if (seadasDefaultBar != null) {
+                    seadasDefaultBar.add(lwcButton2);
+                }
             }
+
         });
+
+
     }
 
 

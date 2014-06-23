@@ -84,11 +84,22 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
         final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
         lwcButton.setToolTipText(TOOL_TIP);
 
+        final AbstractButton lwcButton2 = visatApp.createToolButton(COMMAND_ID);
+        lwcButton2.setToolTipText(TOOL_TIP);
+
         visatApp.getMainFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
                 CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
-                layersBar.add(lwcButton);
+                if (layersBar != null) {
+                    layersBar.add(lwcButton);
+                }
+
+
+                CommandBar seadasDefaultBar = visatApp.getToolBar("seadasDeluxeToolsToolBar");
+                if (seadasDefaultBar != null) {
+                    seadasDefaultBar.add(lwcButton2);
+                }
             }
 
         });
@@ -246,11 +257,12 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                                     +1, +1, +1,
                                                     +1, +1, +1,
                                             });
-
+//todo: 4th argument to ConvolutionFilterBand is a dummy value added to make it compile...may want to look at this...
+                                    int count = 1;
                                     final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
                                             landMasksData.getWaterFractionSmoothedName(),
                                             waterFractionBand,
-                                            arithmeticMean3x3Kernel);
+                                            arithmeticMean3x3Kernel, count);
 
                                     product.addBand(filteredCoastlineBand);
 

@@ -6,6 +6,8 @@ import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.Binding;
 import com.bc.ceres.swing.binding.BindingContext;
 import com.jidesoft.combobox.ColorComboBox;
+import gov.nasa.gsfc.seadas.contour.data.ContourData;
+import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.util.CommonUtilities;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.ui.ColorComboBoxAdapter;
@@ -52,8 +54,8 @@ public class ContourIntervalDialog extends JDialog {
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
             }
         });
-        setMaxValue(new Double(CommonUtilities.round(selectedBand.getStx().getMax(), 3)));
-        setMinValue(new Double(CommonUtilities.round(selectedBand.getStx().getMin(), 3)));
+        setMaxValue(new Double(CommonUtilities.round(selectedBand.getStx().getMaximum(), 3)));
+        setMinValue(new Double(CommonUtilities.round(selectedBand.getStx().getMinimum(), 3)));
         contourData.createContourLevels();
     }
 
@@ -61,8 +63,8 @@ public class ContourIntervalDialog extends JDialog {
 
     public void setBand(Band newBand){
         numberOfLevels = 1;
-        setMaxValue(new Double(CommonUtilities.round(newBand.getStx().getMax(), 3)));
-        setMinValue(new Double(CommonUtilities.round(newBand.getStx().getMin(), 3)));
+        setMaxValue(new Double(CommonUtilities.round(newBand.getStx().getMaximum(), 3)));
+        setMinValue(new Double(CommonUtilities.round(newBand.getStx().getMinimum(), 3)));
         minValueField.setText(new Double(getMinValue()).toString());
         maxValueField.setText(new Double(getMaxValue()).toString());
     }
