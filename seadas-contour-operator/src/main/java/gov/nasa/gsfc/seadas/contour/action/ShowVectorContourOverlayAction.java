@@ -4,18 +4,18 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import gov.nasa.gsfc.seadas.ContourDescriptor;
-import gov.nasa.gsfc.seadas.contour.data.ContourData;
-import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
+import gov.nasa.gsfc.seadas.contour.ui.ContourData;
 import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
+import gov.nasa.gsfc.seadas.contour.ui.ContourInterval;
+import org.esa.beam.framework.datamodel.GeneralFilterBand;
 import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.product.ProductSceneView;
 import org.esa.beam.util.FeatureUtils;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractShowOverlayAction;
-import org.esa.beam.visat.actions.imgfilter.CreateFilteredBandDialog;
+import org.esa.beam.visat.actions.imgfilter.model.Filter;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -32,6 +32,7 @@ import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.RenderedOp;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -50,34 +51,32 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
     @Override
     public void actionPerformed(CommandEvent event) {
         VisatApp visatApp = VisatApp.getApp();
-        final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
-        product = visatApp.getSelectedProduct();
-        ProductNode productNode = visatApp.getApp().getSelectedProductNode();
-        ContourDialog contourDialog = new ContourDialog(product, productNode.getName());
-        contourDialog.setVisible(true);
-        contourDialog.dispose();
+                final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
+                product = visatApp.getSelectedProduct();
+                ProductNode productNode = visatApp.getApp().getSelectedProductNode();
+                ContourDialog contourDialog = new ContourDialog(product, productNode.getName());
+                contourDialog.setVisible(true);
+                contourDialog.dispose();
 
-        if (contourDialog.isContourCanceled()) {
-            return;
-        }
+                if (contourDialog.isContourCanceled()) {
+                    return;
+                }
 
-        ContourData contourData = contourDialog.getContourData();
-        if (contourData.isFiltered()) {
-            Band newBand = getFilteredBand(contourData.getBand());
-            if (newBand != null) {
-                contourData.setBand(newBand);
-            }
-        }
-        //double scalingFactor = sceneView.getSceneImage().getRasters()[0].getScalingFactor();
-        //double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
-        ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
+                ContourData contourData = contourDialog.getContourData();
+                if (contourData.isFiltered()) {
+                    Band newBand = getFilteredBand(contourData.getBand());
+                    contourData.setBand(newBand);
+                 }
+                //double scalingFactor = sceneView.getSceneImage().getRasters()[0].getScalingFactor();
+                //double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
+                ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
 
-        for (VectorDataNode vectorDataNode : vectorDataNodes) {
-            product.getVectorDataGroup().add(vectorDataNode);
-            if (sceneView != null) {
-                sceneView.setLayersVisible(vectorDataNode);
-            }
-        }
+                for (VectorDataNode vectorDataNode : vectorDataNodes) {
+                    product.getVectorDataGroup().add(vectorDataNode);
+                    if (sceneView != null) {
+                        sceneView.setLayersVisible(vectorDataNode);
+                    }
+                }
     }
 
     @Override
@@ -219,23 +218,95 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         if (product.getBand(filteredBandName) != null) {
             return product.getBand(filteredBandName);
         }
-        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
-        if (dialogData == null) {
-            return null;
-        }
-        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
-        return filterBand;
+        Filter filter = new GeneralFilter("Mean 5x5", 5, 5, GeneralFilterBand.OpType.MEAN);
+      //  Band filteredBand = createFilterBand(filter, filteredBandName);
+        Band filteredBand = null;
+
+        return filteredBand;
     }
 
-//    private FilterBand createFilteredBand() {
-//        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
-//        if (dialogData == null) {
-//            return null;
+    private static abstract class Filter {
+
+        private String name;
+
+        public Filter(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        @Override
+        public abstract boolean equals(Object obj);
+    }
+
+    private static class KernelFilter extends Filter {
+
+        private Kernel kernel;
+
+        public KernelFilter(String name, Kernel kernel) {
+            super(name);
+            this.kernel = kernel;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            } else if (obj instanceof KernelFilter) {
+                KernelFilter other = (KernelFilter) obj;
+                return toString().equals(other.toString()) && kernel.equals(other.kernel);
+            }
+            return false;
+        }
+    }
+
+    private static class GeneralFilter extends Filter {
+
+        int width;
+        int height;
+        GeneralFilterBand.OpType operator;
+
+        public GeneralFilter(String name, int width, int height, GeneralFilterBand.OpType operator) {
+            super(name);
+            this.width = width;
+            this.height = height;
+            this.operator = operator;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            } else if (obj instanceof GeneralFilter) {
+                GeneralFilter other = (GeneralFilter) obj;
+                return toString().equals(other.toString()) && operator == other.operator;
+            }
+            return false;
+        }
+    }
+
+//    private static FilterBand createFilterBand(Filter filter, String bandName) {
+//        final RasterDataNode raster = (RasterDataNode) VisatApp.getApp().getSelectedProductNode();
+//
+//        final FilterBand filterBand;
+//        if (filter instanceof KernelFilter) {
+//            final KernelFilter kernelFilter = (KernelFilter) filter;
+//            filterBand = new ConvolutionFilterBand(bandName, raster, kernelFilter.kernel,1);
+//        } else {
+//            final GeneralFilter generalFilter = (GeneralFilter) filter;
+//            filterBand = new GeneralFilterBand(bandName, raster, generalFilter.operator,generalFilter,1 );
 //        }
-//        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
+//        final String descr = MessageFormat.format("Filter ''{0}'' applied to ''{1}''",
+//                filter.toString(),
+//                raster.getName());
+//        filterBand.setDescription(descr);
+//        raster.getProduct().addBand(filterBand);
+//        filterBand.fireProductNodeDataChanged();
 //        return filterBand;
 //    }
-
     private static FilterBand createFilterBand(org.esa.beam.visat.actions.imgfilter.model.Filter filter, String bandName, int iterationCount) {
         RasterDataNode sourceRaster = (RasterDataNode) VisatApp.getApp().getSelectedProductNode();
 
@@ -272,7 +343,6 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
                 1.0 / filter.getKernelQuotient(),
                 filter.getKernelElements());
     }
-
     static GeneralFilterBand.OpType getOpType(org.esa.beam.visat.actions.imgfilter.model.Filter.Operation operation) {
         if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.OPEN) {
             return GeneralFilterBand.OpType.OPENING;
@@ -297,14 +367,5 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         }
     }
 
-    private CreateFilteredBandDialog.DialogData promptForFilter() {
-        final ProductNode selectedNode = VisatApp.getApp().getSelectedProductNode();
-        final Product product = selectedNode.getProduct();
-        final CreateFilteredBandDialog dialog = new CreateFilteredBandDialog(product, selectedNode.getName(), getHelpId());
-        if (dialog.show() == ModalDialog.ID_OK) {
-            return dialog.getDialogData();
-        }
-        return null;
-    }
 }
 
