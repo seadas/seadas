@@ -164,8 +164,7 @@ public class SeadasApp extends VisatApp {
                 layerEditorToolViewCommandId,
                 "showWorldMapOverlay",
                 "showNoDataOverlay",
-                "showGraticuleOverlay",
-                "showContourOverlay"
+                "showGraticuleOverlay"
                ));
 
         addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
