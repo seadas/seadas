@@ -62,14 +62,13 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         }
 
         ContourData contourData = contourDialog.getContourData();
-        if (contourData.isFiltered()) {
-            Band newBand = getFilteredBand(contourData.getBand());
-            if (newBand != null) {
-                contourData.setBand(newBand);
-            }
-        }
-        //double scalingFactor = sceneView.getSceneImage().getRasters()[0].getScalingFactor();
-        //double scalingOffset = sceneView.getSceneImage().getRasters()[0].getScalingOffset();
+//        if (contourData.isFiltered()) {
+//            Band newBand = getFilteredBand(contourData.getBand());
+//            if (newBand != null) {
+//                contourData.setBand(newBand);
+//            }
+//        }
+
         ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
 
         for (VectorDataNode vectorDataNode : vectorDataNodes) {
@@ -102,11 +101,6 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
         pb.setSource("source0", contourData.getBand().getSourceImage());
 
-//        if (contourData.isFiltered()) {
-//            pb.setSource("source0", getFilteredBand(contourData.getBand()).getSourceImage());
-//        } else {
-//            pb.setSource("source0", contourData.getBand().getSourceImage());
-//        }
 
         for (ContourInterval interval : contourIntervals) {
             ArrayList<Double> contourInterval = new ArrayList<Double>();
@@ -214,18 +208,18 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         return fb.buildFeature(null);
     }
 
-    Band getFilteredBand(Band selectedBand) {
-        String filteredBandName = selectedBand.getName() + "_filtered";
-        if (product.getBand(filteredBandName) != null) {
-            return product.getBand(filteredBandName);
-        }
-        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
-        if (dialogData == null) {
-            return null;
-        }
-        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
-        return filterBand;
-    }
+//    Band getFilteredBand(Band selectedBand) {
+//        String filteredBandName = selectedBand.getName() + "_filtered";
+//        if (product.getBand(filteredBandName) != null) {
+//            return product.getBand(filteredBandName);
+//        }
+//        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
+//        if (dialogData == null) {
+//            return null;
+//        }
+//        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
+//        return filterBand;
+//    }
 
 //    private FilterBand createFilteredBand() {
 //        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
