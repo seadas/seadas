@@ -36,7 +36,7 @@ public class ContourDialog extends JDialog {
     private HelpBroker helpBroker = null;
 
     private final static String HELP_ID = "contourLines";
-    private final static String HELP_ICON = "action/Help24.gif";
+    private final static String HELP_ICON = "icons/Help24.gif";
 
     private Product product;
 
