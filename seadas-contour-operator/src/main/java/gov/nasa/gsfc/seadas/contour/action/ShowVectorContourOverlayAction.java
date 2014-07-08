@@ -53,7 +53,9 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
         product = visatApp.getSelectedProduct();
         ProductNode productNode = visatApp.getApp().getSelectedProductNode();
-        ContourDialog contourDialog = new ContourDialog(product, productNode.getName());
+        ProductNodeGroup<Band> products = visatApp.getApp().getSelectedProduct().getBandGroup();
+        //ContourDialog contourDialog = new ContourDialog(product, productNode.getName());
+        ContourDialog contourDialog = new ContourDialog(product, getActiveBands(products));
         contourDialog.setVisible(true);
         contourDialog.dispose();
 
@@ -87,6 +89,20 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
     @Override
     protected void updateSelectState(ProductSceneView view) {
         //setSelected(view.isGraticuleOverlayEnabled());
+    }
+
+    private ArrayList<String> getActiveBands(ProductNodeGroup<Band> products) {
+        Band[] bands = new Band[products.getNodeCount()];
+        ArrayList<Band> activeBands = new ArrayList<>();
+        ArrayList<String> activeBandNames = new ArrayList<>();
+        products.toArray(bands);
+        for (Band band : bands) {
+            if (band.getImageInfo() != null) {
+                activeBands.add(band);
+                activeBandNames.add(band.getName());
+            }
+        }
+        return activeBandNames;
     }
 
     private ArrayList<VectorDataNode> createVectorDataNodesforContours(ContourData contourData) {

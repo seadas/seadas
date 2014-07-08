@@ -7,6 +7,7 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
+import org.esa.beam.visat.VisatApp;
 
 import javax.help.DefaultHelpBroker;
 import javax.help.HelpBroker;
@@ -45,6 +46,7 @@ public class ContourDialog extends JDialog {
 
     JComboBox bandComboBox;
     ArrayList<ContourData> contours;
+    ArrayList<String> activeBands;
 
     private SwingPropertyChangeSupport propertyChangeSupport;
 
@@ -74,6 +76,32 @@ public class ContourDialog extends JDialog {
         propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
         propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
         filterBand = selectedBandName.indexOf("filtered") == -1 ? true : false;
+        createContourUI();
+        contourCanceled = false;
+    }
+
+    public ContourDialog(Product product, ArrayList<String> activeBands) {
+        this.product = product;
+
+        initHelpBroker();
+
+        propertyChangeSupport = new SwingPropertyChangeSupport(this);
+
+        if (helpBroker != null) {
+            helpButton = getHelpButton(HELP_ID);
+        }
+
+        selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
+        String name = VisatApp.getApp().getSelectedProductNode().getName();
+        if (activeBands.contains(VisatApp.getApp().getSelectedProductNode().getName())) {
+            selectedBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
+        }
+        contourData = new ContourData(selectedBand);
+        this.activeBands = activeBands;
+        numberOfLevels = 1;
+        contours = new ArrayList<ContourData>();
+        propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
+        propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
         createContourUI();
         contourCanceled = false;
     }
@@ -232,9 +260,8 @@ public class ContourDialog extends JDialog {
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         contourPanel.add(addButton,
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        mainPanel.add(getFilterPanel(),
+        mainPanel.add(getBandPanel(),
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-
         mainPanel.add(contourPanel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
@@ -261,10 +288,9 @@ public class ContourDialog extends JDialog {
         JPanel bandPanel = new JPanel(new GridBagLayout());
 
         final JCheckBox filterBox = new JCheckBox("Filter 5x5");
-        String[] productList = product.getBandNames();
         JLabel bandLabel = new JLabel("Product:");
-        bandComboBox = new JComboBox(productList);
-        bandComboBox.setSelectedIndex(product.getBandIndex(selectedBand.getName()));
+        bandComboBox = new JComboBox(activeBands.toArray());
+        bandComboBox.setSelectedItem(selectedBand.getName());
         bandComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
