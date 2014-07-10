@@ -6,8 +6,10 @@ import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.UIUtils;
+import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 import org.esa.beam.visat.VisatApp;
+import org.esa.beam.visat.actions.imgfilter.CreateFilteredBandAction;
 
 import javax.help.DefaultHelpBroker;
 import javax.help.HelpBroker;
@@ -29,7 +31,8 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class ContourDialog extends JDialog {
-    static final String CONTOUR_LINE_COLOR_PROPERTY = "contourLineColor";
+
+    public static final String TITLE = "Create Contour Lines"; /*I18N*/
     static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
     static final String DELETE_BUTTON_PRESSED_PROPERTY = "deleteButtonPressed";
     private ContourData contourData;
@@ -51,36 +54,12 @@ public class ContourDialog extends JDialog {
     private SwingPropertyChangeSupport propertyChangeSupport;
 
     JPanel contourPanel;
-    boolean filterBand;
     private boolean contourCanceled;
-
-    public ContourDialog(Product product, String selectedBandName) {
-        this.product = product;
-
-        initHelpBroker();
-
-        propertyChangeSupport = new SwingPropertyChangeSupport(this);
-
-        if (helpBroker != null) {
-            helpButton = getHelpButton(HELP_ID);
-        }
-
-        //selectedBand = product.getBandAt(0);
-        selectedBand = product.getBand(selectedBandName);
-        contourData = new ContourData(selectedBand);
-        //updateContourData();
-//        setMaxValue(new Double(CommonUtilities.round(selectedBand.getStx().getMax(), 3)));
-//        setMinValue(new Double(CommonUtilities.round(selectedBand.getStx().getMin(), 3)));
-        numberOfLevels = 1;
-        contours = new ArrayList<ContourData>();
-        propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
-        propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
-        filterBand = selectedBandName.indexOf("filtered") == -1 ? true : false;
-        createContourUI();
-        contourCanceled = false;
-    }
+    private String filteredBandName;
+    boolean filterBand;
 
     public ContourDialog(Product product, ArrayList<String> activeBands) {
+        super(VisatApp.getApp().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         this.product = product;
 
         initHelpBroker();
@@ -91,10 +70,11 @@ public class ContourDialog extends JDialog {
             helpButton = getHelpButton(HELP_ID);
         }
 
-        selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
-        String name = VisatApp.getApp().getSelectedProductNode().getName();
-        if (activeBands.contains(VisatApp.getApp().getSelectedProductNode().getName())) {
+
+        if (VisatApp.getApp().getSelectedProductNode() != null && activeBands.contains(VisatApp.getApp().getSelectedProductNode().getName())) {
             selectedBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
+        }  else {
+            selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
         }
         contourData = new ContourData(selectedBand);
         this.activeBands = activeBands;
@@ -272,13 +252,10 @@ public class ContourDialog extends JDialog {
 
 
         setModalityType(ModalityType.APPLICATION_MODAL);
-
-
         setTitle("Contour Lines for " + selectedBand.getName() );
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
-
         return mainPanel;
     }
 
@@ -286,8 +263,6 @@ public class ContourDialog extends JDialog {
         final int rightInset = 5;
 
         JPanel bandPanel = new JPanel(new GridBagLayout());
-
-        final JCheckBox filterBox = new JCheckBox("Filter 5x5");
         JLabel bandLabel = new JLabel("Product:");
         bandComboBox = new JComboBox(activeBands.toArray());
         bandComboBox.setSelectedItem(selectedBand.getName());
@@ -297,50 +272,45 @@ public class ContourDialog extends JDialog {
                 String oldBandName = selectedBand.getName();
                 selectedBand = product.getBand((String) bandComboBox.getSelectedItem());
                 propertyChangeSupport.firePropertyChange(NEW_BAND_SELECTED_PROPERTY, oldBandName, selectedBand.getName());
-                filterBand =  selectedBand.getName().indexOf("filtered") == -1 ? true : false;
-                filterBox.setSelected(filterBand);
-                filterBox.setEnabled(filterBand);
             }
         });
 
-        filterBox.setSelected(filterBand);
-        filterBox.addActionListener(new ActionListener() {
+        final JButton filterButton = new JButton("Filter");
+        filterButton.addActionListener(new ActionListener() {
+            VisatApp visatApp = VisatApp.getApp();
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                filterBand = filterBox.isSelected();
-                //contourData.setFiltered(filterBox.isSelected());
+            public void actionPerformed(ActionEvent e) {
+                visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, false);
+                CreateFilteredBandAction filteredBandAction = new CreateFilteredBandAction();
+                filteredBandAction.actionPerformed(getFilterCommandEvent(filteredBandAction, e));
+                updateActiveBandList();
+                visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, true);
             }
         });
         JLabel filler = new JLabel("                                              ");
-
         bandPanel.add(filler,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         bandPanel.add(bandLabel,
                 new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         bandPanel.add(bandComboBox,
                 new ExGridBagConstraints(2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-        bandPanel.add(filterBox,
+        bandPanel.add(filterButton,
                         new ExGridBagConstraints(3, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
         return bandPanel;
     }
 
+    private void updateActiveBandList(){
 
-    private JPanel getFilterPanel(){
-        final JCheckBox filterBox = new JCheckBox("Filter 5x5");
-        filterBox.setSelected(true);
-        filterBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                filterBand = filterBox.isSelected();
-                //contourData.setFiltered(filterBox.isSelected());
+        Band[] bands = product.getBands();
+        for (Band band : bands) {
+            if ( band.getName().contains(selectedBand.getName()) && band.getName().length() > selectedBand.getName().length() ) {
+                selectedBand = band;
+                filteredBandName = band.getName();
+                filterBand = true;
             }
-        });
+        }
 
-        JPanel filterPanel = new JPanel(new BorderLayout());
-        filterPanel.add(filterBox, BorderLayout.CENTER);
-        return filterPanel;
     }
-
     private JPanel getControllerPanel() {
         JPanel controllerPanel = new JPanel(new GridBagLayout());
 
@@ -426,5 +396,20 @@ public class ContourDialog extends JDialog {
 
     public void setContourCanceled(boolean contourCanceled) {
         this.contourCanceled = contourCanceled;
+    }
+
+    public String getFilteredBandName() {
+        return filteredBandName;
+    }
+
+    public void setFilteredBandName(String filteredBandName) {
+        this.filteredBandName = filteredBandName;
+    }
+
+    private CommandEvent getFilterCommandEvent(CreateFilteredBandAction command, ActionEvent actionEvent){
+        CommandEvent filterCommandEvent = new CommandEvent(command, actionEvent, null, null );
+        command.setCommandID("createFilteredBand");
+        command.setHelpId("createFilteredBand");
+        return filterCommandEvent;
     }
 }

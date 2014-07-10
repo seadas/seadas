@@ -52,33 +52,37 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         VisatApp visatApp = VisatApp.getApp();
         final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
         product = visatApp.getSelectedProduct();
-        ProductNode productNode = visatApp.getApp().getSelectedProductNode();
         ProductNodeGroup<Band> products = visatApp.getApp().getSelectedProduct().getBandGroup();
-        //ContourDialog contourDialog = new ContourDialog(product, productNode.getName());
         ContourDialog contourDialog = new ContourDialog(product, getActiveBands(products));
+        //CreateContourDialog contourDialog = new CreateContourDialog(product, "", getHelpId());
         contourDialog.setVisible(true);
         contourDialog.dispose();
+
+//        if (contourDialog.getButtonID()==ModalDialog.ID_CANCEL) {
+//            return;
+//        }
 
         if (contourDialog.isContourCanceled()) {
             return;
         }
-
+        if (contourDialog.getFilteredBandName() != null) {
+            product.getBandGroup().remove(product.getBand(contourDialog.getFilteredBandName()));
+        }
         ContourData contourData = contourDialog.getContourData();
-//        if (contourData.isFiltered()) {
-//            Band newBand = getFilteredBand(contourData.getBand());
-//            if (newBand != null) {
-//                contourData.setBand(newBand);
-//            }
-//        }
 
         ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
 
         for (VectorDataNode vectorDataNode : vectorDataNodes) {
+            // remove the old vector data node with the same name.
+            if (product.getVectorDataGroup().contains(vectorDataNode.getName())) {
+                product.getVectorDataGroup().remove(product.getVectorDataGroup().get(vectorDataNode.getName()));
+            }
             product.getVectorDataGroup().add(vectorDataNode);
             if (sceneView != null) {
                 sceneView.setLayersVisible(vectorDataNode);
             }
         }
+
     }
 
     @Override
@@ -224,27 +228,27 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         return fb.buildFeature(null);
     }
 
-//    Band getFilteredBand(Band selectedBand) {
-//        String filteredBandName = selectedBand.getName() + "_filtered";
-//        if (product.getBand(filteredBandName) != null) {
-//            return product.getBand(filteredBandName);
-//        }
-//        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
-//        if (dialogData == null) {
-//            return null;
-//        }
-//        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
-//        return filterBand;
-//    }
+    Band getFilteredBand(Band selectedBand) {
+        String filteredBandName = selectedBand.getName() + "_filtered";
+        if (product.getBand(filteredBandName) != null) {
+            return product.getBand(filteredBandName);
+        }
+        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
+        if (dialogData == null) {
+            return null;
+        }
+        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
+        return filterBand;
+    }
 
-//    private FilterBand createFilteredBand() {
-//        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
-//        if (dialogData == null) {
-//            return null;
-//        }
-//        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
-//        return filterBand;
-//    }
+    private FilterBand createFilteredBand() {
+        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
+        if (dialogData == null) {
+            return null;
+        }
+        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
+        return filterBand;
+    }
 
     private static FilterBand createFilterBand(org.esa.beam.visat.actions.imgfilter.model.Filter filter, String bandName, int iterationCount) {
         RasterDataNode sourceRaster = (RasterDataNode) VisatApp.getApp().getSelectedProductNode();
