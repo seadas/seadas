@@ -20,6 +20,7 @@ public class MissionInfo {
     public static enum Id {
         AQUARIUS,
         CZCS,
+        HICO,
         MERIS,
         MODISA,
         MODIST,
@@ -35,6 +36,7 @@ public class MissionInfo {
     public final static Id[] SUPPORTED_IDS = {
             Id.AQUARIUS,
             Id.CZCS,
+            Id.HICO,
             Id.MERIS,
             Id.MODISA,
             Id.MODIST,
@@ -80,6 +82,8 @@ public class MissionInfo {
     public final static String[] OCM2_NAMES = {"OCM2"};
     public final static String OCM2_DIRECTORY = "ocm2";
 
+    public final static String[] HICO_NAMES = {"HICO"};
+    public final static String HICO_DIRECTORY = "hico";
 
     private final HashMap<Id, String[]> names = new HashMap<Id, String[]>();
     private final HashMap<Id, String> directories = new HashMap<Id, String>();
@@ -136,6 +140,7 @@ public class MissionInfo {
         names.put(Id.OSMI, OSMI_NAMES);
         names.put(Id.MOS, MOS_NAMES);
         names.put(Id.OCM2, OCM2_NAMES);
+        names.put(Id.HICO, HICO_NAMES);
     }
 
 
