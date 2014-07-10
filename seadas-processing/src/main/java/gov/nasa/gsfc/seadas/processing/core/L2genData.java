@@ -1325,15 +1325,21 @@ public class L2genData implements L2genDataProcessorModel {
             }
 
 
-            FileInfo oFileInfo;
+//            FileInfo oFileInfo;
+//
+//            if (iFileInfo.isMissionId(MissionInfo.Id.AQUARIUS)) {
+//                oFileInfo = FilenamePatterns.getAquariusOFileInfo(iFileInfo, suiteValue);
+//            } else {
+//                oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
+//            }
+//            if (oFileInfo != null) {
+//                setParamValue(OFILE, oFileInfo.getFile().getAbsolutePath());
+//            }
 
-            if (iFileInfo.isMissionId(MissionInfo.Id.AQUARIUS)) {
-                oFileInfo = FilenamePatterns.getAquariusOFileInfo(iFileInfo, suiteValue);
-            } else {
-                oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
-            }
-            if (oFileInfo != null) {
-                setParamValue(OFILE, oFileInfo.getFile().getAbsolutePath());
+            //todo DANNY
+            File oFile = iFileInfo.getOfile();
+            if (oFile != null) {
+                setParamValue(OFILE, oFile.getAbsolutePath());
             }
 
             if (iFileInfo.isGeofileRequired()) {

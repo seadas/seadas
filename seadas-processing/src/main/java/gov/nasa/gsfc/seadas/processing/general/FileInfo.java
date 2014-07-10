@@ -21,6 +21,8 @@ public class FileInfo {
     private File file;
 
     private static final String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
+    private static final String GET_OFILE_SYSTEM_CALL = "get_next_level.py";
+
     private static final boolean DEFAULT_MISSION_AND_FILE_TYPE_ENABLED = true;
 
     private final MissionInfo missionInfo = new MissionInfo();
@@ -55,6 +57,44 @@ public class FileInfo {
         missionInfo.clear();
         fileTypeInfo.clear();
     }
+
+
+
+    public File getOfile() {
+
+        File ofile = null;
+        if (file != null && file.exists()) {
+
+            ProcessorModel processorModel = new ProcessorModel(GET_OFILE_SYSTEM_CALL);
+            processorModel.setAcceptsParFile(false);
+            processorModel.addParamInfo("file", file.getAbsolutePath(), ParamInfo.Type.IFILE, 0);
+            processorModel.getParamInfo("file").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
+
+            try {
+                Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray());
+                BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                String line = stdInput.readLine();
+                if (line != null) {
+                    // todo Danny
+                    String splitLine[] = line.split(":");
+                    if (splitLine.length == 3) {
+                        String ofileName = splitLine[1].toString().trim();
+
+                        if (ofileName.length() > 0) {
+                            ofile = new File(file.getParent(), ofileName);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("ERROR - Problem running " + FILE_INFO_SYSTEM_CALL);
+                System.out.println(e.getMessage());
+            }
+        }
+
+        return ofile;
+    }
+
 
     private void initMissionAndFileTypeInfos() {
 
