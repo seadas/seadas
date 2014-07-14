@@ -8,14 +8,12 @@ import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
 import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.product.ProductSceneView;
 import org.esa.beam.util.FeatureUtils;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractShowOverlayAction;
-import org.esa.beam.visat.actions.imgfilter.CreateFilteredBandDialog;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -54,13 +52,8 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         product = visatApp.getSelectedProduct();
         ProductNodeGroup<Band> products = visatApp.getApp().getSelectedProduct().getBandGroup();
         ContourDialog contourDialog = new ContourDialog(product, getActiveBands(products));
-        //CreateContourDialog contourDialog = new CreateContourDialog(product, "", getHelpId());
         contourDialog.setVisible(true);
         contourDialog.dispose();
-
-//        if (contourDialog.getButtonID()==ModalDialog.ID_CANCEL) {
-//            return;
-//        }
 
         if (contourDialog.isContourCanceled()) {
             return;
@@ -180,6 +173,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
                 coordinates[i].y = coordinates[i].y + 0.5;
             }
             final SimpleFeature feature = createFeature(featureType, lineString);
+
             if (feature != null) {
                 featureCollection.add(feature);
             }
@@ -226,99 +220,6 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         /*0*/
         fb.add(lineString);
         return fb.buildFeature(null);
-    }
-
-    Band getFilteredBand(Band selectedBand) {
-        String filteredBandName = selectedBand.getName() + "_filtered";
-        if (product.getBand(filteredBandName) != null) {
-            return product.getBand(filteredBandName);
-        }
-        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
-        if (dialogData == null) {
-            return null;
-        }
-        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
-        return filterBand;
-    }
-
-    private FilterBand createFilteredBand() {
-        final CreateFilteredBandDialog.DialogData dialogData = promptForFilter();
-        if (dialogData == null) {
-            return null;
-        }
-        final FilterBand filterBand = createFilterBand(dialogData.getFilter(), dialogData.getBandName(), dialogData.getIterationCount());
-        return filterBand;
-    }
-
-    private static FilterBand createFilterBand(org.esa.beam.visat.actions.imgfilter.model.Filter filter, String bandName, int iterationCount) {
-        RasterDataNode sourceRaster = (RasterDataNode) VisatApp.getApp().getSelectedProductNode();
-
-        FilterBand targetBand;
-        Product product = sourceRaster.getProduct();
-
-        if (filter.getOperation() == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.CONVOLVE) {
-            targetBand = new ConvolutionFilterBand(bandName, sourceRaster, getKernel(filter), iterationCount);
-            if (sourceRaster instanceof Band) {
-                ProductUtils.copySpectralBandProperties((Band) sourceRaster, targetBand);
-            }
-        } else {
-            GeneralFilterBand.OpType opType = getOpType(filter.getOperation());
-            targetBand = new GeneralFilterBand(bandName, sourceRaster, opType, getKernel(filter), iterationCount);
-            if (sourceRaster instanceof Band) {
-                ProductUtils.copySpectralBandProperties((Band) sourceRaster, targetBand);
-            }
-        }
-
-        targetBand.setDescription(String.format("Filter '%s' (=%s) applied to '%s'", filter.getName(), filter.getOperation(), sourceRaster.getName()));
-        if (sourceRaster instanceof Band) {
-            ProductUtils.copySpectralBandProperties((Band) sourceRaster, targetBand);
-        }
-        product.addBand(targetBand);
-        targetBand.fireProductNodeDataChanged();
-        return targetBand;
-    }
-
-    private static Kernel getKernel(org.esa.beam.visat.actions.imgfilter.model.Filter filter) {
-        return new Kernel(filter.getKernelWidth(),
-                filter.getKernelHeight(),
-                filter.getKernelOffsetX(),
-                filter.getKernelOffsetY(),
-                1.0 / filter.getKernelQuotient(),
-                filter.getKernelElements());
-    }
-
-    static GeneralFilterBand.OpType getOpType(org.esa.beam.visat.actions.imgfilter.model.Filter.Operation operation) {
-        if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.OPEN) {
-            return GeneralFilterBand.OpType.OPENING;
-        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.CLOSE) {
-            return GeneralFilterBand.OpType.CLOSING;
-        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.ERODE) {
-            return GeneralFilterBand.OpType.EROSION;
-        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.DILATE) {
-            return GeneralFilterBand.OpType.DILATION;
-        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.MIN) {
-            return GeneralFilterBand.OpType.MIN;
-        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.MAX) {
-            return GeneralFilterBand.OpType.MAX;
-        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.MEAN) {
-            return GeneralFilterBand.OpType.MEAN;
-        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.MEDIAN) {
-            return GeneralFilterBand.OpType.MEDIAN;
-        } else if (operation == org.esa.beam.visat.actions.imgfilter.model.Filter.Operation.STDDEV) {
-            return GeneralFilterBand.OpType.STDDEV;
-        } else {
-            throw new IllegalArgumentException("illegal operation: " + operation);
-        }
-    }
-
-    private CreateFilteredBandDialog.DialogData promptForFilter() {
-        final ProductNode selectedNode = VisatApp.getApp().getSelectedProductNode();
-        final Product product = selectedNode.getProduct();
-        final CreateFilteredBandDialog dialog = new CreateFilteredBandDialog(product, selectedNode.getName(), getHelpId());
-        if (dialog.show() == ModalDialog.ID_OK) {
-            return dialog.getDialogData();
-        }
-        return null;
     }
 }
 
