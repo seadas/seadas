@@ -1336,8 +1336,8 @@ public class L2genData implements L2genDataProcessorModel {
 //                setParamValue(OFILE, oFileInfo.getFile().getAbsolutePath());
 //            }
 
-            //todo DANNY
-            File oFile = iFileInfo.getOfile();
+            String tmpOFile = SeadasFileUtils.findNextLevelFileName(iFileInfo.getFile().getAbsolutePath(), "l2gen");
+            File oFile = new File(iFileInfo.getFile().getParent(), tmpOFile);
             if (oFile != null) {
                 setParamValue(OFILE, oFile.getAbsolutePath());
             }
