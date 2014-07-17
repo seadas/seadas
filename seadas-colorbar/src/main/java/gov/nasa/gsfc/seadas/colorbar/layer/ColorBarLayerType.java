@@ -108,11 +108,11 @@ public class ColorBarLayerType extends ImageLayer.Type {
         int rasterWidth = raster.getRasterWidth();
         int rasterHeight = raster.getRasterHeight();
 
-        double scaleX = (image.getHeight() < image.getWidth()) ? (double) rasterWidth / imageWidth : 1.0;
-        double scaleY = (image.getHeight() > image.getWidth()) ?(double) rasterHeight / imageHeight : 1.0;
-        if (scaleX > 1) scaleY = scaleY +1;
-        if (scaleY > 1) scaleX = scaleX +1;
-        int y_axis_translation =  (image.getHeight() < image.getWidth()) ? -image.getHeight() : 0;
+        double scaleX = (image.getHeight() < image.getWidth()) ? (double) rasterWidth / imageWidth : 0.6;
+        double scaleY = (image.getHeight() > image.getWidth()) ?(double) rasterHeight / imageHeight : 0.6;
+        //if (scaleX > 1) scaleY = scaleY +1;
+        //if (scaleY > 1) scaleX = scaleX +1;
+        int y_axis_translation =  (image.getHeight() < image.getWidth()) ? -image.getHeight()/2 : 0;
         int x_axis_translation = (image.getHeight() < image.getWidth()) ? 0 : raster.getRasterWidth();
         double[] flatmatrix = {scaleX, 0.0, 0.0, scaleY, x_axis_translation, y_axis_translation};
         AffineTransform i2mTransform = new AffineTransform(flatmatrix);
