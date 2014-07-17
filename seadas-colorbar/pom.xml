@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>gov.nasa.gsfc.seadas</groupId>
+        <artifactId>seadas</artifactId>
+        <version>7.1</version>
+    </parent>
+
+    <groupId>gov.nasa.gsfc.seadas</groupId>
+    <artifactId>seadas-colorbar</artifactId>
+    <version>1.0</version>
+
+    <name>SEADAS Contour Operator</name>
+    <description>Provides an API as well as an operator for creating a contour overlay for a given band from a loaded
+        product.
+    </description>
+     <dependencies>
+         <dependency>
+             <groupId>org.esa.beam</groupId>
+             <artifactId>beam-core</artifactId>
+             <version>5.0</version>
+         </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-gpf</artifactId>
+            <version>${beam.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-visat-rcp</artifactId>
+            <version>${beam.version}</version>
+        </dependency>
+         <dependency>
+             <groupId>gov.nasa.gsfc.seadas</groupId>
+             <artifactId>seadas-app</artifactId>
+             <version>7.1</version>
+         </dependency>
+         <dependency>
+             <groupId>com.bc.ceres</groupId>
+             <artifactId>ceres-glayer</artifactId>
+             <version>${ceres.version}</version>
+         </dependency>
+         <dependency>
+             <groupId>org.geotools</groupId>
+             <artifactId>gt-referencing</artifactId>
+             <version>2.7.4</version>
+         </dependency>
+     </dependencies>
+</project>
