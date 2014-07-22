@@ -164,6 +164,7 @@ public class SeadasApp extends VisatApp {
                 layerEditorToolViewCommandId,
                 "showWorldMapOverlay",
                 "showNoDataOverlay",
+                "exportLegendImageFile",
                 "showGraticuleOverlay"
                ));
 
