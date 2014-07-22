@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
-    <artifactId>seadas-contour-operator</artifactId>
+    <artifactId>seadas-colorbar</artifactId>
     <version>1.0</version>
 
     <name>SEADAS Contour Operator</name>
@@ -19,6 +19,11 @@
         product.
     </description>
      <dependencies>
+         <dependency>
+             <groupId>org.esa.beam</groupId>
+             <artifactId>beam-core</artifactId>
+             <version>5.0</version>
+         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-gpf</artifactId>
@@ -38,6 +43,11 @@
              <groupId>com.bc.ceres</groupId>
              <artifactId>ceres-glayer</artifactId>
              <version>${ceres.version}</version>
+         </dependency>
+         <dependency>
+             <groupId>org.geotools</groupId>
+             <artifactId>gt-referencing</artifactId>
+             <version>2.7.4</version>
          </dependency>
      </dependencies>
 </project>
