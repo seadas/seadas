@@ -19,6 +19,7 @@ import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductSubsetDef;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.util.Guardian;
+import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.math.IndexValidator;
 import org.esa.beam.util.math.Range;
 
@@ -201,11 +202,11 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
             firstY = _scanlineHeight - _scanlineOffset;
             final float[] lats = new float[gcRawWidth];
             final float[] lons = new float[gcRawWidth];
-            System.arraycopy(lonFloats, 0, lons, _scanlineOffset * scanW, (_scanlineHeight - _scanlineOffset) * scanW);
-            System.arraycopy(latFloats, 0, lats, _scanlineOffset * scanW, (_scanlineHeight - _scanlineOffset) * scanW);
+            System.arraycopy(lonFloats, 0, lons, _scanlineOffset * scanW, firstY * scanW);
+            System.arraycopy(latFloats, 0, lats, _scanlineOffset * scanW, firstY * scanW);
             for (int x = 0; x < scanW; x++) {
-                int y1 = _scanlineHeight - _scanlineOffset; // coord of first y in next stripe
-                int y2 = y1 + _scanlineHeight - 1;         // coord of last y in next stripe
+                int y1 = firstY;                    // coord of first y in next scan
+                int y2 = y1 + _scanlineHeight - 1;  // coord of last y in next scan
                 int index1 = y1 * scanW + x;
                 int index2 = y2 * scanW + x;
                 float deltaLat = (latFloats[index2] - latFloats[index1]) / (_scanlineHeight - 1);
@@ -231,26 +232,26 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
         }
 
         // create last stripe
-        int lastStripeH = (sceneH - _scanlineHeight + _scanlineOffset) % _scanlineHeight;
+        int lastStripeH = (sceneH - firstY) % _scanlineHeight;
         if (lastStripeH != 0) {
-            int lastStripeY = sceneH - lastStripeH - 1; // y coord of first y of last stripe
+            int lastStripeY = sceneH - lastStripeH; // y coord of first y of last stripe
             final float[] lats = new float[gcRawWidth];
             final float[] lons = new float[gcRawWidth];
             System.arraycopy(lonFloats, lastStripeY * scanW, lons, 0, lastStripeH * scanW);
             System.arraycopy(latFloats, lastStripeY * scanW, lats, 0, lastStripeH * scanW);
             for (int x = 0; x < scanW; x++) {
-                int y1 = lastStripeY - _scanlineHeight; // coord of first y in next stripe
-                int y2 = lastStripeY - 1;         // coord of last y in next stripe
+                int y1 = lastStripeY - _scanlineHeight; // coord of first y in previous stripe
+                int y2 = lastStripeY - 1;               // coord of last y in previous stripe
                 int index1 = y1 * scanW + x;
                 int index2 = y2 * scanW + x;
                 float deltaLat = (latFloats[index2] - latFloats[index1]) / (_scanlineHeight - 1);
                 float deltaLon = (lonFloats[index2] - lonFloats[index1]) / (_scanlineHeight - 1);
-                float refLat = latFloats[lastStripeY * scanW + x];
-                float refLon = lonFloats[lastStripeY * scanW + x];
+                float refLat = latFloats[(sceneH-1) * scanW + x];
+                float refLon = lonFloats[(sceneH-1) * scanW + x];
 
                 for (int y = lastStripeH; y < _scanlineHeight; y++) {
-                    lons[y * scanW + x] = refLon - (deltaLon * (y - lastStripeH + 1));
-                    lats[y * scanW + x] = refLat - (deltaLat * (y - lastStripeH + 1));
+                    lons[y * scanW + x] = refLon + (deltaLon * (y - lastStripeH + 1));
+                    lats[y * scanW + x] = refLat + (deltaLat * (y - lastStripeH + 1));
                 }
             }
             addStripeGeocode(lats, lons, lastStripeY, scanW, _scanlineHeight);
@@ -298,20 +299,34 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
         BowtiePixelGeoCoding srcGeocoding = (BowtiePixelGeoCoding)srcScene.getGeoCoding();
         final String latBandName = srcGeocoding._latBand.getName();
         final String lonBandName = srcGeocoding._lonBand.getName();
-        final Band latBand = destScene.getProduct().getBand(latBandName);
-        final Band lonBand = destScene.getProduct().getBand(lonBandName);
+
+        ensureLatLonBands(destScene);
+        final Band targetLatBand = destScene.getProduct().getBand(latBandName);
+        final Band targetLonBand = destScene.getProduct().getBand(lonBandName);
         if(subsetDef != null) {
             if(subsetDef.getSubSamplingY() != 1) {
-                destScene.setGeoCoding(new PixelGeoCoding2(latBand, lonBand, null));
+                destScene.setGeoCoding(new PixelGeoCoding2(targetLatBand, targetLonBand, null));
                 return true;
             }
         }
 
-        if (latBand != null && lonBand != null) {
-            destScene.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, srcGeocoding._scanlineHeight));
+        if (targetLatBand != null && targetLonBand != null) {
+            destScene.setGeoCoding(new BowtiePixelGeoCoding(targetLatBand, targetLonBand, srcGeocoding._scanlineHeight));
             return true;
         }
         return false;
     }
+
+    private void ensureLatLonBands(Scene destScene) {
+         ensureBand(destScene, _latBand);
+         ensureBand(destScene, _lonBand);
+     }
+
+     private static void ensureBand(Scene destScene, Band sourceBand) {
+         Band band = destScene.getProduct().getBand(sourceBand.getName());
+         if (band == null) {
+             ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), destScene.getProduct(), true);
+          }
+      }
 
 }

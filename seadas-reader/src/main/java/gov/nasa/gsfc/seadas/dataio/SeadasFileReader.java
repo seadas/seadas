@@ -638,7 +638,7 @@ public abstract class SeadasFileReader {
                         minmax[0] += band.getScalingOffset();
                         minmax[1] += band.getScalingOffset();
                     }
-                    String validExp = format("%s >= %.2f && %s <= %.2f", name, minmax[0], name, minmax[1]);
+                    String validExp = format("%s >= %.05f && %s <= %.05f", name, minmax[0], name, minmax[1]);
                     band.setValidPixelExpression(validExp);//.format(name, validMinMax[0], name, validMinMax[1]));
                 }
             }
