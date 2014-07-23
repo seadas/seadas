@@ -23,7 +23,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package gov.nasa.gsfc.seadas;
+package gov.nasa.gsfc.seadas.contour.operator;
 
 import javax.media.jai.ROI;
 import java.awt.*;

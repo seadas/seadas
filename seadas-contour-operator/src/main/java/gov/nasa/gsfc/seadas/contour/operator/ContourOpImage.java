@@ -22,7 +22,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
-package gov.nasa.gsfc.seadas;
+package gov.nasa.gsfc.seadas.contour.operator;
 
 import com.vividsolutions.jts.geom.LineString;
 import org.jaitools.CollectionFactory;
