@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.contour.action;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
+import gov.nasa.gsfc.seadas.Contour1Spi;
 import gov.nasa.gsfc.seadas.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
@@ -27,6 +28,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 
 import javax.media.jai.JAI;
+import javax.media.jai.OperationRegistry;
 import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.RenderedOp;
 import java.io.IOException;
@@ -110,6 +112,9 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
         ArrayList<ContourInterval> contourIntervals = contourData.getLevels();
         ArrayList<VectorDataNode> vectorDataNodes = new ArrayList<VectorDataNode>();
+
+        OperationRegistry registry = JAI.getDefaultInstance().getOperationRegistry();
+        new Contour1Spi().updateRegistry(registry);
 
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
         pb.setSource("source0", contourData.getBand().getSourceImage());
