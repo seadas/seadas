@@ -166,39 +166,39 @@ public class L2FileReader extends SeadasFileReader {
     public void addBowtieGeocoding(final Product product, int scanHeight) throws ProductIOException {
         final String longitude = "longitude";
         final String latitude = "latitude";
-        Band latBand;
-        Band lonBand;
 
         if (product.containsBand(latitude) && product.containsBand(longitude)) {
-            latBand = product.getBand(latitude);
-            lonBand = product.getBand(longitude);
+            Band latBand = product.getBand(latitude);
+            Band lonBand = product.getBand(longitude);
             latBand.setNoDataValue(-999.);
             lonBand.setNoDataValue(-999.);
             latBand.setNoDataValueUsed(true);
             lonBand.setNoDataValueUsed(true);
             product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, scanHeight));
         } else {
-            String navGroup = "Navigation_Data";
+            String navGroup = "navigation_data";
             final String cntlPoints = "cntl_pt_cols";
-            int cntl_lat_ix;
-            int cntl_lon_ix;
-            float offsetY;
+            int subSampleY;
+            int subSampleX;
             if (ncFile.findGroup(navGroup) == null) {
-                if (ncFile.findGroup("Navigation") != null) {
-                    navGroup = "Navigation";
+                if (ncFile.findGroup("Navigation_Data") != null) {
+                    navGroup = "Navigation_Data";
                 }
             }
-            int scanCntlPts = getIntAttribute("Number_of_Scan_Control_Points");
-            int pixelCntlPts = getIntAttribute("Number_of_Pixel_Control_Points");
-            cntl_lat_ix = product.getSceneRasterHeight() / scanCntlPts;
-            cntl_lon_ix = Math.round((float) product.getSceneRasterWidth() / pixelCntlPts);
-            if (scanHeight == 20) {
-                offsetY = 0.5f;
-            } else if (scanHeight == 40) {
-                offsetY = 1.5f;
-            } else {
-                offsetY = 0f;
+            int scanCntlPts;
+            int pixelCntlPts;
+
+            try {
+                scanCntlPts = getIntAttribute("scan_control_points");
+                pixelCntlPts = getIntAttribute("pixel_control_points");
+            } catch (ProductIOException e) {
+                scanCntlPts = getIntAttribute("Number_of_Scan_Control_Points");
+                pixelCntlPts = getIntAttribute("Number_of_Pixel_Control_Points");
             }
+
+            subSampleY = product.getSceneRasterHeight() / scanCntlPts;
+            subSampleX = Math.round((float) product.getSceneRasterWidth() / pixelCntlPts);
+
             try {
                 Variable lats = ncFile.findVariable(navGroup + "/" + latitude);
                 Variable lons = ncFile.findVariable(navGroup + "/" + longitude);
@@ -211,21 +211,26 @@ public class L2FileReader extends SeadasFileReader {
                     Array latarr = lats.read();
                     Array lonarr = lons.read();
 
-
                     if (mustFlipX && mustFlipY) {
                         latTiePoints = (float[]) latarr.flip(0).flip(1).copyTo1DJavaArray();
                         lonTiePoints = (float[]) lonarr.flip(0).flip(1).copyTo1DJavaArray();
+                    } else if (!mustFlipX && mustFlipY) {
+                            latTiePoints = (float[]) latarr.flip(0).copyTo1DJavaArray();
+                            lonTiePoints = (float[]) lonarr.flip(0).copyTo1DJavaArray();
+                    } else if (mustFlipX && !mustFlipY) {
+                            latTiePoints = (float[]) latarr.flip(1).copyTo1DJavaArray();
+                            lonTiePoints = (float[]) lonarr.flip(1).copyTo1DJavaArray();
                     } else {
                         latTiePoints = (float[]) latarr.getStorage();
                         lonTiePoints = (float[]) lonarr.getStorage();
                     }
 
-                    final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1], dims[0], 0, offsetY,
-                            cntl_lon_ix, cntl_lat_ix, latTiePoints);
+                    final TiePointGrid latGrid = new TiePointGrid("latitude", dims[1], dims[0], 0, 0,
+                            subSampleX, subSampleY, latTiePoints);
                     product.addTiePointGrid(latGrid);
 
-                    final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1], dims[0], 0, offsetY,
-                            cntl_lon_ix, cntl_lat_ix, lonTiePoints);
+                    final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1], dims[0], 0, 0,
+                            subSampleX, subSampleY, lonTiePoints);
                     product.addTiePointGrid(lonGrid);
 
                     product.setGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanHeight));
@@ -273,15 +278,15 @@ public class L2FileReader extends SeadasFileReader {
                 try {
                     lonRaw = lonVar.read();
                     latRaw = latVar.read();
-                    if (mustFlipX && !mustFlipY) {
-                        latRawData= (float[]) latRaw.flip(1).copyTo1DJavaArray();
-                        lonRawData= (float[]) lonRaw.flip(1).copyTo1DJavaArray();
+                    if (mustFlipX && mustFlipY) {
+                        latRawData= (float[]) latRaw.flip(0).flip(1).copyTo1DJavaArray();
+                        lonRawData= (float[]) lonRaw.flip(0).flip(1).copyTo1DJavaArray();
                     } else if (!mustFlipX && mustFlipY) {
                         latRawData= (float[]) latRaw.flip(0).copyTo1DJavaArray();
                         lonRawData= (float[]) lonRaw.flip(0).copyTo1DJavaArray();
-                    } else if (mustFlipX && mustFlipY) {
-                        latRawData= (float[]) latRaw.flip(0).flip(1).copyTo1DJavaArray();
-                        lonRawData= (float[]) lonRaw.flip(0).flip(1).copyTo1DJavaArray();
+                    } else if (mustFlipX && !mustFlipY) {
+                        latRawData= (float[]) latRaw.flip(1).copyTo1DJavaArray();
+                        lonRawData= (float[]) lonRaw.flip(1).copyTo1DJavaArray();
                     } else {
                         latRawData= (float[]) latRaw.copyTo1DJavaArray();
                         lonRawData= (float[]) lonRaw.copyTo1DJavaArray();
