@@ -704,8 +704,10 @@ public class SeadasApp extends VisatApp {
                 count++;
             }
 
+
+
             getMainFrame().setPreferredSize(new Dimension(1500, 700));
-            getMainFrame().setMinimumSize(new Dimension(800, 700));
+            getMainFrame().setMinimumSize(new Dimension(1000, 700));
 
         } finally {
             pm.done();
