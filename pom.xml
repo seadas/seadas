@@ -36,7 +36,7 @@
         <beam.version>5.0</beam.version>
         <ceres.version>0.14</ceres.version>
         <geotools.version>2.7.4</geotools.version>
-        <jide.version>3.5.3</jide.version>
+        <jide.version>3.5.15</jide.version>
         <jpy.version>0.7</jpy.version>
         <seadas.version>7.1</seadas.version>
     </properties>
@@ -635,6 +635,11 @@
             <id>osgeo</id>
             <name>Open Source Geospatial Foundation Repository</name>
             <url>http://download.osgeo.org/webdav/geotools/</url>
+        </repository>
+        <repository>
+            <id>jide</id>
+            <name>Internal JIDE repository</name>
+            <url>http://seadasdev.domain.pub/mvn-seadas/</url>
         </repository>
     </repositories>
 
