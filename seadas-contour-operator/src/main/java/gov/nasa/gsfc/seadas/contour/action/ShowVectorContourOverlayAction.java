@@ -3,10 +3,10 @@ package gov.nasa.gsfc.seadas.contour.action;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
-import gov.nasa.gsfc.seadas.contour.operator.Contour1Spi;
-import gov.nasa.gsfc.seadas.contour.operator.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
+import gov.nasa.gsfc.seadas.contour.operator.Contour1Spi;
+import gov.nasa.gsfc.seadas.contour.operator.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.ui.command.CommandEvent;
@@ -113,8 +113,18 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         ArrayList<ContourInterval> contourIntervals = contourData.getLevels();
         ArrayList<VectorDataNode> vectorDataNodes = new ArrayList<VectorDataNode>();
 
+        //Register "Contour" operator if it's not in the registry
         OperationRegistry registry = JAI.getDefaultInstance().getOperationRegistry();
-        new Contour1Spi().updateRegistry(registry);
+        String modeName = "rendered";
+        boolean contourIsRegistered = false;
+        for (String name : registry.getDescriptorNames(modeName)) {
+            if (name.contains("Contour")) {
+                contourIsRegistered = true;
+            }
+        }
+        if (!contourIsRegistered) {
+            new Contour1Spi().updateRegistry(registry);
+        }
 
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
         pb.setSource("source0", contourData.getBand().getSourceImage());
