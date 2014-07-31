@@ -63,6 +63,7 @@ public class ContourIntervalDialog extends JDialog {
 
     public void setBand(Band newBand){
         numberOfLevels = 1;
+        numLevelsField.setText("1");
         setMaxValue(new Double(CommonUtilities.round(newBand.getStx().getMaximum(), 3)));
         setMinValue(new Double(CommonUtilities.round(newBand.getStx().getMinimum(), 3)));
         minValueField.setText(new Double(getMinValue()).toString());
