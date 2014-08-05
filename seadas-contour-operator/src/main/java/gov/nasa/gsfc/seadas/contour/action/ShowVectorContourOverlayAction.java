@@ -195,8 +195,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         }
 
         final CoordinateReferenceSystem mapCRS = geoCoding.getMapCRS();
-        String className = geoCoding.getClass().getName();
-        if (!mapCRS.equals(DefaultGeographicCRS.WGS84) || ! (className.contains("BowtiePixelGeoCoding"))) {
+        if (!mapCRS.equals(DefaultGeographicCRS.WGS84) || (geoCoding instanceof CrsGeoCoding)) {
             try {
                 transformFeatureCollection(featureCollection, geoCoding.getImageCRS(), mapCRS);
             } catch (TransformException e) {
@@ -223,7 +222,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
     private SimpleFeatureType createFeatureType(GeoCoding geoCoding) throws IOException {
         SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
         ftb.setName("gov.nasa.gsfc.contour.contourVectorData");
-        ftb.add("contour_lines", LineString.class, geoCoding.getImageCRS());
+        ftb.add("contour_lines", LineString.class, geoCoding.getMapCRS());
         ftb.setDefaultGeometry("contour_lines");
         final SimpleFeatureType ft = ftb.buildFeatureType();
         ft.getUserData().put("contourVectorData", "true");
