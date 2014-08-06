@@ -222,7 +222,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
     private SimpleFeatureType createFeatureType(GeoCoding geoCoding) throws IOException {
         SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
         ftb.setName("gov.nasa.gsfc.contour.contourVectorData");
-        ftb.add("contour_lines", LineString.class, geoCoding.getMapCRS());
+        ftb.add("contour_lines", LineString.class, geoCoding.getImageCRS());
         ftb.setDefaultGeometry("contour_lines");
         final SimpleFeatureType ft = ftb.buildFeatureType();
         ft.getUserData().put("contourVectorData", "true");
