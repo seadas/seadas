@@ -18,7 +18,7 @@ import java.net.URL;
  */
 
 
-class InstallResolutionFileDialog extends JDialog {
+class InstallBathymetryFileDialog extends JDialog {
 
     public static enum Step {
         INSTALLATION,
@@ -30,7 +30,7 @@ class InstallResolutionFileDialog extends JDialog {
     private BathymetryData bathymetryData;
 
 
-    public InstallResolutionFileDialog(BathymetryData bathymetryData, SourceFileInfo sourceFileInfo, Step step) {
+    public InstallBathymetryFileDialog(BathymetryData bathymetryData, SourceFileInfo sourceFileInfo, Step step) {
         this.bathymetryData = bathymetryData;
         this.sourceFileInfo = sourceFileInfo;
 
@@ -59,9 +59,10 @@ class InstallResolutionFileDialog extends JDialog {
 
                 //  acquire in example: "http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask/50m.zip"
                 try {
+                    bathymetryData.setInstallingFile(true);
                     bathymetryData.fireEvent(BathymetryData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
 
-                    final String filename = sourceFileInfo.getFile().getName().toString();
+                    final String filename = sourceFileInfo.getAltFile().getName().toString();
 
                     final URL sourceUrl = new URL(BathymetryData.LANDMASK_URL + "/" + filename);
 
@@ -73,23 +74,6 @@ class InstallResolutionFileDialog extends JDialog {
                     }
 
 
-//                    if (sourceFileInfo.getMode() == BathymetryMaskClassifier.Mode.SRTM_GC) {
-//                        File gcFile = ResourceInstallationUtils.getTargetFile(BathymetryMaskClassifier.GC_WATER_MASK_FILE);
-//
-//                        if (!gcFile.exists()) {
-//                            final URL northSourceUrl = new URL(BathymetryData.LANDMASK_URL + "/" + gcFile.getName());
-//
-//                            Thread t2 = new Thread(new FileInstallRunnable(northSourceUrl, gcFile.getName(), sourceFileInfo, bathymetryData));
-//                            t2.start();
-//                        }
-//                    }
-
-
-//                    File targetDir = ResourceInstallationUtils.getTargetDir();
-//                    ProcessBuilder pb = new ProcessBuilder("wget.py", sourceUrl.toString(), targetDir.getAbsolutePath());
-//                    pb.start();
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -97,26 +81,8 @@ class InstallResolutionFileDialog extends JDialog {
             }
         });
 
-//        this.addPropertyChangeListener(BathymetryData.FILE_INSTALLED_EVENT, new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                SourceFileInfo sourceFileInfo = (SourceFileInfo) evt.getNewValue();
-//
-//                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(this, sourceFileInfo, InstallResolutionFileDialog.Step.CONFIRMATION);
-//                dialog.setVisible(true);
-//                dialog.setEnabled(true);
-//
-//                if (sourceFileInfo.isEnabled()) {
-//                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
-//                    bathymetryData.fireEvent(BathymetryData.FILE_INSTALLED_EVENT2);
-//                } else {
-//                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
-//                }
-//
-//                bathymetryData.removePropertyChangeListener(BathymetryData.FILE_INSTALLED_EVENT, this);
-//            }
-//        });
-//
+
+
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(cancelButton.getPreferredSize());
         cancelButton.setMinimumSize(cancelButton.getPreferredSize());
@@ -139,11 +105,9 @@ class InstallResolutionFileDialog extends JDialog {
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         buttonsJPanel.add(installButton,
                 new ExGridBagConstraints(2, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-//        buttonsJPanel.add(helpButton,
-//                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
-        jLabel = new JLabel("Do you want to install file " + sourceFileInfo.getFile().getName().toString() + " ?");
+        jLabel = new JLabel("Do you want to install file " + sourceFileInfo.getAltFile().getName().toString() + " ?");
 
         JPanel jPanel = new JPanel(new GridBagLayout());
         jPanel.add(jLabel,
@@ -186,11 +150,13 @@ class InstallResolutionFileDialog extends JDialog {
 
 
         if (sourceFileInfo.isEnabled()) {
-            jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
+            jLabel = new JLabel("File " + sourceFileInfo.getAltFile().getName().toString() + " has been installed");
             bathymetryData.fireEvent(BathymetryData.FILE_INSTALLED_EVENT2);
         } else {
-            jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
+            jLabel = new JLabel("File " + sourceFileInfo.getAltFile().getName().toString() + " installation failure");
         }
+
+        bathymetryData.setInstallingFile(false);
 
         JPanel jPanel = new JPanel(new GridBagLayout());
         jPanel.add(jLabel,

@@ -82,10 +82,8 @@ public class ResourceInstallationUtils {
     }
 
     public static File getTargetDir() {
-        File targetModuleDir = new File(SystemUtils.getApplicationDataDir(), BATHYMETRY_MODULE_NAME);
-        File targetDir = new File(targetModuleDir, AUXDIR);
 
-        return targetDir;
+        return SystemUtils.getApplicationDataDir();
     }
 
 
@@ -101,9 +99,7 @@ public class ResourceInstallationUtils {
 
 
     public static File getTargetFile(String filename) {
-        File targetModuleDir = new File(SystemUtils.getApplicationDataDir(), BATHYMETRY_MODULE_NAME);
-        File targetDir = new File(targetModuleDir, AUXDIR);
-        File targetFile = new File(targetDir, filename);
+        File targetFile = new File(getTargetDir(), filename);
 
         return targetFile;
     }

@@ -187,11 +187,13 @@ class BathymetryDialog extends JDialog {
             bathymetryData.addPropertyChangeListener(BathymetryData.PROMPT_REQUEST_TO_INSTALL_FILE_EVENT, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    SourceFileInfo sourceFileInfo = (SourceFileInfo) resolutionComboBox.getjComboBox().getSelectedItem();
+                    if (!bathymetryData.isInstallingFile()) {
+                        SourceFileInfo sourceFileInfo = (SourceFileInfo) resolutionComboBox.getjComboBox().getSelectedItem();
 
-                    InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(bathymetryData, sourceFileInfo, InstallResolutionFileDialog.Step.INSTALLATION);
-                    dialog.setVisible(true);
-                    dialog.setEnabled(true);
+                        InstallBathymetryFileDialog dialog = new InstallBathymetryFileDialog(bathymetryData, sourceFileInfo, InstallBathymetryFileDialog.Step.INSTALLATION);
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
                 }
             });
 

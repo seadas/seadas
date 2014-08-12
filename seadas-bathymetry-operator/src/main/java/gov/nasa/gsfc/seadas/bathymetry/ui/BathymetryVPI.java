@@ -220,7 +220,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                                         parameters.put("subSamplingFactorX", new Integer(bathymetryData.getSuperSampling()));
                                         parameters.put("subSamplingFactorY", new Integer(bathymetryData.getSuperSampling()));
                                         parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
-                                        parameters.put("filename", sourceFileInfo.getFile().getName());
+                                        parameters.put("filename", sourceFileInfo.getExistingFile().getName());
 
                                         /*
                                            Create a new product, which will contain the bathymetry band, then add this band to current product.
@@ -243,36 +243,6 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                                         reformatSourceImage(elevationBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
                                         elevationBand.setName(BathymetryOp.ELEVATION_BAND_NAME);
                                         product.addBand(elevationBand);
-
-//  This is iso line stuff - kinda works though not really a tight good line
-
-//                                        final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
-//                                                new double[]{
-//                                                        +1, +1, +1,
-//                                                        +1, +1, +1,
-//                                                        +1, +1, +1,
-//                                                });
-//
-//                                        final ConvolutionFilterBand bathymetrySmoothedBand = new ConvolutionFilterBand(
-//                                                "bathymetrySmoothed",
-//                                               bathymetryBand,
-//                                                arithmeticMean3x3Kernel);
-//
-//                                        product.addBand(bathymetrySmoothedBand);
-//
-//                                        String bathymetryIsoLineMath = "bathymetrySmoothed" + " > -250 and "
-//                                                + "bathymetrySmoothed" + " < -200";
-//
-//                                        Mask bathymetryIsoMask = Mask.BandMathsType.create(
-//                                                "bathymetryIso",
-//                                                "description",
-//                                                product.getSceneRasterWidth(),
-//                                                product.getSceneRasterHeight(),
-//                                                bathymetryIsoLineMath,
-//                                                bathymetryData.getMaskColor(),
-//                                                bathymetryData.getMaskTransparency());
-//                                        maskGroup.add(bathymetryIsoMask);
-//  END OF iso line stuff
 
                                         pm.worked(1);
                                     }
