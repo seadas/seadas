@@ -62,15 +62,17 @@ class InstallBathymetryFileDialog extends JDialog {
                     bathymetryData.setInstallingFile(true);
                     bathymetryData.fireEvent(BathymetryData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
 
-                    final String filename = sourceFileInfo.getAltFile().getName().toString();
+                    if (sourceFileInfo.getAltFile() != null) {
+                        final String filename = sourceFileInfo.getAltFile().getName().toString();
 
-                    final URL sourceUrl = new URL(BathymetryData.LANDMASK_URL + "/" + filename);
+                        final URL sourceUrl = new URL(BathymetryData.LANDMASK_URL + "/" + filename);
 
-                    File targetFile = ResourceInstallationUtils.getTargetFile(filename);
+                        File targetFile = ResourceInstallationUtils.getTargetFile(filename);
 
-                    if (!targetFile.exists()) {
-                        Thread t = new Thread(new FileInstallRunnable(sourceUrl, filename, sourceFileInfo, bathymetryData));
-                        t.start();
+                        if (!targetFile.exists()) {
+                            Thread t = new Thread(new FileInstallRunnable(sourceUrl, filename, sourceFileInfo, bathymetryData));
+                            t.start();
+                        }
                     }
 
 
@@ -80,7 +82,6 @@ class InstallBathymetryFileDialog extends JDialog {
 
             }
         });
-
 
 
         JButton cancelButton = new JButton("Cancel");

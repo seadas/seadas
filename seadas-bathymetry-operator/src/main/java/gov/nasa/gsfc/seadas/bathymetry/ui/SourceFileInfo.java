@@ -91,11 +91,13 @@ public class SourceFileInfo {
 
     private void setDescription() {
 
-        String core = "Filename=" + getExistingFile();
+
 
         if (isEnabled()) {
+            String core = "Filename=" + getExistingFile();
             this.description = "<html>" + core + "</html>";
         } else {
+            String core =  "Filename=" + getAltFile();
             this.description = "<html>" + core + "<br> NOTE: this file is not currently installed -- see help</html>";
         }
     }
@@ -120,7 +122,7 @@ public class SourceFileInfo {
             return getFile();
         }
 
-        if (getAltFile().exists()) {
+        if (getAltFile() != null && getAltFile().exists()) {
             return getAltFile();
         }
 

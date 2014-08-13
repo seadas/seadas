@@ -58,7 +58,6 @@ public class BathymetryData {
     private String bathymetryBandName = "elevation";
 
 
-
     private ArrayList<SourceFileInfo> sourceFileInfos = new ArrayList<SourceFileInfo>();
     private SourceFileInfo sourceFileInfo;
 
@@ -271,7 +270,7 @@ public class BathymetryData {
         File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
 
         if (!bathymetryFile.exists()) {
-        File altFile = ResourceInstallationUtils.getTargetFile(bathymetryFilename);
+            File altFile = ResourceInstallationUtils.getTargetFile(bathymetryFilename);
             if (altFile.exists()) {
                 return altFile;
             }

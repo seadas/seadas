@@ -196,7 +196,8 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                 if (bathymetryData.isCreateMasks()) {
                     final SourceFileInfo sourceFileInfo = bathymetryData.getSourceFileInfo();
 
-                    if (sourceFileInfo.isEnabled()) {
+
+                    if (sourceFileInfo.isEnabled() && sourceFileInfo.getExistingFile() != null) {
 
 
                         final String[] msg = {"Creating bathymetry band and mask"};
