@@ -172,6 +172,7 @@ class BathymetryDialog extends JDialog {
             fileSelectorEnabled[0] = true;
         }
 
+
         final ResolutionComboBox resolutionComboBox = new ResolutionComboBox(bathymetryData);
 
         JPanel resolutionSamplingPanel = new JPanel(new GridBagLayout());
@@ -254,8 +255,11 @@ class BathymetryDialog extends JDialog {
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
 
-        mainPanel.add(resolutionSamplingPanel,
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+        // todo if we want a file selector then here it is
+        // I removed it because right now there is only one file - DANNY
+        //
+        //        mainPanel.add(resolutionSamplingPanel,
+        //                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
 
         mainPanel.add(maskJPanel,
