@@ -276,8 +276,17 @@ class BathymetryDialog extends JDialog {
         createMasks.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                bathymetryData.setCreateMasks(true);
-                dispose();
+
+
+                SourceFileInfo sourceFileInfo = (SourceFileInfo) resolutionComboBox.getjComboBox().getSelectedItem();
+                if (!sourceFileInfo.isEnabled()) {
+                    bathymetryData.fireEvent(BathymetryData.PROMPT_REQUEST_TO_INSTALL_FILE_EVENT);
+                } else if (!bathymetryData.isInstallingFile()) {
+                    bathymetryData.setCreateMasks(true);
+                    dispose();
+                }
+
+
             }
         });
 
