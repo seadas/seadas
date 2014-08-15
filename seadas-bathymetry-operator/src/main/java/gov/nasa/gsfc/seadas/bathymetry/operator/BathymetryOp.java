@@ -43,9 +43,9 @@ import java.text.MessageFormat;
         description = "Operator creating a bathymetry band, elevation band, topography band and bathymetry mask")
 public class BathymetryOp extends Operator {
 
-    public static final String BATHYMETRY_BAND_NAME = "bathymetryBand";
+    public static final String BATHYMETRY_BAND_NAME = "elevation_bathymetry";
     public static final String ELEVATION_BAND_NAME = "elevation";
-    public static final String TOPOGRAPHY_BAND_NAME = "topography";
+    public static final String TOPOGRAPHY_BAND_NAME = "elevation_topography";
 
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
