@@ -282,6 +282,7 @@ public class ContourDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, false);
                 CreateFilteredBandAction filteredBandAction = new CreateFilteredBandAction();
+                VisatApp.getApp().setSelectedProductNode(selectedBand);
                 filteredBandAction.actionPerformed(getFilterCommandEvent(filteredBandAction, e));
                 updateActiveBandList();
                 visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, true);

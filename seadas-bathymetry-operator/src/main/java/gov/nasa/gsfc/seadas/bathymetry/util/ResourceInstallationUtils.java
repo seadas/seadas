@@ -8,6 +8,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
+
 /**
  * Created with IntelliJ IDEA.
  * User: knowles
@@ -82,10 +84,8 @@ public class ResourceInstallationUtils {
     }
 
     public static File getTargetDir() {
-        File targetModuleDir = new File(SystemUtils.getApplicationDataDir(), BATHYMETRY_MODULE_NAME);
-        File targetDir = new File(targetModuleDir, AUXDIR);
 
-        return targetDir;
+        return BathymetryData.getOcsswRoot().getParentFile();
     }
 
 
@@ -101,9 +101,7 @@ public class ResourceInstallationUtils {
 
 
     public static File getTargetFile(String filename) {
-        File targetModuleDir = new File(SystemUtils.getApplicationDataDir(), BATHYMETRY_MODULE_NAME);
-        File targetDir = new File(targetModuleDir, AUXDIR);
-        File targetFile = new File(targetDir, filename);
+        File targetFile = new File(getTargetDir(), filename);
 
         return targetFile;
     }

@@ -195,7 +195,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         }
 
         final CoordinateReferenceSystem mapCRS = geoCoding.getMapCRS();
-        if (!mapCRS.equals(DefaultGeographicCRS.WGS84)) {
+        if (!mapCRS.equals(DefaultGeographicCRS.WGS84) || (geoCoding instanceof CrsGeoCoding)) {
             try {
                 transformFeatureCollection(featureCollection, geoCoding.getImageCRS(), mapCRS);
             } catch (TransformException e) {

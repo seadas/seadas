@@ -21,7 +21,7 @@
 <h2>Contour Lines</h2>
 
 <p>
-    Creates contour lines for the currently loaded product.
+    Creates contour lines for the currently loaded band or product.
 </p>
 
 <h3>Location</h3>
@@ -34,85 +34,61 @@
         <td style="border-width:0">
             To bring up the <b>"Contour Lines"</b> window click this tool button
             in the <b>"Layers"</b> tool bar or select the
-            corresponding menu item in <b>"Tools -> Contours"</b>.
-            <p class="inote"><b>NOTE:</b> this tool can only be accessed if a SeaDAS file is currently selected. </p>
+            corresponding menu item in <b>"Tools -> Contour" or right click on a product/band image and select "Contour"</b>.
+            <p class="inote"><b>NOTE:</b> this tool can only be accessed if the image of a band or product is displayed. </p>
         </td>
     </tr>
 </table>
 
 
 <h3>Details</h3>
+<h4>Introduction</h4>
+This tool creates contour lines within a selected product.
 
+<h4>User Interface</h4>
 <p>
-    This tool creates coastline, land and water masks within a selected product.
-    Normally masks are made one mask at a time and enabled independently for each band. This tool
-    allows the making and configuring of these masks all at one go. Additionally the masks can be
-    set to enabled (visible) in a bands all at once.
-    <br><br>
 
-    The <b>"Coastline, Land and Water Masks"</b> window is divided into 4 sections. The top section enables the
-    specification of the <a href="CoastlineLandMasks.html#SHORELINE_SOURCE_DATASET">Shoreline Source Dataset</a>
-    and the <a href="CoastlineLandMasks.html#SUPER_SAMPLING_FACTOR">Super Sampling Factor</a>. This criteria
-    is used when generating all of the masks. The next 3 sections allow the setting of the parameters
-    <a href="CoastlineLandMasks.html#COLOR">Color</a>,
-    <a href="CoastlineLandMasks.html#TRANSPARENCY">Transparency</a>, and
-    <a href="CoastlineLandMasks.html#ENABLED">Enabled in all Bands</a>
-    for each mask.
+    The user interface of <b>"Contour Lines"</b> tools is divided into 3 sections.
 
+    <img src="../images/contour_dialog.png"  alt="Contour Dialog"></a>
+
+
+    The top section enables the
+    selection of a product or band as the source of the contour operator. The middle section allow the setting of the parameters
+    <a href="ContourLines.html#START_VALUE">Start Value</a>,
+    <a href="ContourLines.html#END_VALUE">End Value</a>,
+    <a href="ContourLines.html#NUMBER_OF_LEVELS">Number of Levels</a>, and
+    <a href="ContourLines.html#LOG">Log</a>
+for the contour operator.
 
 </p>
 
-<a name="SHORELINE_SOURCE_DATASET"></a>
-<h4>Coastline Source Data</h4>
+<a name="START_VALUE"></a>
+<h6>Start Value</h6>
 
 <p>
-    Each of these datasets is a rasterized file whose filename
-    can be observed in the tooltip when hovering the mouse. If a selection entry is greyed out ("not enabled"),
-    then it's corresponding file is not installed currently on your system. To install any of these files see ......<br>
-
-    The current sources of this data are:
-<ol>
-    <li>SRTM_GC: <br>
-        (Shuttle Radar Topography Mission) latitude range {-60S to 60N}<br>
-        (GlobCover world map) latitude range {-90S to -60S}, {60N to 90N}
-    </li>
-    <li>GSHHS: <br>
-        (Global Self-consistent, Hierarchical, High-resolution Shoreline database)
-    </li>
-</ol>
-
+   Sets the start value for contour levels.
 </p>
 
-<a name="SUPER_SAMPLING_FACTOR"></a>
-<h4>Super Sampling Factor</h4>
+<a name="END_VALUE"></a>
+<h6>End Value</h6>
+
 <p>
-If the resolution of the selected shorelineSourceDataset is greater than the resolution of the currently
-loaded product then setting this parameter greater than 1 will be desirable.  Something on the order of at least
-(productResolution/coastlineSourceDatasetResolution)^2 should be sufficient.  The higher the value the slower
-the processing time.<br>
-    The defaults are sufficient for the 1km default shoreline dataset.
+    Sets the start value for contour levels.
 </p>
 
-
-<a name="COLOR"></a>
-<h4>Color</h4>
+<a name="NUMBER_OF_LEVELS"></a>
+<h6>Number or Levels</h6>
 
 <p>
-    Sets the color for the mask in the Mask Manager.
+    Specifies the number of contour levels.
 </p>
 
-<a name="TRANSPARENCY"></a>
-<h4>Transparency</h4>
+<a name="LOG"></a>
+<h6>Log</h6>
 
 <p>
-    Sets the transparency level for the mask in the <a href="../../../../../../../seadas-help/src/main/resources/doc/help/visat/MaskManagement.html">Mask Manager</a>.
-</p>
-
-<a name="ENABLED"></a>
-<h4>Enabled in all Bands</h4>
-
-<p>
-    Applies the masks to all displayed bands.
+    log or linear contour interval.
 </p>
 
 

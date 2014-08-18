@@ -47,12 +47,12 @@ public class SourceFileInfo {
         setDescription();
     }
 
-    public SourceFileInfo(int resolution, Unit unit,  String filename) {
-        setUnit(unit);
-        setResolution(resolution);
-        setFile(filename);
-        setDescription();
-    }
+//    public SourceFileInfo(int resolution, Unit unit, String filename) {
+//        setUnit(unit);
+//        setResolution(resolution);
+//        setFile(filename);
+//        setDescription();
+//    }
 
 
     public int getResolution() {
@@ -91,22 +91,43 @@ public class SourceFileInfo {
 
     private void setDescription() {
 
-        String core = "Filename=" + getFile();
+
 
         if (isEnabled()) {
+            String core = "Filename=" + getExistingFile();
             this.description = "<html>" + core + "</html>";
         } else {
+            String core =  "Filename=" + getAltFile();
             this.description = "<html>" + core + "<br> NOTE: this file is not currently installed -- see help</html>";
         }
     }
 
 
-
-
     public File getFile() {
+
+        if (file == null) {
+            return null;
+        }
+
         return file;
     }
 
+
+    public File getExistingFile() {
+        if (getFile() == null) {
+            return null;
+        }
+
+        if (getFile().exists()) {
+            return getFile();
+        }
+
+        if (getAltFile() != null && getAltFile().exists()) {
+            return getAltFile();
+        }
+
+        return null;
+    }
 
     private void setFile(File file) {
         this.file = file;
@@ -114,25 +135,20 @@ public class SourceFileInfo {
         setStatus(true, null);
     }
 
-    private void setFile(String filename) {
 
-        try {
-            file = ResourceInstallationUtils.installAuxdata(BathymetryOp.class, filename);
-            setStatus(true, null);
-        } catch (IOException e) {
-            setStatus(false, e.getMessage());
-        }
 
+    public File getAltFile() {
+        File altFile = ResourceInstallationUtils.getTargetFile(file.getName());
+        return altFile;
     }
-
 
     public boolean isEnabled() {
 
-        if (file == null) {
+        if (getExistingFile() == null) {
             return false;
         }
 
-        return file.exists() && getStatus();
+        return getStatus();
 
     }
 

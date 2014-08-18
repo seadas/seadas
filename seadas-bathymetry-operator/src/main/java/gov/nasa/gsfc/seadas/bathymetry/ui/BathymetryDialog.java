@@ -172,6 +172,7 @@ class BathymetryDialog extends JDialog {
             fileSelectorEnabled[0] = true;
         }
 
+
         final ResolutionComboBox resolutionComboBox = new ResolutionComboBox(bathymetryData);
 
         JPanel resolutionSamplingPanel = new JPanel(new GridBagLayout());
@@ -187,11 +188,13 @@ class BathymetryDialog extends JDialog {
             bathymetryData.addPropertyChangeListener(BathymetryData.PROMPT_REQUEST_TO_INSTALL_FILE_EVENT, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    SourceFileInfo sourceFileInfo = (SourceFileInfo) resolutionComboBox.getjComboBox().getSelectedItem();
+                    if (!bathymetryData.isInstallingFile()) {
+                        SourceFileInfo sourceFileInfo = (SourceFileInfo) resolutionComboBox.getjComboBox().getSelectedItem();
 
-                    InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(bathymetryData, sourceFileInfo, InstallResolutionFileDialog.Step.INSTALLATION);
-                    dialog.setVisible(true);
-                    dialog.setEnabled(true);
+                        InstallBathymetryFileDialog dialog = new InstallBathymetryFileDialog(bathymetryData, sourceFileInfo, InstallBathymetryFileDialog.Step.INSTALLATION);
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
                 }
             });
 
@@ -252,8 +255,11 @@ class BathymetryDialog extends JDialog {
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
 
-        mainPanel.add(resolutionSamplingPanel,
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+        // todo if we want a file selector then here it is
+        // I removed it because right now there is only one file - DANNY
+        //
+        //        mainPanel.add(resolutionSamplingPanel,
+        //                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
 
         mainPanel.add(maskJPanel,
@@ -274,8 +280,17 @@ class BathymetryDialog extends JDialog {
         createMasks.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                bathymetryData.setCreateMasks(true);
-                dispose();
+
+
+                SourceFileInfo sourceFileInfo = (SourceFileInfo) resolutionComboBox.getjComboBox().getSelectedItem();
+                if (!sourceFileInfo.isEnabled()) {
+                    bathymetryData.fireEvent(BathymetryData.PROMPT_REQUEST_TO_INSTALL_FILE_EVENT);
+                } else if (!bathymetryData.isInstallingFile()) {
+                    bathymetryData.setCreateMasks(true);
+                    dispose();
+                }
+
+
             }
         });
 

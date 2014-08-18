@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
+import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
 
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -35,6 +36,8 @@ public class BathymetryData {
     private boolean createMasks = false;
     private boolean deleteMasks = false;
 
+    private boolean isInstallingFile = false;
+
     private double maskTransparency = 0.7;
     private boolean showMaskAllBands = true;
     private Color maskColor = new Color(0, 0, 255);
@@ -53,7 +56,6 @@ public class BathymetryData {
 
 
     private String bathymetryBandName = "elevation";
-
 
 
     private ArrayList<SourceFileInfo> sourceFileInfos = new ArrayList<SourceFileInfo>();
@@ -86,7 +88,7 @@ public class BathymetryData {
             public void propertyChange(PropertyChangeEvent evt) {
                 SourceFileInfo sourceFileInfo = (SourceFileInfo) evt.getNewValue();
 
-                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(bathymetryData, sourceFileInfo, InstallResolutionFileDialog.Step.CONFIRMATION);
+                InstallBathymetryFileDialog dialog = new InstallBathymetryFileDialog(bathymetryData, sourceFileInfo, InstallBathymetryFileDialog.Step.CONFIRMATION);
                 dialog.setVisible(true);
                 dialog.setEnabled(true);
             }
@@ -267,9 +269,23 @@ public class BathymetryData {
         File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
         File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
 
+        if (!bathymetryFile.exists()) {
+            File altFile = ResourceInstallationUtils.getTargetFile(bathymetryFilename);
+            if (altFile.exists()) {
+                return altFile;
+            }
+        }
+
         return bathymetryFile;
     }
 
+    public boolean isInstallingFile() {
+        return isInstallingFile;
+    }
+
+    public void setInstallingFile(boolean installingFile) {
+        isInstallingFile = installingFile;
+    }
 }
 
 
