@@ -46,6 +46,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
     final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; symbol:cross";
     Product product;
+    double noDataValue;
 
     @Override
     public void actionPerformed(CommandEvent event) {
@@ -64,7 +65,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
             product.getBandGroup().remove(product.getBand(contourDialog.getFilteredBandName()));
         }
         ContourData contourData = contourDialog.getContourData();
-
+        noDataValue = contourDialog.getNoDataValue();
         ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
 
         for (VectorDataNode vectorDataNode : vectorDataNodes) {
@@ -128,7 +129,9 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
         ParameterBlockJAI pb = new ParameterBlockJAI("Contour");
         pb.setSource("source0", contourData.getBand().getSourceImage());
-
+        ArrayList<Double> noDataList = new ArrayList<>();
+        noDataList.add(noDataValue);
+        pb.setParameter("nodata", noDataList);
 
         for (ContourInterval interval : contourIntervals) {
             ArrayList<Double> contourInterval = new ArrayList<Double>();

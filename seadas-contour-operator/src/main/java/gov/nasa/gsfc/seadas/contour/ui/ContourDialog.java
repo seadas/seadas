@@ -58,6 +58,8 @@ public class ContourDialog extends JDialog {
     private String filteredBandName;
     boolean filterBand;
 
+    private double noDataValue;
+
     public ContourDialog(Product product, ArrayList<String> activeBands) {
         super(VisatApp.getApp().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         this.product = product;
@@ -82,6 +84,7 @@ public class ContourDialog extends JDialog {
         contours = new ArrayList<ContourData>();
         propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
         propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
+        noDataValue = selectedBand.getNoDataValue();
         createContourUI();
         contourCanceled = false;
     }
@@ -272,6 +275,7 @@ public class ContourDialog extends JDialog {
                 String oldBandName = selectedBand.getName();
                 selectedBand = product.getBand((String) bandComboBox.getSelectedItem());
                 propertyChangeSupport.firePropertyChange(NEW_BAND_SELECTED_PROPERTY, oldBandName, selectedBand.getName());
+                noDataValue = selectedBand.getGeophysicalNoDataValue();
             }
         });
 
@@ -308,6 +312,7 @@ public class ContourDialog extends JDialog {
                 selectedBand = band;
                 filteredBandName = band.getName();
                 filterBand = true;
+                noDataValue = selectedBand.getNoDataValue();
             }
         }
 
@@ -412,5 +417,13 @@ public class ContourDialog extends JDialog {
         command.setCommandID("createFilteredBand");
         command.setHelpId("createFilteredBand");
         return filterCommandEvent;
+    }
+
+    public double getNoDataValue() {
+        return noDataValue;
+    }
+
+    public void setNoDataValue(double noDataValue) {
+        this.noDataValue = noDataValue;
     }
 }

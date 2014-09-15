@@ -1342,7 +1342,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             } else {
                 cmdArray[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
             }
-            return cmdArray;
+            String[] cmdArray2 = new String[cmdArray.length+1];
+            for (int i=0; i<cmdArray.length; i++) {
+                cmdArray2[i] = cmdArray[i];
+            }
+
+            //adding ocssw version selection; default is current version
+            cmdArray2[cmdArray.length] = "--git-branch=v" + VisatApp.getApp().getAppVersion();
+            return cmdArray2;
         }
     }
 
