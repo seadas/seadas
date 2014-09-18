@@ -921,22 +921,13 @@ public abstract class SeadasFileReader {
 
             final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
 
-            final DateFormat dateFormatISO = ProductData.UTC.createDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            // only needed as a stop-gap to handle an intermediate version of l2gen metadata
-            final DateFormat dateFormatISOnopunc = ProductData.UTC.createDateFormat("yyyyMMdd'T'HHmmss'Z'");
+            final DateFormat dateFormatISO = ProductData.UTC.createDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
             final DateFormat dateFormatModis = ProductData.UTC.createDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
             final DateFormat dateFormatOcts = ProductData.UTC.createDateFormat("yyyyMMdd HH:mm:ss.SSSSSS");
             try {
                 if (isISO) {
-                    Date date;
-                    try {
-                        date = dateFormatISO.parse(timeString);
-                    } catch (Exception e) {
-                        date = dateFormatISOnopunc.parse(timeString);
-                    }
-
-//                    String milliSeconds = timeString.substring(timeString.length());
+                    Date date = dateFormatISO.parse(timeString);
                     return ProductData.UTC.create(date, 0);
                 } else if (isModis) {
                     final Date date = dateFormatModis.parse(timeString);

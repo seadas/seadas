@@ -48,6 +48,7 @@ public class AncillaryProductReaderPlugIn implements ProductReaderPlugIn {
             "SeaWiFS Climatological Ancillary Data",
             "Daily-OI",
             "ETOPO1 Ice Surface Global Relief Model",
+            "NCEP Reanalysis 2 Ancillary Data",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 

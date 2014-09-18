@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="5.1.3" transformSequenceNumber="4">
   <directoryPresets config="./src/main/resources/images" />
-  <application name="SeaDAS" distributionSourceDir="" applicationId="1981-1521-4114-3542" mediaDir="../../installers" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.version}_${compiler:sys.platform}_installer" compression="7" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="true" createMd5Sums="true" shrinkRuntime="false" shortName="seadas" publisher="NASA Ocean Biology Processing Group" publisherWeb="http://seadas.gsfc.nasa.gov/" version="7.0.2" allPathsRelative="true" backupOnSave="true" autoSave="true" convertDotsToUnderscores="false" macSignature="????" installerName="" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
+  <application name="SeaDAS" distributionSourceDir="" applicationId="1981-1521-4114-3542" mediaDir="../../installers" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.version}_${compiler:sys.platform}_installer" compression="7" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="true" createMd5Sums="true" shrinkRuntime="false" shortName="seadas" publisher="NASA Ocean Biology Processing Group" publisherWeb="http://seadas.gsfc.nasa.gov/" version="7.1" allPathsRelative="true" backupOnSave="true" autoSave="true" convertDotsToUnderscores="false" macSignature="????" installerName="" javaMinVersion="1.7" javaMaxVersion="" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
       <additionalLanguages />
@@ -257,8 +257,11 @@
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.actions.files.DeleteFileAction">
+                      <void property="backupForRollback">
+                        <boolean>false</boolean>
+                      </void>
                       <void property="files">
-                        <array class="java.io.File" length="2">
+                        <array class="java.io.File" length="3">
                           <void index="0">
                             <object class="java.io.File">
                               <string>modules</string>
@@ -269,10 +272,49 @@
                               <string>lib</string>
                             </object>
                           </void>
+                          <void index="2">
+                            <object class="java.io.File">
+                              <string>${installer:sys.userHome}/.seadas.installer.save</string>
+                            </object>
+                          </void>
                         </array>
                       </void>
                       <void property="recursive">
                         <boolean>true</boolean>
+                      </void>
+                    </object>
+                  </java>
+                </serializedBean>
+                <condition />
+              </action>
+              <action name="" id="4904" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage="">
+                <serializedBean>
+                  <java class="java.beans.XMLDecoder">
+                    <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
+                      <void property="script">
+                        <object class="com.install4j.api.beans.ScriptProperty">
+                          <void property="value">
+                            <string>// current file name
+String homeDir = System.getProperty("user.home");
+File file = new File(homeDir, ".seadas");
+
+// new name
+File file2 = new File(homeDir, ".seadas.installer.save");
+
+//int i = 0;
+//while(file2.exists()) {
+//    i++;
+//    String nameStr = ".seadas.old." + Integer.toString(i);
+//    file2 = new File(homeDir, nameStr);
+//}
+
+// Rename directory
+boolean success = file.renameTo(file2);
+
+return true;
+</string>
+                          </void>
+                        </object>
                       </void>
                     </object>
                   </java>
@@ -745,29 +787,7 @@
             <validation />
             <preActivation />
             <postActivation />
-            <actions>
-              <action name="" id="4177" customizedId="" beanClass="com.install4j.runtime.beans.actions.files.DeleteFileAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" multiExec="false" failureStrategy="1" errorMessage=" Failed to remove SeaDAS application data.">
-                <serializedBean>
-                  <java class="java.beans.XMLDecoder">
-                    <object class="com.install4j.runtime.beans.actions.files.DeleteFileAction">
-                      <void property="files">
-                        <array class="java.io.File" length="1">
-                          <void index="0">
-                            <object class="java.io.File">
-                              <string>${installer:sys.userHome}/.seadas</string>
-                            </object>
-                          </void>
-                        </array>
-                      </void>
-                      <void property="recursive">
-                        <boolean>true</boolean>
-                      </void>
-                    </object>
-                  </java>
-                </serializedBean>
-                <condition>context.getBooleanVariable("removeAppData")</condition>
-              </action>
-            </actions>
+            <actions />
             <formComponents>
               <formComponent name="" id="4174" customizedId="" beanClass="com.install4j.runtime.beans.formcomponents.CheckboxComponent" enabled="true" commentSet="false" comment="" insetTop="" insetLeft="" insetBottom="" insetRight="" resetInitOnPrevious="false">
                 <serializedBean>
