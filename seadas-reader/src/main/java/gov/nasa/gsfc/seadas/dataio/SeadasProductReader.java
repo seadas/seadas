@@ -41,6 +41,7 @@ public class SeadasProductReader extends AbstractProductReader {
 
     enum ProductType {
         ANCNRT("SeaWiFS Near Real-Time Ancillary Data"),
+        ANCNRT2("NCEP Reanalysis 2 Ancillary Data"),
         ANCCLIM("SeaWiFS Climatological Ancillary Data"),
         Bathy("Bathymetry"),
         BrowseFile("Browse Product"),
@@ -138,6 +139,7 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case SMI:
                 case ANCNRT:
+                case ANCNRT2:
                 case ANCCLIM:
                 case OISST:
                 case Bathy:
@@ -289,6 +291,8 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Bathy;
             } else if (title.equals("SeaWiFS Near Real-Time Ancillary Data")) {
                 return ProductType.ANCNRT;
+            } else if (title.equals("NCEP Reanalysis 2 Ancillary Data")) {
+                return ProductType.ANCNRT2;
             } else if (title.equals("SeaWiFS Climatological Ancillary Data")) {
                 return ProductType.ANCCLIM;
             } else if (title.contains("Level-3 Standard Mapped Image")) {
