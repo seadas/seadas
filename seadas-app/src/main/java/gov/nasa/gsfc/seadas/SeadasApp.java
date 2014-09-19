@@ -136,12 +136,12 @@ public class SeadasApp extends VisatApp {
 
 
     protected CommandBar createSeadasDeluxeToolsToolBar() {
-        final CommandBar toolBar = createToolBar(SEADAS_DELUXE_TOOLS_TOOL_BAR_ID, "Deluxe Tools");
+        final CommandBar toolBar = createToolBar(SEADAS_DELUXE_TOOLS_TOOL_BAR_ID, "Masks");
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
-        ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
-                "showContourOverlay"));
-
-        addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
+//        ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
+//                "showContourOverlay"));
+//
+//        addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
 
         return toolBar;
@@ -149,7 +149,7 @@ public class SeadasApp extends VisatApp {
 
 
     protected CommandBar createSeadasStandardLayersToolBar() {
-        final CommandBar toolBar = createToolBar(SEADAS_STANDARD_LAYERS_TOOL_BAR_ID, "Standard Layers");
+        final CommandBar toolBar = createToolBar(SEADAS_STANDARD_LAYERS_TOOL_BAR_ID, "Layers");
 
         String layerEditorToolViewCommandId = null;
         ToolViewDescriptor[] toolViewDescriptors = VisatActivator.getInstance().getToolViewDescriptors();
@@ -165,7 +165,8 @@ public class SeadasApp extends VisatApp {
                 "showWorldMapOverlay",
                 "showNoDataOverlay",
                 "exportLegendImageFile",
-                "showGraticuleOverlay"
+                "showGraticuleOverlay",
+                "showContourOverlay"
                ));
 
         addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
@@ -502,8 +503,8 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("view", "View", 'V'));
         menuBar.add(createJMenu("tools", "Tools", 'T'));
         menuBar.add(createJMenu("layers", "Layers", 'L'));
-        menuBar.add(createJMenu("processing", "Proc", 'P'));
-        menuBar.add(createJMenu("ocprocessing", "OCproc", 'O'));
+        menuBar.add(createJMenu("processing", "Processing", 'P'));
+        menuBar.add(createJMenu("ocprocessing", "OCProcessing", 'O'));
         menuBar.add(createJMenu("analysis", "Analysis", 'A'));
         menuBar.add(createJMenu("info", "Info", 'I'));
         menuBar.add(createJMenu("window", "Window", 'W'));

@@ -30,7 +30,7 @@
     <extension point="beam-ui:actions">
         <action>
             <!--<parent>showOverlaysMenu</parent>-->
-            <parent>tools</parent>
+            <parent>layers</parent>
             <id>showContourOverlay</id>
             <class>gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction</class>
             <text>Contour</text>
@@ -38,6 +38,7 @@
             <shortDescr>Add contour lines</shortDescr>
             <description>Add contour lines for the selected image</description>
             <context>image</context>
+            <placeBefore>showGcpOverlay</placeBefore>
             <largeIcon>icons/ContourOverlay22.png</largeIcon>
             <helpId>showContourOverlay</helpId>
         </action>
