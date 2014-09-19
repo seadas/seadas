@@ -14,7 +14,7 @@
   ~ with this program; if not, see http://www.gnu.org/licenses/
   -->
 
-<html xmlns="http://www.w3.org/1999/html">
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
     <title>SeaDAS Help - SeaDAS Application</title>
     <link rel="stylesheet" href="../style.css">
@@ -25,7 +25,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            SeaDAS 7.1 Component Guide
+            SeaDAS 7.1 Help
         </td>
 
         <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
@@ -33,6 +33,24 @@
     </tr>
 </table>
 <br>
+
+<p>SeaDAS is a scientific data visualisation, analysis, and processing software application for remote-sensing
+    satellite data which derives from and is an extension of the BEAM Earth Observation Toolbox and
+    Development Platform. SeaDAS includes support for the data products produced by NASA's Ocean Biology Processing
+    Group
+    (<a href="http://oceancolor.gsfc.nasa.gov" class="invisibleLink">http://oceancolor.gsfc.nasa.gov</a>).
+    This support includes data processing capabilities to allow users to process
+    data between the various levels (i.e. Level 0 through Level 3). <br><br>
+
+    Please be aware that some of the component-level SeaDAS 7.1 help pages have not yet been revised to match the
+    current version. For the latest SeaDAS help and tutorials see
+    <a href="http://seadas.gsfc.nasa.gov" class="invisibleLink">http://seadas.gsfc.nasa.gov</a></p>
+
+<br>
+<hr>
+<h3>Component Reference</h3>
+
+<p class="groupDetails">Where available, component names are linked to their respective help pages.
 
 
 <h4>File Tools</h4>
@@ -308,261 +326,368 @@
 
 
 </table>
-<h4>Image, Layer, & Mask Tools</h4>
+
+<h4>Mask Tools</h4>
 
 <table class="invisibletable">
 
-<tr>
-    <td class="invisibletable" valign="top">
-        <img src="images/icons/bathymetry.png" border="0">
-    </td>
 
-    <td class="invisibletable" valign="top" nowrap>
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/bathymetry.png" border="0">
+        </td>
 
-        <p class="groupTitle">
-            Bathymetry
-        </p>
+        <td class="invisibletable" valign="top" nowrap>
 
-        <p class="groupDetails">
-            Add elevation, bathymetry, and topography bands and bathymetry mask.
-        </p>
+            <p class="groupTitle">
+                Bathymetry
+            </p>
 
-    </td>
-</tr>
+            <p class="groupDetails">
+                Add elevation, bathymetry, and topography bands and bathymetry mask.
+            </p>
 
-
-<tr>
-    <td class="invisibletable" valign="top">
-        <img src="images/icons/coastline_24.png" border="0">
-    </td>
-
-    <td class="invisibletable" valign="top" nowrap>
-
-        <p class="groupTitle">
-            Coastline, Land & Water
-        </p>
-
-        <p class="groupDetails">
-            Add coastline, land and water masks
-        </p>
-
-    </td>
-</tr>
+        </td>
+    </tr>
 
 
-<tr>
-    <td class="invisibletable" valign="top">
-        <a href="../visat/ExportColorLegend.html" class="invisibleLink">
-            <img src="images/icons/ColorbarHorizontal24.png" border="0">
-        </a>
-    </td>
-    <td class="invisibletable" valign="top" nowrap>
-        <p class="groupTitle">
-            <a href="../visat/ExportColorLegend.html" class="invisibleLink">
-                Colorbar
-            </a>
-        </p>
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/coastline_24.png" border="0">
+        </td>
 
-        <p class="groupDetails">
-            View and/or Export the colorbar.
-        </p>
-    </td>
-</tr>
+        <td class="invisibletable" valign="top" nowrap>
 
+            <p class="groupTitle">
+                Coastline, Land & Water
+            </p>
 
-<tr>
-    <td class="invisibletable" valign="top">
-        <a href="../visat/ColorManipulationWindow.html">
-            <img src="images/icons/ContrastStretch24.png" border="0">
-        </a>
-    </td>
+            <p class="groupDetails">
+                Add coastline, land and water masks
+            </p>
 
-    <td class="invisibletable" valign="top" nowrap>
-
-        <p class="groupTitle">
-            <a href="../visat/ColorManipulationWindow.html" class="invisibleLink">
-                Color Manager
-            </a>
-        </p>
-
-        <p class="groupDetails">
-            Set the color palette of band image.
-        </p>
-
-    </td>
-</tr>
+        </td>
+    </tr>
 
 
-<tr>
-    <td class="invisibletable" valign="top">
-        <img src="images/icons/ContourOverlay22.png" border="0">
-    </td>
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/MagicWand22.png" border="0">
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                Magic Wand
+            </p>
 
-    <td class="invisibletable" valign="top" nowrap>
-
-        <p class="groupTitle">
-            Contour
-        </p>
-
-        <p class="groupDetails">
-            Add contour lines.
-        </p>
-
-    </td>
-</tr>
+            <p class="groupDetails">
+                Creates a ROI mask using a magic wand.
+            </p>
+        </td>
+    </tr>
 
 
-<tr>
-    <td class="invisibletable" valign="top">
-        <a href="../visat/ShowGraticuleOverlay.html" class="invisibleLink">
-            <img src="images/icons/GraticuleOverlay24.png" border="0">
-        </a>
-    </td>
-    <td class="invisibletable" valign="top" nowrap>
-        <p class="groupTitle">
-            <a href="../visat/ShowGraticuleOverlay.html" class="invisibleLink">
-                Gridlines
-            </a>
-        </p>
-
-        <p class="groupDetails">
-            Show/hide map gridlines layer for the selected image.
-        </p>
-    </td>
-</tr>
-
-
-<tr>
-    <td class="invisibletable" valign="top">
-        <img src="images/icons/LayerEditor24.png" border="0">
-    </td>
-    <td class="invisibletable" valign="top" nowrap>
-        <p class="groupTitle">
-            Layer Editor
-        </p>
-
-        <p class="groupDetails">
-            Edit layer properties (Grid Lines, No-Data, etc.).
-        </p>
-    </td>
-</tr>
-
-
-<tr>
-    <td class="invisibletable" valign="top">
-        <a href="../visat/LayerManagerWindow.html" class="invisibleLink">
-            <img src="images/icons/LayerManager24.png" border="0">
-        </a>
-    </td>
-    <td class="invisibletable" valign="top" nowrap>
-        <p class="groupTitle">
-            <a href="../visat/LayerManagerWindow.html" class="invisibleLink">
-                Layer Manager
-            </a>
-        </p>
-
-        <p class="groupDetails">
-            Manage view layer visibility and transparency.
-        </p>
-    </td>
-</tr>
-
-
-<tr>
-    <td class="invisibletable" valign="top">
-        <a href="../visat/MaskManagement.html" class="invisibleLink">
-            <img src="images/icons/MaskManager24.png" border="0">
-        </a>
-
-    </td>
-    <td class="invisibletable" valign="top" nowrap>
-        <p class="groupTitle">
+    <tr>
+        <td class="invisibletable" valign="top">
             <a href="../visat/MaskManagement.html" class="invisibleLink">
-                Mask Manager
+                <img src="images/icons/MaskManager24.png" border="0">
             </a>
-        </p>
 
-        <p class="groupDetails">
-            Manage binary data masks and ROIs (regions of interest).
-        </p>
-    </td>
-</tr>
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                <a href="../visat/MaskManagement.html" class="invisibleLink">
+                    Mask Manager
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Manage binary data masks and ROIs (regions of interest).
+            </p>
+        </td>
+    </tr>
 
 
-<tr>
-    <td class="invisibletable" valign="top">
-        <a href="../visat/NavigationWindow.html" class="invisibleLink">
-            <img src="images/icons/Navigation24.png" border="0">
-        </a>
-    </td>
-    <td class="invisibletable" valign="top" nowrap>
-        <p class="groupTitle">
+</table>
+
+
+<h4>Color Tools</h4>
+
+<table class="invisibletable">
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/ExportColorLegend.html" class="invisibleLink">
+                <img src="images/icons/ColorbarHorizontal24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                <a href="../visat/ExportColorLegend.html" class="invisibleLink">
+                    Colorbar
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                View and/or Export the colorbar.
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/ColorManipulationWindow.html">
+                <img src="images/icons/ContrastStretch24.png" border="0">
+            </a>
+        </td>
+
+        <td class="invisibletable" valign="top" nowrap>
+
+            <p class="groupTitle">
+                <a href="../visat/ColorManipulationWindow.html" class="invisibleLink">
+                    Color Manager
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Set the color palette of band image.
+            </p>
+
+        </td>
+    </tr>
+
+    <tr>
+        <td class="invisibletable" valign="top">
+
+        </td>
+
+        <td class="invisibletable" valign="top" nowrap>
+
+            <p class="groupTitle">
+                RGB Image
+            </p>
+
+            <p class="groupDetails">
+                Creates a 3-band composite image using red, green, and blue color palette.
+            </p>
+
+        </td>
+    </tr>
+
+
+</table>
+
+
+<h4>Location Tools</h4>
+
+<table class="invisibletable">
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/ZoomTool24.gif" border="0">
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                Zoom
+            </p>
+
+            <p class="groupDetails">
+
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/SelectTool24.gif" border="0">
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                Select
+            </p>
+
+            <p class="groupDetails">
+
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/PannerTool24.gif" border="0">
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                Pan
+            </p>
+
+            <p class="groupDetails">
+
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
             <a href="../visat/NavigationWindow.html" class="invisibleLink">
-                Navigation
+                <img src="images/icons/Navigation24.png" border="0">
             </a>
-        </p>
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                <a href="../visat/NavigationWindow.html" class="invisibleLink">
+                    Navigation
+                </a>
+            </p>
 
-        <p class="groupDetails">
-            Zoom and pan a selected image view.
-        </p>
-    </td>
-</tr>
-
-
-<tr>
-    <td class="invisibletable" valign="top">
-        <a href="../visat/NoDataOverlay.html" class="invisibleLink">
-            <img src="images/icons/NoDataOverlay24.png" border="0">
-        </a>
-    </td>
-    <td class="invisibletable" valign="top" nowrap>
-        <p class="groupTitle">
-            <a href="../visat/NoDataOverlay.html" class="invisibleLink">
-                No-Data Layer
-            </a>
-        </p>
-
-        <p class="groupDetails">
-            Show no-data overlay for the selected image.
-        </p>
-    </td>
-</tr>
+            <p class="groupDetails">
+                Zoom and pan a selected image view.
+            </p>
+        </td>
+    </tr>
 
 
-<tr>
-    <td class="invisibletable" valign="top">
-        <img src="images/icons/WorldMap24.png" border="0">
-    </td>
-    <td class="invisibletable" valign="top" nowrap>
-        <p class="groupTitle">
-            World Map Layer
-        </p>
-
-        <p class="groupDetails">
-            Show World Map layer for the selected image.
-        </p>
-    </td>
-</tr>
-
-
-<tr>
-    <td class="invisibletable" valign="top">
-        <a href="../visat/WorldMap.html" class="invisibleLink">
-            <img src="images/icons/WorldMapBoundaries24.png" border="0">
-        </a>
-    </td>
-    <td class="invisibletable" valign="top" nowrap>
-        <p class="groupTitle">
+    <tr>
+        <td class="invisibletable" valign="top">
             <a href="../visat/WorldMap.html" class="invisibleLink">
-                World Map Location
+                <img src="images/icons/WorldMapBoundaries24.png" border="0">
             </a>
-        </p>
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                <a href="../visat/WorldMap.html" class="invisibleLink">
+                    World Map Location
+                </a>
+            </p>
 
-        <p class="groupDetails">
-            Display file geographic boundaries on a world map.
-        </p>
-    </td>
-</tr>
+            <p class="groupDetails">
+                Display file geographic boundaries on a world map.
+            </p>
+        </td>
+    </tr>
+
+
+</table>
+
+
+<h4>Layer Tools</h4>
+
+<table class="invisibletable">
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/ContourOverlay22.png" border="0">
+        </td>
+
+        <td class="invisibletable" valign="top" nowrap>
+
+            <p class="groupTitle">
+                Contour
+            </p>
+
+            <p class="groupDetails">
+                Add contour lines.
+            </p>
+
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/ShowGraticuleOverlay.html" class="invisibleLink">
+                <img src="images/icons/GraticuleOverlay24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                <a href="../visat/ShowGraticuleOverlay.html" class="invisibleLink">
+                    Gridlines
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Show/hide map gridlines layer for the selected image.
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/LayerEditor24.png" border="0">
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                Layer Editor
+            </p>
+
+            <p class="groupDetails">
+                Edit layer properties (Grid Lines, No-Data, etc.).
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/LayerManagerWindow.html" class="invisibleLink">
+                <img src="images/icons/LayerManager24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                <a href="../visat/LayerManagerWindow.html" class="invisibleLink">
+                    Layer Manager
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Manage view layer visibility and transparency.
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/NoDataOverlay.html" class="invisibleLink">
+                <img src="images/icons/NoDataOverlay24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                <a href="../visat/NoDataOverlay.html" class="invisibleLink">
+                    No-Data Layer
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Show no-data overlay for the selected image.
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/WorldMap24.png" border="0">
+        </td>
+        <td class="invisibletable" valign="top" nowrap>
+            <p class="groupTitle">
+                World Map Layer
+            </p>
+
+            <p class="groupDetails">
+                Show World Map layer for the selected image.
+            </p>
+        </td>
+    </tr>
 
 
 </table>

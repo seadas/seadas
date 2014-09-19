@@ -144,6 +144,11 @@ public class SeadasApp extends VisatApp {
 //        addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
 
+        addCommandsToToolBar(toolBar, new String[]{
+                "magicWandTool"
+        });
+
+
         return toolBar;
     }
 
@@ -267,9 +272,9 @@ public class SeadasApp extends VisatApp {
         toolBar.add(Box.createHorizontalStrut(PADDING));
         toolBar.add(Box.createHorizontalStrut(PADDING));
 
-        addCommandsToToolBar(toolBar, new String[]{
-                "magicWandTool"
-        });
+//        addCommandsToToolBar(toolBar, new String[]{
+//                "magicWandTool"
+//        });
 
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
 
