@@ -133,9 +133,9 @@ public class SeadasMain implements RuntimeRunnable {
                     Command c = commandManager.getCommand("install_ocssw.py");
                     if (c != null) {
                         if (isOCSSWExist()) {
-                            c.setText("Update Processors");
+                            c.setText("Update OC Processors");
                         } else {
-                            c.setText("Install Processors");
+                            c.setText("Install OC Processors");
                         }
                     }
                 } catch (Exception e) {

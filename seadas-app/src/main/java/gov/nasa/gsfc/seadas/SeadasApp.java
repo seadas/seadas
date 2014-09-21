@@ -15,6 +15,8 @@
  */
 package gov.nasa.gsfc.seadas;
 
+import com.bc.ceres.swing.actions.*;
+import com.bc.ceres.swing.selection.SelectionManager;
 import com.jidesoft.action.CommandBar;
 import com.jidesoft.action.CommandMenuBar;
 import com.jidesoft.action.DockableBar;
@@ -507,9 +509,10 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("edit", "Edit", 'E'));
         menuBar.add(createJMenu("view", "View", 'V'));
         menuBar.add(createJMenu("tools", "Tools", 'T'));
+        menuBar.add(createJMenu("masks", "Masks", 'T'));
         menuBar.add(createJMenu("layers", "Layers", 'L'));
         menuBar.add(createJMenu("processing", "Processing", 'P'));
-        menuBar.add(createJMenu("ocprocessing", "OCProcessing", 'O'));
+        menuBar.add(createJMenu("ocprocessing", "OCProc", 'O'));
         menuBar.add(createJMenu("analysis", "Analysis", 'A'));
         menuBar.add(createJMenu("info", "Info", 'I'));
         menuBar.add(createJMenu("window", "Window", 'W'));
@@ -517,6 +520,53 @@ public class SeadasApp extends VisatApp {
 
         return menuBar;
     }
+
+
+    //This enables placing the plugins in a desired menu
+    @Override
+    protected final void insertCommandMenuItem(Command command) {
+        JMenu menu = null;
+        String parent = command.getParent();
+        if (parent != null) {
+            menu = findMenu(parent);
+        }
+        if (menu == null) {
+            if (command.getCommandID().contains("Bathymetry") ||
+                    command.getCommandID().contains("Coastline")) {
+                menu = findMenu("masks");
+            } else {
+                menu = createNewMenu(parent);
+            }
+        }
+        if (menu != null) {
+            commandMenuInserter.insertCommandIntoMenu(command, menu);
+        }
+    }
+
+    @Override
+    protected void insertCommandMenuItems() {
+        super.insertCommandMenuItems();
+
+        JMenu menu = findMenu("edit");
+
+        SelectionManager selectionManager = getApplicationPage().getSelectionManager();
+        Action cutAction = new CutAction(selectionManager);
+        Action copyAction = new CopyAction(selectionManager);
+        Action pasteAction = new PasteAction(selectionManager);
+        Action selectAllAction = new SelectAllAction(selectionManager);
+        Action deleteAction = new DeleteAction(selectionManager);
+
+//        menu.insert(undoAction, 0);
+//        menu.insert(redoAction, 1);
+        menu.insertSeparator(0);
+        menu.insert(cutAction, 1);
+        menu.insert(copyAction, 2);
+        menu.insert(pasteAction, 3);
+        menu.insert(deleteAction, 4);
+        menu.insert(selectAllAction, 5);
+        menu.insertSeparator(6);
+    }
+
 
 
     @Override

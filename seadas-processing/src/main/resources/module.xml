@@ -54,8 +54,8 @@
             <id>install_ocssw.py</id>
             <placeBefore>extractor</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
-            <text>Install Processors...</text>
-            <shortDescr>Install/Update SeaDAS Processing Software</shortDescr>
+            <text>Install OC Processors...</text>
+            <shortDescr>Install/Update SeaDAS Ocean Color Processing Software</shortDescr>
             <programName>install_ocssw.py</programName>
             <dialogTitle>SeaDAS Processing Software Installer</dialogTitle>
             <xmlFileName>ocssw_installer.xml</xmlFileName>
@@ -295,7 +295,7 @@
             <!--<placeBefore>extractor</placeBefore>-->
             <placeAfter>l3bindump</placeAfter>
             <class>gov.nasa.gsfc.seadas.processing.processor.MultilevelProcessorAction</class>
-            <text>Multi-Level Processor...</text>
+            <text>Multi-Level OC Processor...</text>
             <shortDescr>Process a file through many levels</shortDescr>
             <programName>multilevel_processor.py</programName>
             <dialogTitle>multilevel_processor.py</dialogTitle>
