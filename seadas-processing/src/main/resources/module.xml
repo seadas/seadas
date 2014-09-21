@@ -295,7 +295,7 @@
             <!--<placeBefore>extractor</placeBefore>-->
             <placeAfter>l3bindump</placeAfter>
             <class>gov.nasa.gsfc.seadas.processing.processor.MultilevelProcessorAction</class>
-            <text>Multi-Level OC Processor...</text>
+            <text>Multi-Level Processor...</text>
             <shortDescr>Process a file through many levels</shortDescr>
             <programName>multilevel_processor.py</programName>
             <dialogTitle>multilevel_processor.py</dialogTitle>

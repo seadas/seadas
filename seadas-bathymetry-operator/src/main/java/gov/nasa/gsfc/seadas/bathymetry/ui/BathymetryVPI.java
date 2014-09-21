@@ -39,7 +39,7 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
  */
 public class BathymetryVPI extends AbstractVisatPlugIn {
 
-    public static final String COMMAND_ID = "Bathymetry-Elevation...";
+    public static final String COMMAND_ID = "Bathymetry & Elevation";
     public static final String TOOL_TIP = "Add bathymetry-elevation band and mask";
     public static final String ICON = "bathymetry.png";
 

@@ -509,7 +509,6 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("edit", "Edit", 'E'));
         menuBar.add(createJMenu("view", "View", 'V'));
         menuBar.add(createJMenu("tools", "Tools", 'T'));
-        menuBar.add(createJMenu("masks", "Masks", 'T'));
         menuBar.add(createJMenu("layers", "Layers", 'L'));
         menuBar.add(createJMenu("processing", "Processing", 'P'));
         menuBar.add(createJMenu("ocprocessing", "OCProc", 'O'));
@@ -531,9 +530,14 @@ public class SeadasApp extends VisatApp {
             menu = findMenu(parent);
         }
         if (menu == null) {
-            if (command.getCommandID().contains("Bathymetry") ||
-                    command.getCommandID().contains("Coastline")) {
-                menu = findMenu("masks");
+            if (command.getCommandID().contains("Bathymetry")) {
+                menu = findMenu("layers");
+                command.setPlaceBefore("showContourOverlay");
+            } else if (command.getCommandID().contains("Coastline")) {
+                menu = findMenu("layers");
+                command.setPlaceBefore("showContourOverlay");
+//                command.setSeparatorAfter(true);
+
             } else {
                 menu = createNewMenu(parent);
             }
@@ -563,8 +567,9 @@ public class SeadasApp extends VisatApp {
         menu.insert(copyAction, 2);
         menu.insert(pasteAction, 3);
         menu.insert(deleteAction, 4);
-        menu.insert(selectAllAction, 5);
-        menu.insertSeparator(6);
+        menu.insertSeparator(5);
+        menu.insert(selectAllAction, 6);
+        menu.insertSeparator(7);
     }
 
 
