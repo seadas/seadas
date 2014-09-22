@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-reader</symbolicName>
-    <version>1.5.1</version>
+    <version>1.5.2</version>
     <name>NASA OBPG Ocean Color Product Reader</name>
     <description>A reader for Ocean Color Data Products supported the NASA Ocean Biology Processing Group</description>
 
@@ -14,6 +14,10 @@
 
     <changelog>
         <![CDATA[
+        Changes in 1.5.2:<br>
+        Fixed minor bug in scan line time assignment that resulted from a change in the ISO8601 string format</br>
+        Added support for more ancillary data sets</br>
+        Updated bowtie geolocation for MODIS and VIIRS</br>
         Changes in 1.5.1:<br>
         Fixed minor bug in scan line time assignment that affected L2 files with both Start Time and time_coverage_start attributes</br>
         Minor modification to SMIReader to handle new netCDF formatted files</br>
