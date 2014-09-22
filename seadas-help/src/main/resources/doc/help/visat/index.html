@@ -25,7 +25,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            SeaDAS 7.1 Help
+            Overview
         </td>
 
         <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
@@ -48,12 +48,13 @@
 
 <br>
 <hr>
-<h3>Component Reference</h3>
+<p class="sectionTitle">Component Reference</p>
+<hr>
 
 <p class="groupDetails">Where available, component names are linked to their respective help pages.
 
 
-<h4>File Tools</h4>
+<p class="subSectionTitle">File Tools</p>
 
 <table class="invisibletable">
 
@@ -72,9 +73,12 @@
             </p>
 
             <p class="groupDetails">
-
-                File -> File Manager&nbsp;&nbsp;&nbsp;(Docked: left-side)<br>
                 Displays all opened files in a tree view.
+            </p>
+
+            <p class="groupLocation">
+                File -> File Manager<br>
+                Docked: left-side
             </p>
         </td>
     </tr>
@@ -83,7 +87,7 @@
 </table>
 
 
-<h4>General Processing Tools</h4>
+<p class="subSectionTitle">Processing Tools</p>
 
 <table class="invisibletable">
 
@@ -92,14 +96,20 @@
             <img src="images/icons/dannys_collocation24.png" border="0">
         </td>
 
-        <td class="invisibletable" valign="top" nowrap>
+        <td class="invisibletable" valign="top">
             <p class="groupTitle">
                 Collocate
             </p>
 
             <p class="groupDetails">
-                Processing -> Collocate&nbsp;&nbsp;&nbsp;(Toolbar: Processing)<br>
-                Collocates two files together into a new file (useful for parameter comparisons, etc.)
+                Creates a new file which is a collocation of two selected files. (useful for parameter comparisons,
+                etc.)
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Collocate<br>
+                Toolbar: Processing
+
             </p>
         </td>
     </tr>
@@ -111,7 +121,7 @@
             </a>
         </td>
 
-        <td class="invisibletable" valign="top" nowrap>
+        <td class="invisibletable" valign="top">
             <p class="groupTitle">
                 <a href="../visat/ProductSubsetDialog.html" class="invisibleLink">
                     Crop
@@ -119,8 +129,14 @@
             </p>
 
             <p class="groupDetails">
-                Processing -> Crop&nbsp;&nbsp;&nbsp;(Processing Toolbar)<br>
-                Crops the file spatially to create a new file (default boundaries are the current view).
+                Creates a new file which is a spatially cropped copy of the selected file (default boundaries are the
+                current view).
+
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Crop<br>
+                Toolbar: Processing
 
             </p>
         </td>
@@ -140,8 +156,12 @@
             </p>
 
             <p class="groupDetails">
-                Processing -> Flip Data<br>
-                Applies a data flip to create a new file
+                Creates a new file which is a data flip to the selected file
+
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Flip Data
 
             </p>
         </td>
@@ -163,9 +183,12 @@
             </p>
 
             <p class="groupDetails">
-                Processing -> Mosaic&nbsp;&nbsp;&nbsp;(Toolbar: Processing)<br>
-                Creates a mosaic file from multiple files.
+                Creates a new file which is a mosaic of multiple files.
+            </p>
 
+            <p class="groupLocation">
+                Processing -> Mosaic<br>
+                Toolbar: Processing
             </p>
         </td>
     </tr>
@@ -184,9 +207,11 @@
             </p>
 
             <p class="groupDetails">
-                Processing -> Orthorectify<br>
-                Applies orthorectification to create a new file.
+                Creates a new file which is an orthorectification of the selected file.
+            </p>
 
+            <p class="groupLocation">
+                Processing -> Orthorectify
             </p>
         </td>
     </tr>
@@ -205,9 +230,12 @@
             </p>
 
             <p class="groupDetails">
-                Processing -> Reproject<br>
-                Applies reprojection to create a new file.
+                Creates a new file which is a reprojection of the selected file.
 
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Reproject
             </p>
         </td>
     </tr>
@@ -260,6 +288,7 @@
             </p>
 
             <p class="groupDetails">
+                Tools -> DEM Band<br>
                 Creates DEM elevation and optionally DEM-corrected lat/lon bands from a selected DEM.
             </p>
         </td>
@@ -281,6 +310,8 @@
             </p>
 
             <p class="groupDetails">
+                Tools -> Filtered Band<br>
+                Toolbar: Band Tools<br>
                 Creates a filtered band from the currently selected band.
             </p>
         </td>
@@ -302,6 +333,8 @@
             </p>
 
             <p class="groupDetails">
+                Tools -> Math Band<br>
+                Toolbar: Band Tools <br>
                 Create a new band using an arbitrary mathematical expression.
             </p>
         </td>
@@ -319,7 +352,12 @@
             </p>
 
             <p class="groupDetails">
-                Computes a "real" band from a virtual or filtered band.
+
+            Computes a "real" band from a virtual or filtered band.
+            </p>
+
+            <p class="groupLocation">
+                Tools -> Real Band
             </p>
         </td>
     </tr>
@@ -340,11 +378,16 @@
         <td class="invisibletable" valign="top" nowrap>
 
             <p class="groupTitle">
-                Bathymetry
+                Bathymetry & Elevation
             </p>
 
             <p class="groupDetails">
                 Add elevation, bathymetry, and topography bands and bathymetry mask.
+            </p>
+
+            <p class="groupLocation">
+                Layers -> Bathymetry & Elevation <br>
+                Toolbar: Masks
             </p>
 
         </td>
@@ -363,6 +406,8 @@
             </p>
 
             <p class="groupDetails">
+                Layers -> Coastline, Land & Water<br>
+                Toolbar: Masks<br>
                 Add coastline, land and water masks
             </p>
 
@@ -376,10 +421,12 @@
         </td>
         <td class="invisibletable" valign="top" nowrap>
             <p class="groupTitle">
+                <br>
                 Magic Wand
             </p>
 
             <p class="groupDetails">
+                Toolbar: Masks<br>
                 Creates a ROI mask using a magic wand.
             </p>
         </td>
