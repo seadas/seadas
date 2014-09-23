@@ -113,4 +113,51 @@
     <mapID target="flipDialog" url="visat/DataFlip.html"/>
     <mapID target="pixelGeoCodingSetup" url="visat/PixelGeoCoding.html"/>
 
+
+    <mapID target="timeSeriesManager" url="beam-time-series-tool/TimeSeriesManager.html"/>
+    <mapID target="associations" url="beam-time-series-tool/TimeSeriesManager.html#associations"/>
+    <mapID target="timeSeriesGraph" url="beam-time-series-tool/TimeSeriesGraph.html"/>
+    <mapID target="timeSeriesPlayer" url="beam-time-series-tool/TimeSeriesPlayer.html"/>
+    <mapID target="timeSeriesMatrix" url="beam-time-series-tool/TimeSeriesMatrix.html"/>
+    <mapID target="kmzExport" url="beam-time-series-tool/ExportAsKMZ.html"/>
+
+    <mapID target="bathymetry" url="seadas-bathymetry-operator/Bathymetry.html"/>
+    <mapID target="coastlineLandMasks" url="seadas-watermask-operator/CoastlineLandMasks.html"/>
+
+    <mapID target="clusterAnalysis" url="beam-cluster-analysis/ClusterAnalysis.html"/>
+    <mapID target="clusterAnalysisKMeans" url="beam-cluster-analysis/KMeans.html"/>
+    <mapID target="clusterAnalysisEM" url="beam-cluster-analysis/EM.html"/>
+
+    <mapID target="collocation" url="beam-collocation/CollocationTool.html"/>
+
+    <mapID target="pixelExtraction" url="beam-pixel-extraction/PixelExtraction.html"/>
+
+    <mapID target="spectralUnmixing" url="beam-unmix/SpectralUnmixingTool.html"/>
+
+    <mapID target="contourLines" url="seadas-contour-operator/ContourLines.html"/>
+
+    <mapID target="processOverview" url="seadas-processing/ProcessOverview.html"/>
+    <mapID target="install_ocssw.py" url="seadas-processing/InstallOCSSW.html"/>
+    <mapID target="extractor" url="seadas-processing/ProcessExtractors.html"/>
+    <mapID target="l1aextract_modis" url="seadas-processing/ProcessL1aextract_modis.html"/>
+    <mapID target="l1aextract_seawifs" url="seadas-processing/ProcessL1aextract_seawifs.html"/>
+    <!--<mapID target="l1agen" url="visat/ProcessL1agen.html"/>-->
+    <mapID target="modis_GEO.py" url="seadas-processing/ProcessModis_GEO.py.html"/>
+    <mapID target="l1bgen" url="seadas-processing/ProcessL1bgen.html"/>
+    <mapID target="modis_L1B.py" url="seadas-processing/ProcessModis_L1B.py.html"/>
+    <mapID target="modis_L1A.py" url="seadas-processing/ProcessModis_L1A.py.html"/>
+    <mapID target="l1mapgen" url="seadas-processing/ProcessL1mapgen.html"/>
+    <mapID target="l1brsgen" url="seadas-processing/ProcessL1brsgen.html"/>
+    <mapID target="l2extract" url="seadas-processing/ProcessL2extract.html"/>
+    <mapID target="l2gen" url="seadas-processing/ProcessL2gen.html"/>
+    <mapID target="l2gen_aquarius" url="seadas-processing/ProcessL2genAquarius.html"/>
+    <mapID target="l2mapgen" url="seadas-processing/ProcessL2mapgen.html"/>
+    <mapID target="l2brsgen" url="seadas-processing/ProcessL2brsgen.html"/>
+    <mapID target="l2bin" url="seadas-processing/ProcessL2bin.html"/>
+    <mapID target="l2bin_aquarius" url="seadas-processing/ProcessL2binAquarius.html"/>
+    <mapID target="l3bin" url="seadas-processing/ProcessL3bin.html"/>
+    <mapID target="smigen" url="seadas-processing/ProcessSmigen.html"/>
+    <mapID target="multilevel_processor.py" url="seadas-processing/ProcessMultilevel_processor.py.html"/>
+
+
 </map>

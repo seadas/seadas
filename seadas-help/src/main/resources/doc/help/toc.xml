@@ -18,6 +18,8 @@
     <tocitem text="SeaDAS">
         <tocitem text="Tools">
             <tocitem text="Import and Export Tools">
+                <tocitem text="Extract Pixel Values" target="pixelExtraction"/>
+
                 <tocitem text="Import Raster Data">
                     <tocitem text="ATSR" target="importAtsrProduct"/>
                     <tocitem text="BEAM-DIMAP" target="importDimapProduct"/>
@@ -85,6 +87,8 @@
                 <tocitem text="Profile Plot" target="profilePlotDialog"/>
                 <tocitem text="Table View" target="tableView"/>
                 <tocitem text="Compute Mask Area" target="computeMaskArea"/>
+
+
             </tocitem>
 
             <tocitem text="Product Generation Tools">
@@ -111,7 +115,24 @@
                 <tocitem text="Create DEM-related Bands" target="createDemRelatedBands"/>
                 <tocitem text="Create ASAR NRCS Bands" target="createAsarNrcsBands"/>
                 <tocitem text="Create Filtered Band" target="createFilteredBand"/>
+
+
+                <tocitem text="Time Series Tool">
+                    <tocitem text="Time Series Manager" target="timeSeriesManager"/>
+                    <tocitem text="Time Series Graph" target="timeSeriesGraph"/>
+                    <tocitem text="Time Series Player" target="timeSeriesPlayer"/>
+                    <tocitem text="Time Series Matrix" target="timeSeriesMatrix"/>
+                    <tocitem text="Export Time Series as Google Earth KMZ-file" target="kmzExport"/>
+                </tocitem>
+
+
             </tocitem>
+
+            <tocitem text="Bathymetry" target="bathymetry"/>
+            <tocitem text="Coastline and Land Masks" target="coastlineLandMasks"/>
+            <tocitem text="Contour Lines" target="contourLines"/>
+
+
             <tocitem text="Module Manager" target="moduleManager"/>
         </tocitem>
 
@@ -132,7 +153,47 @@
         </tocitem>
     </tocitem>
     <tocitem text="Data Processors">
-        <!--<tocitem text="Beam Processors" target="dataProcessors"/>-->
+        <tocitem text="Geometric Operations">
+            <tocitem text="Collocation Tool" target="collocation">
+            </tocitem>
+        </tocitem>
+
+        <tocitem text="Cluster Analysis Tools" target="clusterAnalysis">
+            <tocitem text="Cluster Analysis Overview" target="clusterAnalysis"/>
+            <tocitem text="K-Means Cluster Analysis" target="clusterAnalysisKMeans"/>
+            <tocitem text="Expectation Maximization (EM) Cluster Analysis" target="clusterAnalysisEM"/>
+        </tocitem>
+
+        <tocitem text="Image Analysis">
+            <tocitem text="Spectral Unmixing Tool" target="spectralUnmixing"/>
+        </tocitem>
+
+        <tocitem text="SeaDAS Processors">
+            <tocitem text="Introduction" target="processOverview"/>
+            <tocitem text="install_ocssw.py" target="install_ocssw.py"/>
+            <tocitem text="Product Extractors">
+                <tocitem text="Introduction" target="extractor"/>
+                <tocitem text="l1aextract_modis" target="l1aextract_modis"/>
+                <tocitem text="l1aextract_seawifs" target="l1aextract_seawifs"/>
+                <tocitem text="l2extract" target="l2extract"/>
+            </tocitem>
+            <tocitem text="l1bgen" target="l1bgen"/>
+            <tocitem text="l1mapgen" target="l1mapgen"/>
+            <tocitem text="l1brsgen" target="l1brsgen"/>
+            <tocitem text="L2gen" target="l2gen"/>
+            <tocitem text="L2gen_aquarius" target="l2gen_aquarius"/>
+            <tocitem text="l2mapgen" target="l2mapgen"/>
+            <tocitem text="l2brsgen" target="l2brsgen"/>
+            <tocitem text="l2bin" target="l2bin"/>
+            <tocitem text="l2bin_aquarius" target="l2bin_aquarius"/>
+            <tocitem text="l3bin" target="l3bin"/>
+            <tocitem text="smigen" target="smigen"/>
+            <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
+            <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
+            <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
+            <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
+        </tocitem>
     </tocitem>
+
 
 </toc>
