@@ -25,7 +25,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Help
+            Overview
         </td>
 
         <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
@@ -34,62 +34,363 @@
 </table>
 <br>
 
+
 <p>SeaDAS is a scientific data visualisation, analysis, and processing software application for remote-sensing
     satellite data which derives from and is an extension of the BEAM Earth Observation Toolbox and
     Development Platform. SeaDAS includes support for the data products produced by NASA's Ocean Biology Processing
     Group
     (<a href="http://oceancolor.gsfc.nasa.gov" class="invisibleLink">http://oceancolor.gsfc.nasa.gov</a>).
     This support includes data processing capabilities to allow users to process
-    data between the various levels (i.e. Level 0 through Level 3). <br><br>
+    data between the various levels (i.e. Level 0 through Level 3).
+</p>
 
-    Please be aware that some of the component-level SeaDAS 7.1 help pages have not yet been fully revised to match the
+<p class="notes">
+    *Note: many of the SeaDAS 7.1 help pages have not yet been revised to match the
     current version. For the latest SeaDAS help and tutorials see
     <a href="http://seadas.gsfc.nasa.gov" class="invisibleLink">http://seadas.gsfc.nasa.gov</a></p>
 
 <br>
 
 
-<a href="index.html#InfoTools" class="invisibleLink">Info Tools</a><br>
-<br>
-
+<!--<hr>-->
+<!--<p class="sectionTitle">Component Reference</p>-->
+<!--<hr>-->
+<!--<br>-->
 
 <hr>
-<p class="sectionTitle">Component Reference</p>
+
+<table class="invisibletable2">
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#AnalysisTools" class="invisibleLink">Analysis Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools are used for statistics and statistical plotting.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#BandTools" class="invisibleLink">Band Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools create new bands within a file. There are two type of bands; virtual and real. A virtual band is
+            a derived band which is dependent through some algorithm or mathematical equation on the existence
+            of other bands and/or masks. A real band has no dependencies.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#ColorTools" class="invisibleLink">Color Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools are use to add a color scheme to an image.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#FileTools" class="invisibleLink">File Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools deals with opening, saving, and closing files
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#GeoCoding" class="invisibleLink">Geo-Coding Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            Used for attaching and detaching geo-coding.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#GeometryTools" class="invisibleLink">Geometry Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            The tools are used to create and manage geometries which are vector shapes on the image. Each geometry has
+            it's associated mask.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#GroundControlPointTools" class="invisibleLink">GCP Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            A ground control point is a marker for a certain geographical position within a geo-referenced image.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#ImageAnalysisTools" class="invisibleLink">Image Analysis Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            Analysis tools which process to produce files using cluster analysis, spectral unmixing or principle
+            component analysis.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#InfoTools" class="invisibleLink">Info Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools show information.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#LayerTools" class="invisibleLink">Layer Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools are used to create layers, and to manipulate layers within the layer stack.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#LocationTools" class="invisibleLink">Location Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools are used to navigate around an image as well as view it's location.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#MaskTools" class="invisibleLink">Mask Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools are used to create masks.
+        </td>
+    </tr>
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#OceanColorProcessors" class="invisibleLink">Ocean Color Processors</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            The tools allow users to process data between the various Ocean Color file levels (i.e. Level 0 through
+            Level 3).
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#PinTools" class="invisibleLink">Pin Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            A pin is a marker for a certain geographical position within a geo-referenced image. Pins can be used to
+            "freeze" the Pixel Info View and the Spectrum View to the selected pin in order to display the values of the
+            pixel associated with the selected pin
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#ProcessingTools" class="invisibleLink">Processing Tools</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools take the currently selected file and process it to new file using the tools specific operations.
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#TimeSeries" class="invisibleLink">Time Series</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            These tools are used to product a time series.
+        </td>
+    </tr>
+
+
+</table>
+
 <hr>
 
-<!--<p class="groupDetails">Where available, component names are linked to their respective help pages.-->
+<!--<p class="subSectionDetails">-->
+
+<!--</p>-->
 
 
 
-<p class="subSectionTitle">File Tools</p>
 
-<p class="subSectionDetails">
-    Describe category here.
-</p>
+<a name="AnalysisTools"></a>
+
+<p class="subSectionTitle">Analysis Tools</p>
 
 <table class="invisibletable">
 
+
     <tr>
         <td class="invisibletable" valign="top">
-            <a href="../visat/ProductBrowser.html" class="invisibleLink">
-                <img src="images/icons/RsProduct24.gif" border="0">
+            <a href="../visat/CorrelativePlotDialog.html" class="invisibleLink">
+                <img src="images/icons/CorrelativePlot24.png" border="0">
             </a>
         </td>
-
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../visat/ProductBrowser.html" class="invisibleLink">
-                    File Manager
+                <a href="../visat/CorrelativePlotDialog.html" class="invisibleLink">
+                    Correlative Plot
                 </a>
             </p>
 
             <p class="groupDetails">
-                Displays all opened files in a tree view.
+                Displays Correlative Plot for a selected band.
             </p>
 
             <p class="groupLocation">
-                File -> File Manager<br>
-                Docked: left-side
+                Analysis -> Correlative Plot<br>
+                Toolbar: Analysis
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/HistogramDialog.html" class="invisibleLink">
+                <img src="images/icons/Histogram24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/HistogramDialog.html" class="invisibleLink">
+                    Histogram Plot
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Displays Histogram for a selected band.
+            </p>
+
+            <p class="groupLocation">
+                Analysis -> Histogram Plot<br>
+                Toolbar: Analysis
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/ProfilePlotDialog.html" class="invisibleLink">
+                <img src="images/icons/ProfilePlot24.gif" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/ProfilePlotDialog.html" class="invisibleLink">
+                    Profile Plot
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Displays Profile Plot for a selected band.
+            </p>
+
+            <p class="groupLocation">
+                Analysis -> Profile Plot<br>
+                Toolbar: Analysis
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/ScatterplotDialog.html" class="invisibleLink">
+                <img src="images/icons/ScatterPlot24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/ScatterplotDialog.html" class="invisibleLink">
+                    Scatter Plot
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Displays Scatter Plot for two selected bands.
+            </p>
+
+            <p class="groupLocation">
+                Analysis -> Scatter Plot<br>
+                Toolbar: Analysis
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/SpectrumWindow.html" class="invisibleLink">
+                <img src="images/icons/Spectrum24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/SpectrumWindow.html" class="invisibleLink">
+                    Spectrum Plot
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Display spectra at the current pixel position and for pins.
+            </p>
+
+            <p class="groupLocation">
+                Analysis -> Spectrum Plot<br>
+                Toolbar: Analysis
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/StatisticsDialog.html" class="invisibleLink">
+                <img src="images/icons/Statistics24.gif" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/StatisticsDialog.html" class="invisibleLink">
+                    Statistics
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Displays Statistics for a selected band.
+            </p>
+
+            <p class="groupLocation">
+                Analysis -> Statistics<br>
+                Toolbar: Analysis
             </p>
         </td>
     </tr>
@@ -98,179 +399,10 @@
 </table>
 
 
-<p class="subSectionTitle">Processing Tools</p>
 
-<p class="subSectionDetails">
-    Describe category here.
-</p>
-
-<table class="invisibletable">
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../beam-collocation/CollocationTool.html" class="invisibleLink">
-                <img src="images/icons/dannys_collocation24.png" border="0">
-            </a>
-        </td>
-
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../beam-collocation/CollocationTool.html" class="invisibleLink">
-                    Collocate
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Creates a new file which is a collocation of two selected files. (useful for parameter comparisons,
-                etc).
-                The Collocation Tool allows to collocate two spatially overlapping products. Collocating two products
-                implies that the pixel values of one product (the dependent) are resampled into the geographical raster
-                of the other (the reference).
-            </p>
-
-            <p class="groupLocation">
-                Processing -> Collocate<br>
-                Toolbar: Processing
-
-            </p>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/ProductSubsetDialog.html" class="invisibleLink">
-                <img src="images/icons/dannys_spatial_subset24.png" border="0">
-            </a>
-        </td>
-
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/ProductSubsetDialog.html" class="invisibleLink">
-                    Crop
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Creates a new file which is a spatially cropped copy of the selected file (default boundaries are the
-                current view).
-
-            </p>
-
-            <p class="groupLocation">
-                Processing -> Crop<br>
-                Toolbar: Processing
-
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-
-        </td>
-
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/DataFlip.html" class="invisibleLink">
-                    Flip Data
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Creates a new file which is a data flip to the selected file
-
-            </p>
-
-            <p class="groupLocation">
-                Processing -> Flip Data
-
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/Mosaic.html" class="invisibleLink">
-                <img src="images/icons/dannys_mosaic.png" border="0">
-            </a>
-        </td>
-
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/Mosaic.html" class="invisibleLink">
-                    Mosaic
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Creates a new file which is a mosaic of multiple files.
-            </p>
-
-            <p class="groupLocation">
-                Processing -> Mosaic<br>
-                Toolbar: Processing
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-
-        </td>
-
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/Orthorectification.html" class="invisibleLink">
-                    Orthorectify
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Creates a new file which is an orthorectification of the selected file.
-            </p>
-
-            <p class="groupLocation">
-                Processing -> Orthorectify
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-
-        </td>
-
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/Reprojection.html" class="invisibleLink">
-                    Reproject
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Creates a new file which is a reprojection of the selected file.
-
-            </p>
-
-            <p class="groupLocation">
-                Processing -> Reproject
-            </p>
-        </td>
-    </tr>
-
-
-</table>
-
+<a name="BandTools"></a>
 
 <p class="subSectionTitle">Band Tools</p>
-
-<p class="subSectionDetails">
-    Describe category here.
-</p>
 
 <table class="invisibletable">
 
@@ -430,148 +562,10 @@
 
 </table>
 
-<p class="subSectionTitle">Mask Tools</p>
 
-<p class="subSectionDetails">
-    Describe category here.
-</p>
-
-<table class="invisibletable">
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../seadas-bathymetry-operator/Bathymetry.html" class="invisibleLink">
-                <img src="images/icons/bathymetry.png" border="0">
-            </a>
-        </td>
-
-        <td class="invisibletable" valign="top">
-
-            <p class="groupTitle">
-                <a href="../seadas-bathymetry-operator/Bathymetry.html" class="invisibleLink">
-                    Bathymetry Mask & Elevation
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Add elevation, bathymetry, and topography bands and bathymetry mask.
-            </p>
-
-            <p class="groupLocation">
-                Layers -> Bathymetry & Elevation <br>
-                Toolbar: Masks
-            </p>
-
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../seadas-watermask-operator/CoastlineLandMasks.html" class="invisibleLink">
-                <img src="images/icons/coastline_24.png" border="0">
-            </a>
-        </td>
-
-        <td class="invisibletable" valign="top">
-
-            <p class="groupTitle">
-                <a href="../seadas-watermask-operator/CoastlineLandMasks.html" class="invisibleLink">
-                    Coastline, Land & Water Mask
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Add coastline, land and water masks
-            </p>
-
-            <p class="groupLocation">
-                Layers -> Coastline, Land & Water<br>
-                Toolbar: Masks
-            </p>
-
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <img src="images/icons/MagicWand22.png" border="0">
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <br>
-                Magic Wand
-            </p>
-
-            <p class="groupDetails">
-                create a ROI mask comprising pixels that are "similar" to a set of
-                manually picked pixels. The similarity takes into account any number of bands or entire spectra.
-            </p>
-
-            <p class="groupLocation">
-                Toolbar: Masks
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/MaskManagement.html" class="invisibleLink">
-                <img src="images/icons/MaskManager24.png" border="0">
-            </a>
-
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/MaskManagement.html" class="invisibleLink">
-                    Mask Manager
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Manage binary data masks and ROIs (regions of interest).
-            </p>
-
-            <p class="groupLocation">
-                Layers -> Mask Manager <br>
-                Docked: left-side
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/ComputeMaskArea.html" class="invisibleLink">
-                    Mask Area
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Computes the area of a selected mask.
-            </p>
-
-            <p class="groupLocation">
-                Info -> Mask Area
-            </p>
-        </td>
-    </tr>
-
-</table>
-
+<a name="ColorTools"></a>
 
 <p class="subSectionTitle">Color Tools</p>
-
-<p class="subSectionDetails">
-    Describe category here.
-</p>
 
 <table class="invisibletable">
 
@@ -655,312 +649,69 @@
 </table>
 
 
-<p class="subSectionTitle">Location Tools</p>
 
-<p class="subSectionDetails">
-    Describe category here.
-</p>
+<a name="FileTools"></a>
 
-<table class="invisibletable">
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <img src="images/icons/ZoomTool24.gif" border="0">
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                Zoom
-            </p>
-
-            <p class="groupDetails">
-                Zooms in on an interactively drawn area of the image
-            </p>
-
-            <p class="groupLocation">
-                Toolbar: Image Interactions
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <img src="images/icons/SelectTool24.gif" border="0">
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                Select
-            </p>
-
-            <p class="groupDetails">
-                Enables interactive selecting of the image.
-            </p>
-
-            <p class="groupLocation">
-                Toolbar: Image Interactions
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <img src="images/icons/PannerTool24.gif" border="0">
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                Pan
-            </p>
-
-            <p class="groupDetails">
-                Enables interactive panning and zooming of the image.
-            </p>
-
-            <p class="groupLocation">
-                Toolbar: Image Interactions
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/NavigationWindow.html" class="invisibleLink">
-                <img src="images/icons/Navigation24.png" border="0">
-            </a>
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/NavigationWindow.html" class="invisibleLink">
-                    Navigation Controls
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Tool window which allows zooming and panning of a selected image view. Enables cursor sync of multiple
-                views.
-            </p>
-
-            <p class="groupLocation">
-                View -> Navigation Controls<br>
-                Docked: right-side
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/WorldMap.html" class="invisibleLink">
-                <img src="images/icons/WorldMapBoundaries24.png" border="0">
-            </a>
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/WorldMap.html" class="invisibleLink">
-                    World Map Location
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Displays selected file geographic boundaries on a world map.
-            </p>
-
-            <p class="groupLocation">
-                View -> World Map Location<br>
-                Docked: right-side
-            </p>
-        </td>
-    </tr>
-
-
-</table>
-
-
-<p class="subSectionTitle">Layer Tools</p>
-
-<p class="subSectionDetails">
-    Describe category here.
-</p>
+<p class="subSectionTitle">File Tools</p>
 
 <table class="invisibletable">
 
-
     <tr>
         <td class="invisibletable" valign="top">
-            <a href="../seadas-contour-operator/ContourLines.html" class="invisibleLink">
-                <img src="images/icons/ContourOverlay22.png" border="0">
+            <a href="../visat/ProductBrowser.html" class="invisibleLink">
+                <img src="images/icons/RsProduct24.gif" border="0">
             </a>
         </td>
 
         <td class="invisibletable" valign="top">
-
             <p class="groupTitle">
-                <a href="../seadas-contour-operator/ContourLines.html" class="invisibleLink">
-                    Contour Layer
+                <a href="../visat/ProductBrowser.html" class="invisibleLink">
+                    File Manager
                 </a>
             </p>
 
             <p class="groupDetails">
-                Add contour lines.
+                Displays all loaded files in a tree view.
             </p>
 
             <p class="groupLocation">
-                Layers -> Contour<br>
-                Toolbar: Layers
-            </p>
-
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/ShowGraticuleOverlay.html" class="invisibleLink">
-                <img src="images/icons/GraticuleOverlay24.png" border="0">
-            </a>
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/ShowGraticuleOverlay.html" class="invisibleLink">
-                    Map Gridlines Layer
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Show/hide map gridlines layer for the selected image.
-            </p>
-
-            <p class="groupLocation">
-                Layers -> Map Gridlines<br>
-                Toolbar: Layers
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <img src="images/icons/LayerEditor24.png" border="0">
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                Layer Editor
-            </p>
-
-            <p class="groupDetails">
-                Edit layer properties (Grid Lines, No-Data, etc.).
-            </p>
-
-            <p class="groupLocation">
-                Layers -> Layer Editor<br>
-                Toolbar: Layers
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/LayerManagerWindow.html" class="invisibleLink">
-                <img src="images/icons/LayerManager24.png" border="0">
-            </a>
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/LayerManagerWindow.html" class="invisibleLink">
-                    Layer Manager
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Manage view layer visibility and transparency.
-            </p>
-
-            <p class="groupLocation">
-                Layers -> Layer Manager<br>
+                File -> File Manager<br>
                 Docked: left-side
             </p>
         </td>
     </tr>
 
 
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/NoDataOverlay.html" class="invisibleLink">
-                <img src="images/icons/NoDataOverlay24.png" border="0">
-            </a>
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/NoDataOverlay.html" class="invisibleLink">
-                    No-Data Layer
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Show no-data overlay for the selected image.
-            </p>
-
-            <p class="groupLocation">
-                Layers -> No-Data<br>
-                Toolbar: Layers
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <img src="images/icons/WorldMap24.png" border="0">
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                World Map Layer
-            </p>
-
-            <p class="groupDetails">
-                Show World Map layer for the selected image.
-            </p>
-
-            <p class="groupLocation">
-                Layers -> World Map<br>
-                Toolbar: Layers
-            </p>
-        </td>
-    </tr>
-
-
 </table>
 
 
-<p class="subSectionTitle">Pin Tools</p>
 
-<p class="subSectionDetails">
-    A pin is a marker for a certain geographical position within a geo-referenced image.
-    Pins can be used to "freeze" the Pixel Info View and the Spectrum View to the selected pin in order to display the
-    values of the pixel associated with the selected pin.
-</p>
+<a name="GeoCoding"></a>
+
+<p class="subSectionTitle">Geo-Coding</p>
 
 <table class="invisibletable">
 
+
     <tr>
         <td class="invisibletable" valign="top">
-            <img src="images/icons/PinLayer24.png" border="0">
+            <img src="images/icons/Blank24.png" border="0">
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                Pin Layer
+                <a href="../visat/PixelGeoCoding.html" class="invisibleLink">
+                    Attach Geo-Coding
+                </a>
             </p>
 
             <p class="groupDetails">
-                Toggle pin layer.
+                The Pixel Geo-Coding can be used if the user has two bands filled with accurate latitude and longitude
+                values for each pixel. These bands can be used to replace the current geo-coding associated with
+                the product.
             </p>
 
             <p class="groupLocation">
-                Layers -> Pin<br>
-                Toolbar: Layers (Vector)
+                Tools -> Geo-Coding -> Attach Geo-Coding
             </p>
         </td>
     </tr>
@@ -968,48 +719,43 @@
 
     <tr>
         <td class="invisibletable" valign="top">
-            <a href="../visat/PinManagement.html" class="invisibleLink">
-                <img src="images/icons/PinManager24.png" border="0">
-            </a>
+            <img src="images/icons/Blank24.png" border="0">
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../visat/PinManagement.html" class="invisibleLink">
-                    Pin Manager
+                <a href="../visat/PixelGeoCoding.html" class="invisibleLink">
+                    Detach Geo-Coding
                 </a>
             </p>
 
             <p class="groupDetails">
-                Manage placement of pins.
+                Detaches the current pixel geo-coding and restores the previous geo-coding
             </p>
 
             <p class="groupLocation">
-                Layers -> Pin Manager<br>
-                Toolbar: Pin
+                Tools -> Geo-Coding -> Detach Geo-Coding
             </p>
         </td>
     </tr>
 
-
     <tr>
         <td class="invisibletable" valign="top">
-            <a href="../visat/PinManagement.html" class="invisibleLink">
-                <img src="images/icons/PinPlacer24.png" border="0">
-            </a>
+            <img src="images/icons/Blank24.png" border="0">
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../visat/PinManagement.html" class="invisibleLink">
-                    Pin Placer
+                <a href="CreateGCDisplacementBands.html" class="invisibleLink">
+                    Create Displacement Bands
                 </a>
             </p>
 
             <p class="groupDetails">
-                Places pins via mouse click onto image.
+                This command adds 4 bands to the currently selected product. These four bands provide information about
+                the accuracy of the geo-coding.
             </p>
 
             <p class="groupLocation">
-                Toolbar: Pin
+                Tools -> Geo-Coding -> Create Displacement Bands
             </p>
         </td>
     </tr>
@@ -1018,11 +764,10 @@
 </table>
 
 
-<p class="subSectionTitle">Geometry Tools</p>
 
-<p class="subSectionDetails">
-    Describe category here.
-</p>
+<a name="GeometryTools"></a>
+
+<p class="subSectionTitle">Geometry Tools</p>
 
 <table class="invisibletable">
 
@@ -1216,11 +961,10 @@
 </table>
 
 
-<p class="subSectionTitle">Ground Control Point Tools</p>
 
-<p class="subSectionDetails">
-    Describe category here.
-</p>
+<a name="GroundControlPointTools"></a>
+
+<p class="subSectionTitle">GCP Tools</p>
 
 
 <table class="invisibletable">
@@ -1299,10 +1043,17 @@
 </table>
 
 
-<p class="subSectionTitle">Analysis Tools</p>
+
+
+
+<a name="ImageAnalysisTools"></a>
+
+<p class="subSectionTitle">Image Analysis Tools</p>
 
 <p class="subSectionDetails">
-    Describe category here.
+    <a href="../beam-cluster-analysis/ClusterAnalysis.html" class="invisibleLink">
+        Cluster Analysis Overview
+    </a>
 </p>
 
 
@@ -1311,24 +1062,21 @@
 
     <tr>
         <td class="invisibletable" valign="top">
-            <a href="../visat/CorrelativePlotDialog.html" class="invisibleLink">
-                <img src="images/icons/CorrelativePlot24.png" border="0">
-            </a>
+            <img src="images/icons/Blank24.png" border="0">
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../visat/CorrelativePlotDialog.html" class="invisibleLink">
-                    Correlative Plot
+                <a href="../beam-cluster-analysis/EM.html" class="invisibleLink">
+                    EM Cluster
                 </a>
             </p>
 
             <p class="groupDetails">
-                Displays Correlative Plot for a selected band.
+                Uses the Expectation Maximization (EM) cluster analysis algorithm
             </p>
 
             <p class="groupLocation">
-                Analysis -> Correlative Plot<br>
-                Toolbar: Analysis
+                Processing -> Image Analysis -> EM Cluster
             </p>
         </td>
     </tr>
@@ -1336,24 +1084,21 @@
 
     <tr>
         <td class="invisibletable" valign="top">
-            <a href="../visat/HistogramDialog.html" class="invisibleLink">
-                <img src="images/icons/Histogram24.png" border="0">
-            </a>
+
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../visat/HistogramDialog.html" class="invisibleLink">
-                    Histogram Plot
+                <a href="../beam-cluster-analysis/KMeans.html" class="invisibleLink">
+                    K-Means Cluster
                 </a>
             </p>
 
             <p class="groupDetails">
-                Displays Histogram for a selected band.
+                Uses the K-Means (KM) cluster analysis algorithm
             </p>
 
             <p class="groupLocation">
-                Analysis -> Histogram Plot<br>
-                Toolbar: Analysis
+                Processing -> Image Analysis -> K-Means Cluster
             </p>
         </td>
     </tr>
@@ -1361,99 +1106,45 @@
 
     <tr>
         <td class="invisibletable" valign="top">
-            <a href="../visat/ProfilePlotDialog.html" class="invisibleLink">
-                <img src="images/icons/ProfilePlot24.gif" border="0">
-            </a>
+
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../visat/ProfilePlotDialog.html" class="invisibleLink">
-                    Profile Plot
-                </a>
+                Principle Component
             </p>
 
             <p class="groupDetails">
-                Displays Profile Plot for a selected band.
+                Principal Component Analysis (PCA) is typically used to develop a linear model for a set of data
+                (e.g. face images) which can then be used to test for membership. PCA works by converting the
+                set of data to a new basis that is a subspace of the original set. The subspace is selected
+                to maximize information.
             </p>
 
             <p class="groupLocation">
-                Analysis -> Profile Plot<br>
-                Toolbar: Analysis
+                Processing -> Image Analysis -> Principle Component
             </p>
         </td>
     </tr>
 
-
     <tr>
         <td class="invisibletable" valign="top">
-            <a href="../visat/ScatterplotDialog.html" class="invisibleLink">
-                <img src="images/icons/ScatterPlot24.png" border="0">
-            </a>
+
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../visat/ScatterplotDialog.html" class="invisibleLink">
-                    Scatter Plot
+                <a href="../beam-unmix/SpectralUnmixingTool.html" class="invisibleLink">
+                    Spectral Unmixing
                 </a>
             </p>
 
             <p class="groupDetails">
-                Displays Scatter Plot for two selected bands.
+                The spectral unmixing tool is used to decompose a reflectance (or corrected radiance) source spectrum
+                into a set of given endmember spectra. The result of the unmixing is a measure of the membership of the
+                individual endmember to the source spectrum.
             </p>
 
             <p class="groupLocation">
-                Analysis -> Scatter Plot<br>
-                Toolbar: Analysis
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/SpectrumWindow.html" class="invisibleLink">
-                <img src="images/icons/Spectrum24.png" border="0">
-            </a>
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/SpectrumWindow.html" class="invisibleLink">
-                    Spectrum Plot
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Display spectra at the current pixel position and for pins.
-            </p>
-
-            <p class="groupLocation">
-                Analysis -> Spectrum Plot<br>
-                Toolbar: Analysis
-            </p>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <a href="../visat/StatisticsDialog.html" class="invisibleLink">
-                <img src="images/icons/Statistics24.gif" border="0">
-            </a>
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../visat/StatisticsDialog.html" class="invisibleLink">
-                    Statistics
-                </a>
-            </p>
-
-            <p class="groupDetails">
-                Displays Statistics for a selected band.
-            </p>
-
-            <p class="groupLocation">
-                Analysis -> Statistics<br>
-                Toolbar: Analysis
+                Processing -> Image Analysis -> Spectral Unmixing
             </p>
         </td>
     </tr>
@@ -1461,14 +1152,13 @@
 
 </table>
 
+
+
+
+
 <a name="InfoTools"/>
 
 <p class="subSectionTitle">Info Tools</p>
-
-<p class="subSectionDetails">
-    Describe category here.
-</p>
-
 
 <table class="invisibletable">
 
@@ -1588,33 +1278,62 @@
 </table>
 
 
-<p class="subSectionTitle">Geo-Coding</p>
 
-<p class="subSectionDetails">
-    Describe category here.
-</p>
+<a name="LayerTools"></a>
 
+<p class="subSectionTitle">Layer Tools</p>
 
 <table class="invisibletable">
 
 
     <tr>
         <td class="invisibletable" valign="top">
-            <img src="images/icons/Blank24.png" border="0">
+            <a href="../seadas-contour-operator/ContourLines.html" class="invisibleLink">
+                <img src="images/icons/ContourOverlay22.png" border="0">
+            </a>
         </td>
+
         <td class="invisibletable" valign="top">
+
             <p class="groupTitle">
-                <a href="../visat/PixelGeoCoding.html" class="invisibleLink">
-                    Attach Geo-Coding
+                <a href="../seadas-contour-operator/ContourLines.html" class="invisibleLink">
+                    Contour Layer
                 </a>
             </p>
 
             <p class="groupDetails">
-
+                Add contour lines.
             </p>
 
             <p class="groupLocation">
-                Tools -> Geo-Coding -> Attach Geo-Coding
+                Layers -> Contour<br>
+                Toolbar: Layers
+            </p>
+
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/ShowGraticuleOverlay.html" class="invisibleLink">
+                <img src="images/icons/GraticuleOverlay24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/ShowGraticuleOverlay.html" class="invisibleLink">
+                    Map Gridlines Layer
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Show/hide map gridlines layer for the selected image.
+            </p>
+
+            <p class="groupLocation">
+                Layers -> Map Gridlines<br>
+                Toolbar: Layers
             </p>
         </td>
     </tr>
@@ -1622,42 +1341,91 @@
 
     <tr>
         <td class="invisibletable" valign="top">
-            <img src="images/icons/Blank24.png" border="0">
+            <img src="images/icons/LayerEditor24.png" border="0">
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../visat/PixelGeoCoding.html" class="invisibleLink">
-                    Detach Geo-Coding
-                </a>
+                Layer Editor
             </p>
 
             <p class="groupDetails">
-
+                Edit layer properties (Grid Lines, No-Data, etc.).
             </p>
 
             <p class="groupLocation">
-                Tools -> Geo-Coding -> Detach Geo-Coding
+                Layers -> Layer Editor<br>
+                Toolbar: Layers
             </p>
         </td>
     </tr>
 
+
     <tr>
         <td class="invisibletable" valign="top">
-            <img src="images/icons/Blank24.png" border="0">
+            <a href="../visat/LayerManagerWindow.html" class="invisibleLink">
+                <img src="images/icons/LayerManager24.png" border="0">
+            </a>
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="CreateGCDisplacementBands.html" class="invisibleLink">
-                    Create Displacement Bands
+                <a href="../visat/LayerManagerWindow.html" class="invisibleLink">
+                    Layer Manager
                 </a>
             </p>
 
             <p class="groupDetails">
-
+                Manage view layer visibility and transparency.
             </p>
 
             <p class="groupLocation">
-                Tools -> Geo-Coding -> Create Displacement Bands
+                Layers -> Layer Manager<br>
+                Docked: left-side
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/NoDataOverlay.html" class="invisibleLink">
+                <img src="images/icons/NoDataOverlay24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/NoDataOverlay.html" class="invisibleLink">
+                    No-Data Layer
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Show no-data overlay for the selected image.
+            </p>
+
+            <p class="groupLocation">
+                Layers -> No-Data<br>
+                Toolbar: Layers
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/WorldMap24.png" border="0">
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                World Map Layer
+            </p>
+
+            <p class="groupDetails">
+                Show World Map layer for the selected image.
+            </p>
+
+            <p class="groupLocation">
+                Layers -> World Map<br>
+                Toolbar: Layers
             </p>
         </td>
     </tr>
@@ -1666,36 +1434,29 @@
 </table>
 
 
-<p class="subSectionTitle">Image Analysis Tools</p>
 
-<p class="subSectionDetails">
-    Describe category here.
-    <a href="../beam-cluster-analysis/ClusterAnalysis.html" class="invisibleLink">
-        Cluster Analysis Overview
-    </a>
-</p>
+<a name="LocationTools"></a>
 
+<p class="subSectionTitle">Location Tools</p>
 
 <table class="invisibletable">
 
 
     <tr>
         <td class="invisibletable" valign="top">
-            <img src="images/icons/Blank24.png" border="0">
+            <img src="images/icons/ZoomTool24.gif" border="0">
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../beam-cluster-analysis/EM.html" class="invisibleLink">
-                    EM Cluster
-                </a>
+                Zoom
             </p>
 
             <p class="groupDetails">
-
+                Zooms in on an interactively drawn area of the image
             </p>
 
             <p class="groupLocation">
-                Processing -> Image Analysis -> EM Cluster
+                Toolbar: Image Interactions
             </p>
         </td>
     </tr>
@@ -1703,21 +1464,19 @@
 
     <tr>
         <td class="invisibletable" valign="top">
-
+            <img src="images/icons/SelectTool24.gif" border="0">
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../beam-cluster-analysis/KMeans.html" class="invisibleLink">
-                    K-Means Cluster
-                </a>
+                Select
             </p>
 
             <p class="groupDetails">
-
+                Enables interactive selecting of the image.
             </p>
 
             <p class="groupLocation">
-                Processing -> Image Analysis -> K-Means Cluster
+                Toolbar: Image Interactions
             </p>
         </td>
     </tr>
@@ -1725,43 +1484,70 @@
 
     <tr>
         <td class="invisibletable" valign="top">
-
+            <img src="images/icons/PannerTool24.gif" border="0">
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                Principle Component
+                Pan
             </p>
 
             <p class="groupDetails">
-                Principal Component Analysis (PCA) is typically used to develop a linear model for a set of data
-                (e.g. face images) which can then be used to test for membership. PCA works by converting the
-                set of data to a new basis that is a subspace of the original set. The subspace is selected
-                to maximize information.
+                Enables interactive panning and zooming of the image.
             </p>
 
             <p class="groupLocation">
-                Processing -> Image Analysis -> Principle Component
+                Toolbar: Image Interactions
             </p>
         </td>
     </tr>
 
+
     <tr>
         <td class="invisibletable" valign="top">
-
+            <a href="../visat/NavigationWindow.html" class="invisibleLink">
+                <img src="images/icons/Navigation24.png" border="0">
+            </a>
         </td>
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
-                <a href="../beam-unmix/SpectralUnmixingTool.html" class="invisibleLink">
-                    Spectral Unmixing
+                <a href="../visat/NavigationWindow.html" class="invisibleLink">
+                    Navigation Controls
                 </a>
             </p>
 
             <p class="groupDetails">
-
+                Tool window which allows zooming and panning of a selected image view. Enables cursor sync of multiple
+                views.
             </p>
 
             <p class="groupLocation">
-                Processing -> Image Analysis -> Spectral Unmixing
+                View -> Navigation Controls<br>
+                Docked: right-side
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/WorldMap.html" class="invisibleLink">
+                <img src="images/icons/WorldMapBoundaries24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/WorldMap.html" class="invisibleLink">
+                    World Map Location
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Displays selected file geographic boundaries on a world map.
+            </p>
+
+            <p class="groupLocation">
+                View -> World Map Location<br>
+                Docked: right-side
             </p>
         </td>
     </tr>
@@ -1769,13 +1555,453 @@
 
 </table>
 
+
+<a name="MaskTools"></a>
+
+<p class="subSectionTitle">Mask Tools</p>
+
+
+<table class="invisibletable">
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../seadas-bathymetry-operator/Bathymetry.html" class="invisibleLink">
+                <img src="images/icons/bathymetry.png" border="0">
+            </a>
+        </td>
+
+        <td class="invisibletable" valign="top">
+
+            <p class="groupTitle">
+                <a href="../seadas-bathymetry-operator/Bathymetry.html" class="invisibleLink">
+                    Bathymetry Mask & Elevation
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Add elevation, bathymetry, and topography bands and bathymetry mask.
+            </p>
+
+            <p class="groupLocation">
+                Layers -> Bathymetry & Elevation <br>
+                Toolbar: Masks
+            </p>
+
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../seadas-watermask-operator/CoastlineLandMasks.html" class="invisibleLink">
+                <img src="images/icons/coastline_24.png" border="0">
+            </a>
+        </td>
+
+        <td class="invisibletable" valign="top">
+
+            <p class="groupTitle">
+                <a href="../seadas-watermask-operator/CoastlineLandMasks.html" class="invisibleLink">
+                    Coastline, Land & Water Mask
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Add coastline, land and water masks
+            </p>
+
+            <p class="groupLocation">
+                Layers -> Coastline, Land & Water<br>
+                Toolbar: Masks
+            </p>
+
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/MagicWand22.png" border="0">
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <br>
+                Magic Wand
+            </p>
+
+            <p class="groupDetails">
+                create a ROI mask comprising pixels that are "similar" to a set of
+                manually picked pixels. The similarity takes into account any number of bands or entire spectra.
+            </p>
+
+            <p class="groupLocation">
+                Toolbar: Masks
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/MaskManagement.html" class="invisibleLink">
+                <img src="images/icons/MaskManager24.png" border="0">
+            </a>
+
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/MaskManagement.html" class="invisibleLink">
+                    Mask Manager
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Manage binary data masks and ROIs (regions of interest).
+            </p>
+
+            <p class="groupLocation">
+                Layers -> Mask Manager <br>
+                Docked: left-side
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/ComputeMaskArea.html" class="invisibleLink">
+                    Mask Area
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Computes the area of a selected mask.
+            </p>
+
+            <p class="groupLocation">
+                Info -> Mask Area
+            </p>
+        </td>
+    </tr>
+
+</table>
+
+
+
+<a name="OceanColorProcessors"></a>
+
+<p class="subSectionTitle">Ocean Color Processors</p>
+
+<p class="groupLocation">
+    OCProc -> ...
+</p>
+
+
+<table class="invisibletable">
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/Blank24.png" border="0">
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+
+                <a href="../seadas-processing/ProcessL1aextract_modis.html">l1aextract_modis</a><br><br>
+                <a href="../seadas-processing/ProcessL1aextract_seawifs.html">l1aextract_seawifs</a><br><br>
+                <a href="../seadas-processing/ProcessL1agen.html">l1agen</a><br><br>
+                <a href="../seadas-processing/ProcessGeogen.html">geogen</a><br><br>
+                <a href="../seadas-processing/ProcessL1bgen.html">l1bgen</a><br><br>
+                <a href="../seadas-processing/ProcessL1mapgen.html">l1mapgen</a><br><br>
+                <a href="../seadas-processing/ProcessL1brsgen.html">l1brsgen</a><br><br>
+                <a href="../seadas-processing/ProcessL2extract.html">l2extract</a><br><br>
+                <a href="../seadas-processing/ProcessL2gen.html">l2gen</a><br><br>
+                <a href="../seadas-processing/ProcessL2genAquarius.html">l2gen_aquarius</a><br><br>
+                <a href="../seadas-processing/ProcessL2mapgen.html">l2mapgen</a><br><br>
+                <a href="../seadas-processing/ProcessL2brsgen.html">l2brsgen</a><br><br>
+                <a href="../seadas-processing/ProcessL2bin.html">l2bin</a><br><br>
+                <a href="../seadas-processing/ProcessL2binAquarius.html">l2bin_aquarius</a><br><br>
+                <a href="../seadas-processing/ProcessL3bin.html">l3bin</a><br><br>
+                <a href="../seadas-processing/ProcessSmigen.html">smigen</a><br><br>
+                <a href="../seadas-processing/ProcessModis_L1A.py.html">modis_L1A.py</a><br><br>
+                <a href="../seadas-processing/ProcessModis_L1B.py.html">modis_L1B.py</a><br><br>
+                <a href="../seadas-processing/ProcessModis_GEO.py.html">modis_GEO.py</a><br><br>
+                <a href="../seadas-processing/ProcessMultilevel_processor.py.html">multilevel_processor.py</a>
+
+
+            </p>
+
+            <p class="groupLocation">
+            </p>
+        </td>
+    </tr>
+
+
+</table>
+
+
+
+
+
+
+<a name="PinTools"></a>
+
+<p class="subSectionTitle">Pin Tools</p>
+
+<table class="invisibletable">
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/PinLayer24.png" border="0">
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                Pin Layer
+            </p>
+
+            <p class="groupDetails">
+                Toggle pin layer.
+            </p>
+
+            <p class="groupLocation">
+                Layers -> Pin<br>
+                Toolbar: Layers (Vector)
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/PinManagement.html" class="invisibleLink">
+                <img src="images/icons/PinManager24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/PinManagement.html" class="invisibleLink">
+                    Pin Manager
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Manage placement of pins.
+            </p>
+
+            <p class="groupLocation">
+                Layers -> Pin Manager<br>
+                Toolbar: Pin
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/PinManagement.html" class="invisibleLink">
+                <img src="images/icons/PinPlacer24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/PinManagement.html" class="invisibleLink">
+                    Pin Placer
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Places pins via mouse click onto image.
+            </p>
+
+            <p class="groupLocation">
+                Toolbar: Pin
+            </p>
+        </td>
+    </tr>
+
+
+</table>
+
+
+
+
+
+
+<a name="ProcessingTools"></a>
+
+<p class="subSectionTitle">Processing Tools</p>
+
+<table class="invisibletable">
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../beam-collocation/CollocationTool.html" class="invisibleLink">
+                <img src="images/icons/dannys_collocation24.png" border="0">
+            </a>
+        </td>
+
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../beam-collocation/CollocationTool.html" class="invisibleLink">
+                    Collocate
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Creates a new file which is a collocation of two selected files. (useful for parameter comparisons,
+                etc).
+                The Collocation Tool allows to collocate two spatially overlapping products. Collocating two products
+                implies that the pixel values of one product (the dependent) are resampled into the geographical raster
+                of the other (the reference).
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Collocate<br>
+                Toolbar: Processing
+
+            </p>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/ProductSubsetDialog.html" class="invisibleLink">
+                <img src="images/icons/dannys_spatial_subset24.png" border="0">
+            </a>
+        </td>
+
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/ProductSubsetDialog.html" class="invisibleLink">
+                    Crop
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Creates a new file which is a spatially cropped copy of the selected file (default boundaries are the
+                current view).
+
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Crop<br>
+                Toolbar: Processing
+
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+
+        </td>
+
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/DataFlip.html" class="invisibleLink">
+                    Flip Data
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Creates a new file which is a data flip to the selected file
+
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Flip Data
+
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/Mosaic.html" class="invisibleLink">
+                <img src="images/icons/dannys_mosaic.png" border="0">
+            </a>
+        </td>
+
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/Mosaic.html" class="invisibleLink">
+                    Mosaic
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Creates a new file which is a mosaic of multiple files.
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Mosaic<br>
+                Toolbar: Processing
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+
+        </td>
+
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/Orthorectification.html" class="invisibleLink">
+                    Orthorectify
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Creates a new file which is an orthorectification of the selected file.
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Orthorectify
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+
+        </td>
+
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/Reprojection.html" class="invisibleLink">
+                    Reproject
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Creates a new file which is a reprojection of the selected file.
+
+            </p>
+
+            <p class="groupLocation">
+                Processing -> Reproject
+            </p>
+        </td>
+    </tr>
+
+
+</table>
+
+
+
+
+<a name="TimeSeries"></a>
 
 <p class="subSectionTitle">Time Series</p>
-
-<p class="subSectionDetails">
-    Describe category here.
-</p>
-
 
 <table class="invisibletable">
 
@@ -1791,7 +2017,7 @@
             </p>
 
             <p class="groupDetails">
-
+                Creates new time series
             </p>
 
             <p class="groupLocation">
@@ -1813,7 +2039,7 @@
             </p>
 
             <p class="groupDetails">
-
+                The main analysis tool for the time dimension
             </p>
 
             <p class="groupLocation">
@@ -1835,7 +2061,7 @@
             </p>
 
             <p class="groupDetails">
-
+                Allows management of time series
             </p>
 
             <p class="groupLocation">
@@ -1857,7 +2083,8 @@
             </p>
 
             <p class="groupDetails">
-
+                The matrix toolview acts like a magnifying glass: the user can show the pixel value of the pixel the
+                mouse is currently over, together with its neighbouring pixel values.
             </p>
 
             <p class="groupLocation">
@@ -1879,7 +2106,8 @@
             </p>
 
             <p class="groupDetails">
-
+                The Time Series Player allows vividly visualising a time series by providing the control elements for
+                navigating through a time series, either manually or automatically.
             </p>
 
             <p class="groupLocation">
@@ -1901,7 +2129,7 @@
             </p>
 
             <p class="groupDetails">
-
+                Exports Time Series as KMZ-files which are supported by Google Earth
             </p>
 
             <p class="groupLocation">
@@ -1913,77 +2141,21 @@
 </table>
 
 
-<p class="subSectionTitle">Ocean Color Processors</p>
-
-<p class="subSectionDetails">
-    Describe category here.
-</p>
-
-
-<table class="invisibletable">
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <img src="images/icons/Blank24.png" border="0">
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-                <a href="../seadas-processing/ProcessOverview.html" class="invisibleLink">
-                    OC Processors
-                </a>
-            </p>
-
-            <p class="groupDetails">
-            <ul>
-                <li><a href="../seadas-processing/ProcessL1aextract_modis.html">l1aextract_modis</a></li>
-                <li><a href="../seadas-processing/ProcessL1aextract_seawifs.html">l1aextract_seawifs</a></li>
-                <li><a href="../seadas-processing/ProcessL1agen.html">l1agen</a></li>
-                <li><a href="../seadas-processing/ProcessGeogen.html">geogen</a></li>
-                <li><a href="../seadas-processing/ProcessL1bgen.html">l1bgen</a></li>
-                <li><a href="../seadas-processing/ProcessL1mapgen.html">l1mapgen</a></li>
-                <li><a href="../seadas-processing/ProcessL1brsgen.html">l1brsgen</a></li>
-                <li><a href="../seadas-processing/ProcessL2extract.html">l2extract</a></li>
-                <li><a href="../seadas-processing/ProcessL2gen.html">l2gen</a></li>
-                <li><a href="../seadas-processing/ProcessL2genAquarius.html">l2gen_aquarius</a></li>
-                <li><a href="../seadas-processing/ProcessL2mapgen.html">l2mapgen</a></li>
-                <li><a href="../seadas-processing/ProcessL2brsgen.html">l2brsgen</a></li>
-                <li><a href="../seadas-processing/ProcessL2bin.html">l2bin</a></li>
-                <li><a href="../seadas-processing/ProcessL2binAquarius.html">l2bin_aquarius</a></li>
-                <li><a href="../seadas-processing/ProcessL3bin.html">l3bin</a></li>
-                <li><a href="../seadas-processing/ProcessSmigen.html">smigen</a></li>
-                <li><a href="../seadas-processing/ProcessModis_L1A.py.html">modis_L1A.py</a></li>
-                <li><a href="../seadas-processing/ProcessModis_L1B.py.html">modis_L1B.py</a></li>
-                <li><a href="../seadas-processing/ProcessModis_GEO.py.html">modis_GEO.py</a></li>
-                <li><a href="../seadas-processing/ProcessMultilevel_processor.py.html">multilevel_processor.py</a></li>
-            </ul>
-
-            </p>
-
-            <p class="groupLocation">
-                OCProc ->
-            </p>
-        </td>
-    </tr>
-
-
-</table>
-
-
 <table class="invisibletable">
 
 </table>
 
 
-<br><br>
-<hr>
-<br><br>
-<table class="invisibletable">
-    <tr class="invisibletable">
-        <td class="invisibletable">
-            <p align="center"><img src="images/seadas7.1_layout_small.png" border=0></p>
-        </td>
-    </tr>
-</table>
+<!--<br><br>-->
+<!--<hr>-->
+<!--<br><br>-->
+<!--<table class="invisibletable">-->
+<!--<tr class="invisibletable">-->
+<!--<td class="invisibletable">-->
+<!--<p align="center"><img src="images/seadas7.1_layout_small.png" border=0></p>-->
+<!--</td>-->
+<!--</tr>-->
+<!--</table>-->
 
 </body>
 </html>
