@@ -1,0 +1,297 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - l2bin</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            l2bin
+        </td>
+        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>l2bin</h3>
+
+<p>
+    Creates a Level 3 bin file from one or more Level 2 input files.
+</p>
+
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
+<p>Tools -> OCSSW Processing -> l2bin</p>
+
+
+<<a name="details"><h4>Details</h4></a>
+
+<p>
+    <b>l2bin</b> performs spatial/temporal binning of SeaWiFs, MODIS, and OCTS Level-2 data files.
+
+<p></p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>l2bin GUI</b></caption>
+        <tr>
+            <td><img src="../images/l2bin.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>infile</b></td>
+        <td>Text Field</td>
+        <td>input filename/filelist</td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>ofile</b></td>
+        <td> Text Field</td>
+        <td>output bin filename</td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>sday</b></td>
+        <td> text</td>
+        <td>start datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>eday</b></td>
+        <td> int</td>
+        <td>end datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>resolve</b></td>
+        <td>text</td>
+        <td>bin resolution (H,1,2,4,9,36)
+    <pre>
+        H  - 500m
+        1  - 1km
+        2  - 2km
+        4  - 4km
+        9  - 9km
+        36 - 36km
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>9</td>
+    </tr>
+
+    <tr>
+        <td><b>suite</b></td>
+        <td> text</td>
+        <td></td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td><b>flaguse</b></td>
+        <td> text</td>
+        <td>flags masked</td>
+        <td>Optional</td>
+        <td>[see /SENSOR/l2bin_defaults.par]</td>
+    </tr>
+    <tr>
+        <td><b>l3bprod</b></td>
+        <td> text</td>
+        <td>bin products
+    <pre>
+        Set to "ALL" or "all" for all L2 products in 1st input file.
+        Use ':' or ',' or ' ' as delimiters.
+        Use ';' or '=' to delineate minimum values.
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>all products</td>
+    </tr>
+    <tr>
+        <td><b>prodtype</b></td>
+        <td>text</td>
+        <td>product type (Set to "regional" to bin all scans.)</td>
+        <td>Optional</td>
+        <td>day</td>
+    </tr>
+    <tr>
+        <td><b>pversion</b></td>
+        <td> Text Field</td>
+        <td>production version</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>noext</b></td>
+        <td> boolean</td>
+        <td>Check to suppress generation of external files [default=0, (1 for "regional" prodtype)]</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>rowgroup</b></td>
+        <td>int</td>
+        <td>number of bin rows to process at once</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>night</b></td>
+        <td> boolean</td>
+        <td>Check for SST night processing</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>qual_prod</b></td>
+        <td> Text Field</td>
+        <td>quality product field name</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>qual_max</b></td>
+        <td> int</td>
+        <td>maximum acceptable quality</td>
+        <td>Optional</td>
+        <td>2</td>
+    </tr>
+    <!--<tr>-->
+    <!--<td><b>verbose</b></td>-->
+    <!--<td> boolean</td>-->
+    <!--<td>Allows more verbose screen messages when checked.</td>-->
+    <!--<td>Optional</td>-->
+    <!--<td>false</td>-->
+    <!--</tr>-->
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects infile/ofile
+        </td>
+    </tr>
+    <tr>
+        <td><b>Load Parameters ...</b></td>
+        <td> Button</td>
+        <td>Reads in previously saved parameters and populates the fields in
+            GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Store Parameters ...</b></td>
+        <td> Button</td>
+        <td>Saves the current arguments in GUI in a file.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes the l2bin command with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Open in SeaDAS</b></td>
+        <td> Checkbox</td>
+        <td>If selected, the ofile will be added to the open products list right after its generation.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
+<pre>
+    Usage: l2bin parfile=parfile or
+                infile=infile ofile=ofile [sday=sday] [eday=eday]
+                resolve=resolve [flaguse=flaguse] [l3bprod=l3bprod]
+                [prodtype=prodtype] [noext=noext] [verbose=verbose
+                [rowgroup=rowgroup] [night=night] [pversion=pversion]
+
+       parfile   = parameter filename
+       infile    = input filename/filelist
+       ofile     = output bin filename
+       sday      = start datadate (YYYYDDD) [ignored for "regional" prodtype]
+       eday      = end datadate   (YYYYDDD) [ignored for "regional" prodtype]
+       resolve   = bin resolution (H,1,2,4,9,36)
+       flaguse   = flags masked [see /SENSOR/l2bin_defaults.par]
+       l3bprod   = bin products [default=all products]
+                   Set to "ALL" or "all" for all L2 products in 1st input file.
+                   Use ':' or ',' or ' ' as delimiters.
+                   Use ';' or '=' to delineate minimum values.
+       prodtype  = product type (Set to "regional" to bin all scans.) [default=day]
+       pversion  = production version [default=Unspecified]
+       noext     = set to 1 to suppress generation of external files
+                   [default=0, (1 for "regional" prodtype)]
+       rowgroup  = # of bin rows to process at once.
+       night     = set to 1 for SST night processing [default=0]
+       qual_prod = quality product field name
+       qual_max  = maximum acceptable quality [default=2]
+       verbose   = Allow more verbose screen messages [default=0]
+</pre>
+
+<hr>
+</body>
+</html>

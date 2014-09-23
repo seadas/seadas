@@ -1,0 +1,74 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - geogen</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            geogen
+        </td>
+        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                                       border="0"></a></td>
+    </tr>
+</table>
+
+<h3>geogen</h3>
+
+<p>
+    Creates a geolocation file from an input MODIS L1A file.
+</p>
+
+<h4>Location</h4>
+
+<p>Tools -> OCSSW Processing -> geogen</p>
+
+<h4>Details</h4>
+
+<p>
+    The modis_GEO.py program is now used to create GEO files from MODIS L1A input files.
+</p>
+<h5>Command Line Usage</h5>
+<pre>
+Usage:
+    modis_GEO.py [OPTIONS] MODIS_L1A_file
+            or
+    modis_GEO.py --parfile=parameter_file [OPTIONS]
+
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -p PARFILE, --parfile=PARFILE
+                        Parameter file containing program inputs
+  -o GEOFILE, --output=GEOFILE
+                        Output filename
+  -a ATT1, --att1=ATT1  Input attitude file 1 (chronological)
+  -A ATT2, --att2=ATT2  Input attitude file 2 (chronological)
+  -e EPH1, --eph1=EPH1  Input ephemeris file 1 (chronological)
+  -E EPH2, --eph2=EPH2  Input ephemeris file 2 (chronological)
+  --ancdir=ANCDIR       Use a custom directory tree for ancillary files
+  --ancdb=ANCDB         Use a custom file for ancillary database. If full path
+                        not given, ANCDB is assumed to exist (or will be
+                        created) under $OCSSWROOT/log/. If $OCSSWROOT/log/
+                        does not exist,  ANCDB is assumed (or will be created)
+                        under the current working directory
+  --threshold=THRESHOLD
+                        % of geo-populated pixels required to pass geocheck
+                        validation test
+  -r, --refreshDB       Remove existing database records and re-query for
+                        ancillary files
+  --disable-download    Disable download of ancillary files not found on hard
+                        disk
+  -d, --enable-dem      Enable MODIS terrain elevation correction
+  -v, --verbose         print status messages
+  --log                 Save processing log file(s)
+</pre>
+
+<hr>
+</body>
+</html>

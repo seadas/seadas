@@ -133,24 +133,13 @@ table {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 16;
     font-weight: bold;
-    margin-top: 32pt;
-    margin-right: 0pt;
-    margin-bottom: 3pt;
+    margin-top: 18pt;
+    margin-right: 6pt;
+    margin-bottom: 6pt;
     margin-left: 6pt;
     color: #005000;
     font-style: italic;
 }
-
-.subSectionDetails {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11;
-    margin-left: 6pt;
-    margin-top : 0pt;
-    margin-bottom: 14pt;
-    margin-right: 0pt;
-    font-style: normal;
-}
-
 
 .groupTitle {
     font-family: Verdana, Arial, Helvetica, sans-serif;

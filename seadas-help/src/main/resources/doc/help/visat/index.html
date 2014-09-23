@@ -28,7 +28,7 @@
             SeaDAS Help Overview
         </td>
 
-        <td class="header" align="right"><a href="../index.html"><img src="../images/SeaDASHeader.png"
+        <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
                                                                       border=0></a></td>
     </tr>
 </table>
@@ -89,6 +89,10 @@
 
 <p class="subSectionTitle">Processing Tools</p>
 
+<p class="subSectionDetails">
+    Describe category here.
+</p>
+
 <table class="invisibletable">
 
     <tr>
@@ -107,7 +111,10 @@
 
             <p class="groupDetails">
                 Creates a new file which is a collocation of two selected files. (useful for parameter comparisons,
-                etc.)
+                etc).
+                The Collocation Tool allows to collocate two spatially overlapping products. Collocating two products
+                implies that the pixel values of one product (the dependent) are resampled into the geographical raster
+                of the other (the reference).
             </p>
 
             <p class="groupLocation">
@@ -250,6 +257,10 @@
 
 <p class="subSectionTitle">Band Tools</p>
 
+<p class="subSectionDetails">
+    Describe category here.
+</p>
+
 <table class="invisibletable">
 
 
@@ -292,7 +303,8 @@
             </p>
 
             <p class="groupDetails">
-                Creates DEM elevation and optionally DEM-corrected lat/lon bands from a selected DEM.
+                Creates a DEM (Digital Elevation Model) band and optionally DEM-corrected lat/lon bands
+                from a selected DEM.
             </p>
 
             <p class="groupLocation">
@@ -314,7 +326,8 @@
             </p>
 
             <p class="groupDetails">
-
+                Extracts the pixel values given by a user-specified list of geographic coordinates from a given
+                list of data files.
             </p>
 
             <p class="groupLocation">
@@ -339,7 +352,9 @@
             </p>
 
             <p class="groupDetails">
-                Creates a filtered band from the currently selected band.
+                Creates a filtered band from the currently selected band. Filtered bands are created by applying
+                convolution or non-linear filters to the selected band. Filters are used to perform common image
+                processing operations e.g. sharpening, blurring or edge enhancement.
             </p>
 
             <p class="groupLocation">
@@ -366,6 +381,10 @@
 
             <p class="groupDetails">
                 Create a new band using an arbitrary mathematical expression.
+                The band maths tool is used to create new image sample values derived from existing bands, tie-point
+                grids and flags. The source data can originate from all currently open and spatially compatible
+                input products. The source data is combined by arbitrary mathematical expression to generate the
+                target data.
             </p>
 
             <p class="groupLocation">
@@ -401,6 +420,10 @@
 </table>
 
 <p class="subSectionTitle">Mask Tools</p>
+
+<p class="subSectionDetails">
+    Describe category here.
+</p>
 
 <table class="invisibletable">
 
@@ -509,10 +532,35 @@
     </tr>
 
 
+    <tr>
+        <td class="invisibletable" valign="top">
+
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/ComputeMaskArea.html" class="invisibleLink">
+                    Mask Area
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Computes the area of a selected mask.
+            </p>
+
+            <p class="groupLocation">
+                Info -> Mask Area
+            </p>
+        </td>
+    </tr>
+
 </table>
 
 
 <p class="subSectionTitle">Color Tools</p>
+
+<p class="subSectionDetails">
+    Describe category here.
+</p>
 
 <table class="invisibletable">
 
@@ -597,6 +645,10 @@
 
 
 <p class="subSectionTitle">Location Tools</p>
+
+<p class="subSectionDetails">
+    Describe category here.
+</p>
 
 <table class="invisibletable">
 
@@ -716,6 +768,10 @@
 
 
 <p class="subSectionTitle">Layer Tools</p>
+
+<p class="subSectionDetails">
+    Describe category here.
+</p>
 
 <table class="invisibletable">
 
@@ -870,6 +926,11 @@
 
 <p class="subSectionTitle">Pin Tools</p>
 
+<p class="subSectionDetails">
+    A pin is a marker for a certain geographical position within a geo-referenced image.
+    Pins can be used to "freeze" the Pixel Info View and the Spectrum View to the selected pin in order to display the
+    values of the pixel associated with the selected pin.
+</p>
 
 <table class="invisibletable">
 
@@ -948,6 +1009,9 @@
 
 <p class="subSectionTitle">Geometry Tools</p>
 
+<p class="subSectionDetails">
+    Describe category here.
+</p>
 
 <table class="invisibletable">
 
@@ -1143,6 +1207,10 @@
 
 <p class="subSectionTitle">Ground Control Point Tools</p>
 
+<p class="subSectionDetails">
+    Describe category here.
+</p>
+
 
 <table class="invisibletable">
 
@@ -1221,6 +1289,10 @@
 
 
 <p class="subSectionTitle">Analysis Tools</p>
+
+<p class="subSectionDetails">
+    Describe category here.
+</p>
 
 
 <table class="invisibletable">
@@ -1381,6 +1453,10 @@
 
 <p class="subSectionTitle">Info Tools</p>
 
+<p class="subSectionDetails">
+    Describe category here.
+</p>
+
 
 <table class="invisibletable">
 
@@ -1390,7 +1466,8 @@
         <td class="invisibletable" valign="top">
             <p class="groupTitle">
                 <a href="../visat/InformationDialog.html" class="invisibleLink">
-                    Band Info
+
+                Band Info
                 </a>
             </p>
 
@@ -1501,6 +1578,10 @@
 
 <p class="subSectionTitle">Geo-Coding</p>
 
+<p class="subSectionDetails">
+    Describe category here.
+</p>
+
 
 <table class="invisibletable">
 
@@ -1574,6 +1655,10 @@
 
 
 <p class="subSectionTitle">Image Analysis Tools</p>
+
+<p class="subSectionDetails">
+    Describe category here.
+</p>
 
 
 <table class="invisibletable">
@@ -1671,6 +1756,10 @@
 
 
 <p class="subSectionTitle">Time Series</p>
+
+<p class="subSectionDetails">
+    Describe category here.
+</p>
 
 
 <table class="invisibletable">
@@ -1805,6 +1894,40 @@
             </p>
         </td>
     </tr>
+
+</table>
+
+
+<p class="subSectionTitle">Ocean Color Processors</p>
+
+<p class="subSectionDetails">
+    Describe category here.
+</p>
+
+
+<table class="invisibletable">
+
+    <tr>
+        <td class="invisibletable" valign="top">
+
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../ocProcessors/processors/ProcessOverview.html" class="invisibleLink">
+                    OC Processors
+                </a>
+            </p>
+
+            <p class="groupDetails">
+
+            </p>
+
+            <p class="groupLocation">
+                OCProc ->
+            </p>
+        </td>
+    </tr>
+
 
 </table>
 

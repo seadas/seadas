@@ -1,0 +1,375 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - l2mapgen</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            l2mapgen
+        </td>
+        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>l2mapgen</h3>
+
+<p>
+    Creates a Level 2 mapped image.
+</p>
+
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
+<p>Tools -> OCSSW Processing -> l2mapgen</p>
+
+
+<<a name="details"><h4>Details</h4></a>
+
+<p>
+    <b>l2mapgen</b> takes a product from a L2 file, maps it using a Plate Carree cylindrical projection, and produces a
+    gray scale PGM or color PPM file.
+
+<p></p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>l2mapgen GUI</b></caption>
+        <tr>
+            <td><img src="../images/l2mapgen.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>ifile</b></td>
+        <td>Text Field</td>
+        <td>Input Level 2 data product.
+        </td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>ofile</b></td>
+        <td> Text Field</td>
+        <td>Output filename for generated level 2 image file.
+        </td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>palfile</b></td>
+        <td> Text Field</td>
+        <td>palette file name</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>palette_dir</b></td>
+        <td> Text Field</td>
+        <td>palette directory</td>
+        <td>Optional</td>
+        <td>$OCDATAROOT/common/palette</td>
+    </tr>
+    <tr>
+        <td><b>product_table</b></td>
+        <td> Text Field</td>
+        <td>product table</td>
+        <td>Optional</td>
+        <td>$OCDATAROOT/common/smigen_product_table.dat</td>
+    </tr>
+
+    <tr>
+        <td><b>prod</b></td>
+        <td>Text Field</td>
+        <td>product name</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>flaguse</b></td>
+        <td>Text Field</td>
+        <td>flags to be masked</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>quality</b></td>
+        <td>int</td>
+        <td>minimum allowable quality level for SST. Valid only for SST and only if qual_sst or qual_sst4 SDS exist</td>
+        <td>Optional</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td><b>datamin</b></td>
+        <td> float</td>
+        <td>minimum value for data scaling</td>
+        <td>Optional</td>
+        <td>0.0 or see SMI product table</td>
+    </tr>
+    <tr>
+        <td><b>datamax</b></td>
+        <td> float</td>
+        <td>maximum value for data scaling</td>
+        <td>Optional</td>
+        <td>0.0 or see SMI product table</td>
+    </tr>
+    <tr>
+        <td><b>stype</b></td>
+        <td> int</td>
+        <td>scaling type:
+    <pre>
+        1: linear
+        2: log
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>0 or see SMI product table</td>
+    </tr>
+    <tr>
+        <td><b>east</b></td>
+        <td>float</td>
+        <td>Map East longitude</td>
+        <td>Optional</td>
+        <td>0.0 or scene(s) Easternmost Longitude</td>
+    </tr>
+    <tr>
+        <td><b>west</b></td>
+        <td>float</td>
+        <td>Map West longitude</td>
+        <td>Optional</td>
+        <td>0.0 or scene(s) Westernmost Longitude</td>
+    </tr>
+    <tr>
+        <td><b>north</b></td>
+        <td>float</td>
+        <td>Map North longitude</td>
+        <td>Optional</td>
+        <td>0.0 or scene(s) Northernmost Longitude</td>
+    </tr>
+    <tr>
+        <td><b>south</b></td>
+        <td>float</td>
+        <td>Map South longitude</td>
+        <td>Optional</td>
+        <td>0.0 or scene(s) Southernmost Longitude</td>
+    </tr>
+    <tr>
+        <td><b>width</b></td>
+        <td>int</td>
+        <td>width of the output image</td>
+        <td>Optional</td>
+        <td>800</td>
+    </tr>
+    <tr>
+        <td><b>threshold</b></td>
+        <td>float</td>
+        <td>minimum percentage of the area of interest that must receive valid pixel data before an image is generated
+        </td>
+        <td>Optional</td>
+        <td>5</td>
+    </tr>
+
+    <tr>
+        <td><b>outmode</b></td>
+        <td>Text Field (String)</td>
+        <td>format of the output file :
+            <pre>
+                ppm: PPM or PGM image file (alias 1)
+                png: PNG color or grayscale image file (alias 2)
+                tiff: TIFF color or grayscale geo tiff image file (alias 3)
+            </pre>
+        </td>
+        <td>Optional</td>
+        <td>ppm</td>
+    </tr>
+
+    <tr>
+        <td><b>apply_pal</b></td>
+        <td>boolean</td>
+        <td>apply color palette</td>
+        <td>Optional</td>
+        <td>false (gray scale)</td>
+    </tr>
+
+    <tr>
+        <td><b>mask</b></td>
+        <td>boolean</td>
+        <td>apply mask to land, cloud and glint</td>
+        <td>Optional</td>
+        <td>no</td>
+    </tr>
+
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects infile/ofile
+        </td>
+    </tr>
+    <tr>
+        <td><b>Load Parameters ...</b></td>
+        <td> Button</td>
+        <td>Reads in previously saved parameters and populates the fields in
+            GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Store Parameters ...</b></td>
+        <td> Button</td>
+        <td>Saves the current arguments in GUI in a file.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes the l2mapgen command with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Open in SeaDAS</b></td>
+        <td> Checkbox</td>
+        <td>If selected, the ofile will be added to the open products list right after its generation.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
+<pre>
+Usage: l2mapgen argument-list
+
+  This program takes a product from a L2 file, maps it using a Plate
+  Carree cylindrical projection, and produces a gray scale PGM or
+  color PPM file.
+
+  The argument-list is a set of keyword=value pairs. The arguments can
+  be specified on the commandline, or put into a parameter file, or the
+  two methods can be used together, with commandline over-riding.
+
+The list of valid keywords follows:
+
+   -help (boolean) (alias=-h,--help) (default=false) = print usage information
+   -version (boolean) (alias=--version) (default=false) = print the version
+        information
+   -dump_options (boolean) (alias=--dump_options) (default=false) = print
+        information about each option
+   -dump_options_paramfile (ofile) (alias=--dump_options_paramfile) = print
+        information about each option to paramfile
+   -dump_options_xmlfile (ofile) (alias=--dump_options_xmlfile) = print
+        information about each option to XML file
+   par (string) = input parameter file
+   ifile (ifile) = input L2 file name or file with a list of files names
+   ofile (ofile) = output map filename (NULL=STDOUT)
+   prod (string) = product name
+   apply_pal (boolean) (default=false) = apply color palette, false = grayscale
+   palfile (ifile) (default=default) = palette filename
+   palette_dir (ifile) (default=$OCDATAROOT/common/palette) = palette directory
+   product_table (ifile) (default=$OCDATAROOT/common/smigen_product_table.dat) = product table
+   flaguse (string) = flags to be masked
+   quality (int) (default=2) = minimum allowable quality level for SST.  Valid
+        only for SST  and only if qual_sst or qual_sst4 SDS exist
+   mask (boolean) (default=no) = apply mask to land, cloud and glint (see below)
+   datamin (float) (default=0.0) = minimum value for data scaling
+        (default: see SMI product table)
+   datamax (float) (default=0.0) = maximum value for data scaling
+        (default: see SMI product table)
+   stype (int) (default=0) = scaling type: 1=LINEAR; 2=LOG;
+        (default: see SMI product table)
+   east (float) (default=0.0) = Map East longitude
+        (default=scene(s) Easternmost Longitude)
+   west (float) (default=0.0) = Map West longitude
+        (default=scene(s) Westernmost Longitude)
+   north (float) (default=0.0) = Map North latitude
+        (default=scene(s) Northernmost Longitude)
+   south (float) (default=0.0) = Map South latitude
+        (default=scene(s) Southernmost Longitude)
+   width (int) (default=800) = width of the output image
+   threshold (float) (default=5) = minimum percentage of the area of interest
+        that must receive valid pixel data before an image is generated
+   outmode (int) (default=1) = format of the output file
+        1: PPM or PGM image file
+        2: PNG color or grayscale image file
+        3: TIFF color or grayscale geo tiff image file
+
+
+   If the "mask" option is set, the output PGM image will be masked for
+   flags defined in the flaguse parameter. The "no data" pixel value will
+   change from 0 to 255, and pixel values 252, 253, and 254 will represent the
+   sunglint, land, and all other (e.g. clouds/ice,hilt,atmfail,navfail,chlfail)
+   masks, respectively. NOTE: sunglint is NOT masked by default, but if it is
+   added to the flaguse parameter, it will be distinguished in the masking as
+   medium gray.  If a palette is applied and the mask option is set, the
+   palette values will be modified:
+                  Value   R       G       B
+                  252     128     128     128
+                  253     160     82      45
+                  254     255     255     255
+                  255     0       0       0
+
+   By default, this program sends its results to standard output as a
+   PGM-formatted binary data stream.  Save it to a file via ">" or pipe it
+   to your favorite image display program.  The output image is rendered in
+   a Plate Carree projection.
+</pre>
+<hr>
+</body>
+</html>
