@@ -261,6 +261,7 @@ table.header {
     border-width: 0;
     padding: 0;
     white-space: nowrap;
+    text-align: right;
 }
 
 hr {

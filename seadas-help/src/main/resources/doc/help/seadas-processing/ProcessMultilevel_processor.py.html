@@ -1,0 +1,308 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - Multi-level Processor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Multi-level Processor
+        </td>
+        <td class="header" align="right"><a href="../visat/index.html"><img src="images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>Multi-level Processor</h3>
+
+<p>
+    Processes a file or list of files through multiple levels.
+</p>
+
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#sub-programs">Sub-Programs</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
+<p>Tools -> SeaDAS Processing -> Multi-level Processor</p>
+
+
+<a name="details"><h4>Details</h4></a>
+
+<hr>
+
+<center>
+    <table class="image">
+        <caption align="top"><b>multilevel_processor.py - Main Tab</b></caption>
+        <tr>
+            <td><img src="images/multilevel_processor_main.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>ifile</b></td>
+        <td>file name</td>
+        <td>Input file or list of files</td>
+        <td>Required</td>
+        <td>none</td>
+    </tr>
+    <tr>
+        <td><b>odir</b></td>
+        <td>output directory name</td>
+        <td>output directory name</td>
+        <td>Optional</td>
+        <td>none</td>
+    </tr>
+    <tr>
+        <td><b>Parfile</b></td>
+        <td>text</td>
+        <td>all parameters for each section</td>
+        <td>Required</td>
+        <td>none</td>
+    </tr>
+
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b>Type</b></td>
+        <td><b>Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects the input file</td>
+    </tr>
+    <tr>
+        <td><b>Import Parfile</b></td>
+        <td>Button</td>
+        <td>Selects a parfile to load</td>
+    </tr>
+    <tr>
+        <td><b>Retain Selected IFILE</b></td>
+        <td>Check Box</td>
+        <td>When loading a parfile, use the ifile above instead of the ifile in the parfile</td>
+    </tr>
+    <tr>
+        <td><b>Export Parfile</b></td>
+        <td>Button</td>
+        <td>Write the current parfile to a file</td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td> Executes <b><i>multilevel_processor.py</i></b> with arguments provided in the UI</td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td>Button</td>
+        <td>Closes current processor GUI</td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td>Button</td>
+        <td>Makes current arguments effective</td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td>Button</td>
+        <td>Displays the help content of the current command</td>
+    </tr>
+</table>
+
+<p></p>
+
+<hr>
+
+<center>
+    <table class="image">
+        <caption align="top"><b>multilevel_processor.py - Chain Tab</b></caption>
+        <tr>
+            <td><img src="images/multilevel_processor_chain.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b>Type</b></td>
+        <td><b>Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Program Buttons</b></td>
+        <td>Button</td>
+        <td>Opens a GUI window to configure the individual step/program</td>
+    </tr>
+    <tr>
+        <td><b>Keep</b></td>
+        <td>Check Box</td>
+        <td>When selected the output files produced by this step/program will be kept on disk and not deleted</td>
+    </tr>
+    <tr>
+        <td><b>Params</b></td>
+        <td>Text</td>
+        <td>Parameters passed to this step/program</td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td> Executes <b><i>multilevel_processor.py</i></b> with arguments provided in the UI</td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td>Button</td>
+        <td>Closes current processor GUI</td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td>Button</td>
+        <td>Makes current arguments effective</td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td>Button</td>
+        <td>Displays the help content of the current command</td>
+    </tr>
+</table>
+
+<p></p>
+
+<hr>
+
+<a name="sub-programs"><h4>Sub-Programs</h4></a>
+
+<ul>
+    <li><a href="ProcessModis_L1A.py.html">modis_L1A.py</a></li>
+    <li><a href="ProcessL1aextract_seawifs.html">l1aextract_seawifs</a></li>
+    <li><a href="ProcessL1bgen.html">l1bgen</a></li>
+    <li><a href="ProcessL1brsgen.html">l1brsgen</a></li>
+    <li><a href="ProcessModis_GEO.py.html">geo</a></li>
+    <li><a href="ProcessL1aextract_modis.html">l1aextract_modis</a></li>
+    <li><a href="ProcessModis_L1B.py.html">modis_L1B.py</a></li>
+    <li><a href="ProcessL2gen.html">l2gen</a></li>
+    <li><a href="ProcessL2extract.html">l2extract</a></li>
+    <li><a href="ProcessL2bin.html">l2bin</a></li>
+    <li><a href="ProcessL2brsgen.html">l2brsgen</a></li>
+    <li><a href="ProcessL2mapgen.html">l2mapgen</a></li>
+    <li><a href="ProcessL3bin.html">l3bin</a></li>
+    <li><a href="ProcessSmigen.html">smigen</a></li>
+</ul>
+
+<p></p>
+
+<hr>
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
+<pre>
+    Usage:
+    multilevel_processor.py [options] parameter_file
+
+    The parameter_file is similar to, but not exactly like, parameter
+    files for OCSSW processing programs:
+     - It has sections separated by headers which are denoted by "["
+        and "]".
+    The section named "main" is required.  Its allowed options are:
+        ifile - Required entry naming the input file(s) to be processed.
+        use_nrt_anc - use near real time ancillary data
+        keepfiles - keep all the data files generated
+        overwrite - overwrite any data files which already exist
+        use_existing  - use any data files which already exist
+
+        Simultaneous use of both the overwrite and use_existing options
+        is not permitted.
+
+    The names for other sections are the programs for which that section's
+    entries are to be applied.  Intermediate sections which are required for the
+    final level of processing do not need to be defined if their default options
+    are acceptable.  A section can be empty.  The final level of processing
+    must have a section header, even if no entries appear within that section.
+     - Entries within a section appear as key=value.  Comma separated lists of
+    values can be used when appropriate.
+     - Comments are marked by "#"; anything appearing on a line after that
+    character is ignored.  A line beginning with a "#" is completely ignored.
+
+    In addition to the main section, the following sections are allowed:
+        Section name:           Applicable Instrument(s):
+        -------------           -------------------------
+        level 1a:               modis
+        l1aextract_seawifs:     seawifs
+        l1brsgen:               modis, seawifs, general
+        l1mapgen:               modis, seawifs, general
+        geo:                    modis
+        l1aextract_modis:       modis
+        level 1b:               modis, seawifs, general
+        l2gen:                  modis, seawifs, general
+        l2extract:              modis, seawifs, general
+        l2bin:                  modis, seawifs, general
+        l2brsgen:               modis, seawifs, general
+        l2mapgen:               modis, seawifs, general
+        l3bin:                  modis, seawifs, general
+        smigen:                 modis, seawifs, general
+
+    Example:
+
+    # Sample par file for multilevel_processor.py.
+    [main]
+    ifile=2010345034027.L1A_LAC
+    [l2gen]
+    l2prod=chlor_a
+    # final processing level
+
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -k, --keepfiles       keep files created during processing
+  --output_dir=ODIR, --odir=ODIR
+                        user specified directory for output
+  --overwrite           overwrite files which already exist (default = stop
+                        processing if file already exists)
+  --timing              report time required to run each program and total
+  --use_existing        use files which already exist (default = stop
+                        processing if file already exists)
+  -v, --verbose         print status messages to stdout
+</pre>
+
+</body>
+</html>

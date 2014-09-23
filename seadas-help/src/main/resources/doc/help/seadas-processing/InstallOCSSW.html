@@ -1,0 +1,288 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - install_ocssw.py</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            install_ocssw.py
+        </td>
+        <td class="header" align="right"><a href="../visat/index.html"><img src="images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>install_ocssw.py</h3>
+
+<p>
+    Installs or updates OCSSW processing package.
+</p>
+
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
+<p>Tools -> SeaDAS Processing -> Install/Update OC Processors</p>
+
+
+<<a name="details"><h4>Details</h4></a>
+
+<p>
+    <b>Install/Update OC Processors</b> executes <b>install_ocssw.py</b> which installs or updates the OCSSW package for
+    SeaDAS.
+    When SeaDAS first installs OCSSW package,
+    the menu item would display as "Install OC Processors". Afterwords, it's displayed as "Update OC Processors".
+</p>
+
+<p>
+
+    You can access the OCSSW installer GUI from the <b>Tools/SeaDAS Processing/Install/Update OC Processors</b> menu.
+    The ocssw install/update GUI initially displays a default window, as shown in the image below, to select
+    installation directory and mission data files to be included in the installation.
+    If the data files of a mission already exists in the system, the checkbox for that mission would be selected in the
+    initial screen.
+    Users can leave it selected for an update or deselect to skip its installation.
+
+<p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>install_ocssw.py GUI</b></caption>
+        <tr>
+            <td><img src="images/install_ocssw.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>install-dir</b></td>
+        <td>text</td>
+        <td>destination directory for install. Defaults to $OCSSWROOT or "$HOME/ocssw" if neither are given.</td>
+        <td>Optional. The default installation directory is $USER_HOME/ocssw.</td>
+        <td>$OCSSWROOT if it exists, otherwise "$HOME/ocssw"</td>
+    </tr>
+    <tr>
+        <td><b>aquarius</b></td>
+        <td> boolean</td>
+        <td>install Aquarius files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>avhrr</b></td>
+        <td> boolean</td>
+        <td>install AVHRR files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>czcs</b></td>
+        <td> boolean</td>
+        <td>install CZCS files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>hico</b></td>
+        <td> boolean</td>
+        <td>install HICO files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>meris</b></td>
+        <td> boolean</td>
+        <td>install MERIS files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>aqua</b></td>
+        <td> boolean</td>
+        <td>install MODIS Aqua files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>terra</b></td>
+        <td> boolean</td>
+        <td>install MODIS Terra files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>mos</b></td>
+        <td> boolean</td>
+        <td>install MOS files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>ocm1</b></td>
+        <td> boolean</td>
+        <td>install OCM1 files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>ocm2</b></td>
+        <td> boolean</td>
+        <td>install OCM2 files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>octs</b></td>
+        <td> boolean</td>
+        <td>install OCTS files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>osmi</b></td>
+        <td> boolean</td>
+        <td>install OSMI files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>seawifs</b></td>
+        <td> boolean</td>
+        <td>install SeaWiFS files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>viirsn</b></td>
+        <td> boolean</td>
+        <td>install VIIRSN files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>Source Code</b></td>
+        <td> boolean</td>
+        <td>install source code</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>Evaluation Data Files</b></td>
+        <td> boolean</td>
+        <td>install evaluation sensor files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects installation directory
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes <b><i>install_ocssw.py</i></b> with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
+<pre>
+    Usage: install_ocssw.py [options]
+
+    Options:
+      --version             show program's version number and exit
+      -h, --help            show this help message and exit
+      -v, --verbose         Print more information whle running
+      -i INSTALL_DIR, --install-dir=INSTALL_DIR
+                            destination directory for install. Defaults to
+                            $OCSSWROOT or "$HOME/ocssw" if neither are given.
+      -g GIT_BASE, --git-base=GIT_BASE
+                            Web location for the git repositories
+      -a ARCH, --arch=ARCH  set system architecture (linux, linux_64,
+                            macosx_intel)
+      -s, --src             install source code
+      --aquarius            install Aquarius files
+      --avhrr               install AVHRR files
+      --czcs                install CZCS files
+      --goci                install GOCI files
+      --hico                install HICO files
+      --meris               install MERIS files
+      --aqua                install MODIS Aqua files
+      --terra               install MODIS Terra files
+      --mos                 install MOS files
+      --ocm1                install OCM1 files
+      --ocm2                install OCM2 files
+      --ocrvc               install ocrvc files
+      --octs                install OCTS files
+      --osmi                install OSMI files
+      --seawifs             install SeaWiFS files
+      --viirsn              install VIIRSN files
+      --direct-broadcast    install direct broadcast files
+      --eval                install evaluation sensor files
+</pre>
+
+<hr>
+</body>
+</html>

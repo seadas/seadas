@@ -1,0 +1,235 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - modis_L1A.py</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            modis_L1A.py
+        </td>
+        <td class="header" align="right"><a href="../visat/index.html"><img src="images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>modis_L1A.py</h3>
+
+<p>
+    Creates a MODIS Level 1A file from an input Level 0 file.
+</p>
+
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
+<p>Tools -> OCSSW Processing -> modis_L1A.py</p>
+
+
+<<a name="details"><h4>Details</h4></a>
+
+<p>
+    <b>modis_L1A.py</b> creates a MODIS Level 1A file from an input Level 0 file.
+
+<p></p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>modis_L1A.py GUI</b></caption>
+        <tr>
+            <td><img src="images/modis_L1A.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>file</b></td>
+        <td>text</td>
+        <td>MODIS_L0_file name</td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>output</b></td>
+        <td>text</td>
+        <td>Output L1A filename</td>
+        <td>Required</td>
+        <td>'(A|T)YYYYDDDHHMMSS.L1A_LAC'</td>
+    </tr>
+    <tr>
+        <td><b>mission</b></td>
+        <td>text</td>
+        <td>Modis mission:
+     <pre>
+         A: Aqua
+         T: Terra
+     </pre>
+        </td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>startnudge</b></td>
+        <td> text</td>
+        <td>Level-0 start-time offset (seconds)</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>stopnudge</b></td>
+        <td> text</td>
+        <td>Level-0 stop-time offset (seconds)</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>nextgranule</b></td>
+        <td> text</td>
+        <td>Next L0 granule (for geolocation of last scan; sets stopnudge=0)</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <!--<tr>-->
+    <!--<td><b>verbose</b></td>-->
+    <!--<td> boolean</td>-->
+    <!--<td>Print status messages</td>-->
+    <!--<td>Optional</td>-->
+    <!--<td>false</td>-->
+    <!--</tr>-->
+    <tr>
+        <td><b>log</b></td>
+        <td> boolean</td>
+        <td>Save processing log file(s)</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>disableL0fix</b></td>
+        <td> boolean</td>
+        <td>Disable use of l0fix_modis utility for corrupt packets</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects infile/ofile
+        </td>
+    </tr>
+    <tr>
+        <td><b>Load Parameters ...</b></td>
+        <td> Button</td>
+        <td>Reads in previously saved parameters and populates the fields in
+            GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Store Parameters ...</b></td>
+        <td> Button</td>
+        <td>Saves the current arguments in GUI in a file.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes the modi_L1A.py command with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Open in SeaDAS</b></td>
+        <td> Checkbox</td>
+        <td>If selected, the ofile will be added to the open products list right after its generation.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+<pre>
+Usage:
+    modis_L1A.py [OPTIONS] MODIS_L0_file
+            or
+    modis_L1A.py --parfile=parameter_file [OPTIONS]
+
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -p PARFILE, --parfile=PARFILE
+                        Parameter file containing program inputs
+  -o L1AFILE, --output=L1AFILE
+                        Output L1A filename - defaults to
+                        '(A|T)YYYYDDDHHMMSS.L1A_LAC'
+  -m MISSION, --mission=MISSION
+                        MODIS mission - A(qua) or T(erra)
+  -s STARTNUDGE, --startnudge=STARTNUDGE
+                        Level-0 start-time offset (seconds)
+  -e STOPNUDGE, --stopnudge=STOPNUDGE
+                        Level-0 stop-time offset (seconds)
+  -n NEXT, --nextgranule=NEXT
+                        Next L0 granule (for geolocation of last scan; sets
+                        stopnudge=0)
+  -v, --verbose         print status messages
+  --log                 Save processing log file(s)
+  -d, --disableL0fix    Disable use of l0fix_modis utility for corrupt packets
+</pre>
+
+<hr>
+</body>
+</html>
