@@ -33,6 +33,7 @@
                     <tocitem text="MODIS" target="importModisProduct"/>
                     <tocitem text="NOAA-AVHRR/3 Level-1b" target="importAVHRR"/>
                     <tocitem text="NetCDF" target="importNetCdfProduct"/>
+                    <tocitem text="GeoTIFF" target="importGeoTIFFProduct"/>
                 </tocitem>
                 <tocitem text="Import Vector Data">
                     <tocitem text="CSV" target="importCSV"/>
@@ -45,6 +46,7 @@
                     <tocitem text="CSV" target="exportCsv"/>
                     <tocitem text="HDF-5" target="exportHdf5Product"/>
                     <tocitem text="NetCDF/CF" target="exportNetCdfProduct"/>
+                    <tocitem text="GeoTIFF" target="exportGeoTIFFProduct"/>
                 </tocitem>
                 <tocitem text="Other Exports">
                     <tocitem text="Colour Legend" target="exportLegendImageFile"/>

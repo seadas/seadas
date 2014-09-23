@@ -47,7 +47,7 @@
     <mapID target="importGETASSE30" url="visat/ImportGETASSE30.html"/>
     <mapID target="importCSV" url="visat/ImportCSV.html"/>
     <mapID target="interpretPointData" url="visat/ImportCSV.html#interpretPointData"/>
-    <mapID target="importCsvProduct" url="visat/ImportCSVProduct.html"/>
+    <mapID target="importCsvProduct" url="visat/ImportCsvProduct.html"/>
     <mapID target="importMermaid" url="visat/ImportMermaid.html"/>
     <mapID target="importSeaDASTrack" url="visat/ImportSeaDASTrack.html"/>
     <mapID target="importShapefile" url="visat/ImportShapefile.html"/>
@@ -56,7 +56,7 @@
     <mapID target="importAvnir2Product" url="visat/ImportAVNIR2.html"/>
     <mapID target="importChrisProduct" url="visat/ImportChris.html"/>
     <mapID target="importPrismProduct" url="visat/ImportPRISM.html"/>
-    <mapID target="importNetCdfProduct" url="visat/ImportNetCdf.html"/>
+    <mapID target="importNetCdfProduct" url="visat/ImportNetCDF.html"/>
     <mapID target="importSpotVgtProduct" url="visat/ImportSpotVgt.html"/>
     <mapID target="exportDimapProduct" url="visat/ExportDimapProduct.html"/>
     <mapID target="exportNetCdfProduct" url="visat/ExportNetCdfProduct.html"/>
@@ -158,6 +158,7 @@
     <mapID target="l3bin" url="seadas-processing/ProcessL3bin.html"/>
     <mapID target="smigen" url="seadas-processing/ProcessSmigen.html"/>
     <mapID target="multilevel_processor.py" url="seadas-processing/ProcessMultilevel_processor.py.html"/>
-
+    <mapID target="importGeoTIFFProduct" url="beam-geotiff/ImportGeoTIFF.html"/>
+    <mapID target="exportGeoTIFFProduct" url="beam-geotiff/ExportGeoTIFF.html"/>
 
 </map>
