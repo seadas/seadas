@@ -20,6 +20,7 @@
             <tocitem text="Import and Export Tools">
                 <tocitem text="Extract Pixel Values" target="pixelExtraction"/>
 
+
                 <tocitem text="Import Raster Data">
                     <tocitem text="ATSR" target="importAtsrProduct"/>
                     <tocitem text="BEAM-DIMAP" target="importDimapProduct"/>
@@ -34,12 +35,14 @@
                     <tocitem text="NOAA-AVHRR/3 Level-1b" target="importAVHRR"/>
                     <tocitem text="NetCDF" target="importNetCdfProduct"/>
                     <tocitem text="GeoTIFF" target="importGeoTIFFProduct"/>
+                    <tocitem text="NASA Ocean Color" target="importNasaObpgProduct"/>
                 </tocitem>
                 <tocitem text="Import Vector Data">
                     <tocitem text="CSV" target="importCSV"/>
                     <tocitem text="ESRI Shapefile" target="importShapefile"/>
                     <tocitem text="MERMAID Extraction File" target="importMermaid"/>
                     <tocitem text="SeaDAS 6.x Track" target="importSeaDASTrack"/>
+                    <tocitem text="SeaBASS File Format" target="importSeabass"/>
                 </tocitem>
                 <tocitem text="Export Raster Data">
                     <tocitem text="BEAM-DIMAP" target="exportDimapProduct"/>
@@ -49,8 +52,8 @@
                     <tocitem text="GeoTIFF" target="exportGeoTIFFProduct"/>
                 </tocitem>
                 <tocitem text="Other Exports">
-                    <tocitem text="Colour Legend" target="exportLegendImageFile"/>
-                    <tocitem text="Colour Palette" target="exportColorPalette"/>
+                    <tocitem text="Color Bar" target="exportLegendImageFile"/>
+                    <tocitem text="Color Palette" target="exportColorPalette"/>
                     <tocitem text="Displayed Image" target="exportImageFile"/>
                     <tocitem text="ENVI GCP File" target="exportEnviGcpFile"/>
                     <tocitem text="Geometry as Shapefile" target="exportShapefile"/>
@@ -59,6 +62,7 @@
                     <tocitem text="Product Metadata" target="exportProductMetadata"/>
                     <tocitem text="Transect Pixels" target="exportTransectPixels"/>
                 </tocitem>
+                <tocitem text="OPeNDAP Client" target="opendap-client"/>
                 <tocitem text="The 'pconvert' Tool" target="pconvertTool"/>
                 <tocitem text="Product Subset Dialog" target="subsetDialog"/>
                 <tocitem text="Product Grabber" target="productGrabber"/>
@@ -160,14 +164,19 @@
             </tocitem>
         </tocitem>
 
-        <tocitem text="Cluster Analysis Tools" target="clusterAnalysis">
-            <tocitem text="Cluster Analysis Overview" target="clusterAnalysis"/>
-            <tocitem text="K-Means Cluster Analysis" target="clusterAnalysisKMeans"/>
-            <tocitem text="Expectation Maximization (EM) Cluster Analysis" target="clusterAnalysisEM"/>
+
+        <tocitem text="Level 3 Binning Operator" target="binning_overview">
+            <tocitem text="Overview" target="binning_overview"/>
+            <tocitem text="User Interface" target="binning_user_interface"/>
         </tocitem>
 
         <tocitem text="Image Analysis">
             <tocitem text="Spectral Unmixing Tool" target="spectralUnmixing"/>
+            <tocitem text="Cluster Analysis Tools" target="clusterAnalysis">
+                <tocitem text="Cluster Analysis Overview" target="clusterAnalysis"/>
+                <tocitem text="K-Means Cluster Analysis" target="clusterAnalysisKMeans"/>
+                <tocitem text="Expectation Maximization (EM) Cluster Analysis" target="clusterAnalysisEM"/>
+            </tocitem>
         </tocitem>
 
         <tocitem text="SeaDAS Processors">
@@ -197,5 +206,10 @@
         </tocitem>
     </tocitem>
 
+    <tocitem text="Graph Processing Framework (GPF)">
+        <tocitem text="GPF Overview" target="gpf.overview"/>
+        <tocitem text="GPF Graph Processing Tool (gpt)" target="gpf.graphProcessingTool"/>
+        <tocitem text="GPF Operator Index" target="gpf.operatorIndex"/>
+    </tocitem>
 
 </toc>

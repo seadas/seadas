@@ -161,4 +161,24 @@
     <mapID target="importGeoTIFFProduct" url="beam-geotiff/ImportGeoTIFF.html"/>
     <mapID target="exportGeoTIFFProduct" url="beam-geotiff/ExportGeoTIFF.html"/>
 
+    <mapID target="importNasaObpgProduct" url="seadas-reader/importNasaObpgProduct.html"/>
+    <mapID target="importSeadasL1Product" url="seadas-reader/importSeadasL1Product.html"/>
+    <mapID target="importSeadasL2Product" url="seadas-reader/importSeadasL2Product.html"/>
+    <mapID target="importSeadasL3Product" url="seadas-reader/importSeadasL3Product.html"/>
+    <mapID target="importAquariusProduct" url="seadas-reader/importAquariusProduct.html"/>
+    <mapID target="importHICOL1BProduct" url="seadas-reader/importHICOL1BProduct.html"/>
+    <mapID target="importModisL1BProduct" url="seadas-reader/importModisL1BProduct.html"/>
+    <mapID target="importOCM2L1BProduct" url="seadas-reader/importOCM2L1BProduct.html"/>
+    <mapID target="importViirsProduct" url="seadas-reader/importViirsProduct.html"/>
+    <mapID target="importSeadasBrowseProduct" url="seadas-reader/importSeadasBrowseProduct.html"/>
+    <mapID target="importSeabass" url="seadas-reader/importSeabass.html"/>
+
+    <mapID target="opendap-client" url="beam-opendap/Overview.html"/>
+
+    <mapID target="binning_overview" url="beam-binning/overview.html"/>
+    <mapID target="binning_user_interface" url="beam-binning/user_interface.html"/>
+
+    <mapID target="gpf.overview" url="beam-gpf/GpfOverview.html"/>
+    <mapID target="gpf.graphProcessingTool" url="beam-gpf/GraphProcessingTool.html"/>
+    <mapID target="gpf.operatorIndex" url="beam-gpf/OperatorIndex.html"/>
 </map>
