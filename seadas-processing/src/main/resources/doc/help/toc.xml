@@ -7,7 +7,7 @@
 
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
     <tocitem text="SeaDAS">
-        <tocitem text="Processing: Ocean Color">
+        <tocitem text="Processing: Data">
             <tocitem text="Introduction" target="processOverview"/>
             <tocitem text="install_ocssw.py" target="install_ocssw.py"/>
             <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
