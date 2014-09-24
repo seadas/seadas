@@ -7,20 +7,49 @@
 
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
 
+    <tocitem text="SeaDAS 7.1 Help" target="visat"/>
+
+
     <tocitem text="General">
-        <tocitem text="Overview" target="visat"/>
+        <tocitem text="7.1 Release Notes" target="seadasWhatsNew"/>
+        <tocitem text="About" target="aboutSeaDAS"/>
+
         <!--<tocitem text="Overview" target="seadasOverview"/>-->
-        <tocitem text="What's New" target="seadasWhatsNew"/>
-        <tocitem text="Case Study" target="gbrPhoticDepthExampleTutorial"/>
+
+        <tocitem text="Tutorials &amp; Video Help" target="tutorials"/>
+
 
     </tocitem>
 
+
     <tocitem text="SeaDAS">
-        <tocitem text="Tools">
-            <tocitem text="Import and Export Tools">
+
+        <tocitem text="Analysis &amp; Statistics">
+            <tocitem text="Correlative Plot" target="correlativePlotDialog"/>
+            <tocitem text="Histogram Plot" target="histogramDialog"/>
+            <tocitem text="Profile Plot" target="profilePlotDialog"/>
+            <tocitem text="Scatter Plot" target="densityPlotDialog"/>
+            <tocitem text="Spectrum Plot" target="showSpectrumWnd"/>
+            <tocitem text="Statistics" target="statisticsDialog"/>
+            <tocitem text="Table View" target="tableView"/>
+
+        </tocitem>
 
 
-                <tocitem text="Import Raster Data">
+        <tocitem text="Colors">
+            <tocitem text="Color Bar" target="exportLegendImageFile"/>
+            <tocitem text="Color Manager" target="showColorManipulationWnd"/>
+            <tocitem text="RGB Image" target="rgbImageProfile"/>
+        </tocitem>
+
+
+
+        <tocitem text="File &amp; Session I/O">
+            <tocitem text="File Manager" target="productBrowser"/>
+            <tocitem text="Sessions" target="sessionOverview"/>
+
+            <tocitem text="Import Tools">
+                <tocitem text="Raster Data">
                     <tocitem text="ATSR" target="importAtsrProduct"/>
                     <tocitem text="BEAM-DIMAP" target="importDimapProduct"/>
                     <tocitem text="CSV" target="importCsvProduct"/>
@@ -36,118 +65,104 @@
                     <tocitem text="GeoTIFF" target="importGeoTIFFProduct"/>
                     <tocitem text="NASA Ocean Color" target="importNasaObpgProduct"/>
                 </tocitem>
-                <tocitem text="Import Vector Data">
+
+                <tocitem text="Vector Data">
                     <tocitem text="CSV" target="importCSV"/>
                     <tocitem text="ESRI Shapefile" target="importShapefile"/>
                     <tocitem text="MERMAID Extraction File" target="importMermaid"/>
                     <tocitem text="SeaDAS 6.x Track" target="importSeaDASTrack"/>
                     <tocitem text="SeaBASS File Format" target="importSeabass"/>
                 </tocitem>
-                <tocitem text="Export Raster Data">
+
+                <tocitem text="OPeNDAP Client" target="opendap-client"/>
+                <tocitem text="Product Grabber" target="productGrabber"/>
+            </tocitem>
+
+
+            <tocitem text="Export Tools">
+
+
+                <tocitem text="Raster Data">
                     <tocitem text="BEAM-DIMAP" target="exportDimapProduct"/>
                     <tocitem text="CSV" target="exportCsv"/>
                     <tocitem text="HDF-5" target="exportHdf5Product"/>
                     <tocitem text="NetCDF/CF" target="exportNetCdfProduct"/>
                     <tocitem text="GeoTIFF" target="exportGeoTIFFProduct"/>
                 </tocitem>
+
+                <tocitem text="Vector Data">
+                    <tocitem text="Geometry as Shapefile" target="exportShapefile"/>
+                </tocitem>
+
+
                 <tocitem text="Other Exports">
                     <tocitem text="Color Bar" target="exportLegendImageFile"/>
                     <tocitem text="Color Palette" target="exportColorPalette"/>
                     <tocitem text="Displayed Image" target="exportImageFile"/>
                     <tocitem text="ENVI GCP File" target="exportEnviGcpFile"/>
-                    <tocitem text="Geometry as Shapefile" target="exportShapefile"/>
+
                     <tocitem text="KML" target="exportKml"/>
                     <tocitem text="Mask Pixels" target="exportMaskPixels"/>
                     <tocitem text="Product Metadata" target="exportProductMetadata"/>
                     <tocitem text="Transect Pixels" target="exportTransectPixels"/>
                 </tocitem>
-                <tocitem text="OPeNDAP Client" target="opendap-client"/>
+
                 <tocitem text="The 'pconvert' Tool" target="pconvertTool"/>
 
-                <tocitem text="Product Grabber" target="productGrabber"/>
+
                 <tocitem text="Pixel Extraction" target="pixelExtraction"/>
             </tocitem>
 
-            <tocitem text="Imaging Tools">
-                <tocitem text="Image View" target="imageView"/>
-                <tocitem text="Layer Manager" target="showLayerManagerWnd"/>
-                <tocitem text="Navigation Window" target="showNavigationWnd"/>
-                <tocitem text="Color Manager" target="showColorManipulationWnd"/>
-                <tocitem text="RGB Image" target="rgbImageProfile"/>
-                <tocitem text="No-Data Layer" target="noDataOverlay"/>
-                <tocitem text="Vector Data Management" target="vectorDataManagement"/>
-                <tocitem text="Mask Manager" target="showMaskManagerWnd"/>
-            </tocitem>
-
-            <tocitem text="Analysis Tools">
-                <tocitem text="World Map" target="showWorldMapWnd"/>
-                <tocitem text="GCP Manager" target="showGcpManagerWnd"/>
-                <tocitem text="Pin Manager" target="showPinManagerWnd"/>
-                <tocitem text="Spectrum Plot" target="showSpectrumWnd"/>
-                <tocitem text="File/Band Information" target="informationDialog"/>
-                <tocitem text="Geo-Coding Information" target="geoCodingInfoDialog"/>
-                <tocitem text="Statistics" target="statisticsDialog"/>
-                <tocitem text="Histogram Plot" target="histogramDialog"/>
-                <tocitem text="Scatter Plot" target="densityPlotDialog"/>
-                <tocitem text="Correlative Plot" target="correlativePlotDialog"/>
-                <tocitem text="Profile Plot" target="profilePlotDialog"/>
-                <tocitem text="Table View" target="tableView"/>
-                <tocitem text="Mask Area" target="computeMaskArea"/>
+        </tocitem>
 
 
-            </tocitem>
-
-            <tocitem text="Product Generation Tools">
-                <tocitem text="Collocation" target="collocation"/>
-                <tocitem text="Crop" target="subsetDialog"/>
-                <tocitem text="Flip Data" target="dataFlip"/>
-                <tocitem text="Math Band" target="bandArithmetic"/>
-                <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
-                <tocitem text="Mosaic" target="mosaicAction">
-                    <tocitem text="Mosaic Dialog" target="mosaicAction"/>
-                    <tocitem text="Mosaic Algorithm Description" target="mosaicAlgo"/>
-                </tocitem>
-                <tocitem text="Orthorectification" target="orthorectificationAction">
-                    <tocitem text="Orthorectification Dialog" target="orthorectificationAction"/>
-                    <tocitem text="Orthorectification Algorithm" target="orthorectificationAlgo"/>
-                    <tocitem text="GETASSE30 Elevation Model" target="demGETASSE30"/>
-                </tocitem>
-
-                <tocitem text="Reprojection" target="reprojectionAction">
-                    <tocitem text="Reprojection Dialog" target="reprojectionAction"/>
-                    <tocitem text="Resampling Methods" target="resamplingMethods"/>
-                </tocitem>
 
 
-                <tocitem text="Attach Pixel-based Geo-Coding" target="pixelGeoCodingSetup"/>
-                <tocitem text="DEM Bands" target="createDemRelatedBands"/>
-                <tocitem text="Create ASAR NRCS Bands" target="createAsarNrcsBands"/>
-                <tocitem text="Filtered Band" target="createFilteredBand"/>
+        <tocitem text="Geo-Coding">
+
+            <tocitem text="Attach Pixel-based Geo-Coding" target="pixelGeoCodingSetup"/>
+        </tocitem>
 
 
-                <tocitem text="Time Series Tool">
-                    <tocitem text="Time Series Manager" target="timeSeriesManager"/>
-                    <tocitem text="Time Series Graph" target="timeSeriesGraph"/>
-                    <tocitem text="Time Series Player" target="timeSeriesPlayer"/>
-                    <tocitem text="Time Series Matrix" target="timeSeriesMatrix"/>
-                    <tocitem text="Export Time Series as Google Earth KMZ-file" target="kmzExport"/>
-                </tocitem>
+        <tocitem text="Image &amp; Navigation">
+            <tocitem text="Image View" target="imageView"/>
+            <tocitem text="Navigation Controls" target="showNavigationWnd"/>
+            <tocitem text="World Map Location" target="showWorldMapWnd"/>
+
+        </tocitem>
 
 
-            </tocitem>
+        <tocitem text="Information">
+
+            <tocitem text="File/Band Information" target="informationDialog"/>
+            <tocitem text="Geo-Coding Information" target="geoCodingInfoDialog"/>
+            <tocitem text="Mask Area" target="computeMaskArea"/>
+
+            <tocitem text="Pixel Info" target="pixelInfoView"/>
+
+        </tocitem>
+
+
+        <tocitem text="Masks &amp; Layers">
 
             <tocitem text="Bathymetry Mask &amp; Elevation" target="bathymetry"/>
             <tocitem text="Coastline, Land and Water Masks" target="coastlineLandMasks"/>
-            <tocitem text="Contour Layer" target="contourLines"/>
+            <tocitem text="Contour" target="contourLines"/>
+            <tocitem text="GCP" target="showGcpManagerWnd"/>
+            <tocitem text="Geometry" target="geometryOverview"/>
+            <tocitem text="Layer Editor" target="layerEditor"/>
+            <tocitem text="Layer Manager" target="showLayerManagerWnd"/>
+            <tocitem text="Map Gridlines" target="mapGridlines"/>
+            <tocitem text="Mask Manager" target="showMaskManagerWnd"/>
+            <tocitem text="No-Data" target="noDataOverlay"/>
+            <tocitem text="Pins" target="showPinManagerWnd"/>
+            <tocitem text="Vector Data Management" target="vectorDataManagement"/>
+            <tocitem text="World Map" target="worldMap"/>
 
-
-            <tocitem text="Module Manager" target="moduleManager"/>
         </tocitem>
 
-        <tocitem text="Reference">
-            <tocitem text="File Manager" target="productBrowser"/>
-            <tocitem text="Pixel Info" target="pixelInfoView"/>
-            <tocitem text="Preferences Dialog" target="preferences"/>
+
+        <tocitem text="Menus, Toolbars &amp; Layout">
             <tocitem text="Main Toolbar" target="mainToolbar"/>
             <tocitem text="Main Menu Bar" target="menuBar"/>
             <tocitem text="File Menu" target="fileMenu"/>
@@ -157,35 +172,84 @@
             <tocitem text="Tools Menu" target="toolsMenu"/>
             <tocitem text="Window Menu" target="windowMenu"/>
             <tocitem text="Help Menu" target="helpMenu"/>
-            <tocitem text="No-Data Value" target="noDataValue"/>
-        </tocitem>
-    </tocitem>
-    <tocitem text="Data Processors">
+            <tocitem text="Layout" target="layoutOverview"/>
 
-
-    <tocitem text="Level 3 Binning Operator" target="binning_overview">
-            <tocitem text="Overview" target="binning_overview"/>
-            <tocitem text="User Interface" target="binning_user_interface"/>
         </tocitem>
 
-        <tocitem text="Image Analysis">
-            <tocitem text="Spectral Unmixing Tool" target="spectralUnmixing"/>
-            <tocitem text="Cluster Analysis Tools" target="clusterAnalysis">
-                <tocitem text="Cluster Analysis Overview" target="clusterAnalysis"/>
-                <tocitem text="K-Means Cluster Analysis" target="clusterAnalysisKMeans"/>
-                <tocitem text="Expectation Maximization (EM) Cluster Analysis" target="clusterAnalysisEM"/>
+
+        <tocitem text="Modules">
+            <tocitem text="Module Manager" target="moduleManager"/>
+        </tocitem>
+
+
+
+
+        <tocitem text="Processing: Band">
+            <tocitem text="ASAR NRCS Bands" target="createAsarNrcsBands"/>
+            <tocitem text="DEM Bands" target="createDemRelatedBands"/>
+            <tocitem text="Filtered Band" target="createFilteredBand"/>
+            <tocitem text="Math Band" target="bandArithmetic">
+                <tocitem text="Math Band" target="bandArithmetic"/>
+                <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
             </tocitem>
         </tocitem>
 
-        <tocitem text="SeaDAS Processors">
+
+
+        <tocitem text="Processing: File">
+            <tocitem text="Collocate" target="collocation"/>
+            <tocitem text="Crop" target="subsetDialog"/>
+            <tocitem text="Flip Data" target="dataFlip"/>
+
+            <tocitem text="Mosaic" target="mosaicAction">
+                <tocitem text="Mosaic Dialog" target="mosaicAction"/>
+                <tocitem text="Mosaic Algorithm Description" target="mosaicAlgo"/>
+            </tocitem>
+            <tocitem text="Orthorectify" target="orthorectificationAction">
+                <tocitem text="Orthorectify" target="orthorectificationAction"/>
+                <tocitem text="Orthorectification Algorithm" target="orthorectificationAlgo"/>
+                <tocitem text="GETASSE30 Elevation Model" target="demGETASSE30"/>
+            </tocitem>
+
+            <tocitem text="Reproject" target="reprojectionAction">
+                <tocitem text="Reproject" target="reprojectionAction"/>
+                <tocitem text="Resampling Methods" target="resamplingMethods"/>
+            </tocitem>
+
+
+            <tocitem text="Time Series" target="timeSeriesManager">
+                <tocitem text="Time Series Manager" target="timeSeriesManager"/>
+                <tocitem text="Time Series Graph" target="timeSeriesGraph"/>
+                <tocitem text="Time Series Player" target="timeSeriesPlayer"/>
+                <tocitem text="Time Series Matrix" target="timeSeriesMatrix"/>
+                <tocitem text="Export Time Series as Google Earth KMZ-file" target="kmzExport"/>
+            </tocitem>
+
+
+            <tocitem text="Level-3 Binning" target="binning_overview">
+                <tocitem text="Overview" target="binning_overview"/>
+                <tocitem text="User Interface" target="binning_user_interface"/>
+            </tocitem>
+
+            <tocitem text="Image Analysis">
+                <tocitem text="Spectral Unmixing Tool" target="spectralUnmixing"/>
+                <tocitem text="Cluster Analysis Tools" target="clusterAnalysis">
+                    <tocitem text="Cluster Analysis Overview" target="clusterAnalysis"/>
+                    <tocitem text="K-Means Cluster Analysis" target="clusterAnalysisKMeans"/>
+                    <tocitem text="Expectation Maximization (EM) Cluster Analysis" target="clusterAnalysisEM"/>
+                </tocitem>
+            </tocitem>
+
+        </tocitem>
+
+
+        <tocitem text="Processing: Ocean Color">
+
+
             <tocitem text="Introduction" target="processOverview"/>
             <tocitem text="install_ocssw.py" target="install_ocssw.py"/>
-            <tocitem text="Product Extractors">
-                <tocitem text="Introduction" target="extractor"/>
-                <tocitem text="l1aextract_modis" target="l1aextract_modis"/>
-                <tocitem text="l1aextract_seawifs" target="l1aextract_seawifs"/>
-                <tocitem text="l2extract" target="l2extract"/>
-            </tocitem>
+            <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
+
             <tocitem text="l1bgen" target="l1bgen"/>
             <tocitem text="l1mapgen" target="l1mapgen"/>
             <tocitem text="l1brsgen" target="l1brsgen"/>
@@ -200,14 +264,29 @@
             <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
             <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
             <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
-            <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
+            <tocitem text="Product Extractors">
+                <tocitem text="Introduction" target="extractor"/>
+                <tocitem text="l1aextract_modis" target="l1aextract_modis"/>
+                <tocitem text="l1aextract_seawifs" target="l1aextract_seawifs"/>
+                <tocitem text="l2extract" target="l2extract"/>
+            </tocitem>
+
+
         </tocitem>
+
+        <tocitem text="Reference">
+            <tocitem text="No-Data Value" target="noDataValue"/>
+            <tocitem text="Preferences Dialog" target="preferences"/>
+        </tocitem>
+
+        <tocitem text="Scripting">
+            <tocitem text="GPF Overview" target="gpf.overview"/>
+            <tocitem text="GPF Graph Processing Tool (gpt)" target="gpf.graphProcessingTool"/>
+            <tocitem text="GPF Operator Index" target="gpf.operatorIndex"/>
+        </tocitem>
+
+
     </tocitem>
 
-    <tocitem text="Graph Processing Framework (GPF)">
-        <tocitem text="GPF Overview" target="gpf.overview"/>
-        <tocitem text="GPF Graph Processing Tool (gpt)" target="gpf.graphProcessingTool"/>
-        <tocitem text="GPF Operator Index" target="gpf.operatorIndex"/>
-    </tocitem>
 
 </toc>
