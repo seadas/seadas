@@ -18,7 +18,6 @@
     <tocitem text="SeaDAS">
         <tocitem text="Tools">
             <tocitem text="Import and Export Tools">
-                <tocitem text="Extract Pixel Values" target="pixelExtraction"/>
 
 
                 <tocitem text="Import Raster Data">
@@ -64,8 +63,9 @@
                 </tocitem>
                 <tocitem text="OPeNDAP Client" target="opendap-client"/>
                 <tocitem text="The 'pconvert' Tool" target="pconvertTool"/>
-                <tocitem text="Product Subset Dialog" target="subsetDialog"/>
+
                 <tocitem text="Product Grabber" target="productGrabber"/>
+                <tocitem text="Pixel Extraction" target="pixelExtraction"/>
             </tocitem>
 
             <tocitem text="Imaging Tools">
@@ -73,54 +73,56 @@
                 <tocitem text="Layer Manager" target="showLayerManagerWnd"/>
                 <tocitem text="Navigation Window" target="showNavigationWnd"/>
                 <tocitem text="Color Manager" target="showColorManipulationWnd"/>
-                <tocitem text="RGB-Image Profile" target="rgbImageProfile"/>
-                <tocitem text="No-Data Overlay" target="noDataOverlay"/>
+                <tocitem text="RGB Image" target="rgbImageProfile"/>
+                <tocitem text="No-Data Layer" target="noDataOverlay"/>
                 <tocitem text="Vector Data Management" target="vectorDataManagement"/>
-                <tocitem text="Mask Management" target="showMaskManagerWnd"/>
+                <tocitem text="Mask Manager" target="showMaskManagerWnd"/>
             </tocitem>
 
             <tocitem text="Analysis Tools">
-                <tocitem text="Product World Map" target="showWorldMapWnd"/>
-                <tocitem text="Product GCP Manager" target="showGcpManagerWnd"/>
-                <tocitem text="Product Pin Manager" target="showPinManagerWnd"/>
-                <tocitem text="Product Spectrum" target="showSpectrumWnd"/>
-                <tocitem text="Product/Band Information" target="informationDialog"/>
-                <tocitem text="Product/Band Geo-Coding Information" target="geoCodingInfoDialog"/>
-                <tocitem text="Band Statistics" target="statisticsDialog"/>
-                <tocitem text="Band Histogram" target="histogramDialog"/>
-                <tocitem text="Band Scatter Plot" target="densityPlotDialog"/>
+                <tocitem text="World Map" target="showWorldMapWnd"/>
+                <tocitem text="GCP Manager" target="showGcpManagerWnd"/>
+                <tocitem text="Pin Manager" target="showPinManagerWnd"/>
+                <tocitem text="Spectrum Plot" target="showSpectrumWnd"/>
+                <tocitem text="File/Band Information" target="informationDialog"/>
+                <tocitem text="Geo-Coding Information" target="geoCodingInfoDialog"/>
+                <tocitem text="Statistics" target="statisticsDialog"/>
+                <tocitem text="Histogram Plot" target="histogramDialog"/>
+                <tocitem text="Scatter Plot" target="densityPlotDialog"/>
                 <tocitem text="Correlative Plot" target="correlativePlotDialog"/>
                 <tocitem text="Profile Plot" target="profilePlotDialog"/>
                 <tocitem text="Table View" target="tableView"/>
-                <tocitem text="Compute Mask Area" target="computeMaskArea"/>
+                <tocitem text="Mask Area" target="computeMaskArea"/>
 
 
             </tocitem>
 
             <tocitem text="Product Generation Tools">
-                <tocitem text="Band Maths" target="bandArithmetic"/>
-                <tocitem text="Band Maths Expression Editor" target="expressionEditor"/>
-                <tocitem text="Data Flip" target="dataFlip"/>
-
-                <tocitem text="Reprojection" target="reprojectionAction">
-                    <tocitem text="Reprojection Dialog" target="reprojectionAction"/>
-                    <tocitem text="Resampling Methods" target="resamplingMethods"/>
+                <tocitem text="Collocation" target="collocation"/>
+                <tocitem text="Crop" target="subsetDialog"/>
+                <tocitem text="Flip Data" target="dataFlip"/>
+                <tocitem text="Math Band" target="bandArithmetic"/>
+                <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
+                <tocitem text="Mosaic" target="mosaicAction">
+                    <tocitem text="Mosaic Dialog" target="mosaicAction"/>
+                    <tocitem text="Mosaic Algorithm Description" target="mosaicAlgo"/>
                 </tocitem>
                 <tocitem text="Orthorectification" target="orthorectificationAction">
                     <tocitem text="Orthorectification Dialog" target="orthorectificationAction"/>
                     <tocitem text="Orthorectification Algorithm" target="orthorectificationAlgo"/>
                     <tocitem text="GETASSE30 Elevation Model" target="demGETASSE30"/>
-                    <tocitem text="Create DEM-related Bands" target="createDemRelatedBands"/>
-                </tocitem>
-                <tocitem text="Mosaic" target="mosaicAction">
-                    <tocitem text="Mosaic Dialog" target="mosaicAction"/>
-                    <tocitem text="Mosaic Algorithm Description" target="mosaicAlgo"/>
                 </tocitem>
 
+                <tocitem text="Reprojection" target="reprojectionAction">
+                    <tocitem text="Reprojection Dialog" target="reprojectionAction"/>
+                    <tocitem text="Resampling Methods" target="resamplingMethods"/>
+                </tocitem>
+
+
                 <tocitem text="Attach Pixel-based Geo-Coding" target="pixelGeoCodingSetup"/>
-                <tocitem text="Create DEM-related Bands" target="createDemRelatedBands"/>
+                <tocitem text="DEM Bands" target="createDemRelatedBands"/>
                 <tocitem text="Create ASAR NRCS Bands" target="createAsarNrcsBands"/>
-                <tocitem text="Create Filtered Band" target="createFilteredBand"/>
+                <tocitem text="Filtered Band" target="createFilteredBand"/>
 
 
                 <tocitem text="Time Series Tool">
@@ -134,17 +136,17 @@
 
             </tocitem>
 
-            <tocitem text="Bathymetry" target="bathymetry"/>
-            <tocitem text="Coastline and Land Masks" target="coastlineLandMasks"/>
-            <tocitem text="Contour Lines" target="contourLines"/>
+            <tocitem text="Bathymetry Mask &amp; Elevation" target="bathymetry"/>
+            <tocitem text="Coastline, Land and Water Masks" target="coastlineLandMasks"/>
+            <tocitem text="Contour Layer" target="contourLines"/>
 
 
             <tocitem text="Module Manager" target="moduleManager"/>
         </tocitem>
 
         <tocitem text="Reference">
-            <tocitem text="Product Browser" target="productBrowser"/>
-            <tocitem text="Pixel Info View" target="pixelInfoView"/>
+            <tocitem text="File Manager" target="productBrowser"/>
+            <tocitem text="Pixel Info" target="pixelInfoView"/>
             <tocitem text="Preferences Dialog" target="preferences"/>
             <tocitem text="Main Toolbar" target="mainToolbar"/>
             <tocitem text="Main Menu Bar" target="menuBar"/>
@@ -159,13 +161,9 @@
         </tocitem>
     </tocitem>
     <tocitem text="Data Processors">
-        <tocitem text="Geometric Operations">
-            <tocitem text="Collocation Tool" target="collocation">
-            </tocitem>
-        </tocitem>
 
 
-        <tocitem text="Level 3 Binning Operator" target="binning_overview">
+    <tocitem text="Level 3 Binning Operator" target="binning_overview">
             <tocitem text="Overview" target="binning_overview"/>
             <tocitem text="User Interface" target="binning_user_interface"/>
         </tocitem>
