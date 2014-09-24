@@ -43,7 +43,6 @@
         </tocitem>
 
 
-
         <tocitem text="File &amp; Session I/O">
             <tocitem text="File Manager" target="productBrowser"/>
             <tocitem text="Sessions" target="sessionOverview"/>
@@ -116,8 +115,6 @@
         </tocitem>
 
 
-
-
         <tocitem text="Geo-Coding">
 
             <tocitem text="Attach Pixel-based Geo-Coding" target="pixelGeoCodingSetup"/>
@@ -163,25 +160,27 @@
 
 
         <tocitem text="Menus, Toolbars &amp; Layout">
-            <tocitem text="Main Toolbar" target="mainToolbar"/>
-            <tocitem text="Main Menu Bar" target="menuBar"/>
-            <tocitem text="File Menu" target="fileMenu"/>
-            <tocitem text="Edit Menu" target="editMenu"/>
-            <tocitem text="View Menu" target="viewMenu"/>
-            <tocitem text="Analysis Menu" target="analysisMenu"/>
-            <tocitem text="Tools Menu" target="toolsMenu"/>
-            <tocitem text="Window Menu" target="windowMenu"/>
-            <tocitem text="Help Menu" target="helpMenu"/>
             <tocitem text="Layout" target="layoutOverview"/>
 
+            <tocitem text="Menus">
+                <tocitem text="Analysis" target="analysisMenu"/>
+                <!--<tocitem text="Main Menu Bar" target="menuBar"/>-->
+                <tocitem text="Edit" target="editMenu"/>
+                <tocitem text="File" target="fileMenu"/>
+                <tocitem text="Help" target="helpMenu"/>
+                <tocitem text="Tools" target="toolsMenu"/>
+                <tocitem text="View" target="viewMenu"/>
+                <tocitem text="Window" target="windowMenu"/>
+
+            </tocitem>
+
+            <tocitem text="Toolbars" target="mainToolbar"/>
         </tocitem>
 
 
         <tocitem text="Modules">
             <tocitem text="Module Manager" target="moduleManager"/>
         </tocitem>
-
-
 
 
         <tocitem text="Processing: Band">
@@ -193,7 +192,6 @@
                 <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
             </tocitem>
         </tocitem>
-
 
 
         <tocitem text="Processing: File">
