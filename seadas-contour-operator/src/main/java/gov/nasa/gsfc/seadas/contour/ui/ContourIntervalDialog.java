@@ -99,7 +99,15 @@ public class ContourIntervalDialog extends JDialog {
         final PropertyChangeListener pcl_min = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
+                Double originalMinValue = minValue;
                 minValue = (Double) bindingContext.getBinding("minValueField").getPropertyValue();
+                if (minValue == null) {
+                    if (maxValue != null) {
+                        minValue = maxValue;
+                    } else {
+                        minValue = originalMinValue;
+                    }
+                }
                 contourData.setStartValue(minValue);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
             }
@@ -107,7 +115,15 @@ public class ContourIntervalDialog extends JDialog {
         final PropertyChangeListener pcl_max = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
+                Double originalMaxValue = maxValue;
                 maxValue = (Double) bindingContext.getBinding("maxValueField").getPropertyValue();
+                if (maxValue == null) {
+                    if (minValue != null) {
+                        maxValue = minValue;
+                    } else {
+                        maxValue = originalMaxValue;
+                    }
+                }
                 contourData.setEndValue(maxValue);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
             }
