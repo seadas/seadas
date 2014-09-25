@@ -35,6 +35,16 @@
 
         </tocitem>
 
+        <tocitem text="Band Tools">
+            <tocitem text="ASAR NRCS Bands" target="createAsarNrcsBands"/>
+            <tocitem text="DEM Bands" target="createDemRelatedBands"/>
+            <tocitem text="Filtered Band" target="createFilteredBand"/>
+            <tocitem text="Math Band" target="bandArithmetic">
+                <tocitem text="Math Band" target="bandArithmetic"/>
+                <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
+            </tocitem>
+        </tocitem>
+
 
         <tocitem text="Colors">
             <tocitem text="Color Bar" target="exportLegendImageFile"/>
@@ -43,8 +53,8 @@
         </tocitem>
 
 
-        <tocitem text="File &amp; Session I/O">
-            <tocitem text="File Manager" target="productBrowser"/>
+        <tocitem text="File I/O &amp; Sessions">
+        <tocitem text="File Manager" target="productBrowser"/>
             <tocitem text="Sessions" target="sessionOverview"/>
 
             <tocitem text="Import Tools">
@@ -116,13 +126,14 @@
 
 
         <tocitem text="Geo-Coding">
-
             <tocitem text="Attach Pixel-based Geo-Coding" target="pixelGeoCodingSetup"/>
+            <tocitem text="Geo-Coding Displacement Bands" target="geoCodingDisplacementBands"/>
+            <tocitem text="Geo-Coding Info" target="geoCodingInfoDialog"/>
         </tocitem>
 
 
-        <tocitem text="Image &amp; Navigation">
-            <tocitem text="Image View" target="imageView"/>
+        <tocitem text="Image">
+        <tocitem text="Image View" target="imageView"/>
             <tocitem text="Navigation Controls" target="showNavigationWnd"/>
             <tocitem text="World Map Location" target="showWorldMapWnd"/>
 
@@ -130,13 +141,10 @@
 
 
         <tocitem text="Information">
-
-            <tocitem text="File/Band Information" target="informationDialog"/>
-            <tocitem text="Geo-Coding Information" target="geoCodingInfoDialog"/>
-            <tocitem text="Mask Area" target="computeMaskArea"/>
-
+            <tocitem text="File/Band Info" target="informationDialog"/>
+            <tocitem text="Geo-Coding Info" target="geoCodingInfoDialog"/>
+            <tocitem text="Mask Area Info" target="computeMaskArea"/>
             <tocitem text="Pixel Info" target="pixelInfoView"/>
-
         </tocitem>
 
 
@@ -150,6 +158,7 @@
             <tocitem text="Layer Editor" target="layerEditor"/>
             <tocitem text="Layer Manager" target="showLayerManagerWnd"/>
             <tocitem text="Map Gridlines" target="mapGridlines"/>
+            <tocitem text="Mask Area Info" target="computeMaskArea"/>
             <tocitem text="Mask Manager" target="showMaskManagerWnd"/>
             <tocitem text="No-Data" target="noDataOverlay"/>
             <tocitem text="Pins" target="showPinManagerWnd"/>
@@ -159,8 +168,8 @@
         </tocitem>
 
 
-        <tocitem text="Menus, Toolbars &amp; Layout">
-            <tocitem text="Layout" target="layoutOverview"/>
+        <tocitem text="Menus">
+        <tocitem text="Layout" target="layoutOverview"/>
 
             <tocitem text="Menus">
                 <tocitem text="Analysis" target="analysisMenu"/>
@@ -182,16 +191,6 @@
             <tocitem text="Module Manager" target="moduleManager"/>
         </tocitem>
 
-
-        <tocitem text="Processing: Band">
-            <tocitem text="ASAR NRCS Bands" target="createAsarNrcsBands"/>
-            <tocitem text="DEM Bands" target="createDemRelatedBands"/>
-            <tocitem text="Filtered Band" target="createFilteredBand"/>
-            <tocitem text="Math Band" target="bandArithmetic">
-                <tocitem text="Math Band" target="bandArithmetic"/>
-                <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
-            </tocitem>
-        </tocitem>
 
 
 
@@ -232,6 +231,20 @@
             <tocitem text="Crop" target="subsetDialog"/>
             <tocitem text="Flip Data" target="dataFlip"/>
 
+            <tocitem text="Image Analysis">
+                <tocitem text="Spectral Unmixing Tool" target="spectralUnmixing"/>
+                <tocitem text="Cluster Analysis Tools" target="clusterAnalysis">
+                    <tocitem text="Cluster Analysis Overview" target="clusterAnalysis"/>
+                    <tocitem text="K-Means Cluster Analysis" target="clusterAnalysisKMeans"/>
+                    <tocitem text="Expectation Maximization (EM) Cluster Analysis" target="clusterAnalysisEM"/>
+                </tocitem>
+            </tocitem>
+
+            <tocitem text="Level-3 Binning" target="binning_overview">
+                <tocitem text="Overview" target="binning_overview"/>
+                <tocitem text="User Interface" target="binning_user_interface"/>
+            </tocitem>
+
             <tocitem text="Mosaic" target="mosaicAction">
                 <tocitem text="Mosaic Dialog" target="mosaicAction"/>
                 <tocitem text="Mosaic Algorithm Description" target="mosaicAlgo"/>
@@ -247,7 +260,6 @@
                 <tocitem text="Resampling Methods" target="resamplingMethods"/>
             </tocitem>
 
-
             <tocitem text="Time Series" target="timeSeriesManager">
                 <tocitem text="Time Series Manager" target="timeSeriesManager"/>
                 <tocitem text="Time Series Graph" target="timeSeriesGraph"/>
@@ -256,20 +268,6 @@
                 <tocitem text="Export Time Series as Google Earth KMZ-file" target="kmzExport"/>
             </tocitem>
 
-
-            <tocitem text="Level-3 Binning" target="binning_overview">
-                <tocitem text="Overview" target="binning_overview"/>
-                <tocitem text="User Interface" target="binning_user_interface"/>
-            </tocitem>
-
-            <tocitem text="Image Analysis">
-                <tocitem text="Spectral Unmixing Tool" target="spectralUnmixing"/>
-                <tocitem text="Cluster Analysis Tools" target="clusterAnalysis">
-                    <tocitem text="Cluster Analysis Overview" target="clusterAnalysis"/>
-                    <tocitem text="K-Means Cluster Analysis" target="clusterAnalysisKMeans"/>
-                    <tocitem text="Expectation Maximization (EM) Cluster Analysis" target="clusterAnalysisEM"/>
-                </tocitem>
-            </tocitem>
 
         </tocitem>
 

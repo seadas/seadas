@@ -192,4 +192,5 @@
     <mapID target="aboutSeaDAS" url="general/AboutSeaDAS.html"/>
     <mapID target="layoutOverview" url="visat/LayoutOverview.html"/>
     <mapID target="tutorials" url="general/Tutorials.html"/>
+    <mapID target="geoCodingDisplacementBands" url="visat/CreateGCDisplacementBands.html"/>
 </map>
