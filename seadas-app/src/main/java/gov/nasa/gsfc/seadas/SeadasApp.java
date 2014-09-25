@@ -511,7 +511,7 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("tools", "Tools", 'T'));
         menuBar.add(createJMenu("layers", "Layers", 'L'));
         menuBar.add(createJMenu("processing", "Processing", 'P'));
-        menuBar.add(createJMenu("ocprocessing", "OCProc", 'O'));
+        menuBar.add(createJMenu("ocprocessing", "DataProcessing", 'D'));
         menuBar.add(createJMenu("analysis", "Analysis", 'A'));
         menuBar.add(createJMenu("info", "Info", 'I'));
         menuBar.add(createJMenu("window", "Window", 'W'));
@@ -567,9 +567,8 @@ public class SeadasApp extends VisatApp {
         menu.insert(copyAction, 2);
         menu.insert(pasteAction, 3);
         menu.insert(deleteAction, 4);
-        menu.insertSeparator(5);
-        menu.insert(selectAllAction, 6);
-        menu.insertSeparator(7);
+        menu.insert(selectAllAction, 5);
+        menu.insertSeparator(6);
     }
 
 

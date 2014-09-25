@@ -7,8 +7,8 @@
 
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
     <tocitem text="SeaDAS">
-        <tocitem text="File &amp; Session I/O">
-            <tocitem text="Import Tools">
+        <tocitem text="File I/O &amp; Sessions">
+        <tocitem text="Import Tools">
 
                 <tocitem text="Raster Data">
                     <tocitem text="NASA Ocean Color" target="importNasaObpgProduct">

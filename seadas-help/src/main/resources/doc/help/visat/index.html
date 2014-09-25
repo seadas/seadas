@@ -93,6 +93,18 @@
 
     <tr>
         <td class="invisibletable2" valign="top" nowrap>
+            <a href="index.html#OceanColorProcessors" class="invisibleLink">Data Processors</a>
+        </td>
+        <td class="invisibletable2" valign="top">
+            The tools allow users to process data between the various levels (i.e. Level 0 through
+            Level 3).
+        </td>
+    </tr>
+
+
+
+    <tr>
+        <td class="invisibletable2" valign="top" nowrap>
             <a href="index.html#FileTools" class="invisibleLink">File Tools</a>
         </td>
         <td class="invisibletable2" valign="top">
@@ -190,16 +202,6 @@
             <!--Miscellaneous tools.-->
         <!--</td>-->
     <!--</tr>-->
-
-    <tr>
-        <td class="invisibletable2" valign="top" nowrap>
-            <a href="index.html#OceanColorProcessors" class="invisibleLink">Ocean Color Processors</a>
-        </td>
-        <td class="invisibletable2" valign="top">
-            The tools allow users to process data between the various Ocean Color file levels (i.e. Level 0 through
-            Level 3).
-        </td>
-    </tr>
 
 
     <tr>
@@ -629,6 +631,59 @@
 </table>
 
 
+
+<a name="OceanColorProcessors"></a>
+
+<p class="subSectionTitle">Data Processors</p>
+
+<p class="groupLocation">
+    DataProcessing -> ...
+</p>
+
+
+<table class="invisibletable">
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="images/icons/Blank24.png" border="0">
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+
+                <a href="../seadas-processing/ProcessL1aextract_modis.html">l1aextract_modis</a><br><br>
+                <a href="../seadas-processing/ProcessL1aextract_seawifs.html">l1aextract_seawifs</a><br><br>
+                <a href="../seadas-processing/ProcessL1agen.html">l1agen</a><br><br>
+                <a href="../seadas-processing/ProcessGeogen.html">geogen</a><br><br>
+                <a href="../seadas-processing/ProcessL1bgen.html">l1bgen</a><br><br>
+                <a href="../seadas-processing/ProcessL1mapgen.html">l1mapgen</a><br><br>
+                <a href="../seadas-processing/ProcessL1brsgen.html">l1brsgen</a><br><br>
+                <a href="../seadas-processing/ProcessL2extract.html">l2extract</a><br><br>
+                <a href="../seadas-processing/ProcessL2gen.html">l2gen</a><br><br>
+                <a href="../seadas-processing/ProcessL2genAquarius.html">l2gen_aquarius</a><br><br>
+                <a href="../seadas-processing/ProcessL2mapgen.html">l2mapgen</a><br><br>
+                <a href="../seadas-processing/ProcessL2brsgen.html">l2brsgen</a><br><br>
+                <a href="../seadas-processing/ProcessL2bin.html">l2bin</a><br><br>
+                <a href="../seadas-processing/ProcessL2binAquarius.html">l2bin_aquarius</a><br><br>
+                <a href="../seadas-processing/ProcessL3bin.html">l3bin</a><br><br>
+                <a href="../seadas-processing/ProcessSmigen.html">smigen</a><br><br>
+                <a href="../seadas-processing/ProcessModis_L1A.py.html">modis_L1A.py</a><br><br>
+                <a href="../seadas-processing/ProcessModis_L1B.py.html">modis_L1B.py</a><br><br>
+                <a href="../seadas-processing/ProcessModis_GEO.py.html">modis_GEO.py</a><br><br>
+                <a href="../seadas-processing/ProcessMultilevel_processor.py.html">multilevel_processor.py</a>
+
+
+            </p>
+
+            <p class="groupLocation">
+            </p>
+        </td>
+    </tr>
+
+
+</table>
+
+
+
 <a name="FileTools"></a>
 
 <p class="subSectionTitle">File Tools</p>
@@ -821,10 +876,61 @@
         </td>
     </tr>
 
+
     <tr>
         <td class="invisibletable" valign="top">
             <a href="../visat/GeometryManagement.html" class="invisibleLink">
-                <img src="images/icons/NewVectorContainer.png" border="0">
+                <img src="images/icons/DrawLineTool24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/GeometryManagement.html" class="invisibleLink">
+                    Draw Line
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Interactively draw a line geometry on the selected image.
+            </p>
+
+
+            <p class="groupLocation">
+                Toolbar: Image Interactions (extras)
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/GeometryManagement.html" class="invisibleLink">
+                <img src="images/icons/DrawPolylineTool24.png" border="0">
+            </a>
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                <a href="../visat/GeometryManagement.html" class="invisibleLink">
+                    Draw PolyLine
+                </a>
+            </p>
+
+            <p class="groupDetails">
+                Interactively draw a polyLine geometry on the selected image.
+            </p>
+
+
+            <p class="groupLocation">
+                Toolbar: Image Interactions (extras)
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <a href="../visat/GeometryManagement.html" class="invisibleLink">
+            <img src="images/icons/NewVectorContainer.png" border="0">
             </a>
         </td>
         <td class="invisibletable" valign="top">
@@ -857,7 +963,13 @@
             </p>
 
             <p class="groupDetails">
-                Enter coordinates to create a geometry (well-known-text format)
+                Enter coordinates to create a geometry (well-known-text format).
+                If the user desires to create a square region with bounding north-south-west-east coordinates the
+                following
+                web page can be useful to create the WKT string and then copy and paste.<br> <a
+                    href="http://oceancolor.gsfc.nasa.gov/sdpscgi/public/geobox_converter.cgi">
+                oceancolor.gsfc.nasa.gov/sdpscgi/public/geobox_converter.cgi
+            </a>
             </p>
 
 
@@ -1472,6 +1584,26 @@
 
     <tr>
         <td class="invisibletable" valign="top">
+            <img src="images/icons/RangeFinder24.png" border="0">
+        </td>
+        <td class="invisibletable" valign="top">
+            <p class="groupTitle">
+                Range Finder
+            </p>
+
+            <p class="groupDetails">
+                Determine the distance between two points.
+            </p>
+
+            <p class="groupLocation">
+                Toolbar: Image Interactions (extras)
+            </p>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="invisibletable" valign="top">
             <a href="../visat/NavigationWindow.html" class="invisibleLink">
                 <img src="images/icons/Navigation24.png" border="0">
             </a>
@@ -1656,57 +1788,6 @@
             </p>
         </td>
     </tr>
-
-</table>
-
-
-<a name="OceanColorProcessors"></a>
-
-<p class="subSectionTitle">Ocean Color Processors</p>
-
-<p class="groupLocation">
-    OCProc -> ...
-</p>
-
-
-<table class="invisibletable">
-
-    <tr>
-        <td class="invisibletable" valign="top">
-            <img src="images/icons/Blank24.png" border="0">
-        </td>
-        <td class="invisibletable" valign="top">
-            <p class="groupTitle">
-
-                <a href="../seadas-processing/ProcessL1aextract_modis.html">l1aextract_modis</a><br><br>
-                <a href="../seadas-processing/ProcessL1aextract_seawifs.html">l1aextract_seawifs</a><br><br>
-                <a href="../seadas-processing/ProcessL1agen.html">l1agen</a><br><br>
-                <a href="../seadas-processing/ProcessGeogen.html">geogen</a><br><br>
-                <a href="../seadas-processing/ProcessL1bgen.html">l1bgen</a><br><br>
-                <a href="../seadas-processing/ProcessL1mapgen.html">l1mapgen</a><br><br>
-                <a href="../seadas-processing/ProcessL1brsgen.html">l1brsgen</a><br><br>
-                <a href="../seadas-processing/ProcessL2extract.html">l2extract</a><br><br>
-                <a href="../seadas-processing/ProcessL2gen.html">l2gen</a><br><br>
-                <a href="../seadas-processing/ProcessL2genAquarius.html">l2gen_aquarius</a><br><br>
-                <a href="../seadas-processing/ProcessL2mapgen.html">l2mapgen</a><br><br>
-                <a href="../seadas-processing/ProcessL2brsgen.html">l2brsgen</a><br><br>
-                <a href="../seadas-processing/ProcessL2bin.html">l2bin</a><br><br>
-                <a href="../seadas-processing/ProcessL2binAquarius.html">l2bin_aquarius</a><br><br>
-                <a href="../seadas-processing/ProcessL3bin.html">l3bin</a><br><br>
-                <a href="../seadas-processing/ProcessSmigen.html">smigen</a><br><br>
-                <a href="../seadas-processing/ProcessModis_L1A.py.html">modis_L1A.py</a><br><br>
-                <a href="../seadas-processing/ProcessModis_L1B.py.html">modis_L1B.py</a><br><br>
-                <a href="../seadas-processing/ProcessModis_GEO.py.html">modis_GEO.py</a><br><br>
-                <a href="../seadas-processing/ProcessMultilevel_processor.py.html">multilevel_processor.py</a>
-
-
-            </p>
-
-            <p class="groupLocation">
-            </p>
-        </td>
-    </tr>
-
 
 </table>
 
