@@ -31,10 +31,13 @@ public class L2FileReader extends SeadasFileReader {
 
         List<Dimension> dims = ncFile.getDimensions();
         for (Dimension d: dims){
-            if (d.getShortName().equalsIgnoreCase("Number_of_Scan_Lines")){
+            if ((d.getShortName().equalsIgnoreCase("number_of_lines"))
+            ||(d.getShortName().equalsIgnoreCase("Number_of_Scan_Lines")))
+                    {
                 sceneHeight = d.getLength();
             }
-            if (d.getShortName().equalsIgnoreCase("Pixels_per_Scan_Line")){
+            if ((d.getShortName().equalsIgnoreCase("pixels_per_line"))
+            || (d.getShortName().equalsIgnoreCase("Pixels_per_Scan_Line"))){
                 sceneWidth = d.getLength();
             }
         }

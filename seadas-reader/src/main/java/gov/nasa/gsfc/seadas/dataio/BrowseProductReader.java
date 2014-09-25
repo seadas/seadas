@@ -8,6 +8,7 @@ import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
+import ucar.nc2.Dimension;
 import ucar.nc2.Variable;
 
 import java.io.IOException;
@@ -30,9 +31,27 @@ public class BrowseProductReader extends SeadasFileReader {
     @Override
     public Product createProduct() throws ProductIOException {
 
-        int sceneWidth = getIntAttribute("Pixels_per_Scan_Line");
-        int sceneHeight = getIntAttribute("Number_of_Scan_Lines");
+        int sceneHeight = 0;
+        int sceneWidth = 0;
 
+        List<Dimension> dims = ncFile.getDimensions();
+        for (Dimension d: dims){
+            if ((d.getShortName().equalsIgnoreCase("number_of_lines"))
+                    ||(d.getShortName().equalsIgnoreCase("Number_of_Scan_Lines")))
+            {
+                sceneHeight = d.getLength();
+            }
+            if ((d.getShortName().equalsIgnoreCase("pixels_per_line"))
+                    || (d.getShortName().equalsIgnoreCase("Pixels_per_Scan_Line"))){
+                sceneWidth = d.getLength();
+            }
+        }
+        if (sceneWidth == 0){
+            sceneWidth = getIntAttribute("Pixels_per_Scan_Line");
+        }
+        if (sceneHeight == 0){
+            sceneHeight = getIntAttribute("Number_of_Scan_Lines");
+        }
         String productName = getStringAttribute("Product_Name");
 
         mustFlipX = mustFlipY = getDefaultFlip();
