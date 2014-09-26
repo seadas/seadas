@@ -184,7 +184,8 @@
 
 
     <mapID target="geometryOverview" url="visat/GeometryManagement.html"/>
-    <mapID target="mapGridlines" url="visat/ShowGraticuleOverlay.html"/>
+    <mapID target="mapGridlines" url="MapGridlines/MapGridlines.html"/>
+    <!--<mapID target="mapGridlines" url="visat/ShowGraticuleOverlay.html"/>-->
     <mapID target="worldMap" url="visat/WorldMap.html"/>
     <mapID target="layerEditor" url="visat/LayerEditor.html"/>
     <mapID target="sessionOverview" url="visat/Session.html"/>
