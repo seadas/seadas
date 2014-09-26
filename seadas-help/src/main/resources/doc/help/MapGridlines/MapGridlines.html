@@ -29,18 +29,81 @@
     resolution.<br>
 </p>
 
+
+<p>The following 4 images were created with SeaDAS using the same Chloryphyll product scene
+    of a level-2 file. They show various applications of map gridlines along with the effects
+    of reprojection on the map gridlines.
+<uL>
+    <li><a href="MapGridlines.html#Image1">Image 1</a> shows map gridlines on an image of standard l2-file</li>
+    <li><a href="MapGridlines.html#Image2">Image 2</a> shows map gridlines on a reprojection of the same file as Image 1
+    </li>
+    <li><a href="MapGridlines.html#Image3">Image 3</a> shows another variant of Image 2, but with labels placed inside
+        the image
+    </li>
+    <li><a href="MapGridlines.html#Image4">Image 4</a> shows another variant of Image 1, but with only corner labels
+        and no gridlines
+    </li>
+</uL>
+
+</p>
+<table class="invisibletable">
+
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+
+            <a name="Image1"></a>
+            <img src="images/PicL2.png" border="0"> <br><br>
+            <i>Image 1 shows map gridlines on an image of standard l2-file</i>
+            <br><br>
+            <br><br>
+            <br><br>
+            <a name="Image2"></a>
+            <img src="images/PicL2Reprojected.png" border="0"> <br><br>
+            <i>Image 2 shows map gridlines on a reprojection of the same file as Image 1</i>
+            <br><br>
+            <br><br>
+            <br><br>
+
+            <a name="Image3"></a>
+            <img src="images/PicL2ReprojectedInside.png" border="0"> <br><br>
+            <i>Image 3 shows another variant of Image 2, but with labels placed inside the image</i>
+            <br><br>
+            <br><br>
+            <br><br>
+
+            <a name="Image4"></a>
+            <img src="images/PicL2Corners.png" border="0"> <br><br>
+            <i>Image 4 shows another variant of Image 1, but with only corner labels</i>
+            <br><br>
+            <br><br>
+            <br><br>
+
+        </td>
+    </tr>
+
+</table>
+
+
 <p>To edit any of the parameters click on the Layer Editors icon <img src="../visat/images/icons/LayerEditor24.png"
                                                                       border="0">.
     This will enable you to edit whichever layer is
-    currently selected. If the Map Gridline layer is does not show up in the Layer Editors window, then toggle the Map
+    currently selected. If the Map Gridline layer does not show up in the Layer Editors window, then toggle the Map
     Gridlines button <img src="../visat/images/icons/GraticuleOverlay24.png" border="0">
     off then on, this will make the Map Gridline layer the selected layer. The Layer Manager window
-    is another place where you may select a layer to be the selected layer.</p>
+    is another place where you may select a layer to be the selected layer.
 
-<img src="images/PicL2.png" border="0"> <br><br>
-<img src="images/PicL2Reprojected.png" border="0"> <br><br>
-<img src="images/PicL2ReprojectedInside.png" border="0"> <br><br>
-<img src="images/PicL2Corners.png" border="0"> <br><br>
+    <br><br>
+
+    The following image shows the user editable components of the map gridlines. Most fields are pretty
+    self-explanatory.
+    The latitude and longitude step sizes may be set directly where the value represent degrees between the gridlines.
+    Setting
+    this field to zero results in Auto-Sizing. The Auto-Sizing algorithm will set the gridline spacing to a reasonable
+    value such that there are about 3-5 lines. Also note that lines are placed at the nearest most sensible degree
+    value.
+</p>
+
+
 <img src="images/MapGridlines1.png" border="0"> <br><br>
 
 
