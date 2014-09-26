@@ -7,7 +7,7 @@
 
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
     <tocitem text="SeaDAS">
-        <tocitem text="Masks &amp; Layers">
+        <tocitem text="Layers &amp; Masks">
             <tocitem text="Bathymetry Mask &amp; Elevation" target="bathymetry">
             </tocitem>
         </tocitem>

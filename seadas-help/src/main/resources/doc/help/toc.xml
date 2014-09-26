@@ -54,7 +54,7 @@
 
 
         <tocitem text="File I/O &amp; Sessions">
-        <tocitem text="File Manager" target="productBrowser"/>
+            <tocitem text="File Manager" target="productBrowser"/>
             <tocitem text="Sessions" target="sessionOverview"/>
 
             <tocitem text="Import Tools">
@@ -133,7 +133,7 @@
 
 
         <tocitem text="Image">
-        <tocitem text="Image View" target="imageView"/>
+            <tocitem text="Image View" target="imageView"/>
             <tocitem text="Navigation Controls" target="showNavigationWnd"/>
             <tocitem text="World Map Location" target="showWorldMapWnd"/>
 
@@ -148,7 +148,7 @@
         </tocitem>
 
 
-        <tocitem text="Masks &amp; Layers">
+        <tocitem text="Layers &amp; Masks">
 
             <tocitem text="Bathymetry Mask &amp; Elevation" target="bathymetry"/>
             <tocitem text="Coastline, Land and Water Masks" target="coastlineLandMasks"/>
@@ -169,7 +169,7 @@
 
 
         <tocitem text="Menus">
-        <tocitem text="Layout" target="layoutOverview"/>
+            <tocitem text="Layout" target="layoutOverview"/>
 
             <tocitem text="Menus">
                 <tocitem text="Analysis" target="analysisMenu"/>
@@ -190,9 +190,6 @@
         <tocitem text="Modules">
             <tocitem text="Module Manager" target="moduleManager"/>
         </tocitem>
-
-
-
 
 
         <tocitem text="Processing: Data">

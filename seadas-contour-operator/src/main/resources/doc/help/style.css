@@ -111,7 +111,7 @@ table {
     margin: 0;
 }
 
-invisibletable {
+.invisibletable {
     border-width: 0;
     border-style: solid;
     border-color: #FFFFFF;
