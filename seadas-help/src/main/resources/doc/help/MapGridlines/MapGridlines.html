@@ -24,9 +24,8 @@
 <br>
 
 
-<p>Map Gridlines have been significantly revised for SeaDAS 7.1. Below are some examples. For this release most of the
-    preferences have been removed and decent automated defaults are being used which are dynamic to the image
-    resolution.<br>
+<p>Map Gridlines have been significantly revised for SeaDAS 7.1 with a lot of new parameter option choices for the user.
+    Below are some examples.<br>
 </p>
 
 
@@ -84,7 +83,8 @@
 </table>
 
 
-<p>To edit any of the parameters click on the Layer Editors icon <img src="../visat/images/icons/LayerEditor24.png"
+<p><b>Editing parameters of the map gridlines - </b>To edit any of the parameters click on the Layer Editors icon <img
+        src="../visat/images/icons/LayerEditor24.png"
                                                                       border="0">.
     This will enable you to edit whichever layer is
     currently selected. If the Map Gridline layer does not show up in the Layer Editors window, then toggle the Map
@@ -95,17 +95,64 @@
     <br><br>
 
     The following image shows the user editable components of the map gridlines. Most fields are pretty
-    self-explanatory.
-    The latitude and longitude step sizes may be set directly where the value represent degrees between the gridlines.
-    Setting
-    this field to zero results in Auto-Sizing. The Auto-Sizing algorithm will set the gridline spacing to a reasonable
-    value such that there are about 3-5 lines. Also note that lines are placed at the nearest most sensible degree
-    value.
+    self-explanatory. <br><br>
 </p>
 
 
 <img src="images/MapGridlines1.png" border="0"> <br><br>
 
+
+<p>
+    <b>Gridline Spacing - </b> The latitude and longitude step sizes may be set directly where the value represent
+    degrees between the gridlines.
+    Setting
+    this field to zero results in Auto-Sizing. The Auto-Sizing algorithm will set the gridline spacing to a reasonable
+    value such that there are about 3-5 lines. Also note that lines are placed at the nearest most sensible degree
+    value.
+    <br><br>
+    <b>Font Sizing - </b> The user font settings are in term of points rather than pixels. This enables a single user
+    font setting and default to work well with files of any resolution. Internally the font sizes are actually tied
+    to the pixel sizes and there is a conversion of points to pixels being made.
+    <br><br>
+
+    <b>Low Resolution (in pixel space) Problems - </b> For files with an extremely low resolution image, less than
+    about (100 x 100) pixels resolution,
+    you may expect to see problems with the map gridlines, such as missing labels.
+
+
+    <br><br>
+
+    <b>Exporting an image with gridlines - </b> When exporting an image as a pixel-based file (for instance a png file),
+    the gridline labels font text will of course be bounded and affected by the resolution of the exported file. To
+    insure
+    that the text looks good you will want to make sure the exported file is high resolution. To do this, right click on
+    the image
+    in SeaDAS then select "Export Image". To the left in the window which pops up, there are the options "Visible
+    region"
+    and "Full scene". <br><br> "Full scene" will export the image at the exact image resolution (it will not include
+    anything outside
+    the image - like gridlines labels, etc.). The fields below under "Image Dimension" are now tied to the number of
+    pixels
+    in the band. Even if you have chosen the labels to be inside, the image resolution will most likely
+    adversely affect the look of the font.<br><br>
+    "Visible region" will export based on the bounds defined by the image viewer window. This will enable the user to
+    get the gridline
+    labels into the exported file. The fields below under "Image Dimension" are now tied to the number of pixels in the
+    viewer
+    window on your monitor. For a publication quality image you will want to increase this. (Note: right now we haven't
+    added
+    in a fixed ratio feature so you will have to independently adjust both the "Width" and the "Height" fields by the
+    same percentage.
+    I find it easiest to increase by a factor of ten (just tack on a "0" to both the "Width" and "Height" fields.
+
+    <br><br>
+
+    <b>User Preferences</b>
+    For this release most of the
+    preferences have been removed, but decent automated defaults are being used which are dynamic to the image
+    resolution. We do plan on updating the user preferences capabilities to include all the new options in a future
+    release.
+</p>
 
 </body>
 </html>
