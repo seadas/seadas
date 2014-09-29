@@ -121,33 +121,24 @@
 
 
     <br><br>
+    <b>Put Labels on Inside - </b> By default this checkbox is unchecked and the coordinate text labels are placed
+    outside
+    the image. This looks great and is our preferred look. But, keep in mind, that when an image window is first opened,
+    the image fills the window (at least in one dimension). Toggling the
+    gridline labels on and off doesn't affect the zoom of the image. So to view these "outside" labels, the user will
+    need to zoom the
+    image out.
 
-    <b>Exporting an image with gridlines - </b> When exporting an image as a pixel-based file (for instance a png file),
-    the gridline labels font text will of course be bounded and affected by the resolution of the exported file. To
-    insure
-    that the text looks good you will want to make sure the exported file is high resolution. To do this, right click on
-    the image
-    in SeaDAS then select "Export Image". To the left in the window which pops up, there are the options "Visible
-    region"
-    and "Full scene". <br><br> "Full scene" will export the image at the exact image resolution (it will not include
-    anything outside
-    the image - like gridlines labels, etc.). The fields below under "Image Dimension" are now tied to the number of
-    pixels
-    in the band. Even if you have chosen the labels to be inside, the image resolution will most likely
-    adversely affect the look of the font.<br><br>
-    "Visible region" will export based on the bounds defined by the image viewer window. This will enable the user to
-    get the gridline
-    labels into the exported file. The fields below under "Image Dimension" are now tied to the number of pixels in the
-    viewer
-    window on your monitor. For a publication quality image you will want to increase this. (Note: right now we haven't
-    added
-    in a fixed ratio feature so you will have to independently adjust both the "Width" and the "Height" fields by the
-    same percentage.
-    I find it easiest to increase by a factor of ten (just tack on a "0" to both the "Width" and "Height" fields.
+    <b>Exporting an image with gridlines - </b> Use the "Export Image" tool. This tool is located at File -> Export
+    Utilities -> Image or it can be found in
+    the drop down menu when the image is right clicked with the mouse. If your labels are "outside" the image then
+    select "View Window" from the "Source Boundaries" panel. For more on this see
+    <a href="../general/PublicationQualityImages.html">Publication Quality Images</a>.
+
 
     <br><br>
 
-    <b>User Preferences</b>
+    <b>User Preferences - </b>
     For this release most of the
     preferences have been removed, but decent automated defaults are being used which are dynamic to the image
     resolution. We do plan on updating the user preferences capabilities to include all the new options in a future

@@ -194,4 +194,5 @@
     <mapID target="layoutOverview" url="visat/LayoutOverview.html"/>
     <mapID target="tutorials" url="general/Tutorials.html"/>
     <mapID target="geoCodingDisplacementBands" url="visat/CreateGCDisplacementBands.html"/>
+    <mapID target="publicationQualityImages" url="general/PublicationQualityImages.html"/>
 </map>
