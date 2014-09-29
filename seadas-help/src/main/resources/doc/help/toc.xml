@@ -11,9 +11,9 @@
 
 
     <tocitem text="General">
-        <tocitem text="7.1 Release Notes" target="seadasWhatsNew"/>
-        <tocitem text="About" target="aboutSeaDAS"/>
+        <tocitem text="About SeaDAS" target="aboutSeaDAS"/>
         <tocitem text="Publication Quality Images" target="publicationQualityImages"/>
+        <tocitem text="Version Release Notes" target="seadasWhatsNew"/>
 
         <!--<tocitem text="Overview" target="seadasOverview"/>-->
 
@@ -53,6 +53,12 @@
             <tocitem text="RGB Image" target="rgbImageProfile"/>
         </tocitem>
 
+
+        <tocitem text="Command Line Tools (GPF)">
+            <tocitem text="GPF Overview" target="gpf.overview"/>
+            <tocitem text="GPF Graph Processing Tool (gpt)" target="gpf.graphProcessingTool"/>
+            <tocitem text="GPF Operator Index" target="gpf.operatorIndex"/>
+        </tocitem>
 
         <tocitem text="File I/O &amp; Sessions">
             <tocitem text="File Manager" target="productBrowser"/>
@@ -275,11 +281,6 @@
             <tocitem text="Preferences Dialog" target="preferences"/>
         </tocitem>
 
-        <tocitem text="Scripting">
-            <tocitem text="GPF Overview" target="gpf.overview"/>
-            <tocitem text="GPF Graph Processing Tool (gpt)" target="gpf.graphProcessingTool"/>
-            <tocitem text="GPF Operator Index" target="gpf.operatorIndex"/>
-        </tocitem>
 
 
     </tocitem>
