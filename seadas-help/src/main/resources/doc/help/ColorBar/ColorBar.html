@@ -9,7 +9,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Color Bar Tool
+            Color Bar
         </td>
 
         <td class="header" align="right"><a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a></td>
@@ -18,15 +18,16 @@
 
 <br>
 
-<p> The Color Bar Tool is what enables display and formatting of the color bar, the color bar being a visual
+<p> The Color Bar tool is what enables display and formatting of the color bar, the color bar being a visual
     representation
     of the color palette, with its corresponding data values, which has been used in an image.
     <br><br>
 
-    The Color Bar Tool has been significantly revised for SeaDAS 7.1 with a lot of new parameter option choices for the
+    The Color Bar tool has been significantly revised for SeaDAS 7.1 with a lot of new parameter option choices for the
     user.
     It now fully supports log-scaling, gives user full control over text tick labels (their values and formats),
-    adds ability to apply a scaling factor to better display small or large values, supports transparency, the preview
+    adds ability to apply a data scaling factor to better display small or large values, supports transparency, the
+    preview
     resizes to fit the screen no matter how large the color bar actually is, and the user can control the output file
     dimensions.
     Additionally, the color bar can now be made a layer over top the image. <br><br>
@@ -40,6 +41,7 @@
     <br>
 
 
+</p>
 <table class="invisibletable">
     <tr class="invisibletable">
         <td class="invisibletable" align="center">
@@ -76,8 +78,11 @@
 <br><br><br>
 
 
-The next two images illustrate the application of a scaling factor to improve the readability of labels (in this case
-for data values which are very small). Both images were made using the same Rrs_678 band.
+<p>
+    The next two images illustrate the application of a scaling factor to improve the readability of labels (in this
+    case
+    for data values which are very small). Both images were made using the same Rrs_678 band.
+</p>
 <br>
 
 <table class="invisibletable">
@@ -98,8 +103,10 @@ for data values which are very small). Both images were made using the same Rrs_
 <br><br><br>
 
 
-Sometimes, the presentation of an image is better suited to a vertical color bar. The next image shows this orientation.
-<br>
+<p>
+    Sometimes, the presentation of an image is better suited to a vertical color bar. The next image shows this
+    orientation.
+    <br>
 
 
 <table class="invisibletable">
@@ -130,14 +137,75 @@ Sometimes, the presentation of an image is better suited to a vertical color bar
 
 
     The Color Bar Tool <img src="../visat/images/icons/ColorbarVertical24.png" border="0">
-    can be found at File -> Export Utilities -> Color Bar and also in the Layers Toolbar.
+    can be found at <i>(File -> Export Utilities -> Color Bar)</i> and
+    also in the Layers Toolbar.
 
     The following image shows the Color Bar Tool window. <br>
 
+</p>
 
-    <img src="images/ColorBar09.png" border="0"> <br><br>
+<img src="images/ColorBar09.png" border="0"> <br><br>
+
+<p>
+    <b>Orientation - </b> enables selection of "Horizontal" or "Vertical" orientation of the color bar
+    <br><br>
 
 
+    <b>Data Label Distribution &amp; Numeric Formatting - </b> The "Color Bar" tool does not affect a change on the
+    actual
+    distribution of colors within the color bar. It does however put labels at their corresponding data locations.
+    There are 3 different methods you can use to put the data labels on the color bar:<br><br>
+
+    Mode: "Use Even Distribution" - selecting this mode enables the textfield "Tick Mark Count". Using this field, it
+    will evenly distribute tick marks between the color bar defined minimum and maximum value. <br><br>
+
+    Mode: "Use Manually Entered Points" - selecting this mode enables the textfield "Manually Entered Points". The user
+    will
+    enter comma delimited values and these values will be placed on the color bar exactly as the user entered them. As
+    a help to the user, this textfield will be populated by default with the values from the previously selecting mode.
+    The user can then conveniently modify, reformat, delete, or add to this text string. <br><br>
+
+    Mode: "Use Palette Distribution" - selecting this mode will place all points within the palette definition on the
+    color bar.
+    For many palettes this will likely be too many points, but their can be smaller palettes where this functionality
+    is desired. <br><br>
+
+    "Decimal Places" - determines the decimal place setting for all the data labels. <br><br>
+
+    "Data Scaling Factor" - every data label will be modified by multiplying it with this scaling factor. This can help
+    improve data with very small or very large numbers. Adjustment of this field away from "1.0" will of course, in
+    theory,
+    change the units, but the units textfield in the title will remain unaltered, leaving this as an exercise for the
+    user
+    to manually enter it.
+
+
+    <br><br><br>
+
+    <b>Title - </b>
+    The title is by default automatically set from the band info. The user is free to alter this, as well as hiding the
+    title via the "Show Title" checkbox. This checkbox toggles both the title and units together. If you wish to retain
+    the title but not display the units then you will need to remove the text from the "Title Units" textfield.
+    <br><br><br>
+
+    <b>Formatting - </b>
+    All size fields are in units of pixels and should be self-explanatory. The sizes refer specifically to sizing in the
+    exported file. To avoid pixelation in the exported file, you will want to keep the resolution fairly high.
+    <br><br>
+
+    The background color can be selected, or made
+    transparent by checking the "Transparent" checkbox. If you are saving the file, keep in mind that in order to affect
+    transparency you must use a file format (such as .png) which supports transparency.
+
+    <br><br><br>
+
+    <b>Layer Scaling - </b>
+    When creating a color bar layer, you can scale the color bar to the size of the scene image. By default, a
+    horizontal
+    color bar will be placed below the image, in this case the layer scaling refers to percentage of the scene width.
+    Likewise, a vertical
+    color bar will be placed to the right of the image, with the layer scaling referring to percentage of the scene
+    height.
 </p>
 
 <!--<h4>Exporting a Color Legend Image</h4>-->
