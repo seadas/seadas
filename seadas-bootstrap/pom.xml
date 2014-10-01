@@ -53,73 +53,73 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-alos-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-atsr-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-avhrr-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-binning</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-chris-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-cluster-analysis</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-collocation</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-envisat-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-geotiff</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-getasse30-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-hdf5-writer</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-landsat-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
@@ -145,90 +145,90 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-merisl3-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-modis-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-netcdf</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-opendap</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-pconvert</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-pixel-extraction</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-rtp-codec</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-pgx-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-spot-vgt-reader</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-statistics-op</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-temporal-percentile-op</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-time-series-tool</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-unmix</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>blue-marble-worldmap</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
 
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>globcover-worldmap</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
         </dependency>
         <dependency>
             <groupId>com.bc.ceres</groupId>

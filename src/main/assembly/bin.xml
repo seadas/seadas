@@ -1,10 +1,4 @@
-<!--
-
-    SeaDAS binary distribution\
-
--->
-
-
+<!-- SeaDAS binary distribution -->
 <assembly>
     <id>bin</id>
 
@@ -87,7 +81,7 @@
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>*.command</include>
+                <include>*.sh</include>
             </includes>
             <excludes>
                 <exclude>seadas-cli-template.*</exclude>
@@ -99,18 +93,18 @@
 
     <moduleSets>
         <moduleSet>
+            <!--<useAllReactorProjects>true</useAllReactorProjects>-->
             <excludes>
                 <exclude>gov.nasa.gsfc.seadas:seadas-bootstrap</exclude>
                 <exclude>gov.nasa.gsfc.seadas:seadas-installer</exclude>
-                <!--<exclude>org.esa.beam:beam-rtp-codec</exclude>-->
-                <!--<exclude>gov.nasa.gsfc.seadas:seadas-examples</exclude>-->
+                <exclude>org.esa.beam:beam-rtp-codec</exclude>
+                <exclude>gov.nasa.gsfc.seadas:seadas-examples</exclude>
             </excludes>
             <binaries>
                 <outputDirectory>modules</outputDirectory>
                 <unpack>false</unpack>
-                <outputFileNameMapping>${module.artifactId}-${module.version}.${module.extension}
-                </outputFileNameMapping>
-                <includeDependencies>false</includeDependencies>
+                <outputFileNameMapping>${module.artifactId}-${module.version}.${module.extension}</outputFileNameMapping>
+                <includeDependencies>true</includeDependencies>
                 <dependencySets>
                     <dependencySet>
                         <outputDirectory>bin</outputDirectory>
@@ -121,19 +115,19 @@
                     </dependencySet>
                     <dependencySet>
                         <outputDirectory>lib</outputDirectory>
-                        <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}
-                        </outputFileNameMapping>
+                        <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
                         <excludes>
                             <exclude>com.bc.ceres:ceres-*</exclude>
                             <exclude>org.esa.beam:beam-*</exclude>
                             <exclude>gov.nasa.gsfc.seadas:seadas-*</exclude>
+                            <exclude>org.esa.beam:blue-marble-worldmap</exclude>
+                            <exclude>org.esa.beam:globcover-worldmap</exclude>
                             <exclude>ncsa.hdf:*</exclude>
                         </excludes>
                     </dependencySet>
                     <dependencySet>
                         <outputDirectory>modules</outputDirectory>
-                        <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}
-                        </outputFileNameMapping>
+                        <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
                         <includes>
                             <include>com.bc.ceres:*</include>
                         </includes>
