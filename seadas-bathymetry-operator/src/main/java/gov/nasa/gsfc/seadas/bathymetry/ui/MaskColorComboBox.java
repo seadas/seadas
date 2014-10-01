@@ -23,7 +23,7 @@ public class MaskColorComboBox {
 
         this.bathymetryData = bathymetryData;
 
-        jLabel = new JLabel("Color");
+        jLabel = new JLabel("Mask Color");
         jLabel.setToolTipText("set mask color");
 
         colorExComboBox.setSelectedColor(bathymetryData.getMaskColor());

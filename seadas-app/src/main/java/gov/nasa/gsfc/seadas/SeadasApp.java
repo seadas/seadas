@@ -174,7 +174,7 @@ public class SeadasApp extends VisatApp {
                 "exportLegendImageFile",
                 "showGraticuleOverlay",
                 "showContourOverlay"
-               ));
+        ));
 
         addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
@@ -572,7 +572,6 @@ public class SeadasApp extends VisatApp {
     }
 
 
-
     @Override
     protected void initClientUI(com.bc.ceres.core.ProgressMonitor pm) {
         try {
@@ -613,8 +612,6 @@ public class SeadasApp extends VisatApp {
             pm.worked(1);
 
 
-
-
             CommandBar seadasVectorLayersToolBar = createSeadasVectorLayersToolBar();
             seadasVectorLayersToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasVectorLayersToolBar.getContext().setInitIndex(2);
@@ -627,13 +624,13 @@ public class SeadasApp extends VisatApp {
             seadasWestDockToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasWestDockToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(seadasWestDockToolBar);
-           pm.worked(1);
+            pm.worked(1);
 
             CommandBar seadasEastDockToolBar = createSeadasEastDockToolBar();
             seadasEastDockToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasEastDockToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(seadasEastDockToolBar);
-          pm.worked(1);
+            pm.worked(1);
 
 
 //            CommandBar seadasBlankToolBar = createSeadasBlankToolBar();
@@ -765,9 +762,8 @@ public class SeadasApp extends VisatApp {
             }
 
 
-
-            getMainFrame().setPreferredSize(new Dimension(1500, 700));
-            getMainFrame().setMinimumSize(new Dimension(650, 300));
+            getMainFrame().setPreferredSize(new Dimension(15, 70));
+            getMainFrame().setMinimumSize(new Dimension(65, 30));
 
         } finally {
             pm.done();

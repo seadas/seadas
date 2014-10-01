@@ -230,20 +230,23 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                                         Product bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
 
 
+                                        Band topographyBand = bathymetryProduct.getBand(BathymetryOp.TOPOGRAPHY_BAND_NAME);
+                                        reformatSourceImage(topographyBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                        topographyBand.setName(BathymetryOp.TOPOGRAPHY_BAND_NAME);
+                                        product.addBand(topographyBand);
+
+
                                         Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
                                         reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
                                         bathymetryBand.setName(BathymetryOp.BATHYMETRY_BAND_NAME);
                                         product.addBand(bathymetryBand);
 
-                                        Band topograpyBand = bathymetryProduct.getBand(BathymetryOp.TOPOGRAPHY_BAND_NAME);
-                                        reformatSourceImage(topograpyBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                        topograpyBand.setName(BathymetryOp.TOPOGRAPHY_BAND_NAME);
-                                        product.addBand(topograpyBand);
 
                                         Band elevationBand = bathymetryProduct.getBand(BathymetryOp.ELEVATION_BAND_NAME);
                                         reformatSourceImage(elevationBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
                                         elevationBand.setName(BathymetryOp.ELEVATION_BAND_NAME);
                                         product.addBand(elevationBand);
+
 
                                         pm.worked(1);
                                     }

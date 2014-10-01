@@ -157,7 +157,7 @@
 
         <tocitem text="Layers &amp; Masks">
 
-            <tocitem text="Bathymetry Mask &amp; Elevation" target="bathymetry"/>
+            <tocitem text="Bathymetry &amp; Elevation" target="bathymetry"/>
             <tocitem text="Coastline, Land and Water Masks" target="coastlineLandMasks"/>
             <tocitem text="Contour" target="contourLines"/>
             <tocitem text="GCP" target="showGcpManagerWnd"/>

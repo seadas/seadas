@@ -41,7 +41,7 @@ public class BathymetryData {
     private double maskTransparency = 0.7;
     private boolean showMaskAllBands = true;
     private Color maskColor = new Color(0, 0, 255);
-    private String maskName = "BathymetryMask";
+    private String maskName = "BATHYMETRY";
     private String maskDescription = "Bathymetry pixels";
 
     private double maskMinDepth = 0;
@@ -55,7 +55,7 @@ public class BathymetryData {
     private int superSampling = 1;
 
 
-    private String bathymetryBandName = "elevation";
+    //   private String bathymetryBandName = "elevation";
 
 
     private ArrayList<SourceFileInfo> sourceFileInfos = new ArrayList<SourceFileInfo>();
@@ -153,13 +153,13 @@ public class BathymetryData {
     }
 
 
-    public String getBathymetryBandName() {
-        return bathymetryBandName;
-    }
-
-    public void setBathymetryBandName(String bathymetryBandName) {
-        this.bathymetryBandName = bathymetryBandName;
-    }
+//    public String getBathymetryBandName() {
+//        return bathymetryBandName;
+//    }
+//
+//    public void setBathymetryBandName(String bathymetryBandName) {
+//        this.bathymetryBandName = bathymetryBandName;
+//    }
 
 
     public String getMaskName() {
