@@ -10,11 +10,7 @@ import org.esa.beam.framework.ui.AppContext;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,23 +63,24 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
     ));
 
     private static final HashMap<String, String> MISSION_DIRECTORIES;
-     static {
+
+    static {
         MISSION_DIRECTORIES = new HashMap<String, String>();
-         MISSION_DIRECTORIES.put("SEAWIFS", "seawifs");
-         MISSION_DIRECTORIES.put("AQUA", "modisa");
-         MISSION_DIRECTORIES.put("TERRA", "modist");
-         MISSION_DIRECTORIES.put("VIIRSN", "viirsn");
-         MISSION_DIRECTORIES.put("MERIS", "meris");
-         MISSION_DIRECTORIES.put("CZCS", "czcs");
-         MISSION_DIRECTORIES.put("AQUARIUS", "aquarius");
-         MISSION_DIRECTORIES.put("OCTS", "octs");
-         MISSION_DIRECTORIES.put("OSMI", "osmi");
-         MISSION_DIRECTORIES.put("MOS", "mos");
-         MISSION_DIRECTORIES.put("OCM2", "ocm2");
-         MISSION_DIRECTORIES.put("OCM1", "ocm1");
-         MISSION_DIRECTORIES.put("AVHRR", "avhrr");
-         MISSION_DIRECTORIES.put("HICO", "hico");
-         MISSION_DIRECTORIES.put("GOCI", "goci");
+        MISSION_DIRECTORIES.put("SEAWIFS", "seawifs");
+        MISSION_DIRECTORIES.put("AQUA", "modisa");
+        MISSION_DIRECTORIES.put("TERRA", "modist");
+        MISSION_DIRECTORIES.put("VIIRSN", "viirsn");
+        MISSION_DIRECTORIES.put("MERIS", "meris");
+        MISSION_DIRECTORIES.put("CZCS", "czcs");
+        MISSION_DIRECTORIES.put("AQUARIUS", "aquarius");
+        MISSION_DIRECTORIES.put("OCTS", "octs");
+        MISSION_DIRECTORIES.put("OSMI", "osmi");
+        MISSION_DIRECTORIES.put("MOS", "mos");
+        MISSION_DIRECTORIES.put("OCM2", "ocm2");
+        MISSION_DIRECTORIES.put("OCM1", "ocm1");
+        MISSION_DIRECTORIES.put("AVHRR", "avhrr");
+        MISSION_DIRECTORIES.put("HICO", "hico");
+        MISSION_DIRECTORIES.put("GOCI", "goci");
 
     }
 
@@ -170,7 +167,7 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
         newPanel.add(missionPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
         newPanel.add(otherPanel,
-                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
         return newPanel;
     }
 
@@ -213,6 +210,9 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                             if (new File(missionDataDir + "eval").exists()) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                             }
+                        } else if (tmpString.equals("CLEAN")) {
+                            ((JLabel) ((JPanel) c).getComponent(0)).setText("Clean Install");
+                            ((JPanel) c).getComponents()[0].setEnabled(true);
                         }
                         otherPanel.add(c);
                         otherPanel.add(new JLabel("      "));

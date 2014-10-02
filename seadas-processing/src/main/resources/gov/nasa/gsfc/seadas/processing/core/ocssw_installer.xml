@@ -167,5 +167,13 @@
             <description>print out verbose status</description>
             <order>19</order>
         </option>
+        <option type="boolean">
+            <name>--clean</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>clean install</description>
+            <order>20</order>
+        </option>
     </options>
 </paramInfo>
