@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
@@ -86,7 +87,7 @@ class BathymetryDialog extends JDialog {
 
 
     public final void createNotificationUI() {
-        JButton createMasks = new JButton("Recreate Bathymetry Masks");
+        JButton createMasks = new JButton("Recreate Bathymetry Mask");
         createMasks.setPreferredSize(createMasks.getPreferredSize());
         createMasks.setMinimumSize(createMasks.getPreferredSize());
         createMasks.setMaximumSize(createMasks.getPreferredSize());
@@ -140,7 +141,7 @@ class BathymetryDialog extends JDialog {
         setModalityType(ModalityType.APPLICATION_MODAL);
 
 
-        setTitle("Bathymetry");
+        setTitle("Bathymetry & Elevation");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
@@ -152,6 +153,7 @@ class BathymetryDialog extends JDialog {
         setSize(getPreferredSize());
 
     }
+
 
     public final void createBathymetryUI(boolean bandCreated) {
 
@@ -206,50 +208,107 @@ class BathymetryDialog extends JDialog {
                     new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         }
 
-        JPanel maskJPanel = new JPanel(new GridBagLayout());
-        maskJPanel.setBorder(BorderFactory.createTitledBorder(""));
-
 
         JTextField maskNameTextfield = new JTextField(bathymetryData.getMaskName());
         maskNameTextfield.setEditable(false);
-        maskNameTextfield.setToolTipText("Name of the mask (this field is not editable)");
+        maskNameTextfield.setEnabled(false);
+        maskNameTextfield.setToolTipText("Name of the mask to be created (this field is not editable)");
+
+
+        JTextField bathymetryBandNameTextfield = new JTextField(BathymetryOp.BATHYMETRY_BAND_NAME);
+        bathymetryBandNameTextfield.setEditable(false);
+        bathymetryBandNameTextfield.setEnabled(false);
+        bathymetryBandNameTextfield.setToolTipText("Name of the band to be created (this field is not editable)");
+
+
+        JTextField topographyBandNameTextfield = new JTextField(BathymetryOp.TOPOGRAPHY_BAND_NAME);
+        topographyBandNameTextfield.setEditable(false);
+        topographyBandNameTextfield.setEnabled(false);
+        topographyBandNameTextfield.setToolTipText("Name of the band to be created (this field is not editable)");
+
+        JTextField elevationBandNameTextfield = new JTextField(BathymetryOp.ELEVATION_BAND_NAME);
+        elevationBandNameTextfield.setEditable(false);
+        elevationBandNameTextfield.setEnabled(false);
+        elevationBandNameTextfield.setToolTipText("Name of the band to be created (this field is not editable)");
+
+
+        JPanel maskJPanel = new JPanel(new GridBagLayout());
+        maskJPanel.setBorder(BorderFactory.createTitledBorder("Bathymetry Mask Parameters"));
+
+        int gridy = 0;
 
 
         maskJPanel.add(new JLabel("Mask Name"),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         maskJPanel.add(maskNameTextfield,
-                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
+
+        gridy++;
         maskJPanel.add(maskColorComboBox.getjLabel(),
-                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         maskJPanel.add(maskColorComboBox.getColorExComboBox(),
-                new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
+        gridy++;
         maskJPanel.add(maskTransparencySpinner.getjLabel(),
-                new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         maskJPanel.add(maskTransparencySpinner.getjSpinner(),
-                new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
+        gridy++;
         maskJPanel.add(maskMinDepthTextfield.getjLabel(),
-                new ExGridBagConstraints(0, 3, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         maskJPanel.add(maskMinDepthTextfield.getjTextField(),
-                new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
+        gridy++;
         maskJPanel.add(maskMaxDepthTextfield.getjLabel(),
-                new ExGridBagConstraints(0, 4, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         maskJPanel.add(maskMaxDepthTextfield.getjTextField(),
-                new ExGridBagConstraints(1, 4, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
+        gridy++;
         maskJPanel.add(maskEnabledAllBandsCheckbox.getjLabel(),
-                new ExGridBagConstraints(0, 5, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         maskJPanel.add(maskEnabledAllBandsCheckbox.getjCheckBox(),
-                new ExGridBagConstraints(1, 5, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        JPanel bandsJPanel = new JPanel(new GridBagLayout());
+        bandsJPanel.setBorder(BorderFactory.createTitledBorder("Bands"));
+
+        gridy = 0;
+        bandsJPanel.add(new JLabel("Bathymetry Band"),
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        bandsJPanel.add(bathymetryBandNameTextfield,
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        gridy++;
+        bandsJPanel.add(new JLabel("Topography Band"),
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        bandsJPanel.add(topographyBandNameTextfield,
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        gridy++;
+        bandsJPanel.add(new JLabel("Elevation Band"),
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        bandsJPanel.add(elevationBandNameTextfield,
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+
 
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -265,11 +324,14 @@ class BathymetryDialog extends JDialog {
         mainPanel.add(maskJPanel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
+        mainPanel.add(bandsJPanel,
+                new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+
         String label;
         if (bandCreated) {
             label = "Recreate Bathymetry Mask";
         } else {
-            label = "Create Bathymetry Band and Mask";
+            label = "Create Bands and Mask";
         }
         JButton createMasks = new JButton(label);
         createMasks.setPreferredSize(createMasks.getPreferredSize());
@@ -331,7 +393,7 @@ class BathymetryDialog extends JDialog {
         setModalityType(ModalityType.APPLICATION_MODAL);
 
 
-        setTitle("Bathymetry");
+        setTitle("Bathymetry & Elevation");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();

@@ -28,12 +28,12 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-ui</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat</artifactId>
-            <version>${beam.version}</version>
+            <version>${beam.versionRange}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>

@@ -23,7 +23,7 @@ public class MaskTransparencySpinner {
 
         this.bathymetryData = bathymetryData;
 
-        jLabel = new JLabel("Transparency");
+        jLabel = new JLabel("Mask Transparency");
         jLabel.setToolTipText("set mask transparency");
 
         jSpinner.setModel(new SpinnerNumberModel(100, 0, 100, 100));

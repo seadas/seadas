@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>SeaDAS Help - Bathymetry</title>
+    <title>SeaDAS Help - Bathymetry &amp; Elevation</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,7 +10,7 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            Bathymetry
+            Bathymetry &amp; Elevation
         </td>
         <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
                                                                                        border=0></a></td>
@@ -18,102 +18,105 @@
 </table>
 
 
-<h2>Bathymetry</h2>
+<br>
 
-<p>
-    Creates the bathymetry map.
-</p>
 
-<h3>Location</h3>
-
-<table>
+<table class="invisibletable">
     <tr>
-        <td style="border-width:0" valign="top"><a name="MaskManager"><img src="../images/bathymetry.png"
-                                                                           alt="Bathymetry"></a>
+        <td class="invisibletable" valign="top">
+            <img src="../visat/images/icons/bathymetry.png" border="0">
         </td>
-        <td style="border-width:0">
-            To bring up the <b>"Coastline, Land and Water Masks"</b> window click this tool button
-            in the <b>"Layers"</b> tool bar or select the
-            corresponding menu item in <b>"Tools -> Coastline, Land and Water Masks"</b>.
-            <p class="inote"><b>NOTE:</b> this tool can only be accessed if a SeaDAS file is currently selected. </p>
+
+        <td class="invisibletable" valign="top">
+
+            <p class="groupDetails">
+                The Bathymetry & Elevation tool creates a bathymetry mask based on user specified depth ranges. It also
+                creates a bathymetry band,
+                a topography band, and an elevation band. These bands are all in terms of elevation above sea-level, so
+                they
+                are primarily applicable to oceans, seas, bays, etc. The source data is at 2km resolution.
+            </p>
+
+            <p class="groupLocation">
+                Layers -> Bathymetry & Elevation <br>
+                Toolbar: Masks
+            </p>
+
         </td>
     </tr>
 </table>
 
 
-<h3>Details</h3>
+<br>
+<hr>
+<br>
 
 <p>
-    This tool creates coastline, land and water masks within a selected product.
-    Normally masks are made one mask at a time and enabled independently for each band. This tool
-    allows the making and configuring of these masks all at one go. Additionally the masks can be
-    set to enabled (visible) in a bands all at once.
+    The following images illustrate bands and the bathymetry mask which can be created with this tool.
     <br><br>
 
-    The <b>"Coastline, Land and Water Masks"</b> window is divided into 4 sections. The top section enables the
-    specification of the <a href="../seadas-watermask-operator/CoastlineLandMasks.html#SHORELINE_SOURCE_DATASET">Shoreline Source Dataset</a>
-    and the <a href="../seadas-watermask-operator/CoastlineLandMasks.html#SUPER_SAMPLING_FACTOR">Super Sampling Factor</a>. This criteria
-    is used when generating all of the masks. The next 3 sections allow the setting of the parameters
-    <a href="../seadas-watermask-operator/CoastlineLandMasks.html#COLOR">Color</a>,
-    <a href="../seadas-watermask-operator/CoastlineLandMasks.html#TRANSPARENCY">Transparency</a>, and
-    <a href="../seadas-watermask-operator/CoastlineLandMasks.html#ENABLED">Enabled in all Bands</a>
-    for each mask.
-
-
-</p>
-
-<a name="SHORELINE_SOURCE_DATASET"></a>
-<h4>Coastline Source Data</h4>
-
-<p>
-    Each of these datasets is a rasterized file whose filename
-    can be observed in the tooltip when hovering the mouse. If a selection entry is greyed out ("not enabled"),
-    then it's corresponding file is not installed currently on your system. To install any of these files see ......<br>
-
-    The current sources of this data are:
-<ol>
-    <li>SRTM_GC: <br>
-        (Shuttle Radar Topography Mission) latitude range {-60S to 60N}<br>
-        (GlobCover world map) latitude range {-90S to -60S}, {60N to 90N}
-    </li>
-    <li>GSHHS: <br>
-        (Global Self-consistent, Hierarchical, High-resolution Shoreline database)
-    </li>
-</ol>
-
-</p>
-
-<a name="SUPER_SAMPLING_FACTOR"></a>
-<h4>Super Sampling Factor</h4>
-<p>
-If the resolution of the selected shorelineSourceDataset is greater than the resolution of the currently
-loaded product then setting this parameter greater than 1 will be desirable.  Something on the order of at least
-(productResolution/coastlineSourceDatasetResolution)^2 should be sufficient.  The higher the value the slower
-the processing time.<br>
-    The defaults are sufficient for the 1km default shoreline dataset.
 </p>
 
 
-<a name="COLOR"></a>
-<h4>Color</h4>
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/Bathymetry01.png" border="0"> <br>
+            <!--<img src="images/Bathymetry01colorbar.png" border="0"> <br>-->
+            <i>Image 1. Bathymetry band </i>
+        </td>
+    </tr>
+</table>
 
-<p>
-    Sets the color for the mask in the Mask Manager.
-</p>
 
-<a name="TRANSPARENCY"></a>
-<h4>Transparency</h4>
+<br><br><br>
 
-<p>
-    Sets the transparency level for the mask in the <a href="../visat/MaskManagement.html">Mask Manager</a>.
-</p>
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/Bathymetry02.png" border="0"> <br>
+            <!--<img src="images/Bathymetry02colorbar.png" border="0"> <br>-->
+            <i>Image 2. Topography band </i>
+        </td>
+    </tr>
+</table>
 
-<a name="ENABLED"></a>
-<h4>Enabled in all Bands</h4>
+<br><br><br>
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/Bathymetry03.png" border="0"> <br>
+            <i>Image 3. Bathymetry band with bathymetry mask (in black) visible <br>Depth Range: -5 m and -2000m </i>
+        </td>
+    </tr>
+</table>
+<br><br><br>
 
-<p>
-    Applies the masks to all displayed bands.
-</p>
+
+<hr>
+<p>The following image shows the "Bathymetry &amp; Elevation" tool window:</p>
+<br>
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/Bathymetry04.png" border="0">
+        </td>
+    </tr>
+</table>
+
+<br><br>
+<b>Bathymetry Mask Parameters - </b> This tool will create a single mask named "BATHYMETRY. The mask name is not
+editable here,
+however, you may subsequently rename the mask in the Mask Manager tool. The mask color and mask transparency
+can be set here. The mask range is determined by the fields "Min Depth" and "Max Depth". <br><br>
+
+"Enabled in All Band" refers to whether to mask will be set to visible in all band within the file. Unchecking this
+box will result in the mask being visible in the current band and hidden in the rest. Note that at any point later
+after this tool has run, the mask visibility may be easily toggled in each of the bands.<br><br> <br>
+
+<b>Bands - </b> This shows the 3 bands which will be created. The band names are not editable here, but may be altered
+subsequently in the File Info tool. Note that the first time you run this tool, it will create the 3 bands and the
+bathymetry mask. If you run this tool again, it will not re-create the 3 bands, but will re-create the mask.
 
 
 </body>

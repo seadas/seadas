@@ -69,7 +69,7 @@
     <mapID target="exportMaskPixels" url="visat/ExportMaskPixels.html"/>
     <mapID target="exportTransectPixels" url="visat/ExportTransectPixels.html"/>
     <mapID target="exportShapefile" url="visat/ExportShapefile.html"/>
-    <mapID target="exportLegendImageFile" url="visat/ExportColorLegend.html"/>
+    <mapID target="exportLegendImageFile" url="ColorBar/ColorBar.html"/>
     <mapID target="exportColorPalette" url="visat/ExportColorPalette.html"/>
     <mapID target="preferences" url="visat/PreferencesDialog.html"/>
     <mapID target="imageView" url="visat/ProductSceneView.html"/>
