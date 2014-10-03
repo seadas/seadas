@@ -511,7 +511,9 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("tools", "Tools", 'T'));
         menuBar.add(createJMenu("layers", "Layers", 'L'));
         menuBar.add(createJMenu("processing", "Processing", 'P'));
-        menuBar.add(createJMenu("ocprocessing", "DataProcessing", 'D'));
+        if (!System.getProperty("os.name").startsWith("Windows")) {
+            menuBar.add(createJMenu("ocprocessing", "DataProcessing", 'D'));
+        }
         menuBar.add(createJMenu("analysis", "Analysis", 'A'));
         menuBar.add(createJMenu("info", "Info", 'I'));
         menuBar.add(createJMenu("window", "Window", 'W'));
