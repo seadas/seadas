@@ -24,7 +24,7 @@ public class OCSSW {
     public static final String SEADASHOME_PROPERTY = "home";
 
     public static String OCSSW_INSTALLER = "install_ocssw.py";
-    public static String TMP_OCSSW_INSTALLER = System.getProperty("user.home") + System.getProperty("file.separator") + "install_ocssw.py";
+    public static String TMP_OCSSW_INSTALLER = System.getProperty("java.io.tmpdir") + "install_ocssw.py";
     public static String OCSSW_INSTALLER_URL = "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     private static boolean ocsswExist = false;
@@ -103,7 +103,7 @@ public class OCSSW {
             return ocsswInstalScriptDownloadSuccessful;
         }
         try {
-            URL website = new URL("http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py");
+            URL website = new URL(OCSSW_INSTALLER_URL);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
             FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
