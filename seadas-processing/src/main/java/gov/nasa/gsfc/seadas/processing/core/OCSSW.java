@@ -24,13 +24,12 @@ public class OCSSW {
     public static final String SEADASHOME_PROPERTY = "home";
 
     public static String OCSSW_INSTALLER = "install_ocssw.py";
-    public static String TMP_OCSSW_INSTALLER = System.getProperty("java.io.tmpdir") + "install_ocssw.py";
+    public static String TMP_OCSSW_INSTALLER = (new File (System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
     public static String OCSSW_INSTALLER_URL = "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     private static boolean ocsswExist = false;
     private static File ocsswRoot = null;
     private static boolean ocsswInstalScriptDownloadSuccessful = false;
-
 
     public static File getOcsswRoot() throws IOException {
         return ocsswRoot;
