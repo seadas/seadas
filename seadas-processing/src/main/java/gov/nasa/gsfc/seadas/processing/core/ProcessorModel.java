@@ -28,7 +28,7 @@ import java.lang.Boolean;
  * To change this template use File | Settings | File Templates.
  */
 public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
-    private String programName;
+    protected String programName;
 
     private ParamList paramList;
     private boolean acceptsParFile;
@@ -387,7 +387,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public boolean updateIFileInfo(String ifileName) {
 
-        if (programName.equals("multilevel_processor") || programName.equals("multilevel_processor.py")) {
+        if (programName != null && ( programName.equals("multilevel_processor") || programName.equals("multilevel_processor.py" ) ) ) {
             return true;
         }
         if (verifyIFilePath(ifileName)) {
