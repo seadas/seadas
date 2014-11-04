@@ -22,22 +22,18 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-gpf</artifactId>
-            <version>${beam.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat-rcp</artifactId>
-            <version>${beam.version}</version>
         </dependency>
          <dependency>
              <groupId>gov.nasa.gsfc.seadas</groupId>
              <artifactId>seadas-app</artifactId>
-             <version>7.1</version>
          </dependency>
          <dependency>
              <groupId>com.bc.ceres</groupId>
              <artifactId>ceres-glayer</artifactId>
-             <version>${ceres.versionRange}</version>
          </dependency>
      </dependencies>
 </project>

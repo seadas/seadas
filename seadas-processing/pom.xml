@@ -28,17 +28,14 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-ui</artifactId>
-            <version>${beam.versionRange}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-visat</artifactId>
-            <version>${beam.versionRange}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-gpf</artifactId>
-            <version>${beam.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -64,7 +61,6 @@
         <dependency>
              <groupId>edu.ucar</groupId>
              <artifactId>netcdf</artifactId>
-             <version>${netcdf.version}</version>
          </dependency>
         <dependency>
             <groupId>com.sun.electric</groupId>

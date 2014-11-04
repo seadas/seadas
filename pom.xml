@@ -31,7 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <beam.version>5.0.1</beam.version>
-        <beam.versionRange>[5.0,5.1-SNAPSHOT)</beam.versionRange>
+        <beam.versionRange>5.0</beam.versionRange>
         <ceres.versionRange>0.14.1</ceres.versionRange>
         <hdf.version>2.7</hdf.version>
         <netcdf.version>4.3.22</netcdf.version>
@@ -181,17 +181,17 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-core</artifactId>
-                <version>${beam.versionRange}</version>
+                <version>5.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-gpf</artifactId>
-                <version>${beam.versionRange}</version>
+                <version>5.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-ui</artifactId>
-                <version>${beam.versionRange}</version>
+                <version>5.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
@@ -201,7 +201,7 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-visat-rcp</artifactId>
-                <version>${beam.versionRange}</version>
+                <version>5.0.3</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
@@ -211,6 +211,16 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-netcdf</artifactId>
+                <version>5.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>blue-marble-worldmap</artifactId>
+                <version>${beam.versionRange}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esa.beam</groupId>
+                <artifactId>globcover-worldmap</artifactId>
                 <version>${beam.versionRange}</version>
             </dependency>
 
@@ -220,6 +230,19 @@
                 <artifactId>seadas-app</artifactId>
                 <version>${seadas.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>gov.nasa.gsfc.seadas</groupId>
+                <artifactId>seadas-reader</artifactId>
+                <version>1.5.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>gov.nasa.gsfc.seadas</groupId>
+                <artifactId>seadas-contour-operator</artifactId>
+                <version>1.0</version>
+            </dependency>
+
 
             <!-- Miscellaneous 3rd party libraries ############################################# -->
 
