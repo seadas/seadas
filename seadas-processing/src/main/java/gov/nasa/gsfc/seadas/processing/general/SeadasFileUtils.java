@@ -130,11 +130,17 @@ public class SeadasFileUtils {
         BufferedReader br = new BufferedReader(isr);
 
         try {
-            String line = br.readLine();
-            if (exitCode == 0 && line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN) && !line.contains("Error")) {
-                return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+
+            if (exitCode == 0) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
+                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+                    }
+                }
+
             } else {
-                debug("execution error in finding ofile name: " + line);
+                debug("Failed exit code on program '" + programName + "'");
             }
 
         } catch (IOException ioe) {
