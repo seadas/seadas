@@ -46,14 +46,14 @@ Installation Guide
       +   Set the *SeaDAS Bootstrap Classpath* as the main project
       +   Select the "SeaDAS" project
            *Menu File* -> *Project Properties* -> *Build*->*Compile* uncheck 'Compile on Save'
-      +    *Menu File* -> *Project Properties* -> *Actions*->select "Build Project" action and Set Properties -> Add->Skip Tests
-                                               DO NOT Check 'Build with Dependencies'
-           Repeat for "Beam Core API" and "SeaDAS Bootstrap Classpath" projects
-      +   Select the "SeaDAS Bootstrap Classpath" project
-           *Menu File* -> *Project Properties* ->*Run* set:
-                 Main Class: com.bc.ceres.launcher.Launcher
-			Working Directory: `$SEADAS/seadas`
-			VM Options: -Xmx2G -Dceres.context=seadas
+      +    *Menu File* -> *Project Properties* -> *Actions*->select "Build Project" action:
+      		+    Set Properties -> Add->Skip Tests
+      		+    DO NOT Check 'Build with Dependencies'
+      		+    Repeat for "Beam Core API" and "SeaDAS Bootstrap Classpath" projects
+      +   Select the "SeaDAS Bootstrap Classpath" project, *Menu File* -> *Project Properties* ->*Run* set:
+    		+ Main Class: com.bc.ceres.launcher.Launcher
+    		+ Working Directory: `$SEADAS/seadas`
+    		+ VM Options: -Xmx2G -Dceres.context=seadas
    * IntelliJ IDEA:
       +   *Main Menu* -> *File* -> *New Project* -> *Import Project from External Model*
       +   Choose Maven
