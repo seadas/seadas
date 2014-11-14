@@ -46,7 +46,7 @@ Installation Guide
       +   Set the *SeaDAS Bootstrap Classpath* as the main project
       +   Select the "SeaDAS" project
            *Menu File* -> *Project Properties* -> *Build*->*Compile* uncheck 'Compile on Save'
-                                               -> *Actions*->select "Build Project" action and Set Properties -> Add->Skip Tests
+      +    *Menu File* -> *Project Properties* -> *Actions*->select "Build Project" action and Set Properties -> Add->Skip Tests
                                                DO NOT Check 'Build with Dependencies'
            Repeat for "Beam Core API" and "SeaDAS Bootstrap Classpath" projects
       +   Select the "SeaDAS Bootstrap Classpath" project
