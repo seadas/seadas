@@ -40,13 +40,20 @@ Installation Guide
 
 1.  Open up the project in your IDE:
    * Netbeans:
-      +   *Menu File* -> *Open Project* and select ceres
-      +   Check the *Open Required Projects* box
-      +   *Menu File* -> *Open Project* and select beam
-      +   Check the *Open Required Projects* box
+      +   *Menu Preferences Java Maven* -> check 'Skip Tests for any build executions not directly related to testing'
       +   *Menu File* -> *Open Project* and select seadas
       +   Check the *Open Required Projects* box
-      +   Set the *SeaDAS Application* as the main project
+      +   Set the *SeaDAS Bootstrap Classpath* as the main project
+      +   Select the "SeaDAS" project
+      +     *Menu File* -> *Project Properties* -> *Build*->*Compile* uncheck 'Compile on Save'
+      +                                         -> *Actions*->select "Build Project" action and Set Properties -> Add->Skip Tests
+      +                                         DO NOT Check 'Build with Dependencies'
+      +     Repeat for "Beam Core API" and "SeaDAS Bootstrap Classpath" projects
+      +   Select the "SeaDAS Bootstrap Classpath" project
+      +     *Menu File* -> *Project Properties* ->*Run* set:
+      +           Main Class: com.bc.ceres.launcher.Launcher
+			Working Directory: `$SEADAS/seadas`
+			VM Options: -Xmx2G -Dceres.context=seadas
    * IntelliJ IDEA:
       +   *Main Menu* -> *File* -> *New Project* -> *Import Project from External Model*
       +   Choose Maven
