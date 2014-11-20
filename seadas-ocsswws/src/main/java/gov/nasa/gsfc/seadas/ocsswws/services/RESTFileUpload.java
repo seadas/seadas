@@ -3,13 +3,6 @@ package gov.nasa.gsfc.seadas.ocsswws.services;
 /**
  * Created by IntelliJ IDEA.
  * User: Aynur Abdurazik (aabduraz)
- * Date: 5/16/13
- * Time: 11:01 AM
- * To change this template use File | Settings | File Templates.
- */
-/**
- * Created by IntelliJ IDEA.
- * User: Aynur Abdurazik (aabduraz)
  * Date: 7/30/12
  * Time: 1:21 PM
  * To change this template use File | Settings | File Templates.
@@ -119,7 +112,7 @@ public class RESTFileUpload
 //        return Response.status(respStatus).build();
 //    }
 
-    //    @POST
+//    @POST
 //    @Path("/file")
 //    @Consumes("application/octet-stream")
 //    public Response putFile(@Context HttpServletRequest a_request,
@@ -136,10 +129,8 @@ public class RESTFileUpload
 //                 respStatus = Response.Status.INTERNAL_SERVER_ERROR;
 //                 e.printStackTrace();
 //             }
-//
-//     return Response.status(respStatus).build();
-//    }
-    // save uploaded file to the specified location
+//      return Response.status(respStatus).build();
+//   }
 
     private void saveToDisc(final InputStream fileInputStream,
                             final String fileUploadPath) throws IOException
