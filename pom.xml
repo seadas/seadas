@@ -627,8 +627,7 @@
         <repository>
             <id>jide</id>
             <name>Internal JIDE repository</name>
-            <!--<url>http://seadasdev.domain.pub/mvn-seadas/</url>-->
-            <url>/Users/dshea/jide/</url>
+            <url>http://seadasdev.domain.pub/mvn-seadas/</url>
         </repository>
         <repository>
             <id>release.maven.java.net</id>
