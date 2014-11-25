@@ -234,7 +234,7 @@
             <dependency>
                 <groupId>gov.nasa.gsfc.seadas</groupId>
                 <artifactId>seadas-reader</artifactId>
-                <version>1.5.2</version>
+                <version>1.5.3</version>
             </dependency>
 
             <dependency>
@@ -627,7 +627,8 @@
         <repository>
             <id>jide</id>
             <name>Internal JIDE repository</name>
-            <url>http://seadasdev.domain.pub/mvn-seadas/</url>
+            <!--<url>http://seadasdev.domain.pub/mvn-seadas/</url>-->
+            <url>/Users/dshea/jide/</url>
         </repository>
         <repository>
             <id>release.maven.java.net</id>
