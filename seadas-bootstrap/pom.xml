@@ -39,18 +39,144 @@
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-app</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
+            <!--<artifactId>seadas-reader</artifactId>-->
+        <!--</dependency>-->
+
+        <!-- BEAM plugin bits...for some reason bootstrap needs 'em to have 'em -->
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-aatsr-sst</artifactId>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-reader</artifactId>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-alos-reader</artifactId>
         </dependency>
         <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-contour-operator</artifactId>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-atsr-reader</artifactId>
         </dependency>
-
-
-
-        <!-- ceres dependencies -->
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-avhrr-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-binning</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-chris-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-cluster-analysis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-collocation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-envisat-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-geotiff</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-getasse30-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-hdf5-writer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-landsat-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ncsa.hdf</groupId>
+            <artifactId>lib-hdf</artifactId>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-meris-cloud</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-meris-ndvi</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-meris-radiometry</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-meris-smac</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-merisl3-reader</artifactId>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.esa.beam</groupId>-->
+            <!--<artifactId>beam-modis-reader</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-netcdf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-opendap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-pconvert</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-pixel-extraction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-rtp-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-pgx-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-spot-vgt-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-statistics-op</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-temporal-percentile-op</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-time-series-tool</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>beam-unmix</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>blue-marble-worldmap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
+            <artifactId>globcover-worldmap</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.bc.ceres</groupId>
             <artifactId>ceres-launcher</artifactId>
@@ -83,18 +209,6 @@
             <groupId>com.bc.ceres</groupId>
             <artifactId>ceres-metadata</artifactId>
         </dependency>
-
-        <!--beam dependencies-->
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>blue-marble-worldmap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>globcover-worldmap</artifactId>
-        </dependency>
-
-        <!--third party dependencies-->
         <dependency>
             <groupId>com.jidesoft</groupId>
             <artifactId>jide-dock</artifactId>
@@ -152,10 +266,6 @@
             <artifactId>Jama</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom2</artifactId>
         </dependency>
@@ -168,13 +278,7 @@
             <artifactId>jtar</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.googlecode.efficient-java-matrix-library</groupId>
-            <artifactId>ejml</artifactId>
-            <version>0.21</version>
-        </dependency>
-
-
+        <!-- NEW IN 4.6: GeoTools -->
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
@@ -207,7 +311,6 @@
         <dependency>
             <groupId>org.htmlparser</groupId>
             <artifactId>htmlparser</artifactId>
-            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>edu.ucar</groupId>
@@ -217,17 +320,6 @@
         <dependency>
             <groupId>org.jython</groupId>
             <artifactId>jython</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
-            <artifactId>napkinlaf</artifactId>
-            <version>1.2</version>
         </dependency>
 
     </dependencies>
