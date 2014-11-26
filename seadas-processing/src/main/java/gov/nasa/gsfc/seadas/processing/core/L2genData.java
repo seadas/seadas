@@ -1148,7 +1148,7 @@ public class L2genData implements L2genDataProcessorModel {
 
     public String[] getSuiteList() {
 
-        if (iFileInfo != null && iFileInfo.getMissionDirectory() != null) {
+        if (iFileInfo != null && iFileInfo.getMissionDirectory() != null && iFileInfo.getMissionDirectory().exists()) {
 
             ArrayList<String> suitesArrayList = new ArrayList<String>();
 
