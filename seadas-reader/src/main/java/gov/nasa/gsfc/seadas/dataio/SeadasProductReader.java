@@ -162,7 +162,10 @@ public class SeadasProductReader extends AbstractProductReader {
 
             }
 
-            return seadasFileReader.createProduct();
+            Product product = seadasFileReader.createProduct();
+
+            configurePreferredTileSize(product);
+            return product;
 
         } catch (IOException e) {
             throw new ProductIOException(e.getMessage());

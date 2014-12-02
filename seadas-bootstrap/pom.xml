@@ -83,6 +83,10 @@
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
+            <artifactId>beam-envi-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.beam</groupId>
             <artifactId>beam-geotiff</artifactId>
         </dependency>
         <dependency>
