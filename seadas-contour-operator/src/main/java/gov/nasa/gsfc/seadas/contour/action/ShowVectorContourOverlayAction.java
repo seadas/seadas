@@ -44,7 +44,7 @@ import java.util.Collection;
  */
 public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
-    final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; symbol:cross";
+    final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; stroke-dasharray:%s; symbol:cross";
     Product product;
     double noDataValue;
 
@@ -165,7 +165,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
             //convert RGB color to an hexadecimal value
             //String hex = "#"+Integer.toHexString(interval.getLineColor().getRGB()).substring(2);
             String hex = String.format("#%02x%02x%02x", interval.getLineColor().getRed(), interval.getLineColor().getGreen(), interval.getLineColor().getBlue());
-            vectorDataNode.setDefaultStyleCss(String.format(DEFAULT_STYLE_FORMAT, hex, hex));
+            vectorDataNode.setDefaultStyleCss(String.format(DEFAULT_STYLE_FORMAT, hex, hex, interval.getContourLineStyleValue()));
             vectorDataNodes.add(vectorDataNode);
         }
         return vectorDataNodes;

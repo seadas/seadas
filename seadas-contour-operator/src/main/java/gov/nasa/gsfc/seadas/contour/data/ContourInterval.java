@@ -13,13 +13,16 @@ import java.text.DecimalFormat;
 public class ContourInterval {
     String contourLevelName;
     Double contourLevelValue;
+    String contourLineStyleValue;
     private Color lineColor;
+
     DecimalFormat decimalFormat = new DecimalFormat("##.###");
 
     ContourInterval(String contourBaseName, Double contourLevelValue) {
         this.contourLevelValue = new Double(decimalFormat.format(contourLevelValue));
         contourLevelName = contourBaseName + this.contourLevelValue;
         lineColor = Color.WHITE;
+        contourLineStyleValue = "1.0, 0";
     }
 
     ContourInterval(Double contourLevelValue) {
@@ -46,6 +49,14 @@ public class ContourInterval {
         return contourLevelValue;
     }
 
+    public String getContourLineStyleValue() {
+        return contourLineStyleValue;
+    }
+
+    public void setContourLineStyleValue(String contourLineStyleValue) {
+        this.contourLineStyleValue = contourLineStyleValue;
+    }
+
     public Color getLineColor() {
         return lineColor;
     }
@@ -63,6 +74,7 @@ public class ContourInterval {
                                                this.getLineColor().getAlpha()));
         contourInterval.setContourLevelName(this.getContourLevelName());
         contourInterval.setContourLevelValue(this.getContourLevelValue());
+        contourInterval.setContourLineStyleValue(this.getContourLineStyleValue());
         return contourInterval;
 
     }
