@@ -356,7 +356,6 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 ProductData lons = ProductData.createInstance(longitudes);
                 lonBand.setData(lons);
 
-                //product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
                 product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, detectorsInScan));
             } else {
                 product.setGeoCoding(new BowtiePixelGeoCoding(product.getBand(latitude), product.getBand(longitude), detectorsInScan));

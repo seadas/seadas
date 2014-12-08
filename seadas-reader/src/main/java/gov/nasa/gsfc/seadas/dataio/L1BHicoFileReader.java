@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
@@ -333,6 +332,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
 
         Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
         Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
+
         if (latVar != null && lonVar != null ) {
             final ProductData lonRawData;
             final ProductData latRawData;
@@ -353,11 +353,8 @@ public class L1BHicoFileReader extends SeadasFileReader {
             latBand.setData(latRawData);
             lonBand.setData(lonRawData);
 
-            try {
-                product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-            } catch (IOException e) {
-                throw new ProductIOException(e.getMessage());
-            }
+            product.setGeoCoding(new PixelGeoCoding2(latBand, lonBand,null));
+            
         }
     }
 }

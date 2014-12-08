@@ -314,13 +314,8 @@ public class L2FileReader extends SeadasFileReader {
                 }
             }
         }
-        try {
-            if (latBand != null) {
-                product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-            }
-        } catch (IOException e) {
-            throw new ProductIOException(e.getMessage());
+        if (latBand != null) {
+            product.setGeoCoding(new PixelGeoCoding2(latBand, lonBand,null));
         }
-
     }
 }

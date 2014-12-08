@@ -1,14 +1,11 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.PixelGeoCoding;
+import org.esa.beam.framework.datamodel.PixelGeoCoding2;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
 import ucar.nc2.Variable;
-
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -97,11 +94,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         latBand.setNoDataValueUsed(true);
         lonBand.setNoDataValueUsed(true);
 
-        try {
-            product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-        } catch (IOException e) {
-            throw new ProductIOException(e.getMessage());
-        }
+        product.setGeoCoding(new PixelGeoCoding2(latBand, lonBand,null));
     }
 }
 
