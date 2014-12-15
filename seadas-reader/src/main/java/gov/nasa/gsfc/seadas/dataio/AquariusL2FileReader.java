@@ -1,13 +1,10 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.PixelGeoCoding;
+import org.esa.beam.framework.datamodel.PixelGeoCoding2;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
-
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -97,13 +94,8 @@ public class AquariusL2FileReader extends SeadasFileReader {
             latBand = product.getBand(latitude);
             lonBand = product.getBand(longitude);
         }
-        try {
-            if (latBand != null && lonBand != null) {
-                product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 5, ProgressMonitor.NULL));
-            }
-        } catch (IOException e) {
-            throw new ProductIOException(e.getMessage());
+        if (latBand != null && lonBand != null) {
+            product.setGeoCoding(new PixelGeoCoding2(latBand, lonBand, null));
         }
-
     }
 }

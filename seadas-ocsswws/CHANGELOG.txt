@@ -1,0 +1,4 @@
+                                 CHANGELOG
+
+This file contains the significant changes for each OCSSW Web Services release.
+

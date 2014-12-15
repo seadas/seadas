@@ -68,6 +68,11 @@ public abstract class SeadasFileReader {
             sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
         }
         sourceOffsetY += leadLineSkip;
+        int widthRemainder = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
+        
+        if (widthRemainder < 0){
+            sourceWidth += widthRemainder;
+        } 
         start[0] = sourceOffsetY;
         start[1] = sourceOffsetX;
         stride[0] = sourceStepY;
@@ -100,7 +105,12 @@ public abstract class SeadasFileReader {
                 storage = array.copyTo1DJavaArray();
             }
 
-            arraycopy(storage, 0, buffer, 0, destBuffer.getNumElems());
+            if (widthRemainder < 0){
+                arraycopy(storage, 0, buffer, 0, destBuffer.getNumElems() + widthRemainder);
+            }else{
+                arraycopy(storage, 0, buffer, 0, destBuffer.getNumElems());
+
+            }
         } finally {
             pm.done();
         }

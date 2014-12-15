@@ -15,6 +15,7 @@
     <version>1.0</version>
 
     <name>SEADAS Contour Operator</name>
+
     <description>Provides an API as well as an operator for creating a contour overlay for a given band from a loaded
         product.
     </description>

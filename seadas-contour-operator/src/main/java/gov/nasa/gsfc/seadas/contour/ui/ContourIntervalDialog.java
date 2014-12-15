@@ -215,7 +215,7 @@ public class ContourIntervalDialog extends JDialog {
 
                     contourData.createContourLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
                 }
-                System.out.print("--- no change!---");
+                //System.out.print("--- no change!---");
                 customizeContourLevels(contourData);
             }
         });
@@ -285,24 +285,30 @@ public class ContourIntervalDialog extends JDialog {
         final String contourNamePropertyName = "contourName";
         final String contourValuePropertyName = "contourValue";
         final String contourColorPropertyName = "contourColor";
+        final String contourLineStylePropertyName = "contourLineStyle";
         ArrayList<ContourInterval> contourIntervalsClone = contourData.cloneContourIntervals();
         JPanel customPanel = new JPanel();
         customPanel.setLayout(new BoxLayout(customPanel, BoxLayout.Y_AXIS));
         for (final ContourInterval interval : contourIntervalsClone) {
-            JPanel contourLevelPanel = new JPanel(new TableLayout(7));
+            JPanel contourLevelPanel = new JPanel(new TableLayout(8));
             JLabel contourNameLabel = new JLabel("Name: ");
             JLabel contourValueLabel = new JLabel("Value: ");
             JLabel contourColorLabel = new JLabel("Color: ");
+            JLabel contourLineStyleLabel = new JLabel("Line Style: ");
             JTextField contourLevelName = new JTextField();
             contourLevelName.setColumns(20);
             contourLevelName.setText(interval.getContourLevelName());
             JTextField contourLevelValue = new JTextField();
             contourLevelValue.setColumns(5);
             contourLevelValue.setText(new Double(interval.getContourLevelValue()).toString());
+            JTextField contourLineStyleValue = new JTextField();
+            contourLineStyleValue.setColumns(10);
+            contourLineStyleValue.setText(interval.getContourLineStyleValue());
             PropertyContainer propertyContainer = new PropertyContainer();
             propertyContainer.addProperty(Property.create(contourNamePropertyName, interval.getContourLevelName()));
             propertyContainer.addProperty(Property.create(contourValuePropertyName, interval.getContourLevelValue()));
             propertyContainer.addProperty(Property.create(contourColorPropertyName, interval.getLineColor()));
+            propertyContainer.addProperty(Property.create(contourLineStylePropertyName, interval.getContourLineStyleValue()));
             final BindingContext bindingContext = new BindingContext(propertyContainer);
             final PropertyChangeListener pcl_name = new PropertyChangeListener() {
                 @Override
@@ -322,6 +328,12 @@ public class ContourIntervalDialog extends JDialog {
                     interval.setLineColor((Color) bindingContext.getBinding(contourColorPropertyName).getPropertyValue());
                 }
             };
+            final PropertyChangeListener pcl_lineStyle = new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    interval.setContourLineStyleValue((String) bindingContext.getBinding(contourLineStylePropertyName).getPropertyValue());
+                }
+            };
             ColorComboBox contourLineColorComboBox = new ColorComboBox();
             contourLineColorComboBox.setColorValueVisible(false);
             contourLineColorComboBox.setAllowDefaultColor(true);
@@ -337,12 +349,18 @@ public class ContourIntervalDialog extends JDialog {
             contourValueBinding.addComponent(contourValueLabel);
             bindingContext.addPropertyChangeListener(contourValuePropertyName, pcl_value);
 
+            Binding contourLineBinding = bindingContext.bind(contourLineStylePropertyName, contourLineStyleValue);
+            contourValueBinding.addComponent(contourLineStyleLabel);
+            bindingContext.addPropertyChangeListener(contourLineStylePropertyName, pcl_lineStyle);
+
             contourLevelPanel.add(contourNameLabel);
             contourLevelPanel.add(contourLevelName);
             contourLevelPanel.add(contourValueLabel);
             contourLevelPanel.add(contourLevelValue);
             contourLevelPanel.add(contourColorLabel);
             contourLevelPanel.add(contourLineColorComboBox);
+            contourLevelPanel.add(contourLineStyleLabel);
+            contourLevelPanel.add(contourLineStyleValue);
             customPanel.add(contourLevelPanel);
         }
 

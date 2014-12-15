@@ -1,13 +1,10 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.InvalidRangeException;
-import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,12 +63,8 @@ public class L1ASeawifsFileReader extends SeadasFileReader {
         latBand.setData(lats);
         ProductData lons = ProductData.createInstance(longitudes);
         lonBand.setData(lons);
-        try {
-            product.setGeoCoding(new PixelGeoCoding(latBand, lonBand, null, 10, ProgressMonitor.NULL));
-        } catch (IOException e) {
-            throw new ProductIOException(e.getMessage());
-        }
-
+        product.setGeoCoding(new PixelGeoCoding2(latBand, lonBand,null));
+        
         addFlagsAndMasks(product);
 
         return product;

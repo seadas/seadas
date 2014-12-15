@@ -80,6 +80,7 @@
         <module>../beam/beam-cluster-analysis</module>
         <module>../beam/beam-collocation</module>
         <module>../beam/beam-envisat-reader</module>
+        <module>../beam/beam-envi-reader</module>
         <module>../beam/beam-geotiff</module>
         <module>../beam/beam-getasse30-reader</module>
         <module>../beam/beam-hdf5-writer</module>
@@ -252,6 +253,11 @@
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-envisat-reader</artifactId>
                  <version>${beam.versionRange}</version>
+             </dependency>
+             <dependency>
+                 <groupId>org.esa.beam</groupId>
+                 <artifactId>beam-envi-reader</artifactId>
+                 <version>5.0.1</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
