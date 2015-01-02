@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 import org.glassfish.jersey.SslConfigurator;
 import org.glassfish.jersey.filter.LoggingFilter;
 
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -21,7 +22,7 @@ import java.net.URI;
 public class RSClient {
 
     public static final String RESOURCE_BASE_URI = "https://localhost:4463/";
-    public static final String KEY_FILE_PATH =  "/Users/Shared/seadas7/seadas/seadas-ocsswws/";
+    public static final String KEY_FILE_PATH =  "/Users/Shared/seadas71/seadas/seadas-ocsswws/";
     public RSClient() {
     }
 
@@ -198,13 +199,17 @@ public class RSClient {
 
     public void testConnection(){
         SslConfigurator sslConfig = SslConfigurator.newInstance()
-                .trustStoreFile(KEY_FILE_PATH +  "truststore_client")
-                .trustStorePassword("seadas7")
+                .trustStoreFile(KEY_FILE_PATH +  "client.jks")
+                .trustStorePassword("ocsswwsclient")
 
-                .keyStoreFile(KEY_FILE_PATH + "keystore_client")
-                .keyPassword("seadas7");
+                .keyStoreFile(KEY_FILE_PATH + "client.jks")
+                .keyPassword("ocsswwsclient");
 
-        Client client = ClientBuilder.newBuilder().sslContext(sslConfig.createSSLContext()).build();
+        SSLContext ssl = sslConfig.createSSLContext();
+        ClientBuilder clientBuilder = ClientBuilder.newBuilder();
+        clientBuilder = clientBuilder.sslContext(ssl);
+        Client testClient = clientBuilder.build();
+        Client client = ClientBuilder.newBuilder().sslContext(ssl).build();
 
         System.out.println("Client: GET " + RESOURCE_BASE_URI);
 

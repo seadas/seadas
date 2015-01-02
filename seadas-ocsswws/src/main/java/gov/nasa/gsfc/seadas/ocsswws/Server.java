@@ -38,6 +38,8 @@ public class Server {
 
     public static ConcurrentHashMap<String, ArrayList<String>> jobMap;
 
+
+
     private static URI getBaseURI() {
         return UriBuilder.fromUri("https://localhost/").port(getPort(4463)).build();
     }
@@ -77,10 +79,14 @@ public class Server {
            SSLContextConfigurator sslContext = new SSLContextConfigurator();
 
            // set up security context
-           sslContext.setKeyStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_server"); // contains server keypair
-           sslContext.setKeyStorePass("seadas7");
-           sslContext.setTrustStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/truststore_server"); // contains client certificate
-           sslContext.setTrustStorePass("seadas7");
+           //sslContext.setKeyStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_server"); // contains server keypair
+           System.out.println(System.getProperty("user.dir"));
+           sslContext.setKeyStoreFile("/Users/Shared/seadas71/seadas/seadas-ocsswws/server.jks");
+           //sslContext.setKeyStoreFile(System.getProperty("user.dir") + "/ocsswsserver/server.jks"); // contains server keypair
+           sslContext.setKeyStorePass("ocsswwsserver");
+           //sslContext.setTrustStoreFile(System.getProperty("user.dir") + "/ocsswsserver/server.jks"); // contains client certificate
+           sslContext.setTrustStoreFile("/Users/Shared/seadas71/seadas/seadas-ocsswws/server.jks");
+           sslContext.setTrustStorePass("ocsswwsserver");
 
            ResourceConfig rc = new ResourceConfig();
            //rc.registerClasses(RootResource.class, SecurityFilter.class, AuthenticationExceptionMapper.class);
@@ -106,48 +112,6 @@ public class Server {
        }
 
 
-//    protected static void startServer() {
-//
-//        // add Jersey resource servlet
-//        WebappContext context = new WebappContext("context");
-//        ServletRegistration registration =
-//                context.addServlet("ServletContainer", ServletContainer.class);
-//        registration.setInitParameter("com.sun.jersey.config.property.packages",
-//                "gov.nasa.gsfc.seadas.ocsswws.resource;gov.nasa.gsfc.seadas.ocsswws.auth");
-//
-//        // add security filter (which handles http basic authentication)
-//        registration.setInitParameter(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS,
-//                SecurityFilter.class.getName());
-//
-//        // Grizzly ssl configuration
-//        SSLContextConfigurator sslContext = new SSLContextConfigurator();
-//
-//        // set up security context
-//        sslContext.setKeyStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/keystore_server"); // contains server keypair
-//        sslContext.setKeyStorePass("seadas7");
-//        sslContext.setTrustStoreFile(System.getProperty("user.dir") + "/seadas/seadas-ocsswws/truststore_server"); // contains client certificate
-//        sslContext.setTrustStorePass("seadas7");
-//
-//        initJobMap();
-//        try {
-//
-//            webServer = GrizzlyServerFactory.createHttpServer(
-//                    getBaseURI(),
-//                    null,
-//                    true,
-//                    new SSLEngineConfigurator(sslContext).setClientMode(false).setNeedClientAuth(true)
-//            );
-//
-//            // start Grizzly embedded server //
-//            System.out.println("Jersey app started. Try out " + BASE_URI + "\nHit CTRL + C to stop it...");
-//            context.deploy(webServer);
-//            webServer.start();
-//
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
-//    }
-
     private static void initJobMap() {
 
         jobMap = new ConcurrentHashMap<String, ArrayList<String>>();
@@ -164,6 +128,7 @@ public class Server {
 
         for (File client : clients) {
             ArrayList<String> jobsList = new ArrayList<String>();
+            //Create an array of directories. The directories are named with job ids.
             File[] jobs = client.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File file) {
@@ -186,7 +151,9 @@ public class Server {
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
-        startServer1();
+        Server server = new Server();
+
+        server.startServer1();
 
         System.in.read();
     }

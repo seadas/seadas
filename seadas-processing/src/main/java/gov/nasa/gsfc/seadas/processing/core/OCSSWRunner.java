@@ -78,7 +78,9 @@ public class OCSSWRunner {
         return process;
     }
 
-    public static Process executeRemote(ProcessorModel processorModel) {
+    public static Process
+
+    executeRemote(ProcessorModel processorModel) {
         //System.out.println("remote execution!");
         Process process = null;
 

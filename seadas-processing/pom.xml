@@ -53,11 +53,6 @@
         	<artifactId>jax-rs-ri</artifactId>
         	<version>2.0-rc1</version>
         </dependency>
-         <dependency>
-          <groupId>com.google.code.gson</groupId>
-          <artifactId>gson</artifactId>
-          <version>2.2.2</version>
-        </dependency>
         <dependency>
              <groupId>edu.ucar</groupId>
              <artifactId>netcdf</artifactId>
@@ -71,6 +66,16 @@
             <groupId>net.sourceforge.jexcelapi</groupId>
             <artifactId>jxl</artifactId>
             <version>2.6.12</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.glassfish.hk2</groupId>
+        	<artifactId>hk2-api</artifactId>
+        	<version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
         </dependency>
     </dependencies>
 
