@@ -3,6 +3,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <artifactId>seadas</artifactId>
+        <groupId>gov.nasa.gsfc.seadas</groupId>
+        <version>7.1</version>
+    </parent>
+
     <groupId>gov.nasa.gsfc.seadas.ocsswrest</groupId>
     <artifactId>seadas-ocsswrest</artifactId>
     <packaging>jar</packaging>
@@ -32,6 +38,11 @@
             <artifactId>jersey-media-moxy</artifactId>
         </dependency>
         -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>2.9.1</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

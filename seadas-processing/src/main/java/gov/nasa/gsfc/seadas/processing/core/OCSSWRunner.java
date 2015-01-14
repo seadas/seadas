@@ -1,9 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import org.esa.beam.visat.VisatApp;
 
 import java.io.File;
@@ -28,7 +25,7 @@ public class OCSSWRunner {
     private static final String SEADAS_OCSSW_LOCATION = "ocssw.location";
 
     private static final String LOCAL = "local";
-    private static final String REMOTE = "remote";
+        private static final String REMOTE = "remote";
 
     public OCSSWRunner() {
 
@@ -37,7 +34,7 @@ public class OCSSWRunner {
 
     public static Process execute(ProcessorModel processorModel) {
 
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(SEADAS_OCSSW_LOCATION);
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWROOT_PROPERTY);
         if (ocsswLocation == null || ocsswLocation.trim().equals(LOCAL)) {
             return executeLocal(processorModel);
         } else {
@@ -78,14 +75,9 @@ public class OCSSWRunner {
         return process;
     }
 
-    public static Process
-
-    executeRemote(ProcessorModel processorModel) {
+    public static Process executeRemote(ProcessorModel processorModel) {
         //System.out.println("remote execution!");
         Process process = null;
-
-        Gson gson = new Gson();
-        String json = gson.toJson(processorModel.getProgramCmdArray());
 
         return process;
     }
@@ -115,11 +107,6 @@ public class OCSSWRunner {
     }
 
     public static Process executeRemote(String[] cmdArray, File ifileDir) {
-
-        Gson gson = new Gson();
-        String json = gson.toJson(cmdArray);
-        JsonParser parser = new JsonParser();
-        JsonArray array = parser.parse(json).getAsJsonArray();
 
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
 

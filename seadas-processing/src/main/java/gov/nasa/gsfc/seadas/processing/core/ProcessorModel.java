@@ -548,7 +548,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 cmdString = cmdString.replaceAll("argument", "ofile");
                 cmdString = cmdString.replaceAll("option", "ofile");
             }
-            remoteServerCmdArray.add(cmdString);
+            if (remoteServerCmdArray.size() == 0 ) {
+                remoteServerCmdArray.add(cmdString);
+            }
+            else if (! cmdString.equals(remoteServerCmdArray.get(remoteServerCmdArray.size()-1))){
+                remoteServerCmdArray.add(cmdString);
+            }
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
         return cmdArrayParam;

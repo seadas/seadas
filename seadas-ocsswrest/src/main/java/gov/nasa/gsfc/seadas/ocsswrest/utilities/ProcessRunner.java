@@ -18,7 +18,7 @@ public class ProcessRunner {
         Map<String, String> env = processBuilder.environment();
         HashMap environment = new HashMap();
 
-        environment.put("OCSSWROOT", OCSSW.getOcsswEnv());
+        environment.put("OCSSWROOT", OCSSWServerModel.getOcsswEnv());
 
         env.putAll(environment);
 
