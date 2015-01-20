@@ -1,12 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.ocsswwsclient.OCSSWClient;
 import org.esa.beam.visat.VisatApp;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,6 +22,7 @@ public class OCSSW {
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
 
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
+    public static final String OCSSWLOCATION_PROPERTY = "ocssw.location";
     public static final String SEADASHOME_PROPERTY = "home";
     public static final String SEADAS_OCSSW_LOCATION_LOCAL = "local";
     public static final String SEADAS_OCSSW_LOCATION_REMOTE = "remote";
@@ -48,7 +45,7 @@ public class OCSSW {
 
     public static void checkOCSSW() {
 
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY);
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSWLOCATION_PROPERTY);
 
         //ocssw installed local
         if (ocsswLocation == null || ocsswLocation.trim().equals(SEADAS_OCSSW_LOCATION_LOCAL)) {
@@ -72,14 +69,15 @@ public class OCSSW {
         } else {
           //ocssw installed in virtual box and needs be accessed through web services
           // need to access to two services: one for ocsswRoot, and the other for ocsswExist
-            OCSSWClient ocsswClient = new OCSSWClient();
-            WebTarget target = ocsswClient.getOcsswWebTarget();
+            //OCSSWClientOld ocsswClient = new OCSSWClientOld();
+            //WebTarget target = ocsswClient.getOcsswWebTarget();
 
-            Response response = target.path("ocssw").path("ocsswEnv").request(MediaType.APPLICATION_JSON_TYPE).get();
-            String[] ocsswEnv = (String[]) response.getEntity();
-            ocsswRoot = new File(ocsswEnv[0]);
-            ocsswExist = Boolean.getBoolean(ocsswEnv[1]);
-
+            //Response response = target.path("ocssw").path("ocsswEnv").request(MediaType.APPLICATION_JSON_TYPE).get();
+            //String[] ocsswEnv = (String[]) response.getEntity();
+            //ocsswRoot = new File(ocsswEnv[0]);
+            //ocsswExist = Boolean.getBoolean(ocsswEnv[1]);
+            ocsswRoot = new File("${user.home}/ocssw") ;
+            ocsswExist = true;
         }
     }
 
