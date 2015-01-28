@@ -179,12 +179,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     public void remoteExecuteProgram(ProcessorModel pm) {
 
-        RSClient ocsswClient = new RSClient();
+        //OCSSWClient ocsswClient = new OCSSWClient();
         pm.getProgramCmdArray();
 
         String paramString = pm.getCmdArrayString();
         String[] filesToUpload = pm.getFilesToUpload();
-        ocsswClient.requestNewJobId();
+
 //        boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
 //        boolean t = ocsswClient.uploadCmdArray(pm.getProgramCmdArray());
 //        if (fileUploadSuccess) {

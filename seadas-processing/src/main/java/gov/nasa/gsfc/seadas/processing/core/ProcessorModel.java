@@ -50,7 +50,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private boolean multipleInputFiles;
     private ArrayList<String> filesToUpload;
     private ArrayList<String> filesToDownload;
-    private ArrayList<String> finalCmdArray;
+    private ArrayList<String> remoteServerCmdArray;
 
     private boolean openInSeadas;
 
@@ -467,13 +467,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         for (int i = 0; i < cmdArray.length; i++) {
             SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
         }
-        finalCmdArray.add(0, "programLocation : " + cmdArray[0]);
-        finalCmdArray.add(1, "programName : " + cmdArray[1]);
+        remoteServerCmdArray.add(0, "programLocation : " + cmdArray[0]);
+        remoteServerCmdArray.add(1, "programName : " + cmdArray[1]);
         return cmdArray;
     }
 
     public String getCmdArrayString() {
-        Iterator itr = finalCmdArray.iterator();
+        Iterator itr = remoteServerCmdArray.iterator();
         StringBuilder cmdArray = new StringBuilder();
         String tmpString;
         while (itr.hasNext()) {
@@ -548,7 +548,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 cmdString = cmdString.replaceAll("argument", "ofile");
                 cmdString = cmdString.replaceAll("option", "ofile");
             }
-            finalCmdArray.add(cmdString);
+            if (remoteServerCmdArray.size() == 0 ) {
+                remoteServerCmdArray.add(cmdString);
+            }
+            else if (! cmdString.equals(remoteServerCmdArray.get(remoteServerCmdArray.size()-1))){
+                remoteServerCmdArray.add(cmdString);
+            }
             SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
         return cmdArrayParam;
@@ -581,7 +586,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         filesToUpload = new ArrayList<String>();
         filesToDownload = new ArrayList<String>();
-        finalCmdArray = new ArrayList<String>();
+        remoteServerCmdArray = new ArrayList<String>();
 
         if (acceptsParFile) {
             return getCmdArrayWithParFile();
@@ -631,8 +636,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         if (filesToDownload == null) {
             filesToDownload = new ArrayList<String>();
         }
-        if (finalCmdArray == null) {
-            finalCmdArray = new ArrayList<String>();
+        if (remoteServerCmdArray == null) {
+            remoteServerCmdArray = new ArrayList<String>();
         }
 
         StringBuilder parString = new StringBuilder("");
@@ -648,11 +653,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 if (!option.getDefaultValue().equals(option.getValue())) {
                     parString.append(option.getName() + "=" + option.getValue() + "\n");
                     if (option.getType().equals(ParamInfo.Type.IFILE)) {
-                        finalCmdArray.add("ifile : " + option.getName() + "=" + option.getValue());
+                        remoteServerCmdArray.add("ifile : " + option.getName() + "=" + option.getValue());
                     } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
-                        finalCmdArray.add("ofile : " + option.getName() + "=" + option.getValue());
+                        remoteServerCmdArray.add("ofile : " + option.getName() + "=" + option.getValue());
                     } else {
-                        finalCmdArray.add("option : " + option.getName() + "=" + option.getValue());
+                        remoteServerCmdArray.add("option : " + option.getName() + "=" + option.getValue());
                     }
                 }
 
@@ -676,8 +681,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         if (filesToDownload == null) {
             filesToDownload = new ArrayList<String>();
         }
-        if (finalCmdArray == null) {
-            finalCmdArray = new ArrayList<String>();
+        if (remoteServerCmdArray == null) {
+            remoteServerCmdArray = new ArrayList<String>();
         }
 
         StringBuilder parString = new StringBuilder("");
@@ -693,13 +698,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 if (!option.getDefaultValue().equals(option.getValue())) {
                     //parString.append(option.getName() + "=" + option.getValue() + "\n");
                     if (option.getType().equals(ParamInfo.Type.IFILE)) {
-                        finalCmdArray.add("ifile : " + option.getName() + "=" + option.getValue());
+                        remoteServerCmdArray.add("ifile : " + option.getName() + "=" + option.getValue());
                         parString.append("ifile : " + option.getName() + "=" + option.getValue() + "\n");
                     } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
-                        finalCmdArray.add("ofile : " + option.getName() + "=" + option.getValue());
+                        remoteServerCmdArray.add("ofile : " + option.getName() + "=" + option.getValue());
                         parString.append("ofile : " + option.getName() + "=" + option.getValue() + "\n");
                     } else {
-                        finalCmdArray.add("option : " + option.getName() + "=" + option.getValue());
+                        remoteServerCmdArray.add("option : " + option.getName() + "=" + option.getValue());
                         parString.append("option : " + option.getName() + "=" + option.getValue() + "\n");
                     }
                 }

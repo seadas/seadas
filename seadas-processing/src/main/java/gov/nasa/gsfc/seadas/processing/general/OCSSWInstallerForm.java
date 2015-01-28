@@ -84,22 +84,45 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
 
     }
 
+    HashMap<String, Boolean> missionDataStatus;
+
     public OCSSWInstallerForm(AppContext appContext, String programName, String xmlFileName) {
         this.appContext = appContext;
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
         processorModel.setReadyToRun(true);
-
         updateMissionValues();
         createUserInterface();
         processorModel.updateParamInfo("--install-dir", getInstallDir());
     }
 
-    private void updateMissionValues() {
-        for (Map.Entry<String, String> entry : MISSION_DIRECTORIES.entrySet()) {
-            String missionName = entry.getKey();
-            String missionDir = entry.getValue();
+    private void updateMissionStatus() {
+        missionDataStatus = new HashMap<String, Boolean>();
+        missionDataStatus.put("SEAWIFS", new File(missionDataDir + "seawifs").exists());
+        missionDataStatus.put("AQUA", new File(missionDataDir + "modisa").exists());
+        missionDataStatus.put("TERRA", new File(missionDataDir + "modist").exists());
+        missionDataStatus.put("VIIRSN", new File(missionDataDir + "viirsn").exists());
+        missionDataStatus.put("MERIS", new File(missionDataDir + "meris").exists());
+        missionDataStatus.put("CZCS", new File(missionDataDir + "czcs").exists());
+        missionDataStatus.put("AQUARIUS", new File(missionDataDir + "aquarius").exists());
+        missionDataStatus.put("OCTS", new File(missionDataDir + "octs").exists());
+        missionDataStatus.put("OSMI", new File(missionDataDir + "osmi").exists());
+        missionDataStatus.put("MOS", new File(missionDataDir + "mos").exists());
+        missionDataStatus.put("OCM2", new File(missionDataDir + "ocm2").exists());
+        missionDataStatus.put("OCM1", new File(missionDataDir + "ocm1").exists());
+        missionDataStatus.put("AVHRR", new File(missionDataDir + "avhrr").exists());
+        missionDataStatus.put("HICO", new File(missionDataDir + "hico").exists());
+        missionDataStatus.put("GOCI", new File(missionDataDir + "goci").exists());
+    }
 
-            if (new File(missionDataDir + missionDir).exists()) {
+    private void updateMissionValues() {
+
+        updateMissionStatus();
+
+        for (Map.Entry<String, Boolean> entry : missionDataStatus.entrySet()) {
+            String missionName = entry.getKey();
+            Boolean missionStatus = entry.getValue();
+
+            if (missionStatus) {
                 processorModel.setParamValue("--" + missionName.toLowerCase(), "1");
             }
 
@@ -113,8 +136,7 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
     }
 
     private String getInstallDir() {
-        String installDir;
-        installDir = OCSSW.getOcsswEnv();
+        String installDir = OCSSW.getOcsswEnv();
         if (installDir != null) {
             return installDir;
         } else {

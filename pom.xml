@@ -71,6 +71,7 @@
         <module>seadas-watermask-operator</module>
         <module>seadas-contour-operator</module>
         <module>seadas-bathymetry-operator</module>
+        <!--<module>os-rgbwrite</module>-->
         <!--<module>../../beam/beam-aatsr-sst</module>-->
         <module>../beam/beam-alos-reader</module>
         <module>../beam/beam-atsr-reader</module>
@@ -101,6 +102,7 @@
         <module>../beam/blue-marble-worldmap</module>
         <module>../beam/globcover-worldmap</module>
         <module>../beam/lib-hdf</module>
+        <module>seadas-ocsswwsclient</module>
 
     </modules>
 
@@ -736,7 +738,14 @@
                 <version>1.0.4</version>
             </dependency>
 
+            <!-- GSON for JSON support ########################################  -->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.3.1</version>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <scm>
