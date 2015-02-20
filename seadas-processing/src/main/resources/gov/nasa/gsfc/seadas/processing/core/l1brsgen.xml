@@ -4,6 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
+        <progressRegex>Processing scan .+?\((\d+) of (\d+)\)</progressRegex>
         <hasGeoFile>true</hasGeoFile>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
@@ -119,7 +120,7 @@
         </option>
         <option type="int">
             <name>resolution</name>
-            <value></value>
+            <value>-1</value>
             <type>int</type>
             <default>-1</default>
             <description>processing resolution (MODIS only)</description>
@@ -198,7 +199,7 @@
         </option>
         <option type="float">
             <name>datamin</name>
-            <value></value>
+            <value>0.01</value>
             <type>float</type>
             <default>0.01</default>
             <description>minimum value for data scaling
@@ -212,7 +213,7 @@
         </option>
         <option type="float">
             <name>datamax</name>
-            <value></value>
+            <value>0.9</value>
             <type>float</type>
             <default>0.9</default>
             <description>maximum value for data scaling
@@ -226,7 +227,7 @@
         </option>
         <option type="int">
             <name>stype</name>
-            <value></value>
+            <value>0</value>
             <type>int</type>
             <default>0</default>
             <description>scaling type: 0: log; 1: linear
@@ -243,33 +244,78 @@
             </validValue>
         </option>
         <option type="string">
-            <name>outmode</name>
-            <value></value>
+            <name>oformat</name>
+            <value>hdf4</value>
+            <type>string</type>
+            <default>hdf4</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>hdf4</value>
+                    <description>output a HDF4 file</description>
+                </validValue>
+                <validValue>
+                    <value>bin</value>
+                    <description>output a flat binary file</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>output a PNG file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>output a netPBM PPM file</description>
+                </validValue>
+            </validValues>
+            <description>output file format</description>
+        </option>
+        <option type="string">
+            <name>oformat_depth</name>
+            <value>8bit</value>
             <type>string</type>
             <default>8bit</default>
-            <description>defines output file format</description>
             <source>default</source>
-            <validValue>
-                <value>8bit</value>
-                <description>8 bit HDF browse file (alias 0)</description>
-            </validValue>
-            <validValue>
-                <value>24bit</value>
-                <description>24 bit HDF browse file (alias 1)</description>
-            </validValue>
-            <validValue>
-                <value>ppm</value>
-                <description>PPM color or PGM grayscale image file (alias 2)</description>
-            </validValue>
-            <validValue>
-                <value>bin</value>
-                <description>flat binary (alias 3)</description>
-            </validValue>
-            <validValue>
-                <value>png</value>
-                <description>PNG (alias 4)</description>
-            </validValue>
+            <validValues>
+                <validValue>
+                    <value>8bit</value>
+                    <description>output 8 bit color depth</description>
+                </validValue>
+                <validValue>
+                    <value>24bit</value>
+                    <description>output 24 bit color depth</description>
+                </validValue>
+            </validValues>
+            <description>output file color depth for HDF4 file</description>
         </option>
+
+        <!--<option type="string">-->
+            <!--<name>outmode</name>-->
+            <!--<value></value>-->
+            <!--<type>string</type>-->
+            <!--<default>8bit</default>-->
+            <!--<description>defines output file format</description>-->
+            <!--<source>default</source>-->
+            <!--<validValue>-->
+                <!--<value>8bit</value>-->
+                <!--<description>8 bit HDF browse file (alias 0)</description>-->
+            <!--</validValue>-->
+            <!--<validValue>-->
+                <!--<value>24bit</value>-->
+                <!--<description>24 bit HDF browse file (alias 1)</description>-->
+            <!--</validValue>-->
+            <!--<validValue>-->
+                <!--<value>ppm</value>-->
+                <!--<description>PPM color or PGM grayscale image file (alias 2)</description>-->
+            <!--</validValue>-->
+            <!--<validValue>-->
+                <!--<value>bin</value>-->
+                <!--<description>flat binary (alias 3)</description>-->
+            <!--</validValue>-->
+            <!--<validValue>-->
+                <!--<value>png</value>-->
+                <!--<description>PNG (alias 4)</description>-->
+            <!--</validValue>-->
+        <!--</option>-->
 
     </options>
 </paramInfo>

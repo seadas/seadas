@@ -4,6 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
+        <progressRegex>Processing scan .+?\((\d+) of (\d+)\)</progressRegex>
         <hasGeoFile>false</hasGeoFile>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
@@ -87,7 +88,7 @@
         </option>
         <option type="int">
             <name>resolution</name>
-            <value></value>
+            <value>1000</value>
             <type>int</type>
             <default>-1</default>
             <description>processing resolution (MODIS only)</description>
@@ -238,28 +239,50 @@
             <default>[1,1,1]</default>
             <description>bands to use for red, green and blue</description>
         </option>
+        <!--<option type="string">-->
+        <!--<name>outmode</name>-->
+        <!--<value></value>-->
+        <!--<type>string</type>-->
+        <!--<default>ppm</default>-->
+        <!--<description>format of the output file 0: PPM 1: PNG 2: GeoTIFF-->
+        <!--</description>-->
+        <!--<source>default</source>-->
+        <!--<validValues>-->
+        <!--<validValue>-->
+        <!--<value>ppm</value>-->
+        <!--<description>PPM image file (alias 0)</description>-->
+        <!--</validValue>-->
+        <!--<validValue>-->
+        <!--<value>png</value>-->
+        <!--<description>PNG color or grayscale image file (alias 2)</description>-->
+        <!--</validValue>-->
+        <!--<validValue>-->
+        <!--<value>tiff</value>-->
+        <!--<description>GeoTIFF color or grayscale geo tiff image file (alias 2)</description>-->
+        <!--</validValue>-->
+        <!--</validValues>-->
+        <!--</option>-->
+
         <option type="string">
-            <name>outmode</name>
-            <value></value>
-            <type>string</type>
+            <name>oformat</name>
+            <value>ppm</value>
             <default>ppm</default>
-            <description>format of the output file 0: PPM 1: PNG 2: GeoTIFF
-            </description>
-            <source>default</source>
+            <source>/Users/Shared/ocssw/run/data/common/msl12_defaults.par</source>
             <validValues>
                 <validValue>
                     <value>ppm</value>
-                    <description>PPM image file (alias 0)</description>
+                    <description>output a netPBM PPM file</description>
                 </validValue>
                 <validValue>
                     <value>png</value>
-                    <description>PNG color or grayscale image file (alias 2)</description>
+                    <description>output a PNG file</description>
                 </validValue>
                 <validValue>
                     <value>tiff</value>
-                    <description>GeoTIFF color or grayscale geo tiff image file (alias 2)</description>
+                    <description>output a geoTIFF file</description>
                 </validValue>
             </validValues>
+            <description>output file format</description>
         </option>
         <option type="boolean">
             <name>atmocor</name>
@@ -268,5 +291,6 @@
             <default>true</default>
             <description>toggle atmospheric correction</description>
         </option>
+
     </options>
 </paramInfo>
