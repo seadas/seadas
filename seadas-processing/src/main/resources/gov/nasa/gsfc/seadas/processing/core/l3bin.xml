@@ -96,5 +96,26 @@
             <description>production version [default=Unspecified]</description>
             <order>10</order>
         </option>
+        <option type="string">
+            <name>oformat</name>
+            <value></value>
+            <default></default>
+            <source></source>
+            <validValues>
+                <validValue>
+                    <value>1</value>
+                    <description>HDF4</description>
+                </validValue>
+                <validValue>
+                    <value>2</value>
+                    <description>netCDF4</description>
+                </validValue>
+                <validValue>
+                    <value>3</value>
+                    <description>HDF5</description>
+                </validValue>
+            </validValues>
+            <description>output file format; default is the same format as input file(s)</description>
+        </option>
     </options>
 </paramInfo>
