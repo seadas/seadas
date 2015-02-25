@@ -21,7 +21,7 @@ public class ContourInterval {
     ContourInterval(String contourBaseName, Double contourLevelValue) {
         this.contourLevelValue = new Double(decimalFormat.format(contourLevelValue));
         contourLevelName = contourBaseName + this.contourLevelValue;
-        lineColor = Color.WHITE;
+        lineColor = Color.BLACK;
         contourLineStyleValue = "1.0, 0";
     }
 
