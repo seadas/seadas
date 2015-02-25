@@ -86,7 +86,7 @@ public class ContourDialog extends JDialog {
         propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
         noDataValue = selectedBand.getNoDataValue();
         createContourUI();
-        contourCanceled = false;
+        contourCanceled = true;
     }
 
     private PropertyChangeListener getBandPropertyListener() {
@@ -329,6 +329,7 @@ public class ContourDialog extends JDialog {
 //                if (contourData.getContourIntervals().size() == 0) {
 //                    contourData.createContourLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
 //                }
+                contourCanceled = false;
                 dispose();
             }
         });
