@@ -308,7 +308,8 @@ public class ContourDialog extends JDialog {
 
         Band[] bands = product.getBands();
         for (Band band : bands) {
-            if ( band.getName().contains(selectedBand.getName()) && band.getName().length() > selectedBand.getName().length() ) {
+            //the image info of the filteredBand of the current band is null; this is to avoid selecting other filter bands and setting them to null
+            if ( band.getName().contains(selectedBand.getName()) && band.getName().length() > selectedBand.getName().length() && band.getImageInfo() == null ) {
                 selectedBand = band;
                 filteredBandName = band.getName();
                 filterBand = true;
