@@ -58,12 +58,15 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         contourDialog.setVisible(true);
         contourDialog.dispose();
 
-        if (contourDialog.isContourCanceled()) {
-            return;
-        }
+
         if (contourDialog.getFilteredBandName() != null) {
             product.getBandGroup().remove(product.getBand(contourDialog.getFilteredBandName()));
         }
+
+        if (contourDialog.isContourCanceled()) {
+            return;
+        }
+
         ContourData contourData = contourDialog.getContourData();
         noDataValue = contourDialog.getNoDataValue();
         ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
