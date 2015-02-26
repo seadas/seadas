@@ -307,9 +307,10 @@ public class ContourDialog extends JDialog {
     private void updateActiveBandList(){
 
         Band[] bands = product.getBands();
+
         for (Band band : bands) {
             //the image info of the filteredBand of the current band is null; this is to avoid selecting other filter bands and setting them to null
-            if ( band.getName().contains(selectedBand.getName()) && band.getName().length() > selectedBand.getName().length() && band.getImageInfo() == null ) {
+            if ( band.getName().contains(selectedBand.getName()) && band.getName().length() > selectedBand.getName().length() && band.equals(bands[bands.length -1]) ) {
                 selectedBand = band;
                 filteredBandName = band.getName();
                 filterBand = true;
@@ -418,6 +419,7 @@ public class ContourDialog extends JDialog {
         CommandEvent filterCommandEvent = new CommandEvent(command, actionEvent, null, null );
         command.setCommandID("createFilteredBand");
         command.setHelpId("createFilteredBand");
+        command.setLongDescription("filter function in contour");
         return filterCommandEvent;
     }
 
