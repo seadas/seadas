@@ -43,9 +43,9 @@ import java.text.MessageFormat;
         description = "Operator creating a bathymetry band, elevation band, topography band and bathymetry mask")
 public class BathymetryOp extends Operator {
 
-    public static final String BATHYMETRY_BAND_NAME = "elevation_bathymetry";
+    public static final String BATHYMETRY_BAND_NAME = "bathymetry_sealevel";
     public static final String ELEVATION_BAND_NAME = "elevation";
-    public static final String TOPOGRAPHY_BAND_NAME = "elevation_topography";
+    public static final String TOPOGRAPHY_BAND_NAME = "topography_sealevel";
 
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
@@ -250,7 +250,7 @@ public class BathymetryOp extends Operator {
                     pixelPos.setLocation(x, y);
                     geoCoding.getGeoPos(pixelPos, geoPos);
 
-                    short value;
+                    int value;
                     if (geoPos.isValid()) {
 
                         if (targetBandName.equals(ELEVATION_BAND_NAME)) {
@@ -263,9 +263,15 @@ public class BathymetryOp extends Operator {
                             }
                         } else if (targetBandName.equals(BATHYMETRY_BAND_NAME)) {
                             if (motherEarthBox.getValue(geoPos) <= 0) {
+
                                 value = motherEarthBox.getValue(geoPos);
                             } else {
                                 value = bathymetryReader.getMissingValue();
+                            }
+
+                           // convert  to positive if not NaN
+                            if (value > -32000) {
+                                value = -value;
                             }
                         } else {
                             value = bathymetryReader.getMissingValue();
