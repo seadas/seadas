@@ -17,6 +17,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
@@ -281,7 +283,7 @@ public class ContourIntervalDialog extends JDialog {
         return numberOfLevels;
     }
 
-    private void customizeContourLevels(ContourData contourData) {
+    private void customizeContourLevels(ContourData contourData)  {
         final String contourNamePropertyName = "contourName";
         final String contourValuePropertyName = "contourValue";
         final String contourColorPropertyName = "contourColor";
@@ -337,6 +339,7 @@ public class ContourIntervalDialog extends JDialog {
             ColorComboBox contourLineColorComboBox = new ColorComboBox();
             contourLineColorComboBox.setColorValueVisible(false);
             contourLineColorComboBox.setAllowDefaultColor(true);
+            contourLineColorComboBox.setSelectedColor(interval.getLineColor());
             Binding contourLineColorBinding = bindingContext.bind(contourColorPropertyName, new ColorComboBoxAdapter(contourLineColorComboBox));
             contourLineColorBinding.addComponent(contourColorLabel);
             bindingContext.addPropertyChangeListener(contourColorPropertyName, pcl_color);
@@ -366,14 +369,63 @@ public class ContourIntervalDialog extends JDialog {
 
         Object[] options = {"Save",
                 "Cancel"};
-        int n = JOptionPane.showOptionDialog(this, customPanel,
-                "Customize Contour Levels",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                options,
-                options[1]);
-        if (n == JOptionPane.YES_OPTION) {
+//        JOptionPane jPane = new JOptionPane();
+//
+//        int n = JOptionPane.showOptionDialog(this, customPanel,
+//                "Customize Contour Levels",
+//                JOptionPane.YES_NO_OPTION,
+//                JOptionPane.PLAIN_MESSAGE,
+//                null,
+//                options,
+//                options[0]);
+        //final JDialog dialog = new JDialog(this, "Customize Contour Levels", true);
+        final JOptionPane optionPane = new JOptionPane(customPanel,
+                                                       JOptionPane.YES_NO_OPTION,
+                                                       JOptionPane.PLAIN_MESSAGE,
+                javax.swing.UIManager.getIcon("OptionPane.informationIcon"),     //do not use a custom Icon
+                                                       options,  //the titles of buttons
+                                                       options[0]); //default button title
+
+        final JDialog dialog = optionPane.createDialog(this, "Customize Contour Levels");
+        dialog.setDefaultCloseOperation(
+            JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                //setLabel("Thwarted user attempt to close window.");
+            }
+        });
+        optionPane.addPropertyChangeListener(
+            new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e) {
+                    String prop = e.getPropertyName();
+
+                    if (dialog.isVisible()
+                     && (e.getSource() == optionPane)
+                     && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
+                        //If you were going to check something
+                        //before closing the window, you'd do
+                        //it here.
+                        dialog.setVisible(false);
+                    }
+                }
+            });
+        Point dialogLoc = dialog.getLocation();
+        Point parentLoc = this.getLocation();
+        dialog.setLocation(parentLoc.x + dialogLoc.x, dialogLoc.y);
+        dialog.pack();
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);
+
+
+        //int value = ((Integer)optionPane.getValue()).intValue();
+//        if (value == JOptionPane.YES_OPTION) {
+//            setLabel("Good.");
+//        } else if (value == JOptionPane.NO_OPTION) {
+//            setLabel("Try using the window decorations "
+//                     + "to close the non-auto-closing dialog. "
+//                     + "You can't!");
+//        }
+        if (optionPane.getValue().equals(options[0])) {
             contourData.setContourIntervals(contourIntervalsClone);
             minValueField.setText(new Double(contourIntervalsClone.get(0).getContourLevelValue()).toString());
             maxValueField.setText(new Double(contourIntervalsClone.get(contourIntervalsClone.size() - 1).getContourLevelValue()).toString());

@@ -48,6 +48,7 @@ public class ContourData {
         this.band = band;
         log = false;
         filtered = true;
+        keepColors = true;
     }
 
 
@@ -55,7 +56,7 @@ public class ContourData {
         contourIntervals.clear();
     }
 
-    public void createContourLevels(){
+    public void createContourLevels() {
         createContourLevels(startValue, endValue, numOfLevels, log);
     }
 
@@ -70,12 +71,15 @@ public class ContourData {
         Double ev;
         Double interval;
         ArrayList<Color> colors = new ArrayList<Color>();
+        ArrayList<String> names = new ArrayList<>();
         this.startValue = startValue;
         this.endValue = endValue;
         this.numOfLevels = numberOfLevels;
 
         if (keepColors) {
             colors = getColors();
+            names = getNames();
+
         }
 
 
@@ -86,6 +90,9 @@ public class ContourData {
          */
         if (startValue == endValue || Math.abs(startValue - endValue) < 0.00001 || numberOfLevels == 1) {
             contourIntervals.add(new ContourInterval(contourBaseName, startValue));
+            updateColors(colors);
+            //TODO Only update names in the user changed the contour name!
+            updateNames(names);
             return;
         }
 
@@ -93,8 +100,8 @@ public class ContourData {
          * Normal case.
          */
         if (log) {
-            if ( startValue == 0 ) startValue = Double.MIN_VALUE;
-            if ( endValue == 0 ) endValue = Double.MIN_VALUE;
+            if (startValue == 0) startValue = Double.MIN_VALUE;
+            if (endValue == 0) endValue = Double.MIN_VALUE;
             sv = Math.log10(startValue);
             ev = Math.log10(endValue);
             interval = (ev - sv) / (numberOfLevels - 1);
@@ -114,13 +121,33 @@ public class ContourData {
         }
 
         if (keepColors) {
+            updateColors(colors);
+            updateNames(names);
+        }
+    }
+
+
+    private void updateColors(ArrayList<Color> colors) {
+        if (colors.size() > 0) {
             int i = 0;
             for (ContourInterval contourInverval : contourIntervals) {
-                contourInverval.setLineColor(colors.get(i++));
+                if (colors.size() > i) {
+                    contourInverval.setLineColor(colors.get(i++));
+                }
             }
         }
     }
 
+    private void updateNames(ArrayList<String> names) {
+        if (names.size() > 0) {
+            int i = 0;
+            for (ContourInterval contourInverval : contourIntervals) {
+                if (names.size() > i) {
+                    contourInverval.setContourLevelName(names.get(i++));
+                }
+            }
+        }
+    }
 
     public void setBand(Band band) {
         String oldBandName = this.band.getName();
@@ -189,6 +216,14 @@ public class ContourData {
         return colors;
     }
 
+    public ArrayList<String> getNames() {
+        ArrayList<String> names = new ArrayList<String>();
+        for (ContourInterval interval : contourIntervals) {
+            names.add(interval.getContourLevelName());
+        }
+        return names;
+    }
+
     public ArrayList<ContourInterval> cloneContourIntervals() {
         ArrayList<ContourInterval> clone = new ArrayList<ContourInterval>(contourIntervals.size());
         for (ContourInterval interval : contourIntervals) {
@@ -206,31 +241,31 @@ public class ContourData {
     }
 
     public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
-         propertyChangeSupport.addPropertyChangeListener(name, listener);
-     }
+        propertyChangeSupport.addPropertyChangeListener(name, listener);
+    }
 
-     public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
-         propertyChangeSupport.removePropertyChangeListener(name, listener);
-     }
+    public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(name, listener);
+    }
 
-     public SwingPropertyChangeSupport getPropertyChangeSupport() {
-         return propertyChangeSupport;
-     }
+    public SwingPropertyChangeSupport getPropertyChangeSupport() {
+        return propertyChangeSupport;
+    }
 
-     public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
-         PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-         for (int i = 0; i < pr.length; i++) {
-             this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
-         }
-     }
+    public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
+        }
+    }
 
-     public void clearPropertyChangeSupport() {
-         PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-         for (int i = 0; i < pr.length; i++) {
-             this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
-         }
+    public void clearPropertyChangeSupport() {
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
+        }
 
-     }
+    }
 
     public boolean isLog() {
         return log;
