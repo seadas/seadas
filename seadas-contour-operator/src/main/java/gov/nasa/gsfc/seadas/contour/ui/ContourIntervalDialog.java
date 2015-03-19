@@ -63,7 +63,7 @@ public class ContourIntervalDialog extends JDialog {
 
     SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
-    public void setBand(Band newBand){
+    public void setBand(Band newBand) {
         numberOfLevels = 1;
         numLevelsField.setText("1");
         setMaxValue(new Double(CommonUtilities.round(newBand.getStx().getMaximum(), 3)));
@@ -216,9 +216,19 @@ public class ContourIntervalDialog extends JDialog {
                     System.out.print("---change!---");
 
                     contourData.createContourLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
+
                 }
                 //System.out.print("--- no change!---");
                 customizeContourLevels(contourData);
+                // disable min, max, level, log fields of a single contour panel
+                contourPanel.getComponent(0).setEnabled(false);
+                contourPanel.getComponent(1).setEnabled(false);
+                contourPanel.getComponent(2).setEnabled(false);
+                contourPanel.getComponent(3).setEnabled(false);
+                contourPanel.getComponent(4).setEnabled(false);
+                contourPanel.getComponent(5).setEnabled(false);
+                contourPanel.getComponent(6).setEnabled(false);
+                contourPanel.getComponent(7).setEnabled(false);
             }
         });
 
@@ -283,7 +293,7 @@ public class ContourIntervalDialog extends JDialog {
         return numberOfLevels;
     }
 
-    private void customizeContourLevels(ContourData contourData)  {
+    private void customizeContourLevels(ContourData contourData) {
         final String contourNamePropertyName = "contourName";
         final String contourValuePropertyName = "contourValue";
         final String contourColorPropertyName = "contourColor";
@@ -380,35 +390,35 @@ public class ContourIntervalDialog extends JDialog {
 //                options[0]);
         //final JDialog dialog = new JDialog(this, "Customize Contour Levels", true);
         final JOptionPane optionPane = new JOptionPane(customPanel,
-                                                       JOptionPane.YES_NO_OPTION,
-                                                       JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
                 javax.swing.UIManager.getIcon("OptionPane.informationIcon"),     //do not use a custom Icon
-                                                       options,  //the titles of buttons
-                                                       options[0]); //default button title
+                options,  //the titles of buttons
+                options[0]); //default button title
 
         final JDialog dialog = optionPane.createDialog(this, "Group Contour Levels");
         dialog.setDefaultCloseOperation(
-            JDialog.DO_NOTHING_ON_CLOSE);
+                JDialog.DO_NOTHING_ON_CLOSE);
         dialog.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 //setLabel("Thwarted user attempt to close window.");
             }
         });
         optionPane.addPropertyChangeListener(
-            new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent e) {
-                    String prop = e.getPropertyName();
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent e) {
+                        String prop = e.getPropertyName();
 
-                    if (dialog.isVisible()
-                     && (e.getSource() == optionPane)
-                     && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
-                        //If you were going to check something
-                        //before closing the window, you'd do
-                        //it here.
-                        dialog.setVisible(false);
+                        if (dialog.isVisible()
+                                && (e.getSource() == optionPane)
+                                && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
+                            //If you were going to check something
+                            //before closing the window, you'd do
+                            //it here.
+                            dialog.setVisible(false);
+                        }
                     }
-                }
-            });
+                });
         Point dialogLoc = dialog.getLocation();
         Point parentLoc = this.getLocation();
         dialog.setLocation(parentLoc.x + dialogLoc.x, dialogLoc.y);
@@ -440,30 +450,30 @@ public class ContourIntervalDialog extends JDialog {
         return contourData;
     }
 
-        public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
-             propertyChangeSupport.addPropertyChangeListener(name, listener);
-         }
+    public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(name, listener);
+    }
 
-         public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
-             propertyChangeSupport.removePropertyChangeListener(name, listener);
-         }
+    public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(name, listener);
+    }
 
-         public SwingPropertyChangeSupport getPropertyChangeSupport() {
-             return propertyChangeSupport;
-         }
+    public SwingPropertyChangeSupport getPropertyChangeSupport() {
+        return propertyChangeSupport;
+    }
 
-         public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
-             PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-             for (int i = 0; i < pr.length; i++) {
-                 this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
-             }
-         }
+    public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
+        }
+    }
 
-         public void clearPropertyChangeSupport() {
-             PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-             for (int i = 0; i < pr.length; i++) {
-                 this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
-             }
+    public void clearPropertyChangeSupport() {
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
+        }
 
-         }
+    }
 }
