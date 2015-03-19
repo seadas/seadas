@@ -202,7 +202,7 @@ public class ContourIntervalDialog extends JDialog {
         contourPanel.add(logCheckBox,
                 new ExGridBagConstraints(10, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        JButton customize = new JButton("Customize");
+        JButton customize = new JButton("Preview/Edit");
         customize.setPreferredSize(customize.getPreferredSize());
         customize.setMinimumSize(customize.getPreferredSize());
         customize.setMaximumSize(customize.getPreferredSize());
@@ -386,7 +386,7 @@ public class ContourIntervalDialog extends JDialog {
                                                        options,  //the titles of buttons
                                                        options[0]); //default button title
 
-        final JDialog dialog = optionPane.createDialog(this, "Customize Contour Levels");
+        final JDialog dialog = optionPane.createDialog(this, "Group Contour Levels");
         dialog.setDefaultCloseOperation(
             JDialog.DO_NOTHING_ON_CLOSE);
         dialog.addWindowListener(new WindowAdapter() {

@@ -255,7 +255,8 @@ public class ContourDialog extends JDialog {
 
 
         setModalityType(ModalityType.APPLICATION_MODAL);
-        setTitle("Contour Lines for " + selectedBand.getName() );
+        setTitle("Contour Lines");
+        //setTitle("Contour Lines for " + selectedBand.getName() );
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
