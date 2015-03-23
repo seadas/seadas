@@ -25,21 +25,36 @@
 
 
 <pre>
+        Bathymetry
+            - Depth values are now in positive units.
+            - Default color scheme is in log space to better depict shallow water floor features.
+
         Color Palettes Added/Revised
-            - Gradient Palettes (added)
-            - Bathymetry Palettes (revised)
-            - Solar Spectrum (added)
+            - Bathymetry color palette revised with a smoother transition from light blue-green to dark blue-green.
+            - Various gradient palettes added.
+            - Default (oceancolor_standard.cpd) revised to not use black at high saturation.
+
+        Color Schemes:
+            - Added a user defined text file for generating custom schemes or overriding default schemes.
+            - Added a wildcard feature to enable more generic auto-application of color schemes.
 
         Band Filters Added
             - Low-Pass Radial Attenuation
+            - Straylight
 
         RGB Profile Added
+            - MODIS Trucolor profile added.
+
 
     </pre>
 
 
 <p class="h3better">Bug Fixes</p>
 <pre>
+        Color Schemes
+            - Fixed bug where parameter changes in the Color Manager of a band which did not match a scheme name were
+              being lost when toggling between bands.
+
         Contour Lines
             - did this
             - did that
