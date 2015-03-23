@@ -111,7 +111,9 @@ public class ContourIntervalDialog extends JDialog {
                     }
                 }
                 contourData.setStartValue(minValue);
+                contourData.setLog(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
+                logCheckBox.setSelected(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
             }
         };
         final PropertyChangeListener pcl_max = new PropertyChangeListener() {
@@ -127,7 +129,9 @@ public class ContourIntervalDialog extends JDialog {
                     }
                 }
                 contourData.setEndValue(maxValue);
+                contourData.setLog(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
+                logCheckBox.setSelected(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
             }
         };
         final PropertyChangeListener pcl_num = new PropertyChangeListener() {
@@ -162,9 +166,10 @@ public class ContourIntervalDialog extends JDialog {
 //                } else {
 //                    contourData.setKeepColors(false);
 //                }
-                contourData.setLog(logCheckBox.isSelected());
+                contourData.setLog(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
                 //contourData.createContourLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
+                logCheckBox.setSelected(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
             }
         });
 
@@ -221,14 +226,16 @@ public class ContourIntervalDialog extends JDialog {
                 //System.out.print("--- no change!---");
                 customizeContourLevels(contourData);
                 // disable min, max, level, log fields of a single contour panel
-                contourPanel.getComponent(0).setEnabled(false);
-                contourPanel.getComponent(1).setEnabled(false);
-                contourPanel.getComponent(2).setEnabled(false);
-                contourPanel.getComponent(3).setEnabled(false);
-                contourPanel.getComponent(4).setEnabled(false);
-                contourPanel.getComponent(5).setEnabled(false);
-                contourPanel.getComponent(6).setEnabled(false);
-                contourPanel.getComponent(7).setEnabled(false);
+                if (contourData.isContourCustomized()) {
+                    contourPanel.getComponent(0).setEnabled(false);
+                    contourPanel.getComponent(1).setEnabled(false);
+                    contourPanel.getComponent(2).setEnabled(false);
+                    contourPanel.getComponent(3).setEnabled(false);
+                    contourPanel.getComponent(4).setEnabled(false);
+                    contourPanel.getComponent(5).setEnabled(false);
+                    contourPanel.getComponent(6).setEnabled(false);
+                    contourPanel.getComponent(7).setEnabled(false);
+                }
             }
         });
 
@@ -443,6 +450,7 @@ public class ContourIntervalDialog extends JDialog {
             maxValue = contourIntervalsClone.get(contourIntervalsClone.size() - 1).getContourLevelValue();
             contourData.setStartValue(minValue);
             contourData.setEndValue(maxValue);
+            contourData.setContourCustomized(true);
         }
     }
 

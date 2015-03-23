@@ -29,6 +29,7 @@ public class ContourData {
     private boolean keepColors;
     private boolean log;
     private boolean filtered;
+    private boolean contourCustomized;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -49,6 +50,7 @@ public class ContourData {
         log = false;
         filtered = true;
         keepColors = true;
+        contourCustomized = false;
     }
 
 
@@ -281,6 +283,14 @@ public class ContourData {
 
     public void setFiltered(boolean filtered) {
         this.filtered = filtered;
+    }
+
+    public boolean isContourCustomized() {
+        return contourCustomized;
+    }
+
+    public void setContourCustomized(boolean contourCustomized) {
+        this.contourCustomized = contourCustomized;
     }
 }
 
