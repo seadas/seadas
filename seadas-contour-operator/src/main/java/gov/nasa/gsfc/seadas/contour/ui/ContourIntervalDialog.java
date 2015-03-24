@@ -323,6 +323,7 @@ public class ContourIntervalDialog extends JDialog {
             JTextField contourLineStyleValue = new JTextField();
             contourLineStyleValue.setColumns(10);
             contourLineStyleValue.setText(interval.getContourLineStyleValue());
+            contourLineStyleValue.setToolTipText("Enter two numeric values. First number defines the dash length, the second number defines the space the length for dashed lines.");
             PropertyContainer propertyContainer = new PropertyContainer();
             propertyContainer.addProperty(Property.create(contourNamePropertyName, interval.getContourLevelName()));
             propertyContainer.addProperty(Property.create(contourValuePropertyName, interval.getContourLevelValue()));
