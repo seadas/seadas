@@ -253,7 +253,8 @@ public class ContourDialog extends JDialog {
 
         add(mainPanel);
 
-
+        //this will set the "Create Contour Lines" button as a default button that listens to the Enter key
+        mainPanel.getRootPane().setDefaultButton((JButton)((JPanel)mainPanel.getComponent(2)).getComponent(2));
         setModalityType(ModalityType.APPLICATION_MODAL);
         setTitle("Contour Lines");
         //setTitle("Contour Lines for " + selectedBand.getName() );
@@ -266,7 +267,7 @@ public class ContourDialog extends JDialog {
     private JPanel getBandPanel() {
         final int rightInset = 5;
 
-        JPanel bandPanel = new JPanel(new GridBagLayout());
+        final JPanel bandPanel = new JPanel(new GridBagLayout());
         JLabel bandLabel = new JLabel("Product:");
         bandComboBox = new JComboBox(activeBands.toArray());
         bandComboBox.setSelectedItem(selectedBand.getName());
@@ -291,6 +292,7 @@ public class ContourDialog extends JDialog {
                 filteredBandAction.actionPerformed(getFilterCommandEvent(filteredBandAction, e));
                 updateActiveBandList();
                 visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, true);
+                //((JPanel)bandPanel.getParent()).getRootPane().setDefaultButton((JButton)((JPanel)((JPanel)bandPanel.getParent()).getComponent(2)).getComponent(2));
             }
         });
         JLabel filler = new JLabel("                                              ");
@@ -336,7 +338,6 @@ public class ContourDialog extends JDialog {
                 dispose();
             }
         });
-
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(cancelButton.getPreferredSize());
         cancelButton.setMinimumSize(cancelButton.getPreferredSize());
