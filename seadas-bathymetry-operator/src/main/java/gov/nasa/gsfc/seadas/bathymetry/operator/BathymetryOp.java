@@ -43,9 +43,9 @@ import java.text.MessageFormat;
         description = "Operator creating a bathymetry band, elevation band, topography band and bathymetry mask")
 public class BathymetryOp extends Operator {
 
-    public static final String BATHYMETRY_BAND_NAME = "bathymetry_sealevel";
+    public static final String BATHYMETRY_BAND_NAME = "bathymetry_depth";
     public static final String ELEVATION_BAND_NAME = "elevation";
-    public static final String TOPOGRAPHY_BAND_NAME = "topography_sealevel";
+    public static final String TOPOGRAPHY_BAND_NAME = "topography_height";
 
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
@@ -227,9 +227,11 @@ public class BathymetryOp extends Operator {
 
                 // retrieve the bathymetry height array from netcdf
                 Array heightArray = bathymetryReader.getHeightArray(origin, shape);
+                Array waterSurfaceheightArray = bathymetryReader.getWaterSurfaceHeightArray(origin, shape);
 
                 // convert heightArray from ucar.ma2.Array format to regular java array
                 short heights[][] = (short[][]) heightArray.copyToNDJavaArray();
+                short waterSurfaceHeights[][] = (short[][]) waterSurfaceheightArray.copyToNDJavaArray();
 
                 // add the value array to the earthBox
 
@@ -239,7 +241,7 @@ public class BathymetryOp extends Operator {
                 float maxLon = bathymetryReader.getLon(maxLonIndex);
                 short missingValue = bathymetryReader.getMissingValue();
 
-                earthBox.setValues(minLat, maxLat, minLon, maxLon, heights, missingValue);
+                earthBox.setValues(minLat, maxLat, minLon, maxLon, heights, waterSurfaceHeights, missingValue);
                 earthBox.setGetValueAverage(true);
             }
 
@@ -251,25 +253,33 @@ public class BathymetryOp extends Operator {
                     geoCoding.getGeoPos(pixelPos, geoPos);
 
                     int value;
+                    int waterSurfaceHeight;
+                    int height;
                     if (geoPos.isValid()) {
 
+                        height = motherEarthBox.getValue(geoPos);
+                        waterSurfaceHeight = motherEarthBox.getWaterSurfaceValue(geoPos);
+
                         if (targetBandName.equals(ELEVATION_BAND_NAME)) {
-                            value = motherEarthBox.getValue(geoPos);
+                            value = height;
                         } else if (targetBandName.equals(TOPOGRAPHY_BAND_NAME)) {
-                            if (motherEarthBox.getValue(geoPos) > 0) {
+                            int valueSurface = height - waterSurfaceHeight;
+
+                            if (valueSurface > 0) {
                                 value = motherEarthBox.getValue(geoPos);
                             } else {
                                 value = bathymetryReader.getMissingValue();
                             }
                         } else if (targetBandName.equals(BATHYMETRY_BAND_NAME)) {
-                            if (motherEarthBox.getValue(geoPos) <= 0) {
+                          int  valueSurface = height - waterSurfaceHeight;
 
-                                value = motherEarthBox.getValue(geoPos);
+                            if (valueSurface <= 0) {
+                                value = valueSurface;
                             } else {
                                 value = bathymetryReader.getMissingValue();
                             }
 
-                           // convert  to positive if not NaN
+                            // convert  to positive if not NaN
                             if (value > -32000) {
                                 value = -value;
                             }

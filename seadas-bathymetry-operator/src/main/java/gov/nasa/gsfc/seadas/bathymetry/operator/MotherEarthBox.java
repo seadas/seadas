@@ -62,6 +62,25 @@ public class MotherEarthBox {
         return bathymetryValue;
     }
 
+    public short getWaterSurfaceValue(GeoPos geoPos) {
+        short waterSurfaceValue;
+
+        if (geoPos.lat >= 0) {
+            if (geoPos.lon >= 0) {
+                waterSurfaceValue = earthBoxNE.getWaterSurfaceValue(geoPos);
+            } else {
+                waterSurfaceValue = earthBoxNW.getWaterSurfaceValue(geoPos);
+            }
+        } else {
+            if (geoPos.lon >= 0) {
+                waterSurfaceValue = earthBoxSE.getWaterSurfaceValue(geoPos);
+            } else {
+                waterSurfaceValue = earthBoxSW.getWaterSurfaceValue(geoPos);
+            }
+        }
+
+        return waterSurfaceValue;
+    }
 
     public EarthBox getEarthBoxNW() {
         return earthBoxNW;

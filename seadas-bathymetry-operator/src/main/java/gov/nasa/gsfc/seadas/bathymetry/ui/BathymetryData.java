@@ -172,14 +172,23 @@ public class BathymetryData {
 
     public String getMaskMath() {
 
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
+//        stringBuilder.append(" >= ");
+//        stringBuilder.append(new Double(-getMaskMaxDepth()).toString());
+//        stringBuilder.append(" and ");
+//        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
+//        stringBuilder.append(" <= ");
+//        stringBuilder.append(new Double(-getMaskMinDepth()).toString());
+
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
+        stringBuilder.append(BathymetryOp.BATHYMETRY_BAND_NAME);
         stringBuilder.append(" >= ");
-        stringBuilder.append(new Double(-getMaskMaxDepth()).toString());
+        stringBuilder.append(new Double(getMaskMinDepth()).toString());
         stringBuilder.append(" and ");
-        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
+        stringBuilder.append(BathymetryOp.BATHYMETRY_BAND_NAME);
         stringBuilder.append(" <= ");
-        stringBuilder.append(new Double(-getMaskMinDepth()).toString());
+        stringBuilder.append(new Double(getMaskMaxDepth()).toString());
 
         return stringBuilder.toString();
     }

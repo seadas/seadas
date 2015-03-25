@@ -39,6 +39,7 @@ public class BathymetryReader {
     int dimensionLon = 0;
 
     Variable heightVariable;
+    Variable waterSurfaceHeightVariable;
 
     private short missingValue;
 
@@ -60,6 +61,7 @@ public class BathymetryReader {
         deltaLonStrange = (endLon - startLon) / (dimensionLon-1);
 
         heightVariable = ncFile.findVariable("height");
+        waterSurfaceHeightVariable = ncFile.findVariable("water_surface_height");
 
         missingValue = heightVariable.findAttribute("missing_value").getNumericValue().shortValue();
 
@@ -91,6 +93,24 @@ public class BathymetryReader {
         }
     }
 
+    public Array getWaterSurfaceHeightArray(int[] origin, int[] shape) {
+
+        Array heightArray = null;
+
+        try {
+            heightArray = waterSurfaceHeightVariable.read(origin, shape);
+        } catch (IOException e) {
+
+        } catch (InvalidRangeException e) {
+
+        }
+
+        if (heightArray != null) {
+            return heightArray;
+        } else {
+            return null;
+        }
+    }
 
     public short getHeight(int latIndex, int lonIndex) {
 
