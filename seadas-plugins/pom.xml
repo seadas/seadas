@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>seadas-parent</artifactId>
+        <artifactId>seadas</artifactId>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <version>1</version>
+        <version>7.1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -25,7 +25,7 @@
         <module>../seadas-watermask-operator</module>
         <module>../seadas-contour-operator</module>
         <module>../seadas-ocsswrest</module>
-        <module>../seadas-ocsswwsclient</module>
+        <!--<module>../seadas-ocsswwsclient</module>-->
         <module>../seadas-bathymetry-operator</module>
         <!--<module>../../beam/beam-aatsr-sst</module>-->
         <module>../../beam/beam-alos-reader</module>
