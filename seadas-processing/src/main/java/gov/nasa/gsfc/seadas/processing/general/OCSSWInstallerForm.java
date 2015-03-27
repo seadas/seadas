@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.processing.core.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
@@ -19,7 +20,7 @@ import java.util.*;
  * Time: 11:11 AM
  * To change this template use File | Settings | File Templates.
  */
-public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
+public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI {
 
 
     //private FileSelector ocsswDirSelector;
@@ -90,59 +91,18 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
         this.appContext = appContext;
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
         processorModel.setReadyToRun(true);
+        init();
         updateMissionValues();
         createUserInterface();
         processorModel.updateParamInfo("--install-dir", getInstallDir());
     }
 
-    private void updateMissionStatus() {
-        missionDataStatus = new HashMap<String, Boolean>();
-        missionDataStatus.put("SEAWIFS", new File(missionDataDir + "seawifs").exists());
-        missionDataStatus.put("AQUA", new File(missionDataDir + "modisa").exists());
-        missionDataStatus.put("TERRA", new File(missionDataDir + "modist").exists());
-        missionDataStatus.put("VIIRSN", new File(missionDataDir + "viirsn").exists());
-        missionDataStatus.put("MERIS", new File(missionDataDir + "meris").exists());
-        missionDataStatus.put("CZCS", new File(missionDataDir + "czcs").exists());
-        missionDataStatus.put("AQUARIUS", new File(missionDataDir + "aquarius").exists());
-        missionDataStatus.put("OCTS", new File(missionDataDir + "octs").exists());
-        missionDataStatus.put("OSMI", new File(missionDataDir + "osmi").exists());
-        missionDataStatus.put("MOS", new File(missionDataDir + "mos").exists());
-        missionDataStatus.put("OCM2", new File(missionDataDir + "ocm2").exists());
-        missionDataStatus.put("OCM1", new File(missionDataDir + "ocm1").exists());
-        missionDataStatus.put("AVHRR", new File(missionDataDir + "avhrr").exists());
-        missionDataStatus.put("HICO", new File(missionDataDir + "hico").exists());
-        missionDataStatus.put("GOCI", new File(missionDataDir + "goci").exists());
-    }
 
-    private void updateMissionValues() {
+    abstract void updateMissionValues();
 
-        updateMissionStatus();
+    abstract String getInstallDir();
 
-        for (Map.Entry<String, Boolean> entry : missionDataStatus.entrySet()) {
-            String missionName = entry.getKey();
-            Boolean missionStatus = entry.getValue();
-
-            if (missionStatus) {
-                processorModel.setParamValue("--" + missionName.toLowerCase(), "1");
-            }
-
-        }
-        if (new File(missionDataDir + "eval").exists()) {
-            processorModel.setParamValue("--eval", "1");
-        }
-        if (new File(OCSSW.getOcsswEnv() + System.getProperty("file.separator") + "build").exists()) {
-            processorModel.setParamValue("--src", "1");
-        }
-    }
-
-    private String getInstallDir() {
-        String installDir = OCSSW.getOcsswEnv();
-        if (installDir != null) {
-            return installDir;
-        } else {
-            return System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw";
-        }
-    }
+    abstract void init();
 
     public ProcessorModel getProcessorModel() {
         return processorModel;
@@ -192,6 +152,7 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
         return newPanel;
     }
+    //ToDo: missionDataDir test should be differentiated for local and remote servers
 
     private void reorganizePanel(JPanel paramPanel) {
         dirPanel = new JPanel();
@@ -216,7 +177,8 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                     tmpString = ParamUtils.removePreceedingDashes(c.getName()).toUpperCase();
                     if (MISSIONS.contains(tmpString)) {
                         if (!DEFAULT_MISSIONS.contains(tmpString)) {
-                            if (new File(missionDataDir + MISSION_DIRECTORIES.get(tmpString)).exists()) {
+                            if (new File(missionDataDir + MISSION_DIRECTORIES.get(tmpString)).exists() ||
+                                    missionDataStatus.get(tmpString)) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                             }
                             missionPanel.add(c);
@@ -245,6 +207,15 @@ public class OCSSWInstallerForm extends JPanel implements CloProgramUI {
                 for (Component c : bps) {
                     dirPanel = (JPanel) c;
 
+                }
+                if (!RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+                    //if ocssw is not local, then disable the button to choose ocssw installation directory
+                    ((JLabel)dirPanel.getComponent(0)).setText("Remote install-dir");
+                    dirPanel.getComponent(1).setEnabled(false);
+                    dirPanel.getComponent(2).setEnabled(false);
+                    //dirPanel.getComponent(2).setVisible(false);
+                } else {
+                    ((JLabel)dirPanel.getComponent(0)).setText("Local install-dir");
                 }
             }
         }

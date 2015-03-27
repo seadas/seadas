@@ -2,8 +2,11 @@ package gov.nasa.gsfc.seadas.processing.general;
 
 import gov.nasa.gsfc.seadas.processing.core.OCSSWClient;
 import org.esa.beam.framework.ui.AppContext;
+import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,13 +25,23 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
 
     OCSSWInstallerFormRemote(AppContext appContext, String programName, String xmlFileName) {
         super(appContext, programName, xmlFileName);
-        ocsswClient = new OCSSWClient();
-        target = ocsswClient.getOcsswWebTarget();
     }
 
-    private void updateMissionValues() {
-        Response response = target.path("ocssw").path("missions").request().get();
-        missionDataStatus = (HashMap<String, Boolean>) response.getEntity();
+    void init(){
+        ocsswClient = new OCSSWClient();
+        final ResourceConfig rc = new ResourceConfig();
+
+        target = new OCSSWClient().getOcsswWebTarget();
+    }
+
+    @Override
+    void updateMissionValues() {
+
+        Response response0 = target.path("file").path("test").request().get();
+        response0 = target.path("ocssw").path("missions").request().get();
+        missionDataStatus = target.path("ocssw").path("missions").request(MediaType.APPLICATION_JSON)
+                                          .get(new GenericType<HashMap<String, Boolean>>() {});
+        //missionDataStatus = (HashMap<String, Boolean>) response.getEntity();
         for (Map.Entry<String, Boolean> entry : missionDataStatus.entrySet()) {
             String missionName = entry.getKey();
             Boolean missionStatus = entry.getValue();
@@ -38,16 +51,18 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
             }
 
         }
-        if ((Boolean) target.path("ocssw").path("eval").request().get().getEntity()) {
+
+        HashMap<String, Boolean> ocsswStatus = target.path("ocssw").path("evalDirInfo").request(MediaType.APPLICATION_JSON).get(new GenericType<HashMap<String, Boolean>>() {});
+        if ( target.path("ocssw").path("evalDirInfo").request(MediaType.APPLICATION_JSON).get(new GenericType<HashMap<String, Boolean>>() {}).get("eval")) {
             processorModel.setParamValue("--eval", "1");
         }
-        if ((Boolean) target.path("ocssw").path("eval").request().get().getEntity()) {
+        if (target.path("ocssw").path("srcDirInfo").request(MediaType.APPLICATION_JSON).get(new GenericType<HashMap<String, Boolean>>() {}).get("build")) {
             processorModel.setParamValue("--src", "1");
         }
     }
 
-    private String getInstallDir() {
-        return (String) target.path("ocssw").path("installDir").request().get().getEntity();
-        //return "${user.home}/ocssw";
+    @Override
+    String getInstallDir() {
+        return target.path("ocssw").path("installDir").request(MediaType.TEXT_PLAIN).get(String.class);
     }
 }

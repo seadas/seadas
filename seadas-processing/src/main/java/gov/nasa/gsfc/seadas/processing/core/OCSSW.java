@@ -3,6 +3,8 @@ package gov.nasa.gsfc.seadas.processing.core;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import org.esa.beam.visat.VisatApp;
 
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,16 +34,21 @@ public class OCSSW {
     public static String OCSSW_INSTALLER_URL = "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     private static boolean ocsswExist = false;
-    private static File ocsswRoot = null;
+    private static String ocsswRoot = null;
     private static boolean ocsswInstalScriptDownloadSuccessful = false;
 
-    public static File getOcsswRoot() throws IOException {
+    private static String clientId;
+    private static String processorId;
+    private static String jobId;
+
+    public static String getOcsswRoot() throws IOException {
         return ocsswRoot;
     }
 
     public static boolean isOCSSWExist() {
         return ocsswExist;
     }
+
 
     public static void checkOCSSW() {
 
@@ -59,7 +66,7 @@ public class OCSSW {
                 // Precondition to detect the existing installation:
                 // the user needs to provide "seadas.ocssw.root" value in seadas.config
                 // or set OCSSWROOT in the system env.
-                ocsswRoot = new File(dirPath);
+                ocsswRoot = dirPath;
                 final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
                 if (dir.isDirectory()) {
                     ocsswExist = true;
@@ -67,30 +74,29 @@ public class OCSSW {
                 }
             }
         } else {
-          //ocssw installed in virtual box and needs be accessed through web services
-          // need to access to two services: one for ocsswRoot, and the other for ocsswExist
-            //OCSSWClientOld ocsswClient = new OCSSWClientOld();
-            //WebTarget target = ocsswClient.getOcsswWebTarget();
-
-            //Response response = target.path("ocssw").path("ocsswEnv").request(MediaType.APPLICATION_JSON_TYPE).get();
-            //String[] ocsswEnv = (String[]) response.getEntity();
-            //ocsswRoot = new File(ocsswEnv[0]);
-            //ocsswExist = Boolean.getBoolean(ocsswEnv[1]);
-            ocsswRoot = new File("${user.home}/ocssw") ;
+            //ocssw installed in virtual box and needs be accessed through web services
+            // need to access to two services: one for ocsswRoot, and the other for ocsswExist -this doesn't work. Because ocsswrest package is not available to SeadasMain at this time
+//            OCSSWClient ocsswClient = new OCSSWClient();
+//            WebTarget target = ocsswClient.getOcsswWebTarget();
+//            ocsswRoot = target.path("ocssw").path("installDir").request(MediaType.TEXT_PLAIN).get(String.class);
+//            ocsswExist = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON).get(new GenericType<HashMap<String, Boolean>>() {}).get("ocsswExists");
+            //Assumption: ocssw is already installed on the virtual box and the location is ${remoteuser.home}/ocssw
+            ocsswRoot = "${remoteuser.home}/ocssw";
             ocsswExist = true;
         }
     }
 
 
-    public static File getOcsswDataRoot() throws IOException {
-        return new File(new File(getOcsswRoot(), "run"), "data");
+    public static String getOcsswDataRoot() throws IOException {
+        //return new File(new File(getOcsswRoot(), "run"), "data");
+        return ocsswRoot + "/run/data/";
     }
 
 
     public static String getOcsswScriptPath() {
         //final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
-            return ocsswRoot.getPath() + "/run/scripts/ocssw_runner";
+            return ocsswRoot + "/run/scripts/ocssw_runner";
         } else {
             return null;
         }
@@ -99,7 +105,7 @@ public class OCSSW {
 
     public static String[] getOcsswEnvArray() {
         if (ocsswRoot != null) {
-            final String[] envp = {ocsswRoot.getPath()};
+            final String[] envp = {ocsswRoot};
             return envp;
         } else {
             return null;
@@ -108,14 +114,6 @@ public class OCSSW {
 
     public static String getOcsswEnv() {
 
-        if (ocsswRoot != null) {
-            return ocsswRoot.getPath();
-        } else {
-            return null;
-        }
-    }
-
-    private static File getOcsswRootFile() {
         return ocsswRoot;
     }
 
@@ -181,10 +179,38 @@ public class OCSSW {
             if (fileWriter != null) {
                 fileWriter.close();
             }
-            ocsswRoot = new File(installDir);
+            ocsswRoot = installDir;
         } catch (IOException ioe) {
             handleException(ioe.getMessage());
         }
+    }
+
+    public static String getClientId() {
+        return clientId;
+    }
+
+    public static void setClientId(String clientId) {
+        OCSSW.clientId = clientId;
+    }
+
+    public static String getProcessorId() {
+        return processorId;
+    }
+
+    public static void setProcessorId(String processorId) {
+        OCSSW.processorId = processorId;
+    }
+
+
+    public static String getJobId() {
+        return jobId;
+    }
+
+    public static void createJobId() {
+
+        OCSSWClient ocsswClient = new OCSSWClient();
+        WebTarget target = ocsswClient.getOcsswWebTarget();
+        jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN).get(String.class);
     }
 }
 

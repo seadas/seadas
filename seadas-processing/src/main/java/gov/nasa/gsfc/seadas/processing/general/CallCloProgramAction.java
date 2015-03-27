@@ -65,9 +65,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
         //multiIFile = getValue(config, "multiIFile", "false");
 
         super.configure(config);
-        if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
+        if (programName.equals("install_ocssw.py")) {
             OCSSW.checkOCSSW();
         }
+
         super.setEnabled(programName.equals(OCSSW.OCSSW_INSTALLER) || OCSSW.isOCSSWExist());
     }
 
@@ -85,7 +86,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
             if (!OCSSW.isOcsswInstalScriptDownloadSuccessful()) {
                 return null;
             }
-            return new OCSSWInstallerForm(appContext, programName, xmlFileName);
+
+            if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+                return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName);
+            } else {
+                return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName);
+            }
         }
         return new ProgramUIFactory(programName, xmlFileName);//, multiIFile);
     }
@@ -95,6 +101,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
         SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(RuntimeContext.getConfig().getContextProperty(LOG_LEVEL_PROPERTY, "OFF")));
+
+        if (! RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+            OCSSW.setProcessorId(programName);
+            OCSSW.setClientId(System.getProperty("user.name"));
+            OCSSW.createJobId();
+        }
+
         final AppContext appContext = getAppContext();
 
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
@@ -224,23 +237,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
-                displayOutput(processorModel);
-//                String ofileName = processorModel.getOfileName();
-//                if (openOutputInApp) {
-//                    if (programName.equals("l3bindump")) {
-//
-//                    } else {
-//                        File ifileDir = processorModel.getIFileDir();
-//
-//                        StringTokenizer st = new StringTokenizer(ofileName);
-//                        while (st.hasMoreTokens()) {
-//                            File ofile = SeadasFileUtils.createFile(ifileDir, st.nextToken());
-//                            getAppContext().getProductManager().addProduct(ProductIO.readProduct(ofile));
-//                        }
-//                    }
-//                }
-//                return ofileName;
 
+                displayOutput(processorModel);
                 return processorModel.getOfileName();
             }
 
@@ -275,7 +273,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         swingWorker.execute();
     }
 
-    void displayOutput(ProcessorModel processorModel) throws Exception{
+    void displayOutput(ProcessorModel processorModel) throws Exception {
         String ofileName = processorModel.getOfileName();
         if (openOutputInApp) {
 

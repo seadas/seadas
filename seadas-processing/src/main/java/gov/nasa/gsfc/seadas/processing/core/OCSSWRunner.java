@@ -3,6 +3,13 @@ package gov.nasa.gsfc.seadas.processing.core;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import org.esa.beam.visat.VisatApp;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,7 +41,7 @@ public class OCSSWRunner {
 
     public static Process execute(ProcessorModel processorModel) {
 
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWROOT_PROPERTY);
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY);
         if (ocsswLocation == null || ocsswLocation.trim().equals(LOCAL)) {
             return executeLocal(processorModel);
         } else {
@@ -66,6 +73,7 @@ public class OCSSWRunner {
         } else {
             //processBuilder.directory(getDefaultDir());
         }
+
         Process process = null;
         try {
             process = processBuilder.start();
@@ -78,6 +86,20 @@ public class OCSSWRunner {
     public static Process executeRemote(ProcessorModel processorModel) {
         //System.out.println("remote execution!");
         Process process = null;
+
+        String[] cmdArray = processorModel.getProgramCmdArray();
+
+
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        for (String s: cmdArray) {
+            jab.add(s);
+        }
+        JsonArray remoteCmdArray = jab.build();
+
+        OCSSWClient ocsswClient = new OCSSWClient();
+        WebTarget target = ocsswClient.getOcsswWebTarget();
+        final Response response = target.path("ocssw").path("installOcssw").request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
 
         return process;
     }
