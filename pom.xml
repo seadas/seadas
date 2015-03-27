@@ -264,7 +264,7 @@
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-geotiff</artifactId>
-                 <version>${beam.versionRange}</version>
+                 <version>${beam.version}</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
