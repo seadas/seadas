@@ -40,12 +40,10 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
         missionDataStatus.put("GOCI", new File(missionDataDir + "goci").exists());
     }
 
-    @Override
     void init(){
         updateMissionStatus();
     }
 
-    @Override
     void updateMissionValues() {
 
         for (Map.Entry<String, Boolean> entry : missionDataStatus.entrySet()) {
@@ -65,7 +63,6 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
         }
     }
 
-    @Override
     String getInstallDir() {
         String installDir = OCSSW.getOcsswEnv();
         if (installDir != null) {
