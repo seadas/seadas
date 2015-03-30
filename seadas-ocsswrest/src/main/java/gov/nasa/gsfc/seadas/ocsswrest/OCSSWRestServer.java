@@ -1,11 +1,14 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
+import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.jsonp.JsonProcessingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import javax.json.stream.JsonGenerator;
 import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Logger;
@@ -31,6 +34,8 @@ public class OCSSWRestServer {
         final ResourceConfig resourceConfig = new ResourceConfig(MultiPartResource.class);
                     resourceConfig.registerInstances(new LoggingFilter(LOGGER, true));
                     resourceConfig.register(MultiPartFeature.class);
+                    //resourceConfig.register(FileResource.class);
+                    resourceConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
         resourceConfig.packages("gov.nasa.gsfc.seadas.ocsswrest");
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
@@ -43,6 +48,7 @@ public class OCSSWRestServer {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+        SQLiteJDBC.createTable();
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));

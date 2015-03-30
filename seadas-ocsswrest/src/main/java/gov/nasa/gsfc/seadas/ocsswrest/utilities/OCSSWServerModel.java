@@ -28,9 +28,14 @@ public class OCSSWServerModel {
     public static final String SEADASHOME_PROPERTY = "home";
 
     public static String OCSSW_INSTALLER = "install_ocssw.py";
-    public static String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+
     public static String OCSSW_INSTALLER_URL = "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
-    public static String OCSSW_INSTALL_DIR = System.getProperty("user.home" + "/" + "ocssw");
+    public static String OCSSW_INSTALL_DIR = System.getProperty("user.home") + "/ocssw";
+    public static String OCSSW_INSTALLER_FILE_LOCATION = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+
+    public static final String missionDataDir = OCSSW_INSTALL_DIR + System.getProperty("file.separator") + "run"
+                + System.getProperty("file.separator") + "data"
+                + System.getProperty("file.separator");
 
     private static boolean ocsswExist = false;
     private static File ocsswRoot = null;
@@ -118,10 +123,10 @@ public class OCSSWServerModel {
         try {
             URL website = new URL(OCSSW_INSTALLER_URL);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
+            FileOutputStream fos = new FileOutputStream(OCSSW_INSTALLER_FILE_LOCATION);
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
             fos.close();
-            (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
+            (new File(OCSSW_INSTALLER_FILE_LOCATION)).setExecutable(true);
             ocsswInstalScriptDownloadSuccessful = true;
         } catch (MalformedURLException malformedURLException) {
             handleException("URL for downloading install_ocssw.py is not correct!");

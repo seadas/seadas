@@ -15,7 +15,12 @@
     <version>1.0-SNAPSHOT</version>
     <name>seadas-ocsswrest</name>
 
-    <dependencyManagement>
+    <properties>
+        <jersey.version>2.15</jersey.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.glassfish.jersey</groupId>
@@ -31,6 +36,7 @@
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-grizzly2-http</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
         <!-- uncomment this to get JSON support:
          <dependency>
@@ -41,7 +47,17 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
-            <version>2.9.1</version>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-processing</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -50,9 +66,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun.grizzly.osgi</groupId>
-            <artifactId>grizzly-httpservice</artifactId>
-            <version>1.9.9</version>
+        	<groupId>org.xerial</groupId>
+        	<artifactId>sqlite-jdbc</artifactId>
+        	<version>3.7.2</version>
         </dependency>
     </dependencies>
 
