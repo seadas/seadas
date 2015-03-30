@@ -161,6 +161,17 @@ table {
 }
 
 
+.h3better {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 18;
+    font-weight: bold;
+    margin-top: 18pt;
+    margin-right: 6pt;
+    margin-bottom: 0pt;
+    margin-left: 6pt;
+}
+
+
 .groupTitle {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 14;

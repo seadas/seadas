@@ -39,13 +39,13 @@ public class BathymetryData {
     private boolean isInstallingFile = false;
 
     private double maskTransparency = 0.7;
-    private boolean showMaskAllBands = true;
+    private boolean showMaskAllBands = false;
     private Color maskColor = new Color(0, 0, 255);
     private String maskName = "BATHYMETRY";
     private String maskDescription = "Bathymetry pixels";
 
     private double maskMinDepth = 0;
-    private double maskMaxDepth = -10923;
+    private double maskMaxDepth = 10923;
 
 
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
@@ -172,14 +172,23 @@ public class BathymetryData {
 
     public String getMaskMath() {
 
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
+//        stringBuilder.append(" >= ");
+//        stringBuilder.append(new Double(-getMaskMaxDepth()).toString());
+//        stringBuilder.append(" and ");
+//        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
+//        stringBuilder.append(" <= ");
+//        stringBuilder.append(new Double(-getMaskMinDepth()).toString());
+
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
+        stringBuilder.append(BathymetryOp.BATHYMETRY_BAND_NAME);
         stringBuilder.append(" >= ");
-        stringBuilder.append(new Double(getMaskMaxDepth()).toString());
-        stringBuilder.append(" and ");
-        stringBuilder.append(BathymetryOp.ELEVATION_BAND_NAME);
-        stringBuilder.append(" <= ");
         stringBuilder.append(new Double(getMaskMinDepth()).toString());
+        stringBuilder.append(" and ");
+        stringBuilder.append(BathymetryOp.BATHYMETRY_BAND_NAME);
+        stringBuilder.append(" <= ");
+        stringBuilder.append(new Double(getMaskMaxDepth()).toString());
 
         return stringBuilder.toString();
     }

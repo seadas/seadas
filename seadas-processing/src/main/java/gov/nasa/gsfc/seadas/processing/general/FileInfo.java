@@ -1,13 +1,18 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
-import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.processing.core.*;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,14 +35,14 @@ public class FileInfo {
 
 
     public FileInfo(String defaultParent, String child) {
-         this(defaultParent, child, DEFAULT_MISSION_AND_FILE_TYPE_ENABLED);
+        this(defaultParent, child, DEFAULT_MISSION_AND_FILE_TYPE_ENABLED);
     }
 
     public FileInfo(String defaultParent, String child, boolean missionAndFileTypeEnabled) {
 
         this.missionAndFileTypeEnabled = missionAndFileTypeEnabled;
         file = SeadasFileUtils.createFile(defaultParent, child);
-        if(file != null && file.exists()) {
+        if (file != null && file.exists()) {
             initMissionAndFileTypeInfos();
         }
     }
@@ -64,30 +69,71 @@ public class FileInfo {
         processorModel.addParamInfo("file", file.getAbsolutePath(), ParamInfo.Type.IFILE, 0);
         processorModel.getParamInfo("file").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
 
-        try {
-            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray());
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+            try {
 
-            String line = stdInput.readLine();
-            if (line != null) {
-                String splitLine[] = line.split(":");
-                if (splitLine.length == 3) {
-                    String missionName = splitLine[1].toString().trim();
-                    String fileType = splitLine[2].toString().trim();
+                //TODO execute this from remote server
+                Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray());
+                BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-                    if (fileType.length() > 0) {
-                        fileTypeInfo.setName(fileType);
-                    }
+                String line = stdInput.readLine();
+                if (line != null) {
+                    String splitLine[] = line.split(":");
+                    if (splitLine.length == 3) {
+                        String missionName = splitLine[1].toString().trim();
+                        String fileType = splitLine[2].toString().trim();
 
-                    if (missionName.length() > 0) {
-                        missionInfo.setName(missionName);
+                        if (fileType.length() > 0) {
+                            fileTypeInfo.setName(fileType);
+                        }
+
+                        if (missionName.length() > 0) {
+                            missionInfo.setName(missionName);
+                        }
                     }
                 }
+            } catch (IOException e) {
+                System.out.println("ERROR - Problem running " + FILE_INFO_SYSTEM_CALL);
+                System.out.println(e.getMessage());
             }
-        } catch (IOException e) {
-            System.out.println("ERROR - Problem running " + FILE_INFO_SYSTEM_CALL);
-            System.out.println(e.getMessage());
+        } else {
+            OCSSWClient ocsswClient = new OCSSWClient();
+            WebTarget target = ocsswClient.getOcsswWebTarget();
+            final FormDataMultiPart multipart = new FormDataMultiPart(); //.field("foo", "bar").bodyPart(filePart);
+            File testFile = new File("/Users/aabduraz/jarnalshell.conf");
+            try {
+                InputStream fileInputStream = new FileInputStream(file);
+                String contentDisposition = "attachment; filename=\"" + file.getName() + "\"";
+                Response response1 = target.path("file").path("upload").path(OCSSW.getClientId()).path(OCSSW.getProcessorId()).path(OCSSW.getJobId()).path(file.getName())
+                            .request(MediaType.APPLICATION_OCTET_STREAM).header("Content-Disposition", contentDisposition)
+                            .post(Entity.entity(fileInputStream, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+            } catch (FileNotFoundException fnfe) {
+
+            }
+            if (file != null) {
+                // MediaType of the body part will be derived from the file.
+                final FileDataBodyPart filePart = new FileDataBodyPart("file", file, MediaType.MULTIPART_FORM_DATA_TYPE);
+                multipart.bodyPart(filePart);
+            }
+            multipart.field("clientId", OCSSW.getClientId());
+            multipart.field("processorId", OCSSW.getProcessorId());
+            multipart.field("jobId", OCSSW.getJobId());
+
+            //"/upload/{clientId}/{processorId}/{jobId}"
+
+            Response response = target.path("file").path("upload").request()
+                    .post(Entity.entity(multipart, multipart.getMediaType()));
+
+            JsonArrayBuilder jab = Json.createArrayBuilder();
+            for (String s : processorModel.getProgramCmdArray()) {
+                jab.add(s);
+            }
+            JsonArray remoteCmdArray = jab.build();
+
+            response = target.path("ocssw").path("installOcssw").request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
         }
+
     }
 
 

@@ -559,6 +559,49 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return cmdArrayParam;
     }
 
+    private void computeCmdArray(){
+        String[] cmdArrayParam = new String[paramList.getParamArray().size()];
+
+        Iterator itr = paramList.getParamArray().iterator();
+        ParamInfo option;
+        String cmdString = null;
+        while (itr.hasNext()) {
+            option = (ParamInfo) itr.next();
+
+            if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
+                if (option.getValue() != null && option.getValue().length() > 0) {
+                    cmdArrayParam[option.getOrder()] = option.getValue();
+                    cmdString = "argument : " + option.getValue();
+                }
+            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
+                cmdArrayParam[option.getOrder()] = option.getName() + "=" + option.getValue();
+                cmdString = "option : " + option.getName() + "=" + option.getValue();
+            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
+                if (option.getName() != null && option.getName().length() > 0) {
+                    cmdArrayParam[option.getOrder()] = option.getName();
+                    cmdString = "flag : " + option.getName();
+                }
+            }
+
+            if (option.getType().equals(ParamInfo.Type.IFILE) && option.getValue() != null && option.getValue().trim().length() > 0) {
+                filesToUpload.add(option.getValue());
+                cmdString = cmdString.replaceAll("argument", "ifile");
+                cmdString = cmdString.replaceAll("option", "ifile");
+            } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
+                filesToDownload.add(option.getValue());
+                cmdString = cmdString.replaceAll("argument", "ofile");
+                cmdString = cmdString.replaceAll("option", "ofile");
+            }
+            if (remoteServerCmdArray.size() == 0 ) {
+                remoteServerCmdArray.add(cmdString);
+            }
+            else if (! cmdString.equals(remoteServerCmdArray.get(remoteServerCmdArray.size()-1))){
+                remoteServerCmdArray.add(cmdString);
+            }
+            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
+        }
+    }
+
     private String[] getCmdArrayWithArguments() {
 
         String[] cmdArray = concat(getCmdArrayPrefix(), getCmdArrayParam());
@@ -596,11 +639,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             return getCmdArrayWithArguments();
         }
     }
-
-//    public String[] getProgramEnv() {
-//        return processorEnv;
-//
-//    }
 
     public String[] getFilesToUpload() {
         return filesToUpload.toArray(new String[filesToUpload.size()]);
@@ -813,7 +851,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             return rootDir;
         } else {
             try {
-                rootDir = OCSSW.getOcsswRoot();
+                rootDir = new File(OCSSW.getOcsswRoot());
             } catch (Exception e) {
                 SeadasLogger.getLogger().severe("error in getting ocssw root!");
             }
@@ -964,30 +1002,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public void updateParamValues(Product selectedProduct) {
         updateParamValues(selectedProduct.getFileLocation());
-
-//        if (selectedProduct != null) {
-//            String[] bandNames = selectedProduct.getBandNames();
-//            ParamInfo pi = getParamInfo(getProdParamName());
-//            if (bandNames != null && pi != null) {
-//                ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) pi.getValidValueInfos().clone();
-//                String oldValue = pi.getValue();
-//                ParamValidValueInfo paramValidValueInfo;
-//                Band band;
-//                for (String bandName : bandNames) {
-//                    paramValidValueInfo = new ParamValidValueInfo(bandName);
-//                    band = selectedProduct.getBand(bandName);
-//                    paramValidValueInfo.setDescription(band.getDescription());
-//                    pi.addValidValueInfo(paramValidValueInfo);
-//                    if (band.getImageInfo() != null) {
-//                        pi.setValue(bandName);
-//                    }
-//                }
-//                ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
-//                //fireEvent(getProdParamName());
-//                String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
-//                paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
-//            }
-//        }
     }
 
     public void updateParamValues(File selectedFile) {
@@ -1349,7 +1363,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             }
 
             //adding ocssw version selection; default is current version
-            cmdArray2[cmdArray.length] = "--git-branch=v" + VisatApp.getApp().getAppVersion();
+            //cmdArray2[cmdArray.length] = "--git-branch=v" + VisatApp.getApp().getAppVersion();
+            cmdArray2[cmdArray.length] = "--git-branch=v7.1";
             return cmdArray2;
         }
     }

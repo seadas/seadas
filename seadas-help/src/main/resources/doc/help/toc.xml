@@ -7,13 +7,22 @@
 
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
 
-    <tocitem text="SeaDAS 7.1 Help" target="visat"/>
 
+    <tocitem text="About SeaDAS" target="aboutSeaDAS"/>
+    <tocitem text="Home" target="visat"/>
 
     <tocitem text="General">
-        <tocitem text="About SeaDAS" target="aboutSeaDAS"/>
+
+        <tocitem text="Release Notes">
+            <tocitem text="7.1.1" target="releaseNotes7.1.1"/>
+            <tocitem text="7.1" target="releaseNotes7.1"/>
+        </tocitem>
+
+
+
         <tocitem text="Publication Quality Images" target="publicationQualityImages"/>
-        <tocitem text="Version Release Notes" target="seadasWhatsNew"/>
+
+        <!--<tocitem text="What's New" target="seadasWhatsNew"/>-->
 
         <!--<tocitem text="Overview" target="seadasOverview"/>-->
 
@@ -280,7 +289,6 @@
             <tocitem text="No-Data Value" target="noDataValue"/>
             <tocitem text="Preferences Dialog" target="preferences"/>
         </tocitem>
-
 
 
     </tocitem>

@@ -1,0 +1,80 @@
+<html>
+<head>
+    <title>Release Notes: SeaDAS 7.1.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header" width="100%">
+    <tr class="header">
+        <td class="header">&nbsp;
+            SeaDAS 7.1.1 Release Notes
+        </td>
+        <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
+                                                                            border=0></a></td>
+    </tr>
+</table>
+
+<p>
+    <b>Release Date: </b> March 27, 2015<br><br>
+</p>
+
+<p class="h3better">New Features</p>
+
+
+<pre>
+        Band Filters Added
+            - Low-Pass Radial Attenuation
+            - Circular Mean
+            - Straylight
+
+        Bathymetry
+            - Bathymetry values are now 'true depth' accounting for local water surface height instead of being relative to sea level
+            - Bathymetry values are now in positive units.
+            - Default bathymetry color scheme is in log space to better depict shallow water floor features.
+
+        Color Palettes Added/Revised
+            - Bathymetry color palette revised with a smoother transition from light blue-green to dark blue-green.
+            - Various gradient palettes added.
+            - Default (oceancolor_standard.cpd) revised to not use black at high saturation.
+
+        Color Schemes:
+            - Added a user-defined data file for generating custom schemes and/or overriding default schemes.
+            - Added a user-defined data file for customizing the scheme selector
+            - Added a wildcard feature to enable more generic auto-application of color schemes.
+
+        Contour Lines
+            - Many subtle improvements to make it more user-friendly.
+
+        RGB Profile Added
+            - MODIS Trucolor profile added.
+
+    </pre>
+
+
+<p class="h3better">Bug Fixes</p>
+<pre>
+        Color Schemes
+            - Fixed bug where parameter changes in the Color Manager of a band which did not match a default scheme name were
+              being lost when toggling between bands.
+
+        Contour Lines
+            - Fixed bugs related to the usage of band filters inside of the contour tool.
+            - Fixed bugs which could cause program freeze-up on invalid user GUI field entries.
+
+
+</pre>
+
+
+<p class="h3better">Known Issues</p>
+<pre>
+        Real Band
+            - problems when converting NaN values
+
+    </pre>
+
+
+</body>
+</html>

@@ -13,6 +13,8 @@
     <mapID target="seadasOverview" url="general/SeaDASOverview.html"/>
     <mapID target="gbrPhoticDepthExampleTutorial" url="general/gbrPhoticDepthExampleTutorial.html"/>
     <mapID target="seadasWhatsNew" url="general/SeaDASWhatsNew.html"/>
+    <mapID target="releaseNotes7.1.1" url="general/ReleaseNotes7.1.1.html"/>
+    <mapID target="releaseNotes7.1" url="general/ReleaseNotes7.1.html"/>
     <mapID target="beamDefinitions" url="general/BeamDefinitions.html"/>
     <mapID target="beamDataSources" url="general/BeamDataSources.html"/>
     <mapID target="beamRelatedLinks" url="general/BeamRelatedLinks.html"/>

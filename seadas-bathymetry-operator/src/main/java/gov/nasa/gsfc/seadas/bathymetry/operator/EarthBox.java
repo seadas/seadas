@@ -32,6 +32,7 @@ public class EarthBox {
     private int lonDimensionLength = NULL_LENGTH;
 
     private short[][] values;
+    private short[][] waterSurfaceValues;
 
     private short missingValue;
 
@@ -128,8 +129,9 @@ public class EarthBox {
     }
 
 
-    public void setValues(float minLat, float maxLat, float minLon, float maxLon, short[][] values, short missingValue) {
+    public void setValues(float minLat, float maxLat, float minLon, float maxLon, short[][] values, short[][] waterSurfaceValues, short missingValue) {
         this.values = values;
+        this.waterSurfaceValues = waterSurfaceValues;
 
         setMaxLat(maxLat);
         setMinLat(minLat);
@@ -174,6 +176,11 @@ public class EarthBox {
 
     public short getValue(GeoPos geoPos) {
         return getValue(geoPos.lat, geoPos.lon);
+    }
+
+
+    public short getWaterSurfaceValue(GeoPos geoPos) {
+        return getWaterSurfaceValue(geoPos.lat, geoPos.lon);
     }
 
     public short getValue(float lat, float lon) {
@@ -296,8 +303,135 @@ public class EarthBox {
         return value;
     }
 
+
+    public short getWaterSurfaceValue(float lat, float lon) {
+        int latIndex = getLatIndex(lat);
+        int lonIndex = getLonIndex(lon);
+
+
+        short waterSurfaceValue;
+        if (isGetValueAverage()) {
+            float lutLat = getLat(latIndex);
+            float lutLon = getLon(lonIndex);
+
+            float lutLatN;
+            float lutLatS;
+            int lutLatIndexN;
+            int lutLatIndexS;
+
+
+            if (lat > lutLat) {
+                if (latIndex < latDimensionLength - 1) {
+                    lutLatIndexN = latIndex + 1;
+                    lutLatN = getLat(lutLatIndexN);
+                } else {
+                    lutLatIndexN = latIndex;
+                    lutLatN = lutLat;
+                }
+
+                lutLatIndexS = latIndex;
+                lutLatS = lutLat;
+            } else {
+                lutLatN = lutLat;
+                lutLatIndexN = latIndex;
+
+                if (latIndex > 0) {
+                    lutLatIndexS = latIndex - 1;
+                    lutLatS = getLat(lutLatIndexS);
+                } else {
+                    lutLatIndexS = 0;
+                    lutLatS = lutLat;
+                }
+            }
+
+
+            float lutLonE;
+            float lutLonW;
+            int lutLonIndexE;
+            int lutLonIndexW;
+
+            if (lon > lutLon) {
+                if (lonIndex < lonDimensionLength - 1) {
+                    lutLonIndexE = lonIndex + 1;
+                    lutLonE = getLon(lutLonIndexE);
+                } else {
+                    lutLonIndexE = lonIndex;
+                    lutLonE = lutLon;
+                }
+
+                lutLonIndexW = lonIndex;
+                lutLonW = lutLon;
+            } else {
+                lutLonE = lutLon;
+                lutLonIndexE = lonIndex;
+
+                if (lonIndex > 0) {
+                    lutLonIndexW = lonIndex - 1;
+                    lutLonW = getLon(lutLonIndexW);
+                } else {
+                    lutLonIndexW = 0;
+                    lutLonW = lutLon;
+                }
+            }
+
+
+            GeoPos geoPosNW = new GeoPos(lutLatN, lutLonW);
+            GeoPos geoPosNE = new GeoPos(lutLatN, lutLonE);
+            GeoPos geoPosSW = new GeoPos(lutLatS, lutLonW);
+            GeoPos geoPosSE = new GeoPos(lutLatS, lutLonE);
+
+            short cornerValueNW = getWaterSurfaceValue(lutLatIndexN, lutLonIndexW);
+            short cornerValueNE = getWaterSurfaceValue(lutLatIndexN, lutLonIndexE);
+            short cornerValueSW = getWaterSurfaceValue(lutLatIndexS, lutLonIndexW);
+            short cornerValueSE = getWaterSurfaceValue(lutLatIndexS, lutLonIndexE);
+
+            if (cornerValueNW != getMissingValue() && cornerValueNE != getMissingValue() && cornerValueSW != getMissingValue() && cornerValueSE != getMissingValue()) {
+                float deltaLutLat = lutLatN - lutLatS;
+                short sideValueW;
+                short sideValueE;
+
+                if (deltaLutLat > 0) {
+                    float weightLutLatS = (lutLatN - lat) / deltaLutLat;
+                    float weightLutLatN = 1 - weightLutLatS;
+
+                    sideValueW = (short) (weightLutLatN * cornerValueNW + weightLutLatS * cornerValueSW);
+                    sideValueE = (short) (weightLutLatN * cornerValueNE + weightLutLatS * cornerValueSE);
+                } else {
+                    sideValueW = cornerValueNW;
+                    sideValueE = cornerValueNE;
+                }
+
+
+                float deltaLutLon = lutLonE - lutLonW;
+
+
+                if (deltaLutLon > 0) {
+                    float weightSideW = (lutLonE - lon) / deltaLutLon;
+                    float weightSideE = 1 - weightSideW;
+
+                    waterSurfaceValue = (short) (weightSideW * sideValueW + weightSideE * sideValueE);
+                } else {
+                    waterSurfaceValue = sideValueE;
+                }
+            } else {
+                waterSurfaceValue = getWaterSurfaceValue(latIndex, lonIndex);
+            }
+
+        } else {
+            waterSurfaceValue = getWaterSurfaceValue(latIndex, lonIndex);
+        }
+
+        return waterSurfaceValue;
+    }
+
+
+
     public short getValue(int latIndex, int lonIndex) {
         return values[latIndex][lonIndex];
+    }
+
+    public short getWaterSurfaceValue(int latIndex, int lonIndex) {
+        return waterSurfaceValues[latIndex][lonIndex];
     }
 
     public float getLon(int lonIndex) {

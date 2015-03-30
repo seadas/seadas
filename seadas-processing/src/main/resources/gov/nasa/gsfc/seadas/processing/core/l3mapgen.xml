@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+    </programMetaData>
+    <options>
+        <option type="boolean">
+            <name>-help</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <aliases>
+                <alias>-h</alias>
+                <alias>--help</alias>
+            </aliases>
+            <description>print usage information</description>
+        </option>
+        <option type="boolean">
+            <name>-version</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <aliases>
+                <alias>--version</alias>
+            </aliases>
+            <description>print the version information</description>
+        </option>
+        <option type="boolean">
+            <name>-dump_options</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <aliases>
+                <alias>--dump_options</alias>
+            </aliases>
+            <description>print information about each option</description>
+        </option>
+        <option type="ofile">
+            <name>-dump_options_paramfile</name>
+            <value/>
+            <source>default</source>
+            <aliases>
+                <alias>--dump_options_paramfile</alias>
+            </aliases>
+            <description>print information about each option to paramfile</description>
+        </option>
+        <option type="ofile">
+            <name>-dump_options_xmlfile</name>
+            <value>l3mapgen.xml</value>
+            <source>command line</source>
+            <aliases>
+                <alias>--dump_options_xmlfile</alias>
+            </aliases>
+            <description>print information about each option to XML file</description>
+        </option>
+        <option type="string">
+            <name>par</name>
+            <value/>
+            <source>default</source>
+            <description>input parameter file</description>
+        </option>
+        <option type="ifile">
+            <name>ifile</name>
+            <value>A20021852012031.L3b_CU_SST.main</value>
+            <source>command line</source>
+            <description>input L3 bin file name</description>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value>output</value>
+            <default>output</default>
+            <source>default</source>
+            <description>output filename</description>
+        </option>
+        <option type="string">
+            <name>product</name>
+            <value/>
+            <source>default</source>
+            <description>product(s) to map</description>
+        </option>
+        <option type="string">
+            <name>resolution</name>
+            <value>9km</value>
+            <default>9km</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>90km</value>
+                    <description>432 x 216 image for full globe</description>
+                </validValue>
+                <validValue>
+                    <value>36km</value>
+                    <description>1080 x 540</description>
+                </validValue>
+                <validValue>
+                    <value>18km</value>
+                    <description>2160 x 1080</description>
+                </validValue>
+                <validValue>
+                    <value>9km</value>
+                    <description>4320 x 2160</description>
+                </validValue>
+                <validValue>
+                    <value>4km</value>
+                    <description>8640 x 4320</description>
+                </validValue>
+                <validValue>
+                    <value>2km</value>
+                    <description>17280 x 8640</description>
+                </validValue>
+                <validValue>
+                    <value>1km</value>
+                    <description>34560 x 17280</description>
+                </validValue>
+                <validValue>
+                    <value>hkm</value>
+                    <description>69120 x 34560</description>
+                </validValue>
+                <validValue>
+                    <value>qkm</value>
+                    <description>138240 x 69120</description>
+                </validValue>
+                <validValue>
+                    <value>smi</value>
+                    <description>4096 x 2048</description>
+                </validValue>
+                <validValue>
+                    <value>smi4</value>
+                    <description>8192 x 4096</description>
+                </validValue>
+                <validValue>
+                    <value>land</value>
+                    <description>8640 x 4320</description>
+                </validValue>
+                <validValue>
+                    <value>#.#</value>
+                    <description>width of a pixel in meters</description>
+                </validValue>
+                <validValue>
+                    <value>#.#km</value>
+                    <description>width of a pixel in kilometers</description>
+                </validValue>
+                <validValue>
+                    <value>#.#deg</value>
+                    <description>width of a pixel in degrees</description>
+                </validValue>
+            </validValues>
+            <description>size of the output pixel in meters or SMI dimensions</description>
+        </option>
+        <option type="string">
+            <name>oformat</name>
+            <value>netCDF</value>
+            <default>netCDF</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>netCDF</value>
+                    <description>netCDF file, can contain more than one product</description>
+                </validValue>
+                <validValue>
+                    <value>hdf4</value>
+                    <description>HDF4 file (old SMI format)</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>PNG image file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>PPM image file</description>
+                </validValue>
+                <validValue>
+                    <value>geoTIFF</value>
+                    <description>TIFF file with georeference tags</description>
+                </validValue>
+            </validValues>
+            <description>output file format</description>
+        </option>
+        <option type="ofile">
+            <name>ofile2</name>
+            <value/>
+            <source>default</source>
+            <description>output2 filename</description>
+        </option>
+        <option type="string">
+            <name>oformat2</name>
+            <value>png</value>
+            <default>png</default>
+            <source>default</source>
+            <description>output2 file format</description>
+        </option>
+        <option type="string">
+            <name>projection</name>
+            <value>smi</value>
+            <default>smi</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>smi</value>
+                    <description><![CDATA[Standard Mapped image, cylindrical projection, uses central_meridian projection="+proj=eqc +lat_0=<central_meridian>"]]></description>
+                </validValue>
+                <validValue>
+                    <value>mollweide</value>
+                    <description><![CDATA[Mollweide projection projection="+proj=moll +lat_0=<central_meridian>"]]></description>
+                </validValue>
+                <validValue>
+                    <value>raw</value>
+                    <description>raw dump of the bin file</description>
+                </validValue>
+            </validValues>
+            <description>proj.4 projection string or one of the following predefined projections:</description>
+        </option>
+        <option type="float">
+            <name>central_meridian</name>
+            <value>0</value>
+            <default>0</default>
+            <source>default</source>
+            <description>central meridian for projection in deg east.  Only used for smi, mollweide and raw projection</description>
+        </option>
+        <option type="string">
+            <name>interp</name>
+            <value>nearest</value>
+            <default>nearest</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>nearest</value>
+                    <description>Nearest Neighbor</description>
+                </validValue>
+                <validValue>
+                    <value>bin</value>
+                    <description>bin all of the pixels that intersect the area of the output pixel</description>
+                </validValue>
+                <validValue>
+                    <value>area</value>
+                    <description>bin weighted by area all of the pixels that intersect the area of the output pixel</description>
+                </validValue>
+            </validValues>
+            <description>interpolation method:</description>
+        </option>
+        <option type="float">
+            <name>north</name>
+            <value>90.0</value>
+            <default>90.0</default>
+            <source>default</source>
+            <description>Northern most Latitude</description>
+        </option>
+        <option type="float">
+            <name>south</name>
+            <value>-90.0</value>
+            <default>-90.0</default>
+            <source>default</source>
+            <description>Southern most Latitude</description>
+        </option>
+        <option type="float">
+            <name>east</name>
+            <value>180.0</value>
+            <default>180.0</default>
+            <source>default</source>
+            <description>Eastern most Longitude</description>
+        </option>
+        <option type="float">
+            <name>west</name>
+            <value>-180.0</value>
+            <default>-180.0</default>
+            <source>default</source>
+            <description>Western most Longitude</description>
+        </option>
+        <option type="boolean">
+            <name>apply_pal</name>
+            <value>yes</value>
+            <default>yes</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>yes</value>
+                    <description>color image</description>
+                </validValue>
+                <validValue>
+                    <value>no</value>
+                    <description>grayscale image</description>
+                </validValue>
+            </validValues>
+            <description>apply color A palette:</description>
+        </option>
+        <option type="ifile">
+            <name>palfile</name>
+            <value/>
+            <source>default</source>
+            <description>palette filename.  (default = means the palette is chosen using the product.xml file</description>
+        </option>
+        <option type="ifile">
+            <name>palette_dir</name>
+            <value>$OCDATAROOT/common/palette</value>
+            <default>$OCDATAROOT/common/palette</default>
+            <source>default</source>
+            <description>directory containing the palette files</description>
+        </option>
+        <option type="float">
+            <name>datamin</name>
+            <value/>
+            <source>default</source>
+            <description>minimum value for scaling (default from product.xml)</description>
+        </option>
+        <option type="float">
+            <name>datamax</name>
+            <value/>
+            <source>default</source>
+            <description>maximum value for scaling (default from product.xml)</description>
+        </option>
+        <option type="string">
+            <name>scale_type</name>
+            <value/>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>linear</value>
+                    <description>linear scaling</description>
+                </validValue>
+                <validValue>
+                    <value>log</value>
+                    <description>logarithmic scaling</description>
+                </validValue>
+            </validValues>
+            <description>data scaling type (default from product.xml)</description>
+        </option>
+        <option type="boolean">
+            <name>quiet</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>stop the status printing</description>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value>Unspecified</value>
+            <default>Unspecified</default>
+            <source>default</source>
+            <description>processing version string</description>
+        </option>
+        <option type="boolean">
+            <name>use_quality</name>
+            <value>yes</value>
+            <default>yes</default>
+            <source>default</source>
+            <description>should we do quality factor processing</description>
+        </option>
+        <option type="int">
+            <name>deflate</name>
+            <value>4</value>
+            <default>4</default>
+            <source>default</source>
+            <description>deflation level</description>
+        </option>
+    </options>
+</paramInfo>

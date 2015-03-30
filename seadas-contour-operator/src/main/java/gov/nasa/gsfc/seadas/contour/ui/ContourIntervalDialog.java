@@ -17,6 +17,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
@@ -61,7 +63,7 @@ public class ContourIntervalDialog extends JDialog {
 
     SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
-    public void setBand(Band newBand){
+    public void setBand(Band newBand) {
         numberOfLevels = 1;
         numLevelsField.setText("1");
         setMaxValue(new Double(CommonUtilities.round(newBand.getStx().getMaximum(), 3)));
@@ -109,7 +111,9 @@ public class ContourIntervalDialog extends JDialog {
                     }
                 }
                 contourData.setStartValue(minValue);
+                contourData.setLog(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
+                logCheckBox.setSelected(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
             }
         };
         final PropertyChangeListener pcl_max = new PropertyChangeListener() {
@@ -125,7 +129,9 @@ public class ContourIntervalDialog extends JDialog {
                     }
                 }
                 contourData.setEndValue(maxValue);
+                contourData.setLog(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
+                logCheckBox.setSelected(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
             }
         };
         final PropertyChangeListener pcl_num = new PropertyChangeListener() {
@@ -160,9 +166,10 @@ public class ContourIntervalDialog extends JDialog {
 //                } else {
 //                    contourData.setKeepColors(false);
 //                }
-                contourData.setLog(logCheckBox.isSelected());
+                contourData.setLog(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
                 //contourData.createContourLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
+                logCheckBox.setSelected(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
             }
         });
 
@@ -200,7 +207,7 @@ public class ContourIntervalDialog extends JDialog {
         contourPanel.add(logCheckBox,
                 new ExGridBagConstraints(10, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        JButton customize = new JButton("Customize");
+        JButton customize = new JButton("Preview/Edit");
         customize.setPreferredSize(customize.getPreferredSize());
         customize.setMinimumSize(customize.getPreferredSize());
         customize.setMaximumSize(customize.getPreferredSize());
@@ -214,9 +221,21 @@ public class ContourIntervalDialog extends JDialog {
                     System.out.print("---change!---");
 
                     contourData.createContourLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
+
                 }
                 //System.out.print("--- no change!---");
                 customizeContourLevels(contourData);
+                // disable min, max, level, log fields of a single contour panel
+                if (contourData.isContourCustomized()) {
+                    contourPanel.getComponent(0).setEnabled(false);
+                    contourPanel.getComponent(1).setEnabled(false);
+                    contourPanel.getComponent(2).setEnabled(false);
+                    contourPanel.getComponent(3).setEnabled(false);
+                    contourPanel.getComponent(4).setEnabled(false);
+                    contourPanel.getComponent(5).setEnabled(false);
+                    contourPanel.getComponent(6).setEnabled(false);
+                    contourPanel.getComponent(7).setEnabled(false);
+                }
             }
         });
 
@@ -304,6 +323,7 @@ public class ContourIntervalDialog extends JDialog {
             JTextField contourLineStyleValue = new JTextField();
             contourLineStyleValue.setColumns(10);
             contourLineStyleValue.setText(interval.getContourLineStyleValue());
+            contourLineStyleValue.setToolTipText("Enter two numeric values. First number defines the dash length, the second number defines the space the length for dashed lines.");
             PropertyContainer propertyContainer = new PropertyContainer();
             propertyContainer.addProperty(Property.create(contourNamePropertyName, interval.getContourLevelName()));
             propertyContainer.addProperty(Property.create(contourValuePropertyName, interval.getContourLevelValue()));
@@ -337,6 +357,7 @@ public class ContourIntervalDialog extends JDialog {
             ColorComboBox contourLineColorComboBox = new ColorComboBox();
             contourLineColorComboBox.setColorValueVisible(false);
             contourLineColorComboBox.setAllowDefaultColor(true);
+            contourLineColorComboBox.setSelectedColor(interval.getLineColor());
             Binding contourLineColorBinding = bindingContext.bind(contourColorPropertyName, new ColorComboBoxAdapter(contourLineColorComboBox));
             contourLineColorBinding.addComponent(contourColorLabel);
             bindingContext.addPropertyChangeListener(contourColorPropertyName, pcl_color);
@@ -366,14 +387,63 @@ public class ContourIntervalDialog extends JDialog {
 
         Object[] options = {"Save",
                 "Cancel"};
-        int n = JOptionPane.showOptionDialog(this, customPanel,
-                "Customize Contour Levels",
+//        JOptionPane jPane = new JOptionPane();
+//
+//        int n = JOptionPane.showOptionDialog(this, customPanel,
+//                "Customize Contour Levels",
+//                JOptionPane.YES_NO_OPTION,
+//                JOptionPane.PLAIN_MESSAGE,
+//                null,
+//                options,
+//                options[0]);
+        //final JDialog dialog = new JDialog(this, "Customize Contour Levels", true);
+        final JOptionPane optionPane = new JOptionPane(customPanel,
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
-                null,
-                options,
-                options[1]);
-        if (n == JOptionPane.YES_OPTION) {
+                javax.swing.UIManager.getIcon("OptionPane.informationIcon"),     //do not use a custom Icon
+                options,  //the titles of buttons
+                options[0]); //default button title
+
+        final JDialog dialog = optionPane.createDialog(this, "Group Contour Levels");
+        dialog.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                //setLabel("Thwarted user attempt to close window.");
+            }
+        });
+        optionPane.addPropertyChangeListener(
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent e) {
+                        String prop = e.getPropertyName();
+
+                        if (dialog.isVisible()
+                                && (e.getSource() == optionPane)
+                                && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
+                            //If you were going to check something
+                            //before closing the window, you'd do
+                            //it here.
+                            dialog.setVisible(false);
+                        }
+                    }
+                });
+        Point dialogLoc = dialog.getLocation();
+        Point parentLoc = this.getLocation();
+        dialog.setLocation(parentLoc.x + dialogLoc.x, dialogLoc.y);
+        dialog.pack();
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);
+
+
+        //int value = ((Integer)optionPane.getValue()).intValue();
+//        if (value == JOptionPane.YES_OPTION) {
+//            setLabel("Good.");
+//        } else if (value == JOptionPane.NO_OPTION) {
+//            setLabel("Try using the window decorations "
+//                     + "to close the non-auto-closing dialog. "
+//                     + "You can't!");
+//        }
+        if (optionPane.getValue().equals(options[0])) {
             contourData.setContourIntervals(contourIntervalsClone);
             minValueField.setText(new Double(contourIntervalsClone.get(0).getContourLevelValue()).toString());
             maxValueField.setText(new Double(contourIntervalsClone.get(contourIntervalsClone.size() - 1).getContourLevelValue()).toString());
@@ -381,6 +451,7 @@ public class ContourIntervalDialog extends JDialog {
             maxValue = contourIntervalsClone.get(contourIntervalsClone.size() - 1).getContourLevelValue();
             contourData.setStartValue(minValue);
             contourData.setEndValue(maxValue);
+            contourData.setContourCustomized(true);
         }
     }
 
@@ -388,30 +459,30 @@ public class ContourIntervalDialog extends JDialog {
         return contourData;
     }
 
-        public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
-             propertyChangeSupport.addPropertyChangeListener(name, listener);
-         }
+    public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(name, listener);
+    }
 
-         public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
-             propertyChangeSupport.removePropertyChangeListener(name, listener);
-         }
+    public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(name, listener);
+    }
 
-         public SwingPropertyChangeSupport getPropertyChangeSupport() {
-             return propertyChangeSupport;
-         }
+    public SwingPropertyChangeSupport getPropertyChangeSupport() {
+        return propertyChangeSupport;
+    }
 
-         public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
-             PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-             for (int i = 0; i < pr.length; i++) {
-                 this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
-             }
-         }
+    public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
+        }
+    }
 
-         public void clearPropertyChangeSupport() {
-             PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-             for (int i = 0; i < pr.length; i++) {
-                 this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
-             }
+    public void clearPropertyChangeSupport() {
+        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
+        for (int i = 0; i < pr.length; i++) {
+            this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
+        }
 
-         }
+    }
 }
