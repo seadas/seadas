@@ -92,6 +92,7 @@
         <module>../beam/beam-opendap</module>
         <module>../beam/beam-pconvert</module>
         <module>../beam/beam-pixel-extraction</module>
+        <module>../beam/beam-proba-v-reader</module>
         <module>../beam/beam-rtp-codec</module>
         <module>../beam/beam-pgx-reader</module>
         <module>../beam/beam-spot-vgt-reader</module>
@@ -102,6 +103,7 @@
         <module>../beam/blue-marble-worldmap</module>
         <module>../beam/globcover-worldmap</module>
         <module>../beam/lib-hdf</module>
+        <module>../beam/beam-bigtiff</module>
         <module>seadas-ocsswwsclient</module>
 
     </modules>
@@ -184,12 +186,12 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-core</artifactId>
-                <version>5.0.3-SNAPSHOT</version>
+                <version>5.0.5-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-gpf</artifactId>
-                <version>5.0.1</version>
+                <version>5.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
@@ -204,7 +206,7 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-visat-rcp</artifactId>
-                <version>5.0.3</version>
+                <version>5.0.4</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
@@ -214,7 +216,7 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-netcdf</artifactId>
-                <version>5.0.2</version>
+                <version>5.0.4</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
@@ -239,7 +241,7 @@
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-binning</artifactId>
-                 <version>${beam.version}</version>
+                 <version>5.0.5</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
@@ -249,12 +251,12 @@
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-collocation</artifactId>
-                 <version>${beam.version}</version>
+                 <version>5.0.1</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-envisat-reader</artifactId>
-                 <version>${beam.versionRange}</version>
+                 <version>5.0.1-SNAPSHOT</version>
              </dependency>
              <dependency>
                  <groupId>org.esa.beam</groupId>
@@ -264,7 +266,7 @@
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-geotiff</artifactId>
-                 <version>${beam.versionRange}</version>
+                 <version>5.0.1</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
@@ -279,7 +281,7 @@
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-landsat-reader</artifactId>
-                 <version>${beam.version}</version>
+                 <version>5.0.5</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
@@ -339,7 +341,7 @@
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-avhrr-reader</artifactId>
-                 <version>${beam.version}</version>
+                 <version>5.0.3-SNAPSHOT</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
