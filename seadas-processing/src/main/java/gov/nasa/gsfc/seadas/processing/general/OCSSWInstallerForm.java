@@ -51,6 +51,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     "OCM2",
                     "OCRVC",
                     "OCTS",
+                    "OLI",
                     "OSMI",
                     "SEAWIFS",
                     "VIIRSN"}
@@ -75,6 +76,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         MISSION_DIRECTORIES.put("CZCS", "czcs");
         MISSION_DIRECTORIES.put("AQUARIUS", "aquarius");
         MISSION_DIRECTORIES.put("OCTS", "octs");
+        MISSION_DIRECTORIES.put("OLI", "oli");
         MISSION_DIRECTORIES.put("OSMI", "osmi");
         MISSION_DIRECTORIES.put("MOS", "mos");
         MISSION_DIRECTORIES.put("OCM2", "ocm2");
