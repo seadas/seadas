@@ -25,7 +25,7 @@ public class L2genParfileExporter {
         public L2genParfileExporter(L2genData l2genData) {
             this.l2genData = l2genData;
 
-            String NAME = "Export Parfile";
+            String NAME = "Save Parameters";
             jButton = new JButton(NAME);
             jFileChooser = new JFileChooser();
 

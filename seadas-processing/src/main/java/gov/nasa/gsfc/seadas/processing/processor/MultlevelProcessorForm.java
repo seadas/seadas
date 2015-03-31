@@ -182,7 +182,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
 
-        importParfileButton = new JButton("Import Parfile");
+        importParfileButton = new JButton("Load Parameters");
         importParfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -204,7 +204,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         importPanel.add(retainIFileCheckbox,
                 new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
-        exportParfileButton = new JButton("Export Parfile");
+        exportParfileButton = new JButton("Save Parameters");
         exportParfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

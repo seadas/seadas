@@ -24,7 +24,7 @@ public class L2genParfileImporter {
         L2genParfileImporter(L2genData l2genData) {
             this.l2genData = l2genData;
 
-            String NAME = "Import Parfile";
+            String NAME = "Load Parameters";
 
             jButton = new JButton(NAME);
 
