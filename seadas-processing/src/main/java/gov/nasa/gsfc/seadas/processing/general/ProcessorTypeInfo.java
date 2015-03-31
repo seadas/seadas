@@ -26,6 +26,7 @@ public class ProcessorTypeInfo {
         L2BIN,
         L2BIN_AQUARIUS,
         L3BIN,
+        L3MAPGEN,
         SMIGEN,
         SMITOPPM,
         LONLAT2PIXLINE,
@@ -57,6 +58,7 @@ public class ProcessorTypeInfo {
         put("l2gen", ProcessorID.L2GEN);
         put("l2gen_aquarius", ProcessorID.L2GEN_AQUARIUS);
         put("l3bin", ProcessorID.L3BIN);
+        put("l3mapgen", ProcessorID.L3MAPGEN);
         put("smigen", ProcessorID.SMIGEN);
         put("smitoppm", ProcessorID.SMITOPPM);
         put("lonlat2pixline", ProcessorID.LONLAT2PIXLINE);

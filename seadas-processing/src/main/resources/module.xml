@@ -252,7 +252,7 @@
             <parent>ocprocessing</parent>
             <id>l3gen</id>
             <placeAfter>l3bin</placeAfter>
-            <placeBefore>smigen</placeBefore>
+            <placeBefore>l3mapgen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L3genAction</class>
             <text>l3gen...</text>
             <shortDescr>Process l3bin</shortDescr>
@@ -262,16 +262,27 @@
             <xmlFileName>l2gen.xml</xmlFileName>
 
         </action>
-
+        <action>
+            <parent>ocprocessing</parent>
+            <id>l3mapgen</id>
+            <placeAfter>l3gen</placeAfter>
+            <placeBefore>smigen</placeBefore>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>l3mapgen...</text>
+            <shortDescr>Create a L3 Mapped Image</shortDescr>
+            <programName>l3mapgen</programName>
+            <dialogTitle>l3mapgen</dialogTitle>
+            <xmlFileName>l3mapgen.xml</xmlFileName>
+        </action>
 
         <action>
             <parent>ocprocessing</parent>
             <id>smigen</id>
-            <placeAfter>l3bin</placeAfter>
+            <placeAfter>l3mapgen</placeAfter>
             <placeBefore>seadas_processor.py</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>smigen...</text>
-            <shortDescr>Create a L3 SMI file</shortDescr>
+            <shortDescr>Create a L3 map file</shortDescr>
             <programName>smigen</programName>
             <dialogTitle>smigen</dialogTitle>
             <xmlFileName>smigen.xml</xmlFileName>
