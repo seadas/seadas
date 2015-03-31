@@ -57,7 +57,7 @@ public class ParFileUI {
 
     private void createParStringButtonPanel() {
 
-        final JButton saveParameterFileButton = new JButton("Store Parameters...");
+        final JButton saveParameterFileButton = new JButton("Save Parameters...");
         saveParameterFileButton.addActionListener(createSafeAsAction());
 
         final JButton loadParameterButton = new JButton("Load Parameters...");

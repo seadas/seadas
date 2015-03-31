@@ -253,10 +253,10 @@
             </validValue>
         </option>
         <option type="int">
-            <name>outmode</name>
-            <value></value>
+            <name>oformat</name>
+            <value>HDF4</value>
             <type>int</type>
-            <default>0</default>
+            <default>HDF4</default>
             <description>format of the output file
                 0: HDF browse file
                 1: PPM color or PGM grayscale image file
@@ -264,16 +264,16 @@
             </description>
             <source>default</source>
             <validValue>
-                <value>0</value>
+                <value>HDF4</value>
                 <description>HDF browse file</description>
             </validValue>
             <validValue>
-                <value>1</value>
-                <description>PPM color or PGM grayscale image file</description>
+                <value>PNG</value>
+                <description>PNG color or grayscale image file</description>
             </validValue>
             <validValue>
-                <value>2</value>
-                <description>PNG color or grayscale image file</description>
+                <value>PPM</value>
+                <description>PPM color or PGM grayscale image file</description>
             </validValue>
         </option>
     </options>

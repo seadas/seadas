@@ -110,14 +110,14 @@
             <source>default</source>
             <alias>ofile1</alias>
         </option>
-        <option type="ofile">
-            <name>ofile[#]</name>
-            <value/>
-            <type>string</type>
-            <default>output</default>
-            <description>additional output L2 file name</description>
-            <source>default</source>
-        </option>
+        <!--<option type="ofile">-->
+            <!--<name>ofile[#]</name>-->
+            <!--<value/>-->
+            <!--<type>string</type>-->
+            <!--<default>output</default>-->
+            <!--<description>additional output L2 file name</description>-->
+            <!--<source>default</source>-->
+        <!--</option>-->
         <option type="int">
             <name>resolution</name>
             <value>-1</value>

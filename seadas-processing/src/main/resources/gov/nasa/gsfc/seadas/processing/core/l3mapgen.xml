@@ -4,9 +4,13 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
     </programMetaData>
     <options>
-        <option type="boolean">
+        <option type="help">
             <name>-help</name>
             <value>false</value>
             <default>false</default>
@@ -17,7 +21,7 @@
             </aliases>
             <description>print usage information</description>
         </option>
-        <option type="boolean">
+        <option type="help">
             <name>-version</name>
             <value>false</value>
             <default>false</default>
@@ -27,7 +31,7 @@
             </aliases>
             <description>print the version information</description>
         </option>
-        <option type="boolean">
+        <option type="help">
             <name>-dump_options</name>
             <value>false</value>
             <default>false</default>
@@ -37,7 +41,7 @@
             </aliases>
             <description>print information about each option</description>
         </option>
-        <option type="ofile">
+        <option type="help">
             <name>-dump_options_paramfile</name>
             <value/>
             <source>default</source>
@@ -46,7 +50,7 @@
             </aliases>
             <description>print information about each option to paramfile</description>
         </option>
-        <option type="ofile">
+        <option type="help">
             <name>-dump_options_xmlfile</name>
             <value>l3mapgen.xml</value>
             <source>command line</source>
@@ -55,7 +59,7 @@
             </aliases>
             <description>print information about each option to XML file</description>
         </option>
-        <option type="string">
+        <option type="help">
             <name>par</name>
             <value/>
             <source>default</source>
@@ -134,18 +138,18 @@
                     <value>land</value>
                     <description>8640 x 4320</description>
                 </validValue>
-                <validValue>
-                    <value>#.#</value>
-                    <description>width of a pixel in meters</description>
-                </validValue>
-                <validValue>
-                    <value>#.#km</value>
-                    <description>width of a pixel in kilometers</description>
-                </validValue>
-                <validValue>
-                    <value>#.#deg</value>
-                    <description>width of a pixel in degrees</description>
-                </validValue>
+                <!--<validValue>-->
+                    <!--<value>#.#</value>-->
+                    <!--<description>width of a pixel in meters</description>-->
+                <!--</validValue>-->
+                <!--<validValue>-->
+                    <!--<value>#.#km</value>-->
+                    <!--<description>width of a pixel in kilometers</description>-->
+                <!--</validValue>-->
+                <!--<validValue>-->
+                    <!--<value>#.#deg</value>-->
+                    <!--<description>width of a pixel in degrees</description>-->
+                <!--</validValue>-->
             </validValues>
             <description>size of the output pixel in meters or SMI dimensions</description>
         </option>
@@ -178,19 +182,19 @@
             </validValues>
             <description>output file format</description>
         </option>
-        <option type="ofile">
-            <name>ofile2</name>
-            <value/>
-            <source>default</source>
-            <description>output2 filename</description>
-        </option>
-        <option type="string">
-            <name>oformat2</name>
-            <value>png</value>
-            <default>png</default>
-            <source>default</source>
-            <description>output2 file format</description>
-        </option>
+        <!--<option type="ofile">-->
+            <!--<name>ofile2</name>-->
+            <!--<value/>-->
+            <!--<source>default</source>-->
+            <!--<description>output2 filename</description>-->
+        <!--</option>-->
+        <!--<option type="string">-->
+            <!--<name>oformat2</name>-->
+            <!--<value></value>-->
+            <!--<default>png</default>-->
+            <!--<source>default</source>-->
+            <!--<description>output2 file format</description>-->
+        <!--</option>-->
         <option type="string">
             <name>projection</name>
             <value>smi</value>
@@ -214,7 +218,7 @@
         </option>
         <option type="float">
             <name>central_meridian</name>
-            <value>0</value>
+            <value></value>
             <default>0</default>
             <source>default</source>
             <description>central meridian for projection in deg east.  Only used for smi, mollweide and raw projection</description>
@@ -335,7 +339,7 @@
         </option>
         <option type="string">
             <name>pversion</name>
-            <value>Unspecified</value>
+            <value></value>
             <default>Unspecified</default>
             <source>default</source>
             <description>processing version string</description>

@@ -121,14 +121,14 @@
             <description>(default=output) = output L2 file #1 name, output vicarious L1B for inverse mode</description>
             <source>default</source>
         </option>
-        <option type="ofile">
-            <name>ofile[#]</name>
-            <value/>
-            <type>string</type>
-            <default>output</default>
-            <description>additional output L2 file name</description>
-            <source>default</source>
-        </option>
+        <!--<option type="ofile">-->
+            <!--<name>ofile[#]</name>-->
+            <!--<value/>-->
+            <!--<type>string</type>-->
+            <!--<default>output</default>-->
+            <!--<description>additional output L2 file name</description>-->
+            <!--<source>default</source>-->
+        <!--</option>-->
         <option type="string">
             <name>pversion</name>
             <value></value>
@@ -265,8 +265,8 @@
 
         <option type="string">
             <name>oformat</name>
-            <value>ppm</value>
-            <default>ppm</default>
+            <value>png</value>
+            <default>png</default>
             <source>/Users/Shared/ocssw/run/data/common/msl12_defaults.par</source>
             <validValues>
                 <validValue>

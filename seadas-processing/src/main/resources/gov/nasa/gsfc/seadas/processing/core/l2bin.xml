@@ -352,20 +352,20 @@
         </option>
         <option type="string">
             <name>oformat</name>
-            <value></value>
-            <default></default>
+            <value>HDF4</value>
+            <default>HDF4</default>
             <source></source>
             <validValues>
                 <validValue>
-                    <value>1</value>
+                    <value>HDF4</value>
                     <description>HDF4</description>
                 </validValue>
                 <validValue>
-                    <value>2</value>
+                    <value>netCDF4</value>
                     <description>netCDF4</description>
                 </validValue>
                 <validValue>
-                    <value>3</value>
+                    <value>HDF5</value>
                     <description>HDF5</description>
                 </validValue>
             </validValues>
