@@ -16,6 +16,7 @@ public class ContourInterval {
     String contourLineStyleValue;
     private Color lineColor;
 
+    private boolean initial;
     DecimalFormat decimalFormat = new DecimalFormat("##.###");
 
     ContourInterval(String contourBaseName, Double contourLevelValue) {
@@ -57,6 +58,8 @@ public class ContourInterval {
         this.contourLineStyleValue = contourLineStyleValue;
     }
 
+
+
     public Color getLineColor() {
         return lineColor;
     }
@@ -77,5 +80,13 @@ public class ContourInterval {
         contourInterval.setContourLineStyleValue(this.getContourLineStyleValue());
         return contourInterval;
 
+    }
+
+    public boolean isInitial() {
+        return initial;
+    }
+
+    public void setInitial(boolean initial) {
+        this.initial = initial;
     }
 }

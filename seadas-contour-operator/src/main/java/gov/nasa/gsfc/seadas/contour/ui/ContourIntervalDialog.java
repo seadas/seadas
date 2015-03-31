@@ -235,6 +235,7 @@ public class ContourIntervalDialog extends JDialog {
                     contourPanel.getComponent(5).setEnabled(false);
                     contourPanel.getComponent(6).setEnabled(false);
                     contourPanel.getComponent(7).setEnabled(false);
+
                 }
             }
         });

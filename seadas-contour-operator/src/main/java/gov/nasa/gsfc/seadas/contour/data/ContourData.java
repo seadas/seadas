@@ -26,7 +26,6 @@ public class ContourData {
     private Double startValue;
     private Double endValue;
     private int numOfLevels;
-    private boolean keepColors;
     private boolean log;
     private boolean filtered;
     private boolean contourCustomized;
@@ -49,7 +48,6 @@ public class ContourData {
         this.band = band;
         log = false;
         filtered = true;
-        keepColors = true;
         contourCustomized = false;
     }
 
@@ -78,7 +76,7 @@ public class ContourData {
         this.endValue = endValue;
         this.numOfLevels = numberOfLevels;
 
-        if (keepColors) {
+        if (contourCustomized) {
             colors = getColors();
             names = getNames();
 
@@ -92,9 +90,12 @@ public class ContourData {
          */
         if (startValue == endValue || Math.abs(startValue - endValue) < 0.00001 || numberOfLevels == 1) {
             contourIntervals.add(new ContourInterval(contourBaseName, startValue));
-            updateColors(colors);
-            //TODO Only update names in the user changed the contour name!
-            updateNames(names);
+
+            //Only update names if the user edited the contour interval values
+            if (contourCustomized) {
+                updateColors(colors);
+                updateNames(names);
+            }
             return;
         }
 
@@ -122,7 +123,7 @@ public class ContourData {
             }
         }
 
-        if (keepColors) {
+        if (contourCustomized) {
             updateColors(colors);
             updateNames(names);
         }
@@ -232,14 +233,6 @@ public class ContourData {
             clone.add(interval.clone());
         }
         return clone;
-    }
-
-    public boolean isKeepColors() {
-        return keepColors;
-    }
-
-    public void setKeepColors(boolean keepColors) {
-        this.keepColors = keepColors;
     }
 
     public void addPropertyChangeListener(String name, PropertyChangeListener listener) {

@@ -3,13 +3,16 @@ package gov.nasa.gsfc.seadas.contour.ui;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import org.esa.beam.framework.datamodel.Band;
+import org.esa.beam.framework.datamodel.FilterBand;
 import org.esa.beam.framework.datamodel.Product;
+import org.esa.beam.framework.datamodel.RasterDataNode;
 import org.esa.beam.framework.help.HelpSys;
 import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.imgfilter.CreateFilteredBandAction;
+import org.esa.beam.visat.actions.imgfilter.model.Filter;
 
 import javax.help.DefaultHelpBroker;
 import javax.help.HelpBroker;
@@ -59,6 +62,11 @@ public class ContourDialog extends JDialog {
     boolean filterBand;
 
     private double noDataValue;
+    RasterDataNode raster;
+
+    private double NULL_DOUBLE = -1.0;
+    private double ptsToPixelsMultiplier = NULL_DOUBLE;
+
 
     public ContourDialog(Product product, ArrayList<String> activeBands) {
         super(VisatApp.getApp().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
@@ -75,8 +83,11 @@ public class ContourDialog extends JDialog {
 
         if (VisatApp.getApp().getSelectedProductNode() != null && activeBands.contains(VisatApp.getApp().getSelectedProductNode().getName())) {
             selectedBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
+            raster = product.getRasterDataNode(selectedBand.getName());
         }  else {
             selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
+            raster = product.getRasterDataNode(selectedBand.getName());
+
         }
         contourData = new ContourData(selectedBand);
         this.activeBands = activeBands;
@@ -295,6 +306,18 @@ public class ContourDialog extends JDialog {
                 //((JPanel)bandPanel.getParent()).getRootPane().setDefaultButton((JButton)((JPanel)((JPanel)bandPanel.getParent()).getComponent(2)).getComponent(2));
             }
         });
+
+        final JCheckBox filtered = new JCheckBox("Filtered by 5x5", true);
+        filtered.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (filtered.isSelected()) {
+
+                }   else {
+
+                }
+            }
+        });
         JLabel filler = new JLabel("                                              ");
         bandPanel.add(filler,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
@@ -425,11 +448,47 @@ public class ContourDialog extends JDialog {
         return filterCommandEvent;
     }
 
+    private FilterBand getDefaultFilterBand(){
+        Filter defaultFilter = new Filter("Mean 2.5 Pixel Radius", "amc_2.5px", 5, 5, new double[]{
+                            0.172, 0.764, 1, 0.764, 0.172,
+                            0.764, 1, 1, 1, 0.764,
+                            1, 1, 1, 1, 1,
+                            0.764, 1, 1, 1, 0.764,
+                            0.172, 0.764, 1, 0.764, 0.172,
+                    }, 19.8);
+
+        final FilterBand filterBand = CreateFilteredBandAction.createFilterBand(defaultFilter, "", 1);
+
+        return filterBand;
+    }
+
     public double getNoDataValue() {
         return noDataValue;
     }
 
     public void setNoDataValue(double noDataValue) {
         this.noDataValue = noDataValue;
+    }
+
+
+    private double getPtsToPixelsMultiplier() {
+        if (ptsToPixelsMultiplier == NULL_DOUBLE) {
+            final double PTS_PER_INCH = 72.0;
+            final double PAPER_HEIGHT = 11.0;
+            final double PAPER_WIDTH = 8.5;
+
+            double heightToWidthRatioPaper = (PAPER_HEIGHT) / (PAPER_WIDTH);
+            double heightToWidthRatioRaster = raster.getRasterHeight() / raster.getRasterWidth();
+
+            if (heightToWidthRatioRaster > heightToWidthRatioPaper) {
+                // use height
+                ptsToPixelsMultiplier = (1 / PTS_PER_INCH) * (raster.getRasterHeight() / (PAPER_HEIGHT));
+            } else {
+                // use width
+                ptsToPixelsMultiplier = (1 / PTS_PER_INCH) * (raster.getRasterWidth() / (PAPER_WIDTH));
+            }
+        }
+
+        return ptsToPixelsMultiplier;
     }
 }
