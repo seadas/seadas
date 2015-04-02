@@ -48,6 +48,8 @@ public class ContourDialog extends JDialog {
     private Product product;
 
     Band selectedBand;
+    Band selectedFilteredBand;
+    Band selectedUnfilteredBand;
     int numberOfLevels;
 
     JComboBox bandComboBox;
@@ -67,6 +69,8 @@ public class ContourDialog extends JDialog {
     private double NULL_DOUBLE = -1.0;
     private double ptsToPixelsMultiplier = NULL_DOUBLE;
 
+    JCheckBox filtered = new JCheckBox("", true);
+
 
     public ContourDialog(Product product, ArrayList<String> activeBands) {
         super(VisatApp.getApp().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
@@ -82,11 +86,15 @@ public class ContourDialog extends JDialog {
 
 
         if (VisatApp.getApp().getSelectedProductNode() != null && activeBands.contains(VisatApp.getApp().getSelectedProductNode().getName())) {
-            selectedBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
-            raster = product.getRasterDataNode(selectedBand.getName());
-        }  else {
-            selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
-            raster = product.getRasterDataNode(selectedBand.getName());
+            selectedUnfilteredBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
+            //selectedBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
+            selectedBand = getDefaultFilterBand();
+            raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
+        } else {
+            selectedUnfilteredBand = product.getBand(activeBands.get(0));
+            //selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
+            selectedBand = getDefaultFilterBand();
+            raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
 
         }
         contourData = new ContourData(selectedBand);
@@ -104,7 +112,7 @@ public class ContourDialog extends JDialog {
         return new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                for (ContourData contourData1:contours) {
+                for (ContourData contourData1 : contours) {
                     contourData1.setBand(selectedBand);
                 }
             }
@@ -133,15 +141,15 @@ public class ContourDialog extends JDialog {
         };
     }
 
-        @Override
-        public void addPropertyChangeListener (String name, PropertyChangeListener listener){
-            propertyChangeSupport.addPropertyChangeListener(name, listener);
-        }
+    @Override
+    public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(name, listener);
+    }
 
-        @Override
-        public void removePropertyChangeListener (String name, PropertyChangeListener listener){
-            propertyChangeSupport.removePropertyChangeListener(name, listener);
-        }
+    @Override
+    public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(name, listener);
+    }
 
 
     public SwingPropertyChangeSupport getPropertyChangeSupport() {
@@ -265,7 +273,7 @@ public class ContourDialog extends JDialog {
         add(mainPanel);
 
         //this will set the "Create Contour Lines" button as a default button that listens to the Enter key
-        mainPanel.getRootPane().setDefaultButton((JButton)((JPanel)mainPanel.getComponent(2)).getComponent(2));
+        mainPanel.getRootPane().setDefaultButton((JButton) ((JPanel) mainPanel.getComponent(2)).getComponent(2));
         setModalityType(ModalityType.APPLICATION_MODAL);
         setTitle("Contour Lines");
         //setTitle("Contour Lines for " + selectedBand.getName() );
@@ -275,6 +283,11 @@ public class ContourDialog extends JDialog {
         return mainPanel;
     }
 
+    /**
+     * By default a band should be filtered before running the contour algorithm on it.
+     *
+     * @return
+     */
     private JPanel getBandPanel() {
         final int rightInset = 5;
 
@@ -286,39 +299,66 @@ public class ContourDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String oldBandName = selectedBand.getName();
-                selectedBand = product.getBand((String) bandComboBox.getSelectedItem());
+                selectedUnfilteredBand = product.getBand((String) bandComboBox.getSelectedItem());
+                selectedBand = selectedUnfilteredBand;
                 propertyChangeSupport.firePropertyChange(NEW_BAND_SELECTED_PROPERTY, oldBandName, selectedBand.getName());
                 noDataValue = selectedBand.getGeophysicalNoDataValue();
             }
         });
 
-        final JButton filterButton = new JButton("Filter");
+        final JButton filterButton = new JButton("Choose Filter");
+        final JCheckBox filtered = new JCheckBox("", true);
+        final JTextArea filterMessage = new JTextArea("Using filtered band " + selectedFilteredBand.getName());
+        filterMessage.setBackground(Color.lightGray);
+        filterMessage.setEditable(false);
+
         filterButton.addActionListener(new ActionListener() {
             VisatApp visatApp = VisatApp.getApp();
+
             @Override
             public void actionPerformed(ActionEvent e) {
+                Band currentFilteredBand = selectedFilteredBand;
                 visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, false);
                 CreateFilteredBandAction filteredBandAction = new CreateFilteredBandAction();
-                VisatApp.getApp().setSelectedProductNode(selectedBand);
+                VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
+                if (selectedFilteredBand != null) {
+                    product.getBandGroup().remove(product.getBand(selectedFilteredBand.getName()));
+                }
                 filteredBandAction.actionPerformed(getFilterCommandEvent(filteredBandAction, e));
                 updateActiveBandList();
                 visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, true);
+                if (filterBand) {
+                    filterMessage.setText("Using filtered band " + selectedFilteredBand.getName());
+                } else {
+                    if (currentFilteredBand != null) {
+                        product.getBandGroup().add(currentFilteredBand);
+                    }
+                }
                 //((JPanel)bandPanel.getParent()).getRootPane().setDefaultButton((JButton)((JPanel)((JPanel)bandPanel.getParent()).getComponent(2)).getComponent(2));
             }
         });
 
-        final JCheckBox filtered = new JCheckBox("Filtered by 5x5", true);
+
         filtered.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (filtered.isSelected()) {
-
-                }   else {
-
+                    VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
+                    selectedBand = getDefaultFilterBand();
+                    selectedFilteredBand = selectedBand;
+                    filterMessage.setText("Using filtered band " + selectedFilteredBand.getName());
+                } else {
+                    VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
+                    selectedBand = selectedUnfilteredBand;
+                    filterMessage.setText("Not filtered");
+                    if (selectedFilteredBand != null) {
+                        product.getBandGroup().remove(product.getBand(selectedFilteredBand.getName()));
+                    }
+                    selectedFilteredBand = null;
                 }
             }
         });
-        JLabel filler = new JLabel("                                              ");
+        JLabel filler = new JLabel("     ");
         bandPanel.add(filler,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         bandPanel.add(bandLabel,
@@ -326,18 +366,23 @@ public class ContourDialog extends JDialog {
         bandPanel.add(bandComboBox,
                 new ExGridBagConstraints(2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
         bandPanel.add(filterButton,
-                        new ExGridBagConstraints(3, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+                new ExGridBagConstraints(3, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+        bandPanel.add(filtered,
+                new ExGridBagConstraints(4, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+        bandPanel.add(filterMessage,
+                new ExGridBagConstraints(5, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
         return bandPanel;
     }
 
-    private void updateActiveBandList(){
+    private void updateActiveBandList() {
 
         Band[] bands = product.getBands();
-
+        filterBand = false;
         for (Band band : bands) {
             //the image info of the filteredBand of the current band is null; this is to avoid selecting other filter bands and setting them to null
-            if ( band.getName().contains(selectedBand.getName()) && band.getName().length() > selectedBand.getName().length() && band.equals(bands[bands.length -1]) ) {
+            if (band.getName().contains(selectedUnfilteredBand.getName()) && band.getName().length() > selectedUnfilteredBand.getName().length() && band.equals(bands[bands.length - 1])) {
                 selectedBand = band;
+                selectedFilteredBand = band;
                 filteredBandName = band.getName();
                 filterBand = true;
                 noDataValue = selectedBand.getNoDataValue();
@@ -345,6 +390,7 @@ public class ContourDialog extends JDialog {
         }
 
     }
+
     private JPanel getControllerPanel() {
         JPanel controllerPanel = new JPanel(new GridBagLayout());
 
@@ -440,26 +486,29 @@ public class ContourDialog extends JDialog {
         this.filteredBandName = filteredBandName;
     }
 
-    private CommandEvent getFilterCommandEvent(CreateFilteredBandAction command, ActionEvent actionEvent){
-        CommandEvent filterCommandEvent = new CommandEvent(command, actionEvent, null, null );
+    private CommandEvent getFilterCommandEvent(CreateFilteredBandAction command, ActionEvent actionEvent) {
+        CommandEvent filterCommandEvent = new CommandEvent(command, actionEvent, null, null);
         command.setCommandID("createFilteredBand");
         command.setHelpId("createFilteredBand");
         command.setLongDescription("filter function in contour");
         return filterCommandEvent;
     }
 
-    private FilterBand getDefaultFilterBand(){
+    private FilterBand getDefaultFilterBand() {
         Filter defaultFilter = new Filter("Mean 2.5 Pixel Radius", "amc_2.5px", 5, 5, new double[]{
-                            0.172, 0.764, 1, 0.764, 0.172,
-                            0.764, 1, 1, 1, 0.764,
-                            1, 1, 1, 1, 1,
-                            0.764, 1, 1, 1, 0.764,
-                            0.172, 0.764, 1, 0.764, 0.172,
-                    }, 19.8);
+                0.172, 0.764, 1, 0.764, 0.172,
+                0.764, 1, 1, 1, 0.764,
+                1, 1, 1, 1, 1,
+                0.764, 1, 1, 1, 0.764,
+                0.172, 0.764, 1, 0.764, 0.172,
+        }, 19.8);
 
-        final FilterBand filterBand = CreateFilteredBandAction.createFilterBand(defaultFilter, "", 1);
-
-        return filterBand;
+        VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
+        final FilterBand filteredBand = CreateFilteredBandAction.createFilterBand(defaultFilter, selectedUnfilteredBand.getName() + "_amc_2.5px", 1);
+        filterBand = true;
+        selectedFilteredBand = filteredBand;
+        filteredBandName = filteredBand.getName();
+        return filteredBand;
     }
 
     public double getNoDataValue() {

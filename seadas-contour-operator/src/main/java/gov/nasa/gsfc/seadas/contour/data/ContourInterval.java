@@ -15,6 +15,8 @@ public class ContourInterval {
     Double contourLevelValue;
     String contourLineStyleValue;
     private Color lineColor;
+    private double dashLength;
+    private double spaceLength;
 
     private boolean initial;
     DecimalFormat decimalFormat = new DecimalFormat("##.###");
@@ -24,6 +26,9 @@ public class ContourInterval {
         contourLevelName = contourBaseName + this.contourLevelValue;
         lineColor = Color.BLACK;
         contourLineStyleValue = "1.0, 0";
+        dashLength = 1.0;
+        spaceLength = 0;
+
     }
 
     ContourInterval(Double contourLevelValue) {
@@ -88,5 +93,21 @@ public class ContourInterval {
 
     public void setInitial(boolean initial) {
         this.initial = initial;
+    }
+
+    public double getDashLength() {
+        return dashLength;
+    }
+
+    public void setDashLength(double dashLength) {
+        this.dashLength = dashLength;
+    }
+
+    public double getSpaceLength() {
+        return spaceLength;
+    }
+
+    public void setSpaceLength(double spaceLength) {
+        this.spaceLength = spaceLength;
     }
 }
