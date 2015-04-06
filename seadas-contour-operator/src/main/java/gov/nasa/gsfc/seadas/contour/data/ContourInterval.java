@@ -17,23 +17,22 @@ public class ContourInterval {
     private Color lineColor;
     private double dashLength;
     private double spaceLength;
+    private String filterName;
 
     private boolean initial;
     DecimalFormat decimalFormat = new DecimalFormat("##.###");
 
-    ContourInterval(String contourBaseName, Double contourLevelValue) {
+    private double ptsToPixelsMultiplier;
+
+    ContourInterval(String contourBaseName, Double contourLevelValue, String filterName, double ptsToPixelsMultiplier) {
         this.contourLevelValue = new Double(decimalFormat.format(contourLevelValue));
-        contourLevelName = contourBaseName + this.contourLevelValue;
+        contourLevelName = contourBaseName + this.contourLevelValue + "_" + filterName;
         lineColor = Color.BLACK;
         contourLineStyleValue = "1.0, 0";
         dashLength = 1.0;
         spaceLength = 0;
-
-    }
-
-    ContourInterval(Double contourLevelValue) {
-        this.contourLevelValue = new Double(decimalFormat.format(contourLevelValue));
-        lineColor = Color.WHITE;
+        this.filterName = filterName;
+        this.ptsToPixelsMultiplier = ptsToPixelsMultiplier;
     }
 
     ContourInterval() {
@@ -76,6 +75,7 @@ public class ContourInterval {
     @Override
     public ContourInterval clone(){
         ContourInterval contourInterval = new ContourInterval();
+        contourInterval.setPtsToPixelsMultiplier(this.getPtsToPixelsMultiplier());
         contourInterval.setLineColor(new Color(this.getLineColor().getRed(),
                                                this.getLineColor().getGreen(),
                                                this.getLineColor().getBlue(),
@@ -83,6 +83,8 @@ public class ContourInterval {
         contourInterval.setContourLevelName(this.getContourLevelName());
         contourInterval.setContourLevelValue(this.getContourLevelValue());
         contourInterval.setContourLineStyleValue(this.getContourLineStyleValue());
+        contourInterval.setDashLength(this.getDashLength());
+        contourInterval.setSpaceLength(this.getSpaceLength());
         return contourInterval;
 
     }
@@ -101,6 +103,7 @@ public class ContourInterval {
 
     public void setDashLength(double dashLength) {
         this.dashLength = dashLength;
+        setContourLineStyleValue(new Double(this.dashLength * ptsToPixelsMultiplier).toString() + ", " + new Double(this.spaceLength * ptsToPixelsMultiplier).toString());
     }
 
     public double getSpaceLength() {
@@ -109,5 +112,22 @@ public class ContourInterval {
 
     public void setSpaceLength(double spaceLength) {
         this.spaceLength = spaceLength;
+        setContourLineStyleValue(new Double(this.dashLength * ptsToPixelsMultiplier).toString() + ", " + new Double(this.spaceLength * ptsToPixelsMultiplier).toString());
+    }
+
+    public String getFilterName() {
+        return filterName;
+    }
+
+    public void setFilterName(String filterName) {
+        this.filterName = filterName;
+    }
+
+    public double getPtsToPixelsMultiplier() {
+        return ptsToPixelsMultiplier;
+    }
+
+    public void setPtsToPixelsMultiplier(double ptsToPixelsMultiplier) {
+        this.ptsToPixelsMultiplier = ptsToPixelsMultiplier;
     }
 }

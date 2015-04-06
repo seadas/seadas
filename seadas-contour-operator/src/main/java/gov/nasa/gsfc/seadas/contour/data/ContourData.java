@@ -4,6 +4,7 @@ import org.esa.beam.framework.datamodel.Band;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
@@ -17,11 +18,14 @@ import java.util.ArrayList;
 public class ContourData {
 
 
+
+    static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
+    static final String CONTOUR_LINES_BASE_NAME = "contour_";
+    static final String NEW_FILTER_SELECTED_PROPERTY = "newFilterSelected";
+
     private ArrayList<ContourInterval> contourIntervals;
     Band band;
     int bandIndex;
-    static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
-    static final String CONTOUR_LINES_BASE_NAME = "contour_";
     String contourBaseName;
     private Double startValue;
     private Double endValue;
@@ -29,19 +33,22 @@ public class ContourData {
     private boolean log;
     private boolean filtered;
     private boolean contourCustomized;
+    private String filterName;
+    private String oldFilterName;
+    private double ptsToPixelsMultiplier;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
 
     public ContourData() {
-        this(null);
+        this(null, null, null, 1);
     }
 
-    public ContourData(Band band) {
+    public ContourData(Band band, String unfiltereBandName, String filterName, double ptsToPixelsMultiplier) {
         contourIntervals = new ArrayList<ContourInterval>();
         contourBaseName = CONTOUR_LINES_BASE_NAME;
         if (band != null) {
-            contourBaseName = contourBaseName + band.getName() + "_";
+            contourBaseName = contourBaseName + unfiltereBandName + "_";
         }
         startValue = 0.0;
         endValue = 0.0;
@@ -49,6 +56,18 @@ public class ContourData {
         log = false;
         filtered = true;
         contourCustomized = false;
+        this.filterName = filterName;
+        this.ptsToPixelsMultiplier = ptsToPixelsMultiplier;
+        propertyChangeSupport.addPropertyChangeListener(NEW_FILTER_SELECTED_PROPERTY, getFilterButtonPropertyListener());
+    }
+
+    private PropertyChangeListener getFilterButtonPropertyListener() {
+        return new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                updateContourNamesForNewFilter(oldFilterName, filterName);
+            }
+        };
     }
 
 
@@ -89,7 +108,7 @@ public class ContourData {
          * If the numberofIntervals is one (1), the contour line will be based on the start value.
          */
         if (startValue == endValue || Math.abs(startValue - endValue) < 0.00001 || numberOfLevels == 1) {
-            contourIntervals.add(new ContourInterval(contourBaseName, startValue));
+            contourIntervals.add(new ContourInterval(contourBaseName, startValue, filterName, ptsToPixelsMultiplier));
 
             //Only update names if the user edited the contour interval values
             if (contourCustomized) {
@@ -112,14 +131,14 @@ public class ContourData {
             System.out.println("start value: " + sv + "   end value: " + ev + "   interval: " + interval);
             for (int i = 0; i < numberOfLevels; i++) {
                 double contourValue = Math.pow(10, sv + interval * i);
-                contourIntervals.add(new ContourInterval(contourBaseName, contourValue));
+                contourIntervals.add(new ContourInterval(contourBaseName, contourValue, filterName, ptsToPixelsMultiplier));
             }
         } else {
             interval = (endValue - startValue) / (numberOfLevels - 1);
             System.out.println("start value: " + startValue + "   end value: " + endValue + "   interval: " + interval);
             for (int i = 0; i < numberOfLevels; i++) {
                 double contourValue = startValue + interval * i;
-                contourIntervals.add(new ContourInterval(contourBaseName, contourValue));
+                contourIntervals.add(new ContourInterval(contourBaseName, contourValue, filterName, ptsToPixelsMultiplier));
             }
         }
 
@@ -151,6 +170,14 @@ public class ContourData {
             }
         }
     }
+
+    public void updateContourNamesForNewFilter(String oldFilterName, String newFilterName) {
+        for (ContourInterval contourInverval : contourIntervals) {
+            String newName =  contourInverval.getContourLevelName().replace(oldFilterName, newFilterName);
+            contourInverval.setContourLevelName(newName);
+        }
+    }
+
 
     public void setBand(Band band) {
         String oldBandName = this.band.getName();
@@ -284,6 +311,16 @@ public class ContourData {
 
     public void setContourCustomized(boolean contourCustomized) {
         this.contourCustomized = contourCustomized;
+    }
+
+    public String getFilterName() {
+        return filterName;
+    }
+
+    public void setFilterName(String filterName) {
+        oldFilterName = this.filterName;
+        this.filterName = filterName;
+        updateContourNamesForNewFilter(oldFilterName, filterName);
     }
 }
 

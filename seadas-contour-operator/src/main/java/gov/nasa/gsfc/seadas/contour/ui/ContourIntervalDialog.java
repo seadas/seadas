@@ -44,8 +44,8 @@ public class ContourIntervalDialog extends JDialog {
 
     ContourData contourData;
 
-    ContourIntervalDialog(Band selectedBand) {
-        contourData = new ContourData(selectedBand);
+    ContourIntervalDialog(Band selectedBand, String unfilteredBandName, String filterName, double ptsToPixelsMultiplier) {
+        contourData = new ContourData(selectedBand, unfilteredBandName, filterName, ptsToPixelsMultiplier);
         numberOfLevels = 1;
         contourData.setNumOfLevels(numberOfLevels);
 
@@ -306,15 +306,19 @@ public class ContourIntervalDialog extends JDialog {
         final String contourValuePropertyName = "contourValue";
         final String contourColorPropertyName = "contourColor";
         final String contourLineStylePropertyName = "contourLineStyle";
+        final String contourLineDashLengthPropertyName = "contourLineDashLength";
+        final String contourLineSpaceLengthPropertyName = "contourLineSpaceLength";
         ArrayList<ContourInterval> contourIntervalsClone = contourData.cloneContourIntervals();
         JPanel customPanel = new JPanel();
         customPanel.setLayout(new BoxLayout(customPanel, BoxLayout.Y_AXIS));
         for (final ContourInterval interval : contourIntervalsClone) {
-            JPanel contourLevelPanel = new JPanel(new TableLayout(8));
+            JPanel contourLevelPanel = new JPanel(new TableLayout(12));
             JLabel contourNameLabel = new JLabel("Name: ");
             JLabel contourValueLabel = new JLabel("Value: ");
             JLabel contourColorLabel = new JLabel("Color: ");
             JLabel contourLineStyleLabel = new JLabel("Line Style: ");
+            JLabel contourLineDashLengthLabel = new JLabel("Line Dash Length: ");
+            JLabel contourLineSpaceLengthLabel = new JLabel("Line Space Length: ");
 
             JPanel contourLineStylePanel = new JPanel();
             contourLineStylePanel.setLayout(new TableLayout(2));
@@ -330,16 +334,24 @@ public class ContourIntervalDialog extends JDialog {
             contourLineStyleValue.setText(interval.getContourLineStyleValue());
             contourLineStyleValue.setToolTipText("Enter two numeric values. First number defines the dash length, the second number defines the space the length for dashed lines.");
 
-            JTextField dashLengthField = new JTextField();
-            dashLengthField.setColumns(4);
-            dashLengthField.setText(new Double(interval.getDashLength()).toString());
+            JTextField dashLengthValue = new JTextField();
+            dashLengthValue.setColumns(4);
+            dashLengthValue.setText(new Double(interval.getDashLength()).toString());
+            dashLengthValue.setToolTipText("Enter a value greater than 0.");
 
+            JTextField spaceLengthValue = new JTextField();
+            spaceLengthValue.setColumns(4);
+            spaceLengthValue.setText(new Double(interval.getSpaceLength()).toString());
+            spaceLengthValue.setToolTipText("Enter 0 for solid lines. Enter a value greater than 0 for dashed lines.");
 
             PropertyContainer propertyContainer = new PropertyContainer();
             propertyContainer.addProperty(Property.create(contourNamePropertyName, interval.getContourLevelName()));
             propertyContainer.addProperty(Property.create(contourValuePropertyName, interval.getContourLevelValue()));
             propertyContainer.addProperty(Property.create(contourColorPropertyName, interval.getLineColor()));
             propertyContainer.addProperty(Property.create(contourLineStylePropertyName, interval.getContourLineStyleValue()));
+            propertyContainer.addProperty(Property.create(contourLineDashLengthPropertyName, interval.getDashLength()));
+            propertyContainer.addProperty(Property.create(contourLineSpaceLengthPropertyName, interval.getSpaceLength()));
+
             final BindingContext bindingContext = new BindingContext(propertyContainer);
             final PropertyChangeListener pcl_name = new PropertyChangeListener() {
                 @Override
@@ -365,6 +377,20 @@ public class ContourIntervalDialog extends JDialog {
                     interval.setContourLineStyleValue((String) bindingContext.getBinding(contourLineStylePropertyName).getPropertyValue());
                 }
             };
+
+            final PropertyChangeListener pcl_lineDashLength = new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    interval.setDashLength((Double) bindingContext.getBinding(contourLineDashLengthPropertyName).getPropertyValue());
+                }
+            };
+            final PropertyChangeListener pcl_lineSpaceLength = new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    interval.setSpaceLength((Double) bindingContext.getBinding(contourLineSpaceLengthPropertyName).getPropertyValue());
+                }
+            };
+
             ColorComboBox contourLineColorComboBox = new ColorComboBox();
             contourLineColorComboBox.setColorValueVisible(false);
             contourLineColorComboBox.setAllowDefaultColor(true);
@@ -382,8 +408,17 @@ public class ContourIntervalDialog extends JDialog {
             bindingContext.addPropertyChangeListener(contourValuePropertyName, pcl_value);
 
             Binding contourLineBinding = bindingContext.bind(contourLineStylePropertyName, contourLineStyleValue);
-            contourValueBinding.addComponent(contourLineStyleLabel);
+            contourLineBinding.addComponent(contourLineStyleLabel);
             bindingContext.addPropertyChangeListener(contourLineStylePropertyName, pcl_lineStyle);
+
+            Binding contourLineDashLengthBinding = bindingContext.bind(contourLineDashLengthPropertyName, dashLengthValue);
+            contourLineDashLengthBinding.addComponent(contourLineDashLengthLabel);
+            bindingContext.addPropertyChangeListener(contourLineDashLengthPropertyName, pcl_lineDashLength);
+
+            Binding contourLineSpaceLengthBinding = bindingContext.bind(contourLineSpaceLengthPropertyName, spaceLengthValue);
+            contourLineSpaceLengthBinding.addComponent(contourLineSpaceLengthLabel);
+            bindingContext.addPropertyChangeListener(contourLineSpaceLengthPropertyName, pcl_lineSpaceLength);
+
 
             contourLevelPanel.add(contourNameLabel);
             contourLevelPanel.add(contourLevelName);
@@ -391,8 +426,12 @@ public class ContourIntervalDialog extends JDialog {
             contourLevelPanel.add(contourLevelValue);
             contourLevelPanel.add(contourColorLabel);
             contourLevelPanel.add(contourLineColorComboBox);
-            contourLevelPanel.add(contourLineStyleLabel);
-            contourLevelPanel.add(contourLineStyleValue);
+//            contourLevelPanel.add(contourLineStyleLabel);
+//            contourLevelPanel.add(contourLineStyleValue);
+            contourLevelPanel.add(contourLineDashLengthLabel);
+            contourLevelPanel.add(dashLengthValue);
+            contourLevelPanel.add(contourLineSpaceLengthLabel);
+            contourLevelPanel.add(spaceLengthValue);
             customPanel.add(contourLevelPanel);
         }
 
@@ -496,4 +535,8 @@ public class ContourIntervalDialog extends JDialog {
         }
 
     }
+
+//    public void updateContourNames(String newFilterName){
+//            contourData.updateContourNamesForNewFilter(contourData.getFilterName(), newFilterName);
+//    }
 }
