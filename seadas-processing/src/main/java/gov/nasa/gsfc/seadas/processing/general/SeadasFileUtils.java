@@ -85,6 +85,12 @@ public class SeadasFileUtils {
     public static String getGeoFileNameFromIFile(String ifileName) {
 
         String geoFileName = (ifileName.substring(0, ifileName.indexOf("."))).concat(".GEO");
+        int pos1 = ifileName.indexOf(".");
+        int pos2 = ifileName.lastIndexOf(".");
+
+        if ( pos2 > pos1) {
+            geoFileName = ifileName.substring(0, pos1+1) + "GEO" + ifileName.substring(pos2);
+        }
 
         if (new File(geoFileName).exists()) {
             return geoFileName;
