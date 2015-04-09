@@ -80,7 +80,7 @@ public class ExtractorUI extends ProgramUIFactory {
         lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml");
         initLonLatIFile();
 
-        paramUIFactory = new ParamUIFactory(processorModel);
+        paramUIFactory = new ExtractorParamUI(processorModel);
         pixelPanel = paramUIFactory.createParamPanel(processorModel);
 
         newsPanel = new ParamUIFactory(lonlat2pixline).createParamPanel(lonlat2pixline);
