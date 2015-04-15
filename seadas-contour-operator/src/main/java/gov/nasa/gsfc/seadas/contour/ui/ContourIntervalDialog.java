@@ -264,6 +264,7 @@ public class ContourIntervalDialog extends JDialog {
                 contourPanel.removeAll();
                 contourPanel.validate();
                 contourPanel.repaint();
+                contourData.setDeleted(true);
                 propertyChangeSupport.firePropertyChange("deleteButtonPressed", true, false);
                 //propertyChangeSupport.firePropertyChange("deleteButtonPressed", true, false);
             }

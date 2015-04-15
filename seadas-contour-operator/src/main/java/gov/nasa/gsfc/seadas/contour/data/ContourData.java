@@ -36,6 +36,7 @@ public class ContourData {
     private String filterName;
     private String oldFilterName;
     private double ptsToPixelsMultiplier;
+    private boolean deleted;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -56,8 +57,10 @@ public class ContourData {
         log = false;
         filtered = true;
         contourCustomized = false;
+        deleted = false;
         this.filterName = filterName;
         this.ptsToPixelsMultiplier = ptsToPixelsMultiplier;
+        propertyChangeSupport.addPropertyChangeListener(NEW_FILTER_SELECTED_PROPERTY, getFilterButtonPropertyListener());
         propertyChangeSupport.addPropertyChangeListener(NEW_FILTER_SELECTED_PROPERTY, getFilterButtonPropertyListener());
     }
 
@@ -321,6 +324,14 @@ public class ContourData {
         oldFilterName = this.filterName;
         this.filterName = filterName;
         updateContourNamesForNewFilter(oldFilterName, filterName);
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
 

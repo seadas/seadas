@@ -99,7 +99,7 @@ public class ContourDialog extends JDialog {
 
         }
         ptsToPixelsMultiplier = getPtsToPixelsMultiplier();
-        contourData = new ContourData(selectedBand,selectedUnfilteredBand.getName(), getFilterShortHandName(), ptsToPixelsMultiplier );
+        contourData = new ContourData(selectedBand, selectedUnfilteredBand.getName(), getFilterShortHandName(), ptsToPixelsMultiplier);
         this.activeBands = activeBands;
         numberOfLevels = 1;
         contours = new ArrayList<ContourData>();
@@ -126,8 +126,8 @@ public class ContourDialog extends JDialog {
         return new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                for (ContourData contourData1 : contours) {
-                    contourData1.setFilterName(getFilterShortHandName());
+                for (ContourData contourData: contours) {
+                    contourData.setFilterName(getFilterShortHandName());
                 }
             }
         };
@@ -151,7 +151,12 @@ public class ContourDialog extends JDialog {
                     contourPanel.validate();
                     contourPanel.repaint();
                 }
-                //todo delete vectors from the memory also
+                //delete vectors from the memory also
+                for (ContourData contourData1 : contours) {
+                    if (contourData1.isDeleted()) {
+                        contours.remove(contourData1);
+                    }
+                }
             }
         };
     }
@@ -469,16 +474,15 @@ public class ContourDialog extends JDialog {
             }
         });
         contourIntervalDialog.addPropertyChangeListener(NEW_FILTER_SELECTED_PROPERTY, new PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                        //contourIntervalDialog.updateContourNames(getFilterShortHandName());
-                        System.out.println("would this line be executed?");
-                    }
-                });
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //contourIntervalDialog.updateContourNames(getFilterShortHandName());
+                System.out.println("would this line be executed?");
+            }
+        });
         contours.add(contourIntervalDialog.getContourData());
         return contourIntervalDialog.getBasicPanel();
     }
-
 
     public ContourData getContourData() {
 
@@ -489,7 +493,8 @@ public class ContourDialog extends JDialog {
         ContourData mergedContourData = new ContourData(selectedBand, selectedUnfilteredBand.getName(), getFilterShortHandName(), ptsToPixelsMultiplier);
         ArrayList<ContourInterval> contourIntervals = new ArrayList<ContourInterval>();
         for (ContourData contourData : contours) {
-            contourIntervals.addAll(contourData.getContourIntervals());
+            if (contourData != null)
+                contourIntervals.addAll(contourData.getContourIntervals());
         }
         mergedContourData.setContourIntervals(contourIntervals);
         mergedContourData.setFiltered(filterBand);
@@ -568,12 +573,12 @@ public class ContourDialog extends JDialog {
         return ptsToPixelsMultiplier;
     }
 
-    private String getFilterShortHandName(){
-        if ( selectedFilteredBand == null)  {
+    private String getFilterShortHandName() {
+        if (selectedFilteredBand == null) {
             return "not_filtered";
         }
         String selectedUnfilteredBandName = selectedUnfilteredBand.getName();
-        String selectedFilteredBandName =  selectedFilteredBand.getName();
-        return selectedFilteredBandName.substring(selectedUnfilteredBandName.length()+1);
+        String selectedFilteredBandName = selectedFilteredBand.getName();
+        return selectedFilteredBandName.substring(selectedUnfilteredBandName.length() + 1);
     }
 }
