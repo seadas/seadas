@@ -34,8 +34,10 @@
         <td style="border-width:0">
             To bring up the <b>"Contour Lines"</b> window click this tool button
             in the <b>"Layers"</b> tool bar or select the
-            corresponding menu item in <b>"Tools -> Contour" or right click on a product/band image and select "Contour"</b>.
-            <p class="inote"><b>NOTE:</b> this tool can only be accessed if the image of a band or product is displayed. </p>
+            corresponding menu item in <b>"Tools -> Contour" or right click on a product/band image and select
+            "Contour"</b>.
+            <p class="inote"><b>NOTE:</b> this tool can only be accessed if the image of a band or product is displayed.
+            </p>
         </td>
     </tr>
 </table>
@@ -43,23 +45,54 @@
 
 <h3>Details</h3>
 <h4>Introduction</h4>
-This tool creates contour lines within a selected product.
+This tool creates contour lines for a selected product. This tool is built upon the contour operator developed by Michael Bedward and available at
+<code>https://github.com/mbedward/jaitools/tree/master/operator/contour</code>, which in turn uses an
+interpolation algorithm of Paul Bourke: originally published
+ in Byte magazine (1987) as the CONREC contouring subroutine written in
+ FORTRAN. The Java implementation of contour operator was adapted from Paul Bourke's C code for the
+ algorithm, which is available at:
+ <a href="http://local.wasp.uwa.edu.au/~pbourke/papers/conrec/">
+ http://local.wasp.uwa.edu.au/~pbourke/papers/conrec/</a>
 
 <h4>User Interface</h4>
+
 <p>
 
-    The user interface of <b>"Contour Lines"</b> tools is divided into 3 sections.
+    The user interface of <b>"Contour Lines"</b> tool is divided into 3 sections.
 
-    <img src="images/contour_dialog.png"  alt="Contour Dialog"></a>
+<ul>
 
+    <li> The <b><i>top section</i></b> enables the
+        selection of a product or band as the source of the contour operator.
+        By default, the band is filtered using a 5x5 filter. A user can select a desired filter using the "Choose
+        Filter" button, or un-check the checkbox next to
+        the "Choose Filter" button to use the unfiltered, original band to generate contour lines. When an unfiltered
+        band is used, the contour operation takes
+        considerably longer amount of time to create the contour interval lines. Thus, it is highly recommended to use
+        filtered bands.
+    </li>
+    <li>
+        The <b><i>middle section</i></b> allows the setting of the parameters
+        <a href="ContourLines.html#START_VALUE">Start Value</a>,
+        <a href="ContourLines.html#END_VALUE">End Value</a>,
+        <a href="ContourLines.html#NUMBER_OF_LEVELS">Number of Levels</a>, and
+        <a href="ContourLines.html#LOG">Log</a>
+        for the contour operator.
+        Based on the start value, the end value, the number of levels, and the log/linear factor, the "Contour" tool
+        auto-generates contour intervals.
+        Users can view the generated levels using the "Preview/Edit" button and modify the contour interval name,
+        contour value, contour line color, and contour line
+        style. Contour line style is defined using two variables: line dash length and line space length. Line dash
+        length cannot be zero or a negative number. When "line space length"
+        is zero, it indicates the line is solid.
+    </li>
+    <li>
+        The <b><i>last section</i></b> contains buttons that initiates the execution or cancellation of the contour operation.
+    </li>
+</ul>
+<br>
 
-    The top section enables the
-    selection of a product or band as the source of the contour operator. The middle section allow the setting of the parameters
-    <a href="ContourLines.html#START_VALUE">Start Value</a>,
-    <a href="ContourLines.html#END_VALUE">End Value</a>,
-    <a href="ContourLines.html#NUMBER_OF_LEVELS">Number of Levels</a>, and
-    <a href="ContourLines.html#LOG">Log</a>
-for the contour operator.
+<img src="images/contour_dialog.png" alt="Contour Dialog"></a>
 
 </p>
 
@@ -67,14 +100,14 @@ for the contour operator.
 <h6>Start Value</h6>
 
 <p>
-   Sets the start value for contour levels.
+    Sets the start value for contour levels.
 </p>
 
 <a name="END_VALUE"></a>
 <h6>End Value</h6>
 
 <p>
-    Sets the start value for contour levels.
+    Sets the end value for contour levels.
 </p>
 
 <a name="NUMBER_OF_LEVELS"></a>
@@ -88,19 +121,21 @@ for the contour operator.
 <h6>Log</h6>
 
 <p>
-    log or linear contour interval.
+    The contour interval values between the start and end values are auto-generated using either a linear or log distribution factor.
+    However, in "Preview/Edit" window, users can enter any values for contour intervals.
 </p>
 
 
 <a name="Customize"></a>
+
 <h6>Preview/Edit</h6>
 
 <p>
     This button helps to customize the automatically generated contour intervals.
 </p>
 
+<img src="images/contour_preview_edit.png" alt="Contour Dialog"></a>
 
-The last section contains buttons that initiates execution or cancellation.
 
 </body>
 </html>
