@@ -1325,31 +1325,31 @@ public class L2genData implements L2genDataProcessorModel {
             }
 
 
-//            FileInfo oFileInfo;
-//
-//            if (iFileInfo.isMissionId(MissionInfo.Id.AQUARIUS)) {
-//                oFileInfo = FilenamePatterns.getAquariusOFileInfo(iFileInfo, suiteValue);
-//            } else {
-//                oFileInfo = FilenamePatterns.getOFileInfo(iFileInfo);
-//            }
-//            if (oFileInfo != null) {
-//                setParamValue(OFILE, oFileInfo.getFile().getAbsolutePath());
-//            }
+            String progName;
+            if(mode == Mode.L3GEN) {
+                progName = "l3gen";
+            } else {
+                progName = "l2gen";
+            }
 
-            String tmpOFile = SeadasFileUtils.findNextLevelFileName(iFileInfo.getFile().getAbsolutePath(), "l2gen");
-            File oFile = new File(iFileInfo.getFile().getParent(), tmpOFile);
-            if (oFile != null) {
+            String tmpOFile = SeadasFileUtils.findNextLevelFileName(iFileInfo.getFile().getAbsolutePath(), progName);
+            if (tmpOFile != null) {
+                File oFile = new File(iFileInfo.getFile().getParent(), tmpOFile);
                 setParamValue(OFILE, oFile.getAbsolutePath());
             }
 
-            if (iFileInfo.isGeofileRequired()) {
-                FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo);
-                if (geoFileInfo != null) {
-                    setParamValue(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
+            if(mode != Mode.L3GEN) {
+                if (iFileInfo.isGeofileRequired()) {
+                    FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo);
+                    if (geoFileInfo != null) {
+                        setParamValue(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
+                    }
+                } else {
+                    setParamValueAndDefault(GEOFILE, null);
                 }
             } else {
-                setParamValueAndDefault(GEOFILE, null);
-            }
+				setParamValueAndDefault(GEOFILE, null);
+			}
         } else {
             setParamToDefaults(OFILE);
             setParamValueAndDefault(GEOFILE, null);
