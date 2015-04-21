@@ -36,6 +36,7 @@
         <param>aer_wave_short</param>
         <param>atmocor</param>
         <param>brdf_opt</param>
+        <param>cirrus_opt</param>
         <param>filter_file</param>
         <param>filter_opt</param>
         <param>fmtofile</param>
@@ -65,6 +66,7 @@
         <param>sl_frac</param>
         <param>sl_pixl</param>
         <param>taua</param>
+        <param>atrem_opt</param>
     </category>
 
     <category name="Subsetting Options">

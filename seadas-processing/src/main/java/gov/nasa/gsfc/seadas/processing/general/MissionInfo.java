@@ -8,19 +8,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: knowles
- * Date: 5/16/12
- * Time: 3:13 PM
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: knowles Date: 5/16/12 Time: 3:13 PM To change
+ * this template use File | Settings | File Templates.
  */
 public class MissionInfo {
 
-
     public static enum Id {
+
         AQUARIUS,
         CZCS,
         HICO,
+        GOCI,
         MERIS,
         MODISA,
         MODIST,
@@ -29,25 +27,29 @@ public class MissionInfo {
         OSMI,
         SEAWIFS,
         VIIRS,
+        OCM1,
         OCM2,
+        OLI,
         UNKNOWN
     }
 
     public final static Id[] SUPPORTED_IDS = {
-            Id.AQUARIUS,
-            Id.CZCS,
-            Id.HICO,
-            Id.MERIS,
-            Id.MODISA,
-            Id.MODIST,
-            Id.MOS,
-            Id.OCTS,
-            Id.OSMI,
-            Id.SEAWIFS,
-            Id.VIIRS,
-            Id.OCM2
+        Id.AQUARIUS,
+        Id.CZCS,
+        Id.HICO,
+        Id.GOCI,
+        Id.MERIS,
+        Id.MODISA,
+        Id.MODIST,
+        Id.MOS,
+        Id.OCTS,
+        Id.OSMI,
+        Id.SEAWIFS,
+        Id.VIIRS,
+        Id.OCM1,
+        Id.OCM2,
+        Id.OLI
     };
-
 
     public final static String[] SEAWIFS_NAMES = {"SeaWiFS"};
     public final static String SEAWIFS_DIRECTORY = "seawifs";
@@ -79,33 +81,38 @@ public class MissionInfo {
     public final static String[] MOS_NAMES = {"MOS"};
     public final static String MOS_DIRECTORY = "mos";
 
+    public final static String[] OCM1_NAMES = {"OCM1"};
+    public final static String OCM1_DIRECTORY = "ocm1";
+
     public final static String[] OCM2_NAMES = {"OCM2"};
     public final static String OCM2_DIRECTORY = "ocm2";
 
     public final static String[] HICO_NAMES = {"HICO"};
     public final static String HICO_DIRECTORY = "hico";
 
-    private final HashMap<Id, String[]> names = new HashMap<Id, String[]>();
-    private final HashMap<Id, String> directories = new HashMap<Id, String>();
+    public final static String[] GOCI_NAMES = {"GOCI"};
+    public final static String GOCI_DIRECTORY = "goci";
 
+    public final static String[] OLI_NAMES = {"OLI"};
+    public final static String OLI_DIRECTORY = "oli";
+
+    private final HashMap<Id, String[]> names = new HashMap<>();
+    private final HashMap<Id, String> directories = new HashMap<>();
 
     private Id id;
 
     private boolean geofileRequired;
     private File directory;
 
-
     public MissionInfo() {
         initDirectoriesHashMap();
         initNamesHashMap();
     }
 
-
     public MissionInfo(Id id) {
         this();
         setId(id);
     }
-
 
     public void clear() {
         id = null;
@@ -124,9 +131,12 @@ public class MissionInfo {
         directories.put(Id.OCTS, OCTS_DIRECTORY);
         directories.put(Id.OSMI, OSMI_DIRECTORY);
         directories.put(Id.MOS, MOS_DIRECTORY);
+        directories.put(Id.OCM1, OCM1_DIRECTORY);
         directories.put(Id.OCM2, OCM2_DIRECTORY);
+        directories.put(Id.HICO, HICO_DIRECTORY);
+        directories.put(Id.GOCI, GOCI_DIRECTORY);
+        directories.put(Id.OLI, OLI_DIRECTORY);
     }
-
 
     private void initNamesHashMap() {
         names.put(Id.SEAWIFS, SEAWIFS_NAMES);
@@ -139,10 +149,12 @@ public class MissionInfo {
         names.put(Id.OCTS, OCTS_NAMES);
         names.put(Id.OSMI, OSMI_NAMES);
         names.put(Id.MOS, MOS_NAMES);
+        names.put(Id.OCM1, OCM1_NAMES);
         names.put(Id.OCM2, OCM2_NAMES);
         names.put(Id.HICO, HICO_NAMES);
+        names.put(Id.GOCI, GOCI_NAMES);
+        names.put(Id.OLI, OLI_NAMES);
     }
-
 
     public Id getId() {
         return id;
@@ -175,11 +187,12 @@ public class MissionInfo {
 
         while (itr.hasNext()) {
             Object key = itr.next();
-            for (String name : names.get(key))
+            for (String name : names.get(key)) {
                 if (name.toLowerCase().equals(nameString.toLowerCase())) {
                     setId((Id) key);
                     return;
                 }
+            }
         }
 
         setId(Id.UNKNOWN);
@@ -210,7 +223,6 @@ public class MissionInfo {
         }
     }
 
-
     public boolean isGeofileRequired() {
         return geofileRequired;
     }
@@ -218,7 +230,6 @@ public class MissionInfo {
     private void setGeofileRequired(boolean geofileRequired) {
         this.geofileRequired = geofileRequired;
     }
-
 
     private void setMissionDirectoryName() {
         if (directories.containsKey(id)) {
