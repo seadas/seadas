@@ -80,7 +80,8 @@
         </option>
         <option type="string">
             <name>product</name>
-            <value/>
+            <value>myprod</value>
+            <default>myprod</default>
             <source>default</source>
             <description>product(s) to map</description>
         </option>
@@ -155,12 +156,12 @@
         </option>
         <option type="string">
             <name>oformat</name>
-            <value>netCDF</value>
-            <default>netCDF</default>
+            <value>netCDF4</value>
+            <default>netCDF4</default>
             <source>default</source>
             <validValues>
                 <validValue>
-                    <value>netCDF</value>
+                    <value>netCDF4</value>
                     <description>netCDF file, can contain more than one product</description>
                 </validValue>
                 <validValue>
@@ -344,13 +345,13 @@
             <source>default</source>
             <description>processing version string</description>
         </option>
-        <option type="boolean">
-            <name>use_quality</name>
-            <value>yes</value>
-            <default>yes</default>
-            <source>default</source>
-            <description>should we do quality factor processing</description>
-        </option>
+        <!--<option type="boolean">-->
+            <!--<name>use_quality</name>-->
+            <!--<value>yes</value>-->
+            <!--<default>yes</default>-->
+            <!--<source>default</source>-->
+            <!--<description>should we do quality factor processing</description>-->
+        <!--</option>-->
         <option type="int">
             <name>deflate</name>
             <value>4</value>

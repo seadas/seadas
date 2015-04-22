@@ -86,68 +86,70 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             setOpenInSeadas(false);
         }
 
-        addPropertyChangeListener("prod", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-                if (ofileName != null && ofileName.length() > 0) {
-                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-                    if (oldProdValue != null && oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
-                        ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
-                    } else {
-                        ofileName = ofileName + "_" + newProdValue;
-                    }
-                    updateOFileInfo(ofileName);
-                }
-            }
-        });
-
-        addPropertyChangeListener("outmode", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-                if (ofileName != null && ofileName.length() > 0) {
-                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-                    if (oldProdValue != null && oldProdValue.trim().length() > 0 && ofileName.indexOf(convertToMode(oldProdValue)) != -1) {
-                        ofileName = ofileName.replaceAll(convertToMode(oldProdValue), convertToMode(newProdValue));
-                    } else {
-                        ofileName = ofileName + "_" + convertToMode(newProdValue);
-                    }
-                    updateOFileInfo(ofileName);
-                }
-            }
-        });
-
-        addPropertyChangeListener("resolution", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
-                String newResolutionValue = (String) propertyChangeEvent.getNewValue();
-                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-                if (oldResolutionValue != null && oldResolutionValue.trim().length() > 0 && ofileName.indexOf(oldResolutionValue) != -1) {
-                    ofileName = ofileName.replaceAll(oldResolutionValue, newResolutionValue);
-                } else {
-                    ofileName = ofileName + "_" + newResolutionValue;
-                }
-                updateOFileInfo(ofileName);
-            }
-        });
-        addPropertyChangeListener("suite", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String oldSuiteValue = (propertyChangeEvent.getOldValue() instanceof String) ? (String) propertyChangeEvent.getOldValue() : null; //(String)((ArrayList)propertyChangeEvent.getOldValue()).get(0);
-                String newSuiteValue = (propertyChangeEvent.getNewValue() instanceof String) ? (String) propertyChangeEvent.getNewValue() : null; //(String)((ArrayList)propertyChangeEvent.getNewValue()).get(0);
-                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-                if (oldSuiteValue != null && oldSuiteValue.length() > 0 && ofileName.indexOf(oldSuiteValue) != -1) {
-                    ofileName = ofileName.replaceAll(oldSuiteValue, newSuiteValue);
-                } else {
-                    ofileName = ofileName + "_" + newSuiteValue;
-                }
-                updateOFileInfo(ofileName);
-            }
-        });
+//        addPropertyChangeListener("prod", new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+//                if (ofileName != null && ofileName.length() > 0) {
+//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                    if (oldProdValue != null && oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
+//                        ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
+//                    } else {
+//                        ofileName = ofileName + "_" + newProdValue;
+//                    }
+//                    updateOFileInfo(ofileName);
+//                }
+//            }
+//        });
+//
+//        addPropertyChangeListener("outmode", new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+//                if (ofileName != null && ofileName.length() > 0) {
+//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                    if (oldProdValue != null && oldProdValue.trim().length() > 0 && ofileName.indexOf(convertToMode(oldProdValue)) != -1) {
+//                        ofileName = ofileName.replaceAll(convertToMode(oldProdValue), convertToMode(newProdValue));
+//                    } else {
+//                        ofileName = ofileName + "_" + convertToMode(newProdValue);
+//                    }
+//                    updateOFileInfo(ofileName);
+//                }
+//            }
+//        });
+//
+//        addPropertyChangeListener("resolution", new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+//                String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+////                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+////                if (oldResolutionValue != null && oldResolutionValue.trim().length() > 0 && ofileName.indexOf(oldResolutionValue) != -1) {
+////                    ofileName = ofileName.replaceAll(oldResolutionValue, newResolutionValue);
+////                } else {
+////                    ofileName = ofileName + "_" + newResolutionValue;
+////                }
+//                String[] additionalOptions = {"--resolution=" + newResolutionValue};
+//                String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+//                updateOFileInfo(ofileName);
+//            }
+//        });
+//        addPropertyChangeListener("suite", new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                String oldSuiteValue = (propertyChangeEvent.getOldValue() instanceof String) ? (String) propertyChangeEvent.getOldValue() : null; //(String)((ArrayList)propertyChangeEvent.getOldValue()).get(0);
+//                String newSuiteValue = (propertyChangeEvent.getNewValue() instanceof String) ? (String) propertyChangeEvent.getNewValue() : null; //(String)((ArrayList)propertyChangeEvent.getNewValue()).get(0);
+//                String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+//                if (oldSuiteValue != null && oldSuiteValue.length() > 0 && ofileName.indexOf(oldSuiteValue) != -1) {
+//                    ofileName = ofileName.replaceAll(oldSuiteValue, newSuiteValue);
+//                } else {
+//                    ofileName = ofileName + "_" + newSuiteValue;
+//                }
+//                updateOFileInfo(ofileName);
+//            }
+//        });
 
     }
 
@@ -167,8 +169,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 return new LonLat2Pixels_Processor(programName, xmlFileName);
             case SMIGEN:
                 return new SMIGEN_Processor(programName, xmlFileName);
-//            case L2MAPGEN:
-//                return new L2MapGen_Processor(programName, xmlFileName);
+            case L3MAPGEN:
+                return new L3MAPGEN_Processor(programName, xmlFileName);
             case L2BIN:
                 return new L2Bin_Processor(programName, xmlFileName);
             case L2BIN_AQUARIUS:
@@ -182,7 +184,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return new ProcessorModel(programName, xmlFileName);
     }
 
-    private String convertToMode(String outmode) {
+    protected String convertToMode(String outmode) {
         if (!programName.equals("l2brsgen")) {
             return outmode;
         }
@@ -391,7 +393,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             return true;
         }
         if (verifyIFilePath(ifileName)) {
-            String ofileName = SeadasFileUtils.findNextLevelFileName(ifileName, programName);
+            String ofileName = findNextLevelFileName(ifileName);
             //if (ofileName.)
             if (ofileName != null) {
                 updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
@@ -414,6 +416,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         //updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");    //use an empty string
         //updateOFileInfo("");
         return false;
+    }
+
+    String findNextLevelFileName(String ifileName){
+        return SeadasFileUtils.findNextLevelFileName(ifileName, programName);
     }
 
     public boolean updateGeoFileInfo(String ifileName) {
@@ -1342,9 +1348,88 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
 
     private static class SMIGEN_Processor extends ProcessorModel {
-        SMIGEN_Processor(String programName, String xmlFileName) {
+        SMIGEN_Processor(final String programName, String xmlFileName) {
             super(programName, xmlFileName);
             setOpenInSeadas(true);
+            addPropertyChangeListener("prod", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    if (ifileName != null ) {
+                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                        String newProdValue = (String) propertyChangeEvent.getNewValue();
+                        String[] additionalOptions = {"--suite="+ newProdValue, "--resolution=" + getParamValue("resolution")};
+                        String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                        updateOFileInfo(ofileName);
+                    }
+                }
+            });
+
+            addPropertyChangeListener("resolution", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite="+getParamValue("prod")};
+                    String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    updateOFileInfo(ofileName);
+                }
+            });
+        }
+
+        @Override
+        String findNextLevelFileName(String ifileName){
+            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite="+getParamValue("prod")};
+            return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
+        }
+    }
+
+
+    private static class L3MAPGEN_Processor extends ProcessorModel {
+        L3MAPGEN_Processor(final String programName, String xmlFileName) {
+            super(programName, xmlFileName);
+            setOpenInSeadas(true);
+            addPropertyChangeListener("product", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    if (ifileName != null ) {
+                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                        String newProdValue = (String) propertyChangeEvent.getNewValue();
+                        String[] additionalOptions = {"--suite="+ newProdValue, "--resolution=" + getParamValue("resolution")};
+                        String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                        updateOFileInfo(ofileName);
+                    }
+                }
+            });
+
+            addPropertyChangeListener("resolution", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite="+getParamValue("product")};
+                    String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+//            addPropertyChangeListener("oformat", new PropertyChangeListener() {
+//                @Override
+//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+//                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+//                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite="+getParamValue("product")};
+//                    String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+//                    updateOFileInfo(ofileName);
+//                }
+//            });
+
+        }
+        @Override
+        String findNextLevelFileName(String ifileName){
+            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite="+getParamValue("product")};
+            return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
         }
     }
 

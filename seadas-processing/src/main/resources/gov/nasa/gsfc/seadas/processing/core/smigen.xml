@@ -29,9 +29,9 @@
 
         <option type="string" required="true">
             <name>prod</name>
-            <value></value>
+            <value>myprod</value>
             <type>string</type>
-            <default></default>
+            <default>myprod</default>
             <description>product name</description>
             <source>default</source>
         </option>
@@ -185,7 +185,7 @@
         </option>
         <option type="string">
             <name>resolution</name>
-            <value></value>
+            <value>9km</value>
             <type>string</type>
             <default>9km</default>
             <description>36km | 9km | 4km | 2km | 1km

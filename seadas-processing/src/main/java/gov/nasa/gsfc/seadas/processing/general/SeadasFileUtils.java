@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.general;
 import gov.nasa.gsfc.seadas.processing.core.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
 
@@ -120,10 +121,12 @@ public class SeadasFileUtils {
         cmdArray[4] = ifileName;
         cmdArray[5] = programName;
 
-
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
         Process process = OCSSWRunner.execute(cmdArray, new File(ifileDir));
 
+        if (process ==null ) {
+            return "output";
+        }
         int exitCode = process.exitValue();
         InputStream is;
         if (exitCode == 0) {
@@ -157,7 +160,80 @@ public class SeadasFileUtils {
 //        int choice = VisatApp.getApp().showQuestionDialog("ofile computation", "ofile name is not found", true, "continue");
 //
 //        return String.valueOf(choice);
-        return null;
+        return "output";
+    }
+
+    private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName){
+        String[] cmdArray = new String[6];
+        cmdArray[0] = OCSSW.getOcsswScriptPath();
+        cmdArray[1] = "--ocsswroot";
+        cmdArray[2] = OCSSW.getOcsswEnv();
+        cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
+        cmdArray[4] = ifileName;
+        cmdArray[5] = programName;
+
+        return cmdArray;
+
+    }
+
+    private static String getNextLevelFileName(String ifileName, String[] cmdArray) {
+
+        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
+        Process process = OCSSWRunner.execute(cmdArray, new File(ifileDir));
+        if (process == null) {
+            return null;
+        }
+
+        int exitCode = process.exitValue();
+        InputStream is;
+        if (exitCode == 0) {
+            is = process.getInputStream();
+        } else {
+            is = process.getErrorStream();
+        }
+
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+
+        try {
+
+            if (exitCode == 0) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
+                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+                    }
+                }
+
+            } else {
+                debug("Failed exit code on program '" + cmdArray[5] + "'");
+            }
+
+        } catch (IOException ioe) {
+
+            VisatApp.getApp().showErrorDialog(ioe.getMessage());
+        }
+         return null;
+    }
+
+    public static String findNextLevelFileName(String ifileName, String programName, String[] additionalOptions) {
+
+        if (ifileName == null || programName == null) {
+            return null;
+        }
+        if (programName.equals("l3bindump")) {
+            return ifileName + ".xml";
+        }
+        debug("Program name is " + programName);
+        Debug.assertNotNull(ifileName);
+
+        String[] cmdArray = (String[])ArrayUtils.addAll(getCmdArrayForNextLevelNameFinder(ifileName, programName), additionalOptions);
+        String ofileName = getNextLevelFileName(ifileName, cmdArray);
+        if (ofileName == null) {
+            ofileName = "output";
+        }
+
+        return ofileName;
     }
 
     public static String getDefaultOFileNameFromIFile(String ifileName, String programName) {

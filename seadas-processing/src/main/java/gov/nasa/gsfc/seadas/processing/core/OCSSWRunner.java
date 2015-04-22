@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import org.esa.beam.visat.VisatApp;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -32,7 +31,7 @@ public class OCSSWRunner {
     private static final String SEADAS_OCSSW_LOCATION = "ocssw.location";
 
     private static final String LOCAL = "local";
-        private static final String REMOTE = "remote";
+    private static final String REMOTE = "remote";
 
     public OCSSWRunner() {
 
@@ -91,7 +90,7 @@ public class OCSSWRunner {
 
 
         JsonArrayBuilder jab = Json.createArrayBuilder();
-        for (String s: cmdArray) {
+        for (String s : cmdArray) {
             jab.add(s);
         }
         JsonArray remoteCmdArray = jab.build();
@@ -99,7 +98,7 @@ public class OCSSWRunner {
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
         final Response response = target.path("ocssw").path("installOcssw").request(MediaType.APPLICATION_JSON_TYPE)
-                        .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+                .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
 
         return process;
     }
@@ -120,9 +119,11 @@ public class OCSSWRunner {
         Process process = null;
         try {
             process = processBuilder.start();
-            int exitValue = process.waitFor();
+            if (process != null) {
+                int exitValue = process.waitFor();
+            }
         } catch (Exception e) {
-            VisatApp.getApp().showErrorDialog("OCSSW execution error from SeaDAS application! \n" + cmdArray[0] + "  program is not executed correctly.");
+            //VisatApp.getApp().showErrorDialog("OCSSW execution error from SeaDAS application! \n" + cmdArray[3] + "  program is not executed correctly.");
             e.printStackTrace();
         }
         return process;
