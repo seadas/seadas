@@ -1388,7 +1388,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private static class L3MAPGEN_Processor extends ProcessorModel {
         L3MAPGEN_Processor(final String programName, String xmlFileName) {
             super(programName, xmlFileName);
-            setOpenInSeadas(true);
+            setOpenInSeadas(false);
             addPropertyChangeListener("product", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -1414,16 +1414,16 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 }
             });
 
-//            addPropertyChangeListener("oformat", new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
-//                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
-//                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite="+getParamValue("product")};
-//                    String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
-//                    updateOFileInfo(ofileName);
-//                }
-//            });
+            addPropertyChangeListener("oformat", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String oldFormatValue = (String) propertyChangeEvent.getOldValue();
+                    String newFormatValue = (String) propertyChangeEvent.getNewValue();
+                    String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite="+getParamValue("product"), "--oformat=" + newFormatValue};
+                    String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    updateOFileInfo(ofileName);
+                }
+            });
 
         }
         @Override
