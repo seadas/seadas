@@ -1396,7 +1396,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     if (ifileName != null ) {
                         String oldProdValue = (String) propertyChangeEvent.getOldValue();
                         String newProdValue = (String) propertyChangeEvent.getNewValue();
-                        String[] additionalOptions = {"--suite="+ newProdValue, "--resolution=" + getParamValue("resolution")};
+                        String[] additionalOptions = {"--suite="+ newProdValue, "--resolution=" + getParamValue("resolution"), "--oformat=" + getParamValue("oformat")};
                         String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
                         updateOFileInfo(ofileName);
                     }
@@ -1408,7 +1408,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
                     String newResolutionValue = (String) propertyChangeEvent.getNewValue();
-                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite="+getParamValue("product")};
+                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite="+getParamValue("product"),"--oformat=" + getParamValue("oformat")};
                     String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
                     updateOFileInfo(ofileName);
                 }
@@ -1428,7 +1428,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
         @Override
         String findNextLevelFileName(String ifileName){
-            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite="+getParamValue("product")};
+            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite="+getParamValue("product"), "--oformat=" + getParamValue("oformat")};
             return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
         }
     }
