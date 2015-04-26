@@ -27,7 +27,7 @@
 
     <artifactId>seadas-reader</artifactId>
     <name>SeaDAS OBPG Ocean Color Product Reader</name>
-    <version>1.5.3</version>
+    <version>1.5.4</version>
     <description>A reader for NASA Ocean Color (OBPG) Data Products</description>
 
 
@@ -43,7 +43,6 @@
         <dependency>
             <groupId>org.esa.beam</groupId>
             <artifactId>beam-merisl3-reader</artifactId>
-            <version>${beam.versionRange}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.beam</groupId>
