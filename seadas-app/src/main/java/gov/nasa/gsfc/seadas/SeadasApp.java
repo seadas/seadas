@@ -248,8 +248,7 @@ public class SeadasApp extends VisatApp {
 
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
         addCommandsToToolBar(toolBar, new String[]{
-                "drawLineTool",
-                "drawPolylineTool",
+
                 "rangeFinder"
         });
 
@@ -294,6 +293,8 @@ public class SeadasApp extends VisatApp {
                 "drawRectangleTool",
                 "drawEllipseTool",
                 "drawPolygonTool",
+                "drawLineTool",
+                "drawPolylineTool",
                 "insertWktAsGeometry"
 
         });
