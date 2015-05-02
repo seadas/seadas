@@ -134,6 +134,7 @@ public class ContourDialog extends JDialog {
                 for (ContourData contourData : contours) {
                     contourData.setFilterName(getFilterShortHandName());
                 }
+                contourIntervalDialog.setBand(selectedBand);
             }
         };
     }
@@ -383,12 +384,14 @@ public class ContourDialog extends JDialog {
                 visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, true);
                 if (filterBand) {
                     filterMessage.setText("Using filter " + getFilterShortHandName());
+                    filtered.setSelected(true);
                 } else {
                     if (currentFilteredBand != null) {
                         product.getBandGroup().add(currentFilteredBand);
                     }
                 }
                 propertyChangeSupport.firePropertyChange(NEW_FILTER_SELECTED_PROPERTY, true, false);
+                //propertyChangeSupport.firePropertyChange(FILTER_STATUS_CHANGED_PROPERTY, true, false);
                 //contourData.updateContourNamesForNewFilter(contourData.getFilterName(), getFilterShortHandName());
                 //((JPanel)bandPanel.getParent()).getRootPane().setDefaultButton((JButton)((JPanel)((JPanel)bandPanel.getParent()).getComponent(2)).getComponent(2));
             }
