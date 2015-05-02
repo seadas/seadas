@@ -34,8 +34,8 @@ import java.util.ArrayList;
 public class ContourIntervalDialog extends JDialog {
     private static final String DELETE_BUTTON_IMAGE_FILE_NAME = "delete_button.png";
     static final String CONTOUR_DATA_CHANGED_PROPERTY = "contourDataChanged";
-    Double minValue;
-    Double maxValue;
+    private Double minValue;
+    private Double maxValue;
     int numberOfLevels;
 
     //UI components
@@ -56,6 +56,7 @@ public class ContourIntervalDialog extends JDialog {
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
             }
         });
+        propertyChangeSupport.addPropertyChangeListener(CONTOUR_DATA_CHANGED_PROPERTY, getDataChangedPropertyListener());
         setMaxValue(new Double(CommonUtilities.round(selectedBand.getStx().getMaximum(), 3)));
         setMinValue(new Double(CommonUtilities.round(selectedBand.getStx().getMinimum(), 3)));
         contourData.createContourLevels();
@@ -70,6 +71,15 @@ public class ContourIntervalDialog extends JDialog {
         setMinValue(new Double(CommonUtilities.round(newBand.getStx().getMinimum(), 3)));
         minValueField.setText(new Double(getMinValue()).toString());
         maxValueField.setText(new Double(getMaxValue()).toString());
+    }
+
+    private PropertyChangeListener getDataChangedPropertyListener() {
+        return new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                contourData.createContourLevels();
+            }
+        };
     }
 
     protected JPanel getBasicPanel() {
@@ -275,7 +285,7 @@ public class ContourIntervalDialog extends JDialog {
         return contourPanel;
     }
 
-    private void setMinValue(Double minValue) {
+    protected void setMinValue(Double minValue) {
         this.minValue = minValue;
         contourData.setStartValue(minValue);
     }
@@ -284,7 +294,7 @@ public class ContourIntervalDialog extends JDialog {
         return minValue;
     }
 
-    private void setMaxValue(Double maxValue) {
+    protected void setMaxValue(Double maxValue) {
         this.maxValue = maxValue;
         contourData.setEndValue(maxValue);
     }
