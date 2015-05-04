@@ -60,7 +60,8 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
 
         if (contourDialog.getFilteredBandName() != null) {
-            product.getBandGroup().remove(product.getBand(contourDialog.getFilteredBandName()));
+            if (product.getBand(contourDialog.getFilteredBandName()) != null)
+                product.getBandGroup().remove(product.getBand(contourDialog.getFilteredBandName()));
         }
 
         if (contourDialog.isContourCanceled()) {

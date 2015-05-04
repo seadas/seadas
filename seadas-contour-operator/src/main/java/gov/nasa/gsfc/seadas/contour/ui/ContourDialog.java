@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.contour.ui;
 
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
+import gov.nasa.gsfc.seadas.contour.util.CommonUtilities;
 import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.FilterBand;
 import org.esa.beam.framework.datamodel.Product;
@@ -25,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,6 +41,7 @@ public class ContourDialog extends JDialog {
     static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
     static final String DELETE_BUTTON_PRESSED_PROPERTY = "deleteButtonPressed";
     static final String NEW_FILTER_SELECTED_PROPERTY = "newFilterSelected";
+    static final String FILTER_STATUS_CHANGED_PROPERTY = "filterStatusChanged";
     private ContourData contourData;
     private Component helpButton = null;
     private HelpBroker helpBroker = null;
@@ -71,7 +74,7 @@ public class ContourDialog extends JDialog {
     private double ptsToPixelsMultiplier = NULL_DOUBLE;
 
     JCheckBox filtered = new JCheckBox("", true);
-
+    ContourIntervalDialog contourIntervalDialog;
 
     public ContourDialog(Product product, ArrayList<String> activeBands) {
         super(VisatApp.getApp().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
@@ -98,14 +101,16 @@ public class ContourDialog extends JDialog {
             raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
 
         }
+        this.activeBands = activeBands;
         ptsToPixelsMultiplier = getPtsToPixelsMultiplier();
         contourData = new ContourData(selectedBand, selectedUnfilteredBand.getName(), getFilterShortHandName(), ptsToPixelsMultiplier);
-        this.activeBands = activeBands;
         numberOfLevels = 1;
         contours = new ArrayList<ContourData>();
         propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
         propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
+
         propertyChangeSupport.addPropertyChangeListener(NEW_FILTER_SELECTED_PROPERTY, getFilterButtonPropertyListener());
+        propertyChangeSupport.addPropertyChangeListener(FILTER_STATUS_CHANGED_PROPERTY, getFilterCheckboxPropertyListener());
         noDataValue = selectedBand.getNoDataValue();
         createContourUI();
         contourCanceled = true;
@@ -126,9 +131,26 @@ public class ContourDialog extends JDialog {
         return new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                for (ContourData contourData: contours) {
+                for (ContourData contourData : contours) {
                     contourData.setFilterName(getFilterShortHandName());
                 }
+                contourIntervalDialog.setBand(selectedBand);
+            }
+        };
+    }
+
+    private PropertyChangeListener getFilterCheckboxPropertyListener() {
+        return new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                for (ContourData contourData : contours) {
+                    if (!contourData.isContourCustomized()) {
+                       contourData.setStartValue(CommonUtilities.round(selectedBand.getStx().getMinimum(), 3));
+                        contourData.setEndValue(CommonUtilities.round(selectedBand.getStx().getMaximum(), 3));
+                    }
+                    contourData.setFilterName(getFilterShortHandName());
+                }
+                contourIntervalDialog.setBand(selectedBand);
             }
         };
     }
@@ -313,14 +335,27 @@ public class ContourDialog extends JDialog {
 
         final JPanel bandPanel = new JPanel(new GridBagLayout());
         JLabel bandLabel = new JLabel("Product:");
-        bandComboBox = new JComboBox(activeBands.toArray());
+        final JTextArea filterMessage = new JTextArea("Using filter " + getFilterShortHandName());
+
+        Collections.swap(activeBands, 0, activeBands.indexOf(selectedUnfilteredBand.getName()));
+        //bandComboBox = new JComboBox(activeBands.toArray());
+        bandComboBox = new JComboBox(new String[]{selectedUnfilteredBand.getName()});
         bandComboBox.setSelectedItem(selectedBand.getName());
+        //bandComboBox.setEnabled(false);
         bandComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String oldBandName = selectedBand.getName();
+                if (filterBand) {
+                    product.getBandGroup().remove(product.getBand(selectedBand.getName()));
+                }
                 selectedUnfilteredBand = product.getBand((String) bandComboBox.getSelectedItem());
-                selectedBand = selectedUnfilteredBand;
+                //selectedBand = selectedUnfilteredBand;
+                selectedBand = getDefaultFilterBand();
+                filtered.setSelected(true);
+                filterBand = true;
+                filterMessage.setText("Using filter " + getFilterShortHandName());
+                //raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
                 propertyChangeSupport.firePropertyChange(NEW_BAND_SELECTED_PROPERTY, oldBandName, selectedBand.getName());
                 noDataValue = selectedBand.getGeophysicalNoDataValue();
             }
@@ -328,7 +363,7 @@ public class ContourDialog extends JDialog {
 
         final JButton filterButton = new JButton("Choose Filter");
         final JCheckBox filtered = new JCheckBox("", true);
-        final JTextArea filterMessage = new JTextArea("Using filter " + getFilterShortHandName());
+
         filterMessage.setBackground(Color.lightGray);
         filterMessage.setEditable(false);
 
@@ -349,12 +384,14 @@ public class ContourDialog extends JDialog {
                 visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, true);
                 if (filterBand) {
                     filterMessage.setText("Using filter " + getFilterShortHandName());
+                    filtered.setSelected(true);
                 } else {
                     if (currentFilteredBand != null) {
                         product.getBandGroup().add(currentFilteredBand);
                     }
                 }
                 propertyChangeSupport.firePropertyChange(NEW_FILTER_SELECTED_PROPERTY, true, false);
+                //propertyChangeSupport.firePropertyChange(FILTER_STATUS_CHANGED_PROPERTY, true, false);
                 //contourData.updateContourNamesForNewFilter(contourData.getFilterName(), getFilterShortHandName());
                 //((JPanel)bandPanel.getParent()).getRootPane().setDefaultButton((JButton)((JPanel)((JPanel)bandPanel.getParent()).getComponent(2)).getComponent(2));
             }
@@ -380,15 +417,22 @@ public class ContourDialog extends JDialog {
                     selectedFilteredBand = null;
                     filterBand = false;
                 }
-                propertyChangeSupport.firePropertyChange(NEW_FILTER_SELECTED_PROPERTY, true, false);
+                propertyChangeSupport.firePropertyChange(FILTER_STATUS_CHANGED_PROPERTY, true, false);
             }
         });
         JLabel filler = new JLabel("     ");
+
+
+        JTextArea  productTextArea = new JTextArea(bandComboBox.getSelectedItem().toString());
+        productTextArea.setBackground(Color.lightGray);
+        productTextArea.setEditable(false);
+
+
         bandPanel.add(filler,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         bandPanel.add(bandLabel,
                 new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        bandPanel.add(bandComboBox,
+        bandPanel.add(productTextArea,
                 new ExGridBagConstraints(2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
         bandPanel.add(filterButton,
                 new ExGridBagConstraints(3, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
@@ -458,7 +502,7 @@ public class ContourDialog extends JDialog {
     }
 
     private JPanel getContourPanel() {
-        final ContourIntervalDialog contourIntervalDialog = new ContourIntervalDialog(selectedBand, selectedUnfilteredBand.getName(), getFilterShortHandName(), ptsToPixelsMultiplier);
+        contourIntervalDialog = new ContourIntervalDialog(selectedBand, selectedUnfilteredBand.getName(), getFilterShortHandName(), ptsToPixelsMultiplier);
         contourIntervalDialog.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -473,10 +517,10 @@ public class ContourDialog extends JDialog {
                 }
             }
         });
-        contourIntervalDialog.addPropertyChangeListener(NEW_FILTER_SELECTED_PROPERTY, new PropertyChangeListener() {
+        contourIntervalDialog.addPropertyChangeListener(FILTER_STATUS_CHANGED_PROPERTY, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                //contourIntervalDialog.updateContourNames(getFilterShortHandName());
+                contourIntervalDialog.setBand(selectedBand);
                 System.out.println("would this line be executed?");
             }
         });

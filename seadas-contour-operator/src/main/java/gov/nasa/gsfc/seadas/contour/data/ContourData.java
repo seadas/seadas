@@ -22,6 +22,7 @@ public class ContourData {
     static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
     static final String CONTOUR_LINES_BASE_NAME = "contour_";
     static final String NEW_FILTER_SELECTED_PROPERTY = "newFilterSelected";
+    static final String DATA_CHANGED_PROPERTY = "dataChanged";
 
     private ArrayList<ContourInterval> contourIntervals;
     Band band;
@@ -231,6 +232,12 @@ public class ContourData {
 
     public void setEndValue(Double endValue) {
         this.endValue = endValue;
+    }
+
+    public void setStartEndValues(Double startValue, Double endValue){
+        this.startValue = startValue;
+        this.endValue = endValue;
+        propertyChangeSupport.firePropertyChange(DATA_CHANGED_PROPERTY, startValue, endValue);
     }
 
     public int getNumOfLevels() {
