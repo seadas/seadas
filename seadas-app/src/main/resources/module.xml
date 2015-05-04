@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-app</symbolicName>
-    <version>7.1.1</version>
+    <version>7.2</version>
     <name>SeaDAS Application</name>
 
     <description>
@@ -14,9 +14,9 @@
         <applicationDescriptor>
             <applicationId>SeaDAS</applicationId>
             <displayName>SeaDAS</displayName>
-            <version>7.1.1</version>
-            <buildId>2014.05.14</buildId>
-            <buildDate>May 2014</buildDate>
+            <version>7.2</version>
+            <buildId>2015.05.04</buildId>
+            <buildDate>May 2015</buildDate>
             <!--<buildId>${beam.build.id}</buildId>-->
             <!--<buildDate>${beam.build.date}</buildDate>-->
             <excludedActions>
@@ -36,12 +36,66 @@
 
     <changelog>
         <![CDATA[
+        <p>Changes in 7.2:<br/>
+        [New/Updated Features] <br />
+        Band Filters Added <br />
+          - Low-Pass Radial Attenuation <br />
+          - Circular Mean <br />
+          - Straylight <br />
+        Bathymetry <br />
+          - Bathymetry values are now 'true depth' accounting for local water surface height instead of being relative to sea level <br />
+          - Bathymetry values are now in positive units. <br />
+          - Default bathymetry color scheme is in log space to better depict shallow water floor features. <br />
+        Color Palettes Added/Revised <br />
+          - Bathymetry color palette revised with a smoother transition from light blue-green to dark blue-green. <br />
+          - Various gradient palettes added. <br />
+          - Default (oceancolor_standard.cpd) revised to not use black at high saturation. <br />
+        Color Schemes: <br />
+          - Added a user-defined data file for generating custom schemes and/or overriding default schemes. <br />
+          - Added a user-defined data file for customizing the scheme selector <br />
+          - Added a wildcard feature to enable more generic auto-application of color schemes. <br />
+        Contour Lines <br />
+          - Many subtle improvements to make it more user-friendly. <br />
+        Truecolor Profiles Added <br />
+        [SeaDAS Processing GUI] <br />
+        Included Landsat8/OLI in the install/update GUI</p>
+        <p>Changes in 7.1:<br/>
+        [New Features] <br />
+        Reorganized toolbars, menu items and the default UI layout  <br />
+        Redesigned user interface icons <br />
+        Added Bathymetry and mask tool <br />
+        Added Contour tool <br />
+        Graticule tool is improved significantly:  <br />
+         - Users can control label location, label angle, line spacing, 
+            font size, tick-marks, border, widths, colors, and transparency 
+          - Default behavior produces an auto-spaced grid  <br />
+          Color-Bar tool is improved: <br />
+           - Users can control number of tick-marks, decimal places, font size, 
+             manually entered points, scaling factor, color-bar sizing and
+             transparency <br />
+           - Color bar can now be added as a layer on top of the image <br />
+           - Default behavior produces a color-bar with reasonable values <br />
+          Major revision to Color Palette Tool: <br />
+           - Color scheme selector enables easy selection of product specific 
+             and custom schemes. <br />
+           - Saves and stores selected scheme and palette name. <br />
+          Changed wording of ‘Product’ to ‘File’ to avoid confusion. <br />
+          Changed the default background and no-data colors. <br />
+          Geometries are now selectable and movable. <br />
+          Geometries can now be defined with entered coordinates. <br />
+        [Bug Fixes] <br />
+         - Fixed reported bugs from SeaDAS 7.0.2 <br />
+         - Fixed issues with log scaling in Color Palette and Color-bar <br />
+         - Fixed issues related to vector layer <br />
+         - Fixed issues with coastline DIMAP saving <br />
+         - Fixed issues with multi-processor <br />
+         - Fixed issues with SeaDAS help <br />
         <p>Changes in 7.0.2:<br/>
         [Product Readers]
         Added a GOCI L1B specific reader with geolocation
         Updated MODIS L1B reader to include tie-point array data sets
         [SeaDAS Processing GUI]
-        Included GOCI in the install/update GUI
+        Included GOCI in the install/update GUI</p>
         <p>Changes in 7.0.1:<br/>
         [Product Readers]<br/>
         Improved flagging of invalid geolocation<br/>

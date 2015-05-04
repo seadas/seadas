@@ -7,7 +7,7 @@
     <parent>
         <artifactId>seadas</artifactId>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <version>7.1.1</version>
+        <version>7.2</version>
     </parent>
 
     <artifactId>seadas-processing</artifactId>
