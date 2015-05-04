@@ -18,11 +18,11 @@ import java.util.ArrayList;
 public class ContourData {
 
 
-
     static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
     static final String CONTOUR_LINES_BASE_NAME = "contour_";
     static final String NEW_FILTER_SELECTED_PROPERTY = "newFilterSelected";
     static final String DATA_CHANGED_PROPERTY = "dataChanged";
+
 
     private ArrayList<ContourInterval> contourIntervals;
     Band band;
@@ -38,6 +38,8 @@ public class ContourData {
     private String oldFilterName;
     private double ptsToPixelsMultiplier;
     private boolean deleted;
+    private boolean contourInitialized;
+    private boolean contourValuesChanged;
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -52,12 +54,14 @@ public class ContourData {
         if (band != null) {
             contourBaseName = contourBaseName + unfiltereBandName + "_";
         }
-        startValue = 0.0;
-        endValue = 0.0;
+        startValue = Double.MIN_VALUE;
+        endValue = Double.MAX_VALUE;
         this.band = band;
         log = false;
         filtered = true;
         contourCustomized = false;
+        contourInitialized = true;
+        contourValuesChanged = false;
         deleted = false;
         this.filterName = filterName;
         this.ptsToPixelsMultiplier = ptsToPixelsMultiplier;
@@ -152,6 +156,13 @@ public class ContourData {
         }
     }
 
+    private void updateContourIntervals() {
+        ArrayList<Color> colors = getColors();
+        ArrayList<String> names = getNames();
+        updateColors(colors);
+        updateNames(names);
+
+    }
 
     private void updateColors(ArrayList<Color> colors) {
         if (colors.size() > 0) {
@@ -177,7 +188,7 @@ public class ContourData {
 
     public void updateContourNamesForNewFilter(String oldFilterName, String newFilterName) {
         for (ContourInterval contourInverval : contourIntervals) {
-            String newName =  contourInverval.getContourLevelName().replace(oldFilterName, newFilterName);
+            String newName = contourInverval.getContourLevelName().replace(oldFilterName, newFilterName);
             contourInverval.setContourLevelName(newName);
         }
     }
@@ -234,7 +245,7 @@ public class ContourData {
         this.endValue = endValue;
     }
 
-    public void setStartEndValues(Double startValue, Double endValue){
+    public void setStartEndValues(Double startValue, Double endValue) {
         this.startValue = startValue;
         this.endValue = endValue;
         propertyChangeSupport.firePropertyChange(DATA_CHANGED_PROPERTY, startValue, endValue);
@@ -339,6 +350,14 @@ public class ContourData {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public boolean isContourValuesChanged() {
+        return contourValuesChanged;
+    }
+
+    public void setContourValuesChanged(boolean contourValuesChanged) {
+        this.contourValuesChanged = contourValuesChanged;
     }
 }
 

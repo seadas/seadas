@@ -134,6 +134,7 @@ public class ContourDialog extends JDialog {
                 for (ContourData contourData : contours) {
                     contourData.setFilterName(getFilterShortHandName());
                 }
+                if (!contourIntervalDialog.getContourData().isContourCustomized() && ! contourIntervalDialog.getContourData().isContourValuesChanged())
                 contourIntervalDialog.setBand(selectedBand);
             }
         };
@@ -150,6 +151,7 @@ public class ContourDialog extends JDialog {
                     }
                     contourData.setFilterName(getFilterShortHandName());
                 }
+                if (!contourIntervalDialog.getContourData().isContourCustomized() && ! contourIntervalDialog.getContourData().isContourValuesChanged())
                 contourIntervalDialog.setBand(selectedBand);
             }
         };
@@ -334,7 +336,7 @@ public class ContourDialog extends JDialog {
         final int rightInset = 5;
 
         final JPanel bandPanel = new JPanel(new GridBagLayout());
-        JLabel bandLabel = new JLabel("Product:");
+        JLabel bandLabel = new JLabel("Product: ");
         final JTextArea filterMessage = new JTextArea("Using filter " + getFilterShortHandName());
 
         Collections.swap(activeBands, 0, activeBands.indexOf(selectedUnfilteredBand.getName()));
@@ -571,16 +573,25 @@ public class ContourDialog extends JDialog {
     }
 
     private FilterBand getDefaultFilterBand() {
-        Filter defaultFilter = new Filter("Mean 2.5 Pixel Radius", "amc_2.5px", 5, 5, new double[]{
-                0.172, 0.764, 1, 0.764, 0.172,
-                0.764, 1, 1, 1, 0.764,
-                1, 1, 1, 1, 1,
-                0.764, 1, 1, 1, 0.764,
-                0.172, 0.764, 1, 0.764, 0.172,
-        }, 19.8);
+//        Filter defaultFilter = new Filter("Mean 2.5 Pixel Radius", "amc_2.5px", 5, 5, new double[]{
+//                0.172, 0.764, 1, 0.764, 0.172,
+//                0.764, 1, 1, 1, 0.764,
+//                1, 1, 1, 1, 1,
+//                0.764, 1, 1, 1, 0.764,
+//                0.172, 0.764, 1, 0.764, 0.172,
+//        }, 19.8);
+
+        Filter defaultFilter =new Filter("Arithmetic Mean 5x5", "am5", 5, 5, new double[]{
+                           +1, +1, +1, +1, +1,
+                           +1, +1, +1, +1, +1,
+                           +1, +1, +1, +1, +1,
+                           +1, +1, +1, +1, +1,
+                           +1, +1, +1, +1, +1,
+                   }, 25.0);
 
         VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
-        final FilterBand filteredBand = CreateFilteredBandAction.createFilterBand(defaultFilter, selectedUnfilteredBand.getName() + "_amc_2.5px", 1);
+        //final FilterBand filteredBand = CreateFilteredBandAction.createFilterBand(defaultFilter, selectedUnfilteredBand.getName() + "_amc_2.5px", 1);
+        final FilterBand filteredBand = CreateFilteredBandAction.createFilterBand(defaultFilter, selectedUnfilteredBand.getName() + "_am5", 1);
         filterBand = true;
         selectedFilteredBand = filteredBand;
         filteredBandName = filteredBand.getName();

@@ -121,6 +121,7 @@ public class ContourIntervalDialog extends JDialog {
                     }
                 }
                 contourData.setStartValue(minValue);
+                contourData.setContourValuesChanged(true);
                 contourData.setLog(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
                 logCheckBox.setSelected(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
@@ -139,6 +140,7 @@ public class ContourIntervalDialog extends JDialog {
                     }
                 }
                 contourData.setEndValue(maxValue);
+                contourData.setContourValuesChanged(true);
                 contourData.setLog(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
                 logCheckBox.setSelected(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
