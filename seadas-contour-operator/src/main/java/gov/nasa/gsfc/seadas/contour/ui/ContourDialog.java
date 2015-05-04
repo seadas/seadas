@@ -421,11 +421,18 @@ public class ContourDialog extends JDialog {
             }
         });
         JLabel filler = new JLabel("     ");
+
+
+        JTextArea  productTextArea = new JTextArea(bandComboBox.getSelectedItem().toString());
+        productTextArea.setBackground(Color.lightGray);
+        productTextArea.setEditable(false);
+
+
         bandPanel.add(filler,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         bandPanel.add(bandLabel,
                 new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        bandPanel.add(bandComboBox,
+        bandPanel.add(productTextArea,
                 new ExGridBagConstraints(2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
         bandPanel.add(filterButton,
                 new ExGridBagConstraints(3, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
