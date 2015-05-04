@@ -1449,7 +1449,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
             //adding ocssw version selection; default is current version
             //cmdArray2[cmdArray.length] = "--git-branch=v" + VisatApp.getApp().getAppVersion();
-            cmdArray2[cmdArray.length] = "--git-branch=v7.1";
+            cmdArray2[cmdArray.length] = "--git-branch=v7.2";
             return cmdArray2;
         }
     }
