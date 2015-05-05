@@ -33,45 +33,76 @@
     </tr>
 </table>
 
-<h3>RGB-Image Profile</h3>
-
-<p>In this window you are asked to define the RGB channels for a new
-    <a href="ProductSceneView.html#rgbSupport">RGB Image View</a>. You are able to load defined RGB-Profiles, to create
-    and store
-    new or define only temporarily new profiles.</p>
-
-<p align="center"><img src="images/RGBProfileSelect.jpg"></p>
 
 
-<h4>Profile</h4> Selects on of the actual stored RGB-Profiles to use for creation of the new image view.
-<ul>
-    <li>Use the <img src="images/icons/Open24.gif" alt="Open" border="0"> to open a stored
-        <a href="#profileFile">RGB-Profile file</a>.
-    </li>
-    <li>Use the <img src="images/icons/Save24.gif" alt="Save" border="0"> to save the currently displayed RGB-Profile.
-    </li>
-    <li>Use the <img src="images/icons/Remove24.gif" alt="Remove" border="0"> to delete the currently displayed
-        RGB-Profile.
-    </li>
-</ul>
-<h4>RGB Channels</h4>
+<table class="invisibletable">
+
+    <tr>
+        <td class="invisibletable" valign="top">
+            <!--<img src="../visat/images/icons/ColorbarVertical24.png" border="0">-->
+        </td>
+        <td class="invisibletable" valign="top">
+
+            <p class="groupDetails">
+                <br>The RGB Image tool enables a display which  integrates 3 bands using a red, green, and blue color palette
+                respectively for each of the bands.  A common use for this might be for creating True Color images.
+            </p>
+
+            <p class="groupLocation">
+                View -> RGB Image <br>
+            </p>
+        </td>
+    </tr>
+</table>
+
+<br>
+<hr>
+<br>
+
+<p align="center"><img src="images/rgb_example.png"></p>
+
+<p> The image above shows a rgb image created in SeaDAS.</p>
+
+<p>When creating an RGB image, you are prompted with a window for loading and editing a RGB profile.  A profile is a set
+    of 3 algorithms for each band.  These profiles can be saved out as text files and reloaded for future use.</p>
+
+
+<!--<p align="center"><img src="images/RGBProfileSelect.jpg"></p>-->
+
+<p align="center"><img src="images/rgb_gui.png"></p>
+
 
 <p>
-    <b>Red</b> - Defines the mathematical expression for the red channel.<br>
-    <b>Green</b> - Defines the mathematical expression for the green channel.<br>
-    <b>Blue</b> - Defines the mathematical expression for the blue channel.<br>
+<ul>
+    <li><img src="images/icons/Open24.gif" alt="Open" border="0"> opens a stored profile file.
+    </li>
+    <li><img src="images/icons/Save24.gif" alt="Save" border="0"> saves the current profile to a file.
+    </li>
+    <li><img src="images/icons/Remove24.gif" alt="Remove" border="0"> deletes the currently displayed profile from the selector list.
+    </li>
+</ul>
 </p>
 
-<p>Use the <img src="images/icons/NextDialogButton.gif" alt="Opens the Band Maths Expression Editor" border="0"> to
-    to edit the expression for the specific channel by using the <a href="ExpressionEditor.html">Maths Expression Editor</a>.
+
+
+<p>The algorithm for each band may be edited by clicking on <img src="images/icons/NextDialogButton.gif" alt="Opens the Band Maths Expression Editor" border="0">
+    which uses the <a href="ExpressionEditor.html">Maths Expression Editor</a>.
 </p>
 
-<h4>Store RGB Channels</h4>
-Stores the RGB channels into the current product as virtual bands.
+
+<p>As of release 7.2, many selectable RGB profiles have been added and are available by default for many missions.
+To achieve the intended results for these, you select the profile.  Once loaded go to the Color Manager and toggle through
+the 'Red', 'Green', and 'Blue' setting windows setting the minimum (left-most arrow) to 0.0 and the maximum (right-most arrow) to 1.0.
+By default these minimums and maximums are set based on the statistics of the band.</p>
+
+<p>The algorithms within a profile contain bands.  They may even contain masks.  A profile can only be loaded if the bands
+(and masks) are available with the current file.  The profile file may found in ~/.seadas/beam-core/auxdata/rgb-profiles.  The
+default profiles are based on the rhos bands.  If you want to create a similar (copied) one, but based on a different band, say Lt, then
+you can copy this file and hand-edit it accordingly.</p>
 
 <br><br>
 
-<h3><a name="profileFile">RGB-Profile File</a></h3>
+<h3><a name="profileFile">RGB-Profile File Format</a></h3>
 RGB-Profile files must have the extension ".rgb". Multiple default profiles provided by BEAM are located
 in the <i>$BEAM_INSTALL_DIR$</i>/auxdata/rgb_profiles.<br>
 
@@ -116,34 +147,34 @@ The possible entries for an RGB-Profile are listed in the following table:
     </tr>
 </table>
 
-<p><b>Example:</b> The following profile yields good RGB images from MERIS Level-1b data products. The
-    linear-combinations
-    for the red, green and blue components are based on the colour matching functions of the
-    <a href="http://en.wikipedia.org/wiki/CIE_1931_color_space">CIE 1931 color space</a>.</p>
+<!--<p><b>Example:</b> The following profile yields good RGB images from MERIS Level-1b data products. The-->
+    <!--linear-combinations-->
+    <!--for the red, green and blue components are based on the colour matching functions of the-->
+    <!--<a href="http://en.wikipedia.org/wiki/CIE_1931_color_space">CIE 1931 color space</a>.</p>-->
 
-<p>
-    <pre>
-        name = MERIS L1b - High Quality
-        internal = true
+<!--<p>-->
+    <!--<pre>-->
+        <!--name = MERIS L1b - High Quality-->
+        <!--internal = true-->
 
-        red = log(1.0 + 0.35 * radiance_2 + \
-        0.60 * radiance_5 + \
-        radiance_6 + \
-        0.13 * radiance_7)
+        <!--red = log(1.0 + 0.35 * radiance_2 + \-->
+        <!--0.60 * radiance_5 + \-->
+        <!--radiance_6 + \-->
+        <!--0.13 * radiance_7)-->
 
-        green = log(1.0 + 0.21 * radiance_3 + \
-        0.50 * radiance_4 + \
-        radiance_5 + \
-        0.38 * radiance_6)
+        <!--green = log(1.0 + 0.21 * radiance_3 + \-->
+        <!--0.50 * radiance_4 + \-->
+        <!--radiance_5 + \-->
+        <!--0.38 * radiance_6)-->
 
-        blue = log(1.0 + 0.21 * radiance_1 + \
-        1.75 * radiance_2 + \
-        0.47 * radiance_3 + \
-        0.16 * radiance_4)
-    </pre>
+        <!--blue = log(1.0 + 0.21 * radiance_1 + \-->
+        <!--1.75 * radiance_2 + \-->
+        <!--0.47 * radiance_3 + \-->
+        <!--0.16 * radiance_4)-->
+    <!--</pre>-->
 
 
-<hr>
+<!--<hr>-->
 </body>
 </html>
 
