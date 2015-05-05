@@ -71,6 +71,7 @@ public class ContourIntervalDialog extends JDialog {
         setMinValue(new Double(CommonUtilities.round(newBand.getStx().getMinimum(), 3)));
         minValueField.setText(new Double(getMinValue()).toString());
         maxValueField.setText(new Double(getMaxValue()).toString());
+        contourData.setBand(newBand);
     }
 
     private PropertyChangeListener getDataChangedPropertyListener() {

@@ -197,7 +197,7 @@ public class ContourData {
     public void setBand(Band band) {
         String oldBandName = this.band.getName();
         this.band = band;
-        contourBaseName = CONTOUR_LINES_BASE_NAME + band.getName() + "_";
+        //contourBaseName = CONTOUR_LINES_BASE_NAME + band.getName() + "_";
         propertyChangeSupport.firePropertyChange(NEW_BAND_SELECTED_PROPERTY, oldBandName, band.getName());
     }
 
