@@ -91,12 +91,12 @@ public class ContourIntervalDialog extends JDialog {
 
         final DecimalFormat df = new DecimalFormat("##.###");
         minValueField = new JFormattedTextField(df);
-        minValueField.setColumns(4);
+        minValueField.setColumns(5);
         JLabel minValueLabel = new JLabel("Start Value:");
 
 
         maxValueField = new JFormattedTextField(df);
-        maxValueField.setColumns(4);
+        maxValueField.setColumns(7);
 
         JLabel maxValueLabel = new JLabel("End Value:");
 
@@ -152,6 +152,7 @@ public class ContourIntervalDialog extends JDialog {
             public void propertyChange(PropertyChangeEvent evt) {
                 numberOfLevels = (Integer) bindingContext.getBinding("numLevelsField").getPropertyValue();
                 contourData.setNumOfLevels(numberOfLevels);
+                contourData.setContourValuesChanged(true);
                 propertyChangeSupport.firePropertyChange(CONTOUR_DATA_CHANGED_PROPERTY, true, false);
             }
         };
