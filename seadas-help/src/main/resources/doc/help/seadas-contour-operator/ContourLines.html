@@ -45,25 +45,35 @@
 
 <h3>Details</h3>
 <h4>Introduction</h4>
-This tool creates contour lines for a selected product. This tool is built upon the contour operator developed by Michael Bedward and available at
+The <b>Contour Lines</b> tool creates contour lines for a selected product
+using an open source contour operator algorithm, available at
+<code>https://github.com/mbedward/jaitools/tree/master/operator/contour</code>.
+<!--This tool is built upon the contour operator developed by Michael Bedward and available at
 <code>https://github.com/mbedward/jaitools/tree/master/operator/contour</code>, which in turn uses an
 interpolation algorithm of Paul Bourke: originally published
  in Byte magazine (1987) as the CONREC contouring subroutine written in
  FORTRAN. The Java implementation of contour operator was adapted from Paul Bourke's C code for the
  algorithm, which is available at:
  <a href="http://local.wasp.uwa.edu.au/~pbourke/papers/conrec/">
- http://local.wasp.uwa.edu.au/~pbourke/papers/conrec/</a>
+ http://local.wasp.uwa.edu.au/~pbourke/papers/conrec/</a>   -->
 
-<h4>User Interface</h4>
+<h4>Contour Lines Tool User Interface</h4>
 
 <p>
 
-    The user interface of <b>"Contour Lines"</b> tool is divided into 3 sections.
+    The user interface of <b>"Contour Lines"</b> tool is divided into three sections.
 
+    <img src="images/contour_dialog.png" alt="Contour Dialog" style="float:left;width:304px;height:228px">
+
+</p>
+
+
+
+<p>
 <ul>
 
-    <li> The <b><i>top section</i></b> enables the
-        selection of a product or band as the source of the contour operator.
+    <li> The <b><i>top section</i></b> displays the name of the
+        product or band that will be the source of the contour operator.
         By default, the band is filtered using a 5x5 filter. A user can select a desired filter using the "Choose
         Filter" button, or un-check the checkbox next to
         the "Choose Filter" button to use the unfiltered, original band to generate contour lines. When an unfiltered
@@ -86,15 +96,18 @@ interpolation algorithm of Paul Bourke: originally published
         length cannot be zero or a negative number. When "line space length"
         is zero, it indicates the line is solid.
     </li>
+
+    The middle section has two additional buttons for managing contour intervals. The button with the minus ("-") image deletes
+    the group of contour intervals and the button with the plus ("+") image adds a new UI block for creating another set of contour intervals.
+
     <li>
         The <b><i>last section</i></b> contains buttons that initiates the execution or cancellation of the contour operation.
     </li>
 </ul>
 <br>
 
-<img src="images/contour_dialog.png" alt="Contour Dialog"></a>
-
 </p>
+
 
 <a name="START_VALUE"></a>
 <h6>Start Value</h6>
@@ -131,7 +144,8 @@ interpolation algorithm of Paul Bourke: originally published
 <h6>Preview/Edit</h6>
 
 <p>
-    This button helps to customize the automatically generated contour intervals.
+    Clicking on this button will display a dialog box that helps to customize the automatically generated contour intervals.   Users can change all fields in this dialog box. Once the changes are saved,
+    the contour interval values cannot be changed in the main Contour UI.  They can only be changed in the "Preview/Edit" window.
 </p>
 
 <img src="images/contour_preview_edit.png" alt="Contour Dialog"></a>
