@@ -443,10 +443,10 @@ public class ContourIntervalDialog extends JDialog {
             contourLevelPanel.add(contourLineColorComboBox);
 //            contourLevelPanel.add(contourLineStyleLabel);
 //            contourLevelPanel.add(contourLineStyleValue);
-            contourLevelPanel.add(contourLineDashLengthLabel);
-            contourLevelPanel.add(dashLengthValue);
-            contourLevelPanel.add(contourLineSpaceLengthLabel);
-            contourLevelPanel.add(spaceLengthValue);
+            //contourLevelPanel.add(contourLineDashLengthLabel);
+            //contourLevelPanel.add(dashLengthValue);
+            //contourLevelPanel.add(contourLineSpaceLengthLabel);
+            //contourLevelPanel.add(spaceLengthValue);
             customPanel.add(contourLevelPanel);
         }
 
