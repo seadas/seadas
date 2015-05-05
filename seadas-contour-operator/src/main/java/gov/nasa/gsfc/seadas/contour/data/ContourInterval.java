@@ -20,7 +20,7 @@ public class ContourInterval {
     private String filterName;
 
     private boolean initial;
-    DecimalFormat decimalFormat = new DecimalFormat("##.###");
+    DecimalFormat decimalFormat = new DecimalFormat("##.#######");
 
     private double ptsToPixelsMultiplier;
 

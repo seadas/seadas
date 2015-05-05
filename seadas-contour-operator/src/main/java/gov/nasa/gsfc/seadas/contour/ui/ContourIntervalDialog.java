@@ -57,8 +57,8 @@ public class ContourIntervalDialog extends JDialog {
             }
         });
         propertyChangeSupport.addPropertyChangeListener(CONTOUR_DATA_CHANGED_PROPERTY, getDataChangedPropertyListener());
-        setMaxValue(new Double(CommonUtilities.round(selectedBand.getStx().getMaximum(), 3)));
-        setMinValue(new Double(CommonUtilities.round(selectedBand.getStx().getMinimum(), 3)));
+        setMaxValue(new Double(CommonUtilities.round(selectedBand.getStx().getMaximum(), 7)));
+        setMinValue(new Double(CommonUtilities.round(selectedBand.getStx().getMinimum(), 7)));
         contourData.createContourLevels();
     }
 
@@ -67,8 +67,8 @@ public class ContourIntervalDialog extends JDialog {
     public void setBand(Band newBand) {
         numberOfLevels = 1;
         numLevelsField.setText("1");
-        setMaxValue(new Double(CommonUtilities.round(newBand.getStx().getMaximum(), 3)));
-        setMinValue(new Double(CommonUtilities.round(newBand.getStx().getMinimum(), 3)));
+        setMaxValue(new Double(CommonUtilities.round(newBand.getStx().getMaximum(), 7)));
+        setMinValue(new Double(CommonUtilities.round(newBand.getStx().getMinimum(), 7)));
         minValueField.setText(new Double(getMinValue()).toString());
         maxValueField.setText(new Double(getMaxValue()).toString());
         contourData.setBand(newBand);
@@ -89,9 +89,9 @@ public class ContourIntervalDialog extends JDialog {
         final JPanel contourPanel = new JPanel(new GridBagLayout());
         contourPanel.setBorder(BorderFactory.createTitledBorder(""));
 
-        final DecimalFormat df = new DecimalFormat("##.###");
+        final DecimalFormat df = new DecimalFormat("##.#####");
         minValueField = new JFormattedTextField(df);
-        minValueField.setColumns(5);
+        minValueField.setColumns(7);
         JLabel minValueLabel = new JLabel("Start Value:");
 
 
