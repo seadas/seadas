@@ -1067,6 +1067,10 @@ public abstract class SeadasFileReader {
             } else if (dataType == DataType.STRING) {
                 return ProductData.TYPE_ASCII;
             }
+        } else {
+            if (dataType == DataType.CHAR) {
+                return ProductData.TYPE_UINT8;
+            }
         }
         return -1;
     }
