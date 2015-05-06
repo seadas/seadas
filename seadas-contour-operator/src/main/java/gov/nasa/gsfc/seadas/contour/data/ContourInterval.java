@@ -20,12 +20,18 @@ public class ContourInterval {
     private String filterName;
 
     private boolean initial;
-    DecimalFormat decimalFormat = new DecimalFormat("##.#######");
+    DecimalFormat decimalFormatBig = new DecimalFormat("##.###");
+    DecimalFormat decimalFormatSmall = new DecimalFormat("##.#######");
 
     private double ptsToPixelsMultiplier;
 
     ContourInterval(String contourBaseName, Double contourLevelValue, String filterName, double ptsToPixelsMultiplier) {
-        this.contourLevelValue = new Double(decimalFormat.format(contourLevelValue));
+        if (contourLevelValue > 1) {
+            this.contourLevelValue = new Double(decimalFormatBig.format(contourLevelValue));
+        }  else {
+            this.contourLevelValue = new Double(decimalFormatSmall.format(contourLevelValue));
+        }
+
         contourLevelName = contourBaseName + this.contourLevelValue + "_" + filterName;
         lineColor = Color.BLACK;
         contourLineStyleValue = "1.0, 0";
@@ -47,7 +53,11 @@ public class ContourInterval {
     }
 
     public void setContourLevelValue(Double contourLevelValue) {
-        this.contourLevelValue = new Double(decimalFormat.format(contourLevelValue));
+        if (contourLevelValue > 1) {
+            this.contourLevelValue = new Double(decimalFormatBig.format(contourLevelValue));
+        }  else {
+            this.contourLevelValue = new Double(decimalFormatSmall.format(contourLevelValue));
+        }
     }
 
     public double getContourLevelValue() {
