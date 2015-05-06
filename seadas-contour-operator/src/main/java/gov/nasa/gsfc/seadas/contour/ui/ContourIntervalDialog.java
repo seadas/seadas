@@ -89,22 +89,24 @@ public class ContourIntervalDialog extends JDialog {
         final JPanel contourPanel = new JPanel(new GridBagLayout());
         contourPanel.setBorder(BorderFactory.createTitledBorder(""));
 
-        final DecimalFormat decimalFormatBig = new DecimalFormat("##.###");
+        //final DecimalFormat decimalFormatBig = new DecimalFormat("##.###");
         final DecimalFormat decimalFormatSmall = new DecimalFormat("##.#######");
 
-        if (getMinValue() > 1) {
-        minValueField = new JFormattedTextField(decimalFormatBig);
-        } else {
-            minValueField = new JFormattedTextField(decimalFormatSmall);
-        }
+        minValueField = new JFormattedTextField(decimalFormatSmall);
+//        if (getMinValue() > 1) {
+//        minValueField = new JFormattedTextField(decimalFormatBig);
+//        } else {
+//            minValueField = new JFormattedTextField(decimalFormatSmall);
+//        }
         minValueField.setColumns(10);
         JLabel minValueLabel = new JLabel("Start Value:");
 
-        if (getMaxValue() > 1 ) {
-        maxValueField = new JFormattedTextField(decimalFormatBig);
-        } else {
-            maxValueField = new JFormattedTextField(decimalFormatSmall);
-        }
+        maxValueField = new JFormattedTextField(decimalFormatSmall);
+//        if (getMaxValue() > 1 ) {
+//        maxValueField = new JFormattedTextField(decimalFormatBig);
+//        } else {
+//            maxValueField = new JFormattedTextField(decimalFormatSmall);
+//        }
 
         maxValueField.setColumns(10);
 
@@ -131,11 +133,6 @@ public class ContourIntervalDialog extends JDialog {
                         minValue = originalMinValue;
                     }
                 }
-                if (minValue > 1) {
-                    minValueField = new JFormattedTextField(decimalFormatBig);
-                }  else {
-                    minValueField = new JFormattedTextField(decimalFormatSmall);
-                }
                 contourData.setStartValue(minValue);
                 contourData.setContourValuesChanged(true);
                 contourData.setLog(logCheckBox.isSelected() && minValue > 0 && maxValue > 0);
@@ -148,11 +145,7 @@ public class ContourIntervalDialog extends JDialog {
             public void propertyChange(PropertyChangeEvent evt) {
                 Double originalMaxValue = maxValue;
                 maxValue = (Double) bindingContext.getBinding("maxValueField").getPropertyValue();
-                if (maxValue > 1) {
-                    maxValueField = new JFormattedTextField(decimalFormatBig);
-                }  else {
-                    maxValueField = new JFormattedTextField(decimalFormatSmall);
-                }
+
                 if (maxValue == null) {
                     if (minValue != null) {
                         maxValue = minValue;
