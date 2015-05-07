@@ -143,23 +143,7 @@ public class OCSSWRunner {
         WebTarget target = ocsswClient.getOcsswWebTarget();
         final Response response = target.path("ocssw").path("cmdArray").request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
-
-
-//        Map<String, String> env = processBuilder.environment();
-//        if (environment != null)
-//            env.putAll(environment);
-//
-//        if (ifileDir != null) {
-//            processBuilder.directory(ifileDir);
-//        } else {
-//            //processBuilder.directory(getDefaultDir());
-//        }
-//        Process process = null;
-//        try {
-//            process = processBuilder.start();
-//        } catch (IOException ioe) {
-//
-//        }
+        Object obj = response.getEntity().getClass();
         return process;
     }
 
