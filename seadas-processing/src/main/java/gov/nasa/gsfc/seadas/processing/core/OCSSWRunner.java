@@ -131,23 +131,35 @@ public class OCSSWRunner {
 
     public static Process executeRemote(String[] cmdArray, File ifileDir) {
 
-        ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
-
-        Map<String, String> env = processBuilder.environment();
-        if (environment != null)
-            env.putAll(environment);
-
-        if (ifileDir != null) {
-            processBuilder.directory(ifileDir);
-        } else {
-            //processBuilder.directory(getDefaultDir());
-        }
+        //ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
         Process process = null;
-        try {
-            process = processBuilder.start();
-        } catch (IOException ioe) {
-
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        for (String s : cmdArray) {
+            jab.add(s);
         }
+        JsonArray remoteCmdArray = jab.build();
+
+        OCSSWClient ocsswClient = new OCSSWClient();
+        WebTarget target = ocsswClient.getOcsswWebTarget();
+        final Response response = target.path("ocssw").path("cmdArray").request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+
+
+//        Map<String, String> env = processBuilder.environment();
+//        if (environment != null)
+//            env.putAll(environment);
+//
+//        if (ifileDir != null) {
+//            processBuilder.directory(ifileDir);
+//        } else {
+//            //processBuilder.directory(getDefaultDir());
+//        }
+//        Process process = null;
+//        try {
+//            process = processBuilder.start();
+//        } catch (IOException ioe) {
+//
+//        }
         return process;
     }
 

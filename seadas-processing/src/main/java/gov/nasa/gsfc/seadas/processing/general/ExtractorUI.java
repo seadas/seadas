@@ -97,24 +97,6 @@ public class ExtractorUI extends ProgramUIFactory {
                 computePixelsFromLonLat();
             }
         });
-//        pixellonlatSwitch = new JToggleButton();
-//        pixellonlatSwitch.setText("<html><center>" + "Compute" + "<br>" + " PixLines" + "<br>" + "from LonLat" + "</center></html>");
-//        pixellonlatSwitch.setBorderPainted(false);
-//        pixellonlatSwitch.setEnabled(false);
-//        pixellonlatSwitch.setSelected(false);
-//
-//        pixellonlatSwitch.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//
-//                if (pixellonlatSwitch.isSelected()) {
-//                    pixellonlatSwitch.setBorderPainted(true);
-//                    computePixelsFromLonLat();
-//                } else {
-//                    pixellonlatSwitch.setBorderPainted(false);
-//                }
-//            }
-//        });
 
         paramPanel = new JPanel(new GridBagLayout());
         paramPanel.setBorder(BorderFactory.createTitledBorder("Parameters"));
