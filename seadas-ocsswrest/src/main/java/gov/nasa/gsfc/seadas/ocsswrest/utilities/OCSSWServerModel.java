@@ -34,13 +34,12 @@ public class OCSSWServerModel {
     public static String OCSSW_INSTALLER_FILE_LOCATION = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
     public static final String missionDataDir = OCSSW_INSTALL_DIR + System.getProperty("file.separator") + "run"
-                + System.getProperty("file.separator") + "data"
-                + System.getProperty("file.separator");
+            + System.getProperty("file.separator") + "data"
+            + System.getProperty("file.separator");
 
     private static boolean ocsswExist = false;
     private static File ocsswRoot = null;
     private static boolean ocsswInstalScriptDownloadSuccessful = false;
-
 
 
     public static File getOcsswRoot() throws IOException {
@@ -90,14 +89,32 @@ public class OCSSWServerModel {
 
     }
 
-    public static String[] getOcsswEnv() {
-        final File ocsswRoot = getOcsswRootFile();
+    public static String[] getOcsswEnvArray() {
         if (ocsswRoot != null) {
-            final String[] envp = {"OCSSWROOT=" + ocsswRoot.getPath()};
+            final String[] envp = {OCSSW_INSTALL_DIR};
             return envp;
         } else {
             return null;
         }
+    }
+
+    public static String getOcsswEnv() {
+
+        return OCSSW_INSTALL_DIR;
+    }
+
+    public static String[] getCmdArrayPrefix() {
+        String[] cmdArrayPrefix = new String[3];
+        cmdArrayPrefix[0] = OCSSWServerModel.getOcsswScriptPath();
+        cmdArrayPrefix[1] = "--ocsswroot";
+        cmdArrayPrefix[2] = OCSSWServerModel.getOcsswEnv();
+        return cmdArrayPrefix;
+    }
+
+    public static String findIfileOnServer(String ifileName) {
+        OCSSWServerPropertyValues propertyValues = new OCSSWServerPropertyValues();
+        String ifileServerName = ifileName.replace(propertyValues.getClientSharedDirName(), propertyValues.getServerSharedDirName());
+        return ifileServerName;
     }
 
     private static File getOcsswRootFile() {
@@ -113,7 +130,8 @@ public class OCSSWServerModel {
 
     /**
      * this method doanloads the latest ocssw_install.py program from   "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py" location.
-     * @return  true if download is successful.
+     *
+     * @return true if download is successful.
      */
     public static boolean downloadOCSSWInstaller() {
 
@@ -150,7 +168,6 @@ public class OCSSWServerModel {
     public static boolean isOcsswInstalScriptDownloadSuccessful() {
         return ocsswInstalScriptDownloadSuccessful;
     }
-
 
 
 }
