@@ -59,7 +59,6 @@
         </td>
     </tr>
 </table>
-
 <br>
 <hr>
 
@@ -68,10 +67,13 @@
 <p>
     A <b>color palette</b> refers to a set of rgb color values with corresponding (preferably normalized) data values.
     A <b>color scheme</b> denotes which color palette to use, the minimum and maximum values to apply to the palette,
-    and whether the palette is to be displayed with log or linear scaling.<br><br>
+    and whether the palette is to be displayed with log or linear scaling.
+</p><br>
 
+<p>
     The color palettes are stored in color palette definition (cpd) text files. New cpd files can be created
-    within SeaDAS and saved with the "Save CPD File" button.<br><br>
+    within SeaDAS and saved with the "Save CPD File" button.
+</p><br>
 
     The color schemes are stored in the following text files:
 <ul>
@@ -80,17 +82,18 @@
     </li>
     <li>standard_color_palette_schemes.txt : contains the user selectable schemes</li>
 </ul>
-
+<p>
 Note: All color schemes and cpd files are located in the .seadas directory
 (~/.seadas/beam-ui/auxdata/color-palettes/). External cpd files can be copied into this directory and will show up
-in SeaDAS when it is next launched. Scheme files can be hand-edited to add new schemes or modify existing ones.<br><br>
+in SeaDAS when it is next launched. Scheme files can be hand-edited to add new schemes or modify existing ones.
 </p>
-
+<br><br>
 <hr>
 <h4>Editors</h4>
 
 <p>
     The color manager contains 3 editor screens:
+</p>
 <ul>
     <li>Basic Editor:
         <ul>
@@ -112,7 +115,6 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
             <li>change value-color point pairs using a text field table</li>
         </ul>
 </ul>
-</p>
 
 
 <hr>
@@ -120,10 +122,9 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
 
 <p>
     <img src="images/color_manager_basic.png"><br><br>
-    </p>
+</p>
 
-<p>
-    <b>Icons</b>
+<b>Icons</b>
     <ul>
    <li><img src="images/icons/Undo24.gif"> :  resets to the default color scheme</li>
     <li><img src="images/icons/MultiAssignBands24.gif"> :  toggles between log and linear display, redistributing palette points accordingly</li>
@@ -160,7 +161,6 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
     <li><b>Set from Band Data Button</b> : redistributes the palette using band data statistics to determine the
     minimum and maximum range value.</li>
 </ul><br>
-</p>
 
 <hr>
 <h4>Sliders Editor</h4>
@@ -169,7 +169,6 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
     <img src="images/color_manager_sliders.png"><br><br>
 </p>
 
-<p>
     <b>Sliders</b>
     <ul>
     <li><b>Change Data Value</b> : left clicking a slider and moving it will alters it data value for that value-color point pair.</li>
@@ -179,9 +178,11 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
     <li><b>Remove Value-Color Point Pair</b> : right click a slider to remove that slider's value-color point pair</li>
     </ul>
 
+<p>
     <b>Rough Statistics</b> : this underlined selected option will appear in the information above the histogram display
     if the current statistics are rough statistics.  Clicking on this will enable the running a complete band statistics
     which includes all pixel data value in the determination of the data minimum and maximum range.  <br><br>
+</p>
 
     <b>Icons</b>
 <ul>
@@ -198,7 +199,6 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
     <li><img src="images/icons/Information24.gif"> : toggles visibility of statistic information in histogram display </li>
 
 </ul><br>
-</p>
 
 <hr>
 <h4>Table Editor</h4>
@@ -214,15 +214,14 @@ For each value-color point pair the color and/or it's value can be changed with 
     <li><img src="images/icons/MultiAssignBands24.gif"> :  toggles between log and linear display, redistributing palette points accordingly</li>
 </ul>
 <br>
-</p>
 
 <hr>
 
 <h4>More Options</h4>
 
 <ul>
-    <li><b>No-data color</b> : selects no-data color for this band</li>
-    <li><b>Histogram matching</b> : It is sometimes desirable to transform an image so that it's histogram matches that of a
+    <li><a name="nodata" id="nodata"><b>No-data color</b></a> : selects no-data color for this band</li>
+    <li><a name="histomatch" id="histomatch"><b>Histogram matching</b></a> : It is sometimes desirable to transform an image so that it's histogram matches that of a
         specified functional form. It is possible to apply an equalized or normalized
         histogram matching to images which can often improve image quality.</li>
     <li><b>Discrete colors</b> : use only the discrete colors as defined in the palette</li>

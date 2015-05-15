@@ -12,7 +12,7 @@
         <td class="header">&nbsp;
             Contour Lines
         </td>
-        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+        <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
                                                                                        border=0></a></td>
     </tr>
 </table>
@@ -69,10 +69,11 @@ interpolation algorithm of Paul Bourke: originally published
 
 
 
-<p>
 <ul>
 
-    <li> The <b><i>top section</i></b> displays the name of the
+    <li>
+        <p>
+        The <b><i>top section</i></b> displays the name of the
         product or band that will be the source of the contour operator.
         By default, the band is filtered using a 5x5 filter. A user can select a desired filter using the "Choose
         Filter" button, or un-check the checkbox next to
@@ -80,8 +81,11 @@ interpolation algorithm of Paul Bourke: originally published
         band is used, the contour operation takes
         considerably longer amount of time to create the contour interval lines. Thus, it is highly recommended to use
         filtered bands.
+        </p>
+
     </li>
     <li>
+        <p>
         The <b><i>middle section</i></b> allows the setting of the parameters
         <a href="ContourLines.html#START_VALUE">Start Value</a>,
         <a href="ContourLines.html#END_VALUE">End Value</a>,
@@ -95,19 +99,21 @@ interpolation algorithm of Paul Bourke: originally published
         style. Contour line style is defined using two variables: line dash length and line space length. Line dash
         length cannot be zero or a negative number. When "line space length"
         is zero, it indicates the line is solid.
+        </p>
     </li>
 
+    <li>
     The middle section has two additional buttons for managing contour intervals. The button with the minus ("-") image deletes
     the group of contour intervals and the button with the plus ("+") image adds a new UI block for creating another set of contour intervals.
+    </li>
 
     <li>
+        <p>
         The <b><i>last section</i></b> contains buttons that initiates the execution or cancellation of the contour operation.
+        </p>
     </li>
 </ul>
 <br>
-
-</p>
-
 
 <a name="START_VALUE"></a>
 <h6>Start Value</h6>
@@ -148,7 +154,7 @@ interpolation algorithm of Paul Bourke: originally published
     the contour interval values cannot be changed in the main Contour UI.  They can only be changed in the "Preview/Edit" window.
 </p>
 
-<img src="images/contour_preview_edit.png" alt="Contour Dialog"></a>
+<img src="images/contour_preview_edit.png" alt="Contour Dialog">
 
 
 </body>
