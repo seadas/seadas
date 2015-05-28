@@ -1,0 +1,88 @@
+<assembly>
+    <id>bin</id>
+
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <formats>
+        <format>dir</format>
+    </formats>
+
+    <files>
+        <file>
+            <source>readme.html</source>
+            <lineEnding>unix</lineEnding>
+            <filtered>true</filtered>
+        </file>
+        <file>
+            <source>VERSION.txt</source>
+            <filtered>true</filtered>
+        </file>
+        <file>
+            <source>LICENSE.txt</source>
+        </file>
+        <file>
+            <source>CHANGELOG.txt</source>
+        </file>
+    </files>
+
+    <fileSets>
+
+        <fileSet>
+            <directory>src/main/config</directory>
+            <outputDirectory>config</outputDirectory>
+        </fileSet>
+
+    </fileSets>
+
+    <!--<moduleSets>-->
+        <!--<moduleSet>-->
+            <!--&lt;!&ndash;<useAllReactorProjects>true</useAllReactorProjects>&ndash;&gt;-->
+            <!--<excludes>-->
+                <!--<exclude>gov.nasa.gsfc.seadas:seadas-bootstrap</exclude>-->
+                <!--<exclude>gov.nasa.gsfc.seadas:seadas-installer</exclude>-->
+                <!--<exclude>org.esa.beam:beam-rtp-codec</exclude>-->
+                <!--<exclude>gov.nasa.gsfc.seadas:seadas-examples</exclude>-->
+            <!--</excludes>-->
+            <!--<binaries>-->
+                <!--<outputDirectory>modules</outputDirectory>-->
+                <!--<unpack>false</unpack>-->
+                <!--<outputFileNameMapping>${module.artifactId}-${module.version}.${module.extension}</outputFileNameMapping>-->
+                <!--<includeDependencies>true</includeDependencies>-->
+                <!--<dependencySets>-->
+                    <!--<dependencySet>-->
+                        <!--<outputDirectory>bin</outputDirectory>-->
+                        <!--<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>-->
+                        <!--<includes>-->
+                            <!--<exclude>gov.nasa.gsfc.seadas:seadas-ocsswrest</exclude>-->
+                        <!--</includes>-->
+                    <!--</dependencySet>-->
+                    <!--<dependencySet>-->
+                        <!--<outputDirectory>lib</outputDirectory>-->
+                        <!--<outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>-->
+                        <!--<excludes>-->
+                            <!--<exclude>com.bc.ceres:ceres-*</exclude>-->
+                            <!--<exclude>org.esa.beam:beam-*</exclude>-->
+                            <!--<exclude>gov.nasa.gsfc.seadas:seadas-*</exclude>-->
+                            <!--<exclude>org.esa.beam:blue-marble-worldmap</exclude>-->
+                            <!--<exclude>org.esa.beam:globcover-worldmap</exclude>-->
+                            <!--<exclude>ncsa.hdf:*</exclude>-->
+                        <!--</excludes>-->
+                    <!--</dependencySet>-->
+                    <!--<dependencySet>-->
+                        <!--<outputDirectory>modules</outputDirectory>-->
+                        <!--<outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>-->
+                        <!--&lt;!&ndash;<includes>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<include>com.bc.ceres:*</include>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</includes>&ndash;&gt;-->
+                        <!--<excludes>-->
+                            <!--<exclude>com.bc.ceres:ceres-launcher</exclude>-->
+                            <!--<exclude>com.bc.ceres:ceres-deploy</exclude>-->
+                            <!--<exclude>com.bc.ceres:ceres-site</exclude>-->
+                        <!--</excludes>-->
+                    <!--</dependencySet>-->
+                <!--</dependencySets>-->
+            <!--</binaries>-->
+        <!--</moduleSet>-->
+    <!--</moduleSets>-->
+
+</assembly>
