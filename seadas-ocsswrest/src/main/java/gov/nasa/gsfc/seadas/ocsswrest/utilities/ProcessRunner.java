@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.ocsswrest.utilities;
 
+import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,9 +68,27 @@ public class ProcessRunner {
         return process;
     }
 
+    public static Process executeCmdArray(String[] cmdArray) {
+
+
+        executeTest();
+
+        ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
+        Process process = null;
+        try {
+            System.out.println("starting execution 1 ...");
+            process = processBuilder.start();
+        } catch (IOException ioe) {
+            System.out.println("installer execution exception!");
+            System.out.println(ioe.getMessage());
+        }
+
+        return process;
+    }
+
     public static Process executeTest(){
 
-        ArrayList<String> cmdList = new ArrayList<>();
+        ArrayList<String> cmdList = new ArrayList<String>();
 
         cmdList.add("mkdir");
         cmdList.add("/home/aabduraz/Public/test");
@@ -96,7 +116,7 @@ public class ProcessRunner {
             System.out.println(ioe.getMessage());
         }
         //int i = process.exitValue();
-        System.out.print("completed " ) ; //System.out.println(process.exitValue());
+        System.out.println("completed " ) ; //System.out.println(process.exitValue());
         return process;
     }
 }

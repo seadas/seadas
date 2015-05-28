@@ -40,7 +40,7 @@ public class OCSSWRunner {
 
     public static Process execute(ProcessorModel processorModel) {
 
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY);
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);
         if (ocsswLocation == null || ocsswLocation.trim().equals(LOCAL)) {
             return executeLocal(processorModel);
         } else {

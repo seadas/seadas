@@ -87,7 +87,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 return null;
             }
 
-            if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+            if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName);
             } else {
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName);
@@ -102,10 +102,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
         SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(RuntimeContext.getConfig().getContextProperty(LOG_LEVEL_PROPERTY, "OFF")));
 
-        if (! RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+        if (! RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
             OCSSW.setProcessorId(programName);
             OCSSW.setClientId(System.getProperty("user.name"));
             OCSSW.createJobId();
+            OCSSW.retrieveServerSharedDirName();
         }
 
         final AppContext appContext = getAppContext();

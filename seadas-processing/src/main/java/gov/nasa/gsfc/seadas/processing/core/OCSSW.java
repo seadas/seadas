@@ -24,10 +24,11 @@ public class OCSSW {
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
 
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
-    public static final String OCSSWLOCATION_PROPERTY = "ocssw.location";
+    public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
     public static final String SEADASHOME_PROPERTY = "home";
     public static final String SEADAS_OCSSW_LOCATION_LOCAL = "local";
     public static final String SEADAS_OCSSW_LOCATION_REMOTE = "remote";
+    public static final String OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY = "ocssw.sharedDir";
 
     public static String OCSSW_INSTALLER = "install_ocssw.py";
     public static String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
@@ -40,6 +41,7 @@ public class OCSSW {
     private static String clientId;
     private static String processorId;
     private static String jobId;
+    private static String serverSharedDirName;
 
     public static String getOcsswRoot() throws IOException {
         return ocsswRoot;
@@ -49,10 +51,14 @@ public class OCSSW {
         return ocsswExist;
     }
 
+    public static String getOCSSWClientSharedDirName() {
+        return RuntimeContext.getConfig().getContextProperty(OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY);
+    }
+
 
     public static void checkOCSSW() {
 
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSWLOCATION_PROPERTY);
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY);
 
         //ocssw installed local
         if (ocsswLocation == null || ocsswLocation.trim().equals(SEADAS_OCSSW_LOCATION_LOCAL)) {
@@ -211,6 +217,21 @@ public class OCSSW {
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
         jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN).get(String.class);
+    }
+
+    public static void retrieveServerSharedDirName() {
+
+        OCSSWClient ocsswClient = new OCSSWClient();
+        WebTarget target = ocsswClient.getOcsswWebTarget();
+        setServerSharedDirName(target.path("file").path("test").request(MediaType.TEXT_PLAIN).get(String.class));
+    }
+
+    public static String getServerSharedDirName() {
+        return serverSharedDirName;
+    }
+
+    public static void setServerSharedDirName(String serverSharedDirName) {
+        OCSSW.serverSharedDirName = serverSharedDirName;
     }
 }
 

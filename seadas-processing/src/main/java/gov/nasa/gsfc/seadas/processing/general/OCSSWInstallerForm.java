@@ -210,7 +210,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     dirPanel = (JPanel) c;
 
                 }
-                if (!RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+                if (!RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
                     //if ocssw is not local, then disable the button to choose ocssw installation directory
                     ((JLabel)dirPanel.getComponent(0)).setText("Remote install-dir");
                     dirPanel.getComponent(1).setEnabled(false);

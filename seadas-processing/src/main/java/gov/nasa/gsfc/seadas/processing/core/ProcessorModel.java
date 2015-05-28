@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.general.*;
 import jxl.Cell;
 import jxl.Sheet;
@@ -392,7 +393,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         if (programName != null && ( programName.equals("multilevel_processor") || programName.equals("multilevel_processor.py" ) ) ) {
             return true;
         }
+
         if (verifyIFilePath(ifileName)) {
+
+            if (!RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)){
+                String clientSharedDir = OCSSW.getOCSSWClientSharedDirName();
+                String serverSharedDir = OCSSW.getServerSharedDirName();
+                ifileName = ifileName.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
+            }
             String ofileName = findNextLevelFileName(ifileName);
             //if (ofileName.)
             if (ofileName != null) {
@@ -565,48 +573,48 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return cmdArrayParam;
     }
 
-    private void computeCmdArray(){
-        String[] cmdArrayParam = new String[paramList.getParamArray().size()];
-
-        Iterator itr = paramList.getParamArray().iterator();
-        ParamInfo option;
-        String cmdString = null;
-        while (itr.hasNext()) {
-            option = (ParamInfo) itr.next();
-
-            if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
-                if (option.getValue() != null && option.getValue().length() > 0) {
-                    cmdArrayParam[option.getOrder()] = option.getValue();
-                    cmdString = "argument : " + option.getValue();
-                }
-            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
-                cmdArrayParam[option.getOrder()] = option.getName() + "=" + option.getValue();
-                cmdString = "option : " + option.getName() + "=" + option.getValue();
-            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
-                if (option.getName() != null && option.getName().length() > 0) {
-                    cmdArrayParam[option.getOrder()] = option.getName();
-                    cmdString = "flag : " + option.getName();
-                }
-            }
-
-            if (option.getType().equals(ParamInfo.Type.IFILE) && option.getValue() != null && option.getValue().trim().length() > 0) {
-                filesToUpload.add(option.getValue());
-                cmdString = cmdString.replaceAll("argument", "ifile");
-                cmdString = cmdString.replaceAll("option", "ifile");
-            } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
-                filesToDownload.add(option.getValue());
-                cmdString = cmdString.replaceAll("argument", "ofile");
-                cmdString = cmdString.replaceAll("option", "ofile");
-            }
-            if (remoteServerCmdArray.size() == 0 ) {
-                remoteServerCmdArray.add(cmdString);
-            }
-            else if (! cmdString.equals(remoteServerCmdArray.get(remoteServerCmdArray.size()-1))){
-                remoteServerCmdArray.add(cmdString);
-            }
-            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
-        }
-    }
+//    private void computeCmdArray(){
+//        String[] cmdArrayParam = new String[paramList.getParamArray().size()];
+//
+//        Iterator itr = paramList.getParamArray().iterator();
+//        ParamInfo option;
+//        String cmdString = null;
+//        while (itr.hasNext()) {
+//            option = (ParamInfo) itr.next();
+//
+//            if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
+//                if (option.getValue() != null && option.getValue().length() > 0) {
+//                    cmdArrayParam[option.getOrder()] = option.getValue();
+//                    cmdString = "argument : " + option.getValue();
+//                }
+//            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
+//                cmdArrayParam[option.getOrder()] = option.getName() + "=" + option.getValue();
+//                cmdString = "option : " + option.getName() + "=" + option.getValue();
+//            } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
+//                if (option.getName() != null && option.getName().length() > 0) {
+//                    cmdArrayParam[option.getOrder()] = option.getName();
+//                    cmdString = "flag : " + option.getName();
+//                }
+//            }
+//
+//            if (option.getType().equals(ParamInfo.Type.IFILE) && option.getValue() != null && option.getValue().trim().length() > 0) {
+//                filesToUpload.add(option.getValue());
+//                cmdString = cmdString.replaceAll("argument", "ifile");
+//                cmdString = cmdString.replaceAll("option", "ifile");
+//            } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
+//                filesToDownload.add(option.getValue());
+//                cmdString = cmdString.replaceAll("argument", "ofile");
+//                cmdString = cmdString.replaceAll("option", "ofile");
+//            }
+//            if (remoteServerCmdArray.size() == 0 ) {
+//                remoteServerCmdArray.add(cmdString);
+//            }
+//            else if (! cmdString.equals(remoteServerCmdArray.get(remoteServerCmdArray.size()-1))){
+//                remoteServerCmdArray.add(cmdString);
+//            }
+//            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
+//        }
+//    }
 
     private String[] getCmdArrayWithArguments() {
 

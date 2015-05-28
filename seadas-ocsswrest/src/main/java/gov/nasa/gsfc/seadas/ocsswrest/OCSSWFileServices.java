@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerPropertyValues;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -28,7 +29,13 @@ public class OCSSWFileServices {
     private static final String OCSSW_OUTPUT_COMPRESSED_FILE_NAME = "ocssw_output.zip";
     private static final int BUFFER_SIZE = 1024;
 
-    String[] cmdArray;
+    @GET
+    @Path("/serverSharedFileDir")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getSharedFileDirName() {
+        System.out.println("Shared dir name:" + OCSSWServerPropertyValues.getServerSharedDirName());
+        return OCSSWServerPropertyValues.getServerSharedDirName();
+    }
 
     /**
      * Method for uploading a file.
@@ -171,7 +178,10 @@ public class OCSSWFileServices {
     @Path("/test")
     @Produces(MediaType.TEXT_PLAIN)
     public String getIt() {
-        return "Got it! \n";
+        //return "Got it! \n";
+        System.out.println("getting ocssw shared server name");
+        OCSSWServerPropertyValues propertyValues = new OCSSWServerPropertyValues();
+        return propertyValues.getServerSharedDirName();
     }
 
 

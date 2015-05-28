@@ -26,7 +26,7 @@ public class OCSSWServerPropertyValuesTest {
     @Test
     public void testGetPropValue() throws Exception {
         OCSSWServerPropertyValues propertyValues = new OCSSWServerPropertyValues();
-        String sharedDir = propertyValues.getPropValues("sharedDir");
+        String sharedDir = propertyValues.getPropValues("serverSharedDirName");
         System.out.println(sharedDir);
         Assert.assertNotNull(sharedDir);
 

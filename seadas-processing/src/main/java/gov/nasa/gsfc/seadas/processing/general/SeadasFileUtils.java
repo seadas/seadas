@@ -1,12 +1,21 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.core.OCSSW;
+import gov.nasa.gsfc.seadas.processing.core.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -89,8 +98,8 @@ public class SeadasFileUtils {
         int pos1 = ifileName.indexOf(".");
         int pos2 = ifileName.lastIndexOf(".");
 
-        if ( pos2 > pos1) {
-            geoFileName = ifileName.substring(0, pos1+1) + "GEO" + ifileName.substring(pos2);
+        if (pos2 > pos1) {
+            geoFileName = ifileName.substring(0, pos1 + 1) + "GEO" + ifileName.substring(pos2);
         }
 
         if (new File(geoFileName).exists()) {
@@ -122,9 +131,18 @@ public class SeadasFileUtils {
         cmdArray[5] = programName;
 
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
+
+        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+            return retrieveOFileNameLocal(cmdArray, ifileDir);
+        } else {
+            return retrieveOFileNameRemote(cmdArray);
+        }
+    }
+
+    private static String retrieveOFileNameLocal(String[] cmdArray, String ifileDir) {
         Process process = OCSSWRunner.execute(cmdArray, new File(ifileDir));
 
-        if (process ==null ) {
+        if (process == null) {
             return "output";
         }
         int exitCode = process.exitValue();
@@ -149,7 +167,7 @@ public class SeadasFileUtils {
                 }
 
             } else {
-                debug("Failed exit code on program '" + programName + "'");
+                debug("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
             }
 
         } catch (IOException ioe) {
@@ -163,7 +181,28 @@ public class SeadasFileUtils {
         return "output";
     }
 
-    private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName){
+    private static String retrieveOFileNameRemote(String[] cmdArray) {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        for (String s : cmdArray) {
+            jab.add(s);
+        }
+
+        //add jobId for server side database
+        //jab.add(OCSSW.getJobId());
+        JsonArray remoteCmdArray = jab.build();
+
+        OCSSWClient ocsswClient = new OCSSWClient();
+        WebTarget target = ocsswClient.getOcsswWebTarget();
+        final Response response = target.path("ocssw").path("computeNextLevelFileName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+        //return target.path("ocssw").path("findNextLevelFileName").request(MediaType.TEXT_PLAIN).post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE)).get(String.class);
+        String ofileName = target.path("ocssw").path("retrieveNextLevelFileName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
+        //Process process = target.path("ocssw").path("retrieveProcess").path(OCSSW.getJobId()).request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get(Process.class);
+        InputStream inputStream = target.path("ocssw").path("retrieveProcessResult").path(OCSSW.getJobId()).request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get(InputStream.class);
+        return "output";
+    }
+
+    private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
         String[] cmdArray = new String[6];
         cmdArray[0] = OCSSW.getOcsswScriptPath();
         cmdArray[1] = "--ocsswroot";
@@ -171,9 +210,7 @@ public class SeadasFileUtils {
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
         cmdArray[4] = ifileName;
         cmdArray[5] = programName;
-
         return cmdArray;
-
     }
 
     private static String getNextLevelFileName(String ifileName, String[] cmdArray) {
@@ -213,7 +250,7 @@ public class SeadasFileUtils {
 
             VisatApp.getApp().showErrorDialog(ioe.getMessage());
         }
-         return null;
+        return null;
     }
 
     public static String findNextLevelFileName(String ifileName, String programName, String[] additionalOptions) {
@@ -227,7 +264,7 @@ public class SeadasFileUtils {
         debug("Program name is " + programName);
         Debug.assertNotNull(ifileName);
 
-        String[] cmdArray = (String[])ArrayUtils.addAll(getCmdArrayForNextLevelNameFinder(ifileName, programName), additionalOptions);
+        String[] cmdArray = (String[]) ArrayUtils.addAll(getCmdArrayForNextLevelNameFinder(ifileName, programName), additionalOptions);
         String ofileName = getNextLevelFileName(ifileName, cmdArray);
         if (ofileName == null) {
             ofileName = "output";

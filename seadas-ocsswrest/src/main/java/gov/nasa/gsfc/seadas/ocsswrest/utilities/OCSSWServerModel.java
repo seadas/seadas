@@ -9,14 +9,12 @@ package gov.nasa.gsfc.seadas.ocsswrest.utilities;
  */
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.HashMap;
 
 
 public class OCSSWServerModel {
@@ -41,9 +39,17 @@ public class OCSSWServerModel {
     private static File ocsswRoot = null;
     private static boolean ocsswInstalScriptDownloadSuccessful = false;
 
+    private static HashMap<String, Process> processHashMap;
+    private static HashMap<String, InputStream> processResultHashMap;
+
 
     public static File getOcsswRoot() throws IOException {
         return ocsswRoot;
+    }
+
+    public static void init(){
+        checkOCSSW();
+        processHashMap = new HashMap<>();
     }
 
     public static boolean isOCSSWExist() {
@@ -170,4 +176,19 @@ public class OCSSWServerModel {
     }
 
 
+    public static  Process getProcess(String jobId) {
+        return processHashMap.get(jobId);
+    }
+
+    public static void addProcess(String jobId, Process process) {
+         processHashMap.put(jobId, process);
+    }
+
+    public static InputStream getProcessResult(String jobId) {
+        return processResultHashMap.get(jobId);
+    }
+
+    public static void addProcessResult(String jobId, InputStream processResult) {
+        processResultHashMap.put(jobId, processResult);
+    }
 }

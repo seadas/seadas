@@ -69,7 +69,7 @@ public class FileInfo {
         processorModel.addParamInfo("file", file.getAbsolutePath(), ParamInfo.Type.IFILE, 0);
         processorModel.getParamInfo("file").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
 
-        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSWLOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
             try {
 
                 //TODO execute this from remote server

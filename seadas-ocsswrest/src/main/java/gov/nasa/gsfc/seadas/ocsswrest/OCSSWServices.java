@@ -1,15 +1,16 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerModel;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.ProcessRunner;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.validation.constraints.Null;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -95,6 +96,13 @@ public class OCSSWServices {
         return ocsswInfo;
     }
 
+    @GET
+    @Path("/serverSharedFileDir")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getSharedFileDirName() {
+        System.out.println("Shared dir name:" + OCSSWServerPropertyValues.getServerSharedDirName());
+        return OCSSWServerPropertyValues.getServerSharedDirName();
+    }
 
     @POST
     @Path("install")
@@ -103,33 +111,57 @@ public class OCSSWServices {
 
     }
 
+//    @POST
+//    @Path("cmdArray")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response uploadCommandArray(
+//            @FormDataParam("file") InputStream uploadedInputStream,
+//            @FormDataParam("file") FormDataContentDisposition fileInfo,
+//            @FormDataParam("cmdArray") String[] cmdArray,
+//            @QueryParam("clientId") String clientID)
+//            throws IOException {
+//        Response.Status respStatus = Response.Status.OK;
+////        if (fileInfo == null) {
+////            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+////        } else {
+////            final String fileName = fileInfo.getFileName();
+////            String uploadedFileLocation = File.separator
+////                    + fileName;
+////            System.out.println(uploadedFileLocation);
+////            System.out.println(System.getProperty("user.dir"));
+////            try {
+////                //writeToFile(uploadedInputStream, uploadedFileLocation);
+////                //getFileInfo();
+////            } catch (Exception e) {
+////                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+////                e.printStackTrace();
+////            }
+////        }
+//        return Response.status(respStatus).build();
+//    }
+
     @POST
     @Path("cmdArray")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response uploadCommandArray(
-            @FormDataParam("file") InputStream uploadedInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileInfo,
-            @FormDataParam("cmdArray") String[] cmdArray,
-            @QueryParam("clientId") String clientID)
+    public Process uploadCommandArray(JsonArray jsonArray)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
-//        if (fileInfo == null) {
-//            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-//        } else {
-//            final String fileName = fileInfo.getFileName();
-//            String uploadedFileLocation = File.separator
-//                    + fileName;
-//            System.out.println(uploadedFileLocation);
-//            System.out.println(System.getProperty("user.dir"));
-//            try {
-//                //writeToFile(uploadedInputStream, uploadedFileLocation);
-//                //getFileInfo();
-//            } catch (Exception e) {
-//                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-//                e.printStackTrace();
-//            }
-//        }
-        return Response.status(respStatus).build();
+        Process process = null;
+        if (jsonArray == null) {
+            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+        } else {
+            writeToFile(jsonArray.getString(0));
+            downloadOCSSWInstaller();
+
+            String[] cmdArray = getCmdArray(jsonArray);
+
+            cmdArray[0] = OCSSWServerModel.OCSSW_INSTALLER_FILE_LOCATION;
+
+            process = ProcessRunner.executeInstaller(cmdArray);
+        }
+        return process; //Response.status(respStatus).build();
+
+        //return Response.status(respStatus).build();
     }
 
     @POST
@@ -167,125 +199,108 @@ public class OCSSWServices {
 
             String[] cmdArray = getCmdArray(jsonArray);
 
-            cmdArray[0] = OCSSWServerModel.OCSSW_INSTALLER_FILE_LOCATION;
+            cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+            cmdArray[1] = "--ocsswroot";
+            cmdArray[2] = OCSSWServerModel.getOcsswEnv();
 
             process = ProcessRunner.executeInstaller(cmdArray);
         }
         return process; //Response.status(respStatus).build();
     }
 
+    @POST
+    @Path(value = "/computeNextLevelFileName/{jobId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String computeNextLevelFileName(@PathParam("jobId") String jobId, JsonArray jsonArray) {
+        Process process = null;
+        InputStream is = null;
+        String ofileName = "output";
+        if (jsonArray != null) {
+            //jobId = jsonArray.getString(jsonArray.size() - 1);
+
+            String[] cmdArray = getCmdArray(jsonArray);
+
+            cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+            cmdArray[1] = "--ocsswroot";
+            cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+            for (String str : cmdArray) {
+                System.out.println(str);
+            }
+            process = ProcessRunner.executeCmdArray(cmdArray);
+            is = process.getInputStream();
+
+        }
+        InputStreamReader isr = new InputStreamReader(is);
+
+        BufferedReader br = new BufferedReader(isr);
+        int exitCode = 0;
+        try {
+
+            if (exitCode == 0) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
+                        ofileName = (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+                    }
+                }
+
+            } else {
+                System.out.println("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
+            }
+
+        } catch (IOException ioe) {
+
+            System.out.println(ioe.getMessage());
+        }
+
+        System.out.println("completed cmd Array execution!");
+        System.out.println(is.toString());
+        if (jobId != null) {
+            SQLiteJDBC.insertOFileName(jobId, ofileName);
+            OCSSWServerModel.addProcess(jobId, process);
+            OCSSWServerModel.addProcessResult(jobId, is);
+        }
+        return "ok";
+    }
+
     @GET
-    @Path("nextLevelFileName")
-    @Consumes(MediaType.TEXT_PLAIN)
-    public static String findNextLevelFileName(String ifileName, String programName) {
-         if (ifileName == null || programName == null) {
-             return null;
-         }
-         if (programName.equals("l3bindump")) {
-             return ifileName + ".xml";
-         }
+    @Path("retrieveNextLevelFileName/{jobId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String findNextLevelFileName(@PathParam("jobId") String jobId) {
+        //return SQLiteJDBC.retrieveItem(jobId, "O_FILE_NAME");
+        String processString = null;
+        ObjectMapper om = new ObjectMapper();
+        try {
+            processString = om.writeValueAsString(OCSSWServerModel.getProcess(jobId));
+        } catch (JsonProcessingException jpe) {
+            System.out.println(jpe.getStackTrace());
+        }
 
-         String[] cmdArray = new String[6];
-         cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
-         cmdArray[1] = "--ocsswroot";
-         cmdArray[2] = OCSSWServerModel.getOcsswEnv();
-         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-         cmdArray[4] = ifileName;
-         cmdArray[5] = programName;
+        return processString;
+    }
+
+    @GET
+    @Path("retrieveProcess/{jobId}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Process retrieveProcess(@PathParam("jobId") String jobId) {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            String processString = om.writeValueAsString(OCSSWServerModel.getProcess(jobId));
+        } catch (JsonProcessingException jpe) {
+            System.out.println(jpe.getStackTrace());
+        }
+        return OCSSWServerModel.getProcess(jobId);
+    }
+
+    @GET
+    @Path("retrieveProcessResult/{jobId}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public InputStream retrieveProcessResult(@PathParam("jobId") String jobId) {
+        return OCSSWServerModel.getProcessResult(jobId);
+    }
 
 
-         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-         Process process = null;//OCSSWRunner.execute(cmdArray, new File(ifileDir));
-
-         int exitCode = process.exitValue();
-         InputStream is;
-         if (exitCode == 0) {
-             is = process.getInputStream();
-         } else {
-             is = process.getErrorStream();
-         }
-
-         InputStreamReader isr = new InputStreamReader(is);
-         BufferedReader br = new BufferedReader(isr);
-
-         try {
-
-             if (exitCode == 0) {
-                 String line;
-                 while ((line = br.readLine()) != null) {
-                     if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
-                         return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
-                     }
-                 }
-
-             } else {
-                 System.out.println("Failed exit code on program '" + programName + "'");
-             }
-
-         } catch (IOException ioe) {
-
-             System.out.println(ioe.getMessage());
-         }
-
-         return null;
-     }
-
-//    public static String findNextLevelFileName(String ifileName, String programName) {
-//        if (ifileName == null || programName == null) {
-//            return null;
-//        }
-//        if (programName.equals("l3bindump")) {
-//            return ifileName + ".xml";
-//        }
-//
-//        String[] cmdArray = new String[6];
-//
-//        cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
-//        cmdArray[1] = "--ocsswroot";
-//        //cmdArray[2] = OCSSWServerModel.getOcsswEnv();
-//        cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-//        cmdArray[4] = ifileName;
-//        cmdArray[5] = programName;
-//
-//        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-//        Process process = null; //OCSSWRunner.execute(cmdArray, new File(ifileDir));
-//
-//        if (process ==null ) {
-//            return "output";
-//        }
-//        int exitCode = process.exitValue();
-//        InputStream is;
-//        if (exitCode == 0) {
-//            is = process.getInputStream();
-//        } else {
-//            is = process.getErrorStream();
-//        }
-//
-//        InputStreamReader isr = new InputStreamReader(is);
-//        BufferedReader br = new BufferedReader(isr);
-//
-//        try {
-//
-//            if (exitCode == 0) {
-//                String line;
-//                while ((line = br.readLine()) != null) {
-//                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
-//                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
-//                    }
-//                }
-//
-//            } else {
-//                System.out.println("Failed exit code on program '" + programName + "'");
-//            }
-//
-//        } catch (IOException ioe) {
-//
-//            System.out.println(ioe.getMessage());
-//        }
-//        return "output";
-//    }
-//
-    private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName){
+    private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
         String[] cmdArray = new String[6];
         cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
         cmdArray[1] = "--ocsswroot";
@@ -296,66 +311,6 @@ public class OCSSWServices {
         return cmdArray;
 
     }
-
-//    private static String getNextLevelFileName(String ifileName, String[] cmdArray) {
-//
-//        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-//        Process process = OCSSWRunner.execute(cmdArray, new File(ifileDir));
-//        if (process == null) {
-//            return null;
-//        }
-//
-//        int exitCode = process.exitValue();
-//        InputStream is;
-//        if (exitCode == 0) {
-//            is = process.getInputStream();
-//        } else {
-//            is = process.getErrorStream();
-//        }
-//
-//        InputStreamReader isr = new InputStreamReader(is);
-//        BufferedReader br = new BufferedReader(isr);
-//
-//        try {
-//
-//            if (exitCode == 0) {
-//                String line;
-//                while ((line = br.readLine()) != null) {
-//                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
-//                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
-//                    }
-//                }
-//
-//            } else {
-//                debug("Failed exit code on program '" + cmdArray[5] + "'");
-//            }
-//
-//        } catch (IOException ioe) {
-//
-//            VisatApp.getApp().showErrorDialog(ioe.getMessage());
-//        }
-//         return null;
-//    }
-//
-//    public static String findNextLevelFileName(String ifileName, String programName, String[] additionalOptions) {
-//
-//        if (ifileName == null || programName == null) {
-//            return null;
-//        }
-//        if (programName.equals("l3bindump")) {
-//            return ifileName + ".xml";
-//        }
-//        debug("Program name is " + programName);
-//        Debug.assertNotNull(ifileName);
-//
-//        String[] cmdArray = (String[])ArrayUtils.addAll(getCmdArrayForNextLevelNameFinder(ifileName, programName), additionalOptions);
-//        String ofileName = getNextLevelFileName(ifileName, cmdArray);
-//        if (ofileName == null) {
-//            ofileName = "output";
-//        }
-//
-//        return ofileName;
-//    }
 
     private String[] getCmdArray(JsonArray jsonArray) {
         String text = "cmdArray: ";

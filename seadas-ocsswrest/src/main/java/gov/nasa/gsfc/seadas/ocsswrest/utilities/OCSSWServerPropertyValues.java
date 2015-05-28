@@ -14,7 +14,7 @@ import java.util.Properties;
  */
 public class OCSSWServerPropertyValues {
 
-    Properties properties;
+    static Properties properties;
     final static String CONFIG_FILE_NAME = "config.properties";
     final static String CLIENT_SHARED_DIR_NAME_PROPERTY = "clientSharedDirName";
     final static String SERVER_SHARED_DIR_NAME_PROPERTY = "serverSharedDirName";
@@ -27,9 +27,9 @@ public class OCSSWServerPropertyValues {
                 properties.load(inputStream);
             }
         } catch (FileNotFoundException fnfe) {
-
+            System.out.println("config file not found!");
         } catch (IOException ioe) {
-
+            System.out.println("IO exception!");
         }
     }
 
@@ -37,11 +37,13 @@ public class OCSSWServerPropertyValues {
         return properties.getProperty(propertyName);
     }
 
-    public String getClientSharedDirName(){
+    public static String getClientSharedDirName(){
         return properties.getProperty(CLIENT_SHARED_DIR_NAME_PROPERTY);
     }
 
-    public String getServerSharedDirName(){
+    public static String getServerSharedDirName(){
+
+        System.out.println("shared dir name: " + properties.getProperty(SERVER_SHARED_DIR_NAME_PROPERTY));
         return properties.getProperty(SERVER_SHARED_DIR_NAME_PROPERTY);
     }
 
