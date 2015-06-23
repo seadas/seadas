@@ -195,11 +195,13 @@ public class SeadasFileUtils {
         WebTarget target = ocsswClient.getOcsswWebTarget();
         final Response response = target.path("ocssw").path("computeNextLevelFileName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
-        //return target.path("ocssw").path("findNextLevelFileName").request(MediaType.TEXT_PLAIN).post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE)).get(String.class);
+
         String ofileName = target.path("ocssw").path("retrieveNextLevelFileName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
-        //Process process = target.path("ocssw").path("retrieveProcess").path(OCSSW.getJobId()).request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get(Process.class);
-        InputStream inputStream = target.path("ocssw").path("retrieveProcessResult").path(OCSSW.getJobId()).request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get(InputStream.class);
-        return "output";
+        if (ofileName != null) {
+            return ofileName;
+        } else {
+            return "output";
+        }
     }
 
     private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {

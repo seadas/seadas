@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.processing.general.SeadasProcess;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -11,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,26 +82,42 @@ public class OCSSWRunner {
 
         }
         return process;
+
+//ioe        if (process != null) {
+//            return process.exitValue();
+//        } else {
+//            return 1;
+//        }
     }
 
     public static Process executeRemote(ProcessorModel processorModel) {
         //System.out.println("remote execution!");
-        Process process = null;
+        SeadasProcess process = null;
+        //get a command array with arguments only for remote execution
+        //processorModel.setAcceptsParFile(false);
 
+        //this statement needs to be executed to compute the command array for remote execution  - can't be skipped
         String[] cmdArray = processorModel.getProgramCmdArray();
-
+        ArrayList<String> cmdArrayList = processorModel.getRemoteServerCmdArray();
 
         JsonArrayBuilder jab = Json.createArrayBuilder();
-        for (String s : cmdArray) {
+        for (String s : cmdArrayList) {
             jab.add(s);
         }
         JsonArray remoteCmdArray = jab.build();
 
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
-        final Response response = target.path("ocssw").path("installOcssw").request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+        if (processorModel.getProgramName().equals(OCSSW.OCSSW_INSTALLER)) {
+            final Response response = target.path("ocssw").path("installOcssw").request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+        } else {
+            final Response response = target.path("ocssw").path("executeOcsswProgram").request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+        }
 
+        //get exit value from the server
+        //process.setErrorStream();
         return process;
     }
 
@@ -144,7 +162,9 @@ public class OCSSWRunner {
         final Response response = target.path("ocssw").path("cmdArray").request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
         Object obj = response.getEntity().getClass();
+
         return process;
+
     }
 
     public static Process execute(String[] cmdArray) {
