@@ -41,13 +41,6 @@ public class ProcessRunner {
         executeTest();
 
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
-//        Map<String, String> env = processBuilder.environment();
-//        HashMap environment = new HashMap();
-//
-//        environment.put("OCSSWROOT", OCSSWServerModel.OCSSW_INSTALL_DIR);
-//
-//        env.putAll(environment);
-
         processBuilder.directory(new File(OCSSWServerModel.OCSSW_INSTALL_DIR));
         Process process = null;
         try {
@@ -72,15 +65,22 @@ public class ProcessRunner {
 
 
         executeTest();
+        int exitValue = 1;
 
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
         Process process = null;
         try {
             System.out.println("starting execution 1 ...");
             process = processBuilder.start();
+            if (process != null) {
+                exitValue = process.waitFor();
+            }
         } catch (IOException ioe) {
-            System.out.println("installer execution exception!");
+            System.out.println("installer execution IO exception!");
             System.out.println(ioe.getMessage());
+        }catch (InterruptedException ie) {
+            System.out.println("installer execution Interrupted exception!");
+            System.out.println(ie.getMessage());
         }
 
         return process;

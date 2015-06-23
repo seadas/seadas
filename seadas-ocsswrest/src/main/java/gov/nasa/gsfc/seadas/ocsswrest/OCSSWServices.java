@@ -111,35 +111,6 @@ public class OCSSWServices {
 
     }
 
-//    @POST
-//    @Path("cmdArray")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response uploadCommandArray(
-//            @FormDataParam("file") InputStream uploadedInputStream,
-//            @FormDataParam("file") FormDataContentDisposition fileInfo,
-//            @FormDataParam("cmdArray") String[] cmdArray,
-//            @QueryParam("clientId") String clientID)
-//            throws IOException {
-//        Response.Status respStatus = Response.Status.OK;
-////        if (fileInfo == null) {
-////            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-////        } else {
-////            final String fileName = fileInfo.getFileName();
-////            String uploadedFileLocation = File.separator
-////                    + fileName;
-////            System.out.println(uploadedFileLocation);
-////            System.out.println(System.getProperty("user.dir"));
-////            try {
-////                //writeToFile(uploadedInputStream, uploadedFileLocation);
-////                //getFileInfo();
-////            } catch (Exception e) {
-////                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-////                e.printStackTrace();
-////            }
-////        }
-//        return Response.status(respStatus).build();
-//    }
-
     @POST
     @Path("cmdArray")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -167,7 +138,7 @@ public class OCSSWServices {
     @POST
     @Path("installOcssw")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Process installOcssw(JsonArray jsonArray)
+    public String installOcssw(JsonArray jsonArray)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
         Process process = null;
@@ -175,21 +146,26 @@ public class OCSSWServices {
             respStatus = Response.Status.INTERNAL_SERVER_ERROR;
         } else {
             writeToFile(jsonArray.getString(0));
-            downloadOCSSWInstaller();
+            System.out.println("download installer: ");
+            System.out.println(downloadOCSSWInstaller());
 
             String[] cmdArray = getCmdArray(jsonArray);
 
             cmdArray[0] = OCSSWServerModel.OCSSW_INSTALLER_FILE_LOCATION;
 
+            for (String str : cmdArray) {
+                System.out.println(str);
+            }
+
             process = ProcessRunner.executeInstaller(cmdArray);
         }
-        return process; //Response.status(respStatus).build();
+        return new Integer(process.exitValue()).toString(); //Response.status(respStatus).build();
     }
 
     @POST
     @Path("runOcsswProcessor")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Process runOcsswProcessor(JsonArray jsonArray)
+    public String runOcsswProcessor(JsonArray jsonArray)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
         Process process = null;
@@ -205,7 +181,35 @@ public class OCSSWServices {
 
             process = ProcessRunner.executeInstaller(cmdArray);
         }
-        return process; //Response.status(respStatus).build();
+        return new Integer(process.exitValue()).toString(); //Response.status(respStatus).build();
+    }
+
+    @POST
+    @Path("executeOcsswProgram")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String executeOcsswProgram(JsonArray jsonArray)
+            throws IOException {
+        Response.Status respStatus = Response.Status.OK;
+        Process process = null;
+        if (jsonArray == null) {
+            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+        } else {
+
+            String[] cmdArray = getCmdArray(jsonArray);
+
+            cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+            cmdArray[1] = "--ocsswroot";
+            cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+
+            for (String str : cmdArray) {
+                System.out.println(str);
+            }
+
+            process = ProcessRunner.executeCmdArray(cmdArray);
+        }
+        System.out.println("process execution completed.");
+        System.out.println("exit code = " + process.exitValue());
+        return new Integer(process.exitValue()).toString();
     }
 
     @POST
@@ -241,6 +245,7 @@ public class OCSSWServices {
                 while ((line = br.readLine()) != null) {
                     if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
                         ofileName = (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+                        System.out.println(ofileName);
                     }
                 }
 
@@ -256,27 +261,20 @@ public class OCSSWServices {
         System.out.println("completed cmd Array execution!");
         System.out.println(is.toString());
         if (jobId != null) {
-            SQLiteJDBC.insertOFileName(jobId, ofileName);
-            OCSSWServerModel.addProcess(jobId, process);
-            OCSSWServerModel.addProcessResult(jobId, is);
+            if (SQLiteJDBC.isJobIdExist(jobId)) {
+                SQLiteJDBC.updateOFileName(jobId, ofileName);
+            } else {
+                SQLiteJDBC.insertOFileName(jobId, ofileName);
+            }
         }
-        return "ok";
+        return new Integer(process.exitValue()).toString();
     }
 
     @GET
     @Path("retrieveNextLevelFileName/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
     public String findNextLevelFileName(@PathParam("jobId") String jobId) {
-        //return SQLiteJDBC.retrieveItem(jobId, "O_FILE_NAME");
-        String processString = null;
-        ObjectMapper om = new ObjectMapper();
-        try {
-            processString = om.writeValueAsString(OCSSWServerModel.getProcess(jobId));
-        } catch (JsonProcessingException jpe) {
-            System.out.println(jpe.getStackTrace());
-        }
-
-        return processString;
+        return SQLiteJDBC.retrieveItem(jobId, "O_FILE_NAME");
     }
 
     @GET
@@ -354,6 +352,7 @@ public class OCSSWServices {
                     "Please check network connection or 'seadas.ocssw.root' variable in the \"seadas.config\" file. \n" +
                     "possible cause of error: " + ioe.getLocalizedMessage());
         } finally {
+
             return ocsswInstalScriptDownloadSuccessful;
         }
     }
