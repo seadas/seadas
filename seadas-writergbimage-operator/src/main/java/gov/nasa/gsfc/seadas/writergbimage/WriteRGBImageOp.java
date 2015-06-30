@@ -198,7 +198,11 @@ public class WriteRGBImageOp extends Operator {
             band.getImageInfo().setColorPaletteDef(cpd,
                     stx.getMinimum(),
                     stx.getMaximum(), false);
+
+            band.getImageInfo().setLogScaled(cpd.isLogScaled());
+            band.getImageInfo().getColorPaletteSourcesInfo().setCpdFileName(cpdFilePath);
         }
+
 
         band.getImageInfo().setNoDataColor(Color.WHITE);
         //defaultImageInfo.setNoDataColor(Color.WHITE);
