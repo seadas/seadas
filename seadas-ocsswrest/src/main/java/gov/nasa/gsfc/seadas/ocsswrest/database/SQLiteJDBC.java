@@ -91,12 +91,22 @@ public class SQLiteJDBC {
                     " STATUS        CHAR(50) )";
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
-                    " I_FILE_TYPE      CHAR(50) ,    " +
-                    " O_FILE_NAME      CHAR(100) , " +
-                    " MISSION  CHAR(50), " +
-                    " STATUS        CHAR(50) )";
+                    "I_FILE_TYPE      CHAR(50) ,    " +
+                    "O_FILE_NAME      CHAR(100) , " +
+                    "MISSION_NAME  CHAR(50), " +
+                    "STATUS        CHAR(50) )";
+            String lonlat_2_pixel_table_sql = "CREATE TABLE IF NOT EXISTS LONLAT_2_PIXEL_TABLE " +
+                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+                    "SPIXL      CHAR(50) ,    " +
+                    "EPIXL     CHAR(100) , " +
+                    "SLINE  CHAR(50), " +
+                    "ELINE       CHAR(50) )" +
+                    "PIX_SUB     CHAR(100) , " +
+                    "SC_SUB  CHAR(50), " +
+                    "PRODLIST       CHAR(50) )";
             stmt.executeUpdate(processor_table_sql);
             stmt.executeUpdate(file_table_sql);
+            stmt.executeUpdate(lonlat_2_pixel_table_sql);
             stmt.close();
             c.close();
 
@@ -166,8 +176,9 @@ public class SQLiteJDBC {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
-        String queryString = "SELECT JOB_ID, O_FILE_NAME FROM FILE_TABLE WHERE JOB_ID = ?";
-        String oFileName = "output";
+        String commonQueryString = "SELECT * FROM FILE_TABLE WHERE JOB_ID = ?";
+
+        String retrievedItem = null;
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);
@@ -175,14 +186,15 @@ public class SQLiteJDBC {
             connection.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
-            preparedStatement = connection.prepareStatement(queryString);
+            preparedStatement = connection.prepareStatement(commonQueryString);
 
+            //preparedStatement.setString(1, itemName);
             preparedStatement.setString(1, jobId);
 
             ResultSet rs = preparedStatement.executeQuery();
 
-            oFileName = rs.getString("O_FILE_NAME");
-            System.out.println("ofilename : " + oFileName);
+            retrievedItem = rs.getString(itemName);
+            System.out.println("Retrieved item name : " + retrievedItem);
             rs.close();
             preparedStatement.close();
             connection.close();
@@ -191,15 +203,50 @@ public class SQLiteJDBC {
             //System.exit(0);
         }
         System.out.println("Operation done successfully");
-        return oFileName;
+
+        return retrievedItem;
     }
+
+//    public static String retrieveItem(String jobId, String itemName) {
+//        Connection connection = null;
+//        PreparedStatement preparedStatement = null;
+//
+//        String queryString = "SELECT JOB_ID, O_FILE_NAME FROM FILE_TABLE WHERE JOB_ID = ?";
+//        String commonQueryString = "SELECT ? FROM FILE_TABLE WHERE JOB_ID = ?";
+//        String oFileName = "output";
+//
+//        try {
+//            Class.forName(DB_CLASS_FOR_NAME);
+//            connection = DriverManager.getConnection(JOB_DB_URL);
+//            connection.setAutoCommit(false);
+//            System.out.println("Opened database successfully");
+//
+//            preparedStatement = connection.prepareStatement(queryString);
+//
+//            preparedStatement.setString(1, jobId);
+//            preparedStatement.setString(1, jobId);
+//
+//            ResultSet rs = preparedStatement.executeQuery();
+//
+//            oFileName = rs.getString("O_FILE_NAME");
+//            System.out.println("ofilename : " + oFileName);
+//            rs.close();
+//            preparedStatement.close();
+//            connection.close();
+//        } catch (Exception e) {
+//            System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
+//            //System.exit(0);
+//        }
+//        System.out.println("Operation done successfully");
+//        return oFileName;
+//    }
 
     public static boolean isJobIdExist(String jobId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
-        String queryString = "SELECT JOB_ID, O_FILE_NAME FROM FILE_TABLE WHERE JOB_ID = ?";
-        String oFileName = null;
+        String queryString = "SELECT JOB_ID FROM FILE_TABLE WHERE JOB_ID = ?";
+        String jobName = null;
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);
@@ -214,8 +261,8 @@ public class SQLiteJDBC {
             ResultSet rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
-                oFileName = rs.getString("O_FILE_NAME");
-                System.out.println("ofilename : " + oFileName);
+                jobName = rs.getString("JOB_ID");
+                System.out.println("JOB_ID : " + jobName);
             }
             rs.close();
             preparedStatement.close();
@@ -225,7 +272,7 @@ public class SQLiteJDBC {
             //System.exit(0);
         }
         System.out.println("Operation done successfully");
-        return (oFileName != null);
+        return (jobName != null);
     }
 
     public static void insertOFileName(String jobId, String ofileName) {
@@ -271,7 +318,6 @@ public class SQLiteJDBC {
         PreparedStatement preparedStatement = null;
 
         String updateTableSQL = "UPDATE FILE_TABLE set O_FILE_NAME = ? where JOB_ID = ?";
-        String sql = "UPDATE FILE_TABLE set O_FILE_NAME = " + ofileName + " where JOB_ID=" + jobId;
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);
@@ -302,6 +348,154 @@ public class SQLiteJDBC {
         }
         System.out.println("Operation done successfully");
     }
+    public static void insertFileType(String jobId, String fileType) {
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String insertTableSQL = "INSERT INTO FILE_TABLE " + " (JOB_ID, I_FILE_TYPE) VALUES (" + "?, ?)";
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+
+            preparedStatement = connection.prepareStatement(insertTableSQL);
+
+            preparedStatement.setString(1, jobId);
+            preparedStatement.setString(2, fileType);
+
+            // execute insert SQL stetement
+            int exitCode = preparedStatement.executeUpdate();
+
+            connection.commit();
+
+            System.out.println("Ifile type is " + (exitCode == 1 ? "" : "not") + " inserted into FILE_TABLE table!");
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        } catch (ClassNotFoundException cnfe) {
+            System.err.println(cnfe.getClass().getName() + ": " + cnfe.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+    }
+
+    public static void updateFileType(String jobId, String fileType) {
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String updateTableSQL = "UPDATE FILE_TABLE set I_FILE_TYPE = ? where JOB_ID = ?";
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+
+            preparedStatement = connection.prepareStatement(updateTableSQL);
+
+            preparedStatement.setString(1, fileType);
+            preparedStatement.setString(2, jobId);
+
+            // execute update SQL stetement
+            int exitCode = preparedStatement.executeUpdate();
+
+            connection.commit();
+
+            System.out.println("ifiletype is " + (exitCode == 1 ? "" : "not") + " updated in FILE_TABLE table!");
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        } catch (ClassNotFoundException cnfe) {
+            System.err.println(cnfe.getClass().getName() + ": " + cnfe.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+    }
+
+    public static void insertMissionName(String jobId, String missionName) {
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String insertTableSQL = "INSERT INTO FILE_TABLE " + " (JOB_ID, MISSION_NAME) VALUES (" + "?, ?)";
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+
+            preparedStatement = connection.prepareStatement(insertTableSQL);
+
+            preparedStatement.setString(1, jobId);
+            preparedStatement.setString(2, missionName);
+
+            // execute insert SQL stetement
+            int exitCode = preparedStatement.executeUpdate();
+
+            connection.commit();
+
+            System.out.println("Mission Name is " + (exitCode == 1 ? "" : "not") + " inserted into FILE_TABLE table!");
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        } catch (ClassNotFoundException cnfe) {
+            System.err.println(cnfe.getClass().getName() + ": " + cnfe.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+    }
+
+    public static void updateMissionName(String jobId, String missionName) {
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String updateTableSQL = "UPDATE FILE_TABLE set MISSION_NAME = ? where JOB_ID = ?";
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+
+            preparedStatement = connection.prepareStatement(updateTableSQL);
+
+            preparedStatement.setString(1, missionName);
+            preparedStatement.setString(2, jobId);
+
+            // execute update SQL stetement
+            int exitCode = preparedStatement.executeUpdate();
+
+            connection.commit();
+
+            System.out.println("Mission Name is " + (exitCode == 1 ? "" : "not") + " updated in FILE_TABLE table!");
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        } catch (ClassNotFoundException cnfe) {
+            System.err.println(cnfe.getClass().getName() + ": " + cnfe.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+    }
+
 
     public static void updateOFileNameb(String jobId, String ofileName) {
 

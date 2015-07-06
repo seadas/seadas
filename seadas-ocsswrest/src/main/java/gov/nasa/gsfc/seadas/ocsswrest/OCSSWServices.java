@@ -105,6 +105,70 @@ public class OCSSWServices {
     }
 
     @POST
+    @Path("/findIFileTypeAndMissionName/{jobId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String findFileTypeAndMissionName(@PathParam("jobId") String jobId, JsonArray jsonArray) {
+        Response.Status respStatus = Response.Status.OK;
+        Process process = null;
+        String missionName = null;
+        String fileType = null;
+
+        if (jsonArray == null) {
+            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+        } else {
+            System.out.println("finding file type and mission name  ");
+
+            String[] cmdArray = getCmdArray(jsonArray);
+
+            cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+            cmdArray[1] = "--ocsswroot";
+            cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+
+            for (String str : cmdArray) {
+                System.out.println(str);
+            }
+
+            process = ProcessRunner.executeCmdArray(cmdArray);
+
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            try {
+                String line = stdInput.readLine();
+                if (line != null) {
+                    String splitLine[] = line.split(":");
+                    if (splitLine.length == 3) {
+                        missionName = splitLine[1].toString().trim();
+                        fileType = splitLine[2].toString().trim();
+                        System.out.println("Mission Name = " + missionName);
+                        System.out.println("File Type = " + fileType);
+                    }
+                }
+            } catch (IOException ioe) {
+                System.out.println(ioe.getStackTrace());
+            }
+        }
+        if (jobId != null) {
+            //insert or update mission name
+            if (SQLiteJDBC.isJobIdExist(jobId)) {
+                SQLiteJDBC.updateMissionName(jobId, missionName);
+            } else {
+                SQLiteJDBC.insertMissionName(jobId, missionName);
+            }
+
+            //insert or update file type
+            if (SQLiteJDBC.isJobIdExist(jobId)) {
+                SQLiteJDBC.updateFileType(jobId, fileType);
+
+            } else {
+                SQLiteJDBC.insertFileType(jobId, fileType);
+            }
+
+
+        }
+        return "ok";
+    }
+
+
+    @POST
     @Path("install")
     @Consumes(MediaType.APPLICATION_JSON)
     public void installOcssw() {
@@ -276,6 +340,21 @@ public class OCSSWServices {
     public String findNextLevelFileName(@PathParam("jobId") String jobId) {
         return SQLiteJDBC.retrieveItem(jobId, "O_FILE_NAME");
     }
+
+    @GET
+    @Path("retrieveIFileType/{jobId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String findIFileType(@PathParam("jobId") String jobId) {
+        return SQLiteJDBC.retrieveItem(jobId, "I_FILE_TYPE");
+    }
+
+    @GET
+    @Path("retrieveMissionName/{jobId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String findMissionName(@PathParam("jobId") String jobId) {
+        return SQLiteJDBC.retrieveItem(jobId, "MISSION_NAME");
+    }
+
 
     @GET
     @Path("retrieveProcess/{jobId}")
