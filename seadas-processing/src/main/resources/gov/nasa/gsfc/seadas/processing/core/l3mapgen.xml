@@ -70,6 +70,8 @@
             <value>A20021852012031.L3b_CU_SST.main</value>
             <source>command line</source>
             <description>input L3 bin file name</description>
+            <usedAs>option</usedAs>
+            <order>0</order>
         </option>
         <option type="ofile">
             <name>ofile</name>
@@ -77,6 +79,8 @@
             <default>output</default>
             <source>default</source>
             <description>output filename</description>
+            <usedAs>option</usedAs>
+            <order>1</order>
         </option>
         <option type="string">
             <name>product</name>
@@ -84,6 +88,8 @@
             <default>myprod</default>
             <source>default</source>
             <description>product(s) to map</description>
+            <usedAs>option</usedAs>
+            <order>2</order>
         </option>
         <option type="string">
             <name>resolution</name>
@@ -153,6 +159,8 @@
                 <!--</validValue>-->
             </validValues>
             <description>size of the output pixel in meters or SMI dimensions</description>
+            <usedAs>option</usedAs>
+            <order>3</order>
         </option>
         <option type="string">
             <name>oformat</name>
@@ -182,6 +190,8 @@
                 </validValue>
             </validValues>
             <description>output file format</description>
+            <usedAs>option</usedAs>
+            <order>4</order>
         </option>
         <!--<option type="ofile">-->
             <!--<name>ofile2</name>-->
@@ -216,6 +226,8 @@
                 </validValue>
             </validValues>
             <description>proj.4 projection string or one of the following predefined projections:</description>
+            <usedAs>option</usedAs>
+            <order>5</order>
         </option>
         <option type="float">
             <name>central_meridian</name>
@@ -223,6 +235,8 @@
             <default>0</default>
             <source>default</source>
             <description>central meridian for projection in deg east.  Only used for smi, mollweide and raw projection</description>
+            <usedAs>option</usedAs>
+            <order>6</order>
         </option>
         <option type="string">
             <name>interp</name>
@@ -244,6 +258,8 @@
                 </validValue>
             </validValues>
             <description>interpolation method:</description>
+            <usedAs>option</usedAs>
+            <order>7</order>
         </option>
         <option type="float">
             <name>north</name>
@@ -251,6 +267,8 @@
             <default>90.0</default>
             <source>default</source>
             <description>Northern most Latitude</description>
+            <usedAs>option</usedAs>
+            <order>8</order>
         </option>
         <option type="float">
             <name>south</name>
@@ -258,6 +276,8 @@
             <default>-90.0</default>
             <source>default</source>
             <description>Southern most Latitude</description>
+            <usedAs>option</usedAs>
+            <order>9</order>
         </option>
         <option type="float">
             <name>east</name>
@@ -265,6 +285,8 @@
             <default>180.0</default>
             <source>default</source>
             <description>Eastern most Longitude</description>
+            <usedAs>option</usedAs>
+            <order>10</order>
         </option>
         <option type="float">
             <name>west</name>
@@ -272,6 +294,8 @@
             <default>-180.0</default>
             <source>default</source>
             <description>Western most Longitude</description>
+            <usedAs>option</usedAs>
+            <order>11</order>
         </option>
         <option type="boolean">
             <name>apply_pal</name>
@@ -289,12 +313,16 @@
                 </validValue>
             </validValues>
             <description>apply color A palette:</description>
+            <usedAs>option</usedAs>
+            <order>12</order>
         </option>
         <option type="ifile">
             <name>palfile</name>
             <value/>
             <source>default</source>
             <description>palette filename.  (default = means the palette is chosen using the product.xml file</description>
+            <usedAs>option</usedAs>
+            <order>13</order>
         </option>
         <option type="ifile">
             <name>palette_dir</name>
@@ -302,18 +330,24 @@
             <default>$OCDATAROOT/common/palette</default>
             <source>default</source>
             <description>directory containing the palette files</description>
+            <usedAs>option</usedAs>
+            <order>14</order>
         </option>
         <option type="float">
             <name>datamin</name>
             <value/>
             <source>default</source>
             <description>minimum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <order>15</order>
         </option>
         <option type="float">
             <name>datamax</name>
             <value/>
             <source>default</source>
             <description>maximum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <order>16</order>
         </option>
         <option type="string">
             <name>scale_type</name>
@@ -330,6 +364,8 @@
                 </validValue>
             </validValues>
             <description>data scaling type (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <order>17</order>
         </option>
         <option type="boolean">
             <name>quiet</name>
@@ -337,6 +373,8 @@
             <default>false</default>
             <source>default</source>
             <description>stop the status printing</description>
+            <usedAs>option</usedAs>
+            <order>18</order>
         </option>
         <option type="string">
             <name>pversion</name>
@@ -344,6 +382,8 @@
             <default>Unspecified</default>
             <source>default</source>
             <description>processing version string</description>
+            <usedAs>option</usedAs>
+            <order>19</order>
         </option>
         <!--<option type="boolean">-->
             <!--<name>use_quality</name>-->
@@ -358,6 +398,8 @@
             <default>4</default>
             <source>default</source>
             <description>deflation level</description>
+            <usedAs>option</usedAs>
+            <order>20</order>
         </option>
     </options>
 </paramInfo>

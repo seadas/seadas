@@ -159,7 +159,7 @@ public class OCSSWRunner {
 
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
-        final Response response = target.path("ocssw").path("cmdArray").request(MediaType.APPLICATION_JSON_TYPE)
+        final Response response = target.path("ocssw").path("executeOcsswProgram").request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
         Object obj = response.getEntity().getClass();
 

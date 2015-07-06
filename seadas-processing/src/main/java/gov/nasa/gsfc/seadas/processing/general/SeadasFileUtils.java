@@ -127,7 +127,7 @@ public class SeadasFileUtils {
         cmdArray[1] = "--ocsswroot";
         cmdArray[2] = OCSSW.getOcsswEnv();
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-        cmdArray[4] = ifileName;
+        cmdArray[4] = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL) ? ifileName : getIfileNameforRemoteServer(ifileName);
         cmdArray[5] = programName;
 
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
@@ -210,7 +210,7 @@ public class SeadasFileUtils {
         cmdArray[1] = "--ocsswroot";
         cmdArray[2] = OCSSW.getOcsswEnv();
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-        cmdArray[4] = ifileName;
+        cmdArray[4] = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL) ? ifileName : getIfileNameforRemoteServer(ifileName);
         cmdArray[5] = programName;
         return cmdArray;
     }
@@ -267,12 +267,27 @@ public class SeadasFileUtils {
         Debug.assertNotNull(ifileName);
 
         String[] cmdArray = (String[]) ArrayUtils.addAll(getCmdArrayForNextLevelNameFinder(ifileName, programName), additionalOptions);
-        String ofileName = getNextLevelFileName(ifileName, cmdArray);
+
+        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
+
+        String ofileName;
+
+        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+            ofileName = retrieveOFileNameLocal(cmdArray, ifileDir);
+        } else {
+
+            ofileName = retrieveOFileNameRemote(cmdArray);
+        }
+
         if (ofileName == null) {
             ofileName = "output";
         }
-
         return ofileName;
+    }
+
+    private static String getIfileNameforRemoteServer(String ifileName) {
+        String newIfileName = ifileName.replace( OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName() );
+        return newIfileName;
     }
 
     public static String getDefaultOFileNameFromIFile(String ifileName, String programName) {
