@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.writergbimage;
+package gov.nasa.gsfc.seadas.writeimage;
 
 import java.awt.Color;
 import java.io.BufferedReader;

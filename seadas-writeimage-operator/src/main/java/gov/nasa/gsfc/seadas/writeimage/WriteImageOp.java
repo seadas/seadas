@@ -1,16 +1,13 @@
-package gov.nasa.gsfc.seadas.writergbimage;
+package gov.nasa.gsfc.seadas.writeimage;
 
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 
 
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.media.jai.JAI;
 
@@ -20,44 +17,32 @@ import org.esa.beam.framework.datamodel.ImageInfo;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
 import org.esa.beam.framework.datamodel.RasterDataNode;
-import org.esa.beam.framework.datamodel.Stx;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
 import org.esa.beam.framework.gpf.Tile;
-import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.glayer.GraticuleLayer;
-import org.esa.beam.glayer.GraticuleLayerType;
 import org.esa.beam.jai.ImageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.core.ProgressMonitor;
-import com.bc.ceres.glayer.CollectionLayer;
-import com.bc.ceres.glayer.Layer;
-import com.bc.ceres.glayer.LayerType;
-import com.bc.ceres.glayer.LayerTypeRegistry;
-import com.bc.ceres.glayer.support.ImageLayer;
-import com.bc.ceres.grender.Viewport;
-import com.bc.ceres.grender.support.BufferedImageRendering;
 
 /**
  * @author kutila
  * @author aynur abdurazik
  */
-@OperatorMetadata(alias = "WriteRGBImage", version = "0.4", copyright = "(c) 2014 University of Queensland", authors = "Kutila G",
-        description = "Creates an RGB image from a single source band.")
-public class WriteRGBImageOp extends Operator {
+@OperatorMetadata(alias = "WriteImage", version = "0.4", copyright = "(c) 2014 University of Queensland", authors = "Kutila G",
+        description = "Creates a color image from a single source band.")
+public class WriteImageOp extends Operator {
     /**
      * Service Provider Interface
      */
     public static class Spi extends OperatorSpi {
         public Spi() {
-            super(WriteRGBImageOp.class);
+            super(WriteImageOp.class);
         }
     }
 
@@ -83,6 +68,9 @@ public class WriteRGBImageOp extends Operator {
 
     @Parameter(description = "Color palette definition file", defaultValue = "nofile.cpd")
     private String cpdFilePath;
+
+    @Parameter(description = "Auto distribute points between min/max", defaultValue = "false")
+    private boolean cpdAutoDistribute;
 
     @Parameter(description = "Minimum value of colour scale. Used only if colour palette definition not present.", defaultValue = "0.01")
     private double colourScaleMin;
@@ -157,7 +145,7 @@ public class WriteRGBImageOp extends Operator {
     public void computeTile(final Band targetBand, final Tile targetTile, final ProgressMonitor pm)
             throws OperatorException {
         final Rectangle rectangle = targetTile.getRectangle();
-        this.log.debug(" WriteRGBImage.computeTile({}, {}) ", rectangle.getX(), rectangle.getY());
+        this.log.debug(" WriteImage.computeTile({}, {}) ", rectangle.getX(), rectangle.getY());
 
         try {
             this.writeImage();
@@ -179,104 +167,88 @@ public class WriteRGBImageOp extends Operator {
      * @throws Exception
      */
     protected void writeImage() throws Exception {
-        ColorPaletteDef cpd = null;
-        try {
-            cpd = ColorPaletteDef.loadColorPaletteDef(new File(this.cpdFilePath));
-        } catch (IOException e) {
-            cpd = RGBUtils.buildColorPaletteDef(colourScaleMin, colourScaleMax);
-        }
 
         Band band = this.sourceBand;
-
         final ImageInfo defaultImageInfo = band.createDefaultImageInfo(histoSkipRatios, this.pm);
         band.setImageInfo(defaultImageInfo);
 
+        final boolean isLog = LOGARITHMIC.equalsIgnoreCase(this.scaleType);
+
+        final StringBuilder debug = new StringBuilder();
+        debug.append("\n====\n");
+        final File file = new File(this.cpdFilePath);
+        ColorPaletteDef cpd = null;
+        try {
+            cpd = ColorPaletteDef.loadColorPaletteDef(file);
+            debug.append("Successfully loaded color palette definition: ");
+            debug.append(this.cpdFilePath);
+
+        } catch (IOException e) {
+            cpd = RGBUtils.buildColorPaletteDef(colourScaleMin, colourScaleMax);
+            debug.append("Built new color palette definition: ");
+        }
+
         if (band.getIndexCoding() != null) {
             band.getImageInfo().setColors(cpd.getColors());
-        } else {
-            Stx stx = band.getStx();
-            band.getImageInfo().setColorPaletteDef(cpd,
-                    stx.getMinimum(),
-                    stx.getMaximum(), false);
+            debug.append("\n Non-null Index Coding");
 
-            band.getImageInfo().setLogScaled(cpd.isLogScaled());
-            band.getImageInfo().getColorPaletteSourcesInfo().setCpdFileName(cpdFilePath);
+        } else {
+            debug.append("\n Null Index Coding");
+
+            debug.append("\n CPD Auto Distribute=" + this.cpdAutoDistribute);
+
+//            final Stx stx = band.getStx();
+//
+//            double minSample = stx.getMinimum();
+//            double maxSample = stx.getMaximum();
+//
+//
+//
+//            // because min cannot be negative for LOG scaling
+//            if (isLog && minSample < 0) {
+//                minSample = colourScaleMin;
+//                maxSample = colourScaleMax;
+//            }
+
+            double minSample = colourScaleMin;
+            double maxSample = colourScaleMax;
+
+            band.getImageInfo().setColorPaletteDef(cpd, minSample, maxSample, this.cpdAutoDistribute, defaultImageInfo.isLogScaled(), isLog);
+            band.getImageInfo().setLogScaled(isLog);
+
+            debug.append("\n CPD min =");
+            debug.append(minSample + "   " + band.getStx().getMinimum() + "   ");
+            debug.append(cpd.getMinDisplaySample() + "   "  + band.getImageInfo().getColorPaletteDef().getMinDisplaySample());
+            debug.append(band.getImageInfo().isLogScaled());
+            debug.append("\n CPD  max =");
+            debug.append(maxSample  + "  "  + band.getStx().getMinimum() + "   " + cpd.getMaxDisplaySample() + "   " + band.getImageInfo().getColorPaletteDef().getMaxDisplaySample());
+            debug.append("\n ColorScaleMin/Max  = " + colourScaleMin + "; " + colourScaleMax);
+            debug.append("\n source scaling=" + (defaultImageInfo.isLogScaled() ? "LOG" : "LINEAR"));
+            if (isLog) {
+                debug.append("\n target scaling=LOG");
+
+            } else {
+                debug.append("\n target scaling=LINEAR");
+            }
+            debug.append("\n====\n");
         }
 
 
         band.getImageInfo().setNoDataColor(Color.WHITE);
-        //defaultImageInfo.setNoDataColor(Color.WHITE);
 
         RasterDataNode[] bands = {band};
 
         // image looks worse when using either Normalize or Equalize
         defaultImageInfo.setHistogramMatching(ImageInfo.HistogramMatching.None);
 
-        // has no noticeable effect
-        defaultImageInfo.setLogScaled(LOGARITHMIC.equalsIgnoreCase(this.scaleType));
-
         // construct Image
         ImageManager imageManager = ImageManager.getInstance();
         RenderedImage outputImage = imageManager.createColoredBandImage(bands, defaultImageInfo, level);
 
-        //------------------------
-        // Test
-        //this.testAddingLayers(outputImage, band);
-        //------------------------
-
-
         // write Image
         JAI.create("filestore", outputImage, filePath, formatName, null);
+
+        System.out.println(debug.toString());
     }
-
-
-    protected void testAddingLayers(RenderedImage image, Band band) {
-        // 1. create a collection of layers
-        CollectionLayer collectionLayer = new CollectionLayer();
-        List<Layer> layerChildren = collectionLayer.getChildren();
-
-        // 2. create layers
-        ImageLayer imageLayer = new ImageLayer(image);//(RenderedImage)band.getSourceImage());
-
-        LayerType graticuleType = LayerTypeRegistry.getLayerType(GraticuleLayerType.class);
-        PropertySet template = graticuleType.createLayerConfig(null);
-        template.setValue(GraticuleLayerType.PROPERTY_NAME_RASTER, band);
-        GraticuleLayer graticuleLayer = (GraticuleLayer) graticuleType.createLayer(null, template);
-
-//        MaskLayerType type = LayerTypeRegistry.getLayerType(MaskLayerType.class);
-//        PropertySet configuration = type.createLayerConfig(null);
-//        Mask.BandMathsType.create("coast", "", band.getSceneRasterWidth(), band.getSceneRasterHeight(),
-//                "l1_flags.COASTLINE", Color.WHITE, 3.2);
-
-//        Mask coastlineMask;
-//        configuration.setValue(MaskLayerType.PROPERTY_NAME_MASK, coastlineMask);
-//        Layer coastlineLayer = type.createLayer(null, configuration);
-
-
-        // 3. add layers to the Layer Collection
-        layerChildren.add(0, imageLayer);
-        layerChildren.add(0, graticuleLayer);
-//        layerChildren.add(0, coastlineLayer);
-
-
-        // 4. convert Layers into an image
-        Rectangle2D modelBounds = collectionLayer.getModelBounds();
-        Rectangle2D imageBounds =
-                imageLayer.getModelToImageTransform().createTransformedShape(modelBounds).getBounds2D();
-        BufferedImage bufferedImage =
-                new BufferedImage((int) imageBounds.getWidth(), (int) imageBounds.getHeight(),
-                        BufferedImage.TYPE_4BYTE_ABGR);
-
-        BufferedImageRendering rendering = new BufferedImageRendering(bufferedImage);
-        Viewport viewport = rendering.getViewport();
-        viewport.setModelYAxisDown(imageLayer.getImageToModelTransform().getDeterminant() > 0.0);
-        viewport.zoom(modelBounds);
-        collectionLayer.render(rendering);
-        RenderedImage outputImage = rendering.getImage();
-
-        JAI.create("filestore", outputImage, filePath + "-test.png", formatName, null);
-
-    }
-
 
 }
