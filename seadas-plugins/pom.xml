@@ -27,6 +27,7 @@
         <module>../seadas-ocsswrest</module>
         <!--<module>../seadas-ocsswwsclient</module>-->
         <module>../seadas-bathymetry-operator</module>
+        <module>../seadas-writeimage-operator</module>
         <!--<module>../../beam/beam-aatsr-sst</module>-->
         <module>../../beam/beam-alos-reader</module>
         <module>../../beam/beam-atsr-reader</module>

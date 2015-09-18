@@ -104,6 +104,8 @@ public class MissionInfo {
     private boolean geofileRequired;
     private File directory;
 
+    private String[] suites;
+
     public MissionInfo() {
         initDirectoriesHashMap();
         initNamesHashMap();
@@ -248,7 +250,7 @@ public class MissionInfo {
         return directory;
     }
 
-    private void setDirectory(File directory) {
+    public void setDirectory(File directory) {
         this.directory = directory;
     }
 
@@ -262,6 +264,14 @@ public class MissionInfo {
             }
         }
         return false;
+    }
+
+    public String[] getSuites() {
+        return suites;
+    }
+
+    public void setSuites(String[] suites) {
+        this.suites = suites;
     }
 
 }

@@ -1,0 +1,27 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>seadas-writeimage-operator</symbolicName>
+    <version>1.0</version>
+    <name>WriteImage</name>
+
+    <description>Write Image Operator</description>
+    <packaging>dir</packaging>
+
+    <vendor>NASA Goddard OBPG</vendor>
+    <contactAddress>
+        8800 Greenbelt Road, Greenbelt, MD 20771, USA
+    </contactAddress>
+    <copyright>(C) 2013 by NASA Goddard OBPG</copyright>
+    <url>http://seadas.gsfc.nasa.gov</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+
+    <changelog/>
+
+    <dependency>
+        <module>beam-gpf</module>
+    </dependency>
+    <dependency>
+        <module>beam-visat</module>
+        <optional>false</optional>
+    </dependency>
+</module>

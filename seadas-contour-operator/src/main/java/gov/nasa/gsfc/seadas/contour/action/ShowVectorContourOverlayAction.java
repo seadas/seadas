@@ -47,6 +47,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
     final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; stroke-dasharray:%s; symbol:cross";
     Product product;
     double noDataValue;
+    private GeoCoding geoCoding;
 
     @Override
     public void actionPerformed(CommandEvent event) {
@@ -58,7 +59,6 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         contourDialog.setVisible(true);
         contourDialog.dispose();
 
-
         if (contourDialog.getFilteredBandName() != null) {
             if (product.getBand(contourDialog.getFilteredBandName()) != null)
                 product.getBandGroup().remove(product.getBand(contourDialog.getFilteredBandName()));
@@ -67,7 +67,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         if (contourDialog.isContourCanceled()) {
             return;
         }
-
+        setGeoCoding(product.getGeoCoding());
         ContourData contourData = contourDialog.getContourData();
         noDataValue = contourDialog.getNoDataValue();
         ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
@@ -109,7 +109,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         return activeBandNames;
     }
 
-    private ArrayList<VectorDataNode> createVectorDataNodesforContours(ContourData contourData) {
+    public ArrayList<VectorDataNode> createVectorDataNodesforContours(ContourData contourData) {
 
 
         double scalingFactor = contourData.getBand().getScalingFactor();
@@ -153,13 +153,17 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
                 featureCollection = createContourFeatureCollection(pb);
             } catch (Exception e) {
                 if (contourData.getLevels().size() != 0)
+                    System.out.println(e.getMessage());
+                if (VisatApp.getApp() != null) {
                     VisatApp.getApp().showErrorDialog("failed to create contour lines");
-                System.out.println(e.getMessage());
+                }
                 continue;
             }
             if (featureCollection.isEmpty()) {
-                VisatApp.getApp().showErrorDialog("Contour Lines", "No records found for ." + contourData.getBand().getName() + " at " + (contourValue * scalingFactor + scalingOffset));
-                continue;
+                if (VisatApp.getApp() != null) {
+                    VisatApp.getApp().showErrorDialog("Contour Lines", "No records found for ." + contourData.getBand().getName() + " at " + (contourValue * scalingFactor + scalingOffset));
+                }
+                    continue;
             }
 
             final PlacemarkDescriptor placemarkDescriptor = PlacemarkDescriptorRegistry.getInstance().getPlacemarkDescriptor(featureCollection.getSchema());
@@ -179,7 +183,6 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
         RenderedOp dest = JAI.create("Contour", pb);
         Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
-        GeoCoding geoCoding = VisatApp.getApp().getSelectedProduct().getGeoCoding();
         SimpleFeatureType featureType = null;
         FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = null;
         try {
@@ -242,6 +245,14 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         /*0*/
         fb.add(lineString);
         return fb.buildFeature(null);
+    }
+
+    public GeoCoding getGeoCoding() {
+        return geoCoding;
+    }
+
+    public void setGeoCoding(GeoCoding geoCoding) {
+        this.geoCoding = geoCoding;
     }
 }
 

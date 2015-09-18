@@ -4,13 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.validation.constraints.Null;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -35,6 +32,9 @@ public class OCSSWServices {
 
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
+    private static String FILE_TABLE_NAME = "FILE_TABLE";
+    private static String MISSION_TABLE_NAME = "MISSION_TABLE";
+
     private HashMap<String, Boolean> missionDataStatus;
 
     @GET
@@ -61,6 +61,21 @@ public class OCSSWServices {
     public JsonObject getMissionDataStatus() {
         return new MissionInfo().getMissions();
     }
+
+    @GET
+    @Path("retrieveMissionDirName")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getMissionSuitesArray() {
+        return OCSSWServerModel.missionDataDir;
+    }
+
+    @GET
+    @Path("/l2bin_suites/{missionName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject getMissionSuites(@PathParam("missionName") String missionName) {
+        return new MissionInfo().getL2BinSuites(missionName);
+    }
+
 
     @GET
     @Path("downloadInstaller")
@@ -133,6 +148,7 @@ public class OCSSWServices {
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             try {
                 String line = stdInput.readLine();
+                System.out.println("Line = " + line);
                 if (line != null) {
                     String splitLine[] = line.split(":");
                     if (splitLine.length == 3) {
@@ -338,21 +354,29 @@ public class OCSSWServices {
     @Path("retrieveNextLevelFileName/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
     public String findNextLevelFileName(@PathParam("jobId") String jobId) {
-        return SQLiteJDBC.retrieveItem(jobId, "O_FILE_NAME");
+        return SQLiteJDBC.retrieveItem(FILE_TABLE_NAME, jobId, "O_FILE_NAME");
     }
 
     @GET
     @Path("retrieveIFileType/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
     public String findIFileType(@PathParam("jobId") String jobId) {
-        return SQLiteJDBC.retrieveItem(jobId, "I_FILE_TYPE");
+        return SQLiteJDBC.retrieveItem(FILE_TABLE_NAME, jobId, "I_FILE_TYPE");
     }
 
     @GET
     @Path("retrieveMissionName/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
     public String findMissionName(@PathParam("jobId") String jobId) {
-        return SQLiteJDBC.retrieveItem(jobId, "MISSION_NAME");
+        return SQLiteJDBC.retrieveItem(FILE_TABLE_NAME, jobId, "MISSION_NAME");
+    }
+
+
+    @GET
+    @Path("retrieveMissionDirName/{jobId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String findMissionDirName(@PathParam("jobId") String jobId) {
+        return SQLiteJDBC.retrieveItem(FILE_TABLE_NAME, jobId, "MISSION_DIR");
     }
 
 

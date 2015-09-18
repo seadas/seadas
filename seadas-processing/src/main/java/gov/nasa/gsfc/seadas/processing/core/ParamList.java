@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import com.bc.ceres.core.runtime.RuntimeContext;
+
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -130,7 +132,11 @@ public class ParamList {
                 } else {
                     stringBuffer.append(separator);
                 }
-                stringBuffer.append(param.getParamString());
+                String paramString = param.getParamString();
+                if ( ! RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+                    paramString = paramString.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
+                }
+                stringBuffer.append(paramString);
             }
         }
         return stringBuffer.toString();

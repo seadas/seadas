@@ -55,6 +55,10 @@ public class OCSSW {
         return RuntimeContext.getConfig().getContextProperty(OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY);
     }
 
+    public static boolean isOCSSWInstalledLocal() {
+        return RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL);
+    }
+
 
     public static void checkOCSSW() {
 

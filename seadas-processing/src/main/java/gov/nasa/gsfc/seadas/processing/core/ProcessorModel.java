@@ -14,6 +14,11 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 import javax.swing.event.SwingPropertyChangeSupport;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -384,10 +389,18 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private String getParFileCommandLineOption() {
+        File parFile = computeParFile();
+        String parFileName = parFile.getAbsolutePath();
+
+        //check dir name for remote execution
+        if (!RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+            parFileName = parFileName.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
+        }
+
         if (parFileOptionName.equals("none")) {
-            return computeParFile().toString();
+            return parFileName;
         } else {
-            return parFileOptionName + "=" + computeParFile();
+            return parFileOptionName + "=" + parFileName;
         }
     }
 
@@ -461,10 +474,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             optionOrder = option.getOrder();
             optionValue = option.getValue();
             optionType = option.getType();
-            if ( (optionType.equals(ParamInfo.Type.IFILE) || optionType.equals(ParamInfo.Type.OFILE)  )
+            if ((optionType.equals(ParamInfo.Type.IFILE) || optionType.equals(ParamInfo.Type.OFILE))
                     && optionValue != null && optionValue.trim().length() > 0) {
                 //replace shared folder name for remote server
-                if ( ! RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+                if (!RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
                     optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
                 }
             }
@@ -512,7 +525,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         filesToDownload = new ArrayList<String>();
         setRemoteServerCmdArray(new ArrayList<String>());
 
-        if (acceptsParFile ) { // && RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
+        if (acceptsParFile) { // && RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
             cmdArray = getCmdArrayWithParFile();
 
         } else {
@@ -529,12 +542,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private File computeParFile() {
 
         try {
-            final File tempFile = File.createTempFile("tmpParFile", ".par");
+            final File tempFile = File.createTempFile("tmpParFile", ".par", getIFileDir());
             tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
                 fileWriter = new FileWriter(tempFile);
-                fileWriter.write(getParString() + "\n");
+                String parString = getParString();
+                fileWriter.write(parString + "\n");
             } finally {
                 if (fileWriter != null) {
                     fileWriter.close();
@@ -556,8 +570,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         if (filesToDownload == null) {
             filesToDownload = new ArrayList<String>();
         }
-        if (getRemoteServerCmdArray() == null) {
-            setRemoteServerCmdArray(new ArrayList<String>());
+        if (remoteServerCmdArray == null) {
+            remoteServerCmdArray = new ArrayList<String>();
         }
 
         StringBuilder parString = new StringBuilder("");
@@ -572,18 +586,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             if (!option.getType().equals(ParamInfo.Type.HELP) && optionValue.length() > 0) {
 
                 if (!option.getDefaultValue().equals(optionValue)) {
-                    parString.append(option.getName() + "=" + optionValue + "\n");
-//                    if (option.getType().equals(ParamInfo.Type.IFILE)) {
-//                        getRemoteServerCmdArray().add("ifile : " + option.getName() + "=" + option.getValue());
-//                    } else if (option.getType().equals(ParamInfo.Type.OFILE)) {
-//                        getRemoteServerCmdArray().add("ofile : " + option.getName() + "=" + option.getValue());
-//
-//                    } else {
-//                        getRemoteServerCmdArray().add("option : " + option.getName() + "=" + option.getValue());
-//                    }
                     if (option.getType().equals(ParamInfo.Type.OFILE) || option.getType().equals(ParamInfo.Type.IFILE)) {
                         optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
                     }
+                    parString.append(option.getName() + "=" + optionValue + "\n");
+
                     remoteServerCmdArray.add(option.getName() + "=" + optionValue);
                 }
 
@@ -803,14 +810,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
 //        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
 
-            if (fileName.indexOf(System.getProperty("file.separator")) == 0 && new File(fileName).getParentFile().exists()) {
-                return fileName;
-            } else if (new File(getIfileDirString(), fileName).getParentFile().exists()) {
-                return getIfileDirString() + System.getProperty("file.separator") + fileName;
+        if (fileName.indexOf(System.getProperty("file.separator")) == 0 && new File(fileName).getParentFile().exists()) {
+            return fileName;
+        } else if (new File(getIfileDirString(), fileName).getParentFile().exists()) {
+            return getIfileDirString() + System.getProperty("file.separator") + fileName;
 
-            } else {
-                return null;
-            }
+        } else {
+            return null;
+        }
 //        } else {
 //            String ifileDir = getIfileDirString();
 //            ifileDir = ifileDir.replace(OCSSW.getServerSharedDirName(), OCSSW.getOCSSWClientSharedDirName());
@@ -973,7 +980,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public ArrayList<String> getRemoteServerCmdArray() {
         ArrayList<String> remoteArrayCmdArray = new ArrayList<>();
-        for (String str:cmdArray) {
+        for (String str : cmdArray) {
             remoteArrayCmdArray.add(str);
         }
         return remoteArrayCmdArray;
@@ -1103,6 +1110,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         private static final String PAR_FILE_PREFIX = "l2bin_defaults_";
         String DEFAULT_FLAGUSE;
         File missionDir;
+        FileInfo ifileInfo;
 
         L2Bin_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
@@ -1115,7 +1123,20 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         public void updateParamValues(Product selectedProduct) {
             if (selectedProduct != null) {
                 String sampleFileName = selectedProduct.getFileLocation().getAbsolutePath();
-                FileInfo ifileInfo = new FileInfo(sampleFileName);
+                ifileInfo = new FileInfo(sampleFileName);
+                if (ifileInfo.getMissionId().equals(MissionInfo.Id.UNKNOWN)) {
+                    try (BufferedReader br = new BufferedReader(new FileReader(sampleFileName))) {
+                        String listedFileName;
+                        while ((listedFileName = br.readLine()) != null) {
+                            ifileInfo = new FileInfo(listedFileName);
+                            if (! ifileInfo.getMissionId().equals(MissionInfo.Id.UNKNOWN)) {
+                                break;
+                            }
+                        }
+                    } catch(Exception e){
+
+                    }
+                }
                 missionDir = ifileInfo.getMissionDirectory();
                 if (missionDir == null) {
                     try {
@@ -1136,12 +1157,33 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
 
         private void updateSuite() {
-            String[] suites = missionDir.list(new FilenameFilter() {
-                @Override
-                public boolean accept(File file, String s) {
-                    return s.contains("l2bin_defaults_");
+
+            String[] suites;
+            HashMap<String, Boolean> missionSuites;
+            if (OCSSW.isOCSSWInstalledLocal()) {
+                suites = missionDir.list(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File file, String s) {
+                        return s.contains("l2bin_defaults_");
+                    }
+                });
+            } else {
+                OCSSWClient ocsswClient = new OCSSWClient();
+                WebTarget target = ocsswClient.getOcsswWebTarget();
+                missionSuites = target.path("ocssw").path("l2bin_suites").path(ifileInfo.getMissionName()).request(MediaType.APPLICATION_JSON)
+                        .get(new GenericType<HashMap<String, Boolean>>() {});
+                int i = 0;
+                suites = new String[missionSuites.size()];
+                for (Map.Entry<String, Boolean> entry : missionSuites.entrySet()) {
+                    String missionName = entry.getKey();
+                    Boolean missionStatus = entry.getValue();
+
+                    if (missionStatus) {
+                        suites[i++] = missionName;
+                    }
+
                 }
-            });
+            }
             String suiteName;
             ArrayList<ParamValidValueInfo> suiteValidValues = new ArrayList<ParamValidValueInfo>();
             for (String fileName : suites) {
@@ -1333,12 +1375,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
 
         @Override
-        public ArrayList getRemoteServerCmdArray(){
+        public ArrayList getRemoteServerCmdArray() {
             ArrayList<String> remoteArrayCmdArray = new ArrayList<>();
-            for (String str:getProgramCmdArray()) {
+            for (String str : getProgramCmdArray()) {
                 remoteArrayCmdArray.add(str);
             }
-           return remoteArrayCmdArray;
+            return remoteArrayCmdArray;
         }
     }
 

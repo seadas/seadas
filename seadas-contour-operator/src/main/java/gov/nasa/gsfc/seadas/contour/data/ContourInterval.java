@@ -25,7 +25,7 @@ public class ContourInterval {
 
     private double ptsToPixelsMultiplier;
 
-    ContourInterval(String contourBaseName, Double contourLevelValue, String filterName, double ptsToPixelsMultiplier) {
+    public ContourInterval(String contourBaseName, Double contourLevelValue, String filterName, double ptsToPixelsMultiplier) {
         this.contourLevelValue = new Double(decimalFormatSmall.format(contourLevelValue));
 //        if (contourLevelValue > 1) {
 //            this.contourLevelValue = new Double(decimalFormatBig.format(contourLevelValue));
@@ -42,7 +42,7 @@ public class ContourInterval {
         this.ptsToPixelsMultiplier = ptsToPixelsMultiplier;
     }
 
-    ContourInterval() {
+    public ContourInterval() {
     }
 
     public void setContourLevelName(String contourLevelName) {

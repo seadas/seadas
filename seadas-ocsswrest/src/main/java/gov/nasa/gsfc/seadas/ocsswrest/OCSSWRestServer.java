@@ -56,7 +56,7 @@ public class OCSSWRestServer {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        SQLiteJDBC.createTable();
+        SQLiteJDBC.createTables();
         OCSSWServerModel.init();
         processHashMap = new HashMap<>();
         final HttpServer server = startServer();

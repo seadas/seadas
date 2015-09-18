@@ -94,14 +94,15 @@ public class SQLiteJDBC {
                     "I_FILE_TYPE      CHAR(50) ,    " +
                     "O_FILE_NAME      CHAR(100) , " +
                     "MISSION_NAME  CHAR(50), " +
+                    "MISSION_DIR  CHAR(50), " +
                     "STATUS        CHAR(50) )";
             String lonlat_2_pixel_table_sql = "CREATE TABLE IF NOT EXISTS LONLAT_2_PIXEL_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
                     "SPIXL      CHAR(50) ,    " +
                     "EPIXL     CHAR(100) , " +
                     "SLINE  CHAR(50), " +
-                    "ELINE       CHAR(50) )" +
-                    "PIX_SUB     CHAR(100) , " +
+                    "ELINE       CHAR(50), " +
+                    "PIX_SUB     CHAR(100), " +
                     "SC_SUB  CHAR(50), " +
                     "PRODLIST       CHAR(50) )";
             stmt.executeUpdate(processor_table_sql);
@@ -114,8 +115,205 @@ public class SQLiteJDBC {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Opened database successfully");
+        System.out.println("Tables created successfully");
 
+    }
+
+    public static void createTables() {
+
+        Connection connection = null;
+        Statement stmt = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL, username, password);
+
+            stmt = connection.createStatement();
+
+            //string for creating PROCESSOR_TABLE
+            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESSOR_TABLE " +
+                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+                    " CLIENT_ID           CHAR(50)    NOT NULL, " +
+                    " PROCESSOR_ID            CHAR(50)     NOT NULL, " +
+                    " COMMAND_ARRAY  CHAR(500), " +
+                    " STATUS        CHAR(50) )";
+
+            //string for creating FILE_TABLE
+            String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
+                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+                    "I_FILE_TYPE      CHAR(50) ,    " +
+                    "O_FILE_NAME      CHAR(100) , " +
+                    "MISSION_NAME  CHAR(50), " +
+                    "MISSION_DIR  CHAR(50), " +
+                    "STATUS        CHAR(50) )";
+
+            //string for creating LONLAT_2_PIXEL_TABLE
+            String lonlat_2_pixel_table_sql = "CREATE TABLE IF NOT EXISTS LONLAT_2_PIXEL_TABLE " +
+                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+                    "SPIXL      CHAR(50) ,    " +
+                    "EPIXL     CHAR(100) , " +
+                    "SLINE  CHAR(50), " +
+                    "ELINE       CHAR(50), " +
+                    "PIX_SUB     CHAR(100), " +
+                    "SC_SUB  CHAR(50), " +
+                    "PRODLIST       CHAR(50) )";
+
+            //execute create_table statements
+            stmt.executeUpdate(processor_table_sql);
+            stmt.executeUpdate(file_table_sql);
+            stmt.executeUpdate(lonlat_2_pixel_table_sql);
+
+
+            //string for creating MISSION_TABLE
+            String mission_table_sql = "CREATE TABLE IF NOT EXISTS MISSION_TABLE " +
+                    "(MISSION_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+                    " MISSION_NAMES           CHAR(50)    NOT NULL, " +
+                    " MISSION_DIR            CHAR(50)     NOT NULL)";
+
+
+            stmt.executeUpdate(mission_table_sql);
+
+            String insertMissionTableSQL = "INSERT INTO MISSION_TABLE " + " (MISSION_ID, MISSION_NAMES, MISSION_DIR) VALUES (" + "?, ?, ?)";
+
+            preparedStatement = connection.prepareStatement(insertMissionTableSQL);
+
+            //1. insert aquarius mission info
+            preparedStatement.setString(1, "AQUARIUS");
+            preparedStatement.setString(2, "AQUARIUS");
+            preparedStatement.setString(3, "aquarius");
+            preparedStatement.executeUpdate();
+
+            //2. insert czcs mission info
+            preparedStatement.setString(1, "CZCS");
+            preparedStatement.setString(2, "CZCS");
+            preparedStatement.setString(3, "czcs");
+            preparedStatement.executeUpdate();
+
+            //3. insert hico mission info
+            preparedStatement.setString(1, "HICO");
+            preparedStatement.setString(2, "HICO");
+            preparedStatement.setString(3, "hico");
+            preparedStatement.executeUpdate();
+
+            //4. insert goci mission info
+            preparedStatement.setString(1, "GOCI");
+            preparedStatement.setString(2, "GOCI");
+            preparedStatement.setString(3, "goci");
+            preparedStatement.executeUpdate();
+
+            //5. insert meris mission info
+            preparedStatement.setString(1, "MERIS");
+            preparedStatement.setString(2, "MERIS");
+            preparedStatement.setString(3, "meris");
+            preparedStatement.executeUpdate();
+
+            //6. insert modis aqua mission info
+            preparedStatement.setString(1, "MODISA");
+            preparedStatement.setString(2, "MODIS Aqua AQUA MODISA");
+            preparedStatement.setString(3, "hmodisa");
+            preparedStatement.executeUpdate();
+
+            //7. insert modis terra mission info
+            preparedStatement.setString(1, "MODIST");
+            preparedStatement.setString(2, "MODIS Terra TERRA MODIST");
+            preparedStatement.setString(3, "hmodist");
+            preparedStatement.executeUpdate();
+
+            //8. insert mos mission info
+            preparedStatement.setString(1, "MOS");
+            preparedStatement.setString(2, "MOS");
+            preparedStatement.setString(3, "mos");
+            preparedStatement.executeUpdate();
+
+            //9. insert octs mission info
+            preparedStatement.setString(1, "OCTS");
+            preparedStatement.setString(2, "OCTS");
+            preparedStatement.setString(3, "octs");
+            preparedStatement.executeUpdate();
+
+            //10. insert osmi mission info
+            preparedStatement.setString(1, "OSMI");
+            preparedStatement.setString(2, "OSMI");
+            preparedStatement.setString(3, "osmi");
+            preparedStatement.executeUpdate();
+
+            //11. insert seawifs mission info
+            preparedStatement.setString(1, "SEAWIFS");
+            preparedStatement.setString(2, "SEAWIFS SeaWiFS");
+            preparedStatement.setString(3, "seawifs");
+            preparedStatement.executeUpdate();
+
+            //12. insert viirs mission info
+            preparedStatement.setString(1, "VIIRS");
+            preparedStatement.setString(2, "VIIRS VIIRSN");
+            preparedStatement.setString(3, "viirsn");
+            preparedStatement.executeUpdate();
+
+            //13. insert ocm1 mission info
+            preparedStatement.setString(1, "OCM1");
+            preparedStatement.setString(2, "OCM1");
+            preparedStatement.setString(3, "ocm1");
+            preparedStatement.executeUpdate();
+
+            //14. insert ocm2 mission info
+            preparedStatement.setString(1, "OCM2");
+            preparedStatement.setString(2, "OCM2");
+            preparedStatement.setString(3, "ocm2");
+            preparedStatement.executeUpdate();
+
+            //15. insert oli mission info
+            preparedStatement.setString(1, "OLI");
+            preparedStatement.setString(2, "OLI");
+            preparedStatement.setString(3, "oli");
+            preparedStatement.executeUpdate();
+
+            stmt.close();
+            preparedStatement.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Tables created successfully");
+
+    }
+
+    public static String retrieveMissionDir(String missionName) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        Statement statement = null;
+        String commonQueryString = "SELECT * FROM MISSION_TABLE WHERE MISSION_ID = ?";
+
+        String missionDir = null;
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM MISSION_TABLE;");
+            while (rs.next()) {
+                String missionNames = rs.getString("MISSION_NAMES");
+                System.out.println("MISSION NAMES = " + missionNames);
+                if (missionNames.contains(missionName)) {
+                    missionDir = rs.getString("MISSION_DIR");
+                    System.out.println("MISSION DIR = " + missionDir);
+                    break;
+                }
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+
+       return missionDir;
     }
 
     public static void insertJob(String jobId, String clientId, String processorID, String status, String cmdArray) {
@@ -172,11 +370,11 @@ public class SQLiteJDBC {
         System.out.println("Operation done successfully");
     }
 
-    public static String retrieveItem(String jobId, String itemName) {
+    public static String retrieveItem(String tableName, String searchKey, String itemName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
-        String commonQueryString = "SELECT * FROM FILE_TABLE WHERE JOB_ID = ?";
+        String commonQueryString = "SELECT * FROM " + tableName + " WHERE JOB_ID = ?";
 
         String retrievedItem = null;
 
@@ -189,7 +387,7 @@ public class SQLiteJDBC {
             preparedStatement = connection.prepareStatement(commonQueryString);
 
             //preparedStatement.setString(1, itemName);
-            preparedStatement.setString(1, jobId);
+            preparedStatement.setString(1, searchKey);
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -348,6 +546,7 @@ public class SQLiteJDBC {
         }
         System.out.println("Operation done successfully");
     }
+
     public static void insertFileType(String jobId, String fileType) {
 
         Connection connection = null;
@@ -427,7 +626,10 @@ public class SQLiteJDBC {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
-        String insertTableSQL = "INSERT INTO FILE_TABLE " + " (JOB_ID, MISSION_NAME) VALUES (" + "?, ?)";
+        String missionDir = retrieveMissionDir(missionName);
+
+        String insertMissionNameSQL = "INSERT INTO FILE_TABLE " + " (JOB_ID, MISSION_NAME) VALUES (" + "?, ?)";
+        String updateMissionTableSQL = "UPDATE FILE_TABLE set MISSION_DIR = ? where JOB_ID = ?";
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);
@@ -435,18 +637,22 @@ public class SQLiteJDBC {
             connection.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
-
-            preparedStatement = connection.prepareStatement(insertTableSQL);
-
+            //insert mission_name
+            preparedStatement = connection.prepareStatement(insertMissionNameSQL);
             preparedStatement.setString(1, jobId);
             preparedStatement.setString(2, missionName);
-
-            // execute insert SQL stetement
             int exitCode = preparedStatement.executeUpdate();
+
+            //insert mission_dir
+            preparedStatement = connection.prepareStatement(updateMissionTableSQL);
+            preparedStatement.setString(1, missionDir);
+            preparedStatement.setString(2, jobId);
+            exitCode = preparedStatement.executeUpdate();
 
             connection.commit();
 
-            System.out.println("Mission Name is " + (exitCode == 1 ? "" : "not") + " inserted into FILE_TABLE table!");
+            System.out.println("mission_name and mission_dir are " + (exitCode == 1 ? "" : "not") + " inserted into FILE_TABLE table!");
+
             preparedStatement.close();
             connection.close();
         } catch (SQLException e) {
@@ -464,7 +670,8 @@ public class SQLiteJDBC {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
-        String updateTableSQL = "UPDATE FILE_TABLE set MISSION_NAME = ? where JOB_ID = ?";
+        String updateMissionNameSQL = "UPDATE FILE_TABLE set MISSION_NAME = ? where JOB_ID = ?";
+        String updateMissionDirSQL = "UPDATE FILE_TABLE set MISSION_DIR = ? where JOB_ID = ?";
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);
@@ -473,7 +680,7 @@ public class SQLiteJDBC {
             System.out.println("Opened database successfully");
 
 
-            preparedStatement = connection.prepareStatement(updateTableSQL);
+            preparedStatement = connection.prepareStatement(updateMissionNameSQL);
 
             preparedStatement.setString(1, missionName);
             preparedStatement.setString(2, jobId);

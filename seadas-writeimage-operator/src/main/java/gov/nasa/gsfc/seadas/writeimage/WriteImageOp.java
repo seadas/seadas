@@ -14,6 +14,9 @@ import com.bc.ceres.grender.support.BufferedImageRendering;
 import com.bc.ceres.grender.support.DefaultViewport;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
+import gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction;
+import gov.nasa.gsfc.seadas.contour.data.ContourData;
+import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
@@ -27,6 +30,7 @@ import org.esa.beam.framework.ui.application.ApplicationDescriptor;
 import org.esa.beam.framework.ui.application.support.DefaultApplicationDescriptor;
 import org.esa.beam.framework.ui.product.ProductSceneImage;
 import org.esa.beam.framework.ui.product.ProductSceneView;
+import org.esa.beam.framework.ui.product.VectorDataLayerFilterFactory;
 import org.esa.beam.glayer.ColorBarLayerType;
 import org.esa.beam.glayer.GraticuleLayer;
 import org.esa.beam.glayer.GraticuleLayerType;
@@ -35,6 +39,7 @@ import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.PropertyMap;
 import org.esa.beam.util.geotiff.GeoTIFF;
 import org.esa.beam.util.geotiff.GeoTIFFMetadata;
+import org.esa.beam.util.math.MathUtils;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.ShowColorBarOverlayAction;
 import org.slf4j.Logger;
@@ -42,6 +47,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.media.jai.JAI;
 import javax.media.jai.operator.BandSelectDescriptor;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -52,7 +58,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -72,6 +82,9 @@ public class WriteImageOp extends Operator {
             "GeoTIFF", "tif,tiff", "GeoTIFF - TIFF with geo-location"
     };
 
+    private int imageWidth;
+    private int imageHeight;
+    double heightWidthRatio;
 
     /**
      * Service Provider Interface
@@ -127,7 +140,7 @@ public class WriteImageOp extends Operator {
 
     /**
      * From API docs:
-     * <p/>
+     * <p>
      * The left (at index 0) and right (at index 1) normalized areas of the raster data histogram to
      * be excluded when determining the value range for a linear constrast stretching. Can be null,
      * in this case {0.01, 0.04} resp. 5% of the entire area is skipped.
@@ -244,19 +257,6 @@ public class WriteImageOp extends Operator {
 
             debug.append("\n CPD Auto Distribute=" + this.cpdAutoDistribute);
 
-//            final Stx stx = band.getStx();
-//
-//            double minSample = stx.getMinimum();
-//            double maxSample = stx.getMaximum();
-//
-//
-//
-//            // because min cannot be negative for LOG scaling
-//            if (isLog && minSample < 0) {
-//                minSample = colourScaleMin;
-//                maxSample = colourScaleMax;
-//            }
-
             double minSample = colourScaleMin;
             double maxSample = colourScaleMax;
 
@@ -303,8 +303,8 @@ public class WriteImageOp extends Operator {
         final StringBuilder debug = new StringBuilder();
         debug.append("\n====\n");
 
-        ApplicationDescriptor ad = new DefaultApplicationDescriptor();
-        VisatApp visatApp = new VisatApp(ad);
+//        ApplicationDescriptor ad = new DefaultApplicationDescriptor();
+//        VisatApp visatApp = new VisatApp(ad);
         PropertyMap configuration = new PropertyMap();
         ProductSceneImage productSceneImage = new ProductSceneImage(sourceBand, configuration, this.pm);
         ProductSceneView productSceneView = new ProductSceneView(productSceneImage);
@@ -314,45 +314,50 @@ public class WriteImageOp extends Operator {
         final File file2 = new File(filePath2);
         final File file3 = new File(filePath3);
         String imageFormat = "PNG";
-//
-//         ExportImageAction eiAction = new ExportImageAction();
-//        eiAction.exportImage(visatApp, imageFormat, productSceneView, entireImageSelected, file);
+
         write3(imageFormat, productSceneView, entireImageSelected, file1);
 
-        final LayerCanvas layerCanvas = productSceneView.getLayerCanvas();
-        layerCanvas.getViewport().setZoomFactor(layerCanvas.getDefaultZoomFactor());
-
-        ArrayList<Layer> layers = new ArrayList<>();
-
-        Layer colorBarLayer = getColorBarLayer(productSceneView);
-
-        if (colorBarLayer != null) {
-            layers.add(colorBarLayer);
-            debug.append("ColorBarLayer is added to the image \n");
-        }
-        Layer graticuleLayer = getGraticuleLayer(sourceBand);
-        if (graticuleLayer != null) {
-            layers.add(graticuleLayer);
-
-            debug.append("GraticuleLayer is added to the image \n" + graticuleLayer.getTransparency());
-        }
+//
+//        ArrayList<Layer> layers = new ArrayList<>();
+//
+//        Layer colorBarLayer = getColorBarLayer(productSceneView);
+//
+//        if (colorBarLayer != null) {
+//            layers.add(colorBarLayer);
+//            debug.append("ColorBarLayer is added to the image \n");
+//        }
+//        Layer graticuleLayer = getGraticuleLayer(sourceBand);
+//        if (graticuleLayer != null) {
+//            layers.add(graticuleLayer);
+//
+//            debug.append("GraticuleLayer is added to the image \n" + graticuleLayer.getTransparency());
+//        }
 
         productSceneView.setGraticuleOverlayEnabled(true);
-        productSceneView.getSceneImage().addLayer(0, graticuleLayer);
-        productSceneView.updateImage();
+//        productSceneView.getSceneImage().addLayer(0, graticuleLayer);
+//        productSceneView.updateImage();
 
 
         write3(imageFormat, productSceneView, entireImageSelected, file2);
 
-        RenderedImage sourceImage = createImage(imageFormat, productSceneView);
+        getContourLayer(productSceneView, sourceBand);
 
-        //ImageLayer finalImageLayer = addLayer(sourceImage, layers);
-        RenderedImage finalImage = addLayers(sourceImage, layers);
+        write3(imageFormat, productSceneView, entireImageSelected, file3);
 
-
-        writeImage(imageFormat, finalImage, productSceneView, entireImageSelected, file3);
+//        RenderedImage sourceImage = createImage(imageFormat, productSceneView);
+//
+//        //ImageLayer finalImageLayer = addLayer(sourceImage, layers);
+//        RenderedImage finalImage = addLayers(sourceImage, layers);
+//
+//
+//        writeImage(imageFormat, finalImage, productSceneView, entireImageSelected, file3);
 
         System.out.println(debug.toString());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        //get current date time with Date()
+        Date date = new Date();
+        System.out.println(dateFormat.format(date));
+
 
     }
 
@@ -420,8 +425,10 @@ public class WriteImageOp extends Operator {
         final boolean useAlpha = !BMP_FORMAT_DESCRIPTION[0].equals(imageFormat) && !JPEG_FORMAT_DESCRIPTION[0].equals(imageFormat);
         final boolean entireImage = true;
         //TODO this needs to be changed to the actual image dimension.
-        Dimension dimension = new Dimension(view.getPreferredSize());
-        System.out.println("Dimension: " + dimension.height + " " + dimension.width);
+        Dimension dimension = new Dimension(getImageDimensions(view, entireImage));
+        System.out.println("Dimension: " + dimension.width + " " + dimension.height);
+        dimension = new Dimension(1002, 802);
+        System.out.println("Dimension: " + dimension.width + " " + dimension.height);
         return createImage(view, entireImage, dimension, useAlpha,
                 GEOTIFF_FORMAT_DESCRIPTION[0].equals(imageFormat));
     }
@@ -446,10 +453,26 @@ public class WriteImageOp extends Operator {
     private static BufferedImageRendering createRendering(ProductSceneView view, boolean fullScene,
                                                           boolean geoReferenced, BufferedImage bufferedImage) {
         final Viewport vp1 = view.getLayerCanvas().getViewport();
-        final Viewport vp2 = new DefaultViewport(new Rectangle(bufferedImage.getWidth(), bufferedImage.getHeight()),
+        //vp1.setViewBounds(new Rectangle(0, 60, 2000, 2000));
+        System.out.println(" vp1  " + vp1.getViewBounds().getHeight() + "   " + vp1.getViewBounds().getWidth() + " " + vp1.isModelYAxisDown());
+        System.out.println("vp1 zoom factor: " + vp1.getZoomFactor());
+        System.out.println("vp1 view bounds X and Y: " + vp1.getViewBounds().getX() + " " + vp1.getViewBounds().getY());
+        final Viewport vp2 = new DefaultViewport(new Rectangle(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight()),
                 vp1.isModelYAxisDown());
+        System.out.println(" vp2  " + vp2.getViewBounds().getWidth() + "   " + vp2.getViewBounds().getHeight() + " " + vp2.isModelYAxisDown());
+        System.out.println("vp2 zoom factor: " + vp2.getZoomFactor());
+        System.out.println("vp2 model to view transform: " + vp2.getModelToViewTransform().toString());
+        System.out.println("vp2 model to view transform: " + vp2.getViewToModelTransform().toString());
+        System.out.println("vp2 view bounds X and Y: " + vp2.getViewBounds().getX() + " " + vp2.getViewBounds().getY());
         if (fullScene) {
-            vp2.zoom(view.getBaseImageLayer().getModelBounds());
+            System.out.println("model bounds: " + view.getBaseImageLayer().getModelBounds().getWidth() + "  " + view.getBaseImageLayer().getModelBounds().getHeight());
+            System.out.println("model bounds X and Y: " + view.getBaseImageLayer().getModelBounds().getX() + "  " + view.getBaseImageLayer().getModelBounds().getY());
+            System.out.println("model bounds X and Y: " + view.getBaseImageLayer().getModelBounds().getCenterX() + "  " + view.getBaseImageLayer().getModelBounds().getCenterY());
+            //view.getBaseImageLayer().getModelBounds().setRect(143, -28, 12, 9);
+            //vp2.setViewBounds(new Rectangle(1002, 802));
+            //vp2.zoom(view.getBaseImageLayer().getModelBounds());
+            vp2.zoom(new Rectangle(143, -28, 15, 12));
+            //vp2.setViewBounds(new Rectangle(1139, 979));
         } else {
             setTransform(vp1, vp2);
         }
@@ -534,8 +557,6 @@ public class WriteImageOp extends Operator {
         RenderedImage outputImage = rendering.getImage();
 
         return outputImage;
-
-        //return imageLayer;
     }
 
     private Layer getGraticuleLayer(Band band) {
@@ -606,5 +627,67 @@ public class WriteImageOp extends Operator {
 //        return coastlineLayer;
 //    }
 
+    public Dimension getImageDimensions(ProductSceneView view, boolean full) {
+        final Rectangle2D bounds;
+        if (full) {
+            final ImageLayer imageLayer = view.getBaseImageLayer();
+            final Rectangle2D modelBounds = imageLayer.getModelBounds();
+            Rectangle2D imageBounds = imageLayer.getModelToImageTransform().createTransformedShape(modelBounds).getBounds2D();
 
+            final double mScale = modelBounds.getWidth() / modelBounds.getHeight();
+            final double iScale = imageBounds.getHeight() / imageBounds.getWidth();
+            double scaleFactorX = mScale * iScale;
+            bounds = new Rectangle2D.Double(0, 0, scaleFactorX * imageBounds.getWidth(), 1 * imageBounds.getHeight());
+        } else {
+            bounds = view.getLayerCanvas().getViewport().getViewBounds();
+        }
+
+        imageWidth = toInteger(bounds.getWidth());
+        imageHeight = toInteger(bounds.getHeight());
+
+        heightWidthRatio = (double) imageHeight / (double) imageWidth;
+        return new Dimension(imageWidth, imageHeight);
+    }
+
+    private void getContourLayer(ProductSceneView productSceneView, Band sourceBand) {
+        ContourInterval ci = new ContourInterval("contour_test_line_", 0.08, "am5", 1);
+        ArrayList<ContourInterval> contourIntervals = new ArrayList<>();
+        contourIntervals.add(ci);
+        ContourData contourData = new ContourData(sourceBand, "am5", sourceBandName, 1);
+        contourData.setContourIntervals(contourIntervals);
+        contourData.setBand(sourceBand);
+
+        ShowVectorContourOverlayAction action = new ShowVectorContourOverlayAction();
+        action.setGeoCoding((GeoCoding) sourceProduct.getGeoCoding());
+        ArrayList<VectorDataNode> vectorDataNodes = action.createVectorDataNodesforContours(contourData);
+
+        for (VectorDataNode vectorDataNode : vectorDataNodes) {
+
+            // remove the old vector data node with the same name.
+            if (sourceProduct.getVectorDataGroup().contains(vectorDataNode.getName())) {
+                sourceProduct.getVectorDataGroup().remove(sourceProduct.getVectorDataGroup().get(vectorDataNode.getName()));
+            }
+            sourceProduct.getVectorDataGroup().add(vectorDataNode);
+            if (productSceneView != null) {
+                //productSceneView.getRootLayer().getChildren().add(vectorDataNode);
+                productSceneView.setLayersVisible(vectorDataNode);
+            }
+            final LayerFilter nodeFilter = VectorDataLayerFilterFactory.createNodeFilter(vectorDataNode);
+            Layer vectorDataLayer = LayerUtils.getChildLayer(productSceneView.getRootLayer(),
+                    LayerUtils.SEARCH_DEEP,
+                    nodeFilter);
+            if (vectorDataLayer != null) {
+                System.out.println("vector data layer is not null");
+                vectorDataLayer.setVisible(true);
+            } else {
+                System.out.println("vector data layer is null "  + vectorDataNode.toString());
+            }
+
+        }
+
+    }
+
+    private int toInteger(double value) {
+        return MathUtils.floorInt(value);
+    }
 }
