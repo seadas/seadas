@@ -30,6 +30,7 @@ import org.esa.beam.framework.ui.application.ApplicationDescriptor;
 import org.esa.beam.framework.ui.application.support.DefaultApplicationDescriptor;
 import org.esa.beam.framework.ui.product.ProductSceneImage;
 import org.esa.beam.framework.ui.product.ProductSceneView;
+import org.esa.beam.framework.ui.product.VectorDataLayer;
 import org.esa.beam.framework.ui.product.VectorDataLayerFilterFactory;
 import org.esa.beam.glayer.ColorBarLayerType;
 import org.esa.beam.glayer.GraticuleLayer;
@@ -649,7 +650,9 @@ public class WriteImageOp extends Operator {
         return new Dimension(imageWidth, imageHeight);
     }
 
-    private void getContourLayer(ProductSceneView productSceneView, Band sourceBand) {
+    public void getContourLayer(ProductSceneView productSceneView, Band sourceBand) {
+        productSceneView.setGcpOverlayEnabled(true);
+        Product sourceProduct = productSceneView.getProduct();
         ContourInterval ci = new ContourInterval("contour_test_line_", 0.08, "am5", 1);
         ArrayList<ContourInterval> contourIntervals = new ArrayList<>();
         contourIntervals.add(ci);
@@ -661,21 +664,36 @@ public class WriteImageOp extends Operator {
         action.setGeoCoding((GeoCoding) sourceProduct.getGeoCoding());
         ArrayList<VectorDataNode> vectorDataNodes = action.createVectorDataNodesforContours(contourData);
 
-        for (VectorDataNode vectorDataNode : vectorDataNodes) {
 
+        for (VectorDataNode vectorDataNode : vectorDataNodes) {
+            System.out.println("vector data " + vectorDataNode.toString());
             // remove the old vector data node with the same name.
             if (sourceProduct.getVectorDataGroup().contains(vectorDataNode.getName())) {
                 sourceProduct.getVectorDataGroup().remove(sourceProduct.getVectorDataGroup().get(vectorDataNode.getName()));
             }
-            sourceProduct.getVectorDataGroup().add(vectorDataNode);
+            //sourceProduct.getVectorDataGroup().add(vectorDataNode);
+            productSceneView.getProduct().getVectorDataGroup().add(vectorDataNode);
             if (productSceneView != null) {
                 //productSceneView.getRootLayer().getChildren().add(vectorDataNode);
                 productSceneView.setLayersVisible(vectorDataNode);
             }
             final LayerFilter nodeFilter = VectorDataLayerFilterFactory.createNodeFilter(vectorDataNode);
+            System.out.println("vector filter " + nodeFilter.toString());
+
+
             Layer vectorDataLayer = LayerUtils.getChildLayer(productSceneView.getRootLayer(),
                     LayerUtils.SEARCH_DEEP,
                     nodeFilter);
+            List<Layer> children = productSceneView.getRootLayer().getChildren();
+
+            for (Layer childLayer:children) {
+                //System.out.println("layer height :  " + childLayer.getModelBounds().getHeight());
+                System.out.println("child layer name : " + childLayer.getName());
+//                Layer grandchildren = (Layer) childLayer.getChildren();
+//                if(grandchildren!=null) {
+//                    System.out.println("grand child layer name : " + grandchildren.getName());
+//                }
+            }
             if (vectorDataLayer != null) {
                 System.out.println("vector data layer is not null");
                 vectorDataLayer.setVisible(true);
@@ -686,7 +704,6 @@ public class WriteImageOp extends Operator {
         }
 
     }
-
     private int toInteger(double value) {
         return MathUtils.floorInt(value);
     }
