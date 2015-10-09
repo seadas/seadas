@@ -12,6 +12,8 @@ import com.bc.ceres.glayer.swing.LayerCanvas;
 import com.bc.ceres.grender.Viewport;
 import com.bc.ceres.grender.support.BufferedImageRendering;
 import com.bc.ceres.grender.support.DefaultViewport;
+import com.bc.ceres.swing.figure.Figure;
+import com.bc.ceres.swing.figure.FigureCollection;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
 import gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction;
@@ -28,10 +30,7 @@ import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
 import org.esa.beam.framework.ui.application.support.DefaultApplicationDescriptor;
-import org.esa.beam.framework.ui.product.ProductSceneImage;
-import org.esa.beam.framework.ui.product.ProductSceneView;
-import org.esa.beam.framework.ui.product.VectorDataLayer;
-import org.esa.beam.framework.ui.product.VectorDataLayerFilterFactory;
+import org.esa.beam.framework.ui.product.*;
 import org.esa.beam.glayer.ColorBarLayerType;
 import org.esa.beam.glayer.GraticuleLayer;
 import org.esa.beam.glayer.GraticuleLayerType;
@@ -43,6 +42,7 @@ import org.esa.beam.util.geotiff.GeoTIFFMetadata;
 import org.esa.beam.util.math.MathUtils;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.ShowColorBarOverlayAction;
+import org.opengis.feature.simple.SimpleFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,6 +120,9 @@ public class WriteImageOp extends Operator {
 
     @Parameter(description = "The file to which the image 3 is written.")
     private String filePath3;
+
+    @Parameter(description = "The file to which the image 4 is written.")
+    private String filePath4;
 
     @Parameter(description = "Output image format", defaultValue = "png")
     private String formatName;
@@ -314,6 +317,7 @@ public class WriteImageOp extends Operator {
         final File file1 = new File(filePath1);
         final File file2 = new File(filePath2);
         final File file3 = new File(filePath3);
+        final File file4 = new File(filePath4);
         String imageFormat = "PNG";
 
         write3(imageFormat, productSceneView, entireImageSelected, file1);
@@ -344,6 +348,10 @@ public class WriteImageOp extends Operator {
         getContourLayer(productSceneView, sourceBand);
 
         write3(imageFormat, productSceneView, entireImageSelected, file3);
+
+        addTextAnnotationLayer(productSceneView);
+
+        write3(imageFormat, productSceneView, entireImageSelected, file4);
 
 //        RenderedImage sourceImage = createImage(imageFormat, productSceneView);
 //
@@ -704,6 +712,42 @@ public class WriteImageOp extends Operator {
         }
 
     }
+
+    public void addTextAnnotationLayer(ProductSceneView productSceneView) {
+
+        Product sourceProduct = productSceneView.getProduct();
+
+        TextAnnotationDescriptor descriptor = TextAnnotationDescriptor.getInstance();
+        System.out.println("descriptor " + descriptor.toString());
+
+        Rectangle data_bounds = sourceProduct.getBandAt(0).getGeophysicalImage().getBounds();
+        PixelPos pixelPos = new PixelPos((float) Math.random() * data_bounds.width,
+                (float) Math.random() * data_bounds.height);
+        GeoCoding geoCoding = sourceProduct.getGeoCoding();
+        GeoPos geoPos = geoCoding.getGeoPos(pixelPos, null);
+        Placemark textAnnotation1 = Placemark.createPointPlacemark(descriptor, "ta_1", "text annotation!", "This won't show!", pixelPos, geoPos, geoCoding);
+        sourceProduct.getTextAnnotationGroup().add(textAnnotation1);
+
+        //These can be specified in the xml file
+        Font textFont = new Font("Helvetica", Font.PLAIN, 11);
+        Color textColor = Color.YELLOW;
+        Color textOutlineColor = Color.BLACK;
+        setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
+        productSceneView.setPinOverlayEnabled(true);
+        setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
+    }
+
+    private void setTextAnnotationFont(ProductSceneView productSceneView, Font textFont, Color textColor, Color textOutlineColor) {
+        final FigureCollection figureCollection = productSceneView.getFigureEditor().getFigureCollection();
+        final Figure[] figures = figureCollection.getFigures();
+        for (Figure figure : figures) {
+            if (figure instanceof SimpleFeaturePointFigure) {
+                ((SimpleFeaturePointFigure) figure).updateFontColor(textFont, textColor, textOutlineColor);
+            }
+        }
+    }
+
+
     private int toInteger(double value) {
         return MathUtils.floorInt(value);
     }
