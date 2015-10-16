@@ -34,6 +34,7 @@ import org.esa.beam.framework.ui.product.*;
 import org.esa.beam.glayer.ColorBarLayerType;
 import org.esa.beam.glayer.GraticuleLayer;
 import org.esa.beam.glayer.GraticuleLayerType;
+import org.esa.beam.glayer.MaskLayerType;
 import org.esa.beam.jai.ImageManager;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.PropertyMap;
@@ -360,7 +361,10 @@ public class WriteImageOp extends Operator {
 //
 //
 //        writeImage(imageFormat, finalImage, productSceneView, entireImageSelected, file3);
-
+        sourceProduct.getMaskGroup().add(0, Mask.BandMathsType.create("mask", "test", sourceBand.getRasterWidth(), sourceBand.getRasterHeight(), "'" + sourceBandName + "'<0 ? 0 : 1", new Color(110, 110, 110), 0));
+        productSceneView.getSceneImage().getMaskCollectionLayer(true).getChildren().add(getMaskLayer(sourceProduct.getMaskGroup().get(0)));
+        productSceneView.setMaskOverlayEnabled(true);
+        write3(imageFormat, productSceneView, entireImageSelected, file4);
         System.out.println(debug.toString());
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         //get current date time with Date()
@@ -626,15 +630,13 @@ public class WriteImageOp extends Operator {
         return colorBarLayer;
     }
 
-//    private Layer getMaskLayer(Band band){
-//        MaskLayerType maskLayerType = LayerTypeRegistry.getLayerType(MaskLayerType.class);
-//        PropertySet configuration = maskLayerType.createLayerConfig(null);
-//        Mask.BandMathsType.create("coast", "", band.getSceneRasterWidth(), band.getSceneRasterHeight(), "l1_flags.COASTLINE", Color.black, 0);
-//        Mask coastlineMask = maskLayerType.createLayer(ctx, configuration);
-//        configuration.setValue(MaskLayerType.PROPERTY_NAME_MASK, coastlineMask);
-//        Layer coastlineLayer = maskLayerType.createLayer(null, configuration);
-//        return coastlineLayer;
-//    }
+    private Layer getMaskLayer(Mask mask){
+        MaskLayerType maskLayerType = LayerTypeRegistry.getLayerType(MaskLayerType.class);
+        PropertySet configuration = maskLayerType.createLayerConfig(null);
+        configuration.setValue(MaskLayerType.PROPERTY_NAME_MASK, mask);
+        Layer landMaskLayer = maskLayerType.createLayer(null, configuration);
+        return landMaskLayer;
+    }
 
     public Dimension getImageDimensions(ProductSceneView view, boolean full) {
         final Rectangle2D bounds;
