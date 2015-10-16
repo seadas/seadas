@@ -36,13 +36,13 @@ class LandMasksData {
     private double waterMaskTransparency = 0.5;
     private double coastlineMaskTransparency = 0.0;
 
-    private boolean showLandMaskAllBands = false;
+    private boolean showLandMaskAllBands = true;
     private boolean showWaterMaskAllBands = false;
     private boolean showCoastlineMaskAllBands = true;
 
-    private Color landMaskColor = new Color(100, 49, 12);
-    private Color waterMaskColor = new Color(0, 0, 255);
-    private Color coastlineMaskColor = new Color(192, 192, 192);
+    private Color landMaskColor = new Color(70, 70, 70);
+    private Color waterMaskColor = new Color(0, 125, 255);
+    private Color coastlineMaskColor = new Color(0, 0, 0);
 
 
     private String waterFractionBandName = "mask_data_water_fraction";
@@ -50,17 +50,17 @@ class LandMasksData {
 
     private String landMaskName = "LandMask";
     private String landMaskMath = getWaterFractionBandName() + " == 0";
-    private String landMaskDescription = "Land pixels";
+    private String landMaskDescription = "Land masked pixels";
 
 
-    private String coastlineMaskName = "CoastLine";
+    private String coastlineMaskName = "CoastlineMask";
     private String coastlineMath = getWaterFractionSmoothedName() + " > 25 and " + getWaterFractionSmoothedName() + " < 75";
-    private String coastlineMaskDescription = "Coastline pixels";
+    private String coastlineMaskDescription = "Coastline masked pixels";
 
 
     private String waterMaskName = "WaterMask";
     private String waterMaskMath = getWaterFractionBandName() + " > 0";
-    private String waterMaskDescription = "Water pixels";
+    private String waterMaskDescription = "Water masked pixels";
 
 
     private ArrayList<SourceFileInfo> sourceFileInfos = new ArrayList<SourceFileInfo>();
