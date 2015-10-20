@@ -67,7 +67,7 @@
         </option>
         <option type="ifile">
             <name>ifile</name>
-            <value>A20021852012031.L3b_CU_SST.main</value>
+            <value></value>
             <source>command line</source>
             <description>input L3 bin file name</description>
             <usedAs>option</usedAs>
@@ -84,12 +84,55 @@
         </option>
         <option type="string">
             <name>product</name>
-            <value>myprod</value>
-            <default>myprod</default>
+            <value></value>
+            <default></default>
             <source>default</source>
             <description>product(s) to map</description>
             <usedAs>option</usedAs>
             <order>2</order>
+        </option>
+        <option type="string">
+            <name>projection</name>
+            <value>platecarree</value>
+            <default>platecarree</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>smi</value>
+                    <description><![CDATA[Standard Mapped image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lat_0=<central_meridian>"]]></description>
+                </validValue>
+                <validValue>
+                    <value>platecarree</value>
+                    <description><![CDATA[ Plate Carree image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lat_0=<central_meridian>"]]></description>
+                </validValue>
+                <validValue>
+                    <value>mollweide</value>
+                    <description><![CDATA[Mollweide projection projection="+proj=moll +lat_0=<central_meridian>"]]></description>
+                </validValue>
+                <validValue>
+                    <value>lambert</value>
+                    <description><![CDATA[Lambert conformal conic projection, uses central_meridian, projection="+proj=lcc +lat_0=<central_meridian>"]]></description>
+                </validValue>
+                <validValue>
+                    <value>albersconic</value>
+                    <description><![CDATA[Albers equal-area conic projection, uses central_meridian projection="+proj=aea +lat_0=<central_meridian>"]]></description>
+                </validValue>
+                <validValue>
+                    <value>mercator</value>
+                    <description><![CDATA[ Mercator cylindrical map projection, uses central_meridian projection="+proj=merc +lat_0=<central_meridian>"]]></description>
+                </validValue>
+                <validValue>
+                    <value>ease2</value>
+                    <description><![CDATA[Ease Grid 2 projection, uses central_meridian,  projection="+proj=cea +lon_0=0 +lat_ts=30 +ellps=WGS84 +datum=WGS84 +units=m +lat_0=<central_meridian>"]]></description>
+                </validValue>
+                <validValue>
+                    <value>raw</value>
+                    <description>raw dump of the bin file</description>
+                </validValue>
+            </validValues>
+            <description>proj.4 projection string or one of the following predefined projections:</description>
+            <usedAs>option</usedAs>
+            <order>3</order>
         </option>
         <option type="string">
             <name>resolution</name>
@@ -145,98 +188,10 @@
                     <value>land</value>
                     <description>8640 x 4320</description>
                 </validValue>
-                <!--<validValue>-->
-                    <!--<value>#.#</value>-->
-                    <!--<description>width of a pixel in meters</description>-->
-                <!--</validValue>-->
-                <!--<validValue>-->
-                    <!--<value>#.#km</value>-->
-                    <!--<description>width of a pixel in kilometers</description>-->
-                <!--</validValue>-->
-                <!--<validValue>-->
-                    <!--<value>#.#deg</value>-->
-                    <!--<description>width of a pixel in degrees</description>-->
-                <!--</validValue>-->
             </validValues>
             <description>size of the output pixel in meters or SMI dimensions</description>
             <usedAs>option</usedAs>
-            <order>3</order>
-        </option>
-        <option type="string">
-            <name>oformat</name>
-            <value>netCDF4</value>
-            <default>netCDF4</default>
-            <source>default</source>
-            <validValues>
-                <validValue>
-                    <value>netCDF4</value>
-                    <description>netCDF file, can contain more than one product</description>
-                </validValue>
-                <validValue>
-                    <value>hdf4</value>
-                    <description>HDF4 file (old SMI format)</description>
-                </validValue>
-                <validValue>
-                    <value>png</value>
-                    <description>PNG image file</description>
-                </validValue>
-                <validValue>
-                    <value>ppm</value>
-                    <description>PPM image file</description>
-                </validValue>
-                <validValue>
-                    <value>geoTIFF</value>
-                    <description>TIFF file with georeference tags</description>
-                </validValue>
-            </validValues>
-            <description>output file format</description>
-            <usedAs>option</usedAs>
             <order>4</order>
-        </option>
-        <!--<option type="ofile">-->
-            <!--<name>ofile2</name>-->
-            <!--<value/>-->
-            <!--<source>default</source>-->
-            <!--<description>output2 filename</description>-->
-        <!--</option>-->
-        <!--<option type="string">-->
-            <!--<name>oformat2</name>-->
-            <!--<value></value>-->
-            <!--<default>png</default>-->
-            <!--<source>default</source>-->
-            <!--<description>output2 file format</description>-->
-        <!--</option>-->
-        <option type="string">
-            <name>projection</name>
-            <value>smi</value>
-            <default>smi</default>
-            <source>default</source>
-            <validValues>
-                <validValue>
-                    <value>smi</value>
-                    <description><![CDATA[Standard Mapped image, cylindrical projection, uses central_meridian projection="+proj=eqc +lat_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>mollweide</value>
-                    <description><![CDATA[Mollweide projection projection="+proj=moll +lat_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>raw</value>
-                    <description>raw dump of the bin file</description>
-                </validValue>
-            </validValues>
-            <description>proj.4 projection string or one of the following predefined projections:</description>
-            <usedAs>option</usedAs>
-            <order>5</order>
-        </option>
-        <option type="float">
-            <name>central_meridian</name>
-            <value></value>
-            <default>0</default>
-            <source>default</source>
-            <description>central meridian for projection in deg east.  Only used for smi, mollweide and raw projection</description>
-            <usedAs>option</usedAs>
-            <order>6</order>
         </option>
         <option type="string">
             <name>interp</name>
@@ -254,12 +209,21 @@
                 </validValue>
                 <validValue>
                     <value>area</value>
-                    <description>bin weighted by area all of the pixels that intersect the area of the output pixel</description>
+                    <description>bin weighted by area of all the pixels that intersect the area of the output pixel</description>
                 </validValue>
             </validValues>
             <description>interpolation method:</description>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>5</order>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <default>Unspecified</default>
+            <source>default</source>
+            <description>processing version string</description>
+            <usedAs>option</usedAs>
+            <order>6</order>
         </option>
         <option type="float">
             <name>north</name>
@@ -268,7 +232,7 @@
             <source>default</source>
             <description>Northern most Latitude</description>
             <usedAs>option</usedAs>
-            <order>8</order>
+            <order>7</order>
         </option>
         <option type="float">
             <name>south</name>
@@ -277,7 +241,7 @@
             <source>default</source>
             <description>Southern most Latitude</description>
             <usedAs>option</usedAs>
-            <order>9</order>
+            <order>8</order>
         </option>
         <option type="float">
             <name>east</name>
@@ -286,7 +250,7 @@
             <source>default</source>
             <description>Eastern most Longitude</description>
             <usedAs>option</usedAs>
-            <order>10</order>
+            <order>9</order>
         </option>
         <option type="float">
             <name>west</name>
@@ -295,26 +259,65 @@
             <source>default</source>
             <description>Western most Longitude</description>
             <usedAs>option</usedAs>
-            <order>11</order>
+            <order>10</order>
         </option>
-        <option type="boolean">
-            <name>apply_pal</name>
-            <value>yes</value>
-            <default>yes</default>
+        <option type="string">
+            <name>oformat</name>
+            <value>netCDF4</value>
+            <default>netCDF4</default>
             <source>default</source>
             <validValues>
                 <validValue>
-                    <value>yes</value>
-                    <description>color image</description>
+                    <value>netCDF4</value>
+                    <description>netCDF file, can contain more than one product</description>
                 </validValue>
                 <validValue>
-                    <value>no</value>
-                    <description>grayscale image</description>
+                    <value>HDF4</value>
+                    <description>HDF4 file (old SMI format)</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>PNG image file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>PPM image file</description>
+                </validValue>
+                <validValue>
+                    <value>TIFF</value>
+                    <description>TIFF file with georeference tags</description>
                 </validValue>
             </validValues>
-            <description>apply color A palette:</description>
+            <description>output file format</description>
+            <usedAs>option</usedAs>
+            <order>11</order>
+        </option>
+        <option type="int">
+            <name>deflate</name>
+            <value>4</value>
+            <default>4</default>
+            <source>default</source>
+            <description>deflation level</description>
             <usedAs>option</usedAs>
             <order>12</order>
+        </option>
+        <option type="float">
+            <name>central_meridian</name>
+            <value></value>
+            <default>0</default>
+            <source>default</source>
+            <description>central meridian for projection in deg east.  Only used for predefined projection</description>
+            <usedAs>option</usedAs>
+            <order>13</order>
+        </option>
+        <option type="boolean">
+            <name>apply_pal</name>
+            <value>true</value>
+            <default>true</default>
+            <source>default</source>
+            <description>apply color palette</description>
+            <usedAs>option</usedAs>
+            <order>14</order>
         </option>
         <option type="ifile">
             <name>palfile</name>
@@ -322,7 +325,7 @@
             <source>default</source>
             <description>palette filename.  (default = means the palette is chosen using the product.xml file</description>
             <usedAs>option</usedAs>
-            <order>13</order>
+            <order>15</order>
         </option>
         <option type="ifile">
             <name>palette_dir</name>
@@ -331,7 +334,7 @@
             <source>default</source>
             <description>directory containing the palette files</description>
             <usedAs>option</usedAs>
-            <order>14</order>
+            <order>16</order>
         </option>
         <option type="float">
             <name>datamin</name>
@@ -339,7 +342,7 @@
             <source>default</source>
             <description>minimum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <order>15</order>
+            <order>17</order>
         </option>
         <option type="float">
             <name>datamax</name>
@@ -347,7 +350,7 @@
             <source>default</source>
             <description>maximum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <order>16</order>
+            <order>18</order>
         </option>
         <option type="string">
             <name>scale_type</name>
@@ -362,44 +365,66 @@
                     <value>log</value>
                     <description>logarithmic scaling</description>
                 </validValue>
+                <validValue>
+                    <value>arctan</value>
+                    <description>arc tangent scaling</description>
+                </validValue>
             </validValues>
             <description>data scaling type (default from product.xml)</description>
-            <usedAs>option</usedAs>
-            <order>17</order>
-        </option>
-        <option type="boolean">
-            <name>quiet</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>stop the status printing</description>
-            <usedAs>option</usedAs>
-            <order>18</order>
-        </option>
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-            <default>Unspecified</default>
-            <source>default</source>
-            <description>processing version string</description>
             <usedAs>option</usedAs>
             <order>19</order>
         </option>
         <!--<option type="boolean">-->
-            <!--<name>use_quality</name>-->
-            <!--<value>yes</value>-->
-            <!--<default>yes</default>-->
+            <!--<name>quiet</name>-->
+            <!--<value>false</value>-->
+            <!--<default>false</default>-->
             <!--<source>default</source>-->
-            <!--<description>should we do quality factor processing</description>-->
+            <!--<description>stop the status printing</description>-->
         <!--</option>-->
-        <option type="int">
-            <name>deflate</name>
-            <value>4</value>
-            <default>4</default>
+        <option type="boolean">
+            <name>use_quality</name>
+            <value>yes</value>
+            <default>yes</default>
             <source>default</source>
-            <description>deflation level</description>
+            <description>should we do quality factor processing</description>
             <usedAs>option</usedAs>
             <order>20</order>
+        </option>
+        <option type="boolean">
+            <name>use_rgb</name>
+            <value>no</value>
+            <default>no</default>
+            <source>default</source>
+            <description>should we use product_rgb to make a psudo true color image</description>
+            <usedAs>option</usedAs>
+            <order>21</order>
+        </option>
+        <option type="string">
+            <name>product_rgb</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description> 3 products to use for RGB.  Default is sensor specific</description>
+            <usedAs>option</usedAs>
+            <order>22</order>
+        </option>
+        <option type="float">
+            <name>fudge</name>
+            <value>1.0</value>
+            <default>1.0</default>
+            <source>default</source>
+            <description>fudge factor used to modify size of L3 pixels</description>
+            <usedAs>option</usedAs>
+            <order>23</order>
+        </option>
+        <option type="float">
+            <name>threshold</name>
+            <value>0</value>
+            <default>0</default>
+            <source>default</source>
+            <description>minimum percentage of filled pixels before an image is generated</description>
+            <usedAs>option</usedAs>
+            <order>24</order>
         </option>
     </options>
 </paramInfo>
