@@ -11,10 +11,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
-    <artifactId>seadas-writergbimage-operator</artifactId>
+    <artifactId>seadas-writeimage-operator</artifactId>
     <version>1.0</version>
 
-    <name> Write RGB Image Operator</name>
+    <name> Write Image Operator</name>
     <dependencies>
         <dependency>
             <groupId>org.esa.beam</groupId>
