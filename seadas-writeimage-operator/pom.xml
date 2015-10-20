@@ -32,5 +32,10 @@
             <groupId>com.bc.ceres</groupId>
             <artifactId>ceres-glayer</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-contour-operator</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>
