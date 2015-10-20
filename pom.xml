@@ -104,8 +104,7 @@
         <module>../beam/globcover-worldmap</module>
         <module>../beam/lib-hdf</module>
         <module>../beam/beam-bigtiff</module>
-        <module>seadas-ocsswwsclient</module>
-        <module>../seadas-writergbimage-operator</module>
+        <module>seadas-writeimage-operator</module>
 
     </modules>
 
