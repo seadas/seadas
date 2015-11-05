@@ -29,7 +29,7 @@ class LandMasksData {
     private boolean createMasks = false;
     private boolean deleteMasks = false;
 
-    private int superSampling = 1;
+    private int superSampling = 3;
 
 
     private double landMaskTransparency = 0.0;
