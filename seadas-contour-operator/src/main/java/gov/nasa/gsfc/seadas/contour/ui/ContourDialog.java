@@ -319,7 +319,7 @@ public class ContourDialog extends JDialog {
         //this will set the "Create Contour Lines" button as a default button that listens to the Enter key
         mainPanel.getRootPane().setDefaultButton((JButton) ((JPanel) mainPanel.getComponent(2)).getComponent(2));
         setModalityType(ModalityType.APPLICATION_MODAL);
-        setTitle("Contour Lines");
+        setTitle("Create Contour Lines");
         //setTitle("Contour Lines for " + selectedBand.getName() );
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);

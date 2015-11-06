@@ -141,7 +141,7 @@ class BathymetryDialog extends JDialog {
         setModalityType(ModalityType.APPLICATION_MODAL);
 
 
-        setTitle("Bathymetry & Elevation");
+        setTitle("Create Bathymetry Mask and Elevation Bands");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
@@ -393,7 +393,7 @@ class BathymetryDialog extends JDialog {
         setModalityType(ModalityType.APPLICATION_MODAL);
 
 
-        setTitle("Bathymetry & Elevation");
+        setTitle("Create Bathymetry Mask & Elevation Bands");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
