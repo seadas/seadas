@@ -18,7 +18,7 @@
 </table>
 
 <p>
-    <b>Release Date: </b> Nov 1, 2015<br><br>
+    <b>Release Date: </b> Nov 23, 2015<br><br>
 </p>
 
 The SeaDAS development team is pleased to announce the release of SeaDAS 7.3,
@@ -29,34 +29,63 @@ which is built atop a slightly modified BEAM 5.0.1 version.
 
 
 <pre>
+
+        GPT operator added
+            - Write Image Operator.  This command line operator enables the export of images.  It includes
+              parameters for including gridlines, contour lines, color bar, and text annotation on the image.
+
+        Box-tie correction has now been added.
+
         Color Palettes
-            - Chlorophyll Blue-Green palette added.
+            - Chlorophyll Blue-Green palette and scheme added.
             - Palette export now sorts entries in the exported text file
             - User can now remove the default color palettes
 
         RGB Profile
+            - Added to toolbar.
             - User can edit any of the rgb profile text files
 
+        Filtered Band
+            - Toolbar icon changed.
+
+        Land Mask & Coastline Tool
+            - Defaults changed
+                * Super sampling default set to 3
+                * Coastline mask color set to black
+                * Land mask color set to dark grey
+
+        Renamed "Bands (Products)" folder to "Raster Data".
+            - Rationale: a more generic name - this folder contains raster data which may include
+              but is not limited to: oceancolor data products, latitude and longitude data,
+              flagcodings, rgb virtual bands, and any number of user created virtual and real bands.
 
     </pre>
+
 
 
 <p class="h3better">Bug Fixes</p>
+
 <pre>
-        Geometry can now be exported from an smi file.
-        Saved session no longer has conflict with color bar layer.
-
-
-
+        Version 7.3 fixes the following bugs:
+            - geometries could not be exported from a loaded smi image.
+            - color bar layer was creating a saved session conflict
+            - no-data layer sometimes toggled to top of the layer stack
 
 </pre>
 
+<p class="h3better">Important notes on upgrading your SeaDAS version</p>
 
-<p class="h3better">Known Issues</p>
-<pre>
+<p>
+       <b> If you already have SeaDAS version 7 or higher installed:</b><br>
+            In your home directory there is a directory titled '.seadas'.  This contains version-specific preferences
+            and defaults.  This directory also contains any custom color palettes and rgb-profiles which you may have
+            created.  Because of this, a seadas installation will automically move and rename the previous '.seadas'
+            directory putting it in your home directory.  When seadas is launched and does not find this '.seadas'
+            directory, it will automically create this directory and initialize it with the package settings and defaults.
+            You can then manually copy any of your custom color palettes and rgb-profiles from the backed up copy
+            of your previous version's '.seadas' directory over into the '.seadas' directory.
 
-
-    </pre>
+</p>
 
 
 </body>
