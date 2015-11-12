@@ -232,7 +232,8 @@ public class SeadasApp extends VisatApp {
         addCommandsToToolBar(toolBar, new String[]{
                 "createSubsetFromView",
                 "mosaicAction",
-                "collocation"
+                "collocation",
+                "reprojectionAction"
         });
 
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
