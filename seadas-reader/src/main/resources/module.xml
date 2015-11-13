@@ -179,6 +179,8 @@
             <class>gov.nasa.gsfc.seadas.dataio.ImportSeabassAction</class>
             <text>SeaBASS Data</text>
             <parent>importVectorData</parent>
+            <shortDescr>Import ship data (SeaBASS format)</shortDescr>
+            <largeIcon>icons/SeaBASS24.png</largeIcon>
             <helpId>importSeabass</helpId>
         </action>
 

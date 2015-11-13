@@ -102,7 +102,8 @@ public class SeadasApp extends VisatApp {
         final CommandBar toolBar = createToolBar(MAIN_TOOL_BAR_ID, "File");
         toolBar.add(Box.createHorizontalStrut(3));
         addCommandsToToolBar(toolBar, new String[]{
-                "open"
+                "open",
+                "importSeabass"
         });
 
         return toolBar;
