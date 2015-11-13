@@ -603,12 +603,6 @@ public class SeadasApp extends VisatApp {
 
             getMainFrame().getDockableBarManager().setRearrangable(true);
 
-            CommandBar seadasViewToolBar = createSeadasViewToolBar();
-            seadasViewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            seadasViewToolBar.getContext().setInitIndex(2);
-            getMainFrame().getDockableBarManager().addDockableBar(seadasViewToolBar);
-            pm.worked(1);
-
 
 
             CommandBar seadasBandToolsToolBar = createSeadasBandToolsToolBar();
@@ -709,6 +703,13 @@ public class SeadasApp extends VisatApp {
             seadasAnalysisToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(seadasAnalysisToolBar);
             pm.worked(1);
+
+            CommandBar seadasViewToolBar = createSeadasViewToolBar();
+            seadasViewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            seadasViewToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasViewToolBar);
+            pm.worked(1);
+
 
 
             // this gets all the plugin toolbars like (time series)
