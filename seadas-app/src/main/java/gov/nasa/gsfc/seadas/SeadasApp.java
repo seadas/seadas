@@ -102,7 +102,8 @@ public class SeadasApp extends VisatApp {
         final CommandBar toolBar = createToolBar(MAIN_TOOL_BAR_ID, "File");
         toolBar.add(Box.createHorizontalStrut(3));
         addCommandsToToolBar(toolBar, new String[]{
-                "open"
+                "open",
+                "importSeabass"
         });
 
         return toolBar;
@@ -169,11 +170,11 @@ public class SeadasApp extends VisatApp {
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
         ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
                 layerEditorToolViewCommandId,
-                "showWorldMapOverlay",
-                "showNoDataOverlay",
                 "exportLegendImageFile",
+                "showContourOverlay",
                 "showGraticuleOverlay",
-                "showContourOverlay"
+                "showNoDataOverlay",
+                "showWorldMapOverlay"
         ));
 
         addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
@@ -215,8 +216,8 @@ public class SeadasApp extends VisatApp {
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
 
         addCommandsToToolBar(toolBar, new String[]{
+                "createFilteredBand",
                 "bandArithmetic",
-                "createFilteredBand"
         });
 
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
@@ -230,9 +231,10 @@ public class SeadasApp extends VisatApp {
 
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
         addCommandsToToolBar(toolBar, new String[]{
+                "collocation",
                 "createSubsetFromView",
                 "mosaicAction",
-                "collocation"
+                "reprojectionAction"
         });
 
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
@@ -602,6 +604,12 @@ public class SeadasApp extends VisatApp {
 
             getMainFrame().getDockableBarManager().setRearrangable(true);
 
+            CommandBar seadasViewToolBar = createSeadasViewToolBar();
+            seadasViewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            seadasViewToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasViewToolBar);
+            pm.worked(1);
+
 
             CommandBar seadasBandToolsToolBar = createSeadasBandToolsToolBar();
             seadasBandToolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
@@ -622,12 +630,6 @@ public class SeadasApp extends VisatApp {
             seadasStandardLayersToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasStandardLayersToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(seadasStandardLayersToolBar);
-            pm.worked(1);
-
-            CommandBar seadasViewToolBar = createSeadasViewToolBar();
-            seadasViewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            seadasViewToolBar.getContext().setInitIndex(2);
-            getMainFrame().getDockableBarManager().addDockableBar(seadasViewToolBar);
             pm.worked(1);
 
 
@@ -707,6 +709,8 @@ public class SeadasApp extends VisatApp {
             seadasAnalysisToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(seadasAnalysisToolBar);
             pm.worked(1);
+
+
 
 
             // this gets all the plugin toolbars like (time series)
