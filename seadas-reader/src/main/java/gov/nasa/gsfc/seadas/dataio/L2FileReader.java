@@ -1,6 +1,21 @@
+/*
+ * Copyright (C) 2015 Brockmann Consult GmbH (info@brockmann-consult.de)
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 3 of the License, or (at your option)
+ * any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, see http://www.gnu.org/licenses/
+ */
+
 package gov.nasa.gsfc.seadas.dataio;
 
-import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import ucar.ma2.Array;
@@ -86,6 +101,10 @@ public class L2FileReader extends SeadasFileReader {
         if (startTime == null) {
             utcStart = getUTCAttribute("Start_Time");
             utcEnd = getUTCAttribute("End_Time");
+        }
+        // only needed as a stop-gap to handle an intermediate version of l2gen metadata
+        if (utcEnd == null) {
+            utcEnd = getUTCAttribute("time_coverage_stop");
         }
 
         if (utcStart != null) {
@@ -229,7 +248,7 @@ public class L2FileReader extends SeadasFileReader {
                     product.addTiePointGrid(latGrid);
 
                     final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1], dims[0], 0, 0,
-                            subSampleX, subSampleY, lonTiePoints);
+			    subSampleX, subSampleY, lonTiePoints, TiePointGrid.DISCONT_AT_180);
                     product.addTiePointGrid(lonGrid);
 
                     product.setGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanHeight));
@@ -315,7 +334,7 @@ public class L2FileReader extends SeadasFileReader {
             }
         }
         if (latBand != null) {
-            product.setGeoCoding(new PixelGeoCoding2(latBand, lonBand,null));
+            product.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
         }
     }
 }

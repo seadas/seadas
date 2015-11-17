@@ -250,7 +250,7 @@ public class SMIFileReader extends SeadasFileReader {
         return bandToVariableMap;
     }
 
-    public void addGeocoding(Product product) throws IOException, TransformException {
+    public void addGeocoding(Product product) throws IOException {
 
         double pixelX = 0.5;
         double pixelY = 0.5;
@@ -315,7 +315,7 @@ public class SMIFileReader extends SeadasFileReader {
                                                       easting, northing,
                                                       pixelSizeX, pixelSizeY,
                                                       pixelX, pixelY));
-            } catch (FactoryException e) {
+            } catch (FactoryException | TransformException e) {
                 throw new IllegalStateException(e);
             }
 
@@ -423,7 +423,6 @@ public class SMIFileReader extends SeadasFileReader {
     @Override
     protected void addFlagsAndMasks(Product product) {
         Band QFBand = product.getBand("l3m_qual");
-        ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
         if (QFBand != null) {
             FlagCoding flagCoding = new FlagCoding("SST_Quality");
             flagCoding.addFlag("Best", 0x00, "Highest quality retrieval");
@@ -433,19 +432,19 @@ public class SMIFileReader extends SeadasFileReader {
             product.getFlagCodingGroup().add(flagCoding);
             QFBand.setSampleCoding(flagCoding);
 
-            maskGroup.add(Mask.BandMathsType.create("Best", "Highest quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Best", "Highest quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "l3m_qual == 0",
                                                     SeadasFileReader.Cornflower, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("Good", "Good quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Good", "Good quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "l3m_qual == 1",
                                                     SeadasFileReader.LightPurple, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("Questionable", "Questionable quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Questionable", "Questionable quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "l3m_qual == 2",
                                                     SeadasFileReader.BurntUmber, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("Bad", "Bad quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Bad", "Bad quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "l3m_qual == 3",
                                                     SeadasFileReader.FailRed, 0.6));
@@ -461,23 +460,23 @@ public class SMIFileReader extends SeadasFileReader {
             product.getFlagCodingGroup().add(flagCoding);
             QFBand.setSampleCoding(flagCoding);
 
-            maskGroup.add(Mask.BandMathsType.create("Best", "Highest quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Best", "Highest quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst == 0",
                                                     SeadasFileReader.Cornflower, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("Good", "Good quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Good", "Good quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst == 1",
                                                     SeadasFileReader.LightPurple, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("Questionable", "Questionable quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Questionable", "Questionable quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst == 2",
                                                     SeadasFileReader.BurntUmber, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("Bad", "Bad quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Bad", "Bad quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst == 3",
                                                     SeadasFileReader.FailRed, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("No Data", "No data retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("No Data", "No data retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst == -1",
                                                     SeadasFileReader.MediumGray, 0.6));
@@ -492,23 +491,23 @@ public class SMIFileReader extends SeadasFileReader {
             product.getFlagCodingGroup().add(flagCoding);
             QFBand.setSampleCoding(flagCoding);
 
-            maskGroup.add(Mask.BandMathsType.create("Best", "Highest quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Best", "Highest quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst4 == 0",
                                                     SeadasFileReader.Cornflower, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("Good", "Good quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Good", "Good quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst4 == 1",
                                                     SeadasFileReader.LightPurple, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("Questionable", "Questionable quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Questionable", "Questionable quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst4 == 2",
                                                     SeadasFileReader.BurntUmber, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("Bad", "Bad quality retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("Bad", "Bad quality retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst4 == 3",
                                                     SeadasFileReader.FailRed, 0.6));
-            maskGroup.add(Mask.BandMathsType.create("No Data", "No data retrieval",
+            product.getMaskGroup().add(Mask.BandMathsType.create("No Data", "No data retrieval",
                                                     product.getSceneRasterWidth(),
                                                     product.getSceneRasterHeight(), "qual_sst4 == -1",
                                                     SeadasFileReader.MediumGray, 0.6));

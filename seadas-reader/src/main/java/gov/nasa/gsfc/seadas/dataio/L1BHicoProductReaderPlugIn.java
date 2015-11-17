@@ -15,12 +15,12 @@
  */
 package gov.nasa.gsfc.seadas.dataio;
 
+import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
 import org.esa.beam.framework.dataio.DecodeQualification;
 import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
 import org.esa.beam.util.io.BeamFileFilter;
 import ucar.nc2.Attribute;
-import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 
 import java.io.File;
@@ -71,9 +71,9 @@ public class L1BHicoProductReaderPlugIn implements ProductReaderPlugIn {
         }
         NetcdfFile ncfile = null;
         try {
-            if (NetcdfFile.canOpen(file.getPath())) {
-                ncfile = NetcdfFile.open(file.getPath());
-                Attribute instrumentName = ncfile.findGlobalAttribute("metadata_FGDC_Instrument_Information_Instrument_Name");
+            ncfile = NetcdfFileOpener.open(file.getPath());
+            if (ncfile != null) {
+                Attribute instrumentName = ncfile.findGlobalAttribute("metadata/FGDC/Instrument_Information/Instrument_Name");
 
                 //metadata/FGDC/Instrument_Information/Instrument_Name = "Hyperspectral Imager for Coastal Oceans"
 

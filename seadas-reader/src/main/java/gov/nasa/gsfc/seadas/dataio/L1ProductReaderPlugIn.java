@@ -15,6 +15,7 @@
  */
 package gov.nasa.gsfc.seadas.dataio;
 
+import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
 import org.esa.beam.framework.dataio.DecodeQualification;
 import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
@@ -59,7 +60,7 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
             "SeaWiFS Level-1B",
             "SeaWiFS Level-1A Data",
     };
-    private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
+    private static final Set<String> supportedProductTypeSet = new HashSet<>(Arrays.asList(supportedProductTypes));
 
     /**
      * Checks whether the given object is an acceptable input for this product reader and if so, the method checks if it
@@ -85,8 +86,8 @@ public class L1ProductReaderPlugIn implements ProductReaderPlugIn {
         }
         NetcdfFile ncfile = null;
         try {
-            if (NetcdfFile.canOpen(file.getPath())) {
-                ncfile = NetcdfFile.open(file.getPath());
+            ncfile = NetcdfFileOpener.open(file.getPath());
+            if (ncfile != null) {
 
                 Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase("title");
 

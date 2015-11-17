@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.HdfEosUtils;
+import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.dataop.maptransf.Datum;
@@ -305,7 +306,7 @@ public class L1BModisFileReader extends SeadasFileReader {
                     subSample = 1;
                     offsetX = 0f;
                     offsetY = 0f;
-                    geoNcFile = open(geocheck.getPath());
+                    geoNcFile = NetcdfFileOpener.open(geocheck.getPath());
                 }
             }
 
@@ -340,7 +341,7 @@ public class L1BModisFileReader extends SeadasFileReader {
             product.addTiePointGrid(latGrid);
 
             final TiePointGrid lonGrid = new TiePointGrid("longitude", dims[1], dims[0], offsetX, offsetY,
-                    subSample, subSample, lonTiePoints);
+                    subSample, subSample, lonTiePoints, TiePointGrid.DISCONT_AT_180);
             product.addTiePointGrid(lonGrid);
 
             product.setGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanMultiplier));
@@ -385,7 +386,7 @@ public class L1BModisFileReader extends SeadasFileReader {
         //grab granuleID
         try {
             Element inventoryMetadata = eosElement.getChild("INVENTORYMETADATA");
-            Element inventoryElem = (Element) inventoryMetadata.getChildren().get(0);
+            Element inventoryElem = inventoryMetadata.getChildren().get(0);
             Element ecsdataElem = inventoryElem.getChild("ECSDATAGRANULE");
             Element granIdElem = ecsdataElem.getChild("LOCALGRANULEID");
             String granId = granIdElem.getValue().substring(1);

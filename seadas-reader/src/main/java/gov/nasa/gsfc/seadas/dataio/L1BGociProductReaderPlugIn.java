@@ -16,6 +16,7 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import org.esa.beam.dataio.netcdf.GenericNetCdfReaderPlugIn;
+import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
 import org.esa.beam.framework.dataio.DecodeQualification;
 import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.util.io.BeamFileFilter;
@@ -68,9 +69,8 @@ public class L1BGociProductReaderPlugIn extends GenericNetCdfReaderPlugIn {
         H5iosp.setDebugFlags(new DebugFlagsImpl("HdfEos/turnOff"));
 
         try {
-            if (NetcdfFile.canOpen(file.getPath())) {
-
-                ncfile = NetcdfFile.open(file.getPath());
+            ncfile = NetcdfFileOpener.open(file.getPath());
+            if (ncfile != null) {
                 Attribute scene_title = ncfile.findGlobalAttribute("HDFEOS_POINTS_Scene_Header_Scene_Title");
 
                 if (scene_title != null) {

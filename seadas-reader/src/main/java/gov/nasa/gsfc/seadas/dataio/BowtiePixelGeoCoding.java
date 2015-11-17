@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Brockmann Consult GmbH (info@brockmann-consult.de)
+ * Copyright (C) 2015 Brockmann Consult GmbH (info@brockmann-consult.de)
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -302,7 +302,7 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
         final Band targetLonBand = destScene.getProduct().getBand(lonBandName);
         if(subsetDef != null) {
             if(subsetDef.getSubSamplingY() != 1) {
-                destScene.setGeoCoding(new PixelGeoCoding2(targetLatBand, targetLonBand, null));
+                destScene.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(targetLatBand, targetLonBand, null, 5));
                 return true;
             }
         }
