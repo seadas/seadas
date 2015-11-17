@@ -179,7 +179,7 @@
             <class>gov.nasa.gsfc.seadas.dataio.ImportSeabassAction</class>
             <text>SeaBASS Data</text>
             <parent>importVectorData</parent>
-            <shortDescr>Import field measurement data (SeaBASS format)</shortDescr>
+            <shortDescr>Import field measurement (in situ) data (SeaBASS format)</shortDescr>
             <largeIcon>icons/SeaBASS24.png</largeIcon>
             <helpId>importSeabass</helpId>
         </action>
