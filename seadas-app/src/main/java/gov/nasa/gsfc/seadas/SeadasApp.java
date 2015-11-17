@@ -68,6 +68,7 @@ public class SeadasApp extends VisatApp {
     public static final String SEADAS_BLANK_TOOL_BAR_ID = "seadasBlankToolBar";
     public static final String SEADAS_INTERACTIONS_EXTRAS_TOOL_BAR_ID = "seadasInteractionsExtrasToolBar";
     public static final String SEADAS_VIEW_TOOL_BAR_ID = "seadasViewToolBar";
+    public static final String SEADAS_LAYOUT_TOOL_BAR_ID = "seadasLayoutToolBar";
 
 
     public static final String SEADAS_STANDARD_LAYERS_TOOL_BAR_ID = "seadasStandardLayersToolBar";
@@ -108,6 +109,8 @@ public class SeadasApp extends VisatApp {
 
         return toolBar;
     }
+
+
 
 //    protected CommandBar createSeadasFileToolBar() {
 //        final CommandBar toolBar = createToolBar(SEADAS_FILE_TOOL_BAR_ID, "File");
@@ -332,6 +335,17 @@ public class SeadasApp extends VisatApp {
         return toolBar;
     }
 
+
+    protected CommandBar createSeaDASLayoutToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_LAYOUT_TOOL_BAR_ID, "Layout");
+        toolBar.add(Box.createHorizontalStrut(3));
+        addCommandsToToolBar(toolBar, new String[]{
+                "resetLayout"
+        });
+
+        return toolBar;
+    }
+
 //    protected void addCommandsToToolBar(final CommandBar toolBar, final int width, final String[] commandIDs) {
 //        for (final String commandID : commandIDs) {
 //            if (commandID == null) {
@@ -458,6 +472,8 @@ public class SeadasApp extends VisatApp {
         return toolBar;
     }
 
+
+
 //
 //    @Override
 //    protected void loadCommands() {
@@ -497,7 +513,8 @@ public class SeadasApp extends VisatApp {
                 SEADAS_PROC_TOOL_BAR_ID,
                 SEADAS_STANDARD_LAYERS_TOOL_BAR_ID,
                 SEADAS_VIEW_TOOL_BAR_ID,
-                SEADAS_BLANK_TOOL_BAR_ID};
+                SEADAS_BLANK_TOOL_BAR_ID,
+                SEADAS_LAYOUT_TOOL_BAR_ID};
 
         List<String> allDockableBarNames = getMainFrame().getDockableBarManager().getAllDockableBarNames();
 
@@ -711,6 +728,11 @@ public class SeadasApp extends VisatApp {
             pm.worked(1);
 
 
+            CommandBar seadasLayoutToolBar = createSeaDASLayoutToolBar();
+            seadasLayoutToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            seadasLayoutToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasLayoutToolBar);
+            pm.worked(1);
 
 
             // this gets all the plugin toolbars like (time series)
