@@ -67,7 +67,6 @@ public class SeadasApp extends VisatApp {
     public static final String SEADAS_EAST_DOCK_TOOL_BAR_ID = "seadasEastDockToolBar";
     public static final String SEADAS_BLANK_TOOL_BAR_ID = "seadasBlankToolBar";
     public static final String SEADAS_INTERACTIONS_EXTRAS_TOOL_BAR_ID = "seadasInteractionsExtrasToolBar";
-    public static final String SEADAS_LAYOUT_TOOL_BAR_ID = "seadasLayoutToolBar";
 
 
     public static final String SEADAS_STANDARD_LAYERS_TOOL_BAR_ID = "seadasStandardLayersToolBar";
@@ -336,15 +335,6 @@ public class SeadasApp extends VisatApp {
     }
 
 
-    protected CommandBar createSeaDASLayoutToolBar() {
-        final CommandBar toolBar = createToolBar(SEADAS_LAYOUT_TOOL_BAR_ID, "Layout");
-        toolBar.add(Box.createHorizontalStrut(3));
-        addCommandsToToolBar(toolBar, new String[]{
-                "resetLayout"
-        });
-
-        return toolBar;
-    }
 
 //    protected void addCommandsToToolBar(final CommandBar toolBar, final int width, final String[] commandIDs) {
 //        for (final String commandID : commandIDs) {
@@ -499,8 +489,7 @@ public class SeadasApp extends VisatApp {
                 SEADAS_PINS_TOOL_BAR_ID,
                 SEADAS_PROC_TOOL_BAR_ID,
                 SEADAS_STANDARD_LAYERS_TOOL_BAR_ID,
-                SEADAS_BLANK_TOOL_BAR_ID,
-                SEADAS_LAYOUT_TOOL_BAR_ID};
+                SEADAS_BLANK_TOOL_BAR_ID};
 
         List<String> allDockableBarNames = getMainFrame().getDockableBarManager().getAllDockableBarNames();
 
@@ -709,12 +698,6 @@ public class SeadasApp extends VisatApp {
             getMainFrame().getDockableBarManager().addDockableBar(seadasAnalysisToolBar);
             pm.worked(1);
 
-
-            CommandBar seadasLayoutToolBar = createSeaDASLayoutToolBar();
-            seadasLayoutToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            seadasLayoutToolBar.getContext().setInitIndex(2);
-            getMainFrame().getDockableBarManager().addDockableBar(seadasLayoutToolBar);
-            pm.worked(1);
 
 
             // this gets all the plugin toolbars like (time series)
