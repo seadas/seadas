@@ -18,18 +18,22 @@
 </table>
 
 <p>
-    <b>Release Date: </b> Nov 23, 2015<br><br>
+    <b>Release Date: </b> Nov 30, 2015<br><br>
 </p>
 
 The SeaDAS development team is pleased to announce the release of SeaDAS 7.3,
-which is built atop a slightly modified BEAM 5.0.1 version.
+which is built atop a slightly modified BEAM 5.0.1 version.<br><br>
 
+The science processing code has been updated to reflect changes recently implemented
+in production, provide bug fixes and support for the R2014.0 reprocessing for SeaWiFS
 
-<p class="h3better">Features/ Modifications</p>
+<br>
+<hr>
+<p class="sectionTitle">GUI Interface</p>
 
+<p class="subSectionTitle">Features/ Modifications</p>
 
 <pre>
-
         GPT operator added
             - Write Image Operator.  This command line operator enables the export of images.  It includes
               parameters for including gridlines, contour lines, color bar, and text annotation on the image.
@@ -52,6 +56,15 @@ which is built atop a slightly modified BEAM 5.0.1 version.
         Reprojection
             - Toolbar icon added.
 
+        Import Field Measurements (SeaBASS format)
+            - Toolbar icon added
+
+        Window and Toolbar Layout
+            - Toolbar icon added for resetting to default layout
+
+        Reset to Default Layout
+            - Toolbar icon added
+
         Land Mask & Coastline Tool
             - Defaults changed
                 * Super sampling default set to 3
@@ -62,22 +75,71 @@ which is built atop a slightly modified BEAM 5.0.1 version.
             - Rationale: a more simple, generic name - this folder contains raster data which may include
               but is not limited to: oceancolor data products, latitude and longitude data,
               flagcodings, rgb virtual bands, and any number of user created virtual and real bands.
-
     </pre>
 
 
 
-<p class="h3better">Bug Fixes</p>
+
+
+
+
+
+<p class="subSectionTitle">Bug Fixes</p>
 
 <pre>
         Version 7.3 fixes the following bugs:
             - geometries could not be exported from a loaded smi image.
             - color bar layer was creating a saved session conflict
             - no-data layer sometimes toggled to top of the layer stack
+</pre>
+<br>
+<hr>
+<p class="sectionTitle">Science Processing Code</p>
 
+<p class="subSectionTitle">Features/ Modifications</p>
+
+<pre>
+        l2gen:
+            - modified BRDF function to allow LUT files to be netCDF format
+            - added a user-contributed chlorophyll algorithm, (ABI: chl_abi; Shanmugam, 2011)
+            - added support for NASA-formatted VIIRS L1 products
+            - added new flag for VIIRS bow-tie deleted pixels
+            - added support for SST products for VIIRS
+            - added new triple-window SST algorithm for VIIRS
+            - modified Landsat OLI reader to use reflectance scaling rather than radiance scaling
+            - generalized NDVI algorithm
+            - added ?slot? product for GOCI
+        l1info:
+            - additional output added (e.g. Orbit_Number)
+        l3mapgen:
+            - redesigned to improve speed and fix a bug
+            - added RGB support
+            - added support for outputting:
+                variance, standard deviation, number of observations, number of scenes,
+                observation time and bin number
+            - added ability to output more than one product per file (netCDF)
 </pre>
 
 
+
+
+<p class="subSectionTitle">Bug Fixes (Science Processing Code)</p>
+
+<pre>
+        l2gen:
+            - fixed issues with primary productivity algorithms (opp_XXX)
+            - fixed bug in Es output
+        l3bindump:
+            - fixed bug that affected full globe output
+        l3mapgen:
+            - fixed reporting of latitudes in netCDF output
+</pre>
+
+
+
+<br>
+<hr>
+<p class="sectionTitle">Useful Notes</p>
 
 <p class="h3better">Help Pages</p>
 

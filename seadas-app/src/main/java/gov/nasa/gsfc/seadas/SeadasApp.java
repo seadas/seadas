@@ -67,7 +67,6 @@ public class SeadasApp extends VisatApp {
     public static final String SEADAS_EAST_DOCK_TOOL_BAR_ID = "seadasEastDockToolBar";
     public static final String SEADAS_BLANK_TOOL_BAR_ID = "seadasBlankToolBar";
     public static final String SEADAS_INTERACTIONS_EXTRAS_TOOL_BAR_ID = "seadasInteractionsExtrasToolBar";
-    public static final String SEADAS_VIEW_TOOL_BAR_ID = "seadasViewToolBar";
     public static final String SEADAS_LAYOUT_TOOL_BAR_ID = "seadasLayoutToolBar";
 
 
@@ -221,6 +220,7 @@ public class SeadasApp extends VisatApp {
         addCommandsToToolBar(toolBar, new String[]{
                 "createFilteredBand",
                 "bandArithmetic",
+                "showImageViewRGB"
         });
 
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
@@ -441,19 +441,6 @@ public class SeadasApp extends VisatApp {
     }
 
 
-    protected CommandBar createSeadasViewToolBar() {
-        final CommandBar toolBar = createToolBar(SEADAS_VIEW_TOOL_BAR_ID, "View");
-
-//        toolBar.add(Box.createHorizontalStrut(PADDING));
-        ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
-                "showImageViewRGB"
-        ));
-
-        addCommandsToToolBar(toolBar, commandIdList.toArray(new String[0]));
-//        toolBar.add(Box.createHorizontalStrut(PADDING));
-
-        return toolBar;
-    }
 
 
 
@@ -512,7 +499,6 @@ public class SeadasApp extends VisatApp {
                 SEADAS_PINS_TOOL_BAR_ID,
                 SEADAS_PROC_TOOL_BAR_ID,
                 SEADAS_STANDARD_LAYERS_TOOL_BAR_ID,
-                SEADAS_VIEW_TOOL_BAR_ID,
                 SEADAS_BLANK_TOOL_BAR_ID,
                 SEADAS_LAYOUT_TOOL_BAR_ID};
 
@@ -621,11 +607,7 @@ public class SeadasApp extends VisatApp {
 
             getMainFrame().getDockableBarManager().setRearrangable(true);
 
-            CommandBar seadasViewToolBar = createSeadasViewToolBar();
-            seadasViewToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
-            seadasViewToolBar.getContext().setInitIndex(2);
-            getMainFrame().getDockableBarManager().addDockableBar(seadasViewToolBar);
-            pm.worked(1);
+
 
 
             CommandBar seadasBandToolsToolBar = createSeadasBandToolsToolBar();
