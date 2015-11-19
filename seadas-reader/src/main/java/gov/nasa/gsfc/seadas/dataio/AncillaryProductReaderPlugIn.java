@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+ * Copyright (C) 2014 Brockmann Consult GmbH (info@brockmann-consult.de)
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -15,6 +15,7 @@
  */
 package gov.nasa.gsfc.seadas.dataio;
 
+import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
 import org.esa.beam.framework.dataio.DecodeQualification;
 import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
@@ -76,8 +77,8 @@ public class AncillaryProductReaderPlugIn implements ProductReaderPlugIn {
         }
         NetcdfFile ncfile = null;
         try {
-            if (NetcdfFile.canOpen(file.getPath())) {
-                ncfile = NetcdfFile.open(file.getPath());
+            ncfile = NetcdfFileOpener.open(file.getPath());
+            if (ncfile != null) {
 
                 Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase("title");
 

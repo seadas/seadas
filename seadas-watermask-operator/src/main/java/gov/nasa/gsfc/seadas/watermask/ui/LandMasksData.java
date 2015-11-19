@@ -38,9 +38,9 @@ class LandMasksData {
 
     private boolean showLandMaskAllBands = true;
     private boolean showWaterMaskAllBands = false;
-    private boolean showCoastlineMaskAllBands = true;
+    private boolean showCoastlineMaskAllBands = false;
 
-    private Color landMaskColor = new Color(70, 70, 70);
+    private Color landMaskColor = new Color(51, 51, 51);
     private Color waterMaskColor = new Color(0, 125, 255);
     private Color coastlineMaskColor = new Color(0, 0, 0);
 

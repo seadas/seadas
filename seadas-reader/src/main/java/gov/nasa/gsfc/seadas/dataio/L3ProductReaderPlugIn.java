@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+ * Copyright (C) 2015 Brockmann Consult GmbH (info@brockmann-consult.de)
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -15,20 +15,19 @@
  */
 package gov.nasa.gsfc.seadas.dataio;
 
+import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
 import org.esa.beam.framework.dataio.DecodeQualification;
 import org.esa.beam.framework.dataio.ProductReader;
 import org.esa.beam.framework.dataio.ProductReaderPlugIn;
 import org.esa.beam.util.io.BeamFileFilter;
 import ucar.nc2.Attribute;
+import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 
 public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
 
@@ -59,7 +58,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
             "VIIRS Level-3 Standard Mapped Image",
             "OCRVC Level-3 Standard Mapped Image",
             "Level-3 Standard Mapped Image",
-            "GSM mapped"
+            "GSM mapped",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
 
@@ -87,8 +86,8 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
         }
         NetcdfFile ncfile = null;
         try {
-            if (NetcdfFile.canOpen(file.getPath())) {
-                ncfile = NetcdfFile.open(file.getPath());
+            ncfile = NetcdfFileOpener.open(file.getPath());
+            if (ncfile != null) {
                 Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase("Title");
 
                 List<Variable> seadasMappedVariables = ncfile.getVariables();
@@ -102,9 +101,7 @@ public class L3ProductReaderPlugIn implements ProductReaderPlugIn {
                         final String title = titleAttribute.getStringValue();
                         if (title != null) {
                             if (title.matches(".*Level-3 Binned Data")){
-                                JFrame frame = new JFrame();
-                                JOptionPane.showMessageDialog(frame, 
-                                        "Support for visualization of L3 bin files has been disabled.");
+                                System.out.println("Support for visualization of L3 bin files has been disabled.");
                                 ncfile.close();
                                 return DecodeQualification.UNABLE;
                             }
