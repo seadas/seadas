@@ -338,24 +338,24 @@ public class WriteImageOp extends Operator {
         final File file4 = new File(filePath4);
         String imageFormat = "PNG";
 
-        write3(imageFormat, productSceneView, entireImageSelected, file1);
+        //write3(imageFormat, productSceneView, entireImageSelected, file1);
 
 
-        productSceneView.setGraticuleOverlayEnabled(true);
+        //productSceneView.setGraticuleOverlayEnabled(true);
         //productSceneView.getProduct().getBandAt(0).getImageInfo().setNoDataColor(Color.RED);
 
         //productSceneImage.getImageInfo().setNoDataColor(Color.WHITE);
-        productSceneView.setNoDataOverlayEnabled(true);
+        //productSceneView.setNoDataOverlayEnabled(true);
         //productSceneImage.getImageInfo().setNoDataColor(Color.WHITE);
-        write3(imageFormat, productSceneView, entireImageSelected, file2);
+        //write3(imageFormat, productSceneView, entireImageSelected, file2);
 
-        getContourLayer(productSceneView, sourceBand);
+        //getContourLayer(productSceneView, sourceBand);
 
-        write3(imageFormat, productSceneView, entireImageSelected, file3);
+        //write3(imageFormat, productSceneView, entireImageSelected, file3);
 
-        addTextAnnotationLayer(productSceneView);
+        //addTextAnnotationLayer(productSceneView);
 
-        write3(imageFormat, productSceneView, entireImageSelected, file4);
+        //write3(imageFormat, productSceneView, entireImageSelected, file4);
 
 //        RenderedImage sourceImage = createImage(imageFormat, productSceneView);
 //
@@ -367,7 +367,7 @@ public class WriteImageOp extends Operator {
         if (masks.length > 0) {
             this.applyMask(productSceneView);
         }
-        productSceneView.setMaskOverlayEnabled(true);
+        //productSceneView.setMaskOverlayEnabled(true);
         //System.out.print("mask layer ");
         //System.out.println(getMaskLayer(sourceProduct.getMaskGroup().get(0)).getId());
         write3(imageFormat, productSceneView, entireImageSelected, file4);
@@ -652,15 +652,14 @@ public class WriteImageOp extends Operator {
         int[] maskColorValueArray;
         String maskExpression;
         double maskTransparency;
+        Layer maskCollectionLayer = productSceneView.getSceneImage().getMaskCollectionLayer(true);
 
         for (int i = 0; i < masks.length; i++) {
             imageMask = masks[i];
-
             //extract mask band, rename it, and add to the source product
             maskSourceBandName = imageMask.getMaskSourceBandName();
             maskBand = maskProduct.getBand(maskSourceBandName);
             maskBand.setName(maskSourceBandName);
-            System.out.println("mask band name: " + maskBand.getName());
             if (!sourceProduct.containsBand(maskSourceBandName)) {
                 sourceProduct.addBand(maskBand);
             }
@@ -688,13 +687,18 @@ public class WriteImageOp extends Operator {
                         maskTransparency);
                 this.maskProduct.getMaskGroup().add(0, mask);
                 this.sourceProduct.getMaskGroup().add(0, mask);
-
-                final Layer maskLayer = this.getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName));
-                productSceneView.getSceneImage().getMaskCollectionLayer(true).getChildren().add(0, maskLayer);
-                productSceneView.getRootLayer().getChildren().add(0, maskLayer);
-                productSceneView.setMaskOverlayEnabled(true);
+                maskCollectionLayer.getChildren().add(i, getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName)));
+                productSceneView.getRootLayer().getChildren().add(i, getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName)));
             }
         }
+        List<Layer> maskLayers = maskCollectionLayer.getChildren();
+        for (Layer layer : maskLayers)
+
+        {
+            layer.setVisible(true);
+            layer.setTransparency(0);
+        }
+        productSceneView.setMaskOverlayEnabled(true);
     }
 
     private Layer getMaskAsLayer(final Mask mask) {
