@@ -125,7 +125,7 @@ public class WriteImageOp extends Operator {
     @Parameter(itemAlias = "contour", description = "Specifies the contour(s) in the target image.")
     Contour[] contours;
 
-    @Parameter(itemAlias = "annotation", description = "Specifies text annotation(s) to be added in the target image.")
+    @Parameter(itemAlias = "textAnnotation", description = "Specifies text annotation(s) to be added in the target image.")
     TextAnnotation[] textAnnotations;
 
     @Parameter(description = "The file to which the image is written.")
@@ -340,8 +340,8 @@ public class WriteImageOp extends Operator {
 
         //write3(imageFormat, productSceneView, entireImageSelected, file1);
 
-
-        //productSceneView.setGraticuleOverlayEnabled(true);
+//      addTextAnnotationLayer(productSceneView);
+        productSceneView.setGraticuleOverlayEnabled(true);
         //productSceneView.getProduct().getBandAt(0).getImageInfo().setNoDataColor(Color.RED);
 
         //productSceneImage.getImageInfo().setNoDataColor(Color.WHITE);
@@ -353,7 +353,7 @@ public class WriteImageOp extends Operator {
 
         //write3(imageFormat, productSceneView, entireImageSelected, file3);
 
-        //addTextAnnotationLayer(productSceneView);
+
 
         //write3(imageFormat, productSceneView, entireImageSelected, file4);
 
@@ -364,9 +364,14 @@ public class WriteImageOp extends Operator {
 //
 //
 //        writeImage(imageFormat, finalImage, productSceneView, entireImageSelected, file3);
+
+
         if (masks.length > 0) {
             this.applyMask(productSceneView);
         }
+
+
+
         //productSceneView.setMaskOverlayEnabled(true);
         //System.out.print("mask layer ");
         //System.out.println(getMaskLayer(sourceProduct.getMaskGroup().get(0)).getId());
@@ -692,11 +697,15 @@ public class WriteImageOp extends Operator {
             }
         }
         List<Layer> maskLayers = maskCollectionLayer.getChildren();
+        System.out.print("mask layers: ");
+        System.out.println(maskLayers.size());
         for (Layer layer : maskLayers)
 
         {
+            System.out.println(layer.getName());
             layer.setVisible(true);
             layer.setTransparency(0);
+            if (layer.equals(maskLayers.get(maskLayers.size()-1))) break;
         }
         productSceneView.setMaskOverlayEnabled(true);
     }
@@ -801,31 +810,58 @@ public class WriteImageOp extends Operator {
         Product sourceProduct = productSceneView.getProduct();
 
         TextAnnotationDescriptor descriptor = TextAnnotationDescriptor.getInstance();
-        System.out.println("descriptor " + descriptor.toString());
 
-        Rectangle data_bounds = sourceProduct.getBandAt(0).getGeophysicalImage().getBounds();
-        PixelPos pixelPos = new PixelPos((float) Math.random() * data_bounds.width,
-                (float) Math.random() * data_bounds.height);
+        PixelPos pixelPos;
         GeoCoding geoCoding = sourceProduct.getGeoCoding();
-        GeoPos geoPos = geoCoding.getGeoPos(pixelPos, null);
-        Placemark textAnnotation1 = Placemark.createPointPlacemark(descriptor, "ta_1", "text annotation!", "This won't show!", pixelPos, geoPos, geoCoding);
-        sourceProduct.getTextAnnotationGroup().add(textAnnotation1);
+        GeoPos geoPos;
+        Placemark textAnnotationMark;
+        Font textFont;
+        Color textColor;
+        Color textOutlineColor;
+        int fontStyle;
 
-        //These can be specified in the xml file
-        Font textFont = new Font("Helvetica", Font.PLAIN, 11);
-        Color textColor = Color.YELLOW;
-        Color textOutlineColor = Color.BLACK;
-        setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
-        productSceneView.setPinOverlayEnabled(true);
-        setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
+        Rectangle data_bounds = sourceBand.getGeophysicalImage().getBounds();
+        System.out.println("text annotations size: " + textAnnotations.length);
+        for (int i = 0; i < textAnnotations.length; i++) {
+
+
+//            PixelPos pixelPos = new PixelPos((float) Math.random() * data_bounds.width,
+//                    (float) Math.random() * data_bounds.height);
+            pixelPos = new PixelPos(textAnnotations[i].getTextAnnotationLocation()[0],textAnnotations[i].getTextAnnotationLocation()[1] );
+            //pixelPos = new PixelPos((float) Math.random() * data_bounds.width, (float) Math.random() * data_bounds.height);
+
+            geoPos = geoCoding.getGeoPos(pixelPos, null);
+            textAnnotationMark = Placemark.createPointPlacemark(descriptor,
+                                                                textAnnotations[i].getTextAnnotationName(),
+                                                                textAnnotations[i].getTextAnnotationContent(),
+                                                                "This won't show!",
+                                                                pixelPos,
+                                                                geoPos,
+                                                                geoCoding);
+            sourceProduct.getTextAnnotationGroup().add(textAnnotationMark );
+
+            //These can be specified in the xml file
+//            Font textFont = new Font("Helvetica", Font.PLAIN, 11);
+//            Color textColor = Color.YELLOW;
+//            Color textOutlineColor = Color.BLACK;
+            System.out.println(textAnnotations[i].getTextAnnotationFontName() + " " + textAnnotations[i].getTextAnnotationFontStyle() + " " + textAnnotations[i].getTextAnnotationFontSize());
+            textFont = new Font(textAnnotations[i].getTextAnnotationFontName(), textAnnotations[i].getTextAnnotationFontStyle(), textAnnotations[i].getTextAnnotationFontSize());
+            textColor = new Color(textAnnotations[i].getTextAnnotationFontColor()[0],textAnnotations[i].getTextAnnotationFontColor()[1], textAnnotations[i].getTextAnnotationFontColor()[2] );
+            textOutlineColor = Color.BLACK;
+            setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
+            productSceneView.setPinOverlayEnabled(true);
+            setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
+        }
     }
 
     private void setTextAnnotationFont(ProductSceneView productSceneView, Font textFont, Color textColor, Color textOutlineColor) {
         final FigureCollection figureCollection = productSceneView.getFigureEditor().getFigureCollection();
         final Figure[] figures = figureCollection.getFigures();
         for (Figure figure : figures) {
+            System.out.println(figure.getClass().getName());
             if (figure instanceof SimpleFeaturePointFigure) {
-                ((SimpleFeaturePointFigure) figure).updateFontColor(textFont, textColor, textOutlineColor);
+                System.out.println("figure name: " + ((SimpleFeaturePointFigure) figure).getSimpleFeature().getName());
+                        ((SimpleFeaturePointFigure) figure).updateFontColor(textFont, textColor, textOutlineColor);
             }
         }
     }
@@ -837,33 +873,106 @@ public class WriteImageOp extends Operator {
 
     public static class TextAnnotation {
 
-        @Parameter(description = "The annotation text.")
-        String annotation;
-        @Parameter(description = "The location to place the annotation.")
-        int[] location;
+        @Parameter(description = "The name of a text annotation.")
+        private String textAnnotationName;
+        @Parameter(description = "The description of a text annotation.")
+        private String textAnnotationDescription;
+        @Parameter(description = "The content of a text annotation.")
+        private String textAnnotationContent;
+        @Parameter(description = "The text font name of a text annotation. Names are Helvetica, SanSerif, Serif, Times New Roman, etc.")
+        private String textAnnotationFontName;
+        @Parameter(description = "The text font style of a text annotation. Styles are 0 = REGULAR, 1 = BOLD, and 2 = ITALIC.")
+        private int textAnnotationFontStyle;
+        @Parameter(description = "The text font size of a text annotation.")
+        private int textAnnotationFontSize;
+        @Parameter(description = "The content of a text annotation.")
+        private int[] textAnnotationFontColor;
+        @Parameter(description = "The location to place a text annotation.")
+        private int[] textAnnotationLocation;
 
         public TextAnnotation() {
         }
 
-        public TextAnnotation(String annotation, int[] location) {
-            this.annotation = annotation;
-            this.location = location;
+        public TextAnnotation(String textAnnotationName,
+                              String textAnnotationDescription,
+                              String textAnnotationContent,
+                              String textAnnotationFontName,
+                              int textAnnotationFontStyle,
+                              int textAnnotationFontSize,
+                              int[] textAnnotationFontColor,
+                              int[] textAnnotationLocation) {
+            this.textAnnotationName = textAnnotationName;
+            this.textAnnotationDescription = textAnnotationDescription;
+            this.textAnnotationContent = textAnnotationContent;
+            this.textAnnotationFontName = textAnnotationFontName;
+            this.textAnnotationFontStyle = textAnnotationFontStyle;
+            this.textAnnotationFontSize = textAnnotationFontSize;
+            this.textAnnotationFontColor = textAnnotationFontColor;
+            this.textAnnotationLocation = textAnnotationLocation;
         }
 
-        public String getAnnotation() {
-            return annotation;
+        public String getTextAnnotationName() {
+            return textAnnotationName;
         }
 
-        public void setAnnotation(String annotation) {
-            this.annotation = annotation;
+        public void setTextAnnotationName(String textAnnotationName) {
+            this.textAnnotationName = textAnnotationName;
         }
 
-        public int[] getLocation() {
-            return location;
+        public String getTextAnnotationDescription() {
+            return textAnnotationDescription;
         }
 
-        public void setLocation(int[] location) {
-            this.location = location;
+        public void setTextAnnotationDescription(String textAnnotationDescription) {
+            this.textAnnotationDescription = textAnnotationDescription;
+        }
+
+        public String getTextAnnotationContent() {
+            return textAnnotationContent;
+        }
+
+        public void setTextAnnotationContent(String textAnnotationContent) {
+            this.textAnnotationContent = textAnnotationContent;
+        }
+
+        public int[] getTextAnnotationLocation() {
+            return textAnnotationLocation;
+        }
+
+        public void setTextAnnotationLocation(int[] textAnnotationLocation) {
+            this.textAnnotationLocation = textAnnotationLocation;
+        }
+
+        public int getTextAnnotationFontSize() {
+            return textAnnotationFontSize;
+        }
+
+        public void setTextAnnotationFontSize(int textAnnotationFontSize) {
+            this.textAnnotationFontSize = textAnnotationFontSize;
+        }
+
+        public int[] getTextAnnotationFontColor() {
+            return textAnnotationFontColor;
+        }
+
+        public void setTextAnnotationFontColor(int[] textAnnotationFontColor) {
+            this.textAnnotationFontColor = textAnnotationFontColor;
+        }
+
+        public String getTextAnnotationFontName() {
+            return textAnnotationFontName;
+        }
+
+        public void setTextAnnotationFontName(String textAnnotationFontName) {
+            this.textAnnotationFontName = textAnnotationFontName;
+        }
+
+        public int getTextAnnotationFontStyle() {
+            return textAnnotationFontStyle;
+        }
+
+        public void setTextAnnotationFontStyle(int textAnnotationFontStyle) {
+            this.textAnnotationFontStyle = textAnnotationFontStyle;
         }
     }
 
