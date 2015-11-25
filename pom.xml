@@ -24,7 +24,7 @@
     <url>http://seadas.gsfc.nasa.gov/</url>
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas</artifactId>
-    <version>7.2</version>
+    <version>7.3</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -37,7 +37,7 @@
         <netcdf.version>4.3.22</netcdf.version>
         <geotools.version>2.7.4</geotools.version>
         <jide.version>3.5.15</jide.version>
-        <seadas.version>7.2</seadas.version>
+        <seadas.version>7.3</seadas.version>
         <jersey.version>2.15</jersey.version>
     </properties>
 
