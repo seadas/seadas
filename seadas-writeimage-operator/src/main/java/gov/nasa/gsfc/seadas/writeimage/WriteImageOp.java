@@ -27,10 +27,7 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.framework.ui.product.ProductSceneImage;
-import org.esa.beam.framework.ui.product.ProductSceneView;
-import org.esa.beam.framework.ui.product.SimpleFeaturePointFigure;
-import org.esa.beam.framework.ui.product.VectorDataLayerFilterFactory;
+import org.esa.beam.framework.ui.product.*;
 import org.esa.beam.glayer.ColorBarLayerType;
 import org.esa.beam.glayer.GraticuleLayer;
 import org.esa.beam.glayer.GraticuleLayerType;
@@ -60,6 +57,7 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -339,8 +337,8 @@ public class WriteImageOp extends Operator {
         String imageFormat = "PNG";
 
         //write3(imageFormat, productSceneView, entireImageSelected, file1);
-
-//      addTextAnnotationLayer(productSceneView);
+        productSceneView.setPinOverlayEnabled(true);
+        addTextAnnotationLayer(productSceneView);
         productSceneView.setGraticuleOverlayEnabled(true);
         //productSceneView.getProduct().getBandAt(0).getImageInfo().setNoDataColor(Color.RED);
 
@@ -352,7 +350,6 @@ public class WriteImageOp extends Operator {
         //getContourLayer(productSceneView, sourceBand);
 
         //write3(imageFormat, productSceneView, entireImageSelected, file3);
-
 
 
         //write3(imageFormat, productSceneView, entireImageSelected, file4);
@@ -371,7 +368,6 @@ public class WriteImageOp extends Operator {
         }
 
 
-
         //productSceneView.setMaskOverlayEnabled(true);
         //System.out.print("mask layer ");
         //System.out.println(getMaskLayer(sourceProduct.getMaskGroup().get(0)).getId());
@@ -387,10 +383,6 @@ public class WriteImageOp extends Operator {
 
 
         RenderedImage image = createImage(imageFormat, view);
-
-        //new
-        //JAI.create("filestore", image, filePath, formatName, null);
-
         boolean geoTIFFWritten = false;
         try {
             if (imageFormat.equals("GeoTIFF") && entireImageSelected) {
@@ -449,11 +441,7 @@ public class WriteImageOp extends Operator {
     protected RenderedImage createImage(String imageFormat, ProductSceneView view) {
         final boolean useAlpha = !BMP_FORMAT_DESCRIPTION[0].equals(imageFormat) && !JPEG_FORMAT_DESCRIPTION[0].equals(imageFormat);
         final boolean entireImage = true;
-        //TODO this needs to be changed to the actual image dimension.
         Dimension dimension = new Dimension(getImageDimensions(view, entireImage));
-        //System.out.println("Dimension: " + dimension.width + " " + dimension.height);
-        //dimension = new Dimension(1002, 802);
-        System.out.println("Dimension: " + dimension.width + " " + dimension.height);
         return createImage(view, entireImage, dimension, useAlpha,
                 GEOTIFF_FORMAT_DESCRIPTION[0].equals(imageFormat));
     }
@@ -478,26 +466,10 @@ public class WriteImageOp extends Operator {
     private static BufferedImageRendering createRendering(ProductSceneView view, boolean fullScene,
                                                           boolean geoReferenced, BufferedImage bufferedImage) {
         final Viewport vp1 = view.getLayerCanvas().getViewport();
-//        //vp1.setViewBounds(new Rectangle(0, 60, 2000, 2000));
-//        System.out.println(" vp1  " + vp1.getViewBounds().getHeight() + "   " + vp1.getViewBounds().getWidth() + " " + vp1.isModelYAxisDown());
-//        System.out.println("vp1 zoom factor: " + vp1.getZoomFactor());
-//        System.out.println("vp1 view bounds X and Y: " + vp1.getViewBounds().getX() + " " + vp1.getViewBounds().getY());
         final Viewport vp2 = new DefaultViewport(new Rectangle(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight()),
                 vp1.isModelYAxisDown());
-//        System.out.println(" vp2  " + vp2.getViewBounds().getWidth() + "   " + vp2.getViewBounds().getHeight() + " " + vp2.isModelYAxisDown());
-//        System.out.println("vp2 zoom factor: " + vp2.getZoomFactor());
-//        System.out.println("vp2 model to view transform: " + vp2.getModelToViewTransform().toString());
-//        System.out.println("vp2 model to view transform: " + vp2.getViewToModelTransform().toString());
-//        System.out.println("vp2 view bounds X and Y: " + vp2.getViewBounds().getX() + " " + vp2.getViewBounds().getY());
         if (fullScene) {
-//            System.out.println("model bounds: " + view.getBaseImageLayer().getModelBounds().getWidth() + "  " + view.getBaseImageLayer().getModelBounds().getHeight());
-//            System.out.println("model bounds X and Y: " + view.getBaseImageLayer().getModelBounds().getX() + "  " + view.getBaseImageLayer().getModelBounds().getY());
-//            System.out.println("model bounds X and Y: " + view.getBaseImageLayer().getModelBounds().getCenterX() + "  " + view.getBaseImageLayer().getModelBounds().getCenterY());
-            //view.getBaseImageLayer().getModelBounds().setRect(143, -28, 12, 9);
-            //vp2.setViewBounds(new Rectangle(1002, 802));
             vp2.zoom(view.getBaseImageLayer().getModelBounds());
-            //vp2.zoom(new Rectangle(143, -28, 15, 12));
-            //vp2.setViewBounds(new Rectangle(1139, 979));
         } else {
             setTransform(vp1, vp2);
         }
@@ -510,7 +482,6 @@ public class WriteImageOp extends Operator {
             final AffineTransform v2mTransform = vp2.getViewToModelTransform();
             v2mTransform.preConcatenate(m2iTransform);
             final AffineTransform v2iTransform = new AffineTransform(v2mTransform);
-
             final Graphics2D graphics2D = imageRendering.getGraphics();
             v2iTransform.concatenate(graphics2D.getTransform());
             graphics2D.setTransform(v2iTransform);
@@ -523,7 +494,6 @@ public class WriteImageOp extends Operator {
 
         final Rectangle rectangle1 = vp1.getViewBounds();
         final Rectangle rectangle2 = vp2.getViewBounds();
-
         final double w1 = rectangle1.getWidth();
         final double w2 = rectangle2.getWidth();
         final double h1 = rectangle1.getHeight();
@@ -584,48 +554,6 @@ public class WriteImageOp extends Operator {
         return outputImage;
     }
 
-    private Layer getGraticuleLayer(Band band) {
-        LayerType graticuleLayerType = LayerTypeRegistry.getLayerType(GraticuleLayerType.class);
-        PropertySet template = graticuleLayerType.createLayerConfig(null);
-        template.setValue(GraticuleLayerType.PROPERTY_NAME_RASTER, band);
-        GraticuleLayer graticuleLayer = (GraticuleLayer) graticuleLayerType.createLayer(null, template);
-        PropertySet propertySet = graticuleLayer.getConfiguration();
-
-        PropertyDescriptor vd20 = new PropertyDescriptor(GraticuleLayerType.PROPERTY_NAME_TEXT_ENABLED_NORTH, Boolean.class);
-        vd20.setDefaultValue(GraticuleLayerType.DEFAULT_TEXT_ENABLED_NORTH);
-        vd20.setDisplayName("Show Longitude Labels - North");
-        vd20.setDefaultConverter();
-        Object value = vd20.getDefaultValue();
-        Property editorProperty = new Property(vd20, new DefaultPropertyAccessor(value));
-        propertySet.addProperty(editorProperty);
-
-        PropertyDescriptor vd21 = new PropertyDescriptor(GraticuleLayerType.PROPERTY_NAME_TEXT_ENABLED_SOUTH, Boolean.class);
-        vd21.setDefaultValue(GraticuleLayerType.DEFAULT_TEXT_ENABLED_SOUTH);
-        vd21.setDisplayName("Show Longitude Labels - South");
-        vd21.setDefaultConverter();
-        value = vd21.getDefaultValue();
-        editorProperty = new Property(vd21, new DefaultPropertyAccessor(value));
-        propertySet.addProperty(editorProperty);
-
-        PropertyDescriptor vd22 = new PropertyDescriptor(GraticuleLayerType.PROPERTY_NAME_TEXT_ENABLED_WEST, Boolean.class);
-        vd22.setDefaultValue(GraticuleLayerType.DEFAULT_TEXT_ENABLED_WEST);
-        vd22.setDisplayName("Show Latitude Labels - West");
-        vd22.setDefaultConverter();
-        value = vd22.getDefaultValue();
-        editorProperty = new Property(vd22, new DefaultPropertyAccessor(value));
-        propertySet.addProperty(editorProperty);
-
-        PropertyDescriptor vd23 = new PropertyDescriptor(GraticuleLayerType.PROPERTY_NAME_TEXT_ENABLED_EAST, Boolean.class);
-        vd23.setDefaultValue(GraticuleLayerType.DEFAULT_TEXT_ENABLED_EAST);
-        vd23.setDisplayName("Show Latitude Labels - East");
-        vd23.setDefaultConverter();
-        value = vd23.getDefaultValue();
-        editorProperty = new Property(vd23, new DefaultPropertyAccessor(value));
-        propertySet.addProperty(editorProperty);
-
-        return graticuleLayer;
-    }
-
     private Layer getColorBarLayer(ProductSceneView productSceneView) {
 
         ShowColorBarOverlayAction showColorBarOverlayAction = new ShowColorBarOverlayAction();
@@ -658,7 +586,10 @@ public class WriteImageOp extends Operator {
         String maskExpression;
         double maskTransparency;
         Layer maskCollectionLayer = productSceneView.getSceneImage().getMaskCollectionLayer(true);
-
+        maskCollectionLayer.setVisible(true);
+        int existingLayerCount = maskCollectionLayer.getChildren().size();
+        System.out.print("mask layers: ");
+        System.out.println(maskCollectionLayer.getChildren().size());
         for (int i = 0; i < masks.length; i++) {
             imageMask = masks[i];
             //extract mask band, rename it, and add to the source product
@@ -690,22 +621,32 @@ public class WriteImageOp extends Operator {
                         maskExpression,
                         maskColor,
                         maskTransparency);
-                this.maskProduct.getMaskGroup().add(0, mask);
-                this.sourceProduct.getMaskGroup().add(0, mask);
-                maskCollectionLayer.getChildren().add(i, getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName)));
-                productSceneView.getRootLayer().getChildren().add(i, getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName)));
+
+                //this.maskProduct.getMaskGroup().add(i, mask);
+                this.sourceProduct.getMaskGroup().add(i + existingLayerCount, mask);
+                maskCollectionLayer.getChildren().add(i + existingLayerCount, getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName)));
+                //productSceneView.getRootLayer().getChildren().add(i, getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName)));
             }
         }
+        List<Layer> layers = productSceneView.getRootLayer().getChildren();
         List<Layer> maskLayers = maskCollectionLayer.getChildren();
+
+        for (Layer layer : layers) {
+            if (layer instanceof org.esa.beam.glayer.MaskCollectionLayer) {
+                System.out.println("mask layers: " + layer.getChildren().size());
+
+            }
+        }
+
         System.out.print("mask layers: ");
         System.out.println(maskLayers.size());
         for (Layer layer : maskLayers)
 
         {
-            System.out.println(layer.getName());
+            System.out.println(layer.getName() + " " + layer.isVisible() + " " + layer.getId() + " " + maskLayers.indexOf(layer));
             layer.setVisible(true);
             layer.setTransparency(0);
-            if (layer.equals(maskLayers.get(maskLayers.size()-1))) break;
+            //if (layer.equals(maskLayers.get(maskLayers.size()-1))) break;
         }
         productSceneView.setMaskOverlayEnabled(true);
     }
@@ -720,9 +661,6 @@ public class WriteImageOp extends Operator {
 
     public Dimension getImageDimensions(ProductSceneView view, boolean full) {
         final Rectangle2D bounds;
-//        System.out.println("view layer canvas is null : " + view.getLayerCanvas() == null);
-//        System.out.println("view port is null : " + view.getLayerCanvas().getViewport() == null);
-//        System.out.println("view bounds is null : " + view.getLayerCanvas().getViewport().getViewBounds() == null);
         if (full) {
             final ImageLayer imageLayer = view.getBaseImageLayer();
             final Rectangle2D modelBounds = imageLayer.getModelBounds();
@@ -738,7 +676,6 @@ public class WriteImageOp extends Operator {
 
         imageWidth = toInteger(bounds.getWidth());
         imageHeight = toInteger(bounds.getHeight());
-        System.out.println("bound dimension : " + imageWidth + "  " + imageHeight);
         heightWidthRatio = (double) imageHeight / (double) imageWidth;
         return new Dimension(imageWidth, imageHeight);
     }
@@ -827,44 +764,72 @@ public class WriteImageOp extends Operator {
 
 //            PixelPos pixelPos = new PixelPos((float) Math.random() * data_bounds.width,
 //                    (float) Math.random() * data_bounds.height);
-            pixelPos = new PixelPos(textAnnotations[i].getTextAnnotationLocation()[0],textAnnotations[i].getTextAnnotationLocation()[1] );
+            pixelPos = new PixelPos(textAnnotations[i].getTextAnnotationLocation()[0], textAnnotations[i].getTextAnnotationLocation()[1]);
             //pixelPos = new PixelPos((float) Math.random() * data_bounds.width, (float) Math.random() * data_bounds.height);
 
             geoPos = geoCoding.getGeoPos(pixelPos, null);
             textAnnotationMark = Placemark.createPointPlacemark(descriptor,
-                                                                textAnnotations[i].getTextAnnotationName(),
-                                                                textAnnotations[i].getTextAnnotationContent(),
-                                                                "This won't show!",
-                                                                pixelPos,
-                                                                geoPos,
-                                                                geoCoding);
-            sourceProduct.getTextAnnotationGroup().add(textAnnotationMark );
+                    textAnnotations[i].getTextAnnotationName(),
+                    textAnnotations[i].getTextAnnotationContent(),
+                    "This won't show!",
+                    pixelPos,
+                    geoPos,
+                    geoCoding);
+            Collection<org.opengis.feature.Property> properties = textAnnotationMark.getFeature().getProperties();
+//
+//            for (org.opengis.feature.Property property:properties){
+//                System.out.println(property.getName() + " " + property.getDescriptor() + property.getType() + property.getValue());
+//
+//            }
+
+            sourceProduct.getTextAnnotationGroup().add(textAnnotationMark);
 
             //These can be specified in the xml file
 //            Font textFont = new Font("Helvetica", Font.PLAIN, 11);
 //            Color textColor = Color.YELLOW;
 //            Color textOutlineColor = Color.BLACK;
-            System.out.println(textAnnotations[i].getTextAnnotationFontName() + " " + textAnnotations[i].getTextAnnotationFontStyle() + " " + textAnnotations[i].getTextAnnotationFontSize());
+            //System.out.println(textAnnotations[i].getTextAnnotationFontName() + " " + textAnnotations[i].getTextAnnotationFontStyle() + " " + textAnnotations[i].getTextAnnotationFontSize());
+            //System.out.println(textAnnotations[i].getTextAnnotationFontColor()[0] + " " + textAnnotations[i].getTextAnnotationFontColor()[1] + " " + textAnnotations[i].getTextAnnotationFontColor()[2]);
             textFont = new Font(textAnnotations[i].getTextAnnotationFontName(), textAnnotations[i].getTextAnnotationFontStyle(), textAnnotations[i].getTextAnnotationFontSize());
-            textColor = new Color(textAnnotations[i].getTextAnnotationFontColor()[0],textAnnotations[i].getTextAnnotationFontColor()[1], textAnnotations[i].getTextAnnotationFontColor()[2] );
+            textColor = new Color(textAnnotations[i].getTextAnnotationFontColor()[0], textAnnotations[i].getTextAnnotationFontColor()[1], textAnnotations[i].getTextAnnotationFontColor()[2]);
             textOutlineColor = Color.BLACK;
-            setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
-            productSceneView.setPinOverlayEnabled(true);
-            setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
+            //System.out.println(sourceProduct.getTextAnnotationGroup().get(0).getFeature().getClass().getName() + "style: " + textAnnotationMark.getStyleCss());
+            if (textAnnotationMark.getFeature() instanceof SimpleFeaturePointFigure) {
+                ((SimpleFeaturePointFigure) textAnnotationMark.getFeature()).updateFontColor(textFont, textColor, textOutlineColor);
+            }
+            //textAnnotationMark.get
+
+//
+            //setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
+            //this will make the text annotation layer visible
+            //setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
         }
+        //productSceneView.setPinOverlayEnabled(true);
     }
 
-    private void setTextAnnotationFont(ProductSceneView productSceneView, Font textFont, Color textColor, Color textOutlineColor) {
-        final FigureCollection figureCollection = productSceneView.getFigureEditor().getFigureCollection();
-        final Figure[] figures = figureCollection.getFigures();
-        for (Figure figure : figures) {
-            System.out.println(figure.getClass().getName());
-            if (figure instanceof SimpleFeaturePointFigure) {
-                System.out.println("figure name: " + ((SimpleFeaturePointFigure) figure).getSimpleFeature().getName());
-                        ((SimpleFeaturePointFigure) figure).updateFontColor(textFont, textColor, textOutlineColor);
-            }
-        }
-    }
+//    private void setTextAnnotationFont(ProductSceneView productSceneView, Font textFont, Color textColor, Color textOutlineColor) {
+//        productSceneView.getRootLayer().getChildren();
+//        final FigureCollection figureCollection =
+//        final Figure[] figures = figureCollection.getFigures();
+//        System.out.println("figure collection " + figures.length);
+//        for (Figure figure : figures) {
+//            System.out.println(figure.getClass().getName());
+//            if (figure instanceof SimpleFeaturePointFigure) {
+//                System.out.println("figure name: " + ((SimpleFeaturePointFigure) figure).getSimpleFeature().getName());
+//                        ((SimpleFeaturePointFigure) figure).updateFontColor(textFont, textColor, textOutlineColor);
+//            }
+//        }
+//
+//        final SimpleFeatureFigure[] sff = productSceneView.getFeatureFigures(false);
+//        System.out.println(" sinple feature figure  " + sff.length);
+//        for (Figure figure:sff) {
+//            System.out.println(figure.getClass().getName());
+//            if (figure instanceof SimpleFeaturePointFigure) {
+//                System.out.println("figure name: " + ((SimpleFeaturePointFigure) figure).getSimpleFeature().getName());
+//                ((SimpleFeaturePointFigure) figure).updateFontColor(textFont, textColor, textOutlineColor);
+//            }
+//        }
+//    }
 
 
     private int toInteger(double value) {
