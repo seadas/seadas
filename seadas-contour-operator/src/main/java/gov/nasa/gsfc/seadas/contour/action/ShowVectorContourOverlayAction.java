@@ -205,7 +205,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         }
 
         final CoordinateReferenceSystem mapCRS = geoCoding.getMapCRS();
-        System.out.println("geo coding : " +  geoCoding.getImageCRS().toString());
+        //System.out.println("geo coding : " +  geoCoding.getImageCRS().toString());
         if (!mapCRS.equals(DefaultGeographicCRS.WGS84) || (geoCoding instanceof CrsGeoCoding)) {
             try {
                 transformFeatureCollection(featureCollection, geoCoding.getImageCRS(), mapCRS);
@@ -224,7 +224,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         final GeometryFactory geometryFactory = new GeometryFactory();
         while (features.hasNext()) {
             final SimpleFeature simpleFeature = features.next();
-            System.out.println("simple feature : " +  simpleFeature.toString());
+            //System.out.println("simple feature : " +  simpleFeature.toString());
             final LineString sourceLine = (LineString) simpleFeature.getDefaultGeometry();
             final LineString targetLine = transform.transformLineString(sourceLine, geometryFactory);
             simpleFeature.setDefaultGeometry(targetLine);
