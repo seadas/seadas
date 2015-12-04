@@ -65,7 +65,7 @@ import java.util.List;
  * @author kutila
  * @author aynur abdurazik
  */
-@OperatorMetadata(alias = "WriteImage", version = "0.4", copyright = "(c) 2014 University of Queensland", authors = "Kutila G",
+@OperatorMetadata(alias = "WriteImage", version = "1.0", copyright = "(c) 2014 University of Queensland", authors = "Kutila G, Aynur Abdurazik",
         description = "Creates a color image from a single source band.")
 public class WriteImageOp extends Operator {
 
@@ -125,6 +125,9 @@ public class WriteImageOp extends Operator {
 
     @Parameter(itemAlias = "textAnnotation", description = "Specifies text annotation(s) to be added in the target image.")
     TextAnnotation[] textAnnotations;
+
+    @Parameter(description = "Add graticule layer to the target image.", defaultValue = "false")
+    private boolean graticuleLayer;
 
     @Parameter(description = "The file to which the image is written.")
     private String filePath;
@@ -337,9 +340,15 @@ public class WriteImageOp extends Operator {
         String imageFormat = "PNG";
 
         //write3(imageFormat, productSceneView, entireImageSelected, file1);
-        productSceneView.setPinOverlayEnabled(true);
-        addTextAnnotationLayer(productSceneView);
-        productSceneView.setGraticuleOverlayEnabled(true);
+
+        if(textAnnotations.length>0) {
+            productSceneView.setPinOverlayEnabled(true);
+            addTextAnnotationLayer(productSceneView);
+        }
+
+        if (graticuleLayer) {
+            productSceneView.setGraticuleOverlayEnabled(true);
+        }
         //productSceneView.getProduct().getBandAt(0).getImageInfo().setNoDataColor(Color.RED);
 
         //productSceneImage.getImageInfo().setNoDataColor(Color.WHITE);
@@ -367,10 +376,6 @@ public class WriteImageOp extends Operator {
             this.applyMask(productSceneView);
         }
 
-
-        //productSceneView.setMaskOverlayEnabled(true);
-        //System.out.print("mask layer ");
-        //System.out.println(getMaskLayer(sourceProduct.getMaskGroup().get(0)).getId());
         write3(imageFormat, productSceneView, entireImageSelected, file4);
         System.out.println(debug.toString());
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -646,7 +651,7 @@ public class WriteImageOp extends Operator {
             System.out.println(layer.getName() + " " + layer.isVisible() + " " + layer.getId() + " " + maskLayers.indexOf(layer));
             layer.setVisible(true);
             layer.setTransparency(0);
-            //if (layer.equals(maskLayers.get(maskLayers.size()-1))) break;
+            if (layer.equals(maskLayers.get(maskLayers.size()-1))) break;
         }
         productSceneView.setMaskOverlayEnabled(true);
     }
