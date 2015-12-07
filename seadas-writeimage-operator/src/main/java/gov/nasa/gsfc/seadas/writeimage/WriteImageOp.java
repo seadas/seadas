@@ -1,9 +1,6 @@
 package gov.nasa.gsfc.seadas.writeimage;
 
-import com.bc.ceres.binding.Property;
-import com.bc.ceres.binding.PropertyDescriptor;
 import com.bc.ceres.binding.PropertySet;
-import com.bc.ceres.binding.accessors.DefaultPropertyAccessor;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glayer.*;
 import com.bc.ceres.glayer.support.ImageLayer;
@@ -11,8 +8,6 @@ import com.bc.ceres.glayer.support.LayerUtils;
 import com.bc.ceres.grender.Viewport;
 import com.bc.ceres.grender.support.BufferedImageRendering;
 import com.bc.ceres.grender.support.DefaultViewport;
-import com.bc.ceres.swing.figure.Figure;
-import com.bc.ceres.swing.figure.FigureCollection;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
 import gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction;
@@ -29,8 +24,6 @@ import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.framework.ui.product.*;
 import org.esa.beam.glayer.ColorBarLayerType;
-import org.esa.beam.glayer.GraticuleLayer;
-import org.esa.beam.glayer.GraticuleLayerType;
 import org.esa.beam.glayer.MaskLayerType;
 import org.esa.beam.jai.ImageManager;
 import org.esa.beam.util.ProductUtils;
@@ -125,6 +118,15 @@ public class WriteImageOp extends Operator {
 
     @Parameter(itemAlias = "textAnnotation", description = "Specifies text annotation(s) to be added in the target image.")
     TextAnnotation[] textAnnotations;
+
+    @Parameter(description = "Add mask layer(s) to the target image.", defaultValue = "false")
+    private boolean maskLayer;
+
+    @Parameter(description = "Add contour layer to the target image.", defaultValue = "false")
+    private boolean contourLayer;
+
+    @Parameter(description = "Add text annotation layer to the target image.", defaultValue = "false")
+    private boolean textAnnotationLayer;
 
     @Parameter(description = "Add graticule layer to the target image.", defaultValue = "false")
     private boolean graticuleLayer;
@@ -341,9 +343,11 @@ public class WriteImageOp extends Operator {
 
         //write3(imageFormat, productSceneView, entireImageSelected, file1);
 
-        if(textAnnotations.length>0) {
-            productSceneView.setPinOverlayEnabled(true);
-            addTextAnnotationLayer(productSceneView);
+        if (textAnnotationLayer) {
+            if (textAnnotations.length > 0) {
+                productSceneView.setPinOverlayEnabled(true);
+                addTextAnnotationLayer(productSceneView);
+            }
         }
 
         if (graticuleLayer) {
@@ -372,8 +376,10 @@ public class WriteImageOp extends Operator {
 //        writeImage(imageFormat, finalImage, productSceneView, entireImageSelected, file3);
 
 
-        if (masks.length > 0) {
-            this.applyMask(productSceneView);
+        if (maskLayer) {
+            if (masks.length > 0) {
+                this.applyMask(productSceneView);
+            }
         }
 
         write3(imageFormat, productSceneView, entireImageSelected, file4);
@@ -769,6 +775,7 @@ public class WriteImageOp extends Operator {
 
 //            PixelPos pixelPos = new PixelPos((float) Math.random() * data_bounds.width,
 //                    (float) Math.random() * data_bounds.height);
+            geoPos = new GeoPos(textAnnotations[i].getTextAnnotationLatLon()[0], textAnnotations[i].getTextAnnotationLatLon()[0]);
             pixelPos = new PixelPos(textAnnotations[i].getTextAnnotationLocation()[0], textAnnotations[i].getTextAnnotationLocation()[1]);
             //pixelPos = new PixelPos((float) Math.random() * data_bounds.width, (float) Math.random() * data_bounds.height);
 
@@ -857,8 +864,10 @@ public class WriteImageOp extends Operator {
         private int textAnnotationFontSize;
         @Parameter(description = "The content of a text annotation.")
         private int[] textAnnotationFontColor;
-        @Parameter(description = "The location to place a text annotation.")
+        @Parameter(description = "The pixel location to place a text annotation.")
         private int[] textAnnotationLocation;
+        @Parameter(description = "The lat/lon specification to place a text annotation.")
+        private float[] textAnnotationLatLon;
 
         public TextAnnotation() {
         }
@@ -870,7 +879,8 @@ public class WriteImageOp extends Operator {
                               int textAnnotationFontStyle,
                               int textAnnotationFontSize,
                               int[] textAnnotationFontColor,
-                              int[] textAnnotationLocation) {
+                              int[] textAnnotationLocation,
+                              float[] textAnnotationLatLon) {
             this.textAnnotationName = textAnnotationName;
             this.textAnnotationDescription = textAnnotationDescription;
             this.textAnnotationContent = textAnnotationContent;
@@ -879,6 +889,7 @@ public class WriteImageOp extends Operator {
             this.textAnnotationFontSize = textAnnotationFontSize;
             this.textAnnotationFontColor = textAnnotationFontColor;
             this.textAnnotationLocation = textAnnotationLocation;
+            this.textAnnotationLatLon = textAnnotationLatLon;
         }
 
         public String getTextAnnotationName() {
@@ -943,6 +954,14 @@ public class WriteImageOp extends Operator {
 
         public void setTextAnnotationFontStyle(int textAnnotationFontStyle) {
             this.textAnnotationFontStyle = textAnnotationFontStyle;
+        }
+
+        public float[] getTextAnnotationLatLon() {
+            return textAnnotationLatLon;
+        }
+
+        public void setTextAnnotationLatLon(float[] textAnnotationLatLon) {
+            this.textAnnotationLatLon = textAnnotationLatLon;
         }
     }
 
