@@ -304,7 +304,7 @@ public class WriteImageOp extends Operator {
         // write Image
         //JAI.create("filestore", outputImage, filePath, formatName, null);
         writeImage2(band);
-        System.out.println(debug.toString());
+        //System.out.println(debug.toString());
     }
 
     private void writeImage2(Band sourceBand) {
@@ -559,8 +559,6 @@ public class WriteImageOp extends Operator {
         Layer maskCollectionLayer = productSceneView.getSceneImage().getMaskCollectionLayer(true);
         maskCollectionLayer.setVisible(true);
         int existingLayerCount = maskCollectionLayer.getChildren().size();
-        System.out.print("mask layers: ");
-        System.out.println(maskCollectionLayer.getChildren().size());
         Operator readerOp = new ReadOp();
         readerOp.setParameter("file", new File(maskProductFilePath));
         readerOp.initialize();
@@ -604,15 +602,7 @@ public class WriteImageOp extends Operator {
         List<Layer> layers = productSceneView.getRootLayer().getChildren();
         List<Layer> maskLayers = maskCollectionLayer.getChildren();
 
-        for (Layer layer : layers) {
-            if (layer instanceof org.esa.beam.glayer.MaskCollectionLayer) {
-                System.out.println("mask layers: " + layer.getChildren().size());
-
-            }
-        }
-
         for (Layer layer : maskLayers)
-
         {
             layer.setVisible(true);
             layer.setTransparency(0);
