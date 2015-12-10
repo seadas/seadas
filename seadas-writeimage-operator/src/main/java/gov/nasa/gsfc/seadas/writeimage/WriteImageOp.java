@@ -599,7 +599,7 @@ public class WriteImageOp extends Operator {
                 maskCollectionLayer.getChildren().add(i + existingLayerCount, getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName)));
             }
         }
-        List<Layer> layers = productSceneView.getRootLayer().getChildren();
+
         List<Layer> maskLayers = maskCollectionLayer.getChildren();
 
         for (Layer layer : maskLayers)
