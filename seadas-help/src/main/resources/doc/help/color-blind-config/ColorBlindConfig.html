@@ -1,0 +1,276 @@
+<html>
+<head>
+    <title>SeaDAS Help - Universal Palettes & Color Blind Configuration</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Universal Palettes & Color Blind Configuration
+        </td>
+
+        <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png" border="0"></a>
+        </td>
+    </tr>
+</table>
+
+
+<br>
+
+<p>
+    SeaDAS 7.3 adds 3 new "universal" palettes (color blind compliant) and the ability to easily configure the default
+    color schemes for color blind compliance.
+    <br><br>
+
+</p>
+<hr>
+<h4>The Science Universal Palette</h4>
+
+<p>
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/universal_palette.png"  border="0"> <br>
+            <i>Image 1. The Science Universal Palette</i>
+        </td>
+    </tr>
+</table>
+<br><br>
+
+The above image depicts the SeaDAS Science Universal Palette <b>(file=science_universal.cpd)</b> which is a
+    color-blind compliant palette. This palette was designed to optimize and maximize the number of colors being used to
+    ensure an optimum dynamic range while maintaining
+    compliance with the 3 primary color blindness types. The idea here is to have a palette which transitions smoothly
+    and evenly from left to right (low to high). The palette purposely avoids the use of grayscale colors, so that these
+    can be used for land, nodata, cloud, and other mask diplays.
+
+<br><br>
+    The 3 images which follow show simulations of how the color palette would look to various types of
+    color blind people. This palette passes all simulations with the goal of smooth and even transitions being
+    maintained.</p>
+<br>
+
+
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/universal_deuteranope.png"  border="0"> <br>
+            <i>Image 2. Universal Palette (Deuteranope Simulation)</i>
+        </td>
+    </tr>
+</table>
+<br><br>
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/universal_protanope.png"  border="0"> <br>
+            <i>Image 3. Universal Palette (Protanope Simulation)</i>
+        </td>
+    </tr>
+</table>
+<br><br>
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/universal_tritanope.png"  border="0"> <br>
+            <i>Image 4. Universal Palette (Tritanope Simulation)</i>
+        </td>
+    </tr>
+</table>
+<br><br>
+
+The following image illustrates the intensities of the red, green, and blue channels for this palette.
+Of primary note is that the blue channel tracks essentially inversely to the other two channels.  The variance of the red
+and green channels at times helps to bring out color variations for the non-color blind person, while for the color-blind person
+the yellow channel (red + green) essentially continues to track smoothly.  To support protanope compliance the right-side of
+the palette goes to red.
+<br><br>
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/plot_linear.png"  border="0"> <br>
+            <i>Image 5. Linear plot</i>
+        </td>
+    </tr>
+</table>
+
+<br><br>
+
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/standard_uni_example.png"  border="0"> <br>
+            <i>Image 6. MODIS Aqua Chlorophyll Scene (using universal palette)</i>
+        </td>
+    </tr>
+</table>
+<br><br><br>
+
+<br>
+<hr>
+<h4>The Rainbow Palette</h4>
+<br>
+
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/rainbow.png"  border="0"> <br>
+            <i>Image 7. Rainbow Palette</i>
+        </td>
+    </tr>
+</table>
+<br>
+The above image depicts a palette which emulates the solar spectrum (for instance the colors of the rainbow).  This
+palette has problems when viewed by color blind people as can be seen in the follwing simulation images.<br><br>
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/rainbow_deuteranope.png"  border="0"> <br>
+            <i>Image 8. Rainbow Palette (Deuteranope Simulation)</i>
+        </td>
+    </tr>
+</table>
+<br><br>
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/rainbow_protanope.png"  border="0"> <br>
+            <i>Image 9. Rainbow Palette (Protanope Simulation)</i>
+        </td>
+    </tr>
+</table>
+<br><br>
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/rainbow_tritanope.png"  border="0"> <br>
+            <i>Image 10. Rainbow Palette (Tritanope Simulation)</i>
+        </td>
+    </tr>
+</table>
+<br><br>
+
+
+A linear plot shown below illustrates this tracking problem associated with the "yellow" channel.
+<br><br>
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/plot_rainbow_linear.png"  border="0"> <br>
+            <i>Image 11. Linear plot of rainbow palette (plus yellow)</i>
+        </td>
+    </tr>
+</table>
+<br><br>
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/oc_standard_example.png"  border="0"> <br>
+            <i>Image 12. MODIS Aqua Chlorophyll Scene (using rainbow palette)</i>
+        </td>
+    </tr>
+</table>
+<br><br><br>
+</p>
+
+
+
+<br><br><br>
+
+<hr>
+<h4>The Anomalies Universal Palettes</h4>
+<br>
+
+<p>
+    Additionally SeaDAS provides 2 color blind compliant anomalies palettes which are essentially derived from the
+    SeaDAS Standard Universal.  These are: <b>file=anomalies1_universal.cpd</b> and <b>file=anomalies2_universal.cpd</b>.
+
+<br><br>
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/anomaly_soft.png" border="0"> <br>
+            <i>Image 13. SeaDAS Anomalies Universal Pallete</i>
+            <br><br><br><br>
+        </td>
+    </tr>
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/anomaly_hard.png" border="0"> <br>
+            <i>Image 14. SeaDAS Anomalies (Hard) Universal Pallete</i>
+            <br><br>
+        </td>
+    </tr>
+</table>
+</p>
+
+<br><br><br>
+
+<hr>
+<h4>How to Configure</h4>
+<br>
+
+<p>
+    The color blind compliant palette comes automatically with SeaDAS and is readily selectable as a palette within the
+    Color Manager window.
+    <br><br>
+    However, if you wish to configure for color blind compliance the default color schemes which automatically get
+    applied to each open raster image based on the band's name then you can do the following:
+    <br><br>
+    Step 1: Make sure all instances of SeaDAS are closed.
+    <br><br>
+    Step 2: Execute the following two commands from the command line:
+    <pre>
+    % cp ~/.seadas/beam-ui/auxdata/color-palettes-extras/scheme_defaults_universal.txt ~/.seadas/beam-ui/auxdata/color-palettes/scheme_defaults.txt
+    % cp ~/.seadas/beam-ui/auxdata/color-palettes-extras/scheme_selector_universal.txt ~/.seadas/beam-ui/auxdata/color-palettes/scheme_selector.txt
+    </pre>
+</p>
+
+<br>
+<hr>
+<h4>How to Un-Configure</h4>
+<br>
+
+<p>
+    At any time in the future you can go back to the original configuration.
+    <br><br>
+    Step 1: Make sure all instances of SeaDAS are closed.
+<br><br>
+    Step 2: Execute the following two commands from the command line:
+    <pre>
+    % rm ~/.seadas/beam-ui/auxdata/color-palettes/scheme_defaults.txt
+    % rm ~/.seadas/beam-ui/auxdata/color-palettes/scheme_selector.txt
+    </pre>
+Step 3: Open SeaDAS (this will automatically re-create the files with the default values.
+
+</p>
+<br>
+
+
+<br><br> <br>
+
+
+
+<br>
+<hr><h4>Note</h4>
+<br>
+<p>
+    The user may of course, readily edit the parameters contained within the scheme_defaults.txt file and the scheme_selector.txt
+    file as they wish.  The user may also add in any other color blind palette of their design or choosing.
+</p>
+
+</body>
+</html>
