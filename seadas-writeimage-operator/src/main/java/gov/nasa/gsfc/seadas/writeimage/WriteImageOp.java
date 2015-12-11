@@ -1,9 +1,6 @@
 package gov.nasa.gsfc.seadas.writeimage;
 
-import com.bc.ceres.binding.Property;
-import com.bc.ceres.binding.PropertyDescriptor;
 import com.bc.ceres.binding.PropertySet;
-import com.bc.ceres.binding.accessors.DefaultPropertyAccessor;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glayer.*;
 import com.bc.ceres.glayer.support.ImageLayer;
@@ -11,8 +8,6 @@ import com.bc.ceres.glayer.support.LayerUtils;
 import com.bc.ceres.grender.Viewport;
 import com.bc.ceres.grender.support.BufferedImageRendering;
 import com.bc.ceres.grender.support.DefaultViewport;
-import com.bc.ceres.swing.figure.Figure;
-import com.bc.ceres.swing.figure.FigureCollection;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
 import gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction;
@@ -29,10 +24,8 @@ import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.framework.ui.product.*;
 import org.esa.beam.glayer.ColorBarLayerType;
-import org.esa.beam.glayer.GraticuleLayer;
-import org.esa.beam.glayer.GraticuleLayerType;
 import org.esa.beam.glayer.MaskLayerType;
-import org.esa.beam.jai.ImageManager;
+import org.esa.beam.gpf.operators.standard.ReadOp;
 import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.PropertyMap;
 import org.esa.beam.util.geotiff.GeoTIFF;
@@ -42,7 +35,6 @@ import org.esa.beam.visat.actions.ShowColorBarOverlayAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.media.jai.JAI;
 import javax.media.jai.operator.BandSelectDescriptor;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -57,7 +49,6 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -65,7 +56,7 @@ import java.util.List;
  * @author kutila
  * @author aynur abdurazik
  */
-@OperatorMetadata(alias = "WriteImage", version = "0.4", copyright = "(c) 2014 University of Queensland", authors = "Kutila G",
+@OperatorMetadata(alias = "WriteImage", version = "1.0", copyright = "(c) 2014 University of Queensland", authors = "Kutila G, Aynur Abdurazik",
         description = "Creates a color image from a single source band.")
 public class WriteImageOp extends Operator {
 
@@ -101,45 +92,45 @@ public class WriteImageOp extends Operator {
     @SourceProduct(alias = "source", description = "Primary source input from which an RGB image is to be generated.")
     private Product sourceProduct;
 
-    @SourceProduct(alias = "mask", description = "Mask product to be applied.")
-    private Product maskProduct;
-
     @TargetProduct
     private Product targetProduct;
+
+    @Parameter(alias = "maskFilePath", description = "Source file to generate image masks. It can be a separate file or the same input source file.")
+    private String maskProductFilePath;
 
     @Parameter(description = "Name of band containing data. If not provided, first band in the source product is used.")
     private String sourceBandName;
 
 //    @Parameter(description = "Mask color as an RGB value. Defaults to 192,192,192.")
-//    private int[] maskColor;
+//    private int[] imageMaskColor;
 //
 //    @Parameter(description = "BandMath value for mask creation. Leave empty if not using a mask."
-//            + " The value 'maskband > 1 ? 1 : 0' masks positions where the mask has values larger than 1.")
-//    private String maskExpression;
+//            + " The value 'maskband > 1 ? 1 : 0' imageMasks positions where the mask has values larger than 1.")
+//    private String imageMaskExpression;
 
-    @Parameter(itemAlias = "mask", description = "Specifies the mask layer(s) in the target image.")
-    ImageMask[] masks;
+    @Parameter(itemAlias = "imageMask", description = "Specifies the mask layer(s) in the target image.")
+    ImageMask[] imageMasks = {};
 
     @Parameter(itemAlias = "contour", description = "Specifies the contour(s) in the target image.")
-    Contour[] contours;
+    Contour[] contours = {};
 
     @Parameter(itemAlias = "textAnnotation", description = "Specifies text annotation(s) to be added in the target image.")
-    TextAnnotation[] textAnnotations;
+    TextAnnotation[] textAnnotations = {};
+
+    @Parameter(description = "Add mask layer(s) to the target image.", defaultValue = "false")
+    private boolean maskLayer;
+
+    @Parameter(description = "Add contour layer to the target image.", defaultValue = "false")
+    private boolean contourLayer;
+
+    @Parameter(description = "Add text annotation layer to the target image.", defaultValue = "false")
+    private boolean textAnnotationLayer;
+
+    @Parameter(description = "Add graticule layer to the target image.", defaultValue = "false")
+    private boolean graticuleLayer;
 
     @Parameter(description = "The file to which the image is written.")
     private String filePath;
-    @Parameter(description = "The file to which the image 1 is written.")
-    private String filePath1;
-
-    @Parameter(description = "The file to which the image 2 is written.")
-    private String filePath2;
-
-    @Parameter(description = "The file to which the image 3 is written.")
-    private String filePath3;
-
-    @Parameter(description = "The file to which the image 4 is written.")
-    private String filePath4;
-
     @Parameter(description = "Output image format", defaultValue = "png")
     private String formatName;
 
@@ -203,8 +194,6 @@ public class WriteImageOp extends Operator {
             this.sourceBand = this.sourceProduct.getBandAt(0);
             this.sourceBandName = this.sourceBand.getName();
         }
-        //final int sceneRasterWidth = this.sourceProduct.getSceneRasterWidth();
-        //final int sceneRasterHeight = this.sourceProduct.getSceneRasterHeight();
 
         final int sceneRasterWidth = 1199;
         final int sceneRasterHeight = 951;
@@ -309,69 +298,51 @@ public class WriteImageOp extends Operator {
         defaultImageInfo.setHistogramMatching(ImageInfo.HistogramMatching.None);
 
         // construct Image
-        ImageManager imageManager = ImageManager.getInstance();
-        RenderedImage outputImage = imageManager.createColoredBandImage(bands, defaultImageInfo, level);
+        //ImageManager imageManager = ImageManager.getInstance();
+        //RenderedImage outputImage = imageManager.createColoredBandImage(bands, defaultImageInfo, level);
 
         // write Image
-        JAI.create("filestore", outputImage, filePath, formatName, null);
+        //JAI.create("filestore", outputImage, filePath, formatName, null);
         writeImage2(band);
-        System.out.println(debug.toString());
+        //System.out.println(debug.toString());
     }
 
     private void writeImage2(Band sourceBand) {
 
         final StringBuilder debug = new StringBuilder();
         debug.append("\n====\n");
-
-//        ApplicationDescriptor ad = new DefaultApplicationDescriptor();
-//        VisatApp visatApp = new VisatApp(ad);
         PropertyMap configuration = new PropertyMap();
         ProductSceneImage productSceneImage = new ProductSceneImage(sourceBand, configuration, this.pm);
         ProductSceneView productSceneView = new ProductSceneView(productSceneImage);
 
         boolean entireImageSelected = true;
-        final File file1 = new File(filePath1);
-        final File file2 = new File(filePath2);
-        final File file3 = new File(filePath3);
-        final File file4 = new File(filePath4);
+        final File file = new File(filePath);
         String imageFormat = "PNG";
 
-        //write3(imageFormat, productSceneView, entireImageSelected, file1);
-        productSceneView.setPinOverlayEnabled(true);
-        addTextAnnotationLayer(productSceneView);
-        productSceneView.setGraticuleOverlayEnabled(true);
-        //productSceneView.getProduct().getBandAt(0).getImageInfo().setNoDataColor(Color.RED);
-
-        //productSceneImage.getImageInfo().setNoDataColor(Color.WHITE);
-        //productSceneView.setNoDataOverlayEnabled(true);
-        //productSceneImage.getImageInfo().setNoDataColor(Color.WHITE);
-        //write3(imageFormat, productSceneView, entireImageSelected, file2);
-
-        //getContourLayer(productSceneView, sourceBand);
-
-        //write3(imageFormat, productSceneView, entireImageSelected, file3);
-
-
-        //write3(imageFormat, productSceneView, entireImageSelected, file4);
-
-//        RenderedImage sourceImage = createImage(imageFormat, productSceneView);
-//
-//        //ImageLayer finalImageLayer = addLayer(sourceImage, layers);
-//        RenderedImage finalImage = addLayers(sourceImage, layers);
-//
-//
-//        writeImage(imageFormat, finalImage, productSceneView, entireImageSelected, file3);
-
-
-        if (masks.length > 0) {
-            this.applyMask(productSceneView);
+        if (textAnnotationLayer) {
+            if (textAnnotations.length > 0) {
+                productSceneView.setPinOverlayEnabled(true);
+                addTextAnnotationLayer(productSceneView);
+            }
         }
 
+        if (graticuleLayer) {
+            productSceneView.setGraticuleOverlayEnabled(true);
+        }
 
-        //productSceneView.setMaskOverlayEnabled(true);
-        //System.out.print("mask layer ");
-        //System.out.println(getMaskLayer(sourceProduct.getMaskGroup().get(0)).getId());
-        write3(imageFormat, productSceneView, entireImageSelected, file4);
+        if (maskLayer) {
+            if (imageMasks.length > 0) {
+                this.applyMask(productSceneView);
+            }
+        }
+
+        if (contourLayer) {
+            if (contours.length > 0) {
+                this.addContourLayer(productSceneView);
+            }
+        }
+
+        write3(imageFormat, productSceneView, entireImageSelected, file);
         System.out.println(debug.toString());
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         //get current date time with Date()
@@ -588,24 +559,26 @@ public class WriteImageOp extends Operator {
         Layer maskCollectionLayer = productSceneView.getSceneImage().getMaskCollectionLayer(true);
         maskCollectionLayer.setVisible(true);
         int existingLayerCount = maskCollectionLayer.getChildren().size();
-        System.out.print("mask layers: ");
-        System.out.println(maskCollectionLayer.getChildren().size());
-        for (int i = 0; i < masks.length; i++) {
-            imageMask = masks[i];
+        Operator readerOp = new ReadOp();
+        readerOp.setParameter("file", new File(maskProductFilePath));
+        readerOp.initialize();
+        Product maskProduct = readerOp.getTargetProduct();
+        for (int i = 0; i < imageMasks.length; i++) {
+            imageMask = imageMasks[i];
             //extract mask band, rename it, and add to the source product
-            maskSourceBandName = imageMask.getMaskSourceBandName();
+            maskSourceBandName = imageMask.getImageMaskSourceBandName();
             maskBand = maskProduct.getBand(maskSourceBandName);
             maskBand.setName(maskSourceBandName);
             if (!sourceProduct.containsBand(maskSourceBandName)) {
                 sourceProduct.addBand(maskBand);
             }
-            maskName = imageMask.getMaskName();
-            maskDescription = imageMask.getMaskDescription();
+            maskName = imageMask.getImageMaskName();
+            maskDescription = imageMask.getImageMaskDescription();
 
-            maskExpression = imageMask.getMaskExpression();
+            maskExpression = imageMask.getImageMaskExpression();
 
             maskColorValueArray = imageMask.getColor();
-            maskTransparency = imageMask.getMaskTransparency();
+            maskTransparency = imageMask.getImageMaskTransparency();
 
             if (maskExpression != null && maskExpression.length() > 0) {
 
@@ -622,31 +595,18 @@ public class WriteImageOp extends Operator {
                         maskColor,
                         maskTransparency);
 
-                //this.maskProduct.getMaskGroup().add(i, mask);
                 this.sourceProduct.getMaskGroup().add(i + existingLayerCount, mask);
                 maskCollectionLayer.getChildren().add(i + existingLayerCount, getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName)));
-                //productSceneView.getRootLayer().getChildren().add(i, getMaskAsLayer(this.sourceProduct.getMaskGroup().get(maskName)));
             }
         }
-        List<Layer> layers = productSceneView.getRootLayer().getChildren();
+
         List<Layer> maskLayers = maskCollectionLayer.getChildren();
 
-        for (Layer layer : layers) {
-            if (layer instanceof org.esa.beam.glayer.MaskCollectionLayer) {
-                System.out.println("mask layers: " + layer.getChildren().size());
-
-            }
-        }
-
-        System.out.print("mask layers: ");
-        System.out.println(maskLayers.size());
         for (Layer layer : maskLayers)
-
         {
-            System.out.println(layer.getName() + " " + layer.isVisible() + " " + layer.getId() + " " + maskLayers.indexOf(layer));
             layer.setVisible(true);
             layer.setTransparency(0);
-            //if (layer.equals(maskLayers.get(maskLayers.size()-1))) break;
+            if (layer.equals(maskLayers.get(maskLayers.size()-1))) break;
         }
         productSceneView.setMaskOverlayEnabled(true);
     }
@@ -701,110 +661,76 @@ public class WriteImageOp extends Operator {
             if (sourceProduct.getVectorDataGroup().contains(vectorDataNode.getName())) {
                 sourceProduct.getVectorDataGroup().remove(sourceProduct.getVectorDataGroup().get(vectorDataNode.getName()));
             }
-            //sourceProduct.getVectorDataGroup().add(vectorDataNode);
             productSceneView.getProduct().getVectorDataGroup().add(vectorDataNode);
             if (productSceneView != null) {
-                //productSceneView.getRootLayer().getChildren().add(vectorDataNode);
                 productSceneView.setLayersVisible(vectorDataNode);
             }
             final LayerFilter nodeFilter = VectorDataLayerFilterFactory.createNodeFilter(vectorDataNode);
-            System.out.println("vector filter " + nodeFilter.toString());
-
-
             Layer vectorDataLayer = LayerUtils.getChildLayer(productSceneView.getRootLayer(),
                     LayerUtils.SEARCH_DEEP,
                     nodeFilter);
             List<Layer> children = productSceneView.getRootLayer().getChildren();
 
-            for (Layer childLayer : children) {
-                //System.out.println("layer height :  " + childLayer.getModelBounds().getHeight());
-                System.out.println("child layer name : " + childLayer.getName());
-                if (childLayer.getName().equals("Masks")) {
-                    System.out.println("mask layer is visible: " + childLayer.isVisible() + " " + childLayer.getChildren().size() + " " + children.indexOf(childLayer));
-                    List<Layer> masks = childLayer.getChildren();
-                    for (Layer gc : masks) {
-                        System.out.println(gc.getName());
-                    }
-                }
-//                Layer grandchildren = (Layer) childLayer.getChildren();
-//                if(grandchildren!=null) {
-//                    System.out.println("grand child layer name : " + grandchildren.getName());
-//                }
-            }
             if (vectorDataLayer != null) {
-                System.out.println("vector data layer is not null");
                 vectorDataLayer.setVisible(true);
             } else {
-                System.out.println("vector data layer is null " + vectorDataNode.toString());
+                //System.out.println("vector data layer is null " + vectorDataNode.toString());
             }
 
         }
 
     }
 
+    /**
+     * Adds annotation layer.
+     * @param productSceneView
+     */
     public void addTextAnnotationLayer(ProductSceneView productSceneView) {
 
         Product sourceProduct = productSceneView.getProduct();
 
         TextAnnotationDescriptor descriptor = TextAnnotationDescriptor.getInstance();
 
-        PixelPos pixelPos;
+        PixelPos pixelPos = null;
         GeoCoding geoCoding = sourceProduct.getGeoCoding();
-        GeoPos geoPos;
+        GeoPos geoPos = null;
         Placemark textAnnotationMark;
         Font textFont;
         Color textColor;
         Color textOutlineColor;
-        int fontStyle;
-
-        Rectangle data_bounds = sourceBand.getGeophysicalImage().getBounds();
-        System.out.println("text annotations size: " + textAnnotations.length);
+        float[] latlon;
+        int[] pixels;
         for (int i = 0; i < textAnnotations.length; i++) {
-
-
-//            PixelPos pixelPos = new PixelPos((float) Math.random() * data_bounds.width,
-//                    (float) Math.random() * data_bounds.height);
-            pixelPos = new PixelPos(textAnnotations[i].getTextAnnotationLocation()[0], textAnnotations[i].getTextAnnotationLocation()[1]);
-            //pixelPos = new PixelPos((float) Math.random() * data_bounds.width, (float) Math.random() * data_bounds.height);
-
-            geoPos = geoCoding.getGeoPos(pixelPos, null);
-            textAnnotationMark = Placemark.createPointPlacemark(descriptor,
-                    textAnnotations[i].getTextAnnotationName(),
-                    textAnnotations[i].getTextAnnotationContent(),
-                    "This won't show!",
-                    pixelPos,
-                    geoPos,
-                    geoCoding);
-            Collection<org.opengis.feature.Property> properties = textAnnotationMark.getFeature().getProperties();
-//
-//            for (org.opengis.feature.Property property:properties){
-//                System.out.println(property.getName() + " " + property.getDescriptor() + property.getType() + property.getValue());
-//
-//            }
-
-            sourceProduct.getTextAnnotationGroup().add(textAnnotationMark);
-
-            //These can be specified in the xml file
-//            Font textFont = new Font("Helvetica", Font.PLAIN, 11);
-//            Color textColor = Color.YELLOW;
-//            Color textOutlineColor = Color.BLACK;
-            //System.out.println(textAnnotations[i].getTextAnnotationFontName() + " " + textAnnotations[i].getTextAnnotationFontStyle() + " " + textAnnotations[i].getTextAnnotationFontSize());
-            //System.out.println(textAnnotations[i].getTextAnnotationFontColor()[0] + " " + textAnnotations[i].getTextAnnotationFontColor()[1] + " " + textAnnotations[i].getTextAnnotationFontColor()[2]);
-            textFont = new Font(textAnnotations[i].getTextAnnotationFontName(), textAnnotations[i].getTextAnnotationFontStyle(), textAnnotations[i].getTextAnnotationFontSize());
-            textColor = new Color(textAnnotations[i].getTextAnnotationFontColor()[0], textAnnotations[i].getTextAnnotationFontColor()[1], textAnnotations[i].getTextAnnotationFontColor()[2]);
-            textOutlineColor = Color.BLACK;
-            //System.out.println(sourceProduct.getTextAnnotationGroup().get(0).getFeature().getClass().getName() + "style: " + textAnnotationMark.getStyleCss());
-            if (textAnnotationMark.getFeature() instanceof SimpleFeaturePointFigure) {
-                ((SimpleFeaturePointFigure) textAnnotationMark.getFeature()).updateFontColor(textFont, textColor, textOutlineColor);
+            latlon = textAnnotations[i].getTextAnnotationLatLon();
+            pixels = textAnnotations[i].getTextAnnotationLocation();
+            if (latlon != null && latlon.length > 0) {
+                geoPos = new GeoPos(latlon[0], latlon[1]);
+                pixelPos = geoCoding.getPixelPos(geoPos, null);
+            } else if (pixels != null && pixels.length > 0) {
+                pixelPos = new PixelPos(pixels[0], pixels[1]);
+                geoPos = geoCoding.getGeoPos(pixelPos, null);
             }
-            //textAnnotationMark.get
 
-//
-            //setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
+            if (pixelPos != null && geoPos !=null ) {
+                textAnnotationMark = Placemark.createPointPlacemark(descriptor,
+                        textAnnotations[i].getTextAnnotationName(),
+                        textAnnotations[i].getTextAnnotationContent(),
+                        "This won't show!",
+                        pixelPos,
+                        geoPos,
+                        geoCoding);
+
+                sourceProduct.getTextAnnotationGroup().add(textAnnotationMark);
+                textFont = new Font(textAnnotations[i].getTextAnnotationFontName(), textAnnotations[i].getTextAnnotationFontStyle(), textAnnotations[i].getTextAnnotationFontSize());
+                textColor = new Color(textAnnotations[i].getTextAnnotationFontColor()[0], textAnnotations[i].getTextAnnotationFontColor()[1], textAnnotations[i].getTextAnnotationFontColor()[2]);
+                textOutlineColor = Color.BLACK;
+                if (textAnnotationMark.getFeature() instanceof SimpleFeaturePointFigure) {
+                    ((SimpleFeaturePointFigure) textAnnotationMark.getFeature()).updateFontColor(textFont, textColor, textOutlineColor);
+                }
+            }
             //this will make the text annotation layer visible
             //setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
         }
-        //productSceneView.setPinOverlayEnabled(true);
     }
 
 //    private void setTextAnnotationFont(ProductSceneView productSceneView, Font textFont, Color textColor, Color textOutlineColor) {
@@ -831,7 +757,11 @@ public class WriteImageOp extends Operator {
 //        }
 //    }
 
+    private void addContourLayer(ProductSceneView productSceneView) {
+        for (int i = 0; i< contours.length; i++) {
 
+        }
+    }
     private int toInteger(double value) {
         return MathUtils.floorInt(value);
     }
@@ -852,8 +782,10 @@ public class WriteImageOp extends Operator {
         private int textAnnotationFontSize;
         @Parameter(description = "The content of a text annotation.")
         private int[] textAnnotationFontColor;
-        @Parameter(description = "The location to place a text annotation.")
+        @Parameter(description = "The pixel location to place a text annotation.")
         private int[] textAnnotationLocation;
+        @Parameter(description = "The lat/lon specification to place a text annotation.")
+        private float[] textAnnotationLatLon;
 
         public TextAnnotation() {
         }
@@ -865,7 +797,8 @@ public class WriteImageOp extends Operator {
                               int textAnnotationFontStyle,
                               int textAnnotationFontSize,
                               int[] textAnnotationFontColor,
-                              int[] textAnnotationLocation) {
+                              int[] textAnnotationLocation,
+                              float[] textAnnotationLatLon) {
             this.textAnnotationName = textAnnotationName;
             this.textAnnotationDescription = textAnnotationDescription;
             this.textAnnotationContent = textAnnotationContent;
@@ -874,6 +807,7 @@ public class WriteImageOp extends Operator {
             this.textAnnotationFontSize = textAnnotationFontSize;
             this.textAnnotationFontColor = textAnnotationFontColor;
             this.textAnnotationLocation = textAnnotationLocation;
+            this.textAnnotationLatLon = textAnnotationLatLon;
         }
 
         public String getTextAnnotationName() {
@@ -939,6 +873,14 @@ public class WriteImageOp extends Operator {
         public void setTextAnnotationFontStyle(int textAnnotationFontStyle) {
             this.textAnnotationFontStyle = textAnnotationFontStyle;
         }
+
+        public float[] getTextAnnotationLatLon() {
+            return textAnnotationLatLon;
+        }
+
+        public void setTextAnnotationLatLon(float[] textAnnotationLatLon) {
+            this.textAnnotationLatLon = textAnnotationLatLon;
+        }
     }
 
     public static class Contour {
@@ -987,73 +929,73 @@ public class WriteImageOp extends Operator {
     public static class ImageMask {
 
         @Parameter(description = "Name of band that is used to create a mask. If not provided, first band in the mask product is used.")
-        private String maskSourceBandName;
+        private String imageMaskSourceBandName;
         @Parameter(description = "Name of the mask.")
-        private String maskName;
+        private String imageMaskName;
         @Parameter(description = "Description of the mask to be added as a layer on the target image.")
-        private String maskDescription;
+        private String imageMaskDescription;
         @Parameter(description = "BandMath value for mask creation. Leave empty if not using a mask."
-                + " The value 'maskband > 1 ? 1 : 0' masks positions where the mask has values larger than 1.")
-        private String maskExpression;
+                + " The value 'maskband > 1 ? 1 : 0' imageMasks positions where the mask has values larger than 1.")
+        private String imageMaskExpression;
         @Parameter(description = "Mask color as an RGB value. Defaults to 192,192,192.")
-        private int[] maskColor = DEFAULT_MASK_COLOR;
+        private int[] imageMaskColor = DEFAULT_MASK_COLOR;
         @Parameter(description = "Transparency of the mask in the target image. Defaults to 0.")
-        private double maskTransparency = DEFAULT_MASK_TRANSPARENCY;
+        private double imageMaskTransparency = DEFAULT_MASK_TRANSPARENCY;
 
         public ImageMask() {
         }
 
-        public ImageMask(String maskExpression, int[] maskColor) {
-            this.maskExpression = maskExpression;
-            this.maskColor = maskColor;
+        public ImageMask(String imageMaskExpression, int[] imageMaskColor) {
+            this.imageMaskExpression = imageMaskExpression;
+            this.imageMaskColor = imageMaskColor;
         }
 
-        public String getMaskExpression() {
-            return maskExpression;
+        public String getImageMaskExpression() {
+            return imageMaskExpression;
         }
 
-        public void setMaskExpression(String maskExpression) {
-            this.maskExpression = maskExpression;
+        public void setImageMaskExpression(String imageMaskExpression) {
+            this.imageMaskExpression = imageMaskExpression;
         }
 
         public int[] getColor() {
-            return maskColor;
+            return imageMaskColor;
         }
 
         public void setColor(int[] maskColor) {
-            this.maskColor = maskColor;
+            this.imageMaskColor = maskColor;
         }
 
-        public String getMaskSourceBandName() {
-            return maskSourceBandName;
+        public String getImageMaskSourceBandName() {
+            return imageMaskSourceBandName;
         }
 
-        public void setMaskSourceBandName(String maskSourceBandName) {
-            this.maskSourceBandName = maskSourceBandName;
+        public void setImageMaskSourceBandName(String imageMaskSourceBandName) {
+            this.imageMaskSourceBandName = imageMaskSourceBandName;
         }
 
-        public String getMaskName() {
-            return maskName;
+        public String getImageMaskName() {
+            return imageMaskName;
         }
 
-        public void setMaskName(String maskName) {
-            this.maskName = maskName;
+        public void setImageMaskName(String imageMaskName) {
+            this.imageMaskName = imageMaskName;
         }
 
-        public String getMaskDescription() {
-            return maskDescription;
+        public String getImageMaskDescription() {
+            return imageMaskDescription;
         }
 
-        public void setMaskDescription(String maskDescription) {
-            this.maskDescription = maskDescription;
+        public void setImageMaskDescription(String imageMaskDescription) {
+            this.imageMaskDescription = imageMaskDescription;
         }
 
-        public double getMaskTransparency() {
-            return maskTransparency;
+        public double getImageMaskTransparency() {
+            return imageMaskTransparency;
         }
 
-        public void setMaskTransparency(double maskTransparency) {
-            this.maskTransparency = maskTransparency;
+        public void setImageMaskTransparency(double imageMaskTransparency) {
+            this.imageMaskTransparency = imageMaskTransparency;
         }
     }
 }
