@@ -41,6 +41,7 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
         Box-tie correction has now been added.
 
         Color Palettes
+            - Universal palette (color blind compliant) added along with associated color scheme default configurations.
             - Chlorophyll Blue-Green palette and scheme added.
             - Palette export now sorts entries in the exported text file
             - User can now remove the default color palettes
@@ -108,16 +109,18 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
             - added new triple-window SST algorithm for VIIRS
             - modified Landsat OLI reader to use reflectance scaling rather than radiance scaling
             - generalized NDVI algorithm
-            - added ?slot? product for GOCI
+            - added "slot" product for GOCI
         l1info:
             - additional output added (e.g. Orbit_Number)
         l3mapgen:
-            - redesigned to improve speed and fix a bug
+            - redesigned to improve speed
             - added RGB support
             - added support for outputting:
                 variance, standard deviation, number of observations, number of scenes,
                 observation time and bin number
             - added ability to output more than one product per file (netCDF)
+            - added the ability to output 2 files of different formats
+            - added ability to use SMI file as input
 </pre>
 
 

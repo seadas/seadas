@@ -216,7 +216,7 @@
             <dependency>
                 <groupId>org.esa.beam</groupId>
                 <artifactId>beam-netcdf</artifactId>
-                <version>5.0.5</version>
+                <version>5.0.7</version>
             </dependency>
             <dependency>
                 <groupId>org.esa.beam</groupId>
