@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.writeimage;
 
+import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertySet;
+import com.bc.ceres.binding.ValidationException;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glayer.*;
 import com.bc.ceres.glayer.support.ImageLayer;
@@ -24,6 +26,8 @@ import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.framework.ui.product.*;
 import org.esa.beam.glayer.ColorBarLayerType;
+import org.esa.beam.glayer.GraticuleLayer;
+import org.esa.beam.glayer.GraticuleLayerType;
 import org.esa.beam.glayer.MaskLayerType;
 import org.esa.beam.gpf.operators.standard.ReadOp;
 import org.esa.beam.util.ProductUtils;
@@ -128,6 +132,12 @@ public class WriteImageOp extends Operator {
 
     @Parameter(description = "Add graticule layer to the target image.", defaultValue = "false")
     private boolean graticuleLayer;
+
+    @Parameter(description = "Add lat/lon labels on the graticule layer.", defaultValue = "true")
+    private boolean graticuleLayerLabel;
+
+    @Parameter(description = "Add tick to the graticule lat/lon labels.", defaultValue = "true")
+    private boolean graticuleLayerTickEnabled;
 
     @Parameter(description = "The file to which the image is written.")
     private String filePath;
@@ -328,6 +338,30 @@ public class WriteImageOp extends Operator {
 
         if (graticuleLayer) {
             productSceneView.setGraticuleOverlayEnabled(true);
+            List<Layer> layers = productSceneView.getRootLayer().getChildren();
+            String pName;
+            for (Layer layer:layers) {
+                if (layer instanceof GraticuleLayer) {
+                    PropertySet ps = layer.getConfiguration();
+                    for (Property p:ps.getProperties()) {
+                        if (p.getName().contains(GraticuleLayerType.PROPERTY_NAME_TICKMARK_ENABLED)) {
+                            try {
+                                p.setValue(new Boolean(graticuleLayerTickEnabled));
+                            } catch (ValidationException ve ){
+
+                            }
+
+                        } else if (p.getName().contains(GraticuleLayerType.PROPERTY_NAME_TEXT_INSIDE)) {
+                            try {
+                                p.setValue(new Boolean(graticuleLayerLabel));
+                            } catch (ValidationException ve ){
+
+                            }
+
+                        }
+                    }
+                }
+            }
         }
 
         if (maskLayer) {
