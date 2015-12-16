@@ -116,7 +116,7 @@ public class ContourData {
          * If the numberofIntervals is one (1), the contour line will be based on the start value.
          */
         if (startValue == endValue || Math.abs(startValue - endValue) < 0.00001 || numberOfLevels == 1) {
-            contourIntervals.add(new ContourInterval(contourBaseName, startValue, filterName, ptsToPixelsMultiplier));
+            contourIntervals.add(new ContourInterval(contourBaseName, startValue, filterName, ptsToPixelsMultiplier, false));
 
             //Only update names if the user edited the contour interval values
             if (contourCustomized) {
@@ -139,14 +139,14 @@ public class ContourData {
             System.out.println("start value: " + sv + "   end value: " + ev + "   interval: " + interval);
             for (int i = 0; i < numberOfLevels; i++) {
                 double contourValue = Math.pow(10, sv + interval * i);
-                contourIntervals.add(new ContourInterval(contourBaseName, contourValue, filterName, ptsToPixelsMultiplier));
+                contourIntervals.add(new ContourInterval(contourBaseName, contourValue, filterName, ptsToPixelsMultiplier, false));
             }
         } else {
             interval = (endValue - startValue) / (numberOfLevels - 1);
             System.out.println("start value: " + startValue + "   end value: " + endValue + "   interval: " + interval);
             for (int i = 0; i < numberOfLevels; i++) {
                 double contourValue = startValue + interval * i;
-                contourIntervals.add(new ContourInterval(contourBaseName, contourValue, filterName, ptsToPixelsMultiplier));
+                contourIntervals.add(new ContourInterval(contourBaseName, contourValue, filterName, ptsToPixelsMultiplier, false));
             }
         }
 
