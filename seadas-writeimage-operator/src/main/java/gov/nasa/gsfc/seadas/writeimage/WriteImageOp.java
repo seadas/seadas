@@ -372,7 +372,7 @@ public class WriteImageOp extends Operator {
 
         if (contourLayer) {
             if (contours.length > 0) {
-                this.addContourLayer(productSceneView);
+                this.addContourLayers(productSceneView);
             }
         }
 
@@ -674,46 +674,46 @@ public class WriteImageOp extends Operator {
         return new Dimension(imageWidth, imageHeight);
     }
 
-    public void getContourLayer(ProductSceneView productSceneView, Band sourceBand) {
-        productSceneView.setGcpOverlayEnabled(true);
-        Product sourceProduct = productSceneView.getProduct();
-        ContourInterval ci = new ContourInterval("contour_test_line_", 0.08, "am5", 1);
-        ArrayList<ContourInterval> contourIntervals = new ArrayList<>();
-        contourIntervals.add(ci);
-        ContourData contourData = new ContourData(sourceBand, "am5", sourceBandName, 1);
-        contourData.setContourIntervals(contourIntervals);
-        contourData.setBand(sourceBand);
-
-        ShowVectorContourOverlayAction action = new ShowVectorContourOverlayAction();
-        action.setGeoCoding((GeoCoding) sourceProduct.getGeoCoding());
-        ArrayList<VectorDataNode> vectorDataNodes = action.createVectorDataNodesforContours(contourData);
-
-
-        for (VectorDataNode vectorDataNode : vectorDataNodes) {
-            System.out.println("vector data " + vectorDataNode.toString());
-            // remove the old vector data node with the same name.
-            if (sourceProduct.getVectorDataGroup().contains(vectorDataNode.getName())) {
-                sourceProduct.getVectorDataGroup().remove(sourceProduct.getVectorDataGroup().get(vectorDataNode.getName()));
-            }
-            productSceneView.getProduct().getVectorDataGroup().add(vectorDataNode);
-            if (productSceneView != null) {
-                productSceneView.setLayersVisible(vectorDataNode);
-            }
-            final LayerFilter nodeFilter = VectorDataLayerFilterFactory.createNodeFilter(vectorDataNode);
-            Layer vectorDataLayer = LayerUtils.getChildLayer(productSceneView.getRootLayer(),
-                    LayerUtils.SEARCH_DEEP,
-                    nodeFilter);
-            List<Layer> children = productSceneView.getRootLayer().getChildren();
-
-            if (vectorDataLayer != null) {
-                vectorDataLayer.setVisible(true);
-            } else {
-                //System.out.println("vector data layer is null " + vectorDataNode.toString());
-            }
-
-        }
-
-    }
+//    public void getContourLayer(ProductSceneView productSceneView, Band sourceBand) {
+//        productSceneView.setGcpOverlayEnabled(true);
+//        Product sourceProduct = productSceneView.getProduct();
+//        ContourInterval ci = new ContourInterval("contour_test_line_", 0.08, "am5", 1);
+//        ArrayList<ContourInterval> contourIntervals = new ArrayList<>();
+//        contourIntervals.add(ci);
+//        ContourData contourData = new ContourData(sourceBand, "am5", sourceBandName, 1);
+//        contourData.setContourIntervals(contourIntervals);
+//        contourData.setBand(sourceBand);
+//
+//        ShowVectorContourOverlayAction action = new ShowVectorContourOverlayAction();
+//        action.setGeoCoding((GeoCoding) sourceProduct.getGeoCoding());
+//        ArrayList<VectorDataNode> vectorDataNodes = action.createVectorDataNodesforContours(contourData);
+//
+//
+//        for (VectorDataNode vectorDataNode : vectorDataNodes) {
+//            System.out.println("vector data " + vectorDataNode.toString());
+//            // remove the old vector data node with the same name.
+//            if (sourceProduct.getVectorDataGroup().contains(vectorDataNode.getName())) {
+//                sourceProduct.getVectorDataGroup().remove(sourceProduct.getVectorDataGroup().get(vectorDataNode.getName()));
+//            }
+//            productSceneView.getProduct().getVectorDataGroup().add(vectorDataNode);
+//            if (productSceneView != null) {
+//                productSceneView.setLayersVisible(vectorDataNode);
+//            }
+//            final LayerFilter nodeFilter = VectorDataLayerFilterFactory.createNodeFilter(vectorDataNode);
+//            Layer vectorDataLayer = LayerUtils.getChildLayer(productSceneView.getRootLayer(),
+//                    LayerUtils.SEARCH_DEEP,
+//                    nodeFilter);
+//            List<Layer> children = productSceneView.getRootLayer().getChildren();
+//
+//            if (vectorDataLayer != null) {
+//                vectorDataLayer.setVisible(true);
+//            } else {
+//                //System.out.println("vector data layer is null " + vectorDataNode.toString());
+//            }
+//
+//        }
+//
+//    }
 
     /**
      * Adds annotation layer.
@@ -791,9 +791,51 @@ public class WriteImageOp extends Operator {
 //        }
 //    }
 
-    private void addContourLayer(ProductSceneView productSceneView) {
-        for (int i = 0; i< contours.length; i++) {
+    /**
+     *
+     * @param productSceneView
+     */
+    private void addContourLayers(ProductSceneView productSceneView) {
+        productSceneView.setGcpOverlayEnabled(true);
+        Product sourceProduct = productSceneView.getProduct();
+        String filterBandName;
+        for (Contour contour: contours) {
+            filterBandName = contour.getFilterName();
+            ContourInterval ci = new ContourInterval(contour.getName(), new Double(contour.getValue()), filterBandName, 1, true); //0.08, "am5", 1);
+            ArrayList<ContourInterval> contourIntervals = new ArrayList<>();
+            contourIntervals.add(ci);
+            ContourData contourData = new ContourData(sourceBand, filterBandName, sourceBandName, 1);
+            contourData.setContourIntervals(contourIntervals);
+            contourData.setBand(sourceBand);
 
+            ShowVectorContourOverlayAction action = new ShowVectorContourOverlayAction();
+            action.setGeoCoding((GeoCoding) sourceProduct.getGeoCoding());
+            ArrayList<VectorDataNode> vectorDataNodes = action.createVectorDataNodesforContours(contourData);
+
+
+            for (VectorDataNode vectorDataNode : vectorDataNodes) {
+                System.out.println("vector data " + vectorDataNode.toString());
+                // remove the old vector data node with the same name.
+                if (sourceProduct.getVectorDataGroup().contains(vectorDataNode.getName())) {
+                    sourceProduct.getVectorDataGroup().remove(sourceProduct.getVectorDataGroup().get(vectorDataNode.getName()));
+                }
+                productSceneView.getProduct().getVectorDataGroup().add(vectorDataNode);
+                if (productSceneView != null) {
+                    productSceneView.setLayersVisible(vectorDataNode);
+                }
+                final LayerFilter nodeFilter = VectorDataLayerFilterFactory.createNodeFilter(vectorDataNode);
+                Layer vectorDataLayer = LayerUtils.getChildLayer(productSceneView.getRootLayer(),
+                        LayerUtils.SEARCH_DEEP,
+                        nodeFilter);
+                List<Layer> children = productSceneView.getRootLayer().getChildren();
+
+                if (vectorDataLayer != null) {
+                    vectorDataLayer.setVisible(true);
+                } else {
+                    //System.out.println("vector data layer is null " + vectorDataNode.toString());
+                }
+
+            }
         }
     }
     private int toInteger(double value) {
@@ -923,15 +965,22 @@ public class WriteImageOp extends Operator {
         String contourName;
         @Parameter(description = "The value of the contour.")
         String contourValue;
-        @Parameter(description = "Mask color as an RGB value. Defaults to 192,192,192.")
+        @Parameter(description = "Apply filter to the source band before forming contour lines.", defaultValue = "true")
+        private boolean applyFilter;
+        @Parameter(description = "Name of the filter band.", defaultValue = "am5")
+        private String filterName;
+        @Parameter(description = "Contour line color as an RGB value. Defaults to black (0,0,0).")
         private int[] contourLineColor;
+
 
         public Contour() {
         }
 
-        public Contour(String contourName, String contourValue, int[] contourLineColor) {
+        public Contour(String contourName, String contourValue, int[] contourLineColor, boolean applyFilter, String filterName) {
             this.contourName = contourName;
             this.contourValue = contourValue;
+            this.filterName = filterName;
+            this.applyFilter = applyFilter;
             this.contourLineColor = contourLineColor;
         }
 
@@ -957,6 +1006,22 @@ public class WriteImageOp extends Operator {
 
         public void setColor(int[] contourLineColor) {
             this.contourLineColor = contourLineColor;
+        }
+
+        public boolean isApplyFilter() {
+            return applyFilter;
+        }
+
+        public void setApplyFilter(boolean applyFilter) {
+            this.applyFilter = applyFilter;
+        }
+
+        public String getFilterName() {
+            return filterName;
+        }
+
+        public void setFilterName(String filterName) {
+            this.filterName = filterName;
         }
     }
 
