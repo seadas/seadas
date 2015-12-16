@@ -25,15 +25,18 @@ public class ContourInterval {
 
     private double ptsToPixelsMultiplier;
 
-    public ContourInterval(String contourBaseName, Double contourLevelValue, String filterName, double ptsToPixelsMultiplier) {
+    public ContourInterval(String contourBaseName, Double contourLevelValue, String filterName, double ptsToPixelsMultiplier, boolean userDefinedContourName) {
         this.contourLevelValue = new Double(decimalFormatSmall.format(contourLevelValue));
 //        if (contourLevelValue > 1) {
 //            this.contourLevelValue = new Double(decimalFormatBig.format(contourLevelValue));
 //        }  else {
 //            this.contourLevelValue = new Double(decimalFormatSmall.format(contourLevelValue));
 //        }
-
-        contourLevelName = contourBaseName + this.contourLevelValue + "_" + filterName;
+        if (userDefinedContourName) {
+             contourLevelName = contourBaseName;
+        }else {
+            contourLevelName = contourBaseName + this.contourLevelValue + "_" + filterName;
+        }
         lineColor = Color.BLACK;
         contourLineStyleValue = "1.0, 0";
         dashLength = 1.0;
