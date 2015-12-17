@@ -393,9 +393,6 @@ public class ContourDialog extends JDialog {
                     }
                 }
                 propertyChangeSupport.firePropertyChange(NEW_FILTER_SELECTED_PROPERTY, true, false);
-                //propertyChangeSupport.firePropertyChange(FILTER_STATUS_CHANGED_PROPERTY, true, false);
-                //contourData.updateContourNamesForNewFilter(contourData.getFilterName(), getFilterShortHandName());
-                //((JPanel)bandPanel.getParent()).getRootPane().setDefaultButton((JButton)((JPanel)((JPanel)bandPanel.getParent()).getComponent(2)).getComponent(2));
             }
         });
 
