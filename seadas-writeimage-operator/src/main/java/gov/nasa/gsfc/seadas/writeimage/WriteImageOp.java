@@ -24,6 +24,8 @@ import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
+import org.esa.beam.framework.ui.application.ApplicationDescriptor;
+import org.esa.beam.framework.ui.application.support.DefaultApplicationDescriptor;
 import org.esa.beam.framework.ui.product.*;
 import org.esa.beam.glayer.ColorBarLayerType;
 import org.esa.beam.glayer.GraticuleLayer;
@@ -35,7 +37,10 @@ import org.esa.beam.util.PropertyMap;
 import org.esa.beam.util.geotiff.GeoTIFF;
 import org.esa.beam.util.geotiff.GeoTIFFMetadata;
 import org.esa.beam.util.math.MathUtils;
+import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.ShowColorBarOverlayAction;
+import org.esa.beam.visat.actions.imgfilter.CreateFilteredBandAction;
+import org.esa.beam.visat.actions.imgfilter.model.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -799,14 +804,22 @@ public class WriteImageOp extends Operator {
         productSceneView.setGcpOverlayEnabled(true);
         Product sourceProduct = productSceneView.getProduct();
         String filterBandName;
+        ContourData contourData;
+        Band filteredBand = getFilteredBand(sourceBand);
+        Band contourBand;
         for (Contour contour: contours) {
             filterBandName = contour.getFilterName();
             ContourInterval ci = new ContourInterval(contour.getName(), new Double(contour.getValue()), filterBandName, 1, true); //0.08, "am5", 1);
             ArrayList<ContourInterval> contourIntervals = new ArrayList<>();
             contourIntervals.add(ci);
-            ContourData contourData = new ContourData(sourceBand, filterBandName, sourceBandName, 1);
+            if (contour.applyFilter){
+               contourBand = filteredBand;
+            } else {
+                contourBand = sourceBand;
+            }
+            contourData = new ContourData(contourBand, filterBandName, sourceBandName, 1);
             contourData.setContourIntervals(contourIntervals);
-            contourData.setBand(sourceBand);
+            contourData.setBand(contourBand);
 
             ShowVectorContourOverlayAction action = new ShowVectorContourOverlayAction();
             action.setGeoCoding((GeoCoding) sourceProduct.getGeoCoding());
@@ -814,7 +827,6 @@ public class WriteImageOp extends Operator {
 
 
             for (VectorDataNode vectorDataNode : vectorDataNodes) {
-                System.out.println("vector data " + vectorDataNode.toString());
                 // remove the old vector data node with the same name.
                 if (sourceProduct.getVectorDataGroup().contains(vectorDataNode.getName())) {
                     sourceProduct.getVectorDataGroup().remove(sourceProduct.getVectorDataGroup().get(vectorDataNode.getName()));
@@ -1096,5 +1108,19 @@ public class WriteImageOp extends Operator {
         public void setImageMaskTransparency(double imageMaskTransparency) {
             this.imageMaskTransparency = imageMaskTransparency;
         }
+    }
+
+    private FilterBand getFilteredBand(Band sourceBand) {
+        Filter defaultFilter =new Filter("Arithmetic Mean 5x5", "am5", 5, 5, new double[]{
+                +1, +1, +1, +1, +1,
+                +1, +1, +1, +1, +1,
+                +1, +1, +1, +1, +1,
+                +1, +1, +1, +1, +1,
+                +1, +1, +1, +1, +1,
+        }, 25.0);
+        RasterDataNode sourceRaster = sourceProduct.getRasterDataNode(sourceBandName);
+        final FilterBand filteredBand = CreateFilteredBandAction.createFilterBandForGPT(sourceRaster, defaultFilter, sourceBand.getName() + "_am5", 1);
+        return filteredBand;
+
     }
 }
