@@ -1,4 +1,4 @@
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <title>Release Notes: SeaDAS 7.3</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -18,14 +18,14 @@
 </table>
 
 <p>
-    <b>Release Date: </b> Nov 30, 2015<br><br>
+    <b>Release Date: </b> Dec 23, 2015<br><br>
 </p>
 
 The SeaDAS development team is pleased to announce the release of SeaDAS 7.3,
 which is built atop a slightly modified BEAM 5.0.1 version.<br><br>
 
 The science processing code has been updated to reflect changes recently implemented
-in production, provide bug fixes and support for the R2014.0 reprocessing for SeaWiFS
+in production, provide bug fixes and support for the R2014.0 reprocessing for SeaWiFS.
 
 <br>
 <hr>
@@ -43,39 +43,35 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
         Color Palettes
             - Universal palette (color blind compliant) added along with associated color scheme default configurations.
             - Chlorophyll Blue-Green palette and scheme added.
-            - Palette export now sorts entries in the exported text file
-            - User can now remove the default color palettes
+            - Palette export now sorts entries in the exported text file.
+            - User can now remove the default color palettes.
 
         RGB Profile
-            - Toolbar icon added.
-            - User can edit any of the rgb profile text files.
+            - User can now edit any of the rgb profile text files.
             - Added 2 new generic rgb profiles (linear and log).
-
-        Filtered Band
-            - Toolbar icon changed.
-
-        Reprojection
-            - Toolbar icon added.
-
-        Import Field Measurements (SeaBASS format)
-            - Toolbar icon added
-
-        Window and Toolbar Layout
-            - Toolbar icon added for resetting to default layout
-
-        Reset to Default Layout
-            - Toolbar icon added
 
         Land Mask & Coastline Tool
             - Defaults changed
                 * Super sampling default set to 3
-                * Coastline mask color set to black
-                * Land mask color set to dark grey
+                    - takes longer to run but is a much more accurate reprojection of the land data into the image view.
+                * Coastline mask color set to black.
+                * Land mask color set to dark grey.
 
-        Renamed "Bands (Products)" folder to "Rasters".
-            - Rationale: a more simple, generic name - this folder contains raster data which may include
-              but is not limited to: oceancolor data products, latitude and longitude data,
-              flagcodings, rgb virtual bands, and any number of user created virtual and real bands.
+        Icons Added
+            - Reprojection Tool.
+            - RGB Tool.
+            - Import Field Measurements (SeaBASS format).
+
+        Icons Modified
+            - Filtered Band Tool.
+            - Window synchronization (Navigation Controls).
+            - Cursor synchronization (Navigation Controls).
+
+        Folder renamed
+            - Renamed "Bands (Products)" folder to "Rasters".
+                Rationale: a more simple, generic name - this folder contains raster data which may include
+                but is not limited to: oceancolor data products, latitude and longitude data,
+                flagcodings, rgb virtual bands, and any number of user created virtual and real bands.
     </pre>
 
 
@@ -90,8 +86,8 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
 <pre>
         Version 7.3 fixes the following bugs:
             - geometries could not be exported from a loaded smi image.
-            - color bar layer was creating a saved session conflict
-            - no-data layer sometimes toggled to top of the layer stack
+            - color bar layer was creating a saved session conflict.
+            - no-data layer sometimes toggled to top of the layer stack.
 </pre>
 <br>
 <hr>
@@ -101,26 +97,28 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
 
 <pre>
         l2gen:
-            - modified BRDF function to allow LUT files to be netCDF format
-            - added a user-contributed chlorophyll algorithm, (ABI: chl_abi; Shanmugam, 2011)
-            - added support for NASA-formatted VIIRS L1 products
-            - added new flag for VIIRS bow-tie deleted pixels
-            - added support for SST products for VIIRS
-            - added new triple-window SST algorithm for VIIRS
-            - modified Landsat OLI reader to use reflectance scaling rather than radiance scaling
-            - generalized NDVI algorithm
-            - added "slot" product for GOCI
+            - modified BRDF function to allow LUT files to be netCDF format.
+            - added a user-contributed chlorophyll algorithm, (ABI: chl_abi; Shanmugam, 2011).
+            - added support for NASA-formatted VIIRS L1 products.
+            - added new flag for VIIRS bow-tie deleted pixels.
+            - added support for SST products for VIIRS.
+            - added new triple-window SST algorithm for VIIRS.
+            - modified Landsat OLI reader to use reflectance scaling rather than radiance scaling.
+            - generalized NDVI algorithm.
+            - added "slot" product for GOCI.
+
         l1info:
-            - additional output added (e.g. Orbit_Number)
+            - additional output added (e.g. Orbit_Number).
+
         l3mapgen:
-            - redesigned to improve speed
-            - added RGB support
+            - redesigned to improve speed.
+            - added RGB support.
             - added support for outputting:
                 variance, standard deviation, number of observations, number of scenes,
-                observation time and bin number
-            - added ability to output more than one product per file (netCDF)
-            - added the ability to output 2 files of different formats
-            - added ability to use SMI file as input
+                observation time and bin number.
+            - added ability to output more than one product per file (netCDF).
+            - added the ability to output 2 files of different formats.
+            - added ability to use SMI file as input.
 </pre>
 
 
@@ -132,8 +130,10 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
         l2gen:
             - fixed issues with primary productivity algorithms (opp_XXX)
             - fixed bug in Es output
+
         l3bindump:
             - fixed bug that affected full globe output
+
         l3mapgen:
             - fixed reporting of latitudes in netCDF output
 </pre>
@@ -147,12 +147,15 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
 <p class="h3better">Help Pages</p>
 
 <p>
-    Many of the help pages internal to SeaDAS 7.3 have not been revised to match the current version so there can be
+    Some of the help pages internal to SeaDAS 7.3 have not been revised to match the current version so there can be
     some wording discrepancies as well as feature description differences.  However, we regularly produce video help
-    tutorials.  We feel this to be the best, most functional way to enable the user of SeaDAS to get the most out of
-    the software.  In additional we regularly respond to SeaDAS issues on the our user forum.  Questions posted on
+    tutorials <b>(http://seadas.gsfc.nasa.gov/tutorial)</b>.  We feel this to be the best, most functional way to
+    enable the user of SeaDAS to get the most out of the software.  In additional we regularly respond to SeaDAS issues
+    on the our user forum
+    <b>(http://oceancolor.gsfc.nasa.gov/forum/oceancolor/forum_show.pl).</b>  Questions posted on
     the forum help aid us in determining aspects of SeaDAS which may benefit by refinement, as well as give us ideas
-    for topics to be used in future tutorial videos.
+    for topics to be used in future tutorial videos.  Also note that these internal help pages are alos made available at
+      <b>(http://seadas.gsfc.nasa.gov/help/)</b>
 </p>
 
 
