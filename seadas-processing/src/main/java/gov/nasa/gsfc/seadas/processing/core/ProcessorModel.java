@@ -586,8 +586,10 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             if (!option.getType().equals(ParamInfo.Type.HELP) && optionValue.length() > 0) {
 
                 if (!option.getDefaultValue().equals(optionValue)) {
-                    if (option.getType().equals(ParamInfo.Type.OFILE) || option.getType().equals(ParamInfo.Type.IFILE)) {
-                        optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
+                    if (!OCSSW.isOCSSWInstalledLocal()) {
+                        if (option.getType().equals(ParamInfo.Type.OFILE) || option.getType().equals(ParamInfo.Type.IFILE)) {
+                            optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
+                        }
                     }
                     parString.append(option.getName() + "=" + optionValue + "\n");
 
