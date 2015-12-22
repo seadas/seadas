@@ -27,8 +27,8 @@
         <option type="ofile">
             <name>ofile</name>
             <value></value>
-            <default>output</default>
-            <description>output L2 file #1 name, output vicarious L1B for inverse mode</description>
+            <default>color</default>
+            <description>color L2 file #1 name, color vicarious L1B for inverse mode</description>
             <alias>ofile1</alias>
             <order>1</order>
         </option>
@@ -352,8 +352,8 @@
         </option>
         <option type="string">
             <name>oformat</name>
-            <value>HDF4</value>
-            <default>HDF4</default>
+            <value>netCDF4</value>
+            <default>netCDF4</default>
             <source></source>
             <validValues>
                 <validValue>
@@ -369,7 +369,7 @@
                     <description>HDF5</description>
                 </validValue>
             </validValues>
-            <description>output file format; default is the same format as input file(s)</description>
+            <description>color file format; default is the same format as input file(s)</description>
         </option>
     </options>
 </paramInfo>
