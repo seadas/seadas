@@ -75,10 +75,10 @@
         </option>
         <option type="ofile">
             <name>ofile</name>
-            <value>output</value>
-            <default>output</default>
+            <value>color</value>
+            <default>color</default>
             <source>default</source>
-            <description>output filename</description>
+            <description>color filename</description>
             <usedAs>option</usedAs>
             <order>1</order>
         </option>
@@ -189,7 +189,7 @@
                     <description>8640 x 4320</description>
                 </validValue>
             </validValues>
-            <description>size of the output pixel in meters or SMI dimensions</description>
+            <description>size of the color pixel in meters or SMI dimensions</description>
             <usedAs>option</usedAs>
             <order>4</order>
         </option>
@@ -205,11 +205,11 @@
                 </validValue>
                 <validValue>
                     <value>bin</value>
-                    <description>bin all of the pixels that intersect the area of the output pixel</description>
+                    <description>bin all of the pixels that intersect the area of the color pixel</description>
                 </validValue>
                 <validValue>
                     <value>area</value>
-                    <description>bin weighted by area of all the pixels that intersect the area of the output pixel</description>
+                    <description>bin weighted by area of all the pixels that intersect the area of the color pixel</description>
                 </validValue>
             </validValues>
             <description>interpolation method:</description>
@@ -288,7 +288,7 @@
                     <description>TIFF file with georeference tags</description>
                 </validValue>
             </validValues>
-            <description>output file format</description>
+            <description>color file format</description>
             <usedAs>option</usedAs>
             <order>11</order>
         </option>
@@ -383,8 +383,8 @@
         <!--</option>-->
         <option type="boolean">
             <name>use_quality</name>
-            <value>yes</value>
-            <default>yes</default>
+            <value>true</value>
+            <default>true</default>
             <source>default</source>
             <description>should we do quality factor processing</description>
             <usedAs>option</usedAs>
@@ -392,8 +392,8 @@
         </option>
         <option type="boolean">
             <name>use_rgb</name>
-            <value>no</value>
-            <default>no</default>
+            <value>false</value>
+            <default>false</default>
             <source>default</source>
             <description>should we use product_rgb to make a psudo true color image</description>
             <usedAs>option</usedAs>
