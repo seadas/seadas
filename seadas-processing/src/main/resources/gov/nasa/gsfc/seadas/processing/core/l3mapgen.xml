@@ -227,8 +227,8 @@
         </option>
         <option type="float">
             <name>north</name>
-            <value>90.0</value>
-            <default>90.0</default>
+            <value>-999</value>
+            <default>-999</default>
             <source>default</source>
             <description>Northern most Latitude</description>
             <usedAs>option</usedAs>
@@ -236,8 +236,8 @@
         </option>
         <option type="float">
             <name>south</name>
-            <value>-90.0</value>
-            <default>-90.0</default>
+            <value>-999</value>
+            <default>-999</default>
             <source>default</source>
             <description>Southern most Latitude</description>
             <usedAs>option</usedAs>
@@ -245,8 +245,8 @@
         </option>
         <option type="float">
             <name>east</name>
-            <value>180.0</value>
-            <default>180.0</default>
+            <value>-999</value>
+            <default>-999</default>
             <source>default</source>
             <description>Eastern most Longitude</description>
             <usedAs>option</usedAs>
@@ -254,8 +254,8 @@
         </option>
         <option type="float">
             <name>west</name>
-            <value>-180.0</value>
-            <default>-180.0</default>
+            <value>-999</value>
+            <default>-999</default>
             <source>default</source>
             <description>Western most Longitude</description>
             <usedAs>option</usedAs>
