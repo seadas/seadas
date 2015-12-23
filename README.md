@@ -1,4 +1,4 @@
-SeaDAS, version ${seadas.version}
+SeaDAS
 =================================
 
 Installation Guide
