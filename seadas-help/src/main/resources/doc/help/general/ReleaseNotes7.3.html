@@ -38,7 +38,7 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
             - Write Image Operator.  This command line operator enables the export of images.  It includes
               parameters for including gridlines, contour lines, color bar, and text annotation on the image.
 
-        Box-tie correction has now been added.
+        Bowtie correction for VIIRS has been improved to better handle the aggregation zones.
 
         Color Palettes
             - Universal palette (color blind compliant) added along with associated color scheme default configurations.
@@ -75,18 +75,13 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
     </pre>
 
 
-
-
-
-
-
-
 <p class="subSectionTitle">Bug Fixes</p>
 
 <pre>
         Version 7.3 fixes the following bugs:
+            - incorrect geolocation for MODIS 250 and 500m resolution data.
             - geometries could not be exported from a loaded smi image.
-            - color bar layer was creating a saved session conflict.
+            - sessions could not be saved and reloaded if colorbar layer present.
             - no-data layer sometimes toggled to top of the layer stack.
 </pre>
 <br>
