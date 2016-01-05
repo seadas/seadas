@@ -106,6 +106,8 @@ public class WriteImageOp extends Operator {
 
     @Parameter(alias = "maskFilePath", description = "Source file to generate image masks. It can be a separate file or the same input source file.")
     private String maskProductFilePath;
+    @Parameter(alias = "contourFilePath", description = "Source file to generate contour lines. It can be a separate file or the same input source file.")
+    private String contourProductFilePath;
 
     @Parameter(description = "Name of band containing data. If not provided, first band in the source product is used.")
     private String sourceBandName;
@@ -374,6 +376,13 @@ public class WriteImageOp extends Operator {
                 this.applyMask(productSceneView);
             }
         }
+
+//        if (textAnnotationLayer) {
+//            if (textAnnotations.length > 0) {
+//                productSceneView.setPinOverlayEnabled(true);
+//                addTextAnnotationLayer(productSceneView);
+//            }
+//        }
 
         if (contourLayer) {
             if (contours.length > 0) {
@@ -644,7 +653,12 @@ public class WriteImageOp extends Operator {
         for (Layer layer : maskLayers)
         {
             layer.setVisible(true);
-            layer.setTransparency(0);
+            if (layer.getName().equals("text_annotations")) {
+                layer.setTransparency(0);
+            } else {
+                layer.setTransparency(0);
+            }
+            System.out.println("layer name: " + layer.getName() + " " + layer.getTransparency());
             if (layer.equals(maskLayers.get(maskLayers.size()-1))) break;
         }
         productSceneView.setMaskOverlayEnabled(true);
@@ -801,15 +815,31 @@ public class WriteImageOp extends Operator {
      * @param productSceneView
      */
     private void addContourLayers(ProductSceneView productSceneView) {
+        ImageMask imageMask;
+        String contourSourceBandName;
+        Operator readerOp = new ReadOp();
+        readerOp.setParameter("file", new File(contourProductFilePath));
+        readerOp.initialize();
+        Product contourProduct = readerOp.getTargetProduct();
         productSceneView.setGcpOverlayEnabled(true);
         Product sourceProduct = productSceneView.getProduct();
         String filterBandName;
         ContourData contourData;
-        Band filteredBand = getFilteredBand(sourceBand);
+        Color contourLineColor;
+        Band filteredBand;
         Band contourBand;
         for (Contour contour: contours) {
+            contourSourceBandName = contour.getContourSourceBandName();
+            contourBand = contourProduct.getBand(contourSourceBandName);
+            contourBand.setName(contourSourceBandName);
+            if (!sourceProduct.containsBand(contourSourceBandName)) {
+                sourceProduct.addBand(contourBand);
+            }
             filterBandName = contour.getFilterName();
+            filteredBand = getFilteredBand(contourBand, contour.getName());
             ContourInterval ci = new ContourInterval(contour.getName(), new Double(contour.getValue()), filterBandName, 1, true); //0.08, "am5", 1);
+            contourLineColor = new Color(contour.getColor()[0], contour.getColor()[1], contour.getColor()[2]);
+            ci.setLineColor(contourLineColor);
             ArrayList<ContourInterval> contourIntervals = new ArrayList<>();
             contourIntervals.add(ci);
             if (contour.applyFilter){
@@ -973,6 +1003,9 @@ public class WriteImageOp extends Operator {
 
     public static class Contour {
 
+        @Parameter(description = "The source band to create contour lines from.")
+        private
+        String contourSourceBandName;
         @Parameter(description = "The name of the contour.")
         String contourName;
         @Parameter(description = "The value of the contour.")
@@ -983,6 +1016,12 @@ public class WriteImageOp extends Operator {
         private String filterName;
         @Parameter(description = "Contour line color as an RGB value. Defaults to black (0,0,0).")
         private int[] contourLineColor;
+        @Parameter(description = "Contour line color as an RGB value. Defaults to solid (1.0,0.0).")
+        private double[] contourLineStyle;
+        @Parameter(description = "Contour line dash length for dashed lines.", defaultValue = "1.0")
+        private double contourLineDashLength;
+        @Parameter(description = "Contour line space length for dashed lines.", defaultValue = "0")
+        private double contourLineSpaceLength;
 
 
         public Contour() {
@@ -1034,6 +1073,38 @@ public class WriteImageOp extends Operator {
 
         public void setFilterName(String filterName) {
             this.filterName = filterName;
+        }
+
+        public double[] getContourLineStyle() {
+            return contourLineStyle;
+        }
+
+        public void setContourLineStyle(double[] contourLineStyle) {
+            this.contourLineStyle = contourLineStyle;
+        }
+
+        public double getContourLineDashLenth() {
+            return contourLineDashLength;
+        }
+
+        public void setContourLineDashLenth(double contourLineDashLenth) {
+            this.contourLineDashLength = contourLineDashLenth;
+        }
+
+        public double getContourLineSpaceLength() {
+            return contourLineSpaceLength;
+        }
+
+        public void setContourLineSpaceLength(double contourLineSpaceLength) {
+            this.contourLineSpaceLength = contourLineSpaceLength;
+        }
+
+        public String getContourSourceBandName() {
+            return contourSourceBandName;
+        }
+
+        public void setContourSourceBandName(String contourSourceBandName) {
+            this.contourSourceBandName = contourSourceBandName;
         }
     }
 
@@ -1110,7 +1181,7 @@ public class WriteImageOp extends Operator {
         }
     }
 
-    private FilterBand getFilteredBand(Band sourceBand) {
+    private FilterBand getFilteredBand(Band sourceBand, String contourName) {
         Filter defaultFilter =new Filter("Arithmetic Mean 5x5", "am5", 5, 5, new double[]{
                 +1, +1, +1, +1, +1,
                 +1, +1, +1, +1, +1,
@@ -1118,9 +1189,8 @@ public class WriteImageOp extends Operator {
                 +1, +1, +1, +1, +1,
                 +1, +1, +1, +1, +1,
         }, 25.0);
-        RasterDataNode sourceRaster = sourceProduct.getRasterDataNode(sourceBandName);
-        final FilterBand filteredBand = CreateFilteredBandAction.createFilterBandForGPT(sourceRaster, defaultFilter, sourceBand.getName() + "_am5", 1);
+        RasterDataNode sourceRaster = sourceProduct.getRasterDataNode(sourceBand.getName());
+        final FilterBand filteredBand = CreateFilteredBandAction.createFilterBandForGPT(sourceRaster, defaultFilter, sourceBand.getName() + "_am5_" + contourName, 1);
         return filteredBand;
-
     }
 }
