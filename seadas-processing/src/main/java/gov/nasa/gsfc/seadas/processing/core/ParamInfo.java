@@ -53,8 +53,9 @@ public class ParamInfo implements Comparable, Cloneable {
 
     public ParamInfo(String name, String value, Type type, String defaultValue) {
         setName(name);
-        setValue(value);
+        //setType() should be executed before setValue()!
         setType(type);
+        setValue(value);
         setDefaultValue(defaultValue);
     }
 
