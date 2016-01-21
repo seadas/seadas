@@ -1,0 +1,433 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - l3mapgen</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            l3mapgen
+        </td>
+        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>l3mapgen</h3>
+
+<p>
+    Creates a Level 3 mapped image.
+</p>
+
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
+<p>Tools -> OCSSW Processing -> l3mapgen</p>
+
+
+<<a name="details"><h4>Details</h4></a>
+
+<p>
+    <b>l3mapgen</b> takes a product (or products if netCDF output) from an L3 bin
+    file, reprojects the data using Proj.4 and writes a mapped file in the
+    requested output format.
+
+<p></p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>l3mapgen GUI</b></caption>
+        <tr>
+            <td><img src="../images/l3mapgen.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+<tr>
+    <td><b>UI Element Name</b></td>
+    <td><b> Type</b></td>
+    <td><b> Description</b></td>
+    <td><b>Required/Optional</b></td>
+    <td><b>Default Value</b></td>
+</tr>
+<tr>
+    <td><b>ifile</b></td>
+    <td>Text Field</td>
+    <td>Input Level 3 bin file name.
+    </td>
+    <td>Required</td>
+    <td></td>
+</tr>
+<tr>
+    <td><b>ofile</b></td>
+    <td> Text Field</td>
+    <td>Output filename for generated level 3 image file.
+    </td>
+    <td>Required</td>
+    <td></td>
+</tr>
+<tr>
+    <td><b>palfile</b></td>
+    <td> Text Field</td>
+    <td>palette file name</td>
+    <td>Optional</td>
+    <td>the palette is chosen using the product.xml file</td>
+</tr>
+<tr>
+    <td><b>palette_dir</b></td>
+    <td> Text Field</td>
+    <td>palette directory</td>
+    <td>Optional</td>
+    <td>$OCDATAROOT/common/palette</td>
+</tr>
+<tr>
+    <td><b>product</b></td>
+    <td>string</td>
+    <td>product(s) to map</td>
+    <td>Required</td>
+    <td></td>
+</tr>
+<tr>
+    <td><b>resolution</b></td>
+    <td>string</td>
+    <td>size of the output pixel in meters or SMI dimensions:
+     <pre>
+         90km: 432 x 216 image for full globe
+         36km: 1080 x 540
+         18km: 2160 x 1080
+         9km: 4320 x 2160
+         4km: 8640 x 4320
+         2km: 17280 x 8640
+         1km: 34560 x 17280
+         hkm: 69120 x 34560
+         qkm: 138240 x 69120
+         smi: 4096 x 2048
+         smi4: 8192 x 4096
+         land: 8640 x 4320
+         #.#:  width of a pixel in meters
+         #.#km:  width of a pixel in kilometers
+         #.#deg:  width of a pixel in degrees
+     </pre>
+    </td>
+    <td>Optional</td>
+    <td>9km</td>
+</tr>
+
+<tr>
+    <td><b>oformat</b></td>
+    <td>string</td>
+    <td>format of the output file :
+            <pre>
+                 netCDF:  netCDF file, can contain more than one product
+                 hdf4:    HDF4 file (old SMI format)
+                 png:     PNG image file
+                 ppm:     PPM image file
+                 geoTIFF: TIFF file with georeference tags
+            </pre>
+    </td>
+    <td>Optional</td>
+    <td>netCDF</td>
+</tr>
+
+<tr>
+    <td><b>projection</b></td>
+    <td>string</td>
+    <td> proj.4 projection string or one of the following predefined projections:
+ <pre>
+     smi:       Standard Mapped image, cylindrical projection, uses central_meridian projection="+proj=eqc +lat_0=<central_meridian>"
+     mollweide: Mollweide projection projection="+proj=moll +lat_0=<central_meridian>"
+     raw:       raw dump of the bin file
+ </pre>
+    </td>
+    <td>Optional</td>
+    <td>smi</td>
+</tr>
+
+<tr>
+    <td><b>central_meridian</b></td>
+    <td>float</td>
+    <td>central meridian for projection in deg east.  Only used for convenience projections and assumes whole earthe from east to west.</td>
+    <td>Optional</td>
+    <td>0</td>
+</tr>
+<tr>
+    <td><b>interp</b></td>
+    <td>string</td>
+    <td>interpolation method:
+ <pre>
+     nearest: Nearest Neighbor
+     bin:     bin all of the pixels that intersect the area of the output pixel
+     area:    bin weighted by area all of the pixels that intersect the area of the output pixel
+ </pre>
+    </td>
+    <td>Optional</td>
+    <td>nearest</td>
+</tr>
+<tr>
+    <td><b>north</b></td>
+    <td>float</td>
+    <td>Northern most Latitude</td>
+    <td>Optional</td>
+    <td>90.0</td>
+</tr>
+<tr>
+    <td><b>south</b></td>
+    <td>float</td>
+    <td>Southern most Latitude</td>
+    <td>Optional</td>
+    <td>-90.0</td>
+</tr>
+<tr>
+    <td><b>east</b></td>
+    <td>float</td>
+    <td>Eastern most Longitude</td>
+    <td>Optional</td>
+    <td>180.0</td>
+</tr>
+<tr>
+    <td><b>west</b></td>
+    <td>float</td>
+    <td>Western most Longitude</td>
+    <td>Optional</td>
+    <td>-180.0</td>
+</tr>
+<tr>
+    <td><b>apply_pal</b></td>
+    <td>boolean</td>
+    <td>apply color palette:
+        <pre>
+            yes: color image
+            no: grayscale image
+        </pre>
+    </td>
+    <td>Optional</td>
+    <td>yes</td>
+</tr>
+
+<tr>
+    <td><b>datamin</b></td>
+    <td> float</td>
+    <td>minimum value for data scaling</td>
+    <td>Optional</td>
+    <td>default from product.xml</td>
+</tr>
+<tr>
+    <td><b>datamax</b></td>
+    <td> float</td>
+    <td>maximum value for data scaling</td>
+    <td>Optional</td>
+    <td>default from product.xml</td>
+</tr>
+<tr>
+    <td><b>scale_type</b></td>
+    <td> string</td>
+    <td>data scaling type:
+    <pre>
+        linear:   linear scaling
+        log:      logarithmic scaling
+    </pre>
+    </td>
+    <td>Optional</td>
+    <td>default from product.xml</td>
+</tr>
+
+<tr>
+    <td><b>pversion</b></td>
+    <td> string</td>
+    <td>Processing version string</td>
+    <td>Optional</td>
+    <td></td>
+</tr>
+<tr>
+    <td><b>deflate</b></td>
+    <td>int</td>
+    <td>deflation level</td>
+    <td>Optional</td>
+    <td>4</td>
+</tr>
+<tr>
+    <td><b>quiet</b></td>
+    <td>boolean</td>
+    <td>stop the status printing</td>
+    <td>Optional</td>
+    <td>false</td>
+</tr>
+
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects infile/ofile
+        </td>
+    </tr>
+    <tr>
+        <td><b>Load Parameters ...</b></td>
+        <td> Button</td>
+        <td>Reads in previously saved parameters and populates the fields in
+            GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Save Parameters ...</b></td>
+        <td> Button</td>
+        <td>Saves the current arguments in GUI in a file.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes the l2mapgen command with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Open in SeaDAS</b></td>
+        <td> Checkbox</td>
+        <td>If selected, the ofile will be added to the open products list right after its generation.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
+<pre>
+    Usage: l3mapgen argument-list
+
+      This program takes a product (or products if netCDF output) from an L3 bin
+      file, reprojects the data using Proj.4 and writes a mapped file in the
+      requested output format
+
+      The argument-list is a set of keyword=value pairs. The arguments can
+      be specified on the commandline, or put into a parameter file, or the
+      two methods can be used together, with commandline over-riding.
+
+    The list of valid keywords follows:
+
+       -help (boolean) (alias=-h,--help) (default=false) = print usage information
+       -version (boolean) (alias=--version) (default=false) = print the version
+            information
+       -dump_options (boolean) (alias=--dump_options) (default=false) = print
+            information about each option
+       -dump_options_paramfile (ofile) (alias=--dump_options_paramfile) = print
+            information about each option to paramfile
+       -dump_options_xmlfile (ofile) (alias=--dump_options_xmlfile) = print
+            information about each option to XML file
+       par (string) = input parameter file
+       ifile (ifile) = input L3 bin file name
+       ofile (ofile) (default=output) = output filename
+       product (string) = product(s) to map
+       resolution (string) (default=9km) = size of the output pixel in meters or
+            SMI dimensions
+            90km: 432 x 216 image for full globe
+            36km: 1080 x 540
+            18km: 2160 x 1080
+             9km: 4320 x 2160
+             4km: 8640 x 4320
+             2km: 17280 x 8640
+             1km: 34560 x 17280
+             hkm: 69120 x 34560
+             qkm: 138240 x 69120
+             smi: 4096 x 2048
+            smi4: 8192 x 4096
+            land: 8640 x 4320
+             #.#:  width of a pixel in meters
+           #.#km:  width of a pixel in kilometers
+          #.#deg:  width of a pixel in degrees
+       oformat (string) (default=netCDF) = output file format
+            netCDF:  netCDF file, can contain more than one product
+            hdf4:    HDF4 file (old SMI format)
+            png:     PNG image file
+            ppm:     PPM image file
+            geoTIFF: TIFF file with georeference tags
+       ofile2 (ofile) = output2 filename
+       oformat2 (string) (default=png) = output2 file format
+       projection (string) (default=smi) = proj.4 projection string or one of the
+            following predefined projections:
+            smi:       Standard Mapped image, cylindrical projection, uses
+                       central_meridian
+                       projection="+proj=eqc +lat_0=<central_meridian>"
+    mollweide: Mollweide projection
+    projection="+proj=moll +lat_0=
+    <central_meridian>"
+        raw: raw dump of the bin file
+        central_meridian (float) (default=0) = central meridian for projection in
+        deg east. Only used for smi, mollweide and raw projection
+        interp (string) (default=nearest) = interpolation method:
+        nearest: Nearest Neighbor
+        bin: bin all of the pixels that intersect the area of the
+        output pixel
+        area: bin weighted by area all of the pixels that intersect
+        the area of the output pixel
+        north (float) (default=90.0) = Northern most Latitude
+        south (float) (default=-90.0) = Southern most Latitude
+        east (float) (default=180.0) = Eastern most Longitude
+        west (float) (default=-180.0) = Western most Longitude
+        apply_pal (boolean) (default=yes) = apply color A palette:
+        yes: color image
+        no: grayscale image
+        palfile (ifile) = palette filename. (default = means the palette
+        is chosen using the product.xml file
+        palette_dir (ifile) (default=$OCDATAROOT/common/palette) = directory
+        containing the palette files
+        datamin (float) = minimum value for scaling (default from product.xml)
+        datamax (float) = maximum value for scaling (default from product.xml)
+        scale_type (string) = data scaling type (default from product.xml)
+        linear: linear scaling
+        log: logarithmic scaling
+        quiet (boolean) (default=false) = stop the status printing
+        pversion (string) (default=Unspecified) = processing version string
+        use_quality (boolean) (default=yes) = should we do quality factor processing
+        deflate (int) (default=4) = deflation level
+</pre>
+<hr>
+</body>
+</html>

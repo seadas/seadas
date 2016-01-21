@@ -21,7 +21,6 @@
             <tocitem text="l2bin" target="l2bin"/>
             <tocitem text="l2bin_aquarius" target="l2bin_aquarius"/>
             <tocitem text="l3bin" target="l3bin"/>
-            <tocitem text="l3gen" target="l3gen"/>
             <tocitem text="l3mapgen" target="l3mapgen"/>
             <tocitem text="smigen" target="smigen"/>
             <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
