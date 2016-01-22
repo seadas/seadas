@@ -158,7 +158,7 @@ public class SeabassReader extends LineNumberReader {
                         missingValue = Double.valueOf(value);
                         missingValueFound = true;
                     } catch (NumberFormatException e) {
-                        throw new IOException("/missing is not a valid number");
+                        throw new IOException("/missing is not a valid number", e);
                     }
                 } else if (key.equals("/fields")) {
                     fieldStr = value;
@@ -295,7 +295,7 @@ public class SeabassReader extends LineNumberReader {
                             + Integer.toString(i)
                             + "("
                             + info.getName()
-                            + ")");
+                            + ")", e);
                 }
             }
         }

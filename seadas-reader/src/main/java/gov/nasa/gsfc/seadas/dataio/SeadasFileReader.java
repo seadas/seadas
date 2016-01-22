@@ -1062,7 +1062,7 @@ public abstract class SeadasFileReader {
             try {
                 array = inputParams.read();
             } catch (IOException e) {
-                throw new ProductIOException(e.getMessage());
+                throw new ProductIOException(e.getMessage(), e);
             }
 
             String[] lines = array.toString().split("\n");
@@ -1368,7 +1368,7 @@ public abstract class SeadasFileReader {
             try {
                 array = variable.read();
             } catch (IOException e) {
-                throw new ProductIOException(e.getMessage());
+                throw new ProductIOException(e.getMessage(), e);
             }
             final ProductData data = ProductData.createInstance(dataType, array.getStorage());
             final MetadataAttribute attribute = new MetadataAttribute("data", data, true);
@@ -1469,7 +1469,7 @@ public abstract class SeadasFileReader {
             array = variable.read();
 
         } catch (IOException e) {
-            throw new ProductIOException(e.getMessage());
+            throw new ProductIOException(e.getMessage(), e);
         }
         return ProductData.createInstance(dataType, array.getStorage());
     }
