@@ -14,6 +14,7 @@
     <tocitem text="General">
 
         <tocitem text="Release Notes">
+            <tocitem text="7.3.1" target="releaseNotes7.3.1"/>
             <tocitem text="7.3" target="releaseNotes7.3"/>
             <tocitem text="7.2" target="releaseNotes7.2"/>
             <tocitem text="7.1" target="releaseNotes7.1"/>
