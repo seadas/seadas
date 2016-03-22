@@ -353,7 +353,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     String findNextLevelFileName(String ifileName) {
-        return SeadasFileUtils.findNextLevelFileName(ifileName, programName);
+        return SeadasFileUtils.findNextLevelFileName(ifileName, programName, "");
     }
 
     public boolean updateGeoFileInfo(String ifileName) {

@@ -111,7 +111,7 @@ public class SeadasFileUtils {
     }
 
 
-    public static String findNextLevelFileName(String ifileName, String programName) {
+    public static String findNextLevelFileName(String ifileName, String programName, String suite) {
         if (ifileName == null || programName == null) {
             return null;
         }
@@ -120,7 +120,7 @@ public class SeadasFileUtils {
         }
         debug("Program name is " + programName);
         Debug.assertNotNull(ifileName);
-
+// todo Add suite, also check calling program the make sure ProcessorModel call is right
 
         String[] cmdArray = new String[6];
         cmdArray[0] = OCSSW.getOcsswScriptPath();

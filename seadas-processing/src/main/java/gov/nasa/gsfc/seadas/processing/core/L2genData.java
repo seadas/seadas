@@ -1172,6 +1172,8 @@ public class L2genData implements L2genDataProcessorModel {
                 i++;
             }
 
+            java.util.Arrays.sort(suitesArray);
+
             return suitesArray;
 
         } else {
@@ -1332,7 +1334,7 @@ public class L2genData implements L2genDataProcessorModel {
                 progName = "l2gen";
             }
 
-            String tmpOFile = SeadasFileUtils.findNextLevelFileName(iFileInfo.getFile().getAbsolutePath(), progName);
+            String tmpOFile = SeadasFileUtils.findNextLevelFileName(iFileInfo.getFile().getAbsolutePath(), progName, suiteValue);
             if (tmpOFile != null) {
                 File oFile = new File(iFileInfo.getFile().getParent(), tmpOFile);
                 setParamValue(OFILE, oFile.getAbsolutePath());
