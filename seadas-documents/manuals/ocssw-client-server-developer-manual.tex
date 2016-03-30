@@ -1,0 +1,247 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{color}
+\input{rgb}
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ...
+%\geometry{landscape}                		% Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or epsß with pdflatex; use eps in DVI mode
+% \usepackage{makeindex}                   						% TeX will automatically convert eps --> pdf in pdflatex
+\usepackage{amssymb}
+\usepackage{tabularx}
+\usepackage{fancyvrb}
+\DefineVerbatimEnvironment{code}{Verbatim}{fontsize=\small}
+\DefineVerbatimEnvironment{example}{Verbatim}{fontsize=\small}
+\setlength{\extrarowheight}{3pt}
+%\usepackage{hyperref}
+
+\title{OCSSW Web Services Developer Manual}
+\author{Aynur Abdurazik}
+\date{\today}							% Activate to display a given date or no date
+
+
+\begin{document}
+
+\maketitle
+
+
+\section*{\color{DarkGreen}Daily Progress}
+\subsection*{\color{DeepPink3}To Do}
+\begin{itemize}
+\item Progress Monitor
+\begin{itemize}
+\item Save process input stream, error stream, and output stream on the server side database
+\item Access process information from the client using pull mechanism
+\item test running a few processors
+\end{itemize}
+\item Test l2gen
+\item Test multi-level processor
+\end{itemize}
+\subsection*{\color{DarkTurquoise}Learning Objectives}
+\begin{itemize}
+\item Progress Monitor 
+\item regular expression for single data with percentage information
+\end{itemize}
+
+
+\section{Packaging and Deployment}
+\subsection{Packaging}
+
+The \emph{\textbf{ocsww client-server module}}  is independent of the rest of SeaDAS. The jar file that will be deployed on the ocssw server is packaged using the following command in the \textdollar SEADAS\_HOME/seadas/seadas-ocsswrest directory:
+
+\begin{code}
+mvn install assembly:assembly
+\end{code}
+
+\section{\color{DarkOrange}OCSSW Server Side Representation}
+
+\subsection{\color{DarkBlue} Execution}
+
+The jar file is packaged on a developer machine and deployed on the server.
+
+Run the following command from the command line to execute:
+\begin{code}
+﻿java -Xmx2048m -jar seadas-ocsswserver-jar-with-dependencies.jar
+\end{code}
+
+
+\section{\color{DarkGreen}Virtual Box Configuration}
+
+\subsection{Basic Configuration}
+\begin{enumerate}
+\item Need to install ``guest editions" to be able to resize the vm window.
+\end{enumerate}
+
+\subsection{File Sharing}
+\begin{itemize}
+
+\item Manually sharing a folder between host and guest machines: \\
+In VirtualBox {\color{blue}{\bf Devices  $\rightarrow $  Shared Folder Settings...  $\rightarrow $ Shared Folders  $\rightarrow $  Machine Folders}}, select the folder from the host to be shared with the guest.
+   \begin{enumerate}
+      \item sudo rm /sbin/mount.vboxsf
+      \item sudo ln -s /opt/VBoxGuestAdditions-4.3.20/lib/VBoxGuestAdditions/mount.vboxsf /sbin/mount.vboxsf
+      \item mkdir ocsswws
+      \item sudo mount -t vboxsf seadas-ocsswws /home/aabduraz/ocsswws
+      \item To be able to write in the shared directory, it needs to be mounted in this way:\\
+      sudo mount -t vboxsf -o uid=1000,gid=1000 seadas-ocsswrest /home/aabduraz/ocsswrest
+
+   \end{enumerate}
+
+\item Commands to manually mount a directory:
+\begin{code}
+sudo mount -t vboxsf seadas-ocsswrest /home/aabduraz/ocsswrest
+\end{code}
+where $seadas-ocsswrest$ is the name of folder, which has the development source code for web services, shared from the host machine, and $/home/aabduraz/ocsswrest$ is an empty folder in the virtual machine. The  $seadas-ocsswrest$ is shared to deploy the jar file from its $target$ directory after each build. 
+
+\item need to install git
+(error message:Error - Could not execute system command "git --version $>$ /dev/null" )
+
+\end{itemize}
+
+\subsection{Network Configuration}
+\begin{enumerate}
+\item The server must use $0.0.0.0$ as its IP address.
+\item The client should still use $localhost$
+\item The virtual machine uses ``NAT" port-forwarding, which is set through {\color{blue}{\bf Devices $\rightarrow$ Network $\rightarrow$ Network Settings ... }}.
+\item  Between SeaDAS and OCSSWWS, we chose to use port number 6400 and 6401. The server side presents services using address ``$0.0.0.0:6401$", and a SeaDAS client will access the services using $``http://localhost:6400"$.
+\end{enumerate}
+
+\pagebreak
+
+\section{\color{DarkOrange}Security Concepts and Implementation}
+\subsection{\color{DarkBlue} Security Concepts}
+\subsubsection{\color{DeepPink4}Java Keystore}
+
+
+Java keystore is a repository of security certificates.
+JDK provides a tool named $\{keytool\}$ to manipulates keystores. Java $keytool$ stores the keys and certificates in a keystore, protected by a keystore password.
+
+\begin{quote}
+TrustManager: Determines whether the remote authentication credentials \(and thus the connection\) should be trusted.
+
+KeyManager: Determines which authentication credentials to send to the remote host.
+\end{quote}
+
+\subsubsection{\color{DeepPink4}Security Key Generation}
+\begin{enumerate}
+\item  Create a keystore for server
+\begin{code}
+keytool -genkey -alias server -keyalg RSA -keystore server.jks
+\end{code}
+My password for server keystore is "ocsswws". The generated file is $"server.jks"$.
+\item  Create a keystore for client
+\begin{code}
+keytool -genkey -alias client -keyalg RSA -keystore client.jks
+\end{code}
+My password for server keystore is "ocsswwsclient". The generated file is $"client.jks"$.
+
+\item
+View the content of keystore files:
+\begin{code}
+keytool -list -v -keystore server.jks -storepass ocsswws
+keytool -list -v -keystore client.jks -storepass ocsswwsclient
+\end{code}
+\item Get server's self signed public key certificate and store it in client's keystore.
+\begin{code}
+keytool -export -file server.cert -keystore server.jks -storepass ocsswws -alias server
+\end{code}
+\item Get client's self signed public key certificate and store it in server's keystore.
+\begin{code}
+keytool -export -file client.cert -keystore client.jks -storepass ocsswwsclient -alias client
+\end{code}
+
+{\color{red}Note: First we needed to export both server and client public key certificates into files.}
+\item Use following commands to view certificate contents.
+\begin{code}
+keytool -printcert -v -file server.cert
+keytool -printcert -v -file client.cert
+\end{code}
+\item As the last step, import server.cert into client keystore and client.cert into server keystore.
+\begin{itemize}
+\item store client's self signed public key certificate(client.cert) in server.jks against the alias "client".
+\begin{code}
+keytool -import -file client.cert -keystore server.jks -storepass ocsswws -alias client
+\end{code}
+\item store server.cert within client.jks against the alias "server".
+\begin{code}
+keytool -import -file server.cert -keystore client.jks -storepass ocsswwsclient -alias server
+\end{code}
+\end{itemize}
+
+\item View the content of both keystore again using following commands.
+\begin{code}
+keytool -list -v -keystore server.jks -storepass ocsswws
+keytool -list -v -keystore client.jks -storepass ocsswwsclient
+\end{code}
+
+\end{enumerate}
+
+\subsubsection{\color{DeepPink4}Setting up SSL Configuration on OCSSW (Jersey) Client}
+The SSL configuration is setup in the ClientBuilder class. The client builder contains methods for definition of KeyStore, TrustStore or entire SslContext.
+\begin{itemize}
+\item $KeyStore$ - Represents a storage facility for cryptographic keys and certificated; Manages different types of entries. The keystore in javax.net.ssl.keyStore contains  private keys and certificates.
+\item $TrustStore$ -  The $javax.net.ssl.trustStore$ contain CA certificates that a server trusts when a remote party presents its certificate.
+\item $SslContext$ -
+\end{itemize}
+\begin{code}
+SslConfigurator sslConfig = SslConfigurator.newInstance()
+    .trustStoreFile("truststore.jks")
+    .trustStorePassword("asdfgh")
+    .trustStoreType("JKS")
+    .trustManagerFactoryAlgorithm("PKIX")
+
+    .keyStoreFile("keystore.jks")
+    .keyPassword("asdfgh")
+    .keyStoreType("JKS")
+    .keyManagerFactoryAlgorithm("SunX509")
+    .keyStoreProvider("SunJSSE")
+
+    .securityProtocol("SSL");
+
+ SSLContext sslContext = sslConfig.createSSLContext();
+\end{code}
+
+\pagebreak
+
+
+\section*{\color{DarkGreen}Daily Progress}
+\subsection*{\color{DeepPink3}To Do}
+\begin{itemize}
+\item Confugure SSLContext and SslConfigurator
+\begin{itemize}
+\item have an architectural design document
+\end{itemize}
+\item Repackage ocsswrest
+\item deploy on virtual box
+\end{itemize}
+\subsection*{\color{DarkTurquoise}Learning Objectives}
+\begin{itemize}
+\item SSLContext
+\item SslConfigurator
+\end{itemize}
+
+\pagebreak
+
+\section*{\color{DarkGreen}To Do List for OCSSW Web Services}
+
+\begin{enumerate}
+\item Figure out the secure communication configuration between server and client;
+     \begin{itemize}
+            \item document all concepts
+            \item document directory structure and location of keystores
+     \end{itemize}
+\end{enumerate}
+
+\pagebreak
+
+\section*{\color{DarkRed}Resources}
+
+\begin{enumerate}
+\item This site provides information about problems with host identification: \\
+\begin{verbatim}
+ http://java.globinch.com/enterprise-java/
+  security/fix-java-security-certificate-exception-no-matching-localhost-found/
+ \end{verbatim}
+\end{enumerate}
+
+\end{document}
