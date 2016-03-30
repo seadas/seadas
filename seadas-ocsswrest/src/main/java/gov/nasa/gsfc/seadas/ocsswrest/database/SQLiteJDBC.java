@@ -56,7 +56,10 @@ public class SQLiteJDBC {
                     " CLIENT_ID           INT    NOT NULL, " +
                     " PROCESSOR_ID            INT     NOT NULL, " +
                     " COMMAND_ARRAY  CHAR(500), " +
-                    " STATUS        CHAR(50) )";
+                    " STATUS        CHAR(50), " +
+                    " INPUT_STREAM CHAR(500), " +
+                    " OUTPUT_STREAM CHAR(500), " +
+                    " ERROR_STREAM CHAR(500) )";
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
                     "(JOB_ID INT PRIMARY KEY     NOT NULL, " +
                     " I_FILE_TYPE      CHAR(50)    NOT NULL, " +
@@ -88,7 +91,10 @@ public class SQLiteJDBC {
                     " CLIENT_ID           CHAR(50)    NOT NULL, " +
                     " PROCESSOR_ID            CHAR(50)     NOT NULL, " +
                     " COMMAND_ARRAY  CHAR(500), " +
-                    " STATUS        CHAR(50) )";
+                    " STATUS        CHAR(50), " +
+                    " INPUT_STREAM CHAR(500), " +
+                    " OUTPUT_STREAM CHAR(500), " +
+                    " ERROR_STREAM CHAR(500) )";
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
                     "I_FILE_TYPE      CHAR(50) ,    " +
@@ -137,7 +143,10 @@ public class SQLiteJDBC {
                     " CLIENT_ID           CHAR(50)    NOT NULL, " +
                     " PROCESSOR_ID            CHAR(50)     NOT NULL, " +
                     " COMMAND_ARRAY  CHAR(500), " +
-                    " STATUS        CHAR(50) )";
+                    " STATUS        CHAR(50) " +
+                    " INPUT_STREAM CHAR(500), " +
+                    " OUTPUT_STREAM CHAR(500), " +
+                    " ERROR_STREAM CHAR(500) ";
 
             //string for creating FILE_TABLE
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
