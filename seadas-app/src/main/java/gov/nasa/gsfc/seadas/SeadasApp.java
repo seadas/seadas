@@ -538,19 +538,23 @@ public class SeadasApp extends VisatApp {
         menuBar.setStretch(true);
         //  menuBar.setOpaque(false);
 
-        menuBar.add(createJMenu("file", "File", 'F'));
-        menuBar.add(createJMenu("edit", "Edit", 'E'));
-        menuBar.add(createJMenu("view", "View", 'V'));
-        menuBar.add(createJMenu("tools", "Tools", 'T'));
-        menuBar.add(createJMenu("layers", "Layers", 'L'));
-        menuBar.add(createJMenu("processing", "Processors", 'P'));
+
+        menuBar.add(createJMenu("seadas", "SeaDAS ",'s'));
+        menuBar.add(createJMenu("file", "File ", 'F'));
+        menuBar.add(createJMenu("edit", "Edit ", 'E'));
+        menuBar.add(createJMenu("view", "View ", 'V'));
+        menuBar.add(createJMenu("layers", "Layer ", 'L'));
+        menuBar.add(createJMenu("vector", "Vector ", 'c'));
+        menuBar.add(createJMenu("raster", "Raster ", 'r'));
+        menuBar.add(createJMenu("processing", "Processors ", 'P'));
         if (!System.getProperty("os.name").startsWith("Windows")) {
-            menuBar.add(createJMenu("ocprocessing", "OCSSW", 'O'));
+            menuBar.add(createJMenu("ocprocessing", "OCSSW ", 'O'));
         }
-        menuBar.add(createJMenu("analysis", "Analysis", 'A'));
-        menuBar.add(createJMenu("info", "Info", 'I'));
-        menuBar.add(createJMenu("window", "Window", 'W'));
-        menuBar.add(createJMenu("help", "Help", 'H'));
+        menuBar.add(createJMenu("tools", "Tools ", 'T'));
+        menuBar.add(createJMenu("analysis", "Analysis ", 'A'));
+        menuBar.add(createJMenu("info", "Info ", 'I'));
+        menuBar.add(createJMenu("window", "Window ", 'W'));
+        menuBar.add(createJMenu("help", "Help ", 'H'));
 
         return menuBar;
     }
