@@ -297,7 +297,11 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
         final String latBandName = srcGeocoding._latBand.getName();
         final String lonBandName = srcGeocoding._lonBand.getName();
 
-        ensureLatLonBands(destScene);
+        try {
+            ensureLatLonBands(destScene, subsetDef);
+        } catch (IOException e) {
+            return false;
+        }
         final Band targetLatBand = destScene.getProduct().getBand(latBandName);
         final Band targetLonBand = destScene.getProduct().getBand(lonBandName);
         if(subsetDef != null) {
@@ -314,16 +318,29 @@ public class BowtiePixelGeoCoding extends AbstractBowtieGeoCoding {
         return false;
     }
 
-    private void ensureLatLonBands(Scene destScene) {
-         ensureBand(destScene, _latBand);
-         ensureBand(destScene, _lonBand);
-     }
+    private void ensureLatLonBands(Scene destScene, ProductSubsetDef subsetDef) throws IOException {
+        Band destLatBand = destScene.getProduct().getBand(_latBand.getName());
+        Band destLonBand = destScene.getProduct().getBand(_lonBand.getName());
+        if (destLatBand == null || destLonBand == null) {
+            Band tempLatBand;
+            Band tempLonBand;
+            if (subsetDef != null) {
+                ProductSubsetDef bandSubset = new ProductSubsetDef();
+                bandSubset.addNodeName(_latBand.getName());
+                bandSubset.addNodeName(_lonBand.getName());
+                bandSubset.setRegion(subsetDef.getRegion());
+                bandSubset.setSubSampling(subsetDef.getSubSamplingX(), subsetDef.getSubSamplingY());
+                Product temp = _latBand.getProduct().createSubset(bandSubset, "__temp", "");
+                tempLatBand = temp.getBand(_latBand.getName());
+                tempLonBand = temp.getBand(_lonBand.getName());
+            }else {
+                tempLatBand = _latBand;
+                tempLonBand = _lonBand;
+            }
 
-     private static void ensureBand(Scene destScene, Band sourceBand) {
-         Band band = destScene.getProduct().getBand(sourceBand.getName());
-         if (band == null) {
-             ProductUtils.copyBand(sourceBand.getName(), sourceBand.getProduct(), destScene.getProduct(), true);
-          }
-      }
+            ProductUtils.copyBand(tempLatBand.getName(), tempLatBand.getProduct(), destScene.getProduct(), true);
+            ProductUtils.copyBand(tempLonBand.getName(), tempLonBand.getProduct(), destScene.getProduct(), true);
+        }
+    }
 
 }
