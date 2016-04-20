@@ -129,6 +129,7 @@ public class SeadasFileUtils {
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
         cmdArray[4] = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL) ? ifileName : getIfileNameforRemoteServer(ifileName);
         cmdArray[5] = programName;
+        //cmdArray[6] = "--suite="+suite;
 
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
 
@@ -211,6 +212,7 @@ public class SeadasFileUtils {
         cmdArray[2] = OCSSW.getOcsswEnv();
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
         cmdArray[4] = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL) ? ifileName : getIfileNameforRemoteServer(ifileName);
+
         cmdArray[5] = programName;
         return cmdArray;
     }
@@ -461,6 +463,23 @@ public class SeadasFileUtils {
                 fileWriter.close();
             }
         }
+    }
+
+    public static void copyFile(String sourceFilePath, String targetFilePath) {
+        String[] cmdArray = new String[6];
+        cmdArray[0] = "cp";
+        cmdArray[1] = sourceFilePath;
+        cmdArray[2] = targetFilePath;
+        OCSSWRunner.execute(cmdArray);
+    }
+
+    public static void deleteFile(String fileName, String dirPath) {
+        String[] cmdArray = new String[6];
+        cmdArray[0] = "cp";
+        cmdArray[1] = fileName;
+        cmdArray[2] = dirPath;
+        OCSSWRunner.execute(cmdArray);
+
     }
 
 }
