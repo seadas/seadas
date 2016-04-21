@@ -465,21 +465,35 @@ public class SeadasFileUtils {
         }
     }
 
-    public static void copyFile(String sourceFilePath, String targetFilePath) {
-        String[] cmdArray = new String[6];
+    /**
+     * Copies sourceFile into targetDir.
+     * @param sourceFile the full path name of the source file to be copied
+     * @param targetDir the full path name of the target directory
+     * @return the full path of the file in the new location, if the "copy" operation is successfull. Otherwise, it returns null.
+     */
+    public static String copyFile(String sourceFile, String targetDir) {
+        String[] cmdArray = new String[3];
         cmdArray[0] = "cp";
-        cmdArray[1] = sourceFilePath;
-        cmdArray[2] = targetFilePath;
-        OCSSWRunner.execute(cmdArray);
+        cmdArray[1] = sourceFile;
+        cmdArray[2] = targetDir;
+        Process p = OCSSWRunner.execute(cmdArray);
+        if (p.exitValue() == 0) {
+            return targetDir + sourceFile.substring(sourceFile.lastIndexOf(System.getProperty("file.separator"))+1);
+        } else {
+            System.out.println("This should not happen!");
+            return null;
+        }
     }
 
-    public static void deleteFile(String fileName, String dirPath) {
-        String[] cmdArray = new String[6];
-        cmdArray[0] = "cp";
-        cmdArray[1] = fileName;
-        cmdArray[2] = dirPath;
+    /**
+     * Deletes a file from a directory
+     * @param fileFullPathName the full path name of the file to be deleted
+     */
+    public static void deleteFile(String fileFullPathName) {
+        String[] cmdArray = new String[2];
+        cmdArray[0] = "rm";
+        cmdArray[1] = fileFullPathName;
         OCSSWRunner.execute(cmdArray);
-
     }
 
 }
