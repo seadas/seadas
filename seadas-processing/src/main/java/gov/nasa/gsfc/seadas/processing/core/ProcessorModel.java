@@ -14,11 +14,9 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 import javax.swing.event.SwingPropertyChangeSupport;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -59,6 +57,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private ArrayList<String> remoteServerCmdArray;
 
     private boolean openInSeadas;
+    private HashMap<String, String> iFilesOriginalLocations;
+    private HashMap<String, String> oFilesOriginalLocations;
 
     private String prodParamName = "prod";
 
@@ -478,7 +478,20 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     && optionValue != null && optionValue.trim().length() > 0) {
                 //replace shared folder name for remote server
                 if (!RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
-                    optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
+                    if (optionValue.indexOf(OCSSW.getOCSSWClientSharedDirName()) != 0) {
+                        //save the original file location for later usage; copy file to the shared folder; change the value of "optionValue"
+                        String fileName = optionValue.substring(optionValue.lastIndexOf(System.getProperty("file.separator")) + 1);
+                        String dirPath = optionValue.substring(0, optionValue.lastIndexOf(System.getProperty("file.separator")));
+                        if (optionType.equals(ParamInfo.Type.IFILE)) {
+                            iFilesOriginalLocations.put(fileName, dirPath);
+                            SeadasFileUtils.copyFile(optionValue, OCSSW.getOCSSWClientSharedDirName());
+                        } else if (optionType.equals(ParamInfo.Type.IFILE)) {
+                            oFilesOriginalLocations.put(fileName, dirPath);
+                        }
+                        optionValue = OCSSW.getServerSharedDirName() + fileName;
+                    } else {
+                        optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
+                    }
                 }
             }
             if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
@@ -993,6 +1006,22 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         this.remoteServerCmdArray = remoteServerCmdArray;
     }
 
+    public HashMap<String, String> getiFilesOriginalLocations() {
+        return iFilesOriginalLocations;
+    }
+
+    public void setiFilesOriginalLocations(HashMap<String, String> iFilesOriginalLocations) {
+        this.iFilesOriginalLocations = iFilesOriginalLocations;
+    }
+
+    public HashMap<String, String> getoFilesOriginalLocations() {
+        return oFilesOriginalLocations;
+    }
+
+    public void setoFilesOriginalLocations(HashMap<String, String> oFilesOriginalLocations) {
+        this.oFilesOriginalLocations = oFilesOriginalLocations;
+    }
+
     private static class Extractor_Processor extends ProcessorModel {
         Extractor_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
@@ -1131,11 +1160,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                         String listedFileName;
                         while ((listedFileName = br.readLine()) != null) {
                             ifileInfo = new FileInfo(listedFileName);
-                            if (! ifileInfo.getMissionId().equals(MissionInfo.Id.UNKNOWN)) {
+                            if (!ifileInfo.getMissionId().equals(MissionInfo.Id.UNKNOWN)) {
                                 break;
                             }
                         }
-                    } catch(Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
@@ -1173,7 +1202,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 OCSSWClient ocsswClient = new OCSSWClient();
                 WebTarget target = ocsswClient.getOcsswWebTarget();
                 missionSuites = target.path("ocssw").path("l2bin_suites").path(ifileInfo.getMissionName()).request(MediaType.APPLICATION_JSON)
-                        .get(new GenericType<HashMap<String, Boolean>>() {});
+                        .get(new GenericType<HashMap<String, Boolean>>() {
+                        });
                 int i = 0;
                 suites = new String[missionSuites.size()];
                 for (Map.Entry<String, Boolean> entry : missionSuites.entrySet()) {
