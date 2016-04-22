@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>infile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>infile</name>
+            <value></value>
+            <default></default>
+            <description>input MODIS L1A datafile</description>
+            <source>command line</source>
+            <usedAs>argument</usedAs>
+            <order>0</order>
+        </option>
+        <option type="int">
+            <name>spixl</name>
+            <value></value>
+            <default></default>
+            <description>start pixel number; To extract entire scan line set both spixl and epixl to 0</description>
+            <order>1</order>
+            <source>lonlat2pixline</source>
+            <usedAs>argument</usedAs>
+        </option>
+        <option type="int">
+            <name>epixl</name>
+            <value></value>
+            <default></default>
+            <description>end pixel number (-1=the last pixel); To extract entire scan line set both spixl and epixl to 0</description>
+            <order>2</order>
+            <source>lonlat2pixline</source>
+            <usedAs>argument</usedAs>
+        </option>
+        <option type="int">
+            <name>sline</name>
+            <value></value>
+            <default></default>
+            <description>start line number</description>
+            <order>3</order>
+            <source>lonlat2pixline</source>
+            <usedAs>argument</usedAs>
+        </option>
+        <option type="int">
+            <name>eline</name>
+            <value></value>
+            <default></default>
+            <description>end line number (-1=the last line)</description>
+            <order>4</order>
+            <source>lonlat2pixline</source>
+            <usedAs>argument</usedAs>
+        </option>
+        <option type="ofile">
+            <name>outfile</name>
+            <value></value>
+            <default>output</default>
+            <description>output L2 file name</description>
+            <usedAs>argument</usedAs>
+            <order>5</order>
+        </option>
+    </options>
+</paramInfo>
