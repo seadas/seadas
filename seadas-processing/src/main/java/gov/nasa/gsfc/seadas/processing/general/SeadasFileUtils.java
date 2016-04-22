@@ -476,9 +476,9 @@ public class SeadasFileUtils {
         cmdArray[0] = "cp";
         cmdArray[1] = sourceFile;
         cmdArray[2] = targetDir;
-        Process p = OCSSWRunner.execute(cmdArray);
+        Process p = OCSSWRunner.executeLocal(cmdArray, new File(targetDir));
         if (p.exitValue() == 0) {
-            return targetDir + sourceFile.substring(sourceFile.lastIndexOf(System.getProperty("file.separator"))+1);
+            return targetDir + sourceFile.substring(sourceFile.lastIndexOf(System.getProperty("file.separator")));
         } else {
             System.out.println("This should not happen!");
             return null;
@@ -493,7 +493,7 @@ public class SeadasFileUtils {
         String[] cmdArray = new String[2];
         cmdArray[0] = "rm";
         cmdArray[1] = fileFullPathName;
-        OCSSWRunner.execute(cmdArray);
+        OCSSWRunner.executeLocal(cmdArray, new File(fileFullPathName));
     }
 
 }
