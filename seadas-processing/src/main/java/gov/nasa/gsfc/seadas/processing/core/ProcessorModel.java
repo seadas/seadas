@@ -79,6 +79,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         primaryOptions.add("ifile");
         primaryOptions.add("ofile");
         progressPattern = Pattern.compile(ParamUtils.DEFAULT_PROGRESS_REGEX);
+        iFilesOriginalLocations = new HashMap<>();
+        oFilesOriginalLocations = new HashMap<>();
         setOpenInSeadas(false);
     }
 
@@ -482,13 +484,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                         //save the original file location for later usage; copy file to the shared folder; change the value of "optionValue"
                         String fileName = optionValue.substring(optionValue.lastIndexOf(System.getProperty("file.separator")) + 1);
                         String dirPath = optionValue.substring(0, optionValue.lastIndexOf(System.getProperty("file.separator")));
+                        //if the file is an input file, copy it to the shared folder
                         if (optionType.equals(ParamInfo.Type.IFILE)) {
                             iFilesOriginalLocations.put(fileName, dirPath);
                             SeadasFileUtils.copyFile(optionValue, OCSSW.getOCSSWClientSharedDirName());
                         } else if (optionType.equals(ParamInfo.Type.IFILE)) {
                             oFilesOriginalLocations.put(fileName, dirPath);
                         }
-                        optionValue = OCSSW.getServerSharedDirName() + fileName;
+                        optionValue = OCSSW.getServerSharedDirName() + System.getProperty("file.separator") + fileName;
                     } else {
                         optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
                     }
@@ -1043,7 +1046,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 } else if (ifileInfo.getMissionName().indexOf("SeaWiFS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1 ||
                         ifileInfo.getMissionName().indexOf("CZCS") != -1) {
                     programName = "l1aextract_seawifs";
-                } else if ((ifileInfo.getTypeName().indexOf("L2") != -1 || ifileInfo.getTypeName().indexOf("Level 2") != -1) ||
+                }  else if (ifileInfo.getMissionName().indexOf("VIIRS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1 ) {
+                    programName = "l1aextract_viirs";
+                }  else if ((ifileInfo.getTypeName().indexOf("L2") != -1 || ifileInfo.getTypeName().indexOf("Level 2") != -1) ||
                         (ifileInfo.getMissionName().indexOf("OCTS") != -1 && (ifileInfo.getTypeName().indexOf("L1") != -1 || ifileInfo.getTypeName().indexOf("Level 1") != -1))) {
                     programName = "l2extract";
                 }
