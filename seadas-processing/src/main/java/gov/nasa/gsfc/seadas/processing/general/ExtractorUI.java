@@ -25,6 +25,7 @@ public class ExtractorUI extends ProgramUIFactory {
     private ProcessorModel lonlat2pixline;
     private final String L1AEXTRACT_SEAWIFS_INVALID_PARAMS = "prodlist";
     private final String L1AEXTRACT_MODIS_INVALID_PARAMS = "prodlist pix_sub sc_sub";
+    private final String L1AEXTRACT_VIIRS_INVALID_PARAMS = "prodlist pix_sub sc_sub";
     private JPanel pixelPanel;
     private JPanel newsPanel;
     private JPanel paramPanel;
@@ -127,6 +128,8 @@ public class ExtractorUI extends ProgramUIFactory {
                     updateParamPanel(pixelPanel, L1AEXTRACT_SEAWIFS_INVALID_PARAMS);
                 } else if (programName.equals("l1aextract_modis")) {
                     updateParamPanel(pixelPanel, L1AEXTRACT_MODIS_INVALID_PARAMS);
+                } else if (programName.equals("l1aextract_viirs")) {
+                    updateParamPanel(pixelPanel, L1AEXTRACT_VIIRS_INVALID_PARAMS);
                 }
                 //updateParamPanel(programName);
             }
@@ -150,7 +153,9 @@ public class ExtractorUI extends ProgramUIFactory {
              updateParamPanel(pixelPanel, L1AEXTRACT_SEAWIFS_INVALID_PARAMS);
          } else if (programName != null && programName.equals("l1aextract_modis")) {
              updateParamPanel(pixelPanel, L1AEXTRACT_MODIS_INVALID_PARAMS);
-         }
+         } else if (programName != null && programName.equals("l1aextract_viirs")) {
+            updateParamPanel(pixelPanel, L1AEXTRACT_VIIRS_INVALID_PARAMS);
+        }
         return paramPanel;
     }
 
@@ -185,7 +190,10 @@ public class ExtractorUI extends ProgramUIFactory {
         if (ifileInfo.getMissionName() != null && ifileInfo.getTypeName() != null) {
             if (ifileInfo.getMissionName().indexOf("MODIS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1) {
                 programName = "l1aextract_modis";
-            } else if (ifileInfo.getMissionName().indexOf("SeaWiFS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1 ||
+            } else if (ifileInfo.getMissionName().indexOf("VIIRS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1) {
+                programName = "l1aextract_viirs";
+            }
+            else if (ifileInfo.getMissionName().indexOf("SeaWiFS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1 ||
                     ifileInfo.getMissionName().indexOf("CZCS") != -1) {
                 programName = "l1aextract_seawifs";
             } else if ((ifileInfo.getTypeName().indexOf("L2") != -1 || ifileInfo.getTypeName().indexOf("Level 2") != -1) ||
@@ -210,7 +218,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private String getLonLattoPixelsIFileName(String ifileName, String programName) {
 
-        if (programName.indexOf("l1aextract_modis") != -1) {
+        if (programName.indexOf("l1aextract_modis") != -1 || programName.indexOf("l1aextract_viirs") != -1) {
             String geoFileName = (ifileName.substring(0, ifileName.indexOf("."))).concat(".GEO");
 
             if (new File(geoFileName).exists()) {
