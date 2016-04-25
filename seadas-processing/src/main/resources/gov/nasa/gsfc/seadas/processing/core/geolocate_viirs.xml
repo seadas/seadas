@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">>
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>--parfile</parFileOptionName>
+        <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
+        <primaryOptions>
+            <primaryOption>file</primaryOption>
+            <primaryOption>--output</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="help">
+            <name>-help</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print usage information</description>
+            <source>default</source>
+            <alias>-h</alias>
+            <alias>--help</alias>
+        </option>
+        <option type="help">
+            <name>-version</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print the version
+                information
+            </description>
+            <source>default</source>
+            <alias>--version</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print
+                information about each option
+            </description>
+            <source>default</source>
+            <alias>--dump_options</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_paramfile</name>
+            <value/>
+            <type>string</type>
+            <description>print
+                information about each option to paramfile
+            </description>
+            <source>default</source>
+            <alias>--dump_options_paramfile</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_xmlfile</name>
+            <value>l1brsgen.xml</value>
+            <type>string</type>
+            <description>print
+                information about each option to XML file
+            </description>
+            <source>command line</source>
+            <alias>--dump_options_xmlfile</alias>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>processing version string</description>
+            <source>default</source>
+        </option>
+        <option type="ifile">
+            <name>ifile</name>
+            <value></value>
+            <default></default>
+            <description>Input L1A file name</description>
+            <source>command line</source>
+            <usedAs>argument</usedAs>
+            <order>0</order>
+        </option>
+        <option type="ofile">
+            <name>geofile_img</name>
+            <value></value>
+            <default></default>
+            <description>Geolocation IMG filename</description>
+            <usedAs>option</usedAs>
+            <order>1</order>
+        </option>
+        <option type="ofile">
+            <name>geofile_mod</name>
+            <value></value>
+            <default></default>
+            <description>Geolocation MOD filename</description>
+            <usedAs>option</usedAs>
+            <order>2</order>
+        </option>
+        <option type="ofile">
+            <name>geofile_dnb</name>
+            <value></value>
+            <default></default>
+            <description>Geolocation Day Night Band filename</description>
+            <usedAs>option</usedAs>
+            <order>3</order>
+        </option>
+        <option type="string">
+            <name>static_lut_file</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>static calibration LUT filename</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>4</order>
+        </option>
+        <option type="string">
+            <name>rsb_dynamic_lut_file</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description> RSB dynamic calibration LUT filename</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>5</order>
+        </option>
+        <option type="string">
+            <name>dnb_dynamic_lut_file</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>day night band dynamic calibration LUT filename</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>6</order>
+        </option>
+        <option type="string">
+            <name>straylight_lut_file</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>stray light calibration LUT filename</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>7</order>
+        </option>
+        <option type="string">
+            <name>cmn_lut_file</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>common calibration LUT filename</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>8</order>
+        </option>
+        <option type="string">
+            <name>geo_lut_file</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>geolocation LUT filename</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>9</order>
+        </option>
+        <option type="string">
+            <name>polar_wander_file</name>
+            <value></value>
+            <type>string</type>
+            <default>$OCVARROOT/viirsn/polar_wander.h5</default>
+            <description> polar wander filename</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>10</order>
+        </option>
+        <option type="string">
+            <name>leapsec_path</name>
+            <value></value>
+            <default>$OCVARROOT/viirsn/</default>
+            <description>path to the leap second file</description>
+            <usedAs>option</usedAs>
+            <order>11</order>
+        </option>
+        <option type="ifile">
+            <name>terrain_path</name>
+            <value></value>
+            <default>$OCDATAROOT/viirsn/dem</default>
+            <description>path to the terrain height files directory </description>
+            <usedAs>option</usedAs>
+            <order>12</order>
+        </option>
+        <option type="string">
+            <name>land_water_mask_path</name>
+            <value></value>
+            <default></default>
+            <description> path to the land/water mask file directory</description>
+            <usedAs>option</usedAs>
+            <order>13</order>
+        </option>
+        <option type="boolean">
+            <name>verbose</name>
+            <value>false</value>
+            <default>false</default>
+            <description>print status messages</description>
+            <usedAs>flag</usedAs>
+            <order>14</order>
+        </option>
+    </options>
+</paramInfo>
