@@ -17,8 +17,10 @@ public class ProcessorTypeInfo {
         EXTRACTOR,
         MODIS_L1A_PY,
         MODIS_GEO_PY,
+        GEOLOCATE_VIIRS,
         L1BGEN,
         MODIS_L1B_PY,
+        CALIBRATE_VIIRS,
         L1BRSGEN,
         L2BRSGEN,
         L1MAPGEN,
@@ -47,8 +49,10 @@ public class ProcessorTypeInfo {
         put("extractor", ProcessorID.EXTRACTOR);
         put("modis_L1A.py", ProcessorID.MODIS_L1A_PY);
         put("modis_GEO.py", ProcessorID.MODIS_GEO_PY);
+        put("geolocate_viirs", ProcessorID.GEOLOCATE_VIIRS);
         put("l1bgen", ProcessorID.L1BGEN);
         put("modis_L1B.py", ProcessorID.MODIS_L1B_PY);
+        put("calibrate_viirs", ProcessorID.CALIBRATE_VIIRS);
         put("l1brsgen", ProcessorID.L1BRSGEN);
         put("l2brsgen", ProcessorID.L2BRSGEN);
         put("l1mapgen", ProcessorID.L1MAPGEN);
