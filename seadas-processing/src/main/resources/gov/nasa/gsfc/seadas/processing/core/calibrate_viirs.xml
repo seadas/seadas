@@ -2,12 +2,12 @@
 <paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="http://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">>
     <programMetaData>
-        <hasParFile>false</hasParFile>
-        <parFileOptionName>--parfile</parFileOptionName>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
         <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
-            <primaryOption>geofile_mod</primaryOption>
+            <primaryOption>l1bfile_mod</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
@@ -71,26 +71,26 @@
             <order>0</order>
         </option>
         <option type="ofile">
-            <name>geofile_img</name>
+            <name>l1bfile_img</name>
             <value></value>
             <default></default>
-            <description>Geolocation IMG filename</description>
+            <description>output L1B IMG filename</description>
             <usedAs>option</usedAs>
             <order>1</order>
         </option>
         <option type="ofile">
-            <name>geofile_mod</name>
+            <name>l1bfile_mod</name>
             <value></value>
             <default></default>
-            <description>Geolocation MOD filename</description>
+            <description>output L1B MOD filename</description>
             <usedAs>option</usedAs>
             <order>2</order>
         </option>
         <option type="ofile">
-            <name>geofile_dnb</name>
+            <name>l1bfile_dnb</name>
             <value></value>
             <default></default>
-            <description>Geolocation Day Night Band filename</description>
+            <description>output L1B Day Night Band filename</description>
             <usedAs>option</usedAs>
             <order>3</order>
         </option>
@@ -144,16 +144,7 @@
             <usedAs>option</usedAs>
             <order>8</order>
         </option>
-        <option type="ifile">
-            <name>geo_lut_file</name>
-            <value></value>
-            <type>string</type>
-            <default></default>
-            <description>geolocation LUT filename</description>
-            <source>default</source>
-            <usedAs>option</usedAs>
-            <order>9</order>
-        </option>
+
         <option type="ifile">
             <name>polar_wander_file</name>
             <value></value>
@@ -162,13 +153,23 @@
             <description> polar wander filename</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>10</order>
+            <order>9</order>
         </option>
         <option type="string">
             <name>leapsec_path</name>
             <value></value>
             <default>$OCVARROOT/viirsn/</default>
             <description>path to the leap second file</description>
+            <usedAs>option</usedAs>
+            <order>10</order>
+        </option>
+        <option type="ifile">
+            <name>geo_lut_file</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>geolocation LUT filename</description>
+            <source>default</source>
             <usedAs>option</usedAs>
             <order>11</order>
         </option>
@@ -180,21 +181,21 @@
             <usedAs>option</usedAs>
             <order>12</order>
         </option>
-        <option type="string">
-            <name>land_water_mask_path</name>
-            <value></value>
-            <default></default>
-            <description> path to the land/water mask file directory</description>
-            <usedAs>option</usedAs>
-            <order>13</order>
-        </option>
+        <!--<option type="string">-->
+            <!--<name>land_water_mask_path</name>-->
+            <!--<value></value>-->
+            <!--<default></default>-->
+            <!--<description> path to the land/water mask file directory</description>-->
+            <!--<usedAs>option</usedAs>-->
+            <!--<order>13</order>-->
+        <!--</option>-->
         <option type="boolean">
             <name>verbose</name>
             <value>false</value>
             <default>false</default>
             <description>print status messages</description>
             <usedAs>flag</usedAs>
-            <order>14</order>
+            <order>13</order>
         </option>
         <option type="string">
             <name>pversion</name>
@@ -203,7 +204,7 @@
             <description>processing version string</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>15</order>
+            <order>14</order>
         </option>
     </options>
 </paramInfo>
