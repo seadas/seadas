@@ -6,8 +6,8 @@
         <parFileOptionName>--parfile</parFileOptionName>
         <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
         <primaryOptions>
-            <primaryOption>file</primaryOption>
-            <primaryOption>--output</primaryOption>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>geofile_mod</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
@@ -26,9 +26,7 @@
             <value>false</value>
             <type>bool</type>
             <default>false</default>
-            <description>print the version
-                information
-            </description>
+            <description>print the version information</description>
             <source>default</source>
             <alias>--version</alias>
         </option>
@@ -63,14 +61,6 @@
             <source>command line</source>
             <alias>--dump_options_xmlfile</alias>
         </option>
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-            <type>string</type>
-            <default></default>
-            <description>processing version string</description>
-            <source>default</source>
-        </option>
         <option type="ifile">
             <name>ifile</name>
             <value></value>
@@ -104,7 +94,7 @@
             <usedAs>option</usedAs>
             <order>3</order>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>static_lut_file</name>
             <value></value>
             <type>string</type>
@@ -114,7 +104,7 @@
             <usedAs>option</usedAs>
             <order>4</order>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>rsb_dynamic_lut_file</name>
             <value></value>
             <type>string</type>
@@ -124,7 +114,7 @@
             <usedAs>option</usedAs>
             <order>5</order>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>dnb_dynamic_lut_file</name>
             <value></value>
             <type>string</type>
@@ -134,7 +124,7 @@
             <usedAs>option</usedAs>
             <order>6</order>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>straylight_lut_file</name>
             <value></value>
             <type>string</type>
@@ -144,7 +134,7 @@
             <usedAs>option</usedAs>
             <order>7</order>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>cmn_lut_file</name>
             <value></value>
             <type>string</type>
@@ -154,7 +144,7 @@
             <usedAs>option</usedAs>
             <order>8</order>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>geo_lut_file</name>
             <value></value>
             <type>string</type>
@@ -164,7 +154,7 @@
             <usedAs>option</usedAs>
             <order>9</order>
         </option>
-        <option type="string">
+        <option type="ifile">
             <name>polar_wander_file</name>
             <value></value>
             <type>string</type>
@@ -182,7 +172,7 @@
             <usedAs>option</usedAs>
             <order>11</order>
         </option>
-        <option type="ifile">
+        <option type="string">
             <name>terrain_path</name>
             <value></value>
             <default>$OCDATAROOT/viirsn/dem</default>
@@ -205,6 +195,15 @@
             <description>print status messages</description>
             <usedAs>flag</usedAs>
             <order>14</order>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <default></default>
+            <description>processing version string</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>15</order>
         </option>
     </options>
 </paramInfo>
