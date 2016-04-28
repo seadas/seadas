@@ -250,7 +250,10 @@ public class SeadasProcessorInfo {
         }
 
         if (iFileInfo.isMissionId(MissionInfo.Id.VIIRS)) {
-            if (iFileInfo.isTypeId(FileTypeInfo.Id.SDR)) {
+            if (iFileInfo.isTypeId(FileTypeInfo.Id.SDR) ||
+                iFileInfo.isTypeId(FileTypeInfo.Id.L1A) ||
+                iFileInfo.isTypeId(FileTypeInfo.Id.L1B)
+                ) {
                 return true;
             }
         } else if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
