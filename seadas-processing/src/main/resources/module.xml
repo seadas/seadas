@@ -104,7 +104,7 @@
             <parent>ocprocessing</parent>
             <id>modis_L1B.py</id>
             <placeAfter>modis_GEO.py</placeAfter>
-            <placeBefore>l1bgen</placeBefore>
+            <placeBefore>geolocate_viirs</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>modis_L1B...</text>
             <shortDescr>Process MODIS L1A to L1B</shortDescr>
@@ -113,10 +113,39 @@
             <xmlFileName>modis_L1B.xml</xmlFileName>
         </action>
 
+
+        <action>
+            <parent>ocprocessing</parent>
+            <id>geolocate_viirs</id>
+            <placeAfter>modis_L1B.py</placeAfter>
+            <placeBefore>calibrate_viirs</placeBefore>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>geolocate_viirs...</text>
+            <shortDescr>Process VIIRS Geolocation</shortDescr>
+            <programName>geolocate_viirs</programName>
+            <dialogTitle>geolocate_viirs</dialogTitle>
+            <xmlFileName>geolocate_viirs.xml</xmlFileName>
+        </action>
+
+
+
+        <action>
+            <parent>ocprocessing</parent>
+            <id>calibrate_viirs</id>
+            <placeAfter>geolocate_viirs</placeAfter>
+            <placeBefore>l1bgen</placeBefore>
+            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <text>calibrate_viirs...</text>
+            <shortDescr>Process VIIRS L1A to L1B</shortDescr>
+            <programName>calibrate_viirs</programName>
+            <dialogTitle>calibrate_viirs</dialogTitle>
+            <xmlFileName>calibrate_viirs.xml</xmlFileName>
+        </action>
+
         <action>
             <parent>ocprocessing</parent>
             <id>l1bgen</id>
-            <placeAfter>modis_L1B.py</placeAfter>
+            <placeAfter>calibrate_viirs</placeAfter>
             <placeBefore>l1brsgen</placeBefore>
             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
             <text>l1bgen...</text>
