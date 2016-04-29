@@ -103,7 +103,7 @@ public class FilenamePatterns {
         StringBuilder geofile = new StringBuilder();
         File geoFile = null;
 
-        if (iFileInfo.isMissionId(MissionInfo.Id.VIIRS)) {
+        if (iFileInfo.isMissionId(MissionInfo.Id.VIIRS) && iFileInfo.isTypeId(FileTypeInfo.Id.SDR)) {
             String VIIRS_GEOFILE_PREFIX = "GMTCO";
             geofileBasename.append(VIIRS_GEOFILE_PREFIX);
             geofileBasename.append(iFileInfo.getFile().getName().substring(VIIRS_IFILE_PREFIX.length()));
@@ -116,16 +116,16 @@ public class FilenamePatterns {
         } else {
             ArrayList<File> possibleGeoFiles = new ArrayList<File>();
 
-            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC"};
-            String STRING_TO_INSERT[] = {"GEO", "geo"};
+            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC", "L1A_SNPP", "L1B-M_SNPP" };
+            String STRING_TO_INSERT[] = {"GEO", "geo", "GEO-M_SNPP" };
 
             /**
              * replace last occurrence of instance of STRING_TO_BE_REPLACED[]
              */
             for (String string_to_be_replaced : STRING_TO_BE_REPLACED) {
-                if (iFileInfo.getFile().getName().toUpperCase().contains(string_to_be_replaced)) {
+                if (iFileInfo.getFile().getName().contains(string_to_be_replaced)) {
 
-                    int index = iFileInfo.getFile().getName().toUpperCase().lastIndexOf(string_to_be_replaced);
+                    int index = iFileInfo.getFile().getName().lastIndexOf(string_to_be_replaced);
                     String start = iFileInfo.getFile().getName().substring(0, index);
                     String end = iFileInfo.getFile().getName().substring((index + string_to_be_replaced.length()), iFileInfo.getFile().getName().length());
 

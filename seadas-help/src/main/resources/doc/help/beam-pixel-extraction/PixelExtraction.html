@@ -28,7 +28,7 @@
             Pixel Extraction
         </td>
         <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
-                                                                                     border=0></a>
+                                                                            border=0></a>
         </td>
     </tr>
 </table>
@@ -48,7 +48,7 @@
 <h3>The Output Format</h3>
 
 <p>
-    The Pixel Extraction Tool generates output in the widely used and very general CSV-format, using tabstops as
+    The Pixel Extraction Tool generates output as a text file using tabstops as
     separators.<br/>
     It writes a file for each product type it has found within its input products (such as MER_FRS), each starting with
     a header looking like this:<br/><br/>
@@ -273,16 +273,27 @@ next.
 <p class="i1">
     <b>Coordinates:</b>
     The coordinates table shows the user-specified geographic coordinates which are used to extract the values.
-    They consist of a name and their latitude/longitude-values. Initially, the table is filled with the pins of the
-    product currently selected in VISAT. Additional coordinates may be added by
+    They consist of a name, latitude/longitude-values, and date-time. Initially, the table is filled with the pins of the
+    currently selected file.  Note that pins don't include the date-time, but the user can manually edit this field.
+    Add/import options:
 <ul>
-    <li>creating new coordinates</li>
-    <li>reading them from a pin file.
-        In addition to the standard format of a pin file, the coordinates file can have a 'DateTime' column.
-        The format of the time value follows the ISO8601 pattern: yyyy-MM-dd'T'HH:mm:ss.
+    <li><b>Add coordinate</b> adds a new blank coordinate line.</li>
+    <li><b>Import from text file...</b>  Reads in pin output files, as well as pixel extraction output files.
+        <ul>
+            File field names (tab delimited):
+            <li>Name</li>
+            <li>Lat - Decimal degrees</li>
+            <li>Lon - Decimal degrees</li>
+            <li>DateTime - The format of the time value follows the ISO8601 pattern: yyyy-MM-dd'T'HH:mm:ss.</li>
+        </ul>
     </li>
-    <li>reading them from a file in the output CSV-format described above.
-        This allows to compare the results from multiple runs of the Pixel Extraction Tool.
+    <li><b>Import from csv file...</b>  This format does not currently support the DateTime field.
+        <ul>
+            File field names (comma delimited):
+            <li>Name</li>
+            <li>Lat - Decimal degrees</li>
+            <li>Lon - Decimal degrees</li>
+        </ul>
     </li>
 </ul>
 
@@ -329,7 +340,8 @@ next.
     There are two options of how to use the expression: either the expression is used to filter the values to output,
     that is, values which do not satisfy the expression are ignored. In the other case, the information of the value met
     the expression is added to the output.
-    The specified aggregation will be performed if at least one pixel is marked as valid by this expression within the aggregation window.
+    The specified aggregation will be performed if at least one pixel is marked as valid by this expression within the
+    aggregation window.
 </p>
 
 <p class="i1">
