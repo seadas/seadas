@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>Release Notes: SeaDAS 7.3.1</title>
+    <title>Release Notes: SeaDAS 7.3.2</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,7 +10,7 @@
 <table class="header" width="100%">
     <tr class="header">
         <td class="header">&nbsp;
-            SeaDAS 7.3.1 Release Notes
+            SeaDAS 7.3.2 Release Notes
         </td>
         <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
                                                                             border=0></a></td>
@@ -18,10 +18,10 @@
 </table>
 
 <p>
-    <b>Release Date: </b> Feb 22, 2016<br><br>
+    <b>Release Date: </b> <br><br>
 </p>
 
-The SeaDAS development team is pleased to announce the release of SeaDAS 7.3.1,
+The SeaDAS development team is pleased to announce the release of SeaDAS 7.3.2,
 which is built atop a slightly modified BEAM 5.0.1 version.<br><br>
 
 The science processing code has been updated to reflect changes recently implemented
@@ -31,52 +31,58 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
 <hr>
 <p class="sectionTitle">Primary Package</p>
 
-<p class="subSectionTitle">Features/ Modifications</p>
-
-<pre>   Color Palettes
-        - Universal palette (color blind compliant):
-           Version 2: darkens center of palette more to help distinguish from white (nodata, clouds, etc.)
-
-        Map Gridline
-        - default setting adjusted with corner labels turned off
-
-       - WriteImage operator modified to generate contour lines from a band/raster that is in a separate file
-and add it to the target image.
-
-
-    </pre>
-
-
-<p class="subSectionTitle">Bug Fixes</p>
-
 <pre>
-        - Fixed finding of global attribute for HICO product reader plugin.
-        - Corrected an error in initiliazing parameter defaults in SeaDAS GUI for ocssw programs.
+    FEATURE ADDITIONS/MODIFICATIONS
+
+        -   Universal Color Palette. Updated this palette to Version 3 which has a slightly
+            darker and pale greener center. Several versions of this palette exist and are
+            placed (hidden from the GUI) in the extras folder.
+
+        -   RGB tool: added button for setting each RGB channel, min=0 and max=1.  This
+            feature is especially useful when using any of the rhos based rgb profiles which
+            were designed to be optimally used with a color ramp of [0,1]. Greatly improves
+            time needed to do this as before one had to type the numbers in.
+
+        -   Menu reorganization/renames: minor reorganization in the direction of what we
+            anticipate to be the SeaDAS 8 configuration.
+                - "DataProcessing" changed to "OCSSW".
+
+
+    BUG FIXES
+
+        -   In Color Manager disabled the "apply palette to other bands" feature due to it's
+            not supporting the latest color scheme configuration.
+
+        -   Fixes broken link in the color scheme selector.
+
+        -   Fixes problem where color bar would not always display the end point label when
+            used in manually entered points mode.
+
+
+    HELP PAGES
+
+        -   Updated Pixel Extraction help page to clarify the formats for coordinate parameter
+            input file.
 
 
 </pre>
+
+
+
+
 <br>
 <hr>
-<p class="sectionTitle">OCSSW - OceanColor Science Software</p>
+<p class="sectionTitle">Science Processing Code</p>
 
-
-
-<p class="subSectionTitle">Features/ Modifications</p>
 
 <pre>
-        - Default string values for SeaDAS data processor GUI elements became all lower cases.
-        - Help Pages added for l3gen and l3mapgen.
-</pre>
+    FEATURES ADDITIONS/MODIFICATIONS
 
 
 
+    BUG FIXES
 
-<p class="subSectionTitle">Bug Fixes (Science Processing Code)</p>
-
-<pre>
-
-</pre>
-
+    </pre>
 
 
 <br>
