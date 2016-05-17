@@ -370,6 +370,7 @@
                 </validValue>
             </validValues>
             <description>color file format; default is the same format as input file(s)</description>
+            <order>16</order>
         </option>
     </options>
 </paramInfo>

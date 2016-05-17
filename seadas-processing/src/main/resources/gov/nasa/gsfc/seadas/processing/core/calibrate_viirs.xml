@@ -53,7 +53,7 @@
         </option>
         <option type="help">
             <name>-dump_options_xmlfile</name>
-            <value>l1brsgen.xml</value>
+            <value>calibrate_viirs.xml</value>
             <type>string</type>
             <description>print
                 information about each option to XML file
@@ -66,8 +66,7 @@
             <value></value>
             <default></default>
             <description>Input L1A file name</description>
-            <source>command line</source>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>0</order>
         </option>
         <option type="ofile">
@@ -147,7 +146,7 @@
 
         <option type="ifile">
             <name>polar_wander_file</name>
-            <value></value>
+            <value>$OCVARROOT/viirsn/polar_wander.h5</value>
             <type>string</type>
             <default>$OCVARROOT/viirsn/polar_wander.h5</default>
             <description> polar wander filename</description>
@@ -157,7 +156,7 @@
         </option>
         <option type="string">
             <name>leapsec_path</name>
-            <value></value>
+            <value>$OCVARROOT/viirsn/</value>
             <default>$OCVARROOT/viirsn/</default>
             <description>path to the leap second file</description>
             <usedAs>option</usedAs>
@@ -175,8 +174,8 @@
         </option>
         <option type="string">
             <name>terrain_path</name>
-            <value></value>
-            <default>$OCDATAROOT/viirsn/dem</default>
+            <value>/Users/Shared/DEM-files/anc/dem</value>
+            <default></default>
             <description>path to the terrain height files directory </description>
             <usedAs>option</usedAs>
             <order>12</order>
