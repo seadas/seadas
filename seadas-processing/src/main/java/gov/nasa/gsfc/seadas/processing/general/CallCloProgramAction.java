@@ -211,11 +211,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     public void executeProgram(ProcessorModel pm) {
 
-        final ProcessorModel processorModel = pm;
+                final ProcessorModel processorModel = pm;
 
-        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
-            @Override
+                ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
+                    @Override
             protected String doInBackground(ProgressMonitor pm) throws Exception {
+                        OCSSWRunner.setMonitorProgress(true);
                 final Process process = OCSSWRunner.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
@@ -240,6 +241,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 }
 
                 displayOutput(processorModel);
+                        OCSSWRunner.setMonitorProgress(false);
                 return processorModel.getOfileName();
             }
 
@@ -322,6 +324,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
+            System.out.println("line being handled: " + line);
             if (!progressSeen) {
                 progressSeen = true;
                 pm.beginTask(programName, 1000);

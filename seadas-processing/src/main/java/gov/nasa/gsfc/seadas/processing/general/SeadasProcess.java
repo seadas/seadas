@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -8,7 +9,7 @@ import java.io.OutputStream;
  */
 
 public class SeadasProcess extends Process {
-    int exitValue;
+    int exitValue = 0;
     private InputStream inputStream;
     private InputStream errorStream;
     private OutputStream outputStream;

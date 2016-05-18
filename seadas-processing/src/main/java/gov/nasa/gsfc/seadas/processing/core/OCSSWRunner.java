@@ -34,6 +34,7 @@ public class OCSSWRunner {
 
     private static final String LOCAL = "local";
     private static final String REMOTE = "remote";
+    private static boolean monitorProgress = false;
 
     public OCSSWRunner() {
 
@@ -42,8 +43,7 @@ public class OCSSWRunner {
 
     public static Process execute(ProcessorModel processorModel) {
 
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);
-        if (ocsswLocation == null || ocsswLocation.trim().equals(LOCAL)) {
+        if (OCSSW.isLocal()) {
             return executeLocal(processorModel);
         } else {
             return executeRemote(processorModel);
@@ -82,17 +82,11 @@ public class OCSSWRunner {
 
         }
         return process;
-
-//ioe        if (process != null) {
-//            return process.exitValue();
-//        } else {
-//            return 1;
-//        }
     }
 
     public static Process executeRemote(ProcessorModel processorModel) {
         //System.out.println("remote execution!");
-        SeadasProcess process = null;
+        SeadasProcess process = new SeadasProcess();
         //get a command array with arguments only for remote execution
         //processorModel.setAcceptsParFile(false);
 
@@ -108,6 +102,7 @@ public class OCSSWRunner {
 
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
+
         if (processorModel.getProgramName().equals(OCSSW.OCSSW_INSTALLER)) {
             final Response response = target.path("ocssw").path("installOcssw").request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
@@ -118,6 +113,7 @@ public class OCSSWRunner {
 
         //get exit value from the server
         //process.setErrorStream();
+        //process.setInputStream();
         return process;
     }
 
@@ -174,6 +170,14 @@ public class OCSSWRunner {
     private static File getDefaultDir() {
         File rootDir = new File(getProperty("user.dir"));
         return rootDir;
+    }
+
+    public static boolean isMonitorProgress() {
+        return monitorProgress;
+    }
+
+    public static void setMonitorProgress(boolean mProgress) {
+        monitorProgress = mProgress;
     }
 
 //    public void remoteExecuteProgram(ProcessorModel pm) {

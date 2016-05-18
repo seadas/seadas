@@ -43,6 +43,8 @@ public class OCSSW {
     private static String jobId;
     private static String serverSharedDirName;
 
+    private static String ocsswLocation;
+
     public static String getOcsswRoot() throws IOException {
         return ocsswRoot;
     }
@@ -62,7 +64,7 @@ public class OCSSW {
 
     public static void checkOCSSW() {
 
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY);
+        ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY);
 
         //ocssw installed local
         if (ocsswLocation == null || ocsswLocation.trim().equals(SEADAS_OCSSW_LOCATION_LOCAL)) {
@@ -221,6 +223,7 @@ public class OCSSW {
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
         jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN).get(String.class);
+        System.out.println("job id from server: " + jobId);
     }
 
     public static void retrieveServerSharedDirName() {
@@ -236,6 +239,15 @@ public class OCSSW {
 
     public static void setServerSharedDirName(String serverSharedDirName) {
         OCSSW.serverSharedDirName = serverSharedDirName;
+    }
+
+
+    public static String getOCSSWLocationInfo(){
+        return ocsswLocation;
+    }
+
+    public static boolean isLocal(){
+        return ocsswLocation == null || ocsswLocation.trim().equals(SEADAS_OCSSW_LOCATION_LOCAL);
     }
 }
 

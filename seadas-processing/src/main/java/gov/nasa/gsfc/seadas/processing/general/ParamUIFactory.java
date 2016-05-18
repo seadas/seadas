@@ -144,7 +144,7 @@ public class ParamUIFactory {
 
     protected JPanel makeOptionField(final ParamInfo pi) {
 
-        final String optionName = pi.getName();
+        final String optionName = ParamUtils.removePreceedingDashes(pi.getName());
         final JPanel optionPanel = new JPanel();
         optionPanel.setName(optionName);
         TableLayout fieldLayout = new TableLayout(1);
@@ -165,7 +165,7 @@ public class ParamUIFactory {
         vc.getDescriptor(optionName).setDisplayName(optionName);
         final BindingContext ctx = new BindingContext(vc);
         final JTextField field = new JTextField();
-        field.setColumns(8);
+        field.setColumns(optionName.length() > 12 ? 12 : 8 );
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
         field.setMinimumSize(field.getPreferredSize());

@@ -2,6 +2,8 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.ProgressMonitor;
 
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,10 +57,10 @@ public class ProcessObserver {
         final Thread stderrReaderThread = new LineReaderThread(STDERR);
         stdoutReaderThread.start();
         stderrReaderThread.start();
-        awaitTermintation(stdoutReaderThread, stderrReaderThread);
+        awaitTermination(stdoutReaderThread, stderrReaderThread);
     }
 
-    private void awaitTermintation(Thread stdoutReaderThread, Thread stderrReaderThread) {
+    private void awaitTermination(Thread stdoutReaderThread, Thread stderrReaderThread) {
         while (stdoutReaderThread.isAlive() && stderrReaderThread.isAlive()) {
             try {
                 Thread.sleep(100);
@@ -113,7 +115,12 @@ public class ProcessObserver {
         @Override
         public void run() {
             try {
-                read();
+                if (OCSSW.isLocal()) {
+                    read();
+                } else {
+                    readServer();
+                }
+
             } catch (IOException e) {
                 // cannot be handled
             }
@@ -130,6 +137,22 @@ public class ProcessObserver {
             } finally {
                 reader.close();
             }
+        }
+
+        private void readServer() {
+            OCSSWClient ocsswClient = new OCSSWClient();
+            WebTarget target = ocsswClient.getOcsswWebTarget();
+
+            String line = "";
+            while (!line.contains("done!")) {
+                System.out.println("type: " + type);
+                line = target.path("process").path(type).path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
+                System.out.println("lines from server: " + line + "  " + line.contains("done!"));
+
+                fireLineRead(line);
+            }
+            System.out.println("out from the loop! ");
+            pm.setCanceled(true);
         }
 
         private void fireLineRead(String line) {

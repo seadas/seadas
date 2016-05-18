@@ -104,9 +104,6 @@ public class ExtractorUI extends ProgramUIFactory {
         paramPanel.setPreferredSize(new Dimension(700, 400));
         paramPanel.add(newsPanel,
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-//        paramPanel.add(pixellonlatSwitch,
-//                new GridBagConstraintsCustom(1, 1, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        //The following statement will create a space between two panels.
         paramPanel.add(Box.createRigidArea(new Dimension(100, 50)),
                 new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         paramPanel.add(pixelPanel,
@@ -121,7 +118,6 @@ public class ExtractorUI extends ProgramUIFactory {
                 String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 if (programName == null) {
                     VisatApp.getApp().showErrorDialog("No extractor found for " + processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-                    //processorModel.updateIFileInfo("");
                     return;
                 }
                 if (programName.equals("l1aextract_seawifs")) {
@@ -131,24 +127,17 @@ public class ExtractorUI extends ProgramUIFactory {
                 } else if (programName.equals("l1aextract_viirs")) {
                     updateParamPanel(pixelPanel, L1AEXTRACT_VIIRS_INVALID_PARAMS);
                 }
-                //updateParamPanel(programName);
             }
         });
 
         lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                pixellonlatSwitch.setEnabled(true);
-//                pixellonlatSwitch.setBorderPainted(true);
-//                processorModel.setReadyToRun(true);
                 computePixelsFromLonLat();
             }
         });
 
         String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-//        if (programName != null && !programName.equals("extractor")) {
-//            updateParamPanel(programName);
-//        }
         if (programName != null && programName.equals("l1aextract_seawifs")) {
              updateParamPanel(pixelPanel, L1AEXTRACT_SEAWIFS_INVALID_PARAMS);
          } else if (programName != null && programName.equals("l1aextract_modis")) {
@@ -188,16 +177,16 @@ public class ExtractorUI extends ProgramUIFactory {
         SeadasFileUtils.debug("Extractor ifile info: " + ifileInfo.getTypeName() + ifileInfo.getMissionName());
         String programName = null;
         if (ifileInfo.getMissionName() != null && ifileInfo.getTypeName() != null) {
-            if (ifileInfo.getMissionName().indexOf("MODIS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1) {
+            if (ifileInfo.getMissionName().contains("MODIS") && ifileInfo.getTypeName().contains("1A")) {
                 programName = "l1aextract_modis";
-            } else if (ifileInfo.getMissionName().indexOf("VIIRS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1) {
+            } else if (ifileInfo.getMissionName().contains("VIIRS") && ifileInfo.getTypeName().contains("1A")) {
                 programName = "l1aextract_viirs";
             }
-            else if (ifileInfo.getMissionName().indexOf("SeaWiFS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1 ||
-                    ifileInfo.getMissionName().indexOf("CZCS") != -1) {
+            else if (ifileInfo.getMissionName().contains("SeaWiFS") && ifileInfo.getTypeName().contains("1A") ||
+                    ifileInfo.getMissionName().contains("CZCS")) {
                 programName = "l1aextract_seawifs";
-            } else if ((ifileInfo.getTypeName().indexOf("L2") != -1 || ifileInfo.getTypeName().indexOf("Level 2") != -1) ||
-                    (ifileInfo.getMissionName().indexOf("OCTS") != -1 && (ifileInfo.getTypeName().indexOf("L1") != -1 || ifileInfo.getTypeName().indexOf("Level 1") != -1))) {
+            } else if ((ifileInfo.getTypeName().contains("L2") || ifileInfo.getTypeName().contains("Level 2"))||
+                    (ifileInfo.getMissionName().contains("OCTS") && (ifileInfo.getTypeName().contains("L1") || ifileInfo.getTypeName().contains("Level 1")))) {
                 programName = "l2extract";
             }
         }
@@ -218,7 +207,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private String getLonLattoPixelsIFileName(String ifileName, String programName) {
 
-        if (programName.indexOf("l1aextract_modis") != -1 || programName.indexOf("l1aextract_viirs") != -1) {
+        if (programName.contains("l1aextract_modis") || programName.contains("l1aextract_viirs")) {
             String geoFileName = (ifileName.substring(0, ifileName.indexOf("."))).concat(".GEO");
 
             if (new File(geoFileName).exists()) {
