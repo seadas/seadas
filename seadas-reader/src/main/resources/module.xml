@@ -14,6 +14,8 @@
 
     <changelog>
         <![CDATA[
+        Changes in 1.7<br>
+        Added support for VIIRS L1B geolocation and flags for triple_window SST
         Changes in 1.5.4:<br>
 	Removed support for binned files - it may be restored if a better method to read
         these non-raster files is devised
