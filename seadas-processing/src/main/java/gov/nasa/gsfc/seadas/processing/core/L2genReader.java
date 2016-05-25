@@ -10,6 +10,8 @@ import org.w3c.dom.NodeList;
 import java.io.*;
 import java.util.ArrayList;
 
+import static gov.nasa.gsfc.seadas.processing.core.ParamInfo.NULL_STRING;
+
 /**
  * A ...
  *
@@ -167,9 +169,11 @@ public class L2genReader {
                         value = XmlReader.getTextValue(optionElement, "default");
                     }
 
-                    if (name.equals(L2genData.SUITE) && value == null) {
-                        l2genData.setParamValue(L2genData.SUITE, l2genData.getDefaultSuite());
-                    } else if (!name.equals(l2genData.IFILE)) {
+                    if (!name.equals(l2genData.IFILE) &&
+                            !name.equals(l2genData.OFILE) &&
+                            !name.equals(l2genData.GEOFILE) &&
+                            !name.equals(l2genData.SUITE) &&
+                            !name.equals(l2genData.PAR) ) {
                         l2genData.setParamValueAndDefault(name, value);
                     }
                 }
@@ -231,19 +235,14 @@ public class L2genReader {
                     if (name.equals(L2genData.IFILE) ||
                             name.equals(L2genData.OFILE) ||
                             name.equals(L2genData.GEOFILE) ||
-                            name.equals(L2genData.PAR)
-                            ) {
-                        paramInfo.setDefaultValue(ParamInfo.NULL_STRING);
+                            name.equals(L2genData.PAR)) {
+                        paramInfo.setValue(NULL_STRING);
+                        paramInfo.setDefaultValue(NULL_STRING);
+                    } else if (name.equals(L2genData.SUITE)) {
+                        paramInfo.setValue(l2genData.getDefaultSuite());
+                        paramInfo.setDefaultValue(l2genData.getDefaultSuite());
                     } else {
-
                         paramInfo.setDefaultValue(paramInfo.getValue());
-                    }
-
-                    // add in suite default if it is null
-                    if (name.equals(L2genData.SUITE)) {
-                        if (value == null || value.length() == 0) {
-                            paramInfo.setValue(l2genData.getDefaultSuite());
-                        }
                     }
 
                     paramInfo.setDescription(description);
@@ -278,20 +277,15 @@ public class L2genReader {
 
                     l2genData.addParamInfo(paramInfo);
                 }
-                boolean suiteExists = l2genData.hasParamValue(L2genData.SUITE);
-                boolean junk = suiteExists;
-
             }
         }
 
-
         // add on suite if it was missing from xml
         if (!l2genData.hasParamValue(L2genData.SUITE)) {
-            ParamInfo suiteParamInfo = new ParamInfo(L2genData.SUITE, l2genData.getDefaultSuite(), ParamInfo.Type.STRING);
-            suiteParamInfo.setDefaultValue("");
+            ParamInfo suiteParamInfo = new ParamInfo(L2genData.SUITE, l2genData.getDefaultSuite(),
+                    ParamInfo.Type.STRING, l2genData.getDefaultSuite());
             l2genData.addParamInfo(suiteParamInfo);
         }
-
 
         l2genData.sortParamInfos();
     }
@@ -304,7 +298,7 @@ public class L2genReader {
             if (iFile != null) {
                 value = iFile.toString();
             } else {
-                value = ParamInfo.NULL_STRING;
+                value = NULL_STRING;
             }
         }
 
@@ -312,7 +306,7 @@ public class L2genReader {
             if (geoFile != null) {
                 value = geoFile.toString();
             } else {
-                value = ParamInfo.NULL_STRING;
+                value = NULL_STRING;
             }
         }
 
@@ -320,12 +314,12 @@ public class L2genReader {
             if (oFile != null) {
                 value = oFile.toString();
             } else {
-                value = ParamInfo.NULL_STRING;
+                value = NULL_STRING;
             }
         }
 
         if (name.equals(L2genData.PAR)) {
-            value = ParamInfo.NULL_STRING;
+            value = NULL_STRING;
         }
 
         return value;

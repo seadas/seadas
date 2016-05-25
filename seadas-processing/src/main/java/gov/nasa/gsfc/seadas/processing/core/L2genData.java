@@ -1236,10 +1236,14 @@ public class L2genData implements L2genDataProcessorModel {
     }
 
 
-    private void setIfileandSuiteParamValuesWrapper(final ParamInfo ifileParamInfo, final String ifileValue, final String suiteValue) {
+    private void setIfileandSuiteParamValuesWrapper(final ParamInfo ifileParamInfo, final String ifileValue, String suiteValue) {
 
         String currIfile = getParamValue(IFILE);
         String currSuite = getParamValue(SUITE);
+        if(suiteValue == null) {
+            suiteValue = currSuite;
+        }
+        final String newSuite = suiteValue;
         if (currIfile != null && currSuite != null) {
             if (currIfile.equals(ifileValue) && currSuite.equals(suiteValue)) {
                 return;
@@ -1256,7 +1260,7 @@ public class L2genData implements L2genDataProcessorModel {
 
                     pm.beginTask("Re-initializing " + getGuiName(), 2);
 
-                    setIfileandSuiteParamValues(ifileParamInfo, ifileValue, suiteValue);
+                    setIfileandSuiteParamValues(ifileParamInfo, ifileValue, newSuite);
                     pm.done();
                     return null;
                 }
@@ -1272,7 +1276,7 @@ public class L2genData implements L2genDataProcessorModel {
 
             }
         } else {
-            setIfileandSuiteParamValues(ifileParamInfo, ifileValue, suiteValue);
+            setIfileandSuiteParamValues(ifileParamInfo, ifileValue, newSuite);
         }
 
 
