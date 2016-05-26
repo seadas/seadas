@@ -25,7 +25,8 @@ The SeaDAS development team is pleased to announce the release of SeaDAS 7.3.2,
 which is built atop a slightly modified BEAM 5.0.1 version.<br><br>
 
 The science processing code has been updated to reflect changes recently implemented
-in production, provide bug fixes and support for the R2014.0 reprocessing for SeaWiFS.
+in production, provide bug fixes and support for the R2014.0 reprocessing for SeaWiFS
+and MODIS-Terra as well as VIIRS SST R2016.0.
 
 <br>
 <hr>
@@ -77,11 +78,21 @@ in production, provide bug fixes and support for the R2014.0 reprocessing for Se
 
 <pre>
     FEATURES ADDITIONS/MODIFICATIONS
-
+    
+        - Support for NASA L1 format VIIRS
+        - Support for Sentinel-3A OLCI
+        - Update to GOCI defaults
+        - Support for full (hyperspectral) HICO
+        - Support for VIIRS SST
+        - Add support for reading and writing generic netCDF L1B files
+        - Updated MODIS-Terra defaults for V2014.0 processing
 
 
     BUG FIXES
-
+        - Corrected scaling and valid_min/max attributes for several products
+        - Removed dependency on lzma library that affected Mac binaries
+        - Fixed l1info for Landsat OLI files
+        
     </pre>
 
 
