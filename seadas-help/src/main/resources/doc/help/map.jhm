@@ -103,6 +103,7 @@
     <mapID target="rgbImageProfile" url="visat/RGBImageProfile.html"/>
     <mapID target="bandArithmetic" url="visat/BandMaths.html"/>
     <mapID target="vectorDataManagement" url="visat/VectorDataManagement.html"/>
+    <mapID target="textAnnotation" url="visat/TextAnnotation.html"/>
 
 
     <mapID target="reprojectionAction" url="visat/Reprojection.html"/>

@@ -37,6 +37,7 @@ import org.esa.beam.visat.toolviews.nav.NavigationToolView;
 import org.esa.beam.visat.toolviews.pixelinfo.PixelInfoToolView;
 import org.esa.beam.visat.toolviews.placemark.gcp.GcpManagerToolView;
 import org.esa.beam.visat.toolviews.placemark.pin.PinManagerToolView;
+import org.esa.beam.visat.toolviews.placemark.annotation.TextAnnotationManagerToolView;
 import org.esa.beam.visat.toolviews.spectrum.SpectrumToolView;
 import org.esa.beam.visat.toolviews.stat.*;
 import org.esa.beam.visat.toolviews.worldmap.WorldMapToolView;
@@ -62,6 +63,7 @@ public class SeadasApp extends VisatApp {
     public static final String SEADAS_ANALYSIS_TOOL_BAR_ID = "seadasAnalysisToolBar";
     public static final String SEADAS_GEOMETRY_TOOL_BAR_ID = "seadasGeometriesToolBar";
     public static final String SEADAS_PINS_TOOL_BAR_ID = "seadasPinsToolBar";
+    public static final String SEADAS_TEXT_ANNOATATION_TOOL_BAR_ID = "seadasTextAnnotationToolBar";
     public static final String SEADAS_GCP_TOOL_BAR_ID = "seadasGcpToolBar";
     public static final String SEADAS_WEST_DOCK_TOOL_BAR_ID = "seadasWestDockToolBar";
     public static final String SEADAS_EAST_DOCK_TOOL_BAR_ID = "seadasEastDockToolBar";
@@ -172,6 +174,7 @@ public class SeadasApp extends VisatApp {
         ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
                 layerEditorToolViewCommandId,
                 "exportLegendImageFile",
+                "createTextAnnotation",
                 "showContourOverlay",
                 "showGraticuleOverlay",
                 "showNoDataOverlay",
@@ -335,6 +338,19 @@ public class SeadasApp extends VisatApp {
         addCommandsToToolBar(toolBar, new String[]{
                 PinManagerToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
                 "pinTool"
+        });
+//        toolBar.add(Box.createHorizontalStrut(PADDING));
+
+        return toolBar;
+    }
+
+    protected CommandBar createSeadasTextAnnotationToolBar() {
+        final CommandBar toolBar = createToolBar(SEADAS_TEXT_ANNOATATION_TOOL_BAR_ID, "TextAnnotation");
+
+//        toolBar.add(Box.createHorizontalStrut(PADDING));
+        addCommandsToToolBar(toolBar, new String[]{
+                TextAnnotationManagerToolView.ID + SHOW_TOOLVIEW_CMD_POSTFIX,
+                "textAnnotationTool"
         });
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
 
@@ -507,6 +523,7 @@ public class SeadasApp extends VisatApp {
                 SEADAS_FILE_TOOL_BAR_ID,
                 SEADAS_GEOMETRY_TOOL_BAR_ID,
                 SEADAS_PINS_TOOL_BAR_ID,
+                SEADAS_TEXT_ANNOATATION_TOOL_BAR_ID,
                 SEADAS_PROC_TOOL_BAR_ID,
                 SEADAS_STANDARD_LAYERS_TOOL_BAR_ID,
                 SEADAS_FIELD_MEASUREMENTS_TOOL_BAR_ID,
@@ -700,6 +717,13 @@ public class SeadasApp extends VisatApp {
             seadasPinsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasPinsToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(seadasPinsToolBar);
+            pm.worked(1);
+
+
+            CommandBar seadasTextAnnotationToolBar = createSeadasTextAnnotationToolBar();
+            seadasTextAnnotationToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
+            seadasTextAnnotationToolBar.getContext().setInitIndex(2);
+            getMainFrame().getDockableBarManager().addDockableBar(seadasTextAnnotationToolBar);
             pm.worked(1);
 
             CommandBar seadasGcpToolBar = createSeadasGCPToolBar();

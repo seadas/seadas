@@ -182,6 +182,7 @@
             <tocitem text="Mask Manager" target="showMaskManagerWnd"/>
             <tocitem text="No-Data" target="noDataOverlay"/>
             <tocitem text="Pins" target="showPinManagerWnd"/>
+            <tocitem text="Text Annotation" target="textAnnotation"/>
             <tocitem text="Vector Data Management" target="vectorDataManagement"/>
             <tocitem text="World Map" target="worldMap"/>
 
