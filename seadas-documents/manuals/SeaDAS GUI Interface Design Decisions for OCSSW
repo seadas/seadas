@@ -1,0 +1,16 @@
+1. The meaning of option, flag, and argument values in the <usedAs> xml element.
+2. The "verbose" and "pversion" variables on GUI
+3. Types of xml elements
+4. The meaning of each element
+
+XML Representation of OCSSW Program Inputs
+
+1. Introduction to XML
+
+2. Types of Elements Used for OCSSW
+
+We have designed the following types to represent command line inputs for OCSSW programs:
+
+2.1 help
+2.2 ifile
+2.3 ofile

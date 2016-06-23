@@ -1,0 +1,3 @@
+                                 CHANGELOG
+
+This file contains the significant changes for each OCSSW Client-Server Module release.
