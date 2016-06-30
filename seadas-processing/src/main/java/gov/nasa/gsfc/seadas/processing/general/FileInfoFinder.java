@@ -1,10 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.processing.core.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWClient;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.*;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -14,79 +11,58 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 /**
  * Created by aabduraz on 8/21/15.
  */
 public class FileInfoFinder {
 
-    private static final String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
+    public static final String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
+    public static final String FILE_TYPE_ID_STRING = "fileType";
+    public static final String MISSION_NAME_ID_STRING = "missionName";
+    public static final String MISSION_DIR_NAME_ID_STRING = "missionDirName";
 
     private String fileType;
     private String missionName;
     private String missionDirName;
 
-    public void computeFileInfo(ProcessorModel processorModel) {
-        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
-            try {
+    private String fileName;
+    OcsswCommandArrayManager commandArrayManager;
 
-                //TODO execute this from remote server
-                Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray());
-                BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    ProcessorModel fileInfoFinderProcessorModel;
+    HashMap<String, String> fileInfos;
 
-                String line = stdInput.readLine();
-                if (line != null) {
-                    String splitLine[] = line.split(":");
-                    if (splitLine.length == 3) {
-                        String missionName = splitLine[1].toString().trim();
-                        String fileType = splitLine[2].toString().trim();
-
-                        if (fileType.length() > 0) {
-                            setFileType(fileType);
-                        }
-
-                        if (missionName.length() > 0) {
-                            setMissionName(missionName);
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                System.out.println("ERROR - Problem running " + FILE_INFO_SYSTEM_CALL);
-                System.out.println(e.getMessage());
-            }
-        } else {
-            OCSSWClient ocsswClient = new OCSSWClient();
-            WebTarget target = ocsswClient.getOcsswWebTarget();
-            JsonArrayBuilder jab = Json.createArrayBuilder();
-            for (String s : processorModel.getProgramCmdArray()) {
-                jab.add(s);
-            }
-            JsonArray remoteCmdArray = jab.build();
-
-            Response response = target.path("ocssw").path("findIFileTypeAndMissionName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
-
-            String fileType = target.path("ocssw").path("retrieveIFileType").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-            String missionName = target.path("ocssw").path("retrieveMissionName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-            String missionDirName = target.path("ocssw").path("retrieveMissionDirName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-            if (fileType.length() > 0) {
-                setFileType(fileType);
-            }
-
-            if (missionName.length() > 0) {
-                setMissionName(missionName);
-            }
-
-            if (missionDirName.length() > 0) {
-                setMissionDirName(missionDirName);
-            }
-        }
-
+    public FileInfoFinder(String fileName){
+        this.fileName = fileName;
+        fileInfoFinderProcessorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
+        fileInfoFinderProcessorModel.setAcceptsParFile(false);
+        addParamInfo("file", fileName, ParamInfo.Type.IFILE, ParamInfo.USED_IN_COMMAND_AS_ARGUMENT, 0);
+        fileInfos = new HashMap();
     }
 
+    private void addParamInfo(String paramName, String paramValue, ParamInfo.Type paramType, String usedAs, int order){
+        ParamInfo paramInfo = new ParamInfo(paramName, paramValue, paramType);
+        paramInfo.setOrder(order);
+        paramInfo.setUsedAs(usedAs);
+        fileInfoFinderProcessorModel.addParamInfo(paramInfo);
+        identifyFileInfo();
+    }
+
+    public void identifyFileInfo(){
+        if (OCSSW.isLocal()) {
+            commandArrayManager = new LocalOcsswCommandArrayManager(fileInfoFinderProcessorModel);
+            fileInfos = OCSSWRunner.executeLocalGetOBPGFileInfo(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
+        } else {
+            commandArrayManager = new RemoteOcsswCommandArrayManager(fileInfoFinderProcessorModel);
+            fileInfos = OCSSWRunner.executeRemoteGetOBPGFileInfo(commandArrayManager.getProgramCommandArray());
+        }
+        setFileType(fileInfos.get(FILE_TYPE_ID_STRING));
+        setMissionName(fileInfos.get(MISSION_NAME_ID_STRING));
+        setMissionDirName(fileInfos.get(MISSION_DIR_NAME_ID_STRING));
+    }
     public String getFileType() {
         return fileType;
     }

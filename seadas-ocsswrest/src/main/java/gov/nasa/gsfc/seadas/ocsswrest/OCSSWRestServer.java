@@ -23,10 +23,7 @@ import java.util.logging.Logger;
 public class OCSSWRestServer {
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://0.0.0.0:6401/ocsswws/";
-    public static final String ROOT_PATH = "multipart";
     private static final Logger LOGGER = Logger.getLogger(OCSSWRestServer.class.getName());
-
-    private static HashMap<String, Process> processHashMap;
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
@@ -34,9 +31,6 @@ public class OCSSWRestServer {
      * @return Grizzly HTTP server.
      */
     public static HttpServer startServer() {
-        // create a resource config that scans for JAX-RS resources and providers
-        // in gov.nasa.gsfc.seadas.ocsswrest package
-        //final ResourceConfig rc = new ResourceConfig().packages("gov.nasa.gsfc.seadas.ocsswrest");
         final ResourceConfig resourceConfig = new ResourceConfig(MultiPartResource.class);
         resourceConfig.registerInstances(new LoggingFilter(LOGGER, true));
         resourceConfig.register(MultiPartFeature.class);
@@ -58,9 +52,8 @@ public class OCSSWRestServer {
     public static void main(String[] args) throws IOException {
         SQLiteJDBC.createTables();
         OCSSWServerModel.init();
-        processHashMap = new HashMap<>();
         final HttpServer server = startServer();
-        System.out.println(String.format("Jersey app started with WADL available at "
+        System.out.println(String.format("Jersey new app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
         server.shutdown();

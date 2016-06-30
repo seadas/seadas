@@ -3,6 +3,8 @@ package gov.nasa.gsfc.seadas.ocsswrest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessObserver;
+import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessRunner;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
 
 import javax.json.Json;
@@ -120,6 +122,14 @@ public class OCSSWServices {
     }
 
     @POST
+    @Path("/updateProgressMonitorFlag/{progressMonitorFlag}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public void updateProgressMonitorFlag(@PathParam("progressMonitorFlag") String progressMonitorFlag) {
+        System.out.println("Shared dir name:" + OCSSWServerPropertyValues.getServerSharedDirName());
+        OCSSWServerModel.setProgressMonitorFlag(progressMonitorFlag);
+    }
+
+    @POST
     @Path("/findIFileTypeAndMissionName/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public String findFileTypeAndMissionName(@PathParam("jobId") String jobId, JsonArray jsonArray) {
@@ -144,7 +154,6 @@ public class OCSSWServices {
             }
 
             process = ProcessRunner.executeCmdArray(cmdArray);
-
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             try {
                 String line = stdInput.readLine();
@@ -162,6 +171,9 @@ public class OCSSWServices {
                 System.out.println(ioe.getStackTrace());
             }
         }
+
+
+
         if (jobId != null) {
             //insert or update mission name
             if (SQLiteJDBC.isJobIdExist(jobId)) {
@@ -180,7 +192,9 @@ public class OCSSWServices {
 
 
         }
-        return "ok";
+        int exitValue = process.exitValue();
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        return new Integer(exitValue).toString();
     }
 
 
@@ -194,7 +208,7 @@ public class OCSSWServices {
     @POST
     @Path("cmdArray")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Process uploadCommandArray(JsonArray jsonArray)
+    public String uploadCommandArray(JsonArray jsonArray)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
         Process process = null;
@@ -210,9 +224,9 @@ public class OCSSWServices {
 
             process = ProcessRunner.executeInstaller(cmdArray);
         }
-        return process; //Response.status(respStatus).build();
-
-        //return Response.status(respStatus).build();
+        int exitValue = process.exitValue();
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        return new Integer(exitValue).toString();
     }
 
     @POST
@@ -239,7 +253,9 @@ public class OCSSWServices {
 
             process = ProcessRunner.executeInstaller(cmdArray);
         }
-        return new Integer(process.exitValue()).toString(); //Response.status(respStatus).build();
+        int exitValue = process.exitValue();
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        return new Integer(exitValue).toString(); //Response.status(respStatus).build();
     }
 
     @POST
@@ -261,7 +277,9 @@ public class OCSSWServices {
 
             process = ProcessRunner.executeInstaller(cmdArray);
         }
-        return new Integer(process.exitValue()).toString(); //Response.status(respStatus).build();
+        int exitValue = process.exitValue();
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        return new Integer(exitValue).toString();//Response.status(respStatus).build();
     }
 
     @POST
@@ -289,7 +307,9 @@ public class OCSSWServices {
         }
         System.out.println("process execution completed.");
         System.out.println("exit code = " + process.exitValue());
-        return new Integer(process.exitValue()).toString();
+        int exitValue = process.exitValue();
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        return new Integer(exitValue).toString();
     }
 
     @POST
@@ -298,6 +318,8 @@ public class OCSSWServices {
     public String computeNextLevelFileName(@PathParam("jobId") String jobId, JsonArray jsonArray) {
         Process process = null;
         InputStream is = null;
+        InputStream er = null;
+        OutputStream os = null;
         String ofileName = "output";
         if (jsonArray != null) {
             //jobId = jsonArray.getString(jsonArray.size() - 1);
@@ -347,7 +369,9 @@ public class OCSSWServices {
                 SQLiteJDBC.insertOFileName(jobId, ofileName);
             }
         }
-        return new Integer(process.exitValue()).toString();
+        int exitValue = process.exitValue();
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        return new Integer(exitValue).toString();
     }
 
     @GET
@@ -392,14 +416,6 @@ public class OCSSWServices {
         }
         return OCSSWServerModel.getProcess(jobId);
     }
-
-    @GET
-    @Path("retrieveProcessResult/{jobId}")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public InputStream retrieveProcessResult(@PathParam("jobId") String jobId) {
-        return OCSSWServerModel.getProcessResult(jobId);
-    }
-
 
     private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
         String[] cmdArray = new String[6];

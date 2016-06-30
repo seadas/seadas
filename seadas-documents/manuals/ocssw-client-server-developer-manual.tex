@@ -33,7 +33,15 @@ The \emph{\textbf{ocsww client-server module}}  is independent of the rest of Se
 mvn install assembly:assembly
 \end{code}
 
+\subsection{Services and Application Description}
+
+\subsubsection{Adding New REST Services}
+How to register this new service?
+
 \section{\color{DarkOrange}OCSSW Server Side Representation}
+
+\subsection{\color{DarkBlue} OCSSW programs}
+
 
 \subsection{\color{DarkBlue} Execution}
 
@@ -50,9 +58,27 @@ Run the following command from the command line to execute:
 \subsection{Basic Configuration}
 \begin{enumerate}
 \item Need to install ``guest editions" to be able to resize the vm window.
+\item Choose "Fixed" virtual box for performance. Eloborate more later.
 \end{enumerate}
 
 \subsection{File Sharing}
+
+Usage of disk space. Does it take virtual box disk space? How to increase disk space when needed for "fixed" virtual boxes?
+
+How disk space is used on virtual machine, i.e., how is it allocated?
+
+error message when no disk space left:
+"segmentation error"
+
+error message for incorrect way of increasing disk space:
+
+VBoxManage modifyhd "/Users/aabduraz/VirtualBox VMs/OCSSW_Ubuntu_Server/OCSSW_Ubuntu_Server.vdi" --resize 81920
+0%...
+Progress state: VBOX_E_NOT_SUPPORTED
+VBoxManage: error: Resize hard disk operation for this format is not implemented yet!
+
+The reason for the error was there are two disk space measures, virtual size and actual size. The resize amount has to be greater than the virtual size specified in the "Storage" configuration of the virtual machine.
+
 \begin{itemize}
 
 \item Manually sharing a folder between host and guest machines: \\

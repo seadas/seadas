@@ -18,11 +18,9 @@ public class SQLiteJDBC {
 
     public static String JOB_DB_URL = "jdbc:sqlite:ocssw.db";
     public static String DB_CLASS_FOR_NAME = "org.sqlite.JDBC";
-    public static String SQL_INSERT_STRING = "INSERT INTO PROCESSOR_TABLE (JOB_ID,CLIENT_ID,PROCESSOR_ID,COMMAND_ARRAY, STATUS) ";
-    public static String SQL_INSERT_STRING_SERVICES = "INSERT INTO FILE_TABLE (JOB_ID, I_FILE_TYPE, O_FILE_NAME, MISSION, STATUS) ";
-    public static String SQL_INSERT_STRING_PROCESS = "INSERT INTO PROCESS_TABLE (JOB_ID, PROCESS_NAME, PROCESS_EXIT_VALUE, PROCESS_INPUT_STREAM, PROCESS_ERROR_STREAM, PROCESS_OUTPUT_STREAM, STATUS) ";
-    private static String username = "aynur";
-    private static String password = "aynur";
+    public static String SQL_INSERT_STRING = "INSERT INTO PROCESSOR_TABLE (JOB_ID,COMMAND_ARRAY, EXIT_VALUE, stdout, stderr) ";
+    private static String username = "obpg";
+    private static String password = "obpg";
 
 
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
@@ -53,13 +51,10 @@ public class SQLiteJDBC {
             stmt = c.createStatement();
             String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESSOR_TABLE " +
                     "(JOB_ID INT PRIMARY KEY     NOT NULL, " +
-                    " CLIENT_ID           INT    NOT NULL, " +
-                    " PROCESSOR_ID            INT     NOT NULL, " +
                     " COMMAND_ARRAY  CHAR(500), " +
-                    " STATUS        CHAR(50), " +
-                    " INPUT_STREAM CHAR(500), " +
-                    " OUTPUT_STREAM CHAR(500), " +
-                    " ERROR_STREAM CHAR(500) )";
+                    " EXIT_VALUE        CHAR(2), " +
+                    " stdout CHAR(500), " +
+                    " stderr(500) )";
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
                     "(JOB_ID INT PRIMARY KEY     NOT NULL, " +
                     " I_FILE_TYPE      CHAR(50)    NOT NULL, " +
@@ -78,53 +73,6 @@ public class SQLiteJDBC {
         System.out.println("Opened database successfully");
     }
 
-    public static void createTable() {
-        Connection c = null;
-        Statement stmt = null;
-        try {
-            Class.forName(DB_CLASS_FOR_NAME);
-            c = DriverManager.getConnection(JOB_DB_URL, username, password);
-
-            stmt = c.createStatement();
-            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESSOR_TABLE " +
-                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
-                    " CLIENT_ID           CHAR(50)    NOT NULL, " +
-                    " PROCESSOR_ID            CHAR(50)     NOT NULL, " +
-                    " COMMAND_ARRAY  CHAR(500), " +
-                    " STATUS        CHAR(50), " +
-                    " INPUT_STREAM CHAR(500), " +
-                    " OUTPUT_STREAM CHAR(500), " +
-                    " ERROR_STREAM CHAR(500) )";
-            String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
-                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
-                    "I_FILE_TYPE      CHAR(50) ,    " +
-                    "O_FILE_NAME      CHAR(100) , " +
-                    "MISSION_NAME  CHAR(50), " +
-                    "MISSION_DIR  CHAR(50), " +
-                    "STATUS        CHAR(50) )";
-            String lonlat_2_pixel_table_sql = "CREATE TABLE IF NOT EXISTS LONLAT_2_PIXEL_TABLE " +
-                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
-                    "SPIXL      CHAR(50) ,    " +
-                    "EPIXL     CHAR(100) , " +
-                    "SLINE  CHAR(50), " +
-                    "ELINE       CHAR(50), " +
-                    "PIX_SUB     CHAR(100), " +
-                    "SC_SUB  CHAR(50), " +
-                    "PRODLIST       CHAR(50) )";
-            stmt.executeUpdate(processor_table_sql);
-            stmt.executeUpdate(file_table_sql);
-            stmt.executeUpdate(lonlat_2_pixel_table_sql);
-            stmt.close();
-            c.close();
-
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
-        System.out.println("Tables created successfully");
-
-    }
-
     public static void createTables() {
 
         Connection connection = null;
@@ -140,13 +88,10 @@ public class SQLiteJDBC {
             //string for creating PROCESSOR_TABLE
             String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESSOR_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
-                    " CLIENT_ID           CHAR(50)    NOT NULL, " +
-                    " PROCESSOR_ID            CHAR(50)     NOT NULL, " +
                     " COMMAND_ARRAY  CHAR(500), " +
-                    " STATUS        CHAR(50) " +
-                    " INPUT_STREAM CHAR(500), " +
-                    " OUTPUT_STREAM CHAR(500), " +
-                    " ERROR_STREAM CHAR(500) ";
+                    " EXIT_VALUE        CHAR(2), " +
+                    " stdout CHAR(500), " +
+                    " stderr CHAR(500) )";
 
             //string for creating FILE_TABLE
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
@@ -379,6 +324,78 @@ public class SQLiteJDBC {
         System.out.println("Operation done successfully");
     }
 
+    public static void insertItem(String tableName, String itemName, String itemValue) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String commonInsertString = "INSERT INTO " + tableName + " (" + itemName + ") VALUES ( ? )";
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+            System.out.println("Operating on table " + tableName);
+
+
+            preparedStatement = connection.prepareStatement(commonInsertString);
+
+            preparedStatement.setString(1, itemValue);
+            System.out.println("sql string: " + commonInsertString + itemValue);
+
+            // execute insert SQL stetement
+            int exitCode = preparedStatement.executeUpdate();
+
+            connection.commit();
+
+            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " inserted into " +  tableName + " table!");
+            preparedStatement.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(" in inserting item : " + e.getClass().getName() + ": " + e.getMessage());
+            //System.exit(0);
+        }
+        System.out.println("Inserted " + itemName + " successfully");
+    }
+
+    public static String updateItem(String tableName, String jobID, String itemName, String itemValue) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String commonUpdateString = "UPDATE " + tableName + " SET " + itemName + " = ?  WHERE JOB_ID = ?";
+//String updateTableSQL = "UPDATE FILE_TABLE set O_FILE_NAME = ? where JOB_ID = ?";
+        String retrievedItem = null;
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Operating on table " + tableName);
+
+            preparedStatement = connection.prepareStatement(commonUpdateString);
+
+            preparedStatement.setString(1, itemValue);
+            preparedStatement.setString(2, jobID);
+
+            System.out.println("sql string: " + commonUpdateString);
+
+            int exitCode = preparedStatement.executeUpdate();
+            connection.commit();
+
+            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " updated on " +  tableName + " table!");
+            preparedStatement.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
+            //System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+
+        return retrievedItem;
+    }
+
     public static String retrieveItem(String tableName, String searchKey, String itemName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -391,12 +408,13 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Opened database successfully");
+            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey);
 
             preparedStatement = connection.prepareStatement(commonQueryString);
 
             //preparedStatement.setString(1, itemName);
             preparedStatement.setString(1, searchKey);
+            System.out.println("sql string: " + preparedStatement);
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -414,40 +432,6 @@ public class SQLiteJDBC {
         return retrievedItem;
     }
 
-//    public static String retrieveItem(String jobId, String itemName) {
-//        Connection connection = null;
-//        PreparedStatement preparedStatement = null;
-//
-//        String queryString = "SELECT JOB_ID, O_FILE_NAME FROM FILE_TABLE WHERE JOB_ID = ?";
-//        String commonQueryString = "SELECT ? FROM FILE_TABLE WHERE JOB_ID = ?";
-//        String oFileName = "output";
-//
-//        try {
-//            Class.forName(DB_CLASS_FOR_NAME);
-//            connection = DriverManager.getConnection(JOB_DB_URL);
-//            connection.setAutoCommit(false);
-//            System.out.println("Opened database successfully");
-//
-//            preparedStatement = connection.prepareStatement(queryString);
-//
-//            preparedStatement.setString(1, jobId);
-//            preparedStatement.setString(1, jobId);
-//
-//            ResultSet rs = preparedStatement.executeQuery();
-//
-//            oFileName = rs.getString("O_FILE_NAME");
-//            System.out.println("ofilename : " + oFileName);
-//            rs.close();
-//            preparedStatement.close();
-//            connection.close();
-//        } catch (Exception e) {
-//            System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
-//            //System.exit(0);
-//        }
-//        System.out.println("Operation done successfully");
-//        return oFileName;
-//    }
-
     public static boolean isJobIdExist(String jobId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -459,11 +443,12 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Opened database successfully");
+            System.out.println("Operating on job table ");
 
             preparedStatement = connection.prepareStatement(queryString);
 
             preparedStatement.setString(1, jobId);
+            System.out.println("sql string: " + preparedStatement.toString());
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -487,7 +472,7 @@ public class SQLiteJDBC {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
-        String insertTableSQL = "INSERT INTO FILE_TABLE " + " (JOB_ID, O_FILE_NAME) VALUES (" + "?, ?)";
+        String insertTableSQL = "INSERT INTO FILE_TABLE " + " (JOB_ID, O_FILE_NAME) VALUES (?, ?)";
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);

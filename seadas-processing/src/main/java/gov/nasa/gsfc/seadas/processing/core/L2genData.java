@@ -1385,7 +1385,7 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("mission", missionName, ParamInfo.Type.STRING, 0);
 
         try {
-            Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
+            Process p = OCSSWRunner.execute(processorModel); //processorModel.executeProcess();
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             String line = stdInput.readLine();
@@ -1444,7 +1444,7 @@ public class L2genData implements L2genDataProcessorModel {
                 pm.beginTask("Retrieving ancillary files", 2);
 
                 try {
-                    Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
+                    Process p = OCSSWRunner.execute(processorModel); //processorModel.executeProcess();
 
                     // Determine exploded filenames
                     File runDirectoryFiles[] = processorModel.getIFileDir().listFiles();
@@ -1684,9 +1684,7 @@ public class L2genData implements L2genDataProcessorModel {
                 processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
 
                 try {
-                    String[] programCommand = processorModel.getProgramCmdArray();
-
-                    Process p = OCSSWRunner.execute(programCommand, processorModel.getIFileDir());
+                    Process p = OCSSWRunner.execute(processorModel);
                     p.waitFor();
 
                     if (p.exitValue() != 0) {
@@ -1761,8 +1759,7 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            String[] programCommand = processorModel.getProgramCmdArray();
-            Process p = OCSSWRunner.execute(programCommand, processorModel.getIFileDir());//processorModel.executeProcess();
+            Process p = OCSSWRunner.execute(processorModel);//processorModel.executeProcess();
             p.waitFor();
             if (p.exitValue() != 0) {
                 throw new IOException("l2gen failed to run");

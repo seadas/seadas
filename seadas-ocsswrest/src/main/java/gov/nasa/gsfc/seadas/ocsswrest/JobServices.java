@@ -1,5 +1,8 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
+import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerModel;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.*;
@@ -17,21 +20,15 @@ import java.util.Date;
  */
 @Path("/jobs")
 public class JobServices {
-    //    @POST
-//    @Path("/newJobId") ///{clientId}/{processorId}")
-//    @Produces(MediaType.TEXT_PLAIN)
-//    public String createNewJob(
-//            @PathParam("clientId") String clientId,
-//            @PathParam("processorId") String processorId
-//    ) {
-//        String newJobId = hashJobID(new Long(new Date().getTime()).toString());
-//        return newJobId;
-//    }
     @GET
     @Path("/newJobId") ///{clientId}/{processorId}")
     @Produces(MediaType.TEXT_PLAIN)
     public String createNewJob() {
         String newJobId = hashJobID(new Long(new Date().getTime()).toString());
+        //insert rows for this new job in the processor and file tables.
+        OCSSWServerModel.setCurrentJobId(newJobId);
+        System.out.println(" in job services: " + newJobId);
+        SQLiteJDBC.insertItem("PROCESSOR_TABLE", "JOB_ID", newJobId);
         return newJobId;
     }
 

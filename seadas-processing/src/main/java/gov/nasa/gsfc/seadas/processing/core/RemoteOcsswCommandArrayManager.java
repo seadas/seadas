@@ -1,13 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
-import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -15,8 +10,13 @@ import java.util.Iterator;
  */
 public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
 
-    RemoteOcsswCommandArrayManager(ProcessorModel processorModel) {
+    private HashMap<String, String> iFilesOriginalLocations;
+    private HashMap<String, String> oFilesOriginalLocations;
+
+    public RemoteOcsswCommandArrayManager(ProcessorModel processorModel) {
         super(processorModel);
+        iFilesOriginalLocations = new HashMap<>();
+        oFilesOriginalLocations = new HashMap<>();
     }
 
 
@@ -47,23 +47,22 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
             if ((optionType.equals(ParamInfo.Type.IFILE) || optionType.equals(ParamInfo.Type.OFILE))
                     && optionValue != null && optionValue.trim().length() > 0) {
                 //replace shared folder name for remote server
-                if (!RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
-                    if (optionValue.indexOf(OCSSW.getOCSSWClientSharedDirName()) != 0) {
-                        //save the original file location for later usage; copy file to the shared folder; change the value of "optionValue"
-                        String fileName = optionValue.substring(optionValue.lastIndexOf(System.getProperty("file.separator")) + 1);
-                        String dirPath = optionValue.substring(0, optionValue.lastIndexOf(System.getProperty("file.separator")));
-                        //if the file is an input file, copy it to the shared folder
-                        if (optionType.equals(ParamInfo.Type.IFILE)) {
-                            iFilesOriginalLocations.put(fileName, dirPath);
-                            SeadasFileUtils.copyFile(optionValue, OCSSW.getOCSSWClientSharedDirName());
-                        } else if (optionType.equals(ParamInfo.Type.IFILE)) {
-                            oFilesOriginalLocations.put(fileName, dirPath);
-                        }
-                        optionValue = OCSSW.getServerSharedDirName() + System.getProperty("file.separator") + fileName;
-                    } else {
-                        optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
+                if (optionValue.indexOf(OCSSW.getOCSSWClientSharedDirName()) != 0) {
+                    //save the original file location for later usage; copy file to the shared folder; change the value of "optionValue"
+                    String fileName = optionValue.substring(optionValue.lastIndexOf(System.getProperty("file.separator")) + 1);
+                    String dirPath = optionValue.substring(0, optionValue.lastIndexOf(System.getProperty("file.separator")));
+                    //if the file is an input file, copy it to the shared folder
+                    if (optionType.equals(ParamInfo.Type.IFILE)) {
+                        getiFilesOriginalLocations().put(fileName, dirPath);
+                        SeadasFileUtils.copyFile(optionValue, OCSSW.getOCSSWClientSharedDirName());
+                    } else if (optionType.equals(ParamInfo.Type.IFILE)) {
+                        getoFilesOriginalLocations().put(fileName, dirPath);
                     }
+                    optionValue = OCSSW.getServerSharedDirName() + System.getProperty("file.separator") + fileName;
+                } else {
+                    optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
                 }
+
             }
             if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
                 if (option.getValue() != null && option.getValue().length() > 0) {
@@ -76,8 +75,23 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
                     cmdArrayParam[optionOrder] = option.getName();
                 }
             }
-            SeadasLogger.getLogger().info("order: " + option.getOrder() + "  " + option.getName() + "=" + option.getValue());
         }
         return cmdArrayParam;
+    }
+
+    public HashMap<String, String> getiFilesOriginalLocations() {
+        return iFilesOriginalLocations;
+    }
+
+    public void setiFilesOriginalLocations(HashMap<String, String> iFilesOriginalLocations) {
+        this.iFilesOriginalLocations = iFilesOriginalLocations;
+    }
+
+    public HashMap<String, String> getoFilesOriginalLocations() {
+        return oFilesOriginalLocations;
+    }
+
+    public void setoFilesOriginalLocations(HashMap<String, String> oFilesOriginalLocations) {
+        this.oFilesOriginalLocations = oFilesOriginalLocations;
     }
 }

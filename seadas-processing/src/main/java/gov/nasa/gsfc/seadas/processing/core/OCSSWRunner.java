@@ -1,7 +1,10 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.processing.general.FileInfoFinder;
+import gov.nasa.gsfc.seadas.processing.general.NextLevelNameFinder;
 import gov.nasa.gsfc.seadas.processing.general.SeadasProcess;
+import org.esa.beam.visat.VisatApp;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -10,9 +13,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,87 +38,26 @@ public class OCSSWRunner {
     private static final String LOCAL = "local";
     private static final String REMOTE = "remote";
     private static boolean monitorProgress = false;
+    static ProcessorModel processorModel;
+    static OcsswCommandArrayManager commandArrayManager;
 
     public OCSSWRunner() {
 
         environment.put(OCSSW_ROOT_VAR, OCSSW.getOcsswEnvArray());
     }
 
-    public static Process execute(ProcessorModel processorModel) {
-
+    public static Process execute(ProcessorModel pm) {
+        processorModel = pm;
         if (OCSSW.isLocal()) {
-            return executeLocal(processorModel);
+            commandArrayManager = new LocalOcsswCommandArrayManager(processorModel);
+            return executeLocal(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
         } else {
-            return executeRemote(processorModel);
+            commandArrayManager = new RemoteOcsswCommandArrayManager(processorModel);
+            return executeRemote(commandArrayManager.getProgramCommandArray());
         }
     }
 
-    public static Process execute(String[] cmdArray, File ifileDir) {
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(SEADAS_OCSSW_LOCATION);
-        if (ocsswLocation == null || ocsswLocation.trim().equals(LOCAL)) {
-            return executeLocal(cmdArray, ifileDir);
-        } else {
-            return executeRemote(cmdArray, ifileDir);
-        }
-    }
 
-    public static Process executeLocal(ProcessorModel processorModel) {
-        //System.out.println("local execution!" + " " + Arrays.toString(processorModel.getProgramCmdArray()));
-        ProcessBuilder processBuilder = new ProcessBuilder(processorModel.getProgramCmdArray());
-        Map<String, String> env = processBuilder.environment();
-
-        if (!env.containsKey(OCSSW_ROOT_VAR) && OCSSW.isOCSSWExist()) {
-            //System.out.println("error checkpoint!");
-            env.put(OCSSW_ROOT_VAR, OCSSW.getOcsswEnv());
-        }
-
-        if (processorModel.getIFileDir() != null) {
-            processBuilder.directory(processorModel.getIFileDir());
-        } else {
-            //processBuilder.directory(getDefaultDir());
-        }
-
-        Process process = null;
-        try {
-            process = processBuilder.start();
-        } catch (IOException ioe) {
-
-        }
-        return process;
-    }
-
-    public static Process executeRemote(ProcessorModel processorModel) {
-        //System.out.println("remote execution!");
-        SeadasProcess process = new SeadasProcess();
-        //get a command array with arguments only for remote execution
-        //processorModel.setAcceptsParFile(false);
-
-        //this statement needs to be executed to compute the command array for remote execution  - can't be skipped
-        String[] cmdArray = processorModel.getProgramCmdArray();
-        ArrayList<String> cmdArrayList = processorModel.getRemoteServerCmdArray();
-
-        JsonArrayBuilder jab = Json.createArrayBuilder();
-        for (String s : cmdArrayList) {
-            jab.add(s);
-        }
-        JsonArray remoteCmdArray = jab.build();
-
-        OCSSWClient ocsswClient = new OCSSWClient();
-        WebTarget target = ocsswClient.getOcsswWebTarget();
-
-        if (processorModel.getProgramName().equals(OCSSW.OCSSW_INSTALLER)) {
-            final Response response = target.path("ocssw").path("installOcssw").request(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
-        } else {
-            final Response response = target.path("ocssw").path("executeOcsswProgram").request(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
-        }
-
-        //get exit value from the server
-        //process.setErrorStream();
-        //process.setInputStream();
-        return process;
-    }
 
     public static Process executeLocal(String[] cmdArray, File ifileDir) {
         //System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
@@ -143,24 +85,169 @@ public class OCSSWRunner {
         return process;
     }
 
-    public static Process executeRemote(String[] cmdArray, File ifileDir) {
+    public static Process executeRemote(String[] cmdArray) {
 
-        //ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
-        Process process = null;
+        SeadasProcess process = new SeadasProcess();
+        ArrayList<String> cmdArrayList = (ArrayList<String>) Arrays.asList(cmdArray);
+
         JsonArrayBuilder jab = Json.createArrayBuilder();
-        for (String s : cmdArray) {
+        for (String s : cmdArrayList) {
             jab.add(s);
         }
         JsonArray remoteCmdArray = jab.build();
 
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
-        final Response response = target.path("ocssw").path("executeOcsswProgram").request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
-        Object obj = response.getEntity().getClass();
+
+        //todo: merge these two
+
+        if (processorModel.getProgramName().equals(OCSSW.OCSSW_INSTALLER)) {
+            final Response response = target.path("ocssw").path("installOcssw").request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+        } else {
+            final Response response = target.path("ocssw").path("executeOcsswProgram").request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+        }
 
         return process;
 
+    }
+
+    /**
+     *
+     * @param cmdArray - command array for executing  "next_level_name.py INPUT_FILE TARGET_PROGRAM"
+     * @param ifileDir - command execution directory
+     * @return OUTPUT_FILE_NAME. It will be extracted from the standard output.
+     */
+    public static String executeLocalNameFinder(String[] cmdArray, File ifileDir) {
+        Process process = OCSSWRunner.execute(cmdArray, ifileDir);
+
+        if (process == null) {
+            return "output";
+        }
+        int exitCode = process.exitValue();
+        InputStream is;
+        if (exitCode == 0) {
+            is = process.getInputStream();
+        } else {
+            is = process.getErrorStream();
+        }
+
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+
+        try {
+
+            if (exitCode == 0) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.startsWith(NextLevelNameFinder.NEXT_LEVEL_FILE_NAME_TOKEN)) {
+                        return (line.substring(NextLevelNameFinder.NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+                    }
+                }
+
+            } else {
+                VisatApp.getApp().showErrorDialog("Failed exit code on program '" + NextLevelNameFinder.NEXT_LEVEL_FILE_NAME_TOKEN + "'");
+            }
+
+        } catch (IOException ioe) {
+
+            VisatApp.getApp().showErrorDialog(ioe.getMessage());
+        }
+        return "output";
+    }
+
+    public static String executeRemoteNameFinder(String[] cmdArray) {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        for (String s : cmdArray) {
+            jab.add(s);
+        }
+
+        //add jobId for server side database
+        //jab.add(OCSSW.getJobId());
+        JsonArray remoteCmdArray = jab.build();
+
+        OCSSWClient ocsswClient = new OCSSWClient();
+        WebTarget target = ocsswClient.getOcsswWebTarget();
+        final Response response = target.path("ocssw").path("computeNextLevelFileName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+
+        String ofileName = target.path("ocssw").path("retrieveNextLevelFileName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
+        if (ofileName != null) {
+            return ofileName;
+        } else {
+            return "output";
+        }
+    }
+
+    public static HashMap executeLocalGetOBPGFileInfo(String[] cmdArray, File ifileDir) {
+        HashMap<String, String> fileInfos = new HashMap();
+        try {
+
+            Process process = OCSSWRunner.execute(cmdArray, ifileDir);
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line = stdInput.readLine();
+            if (line != null) {
+                String splitLine[] = line.split(":");
+                if (splitLine.length == 3) {
+                    String missionName = splitLine[1].toString().trim();
+                    String fileType = splitLine[2].toString().trim();
+
+                    if (fileType.length() > 0) {
+                        fileInfos.put(FileInfoFinder.FILE_TYPE_ID_STRING, fileType);
+                    }
+
+                    if (missionName.length() > 0) {
+                        fileInfos.put(FileInfoFinder.MISSION_NAME_ID_STRING, missionName);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("ERROR - Problem running " + FileInfoFinder.FILE_INFO_SYSTEM_CALL);
+            System.out.println(e.getMessage());
+        }
+        return fileInfos;
+    }
+
+    public static HashMap executeRemoteGetOBPGFileInfo(String[] cmdArray) {
+
+        HashMap<String, String> fileInfos = new HashMap();
+        OCSSWClient ocsswClient = new OCSSWClient();
+        WebTarget target = ocsswClient.getOcsswWebTarget();
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        for (String s : cmdArray) {
+            jab.add(s);
+        }
+        JsonArray remoteCmdArray = jab.build();
+
+        Response response = target.path("ocssw").path("findIFileTypeAndMissionName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+
+        String fileType = target.path("ocssw").path("retrieveIFileType").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        String missionName = target.path("ocssw").path("retrieveMissionName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        String missionDirName = target.path("ocssw").path("retrieveMissionDirName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        if (fileType.length() > 0) {
+            fileInfos.put(FileInfoFinder.FILE_TYPE_ID_STRING, fileType);
+        }
+
+        if (missionName.length() > 0) {
+            fileInfos.put(FileInfoFinder.MISSION_NAME_ID_STRING, missionName);
+        }
+
+        if (missionDirName.length() > 0) {
+            fileInfos.put(FileInfoFinder.MISSION_DIR_NAME_ID_STRING, missionDirName);
+        }
+        return fileInfos;
+    }
+
+    public static Process execute(String[] cmdArray, File ifileDir) {
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(SEADAS_OCSSW_LOCATION);
+        if (ocsswLocation == null || ocsswLocation.trim().equals(LOCAL)) {
+            return executeLocal(cmdArray, ifileDir);
+        } else {
+            return executeRemote(cmdArray);
+        }
     }
 
     public static Process execute(String[] cmdArray) {
@@ -179,25 +266,4 @@ public class OCSSWRunner {
     public static void setMonitorProgress(boolean mProgress) {
         monitorProgress = mProgress;
     }
-
-//    public void remoteExecuteProgram(ProcessorModel pm) {
-//
-//        RSClient ocsswClient = new RSClient();
-//        pm.getProgramCmdArray();
-//
-//        String paramString = pm.getCmdArrayString();
-//        String[] filesToUpload = pm.getFilesToUpload();
-//
-//        boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
-//
-//        if (fileUploadSuccess) {
-//            //System.out.println("file upload is successful!");
-//
-//            ocsswClient.uploadParFile(pm.getParStringForRemoteServer());
-//            ocsswClient.uploadParam(paramString);
-//            //ocsswClient.runOCSSW();
-//        } else {
-//            //System.out.println("file upload failed!");
-//        }
-//    }
 }

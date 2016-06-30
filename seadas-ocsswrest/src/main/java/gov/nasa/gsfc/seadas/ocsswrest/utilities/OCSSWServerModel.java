@@ -40,7 +40,9 @@ public class OCSSWServerModel {
     private static boolean ocsswInstalScriptDownloadSuccessful = false;
 
     private static HashMap<String, Process> processHashMap;
-    private static HashMap<String, InputStream> processResultHashMap;
+
+    private static String currentJobId;
+    private static boolean progressMonitorFlag;
 
 
     public static File getOcsswRoot() throws IOException {
@@ -184,11 +186,20 @@ public class OCSSWServerModel {
          processHashMap.put(jobId, process);
     }
 
-    public static InputStream getProcessResult(String jobId) {
-        return processResultHashMap.get(jobId);
+    public static String getCurrentJobId() {
+        return currentJobId;
     }
 
-    public static void addProcessResult(String jobId, InputStream processResult) {
-        processResultHashMap.put(jobId, processResult);
+    public static void setCurrentJobId(String currentJobId) {
+        OCSSWServerModel.currentJobId = currentJobId;
+    }
+
+    public static boolean isProgressMonitorFlag() {
+        return progressMonitorFlag;
+    }
+
+    public static void setProgressMonitorFlag(String progressMonitorFlag) {
+
+        OCSSWServerModel.progressMonitorFlag = new Boolean(progressMonitorFlag).booleanValue();
     }
 }

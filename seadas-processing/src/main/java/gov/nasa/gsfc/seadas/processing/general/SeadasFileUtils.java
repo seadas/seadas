@@ -1,10 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.processing.core.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWClient;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
@@ -18,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -129,7 +127,6 @@ public class SeadasFileUtils {
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
         cmdArray[4] = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL) ? ifileName : getIfileNameforRemoteServer(ifileName);
         cmdArray[5] = programName;
-        //cmdArray[6] = "--suite="+suite;
 
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
 
@@ -138,6 +135,25 @@ public class SeadasFileUtils {
         } else {
             return retrieveOFileNameRemote(cmdArray);
         }
+    }
+
+    public ProcessorModel getNextLevelNameFinderProcessorModel(String ifileName, String programName){
+        ProcessorModel nextLevelNamer = new ProcessorModel(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME);
+        final ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
+
+        ParamInfo ifileParamInfo = new ParamInfo("ifile", ifileName, ParamInfo.Type.IFILE);
+        ifileParamInfo.setOrder(0);
+        ifileParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
+        paramInfos.add(ifileParamInfo);
+
+        ParamInfo programNameParamInfo = new ParamInfo("programName", programName, ParamInfo.Type.IFILE);
+        programNameParamInfo.setOrder(1);
+        programNameParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
+        paramInfos.add(programNameParamInfo);
+
+        nextLevelNamer.setParamList(paramInfos);
+
+        return nextLevelNamer;
     }
 
     private static String retrieveOFileNameLocal(String[] cmdArray, String ifileDir) {

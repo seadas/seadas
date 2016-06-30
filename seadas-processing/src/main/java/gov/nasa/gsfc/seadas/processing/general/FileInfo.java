@@ -64,71 +64,9 @@ public class FileInfo {
     }
 
     private void initMissionAndFileTypeInfos() {
-
-        ProcessorModel processorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
-        processorModel.setAcceptsParFile(false);
-        processorModel.addParamInfo("file", file.getAbsolutePath(), ParamInfo.Type.IFILE, 0);
-        processorModel.getParamInfo("file").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
-        FileInfoFinder fileInfoFinder = new FileInfoFinder();
-        fileInfoFinder.computeFileInfo(processorModel);
+        FileInfoFinder fileInfoFinder = new FileInfoFinder(file.getAbsolutePath());
         fileTypeInfo.setName(fileInfoFinder.getFileType());
         missionInfo.setName(fileInfoFinder.getMissionName());
-
-//        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
-//            try {
-//
-//                //TODO execute this from remote server
-//                Process p = OCSSWRunner.execute(processorModel.getProgramCmdArray());
-//                BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//
-//                String line = stdInput.readLine();
-//                if (line != null) {
-//                    String splitLine[] = line.split(":");
-//                    if (splitLine.length == 3) {
-//                        String missionName = splitLine[1].toString().trim();
-//                        String fileType = splitLine[2].toString().trim();
-//
-//                        if (fileType.length() > 0) {
-//                            fileTypeInfo.setName(fileType);
-//                        }
-//
-//                        if (missionName.length() > 0) {
-//                            missionInfo.setName(missionName);
-//                        }
-//                    }
-//                }
-//            } catch (IOException e) {
-//                System.out.println("ERROR - Problem running " + FILE_INFO_SYSTEM_CALL);
-//                System.out.println(e.getMessage());
-//            }
-//        } else {
-//            OCSSWClient ocsswClient = new OCSSWClient();
-//            WebTarget target = ocsswClient.getOcsswWebTarget();
-//            JsonArrayBuilder jab = Json.createArrayBuilder();
-//            for (String s : processorModel.getProgramCmdArray()) {
-//                jab.add(s);
-//            }
-//            JsonArray remoteCmdArray = jab.build();
-//
-//            Response response = target.path("ocssw").path("findIFileTypeAndMissionName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
-//                    .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
-//
-//            String fileType = target.path("ocssw").path("retrieveIFileType").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-//            String missionName = target.path("ocssw").path("retrieveMissionName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-//            String missionDirName =  target.path("ocssw").path("retrieveMissionDirName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-//            if (fileType.length() > 0) {
-//                fileTypeInfo.setName(fileType);
-//            }
-//
-//            if (missionName.length() > 0) {
-//                missionInfo.setName(missionName);
-//            }
-//
-//            if (missionDirName.length() > 0) {
-//                missionInfo.setDirectory(new File(missionDirName));
-//            }
-//        }
-
     }
 
 
