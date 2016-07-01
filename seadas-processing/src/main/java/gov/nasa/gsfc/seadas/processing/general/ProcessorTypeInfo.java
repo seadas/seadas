@@ -38,6 +38,8 @@ public class ProcessorTypeInfo {
         L2GEN,
         L2GEN_AQUARIUS,
         L3BINDUMP,
+        GET_OBPG_FILE_TYPE_PY,
+        NEXT_LEVEL_NAME_PY,
         NOID
     }
 
@@ -70,6 +72,8 @@ public class ProcessorTypeInfo {
         put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR);
         put("install_ocssw.py", ProcessorID.OCSSW_INSTALLER);
         put("l3bindump", ProcessorID.L3BINDUMP);
+        put("get_obpg_file_type.py", ProcessorID.GET_OBPG_FILE_TYPE_PY);
+        put("next_level_name.py", ProcessorID.NEXT_LEVEL_NAME_PY);
 
     }};
 
