@@ -16,10 +16,16 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
+import org.esa.beam.dataio.dimap.DimapProductConstants;
+import org.esa.beam.dataio.dimap.spi.DimapPersistable;
+import org.esa.beam.dataio.dimap.spi.DimapPersistence;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.CsvReader;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
@@ -41,7 +47,10 @@ import java.util.logging.Level;
 
 import static java.lang.String.*;
 import static java.lang.System.arraycopy;
+
 import org.esa.beam.dataio.netcdf.ProfileReadContext;
+
+import javax.swing.*;
 
 
 public abstract class SeadasFileReader {
@@ -64,6 +73,9 @@ public abstract class SeadasFileReader {
     private static final String FLAG_MEANINGS = "flag_meanings";
 
 
+    public static final String MASKS_CONFIG_FILENAME = "l2_masks_default.xml";
+
+
     protected static final SkipBadNav LAT_SKIP_BAD_NAV = new SkipBadNav() {
         @Override
         public final boolean isBadNav(double value) {
@@ -81,8 +93,8 @@ public abstract class SeadasFileReader {
     public abstract Product createProduct() throws IOException;
 
     public synchronized void readBandData(Band destBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth,
-            int sourceHeight, int sourceStepX, int sourceStepY, ProductData destBuffer,
-            ProgressMonitor pm) throws IOException, InvalidRangeException {
+                                          int sourceHeight, int sourceStepX, int sourceStepY, ProductData destBuffer,
+                                          ProgressMonitor pm) throws IOException, InvalidRangeException {
 
         if (mustFlipY) {
             sourceOffsetY = destBand.getSceneRasterHeight() - (sourceOffsetY + sourceHeight);
@@ -142,7 +154,7 @@ public abstract class SeadasFileReader {
 
     public FlagCoding readFlagCoding(Product product, Band bandName) {
         Variable variable = variableMap.get(bandName);
-        if (variable.getFullName().contains("flag")){
+        if (variable.getFullName().contains("flag")) {
             final String codingName = variable.getShortName() + "_coding";
             return readFlagCoding(variable, codingName);
         } else {
@@ -238,9 +250,9 @@ public abstract class SeadasFileReader {
     protected void addFlagsAndMasks(Product product) {
 
         if (product.getProductType().contains("VIIRS L1B")) {
-            for(Band bandName:product.getBands()){
+            for (Band bandName : product.getBands()) {
                 FlagCoding flagCoding = readFlagCoding(product, bandName);
-                if (flagCoding != null){
+                if (flagCoding != null) {
                     product.getFlagCodingGroup().add(flagCoding);
                     bandName.setSampleCoding(flagCoding);
                 }
@@ -257,8 +269,6 @@ public abstract class SeadasFileReader {
 
             Band QFBand = product.getBand("l2_flags");
             if (QFBand != null) {
-
-
 
 
                 FlagCoding flagCoding = new FlagCoding("L2Flags");
@@ -299,29 +309,69 @@ public abstract class SeadasFileReader {
                 QFBand.setSampleCoding(flagCoding);
 
 
-
-
-                MaskSchemes maskSchemes = new MaskSchemes(getSystemAuxdataDir());
-
-                if (maskSchemes != null) {
-                    ArrayList<MasksConfigInfo> masksConfigInfos = maskSchemes.getMasksConfigInfos();
-
-                    for (MasksConfigInfo masksConfigInfo : masksConfigInfos) {
-                        String name = masksConfigInfo.getName();
-                        String logicalExpression = masksConfigInfo.getLogicalExpression();
-                        String description = masksConfigInfo.getDescription();
-                        Color color = masksConfigInfo.getColor();
-                        double transparency = masksConfigInfo.getTranparency();
-
-                        product.getMaskGroup().add(Mask.BandMathsType.create(name, description,
-                                product.getSceneRasterWidth(),
-                                product.getSceneRasterHeight(), logicalExpression,
-                                color, transparency));
-
-                    }
+                File masksConfigDir = getSystemAuxdataDir();
+                File masksConfigFile = null;
+                if (masksConfigDir != null && masksConfigDir.exists()) {
+                    masksConfigFile = new File(masksConfigDir, MASKS_CONFIG_FILENAME);
                 }
 
+
+
+                if (masksConfigFile != null && masksConfigFile.exists()) {
+
+                    try {
+                        final SAXBuilder saxBuilder = new SAXBuilder();
+                        final Document document = saxBuilder.build(masksConfigFile);
+                        final Element rootElement = document.getRootElement();
+                        @SuppressWarnings({"unchecked"})
+                        final List<Element> children = rootElement.getChildren(DimapProductConstants.TAG_MASK);
+                        for (final Element child : children) {
+                            final DimapPersistable persistable = DimapPersistence.getPersistable(child);
+                            if (persistable != null) {
+                                final Mask mask = (Mask) persistable.createObjectFromXml(child, product);
+                                if (mask.getImageType().canTransferMask(mask, product)) {
+                                    product.getMaskGroup().add(mask);
+                                } else {
+                                    throw new Exception(String.format("Cannot add mask '%s' to selected product.", mask.getName()));
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        //         showErrorDialog(String.format("Failed to import mask(s): %s", e.getMessage()));
+                    }
+
+                }
+
+
                 //todo Remove these comments once we confirm new config file methodology
+
+                //                if (masksConfigFile != null && masksConfigFile.exists()) {
+//                    MaskSchemes maskSchemes = new MaskSchemes(masksConfigFile);
+//
+//                    if (maskSchemes != null) {
+//                        ArrayList<MasksConfigInfo> masksConfigInfos = maskSchemes.getMasksConfigInfos();
+//
+//                        for (MasksConfigInfo masksConfigInfo : masksConfigInfos) {
+//                            String name = masksConfigInfo.getName();
+//                            String logicalExpression = masksConfigInfo.getLogicalExpression();
+//                            String description = masksConfigInfo.getDescription();
+//                            Color color = masksConfigInfo.getColor();
+//                            double transparency = masksConfigInfo.getTranparency();
+//
+//                            if (product.isCompatibleBandArithmeticExpression(logicalExpression)) {
+//
+//                                product.getMaskGroup().add(Mask.BandMathsType.create(name, description,
+//                                        product.getSceneRasterWidth(),
+//                                        product.getSceneRasterHeight(), logicalExpression,
+//                                        color, transparency));
+//                            }
+//
+//                        }
+//                    }
+//                }
+
+
+
 //                product.getMaskGroup().add(Mask.BandMathsType.create("Land", "l2_flags.LAND",
 //                        product.getSceneRasterWidth(),
 //                        product.getSceneRasterHeight(), "l2_flags.LAND",
@@ -370,7 +420,7 @@ public abstract class SeadasFileReader {
 //                        product.getSceneRasterHeight(), "l2_flags.CLDICE",
 //                        Color.WHITE, 0.0));
 //
-//
+//txt
 //                product.getMaskGroup().add(Mask.BandMathsType.create("Coccolith", "l2_flags.COCCOLITH: Coccolithophores detected",
 //                        product.getSceneRasterWidth(),
 //                        product.getSceneRasterHeight(), "l2_flags.COCCOLITH",
@@ -874,7 +924,7 @@ public abstract class SeadasFileReader {
     }
 
     public Map<Band, Variable> addBands(Product product,
-            List<Variable> variables) {
+                                        List<Variable> variables) {
         final Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
         for (Variable variable : variables) {
             Band band = addNewBand(product, variable);
@@ -950,13 +1000,13 @@ public abstract class SeadasFileReader {
                         band.setScalingOffset(attribute.getNumericValue(0).doubleValue());
                     } else if (attribName.startsWith("valid_")) {
                         if ("valid_min".equals(attribName)) {
-                            if (attribute.isUnsigned()){
+                            if (attribute.isUnsigned()) {
                                 validMinMax[0] = getUShortAttribute(attribute);
                             } else {
                                 validMinMax[0] = attribute.getNumericValue(0).doubleValue();
                             }
                         } else if ("valid_max".equals(attribName)) {
-                            if (attribute.isUnsigned()){
+                            if (attribute.isUnsigned()) {
                                 validMinMax[1] = getUShortAttribute(attribute);
                             } else {
                                 validMinMax[1] = attribute.getNumericValue(0).doubleValue();
@@ -1090,8 +1140,8 @@ public abstract class SeadasFileReader {
     }
 
     public void computeLatLonBandData(int height, int width, Band latBand, Band lonBand,
-            final float[] latRawData, final float[] lonRawData,
-            final int[] colPoints) {
+                                      final float[] latRawData, final float[] lonRawData,
+                                      final int[] colPoints) {
 
         float[] latFloats = new float[height * width];
         float[] lonFloats = new float[height * width];
@@ -1234,7 +1284,8 @@ public abstract class SeadasFileReader {
             return attribute.getNumericValue(0).intValue();
         }
     }
-    public int getUShortAttribute(Attribute attribute)  {
+
+    public int getUShortAttribute(Attribute attribute) {
         return (attribute.getNumericValue(0).shortValue() & 0xffff);
     }
 
@@ -1456,7 +1507,7 @@ public abstract class SeadasFileReader {
                     break;
                 }
             }
-            for (int i = lineCount; i-- > 0;) {
+            for (int i = lineCount; i-- > 0; ) {
                 int ix = i * 2;
                 float valstart = array.getFloat(ix);
                 float valend = array.getFloat(ix + 1);
