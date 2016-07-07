@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.general.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.general.NextLevelNameFinder;
+import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.general.SeadasProcess;
 import org.esa.beam.visat.VisatApp;
 
@@ -56,7 +57,6 @@ public class OCSSWRunner {
             return executeRemote(commandArrayManager.getProgramCommandArray());
         }
     }
-
 
 
     public static Process executeLocal(String[] cmdArray, File ifileDir) {
@@ -114,7 +114,6 @@ public class OCSSWRunner {
     }
 
     /**
-     *
      * @param cmdArray - command array for executing  "next_level_name.py INPUT_FILE TARGET_PROGRAM"
      * @param ifileDir - command execution directory
      * @return OUTPUT_FILE_NAME. It will be extracted from the standard output.
@@ -220,6 +219,70 @@ public class OCSSWRunner {
             jab.add(s);
         }
         JsonArray remoteCmdArray = jab.build();
+
+        Response response = target.path("ocssw").path("findIFileTypeAndMissionName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
+
+        String fileType = target.path("ocssw").path("retrieveIFileType").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        String missionName = target.path("ocssw").path("retrieveMissionName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        String missionDirName = target.path("ocssw").path("retrieveMissionDirName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        if (fileType.length() > 0) {
+            fileInfos.put(FileInfoFinder.FILE_TYPE_ID_STRING, fileType);
+        }
+
+        if (missionName.length() > 0) {
+            fileInfos.put(FileInfoFinder.MISSION_NAME_ID_STRING, missionName);
+        }
+
+        if (missionDirName.length() > 0) {
+            fileInfos.put(FileInfoFinder.MISSION_DIR_NAME_ID_STRING, missionDirName);
+        }
+        return fileInfos;
+    }
+
+
+    public static HashMap executeLocalLonLat2Pixel(String[] cmdArray, File ifileDir) {
+        HashMap<String, String> pixels = new HashMap();
+        try {
+
+            Process process = OCSSWRunner.execute(cmdArray, ifileDir);
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            String[] tmp;
+            while ((line = stdInput.readLine()) != null) {
+                SeadasLogger.getLogger().info(line);
+                if (line.indexOf("=") != -1) {
+                    tmp = line.split("=");
+                    pixels.put(tmp[0], tmp[1]);
+                }
+            }
+
+        } catch (IOException ioe) {
+            SeadasLogger.getLogger().severe("Execution exception: " + ioe.getMessage());
+        }
+        return pixels;
+    }
+
+    /**
+     *
+     * @param cmdArray
+     * @return
+     *
+     */
+    public static HashMap executeRemoteLonLat2Pixel(String[] cmdArray) {
+
+        HashMap<String, String> fileInfos = new HashMap();
+        OCSSWClient ocsswClient = new OCSSWClient();
+        WebTarget target = ocsswClient.getOcsswWebTarget();
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        for (String s : cmdArray) {
+            jab.add(s);
+        }
+        JsonArray remoteCmdArray = jab.build();
+
+        //todo write new methods on the server side.
+        // need to receive a jason object that has all four parameters.
 
         Response response = target.path("ocssw").path("findIFileTypeAndMissionName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
