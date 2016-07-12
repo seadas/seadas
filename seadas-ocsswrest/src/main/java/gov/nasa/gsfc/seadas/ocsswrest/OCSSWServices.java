@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.ocsswrest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessObserver;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessRunner;
@@ -10,6 +11,7 @@ import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,6 +22,8 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -173,7 +177,6 @@ public class OCSSWServices {
         }
 
 
-
         if (jobId != null) {
             //insert or update mission name
             if (SQLiteJDBC.isJobIdExist(jobId)) {
@@ -197,6 +200,48 @@ public class OCSSWServices {
         return new Integer(exitValue).toString();
     }
 
+    @GET
+    @Path("/lonlat2pixel")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject lonlat2pixelConverter(JsonArray jsonArray) {
+        Process process = null;
+        String programName = "lonlat2pixel";
+        HashMap<String, String> pixels = new HashMap<>();
+        String[] cmdArray = getCmdArray(jsonArray);
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+        cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+        cmdArray[1] = "--ocsswroot";
+        cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+        process = ProcessRunner.executeCmdArray(cmdArray);
+        String jsonString = new String();
+        try {
+            int exitValue = process.waitFor();
+            if (exitValue == 0) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line = br.readLine();
+                String[] tmp;
+                while ((line = br.readLine()) != null) {
+                    if (jsonString.length()>0) {
+                        jsonString = jsonString + ",";
+                    }
+                    if (line.indexOf("=") != -1) {
+                        tmp = line.split("=");
+                        pixels.put(tmp[0], tmp[1]);
+                        jsonString = jsonString + (jsonString.length() >0  ?  "," : "") + tmp[0] + " : " + tmp[1];
+                        jsonObjectBuilder.add(tmp[0], tmp[1]);
+                    }
+                }
+            }
+
+        } catch (IOException ioe) {
+
+        } catch (InterruptedException ie) {
+
+        }
+        JsonObject jo = jsonObjectBuilder.build();
+        return jo;
+    }
 
     @POST
     @Path("install")
