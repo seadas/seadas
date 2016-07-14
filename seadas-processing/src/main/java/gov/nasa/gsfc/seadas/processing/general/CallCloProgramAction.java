@@ -46,13 +46,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private String programName;
     private String dialogTitle;
     private String xmlFileName;
-    //private String multiIFile;
 
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
-
-    // private static String OCSSW_INSTALLER = "install_ocssw.py";
-
 
     @Override
     public void configure(ConfigurationElement config) throws CoreException {
@@ -62,7 +58,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
-        //multiIFile = getValue(config, "multiIFile", "false");
 
         super.configure(config);
         if (programName.equals("install_ocssw.py")) {
@@ -254,7 +249,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 }
             }
         };
-
         swingWorker.execute();
     }
 

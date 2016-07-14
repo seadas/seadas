@@ -51,7 +51,7 @@ public class FileInfoFinder {
         identifyFileInfo();
     }
 
-    public void identifyFileInfo(){
+    private void identifyFileInfo(){
         if (OCSSW.isLocal()) {
             commandArrayManager = new LocalOcsswCommandArrayManager(fileInfoFinderProcessorModel);
             fileInfos = OCSSWRunner.executeLocalGetOBPGFileInfo(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());

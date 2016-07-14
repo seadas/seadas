@@ -1,15 +1,13 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.processing.general.FileInfoFinder;
-import gov.nasa.gsfc.seadas.processing.general.NextLevelNameFinder;
-import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
-import gov.nasa.gsfc.seadas.processing.general.SeadasProcess;
+import gov.nasa.gsfc.seadas.processing.general.*;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -272,7 +270,7 @@ public class OCSSWRunner {
      */
     public static HashMap executeRemoteLonLat2Pixel(String[] cmdArray) {
 
-        HashMap<String, String> fileInfos = new HashMap();
+        HashMap<String, String> pixels = new HashMap();
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
         JsonArrayBuilder jab = Json.createArrayBuilder();
@@ -283,25 +281,17 @@ public class OCSSWRunner {
 
         //todo write new methods on the server side.
         // need to receive a jason object that has all four parameters.
+        //{"spixl":"value1", "epixl":"value2", "sline":"value3", "eline":"value4"}
 
-        Response response = target.path("ocssw").path("findIFileTypeAndMissionName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
+        Response response = target.path("ocssw").path("lonlat2pixel").request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
 
-        String fileType = target.path("ocssw").path("retrieveIFileType").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-        String missionName = target.path("ocssw").path("retrieveMissionName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-        String missionDirName = target.path("ocssw").path("retrieveMissionDirName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-        if (fileType.length() > 0) {
-            fileInfos.put(FileInfoFinder.FILE_TYPE_ID_STRING, fileType);
-        }
-
-        if (missionName.length() > 0) {
-            fileInfos.put(FileInfoFinder.MISSION_NAME_ID_STRING, missionName);
-        }
-
-        if (missionDirName.length() > 0) {
-            fileInfos.put(FileInfoFinder.MISSION_DIR_NAME_ID_STRING, missionDirName);
-        }
-        return fileInfos;
+        JsonObject jo = (JsonObject)response.getEntity();
+        pixels.put(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME, jo.getString(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME));
+        pixels.put(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME, jo.getString(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME));
+        pixels.put(LonLat2PixlineConverter.START_LINE_PARAM_NAME, jo.getString(LonLat2PixlineConverter.START_LINE_PARAM_NAME));
+        pixels.put(LonLat2PixlineConverter.END_LINE_PARAM_NAME, jo.getString(LonLat2PixlineConverter.END_LINE_PARAM_NAME));
+        return pixels;
     }
 
     public static Process execute(String[] cmdArray, File ifileDir) {

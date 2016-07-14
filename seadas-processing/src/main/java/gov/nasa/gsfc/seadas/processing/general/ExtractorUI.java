@@ -42,35 +42,13 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private void computePixelsFromLonLat() {
 
-
-        try {
-            final Process process = OCSSWRunner.execute(lonlat2pixline.getProgramCmdArray(), lonlat2pixline.getIFileDir());
-
-            try {
-                int exitValue = process.waitFor();
-            } catch (Exception e) {
-                SeadasLogger.getLogger().severe("Execution exception 0 : " + e.getMessage());
-            }
-            SeadasLogger.getLogger().info("Execution successful!");
-            InputStream is = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line = br.readLine();
-            String[] tmp;
-            while ((line = br.readLine()) != null) {
-                SeadasLogger.getLogger().info(line);
-                if (line.indexOf("=") != -1) {
-                    tmp = line.split("=");
-                    processorModel.updateParamInfo(tmp[0], tmp[1]);
-                }
-            }
-
-        } catch (IOException ioe) {
-
-            SeadasLogger.getLogger().severe("Execution exception: " + ioe.getMessage());
-
+        LonLat2PixlineConverter lonLat2PixlineConverter = new LonLat2PixlineConverter(lonlat2pixline);
+        if (lonLat2PixlineConverter.computePixelsFromLonLat()) {
+            processorModel.updateParamInfo(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME, lonLat2PixlineConverter.getSpixl());
+            processorModel.updateParamInfo(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME, lonLat2PixlineConverter.getEpixl());
+            processorModel.updateParamInfo(LonLat2PixlineConverter.START_LINE_PARAM_NAME, lonLat2PixlineConverter.getSline());
+            processorModel.updateParamInfo(LonLat2PixlineConverter.END_LINE_PARAM_NAME, lonLat2PixlineConverter.getEline());
         }
-
     }
 
     @Override
@@ -137,14 +115,14 @@ public class ExtractorUI extends ProgramUIFactory {
             }
         });
 
-        String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-        if (programName != null && programName.equals("l1aextract_seawifs")) {
-             updateParamPanel(pixelPanel, L1AEXTRACT_SEAWIFS_INVALID_PARAMS);
-         } else if (programName != null && programName.equals("l1aextract_modis")) {
-             updateParamPanel(pixelPanel, L1AEXTRACT_MODIS_INVALID_PARAMS);
-         } else if (programName != null && programName.equals("l1aextract_viirs")) {
-            updateParamPanel(pixelPanel, L1AEXTRACT_VIIRS_INVALID_PARAMS);
-        }
+//        String programName = getExtractorProgramName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
+//        if (programName != null && programName.equals("l1aextract_seawifs")) {
+//             updateParamPanel(pixelPanel, L1AEXTRACT_SEAWIFS_INVALID_PARAMS);
+//         } else if (programName != null && programName.equals("l1aextract_modis")) {
+//             updateParamPanel(pixelPanel, L1AEXTRACT_MODIS_INVALID_PARAMS);
+//         } else if (programName != null && programName.equals("l1aextract_viirs")) {
+//            updateParamPanel(pixelPanel, L1AEXTRACT_VIIRS_INVALID_PARAMS);
+//        }
         return paramPanel;
     }
 

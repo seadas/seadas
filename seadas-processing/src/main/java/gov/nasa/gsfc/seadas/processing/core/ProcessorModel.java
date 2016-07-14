@@ -133,15 +133,15 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private void setCommandArrayPrefix() {
 
         if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
-            setCmdArrayPrefix(new String[1]);
-            getCmdArrayPrefix()[0] = getProgramName();
+            cmdArrayPrefix = new String[1];
+            cmdArrayPrefix[0] = getProgramName();
             if (!OCSSW.isOCSSWExist()) {
                 getCmdArrayPrefix()[0] = OCSSW.TMP_OCSSW_INSTALLER;
             } else {
                 getCmdArrayPrefix()[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
             }
         } else {
-            setCmdArrayPrefix(new String[4]);
+            cmdArrayPrefix = new String[1];
             getCmdArrayPrefix()[0] = OCSSW.getOcsswScriptPath();
             getCmdArrayPrefix()[1] = "--ocsswroot";
             getCmdArrayPrefix()[2] = OCSSW.getOcsswEnv();
@@ -405,23 +405,23 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
 
     public String[] getCmdArrayPrefix() {
-        String[] cmdArrayPrefix;
-
-        if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
-            cmdArrayPrefix = new String[1];
-            cmdArrayPrefix[0] = getProgramName();
-            if (!OCSSW.isOCSSWExist()) {
-                cmdArrayPrefix[0] = OCSSW.TMP_OCSSW_INSTALLER;
-            } else {
-                cmdArrayPrefix[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
-            }
-        } else {
-            cmdArrayPrefix = new String[4];
-            cmdArrayPrefix[0] = OCSSW.getOcsswScriptPath();
-            cmdArrayPrefix[1] = "--ocsswroot";
-            cmdArrayPrefix[2] = OCSSW.getOcsswEnv();
-            cmdArrayPrefix[3] = getProgramName();
-        }
+//        String[] cmdArrayPrefix;
+//
+//        if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
+//            cmdArrayPrefix = new String[1];
+//            cmdArrayPrefix[0] = getProgramName();
+//            if (!OCSSW.isOCSSWExist()) {
+//                cmdArrayPrefix[0] = OCSSW.TMP_OCSSW_INSTALLER;
+//            } else {
+//                cmdArrayPrefix[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
+//            }
+//        } else {
+//            cmdArrayPrefix = new String[4];
+//            cmdArrayPrefix[0] = OCSSW.getOcsswScriptPath();
+//            cmdArrayPrefix[1] = "--ocsswroot";
+//            cmdArrayPrefix[2] = OCSSW.getOcsswEnv();
+//            cmdArrayPrefix[3] = getProgramName();
+//        }
         return cmdArrayPrefix;
     }
 
