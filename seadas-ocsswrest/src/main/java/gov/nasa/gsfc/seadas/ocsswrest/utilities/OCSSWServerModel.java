@@ -71,21 +71,6 @@ public class OCSSWServerModel {
             return;
         }
     }
-//    public static File getOcsswRoot() throws IOException {
-//        //String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
-//        String dirPath = System.getProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
-//        if (dirPath == null) {
-//            throw new IOException(String.format("Either environment variable '%s' or\n" +
-//                    "configuration parameter '%s' must be given.", OCSSWROOT_ENVVAR, OCSSWROOT_PROPERTY));
-//        }
-//        final File dir = new File(dirPath);
-//        if (!dir.isDirectory()) {
-//            throw new IOException(String.format("The directory pointed to by the environment variable  '%s' or\n" +
-//                    "configuration parameter '%s' seems to be invalid.", OCSSWROOT_ENVVAR, OCSSWROOT_PROPERTY));
-//        }
-//        return dir;
-//    }
-
 
     public static String getOcsswScriptPath() {
         final File ocsswRoot = getOcsswRootFile();
@@ -95,6 +80,14 @@ public class OCSSWServerModel {
             return null;
         }
 
+    }
+
+    public static String[] getCommandArrayPrefix() {
+        String[] cmdArray = new String[3];
+        cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+        cmdArray[1] = "--ocsswroot";
+        cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+        return cmdArray;
     }
 
     public static String[] getOcsswEnvArray() {
