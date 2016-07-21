@@ -319,4 +319,8 @@ public class OCSSWRunner {
     public static void setMonitorProgress(boolean mProgress) {
         monitorProgress = mProgress;
     }
+
+    public static String[] getCurrentCmdArray(){
+        return commandArrayManager.getProgramCommandArray();
+    }
 }

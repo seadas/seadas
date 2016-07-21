@@ -212,7 +212,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
                 pm.done();
                 SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",
-                        "Execution log for " + "\n" + Arrays.toString(processorModel.getProgramCmdArray()) + "\n" + processorModel.getExecutionLogMessage());
+                        "Execution log for " + "\n" + Arrays.toString(OCSSWRunner.getCurrentCmdArray()) + "\n" + processorModel.getExecutionLogMessage());
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
@@ -236,7 +236,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
-                        int exitCode = OCSSWRunner.execute(secondaryProcessor.getProgramCmdArray()).exitValue();
+                        int exitCode = OCSSWRunner.execute(secondaryProcessor).exitValue();
                         if (exitCode == 0) {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);

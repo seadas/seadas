@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
+import org.esa.beam.util.ArrayUtils;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,22 +33,35 @@ public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
      */
     public String[] getProgramCommandArray() {
 
+        String[] cmdArrayPrefix = processorModel.getCmdArrayPrefix();
+        String[] cmdArraySuffix = processorModel.getCmdArraySuffix();
+        String[] cmdArrayForParams;
+
         if (processorModel.acceptsParFile()) {
-            cmdArray = getCmdArrayWithParFile();
+            cmdArrayForParams = getCmdArrayWithParFile();
 
         } else {
-            cmdArray = getCmdArrayWithArguments();
+            cmdArrayForParams = getCmdArrayParam();
         }
+
+        //The final command array is the concatination of cmdArrayPrefix, cmdArrayForParams, and cmdArraySuffix
+        cmdArray = concatAll(cmdArrayPrefix, cmdArrayForParams, cmdArraySuffix);
+
+        // get rid of the null strings
+        ArrayList<String> cmdList = new ArrayList<String>();
+        for (String s : cmdArray) {
+            if (s != null) {
+                cmdList.add(s);
+            }
+        }
+        cmdArray = cmdList.toArray(new String[cmdList.size()]);
 
         return cmdArray;
     }
 
 
     private String[] getCmdArrayWithParFile() {
-        final String[] cmdArray = concat(processorModel.getCmdArrayPrefix(), new String[]{getParFileCommandLineOption()});
-        for (int i = 0; i < cmdArray.length; i++) {
-            SeadasLogger.getLogger().info("i = " + i + " " + cmdArray[i]);
-        }
+        cmdArray = concatAll(processorModel.getCmdArrayPrefix(), new String[]{getParFileCommandLineOption()}, processorModel.getCmdArraySuffix());
         return cmdArray;
     }
 
@@ -90,20 +105,6 @@ public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
             }
         }
         return cmdArrayParam;
-    }
-
-    private String[] getCmdArrayWithArguments() {
-        String[] cmdArray = concat(processorModel.getCmdArrayPrefix(), getCmdArrayParam());
-
-        // get rid of the null strings
-        ArrayList<String> cmdList = new ArrayList<String>();
-        for (String s : cmdArray) {
-            if (s != null) {
-                cmdList.add(s);
-            }
-        }
-        cmdArray = cmdList.toArray(new String[cmdList.size()]);
-        return cmdArray;
     }
 
     private File computeParFile() {
