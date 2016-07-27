@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import gov.nasa.gsfc.seadas.processing.general.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.esa.beam.util.ArrayUtils;
 
 import java.io.File;
@@ -14,13 +16,11 @@ import java.util.Iterator;
  */
 public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
 
-    private String parFileOptionName;
-
+    ParFileManager parFileManager;
 
     public LocalOcsswCommandArrayManager(ProcessorModel processorModel) {
         super(processorModel);
-        parFileOptionName = processorModel.getParFileOptionName();
-
+        parFileManager = new ParFileManager(processorModel);
     }
 
     /**
@@ -38,14 +38,14 @@ public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
         String[] cmdArrayForParams;
 
         if (processorModel.acceptsParFile()) {
-            cmdArrayForParams = getCmdArrayWithParFile();
+            cmdArrayForParams = parFileManager.getCmdArrayWithParFile();
 
         } else {
             cmdArrayForParams = getCmdArrayParam();
         }
 
         //The final command array is the concatination of cmdArrayPrefix, cmdArrayForParams, and cmdArraySuffix
-        cmdArray = concatAll(cmdArrayPrefix, cmdArrayForParams, cmdArraySuffix);
+        cmdArray = SeadasArrayUtils.concatAll(cmdArrayPrefix, cmdArrayForParams, cmdArraySuffix);
 
         // get rid of the null strings
         ArrayList<String> cmdList = new ArrayList<String>();
@@ -57,23 +57,6 @@ public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
         cmdArray = cmdList.toArray(new String[cmdList.size()]);
 
         return cmdArray;
-    }
-
-
-    private String[] getCmdArrayWithParFile() {
-        cmdArray = concatAll(processorModel.getCmdArrayPrefix(), new String[]{getParFileCommandLineOption()}, processorModel.getCmdArraySuffix());
-        return cmdArray;
-    }
-
-    private String getParFileCommandLineOption() {
-        File parFile = computeParFile();
-        String parFileName = parFile.getAbsolutePath();
-
-        if (parFileOptionName.equals("none")) {
-            return parFileName;
-        } else {
-            return parFileOptionName + "=" + parFileName;
-        }
     }
 
     private String[] getCmdArrayParam() {
@@ -106,52 +89,4 @@ public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
         }
         return cmdArrayParam;
     }
-
-    private File computeParFile() {
-
-        try {
-            final File tempFile = File.createTempFile("tmpParFile", ".par", processorModel.getIFileDir());
-            tempFile.deleteOnExit();
-            FileWriter fileWriter = null;
-            try {
-                fileWriter = new FileWriter(tempFile);
-                String parString = getParString();
-                fileWriter.write(parString + "\n");
-            } finally {
-                if (fileWriter != null) {
-                    fileWriter.close();
-                }
-            }
-            return tempFile;
-
-        } catch (IOException e) {
-            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
-            return null;
-        }
-    }
-
-    public String getParString() {
-
-        StringBuilder parString = new StringBuilder("");
-        Iterator itr = paramList.getParamArray().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-            option = (ParamInfo) itr.next();
-            String optionValue = option.getValue();
-            if (!option.getType().equals(ParamInfo.Type.HELP) && optionValue.length() > 0) {
-
-                if (!option.getDefaultValue().equals(optionValue)) {
-                    if (!OCSSW.isOCSSWInstalledLocal()) {
-                        if (option.getType().equals(ParamInfo.Type.OFILE) || option.getType().equals(ParamInfo.Type.IFILE)) {
-                            optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
-                        }
-                    }
-                    parString.append(option.getName() + "=" + optionValue + "\n");
-                }
-            }
-
-        }
-        return paramList.getParamString("\n");
-    }
-
 }
