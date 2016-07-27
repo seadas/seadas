@@ -23,25 +23,17 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
     private L2genPrimaryIOFilesSelector ioFilesSelector;
 
-    //private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
-
     ProcessorModel processorModel;
 
     private ParFileUI parFileUI;
     private JPanel paramPanel;
 
-    public ProgramUIFactory(String programName, String xmlFileName) { //}, String multiIFile) {
+    public ProgramUIFactory(String programName, String xmlFileName) {
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
-        //processorModel.setMultipleInputFiles(multiIFile.equals("true") ? true : false);
         parFileUI = new ParFileUI(processorModel);
         ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
         createUserInterface();
     }
-
-//    public ProgramUIFactory(String programName, String xmlFileName) {
-//        this(programName, xmlFileName, "false");
-//
-//    }
 
     public ProcessorModel getProcessorModel() {
         return processorModel;
@@ -97,7 +89,6 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         //update processor model param info if there is an open product.
         if (ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct() != null) {
             processorModel.updateIFileInfo(ioFilesSelector.getIfileSelector().getSelectedIFileName());
-            //processorModel.updateParamValues(ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct());
             processorModel.updateParamValues(ioFilesSelector.getIfileSelector().getSelectedIFile());
         }
 
@@ -127,19 +118,6 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
                 });
             }
         }
-//        processorModel.addPropertyChangeListener("prod", new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                paramPanel = getParamPanel();
-//                paramPanel.repaint();
-//                paramPanel.validate();
-//                remove(1);
-//                add(paramPanel,
-//                                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-//                revalidate();
-//                repaint();
-//            }
-//        });
 
         this.setLayout(new GridBagLayout());
 
@@ -167,26 +145,5 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         panel.repaint();
         panel.validate();
 
-    }
-
-    protected void enableJPanel(JPanel panel) {
-        Component[] com = panel.getComponents();
-        for (int a = 0; a < com.length; a++) {
-            com[a].setEnabled(true);
-        }
-    }
-
-    private Component findJPanel(Component comp, String panelName) {
-        if (comp.getClass() == JPanel.class && comp.getName() != null && comp.getName().equals(panelName)) return comp;
-        if (comp instanceof Container) {
-            Component[] components = ((Container) comp).getComponents();
-            for (int i = 0; i < components.length; i++) {
-                Component child = findJPanel(components[i], panelName);
-                if (child != null && child.getName() != null && child.getName().equals(panelName)) {
-                    return child;
-                }
-            }
-        }
-        return null;
     }
 }

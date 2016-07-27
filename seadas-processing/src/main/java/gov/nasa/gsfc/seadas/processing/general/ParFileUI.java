@@ -218,9 +218,10 @@ public class ParFileUI {
 
     private File writeParameterFileTo(File parameterFile) throws IOException {
         FileWriter fileWriter = null;
+        ParFileManager parFileManager = new ParFileManager(processorModel);
         try {
             fileWriter = new FileWriter(parameterFile);
-            fileWriter.write(processorModel.getParString());
+            fileWriter.write(parFileManager.getParString());
             return parameterFile;
         } finally {
             if (fileWriter != null) {

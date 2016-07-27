@@ -127,6 +127,7 @@ public class SeadasFileUtils {
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
         cmdArray[4] = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL) ? ifileName : getIfileNameforRemoteServer(ifileName);
         cmdArray[5] = programName;
+        //cmdArray[6] = "--suite="+suite;
 
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
 
