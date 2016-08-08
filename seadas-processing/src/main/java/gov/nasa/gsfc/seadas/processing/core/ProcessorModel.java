@@ -141,7 +141,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 getCmdArrayPrefix()[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
             }
         } else {
-            cmdArrayPrefix = new String[1];
+            cmdArrayPrefix = new String[4];
             getCmdArrayPrefix()[0] = OCSSW.getOcsswScriptPath();
             getCmdArrayPrefix()[1] = "--ocsswroot";
             getCmdArrayPrefix()[2] = OCSSW.getOcsswEnv();
@@ -149,7 +149,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
     }
 
-    private void setCommandArraySuffix(){
+    private void setCommandArraySuffix() {
         setCmdArraySuffix(new String[0]);
     }
 
@@ -762,13 +762,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             super(programName, xmlFileName);
         }
 
+        @Override
         public boolean updateIFileInfo(String ifileName) {
             setProgramName(getExtractorProgramName(ifileName));
             return super.updateIFileInfo(ifileName);
         }
 
         private String getExtractorProgramName(String ifileName) {
-
             FileInfo ifileInfo = new FileInfo(ifileName);
             SeadasFileUtils.debug("Extractor ifile info: " + ifileInfo.getTypeName() + ifileInfo.getMissionName());
             String programName = null;
@@ -1143,7 +1143,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 //            return cmdArray2;
 //        }
 
-        public String[] getProgramArraySuffix(){
+        /**
+         * The version number of the "git-branch" is the first two digits of the SeaDAS app number; trailing numbers should be ignored.
+         * For example, for SeaDAS 7.3.2, the "git-branch" option on command line should be prepared as "--git-branch=v7.3".
+         * @return
+         */
+        @Override
+        public String[] getCmdArraySuffix() {
             String[] cmdArraySuffix = new String[1];
             String[] parts = VisatApp.getApp().getAppVersion().split("\\.");
             cmdArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
