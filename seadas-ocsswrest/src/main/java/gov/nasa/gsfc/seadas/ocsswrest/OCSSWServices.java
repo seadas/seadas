@@ -397,7 +397,7 @@ public class OCSSWServices {
     @Path("retrieveProcessResult/{jobId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream retrieveProcessResult(@PathParam("jobId") String jobId) {
-        return OCSSWServerModel.getProcessResult(jobId);
+        return OCSSWServerModel.getProcess(jobId).getInputStream();
     }
 
 
