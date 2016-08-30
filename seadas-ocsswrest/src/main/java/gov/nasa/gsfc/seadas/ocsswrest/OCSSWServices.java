@@ -462,6 +462,14 @@ public class OCSSWServices {
         return OCSSWServerModel.getProcess(jobId);
     }
 
+    @GET
+    @Path("retrieveProcessResult/{jobId}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public InputStream retrieveProcessResult(@PathParam("jobId") String jobId) {
+        return OCSSWServerModel.getProcess(jobId).getInputStream();
+    }
+
+
     private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
         String[] cmdArray = new String[6];
         cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();

@@ -267,7 +267,7 @@ public class SQLiteJDBC {
             System.exit(0);
         }
 
-       return missionDir;
+        return missionDir;
     }
 
     public static void insertJob(String jobId, String clientId, String processorID, String status, String cmdArray) {
@@ -883,5 +883,3 @@ public class SQLiteJDBC {
     }
 
 }
-
-

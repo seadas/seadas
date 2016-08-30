@@ -176,7 +176,7 @@ public class OCSSWServerModel {
     }
 
     public static void addProcess(String jobId, Process process) {
-         processHashMap.put(jobId, process);
+        processHashMap.put(jobId, process);
     }
 
     public static String getCurrentJobId() {
