@@ -712,7 +712,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             }
             if (var != null) {
                 for (Variable v : var) {
-                    //System.out.println(v.getShortName());
                     products.add(v.getShortName());
                 }
                 String[] bandNames = new String[products.size()];
@@ -1121,27 +1120,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         OCSSWInstaller_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
         }
-
-//        @Override
-//        public String[] getProgramCmdArray() {
-//            String[] cmdArray = super.getProgramCmdArray();
-//            cmdArray[0] = OCSSW.TMP_OCSSW_INSTALLER;
-//            String[] cmdArray2 = new String[cmdArray.length + 1];
-//            for (int i = 0; i < cmdArray.length; i++) {
-//                cmdArray2[i] = cmdArray[i];
-//            }
-//
-//            //adding ocssw version selection; default is current version
-//            //cmdArray2[cmdArray.length] = "--git-branch=v" + VisatApp.getApp().getAppVersion();
-//            //cmdArray2[cmdArray.length] = "--git-branch=v7.2";
-//            String[] parts = VisatApp.getApp().getAppVersion().split("\\.");
-//            if (parts.length >= 2) {
-//                cmdArray2[cmdArray.length] = "--git-branch=v" + parts[0] + "." + parts[1];
-//            } else {
-//                return cmdArray;
-//            }
-//            return cmdArray2;
-//        }
 
         /**
          * The version number of the "git-branch" is the first two digits of the SeaDAS app number; trailing numbers should be ignored.

@@ -16,8 +16,6 @@ public class ParFileManager{
 
     ProcessorModel processorModel;
     protected ParamList paramList;
-    public String[] cmdArray;
-
 
     public ParFileManager(ProcessorModel processorModel) {
         this.processorModel = processorModel;
@@ -26,24 +24,18 @@ public class ParFileManager{
 
     }
 
-    public String[] getProgramCommandArray() {
-        return new String[2];
-    }
-
     public String[] getCmdArrayWithParFile() {
-        cmdArray = SeadasArrayUtils.concatAll(processorModel.getCmdArrayPrefix(), new String[]{getParFileCommandLineOption()}, processorModel.getCmdArraySuffix());
-        return cmdArray;
-    }
+        String parString;
 
-    private String getParFileCommandLineOption() {
         File parFile = computeParFile();
         String parFileName = parFile.getAbsolutePath();
 
         if (parFileOptionName.equals("none")) {
-            return parFileName;
+            parString =  parFileName;
         } else {
-            return parFileOptionName + "=" + parFileName;
+            parString =  parFileOptionName + "=" + parFileName;
         }
+        return new String[]{parString};
     }
 
 
