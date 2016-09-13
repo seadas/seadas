@@ -45,22 +45,19 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
     private final String allparamInitializedPropertyName = "ALL_PARAMS_INITIALIZED";
     private final String l2prodProcessors = "l2mapgen l2brsgen l2bin l2bin_aquarius l3bin smigen";
-    private final int NUMBER_OF_PREFIX_ELEMENTS = 4;
     private ProcessorModel secondaryProcessor;
     private Pattern progressPattern;
 
     private ProcessorTypeInfo.ProcessorID processorID;
 
+    private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
+
     private boolean multipleInputFiles;
-    private ArrayList<String> filesToUpload;
-    private ArrayList<String> filesToDownload;
-    private ArrayList<String> remoteServerCmdArray;
 
     private boolean openInSeadas;
 
     private String prodParamName = "prod";
 
-    private String[] cmdArray;
     private String[] cmdArrayPrefix;
     private String[] cmdArraySuffix;
 
@@ -151,21 +148,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private void setCommandArraySuffix() {
         setCmdArraySuffix(new String[0]);
-    }
-
-    protected String convertToMode(String outmode) {
-        if (!programName.equals("l2brsgen")) {
-            return outmode;
-        }
-        switch (outmode.toCharArray()[0]) {
-            case '0':
-                return "HDF";
-            case '1':
-                return "PPM";
-            case '2':
-                return "PNG";
-        }
-        return null;
     }
 
     public void addParamInfo(ParamInfo info) {
@@ -320,13 +302,15 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void updateParamInfo(String paramName, String newValue) {
+
         ParamInfo option = getParamInfo(paramName);
         if (option != null) {
             String oldValue = option.getValue();
             option.setValue(newValue);
             checkCompleteness();
-            if (!oldValue.equals(newValue)) {
-                getPropertyChangeSupport().firePropertyChange(option.getName(), oldValue, newValue);
+            if (!(oldValue.contains(newValue) && oldValue.trim().length()==newValue.trim().length())) {
+                System.out.println("property changed from " + oldValue + " to " + newValue);
+                propertyChangeSupport.firePropertyChange(option.getName(), oldValue, newValue);
             }
         }
     }
@@ -345,11 +329,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public boolean updateIFileInfo(String ifileName) {
 
+
         if (programName != null && (programName.equals("multilevel_processor") || programName.equals("multilevel_processor.py"))) {
             return true;
         }
-        if (verifyIFilePath(ifileName)) {
+
+        if (programName != null && verifyIFilePath(ifileName)) {
             String ofileName = findNextLevelFileName(ifileName);
+            SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
             if (ofileName != null) {
                 updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
                 updateGeoFileInfo(ifileName);
@@ -360,14 +347,18 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         int result = VisatApp.getApp().showQuestionDialog("Cannot compute output file name. Would you like to continue anyway?", "test");
         if (result == 0) {
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
+            updateOFileInfo("");
         } else {
-            updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");    //use an empty string
+            updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
             updateOFileInfo("");
         }
+        //addPropertyChangeListener();
         return false;
     }
 
+
     String findNextLevelFileName(String ifileName) {
+        SeadasLogger.getLogger().info("program name for finding next level name: " + programName);
         return SeadasFileUtils.findNextLevelFileName(ifileName, programName, "");
     }
 
@@ -394,6 +385,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public void setParamValue(String name, String value) {
         SeadasLogger.getLogger().info("primary io file option names: " + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
+        SeadasLogger.getLogger().info("set param value: " + name + " " + value);
+        System.out.println(name + " " + value);
         if (name.trim().equals(getPrimaryInputFileOptionName())) {
             updateIFileInfo(value);
         } else if (name.trim().equals(getPrimaryOutputFileOptionName())) {
@@ -405,23 +398,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
 
     public String[] getCmdArrayPrefix() {
-//        String[] cmdArrayPrefix;
-//
-//        if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
-//            cmdArrayPrefix = new String[1];
-//            cmdArrayPrefix[0] = getProgramName();
-//            if (!OCSSW.isOCSSWExist()) {
-//                cmdArrayPrefix[0] = OCSSW.TMP_OCSSW_INSTALLER;
-//            } else {
-//                cmdArrayPrefix[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
-//            }
-//        } else {
-//            cmdArrayPrefix = new String[4];
-//            cmdArrayPrefix[0] = OCSSW.getOcsswScriptPath();
-//            cmdArrayPrefix[1] = "--ocsswroot";
-//            cmdArrayPrefix[2] = OCSSW.getOcsswEnv();
-//            cmdArrayPrefix[3] = getProgramName();
-//        }
         return cmdArrayPrefix;
     }
 
@@ -439,11 +415,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        SeadasLogger.getLogger().info("added property name: " + propertyName);
+        SeadasLogger.getLogger().info(" added property name: " + propertyName);
         if (propertyName != null) {
             EventInfo eventInfo = getEventInfo(propertyName);
             if (eventInfo == null) {
-                paramList.addPropertyChangeListener(propertyName, listener);
+                propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
             } else {
                 eventInfo.addPropertyChangeListener(listener);
             }
@@ -453,7 +429,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         EventInfo eventInfo = getEventInfo(propertyName);
         if (eventInfo == null) {
-            paramList.removePropertyChangeListener(propertyName, listener);
+            propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
         } else {
             eventInfo.removePropertyChangeListener(listener);
         }
@@ -484,7 +460,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     public void fireEvent(String name, Object oldValue, Object newValue) {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
-            getPropertyChangeSupport().firePropertyChange(new PropertyChangeEvent(this, name, oldValue, newValue));
+            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, oldValue, newValue));
         } else {
             eventInfo.fireEvent(oldValue, newValue);
         }
@@ -565,9 +541,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private String getOFileFullPath(String fileName) {
-
-//        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
-
         if (fileName.indexOf(System.getProperty("file.separator")) == 0 && new File(fileName).getParentFile().exists()) {
             return fileName;
         } else if (new File(getIfileDirString(), fileName).getParentFile().exists()) {
@@ -576,17 +549,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         } else {
             return null;
         }
-//        } else {
-//            String ifileDir = getIfileDirString();
-//            ifileDir = ifileDir.replace(OCSSW.getServerSharedDirName(), OCSSW.getOCSSWClientSharedDirName());
-//            String ofileName = fileName.lastIndexOf(System.getProperty("file.separator")) == -1 ? fileName : fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator"))+1);
-//            if (new File(ifileDir, ofileName).getParentFile().exists()) {
-//                return ifileDir + System.getProperty("file.separator") + ofileName;
-//
-//            } else {
-//                return null;
-//            }
-//        }
     }
 
     public void setProgramName(String programName) {
@@ -1124,6 +1086,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         /**
          * The version number of the "git-branch" is the first two digits of the SeaDAS app number; trailing numbers should be ignored.
          * For example, for SeaDAS 7.3.2, the "git-branch" option on command line should be prepared as "--git-branch=v7.3".
+         *
          * @return
          */
         @Override
