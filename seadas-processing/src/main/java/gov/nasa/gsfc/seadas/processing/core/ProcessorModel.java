@@ -361,12 +361,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             removePropertyChangeListeners(getPrimaryInputFileOptionName());
             int result = VisatApp.getApp().showQuestionDialog("Cannot compute output file name. Would you like to continue anyway?", "test");
             if (result == 0) {
-                //updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-                //updateParamInfo(getPrimaryOutputFileOptionName(), "" + "\n");
             } else {
                 updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
-
-                //updateOFileInfo("");
             }
         }
         return isIfileValid;
