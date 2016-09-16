@@ -45,6 +45,16 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
     private final String allparamInitializedPropertyName = "ALL_PARAMS_INITIALIZED";
     private final String l2prodProcessors = "l2mapgen l2brsgen l2bin l2bin_aquarius l3bin smigen";
+
+    final String L1AEXTRACT_MODIS = "l1aextract_modis",
+                         L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
+                         L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
+                         L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
+                         L1AEXTRACT_VIIRS = "l1aextract_viirs",
+                         L1AEXTRACT_VIIRS_XML_FILE = "l1aextract_viirs.xml",
+                         L2EXTRACT = "l2extract",
+                         L2EXTRACT_XML_FILE = "l2extract.xml";
+
     private ProcessorModel secondaryProcessor;
     private Pattern progressPattern;
 
@@ -60,6 +70,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private String[] cmdArrayPrefix;
     private String[] cmdArraySuffix;
+
+    private boolean isIfileValid = false;
 
     public ProcessorModel(String name) {
 
@@ -308,7 +320,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             String oldValue = option.getValue();
             option.setValue(newValue);
             checkCompleteness();
-            if (!(oldValue.contains(newValue) && oldValue.trim().length()==newValue.trim().length())) {
+            if (!(oldValue.contains(newValue) && oldValue.trim().length() == newValue.trim().length())) {
                 System.out.println("property changed from " + oldValue + " to " + newValue);
                 propertyChangeSupport.firePropertyChange(option.getName(), oldValue, newValue);
             }
@@ -338,22 +350,26 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             String ofileName = findNextLevelFileName(ifileName);
             SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
             if (ofileName != null) {
+                isIfileValid = true;
                 updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
                 updateGeoFileInfo(ifileName);
                 updateOFileInfo(getOFileFullPath(ofileName));
-                return true;
+            }
+        } else {
+            isIfileValid = false;
+            updateParamInfo(getPrimaryOutputFileOptionName(), "" + "\n");
+            removePropertyChangeListeners(getPrimaryInputFileOptionName());
+            int result = VisatApp.getApp().showQuestionDialog("Cannot compute output file name. Would you like to continue anyway?", "test");
+            if (result == 0) {
+                //updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
+                //updateParamInfo(getPrimaryOutputFileOptionName(), "" + "\n");
+            } else {
+                updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
+
+                //updateOFileInfo("");
             }
         }
-        int result = VisatApp.getApp().showQuestionDialog("Cannot compute output file name. Would you like to continue anyway?", "test");
-        if (result == 0) {
-            updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-            updateOFileInfo("");
-        } else {
-            updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
-            updateOFileInfo("");
-        }
-        //addPropertyChangeListener();
-        return false;
+        return isIfileValid;
     }
 
 
@@ -422,6 +438,21 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
             } else {
                 eventInfo.addPropertyChangeListener(listener);
+            }
+        }
+    }
+
+
+    public void removePropertyChangeListeners(String propertyName) {
+        EventInfo eventInfo = getEventInfo(propertyName);
+        PropertyChangeListener[] propertyListeners = propertyChangeSupport.getPropertyChangeListeners(propertyName);
+        for (PropertyChangeListener propertyChangeListener : propertyListeners) {
+            propertyChangeSupport.removePropertyChangeListener(propertyChangeListener);
+
+            if (eventInfo == null) {
+                propertyChangeSupport.removePropertyChangeListener(propertyChangeListener);
+            } else {
+                eventInfo.removePropertyChangeListener(propertyChangeListener);
             }
         }
     }
@@ -498,7 +529,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public boolean isValidIfile() {
-        return true;
+        return isIfileValid;
     }
 
     public boolean isGeofileRequired() {
@@ -725,28 +756,38 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         @Override
         public boolean updateIFileInfo(String ifileName) {
-            setProgramName(getExtractorProgramName(ifileName));
+            updateExtractor(ifileName);
             return super.updateIFileInfo(ifileName);
         }
 
-        private String getExtractorProgramName(String ifileName) {
+        private void updateExtractor(String ifileName) {
             FileInfo ifileInfo = new FileInfo(ifileName);
-            SeadasFileUtils.debug("Extractor ifile info: " + ifileInfo.getTypeName() + ifileInfo.getMissionName());
+            SeadasFileUtils.debug("Extractor ifile info in extractor class method: " + ifileInfo.getTypeName() + ifileInfo.getMissionName());
             String programName = null;
+            String xmlFileName = null;
             if (ifileInfo.getMissionName() != null && ifileInfo.getTypeName() != null) {
                 if (ifileInfo.getMissionName().indexOf("MODIS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1) {
-                    programName = "l1aextract_modis";
+                    programName = L1AEXTRACT_MODIS;
+                    xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
                 } else if (ifileInfo.getMissionName().indexOf("SeaWiFS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1 ||
                         ifileInfo.getMissionName().indexOf("CZCS") != -1) {
-                    programName = "l1aextract_seawifs";
+                    programName = L1AEXTRACT_SEAWIFS;
+                    xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
                 } else if (ifileInfo.getMissionName().indexOf("VIIRS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1) {
-                    programName = "l1aextract_viirs";
+                    programName = L1AEXTRACT_VIIRS;
+                    xmlFileName = L1AEXTRACT_VIIRS_XML_FILE;
                 } else if ((ifileInfo.getTypeName().indexOf("L2") != -1 || ifileInfo.getTypeName().indexOf("Level 2") != -1) ||
                         (ifileInfo.getMissionName().indexOf("OCTS") != -1 && (ifileInfo.getTypeName().indexOf("L1") != -1 || ifileInfo.getTypeName().indexOf("Level 1") != -1))) {
-                    programName = "l2extract";
+                    programName = L2EXTRACT;
+                    xmlFileName = L2EXTRACT_XML_FILE;
                 }
             }
-            return programName;
+            setProgramName(programName);
+            if (programName != null) {
+                setParamList(ParamUtils.computeParamList(xmlFileName));
+            } else {
+                VisatApp.getApp().showErrorDialog("No extractor found for " + ifileName);
+            }
         }
     }
 

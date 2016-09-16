@@ -99,6 +99,8 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         ParamList paramList = processorModel.getParamList();
         ArrayList<ParamInfo> paramInfos = paramList.getParamArray();
         for (ParamInfo pi : paramInfos) {
+            //when ifile or infile changes, the values of some parameters may change.
+            //ofile and geofile should not affect the param values
             if (!(pi.getType().equals("ifile") || pi.getType().equals("infile") || pi.getType().equals("ofile") || pi.getType().equals("geofile"))) {
                 processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
                     @Override

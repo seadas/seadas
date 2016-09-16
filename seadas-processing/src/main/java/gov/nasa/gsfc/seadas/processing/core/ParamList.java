@@ -92,6 +92,10 @@ public class ParamList {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
     }
 
+    public PropertyChangeListener[] getPropertyChangeListener(String propertyName) {
+        return propertyChangeSupport.getPropertyChangeListeners(propertyName);
+    }
+
     public SwingPropertyChangeSupport getPropertyChangeSupport() {
         return propertyChangeSupport;
     }
@@ -133,9 +137,6 @@ public class ParamList {
                     stringBuffer.append(separator);
                 }
                 String paramString = param.getParamString();
-                if ( ! RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
-                    paramString = paramString.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
-                }
                 stringBuffer.append(paramString);
             }
         }

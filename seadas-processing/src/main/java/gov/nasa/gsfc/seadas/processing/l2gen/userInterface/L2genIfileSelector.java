@@ -43,11 +43,11 @@ public class L2genIfileSelector {
         sourceProductSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
             @Override
             public void selectionChanged(SelectionChangeEvent event) {
+                System.out.println("selection changed!");
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
                     disableEventHandler();
                     l2genDataProcessorModel.updateParamValues(sourceProductSelector.getSelectedProduct());
-                    //l2genDataProcessorModel.updateParamValues(sourceProductSelector.getSelectedProduct().getFileLocation());
                     l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
                     enableEventHandler();
                 }
@@ -60,6 +60,7 @@ public class L2genIfileSelector {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 String ifileName = l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName());
+                System.out.println("processor model property changed! ifileName in file selector "  + ifileName);
                 File iFile = new File(ifileName);
                 disableControlHandler();
                 if (isEventHandlerEnabled() || ifileName.isEmpty()) {
