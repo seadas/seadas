@@ -68,7 +68,7 @@
             <usedAs>option</usedAs>
             <order>5</order>
         </option>
-        <option type="ifile">
+        <option type="dir">
             <name>--ancdir</name>
             <value></value>
             <default></default>
