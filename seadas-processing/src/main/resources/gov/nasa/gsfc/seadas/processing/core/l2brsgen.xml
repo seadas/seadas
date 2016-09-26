@@ -188,7 +188,7 @@
             </description>
             <source>default</source>
         </option>
-        <option type="ifile">
+        <option type="dir">
             <name>palette_dir</name>
             <value></value>
             <type>string</type>
