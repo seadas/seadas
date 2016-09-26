@@ -122,7 +122,7 @@
             <usedAs>argument</usedAs>
             <order>10</order>
         </option>
-        <option type="ifile">
+        <option type="dir">
             <name>palette_dir</name>
             <value></value>
             <type>string</type>
