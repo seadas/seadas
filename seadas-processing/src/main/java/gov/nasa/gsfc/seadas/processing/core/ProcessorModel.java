@@ -321,7 +321,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             option.setValue(newValue);
             checkCompleteness();
             if (!(oldValue.contains(newValue) && oldValue.trim().length() == newValue.trim().length())) {
-                System.out.println("property changed from " + oldValue + " to " + newValue);
+                SeadasFileUtils.debug("property changed from " + oldValue + " to " + newValue);
                 propertyChangeSupport.firePropertyChange(option.getName(), oldValue, newValue);
             }
         }
@@ -396,9 +396,9 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
 
     public void setParamValue(String name, String value) {
-        SeadasLogger.getLogger().info("primary io file option names: " + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
-        SeadasLogger.getLogger().info("set param value: " + name + " " + value);
-        System.out.println(name + " " + value);
+        SeadasFileUtils.debug("primary io file option names: " + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
+        SeadasFileUtils.debug("set param value: " + name + " " + value);
+        SeadasFileUtils.debug(name + " " + value);
         if (name.trim().equals(getPrimaryInputFileOptionName())) {
             updateIFileInfo(value);
         } else if (name.trim().equals(getPrimaryOutputFileOptionName())) {
@@ -427,7 +427,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        SeadasLogger.getLogger().info(" added property name: " + propertyName);
+        SeadasFileUtils.debug(" added property name: " + propertyName);
         if (propertyName != null) {
             EventInfo eventInfo = getEventInfo(propertyName);
             if (eventInfo == null) {
@@ -695,7 +695,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
             List<ucar.nc2.Group> groups = ncFile.getRootGroup().getGroups();
             for (ucar.nc2.Group g : groups) {
-                if (g.getShortName().equals("Geophysical_Data")) {
+                //retrieve geophysical data to fill in "product" value ranges
+                if (g.getShortName().equalsIgnoreCase("Geophysical_Data")) {
                     var = g.getVariables();
                 }
             }
