@@ -513,11 +513,11 @@ public class SeadasFileUtils {
         OCSSWRunner.executeLocal(cmdArray, new File(fileFullPathName));
     }
 
-    public void updateSeadasConfigFile(String configFileFullPath, String varName, String varValue){
-        File seadasConfigFile = new File(configFileFullPath);
-        StringBuilder configLines = new StringBuilder();
+    public void updateDiskFile(String fileFullPath, String varName, String varValue){
+        File targetFile = new File(fileFullPath);
+        StringBuilder targetFileContent = new StringBuilder();
         try {
-            LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(seadasConfigFile));
+            LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(targetFile));
             String readLine;
             String[] configVar;
 
@@ -529,14 +529,14 @@ public class SeadasFileUtils {
                     configVar[0] = configVar[0].trim();
                     configVar[1] = configVar[1].trim();
                     if (configVar[0].trim().equalsIgnoreCase(varName.trim())) {
-                        configLines.append(configVar[0] + " = " + varValue + System.getProperty("line.separator"));
+                        targetFileContent.append(configVar[0] + " = " + varValue + System.getProperty("line.separator"));
                     } else {
-                        configLines.append(readLine + System.getProperty("line.separator"));
+                        targetFileContent.append(readLine + System.getProperty("line.separator"));
                     }
                 }
                 readLine = lineNumberReader.readLine();
             }
-            writeToDisk(configFileFullPath, configLines.toString());
+            writeToDisk(fileFullPath, targetFileContent.toString());
 
         } catch (FileNotFoundException fnfe) {
 
