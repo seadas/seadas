@@ -1,0 +1,45 @@
+<graph id="ReprojectionGraph">
+    <version>1.0</version>
+    <node id="reprojectionNode">
+        <operator>Reproject</operator>
+        <sources>
+            <source>${source}</source>
+            <collocateWith>${collocateWith}</collocateWith>
+        </sources>
+        <parameters>
+            <crs>PROJCS["Oblique_Stereographic / World Geodetic System 1984",
+                GEOGCS["World Geodetic System 1984",
+                DATUM["World Geodetic System 1984",
+                SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+                AUTHORITY["EPSG","6326"]],
+                PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+                UNIT["degree", 0.017453292519943295],
+                AXIS["Geodetic longitude", EAST],
+                AXIS["Geodetic latitude", NORTH]],
+                PROJECTION["Oblique_Stereographic"],
+                PARAMETER["central_meridian", -73.0],
+                PARAMETER["latitude_of_origin", 37.0],
+                PARAMETER["scale_factor", 1.0],
+                PARAMETER["false_easting", 0.0],
+                PARAMETER["false_northing", 0.0],
+                UNIT["m", 1.0],
+                AXIS["Easting", EAST],
+                AXIS["Northing", NORTH]]
+            </crs>
+            <resampling>Bilinear</resampling>
+            <referencePixelX>1384.5</referencePixelX>
+            <referencePixelY>1191.5</referencePixelY>
+            <easting>-98289.53160421527</easting>
+            <northing>726.2082761395723</northing>
+            <orientation>0.0</orientation>
+            <pixelSizeX>1000.0</pixelSizeX>
+            <pixelSizeY>1000.0</pixelSizeY>
+            <width>2769</width>
+            <height>2383</height>
+            <orthorectify>false</orthorectify>
+            <noDataValue>NaN</noDataValue>
+            <includeTiePointGrids>true</includeTiePointGrids>
+            <addDeltaBands>false</addDeltaBands>
+        </parameters>
+    </node>
+</graph>
