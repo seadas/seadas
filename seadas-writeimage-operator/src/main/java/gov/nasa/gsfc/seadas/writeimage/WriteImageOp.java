@@ -65,7 +65,7 @@ import java.util.List;
  * @author kutila
  * @author aynur abdurazik
  */
-@OperatorMetadata(alias = "WriteImage", version = "1.0", copyright = "(c) 2014 University of Queensland", authors = "Kutila G, Aynur Abdurazik",
+@OperatorMetadata(alias = "WriteImage", version = "1.0", copyright = "Ocean Biology Processing Group, NASA", authors = "Kutila G, Aynur Abdurazik",
         description = "Creates a color image from a single source band.")
 public class WriteImageOp extends Operator {
 
