@@ -51,7 +51,7 @@
             <sourceBandName>chlor_a</sourceBandName>
             <filePath>./A2010283180500.L2_LAC_OC.png</filePath>
             <formatName>PNG</formatName>
-            <cpdFilePath>/Users/aabduraz/.seadas/beam-ui/auxdata/color-palettes/oceancolor_standard.cpd
+            <cpdFilePath>$USER_HOME/.seadas/beam-ui/auxdata/color-palettes/oceancolor_standard.cpd  <!--full path of the intended cpd file -->
             </cpdFilePath>
             <cpdAutoDistribute>true</cpdAutoDistribute>
             <level>0</level>
