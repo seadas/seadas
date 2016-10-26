@@ -56,7 +56,7 @@
         </option>
         <option type="int">
             <name>pix_sub</name>
-            <value></value>
+            <value>1</value>
             <default></default>
             <description>pixel subsampling rate</description>
             <usedAs>argument</usedAs>
@@ -64,7 +64,7 @@
         </option>
         <option type="int">
             <name>sc_sub</name>
-            <value></value>
+            <value>1</value>
             <default></default>
             <description>scan line subsampling rate</description>
             <usedAs>argument</usedAs>

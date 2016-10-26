@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -39,8 +40,8 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         return processorModel;
     }
 
-    public Product getSelectedSourceProduct() {
-        return ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct();
+    public File getSelectedSourceProduct() {
+        return ioFilesSelector.getIfileSelector().getFileSelector().getSelectedFile();
     }
 
     public boolean isOpenOutputInApp() {
@@ -87,7 +88,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         ioPanel.validate();
 
         //update processor model param info if there is an open product.
-        if (ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct() != null) {
+        if (ioFilesSelector.getIfileSelector().getFileSelector().getSelectedFile() != null) {
             processorModel.updateIFileInfo(ioFilesSelector.getIfileSelector().getSelectedIFileName());
             processorModel.updateParamValues(ioFilesSelector.getIfileSelector().getSelectedIFile());
         }

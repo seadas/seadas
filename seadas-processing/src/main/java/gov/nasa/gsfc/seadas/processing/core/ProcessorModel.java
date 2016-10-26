@@ -47,13 +47,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private final String l2prodProcessors = "l2mapgen l2brsgen l2bin l2bin_aquarius l3bin smigen";
 
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
-                         L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
-                         L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
-                         L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
-                         L1AEXTRACT_VIIRS = "l1aextract_viirs",
-                         L1AEXTRACT_VIIRS_XML_FILE = "l1aextract_viirs.xml",
-                         L2EXTRACT = "l2extract",
-                         L2EXTRACT_XML_FILE = "l2extract.xml";
+            L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
+            L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
+            L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
+            L1AEXTRACT_VIIRS = "l1aextract_viirs",
+            L1AEXTRACT_VIIRS_XML_FILE = "l1aextract_viirs.xml",
+            L2EXTRACT = "l2extract",
+            L2EXTRACT_XML_FILE = "l2extract.xml";
 
     private ProcessorModel secondaryProcessor;
     private Pattern progressPattern;
@@ -282,7 +282,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void updateParamInfo(ParamInfo currentOption, String newValue) {
-        paramList.setValue(currentOption.getName(), newValue);
+        updateParamInfo(currentOption.getName(), newValue);
         checkCompleteness();
     }
 
@@ -826,6 +826,13 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private static class LonLat2Pixels_Processor extends ProcessorModel {
+        static final String _SWlon = "SWlon";
+        static final String _SWlat = "SWlat";
+        static final String _NElon = "NElon";
+        static final String _NElat = "NElat";
+
+        private LonLat2PixlineConverter lonLat2PixlineConverter;
+
         LonLat2Pixels_Processor(String programName, String xmlFileName) {
             super(programName, xmlFileName);
             addPropertyChangeListener("ifile", new PropertyChangeListener() {
@@ -835,28 +842,28 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
                 }
             });
-            addPropertyChangeListener("SWlon", new PropertyChangeListener() {
+            addPropertyChangeListener(_SWlon, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     checkCompleteness();
 
                 }
             });
-            addPropertyChangeListener("SWlat", new PropertyChangeListener() {
+            addPropertyChangeListener(_SWlat, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     checkCompleteness();
 
                 }
             });
-            addPropertyChangeListener("NElon", new PropertyChangeListener() {
+            addPropertyChangeListener(_NElon, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     checkCompleteness();
 
                 }
             });
-            addPropertyChangeListener("NElat", new PropertyChangeListener() {
+            addPropertyChangeListener(_NElat, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     checkCompleteness();
@@ -864,10 +871,50 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             });
         }
 
+
+        @Override
+        public void checkCompleteness() {
+            String valueOfSWlon = getParamList().getInfo(_SWlon).getValue();
+            String valueOfSWlat = getParamList().getInfo(_SWlat).getValue();
+            String valueOfNElon = getParamList().getInfo(_NElon).getValue();
+            String valueOfNElat = getParamList().getInfo(_NElat).getValue();
+
+            if ((valueOfSWlon != null && valueOfSWlon.trim().length() > 0) &&
+                    (valueOfSWlat != null && valueOfSWlat.trim().length() > 0) &&
+                    (valueOfNElon != null && valueOfNElon.trim().length() > 0) &&
+                    (valueOfNElat != null && valueOfNElat.trim().length() > 0)) {
+                lonLat2PixlineConverter = new LonLat2PixlineConverter(this);
+                lonLat2PixlineConverter.computePixelsFromLonLat();
+                if (lonLat2PixlineConverter.computePixelsFromLonLat()) {
+                    updateParamInfo(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME, lonLat2PixlineConverter.getSpixl());
+                    updateParamInfo(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME, lonLat2PixlineConverter.getEpixl());
+                    updateParamInfo(LonLat2PixlineConverter.START_LINE_PARAM_NAME, lonLat2PixlineConverter.getSline());
+                    updateParamInfo(LonLat2PixlineConverter.END_LINE_PARAM_NAME, lonLat2PixlineConverter.getEline());
+                    fireEvent(getAllparamInitializedPropertyName(), false, true);
+                }
+            }
+        }
+
+        public void updateParamInfo(String paramName, String newValue) {
+
+            ParamInfo option = getParamInfo(paramName);
+            if (option != null) {
+                option.setValue(newValue);
+            }
+        }
+
         public boolean updateIFileInfo(String ifileName) {
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
             updateGeoFileInfo(ifileName);
             return true;
+        }
+
+        public LonLat2PixlineConverter getLonLat2PixlineConverter() {
+            return lonLat2PixlineConverter;
+        }
+
+        public void setLonLat2PixlineConverter(LonLat2PixlineConverter lonLat2PixlineConverter) {
+            this.lonLat2PixlineConverter = lonLat2PixlineConverter;
         }
     }
 

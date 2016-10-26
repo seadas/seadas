@@ -97,7 +97,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
     private JPanel mainPanel;
     private JPanel primaryIOPanel;
-    private SourceProductFileSelector sourceProductFileSelector;
+    private SeadasFileSelector sourceProductFileSelector;
     private JScrollPane parfileScrollPane;
     private JPanel parfilePanel;
     private JPanel importPanel;
@@ -135,10 +135,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         jFileChooser = new JFileChooser();
 
         // create main panel
-        sourceProductFileSelector = new SourceProductFileSelector(VisatApp.getApp(), IFILE, true);
+        sourceProductFileSelector = new SeadasFileSelector(VisatApp.getApp(), IFILE, true);
         sourceProductFileSelector.initProducts();
         //sourceProductFileSelector.setProductNameLabel(new JLabel(IFILE));
-        sourceProductFileSelector.getProductNameComboBox().setPrototypeDisplayValue(
+        sourceProductFileSelector.getFileNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
         sourceProductFileSelector.addSelectionChangeListener(new SelectionChangeListener() {
             @Override
@@ -351,9 +351,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     }
 
     @Override
-    public Product getSelectedSourceProduct() {
+    public File getSelectedSourceProduct() {
         if (getSourceProductFileSelector() != null) {
-            return getSourceProductFileSelector().getSelectedProduct();
+            return getSourceProductFileSelector().getSelectedFile();
         }
         return null;
     }
@@ -363,7 +363,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         return false;
     }
 
-    public SourceProductFileSelector getSourceProductFileSelector() {
+    public SeadasFileSelector getSourceProductFileSelector() {
         return sourceProductFileSelector;
     }
 
@@ -375,7 +375,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
     public void prepareHide() {
         if (getSourceProductFileSelector() != null) {
-            getSourceProductFileSelector().releaseProducts();
+            getSourceProductFileSelector().releaseFiles();
         }
     }
 
@@ -512,8 +512,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         }
 
         String oldIfileName = null;
-        if (sourceProductFileSelector.getSelectedProduct() != null) {
-            oldIfileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
+        if (sourceProductFileSelector.getSelectedFile() != null) {
+            oldIfileName = sourceProductFileSelector.getSelectedFile().getAbsolutePath();
         }
         String newIfileName = getRow(Processor.MAIN.toString()).getParamList().getValue(IFILE);
 
@@ -574,7 +574,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     }
 
     private void handleIFileChanged() {
-        String ifileName = sourceProductFileSelector.getSelectedProduct().getFileLocation().getAbsolutePath();
+        String ifileName = sourceProductFileSelector.getSelectedFile().getAbsolutePath();
         MultilevelProcessorRow row = getRow(Processor.MAIN.toString());
         String oldIFile = row.getParamList().getValue(IFILE);
         if (!ifileName.equals(oldIFile)) {

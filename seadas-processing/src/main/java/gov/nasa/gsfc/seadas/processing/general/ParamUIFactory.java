@@ -165,7 +165,7 @@ public class ParamUIFactory {
         vc.getDescriptor(optionName).setDisplayName(optionName);
         final BindingContext ctx = new BindingContext(vc);
         final JTextField field = new JTextField();
-        field.setColumns(optionName.length() > 12 ? 12 : 8 );
+        field.setColumns(optionName.length() > 12 ? 12 : 8);
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
         field.setMinimumSize(field.getPreferredSize());
@@ -180,15 +180,15 @@ public class ParamUIFactory {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
-                if (! field.getText().trim().equals(pi.getValue().trim()))
-                processorModel.updateParamInfo(pi, field.getText());
+                if (!field.getText().trim().equals(pi.getValue().trim()))
+                    processorModel.updateParamInfo(pi, field.getText());
             }
         });
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                if (! field.getText().trim().equals(pi.getValue().trim()))
-                field.setText(pi.getValue());
+                if (!field.getText().trim().equals(pi.getValue().trim()))
+                    field.setText(pi.getValue());
             }
         });
         optionPanel.add(field);
@@ -240,6 +240,8 @@ public class ParamUIFactory {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 field.setSelected(pi.getValue().equals("true") || pi.getValue().equals("1") ? true : false);
+                field.validate();
+                field.repaint();
                 //optionValue = field.isSelected();
 
             }
@@ -506,27 +508,65 @@ public class ParamUIFactory {
         return values;
     }
 
+    private boolean controlHandlerEnabled = true, eventHandlerEnabled = true;
+
+    private boolean isControlHandlerEnabled() {
+        return controlHandlerEnabled;
+    }
+
+    private boolean isEventHandlerEnabled() {
+        return eventHandlerEnabled;
+    }
+
+    private void enableControlHandler() {
+        controlHandlerEnabled = true;
+    }
+
+    private void disableControlHandler() {
+        controlHandlerEnabled = false;
+    }
+
+    private void enableEventHandler() {
+        eventHandlerEnabled = true;
+    }
+
+    private void disableEventHandler() {
+        eventHandlerEnabled = false;
+    }
+
     private JPanel createIOFileOptionField(final ParamInfo pi) {
+
 
         final FileSelector ioFileSelector = new FileSelector(VisatApp.getApp(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
         ioFileSelector.getFileTextField().setColumns(40);
-        ioFileSelector.addPropertyChangeListener(ioFileSelector.getPropertyName(), new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String iofileName;
-                if (ioFileSelector.getFileName() != null) {
-                    iofileName = ioFileSelector.getFileName();
-                    processorModel.updateParamInfo(pi, iofileName);
-                }
-            }
-        });
 
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                ioFileSelector.setFilename(pi.getValue());
+                disableControlHandler();
+                if (isEventHandlerEnabled() || pi.getName().isEmpty()) {
+                    ioFileSelector.setFilename(pi.getValue());
+                }
+                enableControlHandler();
             }
         });
+
+        ioFileSelector.addPropertyChangeListener(ioFileSelector.getPropertyName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                disableEventHandler();
+                if (isControlHandlerEnabled()) {
+                    String iofileName;
+                    if (ioFileSelector.getFileName() != null) {
+                        iofileName = ioFileSelector.getFileName();
+                        processorModel.updateParamInfo(pi, iofileName);
+                    }
+                }
+                enableEventHandler();
+            }
+        });
+
+
 
         ioFileSelector.getjPanel().setName(pi.getName());
         return ioFileSelector.getjPanel();

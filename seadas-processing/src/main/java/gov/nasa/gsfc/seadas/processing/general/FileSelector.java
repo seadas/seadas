@@ -192,6 +192,8 @@ public class FileSelector {
 
         if (filenameChanged) {
             fileTextfield.setFocusable(true);
+            fileTextfield.validate();
+            fileTextfield.repaint();
             String tmpLastFilename = lastFilename;
             lastFilename = currentFilename;
             fireEvent(propertyName, tmpLastFilename, currentFilename);

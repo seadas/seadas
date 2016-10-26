@@ -13,13 +13,7 @@ public class LonLat2PixlineConverter {
     public static final String START_LINE_PARAM_NAME = "sline";
     public static final String END_LINE_PARAM_NAME = "eline";
     public static final String START_PIXEL_PARAM_NAME = "spixl";
-    public static final String END_PIXEL_PARAM_NAME = "spixl";
-
-//    private String ifile;
-//    private double elon;
-//    private double wlon;
-//    private double slat;
-//    private double nlat;
+    public static final String END_PIXEL_PARAM_NAME = "epixl";
 
     private String sline;
     private String eline;
@@ -38,11 +32,6 @@ public class LonLat2PixlineConverter {
 
 
     public boolean computePixelsFromLonLat(){
-//
-//        addParamInfo("elon", new Double(elon).toString(), ParamInfo.Type.STRING, ParamInfo.USED_IN_COMMAND_AS_ARGUMENT, lonLat2PixelTranslatorProcessorModel.getParamList().getParamArray().size());
-//        addParamInfo("wlon", new Double(wlon).toString(), ParamInfo.Type.STRING, ParamInfo.USED_IN_COMMAND_AS_ARGUMENT, lonLat2PixelTranslatorProcessorModel.getParamList().getParamArray().size());
-//        addParamInfo("slat", new Double(slat).toString(), ParamInfo.Type.STRING, ParamInfo.USED_IN_COMMAND_AS_ARGUMENT, lonLat2PixelTranslatorProcessorModel.getParamList().getParamArray().size());
-//        addParamInfo("nlat", new Double(nlat).toString(), ParamInfo.Type.STRING, ParamInfo.USED_IN_COMMAND_AS_ARGUMENT, lonLat2PixelTranslatorProcessorModel.getParamList().getParamArray().size());
 
         boolean converted = false;
 
@@ -63,23 +52,6 @@ public class LonLat2PixlineConverter {
         }
         return  converted;
     }
-//
-//    private void addParamInfo(String paramName, String paramValue, ParamInfo.Type paramType, String usedAs, int order){
-//        ParamInfo paramInfo = new ParamInfo(paramName, paramValue, paramType);
-//        paramInfo.setOrder(order);
-//        paramInfo.setUsedAs(usedAs);
-//        lonLat2PixelTranslatorProcessorModel.addParamInfo(paramInfo);
-//    }
-//
-//
-//    public String getIfile() {
-//        return ifile;
-//    }
-//
-//    public void setIfile(String ifileName) {
-//        this.ifile = ifileName;
-//        addParamInfo("ifile", ifileName, ParamInfo.Type.IFILE, ParamInfo.USED_IN_COMMAND_AS_ARGUMENT, 0);
-//    }
 
     public String getSline() {
         return sline;

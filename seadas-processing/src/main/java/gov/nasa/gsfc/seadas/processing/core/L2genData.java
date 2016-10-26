@@ -1971,7 +1971,7 @@ public class L2genData implements L2genDataProcessorModel {
         return processorModel;
     }
 
-    public void updateParamValues(Product selectedProduct) {
+    public void updateParamValues(File selectedFile) {
 
     }
 

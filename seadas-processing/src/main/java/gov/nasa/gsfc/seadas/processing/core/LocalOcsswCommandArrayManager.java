@@ -61,6 +61,8 @@ public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
 
     private String[] getCmdArrayParam() {
 
+        paramList = processorModel.getParamList();
+
         String[] cmdArrayParam = new String[paramList.getParamArray().size()];
 
         Iterator itr = paramList.getParamArray().iterator();

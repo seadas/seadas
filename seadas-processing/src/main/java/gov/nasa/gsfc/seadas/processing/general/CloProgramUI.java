@@ -4,6 +4,7 @@ import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.framework.datamodel.Product;
 
 import javax.swing.*;
+import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +16,7 @@ import javax.swing.*;
 public interface CloProgramUI{
     public JPanel getParamPanel();
     public ProcessorModel getProcessorModel();
-    public Product getSelectedSourceProduct();
+    public File getSelectedSourceProduct();
     public boolean isOpenOutputInApp();
     public String getParamString();
     public void setParamString(String paramString);

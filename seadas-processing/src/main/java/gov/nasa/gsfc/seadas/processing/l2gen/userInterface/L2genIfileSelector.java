@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
+import gov.nasa.gsfc.seadas.processing.general.SeadasFileSelector;
 import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
 import org.esa.beam.visat.VisatApp;
 
@@ -22,17 +23,18 @@ public class L2genIfileSelector {
 
     final private L2genDataProcessorModel l2genDataProcessorModel;
 
-    private SourceProductFileSelector sourceProductSelector;
+    //private SourceProductFileSelector fileSelector;
+    private SeadasFileSelector fileSelector;
     private boolean controlHandlerEnabled = true;
     private boolean eventHandlerEnabled = true;
 
     public L2genIfileSelector(L2genDataProcessorModel l2genDataProcessorModel) {
         this.l2genDataProcessorModel = l2genDataProcessorModel;
 
-        sourceProductSelector = new SourceProductFileSelector(VisatApp.getApp(), l2genDataProcessorModel.getPrimaryInputFileOptionName(), l2genDataProcessorModel.isMultipleInputFiles());
-        sourceProductSelector.initProducts();
-        sourceProductSelector.setProductNameLabel(new JLabel(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
-        sourceProductSelector.getProductNameComboBox().setPrototypeDisplayValue(
+        fileSelector = new SeadasFileSelector(VisatApp.getApp(), l2genDataProcessorModel.getPrimaryInputFileOptionName(), l2genDataProcessorModel.isMultipleInputFiles());
+        fileSelector.initProducts();
+        fileSelector.setFileNameLabel(new JLabel(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
+        fileSelector.getFileNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
 
         addControlListeners();
@@ -40,14 +42,14 @@ public class L2genIfileSelector {
     }
 
     private void addControlListeners() {
-        sourceProductSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
+        fileSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
             @Override
             public void selectionChanged(SelectionChangeEvent event) {
                 System.out.println("selection changed!");
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
                     disableEventHandler();
-                    l2genDataProcessorModel.updateParamValues(sourceProductSelector.getSelectedProduct());
+                    l2genDataProcessorModel.updateParamValues(fileSelector.getSelectedFile());
                     l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
                     enableEventHandler();
                 }
@@ -65,9 +67,9 @@ public class L2genIfileSelector {
                 disableControlHandler();
                 if (isEventHandlerEnabled() || ifileName.isEmpty()) {
                     if (iFile.exists()) {
-                        sourceProductSelector.setSelectedFile(iFile);
+                        fileSelector.setSelectedFile(iFile);
                     } else {
-                        sourceProductSelector.setSelectedFile(null);
+                        fileSelector.setSelectedFile(null);
                     }
                 }
                 enableControlHandler();
@@ -78,7 +80,7 @@ public class L2genIfileSelector {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 //l2genDataProcessorModel = null;
-                sourceProductSelector = null;
+                fileSelector = null;
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         });
@@ -109,13 +111,13 @@ public class L2genIfileSelector {
     }
 
     public File getSelectedIFile() {
-        if (sourceProductSelector == null) {
+        if (fileSelector == null) {
             return null;
         }
-        if (sourceProductSelector.getSelectedProduct() == null) {
+        if (fileSelector.getSelectedFile() == null) {
             return null;
         }
-        return sourceProductSelector.getSelectedProduct().getFileLocation();
+        return fileSelector.getSelectedFile();
     }
 
     /**
@@ -123,28 +125,22 @@ public class L2genIfileSelector {
      * @return  Selected product file name   after uncompressed.
      */
     public String getSelectedIFileName() {
-        if (sourceProductSelector == null) {
+        if (fileSelector == null) {
             return null;
         }
-        if (sourceProductSelector.getSelectedProduct() == null) {
+        if (fileSelector.getSelectedFile() == null) {
             return null;
         }
-        return sourceProductSelector.getSelectedProduct().getFileLocation().toString();
-//        ProductReader productReader = sourceProductSelector.getSelectedProduct().getProductReader();
-//        ProductReaderPlugIn netcdfFile = productReader.getReaderPlugIn();
-//        Class[] c = netcdfFile.createReaderInstance().getReaderPlugIn().getInputTypes();
-//        File sourceProductFileLocation =  sourceProductSelector.getSelectedProduct().getFileLocation();
-//        String sourceProductFileAbsolutePathName = sourceProductFileLocation.getParent() + System.getProperty("file.separator") + sourceProductSelector.getSelectedProduct().getName();
-//        return sourceProductFileAbsolutePathName;
+        return fileSelector.getSelectedFile().toString();
     }
 
 
 
     public JPanel getJPanel() {
-        return sourceProductSelector.createDefaultPanel();
+        return fileSelector.createDefaultPanel();
     }
 
-    public SourceProductFileSelector getSourceProductSelector() {
-        return sourceProductSelector;
+    public SeadasFileSelector getFileSelector() {
+        return fileSelector;
     }
 }

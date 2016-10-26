@@ -27,13 +27,38 @@ public class ExtractorUI extends ProgramUIFactory {
     private JPanel newsPanel;
     private JPanel paramPanel;
 
-    private JToggleButton pixellonlatSwitch;
-
     private ParamUIFactory paramUIFactory;
 
     public ExtractorUI(String programName, String xmlFileName) {
         super(programName, xmlFileName);
         paramCounter = new HashMap();
+        initLonLatProcessor();
+        initStaticPanels();
+    }
+
+    private void initLonLatProcessor() {
+        lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml");
+        lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                processorModel.updateParamInfo(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME));
+                processorModel.updateParamInfo(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME));
+                processorModel.updateParamInfo(LonLat2PixlineConverter.START_LINE_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.START_LINE_PARAM_NAME));
+                processorModel.updateParamInfo(LonLat2PixlineConverter.END_LINE_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.END_LINE_PARAM_NAME));
+            }
+        });
+
+        processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                if (processorModel.getProgramName()!=null) {
+                    lonlat2pixline.updateIFileInfo(getLonLattoPixelsIFileName(processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()).getValue().trim(), processorModel.getProgramName()));
+                }
+            }
+        });
+        if (processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()).getValue().trim().length() > 0) {
+            lonlat2pixline.updateIFileInfo(processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()).getValue().trim());
+        }
     }
 
     private void initStaticPanels() {
@@ -42,22 +67,8 @@ public class ExtractorUI extends ProgramUIFactory {
         newsPanel.setName("newsPanel");
     }
 
-    private void computePixelsFromLonLat() {
-
-        LonLat2PixlineConverter lonLat2PixlineConverter = new LonLat2PixlineConverter(lonlat2pixline);
-        if (lonLat2PixlineConverter.computePixelsFromLonLat()) {
-            processorModel.updateParamInfo(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME, lonLat2PixlineConverter.getSpixl());
-            processorModel.updateParamInfo(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME, lonLat2PixlineConverter.getEpixl());
-            processorModel.updateParamInfo(LonLat2PixlineConverter.START_LINE_PARAM_NAME, lonLat2PixlineConverter.getSline());
-            processorModel.updateParamInfo(LonLat2PixlineConverter.END_LINE_PARAM_NAME, lonLat2PixlineConverter.getEline());
-        }
-    }
-
     @Override
     public JPanel getParamPanel() {
-
-        initLonLatProcessor();
-        initStaticPanels();
 
         SeadasFileUtils.debug("updating ofile change listener ...  processorModel   " + processorModel.getPrimaryOutputFileOptionName());
         paramUIFactory = new ExtractorParamUI(processorModel);
@@ -76,33 +87,7 @@ public class ExtractorUI extends ProgramUIFactory {
         return paramPanel;
     }
 
-    private void initLonLatProcessor() {
-        lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml");
-        lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                computePixelsFromLonLat();
-            }
-        });
 
-        lonlat2pixline.addPropertyChangeListener("all_lon_lat_params_complete", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                computePixelsFromLonLat();
-            }
-        });
-        processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                if (processorModel.getProgramName()!=null) {
-                    lonlat2pixline.updateIFileInfo(getLonLattoPixelsIFileName(processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()).getValue().trim(), processorModel.getProgramName()));
-                }
-            }
-        });
-        if (processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()).getValue().trim().length() > 0) {
-            lonlat2pixline.updateIFileInfo(processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()).getValue().trim());
-        }
-    }
 
     private String getLonLattoPixelsIFileName(String ifileName, String programName) {
 
@@ -120,16 +105,5 @@ public class ExtractorUI extends ProgramUIFactory {
         return ifileName;
     }
 
-    private void updateAllParamsCompleteFlag() {
-        allParamsComplete = true;
-        for (boolean value : paramCounter.values()) {
-            allParamsComplete = value && allParamsComplete;
-        }
-        if (allParamsComplete) {
-            computePixelsFromLonLat();
-        }
-    }
-
-    boolean allParamsComplete;
     HashMap<String, Boolean> paramCounter;
 }

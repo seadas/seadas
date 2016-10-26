@@ -74,7 +74,9 @@ public class OCSSWRunner {
         try {
             process = processBuilder.start();
             if (process != null) {
-                int exitValue = process.waitFor();
+                SeadasFileUtils.debug("Running the program " + cmdArray.toString());
+//                int exitValue = process.waitFor();
+//                SeadasFileUtils.debug("process exit value = " + exitValue);
             }
         } catch (Exception e) {
             //VisatApp.getApp().showErrorDialog("OCSSW execution error from SeaDAS application! \n" + cmdArray[3] + "  program is not executed correctly.");
