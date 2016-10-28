@@ -29,11 +29,12 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private ParamUIFactory paramUIFactory;
 
+    private boolean initiliazed = false;
+
     public ExtractorUI(String programName, String xmlFileName) {
         super(programName, xmlFileName);
         paramCounter = new HashMap();
-        initLonLatProcessor();
-        initStaticPanels();
+        initiliazed = true;
     }
 
     private void initLonLatProcessor() {
@@ -69,6 +70,11 @@ public class ExtractorUI extends ProgramUIFactory {
 
     @Override
     public JPanel getParamPanel() {
+
+        if (!initiliazed) {
+            initLonLatProcessor();
+            initStaticPanels();
+        }
 
         SeadasFileUtils.debug("updating ofile change listener ...  processorModel   " + processorModel.getPrimaryOutputFileOptionName());
         paramUIFactory = new ExtractorParamUI(processorModel);
