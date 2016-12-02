@@ -74,7 +74,6 @@
         <module>seadas-watermask-operator</module>
         <module>seadas-contour-operator</module>
         <module>seadas-bathymetry-operator</module>
-        <module>seadas-ocsswrest</module>
         <!--<module>os-rgbwrite</module>-->
         <!--<module>../../beam/beam-aatsr-sst</module>-->
         <module>../beam/beam-alos-reader</module>
