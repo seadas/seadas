@@ -1,0 +1,22 @@
+Nov 29, 2016 3:42:52 PM gov.nasa.gsfc.seadas.processing.core.ParamUtils getOptionStatus
+FINE: tag name: hasParFile
+Nov 29, 2016 3:42:52 PM gov.nasa.gsfc.seadas.processing.core.ParamUtils getOptionStatus
+FINE: hasParFile value = false false
+Nov 29, 2016 3:42:52 PM gov.nasa.gsfc.seadas.processing.core.ParamUtils getProgressRegex
+WARNING: progress meter regular expression is not specified in the xml file.
+Nov 29, 2016 3:42:52 PM gov.nasa.gsfc.seadas.processing.core.ParamUtils getOptionStatus
+WARNING: hasGeoFile exist: false
+Nov 29, 2016 3:42:53 PM gov.nasa.gsfc.seadas.processing.general.SeadasFileSelector$RegexFileFilter <init>
+INFO: regular expression: null
+Nov 29, 2016 3:42:53 PM gov.nasa.gsfc.seadas.processing.general.FileSelector$RegexFileFilter <init>
+INFO: regular expression: null
+Nov 29, 2016 3:42:53 PM gov.nasa.gsfc.seadas.processing.core.ParamUtils getOptionStatus
+FINE: tag name: hasParFile
+Nov 29, 2016 3:42:53 PM gov.nasa.gsfc.seadas.processing.core.ParamUtils getOptionStatus
+FINE: hasParFile value = false false
+Nov 29, 2016 3:42:53 PM gov.nasa.gsfc.seadas.processing.core.ParamUtils getProgressRegex
+WARNING: progress meter regular expression is not specified in the xml file.
+Nov 29, 2016 3:42:53 PM gov.nasa.gsfc.seadas.processing.core.ParamUtils getOptionStatus
+WARNING: hasGeoFile exist: false
+Nov 30, 2016 1:15:54 PM com.bc.ceres.core.runtime.internal.RuntimeImpl stop
+INFO: Stopping runtime for context [seadas]...

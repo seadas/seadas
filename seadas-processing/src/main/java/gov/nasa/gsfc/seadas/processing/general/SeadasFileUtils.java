@@ -509,7 +509,7 @@ public class SeadasFileUtils {
         String[] cmdArray = new String[3];
         cmdArray[0] = "cp";
         cmdArray[1] = sourceFile;
-        cmdArray[2] = targetDir;
+        cmdArray[2] = targetDir + System.getProperty("file.separator") + ".";
         Process p = OCSSWRunner.executeLocal(cmdArray, new File(targetDir));
         if (p.exitValue() == 0) {
             return targetDir + sourceFile.substring(sourceFile.lastIndexOf(System.getProperty("file.separator")));
