@@ -126,15 +126,15 @@ public class SeadasFileUtils {
         cmdArray[1] = "--ocsswroot";
         cmdArray[2] = OCSSW.getOcsswEnv();
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-        cmdArray[4] = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL) ? ifileName : getIfileNameforRemoteServer(ifileName);
+        cmdArray[4] = ifileName;
         cmdArray[5] = programName;
-        //cmdArray[6] = "--suite="+suite;
 
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
 
         if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
             return retrieveOFileNameLocal(cmdArray, ifileDir);
         } else {
+            cmdArray[4] = getIfileNameforRemoteServer(SeadasFileUtils.copyFile(ifileName, OCSSW.getOCSSWClientSharedDirName()));
             return retrieveOFileNameRemote(cmdArray);
         }
     }
@@ -511,6 +511,11 @@ public class SeadasFileUtils {
         cmdArray[1] = sourceFile;
         cmdArray[2] = targetDir + System.getProperty("file.separator") + ".";
         Process p = OCSSWRunner.executeLocal(cmdArray, new File(targetDir));
+        try{
+            p.waitFor();
+        }catch(InterruptedException ie){
+            System.out.println("Process interrupted!");
+        }
         if (p.exitValue() == 0) {
             return targetDir + sourceFile.substring(sourceFile.lastIndexOf(System.getProperty("file.separator")));
         } else {
