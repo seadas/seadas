@@ -87,8 +87,12 @@ public class OCSSWRunner {
 
     public static Process executeRemote(String[] cmdArray) {
 
+        System.out.println("command array size: " + cmdArray.length);
+        //The following statement will eliminate null array elements
+        cmdArray = Arrays.stream(cmdArray).filter(s -> (s != null && s.length() > 0)).toArray(String[]::new);
+        System.out.println("command array size: " + cmdArray.length);
         SeadasProcess process = new SeadasProcess();
-        ArrayList<String> cmdArrayList = (ArrayList<String>) Arrays.asList(cmdArray);
+        ArrayList<String> cmdArrayList = new ArrayList<String>(Arrays.asList(cmdArray));
 
         JsonArrayBuilder jab = Json.createArrayBuilder();
         for (String s : cmdArrayList) {

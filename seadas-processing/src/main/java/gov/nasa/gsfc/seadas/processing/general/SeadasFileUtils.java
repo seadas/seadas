@@ -250,6 +250,14 @@ public class SeadasFileUtils {
         return cmdArray;
     }
 
+    private String getIfileNameforCmdArray(String ifileName){
+        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)){
+            return ifileName;
+        } else {
+            return ifileName;
+        }
+    }
+
     private static String getNextLevelFileName(String ifileName, String[] cmdArray) {
 
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
@@ -388,29 +396,6 @@ public class SeadasFileUtils {
         System.out.println(getCurrentDate("K:mm a,z"));
         System.out.println(getCurrentDate("yyyy.MMMMM.dd GGG hh:mm aaa"));
     }
-
-
-//    public static String expandEnvironment(String string) {
-//
-//
-//        //     Pattern pattern = Pattern.compile("(.+)\\$\\{{0,1}([A-Za-z0-9_]+)\\}{0,1}(.+)");
-//        Pattern pattern = Pattern.compile("([.]*)\\$\\{{0,1}([A-Za-z0-9_]+)\\}{0,1}([.]*)");
-//        Matcher matcher = pattern.matcher(string);
-//
-//
-//        if (matcher.find()) {
-//            String s0 = matcher.group(0);
-//            String s1 = matcher.group(1);
-//            String s2 = matcher.group(2);
-//            String s3 = s2;
-//        }
-//
-//
-//        return string;
-//    }
-//
-//
-
 
     public static String expandEnvironment(String string1) {
 

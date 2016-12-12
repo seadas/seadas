@@ -78,6 +78,7 @@
             <type>string</type>
             <description>input L2 file name or file with a list of files names</description>
             <source>default</source>
+            <usedAs>option</usedAs>
         </option>
         <option type="ifile">
             <name>geofile</name>
@@ -85,6 +86,7 @@
             <type>string</type>
             <description>input L1 geolocation file name (MODIS only)</description>
             <source>default</source>
+            <usedAs>option</usedAs>
         </option>
         <option type="int">
             <name>resolution</name>
@@ -112,6 +114,7 @@
                     <description>standard ocean 1km processing</description>
                 </validValue>
             </validValues>
+            <usedAs>option</usedAs>
         </option>
         <option type="ofile">
             <name>ofile</name>
@@ -120,6 +123,7 @@
             <default>output</default>
             <description>(default=output) = output L2 file #1 name, output vicarious L1B for inverse mode</description>
             <source>default</source>
+            <usedAs>option</usedAs>
         </option>
         <!--<option type="ofile">-->
             <!--<name>ofile[#]</name>-->
@@ -145,6 +149,7 @@
             <description>product suite string for loading suite-specific defaults
             </description>
             <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
+            <usedAs>option</usedAs>
         </option>
 
         <option type="float">
@@ -155,6 +160,7 @@
             <description>minimum reflectance for scaling
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
         </option>
         <option type="float">
             <name>datamax</name>
@@ -164,6 +170,7 @@
             <description>maximum reflectance for scaling
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
         </option>
         <option type="int">
             <name>stype</name>
@@ -181,6 +188,7 @@
                 <value>1</value>
                 <description>linear</description>
             </validValue>
+            <usedAs>option</usedAs>
         </option>
         <option type="float">
             <name>east</name>
@@ -206,6 +214,7 @@
             <default>-999</default>
             <description>north boundary</description>
             <source>default</source>
+            <usedAs>option</usedAs>
         </option>
         <option type="float">
             <name>south</name>
@@ -222,6 +231,7 @@
             <default>600</default>
             <description>width of the output image</description>
             <source>default</source>
+            <usedAs>option</usedAs>
         </option>
         <option type="float">
             <name>threshold</name>
@@ -231,6 +241,7 @@
             <description>threshold for the number of good pixels before an image is produced
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
         </option>
         <option type="int">
             <name>rgb</name>
@@ -238,31 +249,8 @@
             <type>int</type>
             <default>[1,1,1]</default>
             <description>bands to use for red, green and blue</description>
+            <usedAs>option</usedAs>
         </option>
-        <!--<option type="string">-->
-        <!--<name>outmode</name>-->
-        <!--<value></value>-->
-        <!--<type>string</type>-->
-        <!--<default>ppm</default>-->
-        <!--<description>format of the output file 0: PPM 1: PNG 2: GeoTIFF-->
-        <!--</description>-->
-        <!--<source>default</source>-->
-        <!--<validValues>-->
-        <!--<validValue>-->
-        <!--<value>ppm</value>-->
-        <!--<description>PPM image file (alias 0)</description>-->
-        <!--</validValue>-->
-        <!--<validValue>-->
-        <!--<value>png</value>-->
-        <!--<description>PNG color or grayscale image file (alias 2)</description>-->
-        <!--</validValue>-->
-        <!--<validValue>-->
-        <!--<value>tiff</value>-->
-        <!--<description>GeoTIFF color or grayscale geo tiff image file (alias 2)</description>-->
-        <!--</validValue>-->
-        <!--</validValues>-->
-        <!--</option>-->
-
         <option type="string">
             <name>oformat</name>
             <value>png</value>
@@ -283,6 +271,7 @@
                 </validValue>
             </validValues>
             <description>output file format</description>
+            <usedAs>option</usedAs>
         </option>
         <option type="boolean">
             <name>atmocor</name>
@@ -290,6 +279,7 @@
             <type>boolean</type>
             <default>true</default>
             <description>toggle atmospheric correction</description>
+            <usedAs>option</usedAs>
         </option>
 
     </options>
