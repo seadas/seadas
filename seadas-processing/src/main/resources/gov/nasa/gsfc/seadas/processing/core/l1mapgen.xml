@@ -174,7 +174,7 @@
         </option>
         <option type="int">
             <name>stype</name>
-            <value></value>
+            <value>0</value>
             <type>int</type>
             <default>0</default>
             <description>scaling type 0: log 1: linear
@@ -275,7 +275,7 @@
         </option>
         <option type="boolean">
             <name>atmocor</name>
-            <value></value>
+            <value>true</value>
             <type>boolean</type>
             <default>true</default>
             <description>toggle atmospheric correction</description>
