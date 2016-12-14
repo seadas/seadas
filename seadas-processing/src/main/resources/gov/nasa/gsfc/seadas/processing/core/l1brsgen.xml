@@ -192,7 +192,7 @@
         </option>
         <option type="boolean">
             <name>atmocor</name>
-            <value></value>
+            <value>true</value>
             <type>boolean</type>
             <default>true</default>
             <description>toggle atmospheric correction</description>
