@@ -10,78 +10,13 @@
         </primaryOptions>
     </programMetaData>
     <options>
-        <!--<option type="help">-->
-            <!--<name>-help</name>-->
-            <!--<value>false</value>-->
-            <!--<type>bool</type>-->
-            <!--<default>false</default>-->
-            <!--<description>print usage information</description>-->
-            <!--<source>default</source>-->
-            <!--<alias>-h</alias>-->
-            <!--<alias>&#45;&#45;help</alias>-->
-            <!--<order>0</order>-->
-        <!--</option>-->
-        <!--<option type="help">-->
-            <!--<name>-version</name>-->
-            <!--<value>false</value>-->
-            <!--<type>bool</type>-->
-            <!--<default>false</default>-->
-            <!--<description>print the version-->
-                <!--information-->
-            <!--</description>-->
-            <!--<source>default</source>-->
-            <!--<alias>&#45;&#45;version</alias>-->
-            <!--<order>1</order>-->
-        <!--</option>-->
-        <!--<option type="help">-->
-            <!--<name>-dump_options</name>-->
-            <!--<value>false</value>-->
-            <!--<type>bool</type>-->
-            <!--<default>false</default>-->
-            <!--<description>print-->
-                <!--information about each option-->
-            <!--</description>-->
-            <!--<source>default</source>-->
-            <!--<alias>&#45;&#45;dump_options</alias>-->
-            <!--<order>2</order>-->
-        <!--</option>-->
-        <!--<option type="help">-->
-            <!--<name>-dump_options_paramfile</name>-->
-            <!--<value/>-->
-            <!--<type>string</type>-->
-            <!--<description>print-->
-                <!--information about each option to paramfile-->
-            <!--</description>-->
-            <!--<source>default</source>-->
-            <!--<alias>&#45;&#45;dump_options_paramfile</alias>-->
-            <!--<order>3</order>-->
-        <!--</option>-->
-        <!--<option type="help">-->
-            <!--<name>-dump_options_xmlfile</name>-->
-            <!--<value>l2mapgen.xml</value>-->
-            <!--<type>string</type>-->
-            <!--<description>print-->
-                <!--information about each option to XML file-->
-            <!--</description>-->
-            <!--<source>command line</source>-->
-            <!--<alias>&#45;&#45;dump_options_xmlfile</alias>-->
-            <!--<order>4</order>-->
-        <!--</option>-->
-        <!--<option type="help">-->
-            <!--<name>par</name>-->
-            <!--<value/>-->
-            <!--<type>string</type>-->
-            <!--<description>input parameter file</description>-->
-            <!--<source>default</source>-->
-            <!--<order>5</order>-->
-        <!--</option>-->
         <option type="ifile">
             <name>ifile</name>
             <value/>
             <type>string</type>
             <description>input L2 file name or file with a list of files names</description>
             <source>default</source>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>6</order>
         </option>
         <option type="ofile">
@@ -90,7 +25,7 @@
             <type>string</type>
             <description>output map filename (NULL=STDOUT)</description>
             <source>default</source>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>7</order>
         </option>
         <option type="string">
@@ -99,7 +34,7 @@
             <type>string</type>
             <description>product name</description>
             <source>default</source>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>8</order>
         </option>
         <option type="boolean">
@@ -109,7 +44,7 @@
             <default>false</default>
             <description>apply color palette, false = grayscale</description>
             <source>default</source>
-            <usedAs>flag</usedAs>
+            <usedAs>option</usedAs>
             <order>9</order>
         </option>
         <option type="ifile">
@@ -119,7 +54,7 @@
             <default></default>
             <description>palette filename</description>
             <source>default</source>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>10</order>
         </option>
         <option type="dir">
@@ -128,8 +63,8 @@
             <type>string</type>
             <default>$OCDATAROOT/common/palette</default>
             <description>palette directory</description>
-            <source>/Users/Shared/ocssw/run/data/common/l2mapgen_defaults.par</source>
-            <usedAs>argument</usedAs>
+            <source>$OCDATAROOT/common/l2mapgen_defaults.par</source>
+            <usedAs>option</usedAs>
             <order>11</order>
         </option>
         <option type="ifile">
@@ -138,8 +73,8 @@
             <type>string</type>
             <default>$OCDATAROOT/common/smigen_product_table.dat</default>
             <description>product table</description>
-            <source>/Users/Shared/ocssw/run/data/common/l2mapgen_defaults.par</source>
-            <usedAs>argument</usedAs>
+            <source>$OCDATAROOT/common/l2mapgen_defaults.par</source>
+            <usedAs>option</usedAs>
             <order>12</order>
         </option>
         <option type="string">
@@ -160,16 +95,17 @@
                 only for SST and only if qual_sst or qual_sst4 SDS exist
             </description>
             <source>default</source>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>14</order>
         </option>
         <option type="boolean">
             <name>mask</name>
             <value></value>
-            <type>bool</type>
+            <type>boolean</type>
             <default>no</default>
             <description>apply mask to land, cloud and glint (see below)</description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>15</order>
         </option>
         <option type="float">
@@ -181,6 +117,7 @@
                 (default: see SMI product table)
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>16</order>
         </option>
         <option type="float">
@@ -192,6 +129,7 @@
                 (default: see SMI product table)
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>17</order>
         </option>
         <option type="int">
@@ -203,6 +141,7 @@
                 (default: see SMI product table)
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>18</order>
         </option>
         <option type="float">
@@ -214,6 +153,7 @@
                 (default=scene(s) Easternmost Longitude)
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>19</order>
         </option>
         <option type="float">
@@ -225,6 +165,7 @@
                 (default=scene(s) Westernmost Longitude)
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>20</order>
         </option>
         <option type="float">
@@ -236,6 +177,7 @@
                 (default=scene(s) Northernmost Longitude)
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>21</order>
         </option>
         <option type="float">
@@ -247,6 +189,7 @@
                 (default=scene(s) Southernmost Longitude)
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>22</order>
         </option>
         <option type="int">
@@ -256,6 +199,7 @@
             <default>800</default>
             <description>width of the output image</description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>23</order>
         </option>
         <option type="float">
@@ -267,6 +211,7 @@
                 that must receive valid pixel data before an image is generated
             </description>
             <source>default</source>
+            <usedAs>option</usedAs>
             <order>24</order>
         </option>
         <option type="string">
@@ -288,6 +233,7 @@
                 <value>tiff</value>
                 <description>TIFF color or grayscale geo tiff image file (alias 3)</description>
             </validValue>
+            <usedAs>option</usedAs>
             <order>25</order>
         </option>
         <option type="help">
