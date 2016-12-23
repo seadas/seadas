@@ -47,7 +47,7 @@ public class ParamInfo implements Comparable, Cloneable {
     private boolean isBit = false;
     private int order = 0;
     private String validationComment = null;
-    private String usedAs = USED_IN_COMMAND_AS_ARGUMENT;
+    private String usedAs = USED_IN_COMMAND_AS_OPTION;
 
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
 
