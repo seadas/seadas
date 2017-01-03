@@ -1,7 +1,10 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import gov.nasa.gsfc.seadas.processing.general.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
+import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -19,7 +22,6 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
         oFilesOriginalLocations = new HashMap<>();
     }
 
-
     /**
      * this method returns a command array for execution.
      * the array is constructed using the paramList data and input/output files.
@@ -29,6 +31,27 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
      * @return
      */
     public String[] getProgramCommandArray() {
+
+        String[] cmdArrayPrefix = processorModel.getCmdArrayPrefix();
+        String[] cmdArraySuffix = processorModel.getCmdArraySuffix();
+        String[] cmdArrayForParams = getCmdArrayParam();
+
+        //The final command array is the concatination of cmdArrayPrefix, cmdArrayForParams, and cmdArraySuffix
+        cmdArray = SeadasArrayUtils.concatAll(cmdArrayPrefix, cmdArrayForParams, cmdArraySuffix);
+
+        // get rid of the null strings
+        ArrayList<String> cmdList = new ArrayList<String>();
+        for (String s : cmdArray) {
+            if (s != null) {
+                cmdList.add(s);
+            }
+        }
+        cmdArray = cmdList.toArray(new String[cmdList.size()]);
+
+        return cmdArray;
+    }
+
+    public String[] getCmdArrayParam() {
 
         String[] cmdArrayParam = new String[paramList.getParamArray().size()];
 
