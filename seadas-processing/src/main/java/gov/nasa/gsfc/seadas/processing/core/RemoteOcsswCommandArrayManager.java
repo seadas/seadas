@@ -53,6 +53,8 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
 
     public String[] getCmdArrayParam() {
 
+        paramList = processorModel.getParamList();
+
         String[] cmdArrayParam = new String[paramList.getParamArray().size()];
 
         Iterator itr = paramList.getParamArray().iterator();
@@ -77,8 +79,6 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
                     //if the file is an input file, copy it to the shared folder
                     if (optionType.equals(ParamInfo.Type.IFILE)) {
                         getiFilesOriginalLocations().put(fileName, dirPath);
-                        //todo: this should be revisited! Find_next_level_name copies the ifile into the shared directory.
-                        //SeadasFileUtils.copyFile(optionValue, OCSSW.getOCSSWClientSharedDirName());
                     } else if (optionType.equals(ParamInfo.Type.IFILE)) {
                         getoFilesOriginalLocations().put(fileName, dirPath);
                     }
