@@ -70,13 +70,11 @@ public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
         ParamInfo option;
         int optionOrder;
         String optionValue;
-        ParamInfo.Type optionType;
 
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
             optionOrder = option.getOrder();
             optionValue = option.getValue();
-            optionType = option.getType();
             if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
                 if (option.getValue() != null && option.getValue().length() > 0) {
                     cmdArrayParam[optionOrder] = optionValue;
