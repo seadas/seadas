@@ -358,56 +358,19 @@ public class SeadasFileSelector {
             }
         }
 
+        /**
+         * creates a text file that lists file names to be binned.
+         * This method is only used by l2bin and l3bin. As such, input files should L2 file type.
+         *
+         * @param window
+         */
         private void handleMultipFileSelection(Window window) {
             File[] tmpFiles = fileChooser.getSelectedFiles();
-            ArrayList<File> tmpArrayList = new ArrayList<File>();
-            //Product product = null;
-            //Product sampleProduct = null;
-            boolean firstTime = true;
-            for (File file : tmpFiles) {
-                try {
-                    Product product = ProductIO.readProduct(file);
-                    if (product == null) {
-                        if (file.canRead()) {
-                            product = new Product(file.getName(), "DummyType", 10, 10);
-                            product.setFileLocation(file);
-                            product.setDescription(file.getAbsolutePath());
-                        } else {
-                            throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
-                        }
-                    } else {
-                        if (firstTime) {
-                            firstTime = true;
-                            sampleProductForMultiIfiles = product;
-                        }
-                    }
-
-                    if (productFilter.accept(product) && regexFileFilter.accept(file)) {
-                        tmpArrayList.add(file);
-                    } else {
-                        final String message = String.format("Product [%s] is not a valid source.",
-                                product.getFileLocation().getCanonicalPath());
-                        handleError(window, message);
-                        SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
-                        product.dispose();
-                    }
-                } catch (IOException e) {
-
-                    handleError(window, e.getMessage());
-                } catch (Exception e) {
-                    if (sampleProductForMultiIfiles != null) {
-                        sampleProductForMultiIfiles.dispose();
-                    }
-                    handleError(window, e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-            setSelectedMultiFileList(tmpArrayList);
+            setSelectedMultiFileList(tmpFiles);
         }
 
-        public void setSelectedMultiFileList(ArrayList<File> tmpArrayList) {
-            files = new File[tmpArrayList.size()];
-            tmpArrayList.toArray(files);
+        public void setSelectedMultiFileList(File[] selectedMultiFileList) {
+            files = selectedMultiFileList;
 
             File fileListFile = new File(currentDirectory, "_inputFiles.lst");
 
