@@ -1139,7 +1139,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
                     String newResolutionValue = (String) propertyChangeEvent.getNewValue();
-                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + getParamValue("product"), "--oformat=" + getParamValue("oformat")};
+                    String suite = getParamValue("product");
+                    if (suite==null || suite.trim().length()==0) {
+                        suite = "all";
+                    }
+                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite, "--oformat=" + getParamValue("oformat")};
                     String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
                     updateOFileInfo(ofileName);
                 }
@@ -1150,7 +1154,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     String oldFormatValue = (String) propertyChangeEvent.getOldValue();
                     String newFormatValue = (String) propertyChangeEvent.getNewValue();
-                    String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + getParamValue("product"), "--oformat=" + newFormatValue};
+                    String suite = getParamValue("product");
+                    if (suite==null || suite.trim().length()==0) {
+                        suite = "all";
+                    }
+                    String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite, "--oformat=" + newFormatValue};
                     String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
                     updateOFileInfo(ofileName);
                 }
@@ -1160,7 +1168,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         @Override
         String findNextLevelFileName(String ifileName) {
-            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + getParamValue("product"), "--oformat=" + getParamValue("oformat")};
+            String suite = getParamValue("product");
+            if (suite==null || suite.trim().length()==0) {
+                suite = "all";
+            }
+            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite, "--oformat=" + getParamValue("oformat")};
             return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
         }
     }
