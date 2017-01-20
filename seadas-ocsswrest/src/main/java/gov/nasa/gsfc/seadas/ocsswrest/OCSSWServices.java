@@ -55,7 +55,8 @@ public class OCSSWServices {
     @Path("/ocsswInfo")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getOcsswInstallStatus() {
-        final File ocsswScriptsDir = new File(OCSSWServerModel.OCSSW_INSTALL_DIR + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
+        //final File ocsswScriptsDir = new File(OCSSWServerModel.OCSSW_INSTALL_DIR + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
+        final File ocsswScriptsDir = new File(OCSSWServerModel.OCSSW_INSTALL_DIR  + System.getProperty("file.separator") + "scripts");
         System.out.println("ocsswExists");
         JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", ocsswScriptsDir.isDirectory()).build();
         return ocsswInstallStatus;
