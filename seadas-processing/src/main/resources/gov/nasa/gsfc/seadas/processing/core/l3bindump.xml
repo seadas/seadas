@@ -93,70 +93,70 @@
         <option type="string">
             <name>l3bprod</name>
             <value></value>
-            <default>Unspecified</default>
+            <default></default>
             <source>default</source>
             <description>binned product to extract</description>
         </option>
         <option type="int">
             <name>bin_number</name>
             <value></value>
-            <default>-1</default>
+            <default></default>
             <source>default</source>
             <description>bin number</description>
         </option>
         <option type="float">
             <name>north</name>
             <value></value>
-            <default>-999</default>
+            <default></default>
             <source>default</source>
             <description>north boundary</description>
         </option>
         <option type="float">
             <name>south</name>
             <value></value>
-            <default>-999</default>
+            <default></default>
             <source>default</source>
             <description>south boundary</description>
         </option>
         <option type="float">
             <name>east</name>
             <value></value>
-            <default>-999</default>
+            <default></default>
             <source>default</source>
             <description>east boundary</description>
         </option>
         <option type="float">
             <name>west</name>
             <value></value>
-            <default>-999</default>
+            <default></default>
             <source>default</source>
             <description>west boundary</description>
         </option>
         <option type="float">
             <name>lat</name>
             <value></value>
-            <default>-999</default>
+            <default></default>
             <source>default</source>
             <description>latitude</description>
         </option>
         <option type="float">
             <name>lon</name>
             <value></value>
-            <default>-999</default>
+            <default></default>
             <source>default</source>
             <description>longitude</description>
         </option>
         <option type="float">
             <name>radius</name>
             <value></value>
-            <default>-999</default>
+            <default></default>
             <source>default</source>
             <description>radius</description>
         </option>
         <option type="boolean">
             <name>verbose</name>
-            <value>false</value>
-            <default>false</default>
+            <value></value>
+            <default></default>
             <source>default</source>
             <description>verbose output</description>
         </option>
