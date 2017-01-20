@@ -31,7 +31,7 @@ public class OCSSWServerModel {
     public static String OCSSW_INSTALL_DIR = System.getProperty("user.home") + "/ocssw";
     public static String OCSSW_INSTALLER_FILE_LOCATION = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
-    public static final String missionDataDir = OCSSW_INSTALL_DIR + System.getProperty("file.separator") + "run"
+    public static final String missionDataDir = OCSSW_INSTALL_DIR
             + System.getProperty("file.separator") + "data"
             + System.getProperty("file.separator");
 
@@ -65,7 +65,7 @@ public class OCSSWServerModel {
         // the user needs to provide "seadas.ocssw.root" value in seadas.config
         // or set OCSSWROOT in the system env.
         ocsswRoot = new File(OCSSW_INSTALL_DIR);
-        final File dir = new File(OCSSW_INSTALL_DIR + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
+        final File dir = new File(OCSSW_INSTALL_DIR  + System.getProperty("file.separator") + "scripts");
         if (dir.isDirectory()) {
             ocsswExist = true;
             return;
@@ -75,7 +75,7 @@ public class OCSSWServerModel {
     public static String getOcsswScriptPath() {
         final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
-            return ocsswRoot.getPath() + "/run/scripts/ocssw_runner";
+            return ocsswRoot.getPath() + "/scripts/ocssw_runner";
         } else {
             return null;
         }
