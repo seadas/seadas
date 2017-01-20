@@ -79,7 +79,8 @@ public class OCSSW {
                 // the user needs to provide "seadas.ocssw.root" value in seadas.config
                 // or set OCSSWROOT in the system env.
                 ocsswRoot = dirPath;
-                final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
+                //final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
+                final File dir = new File(dirPath  + System.getProperty("file.separator") + "scripts");
                 if (dir.isDirectory()) {
                     ocsswExist = true;
                     return;
@@ -101,14 +102,16 @@ public class OCSSW {
 
     public static String getOcsswDataRoot() throws IOException {
         //return new File(new File(getOcsswRoot(), "run"), "data");
-        return ocsswRoot + "/run/data/";
+        //return ocsswRoot + "/run/data/";
+        return ocsswRoot + "/data/";
     }
 
 
     public static String getOcsswScriptPath() {
         //final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
-            return ocsswRoot + "/run/scripts/ocssw_runner";
+            //return ocsswRoot + "/run/scripts/ocssw_runner";
+            return ocsswRoot + "/scripts/ocssw_runner";
         } else {
             return null;
         }

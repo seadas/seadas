@@ -58,7 +58,7 @@ public class OCSSWRunner {
 
 
     public static Process executeLocal(String[] cmdArray, File ifileDir) {
-        //System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
+        System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
         Map<String, String> env = processBuilder.environment();
         if (!env.containsKey(OCSSW_ROOT_VAR) && OCSSW.isOCSSWExist()) {

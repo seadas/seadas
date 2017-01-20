@@ -147,7 +147,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             if (!OCSSW.isOCSSWExist()) {
                 getCmdArrayPrefix()[0] = OCSSW.TMP_OCSSW_INSTALLER;
             } else {
-                getCmdArrayPrefix()[0] = OCSSW.getOcsswEnv() + "/run/scripts/install_ocssw.py";
+                getCmdArrayPrefix()[0] = OCSSW.getOcsswEnv() + "/scripts/install_ocssw.py";
             }
         } else {
             cmdArrayPrefix = new String[4];
@@ -1101,7 +1101,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
                     String newResolutionValue = (String) propertyChangeEvent.getNewValue();
-                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + getParamValue("prod")};
+                    String suite = getParamValue("prod");
+                    if (suite==null || suite.trim().length()==0) {
+                        suite = "all";
+                    }
+                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite};
                     String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
                     updateOFileInfo(ofileName);
                 }
@@ -1110,7 +1114,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         @Override
         String findNextLevelFileName(String ifileName) {
-            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + getParamValue("prod")};
+            String suite = getParamValue("prod");
+            if (suite==null || suite.trim().length()==0) {
+                suite = "all";
+            }
+            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite};
             return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
         }
     }
