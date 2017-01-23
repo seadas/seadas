@@ -122,7 +122,7 @@ public class SeadasFileUtils {
 // todo Add suite, also check calling program the make sure ProcessorModel call is right
 
         String[] cmdArray = new String[6];
-        cmdArray[0] = OCSSW.getOcsswScriptPath();
+        cmdArray[0] = OCSSW.getOcsswRunnerScriptPath();
         cmdArray[1] = "--ocsswroot";
         cmdArray[2] = OCSSW.getOcsswEnv();
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
@@ -240,7 +240,7 @@ public class SeadasFileUtils {
 
     private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
         String[] cmdArray = new String[6];
-        cmdArray[0] = OCSSW.getOcsswScriptPath();
+        cmdArray[0] = OCSSW.getOcsswRunnerScriptPath();
         cmdArray[1] = "--ocsswroot";
         cmdArray[2] = OCSSW.getOcsswEnv();
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;

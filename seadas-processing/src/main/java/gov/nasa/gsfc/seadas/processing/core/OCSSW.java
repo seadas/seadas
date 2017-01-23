@@ -21,8 +21,8 @@ import java.nio.channels.ReadableByteChannel;
  */
 public class OCSSW {
 
-    public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
-
+    public static final String _OCSSWROOT_ENVVAR = "OCSSWROOT";
+    public static final String _OCDATAROOT_ENVVAR = "OCDATAROOT";
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
     public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
     public static final String SEADASHOME_PROPERTY = "home";
@@ -31,8 +31,11 @@ public class OCSSW {
     public static final String OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY = "ocssw.sharedDir";
 
     public static String OCSSW_INSTALLER = "install_ocssw.py";
+    public static String OCSSW_RUNNER = "ocssw_runner";
     public static String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
     public static String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
+
+    public static String _OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";
 
     private static boolean ocsswExist = false;
     private static String ocsswRoot = null;
@@ -68,7 +71,7 @@ public class OCSSW {
 
         //ocssw installed local
         if (ocsswLocation == null || ocsswLocation.trim().equals(SEADAS_OCSSW_LOCATION_LOCAL)) {
-            String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
+            String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(_OCSSWROOT_ENVVAR));
 
             if (dirPath == null) {
                 dirPath = RuntimeContext.getConfig().getContextProperty(SEADASHOME_PROPERTY, System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
@@ -80,7 +83,7 @@ public class OCSSW {
                 // or set OCSSWROOT in the system env.
                 ocsswRoot = dirPath;
                 //final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
-                final File dir = new File(dirPath  + System.getProperty("file.separator") + "scripts");
+                final File dir = new File(dirPath  + _OCSSW_SCRIPTS_DIR_SUFFIX);
                 if (dir.isDirectory()) {
                     ocsswExist = true;
                     return;
@@ -103,15 +106,24 @@ public class OCSSW {
     public static String getOcsswDataRoot() throws IOException {
         //return new File(new File(getOcsswRoot(), "run"), "data");
         //return ocsswRoot + "/run/data/";
-        return ocsswRoot + "/data/";
+        return RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(_OCDATAROOT_ENVVAR));
     }
 
 
-    public static String getOcsswScriptPath() {
+    public static String getOcsswRunnerScriptPath() {
         //final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
             //return ocsswRoot + "/run/scripts/ocssw_runner";
-            return ocsswRoot + "/scripts/ocssw_runner";
+            return ocsswRoot + System.getProperty("file.separator") + _OCSSW_SCRIPTS_DIR_SUFFIX + System.getProperty("file.separator") + OCSSW_RUNNER;
+        } else {
+            return null;
+        }
+
+    }
+
+    public static String getOcsswInstallerScriptPath() {
+        if (ocsswRoot != null) {
+            return ocsswRoot + System.getProperty("file.separator") + _OCSSW_SCRIPTS_DIR_SUFFIX + System.getProperty("file.separator") +OCSSW_INSTALLER;
         } else {
             return null;
         }

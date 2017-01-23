@@ -39,7 +39,7 @@ public class LUTManager {
     }
 
     private void updateLUT() {
-        String[] lutCmdArray = {OCSSW.getOcsswScriptPath(), UPDATE_LUTS_PROCESSOR_NAME, missionName};
+        String[] lutCmdArray = {OCSSW.getOcsswRunnerScriptPath(), UPDATE_LUTS_PROCESSOR_NAME, missionName};
         Process process = OCSSWRunner.execute(lutCmdArray);
         try {
             int exitValue = process.waitFor();

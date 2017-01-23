@@ -1,13 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.general.*;
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-import jxl.write.*;
-import jxl.write.Number;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 import ucar.nc2.NetcdfFile;
@@ -147,11 +140,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             if (!OCSSW.isOCSSWExist()) {
                 getCmdArrayPrefix()[0] = OCSSW.TMP_OCSSW_INSTALLER;
             } else {
-                getCmdArrayPrefix()[0] = OCSSW.getOcsswEnv() + "/scripts/install_ocssw.py";
+                getCmdArrayPrefix()[0] = OCSSW.getOcsswInstallerScriptPath();
             }
         } else {
             cmdArrayPrefix = new String[4];
-            getCmdArrayPrefix()[0] = OCSSW.getOcsswScriptPath();
+            getCmdArrayPrefix()[0] = OCSSW.getOcsswRunnerScriptPath();
             getCmdArrayPrefix()[1] = "--ocsswroot";
             getCmdArrayPrefix()[2] = OCSSW.getOcsswEnv();
             getCmdArrayPrefix()[3] = getProgramName();
@@ -252,8 +245,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public boolean isValidProcessor() {
-        SeadasLogger.getLogger().info("program location: " + OCSSW.getOcsswScriptPath());
-        return OCSSW.getOcsswScriptPath() != null;
+        SeadasLogger.getLogger().info("program location: " + OCSSW.getOcsswRunnerScriptPath());
+        return OCSSW.getOcsswRunnerScriptPath() != null;
     }
 
     public String getProgramName() {
