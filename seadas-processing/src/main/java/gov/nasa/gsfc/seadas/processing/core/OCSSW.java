@@ -25,8 +25,6 @@ public class OCSSW {
     public static final String _OCSSWROOT_ENVVAR = "OCSSWROOT";
     public static final String _OCDATAROOT_ENVVAR = "OCDATAROOT";
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
-    public static final String OCSSWDATA_PROPERTY = "ocssw.data";
-    public static final String OCSSWSCRIPTS_PROPERTY = "ocssw.scripts";
     public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
     public static final String SEADASHOME_PROPERTY = "home";
     public static final String SEADAS_OCSSW_LOCATION_LOCAL = "local";
@@ -39,10 +37,10 @@ public class OCSSW {
     public static String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     public static String _OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";
+    public static String _OCSSW_DATA_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "data";
 
     private static boolean ocsswExist = false;
     private static String ocsswRoot = null;
-    private static String ocsswDataDir=null;
     private static boolean ocsswInstalScriptDownloadSuccessful = false;
 
     private static String clientId;
@@ -113,15 +111,16 @@ public class OCSSW {
      * @throws IOException
      */
     public static String getOcsswDataRoot() throws IOException {
-        String ocdataroot= System.getenv(_OCDATAROOT_ENVVAR);
-        SeadasFileUtils.debug("ocdataroot = " + ocdataroot);
-        return RuntimeContext.getConfig().getContextProperty(OCSSWDATA_PROPERTY, System.getenv(_OCDATAROOT_ENVVAR));
+        if (ocsswRoot != null) {
+            return ocsswRoot + System.getProperty("file.separator") + _OCSSW_DATA_DIR_SUFFIX;
+        } else {
+            return null;
+        }
     }
 
     public static String getOcsswScriptPath() {
         if (ocsswRoot != null) {
-            String ocsswScriptsPath = ocsswRoot + System.getProperty("file.separator") + _OCSSW_SCRIPTS_DIR_SUFFIX;
-            return RuntimeContext.getConfig().getContextProperty(OCSSWSCRIPTS_PROPERTY, ocsswScriptsPath);
+            return ocsswRoot + System.getProperty("file.separator") + _OCSSW_SCRIPTS_DIR_SUFFIX;
         } else {
             return null;
         }
@@ -211,7 +210,6 @@ public class OCSSW {
                     line = "seadas.ocssw.root = " + installDir;
                     isOCSSWRootSpecified = true;
                 }
-                //TODO update seadas.ocssw.data and seadas.ocssw.scripts also.
                 text.append(line);
                 text.append("\n");
             }
