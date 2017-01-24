@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+
+
+<html>
+<head>
+    <title>Find Matchup</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header" width="100%">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Find Matchup
+        </td>
+        <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
+                                                                            border=0></a></td>
+    </tr>
+</table>
+
+<br>
+
+
+<p>
+    Returns satellite level-2 file names and download links for a time and point or region. <br><br>
+
+    <i>Note: This is a python script <b>fd_matchup.py</b> which is included in the OCSSW installation (currently only available for use on the command line).
+    </i>
+</p>
+
+<hr>
+
+<pre>
+
+~/ocssw/scripts$ ./fd_matchup.py -h
+usage: fd_matchup.py [-h] -sat
+                     {modisa,modist,viirsn,goci,meris,czcs,octs,seawifs}
+                     [-data_type {oc,iop,sst}] [-lat_pnt LAT_PNT]
+                     [-lon_pnt LON_PNT] [-lat_range_min LAT_RANGE_MIN]
+                     [-lat_range_max LAT_RANGE_MAX]
+                     [-lon_range_min LON_RANGE_MIN]
+                     [-lon_range_max LON_RANGE_MAX] [-time_pnt TIME_PNT]
+                     [-time_window TIME_WINDOW]
+                     [-time_range_min TIME_RANGE_MIN]
+                     [-time_range_max TIME_RANGE_MAX]
+                     [-seabass_file SEABASS_FILE] [-get_data GET_DATA]
+
+      This program perform searches of the EarthData Common Metadata Repository (CMR) for satellite
+      granule names given an OB.DAAC satellite/instrument, lat/lon/time pair or range
+
+      Outputs:
+         1) a list of OB.DAAC L2 satellite file granule names that contain the input criteria, per the CMR records.
+         2) a list of public download links to fetch the matching satellite file granules, per the CMR's records.
+
+      Inputs:
+        The argument-list is a set of -keyword value pairs.
+
+      Example usage calls:
+         fd_matchup.py -sat=modist -lat_pnt=23.0 -lon_pnt=170.0 -time_pnt=2015-11-16T09:00:00Z -time_window=8
+         fd_matchup.py -sat=modist -time_range_min=2015-11-15T09:00:00Z -time_range_max=2015-11-17T09:00:00Z -lat_range_min=23.0 -lat_range_max=25.0 -lon_range_min=170.0 -lon_range_max=175.0
+         fd_matchup.py -sat=modist -time_window=4 -seabass_file=[your SB file name].sb
+
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -sat {modisa,modist,viirsn,goci,meris,czcs,octs,seawifs}
+                              String specifier for satellite platform/instrument
+
+                              Valid options are:
+                              -----------------
+                              modisa  = MODIS on AQUA
+                              modist  = MODIS on TERRA
+                              viirsn  = VIIRS on NPP
+                              meris   = MERIS on ENVISAT
+                              goci    = GOCI on COMS
+                              czcs    = CZCS on Nimbus-7
+                              seawifs = SeaWiFS on OrbView-2
+                              octs    = OCTS on ADEOS-I
+
+  -data_type {oc,iop,sst}
+                              OPTIONAL: String specifier for satellite data type
+                              Default behavior returns all product suites
+
+                              Valid options are:
+                              -----------------
+                              oc   = Returns OC (ocean color) product suite
+                              iop  = Returns IOP (inherent optical properties) product suite
+                              sst  = Returns SST product suite (including SST4 where applicable)
+
+  -lat_pnt LAT_PNT            Latitude (point) of interest
+                              Valid values: (-90,90N)
+                              Use with -lon_pnt
+
+  -lon_pnt LON_PNT            Longitude (point) of interest
+                              Valid values: (-180,180E)
+                              Use with -lat_pnt
+
+  -lat_range_min LAT_RANGE_MIN
+                              Minimum latitude (range) for region of interest
+                              Valid values: (-90,90N)
+                              Use with -lon_range_min, -lon_range_max, -lat_range_max
+
+  -lat_range_max LAT_RANGE_MAX
+                              Maximum latitude (range) for region of interest
+                              Valid values: (-90,90N)
+                              Use with -lon_range_min, -lon_range_max, -lat_range_min
+
+  -lon_range_min LON_RANGE_MIN
+                              Minimum longitude (range) for region of interest
+                              Valid values: (-180,180E)
+                              Use with -lon_range_max, -lat_range_min, -lat_range_max
+
+  -lon_range_max LON_RANGE_MAX
+                              Maximum longitude (range) for region of interest
+                              Valid values: (-180,180E)
+                              Use with -lon_range_min, -lat_range_min, -lat_range_max
+
+  -time_pnt TIME_PNT          Time (point) of interest in UTC
+                              Default behavior: returns matches within 90 minutes before and 90 minutes after this given time
+                              Valid format: string of the form: yyyy-mm-ddThh:mm:ssZ
+                              OPTIONALLY: Use with -time_window
+
+  -time_window TIME_WINDOW
+                              Hour time window about given time(s)
+                              OPTIONAL: default value 3 hours (i.e. - 90 minutes before and 90 minutes after given time)
+                              Valid values: integer hours (1-11)
+                              Use with -seabass_file OR -time_pnt
+
+  -time_range_min TIME_RANGE_MIN
+                              Minimum time (range) of interest in UTC
+                              Valid format: string of the form: yyyy-mm-ddThh:mm:ssZ
+                              Use with -time_range_max
+
+  -time_range_max TIME_RANGE_MAX
+                              Maximum time (range) of interest in UTC
+                              Valid format: string of the form: yyyy-mm-ddThh:mm:ssZ
+                              Use with -time_range_min
+
+  -seabass_file SEABASS_FILE
+                              Valid SeaBASS file name
+                              File must contain lat,lon,date,time as /field entries OR
+                              lat,lon,year,month,day,hour,minute,second as /field entries.
+
+
+</pre>
+</p>
+
+
+</body>
+</html>

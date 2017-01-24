@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+
+
+<html>
+<head>
+    <title>Make Matchup</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header" width="100%">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Make Matchup
+        </td>
+        <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
+                                                                            border=0></a></td>
+    </tr>
+</table>
+
+<br>
+
+
+<p>
+
+   Extracts, filters, and appends satellite match-up data to a valid SeaBASS file (requires the val_extract binary executable in the OCSSW software suite to be compiled). <br><br>
+
+    <i>Note: This is a python script <b>mk_matchup.py</b> which is included in the OCSSW installation (currently only available for use on the command line).
+    </i>
+</p>
+
+<hr>
+
+<pre>
+~/ocssw/scripts$ ./mk_matchup.py -h
+usage: mk_matchup.py [-h] -sat_file SAT_FILE -seabass_file SEABASS_FILE
+                     [-out_file OUT_FILE] [-clobber [CLOBBER]]
+                     [-box_size BOX_SIZE]
+                     [-min_valid_sat_pix MIN_VALID_SAT_PIX]
+                     [-max_time_diff MAX_TIME_DIFF]
+
+      This program create and output satellite matchups from a given SeaBASS file.
+
+      Outputs:
+          1) the original SeaBASS data
+          AND
+          2) collocated satellite products as additional fields as columns into -out_file
+             OR if -out_file is not specified, as -seabass_file with _matchups.sb appeneded
+
+      Required inputs:
+          1) an OB.DAAC L2 (SST, SST4, IOP, or OC) satellite file
+          2) a valid SeaBASS file with lat,lon,date,time as field entries or
+             lat,lon,year,month,day,hour,minute,second as field entries.
+
+      Example usage call:
+         mk_matchup.py -sat_file=[OB.DAAC satellite file name].nc -seabass_file=[SeaBASS file name].sb -out_file=[OPTIONAL, output SeaBASS file name].sb
+
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -sat_file SAT_FILE          Valid OB.DAAC L2 satellite netcdf file name.
+
+  -seabass_file SEABASS_FILE
+                              Valid SeaBASS file name
+                              File must contain lat,lon,date,time as field entries
+                              OR
+                              lat,lon,year,month,day,hour,minute,second as field entries.
+
+  -out_file OUT_FILE          OPTIONAL: output SeaBASS file name
+                              Matched-up satellite variables will be appended as additional fields
+                              to the data matrix and relevant headers.
+
+  -clobber [CLOBBER]          OPTIONAL: clobber original -seabass_file and reuse as out_file
+                              Matched-up satellite variables will be APPENDED as additional fields
+                              to the data matrix and relevant headers in the -seabass_file.
+
+  -box_size BOX_SIZE          OPTIONAL: box size of the satellite data extract made around the in situ point
+                              Valid values are odd numbers between 3 and 11, default = 5
+
+  -min_valid_sat_pix MIN_VALID_SAT_PIX
+                              OPTIONAL: percent minimum valid satellite pixels required to create an extract
+                              Valid value: (0.0 - 100.0), default = 50.0
+
+  -max_time_diff MAX_TIME_DIFF
+                              OPTIONAL: maximum time difference between satellite and in situ point
+                              Valid value: (1 - 4 hours), default = 3
+
+</pre>
+</p>
+
+
+</body>
+</html>

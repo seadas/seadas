@@ -144,6 +144,14 @@
 
         </tocitem>
 
+        <tocitem text="Field Measurements">
+            <tocitem text="Overview" target="fieldMeasurements"/>
+            <tocitem text="Import SeaBASS File" target="importSeabass"/>
+            <tocitem text="Import SeaDAS 6.x Track File" target="importSeaDASTrack"/>
+            <tocitem text="Find Matchup" target="fieldMeasurementsFindMatchups"/>
+            <tocitem text="Make Matchup" target="fieldMeasurementsMakeMatchups"/>
+
+        </tocitem>
 
         <tocitem text="Geo-Coding">
             <tocitem text="Attach Pixel-based Geo-Coding" target="pixelGeoCodingSetup"/>
