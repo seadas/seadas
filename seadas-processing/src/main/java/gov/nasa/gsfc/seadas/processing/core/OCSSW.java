@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.ws.rs.client.WebTarget;
@@ -24,6 +25,8 @@ public class OCSSW {
     public static final String _OCSSWROOT_ENVVAR = "OCSSWROOT";
     public static final String _OCDATAROOT_ENVVAR = "OCDATAROOT";
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
+    public static final String OCSSWDATA_PROPERTY = "ocssw.data";
+    public static final String OCSSWSCRIPTS_PROPERTY = "ocssw.scripts";
     public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
     public static final String SEADASHOME_PROPERTY = "home";
     public static final String SEADAS_OCSSW_LOCATION_LOCAL = "local";
@@ -39,6 +42,7 @@ public class OCSSW {
 
     private static boolean ocsswExist = false;
     private static String ocsswRoot = null;
+    private static String ocsswDataDir=null;
     private static boolean ocsswInstalScriptDownloadSuccessful = false;
 
     private static String clientId;
@@ -103,18 +107,31 @@ public class OCSSW {
     }
 
 
+    /**
+     * Returns OCDATAROOT
+     * @return
+     * @throws IOException
+     */
     public static String getOcsswDataRoot() throws IOException {
-        //return new File(new File(getOcsswRoot(), "run"), "data");
-        //return ocsswRoot + "/run/data/";
-        return RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(_OCDATAROOT_ENVVAR));
+        String ocdataroot= System.getenv(_OCDATAROOT_ENVVAR);
+        SeadasFileUtils.debug("ocdataroot = " + ocdataroot);
+        return RuntimeContext.getConfig().getContextProperty(OCSSWDATA_PROPERTY, System.getenv(_OCDATAROOT_ENVVAR));
+    }
+
+    public static String getOcsswScriptPath() {
+        if (ocsswRoot != null) {
+            String ocsswScriptsPath = ocsswRoot + System.getProperty("file.separator") + _OCSSW_SCRIPTS_DIR_SUFFIX;
+            return RuntimeContext.getConfig().getContextProperty(OCSSWSCRIPTS_PROPERTY, ocsswScriptsPath);
+        } else {
+            return null;
+        }
+
     }
 
 
     public static String getOcsswRunnerScriptPath() {
-        //final File ocsswRoot = getOcsswRootFile();
         if (ocsswRoot != null) {
-            //return ocsswRoot + "/run/scripts/ocssw_runner";
-            return ocsswRoot + System.getProperty("file.separator") + _OCSSW_SCRIPTS_DIR_SUFFIX + System.getProperty("file.separator") + OCSSW_RUNNER;
+            return getOcsswScriptPath() + System.getProperty("file.separator") + OCSSW_RUNNER;
         } else {
             return null;
         }
@@ -123,7 +140,7 @@ public class OCSSW {
 
     public static String getOcsswInstallerScriptPath() {
         if (ocsswRoot != null) {
-            return ocsswRoot + System.getProperty("file.separator") + _OCSSW_SCRIPTS_DIR_SUFFIX + System.getProperty("file.separator") +OCSSW_INSTALLER;
+            return getOcsswScriptPath() + System.getProperty("file.separator") +OCSSW_INSTALLER;
         } else {
             return null;
         }
@@ -194,6 +211,7 @@ public class OCSSW {
                     line = "seadas.ocssw.root = " + installDir;
                     isOCSSWRootSpecified = true;
                 }
+                //TODO update seadas.ocssw.data and seadas.ocssw.scripts also.
                 text.append(line);
                 text.append("\n");
             }
