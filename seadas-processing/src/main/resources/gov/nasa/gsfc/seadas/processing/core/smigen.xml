@@ -29,9 +29,9 @@
 
         <option type="string" required="true">
             <name>prod</name>
-            <value>myprod</value>
+            <value></value>
             <type>string</type>
-            <default>myprod</default>
+            <default></default>
             <description>product name</description>
             <source>default</source>
         </option>

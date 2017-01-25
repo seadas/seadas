@@ -22,7 +22,8 @@ import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
- * User: knowles
+ * @author knowles
+ * @author aabduraz
  * Date: 5/25/12
  * Time: 10:29 AM
  * To change this template use File | Settings | File Templates.
@@ -167,6 +168,7 @@ public class FileSelector {
     }
 
     public void setFilename(String fileName) {
+        System.out.println("output file name: " + fileName);
         fileTextfield.setText(fileName);
         //fileTextfield.postActionEvent();
         handleFileTextfield();
@@ -190,6 +192,8 @@ public class FileSelector {
 
         if (filenameChanged) {
             fileTextfield.setFocusable(true);
+            fileTextfield.validate();
+            fileTextfield.repaint();
             String tmpLastFilename = lastFilename;
             lastFilename = currentFilename;
             fireEvent(propertyName, tmpLastFilename, currentFilename);

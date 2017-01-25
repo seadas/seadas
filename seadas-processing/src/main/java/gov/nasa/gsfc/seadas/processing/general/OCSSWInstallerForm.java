@@ -5,11 +5,12 @@ import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.processing.core.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.*;
 
@@ -33,9 +34,11 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     private JPanel missionPanel;
     private JPanel otherPanel;
 
-    public static final String missionDataDir = OCSSW.getOcsswEnv() + System.getProperty("file.separator") + "run"
-            + System.getProperty("file.separator") + "data"
-            + System.getProperty("file.separator");
+    //private JPanel superParamPanel;
+
+    public static final String INSTALL_DIR_OPTION_NAME = "--install-dir";
+
+    public String missionDataDir;
 
     private static final Set<String> MISSIONS = new HashSet<String>(Arrays.asList(
             new String[]{"AQUARIUS",
@@ -89,17 +92,44 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
     HashMap<String, Boolean> missionDataStatus;
 
+
     public OCSSWInstallerForm(AppContext appContext, String programName, String xmlFileName) {
         this.appContext = appContext;
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
         processorModel.setReadyToRun(true);
+        setMissionDataDir(getInstallDir() + getMissionDataDirInterfix());
         init();
         updateMissionValues();
         createUserInterface();
-        processorModel.updateParamInfo("--install-dir", getInstallDir());
+        processorModel.updateParamInfo(INSTALL_DIR_OPTION_NAME, getInstallDir());
+        processorModel.addPropertyChangeListener(INSTALL_DIR_OPTION_NAME, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                setMissionDataDir(processorModel.getParamValue(INSTALL_DIR_OPTION_NAME) + getMissionDataDirInterfix());
+                updateMissionStatus();
+                updateMissionValues();
+                createUserInterface();
+                //reorganizePanel(getSuperParamPanel());
+            }
+        });
     }
 
 
+    String getMissionDataDir(){
+       return missionDataDir;
+    }
+
+    void setMissionDataDir(String currentMissionDataDir) {
+        missionDataDir = currentMissionDataDir;
+    }
+
+    String getMissionDataDirInterfix(){
+        return System.getProperty("file.separator") + "run"
+                + System.getProperty("file.separator") + "data"
+                + System.getProperty("file.separator");
+    }
+
+    abstract void updateMissionStatus();
     abstract void updateMissionValues();
 
     abstract String getInstallDir();
@@ -110,7 +140,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         return processorModel;
     }
 
-    public Product getSelectedSourceProduct() {
+    public File getSelectedSourceProduct() {
         return null;
     }
 
@@ -156,7 +186,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     }
     //ToDo: missionDataDir test should be differentiated for local and remote servers
 
-    private void reorganizePanel(JPanel paramPanel) {
+    protected void reorganizePanel(JPanel paramPanel) {
         dirPanel = new JPanel();
 
         missionPanel = new JPanel(new TableLayout(5));
@@ -182,6 +212,8 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                             if (new File(missionDataDir + MISSION_DIRECTORIES.get(tmpString)).exists() ||
                                     missionDataStatus.get(tmpString)) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
+                            } else {
+                                ((JPanel) c).getComponents()[0].setEnabled(true);
                             }
                             missionPanel.add(c);
                         }
@@ -221,6 +253,10 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 }
             }
         }
+
+    }
+
+    private void refreshMissionPanel(){
 
     }
 

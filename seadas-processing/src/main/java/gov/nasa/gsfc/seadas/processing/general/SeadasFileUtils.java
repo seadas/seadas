@@ -1,10 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.general;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.processing.core.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWClient;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
@@ -17,7 +14,9 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -32,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class SeadasFileUtils {
 
-    private static boolean debug = false;
+    private static boolean debug = true;
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
 
@@ -123,21 +122,40 @@ public class SeadasFileUtils {
 // todo Add suite, also check calling program the make sure ProcessorModel call is right
 
         String[] cmdArray = new String[6];
-        cmdArray[0] = OCSSW.getOcsswScriptPath();
+        cmdArray[0] = OCSSW.getOcsswRunnerScriptPath();
         cmdArray[1] = "--ocsswroot";
         cmdArray[2] = OCSSW.getOcsswEnv();
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-        cmdArray[4] = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL) ? ifileName : getIfileNameforRemoteServer(ifileName);
+        cmdArray[4] = ifileName;
         cmdArray[5] = programName;
-        //cmdArray[6] = "--suite="+suite;
 
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
 
         if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)) {
             return retrieveOFileNameLocal(cmdArray, ifileDir);
         } else {
+            cmdArray[4] = getIfileNameforRemoteServer(SeadasFileUtils.copyFile(ifileName, OCSSW.getOCSSWClientSharedDirName()));
             return retrieveOFileNameRemote(cmdArray);
         }
+    }
+
+    public ProcessorModel getNextLevelNameFinderProcessorModel(String ifileName, String programName) {
+        ProcessorModel nextLevelNamer = new ProcessorModel(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME);
+        final ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
+
+        ParamInfo ifileParamInfo = new ParamInfo("ifile", ifileName, ParamInfo.Type.IFILE);
+        ifileParamInfo.setOrder(0);
+        ifileParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
+        paramInfos.add(ifileParamInfo);
+
+        ParamInfo programNameParamInfo = new ParamInfo("programName", programName, ParamInfo.Type.IFILE);
+        programNameParamInfo.setOrder(1);
+        programNameParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
+        paramInfos.add(programNameParamInfo);
+
+        nextLevelNamer.setParamList(paramInfos);
+
+        return nextLevelNamer;
     }
 
     private static String retrieveOFileNameLocal(String[] cmdArray, String ifileDir) {
@@ -146,6 +164,19 @@ public class SeadasFileUtils {
         if (process == null) {
             return "output";
         }
+
+        //wait for process to exit
+        try {
+            Field field = process.getClass().getDeclaredField("hasExited");
+            field.setAccessible(true);
+            while (!(Boolean) field.get(process)) {
+            }
+        }  catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
         int exitCode = process.exitValue();
         InputStream is;
         if (exitCode == 0) {
@@ -154,17 +185,19 @@ public class SeadasFileUtils {
             is = process.getErrorStream();
         }
 
+
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
 
         try {
 
             if (exitCode == 0) {
-                String line;
-                while ((line = br.readLine()) != null) {
+                String line = br.readLine();
+                while (line != null) {
                     if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
                         return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
                     }
+                    line = br.readLine();
                 }
 
             } else {
@@ -207,7 +240,7 @@ public class SeadasFileUtils {
 
     private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
         String[] cmdArray = new String[6];
-        cmdArray[0] = OCSSW.getOcsswScriptPath();
+        cmdArray[0] = OCSSW.getOcsswRunnerScriptPath();
         cmdArray[1] = "--ocsswroot";
         cmdArray[2] = OCSSW.getOcsswEnv();
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
@@ -215,6 +248,14 @@ public class SeadasFileUtils {
 
         cmdArray[5] = programName;
         return cmdArray;
+    }
+
+    private String getIfileNameforCmdArray(String ifileName){
+        if (RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY).equals(OCSSW.SEADAS_OCSSW_LOCATION_LOCAL)){
+            return ifileName;
+        } else {
+            return ifileName;
+        }
     }
 
     private static String getNextLevelFileName(String ifileName, String[] cmdArray) {
@@ -288,7 +329,7 @@ public class SeadasFileUtils {
     }
 
     private static String getIfileNameforRemoteServer(String ifileName) {
-        String newIfileName = ifileName.replace( OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName() );
+        String newIfileName = ifileName.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
         return newIfileName;
     }
 
@@ -355,29 +396,6 @@ public class SeadasFileUtils {
         System.out.println(getCurrentDate("K:mm a,z"));
         System.out.println(getCurrentDate("yyyy.MMMMM.dd GGG hh:mm aaa"));
     }
-
-
-//    public static String expandEnvironment(String string) {
-//
-//
-//        //     Pattern pattern = Pattern.compile("(.+)\\$\\{{0,1}([A-Za-z0-9_]+)\\}{0,1}(.+)");
-//        Pattern pattern = Pattern.compile("([.]*)\\$\\{{0,1}([A-Za-z0-9_]+)\\}{0,1}([.]*)");
-//        Matcher matcher = pattern.matcher(string);
-//
-//
-//        if (matcher.find()) {
-//            String s0 = matcher.group(0);
-//            String s1 = matcher.group(1);
-//            String s2 = matcher.group(2);
-//            String s3 = s2;
-//        }
-//
-//
-//        return string;
-//    }
-//
-//
-
 
     public static String expandEnvironment(String string1) {
 
@@ -467,16 +485,22 @@ public class SeadasFileUtils {
 
     /**
      * Copies sourceFile into targetDir.
+     *
      * @param sourceFile the full path name of the source file to be copied
-     * @param targetDir the full path name of the target directory
+     * @param targetDir  the full path name of the target directory
      * @return the full path of the file in the new location, if the "copy" operation is successfull. Otherwise, it returns null.
      */
     public static String copyFile(String sourceFile, String targetDir) {
         String[] cmdArray = new String[3];
         cmdArray[0] = "cp";
         cmdArray[1] = sourceFile;
-        cmdArray[2] = targetDir;
+        cmdArray[2] = targetDir + System.getProperty("file.separator") + ".";
         Process p = OCSSWRunner.executeLocal(cmdArray, new File(targetDir));
+        try{
+            p.waitFor();
+        }catch(InterruptedException ie){
+            System.out.println("Process interrupted!");
+        }
         if (p.exitValue() == 0) {
             return targetDir + sourceFile.substring(sourceFile.lastIndexOf(System.getProperty("file.separator")));
         } else {
@@ -487,6 +511,7 @@ public class SeadasFileUtils {
 
     /**
      * Deletes a file from a directory
+     *
      * @param fileFullPathName the full path name of the file to be deleted
      */
     public static void deleteFile(String fileFullPathName) {
@@ -494,6 +519,38 @@ public class SeadasFileUtils {
         cmdArray[0] = "rm";
         cmdArray[1] = fileFullPathName;
         OCSSWRunner.executeLocal(cmdArray, new File(fileFullPathName));
+    }
+
+    public void updateDiskFile(String fileFullPath, String varName, String varValue) {
+        File targetFile = new File(fileFullPath);
+        StringBuilder targetFileContent = new StringBuilder();
+        try {
+            LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(targetFile));
+            String readLine;
+            String[] configVar;
+
+            readLine = lineNumberReader.readLine();
+
+            while (readLine != null) {
+                if (readLine.indexOf("=") != -1) {
+                    configVar = readLine.split("=", 2);
+                    configVar[0] = configVar[0].trim();
+                    configVar[1] = configVar[1].trim();
+                    if (configVar[0].trim().equalsIgnoreCase(varName.trim())) {
+                        targetFileContent.append(configVar[0] + " = " + varValue + System.getProperty("line.separator"));
+                    } else {
+                        targetFileContent.append(readLine + System.getProperty("line.separator"));
+                    }
+                }
+                readLine = lineNumberReader.readLine();
+            }
+            writeToDisk(fileFullPath, targetFileContent.toString());
+
+        } catch (FileNotFoundException fnfe) {
+
+        } catch (IOException ioe) {
+
+        }
     }
 
 }

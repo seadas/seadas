@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -23,32 +24,24 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
     private L2genPrimaryIOFilesSelector ioFilesSelector;
 
-    //private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
-
     ProcessorModel processorModel;
 
     private ParFileUI parFileUI;
     private JPanel paramPanel;
 
-    public ProgramUIFactory(String programName, String xmlFileName) { //}, String multiIFile) {
+    public ProgramUIFactory(String programName, String xmlFileName) {
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
-        //processorModel.setMultipleInputFiles(multiIFile.equals("true") ? true : false);
         parFileUI = new ParFileUI(processorModel);
         ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
         createUserInterface();
     }
 
-//    public ProgramUIFactory(String programName, String xmlFileName) {
-//        this(programName, xmlFileName, "false");
-//
-//    }
-
     public ProcessorModel getProcessorModel() {
         return processorModel;
     }
 
-    public Product getSelectedSourceProduct() {
-        return ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct();
+    public File getSelectedSourceProduct() {
+        return ioFilesSelector.getIfileSelector().getFileSelector().getSelectedFile();
     }
 
     public boolean isOpenOutputInApp() {
@@ -95,9 +88,8 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         ioPanel.validate();
 
         //update processor model param info if there is an open product.
-        if (ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct() != null) {
+        if (ioFilesSelector.getIfileSelector().getFileSelector().getSelectedFile() != null) {
             processorModel.updateIFileInfo(ioFilesSelector.getIfileSelector().getSelectedIFileName());
-            //processorModel.updateParamValues(ioFilesSelector.getIfileSelector().getSourceProductSelector().getSelectedProduct());
             processorModel.updateParamValues(ioFilesSelector.getIfileSelector().getSelectedIFile());
         }
 
@@ -108,6 +100,8 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         ParamList paramList = processorModel.getParamList();
         ArrayList<ParamInfo> paramInfos = paramList.getParamArray();
         for (ParamInfo pi : paramInfos) {
+            //when ifile or infile changes, the values of some parameters may change.
+            //ofile and geofile should not affect the param values
             if (!(pi.getType().equals("ifile") || pi.getType().equals("infile") || pi.getType().equals("ofile") || pi.getType().equals("geofile"))) {
                 processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
                     @Override
@@ -127,19 +121,6 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
                 });
             }
         }
-//        processorModel.addPropertyChangeListener("prod", new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                paramPanel = getParamPanel();
-//                paramPanel.repaint();
-//                paramPanel.validate();
-//                remove(1);
-//                add(paramPanel,
-//                                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-//                revalidate();
-//                repaint();
-//            }
-//        });
 
         this.setLayout(new GridBagLayout());
 
@@ -167,26 +148,5 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         panel.repaint();
         panel.validate();
 
-    }
-
-    protected void enableJPanel(JPanel panel) {
-        Component[] com = panel.getComponents();
-        for (int a = 0; a < com.length; a++) {
-            com[a].setEnabled(true);
-        }
-    }
-
-    private Component findJPanel(Component comp, String panelName) {
-        if (comp.getClass() == JPanel.class && comp.getName() != null && comp.getName().equals(panelName)) return comp;
-        if (comp instanceof Container) {
-            Component[] components = ((Container) comp).getComponents();
-            for (int i = 0; i < components.length; i++) {
-                Component child = findJPanel(components[i], panelName);
-                if (child != null && child.getName() != null && child.getName().equals(panelName)) {
-                    return child;
-                }
-            }
-        }
-        return null;
     }
 }

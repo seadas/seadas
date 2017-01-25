@@ -46,13 +46,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private String programName;
     private String dialogTitle;
     private String xmlFileName;
-    //private String multiIFile;
 
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
-
-    // private static String OCSSW_INSTALLER = "install_ocssw.py";
-
 
     @Override
     public void configure(ConfigurationElement config) throws CoreException {
@@ -62,7 +58,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
-        //multiIFile = getValue(config, "multiIFile", "false");
 
         super.configure(config);
         if (programName.equals("install_ocssw.py")) {
@@ -191,24 +186,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
     }
 
 
-    public void remoteExecuteProgram(ProcessorModel pm) {
-
-        //OCSSWClient ocsswClient = new OCSSWClient();
-        pm.getProgramCmdArray();
-
-        String paramString = pm.getCmdArrayString();
-        String[] filesToUpload = pm.getFilesToUpload();
-
-//        boolean fileUploadSuccess = ocsswClient.uploadFile(filesToUpload);
-//        boolean t = ocsswClient.uploadCmdArray(pm.getProgramCmdArray());
-//        if (fileUploadSuccess) {
-//            ocsswClient.uploadParFile(pm.getParStringForRemoteServer());
-//            ocsswClient.uploadParam(paramString);
-//            ocsswClient.runOCSSW();
-//        } else {
-//        }
-    }
-
     public void executeProgram(ProcessorModel pm) {
 
                 final ProcessorModel processorModel = pm;
@@ -235,7 +212,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
                 pm.done();
                 SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",
-                        "Execution log for " + "\n" + Arrays.toString(processorModel.getProgramCmdArray()) + "\n" + processorModel.getExecutionLogMessage());
+                        "Execution log for " + "\n" + Arrays.toString(OCSSWRunner.getCurrentCmdArray()) + "\n" + processorModel.getExecutionLogMessage());
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
@@ -259,7 +236,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
-                        int exitCode = OCSSWRunner.execute(secondaryProcessor.getProgramCmdArray()).exitValue();
+                        int exitCode = OCSSWRunner.execute(secondaryProcessor).exitValue();
                         if (exitCode == 0) {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);
@@ -272,7 +249,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 }
             }
         };
-
         swingWorker.execute();
     }
 

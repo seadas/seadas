@@ -35,6 +35,11 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
     }
 
     @Override
+    void updateMissionStatus(){
+
+    }
+
+    @Override
     void updateMissionValues() {
 
         Response response0 = target.path("file").path("test").request().get();

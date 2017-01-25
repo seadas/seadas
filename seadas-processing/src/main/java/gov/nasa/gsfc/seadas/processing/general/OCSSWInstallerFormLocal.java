@@ -53,6 +53,8 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
 
             if (missionStatus) {
                 processorModel.setParamValue("--" + missionName.toLowerCase(), "1");
+            } else {
+                processorModel.setParamValue("--" + missionName.toLowerCase(), "0");
             }
 
         }

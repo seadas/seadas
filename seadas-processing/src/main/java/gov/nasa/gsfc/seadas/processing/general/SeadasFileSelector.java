@@ -44,15 +44,13 @@ import java.util.Vector;
 public class SeadasFileSelector {
     private AppContext appContext;
     private ProductFilter productFilter;
-    private Product extraProduct;
-    private File extraFile;
     private File currentDirectory;
     private DefaultComboBoxModel productListModel;
     private DefaultComboBoxModel fileListModel;
-    private JLabel productNameLabel;
+    private JLabel fileNameLabel;
     private JButton productFileChooserButton;
+    private JButton fileChooserButton;
     private JComboBox fileNameComboBox;
-    private JComboBox productNameComboBox;
     private final ProductManager.Listener productManagerListener;
     private ComboBoxSelectionContext selectionContext;
     private RegexFileFilter regexFileFilter;
@@ -72,13 +70,10 @@ public class SeadasFileSelector {
         this.selectMultipleIFiles = selectMultipleIFiles;
         this.appContext = appContext;
 
-        productListModel = new DefaultComboBoxModel();
         fileListModel = new DefaultComboBoxModel();
-
-        productNameLabel = new JLabel(labelText);
-        productFileChooserButton = new JButton(new ProductFileChooserAction());
-
-        productNameComboBox = new JComboBox(productListModel);
+        fileNameLabel = new JLabel(labelText);
+        productFileChooserButton = new JButton(new FileChooserAction());
+        fileChooserButton = new JButton(new FileChooserAction());
         fileNameComboBox = new JComboBox(fileListModel);
         fileNameComboBox.setPrototypeDisplayValue("[1] 123456789 123456789 123456789 123456789 123456789");
         fileNameComboBox.setRenderer(new ProductListCellRenderer());
@@ -88,11 +83,10 @@ public class SeadasFileSelector {
         fileNameComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                final Product product = (Product) productNameComboBox.getSelectedItem();
                 final File file = (File) fileNameComboBox.getSelectedItem();
                 if (file != null) {
                     fileNameComboBox.setToolTipText(file.getPath());
-                 } else {
+                } else {
                     fileNameComboBox.setToolTipText("Select an input file.");
                 }
             }
@@ -103,7 +97,6 @@ public class SeadasFileSelector {
         productManagerListener = new ProductManager.Listener() {
             @Override
             public void productAdded(ProductManager.Event event) {
-                //addProduct(event.getProduct());
                 fileListModel.addElement(event.getProduct().getFileLocation());
             }
 
@@ -123,7 +116,7 @@ public class SeadasFileSelector {
 
     public void setEnabled(boolean enabled) {
         fileNameComboBox.setEnabled(enabled);
-        productNameLabel.setEnabled(enabled);
+        fileNameLabel.setEnabled(enabled);
         productFileChooserButton.setEnabled(enabled);
         filterRegexField.setEnabled(enabled);
         filterRegexLabel.setEnabled(enabled);
@@ -165,43 +158,6 @@ public class SeadasFileSelector {
         appContext.getProductManager().addListener(productManagerListener);
     }
 
-    private synchronized void addFiles(String fileName) {
-        fileListModel.removeAllElements();
-        for (Product product : appContext.getProductManager().getProducts()) {
-            addProduct(product);
-
-        }
-        final Product selectedProduct = appContext.getSelectedProduct();
-        if (selectedProduct != null && productFilter.accept(selectedProduct) && regexFileFilter.accept(selectedProduct.getFileLocation())) {
-            //ifileTextfield.setText(selectedProduct.getName());
-            setSelectedProduct(selectedProduct);
-        }
-        appContext.getProductManager().addListener(productManagerListener);
-    }
-
-
-    public Product getSelectedProduct() {
-        if (sampleProductForMultiIfiles == null) {
-            return (Product) productListModel.getSelectedItem();
-        } else {
-            return sampleProductForMultiIfiles;
-        }
-    }
-
-    public Product getSelectedProductsSample() {
-        return sampleProductForMultiIfiles;
-    }
-
-    public void setCurrentDirectory(File directory) {
-        if (directory != null && directory.isDirectory()) {
-            currentDirectory = directory;
-        }
-    }
-
-    public File getCurrentDirectory() {
-        return currentDirectory;
-    }
-
     public void setSelectedFile(File file) {
         if (file == null) {
             fileListModel.setSelectedItem(null);
@@ -215,87 +171,36 @@ public class SeadasFileSelector {
                 fileListModel.setSelectedItem(file);
             }
         }
-        productNameComboBox.revalidate();
-        productNameComboBox.repaint();
+        fileNameComboBox.revalidate();
+        fileNameComboBox.repaint();
     }
 
-    public void setSelectedProduct(Product product) {
-        if (product == null) {
-            productListModel.setSelectedItem(null);
-            return;
-        }
-        if (productListModelContains(product) && regexFileFilter.accept(product.getFileLocation())) {
-            productListModel.setSelectedItem(product);
-        } else {
-            if (productFilter.accept(product) && regexFileFilter.accept(product.getFileLocation())) {
-                productListModel.addElement(product);
-                productListModel.setSelectedItem(product);
-                if (extraProduct != null) {
-                    productListModel.removeElement(extraProduct);
-                    extraProduct.dispose();
-                }
-
-                extraProduct = product;
-            }
-        }
-        productNameComboBox.revalidate();
-        productNameComboBox.repaint();
-    }
-
-    public synchronized void releaseProducts() {
-        appContext.getProductManager().removeListener(productManagerListener);
-        if (extraProduct != null && getSelectedProduct() != extraProduct) {
-            extraProduct.dispose();
-        }
-        extraProduct = null;
-        productListModel.removeAllElements();
-    }
-
-    public void addFocusListener(FocusListener listener) {
-        //ifileTextfield.addFocusListener(listener);
+    public File getSelectedFile() {
+        return (File) fileListModel.getSelectedItem();
     }
 
     public void addSelectionChangeListener(SelectionChangeListener listener) {
         selectionContext.addSelectionChangeListener(listener);
     }
-
-    public void removeSelectionChangeListener(SelectionChangeListener listener) {
-        selectionContext.removeSelectionChangeListener(listener);
+    public synchronized void releaseFiles() {
+        appContext.getProductManager().removeListener(productManagerListener);
+        fileListModel.removeAllElements();
     }
 
-    private void addProduct(Product product) {
-        if (productFilter.accept(product) && regexFileFilter.accept(product.getFileLocation())) {
-            productListModel.addElement(product);
-        }
+    public JComboBox getFileNameComboBox() {
+        return fileNameComboBox;
     }
 
-    // UI Components
-
-    /////////////////////////////////////
-
-    public JComboBox getProductNameComboBox() {
-        return productNameComboBox;
+    public JLabel getFileNameLabel() {
+        return fileNameLabel;
     }
 
-    public JLabel getProductNameLabel() {
-        return productNameLabel;
+    public void setFileNameLabel(JLabel jLabel) {
+        this.fileNameLabel = jLabel;
     }
 
-    public void setProductNameLabel(JLabel jLabel) {
-        this.productNameLabel = jLabel;
-    }
-
-    public JButton getProductFileChooserButton() {
-        return productFileChooserButton;
-    }
-
-    private boolean productListModelContains(Product product) {
-        for (int i = 0; i < productListModel.getSize(); i++) {
-            if (productListModel.getElementAt(i).equals(product)) {
-                return true;
-            }
-        }
-        return false;
+    public JButton getFileChooserButton() {
+        return fileChooserButton;
     }
 
     private boolean fileListModelContains(File file) {
@@ -306,7 +211,6 @@ public class SeadasFileSelector {
         }
         return false;
     }
-
 
     public JPanel createDefaultPanel() {
         return createDefaultPanel(true);
@@ -320,15 +224,16 @@ public class SeadasFileSelector {
             addLabelToMainPanel(mainPanel);
         }
 
-        mainPanel.add(getProductNameComboBox(),
+        mainPanel.add(getFileNameComboBox(),
                 new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
-        mainPanel.add(getProductFileChooserButton(),
+        mainPanel.add(getFileChooserButton(),
                 new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
         return mainPanel;
     }
 
+
     private void addLabelToMainPanel(JPanel jPanel) {
-        jPanel.add(getProductNameLabel(),
+        jPanel.add(getFileNameLabel(),
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
     }
 
@@ -358,16 +263,12 @@ public class SeadasFileSelector {
 
     private File[] files;
 
-    public File[] getSelectedMultiFiles() {
-        return files;
-    }
-
-    private class ProductFileChooserAction extends AbstractAction {
+    private class FileChooserAction extends AbstractAction {
 
         private String APPROVE_BUTTON_TEXT = "Select";
         private JFileChooser fileChooser;
 
-        private ProductFileChooserAction() {
+        private FileChooserAction() {
             super("...");
             fileChooser = new BeamFileChooser();
             JPanel filterPanel = createFilterPane();
@@ -411,12 +312,9 @@ public class SeadasFileSelector {
 
         private void updateFileFilter() {
             regexFileFilter = new RegexFileFilter(filterRegexField.getText());
-            //removePreviousFilters(regexFilters);
             fileChooser.resetChoosableFileFilters();
             fileChooser.addChoosableFileFilter(regexFileFilter);
             fileChooser.getUI().rescanCurrentDirectory(fileChooser);
-
-            //regexFilters.add(regexFileFilter);
             SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
         }
 
@@ -430,8 +328,6 @@ public class SeadasFileSelector {
             currentDirectory = new File(openDir);
             fileChooser.setCurrentDirectory(currentDirectory);
 
-            //fileChooser.addChoosableFileFilter(regexFileFilter);
-
             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
 
                 currentDirectory = fileChooser.getCurrentDirectory();
@@ -444,96 +340,37 @@ public class SeadasFileSelector {
                 }
 
                 final File file = fileChooser.getSelectedFile();
-                Product product = null;
-                NetcdfFile ncFile1 = null;
-                final String filePath = file.getAbsolutePath();
-                try {
-                    product = ProductIO.readProduct(file);
-                    ncFile1 = NetcdfFile.open(filePath);
 
-                } catch (Exception e) {
-                }
 
-                try {
-                    if (product == null) {
-                        if (file.canRead()) {
-                            product = new Product(file.getName(), "DummyType", 10, 10);
-                            product.setFileLocation(file);
-                        } else {
-                            throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
-                        }
+                if (regexFileFilter.accept(file)) {
+                    setSelectedFile(file);
+                } else {
+                    try {
+                        final String message = String.format("File [%s] is not a valid source.",
+                                file.getCanonicalPath());
 
-                    }
-
-                    if (productFilter.accept(product) && regexFileFilter.accept(file)) {
-                        setSelectedProduct(product);
-                    } else {
-                        final String message = String.format("Product [%s] is not a valid source.",
-                                product.getFileLocation().getCanonicalPath());
                         handleError(window, message);
-                        SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
-                        product.dispose();
+                        SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(file.isHidden()).toString());
+                    } catch (IOException ioe) {
+                        SeadasFileUtils.debug(file + "is not a valid file!");
                     }
-                } catch (Exception e) {
-                    if (product != null) {
-                        product.dispose();
-                    }
-                    handleError(window, e.getMessage());
-                    e.printStackTrace();
                 }
             }
         }
 
+        /**
+         * creates a text file that lists file names to be binned.
+         * This method is only used by l2bin and l3bin. As such, input files should L2 file type.
+         *
+         * @param window
+         */
         private void handleMultipFileSelection(Window window) {
             File[] tmpFiles = fileChooser.getSelectedFiles();
-            ArrayList<File> tmpArrayList = new ArrayList<File>();
-            //Product product = null;
-            //Product sampleProduct = null;
-            boolean firstTime = true;
-            for (File file : tmpFiles) {
-                try {
-                    Product product = ProductIO.readProduct(file);
-                    if (product == null) {
-                        if (file.canRead()) {
-                            product = new Product(file.getName(), "DummyType", 10, 10);
-                            product.setFileLocation(file);
-                            product.setDescription(file.getAbsolutePath());
-                        } else {
-                            throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
-                        }
-                    } else {
-                        if (firstTime) {
-                            firstTime = true;
-                            sampleProductForMultiIfiles = product;
-                        }
-                    }
-
-                    if (productFilter.accept(product) && regexFileFilter.accept(file)) {
-                        tmpArrayList.add(file);
-                    } else {
-                        final String message = String.format("Product [%s] is not a valid source.",
-                                product.getFileLocation().getCanonicalPath());
-                        handleError(window, message);
-                        SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
-                        product.dispose();
-                    }
-                } catch (IOException e) {
-
-                    handleError(window, e.getMessage());
-                } catch (Exception e) {
-                    if (sampleProductForMultiIfiles != null) {
-                        sampleProductForMultiIfiles.dispose();
-                    }
-                    handleError(window, e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-            setSelectedMultiFileList(tmpArrayList);
+            setSelectedMultiFileList(tmpFiles);
         }
 
-        public void setSelectedMultiFileList(ArrayList<File> tmpArrayList) {
-            files = new File[tmpArrayList.size()];
-            tmpArrayList.toArray(files);
+        public void setSelectedMultiFileList(File[] selectedMultiFileList) {
+            files = selectedMultiFileList;
 
             File fileListFile = new File(currentDirectory, "_inputFiles.lst");
 
@@ -549,10 +386,7 @@ public class SeadasFileSelector {
                 fileWriter.close();
             } catch (IOException ioe) {
             }
-            Product product = new Product(fileListFile.getName(), "DummyType", 10, 10);
-            product.setFileLocation(fileListFile);
-            product.setDescription(fileNames.toString());
-            setSelectedProduct(product);
+            setSelectedFile(fileListFile);
             currentDirectory = fileChooser.getCurrentDirectory();
             appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
                     currentDirectory.getAbsolutePath());

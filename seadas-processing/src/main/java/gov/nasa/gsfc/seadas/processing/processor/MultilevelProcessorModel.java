@@ -18,20 +18,20 @@ public class MultilevelProcessorModel extends ProcessorModel {
     }
 
 
-    public String[] getProgramCmdArray() {
-        final String PAR_EQUAL = "par=";
-
-        String[] commandArray = super.getProgramCmdArray();
-
-        for (int i = 0; i < commandArray.length; i++) {
-
-            if (commandArray[i] != null && commandArray[i].startsWith(PAR_EQUAL)) {
-                commandArray[i] = commandArray[i].substring(PAR_EQUAL.length());
-            }
-        }
-
-        return commandArray;
-    }
+//    public String[] getProgramCmdArray() {
+//        final String PAR_EQUAL = "par=";
+//
+//        String[] commandArray = super.getProgramCmdArray();
+//
+//        for (int i = 0; i < commandArray.length; i++) {
+//
+//            if (commandArray[i] != null && commandArray[i].startsWith(PAR_EQUAL)) {
+//                commandArray[i] = commandArray[i].substring(PAR_EQUAL.length());
+//            }
+//        }
+//
+//        return commandArray;
+//    }
 
 
 }

@@ -153,7 +153,8 @@ public class SeadasMain implements RuntimeRunnable {
             dirPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
         }
         if (dirPath != null) {
-            final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
+            //final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
+            final File dir = new File(dirPath  + System.getProperty("file.separator") + "scripts");
             if (dir.isDirectory()) {
                 return true;
             }

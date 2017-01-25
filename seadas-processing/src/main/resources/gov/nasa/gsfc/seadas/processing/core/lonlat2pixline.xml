@@ -53,5 +53,38 @@
             <usedAs>argument</usedAs>
             <order>4</order>
         </option>
+        <option type="help">
+            <name>spixl</name>
+            <value></value>
+            <default></default>
+            <description>start pixel number</description>
+            <usedAs>argument</usedAs>
+            <order>5</order>
+        </option>
+        <option type="help">
+            <name>epixl</name>
+            <value></value>
+            <default></default>
+            <description>end pixel number (-1=the last pixel)</description>
+            <usedAs>argument</usedAs>
+            <order>6</order>
+        </option>
+        <option type="help">
+            <name>sline</name>
+            <value></value>
+            <default></default>
+            <description>start line number</description>
+            <usedAs>argument</usedAs>
+            <order>7</order>
+        </option>
+        <option type="help">
+            <name>eline</name>
+            <value></value>
+            <default></default>
+            <description>end line number (-1=the last line)</description>
+            <usedAs>argument</usedAs>
+            <order>8</order>
+        </option>
+
     </options>
 </paramInfo>

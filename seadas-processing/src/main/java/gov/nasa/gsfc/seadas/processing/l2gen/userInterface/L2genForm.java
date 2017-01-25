@@ -278,14 +278,14 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
 
-    public SourceProductFileSelector getSourceProductSelector() {
-        return l2genMainPanel.getPrimaryIOFilesPanel().getIfileSelector().getSourceProductSelector();
+    public SeadasFileSelector getSourceProductSelector() {
+        return l2genMainPanel.getPrimaryIOFilesPanel().getIfileSelector().getFileSelector();
     }
 
 
-    public Product getSelectedSourceProduct() {
+    public File getSelectedSourceProduct() {
         if (getSourceProductSelector() != null) {
-            return getSourceProductSelector().getSelectedProduct();
+            return getSourceProductSelector().getSelectedFile();
         }
 
         return null;
@@ -300,7 +300,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     public void prepareHide() {
         if (getSourceProductSelector() != null) {
-            getSourceProductSelector().releaseProducts();
+            getSourceProductSelector().releaseFiles();
         }
     }
 

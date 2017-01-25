@@ -47,7 +47,7 @@ public class ParamInfo implements Comparable, Cloneable {
     private boolean isBit = false;
     private int order = 0;
     private String validationComment = null;
-    private String usedAs = USED_IN_COMMAND_AS_ARGUMENT;
+    private String usedAs = USED_IN_COMMAND_AS_OPTION;
 
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
 
@@ -377,19 +377,39 @@ public class ParamInfo implements Comparable, Cloneable {
 
     // get a string representation of this ParamInfo usable as a param string
     public String getParamString() {
-        if (usedAs.equals(USED_IN_COMMAND_AS_FLAG)) {
-            if (isTrue()) {
-                return name;
-            } else {
-                return "";
-            }
-        } else {
-            if (value.contains(" ")) {
-                return name + "=\"" + value + "\"";
-            } else {
-                return name + "=" + value;
-            }
+        if (value.length() == 0) {
+            return "";
         }
+        switch (usedAs) {
+            case USED_IN_COMMAND_AS_ARGUMENT:
+                return value;
+            case USED_IN_COMMAND_AS_FLAG:
+                if (isTrue()) {
+                    return name;
+                } else {
+                    return "";
+                }
+            case USED_IN_COMMAND_AS_OPTION:
+                if (value.contains(" ")) {
+                    return name + "=\"" + value + "\"";
+                } else {
+                    return name + "=" + value;
+                }
+             default:
+                 return "";
+        }
+//        if (usedAs.equals(USED_IN_COMMAND_AS_FLAG)) {
+//            if (isTrue()) {
+//                return name;
+//            } else {
+//                return "";
+//            }
+//        } else if (value.length() > 0){
+//            if (value.contains(" ")) {
+//                return name + "=\"" + value + "\"";
+//            } else {
+//                return name + "=" + value;
+//            }
     }
 
     public boolean isTrue() {

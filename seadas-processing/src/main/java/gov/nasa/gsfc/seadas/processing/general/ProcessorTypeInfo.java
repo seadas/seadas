@@ -13,6 +13,35 @@ import java.util.Set;
  */
 public class ProcessorTypeInfo {
 
+    public static String L1EXTRACT_MODIS_PROGRAM_NAME = "l1extract_modis";
+    public static String L1EXTRACT_SEAWIFS_PROGRAM_NAME = "l1extract_seawifs";
+    public static String L2EXTRACT_PROGRAM_NAME = "l2extract";
+    public static String MODIS_L1A_PY_PROGRAM_NAME = "modis_L1A.py";
+    public static String MODIS_GEO_PY_PROGRAM_NAME = "modis_GEO.py";
+    public static String GEOLOCATE_VIIRS_PROGRAM_NAME = "geolocate_viirs";
+    public static String L1BGEN_PROGRAM_NAME = "l1bgen";
+    public static String MODIS_L1B_PY_PROGRAM_NAME = "modis_L1B.py";
+    public static String CALIBRATE_VIIRS_PROGRAM_NAME = "calibrate_viirs";
+    public static String L1BRSGEN_PROGRAM_NAME = "l1brsgen";
+    public static String L2BRSGEN_PROGRAM_NAME = "l2brsgen";
+    public static String L1MAPGEN_PROGRAM_NAME = "l1mapgen";
+    public static String L2MAPGEN_PROGRAM_NAME = "l2mapgen";
+    public static String L2BIN_PROGRAM_NAME = "l2bin";
+    public static String L2BIN_AQUARIUS_PROGRAM_NAME = "l2bin_aquarius";
+    public static String L2GEN_PROGRAM_NAME = "l2gen";
+    public static String L2GEN_AQUARIUS_PROGRAM_NAME = "l2gen_aquarius";
+    public static String L3BIN_PROGRAM_NAME = "l3bin";
+    public static String L3MAPGEN_PROGRAM_NAME = "l3mapgen";
+    public static String SMIGEN_PROGRAM_NAME = "smigen";
+    public static String SMITOPPM_PROGRAM_NAME = "smitoppm";
+    public static String LONLAT2PIXLINE_PROGRAM_NAME = "lonlat2pixline";
+    public static String MULTILEVEL_PROCESSOR_PY_PROGRAM_NAME = "multilevel_processor.py";
+    public static String MULTILEVEL_PROCESSOR_PROGRAM_NAME = "multilevel_processor";
+    public static String INSTALL_OCSSW_PY_PROGRAM_NAME = "install_ocssw.py";
+    public static String L3BINDUMP_PROGRAM_NAME = "l3bindump";
+    public static String GET_OBPG_FILE_TYPE_PY_PROGRAM_NAME = "get_obpg_file_type.py";
+    public static String NEXT_LEVEL_NAME_PY_PROGRAM_NAME = "next_level_name.py";
+
     public static enum ProcessorID {
         EXTRACTOR,
         MODIS_L1A_PY,
@@ -38,6 +67,8 @@ public class ProcessorTypeInfo {
         L2GEN,
         L2GEN_AQUARIUS,
         L3BINDUMP,
+        GET_OBPG_FILE_TYPE_PY,
+        NEXT_LEVEL_NAME_PY,
         NOID
     }
 
@@ -70,6 +101,8 @@ public class ProcessorTypeInfo {
         put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR);
         put("install_ocssw.py", ProcessorID.OCSSW_INSTALLER);
         put("l3bindump", ProcessorID.L3BINDUMP);
+        put("get_obpg_file_type.py", ProcessorID.GET_OBPG_FILE_TYPE_PY);
+        put("next_level_name.py", ProcessorID.NEXT_LEVEL_NAME_PY);
 
     }};
 

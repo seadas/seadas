@@ -15,14 +15,42 @@
 \setlength{\extrarowheight}{3pt}
 %\usepackage{hyperref}
 
-\title{OCSSW Web Services Developer Manual}
-\author{Aynur Abdurazik}
+\title{SeaDAS Application Developer Manual}
+\author{SeaDAS Dev Team}
 \date{\today}							% Activate to display a given date or no date
 
 
 \begin{document}
 
 \maketitle
+
+\section{Hiccups}
+\subsection{Java Version Update}
+If your java version is updated through system admin, your code will not compile until you update the following three (at least in my case):
+\begin{enumerate}
+\item Update JAVA_HOME environment variable
+\item Update "Project SDK" version in IntelliJ (Go to File -> Project Structure -> Project, then select the latest SDK version)
+\item Update java version in the pom.xml on every module, if you have it in multiple places
+\item Update/check dependency for ocssw restful services, such as sqlite.\footnote{I had this error "java.lang.ClassNotFoundException: org.sqlite.JDBC".
+                                                                                   Adding the following dependency in the pom.xml of seadas-ocsswrest resolved the problem:
+
+                                                                                           <dependency>
+                                                                                               <groupId>org.xerial</groupId>
+                                                                                               <artifactId>sqlite-jdbc</artifactId>
+                                                                                               <version>3.8.11.2</version>
+                                                                                           </dependency>}
+\item Update java version on the remote server \footnote{After Java version is installed on the local and new code with the new Java version is compiled and deployed on the server, got this error:
+﻿Exception in thread "main" java.lang.UnsupportedClassVersionError: gov/nasa/gsfc/seadas/ocsswrest/OCSSWRestServer : Unsupported major.minor version 52.0
+	at java.lang.ClassLoader.defineClass1(Native Method)
+}.
+
+\end{enumerate}
+
+
+﻿export JAVA_HOME=/opt/java/jdk1.8.0_111/
+export JRE_HOME=/opt/java/jdk1.8.0._111/jre
+export PATH=$PATH:/opt/java/jdk1.8.0_111/bin:/opt/java/jdk1.8.0_111/jre/bin
+
 
 \section{Packaging and Deployment}
 \subsection{Packaging}
@@ -57,14 +85,9 @@ Run the following command from the command line to execute:
 
 \subsection{Basic Configuration}
 \begin{enumerate}
-\item Need to install ``guest editions" to be able to resize the vm window and also to enable file sharing between the host and the guest.
+\item Need to install ``guest editions" to be able to resize the vm window.
 \item Choose "Fixed" virtual box for performance. Eloborate more later.
 \end{enumerate}
-
-\subsection{How to install guest additions}
-The guest additions are actually included (invisibly) in the binary package. You get at them by choosing Install Guest Additions from the Devices menu.
-You then install them by mounting the Guest Additions iso file,
-which will show up in the list of available images. The Guest Additions are not available separately and don't need to be.
 
 \subsection{File Sharing}
 
@@ -102,7 +125,7 @@ In VirtualBox {\color{blue}{\bf Devices  $\rightarrow $  Shared Folder Settings.
 \begin{code}
 sudo mount -t vboxsf seadas-ocsswrest /home/aabduraz/ocsswrest
 \end{code}
-where $seadas-ocsswrest$ is the name of folder, which has the development source code for web services, shared from the host machine, and $/home/aabduraz/ocsswrest$ is an empty folder in the virtual machine. The  $seadas-ocsswrest$ is shared to deploy the jar file from its $target$ directory after each build. 
+where $seadas-ocsswrest$ is the name of folder, which has the development source code for web services, shared from the host machine, and $/home/aabduraz/ocsswrest$ is an empty folder in the virtual machine. The  $seadas-ocsswrest$ is shared to deploy the jar file from its $target$ directory after each build.
 
 \item need to install git
 (error message:Error - Could not execute system command "git --version $>$ /dev/null" )
@@ -211,34 +234,5 @@ SslConfigurator sslConfig = SslConfigurator.newInstance()
 
  SSLContext sslContext = sslConfig.createSSLContext();
 \end{code}
-
-
-\section{Virtualbox Related FAQ}
-A Virtual Box Ubuntu behaves very similar to Ubuntu on bare metal. Therefore the solutions from this question
-
-How to fix "The system is running in low-graphics mode" error?
-mostly hold true as well. However note, that you do not have a graphics card or proprietary drivers in a VM. This will all be handled by the guest additions.
-
-We can enter a TTY for command line repair by press and hold the HOST-key, which in your case is the right Ctrl-key and simultanously press F1 trough F8.
-
-In case your virtual hard drive runs short of memory try first with
-
-sudo apt-get autoremove
-sudo apt-get autoclean
-to remove no longer needed packages.
-
-
-\subsection{How to free up disk space}
-
-\begin{itemize}
-\item empty the directory /tmp
-\item dpkg -l | grep ^rc | cut -d ' ' -f3 | xargs sudo apt-get purge -y
-\item sudo apt-get autoremove
-\item Synaptic
-\item sudo apt-get clean
-\ietm sudo apt-get autoclean
-\item sudo apt-get remove --purge linux-image-X.X.XX-XX-generic    -- delete old kernels
-to decide which kernel version to remove: dpkg --get-selections | grep linux-image
-\end{itemize}
 
 \end{document}

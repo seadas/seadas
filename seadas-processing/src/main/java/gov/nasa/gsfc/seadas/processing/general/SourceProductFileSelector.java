@@ -84,11 +84,6 @@ public class SourceProductFileSelector {
     }
 
     public SourceProductFileSelector(AppContext appContext, String labelText, boolean selectMultipleIFiles) {
-//        try {
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         this.selectMultipleIFiles = selectMultipleIFiles;
         this.appContext = appContext;
 
@@ -196,14 +191,6 @@ public class SourceProductFileSelector {
     public Product getSelectedProduct() {
         return (Product) productListModel.getSelectedItem();
     }
-//    public Product getSelectedProduct() {
-//
-////        if (sampleProductForMultiIfiles == null) {
-////        return (Product) productListModel.getSelectedItem();
-////        } else{
-////            return sampleProductForMultiIfiles;
-////        }
-//    }
 
     public Product getSelectedProductSample() {
         if (sampleProductForMultiIfiles == null) {
@@ -273,23 +260,6 @@ public class SourceProductFileSelector {
         productNameComboBox.repaint();
     }
 
-    public void setSelectedFile(File file, String fileContent) {
-        if (file != null && file.canRead()) {
-            Product product = null;
-            try {
-                product = ProductIO.readProduct(file);
-            } catch (IOException ioe) {
-
-            }
-            if (product == null) {
-                product = new Product(file.getName(), "DummyType", 10, 10);
-            }
-            product.setFileLocation(file);
-            product.setDescription(fileContent);
-            setSelectedProduct(product);
-        }
-    }
-
     public synchronized void releaseProducts() {
         appContext.getProductManager().removeListener(productManagerListener);
         if (extraProduct != null && getSelectedProduct() != extraProduct) {
@@ -301,17 +271,6 @@ public class SourceProductFileSelector {
 
     public void addSelectionChangeListener(SelectionChangeListener listener) {
         selectionContext.addSelectionChangeListener(listener);
-    }
-
-    public void removeSelectionChangeListener(SelectionChangeListener listener) {
-        selectionContext.removeSelectionChangeListener(listener);
-    }
-
-    public void removeListeners(){
-       SelectionChangeListener[] selectionChangeListeners = selectionContext.getSelectionChangeListeners();
-        for (int i = 0; i < selectionChangeListeners.length; i++) {
-            this.selectionContext.removeSelectionChangeListener(selectionChangeListeners[i]);
-        }
     }
 
     private void addProduct(Product product) {
@@ -472,8 +431,6 @@ public class SourceProductFileSelector {
             currentDirectory = new File(openDir);
             fileChooser.setCurrentDirectory(currentDirectory);
 
-            //fileChooser.addChoosableFileFilter(regexFileFilter);
-
             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
 
                 currentDirectory = fileChooser.getCurrentDirectory();
@@ -502,21 +459,15 @@ public class SourceProductFileSelector {
                         pm.beginTask("Loading file '" + file + "' as a new SeaDAS product ", 2);
 
                         try {
-                            //productTmp[0] = ProductIO.readProduct(file);
                             pm.worked(1);
-
-                            //Product product = productTmp[0];
                             Product product = null;
                             try {
-                                //if (product == null) {
                                 if (file.canRead()) {
                                     product = new Product(file.getName(), "DummyType", 10, 10);
                                     product.setFileLocation(file);
                                 } else {
                                     throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
                                 }
-                                //}
-
                                 if (productFilter.accept(product) && regexFileFilter.accept(file)) {
                                     setSelectedProduct(product);
                                 } else {
@@ -546,71 +497,9 @@ public class SourceProductFileSelector {
             }
         }
 
-        //        @Override
-//         public void actionPerformed(ActionEvent event) {
-//             final Window window = SwingUtilities.getWindowAncestor((JComponent) event.getSource());
-//
-//             String homeDirPath = SystemUtils.getUserHomeDir().getPath();
-//             String openDir = appContext.getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
-//                     homeDirPath);
-//             currentDirectory = new File(openDir);
-//             fileChooser.setCurrentDirectory(currentDirectory);
-//
-//             //fileChooser.addChoosableFileFilter(regexFileFilter);
-//
-//             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
-//
-//                 currentDirectory = fileChooser.getCurrentDirectory();
-//                 appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
-//                         currentDirectory.getAbsolutePath());
-//
-//                 if (selectMultipleIFiles && fileChooser.getSelectedFiles().length > 1) {
-//                     handleMultipFileSelection(window);
-//                     return;
-//                 }
-//
-//                 final File file = fileChooser.getSelectedFile();
-//                 Product product = null;
-////                 try {
-////                     product = ProductIO.readProduct(file);
-////
-////                 } catch (Exception e) {
-////                 }
-//
-//                 try {
-//                     //if (product == null) {
-//                         if (file != null && file.canRead()) {
-//                             product = new Product(file.getName(), "DummyType", 10, 10);
-//                             product.setFileLocation(file);
-//                         } else {
-//                             throw new IOException(MessageFormat.format("File ''{0}'' could not be read.", file.getPath()));
-//                         }
-//
-//                    // }
-//
-//                     if (productFilter.accept(product) && regexFileFilter.accept(file)) {
-//                         setSelectedProduct(product);
-//                     } else {
-//                         final String message = String.format("Product [%s] is not a valid source.",
-//                                 product.getFileLocation().getCanonicalPath());
-//                         handleError(window, message);
-//                         SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
-//                         product.dispose();
-//                     }
-//                 } catch (Exception e) {
-//                     if (product != null) {
-//                         product.dispose();
-//                     }
-//                     handleError(window, e.getMessage());
-//                     e.printStackTrace();
-//                 }
-//             }
-//         }
         private void handleMultipFileSelection(Window window) {
             File[] tmpFiles = fileChooser.getSelectedFiles();
             ArrayList<File> tmpArrayList = new ArrayList<File>();
-            //Product product = null;
-            //Product sampleProduct = null;
             boolean firstTime = true;
             for (File file : tmpFiles) {
                 try {
