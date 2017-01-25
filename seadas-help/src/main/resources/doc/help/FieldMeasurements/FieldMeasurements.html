@@ -25,21 +25,34 @@
 
 
 <p>
-    SeaDAS contains a variety of tools associated with the use of field measurement data.<br><br>
+    SeaDAS contains a variety of tools associated with the use of field measurement data.<br>
 
-    Field measurement data can be loaded into SeaDAS in one of two formats:<br>
-    <a href="../seadas-reader/importSeabass.html">Import SeaBASS File</a><br>
-    <a href="../visat/ImportSeaDASTrack.html">Import SeaDAS 6.x Track File</a><br>
+    <h4>Importing Field Measurement Data</h4>
+    Field measurement data can be loaded into SeaDAS in either the <br>
+    <a href="../seadas-reader/importSeabass.html">SeaBASS</a> or
+    <a href="../visat/ImportSeaDASTrack.html">SeaDAS6.x</a> format.
     Once loaded this data is available for comparative analysis with the satellite data and ship course tracking overlays.<br><br>
 
-    <a href="ShipTrackImage.html"><img src="images/shiptrack_small.png"></a><br><br>
-    <i>The above image shows a shiptrack for a cruise.  The circles are stations where the open circles are the stations which
-        officially matched up based on a 3 hour time window and other criteria.  The chlorophyll imagery is from the satellite.
-        The correlation plots show the comparison of the satellite measurement of chlorophyll to that of the field measurement value. </i><br><br>
 
-    <a href="FindMatchups.html">Find Matchups</a> is a tool which returns satellite level-2 file names and download links for a time and point or region. <br><br>
+    The image below illustrates some of the capabilities for comparing field measurement data with satellite data.
+        A line (shiptrack) depicts the path of the cruise, the circles are measurement stations with the open circles
+        being the "validated" stations (those station which officially "matched up" with the satellite data with regards to a 3 hour time window and other
+        quality flag constraints).  The chlorophyll imagery displayed is from the satellite.  The correlation plots show the comparison
+        of the satellite measurement of chlorophyll to that of the field measurement value.<br><br>
 
-    <a href="MakeMatchups.html">Make Matchups</a> is a tool which extracts, filters, and appends satellite match-up data to a valid SeaBASS file.
+    <a href="ShipTrackImage.html"><img src="images/shiptrack_small.png"></a><br>
+
+
+    <h4>Level-2 File Search and Matchup Tools</h4>
+
+    The <a href="../beam-pixel-extraction/PixelExtraction.html">Pixel Extraction Tool</a> can be used to effectively determine
+    Level-2 satellite data and field measurement matchups with user specified time window and quality flag constraints.<br><br>
+
+    SeaBASS matchup tools are available, which use the standard accepted SeaBASS validation criteria.
+
+    <a href="FindMatchups.html">Find Matchup</a> is a tool which returns satellite level-2 file names and download links for a time and point or region.
+
+    <a href="MakeMatchups.html">Make Matchup</a> is a tool which extracts, filters, and appends satellite match-up data to a valid SeaBASS file.
 </p>
 
 
