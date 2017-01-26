@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-app</symbolicName>
-    <version>7.3.2</version>
+    <version>7.4</version>
     <name>SeaDAS Application</name>
 
     <description>
@@ -14,7 +14,7 @@
         <applicationDescriptor>
             <applicationId>SeaDAS</applicationId>
             <displayName>SeaDAS</displayName>
-            <version>7.3.2</version>
+            <version>7.4</version>
             <buildId>2016.05.18</buildId>
             <buildDate>May 2016</buildDate>
             <!--<buildId>${beam.build.id}</buildId>-->

@@ -24,7 +24,7 @@
     <url>http://seadas.gsfc.nasa.gov/</url>
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas</artifactId>
-    <version>7.3.2</version>
+    <version>7.4</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -37,7 +37,7 @@
         <netcdf.version>4.3.22</netcdf.version>
         <geotools.version>2.7.4</geotools.version>
         <jide.version>3.5.15</jide.version>
-        <seadas.version>7.3.2</seadas.version>
+        <seadas.version>7.4</seadas.version>
         <javax.ws.rs>2.0.1</javax.ws.rs>
         <jersey.version>2.23.2</jersey.version>
         <grizzly.version>2.3.26</grizzly.version>
@@ -826,7 +826,7 @@
         <repository>
             <id>jide</id>
             <name>Internal JIDE repository</name>
-            <url>http://seadasdev.domain.pub/mvn-seadas/</url>
+            <url>https://seadasdev.domain.pub/mvn-seadas/</url>
         </repository>
         <repository>
             <id>release.maven.java.net</id>

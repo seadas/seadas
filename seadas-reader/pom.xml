@@ -22,7 +22,7 @@
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas</artifactId>
-        <version>7.3.2</version>
+        <version>7.4</version>
     </parent>
 
     <artifactId>seadas-reader</artifactId>
