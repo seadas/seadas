@@ -12,7 +12,7 @@
     <vendor>NASA Ocean Biology Processing Group</vendor>
     <contactAddress>NASA GSFC, Code 614.2</contactAddress>
     <copyright>(C) 2012 United States Government as represented by the Administrator of the National Aeronautics and Space Administration.</copyright>
-    <url>http://oceancolor.gsfc.nasa.gov/seadas</url>
+    <url>https://oceancolor.gsfc.nasa.gov/seadas</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
     <changelog>
         <![CDATA[

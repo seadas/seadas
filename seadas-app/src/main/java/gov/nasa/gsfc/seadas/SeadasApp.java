@@ -92,7 +92,7 @@ public class SeadasApp extends VisatApp {
      */
     public SeadasApp(ApplicationDescriptor applicationDescriptor) {
         super(applicationDescriptor);
-        // SystemUtils.BEAM_HOME_PAGE = "http://seadas.gsfc.nasa.gov/";
+        // SystemUtils.BEAM_HOME_PAGE = "https://seadas.gsfc.nasa.gov/";
     }
 
 

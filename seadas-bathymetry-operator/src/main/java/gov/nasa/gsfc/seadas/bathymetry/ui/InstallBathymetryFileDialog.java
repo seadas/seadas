@@ -57,7 +57,7 @@ class InstallBathymetryFileDialog extends JDialog {
 
                 dispose();
 
-                //  acquire in example: "http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask/50m.zip"
+                //  acquire in example: "https://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask/50m.zip"
                 try {
                     bathymetryData.setInstallingFile(true);
                     bathymetryData.fireEvent(BathymetryData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);

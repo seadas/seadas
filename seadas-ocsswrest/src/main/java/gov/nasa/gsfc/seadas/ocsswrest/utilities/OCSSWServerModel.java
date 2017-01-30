@@ -27,7 +27,7 @@ public class OCSSWServerModel {
 
     public static String OCSSW_INSTALLER = "install_ocssw.py";
 
-    public static String OCSSW_INSTALLER_URL = "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
+    public static String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
     public static String OCSSW_INSTALL_DIR = System.getProperty("user.home") + "/ocssw";
     public static String OCSSW_INSTALLER_FILE_LOCATION = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
     public static String OCDATAROOT;
@@ -133,7 +133,7 @@ public class OCSSWServerModel {
     }
 
     /**
-     * this method doanloads the latest ocssw_install.py program from   "http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py" location.
+     * this method doanloads the latest ocssw_install.py program from   "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py" location.
      *
      * @return true if download is successful.
      */

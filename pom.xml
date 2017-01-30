@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>SeaDAS</name>
-    <url>http://seadas.gsfc.nasa.gov/</url>
+    <url>https://seadas.gsfc.nasa.gov/</url>
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas</artifactId>
     <version>7.4</version>
@@ -113,7 +113,7 @@
 
     <organization>
         <name>NASA Ocean Biogeochemical Processing Group</name>
-        <url>http://oceancolor.gsfc.nasa.gov/</url>
+        <url>https://oceancolor.gsfc.nasa.gov/</url>
     </organization>
 
     <inceptionYear>2011</inceptionYear>
@@ -126,7 +126,7 @@
         </license>
         <license>
             <name>NASA Open Source Agreement</name>
-            <url>http://ti.arc.nasa.gov/opensource/nosa/</url>
+            <url>https://ti.arc.nasa.gov/opensource/nosa/</url>
             <distribution>repo</distribution>
         </license>
     </licenses>

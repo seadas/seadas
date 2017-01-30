@@ -58,7 +58,7 @@ class InstallResolutionFileDialog extends JDialog {
 
                 dispose();
 
-                //  acquire in example: "http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask/50m.zip"
+                //  acquire in example: "https://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask/50m.zip"
                 try {
                     landMasksData.fireEvent(LandMasksData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
 

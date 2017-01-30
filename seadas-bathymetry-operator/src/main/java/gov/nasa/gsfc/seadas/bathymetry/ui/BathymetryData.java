@@ -31,7 +31,7 @@ public class BathymetryData {
     public static String PROMPT_REQUEST_TO_INSTALL_FILE_EVENT = "REQUEST_TO_INSTALL_FILE_EVENT";
     public static String CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT = "CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT";
 
-    public static String LANDMASK_URL = "http://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask";
+    public static String LANDMASK_URL = "https://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask";
 
     private boolean createMasks = false;
     private boolean deleteMasks = false;
