@@ -34,7 +34,7 @@ in production and provide bug fixes.
 <pre>
     FEATURE ADDITIONS/MODIFICATIONS
 
-        -   Color Palette and Color Bar revisions.
+        -   Color Palette and Color Bar
             1.  There is now a toggle button in the Color Manager to reverse the direction of a color palette
             2.  The color bar labels will now automatically default with enough decimals places to display small numbers
             3.  Color palettes can now be exported in the CPT format and the PAL format
@@ -47,12 +47,22 @@ in production and provide bug fixes.
             1.  Added option to display label in either compass format or signed format (in example for longitude: -90 instead of 90W)
             2.  Added option to display label in decimal format or in the format of degrees, minutes, seconds
 
-        -   Text Annotation feature has been added.  Text appears with semi-transparent background to delineate text
-            from image.  The same type of text also now appears on the Pins Tool and the GCP Tool.
+        -   Text Annotation
+            Feature has been added.  Text appears with semi-transparent background to delineate text
+            from image.  Note: the same type of text also now appears on the Pins Tool and the GCP Tool.
 
-        -   Field measurement: Command-line tools added which create validation collocation match-ups between field
+        -   Field Measurement
+            Command-line tools added which create validation collocation match-ups between field
             (in situ) data measurements (points or a SeaBASS file) and Level-2 ocean color satellite data
 
+        -   Level2 Masks
+            1.  New user-friendly naming of the masks which are based on the level2 flags.  An xml configuration file
+                (~/.seadas/beam-ui/auxdata/masks/l2_masks_default.xml) establishes this naming.
+            2.  Added two quality level masks "Quality_L2" and "Quality_L3" which combines the level2 flags to match the
+                standard quality flags being used currently in the production of the OB.DAAC products.
+
+        - Menu Reorganization
+            1.  Minor changes to top level menu aimed.
 
     BUG FIXES
 
