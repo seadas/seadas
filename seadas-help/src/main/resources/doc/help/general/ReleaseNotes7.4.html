@@ -56,10 +56,12 @@ in production and provide bug fixes.
             (in situ) data measurements (points or a SeaBASS file) and Level-2 ocean color satellite data
 
         -   Level2 Masks
-            1.  New user-friendly naming of the masks which are based on the level2 flags.  An xml configuration file
-                (~/.seadas/beam-ui/auxdata/masks/l2_masks_default.xml) establishes this naming.
+            1.  Two choices are now available for the naming convention of the masks which are based on the level2 flags.
+                One identically matches level2 flag names (but now is alphabetized instead of by bit order), the other
+                is a user-friendly name version.  See Preferences->Mask Layer
             2.  Added two quality level masks "Quality_L2" and "Quality_L3" which combines the level2 flags to match the
                 standard quality flags being used currently in the production of the OB.DAAC products.
+            3.  Added "Water" mask convenience shortcut which is Water=!LAND.
 
         - Menu Reorganization
             1.  Minor changes to top level menu aimed.

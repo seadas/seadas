@@ -21,8 +21,10 @@ import org.esa.beam.dataio.dimap.spi.DimapPersistable;
 import org.esa.beam.dataio.dimap.spi.DimapPersistence;
 import org.esa.beam.framework.dataio.ProductIOException;
 import org.esa.beam.framework.datamodel.*;
+import org.esa.beam.util.PropertyMap;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.CsvReader;
+import org.esa.beam.visat.VisatApp;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -55,6 +57,9 @@ import javax.swing.*;
 
 public abstract class SeadasFileReader {
 
+    final VisatApp visatApp = VisatApp.getApp();
+    private PropertyMap configuration = null;
+
     protected boolean mustFlipX;
     protected boolean mustFlipY;
     protected List<Attribute> globalAttributes;
@@ -74,6 +79,7 @@ public abstract class SeadasFileReader {
 
 
     public static final String MASKS_CONFIG_FILENAME = "l2_masks_default.xml";
+    public static final String MASKS_CONFIG_FILENAME_FLAGNAMES = "l2_masks_flagname.xml";
 
 
     protected static final SkipBadNav LAT_SKIP_BAD_NAV = new SkipBadNav() {
@@ -85,6 +91,7 @@ public abstract class SeadasFileReader {
 
     public SeadasFileReader(SeadasProductReader productReader) {
         this.productReader = productReader;
+        this.configuration = visatApp.getPreferences();
         ncFile = productReader.getNcfile();
         globalAttributes = ncFile.getGlobalAttributes();
 
@@ -312,7 +319,11 @@ public abstract class SeadasFileReader {
                 File masksConfigDir = getSystemAuxdataDir();
                 File masksConfigFile = null;
                 if (masksConfigDir != null && masksConfigDir.exists()) {
-                    masksConfigFile = new File(masksConfigDir, MASKS_CONFIG_FILENAME);
+                    if (getUseFlagNames()) {
+                        masksConfigFile = new File(masksConfigDir, MASKS_CONFIG_FILENAME_FLAGNAMES);
+                    } else {
+                        masksConfigFile = new File(masksConfigDir, MASKS_CONFIG_FILENAME);
+                    }
                 }
 
 
@@ -1529,6 +1540,13 @@ public abstract class SeadasFileReader {
 
     private File getSystemAuxdataDir() {
         return new File(SystemUtils.getApplicationDataDir(), "beam-ui/auxdata/masks");
+    }
+
+    public boolean getUseFlagNames() {
+
+        return configuration.getPropertyBool(Mask.ImageType.PARAMETER_NAME_MASK_L2_FLAGNAMES_ENABLED, Mask.ImageType.DEFAULT_L2_FLAGNAMES_ENABLED);
+
+
     }
 
 
