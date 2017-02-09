@@ -51,7 +51,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         L2MAPGEN("l2mapgen"),
         L2BIN("l2bin"),
         L3BIN("l3bin"),
-        SMIGEN("smigen");
+//        SMIGEN("smigen"),
+        L3MAPGEN("l3mapgen");
 
         private Processor(String name) {
             this.name = name;
@@ -301,7 +302,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 Processor.L2BRSGEN,
                 Processor.L2MAPGEN,
                 Processor.L3BIN,
-                Processor.SMIGEN
+//                Processor.SMIGEN,
+                Processor.L3MAPGEN
         };
         rows = new ArrayList<MultilevelProcessorRow>();
 
