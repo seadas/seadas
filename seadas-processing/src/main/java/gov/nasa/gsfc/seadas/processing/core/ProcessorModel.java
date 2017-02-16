@@ -1193,8 +1193,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         public String[] getCmdArraySuffix() {
             String[] cmdArraySuffix = new String[1];
             String[] parts = VisatApp.getApp().getAppVersion().split("\\.");
-            //cmdArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
-            cmdArraySuffix[0] = "--git-branch=v7.3";
+            cmdArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
             return cmdArraySuffix;
         }
     }
