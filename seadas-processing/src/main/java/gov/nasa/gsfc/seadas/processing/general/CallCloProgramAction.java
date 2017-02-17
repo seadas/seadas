@@ -272,7 +272,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
         String namesToExclude = ProcessorTypeInfo.getExcludedProcessorNames();
         for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
             if (!namesToExclude.contains(processorName)) {
-                commandManager.getCommand(processorName).setEnabled(true);
+                if (commandManager.getCommand(processorName) != null) {
+                    commandManager.getCommand(processorName).setEnabled(true);
+                }
             }
         }
         commandManager.getCommand("install_ocssw.py").setText("Update Data Processors");
