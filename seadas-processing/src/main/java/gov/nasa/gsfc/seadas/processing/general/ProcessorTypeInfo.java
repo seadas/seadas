@@ -112,6 +112,8 @@ public class ProcessorTypeInfo {
                   "l1aextract_modis" +
                   "l1aextract_seawifs" +
                   "l2extract" +
+                  "next_level_name.py" +
+                  "get_obpg_file_type.py"+
                   "lonlat2pixline";
     }
 
