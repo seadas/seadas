@@ -65,6 +65,7 @@ public class ProcessorTypeInfo {
         MULTILEVEL_PROCESSOR,
         OCSSW_INSTALLER,
         L2GEN,
+        L3GEN,
         L2GEN_AQUARIUS,
         L3BINDUMP,
         GET_OBPG_FILE_TYPE_PY,
@@ -91,6 +92,7 @@ public class ProcessorTypeInfo {
         put("l2bin", ProcessorID.L2BIN);
         put("l2bin_aquarius", ProcessorID.L2BIN_AQUARIUS);
         put("l2gen", ProcessorID.L2GEN);
+        put("l3gen", ProcessorID.L3GEN);
         put("l2gen_aquarius", ProcessorID.L2GEN_AQUARIUS);
         put("l3bin", ProcessorID.L3BIN);
         put("l3mapgen", ProcessorID.L3MAPGEN);
