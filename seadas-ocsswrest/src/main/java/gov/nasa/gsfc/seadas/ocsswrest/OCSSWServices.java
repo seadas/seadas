@@ -47,7 +47,7 @@ public class OCSSWServices {
     @Path("/installDir")
     @Produces(MediaType.TEXT_PLAIN)
     public String getOCSSWInstallDir() {
-
+        System.out.println("ocssw install dir: " + OCSSWServerModel.OCSSW_INSTALL_DIR);
         return OCSSWServerModel.OCSSW_INSTALL_DIR;
     }
 
@@ -537,7 +537,7 @@ public class OCSSWServices {
         File file;
         try {
 
-            file = new File("/home/aabduraz/cmdArray.txt");
+            file = new File("/home/aynur/cmdArray.txt");
             fop = new FileOutputStream(file);
 
             // if file doesnt exists, then create it

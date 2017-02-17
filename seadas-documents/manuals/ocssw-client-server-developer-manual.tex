@@ -59,13 +59,23 @@ Run the following command from the command line to execute:
 \begin{enumerate}
 \item Need to install ``guest editions" to be able to resize the vm window and also to enable file sharing between the host and the guest.
 \item Choose "Fixed" virtual box for performance. Eloborate more later.
+\item Need to install Java to run the ocssw rest server.
 \end{enumerate}
 
-\subsection{How to install guest additions}
+\subsubsection{How to install guest additions}
 The guest additions are actually included (invisibly) in the binary package. You get at them by choosing Install Guest Additions from the Devices menu.
 You then install them by mounting the Guest Additions iso file,
 which will show up in the list of available images. The Guest Additions are not available separately and don't need to be.
 
+\subsubsection{Java Installation on the Ubuntu Linux Virtual Box}
+
+\begin{enumerate}
+\item Check to see if your Ubuntu Linux operating system archtecture is 32-bit or 64-bit, open up a terminal and run the following command below:
+     \begin{code}
+             file /sbin/
+      \end{code}
+\item
+\end{enumerate}
 \subsection{File Sharing}
 
 Usage of disk space. Does it take virtual box disk space? How to increase disk space when needed for "fixed" virtual boxes?

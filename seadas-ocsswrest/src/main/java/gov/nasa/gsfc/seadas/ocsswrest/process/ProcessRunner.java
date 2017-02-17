@@ -103,7 +103,7 @@ public class ProcessRunner {
         ArrayList<String> cmdList = new ArrayList<String>();
 
         cmdList.add("mkdir");
-        cmdList.add("/home/aabduraz/Public/test");
+        cmdList.add("/home/aynur/Public/test");
 
         System.out.println("starting test execution  ...");
 
@@ -114,7 +114,7 @@ public class ProcessRunner {
 
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
 
-        processBuilder.directory(new File("/home/aabduraz"));
+        processBuilder.directory(new File("/home/aynur"));
 
         Process process = null;
         try {
