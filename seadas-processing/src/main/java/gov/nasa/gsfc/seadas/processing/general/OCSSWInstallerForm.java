@@ -97,9 +97,8 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         this.appContext = appContext;
         processorModel = ProcessorModel.valueOf(programName, xmlFileName);
         processorModel.setReadyToRun(true);
-        init();
         setMissionDataDir(getInstallDir() + getMissionDataDirInterfix());
-        //init();
+        init();
         updateMissionValues();
         createUserInterface();
         processorModel.updateParamInfo(INSTALL_DIR_OPTION_NAME, getInstallDir());
