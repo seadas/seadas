@@ -168,9 +168,7 @@ public class FileSelector {
     }
 
     public void setFilename(String fileName) {
-        System.out.println("output file name: " + fileName);
         fileTextfield.setText(fileName);
-        //fileTextfield.postActionEvent();
         handleFileTextfield();
     }
 

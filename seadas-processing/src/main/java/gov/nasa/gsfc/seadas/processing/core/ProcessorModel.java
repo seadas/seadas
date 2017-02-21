@@ -664,7 +664,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 String sampleFileName = lineNumberReader.readLine();
                 if (new File(sampleFileName).exists()) {
                     selectedFile = new File(sampleFileName);
-                    System.out.println("sample file name: " + sampleFileName + System.currentTimeMillis());
+                    //System.out.println("sample file name: " + sampleFileName + System.currentTimeMillis());
                 } else {
                     return;
                 }

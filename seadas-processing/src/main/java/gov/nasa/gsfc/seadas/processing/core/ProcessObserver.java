@@ -145,13 +145,13 @@ public class ProcessObserver {
 
             String line = "";
             while (!line.contains("done!")) {
-                System.out.println("type: " + type);
+                //System.out.println("type: " + type);
                 line = target.path("process").path(type).path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
-                System.out.println("lines from server: " + line + "  " + line.contains("done!"));
+                //System.out.println("lines from server: " + line + "  " + line.contains("done!"));
 
                 fireLineRead(line);
             }
-            System.out.println("out from the loop! ");
+            //System.out.println("out from the loop! ");
             pm.setCanceled(true);
         }
 

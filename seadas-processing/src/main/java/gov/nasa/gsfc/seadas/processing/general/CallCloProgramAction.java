@@ -302,7 +302,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
-            System.out.println("line being handled: " + line);
+            //System.out.println("line being handled: " + line);
             if (!progressSeen) {
                 progressSeen = true;
                 pm.beginTask(programName, 1000);

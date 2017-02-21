@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class SeadasFileUtils {
 
-    private static boolean debug = true;
+    private static boolean debug = false;
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
 

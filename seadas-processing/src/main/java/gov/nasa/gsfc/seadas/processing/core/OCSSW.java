@@ -254,7 +254,7 @@ public class OCSSW {
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
         jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN).get(String.class);
-        System.out.println("job id from server: " + jobId);
+        //System.out.println("job id from server: " + jobId);
     }
 
     public static void retrieveServerSharedDirName() {

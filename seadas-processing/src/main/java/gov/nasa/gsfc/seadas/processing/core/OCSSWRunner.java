@@ -58,7 +58,7 @@ public class OCSSWRunner {
 
 
     public static Process executeLocal(String[] cmdArray, File ifileDir) {
-        System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
+        //System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
         Map<String, String> env = processBuilder.environment();
         if (!env.containsKey(OCSSW_ROOT_VAR) && OCSSW.isOCSSWExist()) {
@@ -87,10 +87,10 @@ public class OCSSWRunner {
 
     public static Process executeRemote(String[] cmdArray) {
 
-        System.out.println("command array size: " + cmdArray.length);
+        //System.out.println("command array size: " + cmdArray.length);
         //The following statement will eliminate null array elements
         cmdArray = Arrays.stream(cmdArray).filter(s -> (s != null && s.length() > 0)).toArray(String[]::new);
-        System.out.println("command array size: " + cmdArray.length);
+       // System.out.println("command array size: " + cmdArray.length);
         SeadasProcess process = new SeadasProcess();
         ArrayList<String> cmdArrayList = new ArrayList<String>(Arrays.asList(cmdArray));
 

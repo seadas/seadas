@@ -35,7 +35,7 @@ public class OptionalFileSelector extends JPanel {
 
         String fileName = inputFile.getName();
         fileName = fileName.substring(0, fileName.indexOf(".")).concat(extension);
-        System.out.println(" new file Name = " + fileName);
+        //System.out.println(" new file Name = " + fileName);
         return new File(inputFile.getParentFile(), fileName);
     }
 
