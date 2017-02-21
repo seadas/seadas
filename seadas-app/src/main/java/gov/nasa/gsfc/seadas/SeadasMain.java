@@ -147,20 +147,29 @@ public class SeadasMain implements RuntimeRunnable {
 
 
     private boolean isOCSSWExist() {
-        String dirPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));
+        String _OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";
 
-        if (dirPath == null) {
-            dirPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
-        }
-        if (dirPath != null) {
-            //final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
-            final File dir = new File(dirPath  + System.getProperty("file.separator") + "scripts");
-            if (dir.isDirectory()) {
-                return true;
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty("ocssw.location");
+
+        //ocssw installed local
+        if (ocsswLocation == null || ocsswLocation.trim().equals("local")) {
+            String dirPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));
+
+            if (dirPath == null) {
+                dirPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
+            }
+            if (dirPath != null) {
+                final File dir = new File(dirPath  + _OCSSW_SCRIPTS_DIR_SUFFIX);
+                if (dir.isDirectory()) {
+                    return true;
+                }
             }
         }
+
         return false;
     }
+
+
     protected SeadasApp createApplication(ApplicationDescriptor applicationDescriptor) {
         return new SeadasApp(applicationDescriptor);
     }
