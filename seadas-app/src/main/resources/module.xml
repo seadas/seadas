@@ -15,8 +15,8 @@
             <applicationId>SeaDAS</applicationId>
             <displayName>SeaDAS</displayName>
             <version>7.4</version>
-            <buildId>2016.05.18</buildId>
-            <buildDate>May 2016</buildDate>
+            <buildId>2017.02.23</buildId>
+            <buildDate>February 2017</buildDate>
             <!--<buildId>${beam.build.id}</buildId>-->
             <!--<buildDate>${beam.build.date}</buildDate>-->
             <excludedActions>
