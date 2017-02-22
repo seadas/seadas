@@ -34,26 +34,37 @@ in production and provide bug fixes.
 <pre>
     FEATURE ADDITIONS/MODIFICATIONS
 
-        -   Color Palette and Color Bar
+        -   Color Bar
+            1.  The color bar labels will now automatically default with enough decimals places to display small numbers
+            2.  Text may be substituted in place of values on the color bar labels
+            3.  Color schemes configuration file now supports color bar labels defaults
+            4.  Color bar preferences page has been added
+            5.  Color bar location on image can now be set
+            6.  Color bar backdrop transparency can now be set
+            7.  Color bar text color is now fully adjustable
+
+        -   Color Palettes
             1.  There is now a toggle button in the Color Manager to reverse the direction of a color palette
-            2.  The color bar labels will now automatically default with enough decimals places to display small numbers
-            3.  Color palettes can now be exported in the CPT format and the PAL format
-            4.  Text may be substituted in place of values on the color bar labels
-            5.  Color schemes configuration file now supports color bar labels defaults
-            6.  Color Palettes Preferences page has been added which includes color-blind palette configuration option
-            7.  Color bar layer location (offset and shift) can be set by the user
+            2.  Color palettes can now be exported in the CPT format and the PAL format
+            3.  Color palettes preferences page has been added which includes color-blind palette configuration option
 
         -   Gridlines
             1.  Added option to display label in either compass format or signed format (in example for longitude: -90 instead of 90W)
             2.  Added option to display label in decimal format or in the format of degrees, minutes, seconds
+            3.  Gridlines Preference page has been added
+
+        -   RGB Image
+            1.  RGB Image Preferences page now enables the range setting of the RGB color palette (default uses statistics
+                of the bands)
+            2.  Profiles have been added for the OLCI instrument
 
         -   Text Annotation
-            Feature has been added.  Text appears with semi-transparent background to delineate text
-            from image.  Note: the same type of text also now appears on the Pins Tool and the GCP Tool.
+            1.  Feature has been added.  Text appears with semi-transparent background to delineate text
+                from image.  Note: the same type of text also now appears on the Pins Tool and the GCP Tool.
 
         -   Field Measurement
-            Command-line tools added which create validation collocation match-ups between field
-            (in situ) data measurements (points or a SeaBASS file) and Level-2 ocean color satellite data
+            1.  Command-line tools added which create validation collocation match-ups between field
+                (in situ) data measurements (points or a SeaBASS file) and Level-2 ocean color satellite data
 
         -   Level2 Masks
             1.  Two choices are now available for the naming convention of the masks which are based on the level2 flags.
@@ -64,7 +75,7 @@ in production and provide bug fixes.
             3.  Added "Water" mask convenience shortcut which is Water=!LAND.
 
         - Menu Reorganization
-            1.  Minor changes to top level menu aimed.
+            1.  Minor changes to top level menu
 
     BUG FIXES
 
@@ -74,7 +85,7 @@ in production and provide bug fixes.
 
     HELP PAGES
 
-        -   Field Measurement help pages added
+        -   Field Measurement help pages have been added
 
 
 </pre>
