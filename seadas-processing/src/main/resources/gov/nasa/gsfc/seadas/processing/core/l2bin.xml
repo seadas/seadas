@@ -225,6 +225,10 @@
                 <value>SPARE</value>
                 <description>SPARE</description>
             </validValue>
+            <validValue>
+                <value>NONE</value>
+                <description>Do not use any flag</description>
+            </validValue>
             <description>flags masked [see /SENSOR/l2bin_defaults.par]</description>
             <usedAs>option</usedAs>
             <order>6</order>
