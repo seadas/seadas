@@ -307,7 +307,7 @@ public class ParamInfo implements Comparable, Cloneable {
                             }
                         } else if (getName().equals(L2genData.IFILE)) {
                             if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
-                                setValidationComment("# WARNING!!! file " + filename + " is not a valid input mission" + "\n");
+                                setValidationComment("# WARNING!!! file " + filename + " is not a valid input mission" + ": Mission="+ fileInfo.getMissionName() + "\n");
 
                             } else if (!fileInfo.getMissionDirectory().exists()) {
                                 if (fileInfo.getMissionDirectory() != null) {
