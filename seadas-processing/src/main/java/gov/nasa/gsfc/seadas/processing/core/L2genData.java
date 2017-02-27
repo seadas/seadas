@@ -1430,6 +1430,9 @@ public class L2genData implements L2genDataProcessorModel {
         }
 
         processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, position);
+        //getanc.py accepts ifile as an argument, not as a key-value pair.
+        processorModel.getParamInfo("ifile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
+
 
         final File iFile = new File(ifile);
 
