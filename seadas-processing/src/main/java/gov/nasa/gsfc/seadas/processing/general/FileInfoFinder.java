@@ -52,7 +52,8 @@ public class FileInfoFinder {
     }
 
     private void identifyFileInfo(){
-        if (OCSSW.isLocal()) {
+        // todo temporarily set this to test on the mac whether mac thinks it is remote
+        if (OCSSW.isLocal() || 1 == 1) {
             commandArrayManager = new LocalOcsswCommandArrayManager(fileInfoFinderProcessorModel);
             fileInfos = OCSSWRunner.executeLocalGetOBPGFileInfo(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
         } else {
