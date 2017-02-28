@@ -36,8 +36,8 @@ public class OCSSW {
     public static String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
     public static String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
-    public static String _OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";
-    public static String _OCSSW_DATA_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "data";
+    public static String _OCSSW_SCRIPTS_DIR_SUFFIX =  "run" +  System.getProperty("file.separator") + "scripts";
+    public static String _OCSSW_DATA_DIR_SUFFIX =   "run" +  System.getProperty("file.separator") + "data";
 
     private static boolean ocsswExist = false;
     private static String ocsswRoot = null;
@@ -85,7 +85,7 @@ public class OCSSW {
                 // or set OCSSWROOT in the system env.
                 ocsswRoot = dirPath;
                 //final File dir = new File(dirPath + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
-                final File dir = new File(dirPath  + _OCSSW_SCRIPTS_DIR_SUFFIX);
+                final File dir = new File(dirPath  + System.getProperty("file.separator") + _OCSSW_SCRIPTS_DIR_SUFFIX);
                 if (dir.isDirectory()) {
                     ocsswExist = true;
                     return;
