@@ -174,7 +174,6 @@ public class SeadasApp extends VisatApp {
         ArrayList<String> commandIdList = new ArrayList<String>(Arrays.asList(
                 layerEditorToolViewCommandId,
                 "exportLegendImageFile",
-                "createTextAnnotation",
                 "showContourOverlay",
                 "showGraticuleOverlay",
                 "showNoDataOverlay",
@@ -523,11 +522,11 @@ public class SeadasApp extends VisatApp {
                 SEADAS_FILE_TOOL_BAR_ID,
                 SEADAS_GEOMETRY_TOOL_BAR_ID,
                 SEADAS_PINS_TOOL_BAR_ID,
-                SEADAS_TEXT_ANNOATATION_TOOL_BAR_ID,
                 SEADAS_PROC_TOOL_BAR_ID,
                 SEADAS_STANDARD_LAYERS_TOOL_BAR_ID,
                 SEADAS_FIELD_MEASUREMENTS_TOOL_BAR_ID,
                 SEADAS_BLANK_TOOL_BAR_ID};
+      //  SEADAS_TEXT_ANNOATATION_TOOL_BAR_ID,
 
         List<String> allDockableBarNames = getMainFrame().getDockableBarManager().getAllDockableBarNames();
 
