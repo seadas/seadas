@@ -1,0 +1,56 @@
+Execution log for 
+[/accounts/aabduraz/TestDir/ocssw//run/scripts/install_ocssw.py, --install-dir=/accounts/aabduraz/TestDir/ocssw, --aqua, --terra, --oli, --seawifs, --viirsn, --git-branch=v7.4]
+Installing bundles.sha256sum (1 of 21)
+--2017-02-27 15:44:50--  https://oceandata.sci.gsfc.nasa.gov/ocssw/bundles.sha256sum
+Resolving oceandata.sci.gsfc.nasa.gov (oceandata.sci.gsfc.nasa.gov)... fddd:0:0:2::33, 192.168.2.33
+Connecting to oceandata.sci.gsfc.nasa.gov (oceandata.sci.gsfc.nasa.gov)|fddd:0:0:2::33|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 2736 (2.7K) [text/plain]
+Saving to: ‘bundles.sha256sum’
+
+     0K ..                                                    100% 1.17G=0s
+Installing common (2 of 21)
+
+2017-02-27 15:44:50 (1.17 GB/s) - ‘bundles.sha256sum’ saved [2736/2736]
+
+Installing OCSSW_bash.env (3 of 21)
+--2017-02-27 15:44:50--  https://oceandata.sci.gsfc.nasa.gov/ocssw/OCSSW_bash.env
+Resolving oceandata.sci.gsfc.nasa.gov (oceandata.sci.gsfc.nasa.gov)... fddd:0:0:2::33, 192.168.2.33
+Connecting to oceandata.sci.gsfc.nasa.gov (oceandata.sci.gsfc.nasa.gov)|fddd:0:0:2::33|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 2894 (2.8K) [text/plain]
+Saving to: ‘OCSSW_bash.env’
+
+     0K ..                                                    100% 1.04G=0s
+Installing README (4 of 21)
+
+2017-02-27 15:44:50 (1.04 GB/s) - ‘OCSSW_bash.env’ saved [2894/2894]
+
+--2017-02-27 15:44:50--  https://oceandata.sci.gsfc.nasa.gov/ocssw/README
+Resolving oceandata.sci.gsfc.nasa.gov (oceandata.sci.gsfc.nasa.gov)... fddd:0:0:2::33, 192.168.2.33
+Connecting to oceandata.sci.gsfc.nasa.gov (oceandata.sci.gsfc.nasa.gov)|fddd:0:0:2::33|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3358 (3.3K) [text/plain]
+Saving to: ‘README’
+Installing ocrvc (5 of 21)
+
+     0K ...                                                   100%  556M=0s
+
+2017-02-27 15:44:50 (556 MB/s) - ‘README’ saved [3358/3358]
+
+Installing modis (6 of 21)
+Installing modisa (7 of 21)
+Installing hmodisa (8 of 21)
+Installing modist (9 of 21)
+Installing hmodist (10 of 21)
+Installing oli (11 of 21)
+Installing seawifs (12 of 21)
+Installing viirsn (13 of 21)
+Installing bin (14 of 21)
+Installing bin3 (15 of 21)
+Installing scripts (16 of 21)
+Python version acceptable
+Installing seawifs-luts (17 of 21)
+Installing aqua-luts (18 of 21)
+Installing terra-luts (19 of 21)
+Installing viirsn-luts (20 of 21)

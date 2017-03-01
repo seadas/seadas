@@ -43,8 +43,9 @@ public class ParFileManager{
     private File computeParFile() {
 
         try {
-            final File tempFile = File.createTempFile("tmpParFile", ".par", processorModel.getIFileDir());
-            tempFile.deleteOnExit();
+            final File tempFile = File.createTempFile(processorModel.getProgramName() + "-tmpParFile", ".par", processorModel.getIFileDir());
+            System.out.println(tempFile.getAbsoluteFile());
+            //tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
                 fileWriter = new FileWriter(tempFile);
