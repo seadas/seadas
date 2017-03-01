@@ -114,7 +114,7 @@ public class OCSSWServices {
     public OCSSWInfo getOCSSWInfo() {
         OCSSWInfo ocsswInfo = new OCSSWInfo();
         ocsswInfo.setInstalled(true);
-        ocsswInfo.setOcsswDir(System.getProperty("user.home") + "/ocssw");
+        //ocsswInfo.setOcsswDir(System.getProperty("user.home") + "/ocssw");
         return ocsswInfo;
     }
 
