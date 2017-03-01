@@ -34,6 +34,9 @@ import java.util.List;
   */
 public class L2FileReader extends SeadasFileReader {
 
+    private static final String KEEP_BAD_NAV_PROPERTY = "seadas.seadasl2reader.keepBadNavLines";
+    private static final boolean keepBadNavLines = Boolean.getBoolean(KEEP_BAD_NAV_PROPERTY);
+
     L2FileReader(SeadasProductReader productReader) {
         super(productReader);
     }
@@ -76,7 +79,9 @@ public class L2FileReader extends SeadasFileReader {
                 }
             }
             final Variable variable = ncFile.findVariable(navGroup + "/" + latitude);
-            invalidateLines(LAT_SKIP_BAD_NAV,variable);
+            if (!keepBadNavLines) {
+                invalidateLines(LAT_SKIP_BAD_NAV, variable);
+            }
 
             sceneHeight -= leadLineSkip;
             sceneHeight -= tailLineSkip;
@@ -255,7 +260,7 @@ public class L2FileReader extends SeadasFileReader {
 
                 }
             } catch (IOException e) {
-                throw new ProductIOException(e.getMessage());
+                throw new ProductIOException(e.getMessage(), e);
             }
         }
     }
@@ -310,7 +315,7 @@ public class L2FileReader extends SeadasFileReader {
                         lonRawData= (float[]) lonRaw.copyTo1DJavaArray();
                     }
                 } catch (IOException e) {
-                    throw new ProductIOException(e.getMessage());
+                    throw new ProductIOException(e.getMessage(), e);
                 }
 
 
@@ -329,7 +334,7 @@ public class L2FileReader extends SeadasFileReader {
                             latRawData, lonRawData, colPoints);
 
                 } catch (IOException e) {
-                   throw new ProductIOException(e.getMessage());
+                   throw new ProductIOException(e.getMessage(), e);
                 }
             }
         }
