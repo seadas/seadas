@@ -65,12 +65,7 @@ public class ExtractorParamUI extends ParamUIFactory {
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
                 if (!field.getText().trim().equals(pi.getValue().trim())) {
-                    if (new Double(field.getText()).doubleValue() > 0) {
-                        processorModel.updateParamInfo(pi, field.getText());
-                    } else {
-                        VisatApp.getApp().showErrorDialog("Please enter a value greater than zero!");
-                        field.setText(" ");
-                    }
+                   processorModel.updateParamInfo(pi, field.getText());
                 }
             }
         });
