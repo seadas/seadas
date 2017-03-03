@@ -153,6 +153,8 @@
     <mapID target="l1bgen" url="seadas-processing/ProcessL1bgen.html"/>
     <mapID target="modis_L1B.py" url="seadas-processing/ProcessModis_L1B.py.html"/>
     <mapID target="modis_L1A.py" url="seadas-processing/ProcessModis_L1A.py.html"/>
+    <mapID target="geolocate_viirs" url="seadas-processing/GeoLocateViirs.html"/>
+    <mapID target="calibrate_viirs" url="seadas-processing/CalibrateViirs.html"/>
     <mapID target="l1mapgen" url="seadas-processing/ProcessL1mapgen.html"/>
     <mapID target="l1brsgen" url="seadas-processing/ProcessL1brsgen.html"/>
     <mapID target="l2extract" url="seadas-processing/ProcessL2extract.html"/>
