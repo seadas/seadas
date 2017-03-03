@@ -6,7 +6,6 @@
 </head>
 
 <body>
-
 <table class="header" width="100%">
     <tr class="header">
         <td class="header">&nbsp;
@@ -17,25 +16,29 @@
     </tr>
 </table>
 
-<p>
-    <b>Release Date: </b> <br><br>
-</p>
-
-The SeaDAS development team is pleased to announce the release of SeaDAS 7.4,
-which is built atop a slightly modified BEAM 5.0.1 version.<br><br>
-
-The science processing code has been updated to reflect changes recently implemented
-in production and provide bug fixes.
-
-<br>
-<hr>
-<p class="sectionTitle">Primary Package</p>
 
 <pre>
+
+SeaDAS 7.4 Release Notes
+Release Date: March 6, 2017
+
+
+The SeaDAS development team is pleased to announce the release of SeaDAS 7.4.
+
+The critical factor in the SeaDAS 7.4 release is that it now uses the https web protocol for acquiring files.  NASA no
+longer supports the http protocol so previous versions of SeaDAS can no longer retrieve files from NASA.
+
+Additional to this, SeaDAS 7.4 adds new options and preferences for color palettes, color bars, map gridlines, and
+RGB image creation.
+
+
+
+PRIMARY PACKAGE
+
     FEATURE ADDITIONS/MODIFICATIONS
 
         -   Color Bar
-            1.  The color bar labels will now automatically default with enough decimals places to display small numbers
+            1.  The color bar labels will now automatically default with enough decimal places to display small numbers
             2.  Text may be substituted in place of values on the color bar labels
             3.  Color schemes configuration file now supports color bar labels defaults
             4.  Color bar location on image can now be set
@@ -55,11 +58,11 @@ in production and provide bug fixes.
 
         -   RGB Image
             1.  RGB Image Preferences page now enables the range setting of the RGB color palette (default uses statistics
-                of the bands)
-            2.  Profiles have been added for the OLCI instrument
+                of the bands).
+            2.  Additional RGB Profiles have been added.
 
         -   Text Annotation (Beta version)
-            1.  This feature is new and not fully complete and may not work on some image file.  Text appears with
+            1.  This feature is new and not fully complete and may not work on some image files.  Text appears with
                 semi-transparent background to delineate text from image.  Note: the same type of text also now appears
                 on the Pins Tool and the GCP Tool.
 
@@ -78,6 +81,7 @@ in production and provide bug fixes.
         - Menu Reorganization
             1.  Minor changes to top level menu
 
+
     BUG FIXES
 
         -   OCSSW GUIs will now once more fully work again.  A change in web protocols to require https recently caused
@@ -87,58 +91,43 @@ in production and provide bug fixes.
             used in manually entered points mode.
 
 
-
-
     HELP PAGES
 
         -   Field Measurement help pages have been added
 
 
-</pre>
 
 
+SCIENCE PROCESSING CODE
 
-
-<br>
-<hr>
-<p class="sectionTitle">Science Processing Code</p>
-
-
-<pre>
     FEATURES ADDITIONS/MODIFICATIONS
 
-        - No changes (Note: SeaDAS GUI has now been updated to support new web protocol of https)
+        -  (Note: SeaDAS GUI has now been updated to support new web protocol of https)
+        
+        -  multilevel_processor (command line and GUI) now supports l3mapgen (smigen support removed).
+        
+        -  l2bin GUI now enables selection of flaguse="NONE" to run with no flags.  Leaving the flaguse field blank in the GUI results
+           in the default flags being used.
 
 
     BUG FIXES
         -
 
-    </pre>
 
 
-<br>
-<hr>
-<p class="sectionTitle">Useful Notes</p>
+NOTES
 
-<p class="h3better">Help Pages</p>
-
-<p>
     Some of the help pages internal to SeaDAS 7.4 have not been revised to match the current version so there can be
     some wording discrepancies as well as feature description differences.  However, we regularly produce video help
     tutorials <b>(https://seadas.gsfc.nasa.gov/tutorial)</b>.  We feel this to be the best, most functional way to
     enable the user of SeaDAS to get the most out of the software.  In additional we regularly respond to SeaDAS issues
     on the our user forum
-    <b>(https://oceancolor.gsfc.nasa.gov/forum/oceancolor/forum_show.pl).</b>  Questions posted on
+    (https://oceancolor.gsfc.nasa.gov/forum/oceancolor/forum_show.pl).  Questions posted on
     the forum help aid us in determining aspects of SeaDAS which may benefit by refinement, as well as give us ideas
     for topics to be used in future tutorial videos.  Also note that these internal help pages are alos made available at
-    <b>(https://seadas.gsfc.nasa.gov/help/)</b>
-</p>
+    (https://seadas.gsfc.nasa.gov/help/)
 
-
-<p class="h3better">Notes on Upgrading your SeaDAS version</p>
-
-<p>
-    <b> If you already have SeaDAS version 7 or higher installed:</b><br>
+    If you already have SeaDAS version 7 or higher installed:
     In your home directory there is a directory titled '.seadas'.  This contains version-specific preferences
     and defaults.  This directory also contains any custom color palettes and rgb-profiles which you may have
     created.  Because of this, a seadas installation will automically move and rename the previous '.seadas'
@@ -147,10 +136,7 @@ in production and provide bug fixes.
     You can then manually copy any of your custom color palettes and rgb-profiles from the backed up copy
     of your previous version's '.seadas' directory over into the '.seadas' directory.
 
-</p>
 
-
-
-
+</pre>
 </body>
 </html>
