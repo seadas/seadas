@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.ws.rs.client.WebTarget;

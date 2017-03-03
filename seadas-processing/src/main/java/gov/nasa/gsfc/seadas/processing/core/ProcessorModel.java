@@ -778,7 +778,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 getCmdArrayPrefix()[3]=programName;
 
             } else {
-                VisatApp.getApp().showErrorDialog("No extractor found for " + ifileName);
+                //VisatApp.getApp().showErrorDialog("No extractor found for " + ifileName);
             }
         }
     }

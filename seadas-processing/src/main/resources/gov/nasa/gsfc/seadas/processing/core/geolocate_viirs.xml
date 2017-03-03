@@ -173,7 +173,7 @@
         </option>
         <option type="string">
             <name>terrain_path</name>
-            <value>/Users/Shared/DEM-files/anc/dem</value>
+            <value></value>
             <default></default>
             <description>path to the terrain height files directory </description>
             <usedAs>option</usedAs>
