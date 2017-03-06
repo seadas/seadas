@@ -93,6 +93,15 @@
             <usedAs>option</usedAs>
             <order>3</order>
         </option>
+        <option type="ofile">
+            <name>l1bfile_cdg</name>
+            <value/>
+            <default></default>
+            <source>default</source>
+            <description>output L1B un-aggregated dual gain filename</description>
+            <usedAs>option</usedAs>
+            <order></order>
+        </option>
         <option type="ifile">
             <name>static_lut_file</name>
             <value></value>

@@ -4,7 +4,7 @@
     <programMetaData>
         <hasParFile>false</hasParFile>
         <parFileOptionName>--parfile</parFileOptionName>
-        <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
+        <progressRegex>Processing Mod Band (\d+) out of (\d+)</progressRegex>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>geofile_mod</primaryOption>
