@@ -190,8 +190,8 @@
         <!--</option>-->
         <option type="boolean">
             <name>verbose</name>
-            <value>false</value>
-            <default>false</default>
+            <value>true</value>
+            <default>true</default>
             <description>print status messages</description>
             <usedAs>flag</usedAs>
             <order>13</order>

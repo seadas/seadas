@@ -25,7 +25,7 @@ Release Date: March 6, 2017
 
 The SeaDAS development team is pleased to announce the release of SeaDAS 7.4.
 
-The critical factor in the SeaDAS 7.4 release is that it now uses the http web protocol for acquiring files.  NASA no
+The critical factor in the SeaDAS 7.4 release is that it now uses the https web protocol for acquiring files.  NASA no
 longer supports the http protocol so previous versions of SeaDAS can no longer retrieve files from NASA.
 
 Additional to this, SeaDAS 7.4 adds new options and preferences for color palettes, color bars, map gridlines, and
@@ -38,7 +38,7 @@ PRIMARY PACKAGE
     FEATURE ADDITIONS/MODIFICATIONS
 
         -   Color Bar
-            1.  The color bar labels will now automatically default with enough decimals places to display small numbers
+            1.  The color bar labels will now automatically default with enough decimal places to display small numbers
             2.  Text may be substituted in place of values on the color bar labels
             3.  Color schemes configuration file now supports color bar labels defaults
             4.  Color bar location on image can now be set
@@ -102,7 +102,12 @@ SCIENCE PROCESSING CODE
 
     FEATURES ADDITIONS/MODIFICATIONS
 
-        - No changes (Note: SeaDAS GUI has now been updated to support new web protocol of https)
+        -  (Note: SeaDAS GUI has now been updated to support new web protocol of https)
+        
+        -  multilevel_processor (command line and GUI) now supports l3mapgen (smigen support removed).
+        
+        -  l2bin GUI now enables selection of flaguse="NONE" to run with no flags.  Leaving the flaguse field blank in the GUI results
+           in the default flags being used.
 
 
     BUG FIXES

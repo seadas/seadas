@@ -58,10 +58,17 @@ public class ParFileUI {
     private void createParStringButtonPanel() {
 
         final JButton saveParameterFileButton = new JButton("Save Parameters...");
-        saveParameterFileButton.addActionListener(createSafeAsAction());
-
         final JButton loadParameterButton = new JButton("Load Parameters...");
-        loadParameterButton.addActionListener(createLoadParameterAction());
+
+        //The above two buttons are only active if an ocssw processor accepts par file.
+        if (processorModel.acceptsParFile()) {
+            saveParameterFileButton.addActionListener(createSafeAsAction());
+            loadParameterButton.addActionListener(createLoadParameterAction());
+        } else {
+            saveParameterFileButton.setEnabled(false);
+            loadParameterButton.setEnabled(false);
+        }
+
 
         showDefaultCheckBox.addActionListener(new ActionListener() {
             @Override
@@ -232,7 +239,13 @@ public class ParFileUI {
 
     private File getParameterFile() {
         final File productFile = new File(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
-        return FileUtils.exchangeExtension(productFile, ".par");
+        if (productFile !=null){
+            return FileUtils.exchangeExtension(productFile, ".par");
+        }
+
+        else {
+            return null;
+        }
     }
 
     private void showErrorMessage(Component parent, String parFileName) {

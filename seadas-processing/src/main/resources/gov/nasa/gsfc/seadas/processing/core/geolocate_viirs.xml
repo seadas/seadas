@@ -173,7 +173,7 @@
         </option>
         <option type="string">
             <name>terrain_path</name>
-            <value>/Users/Shared/DEM-files/anc/dem</value>
+            <value></value>
             <default></default>
             <description>path to the terrain height files directory </description>
             <usedAs>option</usedAs>
@@ -189,8 +189,8 @@
         </option>
         <option type="boolean">
             <name>verbose</name>
-            <value>false</value>
-            <default>false</default>
+            <value>true</value>
+            <default>true</default>
             <description>print status messages</description>
             <usedAs>flag</usedAs>
             <order>14</order>
