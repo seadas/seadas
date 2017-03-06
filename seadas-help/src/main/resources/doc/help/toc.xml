@@ -230,6 +230,8 @@
             <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
 
             <tocitem text="l1bgen" target="l1bgen"/>
+            <tocitem text="geolocate_viirs" target="geolocate_viirs"/>
+            <tocitem text="calibrate_viirs" target="calibrate_viirs"/>
             <tocitem text="l1mapgen" target="l1mapgen"/>
             <tocitem text="l1brsgen" target="l1brsgen"/>
             <tocitem text="L2gen" target="l2gen"/>
