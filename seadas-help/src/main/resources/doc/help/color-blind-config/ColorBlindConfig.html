@@ -21,15 +21,12 @@
 <br>
 
 <p>
-    SeaDAS 7.3 adds 3 new "universal" palettes (color blind compliant) and the ability to easily configure the default
-    color schemes for color blind compliance.
+    SeaDAS 7.4 adds a preference page to easily configure the default color schemes for color blind compliance.
     <br><br>
 
 </p>
 <hr>
-<p>
-    *Note: this help page is slightly out of date - see <a href="../general/ReleaseNotes7.4.html" class="invisibleLink">SeaDAS 7.4 Release Notes</a></p>
-<br>
+
 <h4>The Universal Palette</h4>
 
 <p>
@@ -43,15 +40,14 @@
 </table>
 <br><br>
 
-The above image depicts the SeaDAS Universal Palette <b>(file=universal_3.cpd)*</b> which is a
+The above image depicts the SeaDAS Universal Palette <b>(file=universal_bluered.cpd)*</b> which is a
     color-blind compliant palette. This palette was designed to optimize and maximize the number of colors being used to
     ensure an optimum dynamic range while maintaining
     compliance with the 3 primary color blindness types. The idea here is to have a palette which transitions smoothly
     and evenly from left to right (low to high). The palette purposely avoids the use of grayscale colors, so that these
     can be used for land, nodata, cloud, and other mask diplays.
 <br><br>
-* 3rd version of the palette (darker center than earlier versions better enable white to be used for a feature which is
-NOT the product (such as cloud masks, etc.)
+* 4th version of the palette (brighter on the red end)
 <br><br>
 
 <br><br>
@@ -271,58 +267,20 @@ A linear plot shown below illustrates this tracking problem associated with the 
 
 <br><br><br>
 
-<hr>
-<h4>How to Configure</h4>
-<br>
+
+<h4>How to Configure For Color Blind Compliancy</h4>
+<p>The following color palette preferences page governs whether the default palette is color blind compliant.  The
+    option determintes whether to use the color-blind compliant palette as the default palette.
+    (see color_palette_schemes.txt located in ~/.seadas/beam-ui/auxdata/color-palettes).</p>
 
 <p>
-    The color blind compliant palette comes automatically with SeaDAS and is readily selectable as a palette within the
-    Color Manager window.
-    <br><br>
-    However, if you wish to configure for color blind compliance the default color schemes which automatically get
-    applied to each open raster image based on the band's name then you can do the following:
-    <br><br>
-    Step 1: Make sure all instances of SeaDAS are closed.
-    <br><br>
-    Step 2: Execute the following two commands from the command line:
-    <pre>
-    % cp ~/.seadas/beam-ui/auxdata/color-palettes-extras/scheme_defaults_universal.txt ~/.seadas/beam-ui/auxdata/color-palettes/scheme_defaults.txt
-    % cp ~/.seadas/beam-ui/auxdata/color-palettes-extras/scheme_selector_universal.txt ~/.seadas/beam-ui/auxdata/color-palettes/scheme_selector.txt
-    </pre>
+    <img src="images/color_palettes_preferences.png"><br><br>
 </p>
 
-<br>
-<hr>
-<h4>How to Un-Configure</h4>
-<br>
-
-<p>
-    At any time in the future you can go back to the original configuration.
-    <br><br>
-    Step 1: Make sure all instances of SeaDAS are closed.
-<br><br>
-    Step 2: Execute the following two commands from the command line:
-    <pre>
-    % rm ~/.seadas/beam-ui/auxdata/color-palettes/scheme_defaults.txt
-    % rm ~/.seadas/beam-ui/auxdata/color-palettes/scheme_selector.txt
-    </pre>
-Step 3: Open SeaDAS (this will automatically re-create the files with the default values.
-
-</p>
-<br>
-
-
-<br><br> <br>
 
 
 
-<br>
-<hr><h4>Note</h4>
-<br>
-<p>
-    The user may of course, readily edit the parameters contained within the scheme_defaults.txt file and the scheme_selector.txt
-    file as they wish.  The user may also add in any other color blind palette of their design or choosing.
-</p>
+
 
 </body>
 </html>

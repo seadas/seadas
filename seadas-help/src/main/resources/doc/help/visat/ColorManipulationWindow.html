@@ -62,9 +62,7 @@
 <br>
 <hr>
 
-<p>
-    *Note: this help page is slightly out of date - see <a href="../general/ReleaseNotes7.4.html" class="invisibleLink">SeaDAS 7.4 Release Notes</a></p>
-<br>
+
 
 <h4>Schemes and Palettes</h4>
 
@@ -76,17 +74,17 @@
 
 <p>
     The color palettes are stored in color palette definition (cpd) text files. New cpd files can be created
-    within SeaDAS and saved with the "Save CPD File" button.
+    within SeaDAS as well as saved.
 </p><br>
 
-    The color schemes are stored in the following text files:
+    The color schemes are stored in the following text files(located in ~/.seadas/beam-ui/auxdata/color-palettes) :
 <ul>
-    <li>defaults_color_palette_schemes.txt : contains the schemes which will be loaded by default keyed on the band's
-        name.
+    <li>color_palette_schemes.txt : contains the schemes.
     </li>
-    <li>standard_color_palette_schemes.txt : contains the user selectable schemes</li>
+    <li>color_palette_scheme_defaults.txt : a lookup table to set the scheme based on the band name</li>
+    <li> color_palette_scheme_selector.txt: a lookup table to set the scheme in the scheme selector in the GUI</li>
 </ul>
-<p>
+
 Note: All color schemes and cpd files are located in the .seadas directory
 (~/.seadas/beam-ui/auxdata/color-palettes/). External cpd files can be copied into this directory and will show up
 in SeaDAS when it is next launched. Scheme files can be hand-edited to add new schemes or modify existing ones.
@@ -104,6 +102,8 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
             <li>load scheme</li>
             <li>load/save cpd file</li>
             <li>set range minimum maximum</li>
+            <li>set scaling: log/linear</li>
+            <li>reverse direction of color palette</li>
         </ul>
     </li>
     <li>Sliders Editor:
@@ -131,8 +131,8 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
 <b>Icons</b>
     <ul>
    <li><img src="images/icons/Undo24.gif"> :  resets to the default color scheme</li>
-    <li><img src="images/icons/MultiAssignBands24.gif"> :  toggles between log and linear display, redistributing palette points accordingly</li>
-    <li><img src="images/icons/LogDisplay24.png"> :  applies current selected color scheme to other bands</li>
+    <li><img src="images/icons/LogDisplay24.png"> :  toggles between log and linear display, redistributing palette points accordingly</li>
+    <!--<li><img src="images/icons/LogDisplay24.png"> :  applies current selected color scheme to other bands</li>-->
 </ul><br>
 
     <b>Scheme Panel</b>
@@ -140,23 +140,24 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
     <li><b>Standard Schemes Selector</b> : Select and load a pre-defined scheme. The
         loaded scheme name will be displayed directly above this selector. Any alteration to parameters subsequent to
         selection of a scheme will result in an asterisks displayed with the scheme name. <br><br>
-        Note: this selector selects schemes from the 'standard_color_palette_schemes.txt' file,
-        if the scheme was loaded by default then the scheme name comes from 'defaults_color_palette_schemes.txt' file.
+        Note: this selector selects schemes from the 'color_palette_scheme_selector.txt' file,
+        if the scheme was loaded by default then the scheme name comes from 'color_palette_scheme_defaults.txt' file.
 
     </li>
 </ul><br>
 <b>Cdp File Panel</b>
 <ul>
-    <li><b>Color Bar Selector</b> : Select a cpd file.  Selector shows a visual representation of each color palette as a
+    <li><b>Color Palette Selector</b> : Select a cpd file.  Selector shows a visual representation of each color palette as a
         color bar. Hovering the mouse over a selection will display it's cpd file name.
     </li>
     <li><b>Load cpd file exact values</b> : selecting this checkbox will load in the cpd file values exactly as they are,
         replacing the currently loaded Minimum and Maximum range values as well as the log scaling with those of the cpd
-        file.  Unchecked, the behaviour is to just load in the palette, maintain the user selected log scaling, and
-        redistribute the palette data points between the user selected Minimum and Maximum range values.
+        file.  Unchecked, the behavior is to load in the palette, while maintaining the user selected log scaling, and
+        redistribute the palette data points between the user currently selected Minimum and Maximum range values.
     </li>
     <li><b>Save CPD File Button</b> : save the current settings to a new cpd file name.  Once saved, this new cpd file
-    becomes the currently selected cpd file in the Schemes Panel.</li>
+    becomes the currently selected cpd file in the Schemes Panel.  Additional save format options are CPT and PAL.</li>
+    <li><b>Reverse Button</b> : reverses the direction of the color palette</li>
 </ul><br>
 <b>Range Panel</b>
 <ul>
@@ -191,8 +192,8 @@ in SeaDAS when it is next launched. Scheme files can be hand-edited to add new s
     <b>Icons</b>
 <ul>
     <li><img src="images/icons/Undo24.gif"> :  resets to the default color scheme</li>
-    <li><img src="images/icons/MultiAssignBands24.gif"> :  toggles between log and linear display, redistributing palette points accordingly</li>
-    <li><img src="images/icons/LogDisplay24.png"> :  applies current selected color scheme to other bands</li>
+    <li><img src=img src="images/icons/LogDisplay24.png"> :  toggles between log and linear display, redistributing palette points accordingly</li>
+    <!--<li><img src="images/icons/MultiAssignBands24.gif"> :  applies current selected color scheme to other bands</li>-->
     <li><img src="images/icons/Auto95Percent24.gif"> : adjusts the sliders to cover 95% of all pixels in the band.</li>
     <li><img src="images/icons/Auto100Percent24.gif"> : adjusts the sliders to cover 100% of all pixels in the band.</li>
     <li><img src="images/icons/ZoomIn24V.gif"> : zoom in on the histogram display vertically </li>
@@ -232,7 +233,26 @@ For each value-color point pair the color and/or it's value can be changed with 
 </ul>
 
 <hr>
+
+<h4>Preferences</h4>
+<p>The following preferences GUI governs this Tool</p>
+
+<p>
+    <img src="images/color_palettes_preferences.png"><br><br>
+</p>
+
+<ul>
+    <li>Currently the only option is whether to use the color-blind compliant palette as the default palette.
+(see color_palette_schemes.txt located in ~/.seadas/beam-ui/auxdata/color-palettes)
+    </li>
+</ul>
+
+<hr>
 <h4>RGB Image</h4>
+
+<p>
+    *Note: this section of the help page is slightly out of date - see <a href="../general/ReleaseNotes7.4.html" class="invisibleLink">SeaDAS 7.4 Release Notes</a></p>
+<br>
 
 <p>Images using separate R,G,B channels use obtain their colours from the samples of three arbitrary bands. In the
     editor, users
