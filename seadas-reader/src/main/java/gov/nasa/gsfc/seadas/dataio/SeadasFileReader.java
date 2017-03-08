@@ -91,7 +91,10 @@ public abstract class SeadasFileReader {
 
     public SeadasFileReader(SeadasProductReader productReader) {
         this.productReader = productReader;
-        this.configuration = visatApp.getPreferences();
+        //Added this condition for gpt calls
+        if (visatApp != null) {
+            this.configuration = visatApp.getPreferences();
+        }
         ncFile = productReader.getNcfile();
         globalAttributes = ncFile.getGlobalAttributes();
 
