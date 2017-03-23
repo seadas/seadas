@@ -4,7 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
+        <progressRegex>Calibrating scan (\d+) of (\d+)</progressRegex>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>l1bfile_mod</primaryOption>
