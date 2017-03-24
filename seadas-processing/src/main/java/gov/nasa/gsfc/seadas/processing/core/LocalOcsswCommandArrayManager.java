@@ -1,13 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.general.ParFileManager;
-import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
-import org.esa.beam.util.ArrayUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 

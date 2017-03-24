@@ -3,8 +3,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
-import gov.nasa.gsfc.seadas.processing.general.SeadasFileSelector;
-import gov.nasa.gsfc.seadas.processing.general.SourceProductFileSelector;
+import gov.nasa.gsfc.seadas.processing.common.SeadasFileSelector;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;

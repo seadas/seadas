@@ -14,7 +14,6 @@ import javax.swing.border.SoftBevelBorder;
 
 
 import com.jidesoft.swing.JideSplitButton;
-import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

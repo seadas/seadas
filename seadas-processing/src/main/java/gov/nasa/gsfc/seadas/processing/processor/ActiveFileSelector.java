@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.processor;
 
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.general.FileSelector;
+import gov.nasa.gsfc.seadas.processing.common.FileSelector;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;

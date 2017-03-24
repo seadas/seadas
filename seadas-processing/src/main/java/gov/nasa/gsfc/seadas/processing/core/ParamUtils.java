@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
-import gov.nasa.gsfc.seadas.processing.general.XmlReader;
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.common.XmlReader;
 import org.esa.beam.visat.VisatApp;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

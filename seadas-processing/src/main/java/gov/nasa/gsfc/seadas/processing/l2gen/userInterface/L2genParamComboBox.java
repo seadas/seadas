@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamValidValueInfo;
-import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;

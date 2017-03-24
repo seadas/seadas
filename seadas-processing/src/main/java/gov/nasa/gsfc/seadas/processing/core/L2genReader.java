@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.general.XmlReader;
+import gov.nasa.gsfc.seadas.processing.common.XmlReader;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genAlgorithmInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductInfo;

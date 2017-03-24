@@ -115,7 +115,7 @@ public class ProcessObserver {
         @Override
         public void run() {
             try {
-                if (OCSSW.isLocal()) {
+                if (OCSSWOldModel.isLocal()) {
                     read();
                 } else {
                     readServer();
@@ -146,7 +146,7 @@ public class ProcessObserver {
             String line = "";
             while (!line.contains("done!")) {
                 //System.out.println("type: " + type);
-                line = target.path("process").path(type).path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
+                line = target.path("process").path(type).path(OCSSWOldModel.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
                 //System.out.println("lines from server: " + line + "  " + line.contains("done!"));
 
                 fireLineRead(line);

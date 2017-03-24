@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.processing.general.*;
+import gov.nasa.gsfc.seadas.processing.common.*;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.Json;
@@ -42,12 +42,12 @@ public class OCSSWRunner {
 
     public OCSSWRunner() {
 
-        environment.put(OCSSW_ROOT_VAR, OCSSW.getOcsswEnvArray());
+        environment.put(OCSSW_ROOT_VAR, OCSSWOldModel.getOcsswEnvArray());
     }
 
     public static Process execute(ProcessorModel pm) {
         processorModel = pm;
-        if (OCSSW.isLocal()) {
+        if (OCSSWOldModel.isLocal()) {
             commandArrayManager = new LocalOcsswCommandArrayManager(processorModel);
             return executeLocal(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
         } else {
@@ -61,8 +61,8 @@ public class OCSSWRunner {
         //System.out.println("local execution!" + " "  + Arrays.toString(cmdArray) );
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
         Map<String, String> env = processBuilder.environment();
-        if (!env.containsKey(OCSSW_ROOT_VAR) && OCSSW.isOCSSWExist()) {
-            env.put(OCSSW_ROOT_VAR, OCSSW.getOcsswEnv());
+        if (!env.containsKey(OCSSW_ROOT_VAR) && OCSSWOldModel.isOCSSWExist()) {
+            env.put(OCSSW_ROOT_VAR, OCSSWOldModel.getOcsswEnv());
         }
         if (ifileDir != null) {
             processBuilder.directory(ifileDir);
@@ -79,7 +79,7 @@ public class OCSSWRunner {
 //                SeadasFileUtils.debug("process exit value = " + exitValue);
             }
         } catch (Exception e) {
-            //VisatApp.getApp().showErrorDialog("OCSSW execution error from SeaDAS application! \n" + cmdArray[3] + "  program is not executed correctly.");
+            //VisatApp.getApp().showErrorDialog("OCSSWOldModel execution error from SeaDAS application! \n" + cmdArray[3] + "  program is not executed correctly.");
             e.printStackTrace();
         }
         return process;
@@ -105,7 +105,7 @@ public class OCSSWRunner {
 
         //todo: merge these two
 
-        if (processorModel.getProgramName().equals(OCSSW.OCSSW_INSTALLER)) {
+        if (processorModel.getProgramName().equals(OCSSWOldModel.OCSSW_INSTALLER)) {
             final Response response = target.path("ocssw").path("installOcssw").request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
         } else {
@@ -167,15 +167,15 @@ public class OCSSWRunner {
         }
 
         //add jobId for server side database
-        //jab.add(OCSSW.getJobId());
+        //jab.add(OCSSWOldModel.getJobId());
         JsonArray remoteCmdArray = jab.build();
 
         OCSSWClient ocsswClient = new OCSSWClient();
         WebTarget target = ocsswClient.getOcsswWebTarget();
-        final Response response = target.path("ocssw").path("computeNextLevelFileName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
+        final Response response = target.path("ocssw").path("computeNextLevelFileName").path(OCSSWOldModel.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
 
-        String ofileName = target.path("ocssw").path("retrieveNextLevelFileName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
+        String ofileName = target.path("ocssw").path("retrieveNextLevelFileName").path(OCSSWOldModel.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
         if (ofileName != null) {
             return ofileName;
         } else {
@@ -224,12 +224,12 @@ public class OCSSWRunner {
         }
         JsonArray remoteCmdArray = jab.build();
 
-        Response response = target.path("ocssw").path("findIFileTypeAndMissionName").path(OCSSW.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
+        Response response = target.path("ocssw").path("findIFileTypeAndMissionName").path(OCSSWOldModel.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
 
-        String fileType = target.path("ocssw").path("retrieveIFileType").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-        String missionName = target.path("ocssw").path("retrieveMissionName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-        String missionDirName = target.path("ocssw").path("retrieveMissionDirName").path(OCSSW.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        String fileType = target.path("ocssw").path("retrieveIFileType").path(OCSSWOldModel.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        String missionName = target.path("ocssw").path("retrieveMissionName").path(OCSSWOldModel.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        String missionDirName = target.path("ocssw").path("retrieveMissionDirName").path(OCSSWOldModel.getJobId()).request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
         if (fileType.length() > 0) {
             fileInfos.put(FileInfoFinder.FILE_TYPE_ID_STRING, fileType);
         }

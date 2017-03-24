@@ -7,7 +7,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.*;
-import gov.nasa.gsfc.seadas.processing.general.*;
+import gov.nasa.gsfc.seadas.processing.common.*;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.visat.VisatApp;

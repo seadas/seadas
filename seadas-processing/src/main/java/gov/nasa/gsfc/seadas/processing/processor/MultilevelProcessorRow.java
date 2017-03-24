@@ -3,7 +3,7 @@ package gov.nasa.gsfc.seadas.processing.processor;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
-import gov.nasa.gsfc.seadas.processing.general.*;
+import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
 import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.framework.ui.UIUtils;

@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.general.*;
+import gov.nasa.gsfc.seadas.processing.common.*;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 import ucar.nc2.NetcdfFile;
@@ -134,19 +134,19 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private void setCommandArrayPrefix() {
 
-        if (programName.equals(OCSSW.OCSSW_INSTALLER)) {
+        if (programName.equals(OCSSWOldModel.OCSSW_INSTALLER)) {
             cmdArrayPrefix = new String[1];
             cmdArrayPrefix[0] = getProgramName();
-            if (!OCSSW.isOCSSWExist()) {
-                getCmdArrayPrefix()[0] = OCSSW.TMP_OCSSW_INSTALLER;
+            if (!OCSSWOldModel.isOCSSWExist()) {
+                getCmdArrayPrefix()[0] = OCSSWOldModel.TMP_OCSSW_INSTALLER;
             } else {
-                getCmdArrayPrefix()[0] = OCSSW.getOcsswInstallerScriptPath();
+                getCmdArrayPrefix()[0] = OCSSWOldModel.getOcsswInstallerScriptPath();
             }
         } else {
             cmdArrayPrefix = new String[4];
-            getCmdArrayPrefix()[0] = OCSSW.getOcsswRunnerScriptPath();
+            getCmdArrayPrefix()[0] = OCSSWOldModel.getOcsswRunnerScriptPath();
             getCmdArrayPrefix()[1] = "--ocsswroot";
-            getCmdArrayPrefix()[2] = OCSSW.getOcsswEnv();
+            getCmdArrayPrefix()[2] = OCSSWOldModel.getOcsswEnv();
             getCmdArrayPrefix()[3] = getProgramName();
         }
     }
@@ -245,8 +245,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public boolean isValidProcessor() {
-        SeadasLogger.getLogger().info("program location: " + OCSSW.getOcsswRunnerScriptPath());
-        return OCSSW.getOcsswRunnerScriptPath() != null;
+        SeadasLogger.getLogger().info("program location: " + OCSSWOldModel.getOcsswRunnerScriptPath());
+        return OCSSWOldModel.getOcsswRunnerScriptPath() != null;
     }
 
     public String getProgramName() {
@@ -500,7 +500,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             return rootDir;
         } else {
             try {
-                rootDir = new File(OCSSW.getOcsswRoot());
+                rootDir = new File(OCSSWOldModel.getOcsswRoot());
             } catch (Exception e) {
                 SeadasLogger.getLogger().severe("error in getting ocssw root!");
             }
@@ -969,7 +969,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
             String[] suites;
             HashMap<String, Boolean> missionSuites;
-            if (OCSSW.isOCSSWInstalledLocal()) {
+            if (OCSSWOldModel.isOCSSWInstalledLocal()) {
                 suites = missionDir.list(new FilenameFilter() {
                     @Override
                     public boolean accept(File file, String s) {

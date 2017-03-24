@@ -16,11 +16,9 @@
 
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
-import gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction;
-import gov.nasa.gsfc.seadas.processing.general.CloProgramUI;
+import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
+import gov.nasa.gsfc.seadas.processing.common.CloProgramUI;
 import org.esa.beam.framework.ui.AppContext;
-
-import java.io.IOException;
 
 /**
  * Geographic collocation action.

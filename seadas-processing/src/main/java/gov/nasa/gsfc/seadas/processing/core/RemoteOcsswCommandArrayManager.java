@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.general.ParFileManager;
-import gov.nasa.gsfc.seadas.processing.general.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 
 import java.util.ArrayList;
@@ -72,7 +70,7 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
             if ((optionType.equals(ParamInfo.Type.IFILE) || optionType.equals(ParamInfo.Type.OFILE))
                     && optionValue != null && optionValue.trim().length() > 0) {
                 //replace shared folder name for remote server
-                if (optionValue.indexOf(OCSSW.getOCSSWClientSharedDirName()) != 0) {
+                if (optionValue.indexOf(OCSSWOldModel.getOCSSWClientSharedDirName()) != 0) {
                     //save the original file location for later usage; copy file to the shared folder; change the value of "optionValue"
                     String fileName = optionValue.substring(optionValue.lastIndexOf(System.getProperty("file.separator")) + 1);
                     String dirPath = optionValue.substring(0, optionValue.lastIndexOf(System.getProperty("file.separator")));
@@ -82,9 +80,9 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
                     } else if (optionType.equals(ParamInfo.Type.IFILE)) {
                         getoFilesOriginalLocations().put(fileName, dirPath);
                     }
-                    optionValue = OCSSW.getServerSharedDirName() + System.getProperty("file.separator") + fileName;
+                    optionValue = OCSSWOldModel.getServerSharedDirName() + System.getProperty("file.separator") + fileName;
                 } else {
-                    optionValue = optionValue.replace(OCSSW.getOCSSWClientSharedDirName(), OCSSW.getServerSharedDirName());
+                    optionValue = optionValue.replace(OCSSWOldModel.getOCSSWClientSharedDirName(), OCSSWOldModel.getServerSharedDirName());
                 }
 
             }

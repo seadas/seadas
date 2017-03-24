@@ -2,7 +2,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 
 import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
-import gov.nasa.gsfc.seadas.processing.general.GridBagConstraintsCustom;
+import gov.nasa.gsfc.seadas.processing.common.GridBagConstraintsCustom;
 
 import javax.swing.*;
 import java.awt.*;

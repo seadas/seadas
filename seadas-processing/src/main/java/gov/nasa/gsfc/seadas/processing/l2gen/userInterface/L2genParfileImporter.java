@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.processing.general.SeadasGuiUtils;
+import gov.nasa.gsfc.seadas.processing.common.SeadasGuiUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

@@ -53,7 +53,7 @@
             <parent>ocprocessing</parent>
             <id>install_ocssw.py</id>
             <placeBefore>extractor</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>Install OC Processors...</text>
             <shortDescr>Install/Update SeaDAS Ocean Color Processing Software</shortDescr>
             <programName>install_ocssw.py</programName>
@@ -66,7 +66,7 @@
             <id>extractor</id>
             <placeAfter>install_ocssw.py</placeAfter>
             <placeBefore>modis_L1A.py</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>extractor...</text>
             <shortDescr>Create L1 and L2 Extracts</shortDescr>
             <programName>extractor</programName>
@@ -79,7 +79,7 @@
             <id>modis_L1A.py</id>
             <placeAfter>extractor</placeAfter>
             <placeBefore>modis_GEO.py</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>modis_L1A...</text>
             <shortDescr>Process MODIS L0 to L1A</shortDescr>
             <programName>modis_L1A.py</programName>
@@ -92,7 +92,7 @@
             <id>modis_GEO.py</id>
             <placeAfter>modis_L1A.py</placeAfter>
             <placeBefore>modis_L1B.py</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>modis_GEO...</text>
             <shortDescr>Process MODIS Geolocation</shortDescr>
             <programName>modis_GEO.py</programName>
@@ -105,7 +105,7 @@
             <id>modis_L1B.py</id>
             <placeAfter>modis_GEO.py</placeAfter>
             <placeBefore>geolocate_viirs</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>modis_L1B...</text>
             <shortDescr>Process MODIS L1A to L1B</shortDescr>
             <programName>modis_L1B.py</programName>
@@ -119,7 +119,7 @@
             <id>geolocate_viirs</id>
             <placeAfter>modis_L1B.py</placeAfter>
             <placeBefore>calibrate_viirs</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>geolocate_viirs...</text>
             <shortDescr>Process VIIRS Geolocation</shortDescr>
             <programName>geolocate_viirs</programName>
@@ -134,7 +134,7 @@
             <id>calibrate_viirs</id>
             <placeAfter>geolocate_viirs</placeAfter>
             <placeBefore>l1bgen</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>calibrate_viirs...</text>
             <shortDescr>Process VIIRS L1A to L1B</shortDescr>
             <programName>calibrate_viirs</programName>
@@ -147,7 +147,7 @@
             <id>l1bgen</id>
             <placeAfter>calibrate_viirs</placeAfter>
             <placeBefore>l1brsgen</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>l1bgen...</text>
             <shortDescr>Create a generic L1B file</shortDescr>
             <programName>l1bgen</programName>
@@ -159,7 +159,7 @@
             <id>l1brsgen</id>
             <placeAfter>l1bgen</placeAfter>
             <placeBefore>l1mapgen</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>l1brsgen...</text>
             <shortDescr>Create a True Color Browse Image</shortDescr>
             <programName>l1brsgen</programName>
@@ -172,7 +172,7 @@
             <id>l1mapgen</id>
             <placeAfter>l1brsgen</placeAfter>
             <placeBefore>l2gen</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>l1mapgen...</text>
             <shortDescr>Create a True Color Mapped Image</shortDescr>
             <programName>l1mapgen</programName>
@@ -216,7 +216,7 @@
             <id>l2brsgen</id>
             <placeAfter>l2gen</placeAfter>
             <placeBefore>l2mapgen</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>l2brsgen...</text>
             <shortDescr>Create a L2 Browse Image</shortDescr>
             <programName>l2brsgen</programName>
@@ -229,7 +229,7 @@
             <id>l2mapgen</id>
             <placeAfter>l2brsgen</placeAfter>
             <placeBefore>l2bin</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>l2mapgen...</text>
             <shortDescr>Create a L2 Mapped Image</shortDescr>
             <programName>l2mapgen</programName>
@@ -242,7 +242,7 @@
             <id>l2bin</id>
             <placeAfter>l2mapgen</placeAfter>
             <placeBefore>l3bin</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>l2bin...</text>
             <shortDescr>Create a L3 bin file from L2 file(s)</shortDescr>
             <programName>l2bin</programName>
@@ -255,7 +255,7 @@
              <id>l2bin_aquarius</id>
              <placeAfter>l2bin</placeAfter>
              <placeBefore>l3bin</placeBefore>
-             <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+             <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
              <text>l2bin_aquarius...</text>
              <shortDescr>Create a L3 bin file from Aquarius L2 file(s)</shortDescr>
              <programName>l2bin_aquarius</programName>
@@ -268,7 +268,7 @@
             <id>l3bin</id>
             <placeAfter>l2bin_aquarius</placeAfter>
             <placeBefore>smigen</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>l3bin...</text>
             <shortDescr>Create a L3 bin file from L3 file(s)</shortDescr>
             <programName>l3bin</programName>
@@ -296,7 +296,7 @@
             <id>l3mapgen</id>
             <placeAfter>l3gen</placeAfter>
             <placeBefore>smigen</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>l3mapgen...</text>
             <shortDescr>Create a L3 Mapped Image</shortDescr>
             <programName>l3mapgen</programName>
@@ -309,7 +309,7 @@
             <id>smigen</id>
             <placeAfter>l3mapgen</placeAfter>
             <placeBefore>seadas_processor.py</placeBefore>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallCloProgramAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
             <text>smigen...</text>
             <shortDescr>Create a L3 map file</shortDescr>
             <programName>smigen</programName>
@@ -321,7 +321,7 @@
             <id>l3bindump</id>
             <!--<placeBefore>extractor</placeBefore>-->
             <placeAfter>smigen</placeAfter>
-            <class>gov.nasa.gsfc.seadas.processing.general.CallL3BinDumpAction</class>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallL3BinDumpAction</class>
             <text>l3bindump...</text>
             <shortDescr>Dump an XML file of the input options</shortDescr>
             <programName>l3bindump</programName>
