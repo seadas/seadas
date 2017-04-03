@@ -8,6 +8,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.common.*;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.visat.VisatApp;
@@ -36,9 +37,9 @@ public class L2genForm extends JPanel implements CloProgramUI {
     private JCheckBox keepParamsCheckbox;
 
 
-    public L2genForm(AppContext appContext, String xmlFileName, final File iFile, boolean showIOFields, L2genData.Mode mode, boolean keepParams, boolean ifileIndependent) {
+    public L2genForm(AppContext appContext, String xmlFileName, final File iFile, boolean showIOFields, L2genData.Mode mode, boolean keepParams, boolean ifileIndependent, OCSSW ocssw) {
 
-        masterData = L2genData.getNew(mode);
+        masterData = L2genData.getNew(mode, ocssw);
         masterData.setIfileIndependentMode(ifileIndependent);
         masterData.setKeepParams(keepParams);
 
@@ -150,14 +151,14 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
     }
 
-    public L2genForm(AppContext appContext, String xmlFileName) {
+    public L2genForm(AppContext appContext, String xmlFileName, OCSSW ocssw) {
 
-        this(appContext, xmlFileName, null, true, L2genData.Mode.L2GEN, false, false);
+        this(appContext, xmlFileName, null, true, L2genData.Mode.L2GEN, false, false, ocssw);
     }
 
-    public L2genForm(AppContext appContext, String xmlFileName, L2genData.Mode mode) {
+    public L2genForm(AppContext appContext, String xmlFileName, L2genData.Mode mode, OCSSW ocssw) {
 
-        this(appContext, xmlFileName, null, true, mode, false, false);
+        this(appContext, xmlFileName, null, true, mode, false, false, ocssw);
     }
 
 

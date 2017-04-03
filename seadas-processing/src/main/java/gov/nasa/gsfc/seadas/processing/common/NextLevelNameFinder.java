@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.*;
 
 /**
  * Created by aabduraz on 6/28/16.
@@ -47,10 +48,10 @@ public class NextLevelNameFinder {
     public String getNextLevelFileName(){
         if (OCSSWOldModel.isLocal()) {
             commandArrayManager = new LocalOcsswCommandArrayManager(nextLevelNamerProcessorModel);
-            ofileName = OCSSWRunner.executeLocalNameFinder(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
+            ofileName = OCSSWRunnerOld.executeLocalNameFinder(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
         } else {
             commandArrayManager = new RemoteOcsswCommandArrayManager(nextLevelNamerProcessorModel);
-            ofileName = OCSSWRunner.executeRemoteNameFinder(commandArrayManager.getProgramCommandArray());
+            ofileName = OCSSWRunnerOld.executeRemoteNameFinder(commandArrayManager.getProgramCommandArray());
         }
         return ofileName;
     }

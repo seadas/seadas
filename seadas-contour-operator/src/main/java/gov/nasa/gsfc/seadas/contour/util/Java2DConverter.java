@@ -128,7 +128,7 @@ public class Java2DConverter {
     }
 
     /**
-     * If you pass in a general GeometryCollection, note that a Shape cannot
+     * If you pass in a common GeometryCollection, note that a Shape cannot
      * preserve information about which elements are 1D and which are 2D. For
      * example, if you pass in a GeometryCollection containing a ring and a
      * disk, you cannot render them as such: if you use Graphics.fill, you'll

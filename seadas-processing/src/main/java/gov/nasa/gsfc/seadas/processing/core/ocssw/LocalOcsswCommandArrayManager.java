@@ -1,6 +1,9 @@
-package gov.nasa.gsfc.seadas.processing.core;
+package gov.nasa.gsfc.seadas.processing.core.ocssw;
 
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OcsswCommandArrayManager;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
             cmdArrayForParams = getCmdArrayParam();
         }
 
-        //The final command array is the concatination of cmdArrayPrefix, cmdArrayForParams, and cmdArraySuffix
+        //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
         cmdArray = SeadasArrayUtils.concatAll(cmdArrayPrefix, cmdArrayForParams, cmdArraySuffix);
 
         // get rid of the null strings

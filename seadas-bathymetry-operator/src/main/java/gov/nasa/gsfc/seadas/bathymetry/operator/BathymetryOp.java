@@ -2,8 +2,6 @@ package gov.nasa.gsfc.seadas.bathymetry.operator;
 
 import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
-import gov.nasa.gsfc.seadas.processing.general.EarthBox2;
-import gov.nasa.gsfc.seadas.processing.general.MotherEarthBox2;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
@@ -17,7 +15,6 @@ import org.esa.beam.util.ProductUtils;
 import ucar.ma2.Array;
 
 
-import javax.naming.NameNotFoundException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;

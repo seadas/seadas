@@ -21,7 +21,7 @@ import java.util.List;
 public class BathymetryReader {
 
     //  For test purposes here is the command line view:
-    // OCSSW/run/data/common:   ncdump -h ETOPO1_ocssw.nc
+    // OCSSWOldModel/run/data/common:   ncdump -h ETOPO1_ocssw.nc
 
     private NetcdfFile ncFile;
 

@@ -2,6 +2,9 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWClient;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWRunnerOld;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
@@ -159,7 +162,7 @@ public class SeadasFileUtils {
     }
 
     private static String retrieveOFileNameLocal(String[] cmdArray, String ifileDir) {
-        Process process = OCSSWRunner.execute(cmdArray, new File(ifileDir));
+        Process process = OCSSWRunnerOld.execute(cmdArray, new File(ifileDir));
 
         if (process == null) {
             return "output";
@@ -261,7 +264,7 @@ public class SeadasFileUtils {
     private static String getNextLevelFileName(String ifileName, String[] cmdArray) {
 
         String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-        Process process = OCSSWRunner.execute(cmdArray, new File(ifileDir));
+        Process process = OCSSWRunnerOld.execute(cmdArray, new File(ifileDir));
         if (process == null) {
             return null;
         }
@@ -495,7 +498,7 @@ public class SeadasFileUtils {
         cmdArray[0] = "cp";
         cmdArray[1] = sourceFile;
         cmdArray[2] = targetDir + System.getProperty("file.separator") + ".";
-        Process p = OCSSWRunner.executeLocal(cmdArray, new File(targetDir));
+        Process p = OCSSWRunnerOld.executeLocal(cmdArray, new File(targetDir));
         try{
             p.waitFor();
         }catch(InterruptedException ie){
@@ -518,7 +521,7 @@ public class SeadasFileUtils {
         String[] cmdArray = new String[2];
         cmdArray[0] = "rm";
         cmdArray[1] = fileFullPathName;
-        OCSSWRunner.executeLocal(cmdArray, new File(fileFullPathName));
+        OCSSWRunnerOld.executeLocal(cmdArray, new File(fileFullPathName));
     }
 
     public void updateDiskFile(String fileFullPath, String varName, String varValue) {

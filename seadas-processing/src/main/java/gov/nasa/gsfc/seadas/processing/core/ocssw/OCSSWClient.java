@@ -1,22 +1,14 @@
-package gov.nasa.gsfc.seadas.processing.core;
+package gov.nasa.gsfc.seadas.processing.core.ocssw;
 
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jsonp.JsonProcessingFeature;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 import javax.json.stream.JsonGenerator;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import java.io.File;
-import java.net.URI;
 
 /**
  * Created by IntelliJ IDEA.

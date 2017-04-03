@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.core;
+package gov.nasa.gsfc.seadas.processing.core.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import org.esa.beam.visat.VisatApp;

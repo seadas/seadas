@@ -1,7 +1,8 @@
-package gov.nasa.gsfc.seadas.processing.core;
+package gov.nasa.gsfc.seadas.processing.core.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.common.*;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.Json;
@@ -27,7 +28,7 @@ import static java.lang.System.getProperty;
  * Time: 12:21 PM
  * To change this template use File | Settings | File Templates.
  */
-public class OCSSWRunner {
+public class OCSSWRunnerOld {
 
     //private static ProcessBuilder processBuilder;
     private static HashMap environment = new HashMap();
@@ -40,7 +41,7 @@ public class OCSSWRunner {
     static ProcessorModel processorModel;
     static OcsswCommandArrayManager commandArrayManager;
 
-    public OCSSWRunner() {
+    public OCSSWRunnerOld() {
 
         environment.put(OCSSW_ROOT_VAR, OCSSWOldModel.getOcsswEnvArray());
     }
@@ -123,7 +124,7 @@ public class OCSSWRunner {
      * @return OUTPUT_FILE_NAME. It will be extracted from the standard output.
      */
     public static String executeLocalNameFinder(String[] cmdArray, File ifileDir) {
-        Process process = OCSSWRunner.execute(cmdArray, ifileDir);
+        Process process = OCSSWRunnerOld.execute(cmdArray, ifileDir);
 
         if (process == null) {
             return "output";
@@ -187,7 +188,7 @@ public class OCSSWRunner {
         HashMap<String, String> fileInfos = new HashMap();
         try {
 
-            Process process = OCSSWRunner.execute(cmdArray, ifileDir);
+            Process process = OCSSWRunnerOld.execute(cmdArray, ifileDir);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
             String line = stdInput.readLine();
@@ -249,7 +250,7 @@ public class OCSSWRunner {
         HashMap<String, String> pixels = new HashMap();
         try {
 
-            Process process = OCSSWRunner.execute(cmdArray, ifileDir);
+            Process process = OCSSWRunnerOld.execute(cmdArray, ifileDir);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
             String line;

@@ -1,6 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.common.*;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWClient;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 import ucar.nc2.NetcdfFile;
@@ -65,11 +68,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private String[] cmdArraySuffix;
 
     private boolean isIfileValid = false;
+    OCSSW ocssw;
 
-    public ProcessorModel(String name) {
+    public ProcessorModel(String name, OCSSW ocssw) {
 
         programName = name;
-
+        this.ocssw = ocssw;
         acceptsParFile = false;
         hasGeoFile = false;
         readyToRun = false;
@@ -86,8 +90,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         setCommandArraySuffix();
     }
 
-    public ProcessorModel(String name, String parXMLFileName) {
-        this(name);
+    public ProcessorModel(String name, String parXMLFileName, OCSSW ocssw) {
+        this(name, ocssw);
         if (parXMLFileName != null && parXMLFileName.length() > 0) {
             setParamList(ParamUtils.computeParamList(parXMLFileName));
             acceptsParFile = ParamUtils.getOptionStatus(parXMLFileName, "hasParFile");
@@ -101,35 +105,35 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
     }
 
-    public ProcessorModel(String name, ArrayList<ParamInfo> paramList) {
-        this(name);
+    public ProcessorModel(String name, ArrayList<ParamInfo> paramList, OCSSW ocssw) {
+        this(name, ocssw);
         setParamList(paramList);
     }
 
-    public static ProcessorModel valueOf(String programName, String xmlFileName) {
+    public static ProcessorModel valueOf(String programName, String xmlFileName, OCSSW ocssw) {
         ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
         switch (processorID) {
             case EXTRACTOR:
-                return new Extractor_Processor(programName, xmlFileName);
+                return new Extractor_Processor(programName, xmlFileName, ocssw);
             case MODIS_L1B_PY:
-                return new Modis_L1B_Processor(programName, xmlFileName);
+                return new Modis_L1B_Processor(programName, xmlFileName, ocssw);
             case LONLAT2PIXLINE:
-                return new LonLat2Pixels_Processor(programName, xmlFileName);
+                return new LonLat2Pixels_Processor(programName, xmlFileName, ocssw);
             case SMIGEN:
-                return new SMIGEN_Processor(programName, xmlFileName);
+                return new SMIGEN_Processor(programName, xmlFileName, ocssw);
             case L3MAPGEN:
-                return new L3MAPGEN_Processor(programName, xmlFileName);
+                return new L3MAPGEN_Processor(programName, xmlFileName, ocssw);
             case L2BIN:
-                return new L2Bin_Processor(programName, xmlFileName);
+                return new L2Bin_Processor(programName, xmlFileName, ocssw);
             case L2BIN_AQUARIUS:
-                return new L2Bin_Processor(programName, xmlFileName);
+                return new L2Bin_Processor(programName, xmlFileName, ocssw);
             case L3BIN:
-                return new L3Bin_Processor(programName, xmlFileName);
+                return new L3Bin_Processor(programName, xmlFileName, ocssw);
             case OCSSW_INSTALLER:
-                return new OCSSWInstaller_Processor(programName, xmlFileName);
+                return new OCSSWInstaller_Processor(programName, xmlFileName, ocssw);
             default:
         }
-        return new ProcessorModel(programName, xmlFileName);
+        return new ProcessorModel(programName, xmlFileName, ocssw);
     }
 
     private void setCommandArrayPrefix() {
@@ -186,7 +190,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void createsmitoppmProcessorModel(String ofileName) {
-        ProcessorModel smitoppm = new ProcessorModel("smitoppm_4_ui");
+        ProcessorModel smitoppm = new ProcessorModel("smitoppm_4_ui", ocssw);
         smitoppm.setAcceptsParFile(false);
         ParamInfo pi1 = new ParamInfo("ifile", getParamValue(getPrimaryOutputFileOptionName()));
         pi1.setOrder(0);
@@ -340,7 +344,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
 
         if (programName != null && verifyIFilePath(ifileName)) {
-            String ofileName = findNextLevelFileName(ifileName);
+            String ofileName = ocssw.getOfileName(ifileName);
             SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
             if (ofileName != null) {
                 isIfileValid = true;
@@ -740,8 +744,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
 
     private static class Extractor_Processor extends ProcessorModel {
-        Extractor_Processor(String programName, String xmlFileName) {
-            super(programName, xmlFileName);
+        Extractor_Processor(String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
         }
 
         @Override
@@ -784,8 +788,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private static class Modis_L1B_Processor extends ProcessorModel {
-        Modis_L1B_Processor(String programName, String xmlFileName) {
-            super(programName, xmlFileName);
+        Modis_L1B_Processor(String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
         }
 
         public boolean updateOFileInfo(String ofileName) {
@@ -828,8 +832,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         private LonLat2PixlineConverter lonLat2PixlineConverter;
 
-        LonLat2Pixels_Processor(String programName, String xmlFileName) {
-            super(programName, xmlFileName);
+        LonLat2Pixels_Processor(String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
             addPropertyChangeListener("ifile", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -921,8 +925,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         File missionDir;
         FileInfo ifileInfo;
 
-        L2Bin_Processor(String programName, String xmlFileName) {
-            super(programName, xmlFileName);
+        L2Bin_Processor(String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
             setProdPramName("l3bprod");
             setMultipleInputFiles(true);
             missionDir = null;
@@ -1036,15 +1040,15 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     private static class L2BinAquarius_Processor extends ProcessorModel {
-        L2BinAquarius_Processor(String programName, String xmlFileName) {
-            super(programName, xmlFileName);
+        L2BinAquarius_Processor(String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
             setMultipleInputFiles(true);
         }
     }
 
     private static class L3Bin_Processor extends ProcessorModel {
-        L3Bin_Processor(String programName, String xmlFileName) {
-            super(programName, xmlFileName);
+        L3Bin_Processor(String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
             setMultipleInputFiles(true);
             addPropertyChangeListener("out_parm", new PropertyChangeListener() {
                 @Override
@@ -1072,8 +1076,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
 
     private static class SMIGEN_Processor extends ProcessorModel {
-        SMIGEN_Processor(final String programName, String xmlFileName) {
-            super(programName, xmlFileName);
+        SMIGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
             setOpenInSeadas(true);
             addPropertyChangeListener("prod", new PropertyChangeListener() {
                 @Override
@@ -1083,7 +1087,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                         String oldProdValue = (String) propertyChangeEvent.getOldValue();
                         String newProdValue = (String) propertyChangeEvent.getNewValue();
                         String[] additionalOptions = {"--suite=" + newProdValue, "--resolution=" + getParamValue("resolution")};
-                        String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
                         updateOFileInfo(ofileName);
                     }
                 }
@@ -1092,6 +1097,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("resolution", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
                     String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
                     String newResolutionValue = (String) propertyChangeEvent.getNewValue();
                     String suite = getParamValue("prod");
@@ -1099,7 +1105,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                         suite = "all";
                     }
                     String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite};
-                    String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
                     updateOFileInfo(ofileName);
                 }
             });
@@ -1112,15 +1119,17 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 suite = "all";
             }
             String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite};
+            ocssw.setCommandArraySuffix(additionalOptions);
             return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
         }
     }
 
 
     private static class L3MAPGEN_Processor extends ProcessorModel {
-        L3MAPGEN_Processor(final String programName, String xmlFileName) {
-            super(programName, xmlFileName);
+        L3MAPGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
             setOpenInSeadas(false);
+
             addPropertyChangeListener("product", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -1129,7 +1138,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                         String oldProdValue = (String) propertyChangeEvent.getOldValue();
                         String newProdValue = (String) propertyChangeEvent.getNewValue();
                         String[] additionalOptions = {"--suite=" + newProdValue, "--resolution=" + getParamValue("resolution"), "--oformat=" + getParamValue("oformat")};
-                        String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
                         updateOFileInfo(ofileName);
                     }
                 }
@@ -1138,6 +1148,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("resolution", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
                     String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
                     String newResolutionValue = (String) propertyChangeEvent.getNewValue();
                     String suite = getParamValue("product");
@@ -1145,7 +1156,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                         suite = "all";
                     }
                     String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite, "--oformat=" + getParamValue("oformat")};
-                    String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
                     updateOFileInfo(ofileName);
                 }
             });
@@ -1153,6 +1165,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             addPropertyChangeListener("oformat", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
                     String oldFormatValue = (String) propertyChangeEvent.getOldValue();
                     String newFormatValue = (String) propertyChangeEvent.getNewValue();
                     String suite = getParamValue("product");
@@ -1160,7 +1173,8 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                         suite = "all";
                     }
                     String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite, "--oformat=" + newFormatValue};
-                    String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
                     updateOFileInfo(ofileName);
                 }
             });
@@ -1174,13 +1188,15 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 suite = "all";
             }
             String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite, "--oformat=" + getParamValue("oformat")};
-            return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
+            ocssw.setCommandArraySuffix(additionalOptions);
+            return ocssw.getOfileName(ifileName, additionalOptions);
+            //return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
         }
     }
 
     private static class OCSSWInstaller_Processor extends ProcessorModel {
-        OCSSWInstaller_Processor(String programName, String xmlFileName) {
-            super(programName, xmlFileName);
+        OCSSWInstaller_Processor(String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
         }
 
         /**
@@ -1194,6 +1210,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             String[] cmdArraySuffix = new String[1];
             String[] parts = VisatApp.getApp().getAppVersion().split("\\.");
             cmdArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
+            ocssw.setCommandArraySuffix(cmdArraySuffix);
             return cmdArraySuffix;
         }
     }

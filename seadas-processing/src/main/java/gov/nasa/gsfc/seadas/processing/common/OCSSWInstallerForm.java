@@ -2,7 +2,8 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.TableLayout;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWOldModel;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.framework.ui.AppContext;
@@ -93,9 +94,9 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     HashMap<String, Boolean> missionDataStatus;
 
 
-    public OCSSWInstallerForm(AppContext appContext, String programName, String xmlFileName) {
+    public OCSSWInstallerForm(AppContext appContext, String programName, String xmlFileName, OCSSW ocssw) {
         this.appContext = appContext;
-        processorModel = ProcessorModel.valueOf(programName, xmlFileName);
+        processorModel = ProcessorModel.valueOf(programName, xmlFileName, ocssw);
         processorModel.setReadyToRun(true);
         setMissionDataDir(getInstallDir() + getMissionDataDirInterfix());
         init();

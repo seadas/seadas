@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.*;
 
 import java.util.HashMap;
 
@@ -37,10 +38,10 @@ public class LonLat2PixlineConverter {
 
         if (OCSSWOldModel.isLocal()) {
             commandArrayManager = new LocalOcsswCommandArrayManager(lonLat2PixelTranslatorProcessorModel);
-            pixelValues = OCSSWRunner.executeLocalLonLat2Pixel(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
+            pixelValues = OCSSWRunnerOld.executeLocalLonLat2Pixel(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
         } else {
             commandArrayManager = new RemoteOcsswCommandArrayManager(lonLat2PixelTranslatorProcessorModel);
-            pixelValues = OCSSWRunner.executeRemoteLonLat2Pixel(commandArrayManager.getProgramCommandArray());
+            pixelValues = OCSSWRunnerOld.executeRemoteLonLat2Pixel(commandArrayManager.getProgramCommandArray());
         }
 
         if (pixelValues !=null) {

@@ -6,6 +6,7 @@ import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.*;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.ModalDialog;
@@ -29,11 +30,7 @@ import java.util.regex.Pattern;
 
 import static org.esa.beam.util.SystemUtils.getApplicationContextId;
 
-//import java.awt.*;
-
 /**
- * A ...
- *
  * @author Norman Fomferra
  * @author Aynur Abdurazik
  * @since SeaDAS 7.0
@@ -43,12 +40,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
     public static final String CONTEXT_LOG_LEVEL_PROPERTY = getApplicationContextId() + ".logLevel";
     public static final String LOG_LEVEL_PROPERTY = "logLevel";
 
+    private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+
     private String programName;
     private String dialogTitle;
     private String xmlFileName;
 
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
+    protected OCSSW ocssw = new OCSSWLocal();  //local is default
 
     @Override
     public void configure(ConfigurationElement config) throws CoreException {
@@ -88,7 +88,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName);
             }
         }
-        return new ProgramUIFactory(programName, xmlFileName);//, multiIFile);
+        return new ProgramUIFactory(programName, xmlFileName, ocssw);//, multiIFile);
+    }
+
+    public static boolean validate(final String ip) {
+        return PATTERN.matcher(ip).matches();
     }
 
     @Override
@@ -97,12 +101,19 @@ public class CallCloProgramAction extends AbstractVisatAction {
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
         SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(RuntimeContext.getConfig().getContextProperty(LOG_LEVEL_PROPERTY, "OFF")));
 
-        if (! RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
-            OCSSWOldModel.setProcessorId(programName);
-            OCSSWOldModel.setClientId(System.getProperty("user.name"));
-            OCSSWOldModel.createJobId();
-            OCSSWOldModel.retrieveServerSharedDirName();
+        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);
+        if (ocsswLocation.equals(OCSSW.OCSSW_LOCATION_PROPERTY_VALUE_VIRTUAL)) {
+            ocssw = new OCSSWVirtual();
+        } else if (validate(ocsswLocation)) {
+            ocssw = new OCSSWRemote();
+        } else {
+            if (OsUtils.getOperatingSystemType() == OsUtils.OSType.Windows) {
+
+                VisatApp.getApp().showInfoDialog(dialogTitle, "Please provide OCSSW server location in $SEADAS_HOME/config/seadas.config");
+                return;
+            }
         }
+        ocssw.setProgramName(programName);
 
         final AppContext appContext = getAppContext();
 
@@ -185,16 +196,20 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     }
 
-
+    /**
+     *
+     * @param pm is the model of the ocssw program to be exeuted
+     * @output this is executed as a native process
+     */
     public void executeProgram(ProcessorModel pm) {
 
-                final ProcessorModel processorModel = pm;
+        final ProcessorModel processorModel = pm;
 
-                ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
-                    @Override
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
+            @Override
             protected String doInBackground(ProgressMonitor pm) throws Exception {
-                        OCSSWRunner.setMonitorProgress(true);
-                final Process process = OCSSWRunner.execute(processorModel);
+                OCSSWRunnerOld.setMonitorProgress(true);
+                final Process process = OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }
@@ -212,13 +227,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
                 pm.done();
                 SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",
-                        "Execution log for " + "\n" + Arrays.toString(OCSSWRunner.getCurrentCmdArray()) + "\n" + processorModel.getExecutionLogMessage());
+                        "Execution log for " + "\n" + Arrays.toString(OCSSWRunnerOld.getCurrentCmdArray()) + "\n" + processorModel.getExecutionLogMessage());
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
 
                 displayOutput(processorModel);
-                        OCSSWRunner.setMonitorProgress(false);
+                OCSSWRunnerOld.setMonitorProgress(false);
                 return processorModel.getOfileName();
             }
 
@@ -236,7 +251,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
-                        int exitCode = OCSSWRunner.execute(secondaryProcessor).exitValue();
+                        int exitCode = OCSSWRunnerOld.execute(secondaryProcessor).exitValue();
                         if (exitCode == 0) {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);

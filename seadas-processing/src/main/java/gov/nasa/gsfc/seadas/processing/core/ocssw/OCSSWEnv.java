@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.core;
+package gov.nasa.gsfc.seadas.processing.core.ocssw;
 
 /**
  * Created by aabduraz on 3/24/17.

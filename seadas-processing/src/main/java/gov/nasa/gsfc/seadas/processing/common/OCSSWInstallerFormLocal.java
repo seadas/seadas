@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.processing.core.OCSSWOldModel;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
 import org.esa.beam.framework.ui.AppContext;
 
 import java.io.File;

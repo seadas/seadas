@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.*;
 
 import java.util.HashMap;
 
@@ -43,10 +44,10 @@ public class FileInfoFinder {
     private void identifyFileInfo(){
         if (OCSSWOldModel.isLocal()) {
             commandArrayManager = new LocalOcsswCommandArrayManager(fileInfoFinderProcessorModel);
-            fileInfos = OCSSWRunner.executeLocalGetOBPGFileInfo(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
+            fileInfos = OCSSWRunnerOld.executeLocalGetOBPGFileInfo(commandArrayManager.getProgramCommandArray(), commandArrayManager.getIfileDir());
         } else {
             commandArrayManager = new RemoteOcsswCommandArrayManager(fileInfoFinderProcessorModel);
-            fileInfos = OCSSWRunner.executeRemoteGetOBPGFileInfo(commandArrayManager.getProgramCommandArray());
+            fileInfos = OCSSWRunnerOld.executeRemoteGetOBPGFileInfo(commandArrayManager.getProgramCommandArray());
         }
         setFileType(fileInfos.get(FILE_TYPE_ID_STRING));
         setMissionName(fileInfos.get(MISSION_NAME_ID_STRING));

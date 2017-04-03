@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.processing.core.OCSSWOldModel;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
 
 import java.io.File;
 import java.io.IOException;

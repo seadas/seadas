@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genPrimaryIOFilesSelector;
 
 import javax.swing.*;
@@ -28,8 +29,8 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
     private ParFileUI parFileUI;
     private JPanel paramPanel;
 
-    public ProgramUIFactory(String programName, String xmlFileName) {
-        processorModel = ProcessorModel.valueOf(programName, xmlFileName);
+    public ProgramUIFactory(String programName, String xmlFileName, OCSSW ocssw) {
+        processorModel = ProcessorModel.valueOf(programName, xmlFileName, ocssw);
         parFileUI = new ParFileUI(processorModel);
         ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
         createUserInterface();

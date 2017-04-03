@@ -1,8 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.swing.TableLayout;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWOldModel;
-import gov.nasa.gsfc.seadas.processing.core.OCSSWRunner;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWRunnerOld;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -40,7 +40,7 @@ public class LUTManager {
 
     private void updateLUT() {
         String[] lutCmdArray = {OCSSWOldModel.getOcsswRunnerScriptPath(), UPDATE_LUTS_PROCESSOR_NAME, missionName};
-        Process process = OCSSWRunner.execute(lutCmdArray);
+        Process process = OCSSWRunnerOld.execute(lutCmdArray);
         try {
             int exitValue = process.waitFor();
         } catch (Exception e) {
