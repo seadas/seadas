@@ -18,8 +18,10 @@
 <table>
   <tr><td><b>Name:</b></td><td><code>StatisticsOp</code></td></tr>
   <tr><td><b>Full name:</b></td><td><code>org.esa.beam.statistics.StatisticsOp</code></td></tr>
-  <tr><td><b>Purpose:</b></td><td>Computes statistics for an arbitrary number of source products.</td></tr>
-  <tr><td><b>Version:</b></td><td>1.0</td></tr>
+  <tr><td><b>Purpose:</b></td><td>Computes statistics for an arbitrary number of source products.  This is the NASA version
+      and slightly varies from the BEAM version.  Version set at 7.4.1 (it was 5.0)
+      to not be confused with BEAM versioning scheme.</td></tr>
+  <tr><td><b>Version:</b></td><td>7.4.1</td></tr>
 </table>
 <h2>Description</h2>
 An operator that is used to compute statistics for any number of source products, restricted to regions given by an
@@ -32,7 +34,17 @@ An operator that is used to compute statistics for any number of source products
  </ul>
  <p/>
  Unlike most other operators, that can compute single {@link org.esa.beam.framework.gpf.Tile tiles},
- the statistics operator processes all of its source products in its {@link #initialize()} method.
+ the statistics operator processes all of its source products in its {@link #initialize()} method.<br>
+
+<pre>
+    Note: this operator has been revised as of SeaDAS 7.4.1 to match the SeaDAS 7.4.1 GUI revision of statistics.  The following are the changes to this operator:
+    1. Changed field "median" to actually be calculated from the raster median.  Previously it was the 50% threshold of the histogram.
+    2. Removed the calling parameter "accuracy", and instead using "numBins".
+    3. Default percent thresholds are now {50,80,85,90,95,98}, previously they were {90,95}.
+    4. "Max Error" field name changed to "BinWidth"
+    5. Added "CoefficientOfVariation" field and "TotalBins" field
+    6. Changed all field names and their order to match that of the GUI.
+</pre>
 <h2>Sources</h2>
 <table>
 <tr>
@@ -110,17 +122,24 @@ ASCII output will only be written if this parameter is set.</td>
 <tr>
   <td><code>percentiles</code></td>
   <td><code>int[]</code></td>
-  <td><code>90,95</code></td>
+  <td><code>50,80,85,90,95,98</code></td>
   <td>The percentile levels that shall be created. Must be in the interval [0..100]</td>
   <td></td>
 </tr>
-<tr>
-  <td><code>accuracy</code></td>
-  <td><code>int</code></td>
-  <td><code>3</code></td>
-  <td>The degree of accuracy used for statistics computation. Higher numbers indicate higher accuracy but may lead to a considerably longer computation time.</td>
-  <td></td>
-</tr>
+    <tr>
+        <td><code>numBins</code></td>
+        <td><code>int</code></td>
+        <td><code>1000</code></td>
+        <td>The number of bins to be used in the histogram statistics.</td>
+        <td></td>
+    </tr>
+<!--<tr>-->
+  <!--<td><code>accuracy</code></td>-->
+  <!--<td><code>int</code></td>-->
+  <!--<td><code>3</code></td>-->
+  <!--<td>The degree of accuracy used for statistics computation. Higher numbers indicate higher accuracy but may lead to a considerably longer computation time.</td>-->
+  <!--<td></td>-->
+<!--</tr>-->
 </table>
 <hr/>
 </body>
