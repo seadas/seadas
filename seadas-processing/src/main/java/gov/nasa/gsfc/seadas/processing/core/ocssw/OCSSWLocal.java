@@ -210,6 +210,11 @@ public class OCSSWLocal extends OCSSW {
     }
 
     @Override
+    public void setCommandArraySuffix() {
+
+    }
+
+    @Override
     public void setOcsswDataDirPath(String ocsswDataDirPath) {
 
     }

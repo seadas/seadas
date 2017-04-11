@@ -101,9 +101,7 @@ public abstract class OCSSW {
 
     public abstract void setCommandArrayPrefix();
 
-    public void setCommandArraySuffix(){
-
-    }
+    public abstract void setCommandArraySuffix();
 
     public String getMissionName(String ifileName) {
         return missionName;

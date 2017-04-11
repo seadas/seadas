@@ -145,6 +145,11 @@ public class OCSSWRemote extends OCSSW {
     }
 
     @Override
+    public void setCommandArraySuffix() {
+
+    }
+
+    @Override
     public void setMissionName(String missionName) {
 
     }

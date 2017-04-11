@@ -87,4 +87,9 @@ public class OCSSWVirtual extends OCSSW {
     public void setCommandArrayPrefix() {
 
     }
+
+    @Override
+    public void setCommandArraySuffix() {
+
+    }
 }
