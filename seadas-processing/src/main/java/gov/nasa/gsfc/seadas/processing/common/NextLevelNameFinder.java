@@ -36,11 +36,11 @@ public class NextLevelNameFinder {
      * @param programName is the TARGET_OUTPUT on the command line
      */
 
-    NextLevelNameFinder(String ifileName, String programName){
+    NextLevelNameFinder(String ifileName, String programName, OCSSW ocssw){
         this.ifileName = ifileName;
         this.programName= programName;
         this.setOfileName("output");
-        nextLevelNamerProcessorModel = new ProcessorModel(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME);
+        nextLevelNamerProcessorModel = new ProcessorModel(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ocssw);
         addIfileParamInfo();
         addProgramNameParamInfo();
     }

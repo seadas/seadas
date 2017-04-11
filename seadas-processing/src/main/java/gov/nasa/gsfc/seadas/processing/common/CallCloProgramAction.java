@@ -73,9 +73,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     public CloProgramUI getProgramUI(AppContext appContext) {
         if (programName.indexOf("extract") != -1) {
-            return new ExtractorUI(programName, xmlFileName);
+            return new ExtractorUI(programName, xmlFileName, ocssw);
         } else if (programName.indexOf("modis_GEO") != -1 || programName.indexOf("modis_L1B") != -1) {
-            return new ModisGEO_L1B_UI(programName, xmlFileName);
+            return new ModisGEO_L1B_UI(programName, xmlFileName, ocssw);
         } else if (programName.indexOf(OCSSWOldModel.OCSSW_INSTALLER) != -1) {
             OCSSWOldModel.downloadOCSSWInstaller();
             if (!OCSSWOldModel.isOcsswInstalScriptDownloadSuccessful()) {
@@ -83,9 +83,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
             }
 
             if (RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
-                return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName);
+                return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {
-                return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName);
+                return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
             }
         }
         return new ProgramUIFactory(programName, xmlFileName, ocssw);//, multiIFile);
@@ -95,12 +95,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         return PATTERN.matcher(ip).matches();
     }
 
-    @Override
-    public void actionPerformed(CommandEvent event) {
-
-        SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
-        SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(RuntimeContext.getConfig().getContextProperty(LOG_LEVEL_PROPERTY, "OFF")));
-
+    private void detectOcssw(){
         String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);
         if (ocsswLocation.equals(OCSSW.OCSSW_LOCATION_PROPERTY_VALUE_VIRTUAL)) {
             ocssw = new OCSSWVirtual();
@@ -114,6 +109,16 @@ public class CallCloProgramAction extends AbstractVisatAction {
             }
         }
         ocssw.setProgramName(programName);
+    }
+
+    @Override
+    public void actionPerformed(CommandEvent event) {
+
+        SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
+        SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(RuntimeContext.getConfig().getContextProperty(LOG_LEVEL_PROPERTY, "OFF")));
+
+        detectOcssw();
+
 
         final AppContext appContext = getAppContext();
 

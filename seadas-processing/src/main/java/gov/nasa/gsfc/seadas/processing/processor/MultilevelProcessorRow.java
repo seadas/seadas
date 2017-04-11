@@ -4,6 +4,7 @@ import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.common.*;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
 import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.framework.ui.UIUtils;
@@ -41,10 +42,13 @@ public class MultilevelProcessorRow {
 
     private boolean checkboxControlHandlerEnabled = true;
 
+    OCSSW ocssw;
 
-    public MultilevelProcessorRow(String name, MultlevelProcessorForm parentForm) {
+
+    public MultilevelProcessorRow(String name, MultlevelProcessorForm parentForm, OCSSW ocssw) {
         this.name = name;
         this.parentForm = parentForm;
+        this.ocssw = ocssw;
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
         paramList = new ParamList();
@@ -126,20 +130,20 @@ public class MultilevelProcessorRow {
     private void createConfigPanel(boolean keepfiles) {
         if (configPanel == null) {
             if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString())) {
-                cloProgramUI = new ProgramUIFactory("multilevel_processor", "multilevel_processor.xml");
+                cloProgramUI = new ProgramUIFactory("multilevel_processor", "multilevel_processor.xml", ocssw);
                 //  configPanel = (JPanel) cloProgramUI;
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("geo")) {
-                cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml");
+                cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml", ocssw);
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("l2gen")) {
             //    cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), false, L2genData.Mode.L2GEN, true, true);
-                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", null  , false, L2genData.Mode.L2GEN, true, true);
+                cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", null  , false, L2genData.Mode.L2GEN, true, true, ocssw);
                 configPanel = cloProgramUI.getParamPanel();
 
             } else {
                 String xmlFile = name.replace(".py", "").concat(".xml");
-                cloProgramUI = new ProgramUIFactory(name, xmlFile);
+                cloProgramUI = new ProgramUIFactory(name, xmlFile, ocssw);
                 configPanel = cloProgramUI.getParamPanel();
             }
 

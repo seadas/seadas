@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
 import org.esa.beam.framework.ui.AppContext;
 
@@ -16,8 +17,8 @@ import java.util.Map;
  */
 public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
 
-    public OCSSWInstallerFormLocal(AppContext appContext, String programName, String xmlFileName) {
-        super(appContext, programName, xmlFileName);
+    public OCSSWInstallerFormLocal(AppContext appContext, String programName, String xmlFileName, OCSSW ocssw) {
+        super(appContext, programName, xmlFileName, ocssw);
 
     }
 

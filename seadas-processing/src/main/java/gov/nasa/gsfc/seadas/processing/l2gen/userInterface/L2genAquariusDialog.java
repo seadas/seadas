@@ -27,6 +27,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.*;
 import org.esa.beam.framework.ui.AppContext;
@@ -34,6 +35,7 @@ import org.esa.beam.framework.ui.AppContext;
 class L2genAquariusDialog extends SingleTargetProductDialog {
 
     private final L2genForm form;
+    OCSSW ocssw;
 
     public static void main(String[] args) {
         final DefaultAppContext context = new DefaultAppContext("l2gen_aquarius");
@@ -45,7 +47,7 @@ class L2genAquariusDialog extends SingleTargetProductDialog {
     L2genAquariusDialog(final String title, final String helpID, AppContext appContext) {
         super(appContext, title, ID_APPLY_CLOSE_HELP, helpID);
         //form = new L2genAquariusForm(getTargetProductSelector(), appContext);
-        form = new L2genForm(appContext, "test", L2genData.Mode.L2GEN_AQUARIUS);
+        form = new L2genForm(appContext, "test", L2genData.Mode.L2GEN_AQUARIUS, ocssw);
     }
 
     @Override

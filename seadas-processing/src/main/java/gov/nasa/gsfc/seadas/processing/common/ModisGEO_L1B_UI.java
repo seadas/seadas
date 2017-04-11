@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
+
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
@@ -17,8 +19,8 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
 
     HashMap<String, String> validLutMissionNameMap;
 
-    public ModisGEO_L1B_UI(String programName, String xmlFileName) {
-        super(programName, xmlFileName);
+    public ModisGEO_L1B_UI(String programName, String xmlFileName, OCSSW ocssw) {
+        super(programName, xmlFileName, ocssw);
     }
 
     private void initMissionNameMap() {

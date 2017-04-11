@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
@@ -28,14 +29,17 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private boolean initiliazed = false;
 
-    public ExtractorUI(String programName, String xmlFileName) {
-        super(programName, xmlFileName);
+    OCSSW ocssw;
+
+    public ExtractorUI(String programName, String xmlFileName, OCSSW ocssw) {
+        super(programName, xmlFileName, ocssw);
         paramCounter = new HashMap();
         initiliazed = true;
+        this.ocssw = ocssw;
     }
 
     private void initLonLatProcessor() {
-        lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml");
+        lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml", ocssw);
         lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {

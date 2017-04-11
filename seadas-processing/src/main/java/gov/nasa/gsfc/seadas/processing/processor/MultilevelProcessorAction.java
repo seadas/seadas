@@ -31,7 +31,7 @@ public class MultilevelProcessorAction extends CallCloProgramAction {
 
     @Override
     public CloProgramUI getProgramUI(AppContext appContext) {
-        return new MultlevelProcessorForm(appContext, getXmlFileName());
+        return new MultlevelProcessorForm(appContext, getXmlFileName(), ocssw);
     }
 
 }

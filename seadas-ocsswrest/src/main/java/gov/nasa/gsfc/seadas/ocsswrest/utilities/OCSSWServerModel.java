@@ -20,7 +20,10 @@ import java.util.HashMap;
 public class OCSSWServerModel {
 
 
-    public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
+    public static String OCSSW_INSTALL_DIR = System.getProperty("user.home") + "/ocssw";
+
+    public static String OCSSW_SCRIPTS_DIR_SUFFIX =  "run" +  System.getProperty("file.separator") + "scripts";
+    public static String OCSSW_DATA_DIR_SUFFIX =   "run" +  System.getProperty("file.separator") + "data";
 
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
     public static final String SEADASHOME_PROPERTY = "home";
@@ -28,7 +31,7 @@ public class OCSSWServerModel {
     public static String OCSSW_INSTALLER = "install_ocssw.py";
 
     public static String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
-    public static String OCSSW_INSTALL_DIR = System.getProperty("user.home") + "/ocssw";
+
     public static String OCSSW_INSTALLER_FILE_LOCATION = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
     public static String OCDATAROOT;
     public static String _OCSSW_SCRIPTS_DIR = OCSSW_INSTALL_DIR +  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";
@@ -48,6 +51,21 @@ public class OCSSWServerModel {
     private static boolean progressMonitorFlag;
 
 
+    /**
+     * This method detects the existence of ocssw on server. The install directory should be user.home/ocssw
+     * Existence criteria: $"user.home"/ocssw/run/scripts directory exists
+     * @return Returns true if ocssw exists, else return false.
+     */
+    public static boolean isOCSSWExist() {
+            final File dir = new File(OCSSW_INSTALL_DIR  + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX);
+            if (dir.isDirectory()) {
+                return true;
+            } else {
+                return false;
+            }
+    }
+
+
     public static File getOcsswRoot() throws IOException {
         return ocsswRoot;
     }
@@ -55,10 +73,6 @@ public class OCSSWServerModel {
     public static void init(){
         checkOCSSW();
         processHashMap = new HashMap<>();
-    }
-
-    public static boolean isOCSSWExist() {
-        return ocsswExist;
     }
 
     public static void checkOCSSW() {

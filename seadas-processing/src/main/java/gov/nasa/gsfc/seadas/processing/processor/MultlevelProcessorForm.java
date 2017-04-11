@@ -12,6 +12,7 @@ import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.common.*;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.BasicApp;
 import org.esa.beam.util.SystemUtils;
@@ -50,7 +51,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         L2MAPGEN("l2mapgen"),
         L2BIN("l2bin"),
         L3BIN("l3bin"),
-//        SMIGEN("smigen"),
+        //        SMIGEN("smigen"),
         L3MAPGEN("l3mapgen");
 
         private Processor(String name) {
@@ -126,9 +127,12 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     ProcessorModel processorModel;
     private SwingPropertyChangeSupport propertyChangeSupport;
 
-    MultlevelProcessorForm(AppContext appContext, String xmlFileName) {
+    OCSSW ocssw;
+
+    MultlevelProcessorForm(AppContext appContext, String xmlFileName, OCSSW ocssw) {
         this.appContext = appContext;
         this.xmlFileName = xmlFileName;
+        this.ocssw = ocssw;
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -307,7 +311,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         rows = new ArrayList<MultilevelProcessorRow>();
 
         for (Processor processor : rowNames) {
-            MultilevelProcessorRow row = new MultilevelProcessorRow(processor.toString(), this);
+            MultilevelProcessorRow row = new MultilevelProcessorRow(processor.toString(), this, ocssw);
             row.addPropertyChangeListener(MultilevelProcessorRow.PARAM_STRING_EVENT, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
@@ -344,7 +348,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     @Override
     public ProcessorModel getProcessorModel() {
         if (processorModel == null) {
-            processorModel = new MultilevelProcessorModel("multilevel_processor.py", xmlFileName);
+            processorModel = new MultilevelProcessorModel("multilevel_processor.py", xmlFileName, ocssw);
             processorModel.setReadyToRun(true);
         }
         processorModel.setParamList(getParamList());

@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.processor;
 
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 
 import java.util.ArrayList;
 
@@ -13,8 +14,8 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class MultilevelProcessorModel extends ProcessorModel {
-    public MultilevelProcessorModel(String name, String parXMLFileName) {
-        super(name, parXMLFileName);
+    public MultilevelProcessorModel(String name, String parXMLFileName, OCSSW ocssw) {
+        super(name, parXMLFileName, ocssw);
     }
 
 

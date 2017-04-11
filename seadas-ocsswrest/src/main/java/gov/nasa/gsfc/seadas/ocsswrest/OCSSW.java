@@ -1,90 +1,98 @@
-package gov.nasa.gsfc.seadas.processing.core.ocssw;
-
-import gov.nasa.gsfc.seadas.processing.core.ParamList;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
+package gov.nasa.gsfc.seadas.ocsswrest;
 
 /**
  * Created by aabduraz on 3/27/17.
  */
-public class OCSSWVirtual extends OCSSW {
-    @Override
+public class OCSSW {
+
+
     public boolean isOCSSWExist() {
         return false;
     }
 
-    @Override
+
+    public String getOcsswDataRoot() {
+        return null;
+    }
+
+
+    public String getOcsswScriptPath() {
+        return null;
+    }
+
+
     public String getOcsswRunnerScriptPath() {
         return null;
     }
 
-    @Override
-    public void execute(ParamList paramListl) {
 
-    }
-
-    @Override
     public Process execute(String[] commandArray) {
         return null;
     }
 
-    @Override
+
     public String getOfileName(String ifileName) {
         return null;
     }
 
-    @Override
+
     public String getOfileName(String ifileName, String[] options) {
         return null;
     }
 
-    @Override
+
     public String getFileType(String ifileName) {
         return null;
     }
 
-    @Override
+
     public String getOcsswDataDirPath() {
         return null;
     }
 
-    @Override
+
     public void setOcsswDataDirPath(String ocsswDataDirPath) {
 
     }
 
-    @Override
+
     public String getOcsswInstallDirPath() {
         return null;
     }
 
-    @Override
+
     public void setOcsswInstallDirPath(String ocsswInstallDirPath) {
 
     }
 
-    @Override
+
     public String getOcsswScriptsDirPath() {
         return null;
     }
 
-    @Override
+
     public void setOcsswScriptsDirPath(String ocsswScriptsDirPath) {
 
     }
 
-    @Override
+
     public String getOcsswInstallerScriptPath() {
         return null;
     }
 
-    @Override
+
     public void setOcsswInstallerScriptPath(String ocsswInstallerScriptPath) {
 
     }
 
-    @Override
-    public void setCommandArrayPrefix() {
+
+    public void setMissionName(String missionName) {
+
+    }
+
+
+    public void setFileType(String fileType) {
 
     }
 }
+

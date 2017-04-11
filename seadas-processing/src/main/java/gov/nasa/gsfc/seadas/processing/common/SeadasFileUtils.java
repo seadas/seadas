@@ -142,24 +142,24 @@ public class SeadasFileUtils {
         }
     }
 
-    public ProcessorModel getNextLevelNameFinderProcessorModel(String ifileName, String programName) {
-        ProcessorModel nextLevelNamer = new ProcessorModel(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME);
-        final ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
-
-        ParamInfo ifileParamInfo = new ParamInfo("ifile", ifileName, ParamInfo.Type.IFILE);
-        ifileParamInfo.setOrder(0);
-        ifileParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
-        paramInfos.add(ifileParamInfo);
-
-        ParamInfo programNameParamInfo = new ParamInfo("programName", programName, ParamInfo.Type.IFILE);
-        programNameParamInfo.setOrder(1);
-        programNameParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
-        paramInfos.add(programNameParamInfo);
-
-        nextLevelNamer.setParamList(paramInfos);
-
-        return nextLevelNamer;
-    }
+//    public ProcessorModel getNextLevelNameFinderProcessorModel(String ifileName, String programName) {
+//        ProcessorModel nextLevelNamer = new ProcessorModel(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME);
+//        final ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
+//
+//        ParamInfo ifileParamInfo = new ParamInfo("ifile", ifileName, ParamInfo.Type.IFILE);
+//        ifileParamInfo.setOrder(0);
+//        ifileParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
+//        paramInfos.add(ifileParamInfo);
+//
+//        ParamInfo programNameParamInfo = new ParamInfo("programName", programName, ParamInfo.Type.IFILE);
+//        programNameParamInfo.setOrder(1);
+//        programNameParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
+//        paramInfos.add(programNameParamInfo);
+//
+//        nextLevelNamer.setParamList(paramInfos);
+//
+//        return nextLevelNamer;
+//    }
 
     private static String retrieveOFileNameLocal(String[] cmdArray, String ifileDir) {
         Process process = OCSSWRunnerOld.execute(cmdArray, new File(ifileDir));

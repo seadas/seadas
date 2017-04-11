@@ -17,7 +17,7 @@ public class L2genAquariusAction extends CallCloProgramAction {
 
     @Override
     public CloProgramUI getProgramUI(AppContext appContext) {
-        return new L2genForm(appContext, getXmlFileName(), L2genData.Mode.L2GEN_AQUARIUS);
+        return new L2genForm(appContext, getXmlFileName(), L2genData.Mode.L2GEN_AQUARIUS, ocssw);
     }
 
 }

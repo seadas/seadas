@@ -17,7 +17,7 @@ public class L3genAction extends CallCloProgramAction {
 
     @Override
     public CloProgramUI getProgramUI(AppContext appContext) {
-        return new L2genForm(appContext, getXmlFileName(), L2genData.Mode.L3GEN);
+        return new L2genForm(appContext, getXmlFileName(), L2genData.Mode.L3GEN, ocssw);
     }
 
 }

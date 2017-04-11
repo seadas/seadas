@@ -36,6 +36,7 @@ import java.util.Map;
 @Path("/ocssw")
 public class OCSSWServices {
 
+    private static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     private static String FILE_TABLE_NAME = "FILE_TABLE";
@@ -52,13 +53,10 @@ public class OCSSWServices {
     }
 
     @GET
-    @Path("/ocsswInfo")
+    @Path("/ocsswInstallStatus")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getOcsswInstallStatus() {
-        //final File ocsswScriptsDir = new File(OCSSWServerModel.OCSSW_INSTALL_DIR + System.getProperty("file.separator") + "run" + System.getProperty("file.separator") + "scripts");
-        final File ocsswScriptsDir = new File(OCSSWServerModel.OCSSW_INSTALL_DIR  + System.getProperty("file.separator") + "scripts");
-        System.out.println("ocsswExists");
-        JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", ocsswScriptsDir.isDirectory()).build();
+                JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist()).build();
         return ocsswInstallStatus;
     }
 

@@ -25,9 +25,11 @@ public class FileInfoFinder {
     ProcessorModel fileInfoFinderProcessorModel;
     HashMap<String, String> fileInfos;
 
+    OCSSW ocssw;
+
     public FileInfoFinder(String fileName){
         this.fileName = fileName;
-        fileInfoFinderProcessorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL);
+        fileInfoFinderProcessorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL, ocssw);
         fileInfoFinderProcessorModel.setAcceptsParFile(false);
         addParamInfo("file", fileName, ParamInfo.Type.IFILE, ParamInfo.USED_IN_COMMAND_AS_ARGUMENT, 0);
         fileInfos = new HashMap();

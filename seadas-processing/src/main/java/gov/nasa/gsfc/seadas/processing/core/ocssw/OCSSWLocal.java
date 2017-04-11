@@ -22,26 +22,46 @@ public class OCSSWLocal extends OCSSW {
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
+    public static String OCSSW_SCRIPTS_DIR_SUFFIX = "run" + System.getProperty("file.separator") + "scripts";
+    public static String OCSSW_DATA_DIR_SUFFIX = "run" + System.getProperty("file.separator") + "data";
 
-    @Override
-    public boolean isOCSSWExist() {
-        return false;
+    public static String OCSSW_INSTALLER = "install_ocssw.py";
+    public static String OCSSW_RUNNER = "ocssw_runner";
+
+
+
+    public OCSSWLocal(){
+
+        initiliaze();
+        ocsswExist = isOCSSWExist();
+
+    }
+
+    private void initiliaze(){
+        String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
+
+        if (dirPath == null) {
+            dirPath = RuntimeContext.getConfig().getContextProperty(SEADASHOME_PROPERTY, System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
+        }
+        if (dirPath != null) {
+            final File dir = new File(dirPath + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX);
+            if (dir.isDirectory()) {
+                ocsswExist = true;
+                ocsswRoot = dirPath;
+                ocsswScriptsDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX;
+                ocsswDataDirPath = ocsswRoot + System.getProperty("file.separator") +OCSSW_DATA_DIR_SUFFIX;
+                ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER;
+                ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER;
+            }
+        }
     }
 
     @Override
-    public String getOcsswDataRoot() {
-        return null;
+    public String getFileType(String ifileName) {
+        return fileType;
     }
 
-    @Override
-    public String getOcsswScriptPath() {
-        return null;
-    }
 
-    @Override
-    public String getOcsswRunnerScriptPath() {
-        return null;
-    }
 
     @Override
     public void execute(ParamList paramListl) {
@@ -87,7 +107,7 @@ public class OCSSWLocal extends OCSSW {
     }
 
 
-    private String getOfileName(String[] commandArray){
+    private String getOfileName(String[] commandArray) {
 
         Process process = execute(commandArray);
 
@@ -171,14 +191,22 @@ public class OCSSWLocal extends OCSSW {
         return null;
     }
 
-    @Override
-    public String getFileType(String ifileName) {
-        return null;
-    }
+    public void setCommandArrayPrefix() {
 
-    @Override
-    public String getOcsswDataDirPath() {
-        return null;
+        if (programName.equals(OCSSW_INSTALLER_PROGRAM_NAME)) {
+            commandArrayPrefix = new String[1];
+            commandArrayPrefix[0] = programName;
+            if (!isOCSSWExist()) {
+                commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH ;
+            } else {
+                commandArrayPrefix[0] = getOcsswInstallerScriptPath();
+            }
+        } else {
+            commandArrayPrefix = new String[3];
+            commandArrayPrefix[0] = getOcsswRunnerScriptPath();
+            commandArrayPrefix[1] = "--ocsswroot";
+            commandArrayPrefix[2] = getOcsswInstallDirPath();
+        }
     }
 
     @Override
@@ -186,44 +214,21 @@ public class OCSSWLocal extends OCSSW {
 
     }
 
-    @Override
-    public String getOcsswInstallDirPath() {
-        return null;
-    }
 
     @Override
     public void setOcsswInstallDirPath(String ocsswInstallDirPath) {
 
     }
 
-    @Override
-    public String getOcsswScriptsDirPath() {
-        return null;
-    }
 
     @Override
     public void setOcsswScriptsDirPath(String ocsswScriptsDirPath) {
 
     }
 
-    @Override
-    public String getOcsswInstallerScriptPath() {
-        return null;
-    }
 
     @Override
     public void setOcsswInstallerScriptPath(String ocsswInstallerScriptPath) {
-
-    }
-
-    @Override
-    public void setMissionName(String missionName) {
-        this.missionName = missionName;
-
-    }
-
-    @Override
-    public void setFileType(String fileType) {
 
     }
 }

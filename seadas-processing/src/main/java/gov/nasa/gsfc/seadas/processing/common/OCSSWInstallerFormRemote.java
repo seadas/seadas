@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWClient;
 import org.esa.beam.framework.ui.AppContext;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -23,8 +24,8 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
     OCSSWClient ocsswClient;
     WebTarget target;
 
-    OCSSWInstallerFormRemote(AppContext appContext, String programName, String xmlFileName) {
-        super(appContext, programName, xmlFileName);
+    OCSSWInstallerFormRemote(AppContext appContext, String programName, String xmlFileName, OCSSW ocssw) {
+        super(appContext, programName, xmlFileName, ocssw);
     }
 
     void init(){

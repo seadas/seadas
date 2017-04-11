@@ -16,6 +16,7 @@
 
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
+import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.ui.*;
 import org.esa.beam.framework.ui.AppContext;
@@ -25,6 +26,7 @@ import java.io.IOException;
 class L2genDialog extends SingleTargetProductDialog {
 
     private L2genForm form;
+    OCSSW ocssw;
 
     public static void main(String[] args) {
         final DefaultAppContext context = new DefaultAppContext("L2gen");
@@ -36,7 +38,7 @@ class L2genDialog extends SingleTargetProductDialog {
     L2genDialog(final String title, final String helpID, AppContext appContext) {
         super(appContext, title, ID_APPLY_CLOSE_HELP, helpID);
         //form = new L2genForm(getTargetProductSelector(), appContext);
-        form = new L2genForm(appContext, "test");
+        form = new L2genForm(appContext, "test", ocssw);
 
     }
 

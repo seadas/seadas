@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core.ocssw;
 
 
+import com.bc.ceres.core.runtime.RuntimeContext;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jsonp.JsonProcessingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -19,27 +20,32 @@ import javax.ws.rs.client.WebTarget;
  */
 public class OCSSWClient {
 
-    public static final String RESOURCE_BASE_URI = "http://localhost:6400/ocsswws/";
-
+    //public static final String RESOURCE_BASE_URI = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);//"http://localhost:6400/ocsswws/";
+    public static final String defaultServer ="localhost";
+    public static final String defaultPort = "6400";
 
     private WebTarget target;
+    private String resourceBaseUri;
 
-    public OCSSWClient(){
+    public OCSSWClient(String serverIPAddress, String portNumber) {
+        resourceBaseUri = getResourceBaseUri(serverIPAddress, portNumber);
         final ClientConfig clientConfig = new ClientConfig();
         clientConfig.register(MultiPartFeature.class);
         clientConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
         Client c = ClientBuilder.newClient(clientConfig);
-        target = c.target(RESOURCE_BASE_URI);
+        target = c.target(resourceBaseUri);
+    }
+
+    public OCSSWClient(){
+      this(defaultServer, defaultPort);
     }
 
     public WebTarget getOcsswWebTarget() {
-
         return target;
     }
 
-    public static void main(String[] args) {
-        OCSSWClient ocsswwsClient = new OCSSWClient();
-        WebTarget newTarget = ocsswwsClient.getOcsswWebTarget();
-
+    private String getResourceBaseUri(String serverIPAddress, String portNumber){
+        String resourceBaseUri = "http://" + serverIPAddress + ":" + portNumber;
+        return  resourceBaseUri;
     }
 }
