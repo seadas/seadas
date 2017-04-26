@@ -1,7 +1,8 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerModel;
+import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerModelOld;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ProcessMessageBodyWriter;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.filter.LoggingFilter;
@@ -14,7 +15,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import javax.json.stream.JsonGenerator;
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 /**
@@ -51,7 +51,8 @@ public class OCSSWRestServer {
      */
     public static void main(String[] args) throws IOException {
         SQLiteJDBC.createTables();
-        OCSSWServerModel.init();
+        OCSSWServerModelOld.init();
+        OCSSWServerModel.initiliaze();
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey new app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));

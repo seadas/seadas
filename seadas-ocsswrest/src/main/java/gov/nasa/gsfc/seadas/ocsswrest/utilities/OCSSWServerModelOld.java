@@ -17,7 +17,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
 
 
-public class OCSSWServerModel {
+public class OCSSWServerModelOld {
 
 
     public static String OCSSW_INSTALL_DIR = System.getProperty("user.home") + "/ocssw";
@@ -101,9 +101,9 @@ public class OCSSWServerModel {
 
     public static String[] getCommandArrayPrefix() {
         String[] cmdArray = new String[3];
-        cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+        cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
         cmdArray[1] = "--ocsswroot";
-        cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+        cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
         return cmdArray;
     }
 
@@ -123,9 +123,9 @@ public class OCSSWServerModel {
 
     public static String[] getCmdArrayPrefix() {
         String[] cmdArrayPrefix = new String[3];
-        cmdArrayPrefix[0] = OCSSWServerModel.getOcsswScriptPath();
+        cmdArrayPrefix[0] = OCSSWServerModelOld.getOcsswScriptPath();
         cmdArrayPrefix[1] = "--ocsswroot";
-        cmdArrayPrefix[2] = OCSSWServerModel.getOcsswEnv();
+        cmdArrayPrefix[2] = OCSSWServerModelOld.getOcsswEnv();
         return cmdArrayPrefix;
     }
 
@@ -138,7 +138,7 @@ public class OCSSWServerModel {
     private static File getOcsswRootFile() {
         final File ocsswRoot;
         try {
-            ocsswRoot = OCSSWServerModel.getOcsswRoot();
+            ocsswRoot = OCSSWServerModelOld.getOcsswRoot();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Dialog", JOptionPane.ERROR_MESSAGE);
             return null;
@@ -201,7 +201,7 @@ public class OCSSWServerModel {
     }
 
     public static void setCurrentJobId(String currentJobId) {
-        OCSSWServerModel.currentJobId = currentJobId;
+        OCSSWServerModelOld.currentJobId = currentJobId;
     }
 
     public static boolean isProgressMonitorFlag() {
@@ -210,6 +210,6 @@ public class OCSSWServerModel {
 
     public static void setProgressMonitorFlag(String progressMonitorFlag) {
 
-        OCSSWServerModel.progressMonitorFlag = new Boolean(progressMonitorFlag).booleanValue();
+        OCSSWServerModelOld.progressMonitorFlag = new Boolean(progressMonitorFlag).booleanValue();
     }
 }

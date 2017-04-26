@@ -2,9 +2,8 @@ package gov.nasa.gsfc.seadas.ocsswrest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
-import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessObserver;
+import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessRunner;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
 
@@ -22,8 +21,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,8 +45,8 @@ public class OCSSWServices {
     @Path("/installDir")
     @Produces(MediaType.TEXT_PLAIN)
     public String getOCSSWInstallDir() {
-        System.out.println("ocssw install dir: " + OCSSWServerModel.OCSSW_INSTALL_DIR);
-        return OCSSWServerModel.OCSSW_INSTALL_DIR;
+        System.out.println("ocssw install dir: " + OCSSWServerModelOld.OCSSW_INSTALL_DIR);
+        return OCSSWServerModelOld.OCSSW_INSTALL_DIR;
     }
 
     @GET
@@ -58,6 +55,15 @@ public class OCSSWServices {
     public JsonObject getOcsswInstallStatus() {
                 JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist()).build();
         return ocsswInstallStatus;
+    }
+
+    @GET
+    @Path("/ocsswSetProgramName")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject setOCSSWProgramName(JsonArray jsonArray){
+        OCSSWServerModel.setProgramName(jsonArray.getString(0));
+
     }
 
     @GET
@@ -71,7 +77,7 @@ public class OCSSWServices {
     @Path("retrieveMissionDirName")
     @Produces(MediaType.TEXT_PLAIN)
     public String getMissionSuitesArray() {
-        return OCSSWServerModel.missionDataDir;
+        return OCSSWServerModelOld.missionDataDir;
     }
 
     @GET
@@ -86,7 +92,7 @@ public class OCSSWServices {
     @Path("downloadInstaller")
     @Produces(MediaType.TEXT_XML)
     public boolean getOCSSWInstallerDownloadStatus() {
-        return OCSSWServerModel.downloadOCSSWInstaller();
+        return OCSSWServerModelOld.downloadOCSSWInstaller();
     }
 
 
@@ -94,7 +100,7 @@ public class OCSSWServices {
     @Path("/evalDirInfo")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getOCSSWEvalDirInfo() {
-        JsonObject evalDirStatus = Json.createObjectBuilder().add("eval", new File(OCSSWServerModel.missionDataDir + "eval").exists()).build();
+        JsonObject evalDirStatus = Json.createObjectBuilder().add("eval", new File(OCSSWServerModelOld.missionDataDir + "eval").exists()).build();
         return evalDirStatus;
     }
 
@@ -102,7 +108,7 @@ public class OCSSWServices {
     @Path("/srcDirInfo")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public JsonObject getOCSSWSrcDirInfo() {
-        JsonObject srcDirStatus = Json.createObjectBuilder().add("build", new File(OCSSWServerModel.missionDataDir + "build").exists()).build();
+        JsonObject srcDirStatus = Json.createObjectBuilder().add("build", new File(OCSSWServerModelOld.missionDataDir + "build").exists()).build();
         return srcDirStatus;
     }
 
@@ -129,7 +135,7 @@ public class OCSSWServices {
     @Consumes(MediaType.TEXT_PLAIN)
     public void updateProgressMonitorFlag(@PathParam("progressMonitorFlag") String progressMonitorFlag) {
         System.out.println("Shared dir name:" + OCSSWServerPropertyValues.getServerSharedDirName());
-        OCSSWServerModel.setProgressMonitorFlag(progressMonitorFlag);
+        OCSSWServerModelOld.setProgressMonitorFlag(progressMonitorFlag);
     }
 
     @POST
@@ -148,9 +154,9 @@ public class OCSSWServices {
 
             String[] cmdArray = getCmdArray(jsonArray);
 
-            cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+            cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
             cmdArray[1] = "--ocsswroot";
-            cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+            cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
 
             for (String str : cmdArray) {
                 System.out.println(str);
@@ -195,7 +201,7 @@ public class OCSSWServices {
 
         }
         int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
         return new Integer(exitValue).toString();
     }
 
@@ -209,9 +215,9 @@ public class OCSSWServices {
         HashMap<String, String> pixels = new HashMap<>();
         String[] cmdArray = getCmdArray(jsonArray);
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
-        cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+        cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
         cmdArray[1] = "--ocsswroot";
-        cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+        cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
         process = ProcessRunner.executeCmdArray(cmdArray);
         String jsonString = new String();
         try {
@@ -264,12 +270,12 @@ public class OCSSWServices {
 
             String[] cmdArray = getCmdArray(jsonArray);
 
-            cmdArray[0] = OCSSWServerModel.OCSSW_INSTALLER_FILE_LOCATION;
+            cmdArray[0] = OCSSWServerModelOld.OCSSW_INSTALLER_FILE_LOCATION;
 
             process = ProcessRunner.executeInstaller(cmdArray);
         }
         int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
         return new Integer(exitValue).toString();
     }
 
@@ -289,7 +295,7 @@ public class OCSSWServices {
 
             String[] cmdArray = getCmdArray(jsonArray);
 
-            cmdArray[0] = OCSSWServerModel.OCSSW_INSTALLER_FILE_LOCATION;
+            cmdArray[0] = OCSSWServerModelOld.OCSSW_INSTALLER_FILE_LOCATION;
 
             for (String str : cmdArray) {
                 System.out.println(str);
@@ -298,7 +304,7 @@ public class OCSSWServices {
             process = ProcessRunner.executeInstaller(cmdArray);
         }
         int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
         return new Integer(exitValue).toString(); //Response.status(respStatus).build();
     }
 
@@ -315,14 +321,14 @@ public class OCSSWServices {
 
             String[] cmdArray = getCmdArray(jsonArray);
 
-            cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+            cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
             cmdArray[1] = "--ocsswroot";
-            cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+            cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
 
             process = ProcessRunner.executeInstaller(cmdArray);
         }
         int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
         return new Integer(exitValue).toString();//Response.status(respStatus).build();
     }
 
@@ -339,9 +345,9 @@ public class OCSSWServices {
 
             String[] cmdArray = getCmdArray(jsonArray);
 
-            cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+            cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
             cmdArray[1] = "--ocsswroot";
-            cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+            cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
 
             for (String str : cmdArray) {
                 System.out.println(str);
@@ -352,7 +358,7 @@ public class OCSSWServices {
         System.out.println("process execution completed.");
         System.out.println("exit code = " + process.exitValue());
         int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
         return new Integer(exitValue).toString();
     }
 
@@ -370,9 +376,9 @@ public class OCSSWServices {
 
             String[] cmdArray = getCmdArray(jsonArray);
 
-            cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+            cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
             cmdArray[1] = "--ocsswroot";
-            cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+            cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
             for (String str : cmdArray) {
                 System.out.println(str);
             }
@@ -414,7 +420,7 @@ public class OCSSWServices {
             }
         }
         int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
         return new Integer(exitValue).toString();
     }
 
@@ -454,26 +460,26 @@ public class OCSSWServices {
     public Process retrieveProcess(@PathParam("jobId") String jobId) {
         ObjectMapper om = new ObjectMapper();
         try {
-            String processString = om.writeValueAsString(OCSSWServerModel.getProcess(jobId));
+            String processString = om.writeValueAsString(OCSSWServerModelOld.getProcess(jobId));
         } catch (JsonProcessingException jpe) {
             System.out.println(jpe.getStackTrace());
         }
-        return OCSSWServerModel.getProcess(jobId);
+        return OCSSWServerModelOld.getProcess(jobId);
     }
 
     @GET
     @Path("retrieveProcessResult/{jobId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream retrieveProcessResult(@PathParam("jobId") String jobId) {
-        return OCSSWServerModel.getProcess(jobId).getInputStream();
+        return OCSSWServerModelOld.getProcess(jobId).getInputStream();
     }
 
 
     private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
         String[] cmdArray = new String[6];
-        cmdArray[0] = OCSSWServerModel.getOcsswScriptPath();
+        cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
         cmdArray[1] = "--ocsswroot";
-        cmdArray[2] = OCSSWServerModel.getOcsswEnv();
+        cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
         cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
         cmdArray[4] = ifileName;
         cmdArray[5] = programName;
@@ -505,12 +511,12 @@ public class OCSSWServices {
 
         try {
 
-            URL website = new URL(OCSSWServerModel.OCSSW_INSTALLER_URL);
+            URL website = new URL(OCSSWServerModelOld.OCSSW_INSTALLER_URL);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(OCSSWServerModel.OCSSW_INSTALLER_FILE_LOCATION);
+            FileOutputStream fos = new FileOutputStream(OCSSWServerModelOld.OCSSW_INSTALLER_FILE_LOCATION);
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
             fos.close();
-            (new File(OCSSWServerModel.OCSSW_INSTALLER_FILE_LOCATION)).setExecutable(true);
+            (new File(OCSSWServerModelOld.OCSSW_INSTALLER_FILE_LOCATION)).setExecutable(true);
             ocsswInstalScriptDownloadSuccessful = true;
         } catch (MalformedURLException malformedURLException) {
             System.out.println("URL for downloading install_ocssw.py is not correct!");

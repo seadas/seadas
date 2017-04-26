@@ -1,18 +1,12 @@
 package gov.nasa.gsfc.seadas.ocsswrest.process;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerModel;
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerModelOld;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,7 +21,7 @@ public class ProcessRunner {
         Map<String, String> env = processBuilder.environment();
         HashMap environment = new HashMap();
 
-        environment.put("OCSSWROOT", OCSSWServerModel.OCSSW_INSTALL_DIR);
+        environment.put("OCSSWROOT", OCSSWServerModelOld.OCSSW_INSTALL_DIR);
 
         env.putAll(environment);
 
@@ -47,7 +41,7 @@ public class ProcessRunner {
         executeTest();
 
         ProcessBuilder processBuilder = new ProcessBuilder(cmdArray);
-        processBuilder.directory(new File(OCSSWServerModel.OCSSW_INSTALL_DIR));
+        processBuilder.directory(new File(OCSSWServerModelOld.OCSSW_INSTALL_DIR));
         Process process = null;
         try {
             System.out.println("starting execution 1 ...");
@@ -77,14 +71,14 @@ public class ProcessRunner {
         try {
             System.out.println("starting execution 1 ...");
             process = processBuilder.start();
-            if (OCSSWServerModel.isProgressMonitorFlag()) {
-                final ProcessObserver processObserver = new ProcessObserver(process, programName, OCSSWServerModel.getCurrentJobId());
+            if (OCSSWServerModelOld.isProgressMonitorFlag()) {
+                final ProcessObserver processObserver = new ProcessObserver(process, programName, OCSSWServerModelOld.getCurrentJobId());
                 processObserver.startAndWait();
             }
             if (process != null) {
                 exitValue = process.waitFor();
                 System.out.println(" process exit code: " + process.exitValue());
-                SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+                SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
             }
         } catch (IOException ioe) {
             System.out.println("installer execution IO exception!");
@@ -128,7 +122,7 @@ public class ProcessRunner {
             System.out.println(ioe.getMessage());
         }
         int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModel.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
         System.out.println("completed "); //System.out.println(process.exitValue());
         return process;
     }
