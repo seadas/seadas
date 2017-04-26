@@ -59,8 +59,15 @@ public class OCSSWRemote extends OCSSW {
         return ofileName;
     }
 
-    private JsonArray transformToJsonArray(String[] ){
-        return null;
+    private JsonArray transformToJsonArray(String[] commandArray){
+
+        JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+
+        for (String option:commandArray){
+            jsonArrayBuilder.add(option);
+        }
+
+        return jsonArrayBuilder.build();
     }
 
     private String getOfileName(JsonArray jsonArray) {
