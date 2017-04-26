@@ -12,7 +12,8 @@
     <options>
         <option type="ifile">
             <name>infile</name>
-            <value>q</value>
+            <value></value>
+            <value></value>
             <default></default>
             <description>input SEAWIFS L1A datafile</description>
             <source>command line</source>

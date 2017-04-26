@@ -1,11 +1,15 @@
 package gov.nasa.gsfc.seadas.processing.core.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 
-import javax.json.JsonObject;
+import javax.json.*;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -26,62 +30,25 @@ public class OCSSWRemote extends OCSSW {
         String remoteServerPortNumber = OCSSW_SERVER_PORT_NUMBER;
         OCSSWClient ocsswClient = new OCSSWClient(remoteServerIPAddress, remoteServerPortNumber);
         target = ocsswClient.getOcsswWebTarget();
-    }
-
-
-    @Override
-    public boolean isOCSSWExist() {
         JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        boolean ocsswExist = jsonObject.getBoolean("ocsswExists");
-        return ocsswExist;
-    }
-
-
-    @Override
-    public String getOcsswInstallerScriptPath() {
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        String ocsswInstallScriptPath = jsonObject.getString("ocsswExists");
-        return ocsswInstallScriptPath;
-    }
-
-
-    @Override
-    public String getOcsswInstallDirPath() {
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        String ocsswInstallDirPath = jsonObject.getString("ocsswExists");
-        return ocsswInstallDirPath;
+        ocsswExist = jsonObject.getBoolean("ocsswExists");
+        ocsswRoot = jsonObject.getString("ocsswRoot");
     }
 
     @Override
-    public String getOcsswRunnerScriptPath() {
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        String ocsswRunnerScriptPath = jsonObject.getString("ocsswExists");
-        return ocsswRunnerScriptPath;
+    public void setProgramName(String programName) {
+        this.programName = programName;
+        target.path("ocssw").path("ocsswSetProgramName").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+        setCommandArrayPrefix();
+        setCommandArraySuffix();
     }
-
-
-    @Override
-    public String getOcsswScriptsDirPath() {
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        String ocsswScriptsDirPath = jsonObject.getString("ocsswExists");
-        return ocsswScriptsDirPath;
-    }
-
-
-
-    @Override
-    public String getOcsswDataDirPath() {
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        String ocsswDataDirPath = jsonObject.getString("ocsswExists");
-        return ocsswDataDirPath;
-    }
-
-
 
     @Override
     public String getOfileName(String ifileName) {
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        String ofileName = jsonObject.getString("ocsswExists");
+        JsonObject jsonObject = target.path("ocssw").path("getOfileName").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+        String ofileName = jsonObject.getString("ofileName");
+        missionName = jsonObject.getString("missionName");
+        fileType = jsonObject.getString("fileType");
         return ofileName;
     }
 
@@ -89,6 +56,18 @@ public class OCSSWRemote extends OCSSW {
     public String getOfileName(String ifileName, String[] options) {
         JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         String ofileName = jsonObject.getString("ocsswExists");
+        return ofileName;
+    }
+
+    private JsonArray transformToJsonArray(String[] ){
+        return null;
+    }
+
+    private String getOfileName(JsonArray jsonArray) {
+        JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(OCSSWOldModel.getJobId()).request(MediaType.APPLICATION_JSON).put(Entity.entity(jsonArray, MediaType.APPLICATION_JSON),JsonObject.class);
+        String ofileName = jsonObject.getString("ofileName");
+        missionName = jsonObject.getString("missionName");
+        fileType = jsonObject.getString("fileType");
         return ofileName;
     }
 
@@ -108,8 +87,36 @@ public class OCSSWRemote extends OCSSW {
 
 
     @Override
-    public void execute(ParamList paramListl) {
+    public Process execute(ParamList paramListl) {
+            return  target.path("executeCommandArray").request(MediaType.APPLICATION_XML).put(Entity.xml(paramListl), Process.class);
+    }
 
+    private JsonArray getJsonFromParamList(ParamList paramList) {
+        JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+
+        Iterator itr = paramList.getParamArray().iterator();
+
+        ParamInfo option;
+        String optionValue;
+        while (itr.hasNext()) {
+            option = (ParamInfo) itr.next();
+            optionValue = option.getValue();
+            if (option.getType() != ParamInfo.Type.HELP) {
+                if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
+                    if (option.getValue() != null && option.getValue().length() > 0) {
+                        jsonArrayBuilder.add(optionValue);
+                    }
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
+                    jsonArrayBuilder.add(option.getName() + "=" + optionValue);
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
+                    if (option.getName() != null && option.getName().length() > 0) {
+                        jsonArrayBuilder.add(option.getName());
+                    }
+                }
+            }
+        }
+        JsonArray jsonCommandArray = jsonArrayBuilder.build();
+        return jsonCommandArray;
     }
 
     @Override

@@ -351,6 +351,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
                 updateGeoFileInfo(ifileName);
                 updateOFileInfo(getOFileFullPath(ofileName));
+                updateParamValues(new File(ifileName));
             }
         } else {
             isIfileValid = false;
@@ -365,11 +366,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return isIfileValid;
     }
 
-
-    String findNextLevelFileName(String ifileName) {
-        SeadasLogger.getLogger().info("program name for finding next level name: " + programName);
-        return SeadasFileUtils.findNextLevelFileName(ifileName, programName, "");
-    }
 
     public boolean updateGeoFileInfo(String ifileName) {
         updateGeoFileStatus(ifileName);
@@ -658,7 +654,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     public void updateParamValues(File selectedFile) {
 
-        if (selectedFile == null || programName != null && !l2prodProcessors.contains(programName)) {
+        if (selectedFile == null || (programName != null && !l2prodProcessors.contains(programName))) {
             return;
         }
 
@@ -695,6 +691,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 //retrieve geophysical data to fill in "product" value ranges
                 if (g.getShortName().equalsIgnoreCase("Geophysical_Data")) {
                     var = g.getVariables();
+                    break;
                 }
             }
             if (var != null) {
@@ -720,10 +717,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 }
             }
         }
-    }
-
-    public void setCmdArrayPrefix(String[] cmdArrayPrefix) {
-        this.cmdArrayPrefix = cmdArrayPrefix;
     }
 
     public String[] getCmdArraySuffix() {
@@ -1112,16 +1105,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             });
         }
 
-        @Override
-        String findNextLevelFileName(String ifileName) {
-            String suite = getParamValue("prod");
-            if (suite==null || suite.trim().length()==0) {
-                suite = "all";
-            }
-            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite};
-            ocssw.setCommandArraySuffix(additionalOptions);
-            return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
-        }
     }
 
 
@@ -1181,17 +1164,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         }
 
-        @Override
-        String findNextLevelFileName(String ifileName) {
-            String suite = getParamValue("product");
-            if (suite==null || suite.trim().length()==0) {
-                suite = "all";
-            }
-            String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite, "--oformat=" + getParamValue("oformat")};
-            ocssw.setCommandArraySuffix(additionalOptions);
-            return ocssw.getOfileName(ifileName, additionalOptions);
-            //return SeadasFileUtils.findNextLevelFileName(ifileName, programName, additionalOptions);
-        }
     }
 
     private static class OCSSWInstaller_Processor extends ProcessorModel {

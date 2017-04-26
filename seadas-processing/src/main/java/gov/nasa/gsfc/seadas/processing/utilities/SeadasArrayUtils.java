@@ -31,7 +31,7 @@ public class SeadasArrayUtils {
     public static <T> T[] concatAll(T[] first, T[]... rest) {
         int totalLength = first.length;
         for (T[] array : rest) {
-            if (rest != null) {
+            if (array != null) {
                 totalLength += array.length;
             }
 
@@ -39,7 +39,7 @@ public class SeadasArrayUtils {
         T[] result = Arrays.copyOf(first, totalLength);
         int offset = first.length;
         for (T[] array : rest) {
-            if (rest != null) {
+            if (array != null) {
                 System.arraycopy(array, 0, result, offset, array.length);
                 offset += array.length;
             }

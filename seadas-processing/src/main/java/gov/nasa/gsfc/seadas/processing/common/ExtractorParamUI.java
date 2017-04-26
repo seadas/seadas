@@ -21,6 +21,8 @@ import java.beans.PropertyChangeListener;
  * To change this template use File | Settings | File Templates.
  */
 public class ExtractorParamUI extends ParamUIFactory {
+
+    private final String NON_INTERGER_VARS = "prod_list";
     public ExtractorParamUI(ProcessorModel pm) {
         super(pm);
     }
@@ -64,8 +66,9 @@ public class ExtractorParamUI extends ParamUIFactory {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
+                String value = field.getText();
                 if (!field.getText().trim().equals(pi.getValue().trim())) {
-                    if (new Double(field.getText()).doubleValue() > 0) {
+                    if (NON_INTERGER_VARS.contains(pi.getName()) || new Double(field.getText()).doubleValue() > 0 ) {
                         processorModel.updateParamInfo(pi, field.getText());
                     } else {
                         VisatApp.getApp().showErrorDialog("Please enter a value greater than zero!");

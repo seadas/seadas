@@ -1,8 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core.ocssw;
 
+import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -18,9 +19,9 @@ public abstract class OCSSW {
     public static final String SEADASHOME_PROPERTY = "home";
 
 
-    public static String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw.py";
-    public static String OCSSW_RUNNER_NAME = "ocssw_runner";
-    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
+    public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
+
     public static String OCSSW_INSTALLER_PROGRAM_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     public static String OCSSW_SCRIPTS_DIR_PATH_SUFFIX =  "run" +  System.getProperty("file.separator") + "scripts";
@@ -36,12 +37,14 @@ public abstract class OCSSW {
 
 
     String programName;
+    String xmlFileName;
     String ifileName;
     String missionName;
     String fileType;
 
     String[] commandArrayPrefix;
     String[] commandArraySuffix;
+    String[] commandArray;
 
     public boolean isOCSSWExist(){
         return ocsswExist;
@@ -67,7 +70,7 @@ public abstract class OCSSW {
         return ocsswRunnerScriptPath;
     }
 
-    public abstract void execute(ParamList paramList);
+    public abstract Process execute(ParamList paramList);
     public abstract Process execute(String[] commandArray);
     public abstract String getOfileName(String ifileName);
     public abstract String getOfileName(String ifileName, String[] options);
@@ -132,5 +135,44 @@ public abstract class OCSSW {
 
     public void setOcsswExist(boolean ocsswExist) {
         this.ocsswExist = ocsswExist;
+    }
+    public void updateOCSSWRoot(String installDir) {
+        FileWriter fileWriter = null;
+        try {
+            final FileReader reader = new FileReader(new File(RuntimeContext.getConfig().getConfigFilePath()));
+            final BufferedReader br = new BufferedReader(reader);
+
+            StringBuilder text = new StringBuilder();
+            String line;
+            boolean isOCSSWRootSpecified = false;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("seadas.ocssw.root")) {
+                    line = "seadas.ocssw.root = " + installDir;
+                    isOCSSWRootSpecified = true;
+                }
+                text.append(line);
+                text.append("\n");
+            }
+            //Append "seadas.ocssw.root = " + installDir + "\n" to the runtime config file if it is not exist
+            if (!isOCSSWRootSpecified) {
+                text.append("seadas.ocssw.root = " + installDir + "\n");
+            }
+            fileWriter = new FileWriter(new File(RuntimeContext.getConfig().getConfigFilePath()));
+            fileWriter.write(text.toString());
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+            ocsswRoot = installDir;
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public String[] getCommandArray() {
+        return commandArray;
+    }
+
+    public void setCommandArray(String[] commandArray) {
+        this.commandArray = commandArray;
     }
 }

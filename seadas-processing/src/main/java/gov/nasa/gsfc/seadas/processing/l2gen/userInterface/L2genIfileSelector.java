@@ -22,7 +22,6 @@ public class L2genIfileSelector {
 
     final private L2genDataProcessorModel l2genDataProcessorModel;
 
-    //private SourceProductFileSelector fileSelector;
     private SeadasFileSelector fileSelector;
     private boolean controlHandlerEnabled = true;
     private boolean eventHandlerEnabled = true;
@@ -44,12 +43,13 @@ public class L2genIfileSelector {
         fileSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
             @Override
             public void selectionChanged(SelectionChangeEvent event) {
-                System.out.println("selection changed!");
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
                     disableEventHandler();
-                    l2genDataProcessorModel.updateParamValues(fileSelector.getSelectedFile());
-                    l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
+                    if (isControlHandlerEnabled()) {
+                        //l2genDataProcessorModel.updateParamValues(fileSelector.getSelectedFile());
+                        l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
+                    }
                     enableEventHandler();
                 }
             }
@@ -78,9 +78,7 @@ public class L2genIfileSelector {
         l2genDataProcessorModel.addPropertyChangeListener("cancel", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                //l2genDataProcessorModel = null;
                 fileSelector = null;
-                //To change body of implemented methods use File | Settings | File Templates.
             }
         });
     }

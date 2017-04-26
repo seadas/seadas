@@ -19,8 +19,8 @@ public class OCSSWVirtual extends OCSSW {
     }
 
     @Override
-    public void execute(ParamList paramListl) {
-
+    public Process execute(ParamList paramListl) {
+        return null;
     }
 
     @Override

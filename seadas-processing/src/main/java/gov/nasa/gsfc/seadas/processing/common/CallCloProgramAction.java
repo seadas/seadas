@@ -76,7 +76,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return new ExtractorUI(programName, xmlFileName, ocssw);
         } else if (programName.indexOf("modis_GEO") != -1 || programName.indexOf("modis_L1B") != -1) {
             return new ModisGEO_L1B_UI(programName, xmlFileName, ocssw);
-        } else if (programName.indexOf(OCSSWOldModel.OCSSW_INSTALLER) != -1) {
+        } else if (programName.indexOf(ocssw.OCSSW_INSTALLER_PROGRAM) != -1) {
             OCSSWOldModel.downloadOCSSWInstaller();
             if (!OCSSWOldModel.isOcsswInstalScriptDownloadSuccessful()) {
                 return null;
@@ -184,13 +184,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
         modalDialog.getButton(ModalDialog.ID_OK).setEnabled(false);
 
         final ProcessorModel processorModel = cloProgramUI.getProcessorModel();
+        programName = processorModel.getProgramName();
         openOutputInApp = cloProgramUI.isOpenOutputInApp();
 
-        if (!programName.equals(OCSSWOldModel.OCSSW_INSTALLER) && !processorModel.isValidProcessor()) {
+        if (!programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM) && !processorModel.isValidProcessor()) {
             return;
         }
 
-        if (programName.equals(OCSSWOldModel.OCSSW_INSTALLER) && !OCSSWOldModel.isOcsswInstalScriptDownloadSuccessful()) {
+        if (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM) && !OCSSWOldModel.isOcsswInstalScriptDownloadSuccessful()) {
             displayMessage(programName, "ocssw installation script does not exist." + "\n" + "Please check network connection and rerun ''Install Processor''");
             return;
         }
@@ -214,13 +215,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
             @Override
             protected String doInBackground(ProgressMonitor pm) throws Exception {
                 OCSSWRunnerOld.setMonitorProgress(true);
-                final Process process = OCSSWRunnerOld.execute(processorModel);
+                final Process process = ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }
                 final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
-                if (programName.equals(OCSSWOldModel.OCSSW_INSTALLER)) {
+                if (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM)) {
                     processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));
                 } else {
                     processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
@@ -232,7 +233,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
                 pm.done();
                 SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",
-                        "Execution log for " + "\n" + Arrays.toString(OCSSWRunnerOld.getCurrentCmdArray()) + "\n" + processorModel.getExecutionLogMessage());
+                        "Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + processorModel.getExecutionLogMessage());
                 if (exitCode != 0) {
                     throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
@@ -247,25 +248,26 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 try {
                     final String outputFileName = get();
                     VisatApp.getApp().showInfoDialog(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? "" :
-                            (programName.equals(OCSSWOldModel.OCSSW_INSTALLER) ? "" : ("Output written to:\n" + outputFileName))), null);
-                    if (programName.equals(OCSSWOldModel.OCSSW_INSTALLER)) {
-                        OCSSWOldModel.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
-                        if (!OCSSWOldModel.isOCSSWExist()) {
+                            (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM) ? "" : ("Output written to:\n" + outputFileName))), null);
+                    if (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM)) {
+                        ocssw.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
+                        if (!ocssw.isOCSSWExist()) {
                             enableProcessors();
                         }
                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
-                        int exitCode = OCSSWRunnerOld.execute(secondaryProcessor).exitValue();
+                        int exitCode = ocssw.execute(secondaryProcessor.getParamList()).exitValue();
                         if (exitCode == 0) {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);
                         }
                     }
                 } catch (InterruptedException e) {
-                    //
+                    e.printStackTrace();
                 } catch (ExecutionException e) {
                     displayMessage(programName, "execution exception: " + e.getMessage() + "\n" + processorModel.getExecutionLogMessage());
+                    e.printStackTrace();
                 }
             }
         };
