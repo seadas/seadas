@@ -57,6 +57,8 @@ public class SQLiteJDBC {
                     " stderr(500) )";
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
                     "(JOB_ID INT PRIMARY KEY     NOT NULL, " +
+                    " PROGRAM_NAME  CHAR(25)   NOT NULL, " +
+                    " I_FILE_NAME       CHAR(100)   NOT NULL, " +
                     " I_FILE_TYPE      CHAR(50)    NOT NULL, " +
                     " O_FILE_NAME      CHAR(100)    NOT NULL, " +
                     " MISSION  CHAR(50), " +
@@ -96,6 +98,8 @@ public class SQLiteJDBC {
             //string for creating FILE_TABLE
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+                    " PROGRAM_NAME  CHAR(25)   NOT NULL, " +
+                    " I_FILE_NAME       CHAR(100)   NOT NULL, " +
                     "I_FILE_TYPE      CHAR(50) ,    " +
                     "O_FILE_NAME      CHAR(100) , " +
                     "MISSION_NAME  CHAR(50), " +

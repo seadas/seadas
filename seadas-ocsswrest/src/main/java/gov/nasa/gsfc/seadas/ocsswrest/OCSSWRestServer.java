@@ -53,6 +53,8 @@ public class OCSSWRestServer {
         SQLiteJDBC.createTables();
         OCSSWServerModelOld.init();
         OCSSWServerModel.initiliaze();
+        OCSSWServerModel ocsswServerModel = new OCSSWServerModel();
+
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey new app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));

@@ -23,7 +23,7 @@ public class Job {
         jobDir = null;
     }
 
-    private String generateJobID(){
+    public String generateJobID(){
       return hashJobID(new Long(new Date().getTime()).toString());
     }
 

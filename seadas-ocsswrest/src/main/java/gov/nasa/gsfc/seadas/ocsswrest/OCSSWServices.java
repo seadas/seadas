@@ -50,9 +50,9 @@ public class OCSSWServices {
     }
 
     @GET
-    @Path("/ocsswInstallStatus")
+    @Path("/ocsswInfo")
     @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject getOcsswInstallStatus() {
+    public JsonObject getOcsswInfo() {
                 JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist()).build();
         return ocsswInstallStatus;
     }
@@ -61,8 +61,10 @@ public class OCSSWServices {
     @Path("/ocsswSetProgramName")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject setOCSSWProgramName(JsonArray jsonArray){
-        OCSSWServerModel.setProgramName(jsonArray.getString(0));
+    public JsonObject setOCSSWProgramName(String programName){
+        String jobId = new Job().generateJobID();
+        SQLiteJDBC.insertItem(FILE_TABLE_NAME, "jobId", jobId);
+        SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, "programName", programName);
 
     }
 

@@ -19,6 +19,7 @@ public class OCSSWRemote extends OCSSW {
     public static final String OCSSW_SERVER_PORT_NUMBER = "6401";
 
     WebTarget target;
+    String jobId;
 
 
     public OCSSWRemote() {
@@ -30,7 +31,7 @@ public class OCSSWRemote extends OCSSW {
         String remoteServerPortNumber = OCSSW_SERVER_PORT_NUMBER;
         OCSSWClient ocsswClient = new OCSSWClient(remoteServerIPAddress, remoteServerPortNumber);
         target = ocsswClient.getOcsswWebTarget();
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+        JsonObject jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         ocsswExist = jsonObject.getBoolean("ocsswExists");
         ocsswRoot = jsonObject.getString("ocsswRoot");
     }
@@ -38,13 +39,12 @@ public class OCSSWRemote extends OCSSW {
     @Override
     public void setProgramName(String programName) {
         this.programName = programName;
-        target.path("ocssw").path("ocsswSetProgramName").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        setCommandArrayPrefix();
-        setCommandArraySuffix();
+        jobId = null;
+                target.path("ocssw").path("ocsswSetProgramName").request(MediaType.APPLICATION_JSON_TYPE).put(Entity.entity(programName, MediaType.TEXT_XML)).getStatus();
     }
 
     @Override
-    public String getOfileName(String ifileName) {
+    public String getOfileName(String ifileName) {javascript:void(null)
         JsonObject jsonObject = target.path("ocssw").path("getOfileName").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         String ofileName = jsonObject.getString("ofileName");
         missionName = jsonObject.getString("missionName");
@@ -54,6 +54,7 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public String getOfileName(String ifileName, String[] options) {
+        target.path("ocssw").path("updateOFileAdditionalOptions").request(MediaType.APPLICATION_JSON).put(Entity.entity(options, MediaType.APPLICATION_JSON));
         JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         String ofileName = jsonObject.getString("ocsswExists");
         return ofileName;
@@ -80,6 +81,7 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public String getFileType(String ifileName) {
+        target.path("ocssw").path("updateOFileAdditionalOptions").request(MediaType.APPLICATION_JSON).put(Entity.entity(options, MediaType.APPLICATION_JSON));
         JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         String fileType = jsonObject.getString("ocsswExists");
         return fileType;
