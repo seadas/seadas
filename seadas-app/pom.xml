@@ -6,7 +6,7 @@
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas</artifactId>
-        <version>7.4</version>
+        <version>7.4.1</version>
     </parent>
 
     <name>SeaDAS Application</name>
