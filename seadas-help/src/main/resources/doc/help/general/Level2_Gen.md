@@ -1,4 +1,4 @@
-# Chapter 2
+## _Chapter 2_
 
 # The Level-2 File Generation Software (l2gen)
 
@@ -12,17 +12,17 @@ The Level-2 Gen GUI is automatically configured by a call to l2gen.  The product
 
 There are many products which can be selected, but the availability of certain products is mission specific.  The following is a categorized listing of many of the key products which can be produced by l2gen for inclusion within the level-2 file.
 
-#### 2.1.1. Radiances and Reflectances
+### 2.1.1. Radiances and Reflectances
 These include (but not limited to):
-1. **Es** - Solar Irradiance at Surface
-1. _Lt_ - Calibrated Top of Atmosphere Radiance
+1. **_Es_** - Solar Irradiance at Surface
+1. **_Lt_** - Calibrated Top of Atmosphere Radiance
 1. **_Lw_** - Water Leaving Radiance
 1. nLw - Normalized Water Leaving Radiance
 1. rhos - Surface Reflectance
 1. rhot - Top of Atmosphere Reflectance
 1. Rrs - Remote Sensing Reflectance
 
-#### 2.1.2 Derived Geophysical Parameters
+### 2.1.2 Derived Geophysical Parameters
 These include (but not limited to):
 - aot - Aerosol Optical Thickness
 - angstrom - Aerosol Angstrom Exponent
