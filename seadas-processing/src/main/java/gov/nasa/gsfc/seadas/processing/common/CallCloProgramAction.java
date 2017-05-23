@@ -97,17 +97,16 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     private void detectOcssw(){
         String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);
-        if (ocsswLocation.equals(OCSSW.OCSSW_LOCATION_PROPERTY_VALUE_VIRTUAL)) {
-            ocssw = new OCSSWVirtual();
-        } else if (validate(ocsswLocation)) {
-            ocssw = new OCSSWRemote();
-        } else {
-            if (OsUtils.getOperatingSystemType() == OsUtils.OSType.Windows) {
-
+       // if (OsUtils.getOperatingSystemType() == OsUtils.OSType.Windows ) {
+            if (ocsswLocation.equals(OCSSW.OCSSW_LOCATION_PROPERTY_VALUE_VIRTUAL)) {
+                ocssw = new OCSSWVirtual();
+            } else if (validate(ocsswLocation)) {
+                ocssw = new OCSSWRemoteClient();
+            } else {
                 VisatApp.getApp().showInfoDialog(dialogTitle, "Please provide OCSSW server location in $SEADAS_HOME/config/seadas.config");
                 return;
             }
-        }
+       // }
         ocssw.setProgramName(programName);
     }
 

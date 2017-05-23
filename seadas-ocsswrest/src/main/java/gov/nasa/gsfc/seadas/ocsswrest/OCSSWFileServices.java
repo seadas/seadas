@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
+import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerPropertyValues;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -19,13 +21,15 @@ import java.nio.file.Files;
  * Time: 5:23 PM
  * To change this template use File | Settings | File Templates.
  */
-@Path("/file")
+@Path("/fileServices")
 public class OCSSWFileServices {
+
+    final static String SERVER_WORKING_DIRECTORY_PROPERTY = "serverWorkingDirectory";
 
     private static final String OCSSW_PROCESSING_DIR = "ocsswfiles";
     private static final String FILE_UPLOAD_PATH = System.getProperty("user.home") + System.getProperty("file.separator") + OCSSW_PROCESSING_DIR + System.getProperty("file.separator") + "ifiles";
     private static final String FILE_DOWNLOAD_PATH = System.getProperty("user.home") + System.getProperty("file.separator") + OCSSW_PROCESSING_DIR + System.getProperty("file.separator") + "ofiles";
-    private static final String FILE_DIR = System.getProperty("user.dir") + System.getProperty("file.separator") + "files";
+    private static final String OCSSW_SERVER_DEFAULT_WORKING_DIR = System.getProperty("user.dir") + System.getProperty("file.separator") + "ocsswIntermediateFiles";
     private static final String OCSSW_OUTPUT_COMPRESSED_FILE_NAME = "ocssw_output.zip";
     private static final int BUFFER_SIZE = 1024;
 
@@ -59,14 +63,50 @@ public class OCSSWFileServices {
             respStatus = Response.Status.INTERNAL_SERVER_ERROR;
         } else {
             final String fileName = fileInfo.getFileName();
-            String uploadedFileDir = FILE_UPLOAD_PATH + File.separator + clientID + File.separator + processorId + File.separator + jobId;
+            String uploadedFileDir = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY, OCSSW_SERVER_DEFAULT_WORKING_DIR ) + File.separator + jobId;//FILE_UPLOAD_PATH + File.separator + clientID + File.separator + processorId + File.separator + jobId;
             new File(uploadedFileDir).mkdirs();
             String uploadedFileLocation = uploadedFileDir + File.separator + fileName;
-            System.out.println(uploadedFileLocation);
-            System.out.println(System.getProperty("user.home"));
-            System.out.println(new File(uploadedFileDir).getAbsolutePath());
             try {
                 writeToFile(uploadedInputStream, uploadedFileLocation);
+                //getFileInfo();
+            } catch (Exception e) {
+                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+                e.printStackTrace();
+            }
+        }
+        return Response.status(respStatus).build();
+    }
+
+    @POST
+    @Path("/upload/{jobId}")
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    public Response iFileUpload(
+            @PathParam("jobId") String jobId,
+            @PathParam("fileName") String fileName,
+            InputStream uploadedInputStream)
+            throws IOException {
+        Response.Status respStatus = Response.Status.OK;
+        if (fileName == null) {
+            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+        } else {
+            String uploadedFileDir = FILE_UPLOAD_PATH + File.separator + jobId;
+            File newFile = new File(uploadedFileDir);
+            Files.createDirectories(newFile.toPath());
+            //mkDirs(clientId, processorId, jobId);
+
+            boolean isDirCreated = new File(uploadedFileDir).isDirectory();
+            String uploadedFileLocation = uploadedFileDir + File.separator + fileName;
+
+            System.out.println(uploadedFileLocation + " is created " + isDirCreated);
+            System.out.println(System.getProperty("user.home"));
+            System.out.println(new File(uploadedFileDir).getAbsolutePath());
+
+            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            try {
+                writeToFile(uploadedInputStream, uploadedFileLocation);
+                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, "ifileName", fileName);
+                String ofileName = ocsswRemote.getOfileName(fileName, jobId);
+                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, "ofileName", ofileName);
                 //getFileInfo();
             } catch (Exception e) {
                 respStatus = Response.Status.INTERNAL_SERVER_ERROR;

@@ -15,7 +15,7 @@ import java.util.Properties;
 public class OCSSWServerPropertyValues {
 
     static Properties properties;
-    final static String CONFIG_FILE_NAME = "config.properties";
+    final static String CONFIG_FILE_NAME = "ocsswserver.config";
     final static String CLIENT_SHARED_DIR_NAME_PROPERTY = "clientSharedDirName";
     final static String SERVER_SHARED_DIR_NAME_PROPERTY = "serverSharedDirName";
 

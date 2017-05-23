@@ -3,31 +3,37 @@ package gov.nasa.gsfc.seadas.processing.core.ocssw;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 import javax.json.*;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
  * Created by aabduraz on 3/27/17.
  */
-public class OCSSWRemote extends OCSSW {
+public class OCSSWRemoteClient extends OCSSW {
 
     public static final String OCSSW_SERVER_PORT_NUMBER = "6401";
 
     WebTarget target;
     String jobId;
+    boolean ifileUploadSuccess;
 
 
-    public OCSSWRemote() {
+    public OCSSWRemoteClient() {
         initiliaze();
     }
 
     private void initiliaze() {
-        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);
+        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY, "localhost");
         String remoteServerPortNumber = OCSSW_SERVER_PORT_NUMBER;
         OCSSWClient ocsswClient = new OCSSWClient(remoteServerIPAddress, remoteServerPortNumber);
         target = ocsswClient.getOcsswWebTarget();
@@ -38,18 +44,53 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public void setProgramName(String programName) {
+        jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_XML_TYPE).get(String.class);
         this.programName = programName;
-        jobId = null;
-                target.path("ocssw").path("ocsswSetProgramName").request(MediaType.APPLICATION_JSON_TYPE).put(Entity.entity(programName, MediaType.TEXT_XML)).getStatus();
+        Response response  = target.path("ocssw").path("ocsswSetProgramName").request(MediaType.APPLICATION_JSON_TYPE).put(Entity.entity(programName, MediaType.TEXT_XML));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+        }
+
+    }
+
+
+    @Override
+    public void setIfileName(String ifileName) {
+        this.ifileName = ifileName;
+        if (uploadIFile(ifileName)){
+            ifileUploadSuccess = true;
+        }
+        else {
+            ifileUploadSuccess = false;
+        }
+
+    }
+
+
+    public boolean uploadIFile(String ifileName){
+        final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("ifile", new File(ifileName));
+        final MultiPart multiPart = new FormDataMultiPart()
+                .field("ifileName", ifileName)
+                .bodyPart(fileDataBodyPart);
+        Response response = target.path("fileServices").path("upload").path(jobId).request().post(Entity.entity(multiPart, multiPart.getMediaType()));
+        if (response.getStatus() == Response.ok().build().getStatus()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public String getOfileName(String ifileName) {javascript:void(null)
-        JsonObject jsonObject = target.path("ocssw").path("getOfileName").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        String ofileName = jsonObject.getString("ofileName");
-        missionName = jsonObject.getString("missionName");
-        fileType = jsonObject.getString("fileType");
-        return ofileName;
+    public String getOfileName(String ifileName) {
+        if (ifileUploadSuccess) {
+            JsonObject jsonObject = target.path("ocssw").path("getOfileName").queryParam(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            String ofileName = jsonObject.getString("ofileName");
+            missionName = jsonObject.getString("missionName");
+            fileType = jsonObject.getString("fileType");
+            return ofileName;
+        } else {
+            return null;
+        }
+
     }
 
     @Override
@@ -81,16 +122,11 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public String getFileType(String ifileName) {
-        target.path("ocssw").path("updateOFileAdditionalOptions").request(MediaType.APPLICATION_JSON).put(Entity.entity(options, MediaType.APPLICATION_JSON));
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        String fileType = jsonObject.getString("ocsswExists");
         return fileType;
     }
 
     @Override
     public String getMissionName(String ifileName) {
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInstallStatus").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        String missionName = jsonObject.getString("ocsswExists");
         return missionName;
     }
 

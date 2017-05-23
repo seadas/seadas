@@ -85,7 +85,7 @@ public class OCSSWLocal extends OCSSW {
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
 
-        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
+        String ifileDir = getIfileName().substring(0, getIfileName().lastIndexOf(System.getProperty("file.separator")));
 
         processBuilder.directory(new File(ifileDir));
 
@@ -104,7 +104,7 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public String getOfileName(String ifileName) {
 
-        this.ifileName = ifileName;
+        this.setIfileName(ifileName);
         extractFileInfo(ifileName);
         if (programName.equals("extractor")) {
             selectExtractorProgram();
@@ -245,35 +245,6 @@ public class OCSSWLocal extends OCSSW {
             VisatApp.getApp().showErrorDialog(ioe.getMessage());
         }
 
-
-        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
-
-        process = execute((String[]) ArrayUtils.addAll(commandArrayPrefix, fileTypeCommandArrayParams));
-
-        try {
-
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            String line = stdInput.readLine();
-            if (line != null) {
-                String splitLine[] = line.split(":");
-                if (splitLine.length == 3) {
-                    String missionName = splitLine[1].toString().trim();
-                    String fileType = splitLine[2].toString().trim();
-
-                    if (fileType.length() > 0) {
-                        setFileType(fileType);
-                    }
-
-                    if (missionName.length() > 0) {
-                        setMissionName(missionName);
-                    }
-                }
-            }
-        } catch (IOException ioe) {
-
-            VisatApp.getApp().showErrorDialog(ioe.getMessage());
-        }
         return null;
     }
 

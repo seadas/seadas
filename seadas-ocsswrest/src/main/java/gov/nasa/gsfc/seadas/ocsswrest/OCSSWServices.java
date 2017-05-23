@@ -58,13 +58,25 @@ public class OCSSWServices {
     }
 
     @GET
-    @Path("/ocsswSetProgramName")
+    @Path("/ocsswSetProgramName/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject setOCSSWProgramName(String programName){
-        String jobId = new Job().generateJobID();
-        SQLiteJDBC.insertItem(FILE_TABLE_NAME, "jobId", jobId);
-        SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, "programName", programName);
+    public Response setOCSSWProgramName(@PathParam("jobId") String jobId, String programName){
+        Response.Status respStatus = Response.Status.OK;
+        if (OCSSWServerModel.isProgramValid(programName)) {
+            SQLiteJDBC.insertItem(FILE_TABLE_NAME, "jobId", jobId);
+            SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, "programName", programName);
+        } else {
+            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+        return Response.status(respStatus).build();
+    }
+
+    @GET
+    @Path("/ocsswSetIFileName/{jobId}")
+    @Consumes(MediaType.TEXT_XML)
+    public void setIfileName(@PathParam("jobId") String jobId, String ifileName){
+        SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, "ifileName", ifileName);
+        OCSSWServerModel ocsswServerModel = new OCSSWServerModel();
 
     }
 

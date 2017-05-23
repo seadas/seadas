@@ -27,7 +27,6 @@ public abstract class OCSSW {
     public static String OCSSW_SCRIPTS_DIR_PATH_SUFFIX =  "run" +  System.getProperty("file.separator") + "scripts";
     public static String OCSSW_DATA_DIR_PATH_SUFFIX =   "run" +  System.getProperty("file.separator") + "data";
 
-
      boolean ocsswExist;
      String ocsswRoot;
      String ocsswDataDirPath;
@@ -174,5 +173,13 @@ public abstract class OCSSW {
 
     public void setCommandArray(String[] commandArray) {
         this.commandArray = commandArray;
+    }
+
+    public String getIfileName() {
+        return ifileName;
+    }
+
+    public void setIfileName(String ifileName) {
+        this.ifileName = ifileName;
     }
 }

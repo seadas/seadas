@@ -23,6 +23,7 @@ public class OCSSWClient {
     //public static final String RESOURCE_BASE_URI = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);//"http://localhost:6400/ocsswws/";
     public static final String defaultServer ="localhost";
     public static final String defaultPort = "6400";
+    final static String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
 
     private WebTarget target;
     private String resourceBaseUri;
@@ -45,7 +46,7 @@ public class OCSSWClient {
     }
 
     private String getResourceBaseUri(String serverIPAddress, String portNumber){
-        String resourceBaseUri = "http://" + serverIPAddress + ":" + portNumber;
+        String resourceBaseUri = "http://" + serverIPAddress + ":" + portNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         return  resourceBaseUri;
     }
 }

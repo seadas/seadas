@@ -1,9 +1,6 @@
 package gov.nasa.gsfc.seadas.ocsswrest.database;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.sql.*;
 
 /**
@@ -26,6 +23,35 @@ public class SQLiteJDBC {
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
 
+    public static final String FILE_TABLE_NAME = "FILE_TABLE";
+    public static final String MISSION_TABLE_NAME = "MISSION_TABLE";
+
+    public static final  String JOB_ID_FIELD_NAME = "JOB_ID";
+    public static final String IFILE_NAME_FIELD_NAME = "I_FILE_NAME";
+    public static final String IFILE_TYPE_FIELD_NAME = "I_FILE_TYPE";
+    public static final String OFILE_NAME_FIELD_NAME = "O_FILE_NAME";
+    public static final String PROGRAM_NAME_FIELD_NAME = "PROGRAM_NAME";
+    public static final String MISSION_NAME_FIELD_NAME = "MISSION_NAME";
+    public static final String MISSION_DIR_FIELD_NAME = "MISSION_DIR";
+
+    public enum FileTableFields{
+        JOB_ID("JOB_ID"),
+        I_FILE_NAME("I_FILE_NAME"),
+        I_FILE_TYPE("I_FILE_TYPE"),
+        O_FILE_NAME("I_FILE_NAME"),
+        PROGRAM_NAME("PROGRAM_NAME"),
+        MISSION_NAME("MISSION_NAME"),
+        MISSION_DIR("MISSION_DIR");
+
+        String fieldName;
+        FileTableFields(String fieldName) {
+            this.fieldName = fieldName;
+        }
+
+        public String getFieldName(){
+            return fieldName;
+        }
+    }
 
     public SQLiteJDBC() {
 
@@ -42,41 +68,45 @@ public class SQLiteJDBC {
     }
 
     public static void main(String args[]) {
-        Connection c = null;
-        Statement stmt = null;
-        try {
-            Class.forName(DB_CLASS_FOR_NAME);
-            c = DriverManager.getConnection(JOB_DB_URL);
-
-            stmt = c.createStatement();
-            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESSOR_TABLE " +
-                    "(JOB_ID INT PRIMARY KEY     NOT NULL, " +
-                    " COMMAND_ARRAY  CHAR(500), " +
-                    " EXIT_VALUE        CHAR(2), " +
-                    " stdout CHAR(500), " +
-                    " stderr(500) )";
-            String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
-                    "(JOB_ID INT PRIMARY KEY     NOT NULL, " +
-                    " PROGRAM_NAME  CHAR(25)   NOT NULL, " +
-                    " I_FILE_NAME       CHAR(100)   NOT NULL, " +
-                    " I_FILE_TYPE      CHAR(50)    NOT NULL, " +
-                    " O_FILE_NAME      CHAR(100)    NOT NULL, " +
-                    " MISSION  CHAR(50), " +
-                    " STATUS        CHAR(50) )";
-            stmt.executeUpdate(processor_table_sql);
-            stmt.executeUpdate(file_table_sql);
-            stmt.close();
-            c.close();
-
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
+//        Connection c = null;
+//        Statement stmt = null;
+//        try {
+//            Class.forName(DB_CLASS_FOR_NAME);
+//            c = DriverManager.getConnection(JOB_DB_URL);
+//
+//            stmt = c.createStatement();
+//            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESSOR_TABLE " +
+//                    "(JOB_ID INT PRIMARY KEY     NOT NULL, " +
+//                    " COMMAND_ARRAY  CHAR(500), " +
+//                    " EXIT_VALUE        CHAR(2), " +
+//                    " stdout CHAR(500), " +
+//                    " stderr(500) )";
+//            String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
+//                    "(JOB_ID INT PRIMARY KEY     NOT NULL, " +
+//                    " PROGRAM_NAME  CHAR(25)   NOT NULL, " +
+//                    " I_FILE_NAME       CHAR(100)   NOT NULL, " +
+//                    " I_FILE_TYPE      CHAR(50)    NOT NULL, " +
+//                    " O_FILE_NAME      CHAR(100)    NOT NULL, " +
+//                    " MISSION  CHAR(50), " +
+//                    " STATUS        CHAR(50) )";
+//            stmt.executeUpdate(processor_table_sql);
+//            stmt.executeUpdate(file_table_sql);
+//            stmt.close();
+//            c.close();
+//
+//        } catch (Exception e) {
+//            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+//            System.exit(0);
+//        }
+        createTables();
         System.out.println("Opened database successfully");
     }
 
     public static void createTables() {
 
+        if (new File("ocssw.db").exists()) {
+            new File("ocssw.db").delete();
+        }
         Connection connection = null;
         Statement stmt = null;
         PreparedStatement preparedStatement = null;
@@ -506,6 +536,10 @@ public class SQLiteJDBC {
             System.exit(0);
         }
         System.out.println("Operation done successfully");
+    }
+
+    public static String getProgramName(String jobId) {
+        return retrieveItem(FILE_TABLE_NAME, jobId, "programName");
     }
 
     public static void updateOFileName(String jobId, String ofileName) {

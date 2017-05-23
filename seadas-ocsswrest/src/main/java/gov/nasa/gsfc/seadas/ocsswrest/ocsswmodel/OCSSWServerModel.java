@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 
+import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -8,6 +10,9 @@ import java.util.Arrays;
  * Created by aabduraz on 3/27/17.
  */
 public class OCSSWServerModel {
+
+    public static final String OS_64BIT_ARCHITECTURE = "_64";
+    public static final String OS_32BIT_ARCHITECTURE = "_32";
 
     public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
     public static final String OCSSW_LOCATION_PROPERTY_VALUE_LOCAL ="local";
@@ -21,15 +26,63 @@ public class OCSSWServerModel {
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
-    public static String OCSSW_BIN_DIR_SUFFIX = "run" + System.getProperty("file.separator") + "bin";
-    public static String OCSSW_SCRIPTS_DIR_SUFFIX = "run" + System.getProperty("file.separator") + "scripts" + System.getProperty("file.separator") + System.getProperty("os.name").toLowerCase();
-    public static String OCSSW_DATA_DIR_SUFFIX = "run" + System.getProperty("file.separator") + "data";
+    public static String OCSSW_BIN_DIR_SUFFIX = "run" + File.separator + "bin" +  File.separator + getOSName();
+    public static String OCSSW_SCRIPTS_DIR_SUFFIX = "run" + File.separator + "scripts";
+    public static String OCSSW_DATA_DIR_SUFFIX = "run" + File.separator + "data";
 
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
     public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
+    public enum ExtractorPrograms{
+        L1AEXTRACT_MODIS("l1aextract_modis"),
+        L1AEXTRACT_SEAWIFS("l1extract_seawifs"),
+        L1AEXTRACT__VIIRS("l1aextract_viirs"),
+        L2EXTRACT("l2extract");
+
+        String extractorProgramName;
+
+        ExtractorPrograms(String programName) {
+            extractorProgramName = programName;
+        }
+
+        public String getExtractorProgramName(){
+            return extractorProgramName;
+        }
+    }
+
+    public enum ExtractorProgramsXMLFiles{
+        l1aextract_modis_xml,
+        l1aextract_seawifs_xml,
+        l1aextract_viirs_xml,
+        l2extract_xml
+    }
+
+    public enum OCSSWDirectories{
+        OCSSW_ROOT(ocsswRoot),
+        OCSSW_BIN_DIR_SUFFIX("run" + File.separator + "bin" +  File.separator + getOSName()),
+        OCSSW_SCRIPTS_DIR_SUFFIX("run" + File.separator + "scripts"),
+        OCSSW_DATA_DIR_SUFFIX( "run" + File.separator + "data"),
+        OCSSW_INSTALLER_TMP_DIR((new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath());
+
+        String dirPath;
+        OCSSWDirectories(String dirPath){
+           this.dirPath = dirPath;
+        }
+
+        public String getDirPath(){
+            return dirPath;
+        }
+    }
+
+    public enum ProgramsScripts{
+        OCSSW_RUNNER_SCRIPT,
+        NEXT_LEVEL_NAME,
+        GET_OBPG_FILE_TYPE,
+        OCSSW_INSTALLER;
+
+    }
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
             L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
             L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
@@ -60,7 +113,11 @@ public class OCSSWServerModel {
 
     String[] additionalOptionsForIfileName;
 
-    boolean isProgramValid;
+    static boolean isProgramValid;
+
+    private static String FILE_TABLE_NAME = "FILE_TABLE";
+    private static String MISSION_TABLE_NAME = "MISSION_TABLE";
+    public static final String PROGRAM_NAME_FIELD_NAME = "PROGRAM_NAME";
 
 
     public OCSSWServerModel(){
@@ -71,19 +128,27 @@ public class OCSSWServerModel {
     }
 
     public static void initiliaze(){
-        String dirPath = System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw";
-
-        if (dirPath != null) {
-            final File dir = new File(dirPath + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX);
+        String ocsswRootPath = System.getProperty("ocsswroot");
+        if (ocsswRootPath != null) {
+            final File dir = new File(ocsswRootPath + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX);
             if (dir.isDirectory()) {
                 ocsswExist = true;
-                ocsswRoot = dirPath;
-                ocsswScriptsDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX;
-                ocsswDataDirPath = ocsswRoot + System.getProperty("file.separator") +OCSSW_DATA_DIR_SUFFIX;
+                ocsswRoot = ocsswRootPath;
+                ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
+                ocsswDataDirPath = ocsswRoot + File.separator +OCSSW_DATA_DIR_SUFFIX;
                 ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM;
                 ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
                 ocsswBinDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
             }
+        }
+    }
+
+    public static String getOSName(){
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (System.getProperty("os.arch").indexOf("64") != -1 ) {
+            return osName + OS_64BIT_ARCHITECTURE;
+        } else {
+            return osName + OS_32BIT_ARCHITECTURE;
         }
     }
 
@@ -112,7 +177,7 @@ public class OCSSWServerModel {
      * @param programName
      * @return true if programName is found in the $OCSSWROOT/run/scripts or $OSSWROOT/run/bin/"os_name" directories. Otherwise return false.
      */
-    private boolean isProgramValid(String programName) {
+    public static boolean isProgramValid(String programName) {
         isProgramValid = false;
         File scriptsFolder = new File(ocsswScriptsDirPath);
         File[] listOfScripts = scriptsFolder.listFiles();
@@ -147,6 +212,26 @@ public class OCSSWServerModel {
             commandArrayPrefix[2] = ocsswRoot;
         }
     }
+
+    public String[] getCommandArrayPrefix(String jobId) {
+        programName = SQLiteJDBC.retrieveItem(FILE_TABLE_NAME, jobId, PROGRAM_NAME_FIELD_NAME);
+
+        if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
+            commandArrayPrefix = new String[1];
+            if (!isOCSSWExist()) {
+                commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH ;
+            } else {
+                commandArrayPrefix[0] = ocsswInstallerScriptPath;
+            }
+        } else {
+            commandArrayPrefix = new String[3];
+            commandArrayPrefix[0] = ocsswRunnerScriptPath;
+            commandArrayPrefix[1] = "--ocsswroot";
+            commandArrayPrefix[2] = ocsswRoot;
+        }
+        return commandArrayPrefix;
+    }
+
 
 
     public Process execute(String[] commandArray) {
@@ -216,7 +301,7 @@ public class OCSSWServerModel {
                     }
 
                     if (missionName.length() > 0) {
-                        setMissionName(missionName);
+                        //setMissionName(missionName);
                     }
                 }
             }
@@ -316,7 +401,7 @@ public class OCSSWServerModel {
 
         String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
 
-        process = execute((concatAll(commandArrayPrefix, fileTypeCommandArrayParams));
+        process = execute(concatAll(commandArrayPrefix, fileTypeCommandArrayParams));
 
         try {
 
@@ -334,7 +419,7 @@ public class OCSSWServerModel {
                     }
 
                     if (missionName.length() > 0) {
-                        setMissionName(missionName);
+                        //setMissionName(missionName);
                     }
                 }
             }

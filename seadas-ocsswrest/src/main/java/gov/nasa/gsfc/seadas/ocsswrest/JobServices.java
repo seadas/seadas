@@ -26,8 +26,6 @@ public class JobServices {
     public String createNewJob() {
         String newJobId = hashJobID(new Long(new Date().getTime()).toString());
         //insert rows for this new job in the processor and file tables.
-        OCSSWServerModelOld.setCurrentJobId(newJobId);
-        System.out.println(" in job services: " + newJobId);
         SQLiteJDBC.insertItem("PROCESSOR_TABLE", "JOB_ID", newJobId);
         return newJobId;
     }
@@ -72,8 +70,4 @@ public class JobServices {
         return sb.toString();
     }
 
-//    @Path("/{clientId}/{processorId}/{jobId}")
-//    public void updateFiles(){
-//
-//    }
 }

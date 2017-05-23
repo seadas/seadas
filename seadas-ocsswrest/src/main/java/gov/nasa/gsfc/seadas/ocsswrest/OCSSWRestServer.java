@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWConfig;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerModelOld;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ProcessMessageBodyWriter;
@@ -13,16 +14,32 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.json.stream.JsonGenerator;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
  * Main class.
  */
 public class OCSSWRestServer {
+    final static String BASE_URI_PORT_NUMBER_PROPERTY = "baseUriPortNumber";
+    final static String OCSSW_ROOT_PROPERTY ="ocsswroot";
+    final static String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
+    final static String SERVER_WORKING_DIRECTORY_PROPERTY = "serverWorkingDirectory";
+    final static String KEEP_INTERMEDIATE_FILES_ON_SERVER_PROPERTY ="keepIntermediateFilesOnServer";
+    final static String SERVER_API="0.0.0.0";
+
+    static String configFilePath="./config/ocsswservertest.config";
+    static String baseUriPortNumber;
+    static String ocsswroot;
+    static String serverWorkingDirectory;
+    static String keepIntermediateFilesOnServer;
+
     // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://0.0.0.0:6401/ocsswws/";
+    public static String BASE_URI = "http://0.0.0.0:6401/ocsswws/";
     private static final Logger LOGGER = Logger.getLogger(OCSSWRestServer.class.getName());
 
     /**
@@ -50,16 +67,44 @@ public class OCSSWRestServer {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+        OCSSWConfig ocsswConfig = new OCSSWConfig();
+        ocsswConfig.readProperties();
+        baseUriPortNumber = System.getProperty(BASE_URI_PORT_NUMBER_PROPERTY);
+        BASE_URI = "http://"+ SERVER_API + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         SQLiteJDBC.createTables();
         OCSSWServerModelOld.init();
         OCSSWServerModel.initiliaze();
-        OCSSWServerModel ocsswServerModel = new OCSSWServerModel();
-
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey new app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
         server.shutdown();
+    }
+
+    private static void readConfigFile(){
+        //load application properties
+        Properties configProperties = new Properties(System.getProperties());
+
+        try {
+            //load the file handle for main.properties
+            FileInputStream fileInputStream = new FileInputStream(configFilePath);
+            configProperties.load(fileInputStream);
+            fileInputStream.close();
+            // set the system properties
+            System.setProperties(configProperties);
+            // display new properties
+            System.getProperties().list(System.out);
+            baseUriPortNumber = configProperties.getProperty(BASE_URI_PORT_NUMBER_PROPERTY);
+            ocsswroot = configProperties.getProperty(OCSSW_ROOT_PROPERTY);
+            serverWorkingDirectory = configProperties.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY);
+            keepIntermediateFilesOnServer = configProperties.getProperty(KEEP_INTERMEDIATE_FILES_ON_SERVER_PROPERTY);
+
+        } catch (FileNotFoundException fnfe){
+
+        } catch (IOException ioe){
+
+        }
+
     }
 }
 
