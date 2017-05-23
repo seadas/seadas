@@ -2,7 +2,7 @@
 
 # The Level-2 File Generation Software (l2gen)
 
-The SeaDAS software which generates a level-2 file from an input level-1 file is Level-2 Gen (l2gen).  Level-2 data consist of derived geophysical variables at the same resolution as the source Level-1 data.  The input level-1 files can be very mission specific in format and content, however the output level-2 file format is not mission specific.  The availability of certain level-2 products is mission specific.
+The SeaDAS software which generates a level-2 file from an input level-1 file is Level-2 Gen (_l2gen_).  Level-2 data consist of derived geophysical variables at the same resolution as the source Level-1 data.  The input level-1 files can be very mission specific in format and content, however the output level-2 file format is not mission specific.  The availability of certain level-2 products is mission specific.
 
 Level-2 Gen (l2gen) is written in C and can be run from either the command line or from within the SeaDAS GUI, which is written in Java.
 
@@ -14,9 +14,9 @@ There are many products which can be selected, but the availability of certain p
 
 #### 2.1.1. Radiances and Reflectances
 These include (but not limited to):
-1. Es - Solar Irradiance at Surface
-1. Lt - Calibrated Top of Atmosphere Radiance
-1. Lw - Water Leaving Radiance
+1. **Es** - Solar Irradiance at Surface
+1. _Lt_ - Calibrated Top of Atmosphere Radiance
+1. ** _Lw_ ** - Water Leaving Radiance
 1. nLw - Normalized Water Leaving Radiance
 1. rhos - Surface Reflectance
 1. rhot - Top of Atmosphere Reflectance
