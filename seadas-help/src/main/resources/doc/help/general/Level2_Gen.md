@@ -24,18 +24,24 @@ These include (but not limited to):
 
 ### 2.1.2 Derived Geophysical Parameters
 These include (but not limited to):
-- aot - Aerosol Optical Thickness
-- angstrom - Aerosol Angstrom Exponent
-- cdom_index - CDOM Index
-- chlor_a - Chlorophyll Concentration (see 7.3.2)
-- Kd_490 - Diffuse Attenuation Coefficient (see 7.3.3)
-- nflh - Normalized Fluorescence Line Height
-- ndvi - Normalized Difference Vegetation Index
-- par - Photosynthetically Available Radiation
-- pic - Particulate Inorganic Carbon
-- poc - Particulate Organic Carbon
-- sst - Sea Surface Temperature
-- Zeu - Euphotic Depth
+
+**_aot_** - Aerosol Optical Thickness
+
+**_angstrom_** - Aerosol Angstrom Exponent
+
+**_cdom_index_** - CDOM Index
+
+**_chlor_a_** - Chlorophyll Concentration (see 7.3.2)
+
+**_Kd_490_** - Diffuse Attenuation Coefficient (see 7.3.3)
+
+**_nflh_** - Normalized Fluorescence Line Height
+**_ndvi_** - Normalized Difference Vegetation Index
+**_par_** - Photosynthetically Available Radiation
+**_pic_** - Particulate Inorganic Carbon
+**_poc_** - Particulate Organic Carbon
+**_sst_** - Sea Surface Temperature
+**_Zeu_** - Euphotic Depth
 
 #### 2.1.3 Inherent Optical Products
 These include (but not limited to):
