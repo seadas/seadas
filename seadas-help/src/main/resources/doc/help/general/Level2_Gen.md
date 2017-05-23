@@ -11,7 +11,7 @@ The Level-2 Gen GUI is automatically configured by a call to l2gen.  The product
 
 There are many products which can be selected, but the availability of certain products is mission specific.  The following is a categorized listing of many of the key products which can be produced by l2gen for inclusion within the level-2 file.
 
-### 2.1.1. Radiances and Reflectances
+### 2.1.1. Radiances and Reflectances  
 These include (but not limited to):
 - **_Es_** - Solar Irradiance at Surface
 - **_Lt_** - Calibrated Top of Atmosphere Radiance
@@ -21,7 +21,7 @@ These include (but not limited to):
 - **_rhot_** - Top of Atmosphere Reflectance
 - **_Rrs_** - Remote Sensing Reflectance
 
-### 2.1.2 Derived Geophysical Parameters
+**2.1.2 DERIVED GEOPHYSICAL PARAMETERS**  
 These include (but not limited to):
 
 **_aot_** - Aerosol Optical Thickness  
