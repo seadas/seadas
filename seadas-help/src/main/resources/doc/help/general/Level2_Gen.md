@@ -2,8 +2,7 @@
 
 # The Level-2 File Generation Software (_l2gen_)
 
-The SeaDAS software which generates a level-2 file from an input level-1 file is Level-2 Gen (_l2gen_).  Level-2 data consist of derived geophysical variables at the same resolution as the source Level-1 data.  The input level-1 files can be very mission specific in format and content, however the output level-2 file format is not mission specific.  The availability of certain level-2 products is mission specific.
-
+The SeaDAS software which generates a level-2 file from an input level-1 file is Level-2 Gen (_l2gen_).  Level-2 data consist of derived geophysical variables at the same resolution as the source Level-1 data.  The input level-1 files can be very mission specific in format and content, however the output level-2 file format is not mission specific.  The availability of certain level-2 products is mission specific.  
 Level-2 Gen (l2gen) is written in C and can be run from either the command line or from within the SeaDAS GUI, which is written in Java.
 
 The Level-2 Gen GUI is automatically configured by a call to l2gen.  The products, parameters, and defaults within l2gen will appear within the L2Gen GUI.  This functionality has the advantage that l2gen may be updated (or even revised by the user) and the new products, parameters and defaults will be available to the Level-2 Gen GUI.
@@ -25,23 +24,18 @@ These include (but not limited to):
 ### 2.1.2 Derived Geophysical Parameters
 These include (but not limited to):
 
-**_aot_** - Aerosol Optical Thickness
-
-**_angstrom_** - Aerosol Angstrom Exponent
-
-**_cdom_index_** - CDOM Index
-
-**_chlor_a_** - Chlorophyll Concentration (see 7.3.2)
-
-**_Kd_490_** - Diffuse Attenuation Coefficient (see 7.3.3)
-
-**_nflh_** - Normalized Fluorescence Line Height
-**_ndvi_** - Normalized Difference Vegetation Index
-**_par_** - Photosynthetically Available Radiation
-**_pic_** - Particulate Inorganic Carbon
-**_poc_** - Particulate Organic Carbon
-**_sst_** - Sea Surface Temperature
-**_Zeu_** - Euphotic Depth
+**_aot_** - Aerosol Optical Thickness  
+**_angstrom_** - Aerosol Angstrom Exponent  
+**_cdom_index_** - CDOM Index  
+**_chlor_a_** - Chlorophyll Concentration (see 7.3.2)  
+**_Kd_490_** - Diffuse Attenuation Coefficient (see 7.3.3)  
+**_nflh_** - Normalized Fluorescence Line Height  
+**_ndvi_** - Normalized Difference Vegetation Index  
+**_par_** - Photosynthetically Available Radiation  
+**_pic_** - Particulate Inorganic Carbon  
+**_poc_** - Particulate Organic Carbon  
+**_sst_** - Sea Surface Temperature  
+**_Zeu_** - Euphotic Depth  
 
 #### 2.1.3 Inherent Optical Products
 These include (but not limited to):
