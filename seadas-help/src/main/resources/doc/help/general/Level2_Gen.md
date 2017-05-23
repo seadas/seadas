@@ -6,10 +6,10 @@ The SeaDAS software which generates a level-2 file from an input level-1 file is
 Level-2 Gen (l2gen) is written in C and can be run from either the command line or from within the SeaDAS GUI, which is written in Java.
 The Level-2 Gen GUI is automatically configured by a call to l2gen.  The products, parameters, and defaults within l2gen will appear within the L2Gen GUI.  This functionality has the advantage that l2gen may be updated (or even revised by the user) and the new products, parameters and defaults will be available to the Level-2 Gen GUI.
 
-## 2.1  Available Products
+1.  Available Products
 There are many products which can be selected, but the availability of certain products is mission specific.  The following is a categorized listing of many of the key products which can be produced by l2gen for inclusion within the level-2 file.
 
-#### 2.1.1 Radiances and Reflectances
+    1. Radiances and Reflectances
 These include (but not limited to):
 - Es - Solar Irradiance at Surface
 - Lt - Calibrated Top of Atmosphere Radiance
