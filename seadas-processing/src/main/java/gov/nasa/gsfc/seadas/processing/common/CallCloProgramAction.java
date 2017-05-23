@@ -61,9 +61,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         super.configure(config);
         if (programName.equals("install_ocssw.py")) {
-            OCSSWOldModel.checkOCSSW();
+            //detectOcssw();
         }
-
         super.setEnabled(programName.equals(OCSSWOldModel.OCSSW_INSTALLER) || OCSSWOldModel.isOCSSWExist());
     }
 
@@ -102,6 +101,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 ocssw = new OCSSWVirtual();
             } else if (validate(ocsswLocation)) {
                 ocssw = new OCSSWRemoteClient();
+                String test = ocssw.getOcsswInstallDirPath();
             } else {
                 VisatApp.getApp().showInfoDialog(dialogTitle, "Please provide OCSSW server location in $SEADAS_HOME/config/seadas.config");
                 return;
@@ -117,7 +117,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
         SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(RuntimeContext.getConfig().getContextProperty(LOG_LEVEL_PROPERTY, "OFF")));
 
         detectOcssw();
-
 
         final AppContext appContext = getAppContext();
 
