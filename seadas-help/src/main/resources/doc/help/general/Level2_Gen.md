@@ -1,47 +1,50 @@
-# Chapter 2
+# _Chapter 2_
 
-# The Level-2 File Generation Software (l2gen)
+# The Level-2 File Generation Software (_l2gen_)
 
-The SeaDAS software which generates a level-2 file from an input level-1 file is Level-2 Gen (l2gen).  Level-2 data consist of derived geophysical variables at the same resolution as the source Level-1 data.  The input level-1 files can be very mission specific in format and content, however the output level-2 file format is not mission specific.  The availability of certain level-2 products is mission specific.
+The SeaDAS software which generates a level-2 file from an input level-1 file is Level-2 Gen (_l2gen_).  Level-2 data consist of derived geophysical variables at the same resolution as the source Level-1 data.  The input level-1 files can be very mission specific in format and content, however the output level-2 file format is not mission specific.  The availability of certain level-2 products is mission specific.  
 Level-2 Gen (l2gen) is written in C and can be run from either the command line or from within the SeaDAS GUI, which is written in Java.
+
 The Level-2 Gen GUI is automatically configured by a call to l2gen.  The products, parameters, and defaults within l2gen will appear within the L2Gen GUI.  This functionality has the advantage that l2gen may be updated (or even revised by the user) and the new products, parameters and defaults will be available to the Level-2 Gen GUI.
 
-## 2.1  Available Products
+## 2.1. Available Products
+
 There are many products which can be selected, but the availability of certain products is mission specific.  The following is a categorized listing of many of the key products which can be produced by l2gen for inclusion within the level-2 file.
 
-#### 2.1.1 Radiances and Reflectances
+### 2.1.1. Radiances and Reflectances  
 These include (but not limited to):
-- Es - Solar Irradiance at Surface
-- Lt - Calibrated Top of Atmosphere Radiance
-- Lw - Water Leaving Radiance
-- nLw - Normalized Water Leaving Radiance
-- rhos - Surface Reflectance
-- rhot - Top of Atmosphere Reflectance
-- Rrs - Remote Sensing Reflectance
+- **_Es_** - Solar Irradiance at Surface
+- **_Lt_** - Calibrated Top of Atmosphere Radiance
+- **_Lw_** - Water Leaving Radiance
+- **_nLw_** - Normalized Water Leaving Radiance
+- **_rhos_** - Surface Reflectance
+- **_rhot_** - Top of Atmosphere Reflectance
+- **_Rrs_** - Remote Sensing Reflectance
 
-#### 2.1.2 Derived Geophysical Parameters
+#### 2.1.2 DERIVED GEOPHYSICAL PARAMETERS 
 These include (but not limited to):
-- aot - Aerosol Optical Thickness
-- angstrom - Aerosol Angstrom Exponent
-- cdom_index - CDOM Index
-- chlor_a - Chlorophyll Concentration (see 7.3.2)
-- Kd_490 - Diffuse Attenuation Coefficient (see 7.3.3)
-- nflh - Normalized Fluorescence Line Height
-- ndvi - Normalized Difference Vegetation Index
-- par - Photosynthetically Available Radiation
-- pic - Particulate Inorganic Carbon
-- poc - Particulate Organic Carbon
-- sst - Sea Surface Temperature
-- Zeu - Euphotic Depth
 
-## 2.1.3 Inherent Optical Products
+**_aot_** - Aerosol Optical Thickness  
+**_angstrom_** - Aerosol Angstrom Exponent  
+**_cdom_index_** - CDOM Index  
+**_chlor_a_** - Chlorophyll Concentration (see 7.3.2)  
+**_Kd_490_** - Diffuse Attenuation Coefficient (see 7.3.3)  
+**_nflh_** - Normalized Fluorescence Line Height  
+**_ndvi_** - Normalized Difference Vegetation Index  
+**_par_** - Photosynthetically Available Radiation  
+**_pic_** - Particulate Inorganic Carbon  
+**_poc_** - Particulate Organic Carbon  
+**_sst_** - Sea Surface Temperature  
+**_Zeu_** - Euphotic Depth  
+
+#### 2.1.3 Inherent Optical Products
 These include (but not limited to):
 - a -  Total Absorption
 - adg - Absorption Due to Gelbstoff and Detrital Material
 - aph - Absorption Due to Phyoplankton
 - bb - Total Backscattering
 
-## 2.1.4 Ancillary, Meterological and Geometric Parameters
+#### 2.1.4 Ancillary, Meterological and Geometric Parameters
 These include (but not limited to):
 - height - Terrain Height
 - humidity - Relative Humidity
@@ -59,13 +62,13 @@ These include (but not limited to):
 - windangle - Wind Direction
 - windspeed - Wind Speed
 
-## 2.1.5 Atmospheric Correction Intermediates
+#### 2.1.5 Atmospheric Correction Intermediates
 These include: cloud_albedo, ...
 
-## 2.1.6 Uncertainties and Error Estimates
+#### 2.1.6 Uncertainties and Error Estimates
 These include: Lt_unc, Rrs_unc, ...
 
-## 2.1.7 Miscellaneous
+#### 2.1.7 Miscellaneous
 These include: resolution, ...
 
 ## 2.2  Processing Options
