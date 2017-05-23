@@ -1,15 +1,15 @@
-Chapter 2
+# Chapter 2
 
-The Level-2 File Generation Software (l2gen)
+# The Level-2 File Generation Software (l2gen)
 
 The SeaDAS software which generates a level-2 file from an input level-1 file is Level-2 Gen (l2gen).  Level-2 data consist of derived geophysical variables at the same resolution as the source Level-1 data.  The input level-1 files can be very mission specific in format and content, however the output level-2 file format is not mission specific.  The availability of certain level-2 products is mission specific.
 Level-2 Gen (l2gen) is written in C and can be run from either the command line or from within the SeaDAS GUI, which is written in Java.
 The Level-2 Gen GUI is automatically configured by a call to l2gen.  The products, parameters, and defaults within l2gen will appear within the L2Gen GUI.  This functionality has the advantage that l2gen may be updated (or even revised by the user) and the new products, parameters and defaults will be available to the Level-2 Gen GUI.
 
-2.1  Available Products
+# 2.1  Available Products
 There are many products which can be selected, but the availability of certain products is mission specific.  The following is a categorized listing of many of the key products which can be produced by l2gen for inclusion within the level-2 file.
 
-2.1.1 Radiances and Reflectances
+## 2.1.1 Radiances and Reflectances
 These include (but not limited to):
 Es - Solar Irradiance at Surface
 Lt - Calibrated Top of Atmosphere Radiance
@@ -19,7 +19,7 @@ rhos - Surface Reflectance
 rhot - Top of Atmosphere Reflectance
 Rrs - Remote Sensing Reflectance
 
-2.1.2 Derived Geophysical Parameters
+## 2.1.2 Derived Geophysical Parameters
 These include (but not limited to):
 aot - Aerosol Optical Thickness
 angstrom - Aerosol Angstrom Exponent
@@ -34,14 +34,14 @@ poc - Particulate Organic Carbon
 sst - Sea Surface Temperature
 Zeu - Euphotic Depth
 
-2.1.3 Inherent Optical Products
+## 2.1.3 Inherent Optical Products
 These include (but not limited to):
 a -  Total Absorption
 adg - Absorption Due to Gelbstoff and Detrital Material
 aph - Absorption Due to Phyoplankton
 bb - Total Backscattering
 
-2.1.4 Ancillary, Meterological and Geometric Parameters
+## 2.1.4 Ancillary, Meterological and Geometric Parameters
 These include (but not limited to):
 height - Terrain Height
 humidity - Relative Humidity
@@ -59,7 +59,7 @@ water_vapor - Water Vapor
 windangle - Wind Direction
 windspeed - Wind Speed
 
-2.1.5 Atmospheric Correction Intermediates
+## 2.1.5 Atmospheric Correction Intermediates
 These include: cloud_albedo, ...
 
 2.1.6 Uncertainties and Error Estimates
