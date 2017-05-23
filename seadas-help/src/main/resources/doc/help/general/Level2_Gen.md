@@ -3,7 +3,9 @@
 # The Level-2 File Generation Software (l2gen)
 
 The SeaDAS software which generates a level-2 file from an input level-1 file is Level-2 Gen (l2gen).  Level-2 data consist of derived geophysical variables at the same resolution as the source Level-1 data.  The input level-1 files can be very mission specific in format and content, however the output level-2 file format is not mission specific.  The availability of certain level-2 products is mission specific.
+
 Level-2 Gen (l2gen) is written in C and can be run from either the command line or from within the SeaDAS GUI, which is written in Java.
+
 The Level-2 Gen GUI is automatically configured by a call to l2gen.  The products, parameters, and defaults within l2gen will appear within the L2Gen GUI.  This functionality has the advantage that l2gen may be updated (or even revised by the user) and the new products, parameters and defaults will be available to the Level-2 Gen GUI.
 
 ## 2.1. Available Products
