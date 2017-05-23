@@ -16,7 +16,7 @@ There are many products which can be selected, but the availability of certain p
 These include (but not limited to):
 1. **Es** - Solar Irradiance at Surface
 1. _Lt_ - Calibrated Top of Atmosphere Radiance
-1. ** _Lw_ ** - Water Leaving Radiance
+1. **_Lw_** - Water Leaving Radiance
 1. nLw - Normalized Water Leaving Radiance
 1. rhos - Surface Reflectance
 1. rhot - Top of Atmosphere Reflectance
