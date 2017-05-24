@@ -45,15 +45,15 @@ class LandMasksData {
     private Color coastlineMaskColor = new Color(0, 0, 0);
 
 
-    private String waterFractionBandName = "mask_data_water_fraction";
-    private String waterFractionSmoothedName = "mask_data_water_fraction_smoothed";
+    private String waterFractionBandName = "water_fraction";
+    private String waterFractionSmoothedName = "water_fraction_am3";
 
     private String landMaskName = "LandMask";
     private String landMaskMath = getWaterFractionBandName() + " == 0";
     private String landMaskDescription = "Land masked pixels";
 
 
-    private String coastlineMaskName = "CoastlineMask";
+    private String coastlineMaskName = "CoastMask";
     private String coastlineMath = getWaterFractionSmoothedName() + " > 25 and " + getWaterFractionSmoothedName() + " < 75";
     private String coastlineMaskDescription = "Coastline masked pixels";
 

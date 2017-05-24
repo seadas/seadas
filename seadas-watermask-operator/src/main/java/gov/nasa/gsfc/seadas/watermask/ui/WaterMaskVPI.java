@@ -229,7 +229,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     Product landWaterProduct = GPF.createProduct(LAND_WATER_MASK_OP_ALIAS, parameters, product);
 
 
-                                    Band waterFractionBand = landWaterProduct.getBand("land_water_fraction");
+                                    Band waterFractionBand = landWaterProduct.getBand(landMasksData.getWaterFractionBandName());
                                 //    Band coastBand = landWaterProduct.getBand("coast");
 
                                     // PROBLEM WITH TILE SIZES
@@ -278,6 +278,18 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     maskGroup.add(coastlineMask);
 
 
+                                    Mask landMask = Mask.BandMathsType.create(
+                                            landMasksData.getLandMaskName(),
+                                            landMasksData.getLandMaskDescription(),
+                                            product.getSceneRasterWidth(),
+                                            product.getSceneRasterHeight(),
+                                            landMasksData.getLandMaskMath(),
+                                            landMasksData.getLandMaskColor(),
+                                            landMasksData.getLandMaskTransparency());
+
+                                    maskGroup.add(landMask);
+
+                                    
                                     Mask waterMask = Mask.BandMathsType.create(
                                             landMasksData.getWaterMaskName(),
                                             landMasksData.getWaterMaskDescription(),
@@ -289,16 +301,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     maskGroup.add(waterMask);
 
 
-                                    Mask landMask = Mask.BandMathsType.create(
-                                            landMasksData.getLandMaskName(),
-                                            landMasksData.getLandMaskDescription(),
-                                            product.getSceneRasterWidth(),
-                                            product.getSceneRasterHeight(),
-                                            landMasksData.getLandMaskMath(),
-                                            landMasksData.getLandMaskColor(),
-                                            landMasksData.getLandMaskTransparency());
 
-                                    maskGroup.add(landMask);
 
 
                                     pm.worked(1);

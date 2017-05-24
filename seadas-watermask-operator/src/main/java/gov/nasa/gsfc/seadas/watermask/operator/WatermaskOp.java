@@ -56,8 +56,8 @@ import java.text.MessageFormat;
                 "GlobCover world map (above 60° north) and therefore very accurate.")
 public class WatermaskOp extends Operator {
 
-    public static final String LAND_WATER_FRACTION_BAND_NAME = "land_water_fraction";
-    public static final String LAND_WATER_FRACTION_SMOOTHED_BAND_NAME = "land_water_fraction_smoothed";
+    public static final String LAND_WATER_FRACTION_BAND_NAME = "water_fraction";
+    public static final String LAND_WATER_FRACTION_SMOOTHED_BAND_NAME = "water_fraction_am3";
     public static final String COAST_BAND_NAME = "coast";
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
@@ -209,13 +209,25 @@ public class WatermaskOp extends Operator {
 
         int count = 1;
         final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
-                "mask_data_water_fraction_smoothed",
+                LAND_WATER_FRACTION_SMOOTHED_BAND_NAME,
                 waterBand,
                 arithmeticMean3x3Kernel, count);
 
         targetProduct.addBand(filteredCoastlineBand);
 
         final ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
+
+        Mask coastlineMask = Mask.BandMathsType.create(
+                "CoastMask",
+                "Coast masked pixels",
+                targetProduct.getSceneRasterWidth(),
+                targetProduct.getSceneRasterHeight(),
+                LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + " > 25 and " + LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + " < 75",
+                new Color(0, 0, 0),
+                0.0);
+        maskGroup.add(coastlineMask);
+
+
         Mask landMask = Mask.BandMathsType.create(
                 "LandMask",
                 "Land masked pixels",
@@ -237,15 +249,7 @@ public class WatermaskOp extends Operator {
                 0.5);
         maskGroup.add(waterMask);
 
-        Mask coastlineMask = Mask.BandMathsType.create(
-                "CoastMask",
-                "Coast masked pixels",
-                targetProduct.getSceneRasterWidth(),
-                targetProduct.getSceneRasterHeight(),
-                LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + " > 25 and " + LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + " < 75",
-                new Color(0, 0, 0),
-                0.0);
-        maskGroup.add(coastlineMask);
+
 
 
 
