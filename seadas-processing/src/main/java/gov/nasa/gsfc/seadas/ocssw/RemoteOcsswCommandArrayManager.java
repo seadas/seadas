@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.core.ocssw;
+package gov.nasa.gsfc.seadas.ocssw;
 
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;

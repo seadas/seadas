@@ -1,10 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.processor;
 
-import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
-
-import java.util.ArrayList;
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 
 /**
  * Created with IntelliJ IDEA.

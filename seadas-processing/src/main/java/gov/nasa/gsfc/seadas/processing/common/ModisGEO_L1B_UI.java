@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 
 import javax.swing.*;
 import java.awt.*;

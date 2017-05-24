@@ -31,9 +31,11 @@ import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.actions.session.OpenSessionAction;
 
+import javax.json.JsonObject;
 import javax.media.jai.JAI;
 import javax.media.jai.util.ImagingListener;
 import javax.swing.*;
+import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -147,7 +149,7 @@ public class SeadasMain implements RuntimeRunnable {
 
 
     private boolean isOCSSWExist() {
-        String _OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";
+        String OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";
 
         String ocsswLocation = RuntimeContext.getConfig().getContextProperty("ocssw.location");
 
@@ -159,13 +161,12 @@ public class SeadasMain implements RuntimeRunnable {
                 dirPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
             }
             if (dirPath != null) {
-                final File dir = new File(dirPath  + _OCSSW_SCRIPTS_DIR_SUFFIX);
+                final File dir = new File(dirPath  + OCSSW_SCRIPTS_DIR_SUFFIX);
                 if (dir.isDirectory()) {
                     return true;
                 }
             }
         }
-
         return false;
     }
 

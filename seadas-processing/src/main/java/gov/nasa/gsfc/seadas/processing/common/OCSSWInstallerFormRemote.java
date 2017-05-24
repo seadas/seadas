@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWClient;
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.OCSSWClient;
 import org.esa.beam.framework.ui.AppContext;
 import org.glassfish.jersey.server.ResourceConfig;
 

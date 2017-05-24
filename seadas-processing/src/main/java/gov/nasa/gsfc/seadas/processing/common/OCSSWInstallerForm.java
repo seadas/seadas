@@ -2,8 +2,8 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.TableLayout;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.framework.ui.AppContext;

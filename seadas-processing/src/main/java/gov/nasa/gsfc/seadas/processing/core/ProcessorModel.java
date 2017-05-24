@@ -1,9 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import gov.nasa.gsfc.seadas.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.common.*;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWClient;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 import ucar.nc2.NetcdfFile;

@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;

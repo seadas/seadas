@@ -1,8 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.swing.TableLayout;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWOldModel;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.OCSSWRunnerOld;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWRunnerOld;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.core.ocssw;
+package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;

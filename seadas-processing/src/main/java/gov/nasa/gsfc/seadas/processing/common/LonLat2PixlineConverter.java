@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.*;
-import gov.nasa.gsfc.seadas.processing.core.ocssw.*;
+import gov.nasa.gsfc.seadas.ocssw.*;
 
 import java.util.HashMap;
 

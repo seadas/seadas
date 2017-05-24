@@ -1,6 +1,8 @@
-package gov.nasa.gsfc.seadas.processing.core.ocssw;
+package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.OCSSW;
+import gov.nasa.gsfc.seadas.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -13,7 +15,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -33,7 +34,7 @@ public class OCSSWRemoteClient extends OCSSW {
     }
 
     private void initiliaze() {
-        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY, "localhost");
+        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY, "localhost");
         String remoteServerPortNumber = OCSSW_SERVER_PORT_NUMBER;
         OCSSWClient ocsswClient = new OCSSWClient(remoteServerIPAddress, remoteServerPortNumber);
         target = ocsswClient.getOcsswWebTarget();

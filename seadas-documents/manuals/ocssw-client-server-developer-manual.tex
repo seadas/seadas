@@ -24,6 +24,26 @@
 
 \maketitle
 
+\section{OCSSW}
+
+\subsection{OCSSW Installation Locations}
+
+There are four possible installation locations for OCSSW in the following order:
+\begin{enumerate}
+\item The path given as the value of seadas.ocssw.root variable in the seadas.config file
+\item The value of the OCSSWROOT system variable specified in the script files
+\item The seadas.home directory specified in the seadas.config file
+\item user.home/ocssw directory
+\end{enumerate}
+
+These locations and their order of selection is implemented as the following:
+\begin{code}
+String ocsswInstallDirPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));
+
+                  if (dirPath == null) {
+                      dirPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + File.separator + "ocssw");
+\end{code}
+
 \section{Packaging and Deployment}
 \subsection{Packaging}
 

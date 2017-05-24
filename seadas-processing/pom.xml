@@ -77,5 +77,9 @@
             <artifactId>jersey-media-multipart</artifactId>
             <version>${jersey.version}</version>
         </dependency>
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-app</artifactId>
+        </dependency>
     </dependencies>
 </project>
