@@ -57,6 +57,7 @@ import java.text.MessageFormat;
 public class WatermaskOp extends Operator {
 
     public static final String LAND_WATER_FRACTION_BAND_NAME = "land_water_fraction";
+    public static final String LAND_WATER_FRACTION_SMOOTHED_BAND_NAME = "land_water_fraction_smoothed";
     public static final String COAST_BAND_NAME = "coast";
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
@@ -220,7 +221,7 @@ public class WatermaskOp extends Operator {
                 "Land masked pixels",
                 targetProduct.getSceneRasterWidth(),
                 targetProduct.getSceneRasterHeight(),
-                waterBand + "== 0",
+                LAND_WATER_FRACTION_BAND_NAME + "== 0",
                 new Color(51, 51, 51),
                 0.0);
 
@@ -231,7 +232,7 @@ public class WatermaskOp extends Operator {
                 "Water masked pixels",
                 targetProduct.getSceneRasterWidth(),
                 targetProduct.getSceneRasterHeight(),
-                waterBand + "> 0",
+                LAND_WATER_FRACTION_BAND_NAME + "> 0",
                 new Color(0, 125, 255),
                 0.5);
         maskGroup.add(waterMask);
@@ -241,7 +242,7 @@ public class WatermaskOp extends Operator {
                 "Coast masked pixels",
                 targetProduct.getSceneRasterWidth(),
                 targetProduct.getSceneRasterHeight(),
-                "mask_data_water_fraction_smoothed" + " > 25 and " + "mask_data_water_fraction_smoothed" + " < 75",
+                LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + " > 25 and " + LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + " < 75",
                 new Color(0, 0, 0),
                 0.0);
         maskGroup.add(coastlineMask);
