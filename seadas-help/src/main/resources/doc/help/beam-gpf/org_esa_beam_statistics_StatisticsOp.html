@@ -33,6 +33,14 @@ An operator that is used to compute statistics for any number of source products
  <li>a shapefile that corresponds to the input shapefile, enriched with the statistics for the regions defined by the shapefile</li>
  </ul>
  <p/>
+Note: this operator differs from the GUI version.  A key difference being that for this operator: <br><br>
+<ul>
+    <li>Currently only one entry is made per band</li>
+    <li>A shapefile is used instead of a ROI mask.</li>
+    <li>A math band expression is available</li>
+    <li>A valid pixel expression is available (the ROI mask could be added here to emulate the GUI version).</li>
+</ul><br><br>
+
  Unlike most other operators, that can compute single {@link org.esa.beam.framework.gpf.Tile tiles},
  the statistics operator processes all of its source products in its {@link #initialize()} method.<br>
 
@@ -104,6 +112,27 @@ If, for example, all NetCDF files under /eodata/ shall be considered, use '/eoda
   <td>The band configurations. These configurations determine the input of the operator.</td>
   <td>not null</td>
 </tr>
+    <tr>
+        <td><code>sourceBandName</code></td>
+        <td><code>String</code></td>
+        <td><code></code></td>
+        <td>Within band configurations. Band name</td>
+        <td>required if no expression given</td>
+    </tr>
+    <tr>
+        <td><code>expression</code></td>
+        <td><code>String</code></td>
+        <td><code></code></td>
+        <td>Within band configurations. Math band expression (can be used instead of band name)</td>
+        <td>required if no band name given</td>
+    </tr>
+    <tr>
+        <td><code>validPixelExpression</code></td>
+        <td><code>String</code></td>
+        <td><code>Existing valid pixel expression of band</code></td>
+        <td>Within band configurations. Valid pixel expression for band.</td>
+        <td></td>
+    </tr>
 <tr>
   <td><code>outputShapefile</code></td>
   <td><code>File</code></td>

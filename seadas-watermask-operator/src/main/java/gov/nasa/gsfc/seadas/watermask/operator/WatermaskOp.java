@@ -17,12 +17,7 @@
 package gov.nasa.gsfc.seadas.watermask.operator;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.GeoCoding;
-import org.esa.beam.framework.datamodel.GeoPos;
-import org.esa.beam.framework.datamodel.PixelPos;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
 import org.esa.beam.framework.gpf.OperatorSpi;
@@ -33,7 +28,7 @@ import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.util.ProductUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.IOException;
 import java.text.MessageFormat;
 
@@ -48,13 +43,13 @@ import java.text.MessageFormat;
  * Since the base data may exhibit a higher resolution than the input product, a subsampling &ge;1 may be specified;
  * therefore, mixed pixels may occur.
  *
- * @author Thomas Storm
+ * @author Daniel Knowles, Marco Peters, Thomas Storm
  */
 @SuppressWarnings({"FieldCanBeLocal"})
 @OperatorMetadata(alias = "LandWaterMask",
         version = "1.0",
         internal = false,
-        authors = "Thomas Storm",
+        authors = "Daniel Knowles, Marco Peters",
         copyright = "(c) 2011 by Brockmann Consult",
         description = "Operator creating a target product with a single band containing a land/water-mask," +
                 " which is based on SRTM-shapefiles (between 60° north and 60° south) and the " +
@@ -199,13 +194,64 @@ public class WatermaskOp extends Operator {
     private void initTargetProduct() {
         targetProduct = new Product("LW-Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
                 sourceProduct.getSceneRasterHeight());
+
         final Band waterBand = targetProduct.addBand(LAND_WATER_FRACTION_BAND_NAME, ProductData.TYPE_FLOAT32);
         waterBand.setNoDataValue(WatermaskClassifier.INVALID_VALUE);
         waterBand.setNoDataValueUsed(true);
 
-        final Band coastBand = targetProduct.addBand(COAST_BAND_NAME, ProductData.TYPE_FLOAT32);
-        coastBand.setNoDataValue(0);
-        coastBand.setNoDataValueUsed(true);
+        final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
+                new double[]{
+                        +1, +1, +1,
+                        +1, +1, +1,
+                        +1, +1, +1,
+                });
+
+        int count = 1;
+        final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
+                "mask_data_water_fraction_smoothed",
+                waterBand,
+                arithmeticMean3x3Kernel, count);
+
+        targetProduct.addBand(filteredCoastlineBand);
+
+        final ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
+        Mask landMask = Mask.BandMathsType.create(
+                "LandMask",
+                "Land masked pixels",
+                targetProduct.getSceneRasterWidth(),
+                targetProduct.getSceneRasterHeight(),
+                waterBand + "== 0",
+                new Color(51, 51, 51),
+                0.0);
+
+        maskGroup.add(landMask);
+
+        Mask waterMask = Mask.BandMathsType.create(
+                "WaterMask",
+                "Water masked pixels",
+                targetProduct.getSceneRasterWidth(),
+                targetProduct.getSceneRasterHeight(),
+                waterBand + "> 0",
+                new Color(0, 125, 255),
+                0.5);
+        maskGroup.add(waterMask);
+
+        Mask coastlineMask = Mask.BandMathsType.create(
+                "CoastMask",
+                "Coast masked pixels",
+                targetProduct.getSceneRasterWidth(),
+                targetProduct.getSceneRasterHeight(),
+                "mask_data_water_fraction_smoothed" + " > 25 and " + "mask_data_water_fraction_smoothed" + " < 75",
+                new Color(0, 0, 0),
+                0.0);
+        maskGroup.add(coastlineMask);
+
+
+
+
+//        final Band coastBand = targetProduct.addBand(COAST_BAND_NAME, ProductData.TYPE_FLOAT32);
+//        coastBand.setNoDataValue(0);
+//        coastBand.setNoDataValueUsed(true);
 
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
     }

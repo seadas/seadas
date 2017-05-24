@@ -230,7 +230,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
 
 
                                     Band waterFractionBand = landWaterProduct.getBand("land_water_fraction");
-                                    Band coastBand = landWaterProduct.getBand("coast");
+                                //    Band coastBand = landWaterProduct.getBand("coast");
 
                                     // PROBLEM WITH TILE SIZES
                                     // Example: product has tileWidth=498 and tileHeight=611
@@ -238,7 +238,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     // Why is this happening and where?
                                     // For now we change the image layout here.
                                     reformatSourceImage(waterFractionBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                    reformatSourceImage(coastBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                              //      reformatSourceImage(coastBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
 
                                     pm.worked(1);
                                     waterFractionBand.setName(landMasksData.getWaterFractionBandName());
