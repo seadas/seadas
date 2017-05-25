@@ -5,6 +5,7 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWLocal;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient;
@@ -19,8 +20,17 @@ import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractVisatAction;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.jsonp.JsonProcessingFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
+import javax.json.JsonObject;
+import javax.json.stream.JsonGenerator;
 import javax.swing.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -62,12 +72,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
-
         super.configure(config);
         if (programName.equals("install_ocssw.py")) {
-            //detectOcssw();
+            OCSSWInfo.checkOCSSW();
         }
-        super.setEnabled(programName.equals(OCSSWOldModel.OCSSW_INSTALLER) || OCSSWOldModel.isOCSSWExist());
+        super.setEnabled(programName.equals(OCSSWOldModel.OCSSW_INSTALLER) || OCSSWInfo.isOCSSWExist());
     }
 
     public String getXmlFileName() {
