@@ -30,11 +30,18 @@ import org.esa.beam.framework.ui.command.Command;
 import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.actions.session.OpenSessionAction;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.jsonp.JsonProcessingFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import javax.json.JsonObject;
+import javax.json.stream.JsonGenerator;
 import javax.media.jai.JAI;
 import javax.media.jai.util.ImagingListener;
 import javax.swing.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
@@ -88,7 +95,7 @@ public class SeadasMain implements RuntimeRunnable {
         final ApplicationDescriptor applicationDescriptor = BeamUiActivator.getInstance().getApplicationDescriptor();
         if (applicationDescriptor == null) {
             throw new IllegalStateException(String.format("Application descriptor not found for applicationId='%s'.",
-                                                          BeamUiActivator.getInstance().getApplicationId()));
+                    BeamUiActivator.getInstance().getApplicationId()));
         }
 
         boolean debugEnabled = false;
@@ -127,9 +134,9 @@ public class SeadasMain implements RuntimeRunnable {
             public void run() {
                 try {
                     final SeadasApp app = createApplication(applicationDescriptor);
-        			app.startUp(progressMonitor);
+                    app.startUp(progressMonitor);
                     openSession(app, finalSessionFile);
-        			openProducts(app, productFilepathList);
+                    openProducts(app, productFilepathList);
 
                     CommandManager commandManager = app.getApplicationPage().getCommandManager();
                     Command c = commandManager.getCommand("install_ocssw.py");
@@ -149,27 +156,8 @@ public class SeadasMain implements RuntimeRunnable {
 
 
     private boolean isOCSSWExist() {
-        String OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";
-
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty("ocssw.location");
-
-        //ocssw installed local
-        if (ocsswLocation == null || ocsswLocation.trim().equals("local")) {
-            String dirPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));
-
-            if (dirPath == null) {
-                dirPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
-            }
-            if (dirPath != null) {
-                final File dir = new File(dirPath  + OCSSW_SCRIPTS_DIR_SUFFIX);
-                if (dir.isDirectory()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return OCSSWInfo.isOCSSWExist();
     }
-
 
     protected SeadasApp createApplication(ApplicationDescriptor applicationDescriptor) {
         return new SeadasApp(applicationDescriptor);
@@ -224,8 +212,8 @@ public class SeadasMain implements RuntimeRunnable {
 
     private static void showError(BasicApp app, final String message) {
         JOptionPane.showMessageDialog(null,
-                                      message,
-                                      app.getAppName(),
-                                      JOptionPane.ERROR_MESSAGE);
+                message,
+                app.getAppName(),
+                JOptionPane.ERROR_MESSAGE);
     }
 }
