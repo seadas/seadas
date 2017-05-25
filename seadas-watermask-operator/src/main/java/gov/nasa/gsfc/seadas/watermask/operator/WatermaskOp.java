@@ -58,7 +58,7 @@ import java.text.MessageFormat;
 public class WatermaskOp extends Operator {
 
     public static final String LAND_WATER_FRACTION_BAND_NAME = "water_fraction";
-    public static final String LAND_WATER_FRACTION_SMOOTHED_BAND_NAME = "water_fraction_am3";
+    public static final String LAND_WATER_FRACTION_SMOOTHED_BAND_NAME = "water_fraction_mean";
     public static final String COAST_BAND_NAME = "coast";
     @SourceProduct(alias = "source", description = "The Product the land/water-mask shall be computed for.",
             label = "Name")
@@ -70,20 +70,24 @@ public class WatermaskOp extends Operator {
 
     @Parameter(description = "Water mask filename",
             label = "Filename", defaultValue = "50m.zip",
-            valueSet = {"50m.zip", "150m.zip", "GSHHS_water_mask_250m.zip", "GSHHS_water_mask_250m.zip", "GSHHS_water_mask_1km.zip", "GSHHS_water_mask_10km.zip"})
+            valueSet = {"50m.zip", "150m.zip", "GSHHS_water_mask_1km.zip", "GSHHS_water_mask_10km.zip"})
     private String filename;
 
 
-    @Parameter(description = "Specifies the factor between the resolution of the source product and the watermask in " +
-            "x direction. A value of '1' means no subsampling at all.",
-            label = "Subsampling factor x", defaultValue = "3", notNull = true)
-    private int subSamplingFactorX;
+//    @Parameter(description = "Specifies the factor between the resolution of the source product and the watermask in " +
+//            "x direction. A value of '1' means no subsampling at all.",
+//            label = "Subsampling factor x", defaultValue = "3", notNull = true)
+//    private int subSamplingFactorX;
+//
+//    @Parameter(description = "Specifies the factor between the resolution of the source product and the watermask in" +
+//            "y direction. A value of '1' means no subsampling at all.",
+//            label = "Subsampling factor y", defaultValue = "3", notNull = true)
+//    private int subSamplingFactorY;
 
-    @Parameter(description = "Specifies the factor between the resolution of the source product and the watermask in" +
-            "y direction. A value of '1' means no subsampling at all.",
-            label = "Subsampling factor y", defaultValue = "3", notNull = true)
-    private int subSamplingFactorY;
-
+    @Parameter(description = "Specifies the factor to divide up a target pixel when determining match with land source data" +
+            ". A value of '1' means no subsampling at all.",
+            label = "Supersampling factor", defaultValue = "3", notNull = true)
+    private int superSamplingFactor;
 
 //    @Parameter(description = "Specifies the watermaskClassifier mode",
 //            label = "Mode", defaultValue = "2", notNull = true)
@@ -94,9 +98,16 @@ public class WatermaskOp extends Operator {
     private WatermaskClassifier.Mode mode;
 
     @Parameter(description = "Output file is copy of source file with land data added",
-            label = "Copy Source File", defaultValue = "true", notNull = true)
+            label = "Copy Source File", defaultValue = "true", notNull = false)
     private boolean copySourceFile;
 
+    @Parameter(description = "Specifies a filter grid size to apply to determine the coastal mask.  (e.g. 3 = 3x3 matrix)",
+            label = "Coastal grid box size", defaultValue = "3", notNull = true)
+    private int coastalGridSize;
+
+    @Parameter(description = "Specifies percent of coastal grid matrix to mask",
+            label = "Coastal size tolerance", defaultValue = "50", notNull = true)
+    private int coastalSizeTolerance;
 
 //    @Parameter(description = "Specifies the resolutionInfo which contains resolution, mode",
 //            label = "Resolution Info", defaultValue = "1 km GSHHS", notNull = true)
@@ -134,12 +145,12 @@ public class WatermaskOp extends Operator {
                     int dataValue = 0;
                     if (targetBandName.equals(LAND_WATER_FRACTION_BAND_NAME)) {
                         dataValue = classifier.getWaterMaskFraction(geoCoding, pixelPos,
-                                subSamplingFactorX,
-                                subSamplingFactorY);
+                                superSamplingFactor,
+                                superSamplingFactor);
                     } else if (targetBandName.equals(COAST_BAND_NAME)) {
                         final boolean coastline = isCoastline(geoCoding, pixelPos,
-                                subSamplingFactorX,
-                                subSamplingFactorY);
+                                superSamplingFactor,
+                                superSamplingFactor);
                         dataValue = coastline ? 1 : 0;
                     }
                     targetTile.setSample(x, y, dataValue);
@@ -179,9 +190,9 @@ public class WatermaskOp extends Operator {
                     WatermaskClassifier.RESOLUTION_1km,
                     WatermaskClassifier.RESOLUTION_10km));
         }
-        if (subSamplingFactorX < 1) {
+        if (superSamplingFactor < 1) {
             String message = MessageFormat.format(
-                    "Subsampling factor needs to be greater than or equal to 1; was: ''{0}''.", subSamplingFactorX);
+                    "Supersampling factor needs to be greater than or equal to 1; was: ''{0}''.", superSamplingFactor);
             throw new OperatorException(message);
         }
     }
@@ -217,7 +228,9 @@ public class WatermaskOp extends Operator {
 //                        +1, +1, +1,
 //                });
 
-        final Filter meanFilter = new Filter("Mean 3x3", "mean3", Filter.Operation.MEAN, 3, 3);
+
+
+        final Filter meanFilter = new Filter("Mean "+Integer.toString(coastalGridSize) + "x" + Integer.toString(coastalGridSize), "mean"+ Integer.toString(coastalGridSize), Filter.Operation.MEAN, coastalGridSize, coastalGridSize);
         final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
                 meanFilter.getKernelHeight(),
                 meanFilter.getKernelOffsetX(),
@@ -232,7 +245,8 @@ public class WatermaskOp extends Operator {
 //                arithmeticMean3x3Kernel, count);
 
 
-        final FilterBand filteredCoastlineBand = new GeneralFilterBand(LAND_WATER_FRACTION_SMOOTHED_BAND_NAME, waterBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
+        String filteredCoastlineBandName = LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + Integer.toString(coastalGridSize);
+        final FilterBand filteredCoastlineBand = new GeneralFilterBand(filteredCoastlineBandName, waterBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
         if (waterBand instanceof Band) {
             ProductUtils.copySpectralBandProperties((Band) waterBand, filteredCoastlineBand);
         }
@@ -243,12 +257,16 @@ public class WatermaskOp extends Operator {
 
         final ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
 
+        double min = 50  - coastalSizeTolerance/2;
+        double max = 50 + coastalSizeTolerance/2;
+      String coastlineMaskExpression =  filteredCoastlineBandName + " > "+ Double.toString(min) + " and " + filteredCoastlineBandName + " < " + Double.toString(max);
+
         Mask coastlineMask = Mask.BandMathsType.create(
-                "CoastMask",
-                "Coast masked pixels",
+                "CoastalMask",
+                "Coastal masked pixels",
                 targetProduct.getSceneRasterWidth(),
                 targetProduct.getSceneRasterHeight(),
-                LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + " > 25 and " + LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + " < 75",
+                coastlineMaskExpression,
                 new Color(0, 0, 0),
                 0.0);
         maskGroup.add(coastlineMask);
@@ -260,7 +278,7 @@ public class WatermaskOp extends Operator {
                 targetProduct.getSceneRasterWidth(),
                 targetProduct.getSceneRasterHeight(),
                 LAND_WATER_FRACTION_BAND_NAME + "== 0",
-                new Color(51, 255, 51),
+                new Color(51, 51, 51),
                 0.0);
 
         maskGroup.add(landMask);

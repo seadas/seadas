@@ -207,6 +207,8 @@ class LandMasksDialog extends JDialog {
 
         final ResolutionComboBox resolutionComboBox = new ResolutionComboBox(landMasksData);
         final SuperSamplingSpinner superSamplingSpinner = new SuperSamplingSpinner(landMasksData);
+        final CoastalGridSizeSpinner coastalGridSizeSpinner = new CoastalGridSizeSpinner(landMasksData);
+        final CoastalSizeToleranceSpinner coastalSizeToleranceSpinner = new CoastalSizeToleranceSpinner(landMasksData);
 
 
         JPanel resolutionSamplingPanel = new JPanel(new GridBagLayout());
@@ -240,6 +242,8 @@ class LandMasksDialog extends JDialog {
                 new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
 
+
+
         JPanel coastlineJPanel = new JPanel(new GridBagLayout());
         coastlineJPanel.setBorder(BorderFactory.createTitledBorder(""));
 
@@ -254,24 +258,39 @@ class LandMasksDialog extends JDialog {
 
         coastlineJPanel.add(coastlineNameTextfield,
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        
 
-        coastlineJPanel.add(coastlineColorComboBox.getjLabel(),
+        coastlineJPanel.add(coastalGridSizeSpinner.getjLabel(),
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        coastlineJPanel.add(coastlineColorComboBox.getColorExComboBox(),
+        coastlineJPanel.add(coastalGridSizeSpinner.getjSpinner(),
                 new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        coastlineJPanel.add(coastlineTransparencySpinner.getjLabel(),
+        coastlineJPanel.add(coastalSizeToleranceSpinner.getjLabel(),
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        coastlineJPanel.add(coastlineTransparencySpinner.getjSpinner(),
+        coastlineJPanel.add(coastalSizeToleranceSpinner.getjSpinner(),
                 new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        coastlineJPanel.add(coastlineEnabledAllBandsCheckbox.getjLabel(),
+
+        coastlineJPanel.add(coastlineColorComboBox.getjLabel(),
                 new ExGridBagConstraints(0, 3, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        coastlineJPanel.add(coastlineEnabledAllBandsCheckbox.getjCheckBox(),
+        coastlineJPanel.add(coastlineColorComboBox.getColorExComboBox(),
                 new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        coastlineJPanel.add(coastlineTransparencySpinner.getjLabel(),
+                new ExGridBagConstraints(0, 4, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        coastlineJPanel.add(coastlineTransparencySpinner.getjSpinner(),
+                new ExGridBagConstraints(1, 4, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        coastlineJPanel.add(coastlineEnabledAllBandsCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, 5, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        coastlineJPanel.add(coastlineEnabledAllBandsCheckbox.getjCheckBox(),
+                new ExGridBagConstraints(1, 5, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
 
 
         JPanel waterJPanel = new JPanel(new GridBagLayout());

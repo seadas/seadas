@@ -30,6 +30,8 @@ class LandMasksData {
     private boolean deleteMasks = false;
 
     private int superSampling = 3;
+    private int coastalGridSize = 3;
+    private int coastalSizeTolerance = 50;
 
 
     private double landMaskTransparency = 0.0;
@@ -46,15 +48,16 @@ class LandMasksData {
 
 
     private String waterFractionBandName = "water_fraction";
-    private String waterFractionSmoothedName = "water_fraction_am3";
+    private String waterFractionSmoothedName = "water_fraction_mean";
 
     private String landMaskName = "LandMask";
     private String landMaskMath = getWaterFractionBandName() + " == 0";
     private String landMaskDescription = "Land masked pixels";
 
 
-    private String coastlineMaskName = "CoastMask";
-    private String coastlineMath = getWaterFractionSmoothedName() + " > 25 and " + getWaterFractionSmoothedName() + " < 75";
+    private String coastlineMaskName = "CoastalMask";
+   // private String coastlineMath = getWaterFractionSmoothedName() + " > 25 and " + getWaterFractionSmoothedName() + " < 75";
+//    private String coastlineMath = getWaterFractionSmoothedName() + " > 0 and " + getWaterFractionSmoothedName() + " < 100";
     private String coastlineMaskDescription = "Coastline masked pixels";
 
 
@@ -228,7 +231,8 @@ class LandMasksData {
     }
 
     public String getWaterFractionSmoothedName() {
-        return waterFractionSmoothedName;
+
+        return waterFractionSmoothedName + getCoastalGridSize();
     }
 
     public void setWaterFractionSmoothedName(String waterFractionSmoothedName) {
@@ -267,13 +271,16 @@ class LandMasksData {
         this.coastlineMaskName = coastlineMaskName;
     }
 
-    public String getCoastlineMath() {
-        return coastlineMath;
+    public String getCoastalMath() {
+
+        double min = 50  - getCoastalSizeTolerance()/2;
+        double max = 50 + getCoastalSizeTolerance()/2;
+      return  getWaterFractionSmoothedName() + " > "+ Double.toString(min) + " and " + getWaterFractionSmoothedName() + " < " + Double.toString(max);
     }
 
-    public void setCoastlineMath(String coastlineMath) {
-        this.coastlineMath = coastlineMath;
-    }
+//    public void setCoastlineMath(String coastlineMath) {
+//        this.coastlineMath = coastlineMath;
+//    }
 
     public String getCoastlineMaskDescription() {
         return coastlineMaskDescription;
@@ -340,6 +347,21 @@ class LandMasksData {
     }
 
 
+    public int getCoastalGridSize() {
+        return coastalGridSize;
+    }
+
+    public void setCoastalGridSize(int coastalGridSize) {
+        this.coastalGridSize = coastalGridSize;
+    }
+
+    public int getCoastalSizeTolerance() {
+        return coastalSizeTolerance;
+    }
+
+    public void setCoastalSizeTolerance(int coastalSizeTolerance) {
+        this.coastalSizeTolerance = coastalSizeTolerance;
+    }
 }
 
 

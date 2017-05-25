@@ -6,12 +6,10 @@ import com.jidesoft.action.CommandBar;
 import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.GPF;
-import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.command.CommandAdapter;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.ExecCommand;
 import org.esa.beam.util.ProductUtils;
-import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.visat.AbstractVisatPlugIn;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.imgfilter.model.Filter;
@@ -24,9 +22,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.RenderedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -217,12 +212,14 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
 
                                     Map<String, Object> parameters = new HashMap<String, Object>();
 
-                                    parameters.put("subSamplingFactorX", new Integer(landMasksData.getSuperSampling()));
-                                    parameters.put("subSamplingFactorY", new Integer(landMasksData.getSuperSampling()));
+                                    parameters.put("superSamplingFactor", new Integer(landMasksData.getSuperSampling()));
+                                   // parameters.put("subSamplingFactorY", new Integer(landMasksData.getSuperSampling()));
                                     parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
                                     parameters.put("mode", sourceFileInfo.getMode().toString());
                                     parameters.put("filename", sourceFileInfo.getFile().getName());
                                     parameters.put("copySourceFile", "false");  // when run in GUI don't do this
+                                    parameters.put("coastalGridSize", landMasksData.getCoastalGridSize());
+                                    parameters.put("coastalSizeTolerance", landMasksData.getCoastalSizeTolerance());
                                     //                             parameters.put("sourceFileInfo", sourceFileInfo);
                                     /*
                                        Create a new product, which will contain the land_water_fraction band
@@ -254,7 +251,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     //todo replace with JAI operator "GeneralFilter" which uses a GeneralFilterFunction
 
 
-                                    int boxSize = 3;
+                                    int boxSize = landMasksData.getCoastalGridSize();
                                     final Filter meanFilter = new Filter("Mean "+ Integer.toString(boxSize)+"x"+Integer.toString(boxSize), "mean"+Integer.toString(boxSize), Filter.Operation.MEAN, boxSize, boxSize);
                                     final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
                                             meanFilter.getKernelHeight(),
@@ -292,7 +289,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                             landMasksData.getCoastlineMaskDescription(),
                                             product.getSceneRasterWidth(),
                                             product.getSceneRasterHeight(),
-                                            landMasksData.getCoastlineMath(),
+                                            landMasksData.getCoastalMath(),
                                             landMasksData.getCoastlineMaskColor(),
                                             landMasksData.getCoastlineMaskTransparency());
                                     maskGroup.add(coastlineMask);
