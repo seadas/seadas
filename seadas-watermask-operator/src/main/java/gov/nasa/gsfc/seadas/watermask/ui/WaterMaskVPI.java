@@ -222,6 +222,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
                                     parameters.put("mode", sourceFileInfo.getMode().toString());
                                     parameters.put("filename", sourceFileInfo.getFile().getName());
+                                    parameters.put("copySourceFile", "false");  // when run in GUI don't do this
                                     //                             parameters.put("sourceFileInfo", sourceFileInfo);
                                     /*
                                        Create a new product, which will contain the land_water_fraction band
@@ -253,7 +254,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     //todo replace with JAI operator "GeneralFilter" which uses a GeneralFilterFunction
 
 
-                                    int boxSize = 7;
+                                    int boxSize = 3;
                                     final Filter meanFilter = new Filter("Mean "+ Integer.toString(boxSize)+"x"+Integer.toString(boxSize), "mean"+Integer.toString(boxSize), Filter.Operation.MEAN, boxSize, boxSize);
                                     final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
                                             meanFilter.getKernelHeight(),
@@ -263,12 +264,12 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                             meanFilter.getKernelElements());
 
 
-                                    final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
-                                            new double[]{
-                                                    +1, +1, +1,
-                                                    +1, +1, +1,
-                                                    +1, +1, +1,
-                                            });
+//                                    final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
+//                                            new double[]{
+//                                                    +1, +1, +1,
+//                                                    +1, +1, +1,
+//                                                    +1, +1, +1,
+//                                            });
 //todo: 4th argument to ConvolutionFilterBand is a dummy value added to make it compile...may want to look at this...
                                     int count = 1;
 //                                    final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
@@ -280,6 +281,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     if (waterFractionBand instanceof Band) {
                                         ProductUtils.copySpectralBandProperties((Band) waterFractionBand, filteredCoastlineBand);
                                     }
+
 
 
                                     product.addBand(filteredCoastlineBand);

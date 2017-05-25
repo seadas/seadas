@@ -27,7 +27,6 @@ import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.util.ProductUtils;
-import org.esa.beam.visat.actions.imgfilter.CreateFilteredBandAction;
 import org.esa.beam.visat.actions.imgfilter.model.Filter;
 
 import java.awt.*;
@@ -93,6 +92,10 @@ public class WatermaskOp extends Operator {
     @Parameter(description = "Specifies the watermaskClassifier mode",
             label = "Mode", defaultValue = "GSHHS", notNull = true)
     private WatermaskClassifier.Mode mode;
+
+    @Parameter(description = "Output file is copy of source file with land data added",
+            label = "Copy Source File", defaultValue = "true", notNull = true)
+    private boolean copySourceFile;
 
 
 //    @Parameter(description = "Specifies the resolutionInfo which contains resolution, mode",
@@ -195,20 +198,24 @@ public class WatermaskOp extends Operator {
     }
 
     private void initTargetProduct() {
-//        targetProduct = new Product("LW-Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
-//                  sourceProduct.getSceneRasterHeight());
-        targetProduct = sourceProduct;
+        if (copySourceFile) {
+            targetProduct = sourceProduct;
+        } else {
+            targetProduct = new Product("LW-Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
+                    sourceProduct.getSceneRasterHeight());
+        }
+
 
         final Band waterBand = targetProduct.addBand(LAND_WATER_FRACTION_BAND_NAME, ProductData.TYPE_FLOAT32);
         waterBand.setNoDataValue(WatermaskClassifier.INVALID_VALUE);
         waterBand.setNoDataValueUsed(true);
 
-        final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
-                new double[]{
-                        +1, +1, +1,
-                        +1, +1, +1,
-                        +1, +1, +1,
-                });
+//        final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
+//                new double[]{
+//                        +1, +1, +1,
+//                        +1, +1, +1,
+//                        +1, +1, +1,
+//                });
 
         final Filter meanFilter = new Filter("Mean 3x3", "mean3", Filter.Operation.MEAN, 3, 3);
         final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
@@ -253,7 +260,7 @@ public class WatermaskOp extends Operator {
                 targetProduct.getSceneRasterWidth(),
                 targetProduct.getSceneRasterHeight(),
                 LAND_WATER_FRACTION_BAND_NAME + "== 0",
-                new Color(51, 51, 51),
+                new Color(51, 255, 51),
                 0.0);
 
         maskGroup.add(landMask);
@@ -269,6 +276,19 @@ public class WatermaskOp extends Operator {
         maskGroup.add(waterMask);
 
 
+        String[] bandNames = targetProduct.getBandNames();
+        for (String bandName : bandNames) {
+            RasterDataNode raster = targetProduct.getRasterDataNode(bandName);
+//            if (landMasksData.isShowCoastlineMaskAllBands()) {
+//                raster.getOverlayMaskGroup().add(coastlineMask);
+//            }
+//            if (landMasksData.isShowLandMaskAllBands()) {
+                raster.getOverlayMaskGroup().add(landMask);
+//            }
+//            if (landMasksData.isShowWaterMaskAllBands()) {
+//                raster.getOverlayMaskGroup().add(waterMask);
+//            }
+        }
 
 
 
