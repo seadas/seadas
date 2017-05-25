@@ -258,7 +258,7 @@ class LandMasksDialog extends JDialog {
 
         coastlineJPanel.add(coastlineNameTextfield,
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        
+
 
         coastlineJPanel.add(coastalGridSizeSpinner.getjLabel(),
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));

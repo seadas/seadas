@@ -216,7 +216,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                    // parameters.put("subSamplingFactorY", new Integer(landMasksData.getSuperSampling()));
                                     parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
                                     parameters.put("mode", sourceFileInfo.getMode().toString());
-                                    parameters.put("filename", sourceFileInfo.getFile().getName());
+                                    parameters.put("worldSourceDataFilename", sourceFileInfo.getFile().getName());
                                     parameters.put("copySourceFile", "false");  // when run in GUI don't do this
                                     parameters.put("coastalGridSize", landMasksData.getCoastalGridSize());
                                     parameters.put("coastalSizeTolerance", landMasksData.getCoastalSizeTolerance());

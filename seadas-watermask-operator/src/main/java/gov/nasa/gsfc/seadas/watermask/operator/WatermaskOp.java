@@ -64,37 +64,23 @@ public class WatermaskOp extends Operator {
             label = "Name")
     private Product sourceProduct;
 
-    @Parameter(description = "Specifies on which resolution the water mask shall be based.", unit = "m/pixel",
-            label = "Resolution", defaultValue = "1000", valueSet = {"50", "150", "1000", "10000"})
+    @Parameter(description = "Specifies on which resolution the water mask shall be based.  This needs to match data worldSourceDataFilename resolution", unit = "m/pixel",
+            label = "Resolution", defaultValue = "1000", valueSet = {"50", "150", "1000", "10000"}, notNull = false)
     private int resolution;
 
-    @Parameter(description = "Water mask filename",
-            label = "Filename", defaultValue = "50m.zip",
-            valueSet = {"50m.zip", "150m.zip", "GSHHS_water_mask_1km.zip", "GSHHS_water_mask_10km.zip"})
-    private String filename;
-
-
-//    @Parameter(description = "Specifies the factor between the resolution of the source product and the watermask in " +
-//            "x direction. A value of '1' means no subsampling at all.",
-//            label = "Subsampling factor x", defaultValue = "3", notNull = true)
-//    private int subSamplingFactorX;
-//
-//    @Parameter(description = "Specifies the factor between the resolution of the source product and the watermask in" +
-//            "y direction. A value of '1' means no subsampling at all.",
-//            label = "Subsampling factor y", defaultValue = "3", notNull = true)
-//    private int subSamplingFactorY;
+    @Parameter(description = "Data source file for determining land/water",
+            label = "worldSourceDataFilename", defaultValue = "50m.zip",
+            valueSet = {"50m.zip", "150m.zip", "GSHHS_water_mask_1km.zip", "GSHHS_water_mask_10km.zip"}, notNull = false)
+    private String worldSourceDataFilename;
 
     @Parameter(description = "Specifies the factor to divide up a target pixel when determining match with land source data" +
             ". A value of '1' means no subsampling at all.",
-            label = "Supersampling factor", defaultValue = "3", notNull = true)
+            label = "Supersampling factor", defaultValue = "3", notNull = false)
     private int superSamplingFactor;
 
-//    @Parameter(description = "Specifies the watermaskClassifier mode",
-//            label = "Mode", defaultValue = "2", notNull = true)
-//    private int mode;
 
-    @Parameter(description = "Specifies the watermaskClassifier mode",
-            label = "Mode", defaultValue = "GSHHS", notNull = true)
+    @Parameter(description = "Specifies the watermaskClassifier mode: use SRTM_GC for the 50m and 150m files",
+            label = "Mode", defaultValue = "GSHHS", valueSet = {"GSHHS", "SRTM_GC"}, notNull = false)
     private WatermaskClassifier.Mode mode;
 
     @Parameter(description = "Output file is copy of source file with land data added",
@@ -102,11 +88,11 @@ public class WatermaskOp extends Operator {
     private boolean copySourceFile;
 
     @Parameter(description = "Specifies a filter grid size to apply to determine the coastal mask.  (e.g. 3 = 3x3 matrix)",
-            label = "Coastal grid box size", defaultValue = "3", notNull = true)
+            label = "Coastal grid box size", defaultValue = "3", notNull = false)
     private int coastalGridSize;
 
     @Parameter(description = "Specifies percent of coastal grid matrix to mask",
-            label = "Coastal size tolerance", defaultValue = "50", notNull = true)
+            label = "Coastal size tolerance", defaultValue = "50", notNull = false)
     private int coastalSizeTolerance;
 
 //    @Parameter(description = "Specifies the resolutionInfo which contains resolution, mode",
@@ -125,7 +111,7 @@ public class WatermaskOp extends Operator {
         initTargetProduct();
 
         try {
-            classifier = new WatermaskClassifier(resolution, mode, filename);
+            classifier = new WatermaskClassifier(resolution, mode, worldSourceDataFilename);
         } catch (IOException e) {
             throw new OperatorException("Error creating class WatermaskClassifier.", e);
         }
