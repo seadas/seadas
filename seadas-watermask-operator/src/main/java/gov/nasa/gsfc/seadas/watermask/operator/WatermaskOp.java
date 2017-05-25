@@ -27,6 +27,8 @@ import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
 import org.esa.beam.framework.gpf.annotations.TargetProduct;
 import org.esa.beam.util.ProductUtils;
+import org.esa.beam.visat.actions.imgfilter.CreateFilteredBandAction;
+import org.esa.beam.visat.actions.imgfilter.model.Filter;
 
 import java.awt.*;
 import java.io.IOException;
@@ -193,8 +195,9 @@ public class WatermaskOp extends Operator {
     }
 
     private void initTargetProduct() {
-        targetProduct = new Product("LW-Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
-                sourceProduct.getSceneRasterHeight());
+//        targetProduct = new Product("LW-Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
+//                  sourceProduct.getSceneRasterHeight());
+        targetProduct = sourceProduct;
 
         final Band waterBand = targetProduct.addBand(LAND_WATER_FRACTION_BAND_NAME, ProductData.TYPE_FLOAT32);
         waterBand.setNoDataValue(WatermaskClassifier.INVALID_VALUE);
@@ -207,11 +210,27 @@ public class WatermaskOp extends Operator {
                         +1, +1, +1,
                 });
 
+        final Filter meanFilter = new Filter("Mean 3x3", "mean3", Filter.Operation.MEAN, 3, 3);
+        final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
+                meanFilter.getKernelHeight(),
+                meanFilter.getKernelOffsetX(),
+                meanFilter.getKernelOffsetY(),
+                1.0 / meanFilter.getKernelQuotient(),
+                meanFilter.getKernelElements());
+
         int count = 1;
-        final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
-                LAND_WATER_FRACTION_SMOOTHED_BAND_NAME,
-                waterBand,
-                arithmeticMean3x3Kernel, count);
+//        final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
+//                LAND_WATER_FRACTION_SMOOTHED_BAND_NAME,
+//                waterBand,
+//                arithmeticMean3x3Kernel, count);
+
+
+        final FilterBand filteredCoastlineBand = new GeneralFilterBand(LAND_WATER_FRACTION_SMOOTHED_BAND_NAME, waterBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
+        if (waterBand instanceof Band) {
+            ProductUtils.copySpectralBandProperties((Band) waterBand, filteredCoastlineBand);
+        }
+
+
 
         targetProduct.addBand(filteredCoastlineBand);
 
@@ -260,6 +279,8 @@ public class WatermaskOp extends Operator {
 
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
     }
+
+
 
     @SuppressWarnings({"UnusedDeclaration"})
     public static class Spi extends OperatorSpi {

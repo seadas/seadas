@@ -10,9 +10,11 @@ import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.command.CommandAdapter;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.ExecCommand;
+import org.esa.beam.util.ProductUtils;
 import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.visat.AbstractVisatPlugIn;
 import org.esa.beam.visat.VisatApp;
+import org.esa.beam.visat.actions.imgfilter.model.Filter;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
@@ -251,6 +253,16 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     //todo replace with JAI operator "GeneralFilter" which uses a GeneralFilterFunction
 
 
+                                    int boxSize = 7;
+                                    final Filter meanFilter = new Filter("Mean "+ Integer.toString(boxSize)+"x"+Integer.toString(boxSize), "mean"+Integer.toString(boxSize), Filter.Operation.MEAN, boxSize, boxSize);
+                                    final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
+                                            meanFilter.getKernelHeight(),
+                                            meanFilter.getKernelOffsetX(),
+                                            meanFilter.getKernelOffsetY(),
+                                            1.0 / meanFilter.getKernelQuotient(),
+                                            meanFilter.getKernelElements());
+
+
                                     final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
                                             new double[]{
                                                     +1, +1, +1,
@@ -259,10 +271,16 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                             });
 //todo: 4th argument to ConvolutionFilterBand is a dummy value added to make it compile...may want to look at this...
                                     int count = 1;
-                                    final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
-                                            landMasksData.getWaterFractionSmoothedName(),
-                                            waterFractionBand,
-                                            arithmeticMean3x3Kernel, count);
+//                                    final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
+//                                            landMasksData.getWaterFractionSmoothedName(),
+//                                            waterFractionBand,
+//                                            arithmeticMean3x3Kernel, count);
+
+                                    final FilterBand filteredCoastlineBand = new GeneralFilterBand(landMasksData.getWaterFractionSmoothedName(), waterFractionBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
+                                    if (waterFractionBand instanceof Band) {
+                                        ProductUtils.copySpectralBandProperties((Band) waterFractionBand, filteredCoastlineBand);
+                                    }
+
 
                                     product.addBand(filteredCoastlineBand);
 
