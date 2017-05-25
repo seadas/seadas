@@ -1,8 +1,6 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.OCSSW;
-import gov.nasa.gsfc.seadas.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
