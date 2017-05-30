@@ -421,7 +421,8 @@ class LandMasksDialog extends JDialog {
 
         setTitle("Create Coastline & Land Masks");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+     // setLocationRelativeTo(null);
+        setBounds(300,100,100,100);
         pack();
 
 

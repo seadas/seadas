@@ -95,6 +95,15 @@ public class WatermaskOp extends Operator {
             label = "Coastal size tolerance", defaultValue = "50", notNull = false)
     private int coastalSizeTolerance;
 
+    @Parameter(description = "Color of land mask",
+            label = "Color of land mask", defaultValue = "0, 125, 255", notNull = false)
+    private Color landMaskColor;
+
+    @Parameter(description = "Includes the masks (otherwise only land band is created)",
+            label = "includeMasks", defaultValue = "true", notNull = false)
+    private boolean includeMasks;
+
+
 //    @Parameter(description = "Specifies the resolutionInfo which contains resolution, mode",
 //            label = "Resolution Info", defaultValue = "1 km GSHHS", notNull = true)
 //    private SourceFileInfo resolutionInfo;
@@ -215,74 +224,74 @@ public class WatermaskOp extends Operator {
 //                });
 
 
+        if (includeMasks) {
 
-        final Filter meanFilter = new Filter("Mean "+Integer.toString(coastalGridSize) + "x" + Integer.toString(coastalGridSize), "mean"+ Integer.toString(coastalGridSize), Filter.Operation.MEAN, coastalGridSize, coastalGridSize);
-        final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
-                meanFilter.getKernelHeight(),
-                meanFilter.getKernelOffsetX(),
-                meanFilter.getKernelOffsetY(),
-                1.0 / meanFilter.getKernelQuotient(),
-                meanFilter.getKernelElements());
+            final Filter meanFilter = new Filter("Mean " + Integer.toString(coastalGridSize) + "x" + Integer.toString(coastalGridSize), "mean" + Integer.toString(coastalGridSize), Filter.Operation.MEAN, coastalGridSize, coastalGridSize);
+            final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
+                    meanFilter.getKernelHeight(),
+                    meanFilter.getKernelOffsetX(),
+                    meanFilter.getKernelOffsetY(),
+                    1.0 / meanFilter.getKernelQuotient(),
+                    meanFilter.getKernelElements());
 
-        int count = 1;
+            int count = 1;
 //        final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
 //                LAND_WATER_FRACTION_SMOOTHED_BAND_NAME,
 //                waterBand,
 //                arithmeticMean3x3Kernel, count);
 
 
-        String filteredCoastlineBandName = LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + Integer.toString(coastalGridSize);
-        final FilterBand filteredCoastlineBand = new GeneralFilterBand(filteredCoastlineBandName, waterBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
-        if (waterBand instanceof Band) {
-            ProductUtils.copySpectralBandProperties((Band) waterBand, filteredCoastlineBand);
-        }
+            String filteredCoastlineBandName = LAND_WATER_FRACTION_SMOOTHED_BAND_NAME + Integer.toString(coastalGridSize);
+            final FilterBand filteredCoastlineBand = new GeneralFilterBand(filteredCoastlineBandName, waterBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
+            if (waterBand instanceof Band) {
+                ProductUtils.copySpectralBandProperties((Band) waterBand, filteredCoastlineBand);
+            }
 
 
+            targetProduct.addBand(filteredCoastlineBand);
 
-        targetProduct.addBand(filteredCoastlineBand);
+            final ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
 
-        final ProductNodeGroup<Mask> maskGroup = targetProduct.getMaskGroup();
+            double min = 50 - coastalSizeTolerance / 2;
+            double max = 50 + coastalSizeTolerance / 2;
+            String coastlineMaskExpression = filteredCoastlineBandName + " > " + Double.toString(min) + " and " + filteredCoastlineBandName + " < " + Double.toString(max);
 
-        double min = 50  - coastalSizeTolerance/2;
-        double max = 50 + coastalSizeTolerance/2;
-      String coastlineMaskExpression =  filteredCoastlineBandName + " > "+ Double.toString(min) + " and " + filteredCoastlineBandName + " < " + Double.toString(max);
-
-        Mask coastlineMask = Mask.BandMathsType.create(
-                "CoastalMask",
-                "Coastal masked pixels",
-                targetProduct.getSceneRasterWidth(),
-                targetProduct.getSceneRasterHeight(),
-                coastlineMaskExpression,
-                new Color(0, 0, 0),
-                0.0);
-        maskGroup.add(coastlineMask);
-
-
-        Mask landMask = Mask.BandMathsType.create(
-                "LandMask",
-                "Land masked pixels",
-                targetProduct.getSceneRasterWidth(),
-                targetProduct.getSceneRasterHeight(),
-                LAND_WATER_FRACTION_BAND_NAME + "== 0",
-                new Color(51, 51, 51),
-                0.0);
-
-        maskGroup.add(landMask);
-
-        Mask waterMask = Mask.BandMathsType.create(
-                "WaterMask",
-                "Water masked pixels",
-                targetProduct.getSceneRasterWidth(),
-                targetProduct.getSceneRasterHeight(),
-                LAND_WATER_FRACTION_BAND_NAME + "> 0",
-                new Color(0, 125, 255),
-                0.5);
-        maskGroup.add(waterMask);
+            Mask coastlineMask = Mask.BandMathsType.create(
+                    "CoastalMask",
+                    "Coastal masked pixels",
+                    targetProduct.getSceneRasterWidth(),
+                    targetProduct.getSceneRasterHeight(),
+                    coastlineMaskExpression,
+                    new Color(0, 0, 0),
+                    0.0);
+            maskGroup.add(coastlineMask);
 
 
-        String[] bandNames = targetProduct.getBandNames();
-        for (String bandName : bandNames) {
-            RasterDataNode raster = targetProduct.getRasterDataNode(bandName);
+            Mask landMask = Mask.BandMathsType.create(
+                    "LandMask",
+                    "Land masked pixels",
+                    targetProduct.getSceneRasterWidth(),
+                    targetProduct.getSceneRasterHeight(),
+                    LAND_WATER_FRACTION_BAND_NAME + "== 0",
+                    new Color(51, 51, 51),
+                    0.0);
+
+            maskGroup.add(landMask);
+
+            Mask waterMask = Mask.BandMathsType.create(
+                    "WaterMask",
+                    "Water masked pixels",
+                    targetProduct.getSceneRasterWidth(),
+                    targetProduct.getSceneRasterHeight(),
+                    LAND_WATER_FRACTION_BAND_NAME + "> 0",
+                    landMaskColor,
+                    0.5);
+            maskGroup.add(waterMask);
+
+
+            String[] bandNames = targetProduct.getBandNames();
+            for (String bandName : bandNames) {
+                RasterDataNode raster = targetProduct.getRasterDataNode(bandName);
 //            if (landMasksData.isShowCoastlineMaskAllBands()) {
 //                raster.getOverlayMaskGroup().add(coastlineMask);
 //            }
@@ -292,9 +301,10 @@ public class WatermaskOp extends Operator {
 //            if (landMasksData.isShowWaterMaskAllBands()) {
 //                raster.getOverlayMaskGroup().add(waterMask);
 //            }
+            }
+
+
         }
-
-
 
 
 //        final Band coastBand = targetProduct.addBand(COAST_BAND_NAME, ProductData.TYPE_FLOAT32);

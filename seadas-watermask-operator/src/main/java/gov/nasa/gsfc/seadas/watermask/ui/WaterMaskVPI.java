@@ -218,8 +218,9 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     parameters.put("mode", sourceFileInfo.getMode().toString());
                                     parameters.put("worldSourceDataFilename", sourceFileInfo.getFile().getName());
                                     parameters.put("copySourceFile", "false");  // when run in GUI don't do this
-                                    parameters.put("coastalGridSize", landMasksData.getCoastalGridSize());
-                                    parameters.put("coastalSizeTolerance", landMasksData.getCoastalSizeTolerance());
+                                //    parameters.put("coastalGridSize", landMasksData.getCoastalGridSize());
+                                //    parameters.put("coastalSizeTolerance", landMasksData.getCoastalSizeTolerance());
+                                    parameters.put("includeMasks", false);  // don't create masks within the operator, do it later
                                     //                             parameters.put("sourceFileInfo", sourceFileInfo);
                                     /*
                                        Create a new product, which will contain the land_water_fraction band
