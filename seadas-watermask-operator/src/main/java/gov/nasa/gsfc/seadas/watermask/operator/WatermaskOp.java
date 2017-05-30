@@ -68,9 +68,9 @@ public class WatermaskOp extends Operator {
             label = "Resolution", defaultValue = "1000", valueSet = {"50", "150", "1000", "10000"}, notNull = false)
     private int resolution;
 
-    @Parameter(description = "Data source file for determining land/water",
-            label = "worldSourceDataFilename", defaultValue = "50m.zip",
-            valueSet = {"50m.zip", "150m.zip", "GSHHS_water_mask_1km.zip", "GSHHS_water_mask_10km.zip"}, notNull = false)
+    @Parameter(description = "Data source file for determining land/water: if default then determined based on selected resolution",
+            label = "worldSourceDataFilename", defaultValue = "DEFAULT",
+            valueSet = {"DEFAULT", "50m.zip", "150m.zip", "GSHHS_water_mask_1km.zip", "GSHHS_water_mask_10km.zip"}, notNull = false)
     private String worldSourceDataFilename;
 
     @Parameter(description = "Specifies the factor to divide up a target pixel when determining match with land source data" +
@@ -79,8 +79,8 @@ public class WatermaskOp extends Operator {
     private int superSamplingFactor;
 
 
-    @Parameter(description = "Specifies the watermaskClassifier mode: use SRTM_GC for the 50m and 150m files",
-            label = "Mode", defaultValue = "GSHHS", valueSet = {"GSHHS", "SRTM_GC"}, notNull = false)
+    @Parameter(description = "Specifies the watermaskClassifier mode: uses SRTM_GC for the 50m and 150m files",
+            label = "Mode", defaultValue = "DEFAULT", valueSet = {"DEFAULT", "GSHHS", "SRTM_GC"}, notNull = false)
     private WatermaskClassifier.Mode mode;
 
     @Parameter(description = "Output file is copy of source file with land data added",

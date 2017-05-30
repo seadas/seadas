@@ -75,33 +75,50 @@ class LandMasksData {
 
         SourceFileInfo sourceFileInfo;
 
+//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_50m,
+//                SourceFileInfo.Unit.METER,
+//                WatermaskClassifier.Mode.SRTM_GC,
+//                WatermaskClassifier.FILENAME_SRTM_GC_50m);
+//        getSourceFileInfos().add(sourceFileInfo);
+//
+//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_150m,
+//                SourceFileInfo.Unit.METER,
+//                WatermaskClassifier.Mode.SRTM_GC,
+//                WatermaskClassifier.FILENAME_SRTM_GC_150m);
+//        getSourceFileInfos().add(sourceFileInfo);
+//
+//
+//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_1km,
+//                SourceFileInfo.Unit.METER,
+//                WatermaskClassifier.Mode.GSHHS,
+//                WatermaskClassifier.FILENAME_GSHHS_1km);
+//        getSourceFileInfos().add(sourceFileInfo);
+//        // set the default
+//        this.sourceFileInfo = sourceFileInfo;
+//
+//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_10km,
+//                SourceFileInfo.Unit.METER,
+//                WatermaskClassifier.Mode.GSHHS,
+//                WatermaskClassifier.FILENAME_GSHHS_10km);
+//        getSourceFileInfos().add(sourceFileInfo);
+
+
         sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_50m,
                 SourceFileInfo.Unit.METER,
-                WatermaskClassifier.Mode.SRTM_GC,
+                WatermaskClassifier.Mode.DEFAULT,
                 WatermaskClassifier.FILENAME_SRTM_GC_50m);
         getSourceFileInfos().add(sourceFileInfo);
 
         sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_150m,
                 SourceFileInfo.Unit.METER,
-                WatermaskClassifier.Mode.SRTM_GC,
+                WatermaskClassifier.Mode.DEFAULT,
                 WatermaskClassifier.FILENAME_SRTM_GC_150m);
         getSourceFileInfos().add(sourceFileInfo);
 
-//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_250m,
-//                SourceFileInfo.Unit.METER,
-//                WatermaskClassifier.Mode.GSHHS,
-//                WatermaskClassifier.FILENAME_GSHHS_250m);
-//        getSourceFileInfos().add(sourceFileInfo);
-//
-//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_500m,
-//                SourceFileInfo.Unit.METER,
-//                WatermaskClassifier.Mode.GSHHS,
-//                WatermaskClassifier.FILENAME_GSHHS_500m);
-//        getSourceFileInfos().add(sourceFileInfo);
 
         sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_1km,
                 SourceFileInfo.Unit.METER,
-                WatermaskClassifier.Mode.GSHHS,
+                WatermaskClassifier.Mode.DEFAULT,
                 WatermaskClassifier.FILENAME_GSHHS_1km);
         getSourceFileInfos().add(sourceFileInfo);
         // set the default
@@ -109,9 +126,10 @@ class LandMasksData {
 
         sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_10km,
                 SourceFileInfo.Unit.METER,
-                WatermaskClassifier.Mode.GSHHS,
+                WatermaskClassifier.Mode.DEFAULT,
                 WatermaskClassifier.FILENAME_GSHHS_10km);
         getSourceFileInfos().add(sourceFileInfo);
+
 
         this.addPropertyChangeListener(LandMasksData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, new PropertyChangeListener() {
             @Override

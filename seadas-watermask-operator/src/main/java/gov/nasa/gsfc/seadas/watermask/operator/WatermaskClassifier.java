@@ -43,17 +43,14 @@ public class WatermaskClassifier {
 
     public static final int RESOLUTION_50m = 50;
     public static final int RESOLUTION_150m = 150;
-    public static final int RESOLUTION_250m = 250;
-    public static final int RESOLUTION_500m = 500;
     public static final int RESOLUTION_1km = 1000;
     public static final int RESOLUTION_10km = 10000;
 
     public static final String FILENAME_SRTM_GC_50m = "50m.zip";
     public static final String FILENAME_SRTM_GC_150m = "150m.zip";
-    public static final String FILENAME_GSHHS_250m = "GSHHS_water_mask_250m.zip";
-    public static final String FILENAME_GSHHS_500m = "GSHHS_water_mask_500m.zip";
     public static final String FILENAME_GSHHS_1km = "GSHHS_water_mask_1km.zip";
     public static final String FILENAME_GSHHS_10km = "GSHHS_water_mask_10km.zip";
+    public static final String FILENAME_USE_DEFAULT = "DEFAULT";
 
     public static String GC_WATER_MASK_FILE = "GC_water_mask.zip";
 
@@ -61,11 +58,13 @@ public class WatermaskClassifier {
     public enum Mode {
         MODIS("MODIS"),
         SRTM_GC("SRTM_GC"),
-        GSHHS("GSHHS");
+        GSHHS("GSHHS"),
+        DEFAULT("DEFAULT");
 
         public String SRTM_GC_DESCRIPTION = "SRTM (Shuttle Radar Topography Mission) and GC(GlobCover World Map)";
         public String GSHHS_DESCRIPTION = "GSHHS (Global Self-consistent, Hierarchical, High-resolution Shoreline Database)";
         public String MODIS_DESCRIPTION = "";
+        public String DEFAULT_DESCRIPTION = "Determines mode based on input resolution";
 
         private final String name;
 
@@ -82,6 +81,8 @@ public class WatermaskClassifier {
                     return SRTM_GC_DESCRIPTION;
                 case GSHHS:
                     return GSHHS_DESCRIPTION;
+                case DEFAULT:
+                    return DEFAULT_DESCRIPTION;
             }
 
             return null;
@@ -158,6 +159,45 @@ public class WatermaskClassifier {
             throw new IllegalArgumentException(
                     MessageFormat.format("Resolution needs to be {0}, {1}, {2} or {3}.", RESOLUTION_50m, RESOLUTION_150m, RESOLUTION_1km, RESOLUTION_10km));
         }
+
+        if (FILENAME_USE_DEFAULT.equals(filename)) {
+            switch (resolution) {
+                case RESOLUTION_50m:
+                    filename = FILENAME_SRTM_GC_50m;
+                    break;
+                case RESOLUTION_150m:
+                    filename = FILENAME_SRTM_GC_150m;
+                    break;
+                case RESOLUTION_1km:
+                    filename = FILENAME_GSHHS_1km;
+                    break;
+                case RESOLUTION_10km:
+                    filename = FILENAME_GSHHS_10km;
+                    break;
+                default:
+                    String msg = String.format("Unknown resolution for setting default filename '%d'. Known resolutions are {%d, %d, %d, %d}", resolution, RESOLUTION_50m, RESOLUTION_150m, RESOLUTION_1km, RESOLUTION_10km);
+            }
+        }
+
+        if (mode == Mode.DEFAULT) {
+            switch (resolution) {
+                case RESOLUTION_50m:
+                    mode = Mode.SRTM_GC;
+                    break;
+                case RESOLUTION_150m:
+                    mode = Mode.SRTM_GC;
+                    break;
+                case RESOLUTION_1km:
+                    mode = Mode.GSHHS;
+                    break;
+                case RESOLUTION_10km:
+                    mode = Mode.GSHHS;
+                    break;
+                default:
+                    String msg = String.format("Unknown resolution for setting default mode '%d'. Known resolutions are {%d, %d, %d, %d}", resolution, RESOLUTION_50m, RESOLUTION_150m, RESOLUTION_1km, RESOLUTION_10km);
+            }
+        }
+
 
         if (mode != Mode.SRTM_GC && mode != Mode.GSHHS && mode != Mode.MODIS) {
             throw new IllegalArgumentException(
