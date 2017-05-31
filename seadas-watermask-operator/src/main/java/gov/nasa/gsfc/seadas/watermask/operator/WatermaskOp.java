@@ -95,13 +95,33 @@ public class WatermaskOp extends Operator {
             label = "Coastal size tolerance", defaultValue = "50", notNull = false)
     private int coastalSizeTolerance;
 
+    @Parameter(description = "Color of water mask",
+            label = "Color of water mask", defaultValue = "0, 125, 255", notNull = false)
+    private Color waterMaskColor;
+
+    @Parameter(description = "Color of coastal mask",
+            label = "Color of coastal mask", defaultValue = "0, 0, 0", notNull = false)
+    private Color coastalMaskColor;
+
     @Parameter(description = "Color of land mask",
-            label = "Color of land mask", defaultValue = "0, 125, 255", notNull = false)
+            label = "Color of land mask", defaultValue = "51, 51, 51", notNull = false)
     private Color landMaskColor;
 
     @Parameter(description = "Includes the masks (otherwise only land band is created)",
             label = "includeMasks", defaultValue = "true", notNull = false)
     private boolean includeMasks;
+
+    @Parameter(description = "Water mask transparency",
+            label = "Water mask transparency", defaultValue = "0", notNull = false)
+    private double waterMaskTransparency;
+
+    @Parameter(description = "Land mask transparency",
+            label = "Land mask transparency", defaultValue = "0", notNull = false)
+    private double landMaskTransparency;
+
+    @Parameter(description = "Coastal mask transparency",
+            label = "Coastal mask transparency", defaultValue = "0", notNull = false)
+    private double coastalMaskTransparency;
 
 
 //    @Parameter(description = "Specifies the resolutionInfo which contains resolution, mode",
@@ -262,8 +282,8 @@ public class WatermaskOp extends Operator {
                     targetProduct.getSceneRasterWidth(),
                     targetProduct.getSceneRasterHeight(),
                     coastlineMaskExpression,
-                    new Color(0, 0, 0),
-                    0.0);
+                    coastalMaskColor,
+                    coastalMaskTransparency);
             maskGroup.add(coastlineMask);
 
 
@@ -273,8 +293,8 @@ public class WatermaskOp extends Operator {
                     targetProduct.getSceneRasterWidth(),
                     targetProduct.getSceneRasterHeight(),
                     LAND_WATER_FRACTION_BAND_NAME + "== 0",
-                    new Color(51, 51, 51),
-                    0.0);
+                    landMaskColor,
+                    landMaskTransparency);
 
             maskGroup.add(landMask);
 
@@ -284,8 +304,8 @@ public class WatermaskOp extends Operator {
                     targetProduct.getSceneRasterWidth(),
                     targetProduct.getSceneRasterHeight(),
                     LAND_WATER_FRACTION_BAND_NAME + "> 0",
-                    landMaskColor,
-                    0.5);
+                    waterMaskColor,
+                    waterMaskTransparency);
             maskGroup.add(waterMask);
 
 

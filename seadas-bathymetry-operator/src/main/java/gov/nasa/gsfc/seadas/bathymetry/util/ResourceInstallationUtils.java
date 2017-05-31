@@ -1,12 +1,16 @@
 package gov.nasa.gsfc.seadas.bathymetry.util;
 
 import com.bc.ceres.core.ProgressMonitor;
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
+import org.esa.beam.BeamUiActivator;
 import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.util.SystemUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Level;
 
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
 
@@ -101,7 +105,15 @@ public class ResourceInstallationUtils {
 
 
     public static File getTargetFile(String filename) {
-        File targetFile = new File(getTargetDir(), filename);
+   //     File targetFile = new File(getTargetDir(), filename);
+
+        File targetModuleDir = new File(SystemUtils.getApplicationDataDir(), BATHYMETRY_MODULE_NAME);
+        File targetDir = new File(targetModuleDir, AUXDIR);
+        File targetFile = new File(targetDir, filename);
+
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
 
         return targetFile;
     }

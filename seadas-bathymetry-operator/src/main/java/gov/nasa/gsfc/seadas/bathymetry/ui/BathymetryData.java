@@ -68,11 +68,12 @@ public class BathymetryData {
 
         SourceFileInfo sourceFileInfo;
 
-        File ocsswRootDir = getOcsswRoot();
-        File ocsswRunDir = new File(ocsswRootDir, "run");
-        File ocsswRunDataDir = new File(ocsswRunDir, "data");
-        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
-        File bathymetryFile = new File(ocsswRunDataCommonDir, FILENAME_BATHYMETRY);
+        File bathymetryFile = getBathymetryFile(FILENAME_BATHYMETRY);
+//        File ocsswRootDir = getOcsswRoot();
+//        File ocsswRunDir = new File(ocsswRootDir, "run");
+//        File ocsswRunDataDir = new File(ocsswRunDir, "data");
+//        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
+//        File bathymetryFile = new File(ocsswRunDataCommonDir, FILENAME_BATHYMETRY);
 
 
         sourceFileInfo = new SourceFileInfo(RESOLUTION_BATHYMETRY_FILE,
@@ -97,7 +98,12 @@ public class BathymetryData {
 
 
     public static File getOcsswRoot() {
-        return new File(RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR)));
+        String test = System.getenv(OCSSWROOT_ENVVAR);
+        if (test != null && test.length() > 1) {
+            return new File(RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR)));
+        }
+
+        return null;
     }
 
 
@@ -272,20 +278,33 @@ public class BathymetryData {
 
 
     static public File getBathymetryFile(String bathymetryFilename) {
-        File ocsswRootDir = getOcsswRoot();
-        File ocsswRunDir = new File(ocsswRootDir, "run");
-        File ocsswRunDataDir = new File(ocsswRunDir, "data");
-        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
-        File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
 
-        if (!bathymetryFile.exists()) {
-            File altFile = ResourceInstallationUtils.getTargetFile(bathymetryFilename);
-            if (altFile.exists()) {
-                return altFile;
+        String test = System.getenv(OCSSWROOT_ENVVAR);
+        if (test != null && test.length() > 1) {
+            File ocsswRootDir = getOcsswRoot();
+            if (ocsswRootDir.exists()) {
+                File ocsswRunDir = new File(ocsswRootDir, "run");
+                if (ocsswRootDir.exists()) {
+                    File ocsswRunDataDir = new File(ocsswRunDir, "data");
+                    if (ocsswRunDataDir.exists()) {
+                        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
+                        if (ocsswRunDataCommonDir.exists()) {
+                            File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
+                            if (bathymetryFile.exists()) {
+                                return bathymetryFile;
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        return bathymetryFile;
+        File bathymetryFile = ResourceInstallationUtils.getTargetFile(bathymetryFilename);
+      //  if (bathymetryFile.exists()) {
+            return bathymetryFile;
+      //  }
+
+      //  return null;
     }
 
     public boolean isInstallingFile() {
