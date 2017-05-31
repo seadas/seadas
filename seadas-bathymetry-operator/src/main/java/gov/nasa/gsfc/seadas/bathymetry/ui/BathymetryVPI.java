@@ -44,7 +44,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
     public static final String ICON = "bathymetry.png";
 
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
-    public static final String BATHYMETRY_PRODUCT_NAME = "bathymetry";
+    public static final String BATHYMETRY_PRODUCT_NAME = "BathymetryOp";
 
 
     @Override
