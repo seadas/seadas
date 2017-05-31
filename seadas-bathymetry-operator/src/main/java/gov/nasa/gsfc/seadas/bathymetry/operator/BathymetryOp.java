@@ -35,7 +35,7 @@ import java.text.MessageFormat;
  * @author Danny Knowles
  */
 @SuppressWarnings({"FieldCanBeLocal"})
-@OperatorMetadata(alias = "bathymetry",
+@OperatorMetadata(alias = "BathymetryOp",
         version = "1.0",
         internal = false,
         authors = "Danny Knowles",
@@ -60,15 +60,7 @@ public class BathymetryOp extends Operator {
             valueSet = {"ETOPO1_ocssw.nc"})
     private String filename;
 
-    @Parameter(description = "Specifies the factor between the resolution of the source product and the bathymetry in " +
-            "x direction. A value of '1' means no subsampling at all.",
-            label = "Subsampling factor x", defaultValue = "3", notNull = true)
-    private int subSamplingFactorX;
 
-    @Parameter(description = "Specifies the factor between the resolution of the source product and the bathymetry in" +
-            "y direction. A value of '1' means no subsampling at all.",
-            label = "Subsampling factor y", defaultValue = "3", notNull = true)
-    private int subSamplingFactorY;
 
 
     @TargetProduct
@@ -100,11 +92,6 @@ public class BathymetryOp extends Operator {
         if (resolution != BathymetryData.RESOLUTION_BATHYMETRY_FILE) {
             throw new OperatorException(String.format("Resolution needs to be %d ",
                     BathymetryData.RESOLUTION_BATHYMETRY_FILE));
-        }
-        if (subSamplingFactorX < 1) {
-            String message = MessageFormat.format(
-                    "Subsampling factor needs to be greater than or equal to 1; was: ''{0}''.", subSamplingFactorX);
-            throw new OperatorException(message);
         }
     }
 
