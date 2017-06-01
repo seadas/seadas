@@ -75,20 +75,39 @@ public class BathymetryOp extends Operator {
 
         File bathymetryFile = BathymetryData.getBathymetryFile(filename);
 
+        if (bathymetryFile != null) {
+            if (bathymetryFile.exists()) {
+                System.out.print("Reading bathymetry source file '" + bathymetryFile.getAbsolutePath());
+            } else {
+                System.out.print("Bathymetry source file does not exist '" + bathymetryFile.getAbsolutePath());
+            }
+        } else {
+            System.out.print("Reading bathymetry source file '" + filename);
+        }
+
 
         try {
             bathymetryReader = new BathymetryReader(bathymetryFile);
         } catch (IOException e) {
-
             if (bathymetryFile != null) {
                 if (bathymetryFile.exists()) {
-                    SeadasLogger.getLogger().warning("Error reading bathymetry source file '" + bathymetryFile.getAbsolutePath());
+                    System.out.print("Error: Reading bathymetry source file '" + bathymetryFile.getAbsolutePath());
                 } else {
-                    SeadasLogger.getLogger().warning("Bathymetry source file does not exist '" + bathymetryFile.getAbsolutePath());
+                    System.out.print("Error: Bathymetry source file does not exist '" + bathymetryFile.getAbsolutePath());
                 }
             } else {
-                SeadasLogger.getLogger().warning("Error reading bathymetry source file '" + filename);
+                System.out.print("Error: Reading bathymetry source file '" + filename);
             }
+
+//            if (bathymetryFile != null) {
+//                if (bathymetryFile.exists()) {
+//                    SeadasLogger.getLogger().warning("Error reading bathymetry source file '" + bathymetryFile.getAbsolutePath());
+//                } else {
+//                    SeadasLogger.getLogger().warning("Bathymetry source file does not exist '" + bathymetryFile.getAbsolutePath());
+//                }
+//            } else {
+//                SeadasLogger.getLogger().warning("Error reading bathymetry source file '" + filename);
+//            }
         }
 
 
