@@ -4,6 +4,7 @@ import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
 import gov.nasa.gsfc.seadas.processing.general.EarthBox2;
 import gov.nasa.gsfc.seadas.processing.general.MotherEarthBox2;
+import gov.nasa.gsfc.seadas.processing.general.SeadasLogger;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.Operator;
 import org.esa.beam.framework.gpf.OperatorException;
@@ -74,16 +75,22 @@ public class BathymetryOp extends Operator {
 
         File bathymetryFile = BathymetryData.getBathymetryFile(filename);
 
+
         try {
             bathymetryReader = new BathymetryReader(bathymetryFile);
         } catch (IOException e) {
-//            if (bathymetryFile != null) {
-//                throw new OperatorException("Error reading bathymetry source file '" + bathymetryFile.getAbsolutePath() + "'.", e);
-//            } else {
-//                throw new OperatorException("Error reading bathymetry source file '" + filename + "' - ", e);
-//
-//            }
+
+            if (bathymetryFile != null) {
+                if (bathymetryFile.exists()) {
+                    SeadasLogger.getLogger().warning("Error reading bathymetry source file '" + bathymetryFile.getAbsolutePath());
+                } else {
+                    SeadasLogger.getLogger().warning("Bathymetry source file does not exist '" + bathymetryFile.getAbsolutePath());
+                }
+            } else {
+                SeadasLogger.getLogger().warning("Error reading bathymetry source file '" + filename);
+            }
         }
+
 
         validateParameter();
         validateSourceProduct();
