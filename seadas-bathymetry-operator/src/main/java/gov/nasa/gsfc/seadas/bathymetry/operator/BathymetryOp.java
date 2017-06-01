@@ -72,12 +72,17 @@ public class BathymetryOp extends Operator {
     @Override
     public void initialize() throws OperatorException {
 
-        File bathymetryFile = BathymetryData.getBathymetryFile(filename);
+        File bathymetryFile = BathymetryData.getBathymetryFile(filename, true);
 
         try {
             bathymetryReader = new BathymetryReader(bathymetryFile);
         } catch (IOException e) {
-            //
+            if (bathymetryFile != null) {
+                throw new OperatorException("Error reading bathymetry source file '" + bathymetryFile.getAbsolutePath() + "'.", e);
+            } else {
+                throw new OperatorException("Error reading bathymetry source file '" + filename + "' - ", e);
+
+            }
         }
 
         validateParameter();

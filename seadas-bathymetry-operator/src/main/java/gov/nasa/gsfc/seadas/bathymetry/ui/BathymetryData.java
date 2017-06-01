@@ -49,7 +49,7 @@ public class BathymetryData {
 
 
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
-    public static final String OCSSWROOT_PROPERTY = "ocssw.root";
+    public static final String OCSSWROOT_PROPERTY = "seadas.ocssw.root";
 
 
     private int superSampling = 1;
@@ -68,7 +68,7 @@ public class BathymetryData {
 
         SourceFileInfo sourceFileInfo;
 
-        File bathymetryFile = getBathymetryFile(FILENAME_BATHYMETRY);
+        File bathymetryFile = getBathymetryFile(FILENAME_BATHYMETRY, false);
 //        File ocsswRootDir = getOcsswRoot();
 //        File ocsswRunDir = new File(ocsswRootDir, "run");
 //        File ocsswRunDataDir = new File(ocsswRunDir, "data");
@@ -97,9 +97,13 @@ public class BathymetryData {
     }
 
 
-    public static File getOcsswRoot() {
-        String test = System.getenv(OCSSWROOT_ENVVAR);
-        if (test != null && test.length() > 1) {
+    public static File getOcsswRoot(boolean operator) {
+        if (operator) {
+            String ocsswRoot = System.getenv(OCSSWROOT_ENVVAR);
+            if (ocsswRoot != null && ocsswRoot.length() > 1) {
+                return  new File(ocsswRoot);
+            }
+        } else {
             return new File(RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR)));
         }
 
@@ -277,12 +281,10 @@ public class BathymetryData {
     }
 
 
-    static public File getBathymetryFile(String bathymetryFilename) {
+    static public File getBathymetryFile(String bathymetryFilename, boolean operator) {
 
-        String test = System.getenv(OCSSWROOT_ENVVAR);
-        if (test != null && test.length() > 1) {
-            File ocsswRootDir = getOcsswRoot();
-            if (ocsswRootDir.exists()) {
+            File ocsswRootDir = getOcsswRoot(operator);
+            if (ocsswRootDir != null && ocsswRootDir.exists()) {
                 File ocsswRunDir = new File(ocsswRootDir, "run");
                 if (ocsswRootDir.exists()) {
                     File ocsswRunDataDir = new File(ocsswRunDir, "data");
@@ -297,7 +299,7 @@ public class BathymetryData {
                     }
                 }
             }
-        }
+
 
         File bathymetryFile = ResourceInstallationUtils.getTargetFile(bathymetryFilename);
       //  if (bathymetryFile.exists()) {
