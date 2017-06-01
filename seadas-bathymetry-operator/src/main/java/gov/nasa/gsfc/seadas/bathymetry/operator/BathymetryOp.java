@@ -72,7 +72,7 @@ public class BathymetryOp extends Operator {
     @Override
     public void initialize() throws OperatorException {
 
-        File bathymetryFile = BathymetryData.getBathymetryFile(filename, true);
+        File bathymetryFile = BathymetryData.getBathymetryFile(filename);
 
         try {
             bathymetryReader = new BathymetryReader(bathymetryFile);

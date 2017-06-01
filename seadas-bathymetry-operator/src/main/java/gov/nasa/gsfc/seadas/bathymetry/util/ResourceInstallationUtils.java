@@ -87,15 +87,9 @@ public class ResourceInstallationUtils {
         output.flush();
     }
 
-    public static File getTargetDir(boolean operator) {
+    public static File getTargetDir() {
 
-        File ocsswRoot = BathymetryData.getOcsswRoot(operator);
-
-        if (ocsswRoot != null) {
-            return ocsswRoot.getParentFile();
-        } else {
-            return null;
-        }
+        return BathymetryData.getOcsswRoot().getParentFile();
     }
 
 
