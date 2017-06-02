@@ -1,12 +1,8 @@
 ## Cheat Sheet for SQLITE commands
 
-* Start SQLite
+1.  Start SQLite   --  sqlite3 <filename>
 
-sqlite3 <filename>
-
-* Show all tables
-
-.tables
+2.  Show all tables  --  <b> .tables </b>
 
 * Show whole database as SQL (kind of a “describe” function in MySQL)
 
