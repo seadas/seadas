@@ -55,4 +55,5 @@ Inserts a new row into table table_name with values value1 in column1, value2 in
 * Read sql from file
 
 sqlite3 my.db < filewithsql
+
 This will read and execute the sql statements from the file filewithsql.
