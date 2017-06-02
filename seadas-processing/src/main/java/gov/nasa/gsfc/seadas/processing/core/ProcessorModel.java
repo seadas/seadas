@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.OCSSWClient;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
@@ -530,7 +530,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         return true;
     }
 
-    private boolean verifyIFilePath(String ifileName) {
+    boolean verifyIFilePath(String ifileName) {
 
         File ifile = new File(ifileName);
 
@@ -544,7 +544,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         String ifileDir;
         try {
             ifileDir = getParamValue(getPrimaryInputFileOptionName());
-            ifileDir = ifileDir.substring(0, ifileDir.lastIndexOf(System.getProperty("file.separator")));
+            ifileDir = ifileDir.substring(0, ifileDir.lastIndexOf(File.separator));
         } catch (Exception e) {
             ifileDir = System.getProperty("user.dir");
         }
@@ -560,11 +560,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
     }
 
-    private String getOFileFullPath(String fileName) {
-        if (fileName.indexOf(System.getProperty("file.separator")) == 0 && new File(fileName).getParentFile().exists()) {
+     String getOFileFullPath(String fileName) {
+        if (fileName.indexOf(File.separator) == 0 && new File(fileName).getParentFile().exists()) {
             return fileName;
         } else if (new File(getIfileDirString(), fileName).getParentFile().exists()) {
-            return getIfileDirString() + System.getProperty("file.separator") + fileName;
+            return getIfileDirString() + File.separator + fileName;
 
         } else {
             return null;
@@ -743,40 +743,30 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
         @Override
         public boolean updateIFileInfo(String ifileName) {
-            updateExtractor(ifileName);
-            return super.updateIFileInfo(ifileName);
-        }
-
-        private void updateExtractor(String ifileName) {
-            FileInfo ifileInfo = new FileInfo(ifileName);
-            SeadasFileUtils.debug("Extractor ifile info in extractor class method: " + ifileInfo.getTypeName() + ifileInfo.getMissionName());
-            String programName = null;
-            String xmlFileName = null;
-            if (ifileInfo.getMissionName() != null && ifileInfo.getTypeName() != null) {
-                if (ifileInfo.getMissionName().indexOf("MODIS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1) {
-                    programName = L1AEXTRACT_MODIS;
-                    xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
-                } else if (ifileInfo.getMissionName().indexOf("SeaWiFS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1 ||
-                        ifileInfo.getMissionName().indexOf("CZCS") != -1) {
-                    programName = L1AEXTRACT_SEAWIFS;
-                    xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
-                } else if (ifileInfo.getMissionName().indexOf("VIIRS") != -1 && ifileInfo.getTypeName().indexOf("1A") != -1) {
-                    programName = L1AEXTRACT_VIIRS;
-                    xmlFileName = L1AEXTRACT_VIIRS_XML_FILE;
-                } else if ((ifileInfo.getTypeName().indexOf("L2") != -1 || ifileInfo.getTypeName().indexOf("Level 2") != -1) ||
-                        (ifileInfo.getMissionName().indexOf("OCTS") != -1 && (ifileInfo.getTypeName().indexOf("L1") != -1 || ifileInfo.getTypeName().indexOf("Level 1") != -1))) {
-                    programName = L2EXTRACT;
-                    xmlFileName = L2EXTRACT_XML_FILE;
+            boolean isIfileValid = false;
+            if (programName != null && verifyIFilePath(ifileName)) {
+                String ofileName = ocssw.getOfileName(ifileName);
+                SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
+                if (ofileName != null) {
+                    programName = ocssw.getProgramName();
+                    setParamList(ParamUtils.computeParamList(ocssw.getXmlFileName()));
+                    isIfileValid = true;
+                    updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
+                    updateGeoFileInfo(ifileName);
+                    updateOFileInfo(getOFileFullPath(ofileName));
+                    updateParamValues(new File(ifileName));
+                }
+            } else {
+                isIfileValid = false;
+                updateParamInfo(getPrimaryOutputFileOptionName(), "" + "\n");
+                removePropertyChangeListeners(getPrimaryInputFileOptionName());
+                int result = VisatApp.getApp().showQuestionDialog("Cannot compute output file name. Would you like to continue anyway?", "test");
+                if (result == 0) {
+                } else {
+                    updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
                 }
             }
-            setProgramName(programName);
-            if (programName != null) {
-                setParamList(ParamUtils.computeParamList(xmlFileName));
-                getCmdArrayPrefix()[3]=programName;
-
-            } else {
-                VisatApp.getApp().showErrorDialog("No extractor found for " + ifileName);
-            }
+            return isIfileValid;
         }
     }
 

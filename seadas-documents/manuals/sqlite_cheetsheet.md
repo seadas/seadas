@@ -44,7 +44,7 @@ This renames table users to client_users.
 9.  DELETE example
 
 
-     DELETE FROM table_name WHERE column_name < 4;
+        DELETE FROM table_name WHERE column_name < 4;
 
 Deletes all rows from table_name where column_name is less than 4
 

@@ -128,8 +128,8 @@ public class SQLiteJDBC {
             //string for creating FILE_TABLE
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
-                    " PROGRAM_NAME  CHAR(25)   NOT NULL, " +
-                    " I_FILE_NAME       CHAR(100)   NOT NULL, " +
+                    " PROGRAM_NAME  CHAR(25)   , " +
+                    " I_FILE_NAME       CHAR(100)  , " +
                     "I_FILE_TYPE      CHAR(50) ,    " +
                     "O_FILE_NAME      CHAR(100) , " +
                     "MISSION_NAME  CHAR(50), " +
@@ -539,7 +539,7 @@ public class SQLiteJDBC {
     }
 
     public static String getProgramName(String jobId) {
-        return retrieveItem(FILE_TABLE_NAME, jobId, "programName");
+        return retrieveItem(FILE_TABLE_NAME, jobId, FileTableFields.PROGRAM_NAME.getFieldName());
     }
 
     public static void updateOFileName(String jobId, String ofileName) {

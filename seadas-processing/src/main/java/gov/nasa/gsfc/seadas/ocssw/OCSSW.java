@@ -27,6 +27,16 @@ public abstract class OCSSW {
     public static String OCSSW_SCRIPTS_DIR_PATH_SUFFIX =  "run" +  System.getProperty("file.separator") + "scripts";
     public static String OCSSW_DATA_DIR_PATH_SUFFIX =   "run" +  System.getProperty("file.separator") + "data";
 
+
+    final String L1AEXTRACT_MODIS = "l1aextract_modis",
+            L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
+            L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
+            L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
+            L1AEXTRACT_VIIRS = "l1aextract_viirs",
+            L1AEXTRACT_VIIRS_XML_FILE = "l1aextract_viirs.xml",
+            L2EXTRACT = "l2extract",
+            L2EXTRACT_XML_FILE = "l2extract.xml";
+
      boolean ocsswExist;
      String ocsswRoot;
      String ocsswDataDirPath;
@@ -36,7 +46,7 @@ public abstract class OCSSW {
 
 
     String programName;
-    String xmlFileName;
+    private String xmlFileName;
     String ifileName;
     String missionName;
     String fileType;
@@ -75,6 +85,25 @@ public abstract class OCSSW {
     public abstract String getOfileName(String ifileName, String[] options);
     public abstract String getFileType(String ifileName);
 
+    void selectExtractorProgram() {
+        if (missionName != null && fileType != null) {
+            if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
+                programName = L1AEXTRACT_MODIS;
+                setXmlFileName(L1AEXTRACT_MODIS_XML_FILE);
+            } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 ||missionName.indexOf("CZCS") != -1) {
+                programName = L1AEXTRACT_SEAWIFS;
+                setXmlFileName(L1AEXTRACT_SEAWIFS_XML_FILE);
+            } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
+                programName = L1AEXTRACT_VIIRS;
+                setXmlFileName(L1AEXTRACT_VIIRS_XML_FILE);
+            } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
+                    (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
+                programName = L2EXTRACT;
+                setXmlFileName(L2EXTRACT_XML_FILE);
+            }
+        }
+        setProgramName(programName);
+    }
 
 
     public abstract void setOcsswDataDirPath(String ocsswDataDirPath);
@@ -135,6 +164,7 @@ public abstract class OCSSW {
     public void setOcsswExist(boolean ocsswExist) {
         this.ocsswExist = ocsswExist;
     }
+
     public void updateOCSSWRoot(String installDir) {
         FileWriter fileWriter = null;
         try {
@@ -181,5 +211,13 @@ public abstract class OCSSW {
 
     public void setIfileName(String ifileName) {
         this.ifileName = ifileName;
+    }
+
+    public String getXmlFileName() {
+        return xmlFileName;
+    }
+
+    public void setXmlFileName(String xmlFileName) {
+        this.xmlFileName = xmlFileName;
     }
 }

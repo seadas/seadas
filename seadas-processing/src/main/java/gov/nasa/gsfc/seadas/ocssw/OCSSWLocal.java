@@ -31,16 +31,6 @@ public class OCSSWLocal extends OCSSW {
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
 
-    final String L1AEXTRACT_MODIS = "l1aextract_modis",
-            L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
-            L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
-            L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
-            L1AEXTRACT_VIIRS = "l1aextract_viirs",
-            L1AEXTRACT_VIIRS_XML_FILE = "l1aextract_viirs.xml",
-            L2EXTRACT = "l2extract",
-            L2EXTRACT_XML_FILE = "l2extract.xml";
-
-
     public OCSSWLocal(){
 
         initiliaze();
@@ -159,25 +149,25 @@ public class OCSSWLocal extends OCSSW {
         }
     }
 
-    private void selectExtractorProgram() {
-        if (missionName != null && fileType != null) {
-            if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
-                programName = L1AEXTRACT_MODIS;
-                xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
-            } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 ||missionName.indexOf("CZCS") != -1) {
-                programName = L1AEXTRACT_SEAWIFS;
-                xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
-            } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
-                programName = L1AEXTRACT_VIIRS;
-                xmlFileName = L1AEXTRACT_VIIRS_XML_FILE;
-            } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
-                    (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
-                programName = L2EXTRACT;
-                xmlFileName = L2EXTRACT_XML_FILE;
-            }
-        }
-        setProgramName(programName);
-    }
+//    private void selectExtractorProgram() {
+//        if (missionName != null && fileType != null) {
+//            if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
+//                programName = L1AEXTRACT_MODIS;
+//                xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
+//            } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 ||missionName.indexOf("CZCS") != -1) {
+//                programName = L1AEXTRACT_SEAWIFS;
+//                xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
+//            } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
+//                programName = L1AEXTRACT_VIIRS;
+//                xmlFileName = L1AEXTRACT_VIIRS_XML_FILE;
+//            } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
+//                    (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
+//                programName = L2EXTRACT;
+//                xmlFileName = L2EXTRACT_XML_FILE;
+//            }
+//        }
+//        setProgramName(programName);
+//    }
 
     @Override
     public String getOfileName(String ifileName, String[] options) {

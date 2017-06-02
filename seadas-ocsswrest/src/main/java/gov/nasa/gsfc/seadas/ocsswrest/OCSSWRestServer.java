@@ -17,6 +17,7 @@ import javax.json.stream.JsonGenerator;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -51,6 +52,7 @@ public class OCSSWRestServer {
         final ResourceConfig resourceConfig = new ResourceConfig(MultiPartResource.class);
         resourceConfig.registerInstances(new LoggingFilter(LOGGER, true));
         resourceConfig.register(MultiPartFeature.class);
+        resourceConfig.register(InputStream.class);
         resourceConfig.register(JacksonFeature.class);
         resourceConfig.register(ProcessMessageBodyWriter.class);
         resourceConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
@@ -72,7 +74,7 @@ public class OCSSWRestServer {
         baseUriPortNumber = System.getProperty(BASE_URI_PORT_NUMBER_PROPERTY);
         BASE_URI = "http://"+ SERVER_API + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         SQLiteJDBC.createTables();
-        OCSSWServerModelOld.init();
+        //OCSSWServerModelOld.init();
         OCSSWServerModel.initiliaze();
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey new app started with WADL available at "

@@ -22,7 +22,7 @@ import java.util.Date;
  */
 public class ServerSideFileUtilities {
 
-    private static boolean debug = false;
+    private static boolean debug = true;
     public static final String FILE_UPLOAD_PATH = System.getProperty("user.dir") + System.getProperty("file.separator") + "ifiles";
     public static final String FILE_DOWNLOAD_PATH = System.getProperty("user.dir") + System.getProperty("file.separator") + "ofiles";
     public static final String OCSSW_OUTPUT_COMPRESSED_FILE_NAME = "ocssw_output.zip";

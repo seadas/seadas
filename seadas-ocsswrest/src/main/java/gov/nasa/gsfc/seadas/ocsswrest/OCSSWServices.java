@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.ocsswrest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.regexp.internal.RE;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessRunner;
@@ -53,31 +54,41 @@ public class OCSSWServices {
     @Path("/ocsswInfo")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getOcsswInfo() {
-                JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist()).build();
+                JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
+                                                                          .add("ocsswRoot", OCSSWServerModel.getOcsswRoot())
+                                                                           .build();
         return ocsswInstallStatus;
     }
 
-    @GET
+    @PUT
     @Path("/ocsswSetProgramName/{jobId}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
     public Response setOCSSWProgramName(@PathParam("jobId") String jobId, String programName){
         Response.Status respStatus = Response.Status.OK;
         if (OCSSWServerModel.isProgramValid(programName)) {
-            SQLiteJDBC.insertItem(FILE_TABLE_NAME, "jobId", jobId);
-            SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, "programName", programName);
+            SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName(), programName);
         } else {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+            respStatus = Response.Status.BAD_REQUEST;
+
         }
         return Response.status(respStatus).build();
     }
 
     @GET
-    @Path("/ocsswSetIFileName/{jobId}")
+    @Path("/getOfileName/{jobId}")
     @Consumes(MediaType.TEXT_XML)
-    public void setIfileName(@PathParam("jobId") String jobId, String ifileName){
-        SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, "ifileName", ifileName);
-        OCSSWServerModel ocsswServerModel = new OCSSWServerModel();
+    public JsonObject getOfileName(@PathParam("jobId") String jobId){
 
+        String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getFieldName());
+        String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName());
+        String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName());
+        String ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
+        JsonObject fileInfo = Json.createObjectBuilder().add("missionName", missionName)
+                                                        .add("fileType", fileType)
+                                                        .add("programName", programName)
+                                                        .add("ofileName", ofileName)
+                                                        .build();
+        return fileInfo;
     }
 
     @GET

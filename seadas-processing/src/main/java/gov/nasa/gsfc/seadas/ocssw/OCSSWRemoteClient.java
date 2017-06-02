@@ -43,12 +43,9 @@ public class OCSSWRemoteClient extends OCSSW {
 
     @Override
     public void setProgramName(String programName) {
-        jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_XML_TYPE).get(String.class);
+        jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
         this.programName = programName;
-        Response response  = target.path("ocssw").path("ocsswSetProgramName").request(MediaType.APPLICATION_JSON_TYPE).put(Entity.entity(programName, MediaType.TEXT_XML));
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-        }
-
+        Response response  = target.path("ocssw").path("ocsswSetProgramName").path(jobId).request().put(Entity.entity(programName, MediaType.TEXT_PLAIN_TYPE));
     }
 
 
@@ -66,25 +63,37 @@ public class OCSSWRemoteClient extends OCSSW {
 
 
     public boolean uploadIFile(String ifileName){
-        final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("ifile", new File(ifileName));
+        final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(ifileName));
         final MultiPart multiPart = new FormDataMultiPart()
-                .field("ifileName", ifileName)
+                //.field("ifileName", ifileName)
                 .bodyPart(fileDataBodyPart);
-        Response response = target.path("fileServices").path("upload").path(jobId).request().post(Entity.entity(multiPart, multiPart.getMediaType()));
+        Response response = target.path("fileServices").path("upload").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
         if (response.getStatus() == Response.ok().build().getStatus()) {
+            JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            String ofileName = jsonObject.getString("ofileName");
+            missionName = jsonObject.getString("missionName");
+            fileType = jsonObject.getString("fileType");
             return true;
         } else {
             return false;
         }
     }
 
+
     @Override
     public String getOfileName(String ifileName) {
+
+        if (programName.equals("l3bindump")) {
+            return ifileName + ".xml";
+        }
+        this.setIfileName(ifileName);
+
         if (ifileUploadSuccess) {
-            JsonObject jsonObject = target.path("ocssw").path("getOfileName").queryParam(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
             String ofileName = jsonObject.getString("ofileName");
             missionName = jsonObject.getString("missionName");
             fileType = jsonObject.getString("fileType");
+            programName = jsonObject.getString("programName");
             return ofileName;
         } else {
             return null;

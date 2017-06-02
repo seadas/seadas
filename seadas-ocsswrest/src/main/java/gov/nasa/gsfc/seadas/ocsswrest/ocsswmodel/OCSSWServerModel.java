@@ -156,6 +156,10 @@ public class OCSSWServerModel {
         return ocsswExist;
     }
 
+    public static String getOcsswRoot(){
+        return ocsswRoot;
+    }
+
 
     public String getFileType(String ifileName) {
         return fileType;
@@ -178,6 +182,10 @@ public class OCSSWServerModel {
      * @return true if programName is found in the $OCSSWROOT/run/scripts or $OSSWROOT/run/bin/"os_name" directories. Otherwise return false.
      */
     public static boolean isProgramValid(String programName) {
+        //"extractor" is special, it can't be validated using the same logic for other programs.
+        if (programName.equals("extractor")) {
+            return true;
+        }
         isProgramValid = false;
         File scriptsFolder = new File(ocsswScriptsDirPath);
         File[] listOfScripts = scriptsFolder.listFiles();

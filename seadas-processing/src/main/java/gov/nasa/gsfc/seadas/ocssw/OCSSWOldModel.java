@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.OCSSWClient;
 import org.esa.beam.visat.VisatApp;
 
 import javax.ws.rs.client.WebTarget;

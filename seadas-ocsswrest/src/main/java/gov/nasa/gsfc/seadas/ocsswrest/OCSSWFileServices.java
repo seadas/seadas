@@ -41,59 +41,59 @@ public class OCSSWFileServices {
         return OCSSWServerPropertyValues.getServerSharedDirName();
     }
 
-    /**
-     * Method for uploading a file.
-     * handling HTTP POST requests. The returned object will be sent
-     * to the client as "text/plain" media type.
-     *
-     * @return String that will be returned as a text/plain response.
-     */
-    @POST
-    @Path("/upload")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response fileUpload(
-            @FormDataParam("file") InputStream uploadedInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileInfo,
-            @FormDataParam("clientId") String clientID,
-            @FormDataParam("processorId") String processorId,
-            @FormDataParam("jobId") String jobId)
-            throws IOException {
-        Response.Status respStatus = Response.Status.OK;
-        if (fileInfo == null) {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        } else {
-            final String fileName = fileInfo.getFileName();
-            String uploadedFileDir = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY, OCSSW_SERVER_DEFAULT_WORKING_DIR ) + File.separator + jobId;//FILE_UPLOAD_PATH + File.separator + clientID + File.separator + processorId + File.separator + jobId;
-            new File(uploadedFileDir).mkdirs();
-            String uploadedFileLocation = uploadedFileDir + File.separator + fileName;
-            try {
-                writeToFile(uploadedInputStream, uploadedFileLocation);
-                //getFileInfo();
-            } catch (Exception e) {
-                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-                e.printStackTrace();
-            }
-        }
-        return Response.status(respStatus).build();
-    }
+//    /**
+//     * Method for uploading a file.
+//     * handling HTTP POST requests. The returned object will be sent
+//     * to the client as "text/plain" media type.
+//     *
+//     * @return String that will be returned as a text/plain response.
+//     */
+//    @POST
+//    @Path("/upload")
+//    @Consumes(MediaType.MULTIPART_FORM_DATA)
+//    public Response fileUpload(
+//            @FormDataParam("file") InputStream uploadedInputStream,
+//            @FormDataParam("file") FormDataContentDisposition fileInfo,
+//            @FormDataParam("clientId") String clientID,
+//            @FormDataParam("processorId") String processorId,
+//            @FormDataParam("jobId") String jobId)
+//            throws IOException {
+//        Response.Status respStatus = Response.Status.OK;
+//        if (fileInfo == null) {
+//            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+//        } else {
+//            final String fileName = fileInfo.getFileName();
+//            String uploadedFileDir = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY, OCSSW_SERVER_DEFAULT_WORKING_DIR ) + File.separator + jobId;//FILE_UPLOAD_PATH + File.separator + clientID + File.separator + processorId + File.separator + jobId;
+//            System.out.println("file directory name: " + uploadedFileDir);
+//            new File(uploadedFileDir).mkdirs();
+//            String uploadedFileLocation = uploadedFileDir + File.separator + fileName;
+//            try {
+//                writeToFile(uploadedInputStream, uploadedFileLocation);
+//                //getFileInfo();
+//            } catch (Exception e) {
+//                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+//                e.printStackTrace();
+//            }
+//        }
+//        return Response.status(respStatus).build();
+//    }
 
     @POST
     @Path("/upload/{jobId}")
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public Response iFileUpload(
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response fileUpload(
             @PathParam("jobId") String jobId,
-            @PathParam("fileName") String fileName,
-            InputStream uploadedInputStream)
+            @FormDataParam("file") InputStream uploadedInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileInfo)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
+        String fileName = fileInfo.getFileName();
         if (fileName == null) {
             respStatus = Response.Status.INTERNAL_SERVER_ERROR;
         } else {
             String uploadedFileDir = FILE_UPLOAD_PATH + File.separator + jobId;
             File newFile = new File(uploadedFileDir);
             Files.createDirectories(newFile.toPath());
-            //mkDirs(clientId, processorId, jobId);
-
             boolean isDirCreated = new File(uploadedFileDir).isDirectory();
             String uploadedFileLocation = uploadedFileDir + File.separator + fileName;
 
@@ -104,10 +104,10 @@ public class OCSSWFileServices {
             OCSSWRemote ocsswRemote = new OCSSWRemote();
             try {
                 writeToFile(uploadedInputStream, uploadedFileLocation);
-                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, "ifileName", fileName);
+                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, fileName);
                 String ofileName = ocsswRemote.getOfileName(fileName, jobId);
-                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, "ofileName", ofileName);
-                //getFileInfo();
+                System.out.println("ofile name = " + ofileName);
+                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, ofileName);
             } catch (Exception e) {
                 respStatus = Response.Status.INTERNAL_SERVER_ERROR;
                 e.printStackTrace();
@@ -170,24 +170,20 @@ public class OCSSWFileServices {
 
         try {
             File file = new File(uploadedFileLocation);
-            //Files.copy(uploadedInputStream, file.toPath());
-
-            OutputStream out = new FileOutputStream(file);
-            //Files.copy(file.toPath(), out);
+            OutputStream outputStream = new FileOutputStream(file);
             int read = 0;
             byte[] bytes = new byte[8192];
 
             while ((read = uploadedInputStream.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
+                outputStream.write(bytes, 0, read);
             }
             uploadedInputStream.close();
-            out.flush();
-            out.close();
+            outputStream.flush();
+            outputStream.close();
         } catch (IOException e) {
 
             e.printStackTrace();
         }
-
     }
 
     @GET

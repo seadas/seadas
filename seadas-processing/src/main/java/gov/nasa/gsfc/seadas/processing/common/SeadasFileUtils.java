@@ -2,7 +2,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
-import gov.nasa.gsfc.seadas.OCSSWClient;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWRunnerOld;
 import org.apache.commons.lang.ArrayUtils;
