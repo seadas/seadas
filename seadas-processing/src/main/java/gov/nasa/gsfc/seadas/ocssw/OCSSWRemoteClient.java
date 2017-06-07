@@ -21,6 +21,7 @@ import java.util.Iterator;
 public class OCSSWRemoteClient extends OCSSW {
 
     public static final String OCSSW_SERVER_PORT_NUMBER = "6401";
+    public static final String SEADAS_CLIENT_ID_PROPERTY = "client.id";
 
     WebTarget target;
     String jobId;
@@ -39,11 +40,16 @@ public class OCSSWRemoteClient extends OCSSW {
         JsonObject jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         ocsswExist = jsonObject.getBoolean("ocsswExists");
         ocsswRoot = jsonObject.getString("ocsswRoot");
+        if (ocsswExist) {
+            jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+            String clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
+            target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
+        }
     }
 
     @Override
     public void setProgramName(String programName) {
-        jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+
         this.programName = programName;
         Response response  = target.path("ocssw").path("ocsswSetProgramName").path(jobId).request().put(Entity.entity(programName, MediaType.TEXT_PLAIN_TYPE));
     }
@@ -61,6 +67,11 @@ public class OCSSWRemoteClient extends OCSSW {
 
     }
 
+    private void updateProgramName(String programName){
+        this.programName = programName;
+        setXmlFileName(programName+".xml");
+    }
+
 
     public boolean uploadIFile(String ifileName){
         final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(ifileName));
@@ -69,10 +80,6 @@ public class OCSSWRemoteClient extends OCSSW {
                 .bodyPart(fileDataBodyPart);
         Response response = target.path("fileServices").path("upload").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
         if (response.getStatus() == Response.ok().build().getStatus()) {
-            JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-            String ofileName = jsonObject.getString("ofileName");
-            missionName = jsonObject.getString("missionName");
-            fileType = jsonObject.getString("fileType");
             return true;
         } else {
             return false;
@@ -93,7 +100,8 @@ public class OCSSWRemoteClient extends OCSSW {
             String ofileName = jsonObject.getString("ofileName");
             missionName = jsonObject.getString("missionName");
             fileType = jsonObject.getString("fileType");
-            programName = jsonObject.getString("programName");
+            updateProgramName( jsonObject.getString("programName") );
+            ofileName = ifileName.substring( 0, ifileName.lastIndexOf(File.separator) + 1 ) + ofileName;
             return ofileName;
         } else {
             return null;
@@ -127,17 +135,6 @@ public class OCSSWRemoteClient extends OCSSW {
         fileType = jsonObject.getString("fileType");
         return ofileName;
     }
-
-    @Override
-    public String getFileType(String ifileName) {
-        return fileType;
-    }
-
-    @Override
-    public String getMissionName(String ifileName) {
-        return missionName;
-    }
-
 
     @Override
     public Process execute(ParamList paramListl) {

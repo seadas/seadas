@@ -83,7 +83,6 @@ public abstract class OCSSW {
     public abstract Process execute(String[] commandArray);
     public abstract String getOfileName(String ifileName);
     public abstract String getOfileName(String ifileName, String[] options);
-    public abstract String getFileType(String ifileName);
 
     void selectExtractorProgram() {
         if (missionName != null && fileType != null) {
@@ -134,7 +133,7 @@ public abstract class OCSSW {
 
     public abstract void setCommandArraySuffix();
 
-    public String getMissionName(String ifileName) {
+    public String getMissionName() {
         return missionName;
     }
 

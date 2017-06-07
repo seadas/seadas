@@ -99,7 +99,7 @@ public class ExtractorUI extends ProgramUIFactory {
     private String getLonLattoPixelsIFileName(String ifileName, String programName) {
 
         if (programName.contains("l1aextract_modis") || programName.contains("l1aextract_viirs")) {
-            String geoFileName = (ifileName.substring(0, ifileName.indexOf("."))).concat(".GEO");
+            String geoFileName = (ifileName.substring(0, ifileName.lastIndexOf("."))).concat(".GEO");
 
             if (new File(geoFileName).exists()) {
                 return geoFileName;

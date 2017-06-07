@@ -37,10 +37,6 @@ public class OCSSWVirtual extends OCSSW {
         return null;
     }
 
-    @Override
-    public String getFileType(String ifileName) {
-        return null;
-    }
 
     @Override
     public String getOcsswDataDirPath() {

@@ -34,7 +34,7 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
         processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String missionName = getMissionName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
+                String missionName = getMissionName();
                 if (missionName != null && missionName.trim().length() > 0) {
                     lutManager.enableLUTButton(missionName);
                 } else {
@@ -42,17 +42,14 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
                 }
             }
         });
-
         JPanel paramPanel = super.getParamPanel();
         JScrollPane scrollPane = (JScrollPane) paramPanel.getComponent(0);
         ((JPanel) findJPanel(scrollPane, paramPanel.getName())).add(lutManager.getLUTPanel());
         return paramPanel;
     }
 
-    private String getMissionName(String ifilePath) {
-        FileInfo fileInfo = new FileInfo(ifilePath);
-
-        String missionName = fileInfo.getMissionName();
+    private String getMissionName() {
+        String missionName = processorModel.getOcssw().getMissionName();
         if (missionName != null) {
             missionName = missionName.toLowerCase();
             if (missionName.contains("aqua")) {

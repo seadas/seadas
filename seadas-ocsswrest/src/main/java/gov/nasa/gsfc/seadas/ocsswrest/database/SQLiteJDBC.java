@@ -36,9 +36,11 @@ public class SQLiteJDBC {
 
     public enum FileTableFields{
         JOB_ID("JOB_ID"),
+        CLIENT_ID_NAME("CLIENT_ID_NAME"),
+        WORKING_DIR_PATH("WORKING_DIR_PATH"),
         I_FILE_NAME("I_FILE_NAME"),
         I_FILE_TYPE("I_FILE_TYPE"),
-        O_FILE_NAME("I_FILE_NAME"),
+        O_FILE_NAME("O_FILE_NAME"),
         PROGRAM_NAME("PROGRAM_NAME"),
         MISSION_NAME("MISSION_NAME"),
         MISSION_DIR("MISSION_DIR");
@@ -128,6 +130,8 @@ public class SQLiteJDBC {
             //string for creating FILE_TABLE
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+                    " CLIENT_ID_NAME       CHAR(100)  , " +
+                    " WORKING_DIR_PATH       CHAR(100)  , " +
                     " PROGRAM_NAME  CHAR(25)   , " +
                     " I_FILE_NAME       CHAR(100)  , " +
                     "I_FILE_TYPE      CHAR(50) ,    " +
@@ -398,7 +402,8 @@ public class SQLiteJDBC {
         PreparedStatement preparedStatement = null;
 
         String commonUpdateString = "UPDATE " + tableName + " SET " + itemName + " = ?  WHERE JOB_ID = ?";
-//String updateTableSQL = "UPDATE FILE_TABLE set O_FILE_NAME = ? where JOB_ID = ?";
+
+        System.out.println(commonUpdateString);
         String retrievedItem = null;
 
         try {
@@ -422,7 +427,7 @@ public class SQLiteJDBC {
             connection.close();
 
         } catch (Exception e) {
-            System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
+            System.err.println(" in update item : " + e.getClass().getName() + ": " + e.getMessage());
             //System.exit(0);
         }
         System.out.println("Operation done successfully");
@@ -442,7 +447,7 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey);
+            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName) ;
 
             preparedStatement = connection.prepareStatement(commonQueryString);
 

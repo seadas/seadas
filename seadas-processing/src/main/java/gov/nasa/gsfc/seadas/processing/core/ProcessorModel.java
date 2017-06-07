@@ -68,12 +68,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private String[] cmdArraySuffix;
 
     private boolean isIfileValid = false;
-    OCSSW ocssw;
+    private OCSSW ocssw;
 
     public ProcessorModel(String name, OCSSW ocssw) {
 
         programName = name;
-        this.ocssw = ocssw;
+        this.setOcssw(ocssw);
         acceptsParFile = false;
         hasGeoFile = false;
         readyToRun = false;
@@ -190,7 +190,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
     public void createsmitoppmProcessorModel(String ofileName) {
-        ProcessorModel smitoppm = new ProcessorModel("smitoppm_4_ui", ocssw);
+        ProcessorModel smitoppm = new ProcessorModel("smitoppm_4_ui", getOcssw());
         smitoppm.setAcceptsParFile(false);
         ParamInfo pi1 = new ParamInfo("ifile", getParamValue(getPrimaryOutputFileOptionName()));
         pi1.setOrder(0);
@@ -344,7 +344,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         }
 
         if (programName != null && verifyIFilePath(ifileName)) {
-            String ofileName = ocssw.getOfileName(ifileName);
+            String ofileName = getOcssw().getOfileName(ifileName);
             SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
             if (ofileName != null) {
                 isIfileValid = true;
@@ -735,6 +735,14 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         this.parFileOptionName = parFileOptionName;
     }
 
+    public OCSSW getOcssw() {
+        return ocssw;
+    }
+
+    public void setOcssw(OCSSW ocssw) {
+        this.ocssw = ocssw;
+    }
+
 
     private static class Extractor_Processor extends ProcessorModel {
         Extractor_Processor(String programName, String xmlFileName, OCSSW ocssw) {
@@ -745,11 +753,11 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         public boolean updateIFileInfo(String ifileName) {
             boolean isIfileValid = false;
             if (programName != null && verifyIFilePath(ifileName)) {
-                String ofileName = ocssw.getOfileName(ifileName);
+                String ofileName = getOcssw().getOfileName(ifileName);
                 SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
                 if (ofileName != null) {
-                    programName = ocssw.getProgramName();
-                    setParamList(ParamUtils.computeParamList(ocssw.getXmlFileName()));
+                    programName = getOcssw().getProgramName();
+                    setParamList(ParamUtils.computeParamList(getOcssw().getXmlFileName()));
                     isIfileValid = true;
                     updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
                     updateGeoFileInfo(ifileName);
@@ -1172,7 +1180,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             String[] cmdArraySuffix = new String[1];
             String[] parts = VisatApp.getApp().getAppVersion().split("\\.");
             cmdArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
-            ocssw.setCommandArraySuffix(cmdArraySuffix);
+            getOcssw().setCommandArraySuffix(cmdArraySuffix);
             return cmdArraySuffix;
         }
     }

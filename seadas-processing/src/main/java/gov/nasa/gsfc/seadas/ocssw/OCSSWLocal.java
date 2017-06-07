@@ -57,12 +57,6 @@ public class OCSSWLocal extends OCSSW {
         }
     }
 
-    @Override
-    public String getFileType(String ifileName) {
-        return fileType;
-    }
-
-
 
     @Override
     public Process execute(ParamList paramListl) {

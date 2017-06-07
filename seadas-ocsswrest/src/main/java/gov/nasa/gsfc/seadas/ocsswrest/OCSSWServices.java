@@ -23,6 +23,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static org.glassfish.jersey.server.model.Parameter.Source.PATH;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Aynur Abdurazik (aabduraz)
@@ -54,16 +56,36 @@ public class OCSSWServices {
     @Path("/ocsswInfo")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getOcsswInfo() {
-                JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
-                                                                          .add("ocsswRoot", OCSSWServerModel.getOcsswRoot())
-                                                                           .build();
+        JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
+                .add("ocsswRoot", OCSSWServerModel.getOcsswRoot())
+                .build();
         return ocsswInstallStatus;
+    }
+
+    /**
+     * This method uploads client id and saves it in the file table. It also decides the working directory for the client and saves it in the table for later requests.
+     *
+     * @param jobId    jobId is specific to each request from the a SeaDAS client
+     * @param clientId clientId identifies one SeaDAS client
+     * @return
+     */
+    @PUT
+    @Path("/ocsswSetClientId/{jobId}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response setClientId(@PathParam("jobId") String jobId, String clientId) {
+        Response.Status respStatus = Response.Status.OK;
+        System.out.println("client : " + clientId );
+        SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.CLIENT_ID_NAME.getFieldName(), clientId);
+        String workingDirPath = System.getProperty("user.home") + File.separator + clientId;
+        System.out.println("client and working directory: " + clientId + "   " + workingDirPath);
+        SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName(), workingDirPath);
+        return Response.status(respStatus).build();
     }
 
     @PUT
     @Path("/ocsswSetProgramName/{jobId}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public Response setOCSSWProgramName(@PathParam("jobId") String jobId, String programName){
+    public Response setOCSSWProgramName(@PathParam("jobId") String jobId, String programName) {
         Response.Status respStatus = Response.Status.OK;
         if (OCSSWServerModel.isProgramValid(programName)) {
             SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName(), programName);
@@ -77,17 +99,18 @@ public class OCSSWServices {
     @GET
     @Path("/getOfileName/{jobId}")
     @Consumes(MediaType.TEXT_XML)
-    public JsonObject getOfileName(@PathParam("jobId") String jobId){
+    public JsonObject getOfileName(@PathParam("jobId") String jobId) {
 
         String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getFieldName());
         String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName());
         String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName());
         String ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
+        ofileName = ofileName.substring(ofileName.lastIndexOf(File.separator) + 1);
         JsonObject fileInfo = Json.createObjectBuilder().add("missionName", missionName)
-                                                        .add("fileType", fileType)
-                                                        .add("programName", programName)
-                                                        .add("ofileName", ofileName)
-                                                        .build();
+                .add("fileType", fileType)
+                .add("programName", programName)
+                .add("ofileName", ofileName)
+                .build();
         return fileInfo;
     }
 
@@ -252,13 +275,13 @@ public class OCSSWServices {
                 String line = br.readLine();
                 String[] tmp;
                 while ((line = br.readLine()) != null) {
-                    if (jsonString.length()>0) {
+                    if (jsonString.length() > 0) {
                         jsonString = jsonString + ",";
                     }
                     if (line.indexOf("=") != -1) {
                         tmp = line.split("=");
                         pixels.put(tmp[0], tmp[1]);
-                        jsonString = jsonString + (jsonString.length() >0  ?  "," : "") + tmp[0] + " : " + tmp[1];
+                        jsonString = jsonString + (jsonString.length() > 0 ? "," : "") + tmp[0] + " : " + tmp[1];
                         jsonObjectBuilder.add(tmp[0], tmp[1]);
                     }
                 }
