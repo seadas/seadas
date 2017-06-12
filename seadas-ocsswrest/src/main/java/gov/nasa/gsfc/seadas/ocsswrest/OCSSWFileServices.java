@@ -49,7 +49,7 @@ public class OCSSWFileServices {
      * @return String that will be returned as a text/plain response.
      */
     @POST
-    @Path("/upload/{jobId}")
+    @Path("/uploadFile/{jobId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response fileUpload(
             @PathParam("jobId") String jobId,
@@ -77,7 +77,7 @@ public class OCSSWFileServices {
                 SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
                 String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
                 System.out.println("ofile name = " + ofileName);
-                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, ofileName);
+                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, uploadedFileDir + File.separator + ofileName);
             } catch (Exception e) {
                 respStatus = Response.Status.INTERNAL_SERVER_ERROR;
                 e.printStackTrace();
@@ -145,21 +145,20 @@ public class OCSSWFileServices {
     }
 
     @GET
-    @Path("/download")
-    //@Produces("application/octet-stream")
-    public File downloadFile(@PathParam("fileName") String fileName) {
-        File file = new File(FILE_UPLOAD_PATH + "/A2002365234500.L2_LAC");
+    @Path("/downloadFile/{jobId}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response downloadFile(@PathParam("jobId") String jobId) {
+        String ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName() );
+        File file = new File(ofileName);
 
         //Put some validations here such as invalid file name or missing file name
         if (!file.exists()) {
             Response.ResponseBuilder response = Response.status(Response.Status.BAD_REQUEST);
             return null;
         }
+        Response.ResponseBuilder response = Response.ok((Object) file);
         System.out.println(file.getAbsolutePath());
-        return file;
-        //Response.ResponseBuilder responseBuilder = Response.ok((Object) file);
-        //responseBuilder.header("Content-Disposition", "attachment; filename=`howtodoinjava.txt'");
-        //return responseBuilder.build();
+        return response.build();
     }
 
     /**

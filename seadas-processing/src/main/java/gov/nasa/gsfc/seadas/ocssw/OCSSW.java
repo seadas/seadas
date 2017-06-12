@@ -67,6 +67,10 @@ public abstract class OCSSW {
         return ocsswScriptsDirPath;
     }
 
+    public boolean isProgramValid(){
+        return true;
+    }
+
     public String getOcsswDataDirPath() {
         return ocsswDataDirPath;
     }

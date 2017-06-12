@@ -198,7 +198,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         programName = processorModel.getProgramName();
         openOutputInApp = cloProgramUI.isOpenOutputInApp();
 
-        if (!programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM) && !processorModel.isValidProcessor()) {
+        if (!ocssw.isProgramValid()){
             return;
         }
 

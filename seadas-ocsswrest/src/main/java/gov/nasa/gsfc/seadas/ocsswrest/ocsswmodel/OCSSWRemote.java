@@ -3,9 +3,13 @@ package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
+import javax.json.JsonObject;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.*;
 
@@ -14,10 +18,10 @@ import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.*;
  */
 public class OCSSWRemote {
 
-    final static String OCSSW_ROOT_PROPERTY ="ocsswroot";
+    final static String OCSSW_ROOT_PROPERTY = "ocsswroot";
     final static String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
     final static String SERVER_WORKING_DIRECTORY_PROPERTY = "serverWorkingDirectory";
-    final static String KEEP_INTERMEDIATE_FILES_ON_SERVER_PROPERTY ="keepIntermediateFilesOnServer";
+    final static String KEEP_INTERMEDIATE_FILES_ON_SERVER_PROPERTY = "keepIntermediateFilesOnServer";
 
     final static String DEFAULT_OCSSW_ROOT = System.getProperty("user.home") + System.getProperty("file.seperator") + "ocssw";
     final static String DEFAULT_WORKING_DIR = System.getProperty("user.home") + System.getProperty("file.seperator") + "clientFiles";
@@ -44,17 +48,17 @@ public class OCSSWRemote {
     String fileType;
     String xmlFileName;
 
-    public void fileOp(){
+    public void fileOp() {
 
     }
 
 
-    private String[] getCommandArrayPrefix(String programName){
-        String[]  commandArrayPrefix;
+    private String[] getCommandArrayPrefix(String programName) {
+        String[] commandArrayPrefix;
         if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
             commandArrayPrefix = new String[1];
             if (!isOCSSWExist()) {
-                commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH ;
+                commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
             } else {
                 commandArrayPrefix[0] = ocsswInstallerScriptPath;
             }
@@ -64,21 +68,58 @@ public class OCSSWRemote {
             commandArrayPrefix[1] = "--ocsswroot";
             commandArrayPrefix[2] = ocsswRoot;
         }
-        for (String item:commandArrayPrefix) {
+        for (String item : commandArrayPrefix) {
             System.out.println("commandArrayPrefix: " + item);
         }
         return commandArrayPrefix;
     }
 
-    public void executeProgram(String programName, String jobId, String[] commandArray) {
+    public void executeProgram(String jobId, String[] commandArray) {
 
+        programName = SQLiteJDBC.getProgramName(jobId);
+        execute(concatAll(getCommandArrayPrefix(programName), commandArray));
     }
 
+    public Process executeProgram(String jobId, JsonObject jsonObject) {
+        programName = SQLiteJDBC.getProgramName(jobId);
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        Set commandArrayKeys = jsonObject.keySet();
+        System.out.println(" array size = " + commandArrayKeys.size());
+        String commandArrayElement;
+        try {
+            Object[] array = (Object[]) commandArrayKeys.toArray();
+            int i = 0;
+            String[] commandArray = new String[commandArrayKeys.size() + 1];
+            commandArray[i++] = programName;
+            for (Object element : array) {
+                System.out.println(" element = " + element);
+                String elementName = (String) element;
+                commandArrayElement = jsonObject.getString((String) element);
+                if (elementName.contains("IFILE") || elementName.contains("OFILE")) {
+                    if (commandArrayElement.indexOf("=") != -1) {
+                        StringTokenizer st = new StringTokenizer(commandArrayElement, "=");
+                        String paramName = st.nextToken();
+                        String paramValue = st.nextToken();
+                        commandArrayElement = paramName + "=" + serverWorkingDir + paramValue.substring(paramValue.lastIndexOf(File.separator));
+
+                    } else {
+                        commandArrayElement = serverWorkingDir + commandArrayElement.substring(commandArrayElement.lastIndexOf(File.separator));
+                    }
+                }
+                System.out.println("command array element = " + commandArrayElement);
+                commandArray[i++] = commandArrayElement;
+            }
+            return execute(concatAll(getCommandArrayPrefix(programName), commandArray));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
 
     public Process execute(String[] commandArray) {
 
         StringBuilder sb = new StringBuilder();
-        for (String item:commandArray) {
+        for (String item : commandArray) {
             sb.append(item + " ");
         }
 
@@ -102,6 +143,7 @@ public class OCSSWRemote {
      * For a given input file, this method finds the file type and mission name before it applies the output file naming convention to compute an output file name.
      * For the generic "extractor" program, it will identify the actual extractor program to be used.
      * The intermediate findings, fileType, missionName, and programName, are saved in the database for future use.
+     *
      * @param ifileName
      * @param jobId
      * @return ofilename
@@ -109,7 +151,7 @@ public class OCSSWRemote {
 
     public String getOfileName(String ifileName, String jobId) {
         programName = SQLiteJDBC.getProgramName(jobId);
-        System.out.println("finding ofile name for  "  + programName + " with input file " + ifileName );
+        System.out.println("finding ofile name for  " + programName + " with input file " + ifileName);
         extractFileInfo(ifileName, jobId);
         if (programName.equals("extractor")) {
             selectExtractorProgram(jobId);
@@ -121,7 +163,7 @@ public class OCSSWRemote {
         }
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
-        } else if(programName.equals("extractor")) {
+        } else if (programName.equals("extractor")) {
 
         }
 
@@ -132,7 +174,7 @@ public class OCSSWRemote {
 
     }
 
-    protected void extractFileInfo(String ifileName, String jobId){
+    protected void extractFileInfo(String ifileName, String jobId) {
 
         String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
 
@@ -142,14 +184,14 @@ public class OCSSWRemote {
 
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line = stdInput.readLine();
-            System.out.println("line : "  + line);
+            System.out.println("line : " + line);
             if (line != null) {
                 String splitLine[] = line.split(":");
                 if (splitLine.length == 3) {
                     String missionName = splitLine[1].toString().trim();
                     String fileType = splitLine[2].toString().trim();
-System.out.println("mission name : "  + missionName);
-                    System.out.println("file type : "  + fileType);
+                    System.out.println("mission name : " + missionName);
+                    System.out.println("file type : " + fileType);
                     if (fileType.length() > 0) {
                         SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName(), fileType);
                         this.fileType = fileType;
@@ -228,7 +270,7 @@ System.out.println("mission name : "  + missionName);
             if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
                 programName = ExtractorPrograms.L1AEXTRACT_MODIS.getExtractorProgramName();
                 xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
-            } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 ||missionName.indexOf("CZCS") != -1) {
+            } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
                 programName = L1AEXTRACT_SEAWIFS;
                 xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
             } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {

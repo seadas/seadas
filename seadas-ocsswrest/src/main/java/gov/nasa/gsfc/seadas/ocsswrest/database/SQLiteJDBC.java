@@ -438,6 +438,7 @@ public class SQLiteJDBC {
     public static String retrieveItem(String tableName, String searchKey, String itemName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName) ;
 
         String commonQueryString = "SELECT * FROM " + tableName + " WHERE JOB_ID = ?";
 

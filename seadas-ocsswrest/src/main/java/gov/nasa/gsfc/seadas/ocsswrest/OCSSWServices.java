@@ -2,8 +2,8 @@ package gov.nasa.gsfc.seadas.ocsswrest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.regexp.internal.RE;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessRunner;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
@@ -23,7 +23,6 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.glassfish.jersey.server.model.Parameter.Source.PATH;
 
 /**
  * Created by IntelliJ IDEA.
@@ -112,6 +111,34 @@ public class OCSSWServices {
                 .add("ofileName", ofileName)
                 .build();
         return fileInfo;
+    }
+
+    @PUT
+    @Path("executeOcsswProgram/{jobId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response executeOcsswProgram(@PathParam("jobId") String jobId, JsonObject jsonObject)
+            throws IOException {
+        Response.Status respStatus = Response.Status.OK;
+        Process process = null;
+        if (jsonObject == null) {
+            respStatus = Response.Status.BAD_REQUEST;
+        } else {
+
+            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            process = ocsswRemote.executeProgram(jobId, jsonObject);
+        }
+        if (process != null) {
+            System.out.println("process execution completed.");
+            System.out.print("exit code = ");
+            try {
+                int exitValue = process.waitFor();
+                System.out.println(exitValue);
+                SQLiteJDBC.updateItem("PROCESSOR_TABLE", jobId, "EXIT_VALUE", new Integer(exitValue).toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return Response.status(respStatus).build();
     }
 
     @GET
@@ -255,7 +282,6 @@ public class OCSSWServices {
 
     @GET
     @Path("/lonlat2pixel")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject lonlat2pixelConverter(JsonArray jsonArray) {
         Process process = null;
@@ -380,97 +406,7 @@ public class OCSSWServices {
         return new Integer(exitValue).toString();//Response.status(respStatus).build();
     }
 
-    @POST
-    @Path("executeOcsswProgram")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String executeOcsswProgram(JsonArray jsonArray)
-            throws IOException {
-        Response.Status respStatus = Response.Status.OK;
-        Process process = null;
-        if (jsonArray == null) {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        } else {
 
-            String[] cmdArray = getCmdArray(jsonArray);
-
-            cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
-            cmdArray[1] = "--ocsswroot";
-            cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
-
-            for (String str : cmdArray) {
-                System.out.println(str);
-            }
-
-            process = ProcessRunner.executeCmdArray(cmdArray);
-        }
-        System.out.println("process execution completed.");
-        System.out.println("exit code = " + process.exitValue());
-        int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
-        return new Integer(exitValue).toString();
-    }
-
-    @POST
-    @Path(value = "/computeNextLevelFileName/{jobId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String computeNextLevelFileName(@PathParam("jobId") String jobId, JsonArray jsonArray) {
-        Process process = null;
-        InputStream is = null;
-        InputStream er = null;
-        OutputStream os = null;
-        String ofileName = "output";
-        if (jsonArray != null) {
-            //jobId = jsonArray.getString(jsonArray.size() - 1);
-
-            String[] cmdArray = getCmdArray(jsonArray);
-
-            cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
-            cmdArray[1] = "--ocsswroot";
-            cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
-            for (String str : cmdArray) {
-                System.out.println(str);
-            }
-            process = ProcessRunner.executeCmdArray(cmdArray);
-            is = process.getInputStream();
-
-        }
-        InputStreamReader isr = new InputStreamReader(is);
-
-        BufferedReader br = new BufferedReader(isr);
-        int exitCode = 0;
-        try {
-
-            if (exitCode == 0) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
-                        ofileName = (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
-                        System.out.println(ofileName);
-                    }
-                }
-
-            } else {
-                System.out.println("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
-            }
-
-        } catch (IOException ioe) {
-
-            System.out.println(ioe.getMessage());
-        }
-
-        System.out.println("completed cmd Array execution!");
-        System.out.println(is.toString());
-        if (jobId != null) {
-            if (SQLiteJDBC.isJobIdExist(jobId)) {
-                SQLiteJDBC.updateOFileName(jobId, ofileName);
-            } else {
-                SQLiteJDBC.insertOFileName(jobId, ofileName);
-            }
-        }
-        int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
-        return new Integer(exitValue).toString();
-    }
 
     @GET
     @Path("retrieveNextLevelFileName/{jobId}")

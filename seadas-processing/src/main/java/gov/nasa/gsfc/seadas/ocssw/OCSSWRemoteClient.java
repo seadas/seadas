@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -12,7 +13,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
+import java.io.*;
 import java.util.Iterator;
 
 /**
@@ -26,6 +27,7 @@ public class OCSSWRemoteClient extends OCSSW {
     WebTarget target;
     String jobId;
     boolean ifileUploadSuccess;
+    String ofileName;
 
 
     public OCSSWRemoteClient() {
@@ -78,7 +80,7 @@ public class OCSSWRemoteClient extends OCSSW {
         final MultiPart multiPart = new FormDataMultiPart()
                 //.field("ifileName", ifileName)
                 .bodyPart(fileDataBodyPart);
-        Response response = target.path("fileServices").path("upload").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
+        Response response = target.path("fileServices").path("uploadFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
         if (response.getStatus() == Response.ok().build().getStatus()) {
             return true;
         } else {
@@ -97,11 +99,11 @@ public class OCSSWRemoteClient extends OCSSW {
 
         if (ifileUploadSuccess) {
             JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-            String ofileName = jsonObject.getString("ofileName");
+            ofileName = jsonObject.getString("ofileName");
             missionName = jsonObject.getString("missionName");
             fileType = jsonObject.getString("fileType");
             updateProgramName( jsonObject.getString("programName") );
-            ofileName = ifileName.substring( 0, ifileName.lastIndexOf(File.separator) + 1 ) + ofileName;
+            ofileName = ifileName.substring( 0, ifileName.lastIndexOf(File.separator) +1 ) + ofileName;
             return ofileName;
         } else {
             return null;
@@ -138,10 +140,74 @@ public class OCSSWRemoteClient extends OCSSW {
 
     @Override
     public Process execute(ParamList paramListl) {
-            return  target.path("executeCommandArray").request(MediaType.APPLICATION_XML).put(Entity.xml(paramListl), Process.class);
+        JsonObject commandArrayJsonObject = getJsonFromParamList(paramListl);
+        Response response = target.path("ocssw").path("executeOcsswProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            Response output = target.path("fileServices").path("downloadFile").path(jobId).request().get(Response.class);
+            final InputStream responseStream = target.path("ocssw").path("downloadFile").path(jobId).request().get(InputStream.class);
+            writeToFile(responseStream, ofileName);
+        }
+        Process seadasProcess = new SeadasProcess();
+        return  seadasProcess;
     }
 
-    private JsonArray getJsonFromParamList(ParamList paramList) {
+    // save uploaded file to new location
+    private void writeToFile(InputStream uploadedInputStream,
+                             String uploadedFileLocation) {
+
+        try {
+            File file = new File(uploadedFileLocation);
+            OutputStream outputStream = new FileOutputStream(file);
+            int read = 0;
+            byte[] bytes = new byte[8192];
+
+            while ((read = uploadedInputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+            uploadedInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private JsonObject getJsonFromParamList(ParamList paramList) {
+
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+
+
+        Iterator itr = paramList.getParamArray().iterator();
+
+        ParamInfo option;
+        String commandItem;
+        while (itr.hasNext()) {
+            option = (ParamInfo) itr.next();
+            commandItem = null;
+            if (option.getType() != ParamInfo.Type.HELP) {
+                if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
+                    if (option.getValue() != null && option.getValue().length() > 0) {
+                        commandItem = option.getValue();
+                    }
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
+                    commandItem = option.getName() + "=" + option.getValue();
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
+                    if (option.getName() != null && option.getName().length() > 0) {
+                        commandItem = option.getName();
+                    }
+                }
+            }
+            //need to send both item name and its type to accurately construct the command array on the server
+            if (commandItem != null) {
+                jsonObjectBuilder.add(option.getName() + "_" + option.getType(), commandItem);
+            }
+
+        }
+        return jsonObjectBuilder.build();
+    }
+
+    private JsonArray getJsonFromParamListOld(ParamList paramList) {
         JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 
         Iterator itr = paramList.getParamArray().iterator();
