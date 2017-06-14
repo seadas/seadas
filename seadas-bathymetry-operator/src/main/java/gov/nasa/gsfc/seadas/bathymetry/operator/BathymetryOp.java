@@ -77,12 +77,12 @@ public class BathymetryOp extends Operator {
 
         if (bathymetryFile != null) {
             if (bathymetryFile.exists()) {
-                System.out.print("Reading bathymetry source file '" + bathymetryFile.getAbsolutePath());
+                System.out.print("Reading bathymetry source file " + bathymetryFile.getAbsolutePath()+"\n");
             } else {
-                System.out.print("Bathymetry source file does not exist '" + bathymetryFile.getAbsolutePath());
+                System.out.print("Bathymetry source file does not exist " + bathymetryFile.getAbsolutePath()+"\n");
             }
         } else {
-            System.out.print("Reading bathymetry source file '" + filename);
+            System.out.print("Reading bathymetry source file " + filename+"\n");
         }
 
 
@@ -91,12 +91,12 @@ public class BathymetryOp extends Operator {
         } catch (IOException e) {
             if (bathymetryFile != null) {
                 if (bathymetryFile.exists()) {
-                    System.out.print("Error: Reading bathymetry source file '" + bathymetryFile.getAbsolutePath());
+                    System.out.print("Error: Reading bathymetry source file " + bathymetryFile.getAbsolutePath()+"\n");
                 } else {
-                    System.out.print("Error: Bathymetry source file does not exist '" + bathymetryFile.getAbsolutePath());
+                    System.out.print("Error: Bathymetry source file does not exist " + bathymetryFile.getAbsolutePath()+"\n");
                 }
             } else {
-                System.out.print("Error: Reading bathymetry source file '" + filename);
+                System.out.print("Error: Reading bathymetry source file " + filename+"\n");
             }
 
 //            if (bathymetryFile != null) {
