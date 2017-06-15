@@ -45,7 +45,7 @@ These include (but are not limited to):
 **_aph_** - Absorption Due to Phyoplankton  
 **_bb_** - Total Backscattering  
 
-#### 2.1.4 ANCILLAR, METEROLOGICAL AND GEOMETRIC PARAMETERS
+#### 2.1.4 ANCILLARY, METEROLOGICAL AND GEOMETRIC PARAMETERS
 These include (but are not limited to):  
 **_height_** - Terrain Height  
 **_humidity_** - Relative Humidity  
@@ -64,7 +64,20 @@ These include (but are not limited to):
 **_windspeed_** - Wind Speed  
 
 #### 2.1.5 ATMOSPHERIC CORRECTION INTERMEDIATES
-These include: cloud_albedo, ...
+These include (but are not limited to):
+**_cloud_albedo_** - Cloud Albedo (used for thresholding)
+**_dpol_** - Degree of Rayleigh Polarization
+**_epsilon_** - Single-scattering aerosol epsilon
+**_fsol_** - Solar distance correction factor
+**_glint_coef_** - Cox-Munk normalized glint radiance
+**_ms_epsilon_** - Observed (multi-scattering) aerosol epsilon
+**_polcor_** - Polarization correction
+**_tg_sen_** - Gaseous Transmittance, Surface to Sensor
+**_tg_sol_** - Gaseous Transmittance, Sun to Surface
+**_t_h2o_** - Total water vapor transmittance
+**_t_o2_** - Total oxygen transmittance
+**_t_sen_** - Rayleigh-Aerosol Diff. Trans., Surface to Sensor
+**_t_sol_** - Rayleigh-Aerosol Diff. Trans., Sun to Surface
 
 #### 2.1.6 UNCERTAINTIES AND ERROR ESTIMATES
 These include: Lt_unc, Rrs_unc, ...
@@ -76,10 +89,28 @@ These include: resolution, ...
 Text goes here.
 
 ## 2.3  SUBSETTING OPTIONS
-Text goes here.
+Text goes here.<
 
-## 2.4  THRESHOLD
-Text goes here.
+## 2.4  THRESHOLDS
+These include (but are not limited to):
+**_aotthreshold_** - threshold on L2 data AOTs (1.000000=AOT_MAX)
+**_chlthreshold_** - threshold on L2 data chlorophyll (100.000000=CHL_MAX)
+**_cirrus_thresh_** - cirrus reflectance thresholds
+**_cloud_eps_** - cloud reflectance ratio threshold
+**_cloud_thresh_** - cloud reflectance threshold (_flag: **CLDICE**_)
+**_cloud_wave_** - wavelength of cloud reflectance test (_flag: **CLDICE**_)
+**_epsmax_** - maximum epsilon to trigger atmospheric correction failure flag (_flag: **ATMWARN**_)
+**_epsmin_** - minimum epsilon to trigger atmospheric correction failure flag (_flag: **ATMWARN**_)
+**_flh_offset_** - bias to subtract from retrieved fluorescence line height
+**_glint_thresh_** - high sun glint threshold (_flag: **HIGLINT**_)
+**_ice_threshold_** - sea ice fraction above which will be flagged as sea ice (_flag: **SEAICE**_)
+**_nlwmin_** - minimum nLw(555) to trigger low Lw flag (_flag: **LOWLW**_)
+**_rhoamin_** - min NIR aerosol reflectance to attempt model lookup
+**_satzen_** - satellite zenith angle threshold in degrees (_flag: **HISATZEN**_)
+**_sunzen_** - sun zenith angle threshold in degees (_flag: **HISOLZEN**_)
+**_tauamax_** - maximum 865 aerosol optical depth to trigger hitau flag
+**_threshold_** - threshold for the number of good pixels before an image is produced
+**_wsmax_** - windspeed limit on white-cap correction in m/s
 
 ## 2.5  ANCILLARY INPUT DATA
 Text goes here.
@@ -121,4 +152,29 @@ This algorithm returns the diffuse attenuation coefficient for downwelling irrad
 Implementation of this algorithm is contingent on the availability of Rrs in the blue-green spectral region (e.g., 490 - 565 nm). CZCS, OCTS, MODIS-Aqua and -Terra, MERIS, SeaWiFS, VIIRS, and others are all supported.
 
 ## 2.13  Level-2 Product Flags
-Text goes here.
+These include (but are not limited to):
+**_LAND_** - Land
+**_PRODWARN_** - One (or more) product algorithms generated a warning
+**_HIGLINT_** - High glint determined
+**_HILT_** - High (or saturating) TOA radiance
+**_HISATZEN_** - Large satellite zenith angle
+**_COASTZ_** - Shallow water (\<30m)
+**_STRAYLIGHT_** - Straylight determined
+**_CLDICE_** - Cloud/Ice determined
+**_COCCOLITH_** - Coccolithophores detected
+**_TURBIDW_** - Turbid water determined
+**_HISOLZEN_** - High solar zenith angle
+**_LOWLW_** - Low Lw @ 555nm (possible cloud shadow)
+**_CHLFAIL_** - Chlorophyll algorithm failure
+**_NAVWARN_** - Navigation suspect
+**_ABSAER_** - Absorbing Aerosols determined
+**_MAXAERITER_** - Maximum iterations reached for NIR iteration
+**_MODGLINT_** - Moderate glint determined
+**_CHLWARN_** - Chlorophyll out-of-bounds (\<0.01 or >100 mg m^-3)
+**_ATMWARN_** - Atmospheric correction warning; Epsilon out-of-bounds
+**_SEAICE_** - Sea ice determined
+**_NAVFAIL_** - Navigation failure
+**_FILTER_** - Insufficient data for smoothing filter
+**_BOWTIEDEL_** - Bowtie deleted pixels (VIIRS)
+**_HIPOL_** - High degree of polariztion determined
+**_PRODFAIL_** - One (or more) product algorithms produced a failure
