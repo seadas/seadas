@@ -5,7 +5,6 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWRunnerOld;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.*;
 import org.esa.beam.util.ResourceInstaller;
@@ -182,8 +181,8 @@ public class L2genData implements L2genDataProcessorModel {
 //    }
 
     private L2genData(Mode mode, OCSSW ocssw) {
-        setMode(mode);
         this.ocssw = ocssw;
+        setMode(mode);
     }
 
     public Mode getMode() {
@@ -230,6 +229,7 @@ public class L2genData implements L2genDataProcessorModel {
                 break;
         }
 
+        ocssw.setProgramName(getGuiName());
         processorModel = new ProcessorModel(getGuiName(), getParamInfos(), ocssw);
 
 //            getProcessorModel().addPropertyChangeListener(L2genData.CANCEL, new PropertyChangeListener() {
@@ -986,7 +986,7 @@ public class L2genData implements L2genDataProcessorModel {
                 paramInfo.setDefaultValue(paramInfo.getValue());
                 setConflictingParams(paramInfo.getName());
                 if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                    paramInfo.validateIfileValue(null, processorId);
+                    paramInfo.validateIfileValue(null, processorId, ocssw);
                 }
                 fireEvent(paramInfo.getName());
             }
@@ -1032,7 +1032,7 @@ public class L2genData implements L2genDataProcessorModel {
                     paramInfo.setValue(value);
 
                     if (paramInfo.getType() == ParamInfo.Type.IFILE) {
-                        paramInfo.validateIfileValue(iFileInfo.getFile().getParent(), processorId);
+                        paramInfo.validateIfileValue(iFileInfo.getFile().getParent(), processorId, ocssw);
                     }
                     setConflictingParams(paramInfo.getName());
                 } else {
@@ -1151,7 +1151,7 @@ public class L2genData implements L2genDataProcessorModel {
 
     public String[] getSuiteList() {
 
-        if (iFileInfo != null && iFileInfo.getMissionDirectory() != null && iFileInfo.getMissionDirectory().exists()) {
+        if (iFileInfo != null && iFileInfo.isMissionDirExist()) {
 
             ArrayList<String> suitesArrayList = new ArrayList<String>();
 
@@ -1307,7 +1307,7 @@ public class L2genData implements L2genDataProcessorModel {
         ifileParamInfo.setValue(ifileValue);
 //        ifileParamInfo.setDefaultValue(ifileValue);
 
-        iFileInfo = ifileParamInfo.validateIfileValue(null, processorId);
+        iFileInfo = ifileParamInfo.validateIfileValue(null, processorId, ocssw);
         processorModel.setReadyToRun(isValidIfile());
 
         if (iFileInfo != null && isValidIfile()) {
@@ -1341,7 +1341,7 @@ public class L2genData implements L2genDataProcessorModel {
                 progName = "l2gen";
             }
 
-            String tmpOFile = SeadasFileUtils.findNextLevelFileName(iFileInfo.getFile().getAbsolutePath(), progName, suiteValue);
+            String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), progName, suiteValue);
             if (tmpOFile != null) {
                 File oFile = new File(iFileInfo.getFile().getParent(), tmpOFile);
                 setParamValue(OFILE, oFile.getAbsolutePath());
@@ -1349,7 +1349,7 @@ public class L2genData implements L2genDataProcessorModel {
 
             if(mode != Mode.L3GEN) {
                 if (iFileInfo.isGeofileRequired()) {
-                    FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo);
+                    FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo, ocssw);
                     if (geoFileInfo != null) {
                         setParamValue(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
                     }
@@ -1388,7 +1388,7 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("mission", missionName, ParamInfo.Type.STRING, 0);
 
         try {
-            Process p = OCSSWRunnerOld.execute(processorModel); //processorModel.executeProcess();
+            Process p = ocssw.execute(processorModel.getParamList()); //processorModel.executeProcess();
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             String line = stdInput.readLine();
@@ -1450,7 +1450,7 @@ public class L2genData implements L2genDataProcessorModel {
                 pm.beginTask("Retrieving ancillary files", 2);
 
                 try {
-                    Process p = OCSSWRunnerOld.execute(processorModel); //processorModel.executeProcess();
+                    Process p = ocssw.execute(processorModel.getParamList()); //processorModel.executeProcess();
 
                     // Determine exploded filenames
                     File runDirectoryFiles[] = processorModel.getIFileDir().listFiles();
@@ -1690,7 +1690,7 @@ public class L2genData implements L2genDataProcessorModel {
                 processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
 
                 try {
-                    Process p = OCSSWRunnerOld.execute(processorModel);
+                    Process p = ocssw.execute(processorModel);
                     p.waitFor();
 
                     if (p.exitValue() != 0) {
@@ -1765,7 +1765,7 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            Process p = OCSSWRunnerOld.execute(processorModel);//processorModel.executeProcess();
+            Process p = ocssw.execute(processorModel.getParamList());//processorModel.executeProcess();
             p.waitFor();
             if (p.exitValue() != 0) {
                 throw new IOException("l2gen failed to run");

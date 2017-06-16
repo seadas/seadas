@@ -23,6 +23,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static org.glassfish.grizzly.http.server.util.MappingData.PATH;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,12 +53,25 @@ public class OCSSWServices {
         return OCSSWServerModelOld.OCSSW_INSTALL_DIR;
     }
 
+    /**
+     *ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
+     ocsswDataDirPath = ocsswRoot + File.separator +OCSSW_DATA_DIR_SUFFIX;
+     ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM;
+     ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
+     ocsswBinDirPath
+     * @return
+     */
     @GET
     @Path("/ocsswInfo")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getOcsswInfo() {
         JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
                 .add("ocsswRoot", OCSSWServerModel.getOcsswRoot())
+                .add("ocsswScriptsDirPath", OCSSWServerModel.getOcsswScriptsDirPath())
+                .add("ocsswDataDirPath", OCSSWServerModel.getOcsswDataDirPath())
+                .add("ocsswInstallerScriptPath", OCSSWServerModel.getOcsswInstallerScriptPath())
+                .add("ocsswRunnerScriptPath", OCSSWServerModel.getOcsswRunnerScriptPath())
+                .add("ocsswBinDirPath", OCSSWServerModel.getOcsswBinDirPath())
                 .build();
         return ocsswInstallStatus;
     }
@@ -141,6 +156,43 @@ public class OCSSWServices {
         return Response.status(respStatus).build();
     }
 
+    @PUT
+    @Path("executeOcsswProgramOnDemand/{jobId}/{programName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response executeOcsswProgramOnDemand(@PathParam("jobId") String jobId,
+                                                @PathParam("programName") String programName,
+                                                JsonObject jsonObject)
+            throws IOException {
+        Response.Status respStatus = Response.Status.OK;
+        Process process = null;
+        if (jsonObject == null) {
+            respStatus = Response.Status.BAD_REQUEST;
+        } else {
+
+            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            process = ocsswRemote.executeProgramOnDemand(jobId, programName, jsonObject);
+        }
+        if (process != null) {
+            System.out.println("process execution completed.");
+            System.out.print("exit code = ");
+            try {
+                int exitValue = process.waitFor();
+                System.out.println(exitValue);
+                SQLiteJDBC.updateItem("PROCESSOR_TABLE", jobId, "EXIT_VALUE", new Integer(exitValue).toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return Response.status(respStatus).build();
+    }
+
+    @GET
+    @Path("processExitValue")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getProcessExitValue(@PathParam("jobId") String jobId){
+        return SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.EXIT_VALUE_NAME.getFieldName());
+    }
+
     @GET
     @Path("missions")
     @Produces(MediaType.APPLICATION_JSON)
@@ -153,6 +205,13 @@ public class OCSSWServices {
     @Produces(MediaType.TEXT_PLAIN)
     public String getMissionSuitesArray() {
         return OCSSWServerModelOld.missionDataDir;
+    }
+
+    @GET
+    @Path("isMissionDirExist/{missionName}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Boolean isMissionDirExist(@PathParam("missionName") String missionName) {
+        return OCSSWServerModel.isMissionDirExist(missionName);
     }
 
     @GET

@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -14,13 +16,13 @@ import java.util.GregorianCalendar;
 public class FilenamePatterns {
 
 
-    static public FileInfo getOFileInfo(FileInfo fileInfo) {
-        return new FileInfo(fileInfo.getFile().getParent(), getOFile(fileInfo).getAbsolutePath(), false);
-    }
-
-    static public FileInfo getAquariusOFileInfo(FileInfo fileInfo, String suite) {
-        return new FileInfo(fileInfo.getFile().getParent(), getAquariusOFile(fileInfo, suite).getAbsolutePath(), false);
-    }
+//    static public FileInfo getOFileInfo(FileInfo fileInfo) {
+//        return new FileInfo(fileInfo.getFile().getParent(), getOFile(fileInfo).getAbsolutePath(), false);
+//    }
+//
+//    static public FileInfo getAquariusOFileInfo(FileInfo fileInfo, String suite) {
+//        return new FileInfo(fileInfo.getFile().getParent(), getAquariusOFile(fileInfo, suite).getAbsolutePath(), false);
+//    }
 
 
     static public File getAquariusOFile(FileInfo iFileInfo, String suite) {
@@ -72,7 +74,7 @@ public class FilenamePatterns {
     }
 
 
-    static public FileInfo getGeoFileInfo(FileInfo fileInfo) {
+    static public FileInfo getGeoFileInfo(FileInfo fileInfo, OCSSW ocssw) {
         if (fileInfo == null) {
             return null;
         }
@@ -83,7 +85,7 @@ public class FilenamePatterns {
             return null;
         }
 
-        return new FileInfo(fileInfo.getFile().getParent(), getGeoFile(fileInfo).getAbsolutePath(), false);
+        return new FileInfo(fileInfo.getFile().getParent(), getGeoFile(fileInfo).getAbsolutePath(), false, ocssw);
     }
 
 

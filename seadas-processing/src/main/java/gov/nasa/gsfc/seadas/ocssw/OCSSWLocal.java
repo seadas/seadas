@@ -5,6 +5,7 @@ import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
@@ -59,6 +60,16 @@ public class OCSSWLocal extends OCSSW {
 
 
     @Override
+    public boolean isMissionDirExist(String missionName) {
+        return false;
+    }
+
+    @Override
+    public Process execute(ProcessorModel processorModel) {
+        return null;
+    }
+
+    @Override
     public Process execute(ParamList paramListl) {
         String[] programNameArray = {programName};
         commandArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, getCommandArrayParam(paramListl), commandArraySuffix);
@@ -84,6 +95,11 @@ public class OCSSWLocal extends OCSSW {
             e.printStackTrace();
         }
         return process;
+    }
+
+    @Override
+    public Process execute(String programName, String[] commandArrayParams) {
+        return null;
     }
 
     @Override
@@ -143,26 +159,6 @@ public class OCSSWLocal extends OCSSW {
         }
     }
 
-//    private void selectExtractorProgram() {
-//        if (missionName != null && fileType != null) {
-//            if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
-//                programName = L1AEXTRACT_MODIS;
-//                xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
-//            } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 ||missionName.indexOf("CZCS") != -1) {
-//                programName = L1AEXTRACT_SEAWIFS;
-//                xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
-//            } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
-//                programName = L1AEXTRACT_VIIRS;
-//                xmlFileName = L1AEXTRACT_VIIRS_XML_FILE;
-//            } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
-//                    (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
-//                programName = L2EXTRACT;
-//                xmlFileName = L2EXTRACT_XML_FILE;
-//            }
-//        }
-//        setProgramName(programName);
-//    }
-
     @Override
     public String getOfileName(String ifileName, String[] options) {
         if (ifileName == null || programName == null) {
@@ -175,6 +171,11 @@ public class OCSSWLocal extends OCSSW {
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
 
         return getOfileName(SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams, options));
+    }
+
+    @Override
+    public String getOfileName(String ifileName, String programName, String suiteValue) {
+        return null;
     }
 
 

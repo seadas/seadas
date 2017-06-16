@@ -25,6 +25,7 @@ public class SQLiteJDBC {
 
     public static final String FILE_TABLE_NAME = "FILE_TABLE";
     public static final String MISSION_TABLE_NAME = "MISSION_TABLE";
+    public static final String PROCESS_TABLE_NAME = "PROCESS_TABLE";
 
     public static final  String JOB_ID_FIELD_NAME = "JOB_ID";
     public static final String IFILE_NAME_FIELD_NAME = "I_FILE_NAME";
@@ -35,7 +36,7 @@ public class SQLiteJDBC {
     public static final String MISSION_DIR_FIELD_NAME = "MISSION_DIR";
 
     public enum FileTableFields{
-        JOB_ID("JOB_ID"),
+        JOB_ID_NAME("JOB_ID"),
         CLIENT_ID_NAME("CLIENT_ID_NAME"),
         WORKING_DIR_PATH("WORKING_DIR_PATH"),
         I_FILE_NAME("I_FILE_NAME"),
@@ -55,6 +56,23 @@ public class SQLiteJDBC {
         }
     }
 
+
+    public enum ProcessTableFields{
+        JOB_ID_NAME("JOB_ID"),
+        COMMAND_ARRAY_NAME("COMMAND_ARRAY"),
+        EXIT_VALUE_NAME("EXIT_VALUE"),
+        STD_OUT_NAME("stdout"),
+        STD_ERR_NAME("stderr");
+
+        String fieldName;
+        ProcessTableFields(String fieldName){
+            this.fieldName = fieldName;
+        }
+
+        public String getFieldName(){
+            return fieldName;
+        }
+    }
     public SQLiteJDBC() {
 
     }
@@ -120,7 +138,7 @@ public class SQLiteJDBC {
             stmt = connection.createStatement();
 
             //string for creating PROCESSOR_TABLE
-            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESSOR_TABLE " +
+            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCES_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
                     " COMMAND_ARRAY  CHAR(500), " +
                     " EXIT_VALUE        CHAR(2), " +

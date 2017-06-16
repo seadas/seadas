@@ -107,7 +107,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         return PATTERN.matcher(ip).matches();
     }
 
-    private void detectOcssw(){
+    public void detectOcssw(){
         String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);
        // if (OsUtils.getOperatingSystemType() == OsUtils.OSType.Windows ) {
             if (ocsswLocation.equals(OCSSW.OCSSW_LOCATION_PROPERTY_VALUE_VIRTUAL)) {
@@ -225,7 +225,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
             @Override
             protected String doInBackground(ProgressMonitor pm) throws Exception {
-                OCSSWRunnerOld.setMonitorProgress(true);
+                ocssw.setMonitorProgress(true);
                 final Process process = ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
@@ -250,7 +250,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 }
 
                 displayOutput(processorModel);
-                OCSSWRunnerOld.setMonitorProgress(false);
+                ocssw.setMonitorProgress(false);
                 return processorModel.getOfileName();
             }
 

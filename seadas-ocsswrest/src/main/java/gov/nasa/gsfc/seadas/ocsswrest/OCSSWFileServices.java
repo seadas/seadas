@@ -11,8 +11,10 @@ import javax.json.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Created by IntelliJ IDEA.
@@ -150,16 +152,60 @@ public class OCSSWFileServices {
     public Response downloadFile(@PathParam("jobId") String jobId) {
         String ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName() );
         File file = new File(ofileName);
-
-        //Put some validations here such as invalid file name or missing file name
-        if (!file.exists()) {
-            Response.ResponseBuilder response = Response.status(Response.Status.BAD_REQUEST);
-            return null;
-        }
-        Response.ResponseBuilder response = Response.ok((Object) file);
+        StreamingOutput fileStream = new StreamingOutput() {
+            @Override
+            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                try
+                {
+                    java.nio.file.Path path = Paths.get(ofileName);
+                    byte[] data = Files.readAllBytes(path);
+                    outputStream.write(data);
+                    outputStream.flush();
+                }
+                catch (Exception e)
+                {
+                    throw new WebApplicationException("File Not Found !!");
+                }
+            }
+        };
         System.out.println(file.getAbsolutePath());
-        return response.build();
+        return Response
+                .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+                .header("content-disposition","attachment; fileName = " + ofileName)
+                .build();
     }
+
+    @GET
+    @Path("/downloadFile/{jobId}/{ofileName}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response downloadFileOnDemand(@PathParam("jobId") String jobId,
+                                         @PathParam("ofileName") String clientOfileName) {
+        String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        String ofileName = workingFileDir + File.separator + clientOfileName;
+        File file = new File(workingFileDir + File.separator + ofileName);
+        StreamingOutput fileStream = new StreamingOutput() {
+            @Override
+            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                try
+                {
+                    java.nio.file.Path path = Paths.get(ofileName);
+                    byte[] data = Files.readAllBytes(path);
+                    outputStream.write(data);
+                    outputStream.flush();
+                }
+                catch (Exception e)
+                {
+                    throw new WebApplicationException("File Not Found !!");
+                }
+            }
+        };
+        System.out.println(file.getAbsolutePath());
+        return Response
+                .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+                .header("content-disposition","attachment; fileName = " + ofileName)
+                .build();
+    }
+
 
     /**
      * Method handling HTTP GET requests. The returned object will be sent

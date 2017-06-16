@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+
 import java.io.File;
 
 /**
@@ -20,14 +22,14 @@ public class FileInfo {
     private final MissionInfo missionInfo = new MissionInfo();
     private final FileTypeInfo fileTypeInfo = new FileTypeInfo();
     private boolean missionAndFileTypeEnabled = DEFAULT_MISSION_AND_FILE_TYPE_ENABLED;
+    OCSSW ocssw;
 
-
-    public FileInfo(String defaultParent, String child) {
-        this(defaultParent, child, DEFAULT_MISSION_AND_FILE_TYPE_ENABLED);
+    public FileInfo(String defaultParent, String child, OCSSW ocssw) {
+        this(defaultParent, child, DEFAULT_MISSION_AND_FILE_TYPE_ENABLED, ocssw);
     }
 
-    public FileInfo(String defaultParent, String child, boolean missionAndFileTypeEnabled) {
-
+    public FileInfo(String defaultParent, String child, boolean missionAndFileTypeEnabled, OCSSW ocssw) {
+        this.ocssw = ocssw;
         this.missionAndFileTypeEnabled = missionAndFileTypeEnabled;
         file = SeadasFileUtils.createFile(defaultParent, child);
         if (file != null && file.exists()) {
@@ -51,7 +53,8 @@ public class FileInfo {
     }
 
     private void initMissionAndFileTypeInfos() {
-        FileInfoFinder fileInfoFinder = new FileInfoFinder(file.getAbsolutePath());
+        FileInfoFinder fileInfoFinder = new FileInfoFinder(file.getAbsolutePath(), ocssw);
+
         fileTypeInfo.setName(fileInfoFinder.getFileType());
         missionInfo.setName(fileInfoFinder.getMissionName());
     }
@@ -70,6 +73,10 @@ public class FileInfo {
 
     public File getMissionDirectory() {
         return missionInfo.getDirectory();
+    }
+
+    public boolean isMissionDirExist(){
+        return ocssw.isMissionDirExist(getMissionName());
     }
 
     public boolean isMissionId(MissionInfo.Id missionId) {

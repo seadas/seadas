@@ -4,7 +4,6 @@ import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWRunnerOld;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
@@ -111,35 +110,35 @@ public class SeadasFileUtils {
         }
     }
 
-
-    public static String findNextLevelFileName(String ifileName, String programName, String suite) {
-        if (ifileName == null || programName == null) {
-            return null;
-        }
-        if (programName.equals("l3bindump")) {
-            return ifileName + ".xml";
-        }
-        debug("Program name is " + programName);
-        Debug.assertNotNull(ifileName);
-// todo Add suite, also check calling program the make sure ProcessorModel call is right
-
-        String[] cmdArray = new String[6];
-        cmdArray[0] = OCSSWOldModel.getOcsswRunnerScriptPath();
-        cmdArray[1] = "--ocsswroot";
-        cmdArray[2] = OCSSWOldModel.getOcsswEnv();
-        cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-        cmdArray[4] = ifileName;
-        cmdArray[5] = programName;
-
-        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-
-        if (RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
-            return retrieveOFileNameLocal(cmdArray, ifileDir);
-        } else {
-            cmdArray[4] = getIfileNameforRemoteServer(SeadasFileUtils.copyFile(ifileName, OCSSWOldModel.getOCSSWClientSharedDirName()));
-            return retrieveOFileNameRemote(cmdArray);
-        }
-    }
+//
+//    public static String findNextLevelFileName(String ifileName, String programName, String suite) {
+//        if (ifileName == null || programName == null) {
+//            return null;
+//        }
+//        if (programName.equals("l3bindump")) {
+//            return ifileName + ".xml";
+//        }
+//        debug("Program name is " + programName);
+//        Debug.assertNotNull(ifileName);
+//// todo Add suite, also check calling program the make sure ProcessorModel call is right
+//
+//        String[] cmdArray = new String[6];
+//        cmdArray[0] = OCSSWOldModel.getOcsswRunnerScriptPath();
+//        cmdArray[1] = "--ocsswroot";
+//        cmdArray[2] = OCSSWOldModel.getOcsswEnv();
+//        cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
+//        cmdArray[4] = ifileName;
+//        cmdArray[5] = programName;
+//
+//        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
+//
+//        if (RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
+//            return retrieveOFileNameLocal(cmdArray, ifileDir);
+//        } else {
+//            cmdArray[4] = getIfileNameforRemoteServer(SeadasFileUtils.copyFile(ifileName, OCSSWOldModel.getOCSSWClientSharedDirName()));
+//            return retrieveOFileNameRemote(cmdArray);
+//        }
+//    }
 
 //    public ProcessorModel getNextLevelNameFinderProcessorModel(String ifileName, String programName) {
 //        ProcessorModel nextLevelNamer = new ProcessorModel(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME);
@@ -159,63 +158,63 @@ public class SeadasFileUtils {
 //
 //        return nextLevelNamer;
 //    }
-
-    private static String retrieveOFileNameLocal(String[] cmdArray, String ifileDir) {
-        Process process = OCSSWRunnerOld.execute(cmdArray, new File(ifileDir));
-
-        if (process == null) {
-            return "output";
-        }
-
-        //wait for process to exit
-        try {
-            Field field = process.getClass().getDeclaredField("hasExited");
-            field.setAccessible(true);
-            while (!(Boolean) field.get(process)) {
-            }
-        }  catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-
-        int exitCode = process.exitValue();
-        InputStream is;
-        if (exitCode == 0) {
-            is = process.getInputStream();
-        } else {
-            is = process.getErrorStream();
-        }
-
-
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-
-        try {
-
-            if (exitCode == 0) {
-                String line = br.readLine();
-                while (line != null) {
-                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
-                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
-                    }
-                    line = br.readLine();
-                }
-
-            } else {
-                debug("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
-            }
-
-        } catch (IOException ioe) {
-
-            VisatApp.getApp().showErrorDialog(ioe.getMessage());
-        }
-
-//        int choice = VisatApp.getApp().showQuestionDialog("ofile computation", "ofile name is not found", true, "continue");
 //
-//        return String.valueOf(choice);
-        return "output";
-    }
+//    private static String retrieveOFileNameLocal(String[] cmdArray, String ifileDir) {
+//        Process process = ocssw.execute(cmdArray, new File(ifileDir));
+//
+//        if (process == null) {
+//            return "output";
+//        }
+//
+//        //wait for process to exit
+//        try {
+//            Field field = process.getClass().getDeclaredField("hasExited");
+//            field.setAccessible(true);
+//            while (!(Boolean) field.get(process)) {
+//            }
+//        }  catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchFieldException e) {
+//            e.printStackTrace();
+//        }
+//
+//        int exitCode = process.exitValue();
+//        InputStream is;
+//        if (exitCode == 0) {
+//            is = process.getInputStream();
+//        } else {
+//            is = process.getErrorStream();
+//        }
+//
+//
+//        InputStreamReader isr = new InputStreamReader(is);
+//        BufferedReader br = new BufferedReader(isr);
+//
+//        try {
+//
+//            if (exitCode == 0) {
+//                String line = br.readLine();
+//                while (line != null) {
+//                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
+//                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+//                    }
+//                    line = br.readLine();
+//                }
+//
+//            } else {
+//                debug("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
+//            }
+//
+//        } catch (IOException ioe) {
+//
+//            VisatApp.getApp().showErrorDialog(ioe.getMessage());
+//        }
+//
+////        int choice = VisatApp.getApp().showQuestionDialog("ofile computation", "ofile name is not found", true, "continue");
+////
+////        return String.valueOf(choice);
+//        return "output";
+//    }
 
     private static String retrieveOFileNameRemote(String[] cmdArray) {
         JsonArrayBuilder jab = Json.createArrayBuilder();
@@ -260,75 +259,75 @@ public class SeadasFileUtils {
         }
     }
 
-    private static String getNextLevelFileName(String ifileName, String[] cmdArray) {
+//    private static String getNextLevelFileName(String ifileName, String[] cmdArray) {
+//
+//        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
+//        Process process = OCSSWRunnerOld.execute(cmdArray, new File(ifileDir));
+//        if (process == null) {
+//            return null;
+//        }
+//
+//        int exitCode = process.exitValue();
+//        InputStream is;
+//        if (exitCode == 0) {
+//            is = process.getInputStream();
+//        } else {
+//            is = process.getErrorStream();
+//        }
+//
+//        InputStreamReader isr = new InputStreamReader(is);
+//        BufferedReader br = new BufferedReader(isr);
+//
+//        try {
+//
+//            if (exitCode == 0) {
+//                String line;
+//                while ((line = br.readLine()) != null) {
+//                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
+//                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+//                    }
+//                }
+//
+//            } else {
+//                debug("Failed exit code on program '" + cmdArray[5] + "'");
+//            }
+//
+//        } catch (IOException ioe) {
+//
+//            VisatApp.getApp().showErrorDialog(ioe.getMessage());
+//        }
+//        return null;
+//    }
 
-        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-        Process process = OCSSWRunnerOld.execute(cmdArray, new File(ifileDir));
-        if (process == null) {
-            return null;
-        }
-
-        int exitCode = process.exitValue();
-        InputStream is;
-        if (exitCode == 0) {
-            is = process.getInputStream();
-        } else {
-            is = process.getErrorStream();
-        }
-
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-
-        try {
-
-            if (exitCode == 0) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
-                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
-                    }
-                }
-
-            } else {
-                debug("Failed exit code on program '" + cmdArray[5] + "'");
-            }
-
-        } catch (IOException ioe) {
-
-            VisatApp.getApp().showErrorDialog(ioe.getMessage());
-        }
-        return null;
-    }
-
-    public static String findNextLevelFileName(String ifileName, String programName, String[] additionalOptions) {
-
-        if (ifileName == null || programName == null) {
-            return null;
-        }
-        if (programName.equals("l3bindump")) {
-            return ifileName + ".xml";
-        }
-        debug("Program name is " + programName);
-        Debug.assertNotNull(ifileName);
-
-        String[] cmdArray = (String[]) ArrayUtils.addAll(getCmdArrayForNextLevelNameFinder(ifileName, programName), additionalOptions);
-
-        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-
-        String ofileName;
-
-        if (RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
-            ofileName = retrieveOFileNameLocal(cmdArray, ifileDir);
-        } else {
-
-            ofileName = retrieveOFileNameRemote(cmdArray);
-        }
-
-        if (ofileName == null) {
-            ofileName = "output";
-        }
-        return ofileName;
-    }
+//    public static String findNextLevelFileName(String ifileName, String programName, String[] additionalOptions) {
+//
+//        if (ifileName == null || programName == null) {
+//            return null;
+//        }
+//        if (programName.equals("l3bindump")) {
+//            return ifileName + ".xml";
+//        }
+//        debug("Program name is " + programName);
+//        Debug.assertNotNull(ifileName);
+//
+//        String[] cmdArray = (String[]) ArrayUtils.addAll(getCmdArrayForNextLevelNameFinder(ifileName, programName), additionalOptions);
+//
+//        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
+//
+//        String ofileName;
+//
+//        if (RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
+//            ofileName = retrieveOFileNameLocal(cmdArray, ifileDir);
+//        } else {
+//
+//            ofileName = retrieveOFileNameRemote(cmdArray);
+//        }
+//
+//        if (ofileName == null) {
+//            ofileName = "output";
+//        }
+//        return ofileName;
+//    }
 
     private static String getIfileNameforRemoteServer(String ifileName) {
         String newIfileName = ifileName.replace(OCSSWOldModel.getOCSSWClientSharedDirName(), OCSSWOldModel.getServerSharedDirName());
@@ -492,67 +491,67 @@ public class SeadasFileUtils {
      * @param targetDir  the full path name of the target directory
      * @return the full path of the file in the new location, if the "copy" operation is successfull. Otherwise, it returns null.
      */
-    public static String copyFile(String sourceFile, String targetDir) {
-        String[] cmdArray = new String[3];
-        cmdArray[0] = "cp";
-        cmdArray[1] = sourceFile;
-        cmdArray[2] = targetDir + System.getProperty("file.separator") + ".";
-        Process p = OCSSWRunnerOld.executeLocal(cmdArray, new File(targetDir));
-        try{
-            p.waitFor();
-        }catch(InterruptedException ie){
-            System.out.println("Process interrupted!");
-        }
-        if (p.exitValue() == 0) {
-            return targetDir + sourceFile.substring(sourceFile.lastIndexOf(System.getProperty("file.separator")));
-        } else {
-            System.out.println("This should not happen!");
-            return null;
-        }
-    }
+//    public static String copyFile(String sourceFile, String targetDir) {
+//        String[] cmdArray = new String[3];
+//        cmdArray[0] = "cp";
+//        cmdArray[1] = sourceFile;
+//        cmdArray[2] = targetDir + System.getProperty("file.separator") + ".";
+//        Process p = OCSSWRunnerOld.executeLocal(cmdArray, new File(targetDir));
+//        try{
+//            p.waitFor();
+//        }catch(InterruptedException ie){
+//            System.out.println("Process interrupted!");
+//        }
+//        if (p.exitValue() == 0) {
+//            return targetDir + sourceFile.substring(sourceFile.lastIndexOf(System.getProperty("file.separator")));
+//        } else {
+//            System.out.println("This should not happen!");
+//            return null;
+//        }
+//    }
 
     /**
      * Deletes a file from a directory
      *
      * @param fileFullPathName the full path name of the file to be deleted
      */
-    public static void deleteFile(String fileFullPathName) {
-        String[] cmdArray = new String[2];
-        cmdArray[0] = "rm";
-        cmdArray[1] = fileFullPathName;
-        OCSSWRunnerOld.executeLocal(cmdArray, new File(fileFullPathName));
-    }
-
-    public void updateDiskFile(String fileFullPath, String varName, String varValue) {
-        File targetFile = new File(fileFullPath);
-        StringBuilder targetFileContent = new StringBuilder();
-        try {
-            LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(targetFile));
-            String readLine;
-            String[] configVar;
-
-            readLine = lineNumberReader.readLine();
-
-            while (readLine != null) {
-                if (readLine.indexOf("=") != -1) {
-                    configVar = readLine.split("=", 2);
-                    configVar[0] = configVar[0].trim();
-                    configVar[1] = configVar[1].trim();
-                    if (configVar[0].trim().equalsIgnoreCase(varName.trim())) {
-                        targetFileContent.append(configVar[0] + " = " + varValue + System.getProperty("line.separator"));
-                    } else {
-                        targetFileContent.append(readLine + System.getProperty("line.separator"));
-                    }
-                }
-                readLine = lineNumberReader.readLine();
-            }
-            writeToDisk(fileFullPath, targetFileContent.toString());
-
-        } catch (FileNotFoundException fnfe) {
-
-        } catch (IOException ioe) {
-
-        }
-    }
+//    public static void deleteFile(String fileFullPathName) {
+//        String[] cmdArray = new String[2];
+//        cmdArray[0] = "rm";
+//        cmdArray[1] = fileFullPathName;
+//        OCSSWRunnerOld.executeLocal(cmdArray, new File(fileFullPathName));
+//    }
+//
+//    public void updateDiskFile(String fileFullPath, String varName, String varValue) {
+//        File targetFile = new File(fileFullPath);
+//        StringBuilder targetFileContent = new StringBuilder();
+//        try {
+//            LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(targetFile));
+//            String readLine;
+//            String[] configVar;
+//
+//            readLine = lineNumberReader.readLine();
+//
+//            while (readLine != null) {
+//                if (readLine.indexOf("=") != -1) {
+//                    configVar = readLine.split("=", 2);
+//                    configVar[0] = configVar[0].trim();
+//                    configVar[1] = configVar[1].trim();
+//                    if (configVar[0].trim().equalsIgnoreCase(varName.trim())) {
+//                        targetFileContent.append(configVar[0] + " = " + varValue + System.getProperty("line.separator"));
+//                    } else {
+//                        targetFileContent.append(readLine + System.getProperty("line.separator"));
+//                    }
+//                }
+//                readLine = lineNumberReader.readLine();
+//            }
+//            writeToDisk(fileFullPath, targetFileContent.toString());
+//
+//        } catch (FileNotFoundException fnfe) {
+//
+//        } catch (IOException ioe) {
+//
+//        }
+//    }
 
 }

@@ -35,6 +35,46 @@ public class OCSSWServerModel {
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
+    public static void setOcsswRoot(String ocsswRoot) {
+        OCSSWServerModel.ocsswRoot = ocsswRoot;
+    }
+
+    public static String getOcsswDataDirPath() {
+        return ocsswDataDirPath;
+    }
+
+    public static boolean isOcsswExist() {
+        return ocsswExist;
+    }
+
+    public static void setOcsswExist(boolean ocsswExist) {
+        OCSSWServerModel.ocsswExist = ocsswExist;
+    }
+
+    public static String getOcsswScriptsDirPath() {
+        return ocsswScriptsDirPath;
+    }
+
+    public static String getOcsswInstallerScriptPath() {
+        return ocsswInstallerScriptPath;
+    }
+
+    public static String getOcsswRunnerScriptPath() {
+        return ocsswRunnerScriptPath;
+    }
+
+    public static void setOcsswRunnerScriptPath(String ocsswRunnerScriptPath) {
+        OCSSWServerModel.ocsswRunnerScriptPath = ocsswRunnerScriptPath;
+    }
+
+    public static String getOcsswBinDirPath() {
+        return ocsswBinDirPath;
+    }
+
+    public static void setOcsswBinDirPath(String ocsswBinDirPath) {
+        OCSSWServerModel.ocsswBinDirPath = ocsswBinDirPath;
+    }
+
     public enum ExtractorPrograms{
         L1AEXTRACT_MODIS("l1aextract_modis"),
         L1AEXTRACT_SEAWIFS("l1extract_seawifs"),
@@ -92,13 +132,13 @@ public class OCSSWServerModel {
             L2EXTRACT = "l2extract",
             L2EXTRACT_XML_FILE = "l2extract.xml";
 
-    static boolean ocsswExist;
-    static String ocsswRoot;
-    static String ocsswDataDirPath;
-    static String ocsswScriptsDirPath;
-    static String ocsswInstallerScriptPath;
-    static String ocsswRunnerScriptPath;
-    static String ocsswBinDirPath;
+    private static boolean ocsswExist;
+    private static String ocsswRoot;
+    private static String ocsswDataDirPath;
+    private static String ocsswScriptsDirPath;
+    private static String ocsswInstallerScriptPath;
+    private static String ocsswRunnerScriptPath;
+    private static String ocsswBinDirPath;
 
 
     String programName;
@@ -150,6 +190,12 @@ public class OCSSWServerModel {
         } else {
             return osName + OS_32BIT_ARCHITECTURE;
         }
+    }
+
+    public static boolean isMissionDirExist(String missionName) {
+        missionName = SQLiteJDBC.retrieveMissionDir(missionName);
+        System.out.println("mission dir = " +  ocsswDataDirPath + File.separator + missionName);
+        return new File(ocsswDataDirPath + File.separator + missionName).exists();
     }
 
     public static boolean isOCSSWExist(){

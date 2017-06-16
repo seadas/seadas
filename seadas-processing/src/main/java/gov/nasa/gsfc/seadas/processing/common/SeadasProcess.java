@@ -21,6 +21,10 @@ public class SeadasProcess extends Process {
         return exitValue;
     }
 
+    public void setExitValue(int exitValue){
+        this.exitValue = exitValue;
+    }
+
     @Override
     public InputStream getErrorStream(){
         return errorStream;

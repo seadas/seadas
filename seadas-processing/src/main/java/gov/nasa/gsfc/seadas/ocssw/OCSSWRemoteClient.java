@@ -4,6 +4,7 @@ import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
@@ -15,6 +16,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -46,6 +49,10 @@ public class OCSSWRemoteClient extends OCSSW {
             jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
             String clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
             target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
+            ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
+            ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
+            ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
+            ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
         }
     }
 
@@ -119,6 +126,11 @@ public class OCSSWRemoteClient extends OCSSW {
         return ofileName;
     }
 
+    @Override
+    public String getOfileName(String ifileName, String programName, String suiteValue) {
+        return null;
+    }
+
     private JsonArray transformToJsonArray(String[] commandArray){
 
         JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
@@ -139,12 +151,63 @@ public class OCSSWRemoteClient extends OCSSW {
     }
 
     @Override
+    public boolean isMissionDirExist(String missionName) {
+        Boolean isMissionExist = target.path("ocssw").path("isMissionDirExist").path(missionName).request().get(Boolean.class);
+        return isMissionExist.booleanValue();
+    }
+
+    @Override
+    public Process execute(ProcessorModel processorModel) {
+        SeadasProcess seadasProcess = new SeadasProcess();
+        String programName = processorModel.getProgramName();
+        JsonObject commandArrayParamJsonObject = getJsonFromParamList(processorModel.getParamList());
+        Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayParamJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            downloadFiles(commandArrayParamJsonObject);
+            seadasProcess.setExitValue(0);
+        }
+        return  seadasProcess;
+    }
+
+    private void downloadFiles(JsonObject paramJsonObject){
+        Set commandArrayKeys = paramJsonObject.keySet();
+        String param;
+        String ofileFullPathName, ofileName;
+        try {
+            Object[] array = (Object[]) commandArrayKeys.toArray();
+            int i = 0;
+            String[] commandArray = new String[commandArrayKeys.size() + 1];
+            commandArray[i++] = programName;
+            for (Object element : array) {
+                String elementName = (String) element;
+                param = paramJsonObject.getString((String) element);
+                if ( elementName.contains("OFILE")) {
+                    if (param.indexOf("=") != -1) {
+                        StringTokenizer st = new StringTokenizer(param, "=");
+                        String paramName = st.nextToken();
+                        String paramValue = st.nextToken();
+                        ofileFullPathName = paramValue;
+
+                    } else {
+                       ofileFullPathName = param;
+                    }
+                    ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1 );
+                    Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
+                    InputStream responceStream = (InputStream)response.getEntity();
+                    writeToFile(responceStream, ofileFullPathName);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
     public Process execute(ParamList paramListl) {
         JsonObject commandArrayJsonObject = getJsonFromParamList(paramListl);
         Response response = target.path("ocssw").path("executeOcsswProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             Response output = target.path("fileServices").path("downloadFile").path(jobId).request().get(Response.class);
-            final InputStream responseStream = target.path("ocssw").path("downloadFile").path(jobId).request().get(InputStream.class);
+            final InputStream responseStream = (InputStream)output.getEntity();
             writeToFile(responseStream, ofileName);
         }
         Process seadasProcess = new SeadasProcess();
@@ -152,19 +215,19 @@ public class OCSSWRemoteClient extends OCSSW {
     }
 
     // save uploaded file to new location
-    private void writeToFile(InputStream uploadedInputStream,
-                             String uploadedFileLocation) {
+    private void writeToFile(InputStream downloadedInputStream,
+                             String downloadedFileLocation) {
 
         try {
-            File file = new File(uploadedFileLocation);
+            File file = new File(downloadedFileLocation);
             OutputStream outputStream = new FileOutputStream(file);
             int read = 0;
             byte[] bytes = new byte[8192];
 
-            while ((read = uploadedInputStream.read(bytes)) != -1) {
+            while ((read = downloadedInputStream.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, read);
             }
-            uploadedInputStream.close();
+            downloadedInputStream.close();
             outputStream.flush();
             outputStream.close();
         } catch (IOException e) {
@@ -237,6 +300,11 @@ public class OCSSWRemoteClient extends OCSSW {
 
     @Override
     public Process execute(String[] commandArray) {
+        return null;
+    }
+
+    @Override
+    public Process execute(String programName, String[] commandArrayParams) {
         return null;
     }
 

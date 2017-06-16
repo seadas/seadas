@@ -18,9 +18,11 @@ import java.util.HashMap;
 public class ModisGEO_L1B_UI extends ProgramUIFactory {
 
     HashMap<String, String> validLutMissionNameMap;
+    OCSSW ocssw;
 
     public ModisGEO_L1B_UI(String programName, String xmlFileName, OCSSW ocssw) {
         super(programName, xmlFileName, ocssw);
+        this.ocssw = ocssw;
     }
 
     private void initMissionNameMap() {
@@ -30,7 +32,7 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
     @Override
     public JPanel getParamPanel() {
         initMissionNameMap();
-        final LUTManager lutManager = new LUTManager();
+        final LUTManager lutManager = new LUTManager(ocssw);
         processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {

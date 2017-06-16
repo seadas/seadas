@@ -40,15 +40,15 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private void initLonLatProcessor() {
         lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml", ocssw);
-        lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                processorModel.updateParamInfo(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME));
-                processorModel.updateParamInfo(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME));
-                processorModel.updateParamInfo(LonLat2PixlineConverter.START_LINE_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.START_LINE_PARAM_NAME));
-                processorModel.updateParamInfo(LonLat2PixlineConverter.END_LINE_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.END_LINE_PARAM_NAME));
-            }
-        });
+//        lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                processorModel.updateParamInfo(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME));
+//                processorModel.updateParamInfo(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME));
+//                processorModel.updateParamInfo(LonLat2PixlineConverter.START_LINE_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.START_LINE_PARAM_NAME));
+//                processorModel.updateParamInfo(LonLat2PixlineConverter.END_LINE_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.END_LINE_PARAM_NAME));
+//            }
+//        });
 
         processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override

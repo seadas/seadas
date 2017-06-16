@@ -1,8 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.swing.TableLayout;
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWRunnerOld;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,8 +19,10 @@ public class LUTManager {
     private final String UPDATE_LUTS_PROCESSOR_NAME = "update_luts.py";
     private String missionName;
     private JButton lutButton;
+    OCSSW ocssw;
 
-    public LUTManager() {
+    public LUTManager(OCSSW ocssw) {
+        this.ocssw = ocssw;
         lutButton = new JButton();
         lutButton.setEnabled(false);
         lutButton.setName("update luts");
@@ -40,7 +42,9 @@ public class LUTManager {
 
     private void updateLUT() {
         String[] lutCmdArray = {OCSSWOldModel.getOcsswRunnerScriptPath(), UPDATE_LUTS_PROCESSOR_NAME, missionName};
-        Process process = OCSSWRunnerOld.execute(lutCmdArray);
+        String[] lutCmdArrayParams = {missionName};
+        Process process = ocssw.execute(lutCmdArray);
+        process = ocssw.execute(UPDATE_LUTS_PROCESSOR_NAME, lutCmdArrayParams);
         try {
             int exitValue = process.waitFor();
         } catch (Exception e) {

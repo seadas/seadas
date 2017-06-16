@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.common.*;
 
 import java.io.File;
@@ -277,7 +278,7 @@ public class ParamInfo implements Comparable, Cloneable {
         isBit = bit;
     }
 
-    public FileInfo validateIfileValue(String defaultFileParent, SeadasProcessorInfo.Id processorInfoId) {
+    public FileInfo validateIfileValue(String defaultFileParent, SeadasProcessorInfo.Id processorInfoId, OCSSW ocssw) {
         clearValidationComment();
 
         FileInfo fileInfo = null;
@@ -286,7 +287,7 @@ public class ParamInfo implements Comparable, Cloneable {
 
             if (getName().equals(L2genData.IFILE) || getName().equals(L2genData.GEOFILE)) {
                 String value = SeadasFileUtils.expandEnvironment(getValue());
-                fileInfo = new FileInfo(defaultFileParent, value, true);
+                fileInfo = new FileInfo(defaultFileParent, value, true, ocssw);
                 if (fileInfo.getFile() != null) {
                     if (fileInfo.getFile().exists()) {
                         String filename = fileInfo.getFile().getAbsolutePath();
@@ -309,7 +310,7 @@ public class ParamInfo implements Comparable, Cloneable {
                             if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
                                 setValidationComment("# WARNING!!! file " + filename + " is not a valid input mission" + ": Mission="+ fileInfo.getMissionName() + "\n");
 
-                            } else if (!fileInfo.getMissionDirectory().exists()) {
+                            } else if (!fileInfo.isMissionDirExist()) {
                                 if (fileInfo.getMissionDirectory() != null) {
                                     setValidationComment("WARNING!!! Mission directory '" + fileInfo.getMissionDirectory().getAbsolutePath() + "' does not exist");
                                 } else {
@@ -329,7 +330,7 @@ public class ParamInfo implements Comparable, Cloneable {
                     setValidationComment("WARNING!!! File'" + getValue() + "' does not exist");
                 }
             } else {
-                fileInfo = new FileInfo(defaultFileParent, getValue(), false);
+                fileInfo = new FileInfo(defaultFileParent, getValue(), false, ocssw);
                 if (fileInfo.getFile() != null && !fileInfo.getFile().exists()) {
                     setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
                 }

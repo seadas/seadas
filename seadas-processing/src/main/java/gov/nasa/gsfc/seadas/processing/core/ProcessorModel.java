@@ -68,7 +68,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     private String[] cmdArraySuffix;
 
     private boolean isIfileValid = false;
-    private OCSSW ocssw;
+    private static OCSSW ocssw;
 
     public ProcessorModel(String name, OCSSW ocssw) {
 
@@ -329,7 +329,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         if ((processorID == ProcessorTypeInfo.ProcessorID.L1BRSGEN
                 || processorID == ProcessorTypeInfo.ProcessorID.L1MAPGEN
                 || processorID == ProcessorTypeInfo.ProcessorID.MODIS_L1B_PY)) {
-            String missionName = (new FileInfo(ifileName)).getMissionName();
+            String missionName = ocssw.getMissionName();
             if (missionName != null && (missionName.indexOf("MODIS") != -1 || missionName.indexOf("VIIRSN") != -1 || missionName.indexOf("VIIRS") != -1)) {
                 setHasGeoFile(true);
             }
@@ -821,7 +821,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
         static final String _NElon = "NElon";
         static final String _NElat = "NElat";
 
-        private LonLat2PixlineConverter lonLat2PixlineConverter;
+        public static String LON_LAT_2_PIXEL_PROGRAM_NAME = "lonlat2pixel";
+        public static final String START_LINE_PARAM_NAME = "sline";
+        public static final String END_LINE_PARAM_NAME = "eline";
+        public static final String START_PIXEL_PARAM_NAME = "spixl";
+        public static final String END_PIXEL_PARAM_NAME = "epixl";
+
 
         LonLat2Pixels_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
@@ -873,13 +878,12 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                     (valueOfSWlat != null && valueOfSWlat.trim().length() > 0) &&
                     (valueOfNElon != null && valueOfNElon.trim().length() > 0) &&
                     (valueOfNElat != null && valueOfNElat.trim().length() > 0)) {
-                lonLat2PixlineConverter = new LonLat2PixlineConverter(this);
-                lonLat2PixlineConverter.computePixelsFromLonLat();
-                if (lonLat2PixlineConverter.computePixelsFromLonLat()) {
-                    updateParamInfo(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME, lonLat2PixlineConverter.getSpixl());
-                    updateParamInfo(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME, lonLat2PixlineConverter.getEpixl());
-                    updateParamInfo(LonLat2PixlineConverter.START_LINE_PARAM_NAME, lonLat2PixlineConverter.getSline());
-                    updateParamInfo(LonLat2PixlineConverter.END_LINE_PARAM_NAME, lonLat2PixlineConverter.getEline());
+                HashMap<String, String> lonlats = ocssw.computePixelsFromLonLat();
+                if (lonlats != null) {
+                    updateParamInfo(START_PIXEL_PARAM_NAME, lonlats.get(START_PIXEL_PARAM_NAME));
+                    updateParamInfo(END_PIXEL_PARAM_NAME, lonlats.get(END_PIXEL_PARAM_NAME));
+                    updateParamInfo(START_LINE_PARAM_NAME, lonlats.get(START_LINE_PARAM_NAME));
+                    updateParamInfo(END_LINE_PARAM_NAME, lonlats.get(END_LINE_PARAM_NAME));
                     fireEvent(getAllparamInitializedPropertyName(), false, true);
                 }
             }
@@ -897,14 +901,6 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
             updateGeoFileInfo(ifileName);
             return true;
-        }
-
-        public LonLat2PixlineConverter getLonLat2PixlineConverter() {
-            return lonLat2PixlineConverter;
-        }
-
-        public void setLonLat2PixlineConverter(LonLat2PixlineConverter lonLat2PixlineConverter) {
-            this.lonLat2PixlineConverter = lonLat2PixlineConverter;
         }
     }
 

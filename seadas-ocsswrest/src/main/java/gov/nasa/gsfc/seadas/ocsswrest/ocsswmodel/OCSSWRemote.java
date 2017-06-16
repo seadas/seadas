@@ -7,7 +7,6 @@ import javax.json.JsonObject;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -60,13 +59,13 @@ public class OCSSWRemote {
             if (!isOCSSWExist()) {
                 commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
             } else {
-                commandArrayPrefix[0] = ocsswInstallerScriptPath;
+                commandArrayPrefix[0] = getOcsswInstallerScriptPath();
             }
         } else {
             commandArrayPrefix = new String[3];
-            commandArrayPrefix[0] = ocsswRunnerScriptPath;
+            commandArrayPrefix[0] = getOcsswRunnerScriptPath();
             commandArrayPrefix[1] = "--ocsswroot";
-            commandArrayPrefix[2] = ocsswRoot;
+            commandArrayPrefix[2] = getOcsswRoot();
         }
         for (String item : commandArrayPrefix) {
             System.out.println("commandArrayPrefix: " + item);
@@ -115,6 +114,42 @@ public class OCSSWRemote {
         }
         return  null;
     }
+
+    public Process executeProgramOnDemand(String jobId, String programName, JsonObject jsonObject) {
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        Set commandArrayKeys = jsonObject.keySet();
+        System.out.println(" array size = " + commandArrayKeys.size());
+        String commandArrayElement;
+        try {
+            Object[] array = (Object[]) commandArrayKeys.toArray();
+            int i = 0;
+            String[] commandArray = new String[commandArrayKeys.size() + 1];
+            commandArray[i++] = programName;
+            for (Object element : array) {
+                System.out.println(" element = " + element);
+                String elementName = (String) element;
+                commandArrayElement = jsonObject.getString((String) element);
+                if (elementName.contains("IFILE") || elementName.contains("OFILE")) {
+                    if (commandArrayElement.indexOf("=") != -1) {
+                        StringTokenizer st = new StringTokenizer(commandArrayElement, "=");
+                        String paramName = st.nextToken();
+                        String paramValue = st.nextToken();
+                        commandArrayElement = paramName + "=" + serverWorkingDir + paramValue.substring(paramValue.lastIndexOf(File.separator));
+
+                    } else {
+                        commandArrayElement = serverWorkingDir + commandArrayElement.substring(commandArrayElement.lastIndexOf(File.separator));
+                    }
+                }
+                System.out.println("command array element = " + commandArrayElement);
+                commandArray[i++] = commandArrayElement;
+            }
+            return execute(concatAll(getCommandArrayPrefix(programName), commandArray));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
+
 
     public Process execute(String[] commandArray) {
 
