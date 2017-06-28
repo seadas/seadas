@@ -233,5 +233,51 @@
 </tr>
 </table>
 <hr/>
+
+<h2>Meta Data</h2>
+<p>The following meta data is added to the output file by this tool.  All the rest of the original meta data from the
+    input file is retained and included in the output file<br>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><code>gpt_Reproject_parameters</code></td>
+        <td>The full operator parameter xml string used to create the output file</td>
+    </tr>
+    <tr>
+        <td><code>crs</code></td>
+        <td>The coordinate reference system (crs parameter) of the output file</td>
+    </tr>
+    <tr>
+        <td><code>map_projection</code></td>
+        <td>The map projection of the output file</td>
+    </tr>
+    <tr>
+        <td><code>history</code></td>
+        <td>"Reproject" is prepended to original value</td>
+    </tr>
+    <tr>
+        <td><code>spatialResolution</code></td>
+        <td>If exists in original file, "derived from" is added to original value</td>
+    </tr>
+    <tr>
+        <td><code>processing_level</code></td>
+        <td>If exists in original file, "derived from" is added to original value</td>
+    </tr>
+    <tr>
+        <td><code>product_name</code></td>
+        <td>If exists in original file, "derived from" is added to original value</td>
+    </tr>
+    <tr>
+        <td><code>title</code></td>
+        <td>If exists in original file, "derived from" is added to original value</td>
+    </tr>
+
+</table>
+
+</p>
 </body>
 </html>
