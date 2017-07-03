@@ -1,5 +1,5 @@
 body {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     color: #000000;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 12;
@@ -12,14 +12,14 @@ body {
 p {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     margin: 6pt;
-}
+    }
 
 .i1 {
     margin-left: 30;
 }
 
 .i2 {
-    margin-left: 50;
+    margin-left: 60;
 }
 
 .note {

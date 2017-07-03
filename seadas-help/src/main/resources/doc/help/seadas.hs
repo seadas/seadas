@@ -24,7 +24,7 @@
 
     <presentation default="true">
         <name>SeaDAS Help</name>
-        <size width="800" height="600"/>
-        <location x="100" y="100"/>
+        <size width="1200" height="800"/>
+        <location x="200" y="50"/>
     </presentation>
 </helpset>
