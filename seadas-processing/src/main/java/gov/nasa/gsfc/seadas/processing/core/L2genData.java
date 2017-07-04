@@ -1151,37 +1151,39 @@ public class L2genData implements L2genDataProcessorModel {
 
     public String[] getSuiteList() {
 
-        if (iFileInfo != null && iFileInfo.isMissionDirExist()) {
+//        if (iFileInfo != null && iFileInfo.isMissionDirExist()) {
+//
+//            ArrayList<String> suitesArrayList = new ArrayList<String>();
+//
+//            File missionDirectoryFiles[] = iFileInfo.getMissionDirectory().listFiles();
+//
+//            for (File file : missionDirectoryFiles) {
+//                String filename = file.getName();
+//
+//                if (filename.startsWith(getDefaultsFilePrefix()) && filename.endsWith(".par")) {
+//                    String filenameTrimmed = filename.replaceFirst(getDefaultsFilePrefix(), "");
+//                    filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
+//                    suitesArrayList.add(filenameTrimmed);
+//                }
+//            }
+//
+//            final String[] suitesArray = new String[suitesArrayList.size()];
+//
+//            int i = 0;
+//            for (String suite : suitesArrayList) {
+//                suitesArray[i] = suite;
+//                i++;
+//            }
+//
+//            java.util.Arrays.sort(suitesArray);
+//
+//            return suitesArray;
+//
+//        } else {
+//            return null;
+//        }
 
-            ArrayList<String> suitesArrayList = new ArrayList<String>();
-
-            File missionDirectoryFiles[] = iFileInfo.getMissionDirectory().listFiles();
-
-            for (File file : missionDirectoryFiles) {
-                String filename = file.getName();
-
-                if (filename.startsWith(getDefaultsFilePrefix()) && filename.endsWith(".par")) {
-                    String filenameTrimmed = filename.replaceFirst(getDefaultsFilePrefix(), "");
-                    filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
-                    suitesArrayList.add(filenameTrimmed);
-                }
-            }
-
-            final String[] suitesArray = new String[suitesArrayList.size()];
-
-            int i = 0;
-            for (String suite : suitesArrayList) {
-                suitesArray[i] = suite;
-                i++;
-            }
-
-            java.util.Arrays.sort(suitesArray);
-
-            return suitesArray;
-
-        } else {
-            return null;
-        }
+        return ocssw.getMissionSuites();
     }
 
 

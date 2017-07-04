@@ -7,6 +7,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -21,6 +22,14 @@ import java.util.Iterator;
 public class MissionInfo {
 
     public HashMap<String, Boolean> missionDataStatus;
+    private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
+            AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
+            L3GEN_DEFAULTS_FILE_PREFIX = "msl12_defaults_";
+    private String defaultsFilePrefix;
+
+    private final static String L2GEN_PROGRAM_NAME = "l2gen",
+            AQUARIUS_PROGRAM_NAME = "l2gen_aquarius",
+            L3GEN_PROGRAM_NAME = "l3gen";
 
     public MissionInfo() {
         initDirectoriesHashMap();
@@ -89,6 +98,56 @@ public class MissionInfo {
         JsonObject missionSuites = job.build();
         return missionSuites;
     }
+
+    public String[] getMissionSuiteList(String missionName, String mode) {
+
+        File missionDir = new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + missionName);
+
+        if (missionDir.exists()) {
+
+            ArrayList<String> suitesArrayList = new ArrayList<String>();
+
+            File missionDirectoryFiles[] = missionDir.listFiles();
+
+            for (File file : missionDirectoryFiles) {
+                String filename = file.getName();
+
+                if (filename.startsWith(getDefaultsFilePrefix(mode)) && filename.endsWith(".par")) {
+                    String filenameTrimmed = filename.replaceFirst(getDefaultsFilePrefix(mode), "");
+                    filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
+                    suitesArrayList.add(filenameTrimmed);
+                }
+            }
+
+            final String[] suitesArray = new String[suitesArrayList.size()];
+
+            int i = 0;
+            for (String suite : suitesArrayList) {
+                suitesArray[i] = suite;
+                i++;
+            }
+
+            java.util.Arrays.sort(suitesArray);
+
+            return suitesArray;
+
+        } else {
+            return null;
+        }
+    }
+
+    public String getDefaultsFilePrefix(String programName) {
+
+        defaultsFilePrefix = DEFAULTS_FILE_PREFIX;
+
+        if (programName.equals(L3GEN_PROGRAM_NAME)) {
+            defaultsFilePrefix = L3GEN_DEFAULTS_FILE_PREFIX;
+        } else if (programName.equals(AQUARIUS_PROGRAM_NAME)) {
+            defaultsFilePrefix = AQUARIUS_DEFAULTS_FILE_PREFIX;
+        }
+        return defaultsFilePrefix;
+    }
+
 
     public String findMissionId(String missionName) {
         Id missionId = Id.UNKNOWN;

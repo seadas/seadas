@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import com.sun.deploy.security.ValidationState;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
@@ -142,6 +143,8 @@ public class OCSSWRemoteClient extends OCSSW {
         return jsonArrayBuilder.build();
     }
 
+
+
     private String getOfileName(JsonArray jsonArray) {
         JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(OCSSWOldModel.getJobId()).request(MediaType.APPLICATION_JSON).put(Entity.entity(jsonArray, MediaType.APPLICATION_JSON),JsonObject.class);
         String ofileName = jsonObject.getString("ofileName");
@@ -157,6 +160,12 @@ public class OCSSWRemoteClient extends OCSSW {
     }
 
     @Override
+    public String[] getMissionSuites() {
+        return target.path("ocssw").path("missionSuites").path(missionName).path(programName).request(MediaType.APPLICATION_JSON_TYPE).get(String[].class);
+    }
+
+
+    @Override
     public Process execute(ProcessorModel processorModel) {
         SeadasProcess seadasProcess = new SeadasProcess();
         String programName = processorModel.getProgramName();
@@ -168,6 +177,8 @@ public class OCSSWRemoteClient extends OCSSW {
         }
         return  seadasProcess;
     }
+
+
 
     private void downloadFiles(JsonObject paramJsonObject){
         Set commandArrayKeys = paramJsonObject.keySet();

@@ -84,6 +84,9 @@ public abstract class OCSSW {
     public String[] getMissionSuites(String missionName) {
         return missions.get(missionName).getMissionSuites();
     }
+
+    public abstract String[] getMissionSuites();
+
     public String getOcsswDataDirPath() {
         return ocsswDataDirPath;
     }

@@ -23,8 +23,6 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.glassfish.grizzly.http.server.util.MappingData.PATH;
-
 
 /**
  * Created by IntelliJ IDEA.
@@ -219,6 +217,13 @@ public class OCSSWServices {
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getMissionSuites(@PathParam("missionName") String missionName) {
         return new MissionInfo().getL2BinSuites(missionName);
+    }
+
+    @GET
+    @Path("/missionSuites/{missionName}/{programName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String[] getL2genMissionSuites(@PathParam("missionName") String missionName, @PathParam("programName") String programName) {
+        return new MissionInfo().getMissionSuiteList(missionName, programName);
     }
 
 

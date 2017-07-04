@@ -16,6 +16,8 @@ public class ParFileManager{
     ProcessorModel processorModel;
     protected ParamList paramList;
 
+    private String parFileLocation;
+
     public ParFileManager(ProcessorModel processorModel) {
         this.processorModel = processorModel;
         paramList = processorModel.getParamList();
@@ -42,8 +44,10 @@ public class ParFileManager{
     private File computeParFile() {
 
         try {
+
             final File tempFile = File.createTempFile(processorModel.getProgramName() + "-tmpParFile", ".par", processorModel.getIFileDir());
-            System.out.println(tempFile.getAbsoluteFile());
+            parFileLocation = tempFile.getAbsolutePath();
+                    System.out.println(tempFile.getAbsoluteFile());
             //tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
@@ -64,20 +68,14 @@ public class ParFileManager{
     }
 
     public String getParString() {
-
-        StringBuilder parString = new StringBuilder("");
-        Iterator itr = paramList.getParamArray().iterator();
-        ParamInfo option;
-        while (itr.hasNext()) {
-            option = (ParamInfo) itr.next();
-            String optionValue = option.getValue();
-            if (!option.getType().equals(ParamInfo.Type.HELP) && optionValue.length() > 0) {
-                if (!option.getDefaultValue().equals(optionValue)) {
-                    parString.append(option.getName() + "=" + optionValue + "\n");
-                }
-            }
-
-        }
         return paramList.getParamString("\n");
+    }
+
+    public String getParFileOptionName() {
+        return parFileOptionName;
+    }
+
+    public void setParFileOptionName(String parFileOptionName) {
+        this.parFileOptionName = parFileOptionName;
     }
 }

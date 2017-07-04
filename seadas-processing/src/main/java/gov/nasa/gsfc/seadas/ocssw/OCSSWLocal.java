@@ -2,10 +2,12 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.processor.MultlevelProcessorForm;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
@@ -30,7 +32,6 @@ public class OCSSWLocal extends OCSSW {
 
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
-
 
     public OCSSWLocal(){
 
@@ -59,14 +60,20 @@ public class OCSSWLocal extends OCSSW {
     }
 
 
+//    @Override
+//    public boolean isMissionDirExist(String missionName) {
+//        return false;
+//    }
+
     @Override
-    public boolean isMissionDirExist(String missionName) {
-        return false;
+    public String[] getMissionSuites() {
+        return new String[0];
     }
 
     @Override
     public Process execute(ProcessorModel processorModel) {
-        return null;
+        setProgramName(processorModel.getProgramName());
+        return execute(getProgramCommandArray(processorModel));
     }
 
     @Override
@@ -76,14 +83,52 @@ public class OCSSWLocal extends OCSSW {
         return execute(commandArray);
     }
 
+    /**
+     * this method returns a command array for execution.
+     * the array is constructed using the paramList data and input/output files.
+     * the command array structure is: full pathname of the program to be executed, input file name, params in the required order and finally the output file name.
+     * assumption: order starts with 1
+     *
+     * @return
+     */
+    public String[] getProgramCommandArray(ProcessorModel processorModel) {
+
+        String[] cmdArray;
+        String[] programNameArray = {programName};
+        String[] cmdArrayForParams;
+
+        ParFileManager parFileManager = new ParFileManager(processorModel);
+
+        if (processorModel.acceptsParFile()) {
+            cmdArrayForParams = parFileManager.getCmdArrayWithParFile();
+
+        } else {
+            cmdArrayForParams = getCommandArrayParam(processorModel.getParamList());
+        }
+
+        //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
+        cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, cmdArrayForParams, commandArraySuffix);
+
+        // get rid of the null strings
+        ArrayList<String> cmdList = new ArrayList<String>();
+        for (String s : cmdArray) {
+            if (s != null) {
+                cmdList.add(s);
+            }
+        }
+        cmdArray = cmdList.toArray(new String[cmdList.size()]);
+
+        return cmdArray;
+    }
+
     @Override
     public Process execute(String[] commandArray) {
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
-
-        String ifileDir = getIfileName().substring(0, getIfileName().lastIndexOf(System.getProperty("file.separator")));
-
-        processBuilder.directory(new File(ifileDir));
+//
+//        String ifileDir = getIfileName().substring(0, getIfileName().lastIndexOf(System.getProperty("file.separator")));
+//
+//        processBuilder.directory(new File(ifileDir));
 
         Process process = null;
         try {
@@ -251,6 +296,7 @@ public class OCSSWLocal extends OCSSW {
             commandArrayPrefix[2] = ocsswRoot;
         }
     }
+
 
     private String[] getCommandArrayParam(ParamList paramList) {
 

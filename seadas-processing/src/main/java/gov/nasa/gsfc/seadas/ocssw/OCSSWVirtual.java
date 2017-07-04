@@ -85,6 +85,11 @@ public class OCSSWVirtual extends OCSSW {
     }
 
     @Override
+    public String[] getMissionSuites() {
+        return new String[0];
+    }
+
+    @Override
     public void setOcsswScriptsDirPath(String ocsswScriptsDirPath) {
 
     }
