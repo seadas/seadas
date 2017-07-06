@@ -109,6 +109,7 @@
 
 
     <mapID target="reprojectionAction" url="visat/Reprojection.html"/>
+    <mapID target="reprojectionActionOld" url="visat/Reprojection_old.html"/>
     <mapID target="orthorectificationAction" url="visat/Orthorectification.html"/>
     <mapID target="orthorectificationAlgo" url="visat/OrthorectificationAlgo.html"/>
     <mapID target="mosaicAction" url="visat/Mosaic.html"/>

@@ -9,17 +9,25 @@ body {
 
 
 
+
 p {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     margin: 6pt;
     }
 
+
+
+
 .i1 {
-    margin-left: 30;
+    margin-left: 40;
 }
 
 .i2 {
-    margin-left: 60;
+    margin-left: 80;
+}
+
+.i3 {
+    margin-left: 120;
 }
 
 .note {
@@ -140,9 +148,9 @@ table {
 }
 .subSectionTitle {
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 16;
+    font-size: 20;
     font-weight: bold;
-    margin-top: 20pt;
+    margin-top: 0pt;
     margin-right: 0pt;
     margin-bottom: 6pt;
     margin-left: 6pt;
@@ -159,6 +167,7 @@ table {
     margin-right: 0pt;
     font-style: normal;
 }
+
 
 
 .h3better {
@@ -184,7 +193,7 @@ table {
     font-size: 12;
     margin-left: 24pt;
     margin-top : 0pt;
-    margin-bottom: 0pt;
+    margin-bottom: 6pt;
     margin-right: 0pt;
     font-style: normal;
 }
@@ -234,6 +243,21 @@ table {
     vertical-align: top;
 }
 
+.invisibletable3 {
+    border-width: 0;
+    border-style: solid;
+    border-color: #FFFFFF;
+    border-collapse: collapse;
+    padding: 0px;
+    margin: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12;
+    font-style: normal;
+    text-valign: bottom;
+    vertical-align: bottom;
+}
+
+
 
 th {
     font-size: 12;
@@ -272,6 +296,18 @@ table.header {
     margin: 0;
 }
 
+td.icon {
+    width: 24;
+    height: 24;
+    font-size: 17;
+    color: #ffffff;
+    bgcolor: #ffffff
+    vertical-align: middle;
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+}
+
 .headerOld {
     font-size: 17;
     height: 29;
@@ -284,18 +320,54 @@ table.header {
 }
 
 
-
 .header {
+    border-collapse: collapse;
+    padding: 0px;
+    margin: 0;
+        border-color: #FFFFFF;
     font-size: 17;
     height: 29;
     color: #ffff99;
     vertical-align: middle;
+    text-align: center;
     background-color: #2B3856;
     border-width: 0;
-    padding: 0;
     white-space: nowrap;
     text-align: right;
 }
+
+.header2 {
+    border-collapse: collapse;
+    padding: 0px;
+    margin: 0;
+        border-color: #FFFFFF;
+    font-size: 17;
+    height: 29;
+    color: #ffffff;
+    vertical-align: middle;
+    text-align: center;
+    background-color: #ffffff;
+    border-width: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.contents {
+    border-collapse: collapse;
+    padding: 0px;
+        border-color: #FFFFFF;
+    font-size: 12;
+    height: 29;
+    color: #000000;
+    vertical-align: middle;
+    background-color: #ffffff;
+    border-width: 0;
+    spacing: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+
+
 
 hr {
     height: 4;
@@ -304,3 +376,30 @@ hr {
     border-style: solid;
     border-width: 1;
 }
+
+img.center {
+    display: block;
+    margin: 0 auto;
+}
+
+.center {
+    text-align: center;
+}
+
+.toolDescription {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12;
+    font-weight: bold;
+    margin: 6pt;
+    color: #008888;
+}
+
+.resize {
+    width:40px; /* you can use % */
+    height: auto;
+}
+
+
+
+
+

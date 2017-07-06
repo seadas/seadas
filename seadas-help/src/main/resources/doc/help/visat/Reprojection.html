@@ -14,24 +14,416 @@
   ~ with this program; if not, see http://www.gnu.org/licenses/
   -->
 
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>VISAT Help - Reprojection</title>
+    <title>SeaDAS Help - Reproject Tool</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
-<table class="header">
-    <tr class="header">
-        <td class="header">&nbsp;
-            Reprojection
-        </td>
-        <td class="header" align="right"><a href="index.html">
-            <img src="../images/SeaDASHeader.png" border=0></a></td>
-    </tr>
-</table>
 
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h2>Reproject</h2>
+
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <p>
+                    <a href="Reprojection.html#Overview" class="invisibleLink">Overview</a><br>
+                    <a href="Reprojection.html#MenuLocation" class="invisibleLink">Menu Location</a><br>
+                    <a href="Reprojection.html#Parameters" class="invisibleLink">Parameters</a><br>
+                    <a href="Reprojection.html#Concepts" class="invisibleLink">Concepts</a><br>
+                    <a href="Reprojection.html#Metadata" class="invisibleLink">Metadata</a><br>
+                    <a href="Reprojection.html#History" class="invisibleLink">Revision History</a><br>
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<br>
+<br>
+
+
+<a name="Overview"></a>
+
+<p class="subSectionTitle">Overview</p>
+
+<p>
+    The Reproject tool enables you to take any file (one which contains geo-coding) and resample it into a new file
+    with
+    a specified map projection. Some key parameters which you can specify are: coordinate reference system
+    (CRS),
+    resolution, interpolation method, and geographic location.
+</p>
+
+<p>This tool is available both from the GUI and from the
+    command
+    line (<a href="../beam-gpf/org_esa_beam_gpf_operators_standard_reproject_ReprojectionOp.html" class="invisibleLink">GPT-Reproject</a>).
+</p>
+
+<p>
+
+    Figure 1 illustrates the results of applying this tool to a level-2 file using an oblique stereographic projection.
+    The
+    greenish portion of the image is a surface reflectance band and the shape of the level-2 boundary can be seen in the
+    projection. Land and water masking has been applies to pixels outside of the original level-2 file boundaries.
+
+</p>
+
+<div class="center">
+    <img src="images/Reproject00.png" border="0"> <br>
+    <i>Figure 1. Projected scene of a level-2 file <br>(Oblique Sterographic)</i>
+</div>
+
+
+<br>
+<br>
+
+
+<a name="MenuLocation"></a>
+
+<p class="subSectionTitle">Menu Location</p>
+
+<p>
+    The Reproject tool can be accessed in the menu system (Raster -> Reproject) or by clicking the tool bar icon <img
+        src="../visat/images/icons/Reproject24.png" border="0">
+</p>
+<p>
+    This tool is also available from the
+    command
+    line (<a href="../beam-gpf/org_esa_beam_gpf_operators_standard_reproject_ReprojectionOp.html" class="invisibleLink">GPT-Reproject</a>).
+</p>
+
+
+<br>
+<br>
+
+<a name="Parameters"></a>
+
+<p class="subSectionTitle">Parameters</p>
+
+<h4>I/O Parameters Tab</h4>
+
+
+<div class="center">
+    <img src="images/Reproject01.png" border="0"> <br>
+    <i>Figure 2. I/O Parameters Tab</i>
+</div>
+
+<br>
+<p>
+    <i><b>Source File</b></i>
+</p>
+
+<p class="i1">
+    <b>File Selector</b><br>This is the file to be reprojected and serves as the input file to the Reproject Tool. You
+    may
+    conveniently select one of the files currently loaded in SeaDAS using the drop down selector. In this case, a file
+    reference number appears to the left of the file name indicating that it is a loaded file and not a direct system
+    file. To select a file directly from your computer system, use the selector button to the right and navigate to the
+    desired
+    file. A file selected this way directly from your system will not have a file reference number displayed next to it.
+    Note that a loaded file can differ from a system file (even though they may bear the same name) in that you may have
+    made changes to the loaded file in SeaDAS and not saved them.
+</p>
+
+
+<br>
+<p>
+    <i><b>Target File</b></i>
+</p>
+
+<p class="i1">
+    <b>Name</b><br>This is the name of the reprojected file which will be generated. The default behavior appends
+    "_reprojected" to the original filename.
+</p>
+
+<p class="i1">
+    <b>Save as</b><br>Used to specify whether the target product should be saved to the file system. The
+    combo box presents a list of file formats, currently BEAM-DIMAP, GeoTIFF, and HDF5.
+    The text field allows to specify a target directory. (Note: if deselected this tool will run much faster as the
+    reprojection
+    does not actually occur at the time of run. Subsequently when the user opens a band in the reprojected file the
+    reprojection
+    occurs for that band only.)
+</p>
+
+<p class="i1">
+    <b>Directory</b><br>Location in which to save file. (Default is the last location in which a file was saved)
+</p>
+
+<p class="i1">
+    <b>Open in SeaDAS</b><br>Used to specify whether the file should be automatically opened in SeaDAS.  
+</p>
+
+
+<br>
+
+
+<p class="i1">
+
+    <br><br>
+
+<h4>Map Projection & Settings Tab</h4>
+<p>
+    <img src="images/Reproject04.png"><br><br>
+</p>
+
+<br>
+
+
+<p>
+    <i><b>Coordinate Reference System (CRS)</b></i>
+    There are 3 options for selecting a CRS: create on yourself - "Custom CRS"; select one - "Predefined CRS"; or use one
+    from an existing file - "Use CRS of file".
+</p>
+
+<p class="i1">
+    <b>Custom CRS</b><br>
+    With this option you will manually select the map projection (along with it's parameters) and the datum to use.
+</p>
+
+<p class="i2">
+    <b>Geodetic datum</b><br>
+    The coordinate system for locating positions on the Earth.  In general, these are based on reference ellipsoids used
+    to represent the shape of the Earth.  You can select from a variety of datums.  The most common (and SeaDAS default)
+    is "WGS 84" (WGS 1984, EPSG:4326).
+
+</p>
+
+<p class="i2">
+    <b>Projection</b><br>
+    The map projection (or how the 3 dimensional Earth's surface will be transformed on a 2 dimensional surface).
+    Select from a list of map projections. If a projection requires parameters then the "CRS Parameters" button will
+    become selectable.
+</p>
+
+<p class="i3">
+    <b>CRS Parameters</b><br>
+    This opens a window of selectable parameters needed by the selected map projection. These contain default values,
+    but likely
+    you will want to modify these values based on your scene location or region of interest.
+    (See <a href="Reprojection.html#crsParameters" class="invisibleLink">CRS Parameters</a> for a more on these parameters)
+</p>
+
+
+</p>
+
+<p class="i1">
+    <b>Predefined CRS</b><br>
+    SeaDAS contains a multitude of pre-defined coordinate reference systems including the EPSG Geodetic Parameter
+    Dataset.
+    (Note: as of SeaDAS 7.5, the EPSG dataset being used is version 7.9.0). Use the selector to the right to choose one
+    of these projections. The XML text representation of the selected projection will be displayed and loaded (
+    See <a href="Reprojection.html#Figure6" class="invisibleLink">Figure 6</a>). If you look at the XML, you can see
+    all the individual parameters which go into the particular projection. You could replicate or deviate from these
+    parameters
+    if you wish by instead using the "Custom CRS" option and manually setting these parameters. Also note that you can
+    use this XML or the authority code when running Reproject in the command line mode.
+</p>
+
+<p class="i1">
+    <b>Use CRS of file</b><br>
+    Select a file from your system (one with geo-coding) and use the identical map projection criteria and geographic
+    boundaries of that file.  This will have the effect that both files are collocated (same raster grid size and grid
+    geocoding) but separate files.  See the Collocation Tool if you wish to actually merge the files together.
+</p>
+<br>
+
+
+
+<p>
+<i><b>Output Settings</b></i>
+</p>
+
+
+<p class="i1">
+    <b>Preserve resolution</b><br>
+    Text.
+</p>
+
+<p class="i1">
+    <b>Add delta lat/lon bands</b><br>
+    Text.
+</p>
+
+<p class="i1">
+    <b>Reproject tie-point grids</b><br>
+    Text.
+</p>
+
+<p class="i1">
+    <b>No-data value</b><br>
+    Text.
+</p>
+
+<p class="i1">
+    <b>Resampling method</b><br>
+    Text.
+</p>
+
+
+<br>
+
+
+<i><b>Output Information</b></i>
+
+<p class="i1">
+    <b>Scene width</b><br>
+    Text.
+</p>
+
+<p class="i1">
+    <b>Scene height</b><br>
+    Text.
+</p>
+
+<p class="i1">
+    <b>Center longitude</b><br>
+    Text.
+</p>
+
+<p class="i1">
+    <b>Center latitude</b><br>
+    Text.
+</p>
+
+<p class="i1">
+    <b>CRS</b><br>
+    Text.
+</p>
+
+<p class="i1">
+    <b>Show WKT</b><br>
+    Text.
+</p>
+
+<br><br>
+
+
+<a name="crsParameters"></a>
+<h4>CRS Parameters</h4>
+<div class="center">
+    <img src="images/Reproject03.png"><br>
+    <i>Figure 3. </i>
+</div>
+
+<p class="i1">
+    <b>Semi-Major</b><br>
+    The semi-major axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the equatorial radius.
+    This value is automatically filled based on the datum (reference ellipsoid) which you selected.
+</p>
+
+
+<p class="i1">
+    <b>Semi-Minor</b><br>
+    The semi-minor axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the polar radius.
+    This value is automatically filled based on the datum (reference ellipsoid) which you selected.
+</p>
+
+
+<p class="i1">
+    <b>False Easting</b><br>
+    Text.
+</p>
+
+
+<p class="i1">
+    <b>False Northing</b><br>
+    Text.
+</p>
+
+
+
+
+<a name="Figure6"></a>
+
+<div class="center">
+
+    <img src="images/Reproject06.png"><br>
+    <i>Figure 6. </i>
+</div>
+
+
+<br>
+<br>
+
+<a name="Concepts"></a>
+
+<p class="subSectionTitle">Concepts</p>
+
+
+<p>
+    <b>Valid Pixels and NaNs</b><br>There is not a one-to-one correspondance between the pixels of the input file and
+    those of the output reprojected file. To handle this, the Reproject tool masks out invalid pixels and ultimately
+    reprojects only the valid pixels of the source file. This hidden automated pixel validation step is acheived using
+    the following two
+    criteria: the <b>valid pixel expression</b> and the designation of a <b>no-data value</b>. You can view/modify this
+    criteria by
+    right-clicking on any band, and selecting <b>Properties</b>. Alternatively you can view this with the <b>Band
+    Info</b> tool (<i>Analysis > Band Info</i>)
+    when selecting the band.
+
+    In general this is the desired behavior, unless the valid pixel expression is masking on an ideal range, outside of
+    which there
+    may actually be valid data. If you wish to include this out-of-range data in the reprojection then you will need to
+    edit the
+    valid pixel expression of the band(s) of the source file before reprojecting. One example of this would be when
+    creating true color
+    images using surface reflectances. Because the surface reflectance product is designed based on water leaving
+    radiances for the ocean, pixels which image cloud tops
+    can exceed a reflectance value of 1. In this case, for the case of including bright clouds in your true color
+    imagery, the valid
+    pixel expression band(s) of the source file would need to be modified so as to not throw away values above 1.
+
+
+</p>
+
+<br>
+<i><b>Statistics and Mapped Imagery</b></i>
+
+
+<br>
+<i><b>Upsampling</b></i>
+
+
+<br>
+<i><b>Downsampling</b></i>
+<p>
+
+</p>
+
+
+<br>
+<br>
+
+<a name="Metadata"></a>
+
+<p class="subSectionTitle">Metadata</p>
+
+<p></p>
+
+
+<br>
+<br>
+
+<a name="History"></a>
+
+<p class="subSectionTitle">Revision History</p>
+
+<p></p>
+
+
+<br>
+
+
+<hr>
+<hr>
 <h3>Reprojection Dialog</h3>
 
 <p>
@@ -96,7 +488,8 @@
 
             <p class="i1">
                 <b>Predefined CRS:</b>
-                By clicking on the <b>Select...</b> button a new <a href="SelectCrsDialog.html">Select Coordinate Reference System</a> dialog is shown
+                By clicking on the <b>Select...</b> button a new <a href="SelectCrsDialog.html">Select Coordinate
+                Reference System</a> dialog is shown
                 where a predefined CRS can be selected.
             </p>
 
@@ -112,7 +505,8 @@
             <p class="i1">
                 <b>Preserve resolution:</b>
                 If unchecked the <b>Output Parameters...</b> is enabled and the upcoming
-                <a href="ReprojectionOutputParametersDialog.html">Output Parameters</a> dialog lets you edit the output parameters like
+                <a href="ReprojectionOutputParametersDialog.html">Output Parameters</a> dialog lets you edit the output
+                parameters like
                 easting and northing of the reference pixel, the pixel size and the scene height and width.
             </p>
 
@@ -158,6 +552,249 @@
 </table>
 
 
+<p>
+    <img src="images/Reproject03.png"><br><br>
+</p>
+
+
+<p>
+    <img src="images/Reproject05.png"><br><br>
+</p>
+
+
+<h4>Schemes and Palettes</h4>
+
+<p>
+    A <b>color palette</b> refers to a set of rgb color values with corresponding (preferably normalized) data values.
+    A <b>color scheme</b> denotes which color palette to use, the minimum and maximum values to apply to the palette,
+    and whether the palette is to be displayed with log or linear scaling.
+</p><br>
+
+<p>
+    The color palettes are stored in color palette definition (cpd) text files. New cpd files can be created
+    within SeaDAS as well as saved.
+</p><br>
+
+The color schemes are stored in the following text files(located in ~/.seadas/beam-ui/auxdata/color-palettes) :
+<ul>
+    <li>color_palette_schemes.txt : contains the schemes.
+    </li>
+    <li>color_palette_scheme_defaults.txt : a lookup table to set the scheme based on the band name</li>
+    <li> color_palette_scheme_selector.txt: a lookup table to set the scheme in the scheme selector in the GUI</li>
+</ul>
+
+Note: All color schemes and cpd files are located in the .seadas directory
+(~/.seadas/beam-ui/auxdata/color-palettes/). External cpd files can be copied into this directory and will show up
+in SeaDAS when it is next launched. Scheme files can be hand-edited to add new schemes or modify existing ones.
+</p>
+<br><br>
 <hr>
+<h4>Editors</h4>
+
+<p>
+    The color manager contains 3 editor screens:
+</p>
+<ul>
+    <li>Basic Editor:
+        <ul>
+            <li>load scheme</li>
+            <li>load/save cpd file</li>
+            <li>set range minimum maximum</li>
+            <li>set scaling: log/linear</li>
+            <li>reverse direction of color palette</li>
+        </ul>
+    </li>
+    <li>Sliders Editor:
+        <ul>
+            <li>displays histogram on top of color-bar</li>
+            <li>automatically or manually adjust individual value-color point pairs using movable sliders</li>
+            <li>add/remove value-color point pairs</li>
+            <li>generate statistics for minimum and maximum band data value</li>
+        </ul>
+    </li>
+    <li>Table Editor:
+        <ul>
+            <li>change value-color point pairs using a text field table</li>
+        </ul>
+</ul>
+
+
+<hr>
+<h4>Basic Editor</h4>
+
+<p>
+    <img src="images/Reproject01.png"><br><br>
+</p>
+
+<b>Icons</b>
+<ul>
+    <li><img src="images/icons/Undo24.gif"> : resets to the default color scheme</li>
+    <li><img src="images/icons/LogDisplay24.png"> : toggles between log and linear display, redistributing palette
+        points accordingly
+    </li>
+    <!--<li><img src="images/icons/LogDisplay24.png"> :  applies current selected color scheme to other bands</li>-->
+</ul>
+<br>
+
+<b>Scheme Panel</b>
+<ul>
+    <li><b>Standard Schemes Selector</b> : Select and load a pre-defined scheme. The
+        loaded scheme name will be displayed directly above this selector. Any alteration to parameters subsequent to
+        selection of a scheme will result in an asterisks displayed with the scheme name. <br><br>
+        Note: this selector selects schemes from the 'color_palette_scheme_selector.txt' file,
+        if the scheme was loaded by default then the scheme name comes from 'color_palette_scheme_defaults.txt' file.
+
+    </li>
+</ul>
+<br>
+<b>Cdp File Panel</b>
+<ul>
+    <li><b>Color Palette Selector</b> : Select a cpd file. Selector shows a visual representation of each color palette
+        as a
+        color bar. Hovering the mouse over a selection will display it's cpd file name.
+    </li>
+    <li><b>Load cpd file exact values</b> : selecting this checkbox will load in the cpd file values exactly as they
+        are,
+        replacing the currently loaded Minimum and Maximum range values as well as the log scaling with those of the cpd
+        file. Unchecked, the behavior is to load in the palette, while maintaining the user selected log scaling, and
+        redistribute the palette data points between the user currently selected Minimum and Maximum range values.
+    </li>
+    <li><b>Save CPD File Button</b> : save the current settings to a new cpd file name. Once saved, this new cpd file
+        becomes the currently selected cpd file in the Schemes Panel. Additional save format options are CPT and PAL.
+    </li>
+    <li><b>Reverse Button</b> : reverses the direction of the color palette</li>
+</ul>
+<br>
+<b>Range Panel</b>
+<ul>
+    <li><b>Min Textfield</b> : redistributes the palette using this minimum range value</li>
+    <li><b>Max Textfield</b> : redistributes the palette using this maximum range value</li>
+    <li><b>Set from Band Data Button</b> : redistributes the palette using band data statistics to determine the
+        minimum and maximum range value.
+    </li>
+</ul>
+<br>
+
+<hr>
+<h4>Sliders Editor</h4>
+
+<p>
+    <img src="images/Reproject02.png"><br><br>
+</p>
+
+<b>Sliders</b>
+<ul>
+    <li><b>Change Data Value</b> : left clicking a slider and moving it will alters it data value for that value-color
+        point pair.
+    </li>
+    <li><b>Change Color</b> : left clicking a slider brings about a color dialog box to enable an alteration of the
+        color
+        for that value-color point pair.
+    </li>
+    <li><b>Add Value-Color Point Pair</b> : right click a slider to add a new point AFTER the slider clicked</li>
+    <li><b>Remove Value-Color Point Pair</b> : right click a slider to remove that slider's value-color point pair</li>
+</ul>
+
+<p>
+    <b>Rough Statistics</b> : this underlined selected option will appear in the information above the histogram display
+    if the current statistics are rough statistics. Clicking on this will enable the running a complete band statistics
+    which includes all pixel data value in the determination of the data minimum and maximum range. <br><br>
+</p>
+
+<b>Icons</b>
+<ul>
+    <li><img src="images/icons/Undo24.gif"> : resets to the default color scheme</li>
+    <li><img src=img src="images/icons/LogDisplay24.png"> : toggles between log and linear display, redistributing
+        palette points accordingly
+    </li>
+    <!--<li><img src="images/icons/MultiAssignBands24.gif"> :  applies current selected color scheme to other bands</li>-->
+    <li><img src="images/icons/Auto95Percent24.gif"> : adjusts the sliders to cover 95% of all pixels in the band.</li>
+    <li><img src="images/icons/Auto100Percent24.gif"> : adjusts the sliders to cover 100% of all pixels in the band.
+    </li>
+    <li><img src="images/icons/ZoomIn24V.gif"> : zoom in on the histogram display vertically</li>
+    <li><img src="images/icons/ZoomOut24V.gif"> : zoom out on the histogram display vertically</li>
+    <li><img src="images/icons/ZoomIn24H.gif"> : zoom in on the histogram display horizontally</li>
+    <li><img src="images/icons/ZoomOut24H.gif"> : zoom out on the histogram display horizontally</li>
+    <li><img src="images/icons/EvenDistribution.gif"> : distributes the sliders evenly between the first and the last
+        slider.
+    </li>
+    <li><img src="images/icons/Information24.gif"> : toggles visibility of statistic information in histogram display
+    </li>
+
+</ul>
+<br>
+
+<hr>
+<h4>Table Editor</h4>
+
+<p>
+    <img src="images/color_manager_table.png"><br><br>
+</p>
+
+For each value-color point pair the color and/or it's value can be changed with this editor.<br><br>
+<b>Icons</b>
+<ul>
+    <li><img src="images/icons/Undo24.gif"> : resets to the default color scheme</li>
+    <li><img src="images/icons/MultiAssignBands24.gif"> : toggles between log and linear display, redistributing palette
+        points accordingly
+    </li>
+</ul>
+<br>
+
+<hr>
+
+<h4>More Options</h4>
+
+<ul>
+    <li><a name="nodata" id="nodata"><b>No-data color</b></a> : selects no-data color for this band</li>
+    <li><a name="histomatch" id="histomatch"><b>Histogram matching</b></a> : It is sometimes desirable to transform an
+        image so that it's histogram matches that of a
+        specified functional form. It is possible to apply an equalized or normalized
+        histogram matching to images which can often improve image quality.
+    </li>
+    <li><b>Discrete colors</b> : use only the discrete colors as defined in the palette</li>
+</ul>
+
+<hr>
+
+<h4>Preferences</h4>
+<p>The following preferences GUI governs this Tool</p>
+
+<p>
+    <img src="images/color_palettes_preferences.png"><br><br>
+</p>
+
+<ul>
+    <li>Currently the only option is whether to use the color-blind compliant palette as the default palette.
+        (see color_palette_schemes.txt located in ~/.seadas/beam-ui/auxdata/color-palettes)
+    </li>
+</ul>
+
+<hr>
+<h4>RGB Image</h4>
+
+<p>
+    *Note: this section of the help page is slightly out of date - see <a href="../general/ReleaseNotes7.4.html"
+                                                                          class="invisibleLink">SeaDAS 7.4 Release
+    Notes</a></p>
+<br>
+
+<p>Images using separate R,G,B channels use obtain their colours from the samples of three arbitrary bands. In the
+    editor, users
+    can switch between the channels in order to edit the contrast stretch range and gamma value of each channel
+    separately.</p>
+
+<p align="center"><img src="images/ColManipRGB.png"></p>
+
+<p>In this mode the sliders are used for contrast stretching in each of the R,G,B channels.
+    In the <b>More Options</b> panels, you can adjust the <b><a href="#nodata">No-Data Colour</a></b> and
+    <b><a href="#histomatch">Histogram Matching</a></b> for the final image. The <b>Source Band</b> and <b>Gamma</b>
+    options
+    apply to each channel. The gamma value is used to adapt the transfer function which quantises the band's
+    sample values to colour values. A gamma value of <code>0.7</code> for the blue channel enhances most
+    RGB images.
+</p>
+
+
 </body>
 </html>

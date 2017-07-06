@@ -288,6 +288,7 @@
 
             <tocitem text="Reproject" target="reprojectionAction">
                 <tocitem text="Reproject" target="reprojectionAction"/>
+                <tocitem text="ReprojectOld" target="reprojectionActionOld"/>
                 <tocitem text="Resampling Methods" target="resamplingMethods"/>
             </tocitem>
 
