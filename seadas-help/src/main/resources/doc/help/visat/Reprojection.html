@@ -86,6 +86,112 @@
 <br>
 
 
+
+<a name="Concepts"></a>
+
+<p class="subSectionTitle">Concepts</p>
+
+
+<p>
+    <b>Valid Pixels and NaNs</b><br>There is not a one-to-one correspondance between the pixels of the input file and
+    those of the output reprojected file. To handle this, the Reproject tool masks out invalid pixels and ultimately
+    reprojects only the valid pixels of the source file. This hidden automated pixel validation step is acheived using
+    the following two
+    criteria: the <b>valid pixel expression</b> and the designation of a <b>no-data value</b>. You can view/modify this
+    criteria by
+    right-clicking on any band, and selecting <b>Properties</b>. Alternatively you can view this with the <b>Band
+    Info</b> tool (<i>Analysis > Band Info</i>)
+    when selecting the band.
+
+    In general this is the desired behavior, unless the valid pixel expression is masking on an ideal range, outside of
+    which there
+    may actually be valid data. If you wish to include this out-of-range data in the reprojection then you will need to
+    edit the
+    valid pixel expression of the band(s) of the source file before reprojecting. One example of this would be when
+    creating true color
+    images using surface reflectances. Because the surface reflectance product is designed based on water leaving
+    radiances for the ocean, pixels which image cloud tops
+    can exceed a reflectance value of 1. In this case, for the case of including bright clouds in your true color
+    imagery, the valid
+    pixel expression band(s) of the source file would need to be modified so as to not throw away values above 1.
+
+
+</p>
+
+<br>
+<i><b>Statistics and Mapped Imagery</b></i>
+<p>
+    In general, it may be best to consider mapping a file one way for statistics and another way for displaying data.
+    For statistics you are best served using an equal area map projection (such as Albers Conic Equal Area, Lambert Azimuthal
+    Equal Area, Sinusoidal, ...). With an equal area projection the Earth surface area is the same for each resultant
+    pixel and they can be treated as such with an equal weighting. However, for large scenes, an equal area map
+    projection
+    may not look natural so using a conformal projection (such as Mercator and Stereographic) is
+    more ideal when displaying imagery.
+</p>
+<p>
+
+    (Note: selection of the "best" map projection is dependent on scene size (is it global, regional, local), scene
+    shape
+    (does it run narrow north-south, narrow west-east, or is it more square in shape), and scene location (is it at the
+    equator, at one of the Poles, or some span of latitudes soemwhere between the Pole and equator.)
+
+</p>
+
+
+
+<br>
+<i><b>Upsampling</b></i>
+<p>
+    Upsampling is the process of resampling (remapping) your data to a higher resolution. Upsampling has no inherent
+    problems,
+    other than the fact that the resultant file will be increasingly larger with higher resolutions. A remapped
+    upsampled image
+    will tend to be clearer than one remapped at a resolution comparable with the original input file. The higher the
+    resampling
+    resolution, the closer you approach to seeing the pixel shapes of the original unprojected file.
+</p>
+<p>
+    (Note: Ideally a remapped
+    image should not be displayed at a zoom level such that it displays the pixellation of the output file. Such a
+    visual
+    might cause a viewer to incorrectly infer a measurement of noise (or lack of noise) pixel to pixel, when
+    in fact
+    these pixels do not bear a one-to-one correspondance with the native satellite detector measurements.)
+</p>
+
+
+<br>
+<i><b>Downsampling</b></i>
+<p>
+    Downsampling is the process of resampling (remapping) your data to a lower resolution. Downsampling by more than a
+    factor
+    of two does have inherent problems, at least in the SeaDAS Reproject and related tools. This is because SeaDAS
+    currently
+    only offers 3 interpolation methods (nearest neighbor, bilinear, and bicubic which use a matrix size on the input
+    file
+    of 1x1, 2x2, and 4x4 respectively for the remapping of each pixel in the output file. Downsampling by greater
+    factors
+    than these matrix sizes, will result in many of the pixels in the source file being ignored. Basically, in order to
+    ensure that all source data pixels are being use, if you are downsampling by a factor of 4 then use bicubic, a
+    factor
+    of 2 then use bilinear or bicubic, and a factor of 1 then use any of the three.
+
+</p>
+<p>
+    (Note: this sampline concept and process is the same in all of the SeaDAS visualization resampling tools: Reproject,
+    Collocate,
+    Mosaic, and Time Series. The SeaDAS OCSSW tools for binning and mapping behave differently and do not ignore
+    any source data pixels for large factor downsampling)
+
+
+</p>
+
+
+<br>
+<br>
+
+
 <a name="MenuLocation"></a>
 
 <p class="subSectionTitle">Menu Location</p>
@@ -112,8 +218,6 @@
 </p>
 <br>
 <hr>
-
-
 
 
 <a name="ParametersIO"></a>
@@ -176,11 +280,11 @@
 </p>
 
 
-<br><br><hr>
+<br><br>
+<hr>
 
 
-
-    <a name="ParametersMapProjectionTab"></a>
+<a name="ParametersMapProjectionTab"></a>
 
 <h4>GUI: Map Projection & Settings Tab</h4>
 <p>
@@ -190,7 +294,7 @@
 
 
 <div class="center">
-<img src="images/Reproject04.png"><br><br>
+    <img src="images/Reproject04.png"><br><br>
     <i>Figure 2. Map Projection & Settings Tab</i>
 
 </div>
@@ -200,10 +304,10 @@
 
 <p>
     <i><b>Coordinate Reference System (CRS)</b></i><br>
-    There are 3 options for selecting a CRS: create on yourself - "Custom CRS"; select one - "Predefined CRS"; or use one
+    There are 3 options for selecting a CRS: create on yourself - "Custom CRS"; select one - "Predefined CRS"; or use
+    one
     from an existing file - "Use CRS of file".
 </p>
-
 
 
 <p class="i1">
@@ -213,8 +317,8 @@
 
 <p class="i2">
     <b>Geodetic datum</b><br>
-    The coordinate system for locating positions on the Earth.  In general, these are based on reference ellipsoids used
-    to represent the shape of the Earth.  You can select from a variety of datums.  The most common (and SeaDAS default)
+    The coordinate system for locating positions on the Earth. In general, these are based on reference ellipsoids used
+    to represent the shape of the Earth. You can select from a variety of datums. The most common (and SeaDAS default)
     is "WGS 84" (WGS 1984, EPSG:4326).
 
 </p>
@@ -231,7 +335,8 @@
     This opens a window of selectable parameters needed by the selected map projection. These contain default values,
     but likely
     you will want to modify these values based on your scene location or region of interest.
-    (See <a href="Reprojection.html#crsParameters" class="invisibleLink">CRS Parameters</a> for a more on these parameters)
+    (See <a href="Reprojection.html#crsParameters" class="invisibleLink">CRS Parameters</a> for a more on these
+    parameters)
 </p>
 
 
@@ -253,42 +358,47 @@
 <p class="i1">
     <b>Use CRS of file</b><br>
     Select a file from your system (one with geo-coding) and use the identical map projection criteria and geographic
-    boundaries of that file.  This will have the effect that both files are collocated (same raster grid size and grid
-    geocoding) but separate files.  See the Collocation Tool if you wish to actually merge the files together.
+    boundaries of that file. This will have the effect that both files are collocated (same raster grid size and grid
+    geocoding) but separate files. See the Collocation Tool if you wish to actually merge the files together.
 </p>
 <br>
 
 
-
 <p>
-<i><b>Output Settings</b></i>
+    <i><b>Output Settings</b></i>
 </p>
 
 
 <p class="i1">
     <b>Preserve resolution</b><br>
-    Use the SeaDAS defaults which will automatically determine a "best-fit" resolution, output file size, and easting and westing.
+    Use the SeaDAS defaults which will automatically determine a "best-fit" resolution, output file size, and easting
+    and westing.
     You can deselect this and manually set these parameters.
 </p>
 
 <p class="i1">
     <b>Add delta lat/lon bands</b><br>
-    Specifies whether or not delta latitude and longitude bands will be added to the target product. These are virtual bands, which can be used to assess the accuracy of the new geo-coding given by the Coordinate Reference System (CRS) with respect to the old geo-coding.
+    Specifies whether or not delta latitude and longitude bands will be added to the target product. These are virtual
+    bands, which can be used to assess the accuracy of the new geo-coding given by the Coordinate Reference System (CRS)
+    with respect to the old geo-coding.
 </p>
 
 <p class="i1">
     <b>Reproject tie-point grids</b><br>
-    Specifies whether or not the tie-point grids shall be included. If they are reprojected they will appear as bands in the target product and not any more as tie-point grids.
+    Specifies whether or not the tie-point grids shall be included. If they are reprojected they will appear as bands in
+    the target product and not any more as tie-point grids.
 </p>
 
 <p class="i1">
     <b>No-data value</b><br>
-    The default no-data value is used for output pixels in the projected band which have either no corresponding pixel in the source product or the source pixel is invalid.
+    The default no-data value is used for output pixels in the projected band which have either no corresponding pixel
+    in the source product or the source pixel is invalid.
 </p>
 
 <p class="i1">
     <b>Resampling method</b><br>
-    This is the interpolation method.  Choose between Nearest, Bilinear, and Bicubic. (<a href="../general/ResamplingMethods.html">See details</a>)
+    This is the interpolation method. Choose between Nearest, Bilinear, and Bicubic. (<a
+        href="../general/ResamplingMethods.html">See details</a>)
 </p>
 
 
@@ -327,13 +437,15 @@
     This is the CRS WKT (well-known text)
 </p>
 
-<br><br><hr>
+<br><br>
+<hr>
 
 
 <a name="crsParameters"></a>
 <h4>GUI: CRS Parameters</h4>
 <p>
-This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab" class="invisibleLink">Map Projection & Settings</a> window
+    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
+                                                         class="invisibleLink">Map Projection & Settings</a> window
 </p>
 
 <br>
@@ -347,38 +459,45 @@ This is a sub window of options launched from the <a href="Reprojection.html#Par
 
 <p class="i1">
     <b>Semi-Major</b><br>
-    The semi-major axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the equatorial radius.
+    The semi-major axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the equatorial
+    radius.
     This value is automatically filled based on the datum (reference ellipsoid) which you selected.
 </p>
 
 
 <p class="i1">
     <b>Semi-Minor</b><br>
-    The semi-minor axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the polar radius.
+    The semi-minor axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the polar
+    radius.
     This value is automatically filled based on the datum (reference ellipsoid) which you selected.
 </p>
 
 
 <p class="i1">
     <b>False Easting</b><br>
-    This is the distance away from the origin (x component) to place the reference pixel.  This essentially has the effect of
-    shifting the geographic boundaries of your output file sideways.  (<a href="Reprojection.html#eastingNorthing" class="invisibleLink">More details</a>)
+    This is the distance away from the origin (x component) to place the reference pixel. This essentially has the
+    effect of
+    shifting the geographic boundaries of your output file sideways. (<a href="Reprojection.html#eastingNorthing"
+                                                                         class="invisibleLink">More details</a>)
 </p>
 
 
 <p class="i1">
     <b>False Northing</b><br>
-    This is the distance away from the origin (y component) to place the reference pixel.  This essentially has the effect of
-    shifting the geographic boundaries of your output file up and down. (<a href="Reprojection.html#eastingNorthing" class="invisibleLink">More details</a>)</p>
+    This is the distance away from the origin (y component) to place the reference pixel. This essentially has the
+    effect of
+    shifting the geographic boundaries of your output file up and down. (<a href="Reprojection.html#eastingNorthing"
+                                                                            class="invisibleLink">More details</a>)</p>
 
 
-
-<br><br><hr>
+<br><br>
+<hr>
 
 <a name="outputParameters"></a>
 <h4>GUI: Output Parameters</h4>
 <p>
-    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab" class="invisibleLink">Map Projection & Settings</a> window.
+    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
+                                                         class="invisibleLink">Map Projection & Settings</a> window.
 </p>
 
 <br>
@@ -411,19 +530,21 @@ This is a sub window of options launched from the <a href="Reprojection.html#Par
 </p>
 
 
-
-
 <p class="i1">
     <b>Easting</b><br>
-    This is the distance away from the origin (x component) to place the reference pixel.  This essentially has the effect of
-    shifting the geographic boundaries of your output file sideways.  (<a href="Reprojection.html#eastingNorthing" class="invisibleLink">More details</a>)
+    This is the distance away from the origin (x component) to place the reference pixel. This essentially has the
+    effect of
+    shifting the geographic boundaries of your output file sideways. (<a href="Reprojection.html#eastingNorthing"
+                                                                         class="invisibleLink">More details</a>)
 </p>
 
 
 <p class="i1">
     <b>Northing</b><br>
-    This is the distance away from the origin (y component) to place the reference pixel.  This essentially has the effect of
-    shifting the geographic boundaries of your output file up and down. (<a href="Reprojection.html#eastingNorthing" class="invisibleLink">More details</a>)
+    This is the distance away from the origin (y component) to place the reference pixel. This essentially has the
+    effect of
+    shifting the geographic boundaries of your output file up and down. (<a href="Reprojection.html#eastingNorthing"
+                                                                            class="invisibleLink">More details</a>)
 </p>
 
 
@@ -434,20 +555,24 @@ This is a sub window of options launched from the <a href="Reprojection.html#Par
 
 <p class="i1">
     <b>Pixel sizeX</b><br>
-    This is the resolution in the x direction of the output image.  The units are dependent on which CRS you have defined.
+    This is the resolution in the x direction of the output image. The units are dependent on which CRS you have
+    defined.
 </p>
 
 <p class="i1">
     <b>Pixel sizeY</b><br>
-    This is the resolution in the y direction of the output image.  The units are dependent on which CRS you have defined.
+    This is the resolution in the y direction of the output image. The units are dependent on which CRS you have
+    defined.
 </p>
 
 <p class="i1">
     <b>Fit product size</b><br>
     This is used to define the width and height in pixels of the output file such that all data from the input file
     will be "best fit" and fully included in the output file.
-    Of note and caution is that SeaDAS (as of version 7.5) uses the width and height setting and ignores this checkbox when Reproject runs.
-    Really the wording on this should be "Edit sizing".  We will have to look into this.  Regardless, clicking "Reset" will set
+    Of note and caution is that SeaDAS (as of version 7.5) uses the width and height setting and ignores this checkbox
+    when Reproject runs.
+    Really the wording on this should be "Edit sizing". We will have to look into this. Regardless, clicking "Reset"
+    will set
     these values for the width and height to "best fit".
 </p>
 
@@ -462,43 +587,47 @@ This is a sub window of options launched from the <a href="Reprojection.html#Par
 </p>
 
 
-
 <a name="eastingNorthing"></a>
 <p class="i1">
     <b>A bit more about the Easting and Northing fields and the Reset button</b><br>
 
-    The Easting and Northing fields can be a bit intimidating and not so intuitive, however basically you need to ask yourself whether
-    you want the geographic boundaries of your output file to be adapted to "best-fit" and include all the data from the input scene, or
+    The Easting and Northing fields can be a bit intimidating and not so intuitive, however basically you need to ask
+    yourself whether
+    you want the geographic boundaries of your output file to be adapted to "best-fit" and include all the data from the
+    input scene, or
     whether you have a specific and exact geographic boundary for your output file in mind.
 </p>
 
 <p class="i1">
-    For the former "best fit" case, SeaDAS can calculate default Easting and Northing values based on your scene boundaries and
-    CRS criteria.  To do this, click the "Reset" button at the bottom of this GUI window.   Of note is that the very
+    For the former "best fit" case, SeaDAS can calculate default Easting and Northing values based on your scene
+    boundaries and
+    CRS criteria. To do this, click the "Reset" button at the bottom of this GUI window. Of note is that the very
     first you open this sub window during a SeaDAS session, the default will be calculated and applied,
     but from that point onward the assumption is that the value in the textfield is the value which you want to use
-    If you make further changes to the CRS criteria or change to a different file, then you will again need to click "Reset".
+    If you make further changes to the CRS criteria or change to a different file, then you will again need to click
+    "Reset".
 </p>
 <p class="i1">
 
-    For the latter case, since the false easting and false northing fields also appear with the CRS definition it may be better
-    or perhaps more clear to set them there and then set the values here to 0.0 for each.  Either way, keep in mind that the actual
+    For the latter case, since the false easting and false northing fields also appear with the CRS definition it may be
+    better
+    or perhaps more clear to set them there and then set the values here to 0.0 for each. Either way, keep in mind that
+    the actual
     false easting and false northing is the sum of the corresponding values in the CRS parameters and Output Parameters.
 
 </p>
 
 
-
-
-<br><br><hr>
-
+<br><br>
+<hr>
 
 
 <a name="Figure6"></a>
 <h4>GUI: Predefined CRS</h4>
 
 <p>
-    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab" class="invisibleLink">Map Projection & Settings</a> window
+    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
+                                                         class="invisibleLink">Map Projection & Settings</a> window
 </p>
 
 <br>
@@ -511,57 +640,6 @@ This is a sub window of options launched from the <a href="Reprojection.html#Par
 
 <br><br>
 
-
-
-
-<a name="Concepts"></a>
-
-<p class="subSectionTitle">Concepts</p>
-
-
-<p>
-    <b>Valid Pixels and NaNs</b><br>There is not a one-to-one correspondance between the pixels of the input file and
-    those of the output reprojected file. To handle this, the Reproject tool masks out invalid pixels and ultimately
-    reprojects only the valid pixels of the source file. This hidden automated pixel validation step is acheived using
-    the following two
-    criteria: the <b>valid pixel expression</b> and the designation of a <b>no-data value</b>. You can view/modify this
-    criteria by
-    right-clicking on any band, and selecting <b>Properties</b>. Alternatively you can view this with the <b>Band
-    Info</b> tool (<i>Analysis > Band Info</i>)
-    when selecting the band.
-
-    In general this is the desired behavior, unless the valid pixel expression is masking on an ideal range, outside of
-    which there
-    may actually be valid data. If you wish to include this out-of-range data in the reprojection then you will need to
-    edit the
-    valid pixel expression of the band(s) of the source file before reprojecting. One example of this would be when
-    creating true color
-    images using surface reflectances. Because the surface reflectance product is designed based on water leaving
-    radiances for the ocean, pixels which image cloud tops
-    can exceed a reflectance value of 1. In this case, for the case of including bright clouds in your true color
-    imagery, the valid
-    pixel expression band(s) of the source file would need to be modified so as to not throw away values above 1.
-
-
-</p>
-
-<br>
-<i><b>Statistics and Mapped Imagery</b></i>
-
-
-<br>
-<i><b>Upsampling</b></i>
-
-
-<br>
-<i><b>Downsampling</b></i>
-<p>
-
-</p>
-
-
-<br>
-<br>
 
 <a name="Metadata"></a>
 
