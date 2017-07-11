@@ -37,6 +37,7 @@
                     <a href="Reprojection.html#Parameters" class="invisibleLink">Parameters</a><br>
                     <a href="Reprojection.html#Concepts" class="invisibleLink">Concepts</a><br>
                     <a href="Reprojection.html#Metadata" class="invisibleLink">Metadata</a><br>
+                    <a href="Reprojection.html#GPT" class="invisibleLink">Command Line Tool (GPT)</a><br>
                     <a href="Reprojection.html#History" class="invisibleLink">Revision History</a><br>
                 </p>
             </td>
@@ -239,7 +240,7 @@
 </p>
 
 <p class="i1">
-    <b>File Selector</b><br>This is the file to be reprojected and serves as the input file to the Reproject Tool. You
+    <b>File</b><br>This is the file to be reprojected and serves as the input file to the Reproject Tool. You
     may
     conveniently select one of the files currently loaded in SeaDAS using the drop down selector. In this case, a file
     reference number appears to the left of the file name indicating that it is a loaded file and not a direct system
@@ -433,7 +434,7 @@
 </p>
 
 <p class="i1">
-    <b>Show WKT</b><br>
+    <b>Show CRS WKT</b><br>
     This is the CRS WKT (well-known text)
 </p>
 
@@ -650,6 +651,27 @@
 
 <br>
 <br>
+
+<a name="GPT"></a>
+
+<p class="subSectionTitle">Command Line Tool (GPT)</p>
+
+<p>
+    The Reproject tool can also be run from the command line using SeaDAS GPT (graph processing tool).  All parameter
+    options within the GUI are also supported for the command line version with a few minor parameter name differences which
+    will be noted below.
+
+    collocatedWith = use CRS of file
+    crs can be either XML or the EPSG Authority (for example EPSG:4326, AUTO:42001, etc.)
+    wktFile as an input is not available in the GUI, but the GUI can create and display the CRS WKT of the specified CRS parameters
+    which could subsequently be used on the command line.
+</p>
+
+
+
+<br>
+<br>
+
 
 <a name="History"></a>
 
