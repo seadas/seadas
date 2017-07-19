@@ -87,7 +87,6 @@
 <br>
 
 
-
 <a name="Concepts"></a>
 
 <p class="subSectionTitle">Concepts</p>
@@ -98,19 +97,21 @@
     those of the output reprojected file. To handle this, the Reproject tool masks out invalid pixels and ultimately
     reprojects only the valid pixels of the source file. This hidden automated pixel validation step is acheived using
     the following two
-    criteria: the <b>valid pixel expression</b> and the designation of a <b>no-data value</b>. You can view/modify this
+    criteria: the <i>valid pixel expression</i> and the designation of a <i>no-data value</i>. You can view/modify this
     criteria by
-    right-clicking on any band, and selecting <b>Properties</b>. Alternatively you can view this with the <b>Band
-    Info</b> tool (<i>Analysis > Band Info</i>)
+    right-clicking on any band, and selecting <i>Properties</i>. Alternatively you can view this with the <i>Band
+    Info</i> tool (<i>Analysis > Band Info</i>)
     when selecting the band.
 
+    </p>
+<p>
     In general this is the desired behavior, unless the valid pixel expression is masking on an ideal range, outside of
     which there
     may actually be valid data. If you wish to include this out-of-range data in the reprojection then you will need to
     edit the
     valid pixel expression of the band(s) of the source file before reprojecting. One example of this would be when
     creating true color
-    images using surface reflectances. Because the surface reflectance product is designed based on water leaving
+    imagery using surface reflectances. Because the surface reflectance product is designed based on water leaving
     radiances for the ocean, pixels which image cloud tops
     can exceed a reflectance value of 1. In this case, for the case of including bright clouds in your true color
     imagery, the valid
@@ -123,22 +124,22 @@
 <i><b>Statistics and Mapped Imagery</b></i>
 <p>
     In general, it may be best to consider mapping a file one way for statistics and another way for displaying data.
-    For statistics you are best served using an equal area map projection (such as Albers Conic Equal Area, Lambert Azimuthal
-    Equal Area, Sinusoidal, ...). With an equal area projection the Earth surface area is the same for each resultant
-    pixel and they can be treated as such with an equal weighting. However, for large scenes, an equal area map
+    For statistics you are best served using an equal area map projection (such as Albers Conic Equal Area, Lambert
+    Azimuthal
+    Equal Area, Sinusoidal, ...). With an equal area projection, the Earth surface area is the same for each resultant
+    pixel and can be treated as such with an equal per pixel weighting. However, for large scenes, an equal area map
     projection
     may not look natural so using a conformal projection (such as Mercator and Stereographic) is
-    more ideal when displaying imagery.
+    more ideal when displaying this type of imagery.
 </p>
 <p>
 
-    (Note: selection of the "best" map projection is dependent on scene size (is it global, regional, local), scene
+    <i>Note: selection of the "best" map projection is dependent on scene size (is it global, regional, local), scene
     shape
     (does it run narrow north-south, narrow west-east, or is it more square in shape), and scene location (is it at the
-    equator, at one of the Poles, or some span of latitudes soemwhere between the Pole and equator.)
+    equator, at one of the Poles, or some span of latitudes soemwhere between the Pole and equator.</i>
 
 </p>
-
 
 
 <br>
@@ -153,12 +154,12 @@
     resolution, the closer you approach to seeing the pixel shapes of the original unprojected file.
 </p>
 <p>
-    (Note: Ideally a remapped
+    <i>Note: Ideally a remapped
     image should not be displayed at a zoom level such that it displays the pixellation of the output file. Such a
     visual
     might cause a viewer to incorrectly infer a measurement of noise (or lack of noise) pixel to pixel, when
     in fact
-    these pixels do not bear a one-to-one correspondance with the native satellite detector measurements.)
+    these pixels do not bear a one-to-one correspondance with the native satellite detector measurements.</i>
 </p>
 
 
@@ -166,26 +167,21 @@
 <i><b>Downsampling</b></i>
 <p>
     Downsampling is the process of resampling (remapping) your data to a lower resolution. Downsampling by more than a
-    factor
-    of two does have inherent problems, at least in the SeaDAS Reproject and related tools. This is because SeaDAS
-    currently
-    only offers 3 interpolation methods (nearest neighbor, bilinear, and bicubic which use a matrix size on the input
-    file
-    of 1x1, 2x2, and 4x4 respectively for the remapping of each pixel in the output file. Downsampling by greater
-    factors
+    factor of 4 does have some inherent problems, at least in the SeaDAS Reproject and its related GUI tools (see note
+    1). This is because SeaDAS currently only offers 3 interpolation methods (nearest neighbor, bilinear, and bicubic)
+    which use a matrix size on the input file of 1x1, 2x2, and 4x4 respectively to generate each remapped pixel of the
+    output file. (<a href="../general/ResamplingMethods.html">See method details.</a>) Downsampling by greater factors
     than these matrix sizes, will result in many of the pixels in the source file being ignored. Basically, in order to
     ensure that all source data pixels are being use, if you are downsampling by a factor of 4 then use bicubic, a
-    factor
-    of 2 then use bilinear or bicubic, and a factor of 1 then use any of the three.
+    factor of 2 then use bilinear or bicubic, and a factor of 1 then use any of the three.
 
 </p>
+<p><i>Note 1: The resampling(remapping) concept and process is the same in all of the SeaDAS visualization resampling
+    tools: Reproject, Collocate, Mosaic, and Time Series.</i>
+</p>
 <p>
-    (Note: this sampline concept and process is the same in all of the SeaDAS visualization resampling tools: Reproject,
-    Collocate,
-    Mosaic, and Time Series. The SeaDAS OCSSW tools for binning and mapping behave differently and do not ignore
-    any source data pixels for large factor downsampling)
-
-
+    <i>Note 2: The SeaDAS OCSSW tools for binning and mapping behave differently and do not ignore
+        any source data pixels for large factor downsampling</i>
 </p>
 
 
@@ -229,14 +225,14 @@
 <br>
 
 <div class="center">
-    <img src="images/Reproject01.png" border="0"> <br>
-    <i>Figure 2. I/O Parameters Tab</i>
+    <img src="images/Reproject_GUI_01.png" border="0"> <br>
+    <i>Figure 1. I/O Parameters Tab</i>
 </div>
 
 <br><br>
 
 <p>
-    <i><b>Source File</b></i>
+    <i><b>Source</b></i>
 </p>
 
 <p class="i1">
@@ -247,14 +243,18 @@
     file. To select a file directly from your computer system, use the selector button to the right and navigate to the
     desired
     file. A file selected this way directly from your system will not have a file reference number displayed next to it.
-    Note that a loaded file can differ from a system file (even though they may bear the same name) in that you may have
-    made changes to the loaded file in SeaDAS and not saved them.
+    </p>
+
+<p class="i1">
+
+    <i>Note: a loaded file can differ from a system file (even though they may bear the same name) in that you may have
+    made changes to the loaded file in SeaDAS and not saved them.</i>
 </p>
 
 
 <br>
 <p>
-    <i><b>Target File</b></i>
+    <i><b>Output</b></i>
 </p>
 
 <p class="i1">
@@ -263,17 +263,23 @@
 </p>
 
 <p class="i1">
-    <b>Save as</b><br>Used to specify whether the target product should be saved to the file system. The
+    <b>Save file as</b><br>Used to specify whether the file should be physically saved to the file system. The
     combo box presents a list of file formats, currently BEAM-DIMAP, GeoTIFF, and HDF5.
-    The text field allows to specify a target directory. (Note: if deselected this tool will run much faster as the
+</p>
+<p class="i1">
+
+<i>Note: if deselected this tool will run much faster as the
     reprojection
     does not actually occur at the time of run. Subsequently when the user opens a band in the reprojected file the
     reprojection
-    occurs for that band only.)
+    occurs for that band only.)</i>
 </p>
 
 <p class="i1">
     <b>Directory</b><br>Location in which to save file. (Default is the last location in which a file was saved)
+</p>
+<p class="i1">
+    <i>Note: the default is the last directory saved to by any standard GUI tool in SeaDAS</i>
 </p>
 
 <p class="i1">
@@ -295,7 +301,7 @@
 
 
 <div class="center">
-    <img src="images/Reproject04.png"><br><br>
+    <img src="images/Reproject_GUI_02.png"><br><br>
     <i>Figure 2. Map Projection & Settings Tab</i>
 
 </div>
@@ -345,15 +351,10 @@
 
 <p class="i1">
     <b>Predefined CRS</b><br>
-    SeaDAS contains a multitude of pre-defined coordinate reference systems including the EPSG Geodetic Parameter
-    Dataset.
-    (Note: as of SeaDAS 7.5, the EPSG dataset being used is version 7.9.0). Use the selector to the right to choose one
-    of these projections. The XML text representation of the selected projection will be displayed and loaded (
-    See <a href="Reprojection.html#Figure6" class="invisibleLink">Figure 6</a>). If you look at the XML, you can see
-    all the individual parameters which go into the particular projection. You could replicate or deviate from these
-    parameters
-    if you wish by instead using the "Custom CRS" option and manually setting these parameters. Also note that you can
-    use this XML or the authority code when running Reproject in the command line mode.
+    SeaDAS contains a multitude of pre-defined coordinate reference systems including the EPSG (European Petroleum Survey Group) Geodetic Parameter
+    Dataset.   Use the selector to the right to choose one
+    of these projections. (
+    See <a href="Reprojection.html#Figure4" class="invisibleLink">Predefined CRS</a> for more on this).
 </p>
 
 <p class="i1">
@@ -452,7 +453,7 @@
 <br>
 
 <div class="center">
-    <img src="images/Reproject03.png"><br>
+    <img src="images/Reproject_GUI_03.png"><br>
     <i>Figure 3. </i>
 </div>
 
@@ -491,7 +492,59 @@
                                                                             class="invisibleLink">More details</a>)</p>
 
 
+<p class="i1">
+    <b>Map Projection dependent fields</b><br>
+    Each map projection may have additional fields dependent on the particular projection.  These can include:<br>
+    Latitude of center<br>
+    Longitude of center<br>
+    Central meridian<br>
+    Latitude of origin<br>
+    Scale factor<br>
+    Azimuth<br>
+    Standard parallel 1<br>
+
+</p>
 <br><br>
+
+<hr>
+
+
+<a name="Figure4"></a>
+<h4>GUI: Predefined CRS</h4>
+
+<p>
+    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
+                                                         class="invisibleLink">Map Projection & Settings</a> window
+</p>
+
+<br>
+<div class="center">
+
+    <img src="images/Reproject_GUI_04.png"><br>
+    <i>Figure 4. </i>
+</div>
+
+
+<br><br>
+
+<p class="i1">
+    Select a CRS in the left window of this GUI
+    and an XML text representation of the selected projection will be displayed and loaded in the right side of this GUI . If you look at the XML, you can see
+    all the individual parameters which go into the particular projection. You could replicate or deviate from these
+    parameters
+    if you wish by instead using the "Custom CRS" option of the parent window and manually setting these parameters.
+</p>
+
+<p class="i1">
+    <i>Note 1: as of SeaDAS 7.5, the EPSG dataset being used is version 7.9.0</i>
+</p>
+<p class="i1">
+    <i>Note 2: you can
+        use this XML or the authority code when running Reproject in the command line mode.</i>
+</p>
+
+<br><br>
+
 <hr>
 
 <a name="outputParameters"></a>
@@ -504,8 +557,8 @@
 <br>
 
 <div class="center">
-    <img src="images/Reproject05.png"><br>
-    <i>Figure 9. </i>
+    <img src="images/Reproject_GUI_05.png"><br>
+    <i>Figure 5. </i>
 </div>
 
 <br><br>
@@ -603,7 +656,7 @@
     For the former "best fit" case, SeaDAS can calculate default Easting and Northing values based on your scene
     boundaries and
     CRS criteria. To do this, click the "Reset" button at the bottom of this GUI window. Of note is that the very
-    first you open this sub window during a SeaDAS session, the default will be calculated and applied,
+    first time you open this sub window during a SeaDAS session, the default will be calculated and applied,
     but from that point onward the assumption is that the value in the textfield is the value which you want to use
     If you make further changes to the CRS criteria or change to a different file, then you will again need to click
     "Reset".
@@ -620,33 +673,54 @@
 
 
 <br><br>
-<hr>
-
-
-<a name="Figure6"></a>
-<h4>GUI: Predefined CRS</h4>
-
-<p>
-    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
-                                                         class="invisibleLink">Map Projection & Settings</a> window
-</p>
-
-<br>
-<div class="center">
-
-    <img src="images/Reproject06.png"><br>
-    <i>Figure 6. </i>
-</div>
-
-
-<br><br>
 
 
 <a name="Metadata"></a>
 
 <p class="subSectionTitle">Metadata</p>
 
-<p></p>
+<p>The following meta data is added to the output file by this tool.  All the rest of the original meta data from the
+    input file is retained and included in the output file<br>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><code>Reproject_gpt_parameters</code></td>
+        <td>The full GPT operator parameter xml string used in the creation the output file</td>
+    </tr>
+    <tr>
+        <td><code>crs</code></td>
+        <td>The coordinate reference system (WKT) used in the creation of the output file</td>
+    </tr>
+    <tr>
+        <td><code>map_projection</code></td>
+        <td>The map projection name used in the creation of the output file</td>
+    </tr>
+    <tr>
+        <td><code>history</code></td>
+        <td>"Reproject" is prepended to original history value</td>
+    </tr>
+    <tr>
+        <td><code>spatial_resolution</code></td>
+        <td>If exists in original file, "Derived from" is prepended to original value</td>
+    </tr>
+    <tr>
+        <td><code>processing_level</code></td>
+        <td>If exists in original file, "Derived from" is prepended to original value</td>
+    </tr>
+    <tr>
+        <td><code>product_name</code></td>
+        <td>If exists in original file, "Derived from" is prepended to original value</td>
+    </tr>
+    <tr>
+        <td><code>title</code></td>
+        <td>If exists in original file, "Derived from" is prepended to original value</td>
+    </tr>
+
+</table>
 
 
 <br>
@@ -657,18 +731,23 @@
 <p class="subSectionTitle">Command Line Tool (GPT)</p>
 
 <p>
-    The Reproject tool can also be run from the command line using SeaDAS GPT (graph processing tool).  All parameter
-    options within the GUI are also supported for the command line version with a few minor parameter name differences which
+    The Reproject tool can also be run from the command line using SeaDAS GPT (graph processing tool). All parameter
+    options within the GUI are also supported for the command line version with a few minor parameter name differences
+    which
     will be noted below.
-
-    collocatedWith = use CRS of file
-    crs can be either XML or the EPSG Authority (for example EPSG:4326, AUTO:42001, etc.)
-    wktFile as an input is not available in the GUI, but the GUI can create and display the CRS WKT of the specified CRS parameters
-    which could subsequently be used on the command line.
+    </p>
+<p>
+    GPT "collocatedWith" = GUI "use CRS of file" <br>
+    GPT "crs" can be either XML or the EPSG Authority (for example EPSG:4326, AUTO:42001, etc.) <br>
+    GPT "wktFile" as an input is not available in the GUI, but the GUI can create and display the CRS WKT of the specified CRS
+    parameters
+    which could subsequently be used on the command line. <br>
 </p>
 
-
-
+<p>Note: The GPT Reproject tool also includes the Orthorectification. </p>
+<p>
+<a href="../beam-gpf/org_esa_beam_gpf_operators_standard_reproject_ReprojectionOp.html">see Reproject-GPT</a>
+    </p>
 <br>
 <br>
 
