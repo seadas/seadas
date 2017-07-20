@@ -51,16 +51,6 @@
 
         </tocitem>
 
-        <tocitem text="Band Tools">
-            <tocitem text="ASAR NRCS Bands" target="createAsarNrcsBands"/>
-            <tocitem text="DEM Bands" target="createDemRelatedBands"/>
-            <tocitem text="Filtered Band" target="createFilteredBand"/>
-            <tocitem text="Math Band" target="bandArithmetic">
-                <tocitem text="Math Band" target="bandArithmetic"/>
-                <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
-            </tocitem>
-        </tocitem>
-
 
         <tocitem text="Colors">
             <tocitem text="Color Bar" target="exportLegendImageFile"/>
@@ -223,7 +213,7 @@
         </tocitem>
 
 
-        <tocitem text="Processing: Data">
+        <tocitem text="OCSSW">
 
 
             <tocitem text="Introduction" target="processOverview"/>
@@ -257,7 +247,21 @@
 
         </tocitem>
 
-        <tocitem text="Processing: File">
+
+
+        <tocitem text="Raster Band Processing">
+            <tocitem text="ASAR NRCS Bands" target="createAsarNrcsBands"/>
+            <tocitem text="DEM Bands" target="createDemRelatedBands"/>
+            <tocitem text="Filtered Band" target="createFilteredBand"/>
+            <tocitem text="Math Band" target="bandArithmetic">
+                <tocitem text="Math Band" target="bandArithmetic"/>
+                <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
+            </tocitem>
+        </tocitem>
+
+
+
+        <tocitem text="Raster File Processing">
             <tocitem text="Collocate" target="collocation"/>
             <tocitem text="Crop" target="subsetDialog"/>
             <tocitem text="Flip Data" target="dataFlip"/>

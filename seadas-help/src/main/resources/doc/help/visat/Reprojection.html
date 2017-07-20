@@ -57,7 +57,7 @@
 
 <p>
     The Reproject tool enables you to take any file (one which contains geo-coding) and resample it into a new file
-    with
+    of
     a specified map projection. Some key parameters which you can specify are: coordinate reference system
     (CRS),
     resolution, interpolation method, and geographic location.
@@ -65,21 +65,31 @@
 
 <p>This tool is available both from the GUI and from the
     command
-    line (<a href="../beam-gpf/org_esa_beam_gpf_operators_standard_reproject_ReprojectionOp.html" class="invisibleLink">GPT-Reproject</a>).
+    line.
 </p>
 
 <p>
 
-    Figure 1 illustrates the results of applying this tool to a level-2 file using an oblique stereographic projection.
+    Figures 1a and 1b illustrates the results of applying this tool to a level-2 file using an oblique stereographic
+    projection.
     The
     greenish portion of the image is a surface reflectance band and the shape of the level-2 boundary can be seen in the
-    projection. Land and water masking has been applies to pixels outside of the original level-2 file boundaries.
+    projection. Land (in brown) and water (in aqua) masks have been applied in order to display pixels
+    outside of the original level-2 file boundaries.
 
 </p>
 
 <div class="center">
+    <img src="images/Reproject00a.png" border="0"> <br>
+    <i>Figure 1a. Unmapped scene of a level-2 file <br></i>
+</div>
+<br>
+<br>
+
+
+<div class="center">
     <img src="images/Reproject00.png" border="0"> <br>
-    <i>Figure 1. Projected scene of a level-2 file <br>(Oblique Sterographic)</i>
+    <i>Figure 1b. Projected scene of a level-2 file <br>(Oblique Sterographic)</i>
 </div>
 
 
@@ -103,7 +113,7 @@
     Info</i> tool (<i>Analysis > Band Info</i>)
     when selecting the band.
 
-    </p>
+</p>
 <p>
     In general this is the desired behavior, unless the valid pixel expression is masking on an ideal range, outside of
     which there
@@ -135,9 +145,10 @@
 <p>
 
     <i>Note: selection of the "best" map projection is dependent on scene size (is it global, regional, local), scene
-    shape
-    (does it run narrow north-south, narrow west-east, or is it more square in shape), and scene location (is it at the
-    equator, at one of the Poles, or some span of latitudes soemwhere between the Pole and equator.</i>
+        shape
+        (does it run narrow north-south, narrow west-east, or is it more square in shape), and scene location (is it at
+        the
+        equator, at one of the Poles, or some span of latitudes soemwhere between the Pole and equator.</i>
 
 </p>
 
@@ -155,11 +166,11 @@
 </p>
 <p>
     <i>Note: Ideally a remapped
-    image should not be displayed at a zoom level such that it displays the pixellation of the output file. Such a
-    visual
-    might cause a viewer to incorrectly infer a measurement of noise (or lack of noise) pixel to pixel, when
-    in fact
-    these pixels do not bear a one-to-one correspondance with the native satellite detector measurements.</i>
+        image should not be displayed at a zoom level such that it displays the pixellation of the output file. Such a
+        visual
+        might cause a viewer to incorrectly infer a measurement of noise (or lack of noise) pixel to pixel, when
+        in fact
+        these pixels do not bear a one-to-one correspondance with the native satellite detector measurements.</i>
 </p>
 
 
@@ -200,7 +211,7 @@
 <p>
     This tool is also available from the
     command
-    line (<a href="../beam-gpf/org_esa_beam_gpf_operators_standard_reproject_ReprojectionOp.html" class="invisibleLink">GPT-Reproject</a>).
+    line.
 </p>
 
 
@@ -225,7 +236,7 @@
 <br>
 
 <div class="center">
-    <img src="images/Reproject_GUI_01.png" border="0"> <br>
+    <img src="images/Reproject_GUI_01.png" border="0"> <br><br>
     <i>Figure 1. I/O Parameters Tab</i>
 </div>
 
@@ -243,12 +254,12 @@
     file. To select a file directly from your computer system, use the selector button to the right and navigate to the
     desired
     file. A file selected this way directly from your system will not have a file reference number displayed next to it.
-    </p>
+</p>
 
 <p class="i1">
 
     <i>Note: a loaded file can differ from a system file (even though they may bear the same name) in that you may have
-    made changes to the loaded file in SeaDAS and not saved them.</i>
+        made changes to the loaded file in SeaDAS and not saved them.</i>
 </p>
 
 
@@ -268,11 +279,11 @@
 </p>
 <p class="i1">
 
-<i>Note: if deselected this tool will run much faster as the
-    reprojection
-    does not actually occur at the time of run. Subsequently when the user opens a band in the reprojected file the
-    reprojection
-    occurs for that band only.)</i>
+    <i>Note: if deselected this tool will run much faster as the
+        reprojection
+        does not actually occur at the time of run. Subsequently when the user opens a band in the reprojected file the
+        reprojection
+        occurs for that band only.)</i>
 </p>
 
 <p class="i1">
@@ -351,8 +362,9 @@
 
 <p class="i1">
     <b>Predefined CRS</b><br>
-    SeaDAS contains a multitude of pre-defined coordinate reference systems including the EPSG (European Petroleum Survey Group) Geodetic Parameter
-    Dataset.   Use the selector to the right to choose one
+    SeaDAS contains a multitude of pre-defined coordinate reference systems including the EPSG (European Petroleum
+    Survey Group) Geodetic Parameter
+    Dataset. Use the selector to the right to choose one
     of these projections. (
     See <a href="Reprojection.html#Figure4" class="invisibleLink">Predefined CRS</a> for more on this).
 </p>
@@ -494,7 +506,8 @@
 
 <p class="i1">
     <b>Map Projection dependent fields</b><br>
-    Each map projection may have additional fields dependent on the particular projection.  These can include:<br>
+    Each map projection may have additional fields dependent on the particular projection. Some of these parameters are:
+<p class="i2">
     Latitude of center<br>
     Longitude of center<br>
     Central meridian<br>
@@ -502,7 +515,7 @@
     Scale factor<br>
     Azimuth<br>
     Standard parallel 1<br>
-
+    ...</p>
 </p>
 <br><br>
 
@@ -529,7 +542,8 @@
 
 <p class="i1">
     Select a CRS in the left window of this GUI
-    and an XML text representation of the selected projection will be displayed and loaded in the right side of this GUI . If you look at the XML, you can see
+    and an XML text representation of the selected projection will be displayed and loaded in the right side of this GUI
+    . If you look at the XML, you can see
     all the individual parameters which go into the particular projection. You could replicate or deviate from these
     parameters
     if you wish by instead using the "Custom CRS" option of the parent window and manually setting these parameters.
@@ -604,7 +618,8 @@
 
 <p class="i1">
     <b>Orientation</b><br>
-    This is the angular rotation of the output image.
+    This is the angular rotation of the output image.  It is the angle between geographic north and map grid north (in degrees),
+    in other words, the convergence angle of the projection's vertical axis from true north.
 </p>
 
 <p class="i1">
@@ -643,7 +658,7 @@
 
 <a name="eastingNorthing"></a>
 <p class="i1">
-    <b>A bit more about the Easting and Northing fields and the Reset button</b><br>
+    <i><b>A bit more about the Easting and Northing fields and the Reset button</b></i><br>
 
     The Easting and Northing fields can be a bit intimidating and not so intuitive, however basically you need to ask
     yourself whether
@@ -670,6 +685,9 @@
     false easting and false northing is the sum of the corresponding values in the CRS parameters and Output Parameters.
 
 </p>
+<p class="i1"><i>Note: Easting, northing and the pixel size are given in the units of the underlying map
+    (e.g. dec. degree for geographic and meter for the UTM projection).</i>
+    </p>
 
 
 <br><br>
@@ -679,7 +697,7 @@
 
 <p class="subSectionTitle">Metadata</p>
 
-<p>The following meta data is added to the output file by this tool.  All the rest of the original meta data from the
+<p>The following meta data is added to the output file by this tool. All the rest of the original meta data from the
     input file is retained and included in the output file<br>
 
 <table>
@@ -735,19 +753,20 @@
     options within the GUI are also supported for the command line version with a few minor parameter name differences
     which
     will be noted below.
-    </p>
+</p>
 <p>
     GPT "collocatedWith" = GUI "use CRS of file" <br>
     GPT "crs" can be either XML or the EPSG Authority (for example EPSG:4326, AUTO:42001, etc.) <br>
-    GPT "wktFile" as an input is not available in the GUI, but the GUI can create and display the CRS WKT of the specified CRS
+    GPT "wktFile" as an input is not available in the GUI, but the GUI can create and display the CRS WKT of the
+    specified CRS
     parameters
     which could subsequently be used on the command line. <br>
 </p>
 
-<p>Note: The GPT Reproject tool also includes the Orthorectification. </p>
+<p><i>Note: The GPT Reproject tool also includes the Orthorectification.</i> </p>
 <p>
-<a href="../beam-gpf/org_esa_beam_gpf_operators_standard_reproject_ReprojectionOp.html">see Reproject-GPT</a>
-    </p>
+    <a href="../beam-gpf/org_esa_beam_gpf_operators_standard_reproject_ReprojectionOp.html">see more on Reproject-GPT</a>
+</p>
 <br>
 <br>
 
@@ -756,7 +775,15 @@
 
 <p class="subSectionTitle">Revision History</p>
 
-<p></p>
+<ul>
+    <li>Version 7.5
+        <ul>
+            <li>Major rewrite of the help page</li>
+            <li>Slight rewording of a few parameters and tabs of the GUI</li>
+            <li>Meta data is now written to the output file</li>
+        </ul>
+    </li>
+</ul>
 
 
 </body>
