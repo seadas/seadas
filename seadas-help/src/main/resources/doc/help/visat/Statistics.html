@@ -1,0 +1,932 @@
+<!--
+  ~ Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>SeaDAS Help - Statistics Tool</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h2>Statistics</h2>
+
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <p>
+                    <a href="Statistics.html#Overview" class="invisibleLink">Overview</a><br>
+                    <a href="Statistics.html#MenuLocation" class="invisibleLink">Menu Location</a><br>
+                    <a href="Statistics.html#Parameters" class="invisibleLink">Parameters</a><br>
+                    <a href="Statistics.html#Concepts" class="invisibleLink">Concepts</a><br>
+                    <a href="Statistics.html#Metadata" class="invisibleLink">Metadata</a><br>
+                    <a href="Statistics.html#GPT" class="invisibleLink">Command Line Tool (GPT)</a><br>
+                    <a href="Statistics.html#History" class="invisibleLink">Revision History</a><br>
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<br>
+<br>
+
+
+<a name="Overview"></a>
+
+
+<p class="subSectionTitle">Overview</p>
+
+<p>
+    The Statistics tool enables you to process and view statistics and relevent metadata for any file loaded within
+    SeaDAS.  The statistics result can be refined to a particular region of interest and masking criteria.  The statistics
+    may be done for a single band or simultaneously for any and/or all bands within a file.  A spreadsheet captures
+    these statistics for easy viewing and export to other spreadsheet program.  A histogram and percentile plot can also
+    be simultaneously generated.
+
+</p>
+
+<p>This tool is available both from the GUI and from the
+    command
+    line.
+</p>
+
+<p>
+
+    Figures 0 illustrates the results of applying this tool to a level-2 file.
+
+</p>
+
+<div class="center">
+    <img src="images/Statistics00.png" border="0"> <br>
+    <i>Figure 0. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+
+<div class="center">
+    <img src="images/Statistics01.png" border="0"> <br>
+    <i>Figure 01. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+<div class="center">
+    <img src="images/Statistics02.png" border="0"> <br>
+    <i>Figure 02. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+
+<div class="center">
+    <img src="images/Statistics03.png" border="0"> <br>
+    <i>Figure 03. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+
+<div class="center">
+    <img src="images/Statistics04_Bins.png" border="0"> <br>
+    <i>Figure 04_Bins. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+<div class="center">
+    <img src="images/Statistics04_Fields.png" border="0"> <br>
+    <i>Figure 04_Fields. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+<div class="center">
+    <img src="images/Statistics04_Format.png" border="0"> <br>
+    <i>Figure 04_Format. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+<div class="center">
+    <img src="images/Statistics04_Plots.png" border="0"> <br>
+    <i>Figure 04_Plots. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+<div class="center">
+    <img src="images/Statistics04_View.png" border="0"> <br>
+    <i>Figure 04_View. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+<div class="center">
+    <img src="images/Statistics04_Fields_additional.png" border="0"> <br>
+    <i>Figure 04_fields_additional. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+
+
+
+<div class="center">
+    <img src="images/Statistics05a.png" border="0"> <br>
+    <i>Figure 05a. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+<div class="center">
+    <img src="images/Statistics05b.png" border="0"> <br>
+    <i>Figure 05b. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+
+<div class="center">
+    <img src="images/Statistics_Preferences.png" border="0"> <br>
+    <i>Figure Statistics_Preferences. Statistics example<br></i>
+</div>
+
+<br>
+<br>
+
+
+<a name="Fields"></a>
+<h4>Fields</h4>
+<p>
+    This is a description of each of the fields generated.
+</p>
+<br>
+
+
+
+<p>
+    <i><b>Statistics</b></i>
+</p>
+
+<p class="i1">
+    <b>Pixels</b><br>This is the total number of "valid" pixels used to calculate the statistics.
+</p>
+
+<p class="i1">
+
+    <i>Note: this does not include pixels which do not contain data.</i>
+</p>
+
+
+<p class="i1">
+    <b>Minimum</b><br>This minimum value of the "valid" pixel.
+</p>
+
+<p class="i1">
+    <b>Maximum</b><br>This maximum value of the "valid" pixel.
+</p>
+
+<p class="i1">
+    <b>Mean</b><br>This mean value of the "valid" pixel.
+</p>
+
+<p class="i1">
+    <b>Median</b><br>This median value of the "valid" pixel.  Calculated by converted 2d raster of "valid" pixels into
+    an array and then obtaining the center element of the array.
+</p>
+<p class="i1">
+
+    <i>Note: versions of SeaDAS prior to 7.5 calculated the median by binned the data and then obtaining the 50 percentile
+    value.  This method is a quicker calculation especially in the case of a large data set, but is dependent on the bin size.
+        This field is still available as the'Median(Binned)' field.  </i>
+</p>
+
+<p class="i1">
+
+    <i>Note: because, especially for larger files, the processing time can increase, this field is optional and you can
+        set whether or not to have the median generated. </i>
+</p>
+
+<p class="i1">
+    <b>Standard_Deviation</b><br>This minimum value of the "valid" pixel.
+</p>
+
+<p class="i1">
+    <b>Coefficient_of_Variation</b><br>Standard_Deviation / Mean.
+</p>
+
+
+
+
+
+<a name="Concepts"></a>
+
+<p class="subSectionTitle">Concepts</p>
+
+
+<br>
+
+
+<p>
+    <i><b>Regional and Validation Masking</b></i>
+</p>
+
+<p>
+    SeaDAS enables the masking out of unwanted pixels, so that the statistics can be done on only the pixels which
+    meet the masking criteria.  Conceptually, there are 2 types of masking, region-of-interest (ROI) and validation.
+    The first type is region based where you have
+    defined a specific area of interest on the Earth, and pixels outside of this are intended to be masked out.  Region masking, by
+    it's very nature is stable across time and not effected by temporal changes such as atmospheric parameters, sunglint, straylight, etc.
+      These latter parameters can be considered validation parameters.
+</p>
+
+<p class="i1">
+    <b>For the GUI:</b><br>There are 2 methods
+    by which SeaDAS applies the masks. Y ou may select a mask of a region (or many region masks) within
+    the Statistics Tool GUI and these are your ROI masks.  If you right click on a band
+    in the File Manager, go to Properties you will find the Valid Pixel Expression and this is where the validation masks are applied.
+
+</p>
+<p class="i1">
+    If you stay within the rigid constructs of the meaning these 2 masking tool parameters, then you would adjust the validPixelExpression to include
+    the atmospheric, sunglint, straylight, etc. parameters
+    However, adjusting the validPixelExpression for each band is probably not the most convenient way to run the statistics tool from the GUI.  Instead,
+    you may want to create a new mask in the Mask Manager which is a composite of the region(s) and the validation masks (for
+    example: MY_MASK = MY_REGION && !STRAYLIGHT && !HIGLINT).  This new composite mask could then be selected within the Statistics GUI
+    as the mask to do the statistics on.  Conversely, (but you probably won't want to do this), you could inject the region
+    mask into the validPixelExpression.
+</p>
+<p class="i1">
+    <i>Note: when you select multiple masks within the Statistics GUI, it will generate one set of statistics for each mask selected.
+        It will not combine these masks together into a single mask.
+        </i>
+</p>
+<p class="i1">
+    <b>For GPT:</b><br>Again there are 2 methods by which SeaDAS applies the masks
+     but with is a slight nuanced difference when running from the command line.  In this case, relevant to the description above,
+    you can supply as parameters a shapefile and a validPixelExpression.  The shapefile automatically loads into SeaDAS, and creates
+    the region of interest mask.  If you want to added in validation masking you will need to do this with the validPixelExpression.
+</p>
+<p class="i1">
+    <i>Note: when editing the validPixelExpression to include any custom validation parameters, keep in mind that you are overwriting the
+        default validPixelExpression (for example for chlor_a you will want to do something like this: chlor_a > 0.001 &&
+        chlor_a <= 100 && !STRAYLIGHT && !HIGLINT).
+
+    </i>
+</p>
+
+
+<br>
+<br>
+
+<p>
+    <i><b>Statistics and Mapped Imagery</b></i>
+</p>
+
+<p>
+    In general, it may be best to consider mapping a file one way for statistics and another way for displaying data.
+    For statistics you are best served using an equal area map projection (such as Albers Conic Equal Area, Lambert
+    Azimuthal
+    Equal Area, Sinusoidal, ...). With an equal area projection, the Earth surface area is the same for each resultant
+    pixel and can be treated as such with an equal per pixel weighting. However, for large scenes, an equal area map
+    projection
+    may not look natural so using a conformal projection (such as Mercator and Stereographic) is
+    more ideal when displaying this type of imagery.
+</p>
+<p>
+
+    <i>Note: selection of the "best" map projection is dependent on scene size (is it global, regional, local), scene
+        shape
+        (does it run narrow north-south, narrow west-east, or is it more square in shape), and scene location (is it at
+        the
+        equator, at one of the Poles, or some span of latitudes soemwhere between the Pole and equator.</i>
+
+</p>
+
+
+
+<br>
+<br>
+
+<a name="MenuLocation"></a>
+
+<p class="subSectionTitle">Menu Location</p>
+
+<p>
+    The Statistics tool can be accessed in the menu system (Analysis -> Statistics) or by clicking the tool bar icon <img
+        src="../visat/images/icons/Statistics24.gif" border="0">
+</p>
+<p>
+    This tool is also available from the
+    command
+    line.
+</p>
+
+
+<br>
+<br>
+
+<a name="Parameters"></a>
+<p class="subSectionTitle">Parameters</p>
+
+<p>
+    The following are the set of GUI windows and sub windows which are used to define the statistics parameters and view
+    the results
+</p>
+<br>
+<hr>
+
+
+<a name="ParametersIO"></a>
+<h4>GUI: I/O Parameters Tab</h4>
+<p>
+    This is a tab of the Reproject window
+</p>
+<br>
+
+<div class="center">
+    <img src="images/Reproject_GUI_01.png" border="0"> <br><br>
+    <i>Figure 1. I/O Parameters Tab</i>
+</div>
+
+<br><br>
+
+<p>
+    <i><b>Source</b></i>
+</p>
+
+<p class="i1">
+    <b>File</b><br>This is the file to be reprojected and serves as the input file to the Reproject Tool. You
+    may
+    conveniently select one of the files currently loaded in SeaDAS using the drop down selector. In this case, a file
+    reference number appears to the left of the file name indicating that it is a loaded file and not a direct system
+    file. To select a file directly from your computer system, use the selector button to the right and navigate to the
+    desired
+    file. A file selected this way directly from your system will not have a file reference number displayed next to it.
+</p>
+
+<p class="i1">
+
+    <i>Note: a loaded file can differ from a system file (even though they may bear the same name) in that you may have
+        made changes to the loaded file in SeaDAS and not saved them.</i>
+</p>
+
+
+<br>
+<p>
+    <i><b>Output</b></i>
+</p>
+
+<p class="i1">
+    <b>Name</b><br>This is the name of the reprojected file which will be generated. The default behavior appends
+    "_reprojected" to the original filename.
+</p>
+
+<p class="i1">
+    <b>Save file as</b><br>Used to specify whether the file should be physically saved to the file system. The
+    combo box presents a list of file formats, currently BEAM-DIMAP, GeoTIFF, and HDF5.
+</p>
+<p class="i1">
+
+    <i>Note: if deselected this tool will run much faster as the
+        reprojection
+        does not actually occur at the time of run. Subsequently when the user opens a band in the reprojected file the
+        reprojection
+        occurs for that band only.)</i>
+</p>
+
+<p class="i1">
+    <b>Directory</b><br>Location in which to save file. (Default is the last location in which a file was saved)
+</p>
+<p class="i1">
+    <i>Note: the default is the last directory saved to by any standard GUI tool in SeaDAS</i>
+</p>
+
+<p class="i1">
+    <b>Open in SeaDAS</b><br>Used to specify whether the file should be automatically opened in SeaDAS.
+</p>
+
+
+<br><br>
+<hr>
+
+
+<a name="ParametersMapProjectionTab"></a>
+
+<h4>GUI: Map Projection & Settings Tab</h4>
+<p>
+    This is a tab of the Reproject window
+</p>
+<br>
+
+
+<div class="center">
+    <img src="images/Reproject_GUI_02.png"><br><br>
+    <i>Figure 2. Map Projection & Settings Tab</i>
+
+</div>
+
+<br><br>
+
+
+<p>
+    <i><b>Coordinate Reference System (CRS)</b></i><br>
+    There are 3 options for selecting a CRS: create on yourself - "Custom CRS"; select one - "Predefined CRS"; or use
+    one
+    from an existing file - "Use CRS of file".
+</p>
+
+
+<p class="i1">
+    <b>Custom CRS</b><br>
+    With this option you will manually select the map projection (along with it's parameters) and the datum to use.
+</p>
+
+<p class="i2">
+    <b>Geodetic datum</b><br>
+    The coordinate system for locating positions on the Earth. In general, these are based on reference ellipsoids used
+    to represent the shape of the Earth. You can select from a variety of datums. The most common (and SeaDAS default)
+    is "WGS 84" (WGS 1984, EPSG:4326).
+
+</p>
+
+<p class="i2">
+    <b>Projection</b><br>
+    The map projection (or how the 3 dimensional Earth's surface will be transformed on a 2 dimensional surface).
+    Select from a list of map projections. If a projection requires parameters then the "CRS Parameters" button will
+    become selectable.
+</p>
+
+<p class="i3">
+    <b>CRS Parameters</b><br>
+    This opens a window of selectable parameters needed by the selected map projection. These contain default values,
+    but likely
+    you will want to modify these values based on your scene location or region of interest.
+    (See <a href="Reprojection.html#crsParameters" class="invisibleLink">CRS Parameters</a> for a more on these
+    parameters)
+</p>
+
+
+</p>
+
+<p class="i1">
+    <b>Predefined CRS</b><br>
+    SeaDAS contains a multitude of pre-defined coordinate reference systems including the EPSG (European Petroleum
+    Survey Group) Geodetic Parameter
+    Dataset. Use the selector to the right to choose one
+    of these projections. (
+    See <a href="Reprojection.html#Figure4" class="invisibleLink">Predefined CRS</a> for more on this).
+</p>
+
+<p class="i1">
+    <b>Use CRS of file</b><br>
+    Select a file from your system (one with geo-coding) and use the identical map projection criteria and geographic
+    boundaries of that file. This will have the effect that both files are collocated (same raster grid size and grid
+    geocoding) but separate files. See the Collocation Tool if you wish to actually merge the files together.
+</p>
+<br>
+
+
+<p>
+    <i><b>Output Settings</b></i>
+</p>
+
+
+<p class="i1">
+    <b>Preserve resolution</b><br>
+    Use the SeaDAS defaults which will automatically determine a "best-fit" resolution, output file size, and easting
+    and westing.
+    You can deselect this and manually set these parameters.
+</p>
+
+<p class="i1">
+    <b>Add delta lat/lon bands</b><br>
+    Specifies whether or not delta latitude and longitude bands will be added to the target product. These are virtual
+    bands, which can be used to assess the accuracy of the new geo-coding given by the Coordinate Reference System (CRS)
+    with respect to the old geo-coding.
+</p>
+
+<p class="i1">
+    <b>Reproject tie-point grids</b><br>
+    Specifies whether or not the tie-point grids shall be included. If they are reprojected they will appear as bands in
+    the target product and not any more as tie-point grids.
+</p>
+
+<p class="i1">
+    <b>No-data value</b><br>
+    The default no-data value is used for output pixels in the projected band which have either no corresponding pixel
+    in the source product or the source pixel is invalid.
+</p>
+
+<p class="i1">
+    <b>Resampling method</b><br>
+    This is the interpolation method. Choose between Nearest, Bilinear, and Bicubic. (<a
+        href="../general/ResamplingMethods.html">See details</a>)
+</p>
+
+
+<br>
+
+
+<i><b>Output Information</b></i>
+
+<p class="i1">
+    <b>Scene width</b><br>
+    This will be the width in pixels of the output file.
+</p>
+
+<p class="i1">
+    <b>Scene height</b><br>
+    This will be the height in pixels of the output file.
+</p>
+
+<p class="i1">
+    <b>Center longitude</b><br>
+    This is the longitude of the center of the source file.
+</p>
+
+<p class="i1">
+    <b>Center latitude</b><br>
+    This is the latitude of the center of the source file.
+</p>
+
+<p class="i1">
+    <b>CRS</b><br>
+    This is name of the chosen projection and datum
+</p>
+
+<p class="i1">
+    <b>Show CRS WKT</b><br>
+    This is the CRS WKT (well-known text)
+</p>
+
+<br><br>
+<hr>
+
+
+<a name="crsParameters"></a>
+<h4>GUI: CRS Parameters</h4>
+<p>
+    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
+                                                         class="invisibleLink">Map Projection & Settings</a> window
+</p>
+
+<br>
+
+<div class="center">
+    <img src="images/Reproject_GUI_03.png"><br>
+    <i>Figure 3. </i>
+</div>
+
+<br><br>
+
+<p class="i1">
+    <b>Semi-Major</b><br>
+    The semi-major axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the equatorial
+    radius.
+    This value is automatically filled based on the datum (reference ellipsoid) which you selected.
+</p>
+
+
+<p class="i1">
+    <b>Semi-Minor</b><br>
+    The semi-minor axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the polar
+    radius.
+    This value is automatically filled based on the datum (reference ellipsoid) which you selected.
+</p>
+
+
+<p class="i1">
+    <b>False Easting</b><br>
+    This is the distance away from the origin (x component) to place the reference pixel. This essentially has the
+    effect of
+    shifting the geographic boundaries of your output file sideways. (<a href="Reprojection.html#eastingNorthing"
+                                                                         class="invisibleLink">More details</a>)
+</p>
+
+
+<p class="i1">
+    <b>False Northing</b><br>
+    This is the distance away from the origin (y component) to place the reference pixel. This essentially has the
+    effect of
+    shifting the geographic boundaries of your output file up and down. (<a href="Reprojection.html#eastingNorthing"
+                                                                            class="invisibleLink">More details</a>)</p>
+
+
+<p class="i1">
+    <b>Map Projection dependent fields</b><br>
+    Each map projection may have additional fields dependent on the particular projection. Some of these parameters are:
+<p class="i2">
+    Latitude of center<br>
+    Longitude of center<br>
+    Central meridian<br>
+    Latitude of origin<br>
+    Scale factor<br>
+    Azimuth<br>
+    Standard parallel 1<br>
+    ...</p>
+</p>
+<br><br>
+
+<hr>
+
+
+<a name="Figure4"></a>
+<h4>GUI: Predefined CRS</h4>
+
+<p>
+    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
+                                                         class="invisibleLink">Map Projection & Settings</a> window
+</p>
+
+<br>
+<div class="center">
+
+    <img src="images/Reproject_GUI_04.png"><br>
+    <i>Figure 4. </i>
+</div>
+
+
+<br><br>
+
+<p class="i1">
+    Select a CRS in the left window of this GUI
+    and an XML text representation of the selected projection will be displayed and loaded in the right side of this GUI
+    . If you look at the XML, you can see
+    all the individual parameters which go into the particular projection. You could replicate or deviate from these
+    parameters
+    if you wish by instead using the "Custom CRS" option of the parent window and manually setting these parameters.
+</p>
+
+<p class="i1">
+    <i>Note 1: as of SeaDAS 7.5, the EPSG dataset being used is version 7.9.0</i>
+</p>
+<p class="i1">
+    <i>Note 2: you can
+        use this XML or the authority code when running Reproject in the command line mode.</i>
+</p>
+
+<br><br>
+
+<hr>
+
+<a name="outputParameters"></a>
+<h4>GUI: Output Parameters</h4>
+<p>
+    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
+                                                         class="invisibleLink">Map Projection & Settings</a> window.
+</p>
+
+<br>
+
+<div class="center">
+    <img src="images/Reproject_GUI_05.png"><br>
+    <i>Figure 5. </i>
+</div>
+
+<br><br>
+
+<p class="i1">
+    <b>Reference Pixel</b><br>
+    This is the pixel of your output file to use for setting the easting and northing.
+</p>
+
+<p class="i2">
+    <b>Reference pixel is at scene upper left</b><br>
+    In this case the upper left pixel of the output file will be used as the reference.
+</p>
+
+<p class="i2">
+    <b>Reference pixel is at scene center</b><br>
+    In this case the center pixel of the output file will be used as the reference.
+</p>
+
+<p class="i2">
+    <b>Other reference pixel position</b><br>
+    In this case you custom specify which pixel of the output file will be used as the reference.
+</p>
+
+
+<p class="i1">
+    <b>Easting</b><br>
+    This is the distance away from the origin (x component) to place the reference pixel. This essentially has the
+    effect of
+    shifting the geographic boundaries of your output file sideways. (<a href="Reprojection.html#eastingNorthing"
+                                                                         class="invisibleLink">More details</a>)
+</p>
+
+
+<p class="i1">
+    <b>Northing</b><br>
+    This is the distance away from the origin (y component) to place the reference pixel. This essentially has the
+    effect of
+    shifting the geographic boundaries of your output file up and down. (<a href="Reprojection.html#eastingNorthing"
+                                                                            class="invisibleLink">More details</a>)
+</p>
+
+
+<p class="i1">
+    <b>Orientation</b><br>
+    This is the angular rotation of the output image.  It is the angle between geographic north and map grid north (in degrees),
+    in other words, the convergence angle of the projection's vertical axis from true north.
+</p>
+
+<p class="i1">
+    <b>Pixel sizeX</b><br>
+    This is the resolution in the x direction of the output image. The units are dependent on which CRS you have
+    defined.
+</p>
+
+<p class="i1">
+    <b>Pixel sizeY</b><br>
+    This is the resolution in the y direction of the output image. The units are dependent on which CRS you have
+    defined.
+</p>
+
+<p class="i1">
+    <b>Fit product size</b><br>
+    This is used to define the width and height in pixels of the output file such that all data from the input file
+    will be "best fit" and fully included in the output file.
+    Of note and caution is that SeaDAS (as of version 7.5) uses the width and height setting and ignores this checkbox
+    when Reproject runs.
+    Really the wording on this should be "Edit sizing". We will have to look into this. Regardless, clicking "Reset"
+    will set
+    these values for the width and height to "best fit".
+</p>
+
+<p class="i2">
+    <b>Width</b><br>
+    This is the desired width in pixels of the output file.
+</p>
+
+<p class="i2">
+    <b>Height</b><br>
+    This is the desired height in pixels of the output file.
+</p>
+
+
+<a name="eastingNorthing"></a>
+<p class="i1">
+    <i><b>A bit more about the Easting and Northing fields and the Reset button</b></i><br>
+
+    The Easting and Northing fields can be a bit intimidating and not so intuitive, however basically you need to ask
+    yourself whether
+    you want the geographic boundaries of your output file to be adapted to "best-fit" and include all the data from the
+    input scene, or
+    whether you have a specific and exact geographic boundary for your output file in mind.
+</p>
+
+<p class="i1">
+    For the former "best fit" case, SeaDAS can calculate default Easting and Northing values based on your scene
+    boundaries and
+    CRS criteria. To do this, click the "Reset" button at the bottom of this GUI window. Of note is that the very
+    first time you open this sub window during a SeaDAS session, the default will be calculated and applied,
+    but from that point onward the assumption is that the value in the textfield is the value which you want to use
+    If you make further changes to the CRS criteria or change to a different file, then you will again need to click
+    "Reset".
+</p>
+<p class="i1">
+
+    For the latter case, since the false easting and false northing fields also appear with the CRS definition it may be
+    better
+    or perhaps more clear to set them there and then set the values here to 0.0 for each. Either way, keep in mind that
+    the actual
+    false easting and false northing is the sum of the corresponding values in the CRS parameters and Output Parameters.
+
+</p>
+<p class="i1"><i>Note: Easting, northing and the pixel size are given in the units of the underlying map
+    (e.g. dec. degree for geographic and meter for the UTM projection).</i>
+</p>
+
+
+<br><br>
+
+
+<a name="Metadata"></a>
+
+<p class="subSectionTitle">Metadata</p>
+
+<p>The following meta data is added to the output file by this tool. All the rest of the original meta data from the
+    input file is retained and included in the output file<br>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><code>Reproject_gpt_parameters</code></td>
+        <td>The full GPT operator parameter xml string used in the creation the output file</td>
+    </tr>
+    <tr>
+        <td><code>crs</code></td>
+        <td>The coordinate reference system (WKT) used in the creation of the output file</td>
+    </tr>
+    <tr>
+        <td><code>map_projection</code></td>
+        <td>The map projection name used in the creation of the output file</td>
+    </tr>
+    <tr>
+        <td><code>history</code></td>
+        <td>"Reproject" is prepended to original history value</td>
+    </tr>
+    <tr>
+        <td><code>spatial_resolution</code></td>
+        <td>If exists in original file, "Derived from" is prepended to original value</td>
+    </tr>
+    <tr>
+        <td><code>processing_level</code></td>
+        <td>If exists in original file, "Derived from" is prepended to original value</td>
+    </tr>
+    <tr>
+        <td><code>product_name</code></td>
+        <td>If exists in original file, "Derived from" is prepended to original value</td>
+    </tr>
+    <tr>
+        <td><code>title</code></td>
+        <td>If exists in original file, "Derived from" is prepended to original value</td>
+    </tr>
+
+</table>
+
+
+<br>
+<br>
+
+<a name="GPT"></a>
+
+<p class="subSectionTitle">Command Line Tool (GPT)</p>
+
+<p>
+    The Reproject tool can also be run from the command line using SeaDAS GPT (graph processing tool). All parameter
+    options within the GUI are also supported for the command line version with a few minor parameter name differences
+    which
+    will be noted below.
+</p>
+<p>
+    GPT "collocatedWith" = GUI "use CRS of file" <br>
+    GPT "crs" can be either XML or the EPSG Authority (for example EPSG:4326, AUTO:42001, etc.) <br>
+    GPT "wktFile" as an input is not available in the GUI, but the GUI can create and display the CRS WKT of the
+    specified CRS
+    parameters
+    which could subsequently be used on the command line. <br>
+</p>
+
+<p><i>Note: The GPT Reproject tool also includes the Orthorectification.</i> </p>
+<p>
+    <a href="../beam-gpf/org_esa_beam_gpf_operators_standard_reproject_ReprojectionOp.html">see more on Reproject-GPT</a>
+</p>
+<br>
+<br>
+
+
+<a name="History"></a>
+
+<p class="subSectionTitle">Revision History</p>
+
+<ul>
+    <li>Version 7.5
+        <ul>
+            <li>Major rewrite of the statistics tool (both GUI and GPT) - besides the added parameters, fields and metadata,
+                the "true" median is now available.  Previous versions used a quicker binned calculation of the median.
+                The current version is now multi-band instead of limited to single band.</li>
+            <li>Major rewrite of the help page</li>
+        </ul>
+    </li>
+</ul>
+
+
+</body>
+</html>

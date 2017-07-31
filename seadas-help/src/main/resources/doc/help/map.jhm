@@ -93,7 +93,7 @@
     <mapID target="noDataValue" url="visat/NoDataValue.html"/>
     <mapID target="informationDialog" url="visat/InformationDialog.html"/>
     <mapID target="geoCodingInfoDialog" url="visat/GeoCodingInfo.html"/>
-    <mapID target="statisticsDialog" url="visat/StatisticsDialog.html"/>
+    <mapID target="statisticsDialog" url="visat/Statistics.html"/>
     <mapID target="histogramDialog" url="visat/HistogramDialog.html"/>
     <mapID target="densityPlotDialog" url="visat/DensityPlotDialog.html"/>
     <mapID target="correlativePlotDialog" url="visat/CorrelativePlotDialog.html"/>
