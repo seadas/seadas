@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>Release Notes: SeaDAS 7.4.1</title>
+    <title>Release Notes: SeaDAS 7.5</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -9,7 +9,7 @@
 <table class="header" width="100%">
     <tr class="header">
         <td class="header">&nbsp;
-            SeaDAS 7.4.1 Release Notes
+            SeaDAS 7.5 Release Notes
         </td>
         <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
                                                                             border=0></a></td>
@@ -19,13 +19,15 @@
 
 
 <pre>
-SeaDAS 7.4.1 Release Notes
-Release Date: April, 2017
+SeaDAS 7.5 Release Notes
+Release Date: Month Day, Year
 
-The SeaDAS development team is pleased to announce the release of SeaDAS 7.4.1
+The SeaDAS development team is pleased to announce the release of SeaDAS 7.5
+
+SeaDAS 7.5 adds processing support of Windows and significantly revises to the Statistics Tool, and more (see below
+    for details)
 
 
-The main factor in the SeaDAS 7.4.1 release is that it updates the statistics tool.
 
 
 
@@ -33,21 +35,49 @@ PRIMARY PACKAGE
 
     FEATURE ADDITIONS/MODIFICATIONS
 
-        -   Statistics Tool (TBD)
+        - Windows Support
 
 
-        - Statistics Operator
-            1. Changed field "median" to actually be calculated from the raster median.  Previously it was the 50% threshold of the histogram.
-            2. Removed the calling parameter "accuracy", and instead using "numBins".
-            3. Default percent thresholds are now {50,80,85,90,95,98}, previously they were {90,95}.
-            4. "Max Error" field name changed to "BinWidth"
-            5. Added "CoefficientOfVariation" field and "TotalBins" field
-            6. Changed all field names and their order to match that of the GUI.
+        - Statistics Tool
+            1. Major revision to this tool:
+                a. Can be run simultaneously for multiple bands (no longer limited to a single band)
+                b. Bin count, and other binning parameters can be set.  (Note: the related accuracy setting has been
+                    removed.  "Bin Width" field was previously named "Max Error")
+                c. More statistics fields added
+                d. Changed "Median" field to be a true calculation of the median.  This field is optional since this
+                    calculation can take longer on very large files.  (Note: previously the median was a binned
+                    calculation dependent on the bin size.)
+                e. A large number of metadata fields added such as Satellite, Platform, Resolution, Time and much more.
+                f. Convenient spreadsheet display added.
+                g. Plot formatting added.
+                h. Percentile plot is now percentile on y-axis and data on x-axis.
+                i. Some delayed screen repaint issue have been resolved.
+                j. Preferences page has been added.
+            2. Major rewrite of the Statistics help page.
+            3. GPT version.
+                a. Adds the same statistics fields as the GUI (although does not add the metadata fields)
+                b. Uses bin count "numBins".  (Note: the related accuracy setting has been removed.)
+
+
+        - Reproject Tool
+            1. Metadata is now written to the output file (both GUI and GPT version).
+            2. Major rewrite of the Reproject help page.
+            2. Slight rewording of a few parameters and tabs of the GUI
+
+
+        - RGB Image Profiles
+            1. A large amount of rgb configuration files (rgb_profiles) have been added.  These include true color and many
+                false color configurations.
+
+        - Coast, Land, Water Tool (GPT) "LandWaterMask"
+            1. This is now fully supported and works in GPT mode.
+
+
 
 
     BUG FIXES
 
-        -
+        - Time Series Tool - bands names were being naming based on local machine time zone, now they use UTC.
 
 
     HELP PAGES
