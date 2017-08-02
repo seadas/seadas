@@ -249,6 +249,199 @@
 
 
 
+<p>
+    <i><b>Band MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the band.  It is obtained directly from the loaded band.  If you wish to edit this
+    band information within the SeaDAS GUI, right-click on a band in the FileManager, then select Properties, then
+    edit the fields.  Now when you run statistics, your edited value will appear in the results.
+</p>
+
+<p class="i1">
+    <b>Band</b><br>The band name.
+</p>
+
+<p class="i1">
+    <b>Unit</b><br>The geophysical unit of the value represented in the band.
+</p>
+
+<p class="i1">
+    <b>Band_Valid_Expression</b><br>Short for "Valid Pixel Expression" of the band.  This is a logical mathematical
+    expression of validation criteria specific to the band which is applied per pixel to determine whether the band
+    pixel is valid.
+</p>
+
+<p class="i1">
+    <b>Band_Description</b><br>A description of the band.
+</p>
+
+
+
+<p>
+    <i><b>File MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the file.
+</p>
+
+<p class="i1">
+    <b>File</b><br>The name of the file "as loaded" into SeaDAS.  The file name can be changed within SeaDAS, yet
+    the original file still exists on your machine.  If you change the file name within SeaDAS (File Manager: right-click
+    file, then Properties, then edit Name), this new file name will be the name displayed by this field.
+</p>
+
+<p class="i1">
+    <b>File_Format</b><br>This is the format of the file "as loaded" into SeaDAS.  SeaDAS contains internal readers
+    for many satellites and data levels.  If you open the file in the GUI the default way (File > Open), then SeaDAS will
+    determine which reader to use on the file.  For example a standard OB.DAAC level-2 file when loaded in will use a
+    level-2 file reader resulting in field "File_Format=SeaDAS-L2".  If you instead import the file using
+    File > Import > NetCDF-CF, the NetCDF-CF reader will be invoked and the resulting field will be "File_Format=NetCDF-CF.
+</p>
+
+<p class="i1">
+    <b>File_Type</b><br>This is the file type determined "as loaded" into SeaDAS.  It is dependent on the reader used
+    internally within SeaDAS to load the file.  It follows the same logic used in obtaining the "File_Format" mentioned
+    above and is somewhat similar in meaning to that field.
+</p>
+
+<p class="i1">
+    <b>File_Width</b><br>The width of the file raster.
+</p>
+
+<p class="i1">
+    <b>File_Height</b>T<br>The height of the file raster.
+</p>
+
+
+MetadataAttribute att = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name");
+MetadataElement elm = product.getMetadataRoot().getElement("Global_Attributes");
+sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name").getData().getElemString();
+} catch (Exception ignore) {
+try {
+MetadataAttribute att = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("instrument");
+
+<p class="i1">
+    <b>Sensor</b>The name of the sensor (satellite) which acquired the data.  This field is obtained from the Global
+    attributes of the metadata.  It searches the following attribute names: "Sensor_Name", "Instrument", "Sensor".
+    If one of these attributes is present then that value gets assigned to the statistics field "Sensor".  Lower-case
+    and upper-case forms of these fields are searched as well.<br>
+</p>
+
+<p class="i1">
+    <b>Platform</b><br>
+</p>
+
+<p class="i1">
+    <b>Resolution</b><br>
+</p>
+
+<p class="i1">
+    <b>Day_Night</b><br>
+</p>
+
+<p class="i1">
+    <b>Orbit</b><br>
+</p>
+
+<p class="i1">
+    <b>Processing_Version</b><br>
+</p>
+
+<p class="i1">
+    <b>Projection</b><br>
+</p>
+
+
+
+<p>
+    <i><b>Mask MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the mask.  It is obtained directly from the loaded mask.  If you wish to edit this
+    mask information within the SeaDAS GUI, this can be done in the MaskManager.   Now when you run statistics, your
+    edited value will appear in the results.
+</p>
+
+<p class="i1">
+    <b>Mask</b><br>The mask name.
+</p>
+
+<p class="i1">
+    <b>Mask_Description</b><br>A description of the band.
+</p>
+
+<p class="i1">
+    <b>Mask_Expression</b><br>This is a logical mathematical expression of criteria specific to the mask which is
+    applied per pixel to determine whether the mask is on or off.
+</p>
+
+
+
+<p>
+    <i><b>Time MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the file.  It is obtained directly from the loaded file.  If you wish to edit this
+    time information within the SeaDAS GUI, right-click on the file in the FileManager, then select Properties, then
+    edit the time fields.  Now when you run statistics, your edited value will appear in the results.
+</p>
+<p class="i1">
+    <i>Note: if the file end time is earlier than the file start time, then the statistics tools will switch these
+        two time fields to be in correct time order.</i>
+</p>
+
+<p class="i1">
+    <b>Start_Date</b><br>The date portion of the file start time.
+</p>
+
+<p class="i1">
+    <b>Start_Time</b><br>The time of day portion of the file start time.
+</p>
+
+<p class="i1">
+    <b>End_Date</b><br>The date portion of the file end time.
+</p>
+
+<p class="i1">
+    <b>End_Time</b><br>The time of day portion of the file end time.
+</p>
+
+
+<p>
+    <i><b>Time Series MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the band.  This is intended
+    to be used on files created by the SeaDAS TimeSeries tool.  The TimeSeries tool generates a single projected and collocated
+    file from multiple input files each of a specific time.  Each band in the output file came from a source file and
+    the band is named based on the time of the input file.
+    So the statistics tool obtained the time series metadata directly from the name of the band.  If you wish to edit this
+    time information within the SeaDAS GUI, right-click on the band in the FileManager, then select Properties, then
+    edit the band name.  Now when you run statistics, your edited value will appear in the results.
+
+</p>
+
+
+<p class="i1">
+    <b>Date</b><br>The date portion of the band time.
+</p>
+
+<p class="i1">
+    <b>Time</b><br>The time of day portion of the band time.
+</p>
+
+
+
+
+
+
+
 
 
 <a name="Concepts"></a>
@@ -331,7 +524,7 @@
         shape
         (does it run narrow north-south, narrow west-east, or is it more square in shape), and scene location (is it at
         the
-        equator, at one of the Poles, or some span of latitudes soemwhere between the Pole and equator.</i>
+        equator, at one of the Poles, or some span of latitudes somewhere between the Pole and equator.</i>
 
 </p>
 
@@ -339,6 +532,22 @@
 
 <br>
 <br>
+
+<p>
+    <i><b>Metadata Fields</b></i>
+</p>
+
+<p>
+    Metadata fields can be included with the statistics output.  These fields are invaluable in documenting your statistics,
+    especially if you run statistics and export the results individually for many files, and then gather it all together
+    into a spreadsheet package or other package.  Unlike statistics, which are precise numbers generated by exact
+    algorithms based on data, metadata is quite dependent and reliant on the type and source of the file.  SeaDAS makes
+    its best effort at gathering together the metadata of a file to include with the statistics.  This help document
+    defines how each metadata field is searched for within a file.
+</p>
+
+
+
 
 <a name="MenuLocation"></a>
 
