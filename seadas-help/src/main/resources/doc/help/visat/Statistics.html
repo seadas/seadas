@@ -312,30 +312,31 @@
 </p>
 
 <p class="i1">
-    <b>File_Height</b>T<br>The height of the file raster.
+    <b>File_Height</b><br>The height of the file raster.
 </p>
 
 
-MetadataAttribute att = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name");
-MetadataElement elm = product.getMetadataRoot().getElement("Global_Attributes");
-sensor = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("Sensor_Name").getData().getElemString();
-} catch (Exception ignore) {
-try {
-MetadataAttribute att = product.getMetadataRoot().getElement("Global_Attributes").getAttribute("instrument");
-
 <p class="i1">
-    <b>Sensor</b>The name of the sensor (satellite) which acquired the data.  This field is obtained from the Global
-    attributes of the metadata.  It searches the following attribute names: "Sensor_Name", "Instrument", "Sensor".
-    If one of these attributes is present then that value gets assigned to the statistics field "Sensor".  Lower-case
-    and upper-case forms of these fields are searched as well.<br>
+    <b>Sensor</b><br>The name of the sensor which acquired the data.  This field is obtained from the Global
+    attributes of the metadata.  The following attribute names are searched: "sensor_name", "instrument", "sensor".
+    If one of these attributes is present then that value gets assigned to the statistics field "Sensor".
+    Upper-case and camel-case variants of these fields are searched as well.
 </p>
 
 <p class="i1">
-    <b>Platform</b><br>
+    <b>Platform</b><br>The name of the platform (satellite) on which the sensor is mounted which acquired the data.
+    This field is obtained from the Global
+    attributes of the metadata.  The following attribute name is looked for: "platform".
+    If one of these attributes is present then that value gets assigned to the statistics field "Platform".
+    Upper-case and camel-case variants of these fields are searched as well.
 </p>
 
+
 <p class="i1">
-    <b>Resolution</b><br>
+    <b>Resolution</b><br>The ground surface resolution (at nadir) of the data.  This field is obtained from the Global
+    attributes of the metadata.  The following attribute names are searched:  "spatial_resolution", "resolution".
+    If one of these attributes is present then that value gets assigned to the statistics field "Resolution".
+    Upper-case and camel-case variants of these fields are searched as well.
 </p>
 
 <p class="i1">
