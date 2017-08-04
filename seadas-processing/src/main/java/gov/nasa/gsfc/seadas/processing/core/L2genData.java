@@ -1183,7 +1183,7 @@ public class L2genData implements L2genDataProcessorModel {
 //            return null;
 //        }
 
-        return ocssw.getMissionSuites();
+        return ocssw.getMissionSuites(iFileInfo.getMissionName(), getGuiName());
     }
 
 
@@ -1345,7 +1345,7 @@ public class L2genData implements L2genDataProcessorModel {
 
             String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), progName, suiteValue);
             if (tmpOFile != null) {
-                File oFile = new File(iFileInfo.getFile().getParent(), tmpOFile);
+                File oFile = new File(iFileInfo.getFile().getParent(), tmpOFile.substring(tmpOFile.lastIndexOf(File.separator) + 1));
                 setParamValue(OFILE, oFile.getAbsolutePath());
             }
 

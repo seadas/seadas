@@ -6,6 +6,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 public class Mission {
 
     private String missionName;
+    private String alternativeMissionNames;
     private boolean isMissionExist;
     private String[] missionSuites;
 
@@ -36,5 +37,13 @@ public class Mission {
 
     public void setMissionSuites(String[] missionSuites) {
         this.missionSuites = missionSuites;
+    }
+
+    public String getAlternativeMissionNames() {
+        return alternativeMissionNames;
+    }
+
+    public void setAlternativeMissionNames(String alternativeMissionNames) {
+        this.alternativeMissionNames = alternativeMissionNames;
     }
 }

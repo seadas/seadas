@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.common.Mission;
+import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 
@@ -43,8 +44,8 @@ public abstract class OCSSW {
     private static boolean monitorProgress = false;
 
     boolean ocsswExist;
-    String ocsswRoot;
-    String ocsswDataDirPath;
+    public static String ocsswRoot;
+    public static String ocsswDataDirPath;
     String ocsswScriptsDirPath;
     String ocsswInstallerScriptPath;
     String ocsswRunnerScriptPath;
@@ -55,6 +56,8 @@ public abstract class OCSSW {
     String ifileName;
     public String missionName;
     public String fileType;
+
+    public MissionInfo missionInfo;
 
     String[] commandArrayPrefix;
     String[] commandArraySuffix;
@@ -85,7 +88,7 @@ public abstract class OCSSW {
         return missions.get(missionName).getMissionSuites();
     }
 
-    public abstract String[] getMissionSuites();
+    public abstract String[] getMissionSuites(String missionName, String programName);
 
     public String getOcsswDataDirPath() {
         return ocsswDataDirPath;
@@ -164,6 +167,8 @@ public abstract class OCSSW {
 
     public void setMissionName(String missionName) {
         this.missionName = missionName;
+        missionInfo.setName(missionName);
+
     }
 
     public String getFileType() {

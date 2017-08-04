@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
@@ -33,14 +34,24 @@ public class OCSSWLocal extends OCSSW {
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
-    public OCSSWLocal(){
+    private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
+            AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
+            L3GEN_DEFAULTS_FILE_PREFIX = "msl12_defaults_";
+
+    private String defaultsFilePrefix;
+
+    private final static String L2GEN_PROGRAM_NAME = "l2gen",
+            AQUARIUS_PROGRAM_NAME = "l2gen_aquarius",
+            L3GEN_PROGRAM_NAME = "l3gen";
+
+    public OCSSWLocal() {
 
         initiliaze();
         ocsswExist = isOCSSWExist();
 
     }
 
-    private void initiliaze(){
+    private void initiliaze() {
         String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
 
         if (dirPath == null) {
@@ -52,23 +63,25 @@ public class OCSSWLocal extends OCSSW {
                 ocsswExist = true;
                 ocsswRoot = dirPath;
                 ocsswScriptsDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX;
-                ocsswDataDirPath = ocsswRoot + System.getProperty("file.separator") +OCSSW_DATA_DIR_SUFFIX;
+                ocsswDataDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_DATA_DIR_SUFFIX;
                 ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM;
                 ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
+                initiliazeMissions();
             }
         }
     }
 
 
-//    @Override
-//    public boolean isMissionDirExist(String missionName) {
-//        return false;
-//    }
-
-    @Override
-    public String[] getMissionSuites() {
-        return new String[0];
+    private void initiliazeMissions() {
+        missionInfo = new MissionInfo();
     }
+
+
+    public boolean isMissionDirExist(String missionName) {
+        String missionDir = ocsswDataDirPath + File.separator + missionInfo.getDirectory();
+        return new File(missionDir).exists();
+    }
+
 
     @Override
     public Process execute(ProcessorModel processorModel) {
@@ -161,7 +174,7 @@ public class OCSSWLocal extends OCSSW {
         }
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
-        } else if(programName.equals("extractor")) {
+        } else if (programName.equals("extractor")) {
 
         }
 
@@ -172,7 +185,61 @@ public class OCSSWLocal extends OCSSW {
 
     }
 
-    private void extractFileInfo(String ifileName){
+    public String[] getMissionSuites(String missionName, String programName) {
+        MissionInfo missionInfo = new MissionInfo();
+
+        missionInfo.setName(missionName);
+
+        File missionDir = new File(getOcsswDataDirPath() + File.separator + missionInfo.getDirectory());
+
+        System.out.println("mission directory: " + missionDir);
+
+        if (missionDir.exists()) {
+
+            ArrayList<String> suitesArrayList = new ArrayList<String>();
+
+            File missionDirectoryFiles[] = missionDir.listFiles();
+
+            for (File file : missionDirectoryFiles) {
+                String filename = file.getName();
+
+                if (filename.startsWith(getDefaultsFilePrefix(programName)) && filename.endsWith(".par")) {
+                    String filenameTrimmed = filename.replaceFirst(getDefaultsFilePrefix(programName), "");
+                    filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
+                    suitesArrayList.add(filenameTrimmed);
+                }
+            }
+
+            final String[] suitesArray = new String[suitesArrayList.size()];
+
+            int i = 0;
+            for (String suite : suitesArrayList) {
+                suitesArray[i] = suite;
+                i++;
+            }
+
+            java.util.Arrays.sort(suitesArray);
+
+            return suitesArray;
+
+        } else {
+            return null;
+        }
+    }
+
+    public String getDefaultsFilePrefix(String programName) {
+
+        defaultsFilePrefix = DEFAULTS_FILE_PREFIX;
+
+        if (programName.equals(L3GEN_PROGRAM_NAME)) {
+            defaultsFilePrefix = L3GEN_DEFAULTS_FILE_PREFIX;
+        } else if (programName.equals(AQUARIUS_PROGRAM_NAME)) {
+            defaultsFilePrefix = AQUARIUS_DEFAULTS_FILE_PREFIX;
+        }
+        return defaultsFilePrefix;
+    }
+
+    private void extractFileInfo(String ifileName) {
 
         String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
 
@@ -220,7 +287,9 @@ public class OCSSWLocal extends OCSSW {
 
     @Override
     public String getOfileName(String ifileName, String programName, String suiteValue) {
-        return null;
+        this.programName = programName;
+        String[] additionalOptions = {"--suite=" + suiteValue};
+        return getOfileName(ifileName, additionalOptions);
     }
 
 
@@ -285,7 +354,7 @@ public class OCSSWLocal extends OCSSW {
             commandArrayPrefix = new String[1];
             commandArrayPrefix[0] = programName;
             if (!isOCSSWExist()) {
-                commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH ;
+                commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
             } else {
                 commandArrayPrefix[0] = getOcsswInstallerScriptPath();
             }

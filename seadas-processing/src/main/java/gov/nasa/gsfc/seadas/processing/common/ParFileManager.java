@@ -78,4 +78,5 @@ public class ParFileManager{
     public void setParFileOptionName(String parFileOptionName) {
         this.parFileOptionName = parFileOptionName;
     }
+
 }

@@ -100,12 +100,20 @@ public class OCSSWRemoteClient extends OCSSW {
     }
 
     public boolean uploadClientFile(String fileName) {
+
         final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(fileName));
         final MultiPart multiPart = new FormDataMultiPart()
                 //.field("ifileName", ifileName)
                 .bodyPart(fileDataBodyPart);
         Response response = target.path("fileServices").path("uploadClientFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
-        uploadListedFiles(fileName);
+        try {
+            String fileTypeString = Files.probeContentType(new File(fileName).toPath());
+            if (fileTypeString.equals(MediaType.TEXT_PLAIN)) {
+                String listOfFiles =  uploadListedFiles(fileName);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (response.getStatus() == Response.ok().build().getStatus()) {
             return true;
         } else {
@@ -115,12 +123,14 @@ public class OCSSWRemoteClient extends OCSSW {
 
     /**
      * This method uploads list of files provided in the text file.
+     *
      * @param fileName is the name of the text file that contains list of input files.
      * @return true if all files uploaded successfully.
      */
-    public boolean uploadListedFiles(String fileName) {
+    public String uploadListedFiles(String fileName) {
 
         File file = new File(fileName);
+        StringBuilder sb = new StringBuilder();
         Scanner input = null;
         try {
             input = new Scanner(file);
@@ -136,21 +146,27 @@ public class OCSSWRemoteClient extends OCSSW {
 
         while (input.hasNext()) {
             nextFileName = input.nextLine();
-            fileDataBodyPart = new FileDataBodyPart("inputFile", new File(nextFileName));
+            fileDataBodyPart = new FileDataBodyPart("file", new File(nextFileName));
             multiPart = new FormDataMultiPart()
                     //.field("ifileName", ifileName)
                     .bodyPart(fileDataBodyPart);
             response = target.path("fileServices").path("uploadClientFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
             if (response.getStatus() == Response.ok().build().getStatus()) {
                 fileUploadSuccess = fileUploadSuccess & true;
+                sb.append(nextFileName.substring(nextFileName.lastIndexOf(File.separator) + 1) + "\n");
             } else {
-                return fileUploadSuccess = fileUploadSuccess & false;
+                fileUploadSuccess = fileUploadSuccess & false;
             }
         }
+        String fileNames = sb.toString();
 
         input.close();
+        if (fileUploadSuccess) {
+            return fileNames;
+        } else {
+            return null;
+        }
 
-        return fileUploadSuccess;
 
     }
 
@@ -286,7 +302,8 @@ public class OCSSWRemoteClient extends OCSSW {
             File parFile = writeParFile(convertParStringForRemoteServer(parString));
             target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
             commandArrayJsonObject = Json.createObjectBuilder().add("parFile", parFile.getName()).build();
-            target.path("ocssw").path("executeMLP").path(jobId).path(programName).request().get(String.class);
+            JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
+            downloadMLPOutputFiles(outputFilesList);
 
         } else {
             commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
@@ -326,6 +343,39 @@ public class OCSSWRemoteClient extends OCSSW {
                     }
                     ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
                     Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
+                    InputStream responceStream = (InputStream) response.getEntity();
+                    writeToFile(responceStream, ofileFullPathName);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void downloadMLPOutputFiles(JsonObject paramJsonObject) {
+        Set commandArrayKeys = paramJsonObject.keySet();
+        String param;
+        String ofileFullPathName, ofileName;
+        try {
+            Object[] array = (Object[]) commandArrayKeys.toArray();
+            int i = 0;
+            String[] commandArray = new String[commandArrayKeys.size() + 1];
+            commandArray[i++] = programName;
+            for (Object element : array) {
+                String elementName = (String) element;
+                param = paramJsonObject.getString((String) element);
+                if (elementName.contains("OFILE")) {
+                    if (param.indexOf("=") != -1) {
+                        StringTokenizer st = new StringTokenizer(param, "=");
+                        String paramName = st.nextToken();
+                        String paramValue = st.nextToken();
+                        ofileFullPathName = paramValue;
+
+                    } else {
+                        ofileFullPathName = param;
+                    }
+                    ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
+                    Response response = target.path("fileServices").path("downloadMLPOutputFile").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
                     writeToFile(responceStream, ofileFullPathName);
                 }
@@ -445,16 +495,8 @@ public class OCSSWRemoteClient extends OCSSW {
                 st2 = new StringTokenizer(token, "=");
                 key = st2.nextToken();
                 value = st2.nextToken();
-                if (new File(value).exists()) {
+                if (new File(value).exists() && !new File(value).isDirectory()) {
                     uploadClientFile(value);
-                    try {
-                        fileTypeString = Files.probeContentType(new File(value).toPath());
-                        if (fileTypeString.equals(MediaType.TEXT_PLAIN)) {
-                            uploadListedFiles(value);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     value = value.substring(value.lastIndexOf(File.separator) + 1);
                 }
                 token = key + "=" + value;
@@ -464,7 +506,9 @@ public class OCSSWRemoteClient extends OCSSW {
         }
 
         String newParString = stringBuilder.toString();
-        return newParString;
+        //remove empty lines
+        String adjusted = newParString.replaceAll("(?m)^[ \t]*\r?\n", "");
+        return adjusted;
     }
 
 
@@ -479,7 +523,7 @@ public class OCSSWRemoteClient extends OCSSW {
             FileWriter fileWriter = null;
             try {
                 fileWriter = new FileWriter(tempFile);
-                fileWriter.write(parString + "\n");
+                fileWriter.write( parString );
             } finally {
                 if (fileWriter != null) {
                     fileWriter.close();

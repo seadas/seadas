@@ -65,7 +65,7 @@ public class OCSSWVirtual extends OCSSW {
     }
 
     @Override
-    public String getOcsswInstallDirPath() {
+    public  String getOcsswInstallDirPath() {
         return null;
     }
 
@@ -85,9 +85,10 @@ public class OCSSWVirtual extends OCSSW {
     }
 
     @Override
-    public String[] getMissionSuites() {
+    public String[] getMissionSuites(String missionName, String programName) {
         return new String[0];
     }
+
 
     @Override
     public void setOcsswScriptsDirPath(String ocsswScriptsDirPath) {
