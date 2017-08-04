@@ -340,19 +340,24 @@
 </p>
 
 <p class="i1">
-    <b>Day_Night</b><br>
+    <b>Day_Night</b><br>"day_night_flag", "day_night"
 </p>
 
 <p class="i1">
     <b>Orbit</b><br>
+    public static String[] METADATA_POSSIBLE_ORBIT_KEYS = {"orbit_number", "orbit"};
+    public static String[] METADATA_POSSIBLE_START_ORBIT_KEYS = {"start_orbit_number", "end_orbit"};
+    public static String[] METADATA_POSSIBLE_END_ORBIT_KEYS = {"end_orbit_number", "end_orbit"};
 </p>
 
 <p class="i1">
     <b>Processing_Version</b><br>
+    "processing_version"
 </p>
 
 <p class="i1">
     <b>Projection</b><br>
+   "map_projection","projection", "crs"
 </p>
 
 
@@ -526,6 +531,68 @@
         (does it run narrow north-south, narrow west-east, or is it more square in shape), and scene location (is it at
         the
         equator, at one of the Poles, or some span of latitudes somewhere between the Pole and equator.</i>
+
+</p>
+
+
+<p>
+    <i><b>Statistics on Virtual Files and Virtual Bands</b></i>
+</p>
+
+<p>
+    Statistics done on a virtual band or virtual file can be extremely slow.  And if done on a chain of virtual files
+     can bog down to the point of mega-slowness or where the computer memory or some other issue just won't let
+    the operation proceed.
+
+
+    (put the following in File Manager help and then refer to it.)
+
+    START
+
+    What are Virtual, Real and System Files
+    In the SeaDAS framework, regarding memory storage location, we can discuss files as being one of 3 types: System,
+    Real and Virtual.  When referring to a system file, we are referring to a file whose data is stored directly on the file system
+    of your computer.  When referring to a real file, we are referring to a file loaded into SeaDAS.  If you load a system
+    file into SeaDAS, this essentially copies that file's data into a new memory (or RAM) location of your computer .  Any changes subsequently
+    made within SeaDAS to the "real" file will not alter the stored "system" file unless you specifically save the file.  Lastly,
+    when referring to a virtual file, this is a file which has been generated within SeaDAS, but does not contain a complete
+    set of its own data.  Instead it contains a mix of metadata, and associated operations set to be performed when they
+    are needed.  The actual raster data needed to perform these operations exists in other file(s).  You can think of a
+    virtual file as a small file (not actually stored on your computer) which is mathematically linked to other files.
+    The tools which have an option to create either
+    a virtual file or a saved file (saving a file creates both a system file and transforms the virtual file into a real file),
+    will run very fast  when creating
+    a virtual file, as compared with the time needed to create the saved file.  This is because all the operations must be
+    performed when creating the saved file, but not when creating the virtual file.
+
+    Note: If you use a tool to create a virtual file from another virtual file, you are creating a chain of virtual files
+    which gets increasing more difficult for SeaDAS and the computer memory to handle.  A chain of virtual files,
+    depending on how long it is and the type of operations being performed, can bog the performance down to the point of
+    mega-slowness or to the point where the computer memory or some other issue just won't let the operation proceed.  In general
+    it is advised to avoid generate a file using a virtual file as input, especially if that chains involves more than one
+    intermediary virtual file along the chain.
+
+    END
+
+
+
+
+    Editing the rest
+
+    For instance, if the file on which you are
+    doing statistics was created in the current SeaDAS session using the Reproject Tool but the resultant processed
+    file was not saved,  then the band(s) on which you are doing statistics on have not actually been reprojected yet.
+    Consequently, the statistics may run extremely slowly or computer memory issues may arise.
+
+
+    Similarly, a virtual band is a band created within SeaDAS, but not converted to a "real" band.  This band may link to
+    other bands with associated operations set to be performed when it is needed.  Performing statistics on a virtual
+    band should be fine, possibly slower, but it all depends on the complexity of the virtual band's operations and
+    whether there is a chain of virtual bands.
+
+
+
+
 
 </p>
 
