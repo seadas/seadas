@@ -84,8 +84,9 @@ public class MissionInfo {
     }
 
     public JsonObject getL2BinSuites(String missionName) {
-        File missionDir = new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + missionName);
-        String[] suites = missionDir.list(new FilenameFilter() {
+        setName(missionName);
+        //File missionDir = new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + getDirectory());
+        String[] suites = directory.list(new FilenameFilter() {
             @Override
             public boolean accept(File file, String s) {
                 return s.contains("l2bin_defaults_");
@@ -100,8 +101,13 @@ public class MissionInfo {
     }
 
     public String[] getMissionSuiteList(String missionName, String mode) {
+        setName(missionName);
 
-        File missionDir = new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + missionName);
+        //File missionDir = new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + missionName);
+
+        File missionDir = directory;
+
+        System.out.println("mission directory: " + missionDir);
 
         if (missionDir.exists()) {
 
@@ -128,6 +134,7 @@ public class MissionInfo {
             }
 
             java.util.Arrays.sort(suitesArray);
+            System.out.println("mission suite: " + suitesArray[0] + suitesArray[1] + suitesArray);
 
             return suitesArray;
 

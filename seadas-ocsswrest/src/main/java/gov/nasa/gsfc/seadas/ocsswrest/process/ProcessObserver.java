@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class ProcessObserver {
     private static final String STDOUT = "stdout";
     private static final String STDERR = "stderr";
-    private static final String PROCESSOR_TABLE = "PROCESSOR_TABLE";
+    private static final String PROCESS_TABLE = "PROCESS_TABLE";
     private final Process process;
     private final String processName;
     private final String  jobID;
@@ -83,16 +83,16 @@ public class ProcessObserver {
                     if (type.equals(STDOUT)) {
                         //save input stream in the table (line, process);
                         System.out.println(" in progress monitor: " + STDOUT + "  " +line);
-                        SQLiteJDBC.updateItem(PROCESSOR_TABLE, jobID, STDOUT, line);
+                        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, STDOUT, line);
                     } else {
                         //save error stream in the table (line, process);
-                        SQLiteJDBC.updateItem(PROCESSOR_TABLE, jobID, STDERR, line );
+                        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, STDERR, line );
                         System.out.println(" in progress monitor: " + STDERR + "  "+ line);
                     }
 
                 }
-                SQLiteJDBC.updateItem(PROCESSOR_TABLE, jobID, STDOUT, "done!");
-                SQLiteJDBC.updateItem(PROCESSOR_TABLE, jobID, STDERR, "done!");
+                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, STDOUT, "done!");
+                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, STDERR, "done!");
 
 
             } finally {

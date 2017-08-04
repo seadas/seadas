@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.ocsswrest.database;
 
 import java.io.*;
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +16,7 @@ public class SQLiteJDBC {
 
     public static String JOB_DB_URL = "jdbc:sqlite:ocssw.db";
     public static String DB_CLASS_FOR_NAME = "org.sqlite.JDBC";
-    public static String SQL_INSERT_STRING = "INSERT INTO PROCESSOR_TABLE (JOB_ID,COMMAND_ARRAY, EXIT_VALUE, stdout, stderr) ";
+    public static String SQL_INSERT_STRING = "INSERT INTO PROCESS_TABLE (JOB_ID,COMMAND_ARRAY, EXIT_VALUE, stdout, stderr) ";
     private static String username = "obpg";
     private static String password = "obpg";
 
@@ -26,6 +27,7 @@ public class SQLiteJDBC {
     public static final String FILE_TABLE_NAME = "FILE_TABLE";
     public static final String MISSION_TABLE_NAME = "MISSION_TABLE";
     public static final String PROCESS_TABLE_NAME = "PROCESS_TABLE";
+    public static final String INPUT_FILES_LIST_TABLE_NAME = "INPUT_FILES_LIST_TABLE";
 
     public static final  String JOB_ID_FIELD_NAME = "JOB_ID";
     public static final String IFILE_NAME_FIELD_NAME = "I_FILE_NAME";
@@ -48,6 +50,25 @@ public class SQLiteJDBC {
 
         String fieldName;
         FileTableFields(String fieldName) {
+            this.fieldName = fieldName;
+        }
+
+        public String getFieldName(){
+            return fieldName;
+        }
+    }
+
+    public enum NextLevelFileNameTableFields{
+        JOB_ID_NAME("JOB_ID"),
+        CLIENT_ID_NAME("CLIENT_ID_NAME"),
+        WORKING_DIR_PATH("WORKING_DIR_PATH"),
+        I_FILE_NAME("I_FILE_NAME"),
+        O_FILE_NAME("O_FILE_NAME"),
+        PROGRAM_NAME("PROGRAM_NAME"),
+        OPTIONS_NAME("OPTIONS");
+
+        String fieldName;
+        NextLevelFileNameTableFields(String fieldName) {
             this.fieldName = fieldName;
         }
 
@@ -95,7 +116,7 @@ public class SQLiteJDBC {
 //            c = DriverManager.getConnection(JOB_DB_URL);
 //
 //            stmt = c.createStatement();
-//            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESSOR_TABLE " +
+//            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESS_TABLE " +
 //                    "(JOB_ID INT PRIMARY KEY     NOT NULL, " +
 //                    " COMMAND_ARRAY  CHAR(500), " +
 //                    " EXIT_VALUE        CHAR(2), " +
@@ -137,8 +158,8 @@ public class SQLiteJDBC {
 
             stmt = connection.createStatement();
 
-            //string for creating PROCESSOR_TABLE
-            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCES_TABLE " +
+            //string for creating PROCESS_TABLE
+            String processor_table_sql = "CREATE TABLE IF NOT EXISTS PROCESS_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
                     " COMMAND_ARRAY  CHAR(500), " +
                     " EXIT_VALUE        CHAR(2), " +
@@ -158,6 +179,17 @@ public class SQLiteJDBC {
                     "MISSION_DIR  CHAR(50), " +
                     "STATUS        CHAR(50) )";
 
+            //string for creating NEXT_LEVELE_FILE_NAME_TABLE
+            String next_level_file_name_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
+                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+                    " CLIENT_ID_NAME       CHAR(100)  , " +
+                    " WORKING_DIR_PATH       CHAR(100)  , " +
+                    " PROGRAM_NAME  CHAR(25)   , " +
+                    " I_FILE_NAME       CHAR(100)  , " +
+                    "O_FILE_NAME      CHAR(100) , " +
+                    "OPTIONS        CHAR(150) )";
+
+
             //string for creating LONLAT_2_PIXEL_TABLE
             String lonlat_2_pixel_table_sql = "CREATE TABLE IF NOT EXISTS LONLAT_2_PIXEL_TABLE " +
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
@@ -169,10 +201,20 @@ public class SQLiteJDBC {
                     "SC_SUB  CHAR(50), " +
                     "PRODLIST       CHAR(50) )";
 
+            String input_files_list_table_sql = "CREATE TABLE IF NOT EXISTS INPUT_FILES_LIST_TABLE " +
+                    "(FILE_ID INTEGER   NOT NULL , " +
+                    "JOB_ID CHAR(50)   NOT NULL, " +
+                    "FILENAME       STRING," +
+                    "PRIMARY KEY (FILE_ID)," +
+                    "FOREIGN KEY (JOB_ID) REFERENCES FILE_TABLE(JOB_ID)" +
+                    " );";
+
             //execute create_table statements
             stmt.executeUpdate(processor_table_sql);
             stmt.executeUpdate(file_table_sql);
+            stmt.executeUpdate(next_level_file_name_table_sql);
             stmt.executeUpdate(lonlat_2_pixel_table_sql);
+            stmt.executeUpdate(input_files_list_table_sql);
 
 
             //string for creating MISSION_TABLE
@@ -384,7 +426,7 @@ public class SQLiteJDBC {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
-        String commonInsertString = "INSERT INTO " + tableName + " (" + itemName + ") VALUES ( ? )";
+        String commonInsertString = "INSERT INTO " + tableName + " (" + itemName + ") VALUES ( ? );";
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);
@@ -451,6 +493,76 @@ public class SQLiteJDBC {
         System.out.println("Operation done successfully");
 
         return retrievedItem;
+    }
+
+    public static ArrayList getInputFilesList(String jobId){
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String commonQueryString = "SELECT * FROM " + INPUT_FILES_LIST_TABLE_NAME + " WHERE JOB_ID = ?";
+
+        ArrayList fileList = new ArrayList();
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME + "  jobID = " + jobId + "searching for " + "fileName") ;
+
+            preparedStatement = connection.prepareStatement(commonQueryString);
+
+            //preparedStatement.setString(1, itemName);
+            preparedStatement.setString(1, jobId);
+            System.out.println("sql string: " + preparedStatement);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+
+            while (rs.next()) {
+                fileList.add(rs.getString("FILENAME"));
+            }
+            rs.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (Exception e) {
+            System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
+            //System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+
+        return fileList;
+    }
+
+    public static void updateInputFilesList(String jobID, String newClientFileName) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String commonUpdateString = "INSERT INTO " + INPUT_FILES_LIST_TABLE_NAME + " ( JOB_ID, FILENAME )  VALUES ( ? , ? );";
+
+        System.out.println(commonUpdateString);
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME);
+
+            preparedStatement = connection.prepareStatement(commonUpdateString);
+
+            preparedStatement.setString(1, jobID);
+            preparedStatement.setString(2, newClientFileName);
+
+            int exitCode = preparedStatement.executeUpdate();
+            connection.commit();
+
+            System.out.println(newClientFileName + " is " + (exitCode == 1 ? "" : "not") + " added in " +  INPUT_FILES_LIST_TABLE_NAME + " table!");
+
+            preparedStatement.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(" in update item : " + e.getClass().getName() + ": " + e.getMessage());
+            //System.exit(0);
+        }
     }
 
     public static String retrieveItem(String tableName, String searchKey, String itemName) {

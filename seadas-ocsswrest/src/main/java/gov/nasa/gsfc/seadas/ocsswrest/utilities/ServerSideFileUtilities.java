@@ -11,7 +11,9 @@ package gov.nasa.gsfc.seadas.ocsswrest.utilities;
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,6 +65,74 @@ public class ServerSideFileUtilities {
         }
     }
 
+    // save uploaded file to new location
+    public static void writeToFile(InputStream uploadedInputStream,
+                                   String uploadedFileLocation) {
+
+        try {
+            File outputFile = new File(uploadedFileLocation);
+            OutputStream outputStream = new FileOutputStream(outputFile);
+            int read = 0;
+            byte[] bytes = new byte[8192];
+
+            while ((read = uploadedInputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+            uploadedInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    // save uploaded file to new location
+    public static void writeToFile(File inputFile,
+                                   String uploadedFileLocation) {
+
+        try {
+            File outputFile = new File(uploadedFileLocation);
+            OutputStream outputStream = new FileOutputStream(outputFile);
+            InputStream uploadedInputStream = new FileInputStream(inputFile);
+            int read = 0;
+            byte[] bytes = new byte[8192];
+
+            while ((read = uploadedInputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+            uploadedInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    public static File writeStringToFile(String fileContent, String fileLocation) {
+
+        try {
+
+            final File parFile = new File(fileLocation);
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter(parFile);
+                fileWriter.write(fileContent );
+            } finally {
+                if (fileWriter != null) {
+
+                    fileWriter.close();
+                }
+            }
+            return parFile;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 //    public static boolean makeNewJobDirectory(String clientID, String jobID) {
 //        String newDirPath = OCSSWRestServer.JOBS_ROOT_DIR + System.getProperty("file.separator") + clientID + System.getProperty("file.separator") + jobID;
 //        ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"mkdir", newDirPath});
@@ -106,6 +176,21 @@ public class ServerSideFileUtilities {
         if (debug) {
             System.out.println("Debugging: " + message);
         }
+    }
+
+    public static ArrayList<String> getFilesList(String dirPath) {
+        ArrayList<String> results = new ArrayList<String>();
+
+
+        File[] files = new File(dirPath).listFiles();
+        //If this pathname does not denote a directory, then listFiles() returns null.
+
+        for (File file : files) {
+            if (file.isFile()) {
+                results.add(file.getName());
+            }
+        }
+        return results;
     }
 
 }

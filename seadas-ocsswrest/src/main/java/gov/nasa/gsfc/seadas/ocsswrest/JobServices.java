@@ -27,7 +27,7 @@ public class JobServices {
         String newJobId = hashJobID(new Long(new Date().getTime()).toString());
         //insert rows for this new job in the processor and file tables.
         SQLiteJDBC.insertItem("FILE_TABLE", "JOB_ID", newJobId);
-        SQLiteJDBC.insertItem("PROCESSOR_TABLE", "JOB_ID", newJobId);
+        SQLiteJDBC.insertItem("PROCESS_TABLE", "JOB_ID", newJobId);
         return newJobId;
     }
 

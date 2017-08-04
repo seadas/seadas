@@ -5,6 +5,8 @@ import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import static gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC.PROCESS_TABLE_NAME;
+
 /**
  * Created by aabduraz on 3/4/16.
  */
@@ -12,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 @Path("/process")
 public class ProcessServices {
 
-    private final String PROCESSOR_TABLE_NAME = "PROCESSOR_TABLE";
     private final String stdout = "stdout";
     private final String stderr = "stderr";
 
@@ -23,7 +24,7 @@ public class ProcessServices {
     public String getProcessInputStream(@PathParam("jobId") String jobId) {
         //TODO: get process input stream from the running process!
         System.out.println("reached to grep standard output.");
-        String stdoutString = SQLiteJDBC.retrieveItem(PROCESSOR_TABLE_NAME, jobId, stdout);
+        String stdoutString = SQLiteJDBC.retrieveItem(PROCESS_TABLE_NAME, jobId, stdout);
         return stdoutString == null ? "done!"  :stdoutString;
     }
 
@@ -34,7 +35,7 @@ public class ProcessServices {
     public String getProcessErrorStream(@PathParam("jobId") String jobId) {
         //TODO: get process error stream from the running process!
         System.out.println("reached to grep standard error.");
-        String stderrString = SQLiteJDBC.retrieveItem(PROCESSOR_TABLE_NAME, jobId, stderr);
+        String stderrString = SQLiteJDBC.retrieveItem(PROCESS_TABLE_NAME, jobId, stderr);
         return stderrString == null ? "done!" : stderrString;
     }
 

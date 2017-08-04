@@ -74,7 +74,6 @@ public class OCSSWRestServer {
         baseUriPortNumber = System.getProperty(BASE_URI_PORT_NUMBER_PROPERTY);
         BASE_URI = "http://"+ SERVER_API + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         SQLiteJDBC.createTables();
-        //OCSSWServerModelOld.init();
         OCSSWServerModel.initiliaze();
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey new app started with WADL available at "

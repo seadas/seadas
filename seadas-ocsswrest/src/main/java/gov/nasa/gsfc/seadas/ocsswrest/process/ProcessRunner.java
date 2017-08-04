@@ -78,7 +78,7 @@ public class ProcessRunner {
             if (process != null) {
                 exitValue = process.waitFor();
                 System.out.println(" process exit code: " + process.exitValue());
-                SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+                SQLiteJDBC.updateItem("PROCESS_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
             }
         } catch (IOException ioe) {
             System.out.println("installer execution IO exception!");
@@ -122,7 +122,7 @@ public class ProcessRunner {
             System.out.println(ioe.getMessage());
         }
         int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESSOR_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
+        SQLiteJDBC.updateItem("PROCESS_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
         System.out.println("completed "); //System.out.println(process.exitValue());
         return process;
     }
