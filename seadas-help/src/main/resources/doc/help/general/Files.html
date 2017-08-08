@@ -1,0 +1,108 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>SeaDAS Help - Files</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h2>Files</h2>
+
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <p>
+                    <a href="Statistics.html#Virtual" class="invisibleLink">Virtual, Real and System Files</a><br>
+                    <a href="Statistics.html#Products" class="invisibleLink">Products</a><br>
+                    <a href="Statistics.html#OCSSW" class="invisibleLink">OCSSW Files</a><br>
+                    <a href="Statistics.html#Reader" class="invisibleLink">SeaDAS File Readers</a><br>
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<br>
+<br>
+
+
+<a name="Virtual"></a>
+
+
+<p class="subSectionTitle">Virtual, Real and System Files</p>
+
+<p>
+    In the SeaDAS framework and within the SeaDAS documentation, regarding memory storage location, we can discuss files
+    as being one of 3 types: System, Real or Virtual.
+
+    </p>
+<p>A "system" file is a file whose data is stored directly on the file system of your computer.  Other names for this file
+    might be "stored" file, or perhaps "physical" file.
+    </p>
+<p>
+    A "real" file, is a file existing within SeaDAS.  It occupies the temporary memory being used while SeaDAS is running.
+    When you load a "system"
+    file into SeaDAS, this essentially copies that file's data into a new memory (or RAM) location of your computer creating
+    what we are calling a "real" file.  Any changes subsequently
+    made within SeaDAS to the "real" file will not alter the stored "system" file unless you specifically save the file.
+    Other names for a "real" file might be "loaded" file or "session" file.
+    </p>
+<p>
+
+    A "virtual" file is a file which has been generated within SeaDAS, but does not contain a complete
+    set of its own data.  Instead it contains a mix of metadata, and associated operations set to be performed when they
+    are needed.  The actual raster data needed to perform these operations exists in other file(s).  You can think of a
+    virtual file as a small file (not actually stored on your computer) which is mathematically linked to other files.
+    Tools which have an option to create either a virtual file or a saved file
+    will run very fast when creating
+    a virtual file, as compared with the time needed to create the saved file.
+    This is because all the operations must be
+    performed when creating the saved file, but not when creating the virtual file.
+
+    An example of a virtual file would be if you run the Reproject Tool with the option "save the file" turned off.
+    The output would be a virtual file which contains information about the reprojection operation which has not actually
+    been performed yet.
+    If you were to then open a band within the virtual file, at that point the reprojection
+    operation would need to occur in order to display that band.
+
+    If you "save" a virtual file, it's associated operations are run and it is transformed into a real file.
+    A system file copy of this real file is made.
+
+     Other names for a "virtual" file might be a "linked" file or perhaps a "logical" file.
+    </p>
+
+<p>
+    For instance, if the file on which you are
+    doing statistics was created in the current SeaDAS session using the Reproject Tool but the resultant processed
+    file was not saved,  then the band(s) on which you are doing statistics on have not actually been reprojected yet.
+    Consequently, the statistics may run extremely slowly or computer memory issues may arise.
+
+</p>
+
+<p><i>
+
+    Note: If you use a tool to create a virtual file from another virtual file, you are creating a chain of virtual files
+    which gets increasing more difficult for SeaDAS and the computer memory to handle.  A chain of virtual files,
+    depending on how long it is and the type of operations being performed, can bog the performance down to the point
+    where the computer memory or some other issue just won't let the operation proceed.  In general
+    it is advised to avoid generate a file using a virtual file as input, especially if that chains involves more than one
+    intermediary virtual file along the chain.
+    </i>
+</p>
+
+
+
+Similarly, a virtual band is a band created within SeaDAS, but not converted to a "real" band.  This band may link to
+other bands with associated operations set to be performed when it is needed.  Performing statistics on a virtual
+band should be fine, possibly slower, but it all depends on the complexity of the virtual band's operations and
+whether there is a chain of virtual bands.
+
+
+
+</body>
+</html>

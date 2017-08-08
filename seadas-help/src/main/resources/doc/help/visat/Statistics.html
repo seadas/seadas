@@ -33,6 +33,7 @@
             <td class="invisibletable">
                 <p>
                     <a href="Statistics.html#Overview" class="invisibleLink">Overview</a><br>
+                    <a href="Statistics.html#Fields" class="invisibleLink">Fields</a><br>
                     <a href="Statistics.html#MenuLocation" class="invisibleLink">Menu Location</a><br>
                     <a href="Statistics.html#Parameters" class="invisibleLink">Parameters</a><br>
                     <a href="Statistics.html#Concepts" class="invisibleLink">Concepts</a><br>
@@ -110,53 +111,12 @@
 <br>
 
 
-<div class="center">
-    <img src="images/Statistics04_Bins.png" border="0"> <br>
-    <i>Figure 04_Bins. Statistics example<br></i>
-</div>
+
+
 
 <br>
 <br>
 
-<div class="center">
-    <img src="images/Statistics04_Fields.png" border="0"> <br>
-    <i>Figure 04_Fields. Statistics example<br></i>
-</div>
-
-<br>
-<br>
-
-<div class="center">
-    <img src="images/Statistics04_Format.png" border="0"> <br>
-    <i>Figure 04_Format. Statistics example<br></i>
-</div>
-
-<br>
-<br>
-
-<div class="center">
-    <img src="images/Statistics04_Plots.png" border="0"> <br>
-    <i>Figure 04_Plots. Statistics example<br></i>
-</div>
-
-<br>
-<br>
-
-<div class="center">
-    <img src="images/Statistics04_View.png" border="0"> <br>
-    <i>Figure 04_View. Statistics example<br></i>
-</div>
-
-<br>
-<br>
-
-<div class="center">
-    <img src="images/Statistics04_Fields_additional.png" border="0"> <br>
-    <i>Figure 04_fields_additional. Statistics example<br></i>
-</div>
-
-<br>
-<br>
 
 
 
@@ -185,266 +145,6 @@
 
 <br>
 <br>
-
-
-<a name="Fields"></a>
-<h4>Fields</h4>
-<p>
-    This is a description of each of the fields generated.
-</p>
-<br>
-
-
-
-<p>
-    <i><b>Statistics</b></i>
-</p>
-
-<p class="i1">
-    <b>Pixels</b><br>This is the total number of "valid" pixels used to calculate the statistics.
-</p>
-
-<p class="i1">
-
-    <i>Note: this does not include pixels which do not contain data.</i>
-</p>
-
-
-<p class="i1">
-    <b>Minimum</b><br>This minimum value of the "valid" pixel.
-</p>
-
-<p class="i1">
-    <b>Maximum</b><br>This maximum value of the "valid" pixel.
-</p>
-
-<p class="i1">
-    <b>Mean</b><br>This mean value of the "valid" pixel.
-</p>
-
-<p class="i1">
-    <b>Median</b><br>This median value of the "valid" pixel.  Calculated by converted 2d raster of "valid" pixels into
-    an array and then obtaining the center element of the array.
-</p>
-<p class="i1">
-
-    <i>Note: versions of SeaDAS prior to 7.5 calculated the median by binned the data and then obtaining the 50 percentile
-    value.  This method is a quicker calculation especially in the case of a large data set, but is dependent on the bin size.
-        This field is still available as the'Median(Binned)' field.  </i>
-</p>
-
-<p class="i1">
-
-    <i>Note: because, especially for larger files, the processing time can increase, this field is optional and you can
-        set whether or not to have the median generated. </i>
-</p>
-
-<p class="i1">
-    <b>Standard_Deviation</b><br>This minimum value of the "valid" pixel.
-</p>
-
-<p class="i1">
-    <b>Coefficient_of_Variation</b><br>Standard_Deviation / Mean.
-</p>
-
-
-
-<p>
-    <i><b>Band MetaData</b></i>
-</p>
-
-<p class="i1">
-    This is information about the band.  It is obtained directly from the loaded band.  If you wish to edit this
-    band information within the SeaDAS GUI, right-click on a band in the FileManager, then select Properties, then
-    edit the fields.  Now when you run statistics, your edited value will appear in the results.
-</p>
-
-<p class="i1">
-    <b>Band</b><br>The band name.
-</p>
-
-<p class="i1">
-    <b>Unit</b><br>The geophysical unit of the value represented in the band.
-</p>
-
-<p class="i1">
-    <b>Band_Valid_Expression</b><br>Short for "Valid Pixel Expression" of the band.  This is a logical mathematical
-    expression of validation criteria specific to the band which is applied per pixel to determine whether the band
-    pixel is valid.
-</p>
-
-<p class="i1">
-    <b>Band_Description</b><br>A description of the band.
-</p>
-
-
-
-<p>
-    <i><b>File MetaData</b></i>
-</p>
-
-<p class="i1">
-    This is information about the file.
-</p>
-
-<p class="i1">
-    <b>File</b><br>The name of the file "as loaded" into SeaDAS.  The file name can be changed within SeaDAS, yet
-    the original file still exists on your machine.  If you change the file name within SeaDAS (File Manager: right-click
-    file, then Properties, then edit Name), this new file name will be the name displayed by this field.
-</p>
-
-<p class="i1">
-    <b>File_Format</b><br>This is the format of the file "as loaded" into SeaDAS.  SeaDAS contains internal readers
-    for many satellites and data levels.  If you open the file in the GUI the default way (File > Open), then SeaDAS will
-    determine which reader to use on the file.  For example a standard OB.DAAC level-2 file when loaded in will use a
-    level-2 file reader resulting in field "File_Format=SeaDAS-L2".  If you instead import the file using
-    File > Import > NetCDF-CF, the NetCDF-CF reader will be invoked and the resulting field will be "File_Format=NetCDF-CF.
-</p>
-
-<p class="i1">
-    <b>File_Type</b><br>This is the file type determined "as loaded" into SeaDAS.  It is dependent on the reader used
-    internally within SeaDAS to load the file.  It follows the same logic used in obtaining the "File_Format" mentioned
-    above and is somewhat similar in meaning to that field.
-</p>
-
-<p class="i1">
-    <b>File_Width</b><br>The width of the file raster.
-</p>
-
-<p class="i1">
-    <b>File_Height</b><br>The height of the file raster.
-</p>
-
-
-<p class="i1">
-    <b>Sensor</b><br>The name of the sensor which acquired the data.  This field is obtained from the Global
-    attributes of the metadata.  The following attribute names are searched: "sensor_name", "instrument", "sensor".
-    If one of these attributes is present then that value gets assigned to the statistics field "Sensor".
-    Upper-case and camel-case variants of these fields are searched as well.
-</p>
-
-<p class="i1">
-    <b>Platform</b><br>The name of the platform (satellite) on which the sensor is mounted which acquired the data.
-    This field is obtained from the Global
-    attributes of the metadata.  The following attribute name is looked for: "platform".
-    If one of these attributes is present then that value gets assigned to the statistics field "Platform".
-    Upper-case and camel-case variants of these fields are searched as well.
-</p>
-
-
-<p class="i1">
-    <b>Resolution</b><br>The ground surface resolution (at nadir) of the data.  This field is obtained from the Global
-    attributes of the metadata.  The following attribute names are searched:  "spatial_resolution", "resolution".
-    If one of these attributes is present then that value gets assigned to the statistics field "Resolution".
-    Upper-case and camel-case variants of these fields are searched as well.
-</p>
-
-<p class="i1">
-    <b>Day_Night</b><br>"day_night_flag", "day_night"
-</p>
-
-<p class="i1">
-    <b>Orbit</b><br>
-    public static String[] METADATA_POSSIBLE_ORBIT_KEYS = {"orbit_number", "orbit"};
-    public static String[] METADATA_POSSIBLE_START_ORBIT_KEYS = {"start_orbit_number", "end_orbit"};
-    public static String[] METADATA_POSSIBLE_END_ORBIT_KEYS = {"end_orbit_number", "end_orbit"};
-</p>
-
-<p class="i1">
-    <b>Processing_Version</b><br>
-    "processing_version"
-</p>
-
-<p class="i1">
-    <b>Projection</b><br>
-   "map_projection","projection", "crs"
-</p>
-
-
-
-<p>
-    <i><b>Mask MetaData</b></i>
-</p>
-
-<p class="i1">
-    This is information about the mask.  It is obtained directly from the loaded mask.  If you wish to edit this
-    mask information within the SeaDAS GUI, this can be done in the MaskManager.   Now when you run statistics, your
-    edited value will appear in the results.
-</p>
-
-<p class="i1">
-    <b>Mask</b><br>The mask name.
-</p>
-
-<p class="i1">
-    <b>Mask_Description</b><br>A description of the band.
-</p>
-
-<p class="i1">
-    <b>Mask_Expression</b><br>This is a logical mathematical expression of criteria specific to the mask which is
-    applied per pixel to determine whether the mask is on or off.
-</p>
-
-
-
-<p>
-    <i><b>Time MetaData</b></i>
-</p>
-
-<p class="i1">
-    This is information about the file.  It is obtained directly from the loaded file.  If you wish to edit this
-    time information within the SeaDAS GUI, right-click on the file in the FileManager, then select Properties, then
-    edit the time fields.  Now when you run statistics, your edited value will appear in the results.
-</p>
-<p class="i1">
-    <i>Note: if the file end time is earlier than the file start time, then the statistics tools will switch these
-        two time fields to be in correct time order.</i>
-</p>
-
-<p class="i1">
-    <b>Start_Date</b><br>The date portion of the file start time.
-</p>
-
-<p class="i1">
-    <b>Start_Time</b><br>The time of day portion of the file start time.
-</p>
-
-<p class="i1">
-    <b>End_Date</b><br>The date portion of the file end time.
-</p>
-
-<p class="i1">
-    <b>End_Time</b><br>The time of day portion of the file end time.
-</p>
-
-
-<p>
-    <i><b>Time Series MetaData</b></i>
-</p>
-
-<p class="i1">
-    This is information about the band.  This is intended
-    to be used on files created by the SeaDAS TimeSeries tool.  The TimeSeries tool generates a single projected and collocated
-    file from multiple input files each of a specific time.  Each band in the output file came from a source file and
-    the band is named based on the time of the input file.
-    So the statistics tool obtained the time series metadata directly from the name of the band.  If you wish to edit this
-    time information within the SeaDAS GUI, right-click on the band in the FileManager, then select Properties, then
-    edit the band name.  Now when you run statistics, your edited value will appear in the results.
-
-</p>
-
-
-<p class="i1">
-    <b>Date</b><br>The date portion of the band time.
-</p>
-
-<p class="i1">
-    <b>Time</b><br>The time of day portion of the band time.
-</p>
-
-
-
-
 
 
 
@@ -534,61 +234,24 @@
 
 </p>
 
+<br><br>
 
 <p>
     <i><b>Statistics on Virtual Files and Virtual Bands</b></i>
 </p>
 
 <p>
-    Statistics done on a virtual band or virtual file can be extremely slow.  And if done on a chain of virtual files
-     can bog down to the point of mega-slowness or where the computer memory or some other issue just won't let
-    the operation proceed.
+    Statistics done on a virtual file can be extremely slow.  And if done on a chain of virtual files
+     can bog down to the point where the computer memory or some other issue just won't let
+    the operation proceed.  Try to avoid where possible these chains of virtual files and bands.  If the file on which
+    you are about to do statistics is a virtual file, you should consider first saving it (which transforms it into a real file),
+    and then generating your statistics.
+
+    (See <a href="../general/Files.html" class="invisibleLink">Virtual, Real and System Files</a> for more)
+    </p>
+<p>
 
 
-    (put the following in File Manager help and then refer to it.)
-
-    START
-
-    What are Virtual, Real and System Files
-    In the SeaDAS framework, regarding memory storage location, we can discuss files as being one of 3 types: System,
-    Real and Virtual.  When referring to a system file, we are referring to a file whose data is stored directly on the file system
-    of your computer.  When referring to a real file, we are referring to a file loaded into SeaDAS.  If you load a system
-    file into SeaDAS, this essentially copies that file's data into a new memory (or RAM) location of your computer .  Any changes subsequently
-    made within SeaDAS to the "real" file will not alter the stored "system" file unless you specifically save the file.  Lastly,
-    when referring to a virtual file, this is a file which has been generated within SeaDAS, but does not contain a complete
-    set of its own data.  Instead it contains a mix of metadata, and associated operations set to be performed when they
-    are needed.  The actual raster data needed to perform these operations exists in other file(s).  You can think of a
-    virtual file as a small file (not actually stored on your computer) which is mathematically linked to other files.
-    The tools which have an option to create either
-    a virtual file or a saved file (saving a file creates both a system file and transforms the virtual file into a real file),
-    will run very fast  when creating
-    a virtual file, as compared with the time needed to create the saved file.  This is because all the operations must be
-    performed when creating the saved file, but not when creating the virtual file.
-
-    Note: If you use a tool to create a virtual file from another virtual file, you are creating a chain of virtual files
-    which gets increasing more difficult for SeaDAS and the computer memory to handle.  A chain of virtual files,
-    depending on how long it is and the type of operations being performed, can bog the performance down to the point of
-    mega-slowness or to the point where the computer memory or some other issue just won't let the operation proceed.  In general
-    it is advised to avoid generate a file using a virtual file as input, especially if that chains involves more than one
-    intermediary virtual file along the chain.
-
-    END
-
-
-
-
-    Editing the rest
-
-    For instance, if the file on which you are
-    doing statistics was created in the current SeaDAS session using the Reproject Tool but the resultant processed
-    file was not saved,  then the band(s) on which you are doing statistics on have not actually been reprojected yet.
-    Consequently, the statistics may run extremely slowly or computer memory issues may arise.
-
-
-    Similarly, a virtual band is a band created within SeaDAS, but not converted to a "real" band.  This band may link to
-    other bands with associated operations set to be performed when it is needed.  Performing statistics on a virtual
-    band should be fine, possibly slower, but it all depends on the complexity of the virtual band's operations and
-    whether there is a chain of virtual bands.
 
 
 
@@ -613,6 +276,298 @@
     its best effort at gathering together the metadata of a file to include with the statistics.  This help document
     defines how each metadata field is searched for within a file.
 </p>
+
+
+
+
+
+<a name="Fields"></a>
+
+<p class="subSectionTitle">Fields</p>
+
+<p>
+    This is a description of each of the fields generated.
+</p>
+<br>
+
+
+
+<p>
+    <i><b>Statistics</b></i>
+</p>
+
+<p class="i1">
+    <b>Pixels</b><br>This is the total number of "valid" pixels used to calculate the statistics.
+</p>
+
+<p class="i1">
+
+    <i>Note: this does not include pixels which do not contain data.</i>
+</p>
+
+
+<p class="i1">
+    <b>Minimum</b><br>This minimum value of the "valid" pixels.
+</p>
+
+<p class="i1">
+    <b>Maximum</b><br>This maximum value of the "valid" pixels.
+</p>
+
+<p class="i1">
+    <b>Mean</b><br>This mean value of the "valid" pixels.
+</p>
+
+<p class="i1">
+    <b>Median</b><br>This median value of the "valid" pixels.  Calculated by converted 2d raster of "valid" pixels into
+    an array and then obtaining the center element of the array.
+</p>
+<p class="i1">
+
+    <i>Note: versions of SeaDAS prior to 7.5 calculated the median by binned the data and then obtaining the 50 percentile
+        value.  This method is a quicker calculation especially in the case of a large data set, but is dependent on the bin size.
+        This field is still available as the'Median(Binned)' field.  </i>
+</p>
+
+<p class="i1">
+
+    <i>Note: because, especially for larger files, the processing time can increase, this field is optional and you can
+        set whether or not to have the median generated. </i>
+</p>
+
+<p class="i1">
+    <b>Standard_Deviation</b><br>This minimum value of the "valid" pixel.
+</p>
+
+<p class="i1">
+    <b>Coefficient_of_Variation</b><br>Standard_Deviation / Mean.
+</p>
+
+<p class="i1">
+    <b>Percent Thresholds</b><br>Calculated based on a histogram defined by binning the data.  This is dependent on the
+    number of bins.
+</p>
+
+
+<br>
+<p>
+    <i><b>Band MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the band.  It is obtained directly from the loaded band.  If you wish to edit this
+    band information within the SeaDAS GUI, right-click on a band in the FileManager, then select Properties, then
+    edit the fields.  Now when you run statistics, your edited value will appear in the results.
+</p>
+
+<p class="i1">
+    <b>Band</b><br>The band name.
+</p>
+
+<p class="i1">
+    <b>Unit</b><br>The geophysical unit of the value represented in the band.
+</p>
+
+<p class="i1">
+    <b>Band_Valid_Expression</b><br>Short for "Valid Pixel Expression" of the band.  This is a logical mathematical
+    expression of validation criteria specific to the band which is applied per pixel to determine whether the band
+    pixel is valid.
+</p>
+
+<p class="i1">
+    <b>Band_Description</b><br>A description of the band.
+</p>
+
+
+<br>
+<p>
+    <i><b>File MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the file.
+</p>
+
+<p class="i1">
+    <b>File</b><br>The name of the file "as loaded" into SeaDAS.  The file name can be changed within SeaDAS, yet
+    the original file still exists on your machine.  If you change the file name within SeaDAS (File Manager: right-click
+    file, then Properties, then edit Name), this new file name will be the name displayed by this field.
+</p>
+
+<p class="i1">
+    <b>File_Format</b><br>This is the format of the file "as loaded" into SeaDAS.  SeaDAS contains internal readers
+    for many satellites and data levels.  If you open the file in the GUI the default way (File > Open), then SeaDAS will
+    determine which reader to use on the file.  For example a standard OB.DAAC level-2 file when loaded in will use a
+    level-2 file reader resulting in field "File_Format=SeaDAS-L2".  If you instead import the file using
+    File > Import > NetCDF-CF, the NetCDF-CF reader will be invoked and the resulting field will be "File_Format=NetCDF-CF.
+</p>
+
+<p class="i1">
+    <b>File_Type</b><br>This is the file type determined "as loaded" into SeaDAS.  It is dependent on the reader used
+    internally within SeaDAS to load the file.  It follows the same logic used in obtaining the "File_Format" mentioned
+    above and is somewhat similar in meaning to that field.
+</p>
+
+<p class="i1">
+    <b>File_Width</b><br>The width of the file raster.
+</p>
+
+<p class="i1">
+    <b>File_Height</b><br>The height of the file raster.
+</p>
+
+
+<p class="i1">
+    <b>Sensor</b><br>The name of the sensor which acquired the data.  This field is obtained from the Global
+    attributes of the metadata.  The following attribute names are searched: "sensor_name", "instrument", "sensor".
+    If one of these attributes is present then that value gets assigned to the statistics field "Sensor".
+    Upper-case and camel-case variants of these fields are searched as well.
+</p>
+
+<p class="i1">
+    <b>Platform</b><br>The name of the platform (satellite) on which the sensor is mounted which acquired the data.
+    This field is obtained from the Global
+    attributes of the metadata.  The following attribute name is looked for: "platform".
+    If one of these attributes is present then that value gets assigned to the statistics field "Platform".
+    Upper-case and camel-case variants of these fields are searched as well.
+</p>
+
+
+<p class="i1">
+    <b>Resolution</b><br>The ground surface resolution (at nadir) of the data.  This field is obtained from the Global
+    attributes of the metadata.  The following attribute names are searched:  "spatial_resolution", "resolution".
+    If one of these attributes is present then that value gets assigned to the statistics field "Resolution".
+    Upper-case and camel-case variants of these fields are searched as well.
+</p>
+
+<p class="i1">
+    <b>Day_Night</b><br>Indicates whether the data was imaged during daylight or at night.
+    This field is obtained from the Global attributes of the metadata.
+    The following attribute names are searched: "day_night_flag", "day_night".
+    If one of these attributes is present then that value gets assigned to the statistics field "Day_Night".
+    Upper-case and camel-case variants of these fields are searched as well.
+</p>
+
+<p class="i1">
+    <b>Orbit</b><br>The orbit revolution count of the satellite.
+    The following attribute names are searched: "orbit_number", "orbit".
+    If one of these attributes is present then that value gets assigned to the statistics field "Orbit".
+    Upper-case and camel-case variants of these fields are searched as well.
+    Files may span multiple orbits so this is searched as well.
+    The following attribute names are searched: "start_orbit_number", "end_orbit", "end_orbit_number", "end_orbit".
+    If anything is found within this orbit number span search then the start and end orbit number are assigned to
+    the statistics field "Orbit".
+
+</p>
+
+<p class="i1">
+    <b>Processing_Version</b><br>The processing version of the software which created the file.
+    This field is obtained from the Global attributes of the metadata.
+    The following attribute names are searched: "processing_version".
+    If one of these attributes is present then that value gets assigned to the statistics field "Processing_Version".
+    Upper-case and camel-case variants of these fields are searched as well.
+</p>
+
+<p class="i1">
+    <b>Projection</b><br>The map projection of the file.  If the file currently has a coordinate reference system
+    defined for it within SeaDAS, then this is displayed along with the words "(obtained from CrsGeoCoding)".
+    If not, then an attempt is made to obtain this from the Global attributes of the metadata.
+    The following attribute names are searched: "map_projection","projection", "crs".
+    If one of these attributes is present then that value gets assigned to the statistics field "Projection"
+    along with the words "(obtained from MetaData)".
+    Upper-case and camel-case variants of these fields are searched as well.
+    Lastly, if no projection has been found then a java class is displayed.  OB.DAAC level-2 files will indicate
+    the class "BowtiePixelGeoCoding".
+</p>
+
+
+<br>
+<p>
+    <i><b>Mask MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the mask.  It is obtained directly from the loaded mask.  If you wish to edit this
+    mask information within the SeaDAS GUI, this can be done in the MaskManager.   Now when you run statistics, your
+    edited value will appear in the results.
+</p>
+
+<p class="i1">
+    <b>Mask</b><br>The mask name.
+</p>
+
+<p class="i1">
+    <b>Mask_Description</b><br>A description of the band.
+</p>
+
+<p class="i1">
+    <b>Mask_Expression</b><br>This is a logical mathematical expression of criteria specific to the mask which is
+    applied per pixel to determine whether the mask is on or off.
+</p>
+
+
+<br>
+<p>
+    <i><b>Time MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the file.  It is obtained directly from the loaded file.  If you wish to edit this
+    time information within the SeaDAS GUI, right-click on the file in the FileManager, then select Properties, then
+    edit the time fields.  Now when you run statistics, your edited value will appear in the results.
+</p>
+<p class="i1">
+    <i>Note: if the file end time is earlier than the file start time, then the statistics tools will switch these
+        two time fields to be in correct time order.</i>
+</p>
+
+<p class="i1">
+    <b>Start_Date</b><br>The date portion of the file start time.
+</p>
+
+<p class="i1">
+    <b>Start_Time</b><br>The time of day portion of the file start time.
+</p>
+
+<p class="i1">
+    <b>End_Date</b><br>The date portion of the file end time.
+</p>
+
+<p class="i1">
+    <b>End_Time</b><br>The time of day portion of the file end time.
+</p>
+
+
+<br>
+<p>
+    <i><b>Time Series MetaData</b></i>
+</p>
+
+<p class="i1">
+    This is information about the band.  This is intended
+    to be used on files created by the SeaDAS TimeSeries tool.  The TimeSeries tool generates a single projected and collocated
+    file from multiple input files each of a specific time.  Each band in the output file came from a source file and
+    the band is named based on the time of the input file.
+    So the statistics tool obtained the time series metadata directly from the name of the band.  If you wish to edit this
+    time information within the SeaDAS GUI, right-click on the band in the FileManager, then select Properties, then
+    edit the band name.  Now when you run statistics, your edited value will appear in the results.
+
+</p>
+
+
+<p class="i1">
+    <b>Date</b><br>The date portion of the band time.
+</p>
+
+<p class="i1">
+    <b>Time</b><br>The time of day portion of the band time.
+</p>
+
+
+
+
+
+
 
 
 
@@ -643,547 +598,276 @@
     the results
 </p>
 <br>
-<hr>
+<br>
 
-
-<a name="ParametersIO"></a>
-<h4>GUI: I/O Parameters Tab</h4>
-<p>
-    This is a tab of the Reproject window
+______________________________________________________
+<a name="Bins"></a>
+<h4>The "Bins" Parameter Window</h4>
+<p class="i1first">
+    This is a tab of the Statistics window.  Its parameters are used to define the binning range and resolution
+    used by histogram based statistics which includes the percent threshold fields.
 </p>
 <br>
 
 <div class="center">
-    <img src="images/Reproject_GUI_01.png" border="0"> <br><br>
-    <i>Figure 1. I/O Parameters Tab</i>
+    <img src="images/Statistics04_Bins.png" border="0"> <br>
+    <i>Figure ?. Bins Parameters Tab<br></i>
 </div>
 
-<br><br>
-
-<p>
-    <i><b>Source</b></i>
-</p>
-
-<p class="i1">
-    <b>File</b><br>This is the file to be reprojected and serves as the input file to the Reproject Tool. You
-    may
-    conveniently select one of the files currently loaded in SeaDAS using the drop down selector. In this case, a file
-    reference number appears to the left of the file name indicating that it is a loaded file and not a direct system
-    file. To select a file directly from your computer system, use the selector button to the right and navigate to the
-    desired
-    file. A file selected this way directly from your system will not have a file reference number displayed next to it.
-</p>
-
-<p class="i1">
-
-    <i>Note: a loaded file can differ from a system file (even though they may bear the same name) in that you may have
-        made changes to the loaded file in SeaDAS and not saved them.</i>
-</p>
-
-
 <br>
-<p>
-    <i><b>Output</b></i>
+<br>
+
+
+<p class="i1">
+    <b>#Bins</b><br>The number of bins.
 </p>
 
 <p class="i1">
-    <b>Name</b><br>This is the name of the reprojected file which will be generated. The default behavior appends
-    "_reprojected" to the original filename.
+    <b>Set #Bins from Bin Width</b><br>The number of bins (auto-calculated based on a specified bin width).  Such a
+    parameter is very product specific so it is not set for use by default nor does it appear in the preferences.
 </p>
 
 <p class="i1">
-    <b>Save file as</b><br>Used to specify whether the file should be physically saved to the file system. The
-    combo box presents a list of file formats, currently BEAM-DIMAP, GeoTIFF, and HDF5.
-</p>
-<p class="i1">
-
-    <i>Note: if deselected this tool will run much faster as the
-        reprojection
-        does not actually occur at the time of run. Subsequently when the user opens a band in the reprojected file the
-        reprojection
-        occurs for that band only.)</i>
+    <b>Bin Span</b><br>The range of the bins.  Such a
+    parameter is very product specific so it is not set for use by default nor does it appear in the preferences.
 </p>
 
 <p class="i1">
-    <b>Directory</b><br>Location in which to save file. (Default is the last location in which a file was saved)
-</p>
-<p class="i1">
-    <i>Note: the default is the last directory saved to by any standard GUI tool in SeaDAS</i>
+    <b>Log Scaled Bins</b><br>Use log scaling for the bins.
 </p>
 
 <p class="i1">
-    <b>Open in SeaDAS</b><br>Used to specify whether the file should be automatically opened in SeaDAS.
+    <i>Note: The histogram plots only display the labels as the log of the number. </i>
 </p>
+
+
 
 
 <br><br>
-<hr>
 
+______________________________________________________
 
-<a name="ParametersMapProjectionTab"></a>
-
-<h4>GUI: Map Projection & Settings Tab</h4>
+<a name="FieldsTab"></a>
+<h4>The "Fields" Parameter Window</h4>
+<p class="i1first">
+    This is a tab within the Statistics GUI window.  This contains parameters to let you specify the fields which
+    you want displayed in the results.  In the GUI, there is a separator to distinguish between the statistics fields
+    (above) and the metadata fields (below).  The fields listed below the separator only get written to the spreadsheet.
+    Many of these fields are actually a grouping of fields.  (For more specifics on each field see
+    <a href="Statistics.html#Fields" class="invisibleLink">Fields</a>)
+</p>
 <p>
-    This is a tab of the Reproject window
+    <i>Note: the figure shown and description includes some addition fields (disabled by default) which can be enabled within
+        the Preferences page for the Statistics tool.</i>
 </p>
 <br>
 
 
 <div class="center">
-    <img src="images/Reproject_GUI_02.png"><br><br>
-    <i>Figure 2. Map Projection & Settings Tab</i>
-
+    <img src="images/Statistics04_Fields_additional.png" border="0"> <br>
+    <i>Figure ?. Fields Parameters Tab<br></i>
 </div>
 
+
+
 <br><br>
 
 
-<p>
-    <i><b>Coordinate Reference System (CRS)</b></i><br>
-    There are 3 options for selecting a CRS: create on yourself - "Custom CRS"; select one - "Predefined CRS"; or use
-    one
-    from an existing file - "Use CRS of file".
-</p>
-
-
 <p class="i1">
-    <b>Custom CRS</b><br>
-    With this option you will manually select the map projection (along with it's parameters) and the datum to use.
-</p>
-
-<p class="i2">
-    <b>Geodetic datum</b><br>
-    The coordinate system for locating positions on the Earth. In general, these are based on reference ellipsoids used
-    to represent the shape of the Earth. You can select from a variety of datums. The most common (and SeaDAS default)
-    is "WGS 84" (WGS 1984, EPSG:4326).
-
-</p>
-
-<p class="i2">
-    <b>Projection</b><br>
-    The map projection (or how the 3 dimensional Earth's surface will be transformed on a 2 dimensional surface).
-    Select from a list of map projections. If a projection requires parameters then the "CRS Parameters" button will
-    become selectable.
-</p>
-
-<p class="i3">
-    <b>CRS Parameters</b><br>
-    This opens a window of selectable parameters needed by the selected map projection. These contain default values,
-    but likely
-    you will want to modify these values based on your scene location or region of interest.
-    (See <a href="Reprojection.html#crsParameters" class="invisibleLink">CRS Parameters</a> for a more on these
-    parameters)
-</p>
-
-
+    <b>Include Median</b><br>This median value of the "valid" pixels.  Calculated by converting 2d raster of "valid" pixels into
+    an array and then obtaining the center element of the array.  This can be slow for large file, which is why this
+    field can be optionally disabled here.
 </p>
 
 <p class="i1">
-    <b>Predefined CRS</b><br>
-    SeaDAS contains a multitude of pre-defined coordinate reference systems including the EPSG (European Petroleum
-    Survey Group) Geodetic Parameter
-    Dataset. Use the selector to the right to choose one
-    of these projections. (
-    See <a href="Reprojection.html#Figure4" class="invisibleLink">Predefined CRS</a> for more on this).
+    <b>Include Binning Info</b><br>Includes a group of fields indicating the binning parameters used in calculating the
+    histogram-based statistics.  These fields include: Total_Bins, Bin_Min, Bin_Max, Bin_Width.
 </p>
 
 <p class="i1">
-    <b>Use CRS of file</b><br>
-    Select a file from your system (one with geo-coding) and use the identical map projection criteria and geographic
-    boundaries of that file. This will have the effect that both files are collocated (same raster grid size and grid
-    geocoding) but separate files. See the Collocation Tool if you wish to actually merge the files together.
-</p>
-<br>
-
-
-<p>
-    <i><b>Output Settings</b></i>
-</p>
-
-
-<p class="i1">
-    <b>Preserve resolution</b><br>
-    Use the SeaDAS defaults which will automatically determine a "best-fit" resolution, output file size, and easting
-    and westing.
-    You can deselect this and manually set these parameters.
+    <b>Include Thresholds</b><br>This is a comma delimited list of percent thresholds to calculate using the histogram-based
+    statistics.  If nothing is in this textfield then no percent thresholds will be calculated.
 </p>
 
 <p class="i1">
-    <b>Add delta lat/lon bands</b><br>
-    Specifies whether or not delta latitude and longitude bands will be added to the target product. These are virtual
-    bands, which can be used to assess the accuracy of the new geo-coding given by the Coordinate Reference System (CRS)
-    with respect to the old geo-coding.
+    <b>Include Histogram Statistics</b><br>Includes some statistics fields calculated from the histogram.  These include:
+    Mean(Binned), Median(Binned), StandardDeviation(Binned).
+</p>
+
+
+
+<p class="i1">
+    <b>Include Band MetaData</b><br>Adds band metadata fields to the spreadsheet.  These fields include: Band, Unit,
+    Band_Valid_Expression, Band_Description.
 </p>
 
 <p class="i1">
-    <b>Reproject tie-point grids</b><br>
-    Specifies whether or not the tie-point grids shall be included. If they are reprojected they will appear as bands in
-    the target product and not any more as tie-point grids.
+    <b>Include File MetaData</b><br>Adds file metadata fields to the spreadsheet.  These fields include:
+    File, File_Format, File_Type, File_Width, File_Height, Sensor, Platform, Resolution,
+    Day_Night, Orbit, Processing_Version, Projection.
 </p>
 
 <p class="i1">
-    <b>No-data value</b><br>
-    The default no-data value is used for output pixels in the projected band which have either no corresponding pixel
-    in the source product or the source pixel is invalid.
+    <b>Include Mask MetaData</b><br>Adds mask metadata fields to the spreadsheet.  These fields include:
+    Mask, Mask_Description, Mask_Expression.
 </p>
 
 <p class="i1">
-    <b>Resampling method</b><br>
-    This is the interpolation method. Choose between Nearest, Bilinear, and Bicubic. (<a
-        href="../general/ResamplingMethods.html">See details</a>)
-</p>
-
-
-<br>
-
-
-<i><b>Output Information</b></i>
-
-<p class="i1">
-    <b>Scene width</b><br>
-    This will be the width in pixels of the output file.
+    <b>Include Time MetaData</b><br>Adds time metadata fields to the spreadsheet.  These fields include:
+    Start_Date, Start_Time, End_Date, End_Time.
 </p>
 
 <p class="i1">
-    <b>Scene height</b><br>
-    This will be the height in pixels of the output file.
+    <b>Include Time Series MetaData</b><br>Intended for files created by the SeaDAS time series tool.
+    Adds time series metadata fields to the spreadsheet.  These fields include:
+    Time_Series_Date, Time_Series_Time.
 </p>
 
 <p class="i1">
-    <b>Center longitude</b><br>
-    This is the longitude of the center of the source file.
+    <b>Include Projection Parameters</b><br>If available display full WKT of the coordinate reference system.
+    This can be a large text string and the field is Projection_Parameters.
 </p>
 
-<p class="i1">
-    <b>Center latitude</b><br>
-    This is the latitude of the center of the source file.
-</p>
 
-<p class="i1">
-    <b>CRS</b><br>
-    This is name of the chosen projection and datum
-</p>
 
-<p class="i1">
-    <b>Show CRS WKT</b><br>
-    This is the CRS WKT (well-known text)
-</p>
+
+
 
 <br><br>
-<hr>
 
 
-<a name="crsParameters"></a>
-<h4>GUI: CRS Parameters</h4>
-<p>
-    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
-                                                         class="invisibleLink">Map Projection & Settings</a> window
+
+______________________________________________________
+<a name="Format"></a>
+<h4>The "Format" Parameter Window</h4>
+<p class="i1first">
+    This is a tab accessible from within the Statistics window.  These parameters enable you to format the text rendition
+    of the statistics results (sush as decimal places) as well as to adjust some formatting to the spreadsheet.  The
+    line separator within this tab delineates the aspects which are only applicable to the spreadsheet.
+    Parameters listed below the separator are only applicable to the spreadsheet.
 </p>
-
 <br>
+
 
 <div class="center">
-    <img src="images/Reproject_GUI_03.png"><br>
-    <i>Figure 3. </i>
+    <img src="images/Statistics04_Format.png" border="0"> <br>
+    <i>Figure ?. Format Parameters Tab<br></i>
 </div>
+
 
 <br><br>
 
-<p class="i1">
-    <b>Semi-Major</b><br>
-    The semi-major axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the equatorial
-    radius.
-    This value is automatically filled based on the datum (reference ellipsoid) which you selected.
+
+<p class="i1hang">
+    <b>Decimal Places</b>
 </p>
 
 
-<p class="i1">
-    <b>Semi-Minor</b><br>
-    The semi-minor axis of the planet's shape treated as an ellipsoid, which in the case of the Earth, is the polar
-    radius.
-    This value is automatically filled based on the datum (reference ellipsoid) which you selected.
+<p class="i2first">
+    For numbers which are not integers, this sets the number of decimal places.
 </p>
 
 
-<p class="i1">
-    <b>False Easting</b><br>
-    This is the distance away from the origin (x component) to place the reference pixel. This essentially has the
-    effect of
-    shifting the geographic boundaries of your output file sideways. (<a href="Reprojection.html#eastingNorthing"
-                                                                         class="invisibleLink">More details</a>)
+
+<p class="i1hang">
+    <b>Column Width</b>
+    </p>
+
+
+<p class="i2first">
+    Sets the displayed width of the columns within the statistics GUI spreadsheet.
+    Setting the column width to a value of less than 8 will result in this field being
+    ignored such that the columns will auto-adjust to show the full text entry for all entries.
 </p>
 
-
-<p class="i1">
-    <b>False Northing</b><br>
-    This is the distance away from the origin (y component) to place the reference pixel. This essentially has the
-    effect of
-    shifting the geographic boundaries of your output file up and down. (<a href="Reprojection.html#eastingNorthing"
-                                                                            class="invisibleLink">More details</a>)</p>
-
-
-<p class="i1">
-    <b>Map Projection dependent fields</b><br>
-    Each map projection may have additional fields dependent on the particular projection. Some of these parameters are:
 <p class="i2">
-    Latitude of center<br>
-    Longitude of center<br>
-    Central meridian<br>
-    Latitude of origin<br>
-    Scale factor<br>
-    Azimuth<br>
-    Standard parallel 1<br>
-    ...</p>
+    <i>Note: If an entry
+        cannot fit within the column width, it will be partially display.  Even though the full entry is not displayed, it is
+        there in full and the spreadsheet can be saved to the clipboard and
+        copied into another program.
+    </i>
 </p>
+
+
+<p class="i1hang">
+    <b>Include Column Breaks</b>
+</p>
+
+<p class="i2first">
+    This creates separator columns with the entry "||"  between each grouping of metadata
+    in the statistics GUI spreadsheet.
+</p>
+
 <br><br>
 
-<hr>
 
 
-<a name="Figure4"></a>
-<h4>GUI: Predefined CRS</h4>
-
+___________________________
+<a name="Plots"></a>
+<h4>GUI: Plots Tab</h4>
 <p>
-    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
-                                                         class="invisibleLink">Map Projection & Settings</a> window
+    This is a tab of the Statistics window
 </p>
-
 <br>
-<div class="center">
 
-    <img src="images/Reproject_GUI_04.png"><br>
-    <i>Figure 4. </i>
-</div>
-
-
-<br><br>
-
-<p class="i1">
-    Select a CRS in the left window of this GUI
-    and an XML text representation of the selected projection will be displayed and loaded in the right side of this GUI
-    . If you look at the XML, you can see
-    all the individual parameters which go into the particular projection. You could replicate or deviate from these
-    parameters
-    if you wish by instead using the "Custom CRS" option of the parent window and manually setting these parameters.
-</p>
-
-<p class="i1">
-    <i>Note 1: as of SeaDAS 7.5, the EPSG dataset being used is version 7.9.0</i>
-</p>
-<p class="i1">
-    <i>Note 2: you can
-        use this XML or the authority code when running Reproject in the command line mode.</i>
-</p>
-
-<br><br>
-
-<hr>
-
-<a name="outputParameters"></a>
-<h4>GUI: Output Parameters</h4>
-<p>
-    This is a sub window of options launched from the <a href="Reprojection.html#ParametersMapProjectionTab"
-                                                         class="invisibleLink">Map Projection & Settings</a> window.
-</p>
-
-<br>
 
 <div class="center">
-    <img src="images/Reproject_GUI_05.png"><br>
-    <i>Figure 5. </i>
+    <img src="images/Statistics04_Plots.png" border="0"> <br>
+    <i>Figure ?. Plots Parameters Tab<br></i>
 </div>
 
+
 <br><br>
 
-<p class="i1">
-    <b>Reference Pixel</b><br>
-    This is the pixel of your output file to use for setting the easting and northing.
-</p>
-
-<p class="i2">
-    <b>Reference pixel is at scene upper left</b><br>
-    In this case the upper left pixel of the output file will be used as the reference.
-</p>
-
-<p class="i2">
-    <b>Reference pixel is at scene center</b><br>
-    In this case the center pixel of the output file will be used as the reference.
-</p>
-
-<p class="i2">
-    <b>Other reference pixel position</b><br>
-    In this case you custom specify which pixel of the output file will be used as the reference.
-</p>
-
 
 <p class="i1">
-    <b>Easting</b><br>
-    This is the distance away from the origin (x component) to place the reference pixel. This essentially has the
-    effect of
-    shifting the geographic boundaries of your output file sideways. (<a href="Reprojection.html#eastingNorthing"
-                                                                         class="invisibleLink">More details</a>)
+    <b>Field</b><br>Text TBD
 </p>
 
-
-<p class="i1">
-    <b>Northing</b><br>
-    This is the distance away from the origin (y component) to place the reference pixel. This essentially has the
-    effect of
-    shifting the geographic boundaries of your output file up and down. (<a href="Reprojection.html#eastingNorthing"
-                                                                            class="invisibleLink">More details</a>)
-</p>
-
-
-<p class="i1">
-    <b>Orientation</b><br>
-    This is the angular rotation of the output image.  It is the angle between geographic north and map grid north (in degrees),
-    in other words, the convergence angle of the projection's vertical axis from true north.
-</p>
-
-<p class="i1">
-    <b>Pixel sizeX</b><br>
-    This is the resolution in the x direction of the output image. The units are dependent on which CRS you have
-    defined.
-</p>
-
-<p class="i1">
-    <b>Pixel sizeY</b><br>
-    This is the resolution in the y direction of the output image. The units are dependent on which CRS you have
-    defined.
-</p>
-
-<p class="i1">
-    <b>Fit product size</b><br>
-    This is used to define the width and height in pixels of the output file such that all data from the input file
-    will be "best fit" and fully included in the output file.
-    Of note and caution is that SeaDAS (as of version 7.5) uses the width and height setting and ignores this checkbox
-    when Reproject runs.
-    Really the wording on this should be "Edit sizing". We will have to look into this. Regardless, clicking "Reset"
-    will set
-    these values for the width and height to "best fit".
-</p>
-
-<p class="i2">
-    <b>Width</b><br>
-    This is the desired width in pixels of the output file.
-</p>
-
-<p class="i2">
-    <b>Height</b><br>
-    This is the desired height in pixels of the output file.
-</p>
-
-
-<a name="eastingNorthing"></a>
-<p class="i1">
-    <i><b>A bit more about the Easting and Northing fields and the Reset button</b></i><br>
-
-    The Easting and Northing fields can be a bit intimidating and not so intuitive, however basically you need to ask
-    yourself whether
-    you want the geographic boundaries of your output file to be adapted to "best-fit" and include all the data from the
-    input scene, or
-    whether you have a specific and exact geographic boundary for your output file in mind.
-</p>
-
-<p class="i1">
-    For the former "best fit" case, SeaDAS can calculate default Easting and Northing values based on your scene
-    boundaries and
-    CRS criteria. To do this, click the "Reset" button at the bottom of this GUI window. Of note is that the very
-    first time you open this sub window during a SeaDAS session, the default will be calculated and applied,
-    but from that point onward the assumption is that the value in the textfield is the value which you want to use
-    If you make further changes to the CRS criteria or change to a different file, then you will again need to click
-    "Reset".
-</p>
-<p class="i1">
-
-    For the latter case, since the false easting and false northing fields also appear with the CRS definition it may be
-    better
-    or perhaps more clear to set them there and then set the values here to 0.0 for each. Either way, keep in mind that
-    the actual
-    false easting and false northing is the sum of the corresponding values in the CRS parameters and Output Parameters.
-
-</p>
-<p class="i1"><i>Note: Easting, northing and the pixel size are given in the units of the underlying map
-    (e.g. dec. degree for geographic and meter for the UTM projection).</i>
-</p>
 
 
 <br><br>
 
 
-<a name="Metadata"></a>
 
-<p class="subSectionTitle">Metadata</p>
-
-<p>The following meta data is added to the output file by this tool. All the rest of the original meta data from the
-    input file is retained and included in the output file<br>
-
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Description</th>
-    </tr>
-    <tr>
-        <td><code>Reproject_gpt_parameters</code></td>
-        <td>The full GPT operator parameter xml string used in the creation the output file</td>
-    </tr>
-    <tr>
-        <td><code>crs</code></td>
-        <td>The coordinate reference system (WKT) used in the creation of the output file</td>
-    </tr>
-    <tr>
-        <td><code>map_projection</code></td>
-        <td>The map projection name used in the creation of the output file</td>
-    </tr>
-    <tr>
-        <td><code>history</code></td>
-        <td>"Reproject" is prepended to original history value</td>
-    </tr>
-    <tr>
-        <td><code>spatial_resolution</code></td>
-        <td>If exists in original file, "Derived from" is prepended to original value</td>
-    </tr>
-    <tr>
-        <td><code>processing_level</code></td>
-        <td>If exists in original file, "Derived from" is prepended to original value</td>
-    </tr>
-    <tr>
-        <td><code>product_name</code></td>
-        <td>If exists in original file, "Derived from" is prepended to original value</td>
-    </tr>
-    <tr>
-        <td><code>title</code></td>
-        <td>If exists in original file, "Derived from" is prepended to original value</td>
-    </tr>
-
-</table>
-
-
+___________________________
+<a name="View"></a>
+<h4>GUI: View Tab</h4>
+<p>
+    This is a tab of the Statistics window
+</p>
 <br>
-<br>
+
+
+<div class="center">
+    <img src="images/Statistics04_View.png" border="0"> <br>
+    <i>Figure ?. View Parameters Tab<br></i>
+</div>
+
+
+<br><br>
+
+
+<p class="i1">
+    <b>Field</b><br>Text TBD
+</p>
+
+
+
+<br><br>
+
+
+
+
 
 <a name="GPT"></a>
 
 <p class="subSectionTitle">Command Line Tool (GPT)</p>
 
 <p>
-    The Reproject tool can also be run from the command line using SeaDAS GPT (graph processing tool). All parameter
-    options within the GUI are also supported for the command line version with a few minor parameter name differences
-    which
-    will be noted below.
-</p>
+    The Statistics tool can also be run from the command line using SeaDAS GPT (graph processing tool).
 <p>
-    GPT "collocatedWith" = GUI "use CRS of file" <br>
-    GPT "crs" can be either XML or the EPSG Authority (for example EPSG:4326, AUTO:42001, etc.) <br>
-    GPT "wktFile" as an input is not available in the GUI, but the GUI can create and display the CRS WKT of the
-    specified CRS
-    parameters
-    which could subsequently be used on the command line. <br>
-</p>
-
-<p><i>Note: The GPT Reproject tool also includes the Orthorectification.</i> </p>
-<p>
-    <a href="../beam-gpf/org_esa_beam_gpf_operators_standard_reproject_ReprojectionOp.html">see more on Reproject-GPT</a>
+    <a href="../beam-gpf/org_esa_beam_statistics_StatisticsOp.html">see more on Statistics-GPT</a>
 </p>
 <br>
 <br>
