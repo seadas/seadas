@@ -38,7 +38,7 @@
         <geotools.version>2.7.4</geotools.version>
         <jide.version>3.5.15</jide.version>
         <seadas.version>7.4.1</seadas.version>
-        <javax.ws.rs>2.0.1</javax.ws.rs>
+        <javax.ws.rs>2.1-m09</javax.ws.rs>
         <jersey.version>2.23.2</jersey.version>
         <grizzly.version>2.3.26</grizzly.version>
         <junit.version>4.12</junit.version>
@@ -74,8 +74,6 @@
         <module>seadas-watermask-operator</module>
         <module>seadas-contour-operator</module>
         <module>seadas-bathymetry-operator</module>
-        <!--<module>os-rgbwrite</module>-->
-        <!--<module>../../beam/beam-aatsr-sst</module>-->
         <module>../beam/beam-alos-reader</module>
         <module>../beam/beam-atsr-reader</module>
         <module>../beam/beam-avhrr-reader</module>
