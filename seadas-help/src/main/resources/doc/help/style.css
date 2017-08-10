@@ -16,6 +16,17 @@ p {
     }
 
 
+
+.i0first {
+    margin-left: 6;
+    margin-top: 0;
+}
+
+.i0hang {
+    margin-left: 6;
+    margin-bottom: 0;
+}
+
 .i1hang {
     margin-left: 40;
     margin-bottom: 0;
