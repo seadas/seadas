@@ -31,11 +31,13 @@ public class OCSSWRemoteClient extends OCSSW {
     public static final String OCSSW_SERVER_PORT_NUMBER = "6401";
     public static final String SEADAS_CLIENT_ID_PROPERTY = "client.id";
     public static final String MLP_PROGRAM_NAME = "multilevel_processor.py";
+    public static final String MLP_PAR_FILE_ODIR_KEY_NAME = "odir";
 
     WebTarget target;
     String jobId;
     boolean ifileUploadSuccess;
     String ofileName;
+    String ofileDir;
 
 
     public OCSSWRemoteClient() {
@@ -377,6 +379,7 @@ public class OCSSWRemoteClient extends OCSSW {
                     ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
                     Response response = target.path("fileServices").path("downloadMLPOutputFile").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
+                    ofileFullPathName = ofileDir + File.separator + ofileName;
                     writeToFile(responceStream, ofileFullPathName);
                 }
             }
@@ -498,6 +501,8 @@ public class OCSSWRemoteClient extends OCSSW {
                 if (new File(value).exists() && !new File(value).isDirectory()) {
                     uploadClientFile(value);
                     value = value.substring(value.lastIndexOf(File.separator) + 1);
+                } else if (key.equals(MLP_PAR_FILE_ODIR_KEY_NAME) && new File(value).isDirectory()) {
+                    ofileDir = value;
                 }
                 token = key + "=" + value;
             }

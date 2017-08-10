@@ -1,8 +1,0 @@
-icefile=/accounts/aabduraz/TestDir/ocssw/run/var/anc/2011/199/N201119900_SEAICE_NSIDC_24h.hdf
-met1=/accounts/aabduraz/TestDir/ocssw/run/var/anc/2011/199/N201119918_MET_NCEPR2_6h.hdf
-met2=/accounts/aabduraz/TestDir/ocssw/run/var/anc/2011/200/N201120000_MET_NCEPR2_6h.hdf
-met3=/accounts/aabduraz/TestDir/ocssw/run/var/anc/2011/200/N201120000_MET_NCEPR2_6h.hdf
-ozone1=/accounts/aabduraz/TestDir/ocssw/run/var/anc/2011/199/N201119900_O3_AURAOMI_24h.hdf
-ozone2=/accounts/aabduraz/TestDir/ocssw/run/var/anc/2011/200/N201120000_O3_AURAOMI_24h.hdf
-ozone3=/accounts/aabduraz/TestDir/ocssw/run/var/anc/2011/200/N201120000_O3_AURAOMI_24h.hdf
-sstfile=/accounts/aabduraz/TestDir/ocssw/run/var/anc/2011/199/N2011199_SST_OIV2AVAM_24h.nc

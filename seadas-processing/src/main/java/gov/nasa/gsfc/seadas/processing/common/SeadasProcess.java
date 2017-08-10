@@ -33,6 +33,7 @@ public class SeadasProcess extends Process {
 
     @Override
     public InputStream getInputStream() {
+
         return inputStream;
     }
 

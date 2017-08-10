@@ -190,8 +190,9 @@ public class OCSSWRemote {
         Collection<String> filesInMLPDir = ServerSideFileUtilities.getFilesList(mlpOutputDir);
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
         Iterator itr = filesInMLPDir.iterator();
+        int i = 0;
         while (itr.hasNext()) {
-            jsonObjectBuilder.add("OFILE", (String)itr.next());
+            jsonObjectBuilder.add("OFILE" + i++, (String)itr.next());
         }
         return jsonObjectBuilder.build();
     }

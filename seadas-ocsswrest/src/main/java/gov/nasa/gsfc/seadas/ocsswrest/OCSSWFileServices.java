@@ -212,27 +212,31 @@ public class OCSSWFileServices {
         String mlpOutputDir = workingFileDir + File.separator + jobId + File.separator + MLP_OUTPUT_DIR_NAME;
         String ofileName = mlpOutputDir + File.separator + clientOfileName;
         File file = new File(ofileName);
-        StreamingOutput fileStream = new StreamingOutput() {
-            @Override
-            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
-                try
-                {
-                    java.nio.file.Path path = Paths.get(ofileName);
-                    byte[] data = Files.readAllBytes(path);
-                    outputStream.write(data);
-                    outputStream.flush();
+        if (file.exists() ) {
+            StreamingOutput fileStream = new StreamingOutput() {
+                @Override
+                public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                    try {
+                        java.nio.file.Path path = Paths.get(ofileName);
+                        byte[] data = Files.readAllBytes(path);
+                        outputStream.write(data);
+                        outputStream.flush();
+                    } catch (Exception e) {
+                        throw new WebApplicationException("File Not Found !!");
+                    }
                 }
-                catch (Exception e)
-                {
-                    throw new WebApplicationException("File Not Found !!");
-                }
-            }
-        };
-        System.out.println(file.getAbsolutePath());
-        return Response
-                .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
-                .header("content-disposition","attachment; fileName = " + ofileName)
-                .build();
+            };
+            System.out.println(file.getAbsolutePath());
+
+            return Response
+                    .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("content-disposition", "attachment; fileName = " + ofileName)
+                    .build();
+        }
+        else {
+            System.out.println( ofileName + " does not exist");
+            return null;
+        }
     }
 
 

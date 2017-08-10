@@ -110,120 +110,12 @@ public class SeadasFileUtils {
         }
     }
 
-//
-//    public static String findNextLevelFileName(String ifileName, String programName, String suite) {
-//        if (ifileName == null || programName == null) {
-//            return null;
-//        }
-//        if (programName.equals("l3bindump")) {
-//            return ifileName + ".xml";
-//        }
-//        debug("Program name is " + programName);
-//        Debug.assertNotNull(ifileName);
-//// todo Add suite, also check calling program the make sure ProcessorModel call is right
-//
-//        String[] cmdArray = new String[6];
-//        cmdArray[0] = OCSSWOldModel.getOcsswRunnerScriptPath();
-//        cmdArray[1] = "--ocsswroot";
-//        cmdArray[2] = OCSSWOldModel.getOcsswEnv();
-//        cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-//        cmdArray[4] = ifileName;
-//        cmdArray[5] = programName;
-//
-//        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-//
-//        if (RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
-//            return retrieveOFileNameLocal(cmdArray, ifileDir);
-//        } else {
-//            cmdArray[4] = getIfileNameforRemoteServer(SeadasFileUtils.copyFile(ifileName, OCSSWOldModel.getOCSSWClientSharedDirName()));
-//            return retrieveOFileNameRemote(cmdArray);
-//        }
-//    }
-
-//    public ProcessorModel getNextLevelNameFinderProcessorModel(String ifileName, String programName) {
-//        ProcessorModel nextLevelNamer = new ProcessorModel(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME);
-//        final ArrayList<ParamInfo> paramInfos = new ArrayList<ParamInfo>();
-//
-//        ParamInfo ifileParamInfo = new ParamInfo("ifile", ifileName, ParamInfo.Type.IFILE);
-//        ifileParamInfo.setOrder(0);
-//        ifileParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
-//        paramInfos.add(ifileParamInfo);
-//
-//        ParamInfo programNameParamInfo = new ParamInfo("programName", programName, ParamInfo.Type.IFILE);
-//        programNameParamInfo.setOrder(1);
-//        programNameParamInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
-//        paramInfos.add(programNameParamInfo);
-//
-//        nextLevelNamer.setParamList(paramInfos);
-//
-//        return nextLevelNamer;
-//    }
-//
-//    private static String retrieveOFileNameLocal(String[] cmdArray, String ifileDir) {
-//        Process process = ocssw.execute(cmdArray, new File(ifileDir));
-//
-//        if (process == null) {
-//            return "output";
-//        }
-//
-//        //wait for process to exit
-//        try {
-//            Field field = process.getClass().getDeclaredField("hasExited");
-//            field.setAccessible(true);
-//            while (!(Boolean) field.get(process)) {
-//            }
-//        }  catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchFieldException e) {
-//            e.printStackTrace();
-//        }
-//
-//        int exitCode = process.exitValue();
-//        InputStream is;
-//        if (exitCode == 0) {
-//            is = process.getInputStream();
-//        } else {
-//            is = process.getErrorStream();
-//        }
-//
-//
-//        InputStreamReader isr = new InputStreamReader(is);
-//        BufferedReader br = new BufferedReader(isr);
-//
-//        try {
-//
-//            if (exitCode == 0) {
-//                String line = br.readLine();
-//                while (line != null) {
-//                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
-//                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
-//                    }
-//                    line = br.readLine();
-//                }
-//
-//            } else {
-//                debug("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
-//            }
-//
-//        } catch (IOException ioe) {
-//
-//            VisatApp.getApp().showErrorDialog(ioe.getMessage());
-//        }
-//
-////        int choice = VisatApp.getApp().showQuestionDialog("ofile computation", "ofile name is not found", true, "continue");
-////
-////        return String.valueOf(choice);
-//        return "output";
-//    }
-
     private static String retrieveOFileNameRemote(String[] cmdArray) {
         JsonArrayBuilder jab = Json.createArrayBuilder();
         for (String s : cmdArray) {
             jab.add(s);
         }
 
-        //add jobId for server side database
-        //jab.add(OCSSWOldModel.getJobId());
         JsonArray remoteCmdArray = jab.build();
 
         OCSSWClient ocsswClient = new OCSSWClient();
@@ -259,143 +151,9 @@ public class SeadasFileUtils {
         }
     }
 
-//    private static String getNextLevelFileName(String ifileName, String[] cmdArray) {
-//
-//        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-//        Process process = OCSSWRunnerOld.execute(cmdArray, new File(ifileDir));
-//        if (process == null) {
-//            return null;
-//        }
-//
-//        int exitCode = process.exitValue();
-//        InputStream is;
-//        if (exitCode == 0) {
-//            is = process.getInputStream();
-//        } else {
-//            is = process.getErrorStream();
-//        }
-//
-//        InputStreamReader isr = new InputStreamReader(is);
-//        BufferedReader br = new BufferedReader(isr);
-//
-//        try {
-//
-//            if (exitCode == 0) {
-//                String line;
-//                while ((line = br.readLine()) != null) {
-//                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
-//                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
-//                    }
-//                }
-//
-//            } else {
-//                debug("Failed exit code on program '" + cmdArray[5] + "'");
-//            }
-//
-//        } catch (IOException ioe) {
-//
-//            VisatApp.getApp().showErrorDialog(ioe.getMessage());
-//        }
-//        return null;
-//    }
-
-//    public static String findNextLevelFileName(String ifileName, String programName, String[] additionalOptions) {
-//
-//        if (ifileName == null || programName == null) {
-//            return null;
-//        }
-//        if (programName.equals("l3bindump")) {
-//            return ifileName + ".xml";
-//        }
-//        debug("Program name is " + programName);
-//        Debug.assertNotNull(ifileName);
-//
-//        String[] cmdArray = (String[]) ArrayUtils.addAll(getCmdArrayForNextLevelNameFinder(ifileName, programName), additionalOptions);
-//
-//        String ifileDir = ifileName.substring(0, ifileName.lastIndexOf(System.getProperty("file.separator")));
-//
-//        String ofileName;
-//
-//        if (RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
-//            ofileName = retrieveOFileNameLocal(cmdArray, ifileDir);
-//        } else {
-//
-//            ofileName = retrieveOFileNameRemote(cmdArray);
-//        }
-//
-//        if (ofileName == null) {
-//            ofileName = "output";
-//        }
-//        return ofileName;
-//    }
-
     private static String getIfileNameforRemoteServer(String ifileName) {
         String newIfileName = ifileName.replace(OCSSWOldModel.getOCSSWClientSharedDirName(), OCSSWOldModel.getServerSharedDirName());
         return newIfileName;
-    }
-
-    public static String getDefaultOFileNameFromIFile(String ifileName, String programName) {
-        debug("Program name is " + programName);
-        Debug.assertNotNull(ifileName);
-        ProcessorTypeInfo.ProcessorID processorID = ProcessorTypeInfo.getProcessorID(programName);
-        String ofileName = ifileName + "_" + programName + ".out";
-        switch (processorID) {
-            case EXTRACTOR:
-                ofileName = ifileName + ".sub";
-                break;
-            case MODIS_L1A_PY:
-                //FileUtils.exchangeExtension(ifileName, "GEO") ;
-                break;
-            case MODIS_GEO_PY:
-                ofileName = ifileName.replaceAll("L1A_LAC", "GEO");
-                break;
-            case L1BGEN:
-                ofileName = ifileName.replaceAll("L1A", "L1B");
-                break;
-            case MODIS_L1B_PY:
-                ofileName = ifileName.replaceAll("L1A", "L1B");
-                break;
-            case L1BRSGEN:
-                ofileName = ifileName + ".BRS";
-                break;
-            case L2BRSGEN:
-                ofileName = ifileName + ".BRS";
-                break;
-            case L1MAPGEN:
-                ofileName = ifileName + "_" + programName + ".out";
-                break;
-            case L2MAPGEN:
-                ofileName = ifileName + "_" + programName + ".out";
-                break;
-            case L2BIN:
-                ofileName = ifileName.replaceAll("L2_.{3,}", "L3b_DAY");
-                break;
-            case L3BIN:
-                ofileName = ifileName.replaceAll("L2_.{3,}", "L3b_DAY");
-                break;
-            case SMIGEN:
-                ofileName = ifileName.replaceAll("L3B", "L3m");
-                ofileName = ofileName.replaceAll("L3b", "L3m");
-                ofileName = ofileName.replaceAll(".main", "");
-                break;
-            case SMITOPPM:
-                ofileName = ifileName.trim().length() > 0 ? ifileName + ".ppm" : "";
-                break;
-        }
-        return ofileName;
-    }
-
-    public static void main(String arg[]) {
-        System.out.println(getCurrentDate("dd MMMMM yyyy"));
-        System.out.println(getCurrentDate("yyyyMMdd"));
-        System.out.println(getCurrentDate("dd.MM.yy"));
-        System.out.println(getCurrentDate("MM/dd/yy"));
-        System.out.println(getCurrentDate("yyyy.MM.dd G 'at' hh:mm:ss z"));
-        System.out.println(getCurrentDate("EEE, MMM d, ''yy"));
-        System.out.println(getCurrentDate("h:mm a"));
-        System.out.println(getCurrentDate("H:mm:ss:SSS"));
-        System.out.println(getCurrentDate("K:mm a,z"));
-        System.out.println(getCurrentDate("yyyy.MMMMM.dd GGG hh:mm aaa"));
     }
 
     public static String expandEnvironment(String string1) {
@@ -484,74 +242,94 @@ public class SeadasFileUtils {
         }
     }
 
-    /**
-     * Copies sourceFile into targetDir.
-     *
-     * @param sourceFile the full path name of the source file to be copied
-     * @param targetDir  the full path name of the target directory
-     * @return the full path of the file in the new location, if the "copy" operation is successfull. Otherwise, it returns null.
-     */
-//    public static String copyFile(String sourceFile, String targetDir) {
-//        String[] cmdArray = new String[3];
-//        cmdArray[0] = "cp";
-//        cmdArray[1] = sourceFile;
-//        cmdArray[2] = targetDir + System.getProperty("file.separator") + ".";
-//        Process p = OCSSWRunnerOld.executeLocal(cmdArray, new File(targetDir));
-//        try{
-//            p.waitFor();
-//        }catch(InterruptedException ie){
-//            System.out.println("Process interrupted!");
-//        }
-//        if (p.exitValue() == 0) {
-//            return targetDir + sourceFile.substring(sourceFile.lastIndexOf(System.getProperty("file.separator")));
-//        } else {
-//            System.out.println("This should not happen!");
-//            return null;
-//        }
-//    }
+    public String tail( File file ) {
+        RandomAccessFile fileHandler = null;
+        try {
+            fileHandler = new RandomAccessFile( file, "r" );
+            long fileLength = fileHandler.length() - 1;
+            StringBuilder sb = new StringBuilder();
 
-    /**
-     * Deletes a file from a directory
-     *
-     * @param fileFullPathName the full path name of the file to be deleted
-     */
-//    public static void deleteFile(String fileFullPathName) {
-//        String[] cmdArray = new String[2];
-//        cmdArray[0] = "rm";
-//        cmdArray[1] = fileFullPathName;
-//        OCSSWRunnerOld.executeLocal(cmdArray, new File(fileFullPathName));
-//    }
-//
-//    public void updateDiskFile(String fileFullPath, String varName, String varValue) {
-//        File targetFile = new File(fileFullPath);
-//        StringBuilder targetFileContent = new StringBuilder();
-//        try {
-//            LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(targetFile));
-//            String readLine;
-//            String[] configVar;
-//
-//            readLine = lineNumberReader.readLine();
-//
-//            while (readLine != null) {
-//                if (readLine.indexOf("=") != -1) {
-//                    configVar = readLine.split("=", 2);
-//                    configVar[0] = configVar[0].trim();
-//                    configVar[1] = configVar[1].trim();
-//                    if (configVar[0].trim().equalsIgnoreCase(varName.trim())) {
-//                        targetFileContent.append(configVar[0] + " = " + varValue + System.getProperty("line.separator"));
-//                    } else {
-//                        targetFileContent.append(readLine + System.getProperty("line.separator"));
-//                    }
-//                }
-//                readLine = lineNumberReader.readLine();
-//            }
-//            writeToDisk(fileFullPath, targetFileContent.toString());
-//
-//        } catch (FileNotFoundException fnfe) {
-//
-//        } catch (IOException ioe) {
-//
-//        }
-//    }
+            for(long filePointer = fileLength; filePointer != -1; filePointer--){
+                fileHandler.seek( filePointer );
+                int readByte = fileHandler.readByte();
 
-}
+                if( readByte == 0xA ) {
+                    if( filePointer == fileLength ) {
+                        continue;
+                    }
+                    break;
+
+                } else if( readByte == 0xD ) {
+                    if( filePointer == fileLength - 1 ) {
+                        continue;
+                    }
+                    break;
+                }
+
+                sb.append( ( char ) readByte );
+            }
+
+            String lastLine = sb.reverse().toString();
+            return lastLine;
+        } catch( java.io.FileNotFoundException e ) {
+            e.printStackTrace();
+            return null;
+        } catch( java.io.IOException e ) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (fileHandler != null )
+                try {
+                    fileHandler.close();
+                } catch (IOException e) {
+                /* ignore */
+                }
+        }
+    }
+
+    public String tail2( File file, int lines) {
+        java.io.RandomAccessFile fileHandler = null;
+        try {
+            fileHandler =
+                    new java.io.RandomAccessFile( file, "r" );
+            long fileLength = fileHandler.length() - 1;
+            StringBuilder sb = new StringBuilder();
+            int line = 0;
+
+            for(long filePointer = fileLength; filePointer != -1; filePointer--){
+                fileHandler.seek( filePointer );
+                int readByte = fileHandler.readByte();
+
+                if( readByte == 0xA ) {
+                    if (filePointer < fileLength) {
+                        line = line + 1;
+                    }
+                } else if( readByte == 0xD ) {
+                    if (filePointer < fileLength-1) {
+                        line = line + 1;
+                    }
+                }
+                if (line >= lines) {
+                    break;
+                }
+                sb.append( ( char ) readByte );
+            }
+
+            String lastLine = sb.reverse().toString();
+            return lastLine;
+        } catch( java.io.FileNotFoundException e ) {
+            e.printStackTrace();
+            return null;
+        } catch( java.io.IOException e ) {
+            e.printStackTrace();
+            return null;
+        }
+        finally {
+            if (fileHandler != null )
+                try {
+                    fileHandler.close();
+                } catch (IOException e) {
+                }
+        }
+    }
+ }
