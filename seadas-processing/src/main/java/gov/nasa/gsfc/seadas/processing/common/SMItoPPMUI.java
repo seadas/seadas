@@ -68,7 +68,7 @@ public class SMItoPPMUI {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (smitoppmCheckBox.isSelected()) {
-                    ppmFile.setFilename(SeadasFileUtils.getDefaultOFileNameFromIFile(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm"));
+                    ppmFile.setFilename(processorModel.getOcssw().getOfileName(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm", null));
                     smitoppmPanel.add(ppmFile.getjPanel());
                     smitoppmPanel.validate();
                     smitoppmPanel.repaint();
@@ -80,7 +80,7 @@ public class SMItoPPMUI {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (smitoppmCheckBox.isSelected()) {
-                    ppmFile.setFilename(SeadasFileUtils.getDefaultOFileNameFromIFile(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm"));
+                    ppmFile.setFilename(processorModel.getOcssw().getOfileName(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm", null));
                     smitoppmPanel.add(ppmFile.getjPanel());
                     smitoppmPanel.validate();
                     smitoppmPanel.repaint();
@@ -93,7 +93,7 @@ public class SMItoPPMUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (smitoppmCheckBox.isSelected()) {
-                    ppmFile.setFilename(SeadasFileUtils.getDefaultOFileNameFromIFile(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm"));
+                    ppmFile.setFilename(processorModel.getOcssw().getOfileName(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()), "smitoppm", null));
                     smitoppmPanel.add(ppmFile.getjPanel());
                     processorModel.setReadyToRun(processorModel.getParamValue(processorModel.getPrimaryOutputFileOptionName()).trim().length() > 0 && ppmFile.getFileName().trim().length() > 0);
                     processorModel.createsmitoppmProcessorModel(ppmFile.getFileName());
