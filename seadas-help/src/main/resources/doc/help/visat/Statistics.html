@@ -208,6 +208,36 @@
 <br><br>
 
 
+
+&nbsp;&nbsp;&nbsp;&nbsp;_______________
+<h4><i>Earth-Surface Pixel Area Considerations for Level-2 Files</i></h4>
+<p class="i1">
+When doing statistics directly on a level-2 file, you should take into consideration the fact that
+    for most missions not all pixels in the
+    level-2 file will have an equal Earth surface area.  Pixels with a high sensor zenith angle can be substantially of greater
+    surface area than those at a low sensor zenith angle.
+
+    If you constrain your analysis to a region (grid box size) which limits this mix of large and small surface
+    area pixels, your statistics can be more meaningful.
+    <p>
+<br>
+
+<div class="center">
+    <img src="images/StatisticsPixelArea.png" border="0"> <br>
+    <i> <br></i>
+</div>
+<br>
+
+<p class="i1">
+
+    The table above illustrates for MODIS (the 1km bands) the percent difference of surface area between the smallest and
+    largest pixels of several grid box sizes.  The significant impact of sensor zenith angle on this is readily apparent.
+    This table can be helpful in determining whether a particular grid box size is appropriate for your particular scene.
+</p>
+
+
+<br><br>
+
 &nbsp;&nbsp;&nbsp;&nbsp;_______________
 <h4><i>Statistics on Virtual Files and Virtual Bands</i></h4>
 
