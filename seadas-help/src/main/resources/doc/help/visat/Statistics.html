@@ -117,9 +117,10 @@
     encounter if you do not have a reasonable bin resolution.  This example uses the chlor_a product of a level-2 file,
     for the full scene.
     The image on the left has a bin count of 1,000 and the image on the right has a bin count of 100,000.
-    The value range.  The plot x-axis span has been reduced to span from 0.0 to 0.4.  However, the high end can be up to
-    100.0 which is the high end of the valid pixel expression.  Since, for this example, the majority of the
-    data occurs in only a small portion of the valid data range, a total bin count of 1,000, as shown in the left image,
+    Both span the default value range of statistics min and statistics max.
+     The plot x-axis span has been reduced to span from 0.0 to 0.4.  Keep in mind that the high end of chlor_a can be up to
+    100.0, which is the high end of its valid pixel expression.  Since, for this example, the majority of the
+    data occurs in only a small portion of the binning span data range, a total bin count of 1,000, as shown in the left image,
     does a poor job of identifying the histogram and data structure.
 </p>
 
@@ -212,13 +213,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;_______________
 <h4><i>Earth-Surface Pixel Area Considerations for Level-2 Files</i></h4>
 <p class="i1">
-When doing statistics directly on a level-2 file, you should take into consideration the fact that
+When choosing to not reproject and to do statistics directly on a level-2 file, you should take into consideration the fact that
     for most missions not all pixels in the
     level-2 file will have an equal Earth surface area.  Pixels with a high sensor zenith angle can be substantially of greater
     surface area than those at a low sensor zenith angle.
 
-    If you constrain your analysis to a region (grid box size) which limits this mix of large and small surface
-    area pixels, your statistics can be more meaningful.
+    If you constrain your analysis to a region (grid box) size which limits this mix of large and small surface
+    area pixels, statistics done directly on level-2 files can be more meaningful.
     <p>
 <br>
 
@@ -235,6 +236,12 @@ When doing statistics directly on a level-2 file, you should take into considera
     This table can be helpful in determining whether a particular grid box size is appropriate for your particular scene.
 </p>
 
+<p class="i1">
+    <i>
+        The following math band equation was used to determine pixel surface area for MODIS Aqua:
+1.0*pow(((6371*sin((senz*PI/180)- (asin((6371/(6371+700))*sin(senz*PI/180))))/sin(asin((6371/(6371+700))*sin(senz*PI/180))))/700),2.0)/cos(senz*PI/180)
+        </i>
+</p>
 
 <br><br>
 
@@ -1040,7 +1047,7 @@ When doing statistics directly on a level-2 file, you should take into considera
 </p>
 
 <p class="i2">
-    <i>Note: Setting the column width to a value of less than 8 will result in this field being
+    <i>Note: Setting the column width to a value of less than 10 will result in this field being
         ignored such that the columns will auto-adjust to show the full text entry for all entries.
     </i>
 </p>
