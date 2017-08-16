@@ -226,7 +226,7 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
 <div class="center">
     <img src="images/StatisticsPixelArea.png" border="0"> <br>
     <i> <br></i>
-</div>
+<</div>
 <br>
 
 <p class="i1">
@@ -304,11 +304,27 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
 
 <p class="i1hang"><b>Pixels</b></p>
 <p class="i2first">
+    This is the total number of pixels used to calculate the statistics.
+</p>
+<p class="i2">
+    <i>Note: this does include pixels which do not contain data.</i>
+</p>
+
+<p class="i1hang"><b>Valid_Pixels</b></p>
+<p class="i2first">
     This is the total number of "valid" pixels used to calculate the statistics.
 </p>
 <p class="i2">
     <i>Note: this does not include pixels which do not contain data.</i>
 </p>
+
+
+<p class="i1hang"><b>Fraction_Valid</b></p>
+<p class="i2first">
+    This is the total number of valid pixels ("Valid_Pixels) divided by the total pixels ("Pixels").
+</p>
+
+
 
 <p class="i1hang"><b>Minimum</b></p>
 <p class="i2first">
@@ -914,6 +930,15 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
         the Preferences page for the Statistics tool (For more on this see <a href="Statistics.html#Preferences" class="invisibleLink">Preferences</a>).</i>
 </p>
 
+<p class="i1hang"><b>Include Total Pixel Count</b></p>
+<p class="i2first">
+    Includes a group of fields indicating the pixel counts.
+    These fields include: Pixels, Valid_Pixels, Fraction_Valid.
+</p>
+<p class="i2first">
+   <i>Note: deselecting this field still displays "Valid_Pixel".  The other fields can take longer to create, which is why
+   this selector is made available.</i>i>
+</p>
 
 
 <p class="i1hang"><b>Include Median</b></p>
