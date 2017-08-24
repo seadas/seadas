@@ -56,8 +56,8 @@ public class OCSSWRemoteTest {
 
     @Before
     public void setUp() throws Exception {
-        OCSSWConfig ocsswConfig = new OCSSWConfig();
-        ocsswConfig.readProperties();
+        String configFilePath = "/accounts/aabduraz/TestDir/ocsswrestserver.config";
+        OCSSWConfig ocsswConfig = new OCSSWConfig(configFilePath);
         OCSSWServerModel.initiliaze();
     }
 
