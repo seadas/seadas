@@ -171,6 +171,7 @@ public class OCSSWServerModel {
         String ocsswRootPath = System.getProperty("ocsswroot");
         if (ocsswRootPath != null) {
             final File dir = new File(ocsswRootPath + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX);
+            System.out.println("server ocssw root path: " + dir.getAbsoluteFile());
             if (dir.isDirectory()) {
                 ocsswExist = true;
                 ocsswRoot = ocsswRootPath;
