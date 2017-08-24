@@ -19,6 +19,7 @@ public abstract class OCSSW {
     public static final String OCSSW_VIRTUAL_SERVER_PORT_FORWWARD_NUMBER_FOR_CLIENT = "6400";
 
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
+    public static final String OCSSW_SERVER_PORT_PROPERTY = "ocssw.port";
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
     public static final String SEADASHOME_PROPERTY = "home";
 

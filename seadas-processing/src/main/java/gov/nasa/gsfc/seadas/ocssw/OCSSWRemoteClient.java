@@ -15,8 +15,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
-import java.nio.file.Files;
+import java.io.*;import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -37,12 +36,12 @@ public class OCSSWRemoteClient extends OCSSW {
 
 
     public OCSSWRemoteClient() {
-        initiliaze();
+        initialize();
     }
 
-    private void initiliaze() {
+     private void initialize() {
         String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY, "localhost");
-        String remoteServerPortNumber = OCSSW_SERVER_PORT_NUMBER;
+        String remoteServerPortNumber = RuntimeContext.getConfig().getContextProperty(OCSSW_SERVER_PORT_PROPERTY, OCSSW_SERVER_PORT_NUMBER);
         OCSSWClient ocsswClient = new OCSSWClient(remoteServerIPAddress, remoteServerPortNumber);
         target = ocsswClient.getOcsswWebTarget();
         JsonObject jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);

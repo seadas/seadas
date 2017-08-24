@@ -9,7 +9,7 @@ import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWLocal;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWVirtual;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWVMClient;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.ocssw.*;
 import org.esa.beam.framework.dataio.ProductIO;
@@ -111,7 +111,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);
        // if (OsUtils.getOperatingSystemType() == OsUtils.OSType.Windows ) {
             if (ocsswLocation.equals(OCSSW.OCSSW_LOCATION_PROPERTY_VALUE_VIRTUAL)) {
-                ocssw = new OCSSWVirtual();
+                ocssw = new OCSSWVMClient();
             } else if (validate(ocsswLocation)) {
                 ocssw = new OCSSWRemoteClient();
                 String test = ocssw.getOcsswInstallDirPath();

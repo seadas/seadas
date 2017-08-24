@@ -124,7 +124,8 @@ In VirtualBox {\color{blue}{\bf Devices  $\rightarrow $  Shared Folder Settings.
       \item mkdir ocsswws
       \item sudo mount -t vboxsf seadas-ocsswws /home/aabduraz/ocsswws
       \item To be able to write in the shared directory, it needs to be mounted in this way:\\
-      sudo mount -t vboxsf -o uid=1000,gid=1000 seadas-ocsswrest /home/aabduraz/ocsswrest
+      sudo mount -t vboxsf -o uid=1000,gid=1000 seadas-ocsswrest /home/aabduraz/ocsswrest \\
+      {\color{red} no space between uid=1000 and gid=1000 !!!}
 
    \end{enumerate}
 
