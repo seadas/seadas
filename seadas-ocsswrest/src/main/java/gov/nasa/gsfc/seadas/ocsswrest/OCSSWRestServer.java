@@ -69,8 +69,8 @@ public class OCSSWRestServer {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        OCSSWConfig ocsswConfig = new OCSSWConfig();
-        ocsswConfig.readProperties();
+        String fileName = args[0];
+        OCSSWConfig ocsswConfig = new OCSSWConfig(fileName);
         baseUriPortNumber = System.getProperty(BASE_URI_PORT_NUMBER_PROPERTY);
         BASE_URI = "http://"+ SERVER_API + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         SQLiteJDBC.createTables();
