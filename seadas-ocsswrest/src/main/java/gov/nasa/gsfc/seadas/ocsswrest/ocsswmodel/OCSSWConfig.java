@@ -23,12 +23,16 @@ public class OCSSWConfig  {
     private static final String FILE_DIR = System.getProperty("user.dir") + System.getProperty("file.separator") + "files";
     private static final String OCSSW_OUTPUT_COMPRESSED_FILE_NAME = "ocssw_output.zip";
 
-    public static String configFilePath="ocsswservertest.config";
-    public static final String PROPERTIES_FILE = "ocsswserver.config";
+//    public static String configFilePath="ocsswservertest.config";
+//    public static final String PROPERTIES_FILE = "ocsswserver.config";
     public static Properties properties = new Properties(System.getProperties());
 
-    public Properties readProperties() {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);
+    public OCSSWConfig(String configFilePath) {
+        this.readProperties(configFilePath);
+    }
+
+    public Properties readProperties(String configFilePath) {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(configFilePath);
         if (inputStream != null) {
             try {
                 properties.load(inputStream);
