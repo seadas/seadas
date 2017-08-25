@@ -60,6 +60,7 @@ public class OCSSWInfo {
         String baseUriPortNumber = RuntimeContext.getConfig().getContextProperty(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
         String serverAPI = RuntimeContext.getConfig().getContextProperty("ocssw.location", "locahost");
         String resourceBaseUri = "http://"+ serverAPI + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
+        System.out.println("server URL:" + resourceBaseUri);
         final ClientConfig clientConfig = new ClientConfig();
         clientConfig.register(MultiPartFeature.class);
         clientConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
