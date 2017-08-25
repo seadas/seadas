@@ -19,13 +19,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
  * Main class.
  */
-public class OCSSWRestServer {
+public class OCSSWRestServer extends ResourceConfig {
     final static String BASE_URI_PORT_NUMBER_PROPERTY = "baseUriPortNumber";
     final static String OCSSW_ROOT_PROPERTY ="ocsswroot";
     final static String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
@@ -42,6 +45,13 @@ public class OCSSWRestServer {
     // Base URI the Grizzly HTTP server will listen on
     public static String BASE_URI = "http://0.0.0.0:6401/ocsswws/";
     private static final Logger LOGGER = Logger.getLogger(OCSSWRestServer.class.getName());
+
+
+    public OCSSWRestServer(String ocsswroot) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("ocsswroot", ocsswroot);
+        setProperties(properties);
+    }
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
@@ -70,42 +80,18 @@ public class OCSSWRestServer {
      */
     public static void main(String[] args) throws IOException {
         String fileName = args[0];
+        System.out.println("argument: " + fileName);
         OCSSWConfig ocsswConfig = new OCSSWConfig(fileName);
         baseUriPortNumber = System.getProperty(BASE_URI_PORT_NUMBER_PROPERTY);
         BASE_URI = "http://"+ SERVER_API + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         SQLiteJDBC.createTables();
         OCSSWServerModel.initiliaze();
+        System.out.println(String.format("ORS is starting at ", BASE_URI));
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey new app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
         server.shutdown();
-    }
-
-    private static void readConfigFile(){
-        //load application properties
-        Properties configProperties = new Properties(System.getProperties());
-
-        try {
-            //load the file handle for main.properties
-            FileInputStream fileInputStream = new FileInputStream(configFilePath);
-            configProperties.load(fileInputStream);
-            fileInputStream.close();
-            // set the system properties
-            System.setProperties(configProperties);
-            // display new properties
-            System.getProperties().list(System.out);
-            baseUriPortNumber = configProperties.getProperty(BASE_URI_PORT_NUMBER_PROPERTY);
-            ocsswroot = configProperties.getProperty(OCSSW_ROOT_PROPERTY);
-            serverWorkingDirectory = configProperties.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY);
-            keepIntermediateFilesOnServer = configProperties.getProperty(KEEP_INTERMEDIATE_FILES_ON_SERVER_PROPERTY);
-
-        } catch (FileNotFoundException fnfe){
-
-        } catch (IOException ioe){
-
-        }
-
     }
 }
 
