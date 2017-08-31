@@ -3,7 +3,7 @@
     <parent>
         <artifactId>seadas</artifactId>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <version>7.4</version>
+        <version>7.5</version>
     </parent>
 
     <groupId>gov.nasa.gsfc.seadas.ocsswrest</groupId>

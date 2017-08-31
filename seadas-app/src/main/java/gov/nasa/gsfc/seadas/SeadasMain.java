@@ -156,6 +156,7 @@ public class SeadasMain implements RuntimeRunnable {
 
 
     private boolean isOCSSWExist() {
+        OCSSWInfo.detectOcssw();
         return OCSSWInfo.isOCSSWExist();
     }
 

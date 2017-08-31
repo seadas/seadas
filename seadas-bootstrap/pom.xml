@@ -23,7 +23,7 @@
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas</artifactId>
-        <version>7.4</version>
+        <version>7.5</version>
     </parent>
 
     <packaging>jar</packaging>

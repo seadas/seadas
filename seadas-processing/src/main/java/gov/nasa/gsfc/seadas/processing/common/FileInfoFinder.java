@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.ocssw.*;
@@ -29,7 +30,7 @@ public class FileInfoFinder {
         ocssw.getOfileName(fileName);
         setMissionName(ocssw.getMissionName());
         setFileType(ocssw.getFileType());
-        setMissionDirName(ocssw.getOcsswDataDirPath());
+        setMissionDirName(OCSSWInfo.getOcsswDataDirPath());
 //        fileInfoFinderProcessorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL, ocssw);
 //        fileInfoFinderProcessorModel.setAcceptsParFile(false);
 //        addParamInfo("file", fileName, ParamInfo.Type.IFILE, ParamInfo.USED_IN_COMMAND_AS_ARGUMENT, 0);

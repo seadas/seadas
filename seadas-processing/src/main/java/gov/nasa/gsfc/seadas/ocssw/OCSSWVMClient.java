@@ -1,18 +1,28 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
+import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
+import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Scanner;
+
+import static java.nio.file.StandardCopyOption.*;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -22,28 +32,23 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
     public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + "ocsswVMServerSharedDir";
 
     String sharedDirPath;
+    String workingDir;
 
-    public OCSSWVMClient(){
+    public OCSSWVMClient() {
         this.initialize();
     }
 
-    private void initialize(){
+    private void initialize() {
         sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY, OCSSW_VM_SERVER_SHARED_DIR_PROPERTY_DEFAULT_VALUE);
         String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY, "localhost");
         String remoteServerPortNumber = RuntimeContext.getConfig().getContextProperty(OCSSW_SERVER_PORT_PROPERTY, OCSSW_VIRTUAL_SERVER_PORT_FORWWARD_NUMBER_FOR_CLIENT);
         OCSSWClient ocsswClient = new OCSSWClient(remoteServerIPAddress, remoteServerPortNumber);
         target = ocsswClient.getOcsswWebTarget();
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        ocsswExist = jsonObject.getBoolean("ocsswExists");
-        ocsswRoot = jsonObject.getString("ocsswRoot");
-        if (ocsswExist) {
+         if (OCSSWInfo.isOcsswExist()) {
             jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-            String clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
+            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
             target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
-            ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
-            ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
-            ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
-            ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
+            workingDir = sharedDirPath + File.separator + clientId + File.separator + jobId + File.separator;
         }
     }
 
@@ -55,4 +60,131 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
             return false;
         }
     }
+
+    /**
+     * This method copies the client file into the shared directory between the host and the virtual machine.
+     * The shared directory is specified in the seadas.config file.
+     *
+     * @param fileName
+     * @return
+     */
+    @Override
+
+    public boolean uploadClientFile(String fileName) {
+
+        copyFile(fileName);
+
+        try {
+            String fileTypeString = Files.probeContentType(new File(fileName).toPath());
+            if (fileTypeString.equals(MediaType.TEXT_PLAIN)) {
+                String listOfFiles = uploadListedFiles(fileName);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    /**
+     * This method uploads list of files provided in the text file.
+     *
+     * @param fileName is the name of the text file that contains list of input files.
+     * @return true if all files uploaded successfully.
+     */
+    @Override
+    public String uploadListedFiles(String fileName) {
+
+        File file = new File(fileName);
+        StringBuilder sb = new StringBuilder();
+        Scanner input = null;
+        try {
+            input = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        String nextFileName;
+        boolean fileUploadSuccess = true;
+
+        while (input.hasNext()) {
+            nextFileName = input.nextLine();
+            copyFile(nextFileName);
+        }
+        String fileNames = sb.toString();
+
+        input.close();
+        if (fileUploadSuccess) {
+            return fileNames;
+        } else {
+            return null;
+        }
+
+
+    }
+
+    private void copyFile(String sourceFilePath) {
+        File sourceFile = new File(sourceFilePath);
+        String targetFilePathName = workingDir + sourceFilePath.substring(sourceFilePath.lastIndexOf(File.separator) + 1);
+        File targetFile = new File(targetFilePathName);
+        targetFile.getParentFile().mkdirs();
+
+        try {
+            SeadasFileUtils.copyFileUsingStream(sourceFile, targetFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void copyMLPFiles(String sourceFilePath) {
+        File sourceFile = new File(sourceFilePath);
+        String targetFilePathName = workingDir + sourceFilePath.substring(sourceFilePath.lastIndexOf(File.separator) + 1);
+        File targetFile = new File(targetFilePathName);
+        targetFile.getParentFile().mkdirs();
+
+        try {
+            SeadasFileUtils.copyFileUsingStream(sourceFile, targetFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * this method returns a command array for execution.
+     * the array is constructed using the paramList data and input/output files.
+     * the command array structure is: full pathname of the program to be executed, input file name, params in the required order and finally the output file name.
+     * assumption: order starts with 1
+     *
+     * @return
+     */
+    @Override
+    public Process execute(ProcessorModel processorModel) {
+        SeadasProcess seadasProcess = new SeadasProcess();
+
+        JsonObject commandArrayJsonObject = null;
+
+        String programName = processorModel.getProgramName();
+
+        if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
+            String parString = processorModel.getParamList().getParamString("\n");
+            File parFile = writeParFile(convertParStringForRemoteServer(parString));
+            copyMLPFiles(parFile.getAbsolutePath());
+            target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+            commandArrayJsonObject = Json.createObjectBuilder().add("parFile", parFile.getName()).build();
+            JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
+            downloadMLPOutputFiles(outputFilesList);
+
+        } else {
+            commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+            Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                downloadFiles(commandArrayJsonObject);
+                seadasProcess.setExitValue(0);
+            }
+        }
+
+
+        return seadasProcess;
+    }
+
 }

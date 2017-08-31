@@ -59,11 +59,22 @@ public class SeadasFileUtils {
         return file;
     }
 
-    public static String getCurrentDate(String dateFormat) {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        return sdf.format(cal.getTime());
 
+    public static void copyFileUsingStream(File source, File dest) throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
     }
 
     public static String getKeyValueFromParFile(File file, String key) {
@@ -108,52 +119,6 @@ public class SeadasFileUtils {
             VisatApp.getApp().showErrorDialog(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
             return null;
         }
-    }
-
-    private static String retrieveOFileNameRemote(String[] cmdArray) {
-        JsonArrayBuilder jab = Json.createArrayBuilder();
-        for (String s : cmdArray) {
-            jab.add(s);
-        }
-
-        JsonArray remoteCmdArray = jab.build();
-
-        OCSSWClient ocsswClient = new OCSSWClient();
-        WebTarget target = ocsswClient.getOcsswWebTarget();
-        final Response response = target.path("ocssw").path("computeNextLevelFileName").path(OCSSWOldModel.getJobId()).request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.entity(remoteCmdArray, MediaType.APPLICATION_JSON_TYPE));
-
-        String ofileName = target.path("ocssw").path("retrieveNextLevelFileName").path(OCSSWOldModel.getJobId()).request(MediaType.TEXT_PLAIN).get(String.class);
-        if (ofileName != null) {
-            return ofileName;
-        } else {
-            return "output";
-        }
-    }
-
-    private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
-        String[] cmdArray = new String[6];
-        cmdArray[0] = OCSSWOldModel.getOcsswRunnerScriptPath();
-        cmdArray[1] = "--ocsswroot";
-        cmdArray[2] = OCSSWOldModel.getOcsswEnv();
-        cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-        cmdArray[4] = RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL) ? ifileName : getIfileNameforRemoteServer(ifileName);
-
-        cmdArray[5] = programName;
-        return cmdArray;
-    }
-
-    private String getIfileNameforCmdArray(String ifileName){
-        if (RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)){
-            return ifileName;
-        } else {
-            return ifileName;
-        }
-    }
-
-    private static String getIfileNameforRemoteServer(String ifileName) {
-        String newIfileName = ifileName.replace(OCSSWOldModel.getOCSSWClientSharedDirName(), OCSSWOldModel.getServerSharedDirName());
-        return newIfileName;
     }
 
     public static String expandEnvironment(String string1) {

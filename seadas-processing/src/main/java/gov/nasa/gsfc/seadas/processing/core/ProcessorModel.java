@@ -367,6 +367,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
     }
 
 
+    //todo: change the path to get geo filename from ifile
     public boolean updateGeoFileInfo(String ifileName) {
         updateGeoFileStatus(ifileName);
         if (hasGeoFile()) {
