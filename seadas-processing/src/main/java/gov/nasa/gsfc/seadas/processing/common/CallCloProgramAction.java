@@ -20,17 +20,8 @@ import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.visat.VisatApp;
 import org.esa.beam.visat.actions.AbstractVisatAction;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.jsonp.JsonProcessingFeature;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-import javax.json.JsonObject;
-import javax.json.stream.JsonGenerator;
 import javax.swing.*;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -62,7 +53,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
-    protected OCSSW ocssw = new OCSSWLocal();  //local is default
+    protected OCSSW ocssw;
 
     @Override
     public void configure(ConfigurationElement config) throws CoreException {
@@ -74,7 +65,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
         super.configure(config);
         if (programName.equals("install_ocssw.py")) {
-            OCSSWInfo.checkOCSSW();
+            OCSSWInfo.detectOcssw();
         }
         super.setEnabled(programName.equals(OCSSWOldModel.OCSSW_INSTALLER) || OCSSWInfo.isOCSSWExist());
     }
@@ -107,19 +98,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
         return PATTERN.matcher(ip).matches();
     }
 
-    public void detectOcssw(){
-        String ocsswLocation = RuntimeContext.getConfig().getContextProperty(OCSSW.OCSSW_LOCATION_PROPERTY);
-       // if (OsUtils.getOperatingSystemType() == OsUtils.OSType.Windows ) {
-            if (ocsswLocation.equals(OCSSW.OCSSW_LOCATION_PROPERTY_VALUE_VIRTUAL)) {
-                ocssw = new OCSSWVMClient();
-            } else if (validate(ocsswLocation)) {
-                ocssw = new OCSSWRemoteClient();
-                String test = ocssw.getOcsswInstallDirPath();
-            } else {
-                VisatApp.getApp().showInfoDialog(dialogTitle, "Please provide OCSSW server location in $SEADAS_HOME/config/seadas.config");
-                return;
-            }
-       // }
+    public void initializeOcsswClient() {
+
+        if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSWLocationProperties.OCSSW_LOCATION_LOCAL.getOcsswLocation())) {
+            ocssw = new OCSSWLocal();
+        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSWLocationProperties.OCSSW_LOCATION_VIRTUALMACHINE.getOcsswLocation())) {
+            ocssw = new OCSSWVMClient();
+        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSWLocationProperties.OCSSW_LOCATION_REMOTESERVER.getOcsswLocation())) {
+            ocssw = new OCSSWRemoteClient();
+        }
         ocssw.setProgramName(programName);
     }
 
@@ -129,7 +116,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
         SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(RuntimeContext.getConfig().getContextProperty(LOG_LEVEL_PROPERTY, "OFF")));
 
-        detectOcssw();
+        initializeOcsswClient();
 
         final AppContext appContext = getAppContext();
 
@@ -198,7 +185,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         programName = processorModel.getProgramName();
         openOutputInApp = cloProgramUI.isOpenOutputInApp();
 
-        if (!ocssw.isProgramValid()){
+        if (!ocssw.isProgramValid()) {
             return;
         }
 
@@ -214,7 +201,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
     }
 
     /**
-     *
      * @param pm is the model of the ocssw program to be exeuted
      * @output this is executed as a native process
      */
