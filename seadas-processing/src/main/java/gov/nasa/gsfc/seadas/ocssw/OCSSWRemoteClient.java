@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
@@ -23,13 +24,14 @@ import java.util.*;
  */
 public class OCSSWRemoteClient extends OCSSW {
 
-    public static final String OCSSW_SERVER_PORT_NUMBER = "6401";
+    public static final String OCSSW_SERVER_PORT_NUMBER = "6400";
     public static final String SEADAS_CLIENT_ID_PROPERTY = "client.id";
     public static final String MLP_PROGRAM_NAME = "multilevel_processor.py";
     public static final String MLP_PAR_FILE_ODIR_KEY_NAME = "odir";
 
     WebTarget target;
     String jobId;
+    String clientId;
     boolean ifileUploadSuccess;
     String ofileName;
     String ofileDir;
@@ -44,17 +46,10 @@ public class OCSSWRemoteClient extends OCSSW {
         String remoteServerPortNumber = RuntimeContext.getConfig().getContextProperty(OCSSW_SERVER_PORT_PROPERTY, OCSSW_SERVER_PORT_NUMBER);
         OCSSWClient ocsswClient = new OCSSWClient(remoteServerIPAddress, remoteServerPortNumber);
         target = ocsswClient.getOcsswWebTarget();
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        ocsswExist = jsonObject.getBoolean("ocsswExists");
-        ocsswRoot = jsonObject.getString("ocsswRoot");
-        if (ocsswExist) {
+        if (OCSSWInfo.isOcsswExist()) {
             jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-            String clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
+            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
             target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
-            ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
-            ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
-            ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
-            ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
         }
     }
 
@@ -106,7 +101,7 @@ public class OCSSWRemoteClient extends OCSSW {
         try {
             String fileTypeString = Files.probeContentType(new File(fileName).toPath());
             if (fileTypeString.equals(MediaType.TEXT_PLAIN)) {
-                String listOfFiles =  uploadListedFiles(fileName);
+                uploadListedFiles(fileName);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -263,19 +258,6 @@ public class OCSSWRemoteClient extends OCSSW {
     public String[] getMissionSuites(String missionName, String programName) {
         return target.path("ocssw").path("missionSuites").path(missionName).path(programName).request(MediaType.APPLICATION_JSON_TYPE).get(String[].class);
     }
-
-//    @Override
-//    public Process execute(ProcessorModel processorModel) {
-//        SeadasProcess seadasProcess = new SeadasProcess();
-//        String programName = processorModel.getProgramName();
-//        JsonObject commandArrayParamJsonObject = getJsonFromParamList(processorModel.getParamList());
-//        Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayParamJsonObject, MediaType.APPLICATION_JSON_TYPE));
-//        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-//            downloadFiles(commandArrayParamJsonObject);
-//            seadasProcess.setExitValue(0);
-//        }
-//        return  seadasProcess;
-//    }
 
     /**
      * this method returns a command array for execution.
@@ -480,7 +462,7 @@ public class OCSSWRemoteClient extends OCSSW {
         return jsonCommandArray;
     }
 
-    private String convertParStringForRemoteServer(String parString) {
+    protected String convertParStringForRemoteServer(String parString) {
         StringTokenizer st1 = new StringTokenizer(parString, "\n");
         StringTokenizer st2;
         StringBuilder stringBuilder = new StringBuilder();
@@ -512,7 +494,7 @@ public class OCSSWRemoteClient extends OCSSW {
     }
 
 
-    private File writeParFile(String parString) {
+    protected File writeParFile(String parString) {
 
         try {
 
@@ -545,28 +527,6 @@ public class OCSSWRemoteClient extends OCSSW {
     @Override
     public Process execute(String programName, String[] commandArrayParams) {
         return null;
-    }
-
-    @Override
-    public void setOcsswDataDirPath(String ocsswDataDirPath) {
-
-    }
-
-    @Override
-    public void setOcsswInstallDirPath(String ocsswInstallDirPath) {
-
-    }
-
-
-    @Override
-    public void setOcsswScriptsDirPath(String ocsswScriptsDirPath) {
-
-    }
-
-
-    @Override
-    public void setOcsswInstallerScriptPath(String ocsswInstallerScriptPath) {
-
     }
 
     @Override
