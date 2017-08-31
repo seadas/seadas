@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
@@ -47,8 +48,6 @@ public class OCSSWLocal extends OCSSW {
     public OCSSWLocal() {
 
         initiliaze();
-        ocsswExist = isOCSSWExist();
-
     }
 
     private void initiliaze() {
@@ -60,12 +59,6 @@ public class OCSSWLocal extends OCSSW {
         if (dirPath != null) {
             final File dir = new File(dirPath + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX);
             if (dir.isDirectory()) {
-                ocsswExist = true;
-                ocsswRoot = dirPath;
-                ocsswScriptsDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX;
-                ocsswDataDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_DATA_DIR_SUFFIX;
-                ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM;
-                ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
                 initiliazeMissions();
             }
         }
@@ -78,7 +71,7 @@ public class OCSSWLocal extends OCSSW {
 
 
     public boolean isMissionDirExist(String missionName) {
-        String missionDir = ocsswDataDirPath + File.separator + missionInfo.getDirectory();
+        String missionDir = OCSSWInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory();
         return new File(missionDir).exists();
     }
 
@@ -138,10 +131,6 @@ public class OCSSWLocal extends OCSSW {
     public Process execute(String[] commandArray) {
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
-//
-//        String ifileDir = getIfileName().substring(0, getIfileName().lastIndexOf(System.getProperty("file.separator")));
-//
-//        processBuilder.directory(new File(ifileDir));
 
         Process process = null;
         try {
@@ -190,7 +179,7 @@ public class OCSSWLocal extends OCSSW {
 
         missionInfo.setName(missionName);
 
-        File missionDir = new File(getOcsswDataDirPath() + File.separator + missionInfo.getDirectory());
+        File missionDir = new File(OCSSWInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory());
 
         System.out.println("mission directory: " + missionDir);
 
@@ -356,13 +345,13 @@ public class OCSSWLocal extends OCSSW {
             if (!isOCSSWExist()) {
                 commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
             } else {
-                commandArrayPrefix[0] = getOcsswInstallerScriptPath();
+                commandArrayPrefix[0] = OCSSWInfo.getOcsswInstallerScriptPath();
             }
         } else {
             commandArrayPrefix = new String[3];
-            commandArrayPrefix[0] = ocsswRunnerScriptPath;
+            commandArrayPrefix[0] = OCSSWInfo.getOcsswRunnerScriptPath();
             commandArrayPrefix[1] = "--ocsswroot";
-            commandArrayPrefix[2] = ocsswRoot;
+            commandArrayPrefix[2] = OCSSWInfo.getOcsswRoot();
         }
     }
 
@@ -405,26 +394,4 @@ public class OCSSWLocal extends OCSSW {
 
     }
 
-    @Override
-    public void setOcsswDataDirPath(String ocsswDataDirPath) {
-
-    }
-
-
-    @Override
-    public void setOcsswInstallDirPath(String ocsswInstallDirPath) {
-
-    }
-
-
-    @Override
-    public void setOcsswScriptsDirPath(String ocsswScriptsDirPath) {
-
-    }
-
-
-    @Override
-    public void setOcsswInstallerScriptPath(String ocsswInstallerScriptPath) {
-
-    }
 }
