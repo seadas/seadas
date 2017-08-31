@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
@@ -323,7 +324,7 @@ public class OCSSWRemoteClient extends OCSSW {
                     ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
                     Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
-                    writeToFile(responceStream, ofileFullPathName);
+                    SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
                 }
             }
         } catch (Exception e) {
@@ -357,7 +358,7 @@ public class OCSSWRemoteClient extends OCSSW {
                     Response response = target.path("fileServices").path("downloadMLPOutputFile").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
                     ofileFullPathName = ofileDir + File.separator + ofileName;
-                    writeToFile(responceStream, ofileFullPathName);
+                    SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
                 }
             }
         } catch (Exception e) {
@@ -372,32 +373,10 @@ public class OCSSWRemoteClient extends OCSSW {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             Response output = target.path("fileServices").path("downloadFile").path(jobId).request().get(Response.class);
             final InputStream responseStream = (InputStream) output.getEntity();
-            writeToFile(responseStream, ofileName);
+            SeadasFileUtils.writeToFile(responseStream, ofileName);
         }
         Process seadasProcess = new SeadasProcess();
         return seadasProcess;
-    }
-
-    // save uploaded file to new location
-    private void writeToFile(InputStream downloadedInputStream,
-                             String downloadedFileLocation) {
-
-        try {
-            File file = new File(downloadedFileLocation);
-            OutputStream outputStream = new FileOutputStream(file);
-            int read = 0;
-            byte[] bytes = new byte[8192];
-
-            while ((read = downloadedInputStream.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
-            }
-            downloadedInputStream.close();
-            outputStream.flush();
-            outputStream.close();
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
     }
 
     private JsonObject getJsonFromParamList(ParamList paramList) {
