@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.Mission;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
@@ -14,8 +15,7 @@ import java.util.HashMap;
  */
 public abstract class OCSSW {
     public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
-    public static final String OCSSW_LOCATION_PROPERTY_VALUE_LOCAL = "local";
-    public static final String OCSSW_LOCATION_PROPERTY_VALUE_VIRTUAL = "localhost";
+
     public static final String OCSSW_VIRTUAL_SERVER_PORT_FORWWARD_NUMBER_FOR_CLIENT = "6400";
 
     public static final String OCSSWROOT_PROPERTY = "ocssw.root";
@@ -25,12 +25,7 @@ public abstract class OCSSW {
 
 
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
-    public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
 
-    public static String OCSSW_INSTALLER_PROGRAM_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
-
-    public static String OCSSW_SCRIPTS_DIR_PATH_SUFFIX = "run" + System.getProperty("file.separator") + "scripts";
-    public static String OCSSW_DATA_DIR_PATH_SUFFIX = "run" + System.getProperty("file.separator") + "data";
 
 
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
@@ -43,13 +38,6 @@ public abstract class OCSSW {
             L2EXTRACT_XML_FILE = "l2extract.xml";
 
     private static boolean monitorProgress = false;
-
-    boolean ocsswExist;
-    public static String ocsswRoot;
-    public static String ocsswDataDirPath;
-    String ocsswScriptsDirPath;
-    String ocsswInstallerScriptPath;
-    String ocsswRunnerScriptPath;
 
 
     String programName;
@@ -67,16 +55,9 @@ public abstract class OCSSW {
     HashMap<String, Mission> missions;
 
     public boolean isOCSSWExist() {
-        return ocsswExist;
+        return OCSSWInfo.isOCSSWExist();
     }
 
-    public String getOcsswInstallDirPath() {
-        return ocsswRoot;
-    }
-
-    public String getOcsswScriptsDirPath() {
-        return ocsswScriptsDirPath;
-    }
 
     public boolean isProgramValid() {
         return true;
@@ -90,18 +71,6 @@ public abstract class OCSSW {
     }
 
     public abstract String[] getMissionSuites(String missionName, String programName);
-
-    public String getOcsswDataDirPath() {
-        return ocsswDataDirPath;
-    }
-
-    public String getOcsswInstallerScriptPath() {
-        return ocsswInstallerScriptPath;
-    }
-
-    public String getOcsswRunnerScriptPath() {
-        return ocsswRunnerScriptPath;
-    }
 
     public abstract Process execute(ProcessorModel processorModel);
     public abstract Process execute(ParamList paramList);
@@ -135,17 +104,6 @@ public abstract class OCSSW {
         setProgramName(programName);
     }
 
-
-    public abstract void setOcsswDataDirPath(String ocsswDataDirPath);
-
-
-    public abstract void setOcsswInstallDirPath(String ocsswInstallDirPath);
-
-
-    public abstract void setOcsswScriptsDirPath(String ocsswScriptsDirPath);
-
-
-    public abstract void setOcsswInstallerScriptPath(String ocsswInstallerScriptPath);
 
     public String getProgramName() {
         return programName;
@@ -188,14 +146,6 @@ public abstract class OCSSW {
         this.commandArraySuffix = commandArraySuffix;
     }
 
-    public boolean isOcsswExist() {
-        return ocsswExist;
-    }
-
-    public void setOcsswExist(boolean ocsswExist) {
-        this.ocsswExist = ocsswExist;
-    }
-
     public void updateOCSSWRoot(String installDir) {
         FileWriter fileWriter = null;
         try {
@@ -222,7 +172,7 @@ public abstract class OCSSW {
             if (fileWriter != null) {
                 fileWriter.close();
             }
-            ocsswRoot = installDir;
+            OCSSWInfo.setOcsswRoot(installDir);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
