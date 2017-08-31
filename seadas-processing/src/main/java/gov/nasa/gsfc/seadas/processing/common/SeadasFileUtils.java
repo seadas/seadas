@@ -103,6 +103,28 @@ public class SeadasFileUtils {
         return null;
     }
 
+    public static void writeToFile(InputStream downloadedInputStream,
+                             String downloadedFileLocation) {
+
+        try {
+            File file = new File(downloadedFileLocation);
+            OutputStream outputStream = new FileOutputStream(file);
+            int read = 0;
+            byte[] bytes = new byte[8192];
+
+            while ((read = downloadedInputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+            downloadedInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
     public static String getGeoFileNameFromIFile(String ifileName) {
 
         String geoFileName = (ifileName.substring(0, ifileName.indexOf("."))).concat(".GEO");
