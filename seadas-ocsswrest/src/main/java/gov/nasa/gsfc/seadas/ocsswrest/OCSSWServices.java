@@ -217,6 +217,14 @@ public class OCSSWServices {
     }
 
     @GET
+    @Path("executeMLPParFile/{jobId}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response executeMLPParFile(@PathParam("jobId") String jobId){
+        Response.Status respStatus = Response.Status.OK;
+        return Response.status(respStatus).build();
+    }
+
+    @GET
     @Path("getMLPOutputFiles/{jobId}")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject executeMLP(@PathParam("jobId") String jobId){
