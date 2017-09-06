@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
 
@@ -239,7 +240,7 @@ public class MissionInfo {
         if (directories.containsKey(id)) {
             String missionPiece = directories.get(id);
             try {
-                setDirectory(new File(OCSSW.ocsswDataDirPath, missionPiece));
+                setDirectory(new File(OCSSWInfo.getInstance().getOcsswDataDirPath(), missionPiece));
             } catch (Exception e) {
                 setDirectory(null);
             }

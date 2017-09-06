@@ -38,16 +38,17 @@ public class OCSSWRemoteClient extends OCSSW {
     String ofileDir;
 
 
+
     public OCSSWRemoteClient() {
         initialize();
     }
 
      private void initialize() {
-        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY, "localhost");
-        String remoteServerPortNumber = RuntimeContext.getConfig().getContextProperty(OCSSW_SERVER_PORT_PROPERTY, OCSSW_SERVER_PORT_NUMBER);
-        OCSSWClient ocsswClient = new OCSSWClient(remoteServerIPAddress, remoteServerPortNumber);
+//        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY, "localhost");
+//        String remoteServerPortNumber = RuntimeContext.getConfig().getContextProperty(OCSSW_SERVER_PORT_PROPERTY, OCSSW_SERVER_PORT_NUMBER);
+        OCSSWClient ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
-        if (OCSSWInfo.isOcsswExist()) {
+        if (ocsswInfo.isOcsswExist()) {
             jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
             clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
             target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
@@ -278,8 +279,7 @@ public class OCSSWRemoteClient extends OCSSW {
 
         if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
             String parString = processorModel.getParamList().getParamString("\n");
-            ;
-            File parFile = writeParFile(convertParStringForRemoteServer(parString));
+            File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
             target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
             commandArrayJsonObject = Json.createObjectBuilder().add("parFile", parFile.getName()).build();
             JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
@@ -379,7 +379,7 @@ public class OCSSWRemoteClient extends OCSSW {
         return seadasProcess;
     }
 
-    private JsonObject getJsonFromParamList(ParamList paramList) {
+    protected JsonObject getJsonFromParamList(ParamList paramList) {
 
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
 
@@ -478,6 +478,31 @@ public class OCSSWRemoteClient extends OCSSW {
         try {
 
             final File tempFile = File.createTempFile(programName + "-tmpParFile", ".par");
+            String parFileLocation = tempFile.getAbsolutePath();
+            System.out.println(tempFile.getAbsoluteFile());
+            tempFile.deleteOnExit();
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter(tempFile);
+                fileWriter.write( parString );
+            } finally {
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            }
+            return tempFile;
+
+        } catch (IOException e) {
+            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            return null;
+        }
+    }
+
+    protected File writeMLPParFile(String parString) {
+
+        try {
+
+            final File tempFile = File.createTempFile(MLP_PAR_FILE_NAME, ".par");
             String parFileLocation = tempFile.getAbsolutePath();
             System.out.println(tempFile.getAbsoluteFile());
             tempFile.deleteOnExit();

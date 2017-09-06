@@ -41,6 +41,14 @@ public class OCSSWClient {
         target = c.target(resourceBaseUri);
     }
 
+    public OCSSWClient(String resourceBaseUri) {
+        final ClientConfig clientConfig = new ClientConfig();
+        clientConfig.register(MultiPartFeature.class);
+        clientConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
+        Client c = ClientBuilder.newClient(clientConfig);
+        target = c.target(resourceBaseUri);
+    }
+
     public OCSSWClient(){
       this(defaultServer, defaultPort);
     }

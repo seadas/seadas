@@ -156,8 +156,8 @@ public class SeadasMain implements RuntimeRunnable {
 
 
     private boolean isOCSSWExist() {
-        OCSSWInfo.detectOcssw();
-        return OCSSWInfo.isOCSSWExist();
+        OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
+        return ocsswInfo.isOCSSWExist();
     }
 
     protected SeadasApp createApplication(ApplicationDescriptor applicationDescriptor) {

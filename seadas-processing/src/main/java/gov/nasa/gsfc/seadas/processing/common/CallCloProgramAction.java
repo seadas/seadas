@@ -55,6 +55,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private boolean openOutputInApp = true;
     protected OCSSW ocssw;
 
+    protected OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
+
     @Override
     public void configure(ConfigurationElement config) throws CoreException {
         programName = getConfigString(config, "programName");
@@ -64,10 +66,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
         super.configure(config);
-        if (programName.equals("install_ocssw.py")) {
-            OCSSWInfo.detectOcssw();
-        }
-        super.setEnabled(programName.equals(OCSSWOldModel.OCSSW_INSTALLER) || OCSSWInfo.isOCSSWExist());
+//        if (programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
+//            OCSSWInfo.detectOcssw();
+//        }
+        super.setEnabled(programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME) || ocsswInfo.isOCSSWExist());
     }
 
     public String getXmlFileName() {
@@ -100,11 +102,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     public void initializeOcsswClient() {
 
-        if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSWLocationProperties.OCSSW_LOCATION_LOCAL.getOcsswLocation())) {
+        if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
             ocssw = new OCSSWLocal();
-        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSWLocationProperties.OCSSW_LOCATION_VIRTUALMACHINE.getOcsswLocation())) {
+        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
             ocssw = new OCSSWVMClient();
-        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSWLocationProperties.OCSSW_LOCATION_REMOTESERVER.getOcsswLocation())) {
+        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
             ocssw = new OCSSWRemoteClient();
         }
         ocssw.setProgramName(programName);

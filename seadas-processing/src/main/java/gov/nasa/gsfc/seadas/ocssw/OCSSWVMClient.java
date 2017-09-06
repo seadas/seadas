@@ -21,6 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import static java.nio.file.StandardCopyOption.*;
 
@@ -34,17 +36,21 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
     String sharedDirPath;
     String workingDir;
 
+
+
     public OCSSWVMClient() {
+
         this.initialize();
+
     }
 
     private void initialize() {
         sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY, OCSSW_VM_SERVER_SHARED_DIR_PROPERTY_DEFAULT_VALUE);
-        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY, "localhost");
-        String remoteServerPortNumber = RuntimeContext.getConfig().getContextProperty(OCSSW_SERVER_PORT_PROPERTY, OCSSW_VIRTUAL_SERVER_PORT_FORWWARD_NUMBER_FOR_CLIENT);
-        OCSSWClient ocsswClient = new OCSSWClient(remoteServerIPAddress, remoteServerPortNumber);
+//        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY, "localhost");
+//        String remoteServerPortNumber = RuntimeContext.getConfig().getContextProperty(OCSSW_SERVER_PORT_PROPERTY, OCSSW_VIRTUAL_SERVER_PORT_FORWWARD_NUMBER_FOR_CLIENT);
+        OCSSWClient ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
-         if (OCSSWInfo.isOcsswExist()) {
+        if (ocsswInfo.isOcsswExist()) {
             jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
             clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
             target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
@@ -148,6 +154,10 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
         }
     }
 
+    private void copyOutputFiles(String outputFilesList) {
+
+    }
+
 
     /**
      * this method returns a command array for execution.
@@ -167,13 +177,12 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
 
         if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
             String parString = processorModel.getParamList().getParamString("\n");
-            File parFile = writeParFile(convertParStringForRemoteServer(parString));
-            copyMLPFiles(parFile.getAbsolutePath());
+            File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
             target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
-            commandArrayJsonObject = Json.createObjectBuilder().add("parFile", parFile.getName()).build();
+            //copyMLPFiles(parFile.getAbsolutePath());
+            //target.path("ocssw").path("executeMLPParFile").path(jobId).request().get(String.class);
             JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
-            downloadMLPOutputFiles(outputFilesList);
-
+            downloadFiles(outputFilesList);
         } else {
             commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
             Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
@@ -187,4 +196,38 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
         return seadasProcess;
     }
 
+
+    //to do: change to copy files instead of uploading
+    private void downloadFiles(JsonObject paramJsonObject) {
+        Set commandArrayKeys = paramJsonObject.keySet();
+        String param;
+        String ofileFullPathName, ofileName;
+        try {
+            Object[] array = (Object[]) commandArrayKeys.toArray();
+            int i = 0;
+            String[] commandArray = new String[commandArrayKeys.size() + 1];
+            commandArray[i++] = programName;
+            for (Object element : array) {
+                String elementName = (String) element;
+                param = paramJsonObject.getString((String) element);
+                if (elementName.contains("OFILE")) {
+                    if (param.indexOf("=") != -1) {
+                        StringTokenizer st = new StringTokenizer(param, "=");
+                        String paramName = st.nextToken();
+                        String paramValue = st.nextToken();
+                        ofileFullPathName = paramValue;
+
+                    } else {
+                        ofileFullPathName = param;
+                    }
+                    ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
+                    Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
+                    InputStream responceStream = (InputStream) response.getEntity();
+                    SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

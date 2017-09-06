@@ -26,6 +26,8 @@ public abstract class OCSSW {
 
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
 
+    public static String MLP_PAR_FILE_NAME = "mlp_par_file";
+
 
 
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
@@ -54,8 +56,10 @@ public abstract class OCSSW {
 
     HashMap<String, Mission> missions;
 
+    OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
+
     public boolean isOCSSWExist() {
-        return OCSSWInfo.isOCSSWExist();
+        return ocsswInfo.isOCSSWExist();
     }
 
 
@@ -172,7 +176,7 @@ public abstract class OCSSW {
             if (fileWriter != null) {
                 fileWriter.close();
             }
-            OCSSWInfo.setOcsswRoot(installDir);
+            ocsswInfo.setOcsswRoot(installDir);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

@@ -71,7 +71,7 @@ public class OCSSWLocal extends OCSSW {
 
 
     public boolean isMissionDirExist(String missionName) {
-        String missionDir = OCSSWInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory();
+        String missionDir = ocsswInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory();
         return new File(missionDir).exists();
     }
 
@@ -179,7 +179,7 @@ public class OCSSWLocal extends OCSSW {
 
         missionInfo.setName(missionName);
 
-        File missionDir = new File(OCSSWInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory());
+        File missionDir = new File(ocsswInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory());
 
         System.out.println("mission directory: " + missionDir);
 
@@ -345,13 +345,13 @@ public class OCSSWLocal extends OCSSW {
             if (!isOCSSWExist()) {
                 commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
             } else {
-                commandArrayPrefix[0] = OCSSWInfo.getOcsswInstallerScriptPath();
+                commandArrayPrefix[0] = ocsswInfo.getOcsswInstallerScriptPath();
             }
         } else {
             commandArrayPrefix = new String[3];
-            commandArrayPrefix[0] = OCSSWInfo.getOcsswRunnerScriptPath();
+            commandArrayPrefix[0] = ocsswInfo.getOcsswRunnerScriptPath();
             commandArrayPrefix[1] = "--ocsswroot";
-            commandArrayPrefix[2] = OCSSWInfo.getOcsswRoot();
+            commandArrayPrefix[2] = ocsswInfo.getOcsswRoot();
         }
     }
 

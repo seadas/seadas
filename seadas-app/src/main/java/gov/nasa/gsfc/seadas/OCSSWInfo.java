@@ -19,19 +19,26 @@ import java.util.regex.Pattern;
 /**
  * Created by aabduraz on 5/25/17.
  */
+
+/**
+ * OCSSWInfo is an Singleton class.
+ */
 public class OCSSWInfo {
 
     public static final String OS_64BIT_ARCHITECTURE = "_64";
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
     public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
+    public static final String OCSSW_LOCATION_LOCAL ="local";
+    public static final String OCSSW_LOCATION_VIRTUAL_MACHINE ="virtualMachine";
+    public static final String OCSSW_LOCATION_REMOTE_SERVER ="remoteServer";
     private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
     public static String OCSSW_BIN_DIR_SUFFIX = "run" + File.separator + "bin" + File.separator + getOSName();
     public static String OCSSW_SCRIPTS_DIR_SUFFIX = "run" + File.separator + "scripts";
     public static String OCSSW_DATA_DIR_SUFFIX = "run" + File.separator + "data";
 
-    public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
+    public static String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw.py";
     public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
 
     private static boolean ocsswExist;
@@ -43,6 +50,7 @@ public class OCSSWInfo {
     private static String ocsswBinDirPath;
 
     private static String ocsswLocation;
+    private static String resourceBaseUri;
 
     public static String getOcsswLocation() {
         return ocsswLocation;
@@ -52,45 +60,46 @@ public class OCSSWInfo {
         OCSSWInfo.ocsswLocation = ocsswLocation;
     }
 
-    public enum OCSSWLocationProperties {
-        OCSSW_LOCATION_LOCAL("local"),
-        OCSSW_LOCATION_VIRTUALMACHINE("virtualMachine"),
-        OCSSW_LOCATION_REMOTESERVER("remoteServer");
 
-        String ocsswLocation;
+    public static String VIRTUAL_MACHINE_SERVER_API = "localhost";
 
-        OCSSWLocationProperties(String ocsswLocation) {
-            this.ocsswLocation = ocsswLocation;
+    private static OCSSWInfo ocsswInfo = null;
+
+    private OCSSWInfo() {}
+
+    public static OCSSWInfo getInstance(){
+        if (ocsswInfo == null) {
+            ocsswInfo = new OCSSWInfo();
+            ocsswInfo.detectOcssw();
         }
 
-        public String getOcsswLocation() {
-            return ocsswLocation;
-        }
-
+        return ocsswInfo;
     }
 
-    public static boolean isOCSSWExist() {
+    public  boolean isOCSSWExist() {
         return ocsswExist;
     }
 
-    public static void detectOcssw() {
+    public  void detectOcssw() {
         String ocsswLocationPropertyValue = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY);
 
         setOcsswLocation(null);
 
         boolean isValidOcsswPropertyValue = isValidOcsswLocationProperty(ocsswLocationPropertyValue);
 
-        if ((ocsswLocationPropertyValue.equalsIgnoreCase(OCSSWLocationProperties.OCSSW_LOCATION_LOCAL.getOcsswLocation()) && OsUtils.getOperatingSystemType() != OsUtils.OSType.Windows)
+        if ((ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_LOCAL) && OsUtils.getOperatingSystemType() != OsUtils.OSType.Windows)
              || (!isValidOcsswPropertyValue && (OsUtils.getOperatingSystemType() == OsUtils.OSType.Linux || OsUtils.getOperatingSystemType() == OsUtils.OSType.MacOS)) ) {
-            setOcsswLocation(OCSSWLocationProperties.OCSSW_LOCATION_LOCAL.getOcsswLocation());
+            setOcsswLocation(OCSSW_LOCATION_LOCAL);
             initializeLocalOCSSW();
         } else {
-            if (ocsswLocationPropertyValue.equalsIgnoreCase(OCSSWLocationProperties.OCSSW_LOCATION_VIRTUALMACHINE.getOcsswLocation())) {
-                setOcsswLocation(OCSSWLocationProperties.OCSSW_LOCATION_VIRTUALMACHINE.getOcsswLocation());
+            if (ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_VIRTUAL_MACHINE)) {
+                setOcsswLocation(OCSSW_LOCATION_VIRTUAL_MACHINE);
+                initializeRemoteOCSSW(VIRTUAL_MACHINE_SERVER_API);
+
             } else if (validate(ocsswLocationPropertyValue)) {
-                setOcsswLocation(OCSSWLocationProperties.OCSSW_LOCATION_REMOTESERVER.getOcsswLocation());
+                setOcsswLocation(OCSSW_LOCATION_REMOTE_SERVER);
+                initializeRemoteOCSSW(ocsswLocationPropertyValue);
             }
-            initializeRemoteOCSSW();
         }
 
         if (ocsswLocationPropertyValue == null) {
@@ -103,20 +112,19 @@ public class OCSSWInfo {
      * OCSSW_LOCATION_PROPERTY takes only one of the following three values: local, virtualMachine, IP address of a remote server
      * @return
      */
-    private static boolean isValidOcsswLocationProperty(String ocsswLocationPropertyValue){
-
-        if( ocsswLocationPropertyValue.equalsIgnoreCase(OCSSWLocationProperties.OCSSW_LOCATION_LOCAL.getOcsswLocation())
-                || ocsswLocationPropertyValue.equalsIgnoreCase(OCSSWLocationProperties.OCSSW_LOCATION_VIRTUALMACHINE.getOcsswLocation())
-                || ocsswLocationPropertyValue.equalsIgnoreCase(OCSSWLocationProperties.OCSSW_LOCATION_REMOTESERVER.getOcsswLocation())) {
+    private  boolean isValidOcsswLocationProperty(String ocsswLocationPropertyValue){
+        if( ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_LOCAL)
+                || ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_VIRTUAL_MACHINE)
+                || validate(ocsswLocationPropertyValue)) {
             return true;
         }
         return false;
     }
-    public static boolean validate(final String ip) {
+    public boolean validate(final String ip) {
         return PATTERN.matcher(ip).matches();
     }
 
-    public static void initializeLocalOCSSW() {
+    public void initializeLocalOCSSW() {
         String ocsswRootPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));
         if (ocsswRootPath == null) {
             ocsswRootPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + File.separator + "ocssw");
@@ -129,19 +137,18 @@ public class OCSSWInfo {
                 ocsswRoot = ocsswRootPath;
                 ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
                 ocsswDataDirPath = ocsswRoot + File.separator + OCSSW_DATA_DIR_SUFFIX;
-                ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM;
+                ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM_NAME;
                 ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
                 ocsswBinDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
             }
         }
     }
 
-    private static boolean initializeRemoteOCSSW() {
+    private  boolean initializeRemoteOCSSW(String serverAPI) {
         final String BASE_URI_PORT_NUMBER_PROPERTY = "ocssw.port";
         final String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
         String baseUriPortNumber = RuntimeContext.getConfig().getContextProperty(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
-        String serverAPI = RuntimeContext.getConfig().getContextProperty("ocssw.location", "locahost");
-        String resourceBaseUri = "http://" + serverAPI + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
+        resourceBaseUri = "http://" + serverAPI + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         System.out.println("server URL:" + resourceBaseUri);
         final ClientConfig clientConfig = new ClientConfig();
         clientConfig.register(MultiPartFeature.class);
@@ -149,12 +156,13 @@ public class OCSSWInfo {
         Client c = ClientBuilder.newClient(clientConfig);
         WebTarget target = c.target(resourceBaseUri);
         JsonObject jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        boolean ocsswExist = jsonObject.getBoolean("ocsswExists");
+        ocsswExist = jsonObject.getBoolean("ocsswExists");
         if (ocsswExist) {
             ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
             ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
             ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
             ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
+
         }
         return ocsswExist;
     }
@@ -168,35 +176,43 @@ public class OCSSWInfo {
         }
     }
 
-    public static boolean isOcsswExist() {
+    public  String getResourceBaseUri() {
+        return resourceBaseUri;
+    }
+
+    private String getServerAPI(){
+        return null;
+    }
+
+    public  boolean isOcsswExist() {
         return ocsswExist;
     }
 
-    public static String getOcsswRoot() {
+    public  String getOcsswRoot() {
         return ocsswRoot;
     }
 
-    public static void setOcsswRoot(String ocsswRootNewValue) {
+    public  void setOcsswRoot(String ocsswRootNewValue) {
          ocsswRoot = ocsswRootNewValue;
     }
 
-    public static String getOcsswDataDirPath() {
+    public  String getOcsswDataDirPath() {
         return ocsswDataDirPath;
     }
 
-    public static String getOcsswScriptsDirPath() {
+    public  String getOcsswScriptsDirPath() {
         return ocsswScriptsDirPath;
     }
 
-    public static String getOcsswInstallerScriptPath() {
+    public String getOcsswInstallerScriptPath() {
         return ocsswInstallerScriptPath;
     }
 
-    public static String getOcsswRunnerScriptPath() {
+    public  String getOcsswRunnerScriptPath() {
         return ocsswRunnerScriptPath;
     }
 
-    public static String getOcsswBinDirPath() {
+    public String getOcsswBinDirPath() {
         return ocsswBinDirPath;
     }
 }

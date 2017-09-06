@@ -30,7 +30,7 @@ public class FileInfoFinder {
         ocssw.getOfileName(fileName);
         setMissionName(ocssw.getMissionName());
         setFileType(ocssw.getFileType());
-        setMissionDirName(OCSSWInfo.getOcsswDataDirPath());
+        setMissionDirName(OCSSWInfo.getInstance().getOcsswDataDirPath());
 //        fileInfoFinderProcessorModel = new ProcessorModel(FILE_INFO_SYSTEM_CALL, ocssw);
 //        fileInfoFinderProcessorModel.setAcceptsParFile(false);
 //        addParamInfo("file", fileName, ParamInfo.Type.IFILE, ParamInfo.USED_IN_COMMAND_AS_ARGUMENT, 0);
