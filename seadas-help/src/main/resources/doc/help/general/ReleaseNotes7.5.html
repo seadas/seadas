@@ -41,18 +41,19 @@ PRIMARY PACKAGE
         - Statistics Tool
             1. Major revision to this tool:
                 a. Can be run simultaneously for multiple bands (no longer limited to a single band)
-                b. Bin count, and other binning parameters can be set.  (Note: the related accuracy setting has been
+                b. Regional and quality masking options
+                c. Bin count, and other binning parameters can be set.  (Note: the related accuracy setting has been
                     removed.  "Bin Width" field was previously named "Max Error")
-                c. More statistics fields added
-                d. Changed "Median" field to be a true calculation of the median.  This field is optional since this
+                d. More statistics fields added
+                e. Changed "Median" field to be a true calculation of the median.  This field is optional since this
                     calculation can take longer on very large files.  (Note: previously the median was a binned
                     calculation dependent on the bin size.)
-                e. A large number of metadata fields added such as Satellite, Platform, Resolution, Time and much more.
-                f. Convenient spreadsheet display added.
-                g. Plot formatting added.
-                h. Percentile plot is now percentile on y-axis and data on x-axis.
-                i. Some delayed screen repaint issue have been resolved.
-                j. Preferences page has been added.
+                f. A large number of metadata fields added such as Satellite, Platform, Resolution, Time and much more.
+                g. Convenient spreadsheet display added.
+                h. Plot formatting added.
+                i. Percentile plot is now percentile on y-axis and data on x-axis.
+                j. Some delayed screen repaint issue have been resolved.
+                k. Preferences page has been added.
             2. Major rewrite of the Statistics help page.
             3. GPT version.
                 a. Adds the same statistics fields as the GUI (although does not add the metadata fields)
