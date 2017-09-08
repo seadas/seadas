@@ -295,7 +295,62 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
 </p>
 
 
+
 &nbsp;&nbsp;&nbsp;&nbsp;_______________
+
+
+<p class="i1hang"><b>File#</b></p>
+<p class="i2first">
+    The reference index number of the loaded file within the File Manager
+</p>
+<p class="i2">
+    <i>Note: statistics can only be generated on a single file, and are performed on the currently selected view</i>
+</p>
+
+<p class="i1hang"><b>Band</b></p>
+<p class="i2first">
+    The raster band on which statistics are generated.
+</p>
+<p class="i2">
+    <i>Note: the default is the band currently selected in the File Manager, but any band or multiple bands may be selected.</i>
+</p>
+
+<p class="i1hang"><b>Regional_Mask</b></p>
+<p class="i2first">
+    A mask applied to the data to restrict the pixels being which are processed.  In addition, it is used to generate
+    the field "Regional_Pixels".
+</p>
+<p class="i2">
+    <i>Note: this is intended to be a mask of a region, or perhaps bathymetry depth (basically a mask which shouldn't vary over time) </i>
+</p>
+
+<p class="i1hang"><b>Quality_Mask</b></p>
+<p class="i2first">
+    A mask applied to the data to restrict the pixels being which are processed.
+</p>
+<p class="i2">
+    <i>Note: this is intended to be a mask of data quality.  This mask is applied to the valid pixel expression. It has no
+    effect on the field "Regional_Pixels".</i>
+</p>
+
+<p class="i1hang"><b>Regional_Pixels</b></p>
+<p class="i2first">
+    The total number of pixels which match the regional_mask: null (NaN) pixels are included in this total.
+</p>
+
+<p class="i1hang"><b>Valid_Pixels</b></p>
+<p class="i2first">
+    The total number of pixels which are valid.  Valid means they match both the regional_mask and quality_mask: null (NaN) pixels are NOT included in this total.
+</p>
+
+<p class="i1hang"><b>Fraction_Valid</b></p>
+<p class="i2first">
+    Fraction of the regional pixels which are valid:  (Fraction_Valid = Valid_Pixels / Regional_Pixels)
+</p>
+
+
+
+
 <h4><i>Statistics</i></h4>
 
 <p class="i1first">
@@ -551,13 +606,44 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
 
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;_______________
-<h4><i>Mask MetaData</i></h4>
+<h4><i>Regional_Mask MetaData</i></h4>
 
 
 <p  class="i1first">
-    This is information about the mask.  It is obtained directly from the loaded mask.  If you wish to edit this
-    mask information within the SeaDAS GUI, this can be done in the MaskManager.   Now when you run statistics, your
-    edited value will appear in the results.
+    This is information about the regional mask.  It is obtained directly from the loaded mask.
+</p>
+
+
+
+<p class="i1hang"><b>Mask</b></p>
+<p class="i2first">
+    The mask name.
+</p>
+
+
+<p class="i1hang"><b>Mask_Description</b></p>
+<p class="i2first">
+    A description of the band.
+</p>
+
+
+<p class="i1hang"><b>Mask_Expression</b></p>
+<p class="i2first">
+    This is a logical mathematical expression of criteria specific to the mask which is
+    applied per pixel to determine whether the mask is on or off.
+</p>
+
+
+
+
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_______________
+<h4><i>Quality_Mask MetaData</i></h4>
+
+
+<p  class="i1first">
+    This is information about the mask.  It is obtained directly from the loaded mask.
 </p>
 
 
