@@ -129,40 +129,25 @@
 
 
 &nbsp;&nbsp;&nbsp;&nbsp;_______________
-<h4><i>Regional and Validation Masking</i></h4>
+<h4><i>Regional and Quality Masking</i></h4>
 
 
 
 <p class="i1">
     SeaDAS enables the masking out of unwanted pixels, so that the statistics can be done on only the pixels which
-    meet the masking criteria.  Conceptually, there are 2 types of masking, region-of-interest (ROI) and validation.
+    meet the masking criteria.  Conceptually, there are 2 types of masking: regional and quality.
     The first type is region based where you have
     defined a specific area of interest on the Earth, and pixels outside of this are intended to be masked out.  Region masking, by
     it's very nature is stable across time and not effected by temporal changes such as atmospheric parameters, sunglint, straylight, etc.
-      These latter parameters can be considered validation parameters.
+      These latter parameters can be considered quality parameters.
 </p>
 
 <p class="i1">
-    <b>For the GUI:</b><br>There are 2 methods
-    by which SeaDAS applies the masks. Y ou may select a mask of a region (or many region masks) within
-    the Statistics Tool GUI and these are your ROI masks.  If you right click on a band
-    in the File Manager, go to Properties you will find the Valid Pixel Expression and this is where the validation masks are applied.
+    <i>Note: The primary advantage in splitting out the regional masking from the quality masking is that
+    is enables calculate of total pixels in a region, and subsequent calculation of fraction of valid pixels. </i>
 
 </p>
-<p class="i1">
-    If you stay within the rigid constructs of the meaning these 2 masking tool parameters, then you would adjust the validPixelExpression to include
-    the atmospheric, sunglint, straylight, etc. parameters
-    However, adjusting the validPixelExpression for each band is probably not the most convenient way to run the statistics tool from the GUI.  Instead,
-    you may want to create a new mask in the Mask Manager which is a composite of the region(s) and the validation masks (for
-    example: MY_MASK = MY_REGION && !STRAYLIGHT && !HIGLINT).  This new composite mask could then be selected within the Statistics GUI
-    as the mask to do the statistics on.  Conversely, (but you probably won't want to do this), you could inject the region
-    mask into the validPixelExpression.
-</p>
-<p class="i1">
-    <i>Note: when you select multiple masks within the Statistics GUI, it will generate one set of statistics for each mask selected.
-        It will not combine these masks together into a single mask.
-        </i>
-</p>
+
 <p class="i1">
     <b>For GPT:</b><br>Again there are 2 methods by which SeaDAS applies the masks
      but with is a slight nuanced difference when running from the command line.  In this case, relevant to the description above,
@@ -349,8 +334,8 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
 </p>
 
 
-
-
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_______________
 <h4><i>Statistics</i></h4>
 
 <p class="i1first">
@@ -643,7 +628,7 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
 
 
 <p  class="i1first">
-    This is information about the mask.  It is obtained directly from the loaded mask.
+    This is information about the quality mask.  It is obtained directly from the loaded mask.
 </p>
 
 
@@ -901,12 +886,13 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
 
 
 
+
 <br><br>
 
 
 &nbsp;&nbsp;&nbsp;&nbsp;_______________
 <a name="MaskSelector"></a>
-<h4><i>The "Mask" Selector</i></h4>
+<h4><i>The "Regional Mask" Selector</i></h4>
 
 <br>
 <div class="center">
@@ -914,6 +900,39 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
     <!--<i>Figure ?. The  masks selector<br></i>-->
 </div>
 <br>
+
+
+<p class="i1first">
+    This is accessible from within the Statistics window.  You can select multiple masks from within
+    the same file on which to simultaneously generate the same statistics fields.  For each selected band and selected
+    mask combination you will get a set of statistics results.  No masks are selected by default.  You have the option
+    to logically group the masks together, in which case a new mask is created.
+</p>
+<p class="i1first">
+    <i>Note: once you have made selections within this mask selector, the selections are not altered if you change
+        to a different band (within the same file) in the File Manager.  This behavior has been chosed as mask selection
+        is less apt to be so band dependent.  However, if you change to a different file within the File Manager, then
+        this mask selector will indeed reset as the masks within a different file can vary.</i>
+</p>
+
+
+
+
+<p class="i1hang"><b>Include Unmasked (Full Scene)</b></p>
+<p class="i2first">
+    Selecting this gives you an entry of statistics results for the full scene with no masking applied.
+</p>
+
+<br><br>
+
+
+<br><br>
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;_______________
+<a name="MaskSelector"></a>
+<h4><i>The "Quality Mask" Selector</i></h4>
+
 
 <div class="center">
     <img src="images/Statistics04_Quality.png" border="0"> <br>
@@ -923,9 +942,11 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
 
 
 <p class="i1first">
-    This is accessible from within the Statistics window.  You can now select multiple masks from within
+    This is accessible from within the Statistics window.  You can select multiple masks from within
     the same file on which to simultaneously generate the same statistics fields.  For each selected band and selected
     mask combination you will get a set of statistics results.  No masks are selected by default.
+    You have the option
+    to logically group the masks together, in which case a new mask is created.
 </p>
 <p class="i1first">
     <i>Note: once you have made selections within this mask selector, the selections are not altered if you change
@@ -937,10 +958,9 @@ When choosing to not reproject and to do statistics directly on a level-2 file, 
 
 
 
-<p class="i1hang"><b>Full Scene</b></p>
+<p class="i1hang"><b>Include Unmasked</b></p>
 <p class="i2first">
-    Selecting this gives you a set of statistics results for the full scene with no masking applied.  However, if you
-    select masks within the mask selector you will also gets results for each of those masks as well.
+    Selecting this gives you a set of statistics with no quality masking applied.
 </p>
 
 <br><br>
