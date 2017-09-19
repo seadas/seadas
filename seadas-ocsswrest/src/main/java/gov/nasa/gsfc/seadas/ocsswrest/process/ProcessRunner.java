@@ -72,7 +72,7 @@ public class ProcessRunner {
             System.out.println("starting execution 1 ...");
             process = processBuilder.start();
             if (OCSSWServerModelOld.isProgressMonitorFlag()) {
-                final ProcessObserver processObserver = new ProcessObserver(process, programName, OCSSWServerModelOld.getCurrentJobId());
+                final ORSProcessObserver processObserver = new ORSProcessObserver(process, programName, OCSSWServerModelOld.getCurrentJobId());
                 processObserver.startAndWait();
             }
             if (process != null) {

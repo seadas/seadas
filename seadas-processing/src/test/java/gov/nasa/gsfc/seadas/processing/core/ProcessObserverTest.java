@@ -43,12 +43,12 @@ public class ProcessObserverTest {
         String stderr;
 
         @Override
-        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
             stdout = line;
         }
 
         @Override
-        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
             stderr = line;
         }
     }

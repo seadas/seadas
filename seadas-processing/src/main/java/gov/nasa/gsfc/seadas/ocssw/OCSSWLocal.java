@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
+import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
@@ -8,6 +9,7 @@ import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
+import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.processor.MultlevelProcessorForm;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
@@ -69,6 +71,11 @@ public class OCSSWLocal extends OCSSW {
         missionInfo = new MissionInfo();
     }
 
+
+    @Override
+    public ProcessObserver getOCSSWProcessObserver(Process process, String processName, ProgressMonitor progressMonitor) {
+        return new ProcessObserver(process, processName, progressMonitor);
+    }
 
     public boolean isMissionDirExist(String missionName) {
         String missionDir = ocsswInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory();

@@ -1,11 +1,14 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
+import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.Mission;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
+import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.RemoteProcessObserver;
 
 import java.io.*;
 import java.util.HashMap;
@@ -27,7 +30,6 @@ public abstract class OCSSW {
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
 
     public static String MLP_PAR_FILE_NAME = "mlp_par_file";
-
 
 
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
@@ -58,6 +60,20 @@ public abstract class OCSSW {
 
     OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
 
+    public static OCSSW getOCSSWInstance() {
+        if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
+            return new OCSSWLocal();
+        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
+            return new OCSSWVMClient();
+        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
+            return new OCSSWRemoteClient();
+        }
+        return new OCSSWLocal();
+    }
+
+    public abstract ProcessObserver getOCSSWProcessObserver(Process process, String processName, ProgressMonitor progressMonitor);
+
+
     public boolean isOCSSWExist() {
         return ocsswInfo.isOCSSWExist();
     }
@@ -67,9 +83,10 @@ public abstract class OCSSW {
         return true;
     }
 
-    public boolean isMissionDirExist(String missionName){
+    public boolean isMissionDirExist(String missionName) {
         return missions.get(missionName).isMissionExist();
     }
+
     public String[] getMissionSuites(String missionName) {
         return missions.get(missionName).getMissionSuites();
     }
@@ -77,6 +94,7 @@ public abstract class OCSSW {
     public abstract String[] getMissionSuites(String missionName, String programName);
 
     public abstract Process execute(ProcessorModel processorModel);
+
     public abstract Process execute(ParamList paramList);
 
     public abstract Process execute(String[] commandArray);
@@ -86,7 +104,8 @@ public abstract class OCSSW {
     public abstract String getOfileName(String ifileName);
 
     public abstract String getOfileName(String ifileName, String[] options);
-    public abstract String getOfileName(String ifileName, String programName, String suiteValue );
+
+    public abstract String getOfileName(String ifileName, String programName, String suiteValue);
 
     void selectExtractorProgram() {
         if (missionName != null && fileType != null) {
@@ -214,7 +233,7 @@ public abstract class OCSSW {
         monitorProgress = mProgress;
     }
 
-    public HashMap<String, String> computePixelsFromLonLat(){
+    public HashMap<String, String> computePixelsFromLonLat() {
         return null;
     }
 }

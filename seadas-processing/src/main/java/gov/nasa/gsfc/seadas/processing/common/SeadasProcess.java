@@ -1,5 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.OCSSWInfo;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
+
+import javax.ws.rs.client.WebTarget;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -13,7 +17,15 @@ public class SeadasProcess extends Process {
     private InputStream errorStream;
     private OutputStream outputStream;
     int waitFor;
+    OCSSWInfo ocsswInfo;
+    WebTarget target;
+    String jobId;
 
+    public SeadasProcess(OCSSWInfo ocsswInfo, String jobId){
+        super();
+        this.ocsswInfo = ocsswInfo;
+        this.jobId = jobId;
+    }
     public void destroy(){
 
     }
@@ -27,14 +39,13 @@ public class SeadasProcess extends Process {
 
     @Override
     public InputStream getErrorStream(){
-        return errorStream;
+      return null;
     }
 
 
     @Override
     public InputStream getInputStream() {
-
-        return inputStream;
+        return null;
     }
 
     public void setInputStream(InputStream inputStream) {

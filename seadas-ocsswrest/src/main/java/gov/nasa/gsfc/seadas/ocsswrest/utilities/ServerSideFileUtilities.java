@@ -193,5 +193,15 @@ public class ServerSideFileUtilities {
         return results;
     }
 
+    public static String getLogFileName(String dirPath) {
+
+        File[] files = new File(dirPath).listFiles();
+        for (File file : files) {
+            if (file.isFile() && file.getName().indexOf("Processor") != -1 && file.getName().endsWith(".log")) {
+                return file.getAbsolutePath();
+            }
+        }
+        return null;
+    }
 }
 

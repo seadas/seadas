@@ -102,13 +102,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     public void initializeOcsswClient() {
 
-        if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
-            ocssw = new OCSSWLocal();
-        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
-            ocssw = new OCSSWVMClient();
-        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
-            ocssw = new OCSSWRemoteClient();
-        }
+        ocssw = OCSSW.getOCSSWInstance();
+//        if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
+//            ocssw = new OCSSWLocal();
+//        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
+//            ocssw = new OCSSWVMClient();
+//        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
+//            ocssw = new OCSSWRemoteClient();
+//        }
         ocssw.setProgramName(programName);
     }
 
@@ -213,12 +214,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
             @Override
             protected String doInBackground(ProgressMonitor pm) throws Exception {
+
                 ocssw.setMonitorProgress(true);
                 final Process process = ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }
-                final ProcessObserver processObserver = new ProcessObserver(process, programName, pm);
+                final ProcessObserver processObserver = ocssw.getOCSSWProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
                 if (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM)) {
                     processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));
@@ -322,11 +324,10 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
 
         @Override
-        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
-            //System.out.println("line being handled: " + line);
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
             if (!progressSeen) {
                 progressSeen = true;
-                pm.beginTask(programName, 1000);
+                progressMonitor.beginTask(programName, 1000);
             }
 
             Matcher matcher = progressPattern.matcher(line);
@@ -335,17 +336,17 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 int numScans = Integer.parseInt(matcher.group(2));
 
                 scan = (scan * 1000) / numScans;
-                pm.worked(scan - lastScan);
+                progressMonitor.worked(scan - lastScan);
                 lastScan = scan;
                 currentText = line;
             }
-
-            pm.setTaskName(programName);
-            pm.setSubTaskName(line);
+            System.out.println("handleLineOnStdoutRead ..."  + line);
+            progressMonitor.setTaskName(programName);
+            progressMonitor.setSubTaskName(line);
         }
 
         @Override
-        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
         }
     }
 
@@ -360,13 +361,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
 
         @Override
-        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
             SeadasLogger.getLogger().info(programName + ": " + line);
             executionErrorLog = executionErrorLog + line + "\n";
         }
 
         @Override
-        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
             SeadasLogger.getLogger().info(programName + " stderr: " + line);
             executionErrorLog = executionErrorLog + line + "\n";
         }
@@ -379,15 +380,15 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private static class TerminationHandler implements ProcessObserver.Handler {
 
         @Override
-        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor pm) {
-            if (pm.isCanceled()) {
+        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
+            if (progressMonitor.isCanceled()) {
                 process.destroy();
             }
         }
 
         @Override
-        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
-            if (pm.isCanceled()) {
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
+            if (progressMonitor.isCanceled()) {
                 process.destroy();
             }
         }
@@ -403,18 +404,18 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
 
         @Override
-        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor pm) {
+        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
             int len = line.length();
             if (len > 70) {
                 String[] parts = line.trim().split("\\s+", 2);
                 try {
                     int percent = Integer.parseInt(parts[0]);
-                    pm.setSubTaskName(currentText + " - " + parts[0] + "%");
+                    progressMonitor.setSubTaskName(currentText + " - " + parts[0] + "%");
                 } catch (Exception e) {
-                    pm.setSubTaskName(line);
+                    progressMonitor.setSubTaskName(line);
                 }
             } else {
-                pm.setSubTaskName(line);
+                progressMonitor.setSubTaskName(line);
             }
         }
     }

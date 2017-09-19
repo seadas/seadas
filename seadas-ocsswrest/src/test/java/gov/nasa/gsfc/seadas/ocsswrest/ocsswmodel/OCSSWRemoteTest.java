@@ -32,14 +32,10 @@ public class OCSSWRemoteTest {
         String[] commandArray = {MLP_PROGRAM_NAME,  parFileLocation};;
         OCSSWRemote ocsswRemote = new OCSSWRemote();
         final long startTime = System.nanoTime();
-        Process process = ocsswRemote.execute(concatAll(ocsswRemote.getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileLocation).getParent());
+        ocsswRemote.execute(concatAll(ocsswRemote.getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileLocation).getParent(), "1234");
         final long duration = System.nanoTime() - startTime;
         long start = System.currentTimeMillis();
 
-
-        while (process.isAlive()) {
-
-        }
         System.out.println("execution time is nano seconds: " + duration);
         Date myTime = new Date(duration/1000);
 
@@ -49,7 +45,6 @@ public class OCSSWRemoteTest {
         System.out.println("Execution time is " + formatter.format((end - start) / 1000d) + " seconds");
 
         System.out.println(myTime.getTime());
-        System.out.println(process.getErrorStream());
 
     }
 

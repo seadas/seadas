@@ -1,31 +1,27 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.ProgressMonitor;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
+import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 /**
- * An observer that notifies its {@link Handler handlers} about lines of characters that have been written
- * by a process to both {@code stdout} and {@code stderr} output streams.
- *
- * @author Norman Fomferra
- * @since SeaDAS 7.0
+ * Created by aabduraz on 9/12/17.
  */
-public class ProcessObserver {
-    protected static final String STDOUT = "stdout";
-    protected static final String STDERR = "stderr";
-    protected final Process process;
-    protected final String processName;
-    protected final ProgressMonitor progressMonitor;
-    protected final ArrayList<Handler> handlers;
+public class RemoteProcessObserver extends ProcessObserver {
+
+    OCSSWInfo ocsswInfo;
+    WebTarget target;
+    private String jobId;
 
     /**
      * Constructor.
@@ -34,29 +30,22 @@ public class ProcessObserver {
      * @param processName     A name that represents the process
      * @param progressMonitor A progress monitor
      */
-    public ProcessObserver(final Process process, String processName, ProgressMonitor progressMonitor) {
-        this.process = process;
-        this.processName = processName;
-        this.progressMonitor = progressMonitor;
-        this.handlers = new ArrayList<Handler>();
+    public RemoteProcessObserver(Process process, String processName, ProgressMonitor progressMonitor) {
+        super(process, processName, progressMonitor);
+        this.ocsswInfo = OCSSWInfo.getInstance();
+        OCSSWClient ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
+        target = ocsswClient.getOcsswWebTarget();
     }
 
-    /**
-     * Adds a new handler to this observer.
-     *
-     * @param handler The new handler.
-     */
-    public void addHandler(Handler handler) {
-        handlers.add(handler);
-    }
 
     /**
      * Starts observing the given process. The method blocks until both {@code stdout} and {@code stderr}
      * streams are no longer available. If the progress monitor is cancelled, the process will be destroyed.
      */
-    public void startAndWait() {
-        final Thread stdoutReaderThread = new LineReaderThread(STDOUT);
-        final Thread stderrReaderThread = new LineReaderThread(STDERR);
+    @Override
+    public final void startAndWait() {
+        final Thread stdoutReaderThread = new RemoteProcessObserver.LineReaderThread(STDOUT);
+        final Thread stderrReaderThread = new RemoteProcessObserver.LineReaderThread(STDERR);
         stdoutReaderThread.start();
         stderrReaderThread.start();
         awaitTermination(stdoutReaderThread, stderrReaderThread);
@@ -81,6 +70,14 @@ public class ProcessObserver {
                 process.destroy();
             }
         }
+    }
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
     }
 
     /**
@@ -123,10 +120,12 @@ public class ProcessObserver {
             }
         }
 
-        private void read() throws IOException {
-            System.out.println("reading from process input stream ...");
-            final InputStream inputStream = type.equals("stdout") ? process.getInputStream() : process.getErrorStream();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        protected void read() throws IOException {
+            OCSSWClient ocsswClient = new OCSSWClient();
+            WebTarget target = ocsswClient.getOcsswWebTarget();
+            Response response = target.path("fileServices").path("downloadLogFile").path(jobId).path(processName).request().get(Response.class);
+            InputStream responceStream = (InputStream) response.getEntity();
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(responceStream));
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -137,8 +136,8 @@ public class ProcessObserver {
             }
         }
 
-        private void fireLineRead(String line) {
-            for (Handler handler : handlers) {
+        protected void fireLineRead(String line) {
+            for (ProcessObserver.Handler handler : handlers) {
                 if (type.equals("stdout")) {
                     handler.handleLineOnStdoutRead(line, process, progressMonitor);
                 } else {

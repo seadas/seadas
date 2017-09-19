@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.MLP_OUTPUT_DIR_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.MLP_PROGRAM_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.PROCESS_STDOUT_FILE_NAME_EXTENSION;
 
 /**
  * Created by IntelliJ IDEA.
@@ -200,6 +202,40 @@ public class OCSSWFileServices {
         return Response
                 .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
                 .header("content-disposition","attachment; fileName = " + ofileName)
+                .build();
+    }
+
+
+    @GET
+    @Path("/downloadLogFile/{jobId}/{programName}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response downloadLogFile(@PathParam("jobId") String jobId, @PathParam("programName") String programName) {
+        String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        String workingDir = workingFileDir + File.separator + jobId;
+        String processStdoutFileName = workingDir + File.separator + programName + PROCESS_STDOUT_FILE_NAME_EXTENSION;
+        if (programName.equals(MLP_PROGRAM_NAME)) {
+            processStdoutFileName = ServerSideFileUtilities.getLogFileName(workingDir);
+        }
+        String finalProcessStdoutFileName = processStdoutFileName;
+        StreamingOutput fileStream = new StreamingOutput() {
+            @Override
+            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                try
+                {
+                    java.nio.file.Path path = Paths.get(finalProcessStdoutFileName);
+                    byte[] data = Files.readAllBytes(path);
+                    outputStream.write(data);
+                    outputStream.flush();
+                }
+                catch (Exception e)
+                {
+                    throw new WebApplicationException("File Not Found !!");
+                }
+            }
+        };
+        return Response
+                .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+                .header("content-disposition","attachment; fileName = " + finalProcessStdoutFileName)
                 .build();
     }
 

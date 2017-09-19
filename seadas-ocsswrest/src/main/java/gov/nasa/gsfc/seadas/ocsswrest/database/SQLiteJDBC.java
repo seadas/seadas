@@ -20,6 +20,9 @@ public class SQLiteJDBC {
     private static String username = "obpg";
     private static String password = "obpg";
 
+    protected static final String STDOUT = "stdout";
+    protected static final String STDERR = "stderr";
+
 
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
@@ -27,9 +30,11 @@ public class SQLiteJDBC {
     public static final String FILE_TABLE_NAME = "FILE_TABLE";
     public static final String MISSION_TABLE_NAME = "MISSION_TABLE";
     public static final String PROCESS_TABLE_NAME = "PROCESS_TABLE";
+    public static final String PROCESS_MONITOR_STDOUT_TABLE_NAME = "PROCESS_MONITOR_STDOUT_TABLE";
+    public static final String PROCESS_MONITOR_STDERR_TABLE_NAME = "PROCESS_MONITOR_STDERR_TABLE";
     public static final String INPUT_FILES_LIST_TABLE_NAME = "INPUT_FILES_LIST_TABLE";
 
-    public static final  String JOB_ID_FIELD_NAME = "JOB_ID";
+    public static final String JOB_ID_FIELD_NAME = "JOB_ID";
     public static final String IFILE_NAME_FIELD_NAME = "I_FILE_NAME";
     public static final String IFILE_TYPE_FIELD_NAME = "I_FILE_TYPE";
     public static final String OFILE_NAME_FIELD_NAME = "O_FILE_NAME";
@@ -37,7 +42,11 @@ public class SQLiteJDBC {
     public static final String MISSION_NAME_FIELD_NAME = "MISSION_NAME";
     public static final String MISSION_DIR_FIELD_NAME = "MISSION_DIR";
 
-    public enum FileTableFields{
+    public static final String PROCESS_STATUS_NONEXIST = "-1";
+    public static final String PROCESS_STATUS_STARTED = "0";
+    public static final String PROCESS_STATUS_COMPLETED = "1";
+
+    public enum FileTableFields {
         JOB_ID_NAME("JOB_ID"),
         CLIENT_ID_NAME("CLIENT_ID_NAME"),
         WORKING_DIR_PATH("WORKING_DIR_PATH"),
@@ -46,19 +55,37 @@ public class SQLiteJDBC {
         O_FILE_NAME("O_FILE_NAME"),
         PROGRAM_NAME("PROGRAM_NAME"),
         MISSION_NAME("MISSION_NAME"),
-        MISSION_DIR("MISSION_DIR");
+        MISSION_DIR("MISSION_DIR"),
+        STATUS("STATUS");
 
         String fieldName;
+
         FileTableFields(String fieldName) {
             this.fieldName = fieldName;
         }
 
-        public String getFieldName(){
+        public String getFieldName() {
             return fieldName;
         }
     }
 
-    public enum NextLevelFileNameTableFields{
+    public enum ProcessStatusFlag{
+        NONEXIST(PROCESS_STATUS_NONEXIST),
+        STARTED(PROCESS_STATUS_STARTED),
+        COMPLETED(PROCESS_STATUS_COMPLETED);
+
+        String value;
+
+        ProcessStatusFlag(String value) {
+            this.value = value;
+        }
+
+        public String getValue(){
+            return value;
+        }
+    }
+
+    public enum NextLevelFileNameTableFields {
         JOB_ID_NAME("JOB_ID"),
         CLIENT_ID_NAME("CLIENT_ID_NAME"),
         WORKING_DIR_PATH("WORKING_DIR_PATH"),
@@ -68,17 +95,18 @@ public class SQLiteJDBC {
         OPTIONS_NAME("OPTIONS");
 
         String fieldName;
+
         NextLevelFileNameTableFields(String fieldName) {
             this.fieldName = fieldName;
         }
 
-        public String getFieldName(){
+        public String getFieldName() {
             return fieldName;
         }
     }
 
 
-    public enum ProcessTableFields{
+    public enum ProcessTableFields {
         JOB_ID_NAME("JOB_ID"),
         COMMAND_ARRAY_NAME("COMMAND_ARRAY"),
         EXIT_VALUE_NAME("EXIT_VALUE"),
@@ -86,14 +114,16 @@ public class SQLiteJDBC {
         STD_ERR_NAME("stderr");
 
         String fieldName;
-        ProcessTableFields(String fieldName){
+
+        ProcessTableFields(String fieldName) {
             this.fieldName = fieldName;
         }
 
-        public String getFieldName(){
+        public String getFieldName() {
             return fieldName;
         }
     }
+
     public SQLiteJDBC() {
 
     }
@@ -332,6 +362,99 @@ public class SQLiteJDBC {
 
     }
 
+    public static void createProcessMonitorTables(String jobId) {
+
+        //string for creating PROCESS_TABLE
+
+
+
+        String stdoutTableName = PROCESS_MONITOR_STDOUT_TABLE_NAME + "_" + jobId;
+        String stderrTableName = PROCESS_MONITOR_STDERR_TABLE_NAME + "_" + jobId;
+
+        System.out.println("Creating table " + stdoutTableName + " ... ");
+
+
+        String create_process_monitor_stdout_table_sql = "CREATE TABLE IF NOT EXISTS " + stdoutTableName  +
+                "( LINE_ID INTEGER PRIMARY KEY   NOT NULL, "  + STDOUT + " CHAR(500) )";
+
+        String create_process_monitor_stderr_table_sql = "CREATE TABLE IF NOT EXISTS " + stderrTableName +
+                "( LINE_ID INTEGER PRIMARY KEY   NOT NULL, " + STDERR + " CHAR(500))";
+
+        String drop_process_monitor_stdout_table_sql = "DROP TABLE " + stdoutTableName;
+        String drop_process_monitor_stderr_table_sql = "DROP TABLE " + stderrTableName;
+
+        Connection connection = null;
+        Statement stmt = null;
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL, username, password);
+            stmt = connection.createStatement();
+
+            DatabaseMetaData md = connection.getMetaData();
+
+            System.out.println( stdoutTableName + " ... "  + md.getDatabaseProductName());
+
+            ResultSet rs = md.getTables(null, null, stdoutTableName, null);
+
+            System.out.println( stdoutTableName + " ... "  + rs.next());
+
+
+            if (rs.next()) {
+                stmt.executeUpdate(drop_process_monitor_stdout_table_sql);
+                stmt.executeUpdate(drop_process_monitor_stderr_table_sql);
+
+            }
+            stmt.executeUpdate(create_process_monitor_stdout_table_sql);
+            stmt.executeUpdate(create_process_monitor_stderr_table_sql);
+            System.out.println("Table " + stdoutTableName + " created successfully");
+            System.out.println("Table " + stderrTableName + " created successfully");
+            rs.close();
+            stmt.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    public static void dropProcessMonitorTables(String jobId) {
+
+
+        String stdoutTableName = PROCESS_MONITOR_STDOUT_TABLE_NAME + "_" + jobId;
+        String stderrTableName = PROCESS_MONITOR_STDERR_TABLE_NAME + "_" + jobId;
+
+
+        String drop_process_monitor_stdout_table_sql = "DROP TABLE " + stdoutTableName;
+        String drop_process_monitor_stderr_table_sql = "DROP TABLE " + stderrTableName;
+
+        Connection connection = null;
+        Statement stmt = null;
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL, username, password);
+            stmt = connection.createStatement();
+
+            DatabaseMetaData md = connection.getMetaData();
+            ResultSet rs = md.getTables(null, null, stdoutTableName, null);
+            if (rs.next()) {
+                stmt.executeUpdate(drop_process_monitor_stdout_table_sql);
+                stmt.executeUpdate(drop_process_monitor_stderr_table_sql);
+
+            }
+            rs.close();
+            stmt.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+
     public static String retrieveMissionDir(String missionName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -446,7 +569,42 @@ public class SQLiteJDBC {
 
             connection.commit();
 
-            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " inserted into " +  tableName + " table!");
+            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " inserted into " + tableName + " table!");
+            preparedStatement.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(" in inserting item : " + e.getClass().getName() + ": " + e.getMessage());
+            //System.exit(0);
+        }
+        System.out.println("Inserted " + itemName + " successfully");
+    }
+
+    public static void insertItemInProcessMonitorTables(String tableName, String itemName, String itemValue) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String commonInsertString = "INSERT INTO " + tableName + " ( LINE_ID, " + itemName + ") VALUES ( ?, ? );";
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+            System.out.println("Operating on table " + tableName);
+
+
+            preparedStatement = connection.prepareStatement(commonInsertString);
+
+            preparedStatement.setString(1, itemValue);
+            System.out.println("sql string: " + commonInsertString + itemValue);
+
+            // execute insert SQL stetement
+            int exitCode = preparedStatement.executeUpdate();
+
+            connection.commit();
+
+            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " inserted into " + tableName + " table!");
             preparedStatement.close();
             connection.close();
 
@@ -482,7 +640,8 @@ public class SQLiteJDBC {
             int exitCode = preparedStatement.executeUpdate();
             connection.commit();
 
-            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " updated on " +  tableName + " table!");
+            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " updated on " + tableName + " table!");
+            System.out.println(itemName + " = "  + itemValue);
             preparedStatement.close();
             connection.close();
 
@@ -495,7 +654,45 @@ public class SQLiteJDBC {
         return retrievedItem;
     }
 
-    public static ArrayList getInputFilesList(String jobId){
+    public static String updateInputStreamItem(String tableName, String jobID, String itemName, InputStream itemValue) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String commonUpdateString = "UPDATE " + tableName + " SET " + itemName + " = ?  WHERE JOB_ID = ?";
+
+        System.out.println(commonUpdateString);
+        String retrievedItem = null;
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Operating on table " + tableName);
+
+            preparedStatement = connection.prepareStatement(commonUpdateString);
+
+            preparedStatement.setBinaryStream(1, itemValue);
+            preparedStatement.setString(2, jobID);
+
+            System.out.println("sql string: " + commonUpdateString);
+
+            int exitCode = preparedStatement.executeUpdate();
+            connection.commit();
+
+            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " updated on " + tableName + " table!");
+            preparedStatement.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(" in update item : " + e.getClass().getName() + ": " + e.getMessage());
+            //System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+
+        return retrievedItem;
+    }
+
+    public static ArrayList getInputFilesList(String jobId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         String commonQueryString = "SELECT * FROM " + INPUT_FILES_LIST_TABLE_NAME + " WHERE JOB_ID = ?";
@@ -506,7 +703,7 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME + "  jobID = " + jobId + "searching for " + "fileName") ;
+            System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME + "  jobID = " + jobId + "searching for " + "fileName");
 
             preparedStatement = connection.prepareStatement(commonQueryString);
 
@@ -554,7 +751,7 @@ public class SQLiteJDBC {
             int exitCode = preparedStatement.executeUpdate();
             connection.commit();
 
-            System.out.println(newClientFileName + " is " + (exitCode == 1 ? "" : "not") + " added in " +  INPUT_FILES_LIST_TABLE_NAME + " table!");
+            System.out.println(newClientFileName + " is " + (exitCode == 1 ? "" : "not") + " added in " + INPUT_FILES_LIST_TABLE_NAME + " table!");
 
             preparedStatement.close();
             connection.close();
@@ -568,7 +765,7 @@ public class SQLiteJDBC {
     public static String retrieveItem(String tableName, String searchKey, String itemName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName) ;
+        System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName);
 
         String commonQueryString = "SELECT * FROM " + tableName + " WHERE JOB_ID = ?";
 
@@ -578,7 +775,7 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName) ;
+            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName);
 
             preparedStatement = connection.prepareStatement(commonQueryString);
 
@@ -596,6 +793,78 @@ public class SQLiteJDBC {
         } catch (Exception e) {
             System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
             //System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+
+        return retrievedItem;
+    }
+
+    public static String retrieveProcessMonitorLine(String tableName) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String commonQueryString = "SELECT * FROM " + tableName;
+
+        String retrievedItem = null;
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(commonQueryString);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (rs.next()) {
+                retrievedItem = rs.getString(1);
+                rs.deleteRow();
+            } else {
+                retrievedItem = "process exited!";
+            }
+
+            System.out.println("Retrieved item name : " + retrievedItem);
+            rs.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (Exception e) {
+            System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
+            //System.exit(0);
+        }
+
+        return retrievedItem;
+    }
+
+
+    public static InputStream retrieveInputStreamItem(String tableName, String searchKey, String itemName) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName);
+
+        String commonQueryString = "SELECT * FROM " + tableName + " WHERE JOB_ID = ?";
+
+        InputStream retrievedItem = null;
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName);
+
+            preparedStatement = connection.prepareStatement(commonQueryString);
+
+            //preparedStatement.setString(1, itemName);
+            preparedStatement.setString(1, searchKey);
+            System.out.println("sql string: " + preparedStatement);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            retrievedItem = rs.getBinaryStream(itemName);
+            System.out.println("Retrieved item name : " + retrievedItem);
+            rs.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (Exception e) {
+            System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
         }
         System.out.println("Operation done successfully");
 

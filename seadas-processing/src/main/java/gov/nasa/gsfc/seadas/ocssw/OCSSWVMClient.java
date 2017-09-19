@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
+import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
@@ -79,11 +80,12 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
     public boolean uploadClientFile(String fileName) {
 
         copyFile(fileName);
+        ProgressMonitor pm = null;
 
         try {
             String fileTypeString = Files.probeContentType(new File(fileName).toPath());
             if (fileTypeString.equals(MediaType.TEXT_PLAIN)) {
-                String listOfFiles = uploadListedFiles(fileName);
+                String listOfFiles = uploadListedFiles(pm, fileName);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,7 +100,7 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
      * @return true if all files uploaded successfully.
      */
     @Override
-    public String uploadListedFiles(String fileName) {
+    public String uploadListedFiles(ProgressMonitor pm, String fileName) {
 
         File file = new File(fileName);
         StringBuilder sb = new StringBuilder();
@@ -169,7 +171,7 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
      */
     @Override
     public Process execute(ProcessorModel processorModel) {
-        SeadasProcess seadasProcess = new SeadasProcess();
+        SeadasProcess seadasProcess = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = null;
 

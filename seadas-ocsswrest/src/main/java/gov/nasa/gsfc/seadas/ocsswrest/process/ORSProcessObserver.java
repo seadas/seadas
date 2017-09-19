@@ -2,22 +2,26 @@ package gov.nasa.gsfc.seadas.ocsswrest.process;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by aabduraz on 3/22/16.
  */
-public class ProcessObserver {
+public class ORSProcessObserver {
     private static final String STDOUT = "stdout";
     private static final String STDERR = "stderr";
-    private static final String PROCESS_TABLE = "PROCESS_TABLE";
     private final Process process;
     private final String processName;
     private final String  jobID;
+    private String processMonitorStdoutTableName;
+    private String processMonitorStderrTableName;
 
     /**
      * Constructor.
@@ -25,10 +29,15 @@ public class ProcessObserver {
      * @param process     The process to be observed
      * @param processName A name that represents the process
      */
-    public ProcessObserver(final Process process, String processName, String jobID) {
+    public ORSProcessObserver(final Process process, String processName, String jobID) {
         this.process = process;
         this.processName = processName;
         this.jobID = jobID;
+        SQLiteJDBC.createProcessMonitorTables(jobID);
+        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobID, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
+        processMonitorStdoutTableName = SQLiteJDBC.PROCESS_MONITOR_STDOUT_TABLE_NAME + "_" + jobID;
+        processMonitorStderrTableName = SQLiteJDBC.PROCESS_MONITOR_STDERR_TABLE_NAME + "_" + jobID;
+
     }
 
     /**
@@ -52,9 +61,15 @@ public class ProcessObserver {
                 //      * 1. just leave, and let the process be unattended (current impl.)
                 //        2. destroy the process
                 //        3. throw a checked ProgressObserverException
+                SQLiteJDBC.dropProcessMonitorTables(jobID);
                 return;
             }
         }
+
+        //Both threads completed monitoring the process. Delete the associated tables.
+        SQLiteJDBC.dropProcessMonitorTables(jobID);
+        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobID, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
+
     }
 
     private class LineReaderThread extends Thread {
@@ -64,10 +79,10 @@ public class ProcessObserver {
             super(processName + "-" + type);
             this.type = type;
         }
-
         @Override
         public void run() {
             try {
+                System.out.println(" in progress monitor reading ... " );
                 read();
             } catch (IOException e) {
                 // cannot be handled
@@ -83,17 +98,13 @@ public class ProcessObserver {
                     if (type.equals(STDOUT)) {
                         //save input stream in the table (line, process);
                         System.out.println(" in progress monitor: " + STDOUT + "  " +line);
-                        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, STDOUT, line);
+                        SQLiteJDBC.insertItem(processMonitorStdoutTableName, STDOUT, line);
                     } else {
                         //save error stream in the table (line, process);
-                        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, STDERR, line );
+                        SQLiteJDBC.insertItem(processMonitorStderrTableName, STDERR, line );
                         System.out.println(" in progress monitor: " + STDERR + "  "+ line);
                     }
-
                 }
-                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, STDOUT, "done!");
-                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, STDERR, "done!");
-
 
             } finally {
                 reader.close();

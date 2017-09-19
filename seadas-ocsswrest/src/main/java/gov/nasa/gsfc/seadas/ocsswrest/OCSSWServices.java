@@ -139,18 +139,7 @@ public class OCSSWServices {
         } else {
 
             OCSSWRemote ocsswRemote = new OCSSWRemote();
-            process = ocsswRemote.executeProgram(jobId, jsonObject);
-        }
-        if (process != null) {
-            System.out.println("process execution completed.");
-            System.out.print("exit code = ");
-            try {
-                int exitValue = process.waitFor();
-                System.out.println(exitValue);
-                SQLiteJDBC.updateItem("PROCESS_TABLE", jobId, "EXIT_VALUE", new Integer(exitValue).toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ocsswRemote.executeProgram(jobId, jsonObject);
         }
         return Response.status(respStatus).build();
     }
@@ -163,24 +152,12 @@ public class OCSSWServices {
                                                 JsonObject jsonObject)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
-        Process process = null;
         if (jsonObject == null) {
             respStatus = Response.Status.BAD_REQUEST;
         } else {
 
             OCSSWRemote ocsswRemote = new OCSSWRemote();
-            process = ocsswRemote.executeProgramOnDemand(jobId, programName, jsonObject);
-        }
-        if (process != null) {
-            System.out.println("process execution completed.");
-            System.out.print("exit code = ");
-            try {
-                int exitValue = process.waitFor();
-                System.out.println(exitValue);
-                SQLiteJDBC.updateItem("PROCESS_TABLE", jobId, "EXIT_VALUE", new Integer(exitValue).toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ocsswRemote.executeProgramOnDemand(jobId, programName, jsonObject);
         }
         return Response.status(respStatus).build();
     }
@@ -193,25 +170,13 @@ public class OCSSWServices {
                                                  File parFile)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
-        Process process = null;
         System.out.println("par file path: " + parFile.getAbsolutePath());
         if (parFile == null) {
             respStatus = Response.Status.BAD_REQUEST;
         } else {
 
             OCSSWRemote ocsswRemote = new OCSSWRemote();
-            process = ocsswRemote.executeMLP(jobId, parFile);
-        }
-        if (process != null) {
-            System.out.println("process execution completed.");
-            System.out.print("exit code = ");
-            try {
-                int exitValue = process.waitFor();
-                System.out.println(exitValue);
-                SQLiteJDBC.updateItem("PROCESS_TABLE", jobId, "EXIT_VALUE", new Integer(exitValue).toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ocsswRemote.executeMLP(jobId, parFile);
         }
         return Response.status(respStatus).build();
     }
@@ -238,6 +203,15 @@ public class OCSSWServices {
     @Produces(MediaType.TEXT_PLAIN)
     public String getProcessExitValue(@PathParam("jobId") String jobId){
         return SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.EXIT_VALUE_NAME.getFieldName());
+    }
+
+    @GET
+    @Path("processStatus/{jobId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getProcessStatus(@PathParam("jobId") String jobId){
+        String processStatus =  SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.STATUS.getFieldName());
+        System.out.println("process status: " + processStatus);
+        return processStatus;
     }
 
     @GET
@@ -334,73 +308,6 @@ public class OCSSWServices {
         OCSSWRemote ocsswRemote = new OCSSWRemote();
         ocsswRemote.getOfileName(jobId, jsonObject);
         return responseStatus.getStatusCode();
-    }
-
-    @POST
-    @Path("/findIFileTypeAndMissionName/{jobId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String findFileTypeAndMissionName(@PathParam("jobId") String jobId, JsonArray jsonArray) {
-        Response.Status respStatus = Response.Status.OK;
-        Process process = null;
-        String missionName = null;
-        String fileType = null;
-
-        if (jsonArray == null) {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        } else {
-            System.out.println("finding file type and mission name  ");
-
-            String[] cmdArray = getCmdArray(jsonArray);
-
-            cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
-            cmdArray[1] = "--ocsswroot";
-            cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
-
-            for (String str : cmdArray) {
-                System.out.println(str);
-            }
-
-            process = ProcessRunner.executeCmdArray(cmdArray);
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            try {
-                String line = stdInput.readLine();
-                System.out.println("Line = " + line);
-                if (line != null) {
-                    String splitLine[] = line.split(":");
-                    if (splitLine.length == 3) {
-                        missionName = splitLine[1].toString().trim();
-                        fileType = splitLine[2].toString().trim();
-                        System.out.println("Mission Name = " + missionName);
-                        System.out.println("File Type = " + fileType);
-                    }
-                }
-            } catch (IOException ioe) {
-                System.out.println(ioe.getStackTrace());
-            }
-        }
-
-
-        if (jobId != null) {
-            //insert or update mission name
-            if (SQLiteJDBC.isJobIdExist(jobId)) {
-                SQLiteJDBC.updateMissionName(jobId, missionName);
-            } else {
-                SQLiteJDBC.insertMissionName(jobId, missionName);
-            }
-
-            //insert or update file type
-            if (SQLiteJDBC.isJobIdExist(jobId)) {
-                SQLiteJDBC.updateFileType(jobId, fileType);
-
-            } else {
-                SQLiteJDBC.insertFileType(jobId, fileType);
-            }
-
-
-        }
-        int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESS_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
-        return new Integer(exitValue).toString();
     }
 
     @GET
@@ -562,24 +469,49 @@ public class OCSSWServices {
 
 
     @GET
-    @Path("retrieveProcess/{jobId}")
+    @Path("retrieveProcessStdoutFile/{jobId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Process retrieveProcess(@PathParam("jobId") String jobId) {
-        ObjectMapper om = new ObjectMapper();
-        try {
-            String processString = om.writeValueAsString(OCSSWServerModelOld.getProcess(jobId));
-        } catch (JsonProcessingException jpe) {
-            System.out.println(jpe.getStackTrace());
-        }
-        return OCSSWServerModelOld.getProcess(jobId);
+    public InputStream retrieveProcessStdoutFile(@PathParam("jobId") String jobId) {
+        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        InputStream inputStream1 = ocsswRemote.getProcessStdoutFile(jobId);
+        InputStream inputStream = SQLiteJDBC.retrieveInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STD_OUT_NAME.getFieldName());
+        return inputStream;
     }
 
     @GET
-    @Path("retrieveProcessResult/{jobId}")
+    @Path("retrieveProcessInputStream/{jobId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public InputStream retrieveProcessResult(@PathParam("jobId") String jobId) {
-        return OCSSWServerModelOld.getProcess(jobId).getInputStream();
+    public InputStream retrieveProcessInputStream(@PathParam("jobId") String jobId) {
+        InputStream inputStream = SQLiteJDBC.retrieveInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STD_OUT_NAME.getFieldName());
+        return inputStream;
     }
+
+    @GET
+    @Path("retrieveProcessErrorStream/{jobId}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public InputStream retrieveProcessErrorStream(@PathParam("jobId") String jobId) {
+        InputStream inputStream = SQLiteJDBC.retrieveInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STD_ERR_NAME.getFieldName());
+        return inputStream;
+    }
+
+    @GET
+    @Path("retrieveProcessInputStreamLine/{jobId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String retrieveProcessInputStreamLine(@PathParam("jobId") String jobId) {
+        String processStdoutStreamTableName = SQLiteJDBC.PROCESS_MONITOR_STDOUT_TABLE_NAME + "_" + jobId;
+        String inputStreamLine = SQLiteJDBC.retrieveProcessMonitorLine(processStdoutStreamTableName);
+        return inputStreamLine;
+    }
+
+    @GET
+    @Path("retrieveProcessErrorStreamLine/{jobId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String retrieveProcessErrorStreamLine(@PathParam("jobId") String jobId) {
+        String processStderrStreamTableName = SQLiteJDBC.PROCESS_MONITOR_STDERR_TABLE_NAME + "_" + jobId;
+        String outputStreamLine = SQLiteJDBC.retrieveProcessMonitorLine(processStderrStreamTableName);
+        return outputStreamLine;
+    }
+
 
 
     private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
