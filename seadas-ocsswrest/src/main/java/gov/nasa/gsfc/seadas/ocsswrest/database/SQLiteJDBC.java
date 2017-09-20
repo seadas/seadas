@@ -406,7 +406,7 @@ public class SQLiteJDBC {
             stdoutStatement = stdoutConnection.createStatement();
 
             stderrConnection = DriverManager.getConnection(PROCESS_STDERR_DB_URL, username, password);
-            stderrStatement = stdoutConnection.createStatement();
+            stderrStatement = stderrConnection.createStatement();
 
 //            DatabaseMetaData md = stdoutConnection.getMetaData();
 //
