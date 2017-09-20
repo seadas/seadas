@@ -98,10 +98,10 @@ public class ORSProcessObserver {
                     if (type.equals(STDOUT)) {
                         //save input stream in the table (line, process);
                         System.out.println(" in progress monitor: " + STDOUT + "  " +line);
-                        SQLiteJDBC.insertItem(processMonitorStdoutTableName, STDOUT, line);
+                        SQLiteJDBC.insertItemInProcessMonitorTables(SQLiteJDBC.PROCESS_STDOUT_DB_URL, processMonitorStdoutTableName, STDOUT, line);
                     } else {
                         //save error stream in the table (line, process);
-                        SQLiteJDBC.insertItem(processMonitorStderrTableName, STDERR, line );
+                        SQLiteJDBC.insertItemInProcessMonitorTables(SQLiteJDBC.PROCESS_STDERR_DB_URL, processMonitorStderrTableName, STDERR, line );
                         System.out.println(" in progress monitor: " + STDERR + "  "+ line);
                     }
                 }

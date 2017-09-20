@@ -14,7 +14,12 @@ import java.util.ArrayList;
 
 public class SQLiteJDBC {
 
-    public static String JOB_DB_URL = "jdbc:sqlite:ocssw.db";
+    public static String JOB_DB_FILENAME = "ocssw.db";
+    public static String PROCESS_STDOUT_DB_FILENAME = "process_stdout.db";
+    public static String PROCESS_STDERR_DB_FILENAME = "process_stderr.db";
+    public static String JOB_DB_URL = "jdbc:sqlite:" + JOB_DB_FILENAME;
+    public static String PROCESS_STDOUT_DB_URL = "jdbc:sqlite:" + PROCESS_STDOUT_DB_FILENAME;
+    public static String PROCESS_STDERR_DB_URL = "jdbc:sqlite:" + PROCESS_STDERR_DB_FILENAME;
     public static String DB_CLASS_FOR_NAME = "org.sqlite.JDBC";
     public static String SQL_INSERT_STRING = "INSERT INTO PROCESS_TABLE (JOB_ID,COMMAND_ARRAY, EXIT_VALUE, stdout, stderr) ";
     private static String username = "obpg";
@@ -175,8 +180,8 @@ public class SQLiteJDBC {
 
     public static void createTables() {
 
-        if (new File("ocssw.db").exists()) {
-            new File("ocssw.db").delete();
+        if (new File(JOB_DB_FILENAME).exists()) {
+            new File(JOB_DB_FILENAME).delete();
         }
         Connection connection = null;
         Statement stmt = null;
@@ -366,6 +371,13 @@ public class SQLiteJDBC {
 
         //string for creating PROCESS_TABLE
 
+        if (new File(PROCESS_STDOUT_DB_FILENAME).exists()) {
+            new File(PROCESS_STDOUT_DB_FILENAME).delete();
+        }
+
+        if (new File(PROCESS_STDERR_DB_FILENAME).exists()) {
+            new File(PROCESS_STDERR_DB_FILENAME).delete();
+        }
 
 
         String stdoutTableName = PROCESS_MONITOR_STDOUT_TABLE_NAME + "_" + jobId;
@@ -383,36 +395,43 @@ public class SQLiteJDBC {
         String drop_process_monitor_stdout_table_sql = "DROP TABLE " + stdoutTableName;
         String drop_process_monitor_stderr_table_sql = "DROP TABLE " + stderrTableName;
 
-        Connection connection = null;
-        Statement stmt = null;
+        Connection stdoutConnection = null;
+        Connection stderrConnection = null;
+        Statement stdoutStatement = null;
+        Statement stderrStatement = null;
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);
-            connection = DriverManager.getConnection(JOB_DB_URL, username, password);
-            stmt = connection.createStatement();
+            stdoutConnection = DriverManager.getConnection(PROCESS_STDOUT_DB_URL, username, password);
+            stdoutStatement = stdoutConnection.createStatement();
 
-            DatabaseMetaData md = connection.getMetaData();
+            stderrConnection = DriverManager.getConnection(PROCESS_STDERR_DB_URL, username, password);
+            stderrStatement = stdoutConnection.createStatement();
 
-            System.out.println( stdoutTableName + " ... "  + md.getDatabaseProductName());
-
-            ResultSet rs = md.getTables(null, null, stdoutTableName, null);
-
-            System.out.println( stdoutTableName + " ... "  + rs.next());
-
-
-            if (rs.next()) {
-                stmt.executeUpdate(drop_process_monitor_stdout_table_sql);
-                stmt.executeUpdate(drop_process_monitor_stderr_table_sql);
-
-            }
-            stmt.executeUpdate(create_process_monitor_stdout_table_sql);
-            stmt.executeUpdate(create_process_monitor_stderr_table_sql);
+//            DatabaseMetaData md = stdoutConnection.getMetaData();
+//
+//            System.out.println( stdoutTableName + " ... "  + md.getDatabaseProductName());
+//
+//            ResultSet rs = md.getTables(null, null, stdoutTableName, null);
+//
+//            System.out.println( stdoutTableName + " ... "  + rs.next());
+//
+//
+//            if (rs.next()) {
+//                stdoutStatement.executeUpdate(drop_process_monitor_stdout_table_sql);
+//                stdoutStatement.executeUpdate(drop_process_monitor_stderr_table_sql);
+//
+//            }
+            stdoutStatement.executeUpdate(create_process_monitor_stdout_table_sql);
+            stderrStatement.executeUpdate(create_process_monitor_stderr_table_sql);
             System.out.println("Table " + stdoutTableName + " created successfully");
             System.out.println("Table " + stderrTableName + " created successfully");
-            rs.close();
-            stmt.close();
-            connection.close();
-
+            //rs.close();
+            stdoutStatement.close();
+            stderrStatement.close();
+            stdoutConnection.close();
+            stderrConnection.close();
+            
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -580,7 +599,7 @@ public class SQLiteJDBC {
         System.out.println("Inserted " + itemName + " successfully");
     }
 
-    public static void insertItemInProcessMonitorTables(String tableName, String itemName, String itemValue) {
+    public static void insertItemInProcessMonitorTables(String dbNameURL, String tableName, String itemName, String itemValue) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -588,7 +607,7 @@ public class SQLiteJDBC {
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);
-            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection = DriverManager.getConnection(dbNameURL);
             connection.setAutoCommit(false);
             System.out.println("Opened database successfully");
             System.out.println("Operating on table " + tableName);
