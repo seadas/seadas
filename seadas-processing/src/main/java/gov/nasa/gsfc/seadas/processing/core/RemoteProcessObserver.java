@@ -3,16 +3,14 @@ package gov.nasa.gsfc.seadas.processing.core;
 import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
-import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
+
+import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient.PROCESS_STATUS_COMPLETED;
+import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient.PROCESS_STATUS_NONEXIST;
+import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient.PROCESS_STATUS_STARTED;
 
 /**
  * Created by aabduraz on 9/12/17.
@@ -22,6 +20,8 @@ public class RemoteProcessObserver extends ProcessObserver {
     OCSSWInfo ocsswInfo;
     WebTarget target;
     private String jobId;
+    private boolean serverProcessCompleted = false;
+
 
     /**
      * Constructor.
@@ -80,6 +80,14 @@ public class RemoteProcessObserver extends ProcessObserver {
         this.jobId = jobId;
     }
 
+    public boolean isServerProcessCompleted() {
+        return serverProcessCompleted;
+    }
+
+    public void setServerProcessCompleted(boolean serverProcessCompleted) {
+        this.serverProcessCompleted = serverProcessCompleted;
+    }
+
     /**
      * A handler that will be informed if a new line has been read from either {@code stdout} or {@code stderr}.
      */
@@ -123,16 +131,26 @@ public class RemoteProcessObserver extends ProcessObserver {
         protected void read() throws IOException {
             OCSSWClient ocsswClient = new OCSSWClient();
             WebTarget target = ocsswClient.getOcsswWebTarget();
-            Response response = target.path("fileServices").path("downloadLogFile").path(jobId).path(processName).request().get(Response.class);
-            InputStream responceStream = (InputStream) response.getEntity();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(responceStream));
-            try {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    fireLineRead(line);
+
+            String processStatus = "-1";
+
+            while (!isServerProcessCompleted()) {
+                switch (processStatus) {
+                    case PROCESS_STATUS_NONEXIST:
+                        setServerProcessCompleted(false);
+                    case PROCESS_STATUS_STARTED:
+                        setServerProcessCompleted(false);
+                    case PROCESS_STATUS_COMPLETED:
+                        setServerProcessCompleted(true);
                 }
-            } finally {
-                reader.close();
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("process status before: " + processStatus);
+                processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+                System.out.println("process status after: " + processStatus);
             }
         }
 

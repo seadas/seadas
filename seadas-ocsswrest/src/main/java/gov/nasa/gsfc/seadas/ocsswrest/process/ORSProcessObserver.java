@@ -33,10 +33,10 @@ public class ORSProcessObserver {
         this.process = process;
         this.processName = processName;
         this.jobID = jobID;
-        SQLiteJDBC.createProcessMonitorTables(jobID);
+        //SQLiteJDBC.createProcessMonitorTables(jobID);
         SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobID, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
-        processMonitorStdoutTableName = SQLiteJDBC.PROCESS_MONITOR_STDOUT_TABLE_NAME + "_" + jobID;
-        processMonitorStderrTableName = SQLiteJDBC.PROCESS_MONITOR_STDERR_TABLE_NAME + "_" + jobID;
+        //processMonitorStdoutTableName = SQLiteJDBC.PROCESS_MONITOR_STDOUT_TABLE_NAME + "_" + jobID;
+        //processMonitorStderrTableName = SQLiteJDBC.PROCESS_MONITOR_STDERR_TABLE_NAME + "_" + jobID;
 
     }
 
@@ -67,7 +67,7 @@ public class ORSProcessObserver {
         }
 
         //Both threads completed monitoring the process. Delete the associated tables.
-        SQLiteJDBC.dropProcessMonitorTables(jobID);
+        //SQLiteJDBC.dropProcessMonitorTables(jobID);
         SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobID, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
 
     }
@@ -98,10 +98,10 @@ public class ORSProcessObserver {
                     if (type.equals(STDOUT)) {
                         //save input stream in the table (line, process);
                         System.out.println(" in progress monitor: " + STDOUT + "  " +line);
-                        SQLiteJDBC.insertItemInProcessMonitorTables(SQLiteJDBC.PROCESS_STDOUT_DB_URL, processMonitorStdoutTableName, STDOUT, line);
+                        //SQLiteJDBC.insertItemInProcessMonitorTables(SQLiteJDBC.PROCESS_STDOUT_DB_URL, processMonitorStdoutTableName, STDOUT, line);
                     } else {
                         //save error stream in the table (line, process);
-                        SQLiteJDBC.insertItemInProcessMonitorTables(SQLiteJDBC.PROCESS_STDERR_DB_URL, processMonitorStderrTableName, STDERR, line );
+                        //SQLiteJDBC.insertItemInProcessMonitorTables(SQLiteJDBC.PROCESS_STDERR_DB_URL, processMonitorStderrTableName, STDERR, line );
                         System.out.println(" in progress monitor: " + STDERR + "  "+ line);
                     }
                 }

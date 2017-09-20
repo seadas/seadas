@@ -308,7 +308,7 @@ public class OCSSWRemoteClient extends OCSSW {
      * @return
      */
     @Override
-    public Process execute(ProcessorModel processorModel) {
+    public SeadasProcess execute(ProcessorModel processorModel) {
         SeadasProcess seadasProcess = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = null;

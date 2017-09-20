@@ -12,7 +12,7 @@ import java.io.OutputStream;
  */
 
 public class SeadasProcess extends Process {
-    int exitValue = 0;
+    int exitValue = 1;
     private InputStream inputStream;
     private InputStream errorStream;
     private OutputStream outputStream;
