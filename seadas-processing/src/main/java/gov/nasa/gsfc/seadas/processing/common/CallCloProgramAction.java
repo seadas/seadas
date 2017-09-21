@@ -216,7 +216,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected String doInBackground(ProgressMonitor pm) throws Exception {
 
                 ocssw.setMonitorProgress(true);
-                final SeadasProcess process = ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
+                final Process process = ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }

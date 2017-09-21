@@ -5,7 +5,6 @@ import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.Mission;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
-import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
@@ -94,7 +93,7 @@ public abstract class OCSSW {
 
     public abstract String[] getMissionSuites(String missionName, String programName);
 
-    public abstract SeadasProcess execute(ProcessorModel processorModel);
+    public abstract Process execute(ProcessorModel processorModel);
 
     public abstract Process execute(ParamList paramList);
 

@@ -7,7 +7,6 @@ import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
-import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
@@ -85,7 +84,7 @@ public class OCSSWLocal extends OCSSW {
 
 
     @Override
-    public SeadasProcess execute(ProcessorModel processorModel) {
+    public Process execute(ProcessorModel processorModel) {
         setProgramName(processorModel.getProgramName());
         return execute(getProgramCommandArray(processorModel));
     }
@@ -136,13 +135,13 @@ public class OCSSWLocal extends OCSSW {
     }
 
     @Override
-    public SeadasProcess execute(String[] commandArray) {
+    public Process execute(String[] commandArray) {
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
 
-        SeadasProcess process = null;
+        Process process = null;
         try {
-            process = (SeadasProcess) processBuilder.start();
+            process = (Process) processBuilder.start();
             if (process != null) {
                 SeadasFileUtils.debug("Running the program " + commandArray.toString());
             }

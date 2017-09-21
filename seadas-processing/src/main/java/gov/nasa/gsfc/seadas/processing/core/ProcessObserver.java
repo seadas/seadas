@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.core;
 import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
-
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import java.io.BufferedReader;
@@ -130,8 +129,10 @@ public class ProcessObserver {
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {
+                    System.out.println(" in progress monitor: " + type + "  " +line);
                     fireLineRead(line);
                 }
+                System.out.println("process completed!");
             } finally {
                 reader.close();
             }

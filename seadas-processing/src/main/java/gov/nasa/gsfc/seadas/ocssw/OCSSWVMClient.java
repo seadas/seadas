@@ -170,8 +170,8 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
      * @return
      */
     @Override
-    public SeadasProcess execute(ProcessorModel processorModel) {
-        SeadasProcess seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+    public Process execute(ProcessorModel processorModel) {
+        Process Process = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = null;
 
@@ -190,12 +190,11 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
             Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
             if (response.getStatus() == Response.Status.OK.getStatusCode()) {
                 downloadFiles(commandArrayJsonObject);
-                seadasProcess.setExitValue(0);
             }
         }
 
 
-        return seadasProcess;
+        return Process;
     }
 
 

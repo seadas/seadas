@@ -148,9 +148,8 @@ public class RemoteProcessObserver extends ProcessObserver {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println("process status before: " + processStatus);
                 processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
-                System.out.println("process status after: " + processStatus);
+                System.out.println("process status in progress monitor: " + processStatus);
             }
         }
 

@@ -308,8 +308,8 @@ public class OCSSWRemoteClient extends OCSSW {
      * @return
      */
     @Override
-    public SeadasProcess execute(ProcessorModel processorModel) {
-        SeadasProcess seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+    public Process execute(ProcessorModel processorModel) {
+        Process Process = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = null;
 
@@ -323,7 +323,7 @@ public class OCSSWRemoteClient extends OCSSW {
             commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
             Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
             if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                //seadasProcess.setExitValue(0);
+                //Process.setExitValue(0);
             }
         }
 
@@ -348,7 +348,7 @@ public class OCSSWRemoteClient extends OCSSW {
             processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
             System.out.println("process status after: " + processStatus);
         }
-        return seadasProcess;
+        return Process;
     }
 
     public void downloadFiles(String jobId, JsonObject commandArrayJsonObject) {
@@ -436,8 +436,8 @@ public class OCSSWRemoteClient extends OCSSW {
             final InputStream responseStream = (InputStream) output.getEntity();
             SeadasFileUtils.writeToFile(responseStream, ofileName);
         }
-        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
-        return seadasProcess;
+        Process Process = new SeadasProcess(ocsswInfo, jobId);
+        return Process;
     }
 
     protected JsonObject getJsonFromParamList(ParamList paramList) {

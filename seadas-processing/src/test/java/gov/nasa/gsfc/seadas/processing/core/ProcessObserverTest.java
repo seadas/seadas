@@ -28,7 +28,7 @@ public class ProcessObserverTest {
 
     @Test
     public void testHandlersAreNotified() throws Exception {
-        Process process = Runtime.getRuntime().exec(shellExec.getPath());
+        Process process = (Process) Runtime.getRuntime().exec(shellExec.getPath());
         ProcessObserver processObserver = new ProcessObserver(process, "test", new NullProgressMonitor());
         MyHandler handler = new MyHandler();
         processObserver.addHandler(handler);
