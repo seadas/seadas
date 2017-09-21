@@ -175,6 +175,7 @@ public class OCSSWServices {
             respStatus = Response.Status.BAD_REQUEST;
         } else {
 
+            SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
             OCSSWRemote ocsswRemote = new OCSSWRemote();
             ocsswRemote.executeMLP(jobId, parFile);
         }

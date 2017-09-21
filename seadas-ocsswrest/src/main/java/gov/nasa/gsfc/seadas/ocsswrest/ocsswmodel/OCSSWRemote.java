@@ -392,7 +392,7 @@ public class OCSSWRemote {
 
                 processBuilder.directory(new File(workingDir));
 
-                processBuilder.redirectErrorStream(true);
+                //processBuilder.redirectErrorStream(true);
                 //File log = new File("log");
                 //processBuilder.redirectOutput(ProcessBuilder.Redirect.appendTo(log));
                 Process process = null;
