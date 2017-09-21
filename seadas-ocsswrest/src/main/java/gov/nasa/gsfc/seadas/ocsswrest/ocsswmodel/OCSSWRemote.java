@@ -37,7 +37,7 @@ public class OCSSWRemote {
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
     public static String MLP_PROGRAM_NAME = "multilevel_processor.py";
-    public static String MLP_PAR_FILE_NAME = "multilevel_processor_parFile.txt";
+    public static String MLP_PAR_FILE_NAME = "multilevel_processor_parFile.par";
     public static String MLP_OUTPUT_DIR_NAME = "mlpOutputDir";
 
     public static String PROCESS_STDOUT_FILE_NAME_EXTENSION = ".log";
@@ -227,6 +227,7 @@ public class OCSSWRemote {
         String fileTypeString;
         boolean isOdirdefined = true;
 
+        int odirStringPositioninParFile = 6 ;
 
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String mlpDir = workingFileDir + File.separator + jobId;
@@ -254,8 +255,7 @@ public class OCSSWRemote {
                     if (key.equals("odir")) {
                         value = mlpOutputDir;
                     } else {
-                        stringBuilder.append("odir=" + mlpOutputDir);
-                        stringBuilder.append("\n");
+                        stringBuilder.insert(odirStringPositioninParFile, "odir=" + mlpOutputDir + "\n");
                     }
                     isOdirdefined = true;
                 }
@@ -263,6 +263,9 @@ public class OCSSWRemote {
             }
             stringBuilder.append(token);
             stringBuilder.append("\n");
+            if (token.indexOf("ifile") != -1) {
+                odirStringPositioninParFile = stringBuilder.indexOf(token) + token.length() + 1;
+            }
         }
 
         //Create the mlp output dir; Otherwise mlp will throw exception
@@ -339,11 +342,6 @@ public class OCSSWRemote {
 
                 return null;
             }
-
-            @Override
-            protected void done() {
-
-            }
         };
         swingWorker.execute();
     }
@@ -408,11 +406,6 @@ public class OCSSWRemote {
                 processObserver.startAndWait();
                 System.out.println("process started successfully");
                 return process;
-            }
-
-            @Override
-            protected void done() {
-                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobID, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
             }
         };
         swingWorker.execute();
