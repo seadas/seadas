@@ -19,7 +19,7 @@ public class ORSProcessObserver {
     private static final String STDERR = "stderr";
     private final Process process;
     private final String processName;
-    private final String  jobID;
+    private final String jobID;
     private String processMonitorStdoutTableName;
     private String processMonitorStderrTableName;
 
@@ -33,7 +33,7 @@ public class ORSProcessObserver {
         this.process = process;
         this.processName = processName;
         this.jobID = jobID;
-        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobID, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
+        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
     }
 
     /**
@@ -60,9 +60,6 @@ public class ORSProcessObserver {
                 return;
             }
         }
-//        System.out.println(" in progress monitor process status before update: "+ SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobID, SQLiteJDBC.FileTableFields.STATUS.getFieldName()));
-//        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobID, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
-//        System.out.println(" in progress monitor process status: "+ SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
     }
 
     private class LineReaderThread extends Thread {
@@ -72,6 +69,7 @@ public class ORSProcessObserver {
             super(processName + "-" + type);
             this.type = type;
         }
+
         @Override
         public void run() {
             try {
@@ -87,18 +85,18 @@ public class ORSProcessObserver {
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(" in progress monitor: " + type + "  " +line);
-//                    if (type.equals(STDOUT)) {
-//                        //save input stream in the table (line, process);
-//                        System.out.println(" in progress monitor: " + STDOUT + "  " +line);
-//                        //SQLiteJDBC.insertItemInProcessMonitorTables(SQLiteJDBC.PROCESS_STDOUT_DB_URL, processMonitorStdoutTableName, STDOUT, line);
-//                    } else {
-//                        //save error stream in the table (line, process);
-//                        //SQLiteJDBC.insertItemInProcessMonitorTables(SQLiteJDBC.PROCESS_STDERR_DB_URL, processMonitorStderrTableName, STDERR, line );
-//                        System.out.println(" in progress monitor: " + STDERR + "  "+ line);
-//                    }
+                    System.out.println(" in progress monitor: " + type + "  " + line);
+                    if (type.equals("stdout")) {
+                        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STD_OUT_NAME.getFieldName(), line);
+                    } else {
+                        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STD_OUT_NAME.getFieldName(), line);
+                    }
+
                 }
                 System.out.println("process completed!");
+                System.out.println(" in progress monitor process status before update: " + SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName()));
+                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
+                System.out.println(" in progress monitor process status: " + SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
 
             } finally {
                 reader.close();

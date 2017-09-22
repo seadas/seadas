@@ -60,8 +60,7 @@ public class SQLiteJDBC {
         O_FILE_NAME("O_FILE_NAME"),
         PROGRAM_NAME("PROGRAM_NAME"),
         MISSION_NAME("MISSION_NAME"),
-        MISSION_DIR("MISSION_DIR"),
-        STATUS("STATUS");
+        MISSION_DIR("MISSION_DIR");
 
         String fieldName;
 
@@ -114,6 +113,7 @@ public class SQLiteJDBC {
     public enum ProcessTableFields {
         JOB_ID_NAME("JOB_ID"),
         COMMAND_ARRAY_NAME("COMMAND_ARRAY"),
+        STATUS("STATUS"),
         EXIT_VALUE_NAME("EXIT_VALUE"),
         STD_OUT_NAME("stdout"),
         STD_ERR_NAME("stderr");
@@ -198,6 +198,7 @@ public class SQLiteJDBC {
                     "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
                     " COMMAND_ARRAY  CHAR(500), " +
                     " EXIT_VALUE        CHAR(2), " +
+                    " STATUS        CHAR(50), " +
                     " stdout CHAR(500), " +
                     " stderr CHAR(500) )";
 
@@ -211,8 +212,7 @@ public class SQLiteJDBC {
                     "I_FILE_TYPE      CHAR(50) ,    " +
                     "O_FILE_NAME      CHAR(100) , " +
                     "MISSION_NAME  CHAR(50), " +
-                    "MISSION_DIR  CHAR(50), " +
-                    "STATUS        CHAR(50) )";
+                    "MISSION_DIR  CHAR(50) )";
 
             //string for creating NEXT_LEVELE_FILE_NAME_TABLE
             String next_level_file_name_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +

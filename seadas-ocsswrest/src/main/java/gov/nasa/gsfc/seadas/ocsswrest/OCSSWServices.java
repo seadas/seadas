@@ -175,7 +175,7 @@ public class OCSSWServices {
             respStatus = Response.Status.BAD_REQUEST;
         } else {
 
-            SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
+            SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
             OCSSWRemote ocsswRemote = new OCSSWRemote();
             ocsswRemote.executeMLP(jobId, parFile);
         }
@@ -210,7 +210,7 @@ public class OCSSWServices {
     @Path("processStatus/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
     public String getProcessStatus(@PathParam("jobId") String jobId){
-        String processStatus =  SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.STATUS.getFieldName());
+        String processStatus =  SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName());
         System.out.println("process status: " + processStatus);
         return processStatus;
     }

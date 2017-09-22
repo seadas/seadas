@@ -398,7 +398,7 @@ public class OCSSWRemote {
                 Process process = null;
                 try {
                     process = processBuilder.start();
-                    SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobID, SQLiteJDBC.FileTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
+                    SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
