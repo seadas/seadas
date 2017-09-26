@@ -104,6 +104,7 @@ public class OCSSWRemoteClient extends OCSSW {
 
         ifileUploadSuccess = false;
 
+
         VisatApp visatApp = VisatApp.getApp();
 
         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
@@ -309,7 +310,7 @@ public class OCSSWRemoteClient extends OCSSW {
      */
     @Override
     public Process execute(ProcessorModel processorModel) {
-        Process Process = new SeadasProcess(ocsswInfo, jobId);
+        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = null;
 
@@ -348,8 +349,9 @@ public class OCSSWRemoteClient extends OCSSW {
             processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
             System.out.println("process status after: " + processStatus);
         }
-        return Process;
+        return seadasProcess;
     }
+
 
     public void downloadFiles(String jobId, JsonObject commandArrayJsonObject) {
         if ( programName.equals(MLP_PROGRAM_NAME)) {

@@ -5,7 +5,10 @@ import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 
 import javax.ws.rs.client.WebTarget;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient.PROCESS_STATUS_COMPLETED;
@@ -128,7 +131,7 @@ public class RemoteProcessObserver extends ProcessObserver {
             }
         }
 
-        protected void read() throws IOException {
+        protected void readNew() throws IOException {
             OCSSWClient ocsswClient = new OCSSWClient();
             WebTarget target = ocsswClient.getOcsswWebTarget();
 
@@ -152,6 +155,31 @@ public class RemoteProcessObserver extends ProcessObserver {
                 System.out.println("process status in progress monitor: " + processStatus);
             }
         }
+
+        private void read() throws IOException {
+            System.out.println("reading from process input stream ...");
+            String processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+            String line = null;
+            while (!processStatus.equals(PROCESS_STATUS_COMPLETED)) {
+                switch (type) {
+                    case STDOUT:
+                        line = target.path("ocssw").path("retrieveProcessInputStreamLine").path(jobId).request().get(String.class);
+                        System.out.println(" in progress monitor: " + type + "  " + line);
+                    case STDERR:
+                        line = target.path("ocssw").path("retrieveProcessErrorStreamLine").path(jobId).request().get(String.class);
+                        System.out.println(" in progress monitor: " + type + "  " + line);
+                }
+
+                processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+                fireLineRead(line);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
 
         protected void fireLineRead(String line) {
             for (ProcessObserver.Handler handler : handlers) {

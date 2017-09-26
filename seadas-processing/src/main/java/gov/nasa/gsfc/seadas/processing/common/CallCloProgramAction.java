@@ -231,9 +231,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 processObserver.startAndWait();
                 processorModel.setExecutionLogMessage(ch.getExecutionErrorLog());
 
-                while (process.isAlive()) {
-
-                }
                 int exitCode = process.exitValue();
 
                 pm.done();

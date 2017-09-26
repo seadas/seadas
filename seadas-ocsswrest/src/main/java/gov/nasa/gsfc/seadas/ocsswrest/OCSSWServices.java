@@ -6,6 +6,7 @@ import com.sun.org.apache.regexp.internal.RE;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
+import gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessRunner;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
 
@@ -23,6 +24,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_ERROR_STREAM_FILE_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_INPUT_STREAM_FILE_NAME;
 
 
 /**
@@ -480,27 +484,13 @@ public class OCSSWServices {
     }
 
     @GET
-    @Path("retrieveProcessInputStream/{jobId}")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public InputStream retrieveProcessInputStream(@PathParam("jobId") String jobId) {
-        InputStream inputStream = SQLiteJDBC.retrieveInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STD_OUT_NAME.getFieldName());
-        return inputStream;
-    }
-
-    @GET
-    @Path("retrieveProcessErrorStream/{jobId}")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public InputStream retrieveProcessErrorStream(@PathParam("jobId") String jobId) {
-        InputStream inputStream = SQLiteJDBC.retrieveInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STD_ERR_NAME.getFieldName());
-        return inputStream;
-    }
-
-    @GET
     @Path("retrieveProcessInputStreamLine/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
     public String retrieveProcessInputStreamLine(@PathParam("jobId") String jobId) {
-        String processStdoutStreamTableName = SQLiteJDBC.PROCESS_MONITOR_STDOUT_TABLE_NAME + "_" + jobId;
-        String inputStreamLine = SQLiteJDBC.retrieveProcessMonitorLine(processStdoutStreamTableName);
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        String processInputStreamFileName = serverWorkingDir + File.separator + jobId + File.separator + PROCESS_INPUT_STREAM_FILE_NAME;
+        String inputStreamLine = ServerSideFileUtilities.getlastLine(processInputStreamFileName);
+        System.out.println("process input stream last line = "  + inputStreamLine + "  filename = " + processInputStreamFileName);
         return inputStreamLine;
     }
 
@@ -508,9 +498,11 @@ public class OCSSWServices {
     @Path("retrieveProcessErrorStreamLine/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
     public String retrieveProcessErrorStreamLine(@PathParam("jobId") String jobId) {
-        String processStderrStreamTableName = SQLiteJDBC.PROCESS_MONITOR_STDERR_TABLE_NAME + "_" + jobId;
-        String outputStreamLine = SQLiteJDBC.retrieveProcessMonitorLine(processStderrStreamTableName);
-        return outputStreamLine;
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        String processErrorStreamFileName = serverWorkingDir + File.separator + jobId + File.separator + PROCESS_ERROR_STREAM_FILE_NAME;
+        String errorStreamLine = ServerSideFileUtilities.getlastLine(processErrorStreamFileName);
+        System.out.println("process error stream last line = "  + errorStreamLine + "  filename = " + processErrorStreamFileName);
+        return errorStreamLine;
     }
 
 

@@ -2,26 +2,27 @@ package gov.nasa.gsfc.seadas.ocsswrest.process;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 
-import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
 
 /**
  * Created by aabduraz on 3/22/16.
  */
 public class ORSProcessObserver {
+
+    public static final String PROCESS_INPUT_STREAM_FILE_NAME = "processInputStream.log";
+    public static final String PROCESS_ERROR_STREAM_FILE_NAME = "processErrorStream.log";
+
     private static final String STDOUT = "stdout";
     private static final String STDERR = "stderr";
     private final Process process;
     private final String processName;
-    private final String jobID;
+    private final String jobId;
+
     private String processMonitorStdoutTableName;
     private String processMonitorStderrTableName;
+
+    private String processInputStreamFileName;
+    private String processErrorStreamFileName;
 
     /**
      * Constructor.
@@ -29,11 +30,14 @@ public class ORSProcessObserver {
      * @param process     The process to be observed
      * @param processName A name that represents the process
      */
-    public ORSProcessObserver(final Process process, String processName, String jobID) {
+    public ORSProcessObserver(final Process process, String processName, String jobId) {
         this.process = process;
         this.processName = processName;
-        this.jobID = jobID;
-        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
+        this.jobId = jobId;
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        processInputStreamFileName = serverWorkingDir + File.separator + jobId + File.separator + PROCESS_INPUT_STREAM_FILE_NAME;
+        processErrorStreamFileName = serverWorkingDir + File.separator + jobId + File.separator + PROCESS_ERROR_STREAM_FILE_NAME;
+        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
     }
 
     /**
@@ -80,27 +84,64 @@ public class ORSProcessObserver {
         }
 
         private void read() throws IOException {
-            final InputStream inputStream = type.equals(STDOUT) ? process.getInputStream() : process.getErrorStream();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            System.out.println("reading from process input stream ...");
+            InputStream inputStream = null; // = type.equals("stdout") ? process.getInputStream() : process.getErrorStream();
+            switch (type) {
+                case STDOUT:
+                    inputStream = process.getInputStream();
+                    //SQLiteJDBC.updateInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.INPUTSTREAM.getFieldName(), inputStream);
+                    writeProcessStreamToFile(inputStream, processInputStreamFileName);
+                case STDERR:
+                    inputStream = process.getErrorStream();
+                    //SQLiteJDBC.updateInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.ERRORSTREAM.getFieldName(), inputStream);
+                    writeProcessStreamToFile(inputStream, processErrorStreamFileName);
+            }
+        }
+
+
+        private void writeProcessStreamToFile(InputStream inputStream, String fileName) {
+
+            OutputStream outputStream = null;
+
             try {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(" in progress monitor: " + type + "  " + line);
-                    if (type.equals("stdout")) {
-                        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STD_OUT_NAME.getFieldName(), line);
-                    } else {
-                        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STD_OUT_NAME.getFieldName(), line);
-                    }
 
+                // write the inputStream to a FileOutputStream
+                outputStream = new FileOutputStream(new File(fileName), true);
+
+                int read = 0;
+                byte[] bytes = new byte[1024];
+
+                while ((read = inputStream.read(bytes)) != -1) {
+                    outputStream.write(bytes, 0, read);
                 }
-                System.out.println("process completed!");
-                System.out.println(" in progress monitor process status before update: " + SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName()));
-                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobID, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
-                System.out.println(" in progress monitor process status: " + SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
 
+                if (type.equals(STDOUT)) {
+                    SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
+                }
+                System.out.println("Appended process input stream in " + fileName);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             } finally {
-                reader.close();
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (outputStream != null) {
+                    try {
+                        // outputStream.flush();
+                        outputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
+
+
 }

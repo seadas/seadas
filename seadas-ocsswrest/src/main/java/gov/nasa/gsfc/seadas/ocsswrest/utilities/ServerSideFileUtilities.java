@@ -203,5 +203,20 @@ public class ServerSideFileUtilities {
         }
         return null;
     }
+
+    public static String getlastLine(String fileName) {
+        BufferedReader input = null;
+        String last = null, line;
+        try {
+            input = new BufferedReader(new FileReader(fileName));
+            while ((line = input.readLine()) != null) {
+                last = line;
+            }
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return last;
+    }
 }
 

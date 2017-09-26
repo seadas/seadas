@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.ocsswrest.database;
 
+import sun.misc.IOUtils;
+
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -116,7 +118,9 @@ public class SQLiteJDBC {
         STATUS("STATUS"),
         EXIT_VALUE_NAME("EXIT_VALUE"),
         STD_OUT_NAME("stdout"),
-        STD_ERR_NAME("stderr");
+        STD_ERR_NAME("stderr"),
+        INPUTSTREAM("INPUT_STREAM"),
+        ERRORSTREAM("ERROR_STREAM");
 
         String fieldName;
 
@@ -200,7 +204,9 @@ public class SQLiteJDBC {
                     " EXIT_VALUE        CHAR(2), " +
                     " STATUS        CHAR(50), " +
                     " stdout CHAR(500), " +
-                    " stderr CHAR(500) )";
+                    " stderr CHAR(500), " +
+                    " INPUT_STREAM BLOB , " +
+                    " OUTPUT_STREAM BLOB )";
 
             //string for creating FILE_TABLE
             String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
@@ -673,6 +679,23 @@ public class SQLiteJDBC {
         return retrievedItem;
     }
 
+    private static byte[] transformInputStreamToBytes(InputStream inputStream){
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[16384];
+
+        try {
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return buffer.toByteArray();
+    }
+
     public static String updateInputStreamItem(String tableName, String jobID, String itemName, InputStream itemValue) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -690,7 +713,7 @@ public class SQLiteJDBC {
 
             preparedStatement = connection.prepareStatement(commonUpdateString);
 
-            preparedStatement.setBinaryStream(1, itemValue);
+            preparedStatement.setBytes(1, transformInputStreamToBytes(itemValue));
             preparedStatement.setString(2, jobID);
 
             System.out.println("sql string: " + commonUpdateString);
@@ -722,7 +745,7 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME + "  jobID = " + jobId + "searching for " + "fileName");
+            System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME + "  jobID = " + jobId + "  searching for " + "fileName");
 
             preparedStatement = connection.prepareStatement(commonQueryString);
 
@@ -784,7 +807,7 @@ public class SQLiteJDBC {
     public static String retrieveItem(String tableName, String searchKey, String itemName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName);
+        System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + " searching for " + itemName);
 
         String commonQueryString = "SELECT * FROM " + tableName + " WHERE JOB_ID = ?";
 
@@ -794,7 +817,7 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName);
+            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + " searching for " + itemName);
 
             preparedStatement = connection.prepareStatement(commonQueryString);
 
@@ -858,7 +881,7 @@ public class SQLiteJDBC {
     public static InputStream retrieveInputStreamItem(String tableName, String searchKey, String itemName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName);
+        System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + " searching for " + itemName);
 
         String commonQueryString = "SELECT * FROM " + tableName + " WHERE JOB_ID = ?";
 
@@ -868,22 +891,40 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + "searching for " + itemName);
+            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + " searching for " + itemName);
 
             preparedStatement = connection.prepareStatement(commonQueryString);
 
             //preparedStatement.setString(1, itemName);
             preparedStatement.setString(1, searchKey);
-            System.out.println("sql string: " + preparedStatement);
+            System.out.println("sql string: " + preparedStatement.toString());
 
             ResultSet rs = preparedStatement.executeQuery();
-            retrievedItem = rs.getBinaryStream(itemName);
-            System.out.println("Retrieved item name : " + retrievedItem);
+
+            int size= 0;
+            if (rs != null)
+            {
+                rs.beforeFirst();
+                rs.last();
+                size = rs.getRow();
+            }
+
+            if (rs.next()) {
+                retrievedItem = rs.getBinaryStream(size);
+                System.out.println("Total retrieved item number : " + rs.getFetchSize());
+                //rs.deleteRow();
+            } else {
+                retrievedItem = null;
+            }
+
+            //retrievedItem = rs.getBinaryStream(itemName);
+            System.out.println("Retrieved item name : " + retrievedItem.toString());
             rs.close();
             preparedStatement.close();
             connection.close();
         } catch (Exception e) {
-            System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
+            System.err.println(" in retrieve input stream item : " );
+            e.printStackTrace();
         }
         System.out.println("Operation done successfully");
 
