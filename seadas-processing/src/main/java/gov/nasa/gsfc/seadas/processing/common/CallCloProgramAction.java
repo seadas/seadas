@@ -231,7 +231,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 processObserver.startAndWait();
                 processorModel.setExecutionLogMessage(ch.getExecutionErrorLog());
 
-                int exitCode = process.exitValue();
+                int exitCode = ocssw.getProcessExitValue(process);
 
                 pm.done();
                 SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",

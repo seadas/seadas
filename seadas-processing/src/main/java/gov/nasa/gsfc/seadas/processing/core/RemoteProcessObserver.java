@@ -165,6 +165,7 @@ public class RemoteProcessObserver extends ProcessObserver {
                     case STDOUT:
                         line = target.path("ocssw").path("retrieveProcessInputStreamLine").path(jobId).request().get(String.class);
                         System.out.println(" in progress monitor: " + type + "  " + line);
+                        break;
                     case STDERR:
                         line = target.path("ocssw").path("retrieveProcessErrorStreamLine").path(jobId).request().get(String.class);
                         System.out.println(" in progress monitor: " + type + "  " + line);

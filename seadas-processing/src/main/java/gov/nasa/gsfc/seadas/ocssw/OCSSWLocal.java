@@ -90,6 +90,11 @@ public class OCSSWLocal extends OCSSW {
     }
 
     @Override
+    public int getProcessExitValue(Process process) {
+        return process.exitValue();
+    }
+
+    @Override
     public Process execute(ParamList paramListl) {
         String[] programNameArray = {programName};
         commandArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, getCommandArrayParam(paramListl), commandArraySuffix);

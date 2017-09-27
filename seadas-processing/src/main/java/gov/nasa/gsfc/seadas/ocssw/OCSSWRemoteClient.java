@@ -46,6 +46,8 @@ public class OCSSWRemoteClient extends OCSSW {
     String ofileDir;
 
 
+    int processExitValue = 1;
+
     public OCSSWRemoteClient() {
         initialize();
     }
@@ -339,6 +341,7 @@ public class OCSSWRemoteClient extends OCSSW {
                     serverProcessStarted = true;
                 case PROCESS_STATUS_COMPLETED:
                     serverProcessStarted = true;
+                    processExitValue = 0;
             }
             try {
                 TimeUnit.SECONDS.sleep(1);
@@ -350,6 +353,11 @@ public class OCSSWRemoteClient extends OCSSW {
             System.out.println("process status after: " + processStatus);
         }
         return seadasProcess;
+    }
+
+    @Override
+    public int getProcessExitValue(Process process) {
+        return processExitValue;
     }
 
 

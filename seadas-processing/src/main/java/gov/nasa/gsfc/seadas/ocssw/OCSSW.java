@@ -94,6 +94,7 @@ public abstract class OCSSW {
     public abstract String[] getMissionSuites(String missionName, String programName);
 
     public abstract Process execute(ProcessorModel processorModel);
+    public abstract int getProcessExitValue(Process process);
 
     public abstract Process execute(ParamList paramList);
 
