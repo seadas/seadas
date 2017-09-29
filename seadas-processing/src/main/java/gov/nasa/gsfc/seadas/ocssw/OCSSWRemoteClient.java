@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.ocssw;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
@@ -14,10 +13,12 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 import javax.json.*;
+import javax.swing.event.SwingPropertyChangeSupport;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
@@ -46,8 +47,6 @@ public class OCSSWRemoteClient extends OCSSW {
     String ofileDir;
 
 
-    int processExitValue = 1;
-
     public OCSSWRemoteClient() {
         initialize();
     }
@@ -63,6 +62,7 @@ public class OCSSWRemoteClient extends OCSSW {
             target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
         }
     }
+
 
     @Override
     public void setProgramName(String programName) {
@@ -318,59 +318,68 @@ public class OCSSWRemoteClient extends OCSSW {
 
         String programName = processorModel.getProgramName();
 
-        if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
-            String parString = processorModel.getParamList().getParamString("\n");
-            File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
-            target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+        if (programName.equals(MLP_PROGRAM_NAME)) {
+            return executeMLP(processorModel);
+        } else {
+            if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
+                String parString = processorModel.getParamList().getParamString("\n");
+                File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
+                target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+            } else {
+                commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+                Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+                if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                    //Process.setExitValue(0);
+                }
+            }
+
+            boolean serverProcessStarted = false;
+
+            String processStatus = "-1";
+            while (!serverProcessStarted) {
+                switch (processStatus) {
+                    case PROCESS_STATUS_NONEXIST:
+                        serverProcessStarted = false;
+                        break;
+                    case PROCESS_STATUS_STARTED:
+                        serverProcessStarted = true;
+                        break;
+                    case PROCESS_STATUS_COMPLETED:
+                        serverProcessStarted = true;
+                }
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("process status before: " + processStatus);
+                processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+                System.out.println("process status after: " + processStatus);
+            }
+            return seadasProcess;
+        }
+    }
+
+
+    @Override
+    public void getOutputFiles(ProcessorModel processorModel) {
+
+        JsonObject commandArrayJsonObject = null;
+
+        if (programName.equals(MLP_PROGRAM_NAME)) {
+            JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
+            downloadMLPOutputFiles(outputFilesList);
         } else {
             commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
             Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
             if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                //Process.setExitValue(0);
+                downloadCommonFiles(commandArrayJsonObject);
             }
         }
-
-        boolean serverProcessStarted = false;
-
-        String processStatus = "-1";
-        while (!serverProcessStarted) {
-            switch (processStatus) {
-                case PROCESS_STATUS_NONEXIST:
-                    serverProcessStarted = false;
-                case PROCESS_STATUS_STARTED:
-                    serverProcessStarted = true;
-                case PROCESS_STATUS_COMPLETED:
-                    serverProcessStarted = true;
-                    processExitValue = 0;
-            }
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("process status before: " + processStatus);
-            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
-            System.out.println("process status after: " + processStatus);
-        }
-        return seadasProcess;
-    }
-
-    @Override
-    public int getProcessExitValue(Process process) {
-        return processExitValue;
     }
 
 
-    public void downloadFiles(String jobId, JsonObject commandArrayJsonObject) {
-        if ( programName.equals(MLP_PROGRAM_NAME)) {
-            JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
-            downloadMLPOutputFiles(outputFilesList);
-        } else {
-            downloadFiles(commandArrayJsonObject);
-        }
-    }
-
-    private void downloadFiles(JsonObject paramJsonObject) {
+    private void downloadCommonFiles(JsonObject paramJsonObject) {
         Set commandArrayKeys = paramJsonObject.keySet();
         String param;
         String ofileFullPathName, ofileName;
@@ -401,6 +410,39 @@ public class OCSSWRemoteClient extends OCSSW {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private Process executeMLP(ProcessorModel processorModel) {
+        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+        String parString = processorModel.getParamList().getParamString("\n");
+        File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
+        target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+
+
+        boolean serverProcessStarted = false;
+
+        String processStatus = "-1";
+        while (!serverProcessStarted) {
+            switch (processStatus) {
+                case PROCESS_STATUS_NONEXIST:
+                    serverProcessStarted = false;
+                    break;
+                case PROCESS_STATUS_STARTED:
+                    serverProcessStarted = true;
+                    break;
+                case PROCESS_STATUS_COMPLETED:
+                    serverProcessStarted = true;
+            }
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("process status before: " + processStatus);
+            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+            System.out.println("process status after: " + processStatus);
+        }
+        return seadasProcess;
     }
 
     private void downloadMLPOutputFiles(JsonObject paramJsonObject) {
