@@ -45,6 +45,9 @@ public class OCSSWRemoteClient extends OCSSW {
     boolean ifileUploadSuccess;
     String ofileName;
     String ofileDir;
+    String ifileDir;
+
+    ProcessorModel processorModel;
 
 
     public OCSSWRemoteClient() {
@@ -312,6 +315,9 @@ public class OCSSWRemoteClient extends OCSSW {
      */
     @Override
     public Process execute(ProcessorModel processorModel) {
+
+        this.processorModel = processorModel;
+
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = null;
@@ -446,6 +452,11 @@ public class OCSSWRemoteClient extends OCSSW {
     }
 
     private void downloadMLPOutputFiles(JsonObject paramJsonObject) {
+
+        if (ofileDir == null) {
+            ofileDir = ifileDir;
+        }
+
         Set commandArrayKeys = paramJsonObject.keySet();
         String param;
         String ofileFullPathName, ofileName;
@@ -511,6 +522,12 @@ public class OCSSWRemoteClient extends OCSSW {
                     }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
                     commandItem = option.getName() + "=" + option.getValue();
+                    if (option.getType().equals(ParamInfo.Type.OFILE)) {
+                        ofileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator) );
+                    }
+                    if (option.getType().equals(ParamInfo.Type.IFILE)) {
+                        ifileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator) );
+                    }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
                     if (option.getName() != null && option.getName().length() > 0) {
                         commandItem = option.getName();
@@ -568,10 +585,18 @@ public class OCSSWRemoteClient extends OCSSW {
                 key = st2.nextToken();
                 value = st2.nextToken();
                 if (new File(value).exists() && !new File(value).isDirectory()) {
+                    //if item is ifile
+                    if (key.equals(processorModel.getPrimaryInputFileOptionName())) {
+                        ifileDir = value.substring(0, value.lastIndexOf(File.separator) );
+                    }
                     uploadClientFile(value);
                     value = value.substring(value.lastIndexOf(File.separator) + 1);
-                } else if (key.equals(MLP_PAR_FILE_ODIR_KEY_NAME) && new File(value).isDirectory()) {
+
+                } else if ( key.equals(MLP_PAR_FILE_ODIR_KEY_NAME) && new File(value).isDirectory() ) {
                     ofileDir = value;
+                    //if item is ofile
+                } else if ( key.equals(processorModel.getPrimaryOutputFileOptionName()) ) {
+                    ofileDir = value.substring(0, value.lastIndexOf(File.separator) );
                 }
                 token = key + "=" + value;
             }
@@ -584,7 +609,6 @@ public class OCSSWRemoteClient extends OCSSW {
         String adjusted = newParString.replaceAll("(?m)^[ \t]*\r?\n", "");
         return adjusted;
     }
-
 
     protected File writeParFile(String parString) {
 
