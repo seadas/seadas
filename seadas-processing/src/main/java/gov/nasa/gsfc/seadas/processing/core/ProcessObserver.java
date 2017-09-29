@@ -26,6 +26,8 @@ public class ProcessObserver {
     protected final ProgressMonitor progressMonitor;
     protected final ArrayList<Handler> handlers;
 
+    private int processExitValue;
+
     /**
      * Constructor.
      *
@@ -38,6 +40,7 @@ public class ProcessObserver {
         this.processName = processName;
         this.progressMonitor = progressMonitor;
         this.handlers = new ArrayList<Handler>();
+        processExitValue = -1;
     }
 
     /**
@@ -80,6 +83,14 @@ public class ProcessObserver {
                 process.destroy();
             }
         }
+    }
+
+    public int getProcessExitValue() {
+        return processExitValue;
+    }
+
+    public void setProcessExitValue(int processExitValue) {
+        this.processExitValue = processExitValue;
     }
 
     /**
@@ -136,6 +147,7 @@ public class ProcessObserver {
             } finally {
                 reader.close();
             }
+            processExitValue = process.exitValue();
         }
 
         private void fireLineRead(String line) {
