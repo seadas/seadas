@@ -4,11 +4,10 @@ import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 
+import javax.swing.event.SwingPropertyChangeSupport;
 import javax.ws.rs.client.WebTarget;
-import java.io.BufferedReader;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient.PROCESS_STATUS_COMPLETED;
@@ -23,8 +22,7 @@ public class RemoteProcessObserver extends ProcessObserver {
     OCSSWInfo ocsswInfo;
     WebTarget target;
     private String jobId;
-    private boolean serverProcessCompleted = false;
-
+    private boolean serverProcessCompleted;
 
     /**
      * Constructor.
@@ -38,6 +36,8 @@ public class RemoteProcessObserver extends ProcessObserver {
         this.ocsswInfo = OCSSWInfo.getInstance();
         OCSSWClient ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
+        setProcessExitValue(-1);
+        serverProcessCompleted = false;
     }
 
 
@@ -179,6 +179,7 @@ public class RemoteProcessObserver extends ProcessObserver {
                     e.printStackTrace();
                 }
             }
+            setProcessExitValue(0);
         }
 
 
