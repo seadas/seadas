@@ -101,7 +101,9 @@ public abstract class OCSSW {
 
     public abstract Process execute(String programName, String[] commandArrayParams);
 
-    public abstract void getOutputFiles(ProcessorModel processorModel);
+    public void getOutputFiles(ProcessorModel processorModel) {
+
+    }
 
     public abstract String getOfileName(String ifileName);
 
