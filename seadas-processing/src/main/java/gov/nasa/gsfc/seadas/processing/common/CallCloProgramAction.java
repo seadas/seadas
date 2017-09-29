@@ -231,16 +231,18 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 processObserver.startAndWait();
                 processorModel.setExecutionLogMessage(ch.getExecutionErrorLog());
 
-                int exitCode = ocssw.getProcessExitValue(process);
+                int exitCode = processObserver.getProcessExitValue();
 
                 pm.done();
                 SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",
                         "Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + processorModel.getExecutionLogMessage());
-                if (exitCode != 0) {
-                    throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
+
+                if (exitCode != 0)
+                {
+                   throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
 
-                displayOutput(processorModel);
+
                 ocssw.setMonitorProgress(false);
                 return processorModel.getOfileName();
             }
@@ -249,6 +251,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected void done() {
                 try {
                     final String outputFileName = get();
+                    ocssw.getOutputFiles(processorModel);
+                    displayOutput(processorModel);
                     VisatApp.getApp().showInfoDialog(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? "" :
                             (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM) ? "" : ("Output written to:\n" + outputFileName))), null);
                     if (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM)) {
@@ -269,6 +273,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     displayMessage(programName, "execution exception: " + e.getMessage() + "\n" + processorModel.getExecutionLogMessage());
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
