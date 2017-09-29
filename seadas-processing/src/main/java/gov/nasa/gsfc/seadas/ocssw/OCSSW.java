@@ -94,13 +94,14 @@ public abstract class OCSSW {
     public abstract String[] getMissionSuites(String missionName, String programName);
 
     public abstract Process execute(ProcessorModel processorModel);
-    public abstract int getProcessExitValue(Process process);
 
     public abstract Process execute(ParamList paramList);
 
     public abstract Process execute(String[] commandArray);
 
     public abstract Process execute(String programName, String[] commandArrayParams);
+
+    public abstract void getOutputFiles(ProcessorModel processorModel);
 
     public abstract String getOfileName(String ifileName);
 
