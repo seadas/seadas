@@ -13,12 +13,10 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 import javax.json.*;
-import javax.swing.event.SwingPropertyChangeSupport;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
@@ -118,7 +116,7 @@ public class OCSSWRemoteClient extends OCSSW {
             @Override
             protected Void doInBackground(ProgressMonitor pm) throws Exception {
 
-                pm.beginTask("Uploading file '" + fileName + "' to the remote server ", 6);
+                pm.beginTask("Uploading file '" + fileName + "' to the remote server ", 10);
 
                 pm.worked(1);
                 final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(fileName));
@@ -159,22 +157,35 @@ public class OCSSWRemoteClient extends OCSSW {
 
         File file = new File(fileName);
         StringBuilder sb = new StringBuilder();
-        Scanner input = null;
+        Scanner scanner = null;
+        ArrayList<String> fileList = new ArrayList<>();
+
         try {
-            input = new Scanner(file);
+            scanner = new Scanner(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        int fileCount = 0;
+        while (scanner.hasNextLine()) {
+            fileCount++;
+            fileList.add(scanner.nextLine());
+        }
+        scanner.close();
+
+        pm.beginTask("Uploading " + fileCount + " files to the remote server ...", fileCount);
+
         FileDataBodyPart fileDataBodyPart;
         MultiPart multiPart;
         Response response;
-        String nextFileName;
+
         boolean fileUploadSuccess = true;
 
         int numberOfTasksWorked = 1;
-        while (input.hasNext()) {
-            nextFileName = input.nextLine();
-            pm.setTaskName("Uploading " + nextFileName);
+
+        for (String nextFileName : fileList) {
+
+            pm.setSubTaskName("Uploading " + nextFileName + " to the remote server ...");
 
             fileDataBodyPart = new FileDataBodyPart("file", new File(nextFileName));
             multiPart = new FormDataMultiPart()
@@ -191,7 +202,7 @@ public class OCSSWRemoteClient extends OCSSW {
         }
         String fileNames = sb.toString();
 
-        input.close();
+
         if (fileUploadSuccess) {
             return fileNames;
         } else {
@@ -370,18 +381,30 @@ public class OCSSWRemoteClient extends OCSSW {
     @Override
     public void getOutputFiles(ProcessorModel processorModel) {
 
-        JsonObject commandArrayJsonObject = null;
+        VisatApp visatApp = VisatApp.getApp();
 
-        if (programName.equals(MLP_PROGRAM_NAME)) {
-            JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
-            downloadMLPOutputFiles(outputFilesList);
-        } else {
-            commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
-            Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
-            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                downloadCommonFiles(commandArrayJsonObject);
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                "OCSSW Remote Server File Upload") {
+
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
+
+                JsonObject commandArrayJsonObject = null;
+
+                if (programName.equals(MLP_PROGRAM_NAME)) {
+                    JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
+                    downloadMLPOutputFiles(outputFilesList, pm);
+                } else {
+                    commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+                    Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+                    if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                        downloadCommonFiles(commandArrayJsonObject);
+                    }
+                }
+                return null;
             }
-        }
+        };
+        pmSwingWorker.executeWithBlocking();
     }
 
 
@@ -451,11 +474,14 @@ public class OCSSWRemoteClient extends OCSSW {
         return seadasProcess;
     }
 
-    private void downloadMLPOutputFiles(JsonObject paramJsonObject) {
+    private void downloadMLPOutputFiles(JsonObject paramJsonObject, ProgressMonitor pm) {
 
         if (ofileDir == null) {
             ofileDir = ifileDir;
         }
+
+        pm.beginTask("Downloading output files from the remote server to " + ofileDir, paramJsonObject.size());
+        pm.worked(1);
 
         Set commandArrayKeys = paramJsonObject.keySet();
         String param;
@@ -465,6 +491,9 @@ public class OCSSWRemoteClient extends OCSSW {
             int i = 0;
             String[] commandArray = new String[commandArrayKeys.size() + 1];
             commandArray[i++] = programName;
+
+            int numberOfTasksWorked = 1;
+
             for (Object element : array) {
                 String elementName = (String) element;
                 param = paramJsonObject.getString((String) element);
@@ -479,10 +508,14 @@ public class OCSSWRemoteClient extends OCSSW {
                         ofileFullPathName = param;
                     }
                     ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
+
+                    pm.setSubTaskName("Downloading file '" + ofileName + " to " + ofileDir);
+
                     Response response = target.path("fileServices").path("downloadMLPOutputFile").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
                     ofileFullPathName = ofileDir + File.separator + ofileName;
                     SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
+                    pm.worked(numberOfTasksWorked++);
                 }
             }
         } catch (Exception e) {
@@ -523,10 +556,10 @@ public class OCSSWRemoteClient extends OCSSW {
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
                     commandItem = option.getName() + "=" + option.getValue();
                     if (option.getType().equals(ParamInfo.Type.OFILE)) {
-                        ofileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator) );
+                        ofileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
                     }
                     if (option.getType().equals(ParamInfo.Type.IFILE)) {
-                        ifileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator) );
+                        ifileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
                     }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
                     if (option.getName() != null && option.getName().length() > 0) {
@@ -587,16 +620,16 @@ public class OCSSWRemoteClient extends OCSSW {
                 if (new File(value).exists() && !new File(value).isDirectory()) {
                     //if item is ifile
                     if (key.equals(processorModel.getPrimaryInputFileOptionName())) {
-                        ifileDir = value.substring(0, value.lastIndexOf(File.separator) );
+                        ifileDir = value.substring(0, value.lastIndexOf(File.separator));
                     }
                     uploadClientFile(value);
                     value = value.substring(value.lastIndexOf(File.separator) + 1);
 
-                } else if ( key.equals(MLP_PAR_FILE_ODIR_KEY_NAME) && new File(value).isDirectory() ) {
+                } else if (key.equals(MLP_PAR_FILE_ODIR_KEY_NAME) && new File(value).isDirectory()) {
                     ofileDir = value;
                     //if item is ofile
-                } else if ( key.equals(processorModel.getPrimaryOutputFileOptionName()) ) {
-                    ofileDir = value.substring(0, value.lastIndexOf(File.separator) );
+                } else if (key.equals(processorModel.getPrimaryOutputFileOptionName())) {
+                    ofileDir = value.substring(0, value.lastIndexOf(File.separator));
                 }
                 token = key + "=" + value;
             }
