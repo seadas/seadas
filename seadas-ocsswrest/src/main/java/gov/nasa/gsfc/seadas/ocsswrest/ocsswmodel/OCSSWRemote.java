@@ -111,10 +111,10 @@ public class OCSSWRemote {
                         StringTokenizer st = new StringTokenizer(commandArrayElement, "=");
                         String paramName = st.nextToken();
                         String paramValue = st.nextToken();
-                        commandArrayElement = paramName + "=" + serverWorkingDir + paramValue.substring(paramValue.lastIndexOf(File.separator));
+                        commandArrayElement = paramName + "=" + serverWorkingDir + File.separator + jobId + File.separator + paramValue.substring(paramValue.lastIndexOf(File.separator) + 1);
 
                     } else {
-                        commandArrayElement = serverWorkingDir + commandArrayElement.substring(commandArrayElement.lastIndexOf(File.separator));
+                        commandArrayElement = serverWorkingDir + File.separator + jobId + File.separator + commandArrayElement.substring(commandArrayElement.lastIndexOf(File.separator) + 1);
                     }
                 }
                 System.out.println("command array element = " + commandArrayElement);
@@ -145,10 +145,10 @@ public class OCSSWRemote {
                         StringTokenizer st = new StringTokenizer(commandArrayElement, "=");
                         String paramName = st.nextToken();
                         String paramValue = st.nextToken();
-                        commandArrayElement = paramName + "=" + serverWorkingDir + paramValue.substring(paramValue.lastIndexOf(File.separator));
+                        commandArrayElement = paramName + "=" + serverWorkingDir + File.separator + jobId + File.separator + paramValue.substring(paramValue.lastIndexOf(File.separator) + 1);
 
                     } else {
-                        commandArrayElement = serverWorkingDir + commandArrayElement.substring(commandArrayElement.lastIndexOf(File.separator));
+                        commandArrayElement = serverWorkingDir + File.separator + jobId + File.separator + commandArrayElement.substring(commandArrayElement.lastIndexOf(File.separator) + 1);
                     }
                 }
                 System.out.println("command array element = " + commandArrayElement);
@@ -196,7 +196,7 @@ public class OCSSWRemote {
         File processStdoutFile = new File(processStdoutFileName);
         InputStream processStdoutStream = null;
         try {
-             processStdoutStream = new FileInputStream(processStdoutFile);
+            processStdoutStream = new FileInputStream(processStdoutFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -227,7 +227,7 @@ public class OCSSWRemote {
         String fileTypeString;
         boolean isOdirdefined = true;
 
-        int odirStringPositioninParFile = 6 ;
+        int odirStringPositioninParFile = 6;
 
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String mlpDir = workingFileDir + File.separator + jobId;
@@ -383,7 +383,7 @@ public class OCSSWRemote {
                     sb.append(item + " ");
                 }
 
-                 System.out.println("command array: " + sb.toString());
+                System.out.println("command array: " + sb.toString());
                 ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
                 Map<String, String> env = processBuilder.environment();
 
