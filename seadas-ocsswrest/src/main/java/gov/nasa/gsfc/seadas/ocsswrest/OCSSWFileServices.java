@@ -76,7 +76,7 @@ public class OCSSWFileServices {
             File newFile = new File(currentWorkingDir);
             Files.createDirectories(newFile.toPath());
             boolean isDirCreated = new File(currentWorkingDir).isDirectory();
-            String ifileFullPathName = currentWorkingDir + File.separator + fileName;
+            String ifileFullPathName = currentWorkingDir + File.separator + jobId + File.separator + fileName;
 
             System.out.println(ifileFullPathName + " is created " + isDirCreated);
             System.out.println(System.getProperty("user.home"));
@@ -124,7 +124,7 @@ public class OCSSWFileServices {
             File newFile = new File(currentWorkingDir);
             Files.createDirectories(newFile.toPath());
             boolean isDirCreated = new File(currentWorkingDir).isDirectory();
-            String clientfileFullPathName = currentWorkingDir + File.separator + fileName;
+            String clientfileFullPathName = currentWorkingDir + File.separator + jobId + File.separator + fileName;
 
             System.out.println(clientfileFullPathName + " is created " + isDirCreated);
             System.out.println(System.getProperty("user.home"));
