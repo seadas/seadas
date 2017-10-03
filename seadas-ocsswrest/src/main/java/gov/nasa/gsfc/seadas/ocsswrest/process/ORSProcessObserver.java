@@ -107,6 +107,11 @@ public class ORSProcessObserver {
             try {
 
                 // write the inputStream to a FileOutputStream
+                File currentFile = new File(fileName);
+                if ( !currentFile.getParentFile().exists() ) {
+                    currentFile.getParentFile().mkdir();
+                }
+
                 outputStream = new FileOutputStream(new File(fileName), true);
 
                 int read = 0;
