@@ -93,6 +93,7 @@ public class OCSSWServices {
         Response.Status respStatus = Response.Status.OK;
         System.out.println("client : " + clientId );
         SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.CLIENT_ID_NAME.getFieldName(), clientId);
+        //todo: working dir is set to user.home for now. Get it from the config file
         String workingDirPath = System.getProperty("user.home") + File.separator + clientId;
         System.out.println("client and working directory: " + clientId + "   " + workingDirPath);
         SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName(), workingDirPath);
