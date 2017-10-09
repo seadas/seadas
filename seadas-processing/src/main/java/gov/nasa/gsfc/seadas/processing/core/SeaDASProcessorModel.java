@@ -12,7 +12,7 @@ import java.io.File;
  * Time: 1:41 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface L2genDataProcessorModel {
+public interface SeaDASProcessorModel {
     public String getParamValue(String name);
     public void setParamValue(String name, String value);
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
