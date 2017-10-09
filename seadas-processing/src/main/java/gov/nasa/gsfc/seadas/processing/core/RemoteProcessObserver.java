@@ -4,10 +4,10 @@ import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 
-import javax.swing.event.SwingPropertyChangeSupport;
 import javax.ws.rs.client.WebTarget;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient.PROCESS_STATUS_COMPLETED;
@@ -131,57 +131,37 @@ public class RemoteProcessObserver extends ProcessObserver {
             }
         }
 
-        protected void readNew() throws IOException {
-            OCSSWClient ocsswClient = new OCSSWClient();
-            WebTarget target = ocsswClient.getOcsswWebTarget();
-
-            String processStatus = "-1";
-
-            while (!isServerProcessCompleted()) {
-                switch (processStatus) {
-                    case PROCESS_STATUS_NONEXIST:
-                        setServerProcessCompleted(false);
-                    case PROCESS_STATUS_STARTED:
-                        setServerProcessCompleted(false);
-                    case PROCESS_STATUS_COMPLETED:
-                        setServerProcessCompleted(true);
-                }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
-                System.out.println("process status in progress monitor: " + processStatus);
-            }
-        }
-
         private void read() throws IOException {
-            System.out.println("reading from process input stream ...");
-            String processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
-            String line = null;
-            while (!processStatus.equals(PROCESS_STATUS_COMPLETED)) {
-                switch (type) {
-                    case STDOUT:
-                        line = target.path("ocssw").path("retrieveProcessInputStreamLine").path(jobId).request().get(String.class);
-                        System.out.println(" in progress monitor: " + type + "  " + line);
-                        break;
-                    case STDERR:
-                        line = target.path("ocssw").path("retrieveProcessErrorStreamLine").path(jobId).request().get(String.class);
-                        System.out.println(" in progress monitor: " + type + "  " + line);
+            final InputStream inputStream = type.equals("stdout") ? readProcessStream(ocsswInfo.getProcessInputStreamPort()) : readProcessStream(ocsswInfo.getProcessErrorStreamPort());
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    fireLineRead(line);
                 }
-
-                processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
-                fireLineRead(line);
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            } finally {
+                reader.close();
             }
             setProcessExitValue(0);
         }
 
+
+        private InputStream readProcessStream(int portNumber) {
+            String hostName = null;
+            InputStream inputStream = null;
+            try {
+                Socket echoSocket = new Socket(hostName, portNumber);
+                inputStream = echoSocket.getInputStream();
+            } catch (UnknownHostException e) {
+                System.err.println("Don't know about host " + hostName);
+                System.exit(1);
+            } catch (IOException e) {
+                System.err.println("Couldn't get I/O for the connection to " +
+                        hostName);
+                System.exit(1);
+            }
+            return inputStream;
+        }
 
         protected void fireLineRead(String line) {
             for (ProcessObserver.Handler handler : handlers) {
