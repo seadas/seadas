@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileSelector;
 import org.esa.beam.visat.VisatApp;
@@ -19,13 +19,13 @@ import java.beans.PropertyChangeListener;
  */
 public class L2genGeofileSelector {
 
-    final private L2genDataProcessorModel l2genDataProcessorModel;
+    final private SeaDASProcessorModel seaDASProcessorModel;
 
     final private FileSelector fileSelector;
     private boolean controlHandlerEnabled = true;
 
-    public L2genGeofileSelector(L2genDataProcessorModel  l2genDataProcessorModel) {
-        this.l2genDataProcessorModel = l2genDataProcessorModel;
+    public L2genGeofileSelector(SeaDASProcessorModel seaDASProcessorModel) {
+        this.seaDASProcessorModel = seaDASProcessorModel;
 
         fileSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.IFILE, L2genData.GEOFILE);
         addControlListeners();
@@ -37,27 +37,27 @@ public class L2genGeofileSelector {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (isControlHandlerEnabled()) {
-                    l2genDataProcessorModel.setParamValue(L2genData.GEOFILE, fileSelector.getFileName());
+                    seaDASProcessorModel.setParamValue(L2genData.GEOFILE, fileSelector.getFileName());
                 }
             }
         });
     }
 
     private void addEventListeners() {
-        l2genDataProcessorModel.addPropertyChangeListener(L2genData.GEOFILE, new PropertyChangeListener() {
+        seaDASProcessorModel.addPropertyChangeListener(L2genData.GEOFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 disableControlHandler();
-                fileSelector.setFilename(l2genDataProcessorModel.getParamValue(L2genData.GEOFILE));
+                fileSelector.setFilename(seaDASProcessorModel.getParamValue(L2genData.GEOFILE));
                 enableControlHandler();
             }
         });
 
-        l2genDataProcessorModel.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
+        seaDASProcessorModel.addPropertyChangeListener(L2genData.IFILE, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                fileSelector.setEnabled(l2genDataProcessorModel.isValidIfile() && l2genDataProcessorModel.isGeofileRequired());
-                fileSelector.setVisible(l2genDataProcessorModel.isValidIfile() && l2genDataProcessorModel.isGeofileRequired());
+                fileSelector.setEnabled(seaDASProcessorModel.isValidIfile() && seaDASProcessorModel.isGeofileRequired());
+                fileSelector.setVisible(seaDASProcessorModel.isValidIfile() && seaDASProcessorModel.isGeofileRequired());
             }
         });
     }
