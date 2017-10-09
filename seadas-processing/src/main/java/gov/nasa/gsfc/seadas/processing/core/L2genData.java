@@ -1692,12 +1692,13 @@ public class L2genData implements L2genDataProcessorModel {
                 processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
 
                 try {
-                    Process p = ocssw.execute(processorModel);
-                    p.waitFor();
+                    Process p = ocssw.executeSimple(processorModel);
+                    ocssw.waitForProcess();
 
-                    if (p.exitValue() != 0) {
+                    if (ocssw.getProcessExitValue() != 0) {
                         throw new IOException(getGuiName() + " returned nonzero exitvalue");
                     }
+                    ocssw.getOutputFiles(processorModel);
 
                     if (!xmlFile.exists()) {
                         return null;
@@ -1706,8 +1707,6 @@ public class L2genData implements L2genDataProcessorModel {
                     return new FileInputStream(xmlFile);
                 } catch (IOException e) {
                     throw new IOException("Problem creating product XML file: " + e.getMessage());
-                } catch (InterruptedException e) {
-                    throw new IOException("Problem waiting for l2gen for Product XML file: " + e.getMessage());
                 }
             }
         }
@@ -1767,11 +1766,13 @@ public class L2genData implements L2genDataProcessorModel {
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            Process p = ocssw.execute(processorModel.getParamList());//processorModel.executeProcess();
-            p.waitFor();
-            if (p.exitValue() != 0) {
+            Process p = ocssw.executeSimple(processorModel);
+            ocssw.waitForProcess();
+            if (ocssw.getProcessExitValue() != 0) {
                 throw new IOException("l2gen failed to run");
             }
+
+            ocssw.getOutputFiles(processorModel);
 
             if (!xmlFile.exists()) {
                 return null;
@@ -1780,8 +1781,6 @@ public class L2genData implements L2genDataProcessorModel {
             return new FileInputStream(xmlFile);
         } catch (IOException e) {
             throw new IOException("problem creating Parameter XML file: " + e.getMessage());
-        } catch (InterruptedException e) {
-            throw new IOException("problem waiting for l2gen for Parameter XML file: " + e.getMessage());
         }
     }
 
