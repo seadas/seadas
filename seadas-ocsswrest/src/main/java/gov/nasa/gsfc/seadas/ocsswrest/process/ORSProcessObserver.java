@@ -1,8 +1,12 @@
 package gov.nasa.gsfc.seadas.ocsswrest.process;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWConfig;
 
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Created by aabduraz on 3/22/16.
@@ -18,11 +22,9 @@ public class ORSProcessObserver {
     private final String processName;
     private final String jobId;
 
-    private String processMonitorStdoutTableName;
-    private String processMonitorStderrTableName;
+    private int processInputStreamPortNumber;
+    private int processErrorStreamPortNumber;
 
-    private String processInputStreamFileName;
-    private String processErrorStreamFileName;
 
     /**
      * Constructor.
@@ -34,9 +36,8 @@ public class ORSProcessObserver {
         this.process = process;
         this.processName = processName;
         this.jobId = jobId;
-        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        processInputStreamFileName = serverWorkingDir + File.separator + jobId + File.separator + PROCESS_INPUT_STREAM_FILE_NAME;
-        processErrorStreamFileName = serverWorkingDir + File.separator + jobId + File.separator + PROCESS_ERROR_STREAM_FILE_NAME;
+        processInputStreamPortNumber = new Integer(System.getProperty(OCSSWConfig.OCSSW_PROCESS_INPUTSTREAM_SOCKET_PORT_NUMBER_PROPERTY)).intValue();
+        processErrorStreamPortNumber = new Integer(System.getProperty(OCSSWConfig.OCSSW_PROCESS_ERRORSTREAM_SOCKET_PORT_NUMBER_PROPERTY)).intValue();
         SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
     }
 
@@ -61,6 +62,7 @@ public class ORSProcessObserver {
                 //      * 1. just leave, and let the process be unattended (current impl.)
                 //        2. destroy the process
                 //        3. throw a checked ProgressObserverException
+                e.printStackTrace();
                 return;
             }
         }
@@ -79,74 +81,39 @@ public class ORSProcessObserver {
             try {
                 read();
             } catch (IOException e) {
-                // cannot be handled
+                e.printStackTrace();
             }
         }
 
         private void read() throws IOException {
 
-            System.out.println("reading from process input stream ...");
-            InputStream inputStream = null; // = type.equals("stdout") ? process.getInputStream() : process.getErrorStream();
-            switch (type) {
-                case STDOUT:
-                    inputStream = process.getInputStream();
-                    //SQLiteJDBC.updateInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.INPUTSTREAM.getFieldName(), inputStream);
-                    writeProcessStreamToFile(inputStream, processInputStreamFileName);
-                case STDERR:
-                    inputStream = process.getErrorStream();
-                    //SQLiteJDBC.updateInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.ERRORSTREAM.getFieldName(), inputStream);
-                    writeProcessStreamToFile(inputStream, processErrorStreamFileName);
-            }
+            InputStream inputStream = type.equals("stdout") ? process.getInputStream() : process.getErrorStream();
+            writeProcessStreamToSocket(inputStream, type.equals("stdout") ? processInputStreamPortNumber :processErrorStreamPortNumber);
         }
 
-
-        private void writeProcessStreamToFile(InputStream inputStream, String fileName) {
-
-            OutputStream outputStream = null;
-
-            try {
-
-                // write the inputStream to a FileOutputStream
-                File currentFile = new File(fileName);
-                if ( !currentFile.getParentFile().exists() ) {
-                    currentFile.getParentFile().mkdir();
+        private void writeProcessStreamToSocket(InputStream inputStream, int portNumber) {
+            try (
+                    ServerSocket serverSocket =
+                            new ServerSocket(portNumber);
+                    Socket clientSocket = serverSocket.accept();
+                    PrintWriter out =
+                            new PrintWriter(clientSocket.getOutputStream(), true);
+                    final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            ) {
+                String inputLine;
+                while ((inputLine = reader.readLine()) != null) {
+                    out.println(inputLine);
                 }
-
-                outputStream = new FileOutputStream(new File(fileName), true);
-
-                int read = 0;
-                byte[] bytes = new byte[1024];
-
-                while ((read = inputStream.read(bytes)) != -1) {
-                    outputStream.write(bytes, 0, read);
-                }
-
                 if (type.equals(STDOUT)) {
                     SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
                 }
-                System.out.println("Appended process input stream in " + fileName);
-
             } catch (IOException e) {
+                System.out.println("Exception caught when trying to listen on port "
+                        + portNumber + " or listening for a connection");
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (outputStream != null) {
-                    try {
-                        // outputStream.flush();
-                        outputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }
     }
-
-
 }
