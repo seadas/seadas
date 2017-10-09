@@ -32,6 +32,8 @@ public class OCSSWInfo {
     public static final String OCSSW_LOCATION_LOCAL ="local";
     public static final String OCSSW_LOCATION_VIRTUAL_MACHINE ="virtualMachine";
     public static final String OCSSW_LOCATION_REMOTE_SERVER ="remoteServer";
+    public static final String OCSSW_PROCESS_INPUT_STREAM_PORT = "ocssw.processInputStreamPort";
+    public static final String OCSSW_PROCESS_ERROR_STREAM_PORT = "ocssw.processErrorStreamPort";
     private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
     public static String OCSSW_BIN_DIR_SUFFIX = "run" + File.separator + "bin" + File.separator + getOSName();
@@ -40,6 +42,9 @@ public class OCSSWInfo {
 
     public static String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw.py";
     public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
+
+    private  int processInputStreamPort;
+    private int processErrorStreamPort;
 
     private static boolean ocsswExist;
     private static String ocsswRoot;
@@ -74,6 +79,22 @@ public class OCSSWInfo {
         }
 
         return ocsswInfo;
+    }
+
+    public  int getProcessInputStreamPort() {
+        return processInputStreamPort;
+    }
+
+    public  void setProcessInputStreamPort(int processInputStreamPort) {
+        processInputStreamPort = processInputStreamPort;
+    }
+
+    public  int getProcessErrorStreamPort() {
+        return processErrorStreamPort;
+    }
+
+    public  void setProcessErrorStreamPort(int processErrorStreamPort) {
+        processErrorStreamPort = processErrorStreamPort;
     }
 
     public  boolean isOCSSWExist() {
@@ -164,6 +185,9 @@ public class OCSSWInfo {
             ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
 
         }
+
+        processInputStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_INPUT_STREAM_PORT)).intValue();
+        processErrorStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_ERROR_STREAM_PORT)).intValue();
         return ocsswExist;
     }
 
