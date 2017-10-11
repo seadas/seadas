@@ -52,7 +52,24 @@ public class OCSSWFileServices {
         return OCSSWServerPropertyValues.getServerSharedDirName();
     }
 
+    @GET
+    @Path("/fileVerification/{jobId}/{fileName}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response fileVerification(@PathParam("jobId") String jobId,
+                                         @PathParam("fileName") String fileName) {
+        String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        String fileNameOnServer = workingFileDir + File.separator + jobId + File.separator + fileName;
+        File file = new File(fileNameOnServer);
 
+        Response.Status respStatus;
+
+        if ( new File(fileNameOnServer).exists() ) {
+           respStatus = Response.Status.FOUND;
+        } else {
+            respStatus = Response.Status.NOT_FOUND;
+        }
+        return Response.status(respStatus).build();
+    }
 
    /**
      * Method for uploading a file.
@@ -76,7 +93,7 @@ public class OCSSWFileServices {
             File newFile = new File(currentWorkingDir);
             Files.createDirectories(newFile.toPath());
             boolean isDirCreated = new File(currentWorkingDir).isDirectory();
-            String ifileFullPathName = currentWorkingDir + File.separator + jobId + File.separator + fileName;
+            String ifileFullPathName = currentWorkingDir + File.separator + fileName;
 
             System.out.println(ifileFullPathName + " is created " + isDirCreated);
             System.out.println(System.getProperty("user.home"));
@@ -124,7 +141,7 @@ public class OCSSWFileServices {
             File newFile = new File(currentWorkingDir);
             Files.createDirectories(newFile.toPath());
             boolean isDirCreated = new File(currentWorkingDir).isDirectory();
-            String clientfileFullPathName = currentWorkingDir + File.separator + jobId + File.separator + fileName;
+            String clientfileFullPathName = currentWorkingDir + File.separator  + fileName;
 
             System.out.println(clientfileFullPathName + " is created " + isDirCreated);
             System.out.println(System.getProperty("user.home"));
@@ -282,7 +299,7 @@ public class OCSSWFileServices {
     public Response downloadFileOnDemand(@PathParam("jobId") String jobId,
                                          @PathParam("ofileName") String clientOfileName) {
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String ofileName = workingFileDir + File.separator + clientOfileName;
+        String ofileName = workingFileDir + File.separator + jobId + File.separator + clientOfileName;
         File file = new File(ofileName);
         StreamingOutput fileStream = new StreamingOutput() {
             @Override
