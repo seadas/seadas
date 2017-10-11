@@ -26,7 +26,7 @@ import java.util.logging.Level;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class L2genData implements L2genDataProcessorModel {
+public class L2genData implements SeaDASProcessorModel {
 
     public static final String OPER_DIR = "l2gen";
     public static final String CANCEL = "cancel";
@@ -43,6 +43,21 @@ public class L2genData implements L2genDataProcessorModel {
         RESOURCES
     }
 
+    public static enum ImplicitInputFileExtensions {
+        L2GEN("L1B_HKM, L1B_QKM, L1B_LAC.anc"),
+        L3GEN("L1B_HKM, L1B_QKM, L1B_LAC.anc"),
+        L2GEN_AQUARIUS("L1B_HKM, L1B_QKM, L1B_LAC.anc");
+
+        String fileExtensions;
+
+        ImplicitInputFileExtensions(String fieldName) {
+            this.fileExtensions = fieldName;
+        }
+
+        public String getFileExtensions() {
+            return fileExtensions;
+        }
+    }
 
     private static final String
             GUI_NAME = "l2gen",
@@ -1245,7 +1260,7 @@ public class L2genData implements L2genDataProcessorModel {
 
         String currIfile = getParamValue(IFILE);
         String currSuite = getParamValue(SUITE);
-        if(suiteValue == null) {
+        if (suiteValue == null) {
             suiteValue = currSuite;
         }
         final String newSuite = suiteValue;
@@ -1337,7 +1352,7 @@ public class L2genData implements L2genDataProcessorModel {
 
 
             String progName;
-            if(mode == Mode.L3GEN) {
+            if (mode == Mode.L3GEN) {
                 progName = "l3gen";
             } else {
                 progName = "l2gen";
@@ -1349,7 +1364,7 @@ public class L2genData implements L2genDataProcessorModel {
                 setParamValue(OFILE, oFile.getAbsolutePath());
             }
 
-            if(mode != Mode.L3GEN) {
+            if (mode != Mode.L3GEN) {
                 if (iFileInfo.isGeofileRequired()) {
                     FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo, ocssw);
                     if (geoFileInfo != null) {
@@ -1359,8 +1374,8 @@ public class L2genData implements L2genDataProcessorModel {
                     setParamValueAndDefault(GEOFILE, null);
                 }
             } else {
-				setParamValueAndDefault(GEOFILE, null);
-			}
+                setParamValueAndDefault(GEOFILE, null);
+            }
         } else {
             setParamToDefaults(OFILE);
             setParamValueAndDefault(GEOFILE, null);
@@ -1516,43 +1531,6 @@ public class L2genData implements L2genDataProcessorModel {
 
     }
 
-//    public void setAncillaryFiles() {
-//
-//        if (!isValidIfile()) {
-//            System.out.println("ERROR - Can not run getanc.py without a valid ifile.");
-//            return;
-//        }
-//
-//        // get the ifile
-//        String ifile = getParamValue(getParamInfo(IFILE));
-//        StringBuilder ancillaryFiles = new StringBuilder("");
-//
-//        ProcessorModel processorModel = new ProcessorModel("getanc.py");
-//        processorModel.setAcceptsParFile(false);
-//        processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, 1);
-//
-//        try {
-//            Process p = OCSSWRunnerOld.execute(processorModel.getProgramCmdArray(), processorModel.getIFileDir()); //processorModel.executeProcess();
-//            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//
-//            String line = stdInput.readLine();
-//            while (line != null) {
-//                if (line.contains("=")) {
-//                    ancillaryFiles.append(line);
-//                    ancillaryFiles.append("\n");
-//                }
-//                line = stdInput.readLine();
-//            }
-//        } catch (IOException e) {
-//            System.out.println("ERROR - Problem running getanc.py");
-//            System.out.println(e.getMessage());
-//            return;
-//        }
-//
-//        setParString(ancillaryFiles.toString(), true, true);
-//    }
-//
-
     private void debug(String string) {
 
         //  System.out.println(string);
@@ -1680,7 +1658,7 @@ public class L2genData implements L2genDataProcessorModel {
         } else if (source == Source.L2GEN) {
             if (!xmlFile.exists() || overwrite) {
                 String executable = getGuiName();
-            //    String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+                //    String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
 
                 if (executable.equals("l3gen")) {
                     executable = "l2gen";
@@ -1750,7 +1728,7 @@ public class L2genData implements L2genDataProcessorModel {
         xmlFile = new File(l2genDir, getParamInfoXml());
 
         String executable = getGuiName();
-       // String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+        // String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
         if (executable.equals("l3gen")) {
             executable = "l2gen";
         }
@@ -1975,10 +1953,25 @@ public class L2genData implements L2genDataProcessorModel {
 
     public ProcessorModel getProcessorModel() {
         processorModel.setReadyToRun(isValidIfile());
+        processorModel.setImplicitInputFileExtensions(getImplicitInputFileExtensions());
         return processorModel;
     }
 
     public void updateParamValues(File selectedFile) {
+
+    }
+
+    @Override
+    public String getImplicitInputFileExtensions() {
+
+        switch (mode) {
+            case L2GEN_AQUARIUS:
+                return ImplicitInputFileExtensions.L2GEN_AQUARIUS.getFileExtensions();
+            case L3GEN:
+                return ImplicitInputFileExtensions.L3GEN.getFileExtensions();
+            default:
+                return ImplicitInputFileExtensions.L2GEN.getFileExtensions();
+        }
 
     }
 
