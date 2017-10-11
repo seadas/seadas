@@ -7,6 +7,7 @@ import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
 import org.esa.beam.visat.VisatApp;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -33,11 +34,18 @@ public class OCSSWRemoteClient extends OCSSW {
     public static final String MLP_PAR_FILE_ODIR_KEY_NAME = "odir";
 
 
-    public static final String PROCESS_STATUS_NONEXIST = "-1";
-    public static final String PROCESS_STATUS_STARTED = "0";
-    public static final String PROCESS_STATUS_COMPLETED = "1";
+    public static final String PROCESS_STATUS_NONEXIST = "-100";
+    public static final String PROCESS_STATUS_STARTED = "-1";
+    public static final String PROCESS_STATUS_COMPLETED = "0";
+    public static final String PROCESS_STATUS_FAILED = "1";
 
+    public static final String PROGRAMS_NEED_ADDITIONAL_FILES = "l2gen,l3gen,l2gen_aquarius";
+
+    public static final String ADDITIONAL_FILE_EXTENSIONS = "L1B_HKM, L1B_QKM, L1B_LAC.anc";
+
+    OCSSWClient ocsswClient;
     WebTarget target;
+
     String jobId;
     String clientId;
     boolean ifileUploadSuccess;
@@ -53,15 +61,14 @@ public class OCSSWRemoteClient extends OCSSW {
     }
 
     private void initialize() {
-//        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY, "localhost");
-//        String remoteServerPortNumber = RuntimeContext.getConfig().getContextProperty(OCSSW_SERVER_PORT_PROPERTY, OCSSW_SERVER_PORT_NUMBER);
-        OCSSWClient ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
+        ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
         if (ocsswInfo.isOcsswExist()) {
             jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
             clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
             target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
         }
+        setOfileNameFound(false);
     }
 
 
@@ -219,6 +226,12 @@ public class OCSSWRemoteClient extends OCSSW {
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
         }
+
+        if (isOfileNameFound()) {
+            return ofileName;
+        }
+
+
         this.setIfileName(ifileName);
 
         if (ifileUploadSuccess) {
@@ -228,8 +241,10 @@ public class OCSSWRemoteClient extends OCSSW {
             fileType = jsonObject.getString("fileType");
             updateProgramName(jsonObject.getString("programName"));
             ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
+            setOfileNameFound(true);
             return ofileName;
         } else {
+            setOfileNameFound(false);
             return null;
         }
 
@@ -241,6 +256,11 @@ public class OCSSWRemoteClient extends OCSSW {
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
         }
+
+        if (isOfileNameFound()) {
+            return ofileName;
+        }
+
         this.setIfileName(ifileName);
 
         if (ifileUploadSuccess) {
@@ -252,14 +272,20 @@ public class OCSSWRemoteClient extends OCSSW {
             fileType = jsonObject.getString("fileType");
             updateProgramName(jsonObject.getString("programName"));
             ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
+            setOfileNameFound(true);
             return ofileName;
         } else {
+            setOfileNameFound(false);
             return null;
         }
     }
 
     @Override
     public String getOfileName(String ifileName, String programName, String suiteValue) {
+
+        if (isOfileNameFound()) {
+            return ofileName;
+        }
 
         this.programName = programName;
         String[] additionalOptions = {"--suite=" + suiteValue};
@@ -338,21 +364,24 @@ public class OCSSWRemoteClient extends OCSSW {
         if (programName.equals(MLP_PROGRAM_NAME)) {
             return executeMLP(processorModel);
         } else {
+            //todo implement par file uploading for programs other than mlp
             if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
                 String parString = processorModel.getParamList().getParamString("\n");
                 File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
                 target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
             } else {
                 commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+                //this is to make sure that all necessary files are uploaded to the server before execution
+                prepareToRemoteExecute();
                 Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
                 if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                    //Process.setExitValue(0);
+                    setProcessExitValue(0);
                 }
             }
 
             boolean serverProcessStarted = false;
 
-            String processStatus = "-1";
+            String processStatus = "-100";
             while (!serverProcessStarted) {
                 switch (processStatus) {
                     case PROCESS_STATUS_NONEXIST:
@@ -363,20 +392,96 @@ public class OCSSWRemoteClient extends OCSSW {
                         break;
                     case PROCESS_STATUS_COMPLETED:
                         serverProcessStarted = true;
+                        break;
+                    case PROCESS_STATUS_FAILED:
+                        setProcessExitValue(1);
+                        serverProcessStarted = true;
+                        break;
                 }
                 try {
-                    TimeUnit.SECONDS.sleep(2);
+                    TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println("process status before: " + processStatus);
                 processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
-                System.out.println("process status after: " + processStatus);
             }
             return seadasProcess;
         }
     }
 
+    @Override
+    public Process executeSimple(ProcessorModel processorModel) {
+        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+
+        JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+        Response response = target.path("ocssw").path("executeOcsswProgramSimple").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            setProcessExitValue(0);
+        }
+
+        boolean serverProcessCompleted = false;
+
+        String processStatus = "-100";
+        while (!serverProcessCompleted) {
+            switch (processStatus) {
+                case PROCESS_STATUS_NONEXIST:
+                    serverProcessCompleted = false;
+                    break;
+                case PROCESS_STATUS_STARTED:
+                    serverProcessCompleted = false;
+                    break;
+                case PROCESS_STATUS_COMPLETED:
+                    serverProcessCompleted = true;
+                    break;
+                case PROCESS_STATUS_FAILED:
+                    setProcessExitValue(1);
+                    serverProcessCompleted = true;
+                    break;
+            }
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+        }
+        return seadasProcess;
+    }
+
+    @Override
+    public void waitForProcess() {
+        boolean serverProcessCompleted = false;
+
+        String processStatus = "-100";
+        while (!serverProcessCompleted) {
+            switch (processStatus) {
+                case PROCESS_STATUS_NONEXIST:
+                    serverProcessCompleted = false;
+                    break;
+                case PROCESS_STATUS_STARTED:
+                    serverProcessCompleted = false;
+                    break;
+                case PROCESS_STATUS_COMPLETED:
+                    serverProcessCompleted = true;
+                    setProcessExitValue(0);
+                    break;
+                case PROCESS_STATUS_FAILED:
+                    setProcessExitValue(1);
+                    serverProcessCompleted = true;
+                    break;
+                default:
+                    serverProcessCompleted = false;
+            }
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("wait for process: status before: " + processStatus);
+            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+            System.out.println("wait for process: status after: " + processStatus);
+        }
+    }
 
     @Override
     public void getOutputFiles(ProcessorModel processorModel) {
@@ -384,7 +489,7 @@ public class OCSSWRemoteClient extends OCSSW {
         VisatApp visatApp = VisatApp.getApp();
 
         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                "OCSSW Remote Server File Upload") {
+                "OCSSW Remote Server File Download") {
 
             @Override
             protected Void doInBackground(ProgressMonitor pm) throws Exception {
@@ -396,10 +501,7 @@ public class OCSSWRemoteClient extends OCSSW {
                     downloadMLPOutputFiles(outputFilesList, pm);
                 } else {
                     commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
-                    Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
-                    if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                        downloadCommonFiles(commandArrayJsonObject);
-                    }
+                    downloadCommonFiles(commandArrayJsonObject);
                 }
                 return null;
             }
@@ -450,7 +552,7 @@ public class OCSSWRemoteClient extends OCSSW {
 
         boolean serverProcessStarted = false;
 
-        String processStatus = "-1";
+        String processStatus = "-100";
         while (!serverProcessStarted) {
             switch (processStatus) {
                 case PROCESS_STATUS_NONEXIST:
@@ -458,9 +560,18 @@ public class OCSSWRemoteClient extends OCSSW {
                     break;
                 case PROCESS_STATUS_STARTED:
                     serverProcessStarted = true;
+                    setProcessExitValue(1);
                     break;
                 case PROCESS_STATUS_COMPLETED:
                     serverProcessStarted = true;
+                    setProcessExitValue(1);
+                    break;
+                case PROCESS_STATUS_FAILED:
+                    setProcessExitValue(1);
+                    serverProcessStarted = true;
+                    break;
+                default:
+                    serverProcessStarted = false;
             }
             try {
                 TimeUnit.SECONDS.sleep(1);
@@ -542,9 +653,12 @@ public class OCSSWRemoteClient extends OCSSW {
 
 
         Iterator itr = paramList.getParamArray().iterator();
+        Response response;
 
         ParamInfo option;
         String commandItem;
+        String fileName;
+
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
             commandItem = null;
@@ -559,7 +673,12 @@ public class OCSSWRemoteClient extends OCSSW {
                         ofileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
                     }
                     if (option.getType().equals(ParamInfo.Type.IFILE)) {
+                        fileName = option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
                         ifileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
+                        response = ocsswClient.getServicePathForFileVerification(jobId).path(fileName).request().get();
+                        if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
+                            uploadClientFile(option.getValue());
+                        }
                     }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
                     if (option.getName() != null && option.getName().length() > 0) {
@@ -574,6 +693,21 @@ public class OCSSWRemoteClient extends OCSSW {
 
         }
         return jsonObjectBuilder.build();
+    }
+
+    private void prepareToRemoteExecute() {
+        String fileExtensions = processorModel.getImplicitInputFileExtensions();
+        if (fileExtensions != null) {
+           StringTokenizer st = new StringTokenizer(fileExtensions, ",");
+           String fileExtension;
+           String fileNameBase = ifileName.substring(ifileName.lastIndexOf(File.separator) + 1, ifileName.lastIndexOf("."));
+           String fileNameToUpload;
+           while (st.hasMoreTokens()) {
+               fileExtension = st.nextToken().trim();
+               fileNameToUpload = ifileDir + File.separator + fileNameBase + "." + fileExtension;
+               uploadClientFile(fileNameToUpload);
+           }
+        }
     }
 
     private JsonArray getJsonFromParamListOld(ParamList paramList) {
