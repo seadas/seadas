@@ -27,7 +27,7 @@ import java.lang.Boolean;
  * Time: 2:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
+public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     protected String programName;
 
     private ParamList paramList;
@@ -69,6 +69,7 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
 
     private boolean isIfileValid = false;
     private static OCSSW ocssw;
+    private String fileExtensions = null;
 
     public ProcessorModel(String name, OCSSW ocssw) {
 
@@ -718,6 +719,16 @@ public class ProcessorModel implements L2genDataProcessorModel, Cloneable {
                 }
             }
         }
+    }
+
+    @Override
+    public String getImplicitInputFileExtensions() {
+        return fileExtensions;
+    }
+
+    public void setImplicitInputFileExtensions(String fileExtensions) {
+
+        this.fileExtensions = fileExtensions;
     }
 
     public String[] getCmdArraySuffix() {
