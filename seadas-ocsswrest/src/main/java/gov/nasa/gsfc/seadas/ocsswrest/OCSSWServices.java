@@ -167,6 +167,26 @@ public class OCSSWServices {
         return Response.status(respStatus).build();
     }
 
+
+    @PUT
+    @Path("executeOcsswProgramSimple/{jobId}/{programName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response executeOcsswProgramSimple(@PathParam("jobId") String jobId,
+                                                @PathParam("programName") String programName,
+                                                JsonObject jsonObject)
+            throws IOException {
+        Response.Status respStatus = Response.Status.OK;
+        if (jsonObject == null) {
+            respStatus = Response.Status.BAD_REQUEST;
+        } else {
+
+            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            ocsswRemote.executeProgramSimple(jobId, programName, jsonObject);
+        }
+        return Response.status(respStatus).build();
+    }
+
+
     @PUT
     @Path("uploadMLPParFile/{jobId}")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
