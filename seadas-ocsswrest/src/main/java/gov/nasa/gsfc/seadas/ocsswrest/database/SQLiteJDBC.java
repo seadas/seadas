@@ -49,9 +49,10 @@ public class SQLiteJDBC {
     public static final String MISSION_NAME_FIELD_NAME = "MISSION_NAME";
     public static final String MISSION_DIR_FIELD_NAME = "MISSION_DIR";
 
-    public static final String PROCESS_STATUS_NONEXIST = "-1";
-    public static final String PROCESS_STATUS_STARTED = "0";
-    public static final String PROCESS_STATUS_COMPLETED = "1";
+    public static final String PROCESS_STATUS_NONEXIST = "-100";
+    public static final String PROCESS_STATUS_STARTED = "-1";
+    public static final String PROCESS_STATUS_COMPLETED = "0";
+    public static final String PROCESS_STATUS_FAILED = "1";
 
     public enum FileTableFields {
         JOB_ID_NAME("JOB_ID"),
@@ -78,7 +79,8 @@ public class SQLiteJDBC {
     public enum ProcessStatusFlag{
         NONEXIST(PROCESS_STATUS_NONEXIST),
         STARTED(PROCESS_STATUS_STARTED),
-        COMPLETED(PROCESS_STATUS_COMPLETED);
+        COMPLETED(PROCESS_STATUS_COMPLETED),
+        FAILED(PROCESS_STATUS_FAILED);
 
         String value;
 
