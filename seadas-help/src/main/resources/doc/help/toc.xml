@@ -63,6 +63,7 @@
             <tocitem text="GPF Overview" target="gpf.overview"/>
             <tocitem text="GPF Graph Processing Tool (gpt)" target="gpf.graphProcessingTool"/>
             <tocitem text="GPF Operator Index" target="gpf.operatorIndex"/>
+            <tocitem text="GPF Mosaic Example" target="gptExampleMosaic"/>
         </tocitem>
 
         <tocitem text="File I/O &amp; Sessions">
@@ -292,7 +293,6 @@
 
             <tocitem text="Reproject" target="reprojectionAction">
                 <tocitem text="Reproject" target="reprojectionAction"/>
-                <tocitem text="ReprojectOld" target="reprojectionActionOld"/>
                 <tocitem text="Resampling Methods" target="resamplingMethods"/>
             </tocitem>
 

@@ -10,6 +10,7 @@
     <mapID target="folder" url="images/HelpFolder.jpg"/>
     <mapID target="doc" url="images/HelpDoc.jpg"/>
 
+    <mapID target="gptExampleMosaic" url="GptExamples/mosaicGptExample.html"/>
     <mapID target="seadasOverview" url="general/SeaDASOverview.html"/>
     <mapID target="gbrPhoticDepthExampleTutorial" url="general/gbrPhoticDepthExampleTutorial.html"/>
     <mapID target="seadasWhatsNew" url="general/SeaDASWhatsNew.html"/>
@@ -28,6 +29,8 @@
     <mapID target="resamplingMethods" url="general/ResamplingMethods.html"/>
     <mapID target="envisatProducts" url="general/envisat-products/index.html"/>
     <!-- todo -->
+
+
 
     <mapID target="visat" url="visat/index.html"/>
     <mapID target="mainToolbar" url="visat/Toolbars.html"/>
