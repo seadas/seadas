@@ -127,7 +127,7 @@ public class OCSSWRemote {
     }
 
     public void executeProgramOnDemand(String jobId, String programName, JsonObject jsonObject) {
-        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
         Set commandArrayKeys = jsonObject.keySet();
         System.out.println(" array size = " + commandArrayKeys.size());
         String commandArrayElement;
@@ -145,14 +145,19 @@ public class OCSSWRemote {
                         StringTokenizer st = new StringTokenizer(commandArrayElement, "=");
                         String paramName = st.nextToken();
                         String paramValue = st.nextToken();
-                        commandArrayElement = paramName + "=" + serverWorkingDir + File.separator + jobId + File.separator + paramValue.substring(paramValue.lastIndexOf(File.separator) + 1);
+                        commandArrayElement = paramName + "=" + serverWorkingDir + File.separator + paramValue.substring(paramValue.lastIndexOf(File.separator) + 1);
 
                     } else {
-                        commandArrayElement = serverWorkingDir + File.separator + jobId + File.separator + commandArrayElement.substring(commandArrayElement.lastIndexOf(File.separator) + 1);
+                        commandArrayElement = serverWorkingDir + File.separator + commandArrayElement.substring(commandArrayElement.lastIndexOf(File.separator) + 1);
                     }
                 }
                 System.out.println("command array element = " + commandArrayElement);
                 commandArray[i++] = commandArrayElement;
+            }
+            try {
+                Files.createDirectories(new File(serverWorkingDir).toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             executeProcess(concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
         } catch (Exception e) {
@@ -160,6 +165,44 @@ public class OCSSWRemote {
         }
     }
 
+    public void executeProgramSimple(String jobId, String programName, JsonObject jsonObject) {
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
+        Set commandArrayKeys = jsonObject.keySet();
+        System.out.println(" array size = " + commandArrayKeys.size());
+        String commandArrayElement;
+        try {
+            Object[] array = (Object[]) commandArrayKeys.toArray();
+            int i = 0;
+            String[] commandArray = new String[commandArrayKeys.size() + 1];
+            commandArray[i++] = programName;
+            for (Object element : array) {
+                System.out.println(" element = " + element);
+                String elementName = (String) element;
+                commandArrayElement = jsonObject.getString((String) element);
+                if (elementName.contains("IFILE") || elementName.contains("OFILE")) {
+                    if (commandArrayElement.indexOf("=") != -1) {
+                        StringTokenizer st = new StringTokenizer(commandArrayElement, "=");
+                        String paramName = st.nextToken();
+                        String paramValue = st.nextToken();
+                        commandArrayElement = paramName + "=" + serverWorkingDir + File.separator + paramValue.substring(paramValue.lastIndexOf(File.separator) + 1);
+
+                    } else {
+                        commandArrayElement = serverWorkingDir + File.separator + commandArrayElement.substring(commandArrayElement.lastIndexOf(File.separator) + 1);
+                    }
+                }
+                System.out.println("command array element = " + commandArrayElement);
+                commandArray[i++] = commandArrayElement;
+            }
+            try {
+                Files.createDirectories(new File(serverWorkingDir).toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            executeProcessSimple(concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void executeMLP(String jobId, File parFile) {
         System.out.println("par file path: " + parFile.getAbsolutePath());
@@ -336,16 +379,46 @@ public class OCSSWRemote {
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }
-                final ORSProcessObserver processObserver = new ORSProcessObserver(process, programName, jobId);
-
-                processObserver.startAndWait();
-
+                if (process.isAlive()) {
+                    System.out.println("process is alive: ");
+                    final ORSProcessObserver processObserver = new ORSProcessObserver(process, programName, jobId);
+                    processObserver.startAndWait();
+                } else {
+                    SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
+                }
+                System.out.println("process exited! ");
                 return null;
             }
         };
         swingWorker.execute();
     }
 
+    public void executeProcessSimple(String[] commandArray, String jobId) {
+
+
+        StringBuilder sb = new StringBuilder();
+        for (String item : commandArray) {
+            sb.append(item + " ");
+        }
+
+        ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+        Process process = null;
+        try {
+            process = processBuilder.start();
+            SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.STARTED.getValue());
+            if (process == null) {
+                throw new IOException(programName + " failed to create process.");
+            }
+            process.waitFor();
+            if (process.exitValue() == 0) {
+                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("process exited! ");
+    }
 
     public Process executeSimple(String[] commandArray) {
 
