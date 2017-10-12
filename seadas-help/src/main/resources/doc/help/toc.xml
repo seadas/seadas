@@ -60,10 +60,14 @@
 
 
         <tocitem text="Command Line Tools (GPF)">
+            <tocitem text="GPF Examples">
+                <tocitem text="GPF Mosaic Example" target="gptExampleMosaic"/>
+            </tocitem>
             <tocitem text="GPF Overview" target="gpf.overview"/>
             <tocitem text="GPF Graph Processing Tool (gpt)" target="gpf.graphProcessingTool"/>
             <tocitem text="GPF Operator Index" target="gpf.operatorIndex"/>
-            <tocitem text="GPF Mosaic Example" target="gptExampleMosaic"/>
+
+
         </tocitem>
 
         <tocitem text="File I/O &amp; Sessions">

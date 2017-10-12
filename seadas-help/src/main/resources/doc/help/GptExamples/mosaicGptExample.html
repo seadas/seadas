@@ -10,18 +10,19 @@
 
 <div class="center">
     <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
-    <h2>SeaDAS Example: Mosaic GPT</h2>
+    <h2>GPT Mosaic Example</h2>
 
     <table class="invisibletable">
         <tr class="invisibletable">
             <td class="invisibletable">
                 <p>
-                    <a href="Statistics.html#Overview" class="invisibleLink">Overview</a><br>
-                    <a href="Statistics.html#GetData" class="invisibleLink">Get The Data</a><br>
-                    <a href="Statistics.html#DailyInGUI" class="invisibleLink">Create Daily File in GUI</a><br>
-                    <a href="Statistics.html#DailyInGPT" class="invisibleLink">Create Daily File in GPT</a><br>
-                    <a href="Statistics.html#Monthly" class="invisibleLink">Create the Monthly</a><br>
-                    <a href="Statistics.html#Script" class="invisibleLink">Scripting the Creation of the Daily Files</a><br>
+                    <a href="mosaicGptExample.html#Overview" class="invisibleLink">Overview</a><br>
+                    <a href="mosaicGptExample.html#Example1" class="invisibleLink">Example 1: Geographic Lat/Lon Projection</a><br>
+                    <a href="mosaicGptExample.html#Example2" class="invisibleLink">Example 2: Oblique Stereographic Projection</a><br>
+                    <a href="mosaicGptExample.html#Example3" class="invisibleLink">Example 3: Lambert Azimuthal Equal Area Projection</a><br>
+                    <a href="mosaicGptExample.html#Example4" class="invisibleLink">Example 4: Lambert Azimuthal Equal Area Projection (alternate)</a><br>
+
+
                 </p>
             </td>
         </tr>
@@ -39,59 +40,57 @@
     <p class="subSectionTitle">Overview</p>
 </div>
 <br>
-
 <p>
-    In this example you will see how to use the SeaDAS command line tool (GPT) to run the SeaDAS Mosaic tool to
-    generate a 1km Chlorophyll monthly product along with its constituent daily files. The specific projection we will
-    use will be a Lambert Equal-Area projection and the region will be the Gulf of Mexico. The sensor will be MODIS
-    Aqua and the time frame will be a January 2017 monthly. The input files will be level2 OB.DAAC files. Using this
-    example as a starting point model, you should be able to customize this to you own specific criteria
+    These examples show uses of the SeaDAS Mosaic tool run from the command line using GPT (graph processing tool).
+</p>
+<p>
+    <i>Note: when processing a large number of files with the Mosaic tool you may likely need to increase your memory
+    allocation.  To do this edit the file gpt.sh.</i>
 </p>
 
-<p>
-    Examples for running GPT at the command line to create a mosaic of level2 files bounded in the region of the Gulf of Mexico.
-</p>
+
+
 <br>
+<hr>
+<a name="Example1"></a>
+<div class="center">
+    <p class="subSectionTitle">Example 1: Geographic Lat/Lon Projection</p>
+</div>
+<br>
+
 <p>
-<b>Example 1: Standard Geographic Lat/Lon Projection</b>
-</p><table><tr><td bgcolor="#dddddd">
+    This uses the SeaDAS Mosaic tool in GPT (command line) mode to combine several input level-2 files into a single
+    mapped output file.  The level-2 files were imaged January 23 2017 over the Gulf of Mexico by both the VIIRS and the
+    MODIS Aqua instruments.  The output file is specifically geographically bounded to this Gulf of Mexico region.
+    Level-2 quality flags are used to constrain the source pixels being used.
+    Two products are created: chlor_a and apparent_optical_depth.  The product chlor_a exists in the source level-2 files
+    and the product apparent_optical_depth is derived using a mathematical expression from the level-2
+    product Kd_490.  The projection is standard geographic lat/lon with a pixelSize=0.009 (roughly 1km resolution).
+    A parameter properties "par" file is used to store the variables needed for the xml graph file.
+</p>
+
+<p>
+    <i>Note: you can readily modify these parameters in this "par" file to adapt to your own specific region, products, and quality criteria. </i>
+</p>
+<p>
+    <i>Note: the Mosaic GPT call acquires the input files from individual arguments in the command line.  A convenience system call
+    (`cat level2Files.txt`) is used here instead of entering each file as a command line argument.</i>
+</p>
+<p>
+<b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e0e0e0">
 <pre>
-gpt.sh mosaicGeneral.xml -p mosaicGeoLatLonGulfOfMexico.par `cat level2Files.txt` -t A20170212017023_mosaicGeoLatLonGulfOfMexico.dim
+gpt.sh mosaicGeneral.xml -p mosaicGeoLatLonCrsGulfMexico.par `cat level2Files.txt` -t AquaVIIRS_2017023_mosaicGeoLatLonGulfMexico.dim
 </pre>
 </td></tr></table>
 
-<br>
-<p>
-<b>Example 2: Lambert Azimuthal Projection</b>
-</p>
-<table><tr><td bgcolor="#dddddd">
-<pre>
-gpt.sh mosaicGeneral.xml -p mosaicLambertAzimuthalGulfOfMexico.par `cat level2Files.txt` -t A20170212017023_mosaicLambertAzimuthalGulfOfMexico.dim
-</pre>
-</td></tr></table>
 
 
 <br>
 <p>
-<b>Example 3: Oblique Stereographic Projection</b>
+<b>File = mosaicGeneral.xml</b>
 </p>
-<table><tr><td bgcolor="#dddddd">
-<pre>
-gpt.sh mosaicGeneral.xml -p mosaicObliqueStereographicGulfOfMexico.par `cat level2Files.txt` -t A20170212017023_mosaicObliqueStereographicGulfOfMexico.dim
-</pre>
-</td></tr></table>
-
-
-<br>
-<p>The following files are used in the above examples:</p>
-
-<br>
-<p>
-<b>File = mosaicGeneral.xml</b><br>
-    This is a general xml input file for creating a GPT mosaic which uses variable parameters.  This file assumes 1 band and
-    1 validation expression.  To change number of bands or expressions this file would need to be edited.
-</p>
-<table><tr><td bgcolor="#dddddd">
+<table><tr><td bgcolor="#e0e0e0">
 
 <pre>
 &lt;graph id="MosaicGraph"&gt;
@@ -106,14 +105,18 @@ gpt.sh mosaicGeneral.xml -p mosaicObliqueStereographicGulfOfMexico.par `cat leve
     &lt;parameters&gt;
         &lt;variables&gt;
             &lt;variable&gt;
-                &lt;name&gt;${band}&lt;/name&gt;
-                &lt;expression&gt;${band}&lt;/expression&gt;
+                &lt;name&gt;${band1}&lt;/name&gt;
+                &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band2}&lt;/name&gt;
+                &lt;expression&gt;${band2Expression}&lt;/expression&gt;
             &lt;/variable&gt;
         &lt;/variables&gt;
         &lt;conditions&gt;
             &lt;condition&gt;
                 &lt;name&gt;condition_0&lt;/name&gt;
-                &lt;expression&gt;${expression}&lt;/expression&gt;
+                &lt;expression&gt;${qualityExpression}&lt;/expression&gt;
                 &lt;output&gt;false&lt;/output&gt;
             &lt;/condition&gt;
         &lt;/conditions&gt;
@@ -137,56 +140,258 @@ gpt.sh mosaicGeneral.xml -p mosaicObliqueStereographicGulfOfMexico.par `cat leve
 
 <br>
 <p>
-<b>File = mosaicGeoLatLonGulfOfMexico.par</b> <br>
-    These are the parameters which get passed in to fill out the variables in the xml file (mosaicGeneral.xml)
+<b>File = mosaicGeoLatLonCrsGulfMexico.par</b>
 </p>
-<table><tr><td bgcolor="#dddddd">
 
+<table><tr><td bgcolor="#e0e0e0">
 <pre>
-band=chlor_a
-expression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT and !l2_flags.CLDICE
+band1=chlor_a
+band1Expression=chlor_a
+band2=apparent_optical_depth
+band2Expression=1.3/Kd_490
+qualityExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+north=31.0
+south=17.5
+west=-98.5
+east=-80.0
+pixelSize=0.009
+resampling=Nearest
 crs=GEOGCS["WGS84(DD)", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]]
-north=31.0
-south=17.5
-west=-98.5
-east=-80.0
-pixelSize=1000.0
-resampling=Nearest
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = level2Files.txt</b>
+</p>
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+level2_files/A2017023193000.L2_LAC_OC.nc
+level2_files/A2017023193500.L2_LAC_OC.nc
+level2_files/V2017023190000.L2_SNPP_OC.nc
+level2_files/V2017023190600.L2_SNPP_OC.nc
 </pre>
 </td></tr></table>
 
 
 
 <br>
+<hr>
+<a name="Example2"></a>
+<div class="center">
+    <p class="subSectionTitle">Example 2: Oblique Stereographic Projection</p>
+</div>
+<br>
 <p>
-<b>File = mosaicLambertAzimuthalGulfOfMexico.par</b> <br>
-These are the parameters which get passed in to fill out the variables in the xml file (mosaicGeneral.xml)
+    This is exactly the same as example 1 except that it uses a Oblique Stereographic projection.
+    (See example 1 for the files "mosaicGeneral.xml" and "level2Files.txt".)
 </p>
-<table><tr><td bgcolor="#dddddd">
 
+<p>
+    <i>Note: if you modify this to cover a different region you will also have to modify the crs value (specifically
+        "latitude_of_origin" and "central_meridian").  Also, the pixelSize is in units of meters whereas in example 1 is was
+        in units of degrees.</i>
+</p>
+
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p>
+<table><tr><td bgcolor="#e0e0e0">
 <pre>
-band=chlor_a
-expression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT and !l2_flags.CLDICE
-crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["World Geodetic System 1984",DATUM["World Geodetic System 1984",SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],UNIT["degree", 0.017453292519943295],AXIS["Geodetic longitude", EAST],AXIS["Geodetic latitude", NORTH]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_center", 25.0],PARAMETER["longitude_of_center", -90.0],PARAMETER["false_easting", 0.0],PARAMETER["false_northing", 0.0],UNIT["m", 1.0],AXIS["Easting", EAST],AXIS["Northing", NORTH]]
+gpt.sh mosaicGeneral.xml -p mosaicObliqueStereoCrsGulfMexico.par `cat level2Files.txt` -t AquaVIIRS_2017023_mosaicObliqueStereoGulfMexico.dim
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+    <b>File = mosaicObliqueStereoCrsGulfMexico.par</b>
+</p>
+
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+band1=chlor_a
+band1Expression=chlor_a
+band2=apparent_optical_depth
+band2Expression=1.3/Kd_490
+qualityExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT and !l2_flags.CLDICE
 north=31.0
 south=17.5
 west=-98.5
 east=-80.0
 pixelSize=1000.0
 resampling=Nearest
-</pre>
-</td></tr></table>
-
-<br>
-<p>
-<b>File = mosaicObliqueStereographicGulfOfMexico.par</b> <br>
-These are the parameters which get passed in to fill out the variables in the xml file (mosaicGeneral.xml)
-</p>
-<table><tr><td bgcolor="#dddddd">
-<pre>
-band=chlor_a
-expression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT and !l2_flags.CLDICE
 crs=PROJCS["Oblique_Stereographic / World Geodetic System 1984",GEOGCS["World Geodetic System 1984", DATUM["World Geodetic System 1984", SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]], AUTHORITY["EPSG","6326"]], PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]], PROJECTION["Oblique_Stereographic"], PARAMETER["central_meridian", -90.0], PARAMETER["latitude_of_origin", 25.0], PARAMETER["scale_factor", 1.0], PARAMETER["false_easting", 0.0], PARAMETER["false_northing", 0.0], UNIT["m", 1.0], AXIS["Easting", EAST], AXIS["Northing", NORTH]]
+</pre>
+</td></tr></table>
+
+
+
+
+<br>
+<hr>
+<a name="Example3"></a>
+<div class="center">
+    <p class="subSectionTitle">Example 3: Lambert Azimuthal Equal Area Projection</p>
+</div>
+<br>
+<p>
+    This is exactly the same as example 1 except that it uses a Lambert Azimuthal Equal-Area projection.
+    (See example 1 for the files "mosaicGeneral.xml" and "level2Files.txt".)
+</p>
+
+<p>
+    <i>Note: if you modify this to cover a different region you will also have to modify the crs value (specifically
+    "latitude_of_center" and "longitude_of_center").  Also, the pixelSize is in units of meters whereas in example 1 is was
+        in units of degrees.</i>
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p>
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+gpt.sh mosaicGeneral.xml -p mosaicLambertAzCrsGulfMexico.par `cat level2Files.txt` -t AquaVIIRS_2017023_mosaicLambertAzGulfMexico.dim
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+    <b>File = mosaicLambertAzCrsGulfMexico.par</b>
+</p>
+
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+band1=chlor_a
+band1Expression=chlor_a
+band2=apparent_optical_depth
+band2Expression=1.3/Kd_490
+qualityExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+north=31.0
+south=17.5
+west=-98.5
+east=-80.0
+pixelSize=1000.0
+resampling=Nearest
+crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["World Geodetic System 1984",DATUM["World Geodetic System 1984",SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],UNIT["degree", 0.017453292519943295],AXIS["Geodetic longitude", EAST],AXIS["Geodetic latitude", NORTH]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_center", 25.0],PARAMETER["longitude_of_center", -90.0],PARAMETER["false_easting", 0.0],PARAMETER["false_northing", 0.0],UNIT["m", 1.0],AXIS["Easting", EAST],AXIS["Northing", NORTH]]
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<hr>
+<a name="Example4"></a>
+<div class="center">
+    <p class="subSectionTitle">Example 4: Lambert Azimuthal Equal Area Projection (alternate)</p>
+</div>
+<br>
+<p>
+    This is basically the same as example 3 except that the crs if defined in the xml graph file with some added variables
+    in order to specify the center of the scene in the "par" file.  If you are always using the same projection, but
+    for differing regions this example is a good choice.  One other difference here, to illustrate an option,
+    that the same variable is used for convenience for both the band name and the band expression.  If you are not
+    creating new bands using a mathematical expression then condensing these two variables into a single variable works.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p>
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+gpt.sh mosaicLambertAz.xml -p mosaicLambertAzAltGulfMexico.par `cat level2Files.txt` -t AquaVIIRS_2017023_mosaicLambertAzGulfMexico.dim
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = mosaicLambertAz.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+&lt;graph id="MosaicLambertGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+  &lt;node id="MosaicLambertNode"&gt;
+    &lt;operator&gt;Mosaic&lt;/operator&gt;
+    &lt;sources&gt;
+       &lt;sourceProducts&gt;${sourceProducts}&lt;/sourceProducts&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;variables&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band1}&lt;/name&gt;
+                &lt;expression&gt;${band1}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band2}&lt;/name&gt;
+                &lt;expression&gt;${band2}&lt;/expression&gt;
+            &lt;/variable&gt;
+        &lt;/variables&gt;
+        &lt;conditions&gt;
+            &lt;condition&gt;
+                &lt;name&gt;condition_0&lt;/name&gt;
+                &lt;expression&gt;${qualityExpression}&lt;/expression&gt;
+                &lt;output&gt;false&lt;/output&gt;
+            &lt;/condition&gt;
+        &lt;/conditions&gt;
+        &lt;combine&gt;OR&lt;/combine&gt;
+        &lt;crs&gt;
+            PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",
+            GEOGCS["World Geodetic System 1984",
+            DATUM["World Geodetic System 1984",
+              SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+              AUTHORITY["EPSG","6326"]],
+            PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+            UNIT["degree", 0.017453292519943295],
+            AXIS["Geodetic longitude", EAST],
+            AXIS["Geodetic latitude", NORTH]],
+            PROJECTION["Lambert_Azimuthal_Equal_Area"],
+            PARAMETER["latitude_of_center", ${latitudeOfCenter}],
+            PARAMETER["longitude_of_center", ${longitudeOfCenter}],
+            PARAMETER["false_easting", 0.0],
+            PARAMETER["false_northing", 0.0],
+            UNIT["m", 1.0],
+            AXIS["Easting", EAST],
+            AXIS["Northing", NORTH]]
+        &lt;/crs&gt;
+        &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+        &lt;westBound&gt;${west}&lt;/westBound&gt;
+        &lt;northBound&gt;${north}&lt;/northBound&gt;
+        &lt;eastBound&gt;${east}&lt;/eastBound&gt;
+        &lt;southBound&gt;${south}&lt;/southBound&gt;
+        &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+        &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = mosaicLambertAzGulfMexico.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+band1=chlor_a
+band2=Kd_490
+qualityExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+latitudeOfCenter=25.0
+longitudeOfCenter=-90.0
 north=31.0
 south=17.5
 west=-98.5
@@ -196,26 +401,10 @@ resampling=Nearest
 </pre>
 </td></tr></table>
 
-<br>
-<p>
-<b>File = level2Files.txt</b><br>
-    This is a list of level2 files for a 3 day period imaged by MODIS Aqua over the Gulf of Mexico region
-</p>
-<table><tr><td bgcolor="#dddddd">
-<pre>
-A2017021180500.L2_LAC_OC.nc
-A2017021181000.L2_LAC_OC.nc
-A2017021194500.L2_LAC_OC.nc
-A2017021195000.L2_LAC_OC.nc
-A2017022185000.L2_LAC_OC.nc
-A2017022185500.L2_LAC_OC.nc
-A2017022202500.L2_LAC_OC.nc
-A2017022203000.L2_LAC_OC.nc
-A2017023175500.L2_LAC_OC.nc
-A2017023193000.L2_LAC_OC.nc
-A2017023193500.L2_LAC_OC.nc
-</pre>
-</td></tr></table>
+
+
+
+
 
 </body>
 </html>
