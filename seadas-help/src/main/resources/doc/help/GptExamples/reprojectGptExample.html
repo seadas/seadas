@@ -41,7 +41,7 @@
 </div>
 <br>
 <p>
-    These examples show some examples of the SeaDAS Reproject tool run from the command line using GPT (graph processing tool).
+    These are some examples of the SeaDAS Reproject tool run from the command line using GPT (graph processing tool).
 </p>
 <p>
     <i>Note: when processing large files with the Reproject tool you may likely need to increase your memory
@@ -59,7 +59,7 @@
 <br>
 
 <p>
-    This uses the SeaDAS Reproject tool in GPT (command line) mode to reproject a singe input level-2 file into a single
+    This uses the SeaDAS Reproject tool in GPT (command line) mode to reproject a single input level-2 file into a single
     mapped output file.  The level-2 file was imaged January 23 2017 over the Gulf of Mexico by the
     MODIS Aqua instrument.  The projection is standard geographic lat/lon with a pixelSize=0.009 (roughly 1km resolution).
     A parameter properties "par" file is used to store the variables needed for the xml graph file.
@@ -73,7 +73,7 @@
 <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e0e0e0">
 <pre>
-gpt.sh reprojectGeneral.xml -p reprojectGeoLatLonCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectGeoLatLon.dim
+gpt.sh reprojectGeneral.xml -p reprojectGeoLatLonCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectGeoLatLonGulfMexico.dim
 </pre>
 </td></tr></table>
 

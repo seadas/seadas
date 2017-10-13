@@ -12,6 +12,7 @@
 
     <mapID target="gptExampleMosaic" url="GptExamples/mosaicGptExample.html"/>
     <mapID target="gptExampleReproject" url="GptExamples/reprojectGptExample.html"/>
+    <mapID target="gptExampleSubset" url="GptExamples/subsetGptExample.html"/>
     <mapID target="seadasOverview" url="general/SeaDASOverview.html"/>
     <mapID target="gbrPhoticDepthExampleTutorial" url="general/gbrPhoticDepthExampleTutorial.html"/>
     <mapID target="seadasWhatsNew" url="general/SeaDASWhatsNew.html"/>
