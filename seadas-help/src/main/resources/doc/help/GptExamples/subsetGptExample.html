@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>SeaDAS Example - Subset Gpt</title>
+    <title>The GPF Cookbook: Subset</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,7 +10,7 @@
 
 <div class="center">
     <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
-    <h1>The GPT Cookbook</h1>
+    <h1>The GPF Cookbook</h1>
     <h2>Subset</h2>
 
     <table class="invisibletable">
@@ -33,12 +33,36 @@
 <br>
 
 <p>
-    These are some examples of the SeaDAS Subset tool run from the command line using GPT (graph processing tool).
+    The GPF subset operator enables you to create a file which is subset copy of a source input file.
 </p>
+
 <p>
-    <i>Note: when processing large files with the Subset tool you may likely need to increase your memory
-    allocation.  To do this edit the file gpt.sh.</i>
+    There are several dimensions in which you can subset the file.
 </p>
+
+<p class="i1">
+    1. You can reduce the number of raster bands, selecting only your desired bands.
+</p>
+
+<p class="i1">
+    2. You can do an area crop of the geometric bounds of the file, where the area crop is done in either pixel
+    space, or in geographic coordinate space.
+</p>
+
+<p class="i1">
+    3. You can subsample
+    the file such that you retain only every other, 3rd, 4th, etc. pixel in the raster.
+</p>
+
+<p class="i1">
+    4. You can retain/discard file metadata.
+</p>
+
+
+<!--<p>-->
+    <!--<i>Note: when processing large files with the Subset tool you may likely need to increase your memory-->
+    <!--allocation.  To do this edit the file gpt.sh.</i>-->
+<!--</p>-->
 
 
 
@@ -51,15 +75,13 @@
 <br>
 
 <p>
-    This uses the SeaDAS Subset tool in GPT (command line) mode to geographically crop a single input level-2 file
-    into a single mapped output file.  The level-2 file was imaged January 23 2017 over the Gulf of Mexico by the
-    MODIS Aqua instrument.
-    A parameter properties "par" file is used to store the variables needed for the xml graph file.
+    This performs an area crop in geographic coordinate space.  The bounded region is over the Gulf of Mexico.
 </p>
 
-<p>
-    <i>Note: you can readily modify these parameters in this "par" file to adapt to your own specific criteria. </i>
-</p>
+<!--<p>-->
+    <!--A parameter properties "par" file is used to store the variables needed for the xml graph file.-->
+    <!--<i>Note: you can readily modify these parameters in this "par" file to adapt to your own specific criteria. </i>-->
+<!--</p>-->
 
 <p>
 <b>Command Line Entry</b>
@@ -122,10 +144,11 @@ east=-80.0
 <br>
 
 <p>
-    This uses the SeaDAS Subset tool in GPT (command line) mode to subset based not on geographic coordinates, but
-    directly on the native pixels of the input file.
+    This performs an area crop in pixel space.
+</p>
 
-    Here we will crop off 240 pixels at both the beginning and end of the scan.  In other words the easternmost and
+<p>
+   <i> Note: Here we will crop off 240 pixels at both the beginning and end of the scan.  In other words the easternmost and
     westernmost pixels.  One reason for doing this might be to eliminate high sensor zenith angle (low resolution)
     pixels from the scene.  For a standard MODIS level-2 1km LAC file, this approximates the removal of pixels
     above a 40 degree sensor zenith angle.
@@ -134,13 +157,11 @@ east=-80.0
 
 
     The level-2 file was imaged January 23 2017 over the Gulf of Mexico by the
-    MODIS Aqua instrument.
-    A parameter properties "par" file is used to store the variables needed for the xml graph file.
+    MODIS Aqua instrument. </i>
+
 </p>
 
-<p>
-    <i>Note: you can readily modify these parameters in this "par" file to adapt to your own specific criteria. </i>
-</p>
+
 
 <p>
     <b>Command Line Entry</b>
