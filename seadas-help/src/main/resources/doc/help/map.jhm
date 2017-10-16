@@ -10,6 +10,7 @@
     <mapID target="folder" url="images/HelpFolder.jpg"/>
     <mapID target="doc" url="images/HelpDoc.jpg"/>
 
+    <mapID target="gptCookbook" url="GptExamples/gpfCookbook.html"/>
     <mapID target="gptExampleMosaic" url="GptExamples/mosaicGptExample.html"/>
     <mapID target="gptExampleReproject" url="GptExamples/reprojectGptExample.html"/>
     <mapID target="gptExampleSubset" url="GptExamples/subsetGptExample.html"/>

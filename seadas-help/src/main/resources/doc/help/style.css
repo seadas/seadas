@@ -55,6 +55,55 @@ p {
     margin-left: 120;
 }
 
+
+
+.toc {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 14;
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 10pt;
+    margin-left: 0;
+}
+
+
+.toc1 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 18;
+    font-weight: bold;
+    margin-top: 18pt;
+    margin-right: 0pt;
+    margin-bottom: 10pt;
+    margin-left: 0pt;
+}
+
+.toc2 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 14;
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 10pt;
+    margin-left: 40;
+}
+
+
+.chapterTitle {
+                  font-family: Verdana, Arial, Helvetica, sans-serif;
+                  font-size: 35;
+                  font-weight: bold;
+                  margin-top: 18pt;
+                  margin-right: 6pt;
+                  margin-bottom: 12pt;
+                  margin-left: 6pt;
+                  color: black;
+
+              }
+
+
+
+
 .note {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     color: red;
@@ -126,6 +175,8 @@ h5 {
     margin-bottom: 6pt;
     margin-left: 6pt;
 }
+
+
 
 h6 {
     font-family: Verdana, Arial, Helvetica, sans-serif;

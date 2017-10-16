@@ -1,0 +1,196 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPF Cookbook: Subset</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT Cookbook</h1>
+    <h2>Configuration and General Options</h2>
+
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <p>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="gptCookbookConfiguration.html#Alias" class="invisibleLink">1. The "gpt" Alias</a><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="gpfCookbook.html#Memory" class="invisibleLink">2. Memory Allocation</a><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="gpfCookbook.html#GPFversuGUI" class="invisibleLink">3. GPF versus GUI</a><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="gpfCookbook.html#ParFiles" class="invisibleLink">4. Use of Parameters in the Graph File</a><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="gpfCookbook.html#GraphBuilder" class="invisibleLink">5. Use of the Graph Builder of SNAP</a>
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<br>
+<br>
+<br>
+
+<p>
+    These are some top level configuration and general options for the gpt tool.
+</p>
+
+
+<!--<p>-->
+    <!--<i>Note: when processing large files with the Subset tool you may likely need to increase your memory-->
+    <!--allocation.  To do this edit the file gpt.sh.</i>-->
+<!--</p>-->
+
+
+
+
+<br>
+<hr>
+<a name="Alias"></a>
+<p class="subSectionTitle">The "gpt" Alias</p>
+<br>
+
+<p>
+    The tool which runs the GPF is GPT (Graph Processing Tool).  This is executed at the command line by running a
+    shell script which is platform dependent and its name is also platform dependent.  The script is located within
+    the bin directory of your SeaDAS home directory (the directory where you installed SeaDAS).  It is named as
+    follows for the various platforms:
+</p>
+
+<p class="i1">
+    <b>Mac</b> - gpf.command
+</p>
+
+<p class="i1">
+    <b>Linux/Unix</b> - gpf.sh
+</p>
+
+<p class="i1">
+    <b>Windows</b> - gpf.bat
+</p>
+
+<p>
+    For platform independence, this cookbook will simply use the command "gpt".  You can configure your system creating a "gpt"
+    alias such that the command "gpt" will point to the respective gpt command script on your system.
+</p>
+
+
+
+
+<br>
+<hr>
+<a name="Memory"></a>
+<p class="subSectionTitle">Memory Allocation</p>
+<br>
+
+<p>
+    The default memory allocated for use by gpt is 1 MB.  If you are processing large files (for instance those of Landsat 8), or
+    processing a large number of files (for instance doing a Mosaic of many level-2 files) will likely run into memory
+    issues.  You can increase this memory allocation by editing the gpt file (of course staying within the confines of
+    your systems total memory).  Here are a few possible options:
+</p>
+
+
+
+<br>
+<p>
+    <b>File = gpt (gpt.sh : gpt.bat : gpt.command)</b>
+
+
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+# 1 MB allocation to GPT
+-Xmx1024M
+</pre>
+</td></tr></table>
+</pre>
+</td></tr></table>
+</p>
+<br>
+
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+# 2 MB allocation to GPT
+-Xmx2048M
+</pre>
+</td></tr></table>
+</pre>
+</td></tr></table>
+</p>
+<br>
+
+<table><tr><td bgcolor="#e0e0e0">
+<pre>
+# 4 MB allocation to GPT
+-Xmx4096M
+</pre>
+</td></tr></table>
+</pre>
+</td></tr></table>
+</p>
+
+
+
+<br>
+<hr>
+<a name="GPFversusGUI"></a>
+<p class="subSectionTitle">GPF versus GUI</p>
+<br>
+
+
+
+<p>
+    While it would be desirable that all features for every tool located within the GUI be both included and behave the
+    same within GPF, and vice versa, for many tools there are some subtle usage and parameter differences.  Before tackling
+    the configuration of your xml file for the gpf operator node for a particular tool, you should first familiarize
+    yourself with the GUI version.  For most tools within the GUI, once you have defined all your desired parameters, there
+    is the option to view the gpt xml equivalent parameters.  This can be a highly useful feature in devising your xml
+    file and its parameters.
+</p>
+
+
+
+
+
+<br>
+<hr>
+<a name="ParFiles"></a>
+<p class="subSectionTitle">Use of Parameters in the Graph File</p>
+<br>
+
+
+
+<p>
+    One way to make an xml graph file more readable and generic is to define variables for its parameters and then
+    place all the variable value pairs in a par file.  Most of the examples in this cookbook make use of this feature.
+</p>
+
+
+
+<br>
+<hr>
+<a name="GraphBuilder"></a>
+<p class="subSectionTitle">Use of the Graph Builder of SNAP</p>
+<br>
+
+<p>
+    Currently SeaDAS 7.x does not include an xml multi-node graph builder.  However, this feature is now available in SNAP.
+    If you want to use this GUI feature, you can download and install SNAP, build the graph, and then use this graph
+    within SeaDAS (or SNAP).  But some words of caution: an important distinction between SNAP and SeaDAS in doing this is
+    that SNAP may contain gpf tools not availabe in SeaDAS 7.x and vice versa.  Another distinction is that a tool in SNAP could differ from its SeaDAS
+    counterpart tool.  One such example of differing gpf operators is the Statistics operator "StatisticsOp" due to the
+    revisions of the statistics tool as of SeaDAS 7.5.
+</p>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
