@@ -83,6 +83,8 @@ public class OCSSWRemoteClient extends OCSSW {
     @Override
     public void setIfileName(String ifileName) {
         this.ifileName = ifileName;
+        setOfileNameFound(false);
+        ofileName = null;
         if (uploadIFile(ifileName)) {
             ifileUploadSuccess = true;
         } else {
@@ -241,6 +243,10 @@ public class OCSSWRemoteClient extends OCSSW {
             fileType = jsonObject.getString("fileType");
             updateProgramName(jsonObject.getString("programName"));
             ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
+            if (ofileName == null || missionName == null || fileType == null ) {
+                setOfileNameFound(false);
+                return null;
+            }
             setOfileNameFound(true);
             return ofileName;
         } else {
@@ -272,6 +278,11 @@ public class OCSSWRemoteClient extends OCSSW {
             fileType = jsonObject.getString("fileType");
             updateProgramName(jsonObject.getString("programName"));
             ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
+
+            if (ofileName == null || missionName == null || fileType == null ) {
+                setOfileNameFound(false);
+                return null;
+            }
             setOfileNameFound(true);
             return ofileName;
         } else {
@@ -339,6 +350,9 @@ public class OCSSWRemoteClient extends OCSSW {
 
     @Override
     public String[] getMissionSuites(String missionName, String programName) {
+        if (missionName == null) {
+            return null;
+        }
         return target.path("ocssw").path("missionSuites").path(missionName).path(programName).request(MediaType.APPLICATION_JSON_TYPE).get(String[].class);
     }
 
