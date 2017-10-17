@@ -47,6 +47,8 @@ public class OCSSWLocal extends OCSSW {
             AQUARIUS_PROGRAM_NAME = "l2gen_aquarius",
             L3GEN_PROGRAM_NAME = "l3gen";
 
+    Process process;
+
     public OCSSWLocal() {
 
         initiliaze();
@@ -82,11 +84,29 @@ public class OCSSWLocal extends OCSSW {
         return new File(missionDir).exists();
     }
 
+    @Override
+    public int getProcessExitValue(){
+        return process.exitValue();
+    }
+
+    @Override
+    public void waitForProcess(){
+        try {
+            process.waitFor();
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
+    }
 
     @Override
     public Process execute(ProcessorModel processorModel) {
         setProgramName(processorModel.getProgramName());
         return execute(getProgramCommandArray(processorModel));
+    }
+
+    @Override
+    public Process executeSimple(ProcessorModel processorModel) {
+        return execute(processorModel);
     }
 
     @Override
@@ -139,7 +159,7 @@ public class OCSSWLocal extends OCSSW {
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
 
-        Process process = null;
+        process = null;
         try {
             process = (Process) processBuilder.start();
             if (process != null) {
@@ -148,6 +168,7 @@ public class OCSSWLocal extends OCSSW {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return process;
     }
 
@@ -239,7 +260,7 @@ public class OCSSWLocal extends OCSSW {
 
         String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
 
-        Process process = execute((String[]) ArrayUtils.addAll(commandArrayPrefix, fileTypeCommandArrayParams));
+        process = execute((String[]) ArrayUtils.addAll(commandArrayPrefix, fileTypeCommandArrayParams));
 
         try {
 
@@ -291,7 +312,7 @@ public class OCSSWLocal extends OCSSW {
 
     private String getOfileName(String[] commandArray) {
 
-        Process process = execute(commandArray);
+        process = execute(commandArray);
 
         if (process == null) {
             return null;

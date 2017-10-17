@@ -100,16 +100,33 @@ public class OCSSWRemoteClient extends OCSSW {
 
 
     public boolean uploadIFile(String ifileName) {
-        final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(ifileName));
-        final MultiPart multiPart = new FormDataMultiPart()
-                //.field("ifileName", ifileName)
-                .bodyPart(fileDataBodyPart);
-        Response response = target.path("fileServices").path("uploadFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
-        if (response.getStatus() == Response.ok().build().getStatus()) {
-            return true;
-        } else {
-            return false;
-        }
+
+        ifileUploadSuccess = false;
+
+        VisatApp visatApp = VisatApp.getApp();
+
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                "OCSSW Remote Server File Upload") {
+
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
+
+                pm.beginTask("Uploading file '" + ifileName + "' to the remote server ", 10);
+
+                pm.worked(1);
+                final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(ifileName));
+                final MultiPart multiPart = new FormDataMultiPart()
+                        //.field("ifileName", ifileName)
+                        .bodyPart(fileDataBodyPart);
+                Response response = target.path("fileServices").path("uploadFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
+                if (response.getStatus() == Response.ok().build().getStatus()) {
+                    ifileUploadSuccess = true;
+                }
+                return null;
+            }
+        };
+        pmSwingWorker.executeWithBlocking();
+        return ifileUploadSuccess;
     }
 
     public boolean uploadClientFile(String fileName) {
@@ -243,7 +260,7 @@ public class OCSSWRemoteClient extends OCSSW {
             fileType = jsonObject.getString("fileType");
             updateProgramName(jsonObject.getString("programName"));
             ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
-            if (ofileName == null || missionName == null || fileType == null ) {
+            if (ofileName == null || missionName == null || fileType == null) {
                 setOfileNameFound(false);
                 return null;
             }
@@ -279,7 +296,7 @@ public class OCSSWRemoteClient extends OCSSW {
             updateProgramName(jsonObject.getString("programName"));
             ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
 
-            if (ofileName == null || missionName == null || fileType == null ) {
+            if (ofileName == null || missionName == null || fileType == null) {
                 setOfileNameFound(false);
                 return null;
             }
@@ -712,15 +729,15 @@ public class OCSSWRemoteClient extends OCSSW {
     private void prepareToRemoteExecute() {
         String fileExtensions = processorModel.getImplicitInputFileExtensions();
         if (fileExtensions != null) {
-           StringTokenizer st = new StringTokenizer(fileExtensions, ",");
-           String fileExtension;
-           String fileNameBase = ifileName.substring(ifileName.lastIndexOf(File.separator) + 1, ifileName.lastIndexOf("."));
-           String fileNameToUpload;
-           while (st.hasMoreTokens()) {
-               fileExtension = st.nextToken().trim();
-               fileNameToUpload = ifileDir + File.separator + fileNameBase + "." + fileExtension;
-               uploadClientFile(fileNameToUpload);
-           }
+            StringTokenizer st = new StringTokenizer(fileExtensions, ",");
+            String fileExtension;
+            String fileNameBase = ifileName.substring(ifileName.lastIndexOf(File.separator) + 1, ifileName.lastIndexOf("."));
+            String fileNameToUpload;
+            while (st.hasMoreTokens()) {
+                fileExtension = st.nextToken().trim();
+                fileNameToUpload = ifileDir + File.separator + fileNameBase + "." + fileExtension;
+                uploadClientFile(fileNameToUpload);
+            }
         }
     }
 
