@@ -60,6 +60,10 @@ public abstract class OCSSW {
 
     OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
 
+    private int processExitValue;
+
+    private boolean ofileNameFound;
+
     public static OCSSW getOCSSWInstance() {
         if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
             return new OCSSWLocal();
@@ -94,6 +98,7 @@ public abstract class OCSSW {
     public abstract String[] getMissionSuites(String missionName, String programName);
 
     public abstract Process execute(ProcessorModel processorModel);
+    public abstract Process executeSimple(ProcessorModel processorModel);
 
     public abstract Process execute(ParamList paramList);
 
@@ -239,5 +244,25 @@ public abstract class OCSSW {
 
     public HashMap<String, String> computePixelsFromLonLat() {
         return null;
+    }
+
+    public int getProcessExitValue() {
+        return processExitValue;
+    }
+
+    public void setProcessExitValue(int processExitValue) {
+        this.processExitValue = processExitValue;
+    }
+
+    public void waitForProcess(){
+
+    }
+
+    public boolean isOfileNameFound() {
+        return ofileNameFound;
+    }
+
+    public void setOfileNameFound(boolean ofileNameFound) {
+        this.ofileNameFound = ofileNameFound;
     }
 }
