@@ -2,7 +2,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
-import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileSelector;
 import org.esa.beam.visat.VisatApp;
 
@@ -20,18 +20,18 @@ import java.io.File;
  */
 public class L2genIfileSelector {
 
-    final private L2genDataProcessorModel l2genDataProcessorModel;
+    final private SeaDASProcessorModel seaDASProcessorModel;
 
     private SeadasFileSelector fileSelector;
     private boolean controlHandlerEnabled = true;
     private boolean eventHandlerEnabled = true;
 
-    public L2genIfileSelector(L2genDataProcessorModel l2genDataProcessorModel) {
-        this.l2genDataProcessorModel = l2genDataProcessorModel;
+    public L2genIfileSelector(SeaDASProcessorModel seaDASProcessorModel) {
+        this.seaDASProcessorModel = seaDASProcessorModel;
 
-        fileSelector = new SeadasFileSelector(VisatApp.getApp(), l2genDataProcessorModel.getPrimaryInputFileOptionName(), l2genDataProcessorModel.isMultipleInputFiles());
+        fileSelector = new SeadasFileSelector(VisatApp.getApp(), seaDASProcessorModel.getPrimaryInputFileOptionName(), seaDASProcessorModel.isMultipleInputFiles());
         fileSelector.initProducts();
-        fileSelector.setFileNameLabel(new JLabel(l2genDataProcessorModel.getPrimaryInputFileOptionName()));
+        fileSelector.setFileNameLabel(new JLabel(seaDASProcessorModel.getPrimaryInputFileOptionName()));
         fileSelector.getFileNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
 
@@ -47,8 +47,8 @@ public class L2genIfileSelector {
                 if (isControlHandlerEnabled() && iFile != null) {
                     disableEventHandler();
                     if (isControlHandlerEnabled()) {
-                        //l2genDataProcessorModel.updateParamValues(fileSelector.getSelectedFile());
-                        l2genDataProcessorModel.setParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
+                        //seaDASProcessorModel.updateParamValues(fileSelector.getSelectedFile());
+                        seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
                     }
                     enableEventHandler();
                 }
@@ -57,10 +57,10 @@ public class L2genIfileSelector {
     }
 
     private void addEventListeners() {
-        l2genDataProcessorModel.addPropertyChangeListener(l2genDataProcessorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
+        seaDASProcessorModel.addPropertyChangeListener(seaDASProcessorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                String ifileName = l2genDataProcessorModel.getParamValue(l2genDataProcessorModel.getPrimaryInputFileOptionName());
+                String ifileName = seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName());
                 System.out.println("processor model property changed! ifileName in file selector "  + ifileName);
                 File iFile = new File(ifileName);
                 disableControlHandler();
@@ -75,7 +75,7 @@ public class L2genIfileSelector {
             }
         }
         );
-        l2genDataProcessorModel.addPropertyChangeListener("cancel", new PropertyChangeListener() {
+        seaDASProcessorModel.addPropertyChangeListener("cancel", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 fileSelector = null;
