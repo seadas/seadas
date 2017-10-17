@@ -1,0 +1,384 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: LandWaterMask</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT Cookbook</h1>
+    <p class="chapterTitle">LandWaterMask</p>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+    Creates a file which is a copy of an input source file, adding a land band, land mask, water mask and coast mask.
+        </p>
+    </td></tr></table>
+
+    <br>
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="mosaicGptExample.html#Example1" class="invisibleLink">Add Land Mask to 9km File (Simple)</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="mosaicGptExample.html#Example2" class="invisibleLink">Add Land Mask to 4km File (Simple)</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="mosaicGptExample.html#Example3" class="invisibleLink">Add Land Mask to 1km File (Simple)</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="mosaicGptExample.html#Example4" class="invisibleLink">Add Land Mask to 300 meter File (Simple)</a></p>
+                <p class="toc">Example 5&nbsp;&nbsp;<a href="mosaicGptExample.html#Example5" class="invisibleLink">Add Land Mask to 30 meter File (Simple)</a></p>
+                <p class="toc">Example 6&nbsp;&nbsp;<a href="mosaicGptExample.html#Example6" class="invisibleLink">Add Land Mask to 9km File (Custom)</a></p>
+                <br>
+                <p class="toc">Note 1&nbsp;&nbsp;<a href="mosaicGptExample.html#Note1" class="invisibleLink">Parameters: resolution and superSamplingFactor</a></p>
+                <p class="toc">Note 2&nbsp;&nbsp;<a href="mosaicGptExample.html#Note2" class="invisibleLink">Installing the 50m and 150m Land Data Set</a></p>
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
+
+
+<br><br><br><hr>
+<a name="Example1"></a>
+    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Add Land Mask to 9km File (Simple)</p>
+<br>
+
+<p>
+    This creates a copy of a 9km resolution file, adding to it a land band, land mask, water mask and coast mask.
+</p>
+
+<br>
+<p>
+<b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt LandWaterMaskSimple.xml -p LandWaterMaskEx01.par -Ssource=A20172132017243.L3m_MO_NSST_sst_9km.nc -t A20172132017243.L3m_MO_NSST_sst_9km_land.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+<b>File = LandWaterMaskSimple.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+
+<pre>
+&lt;graph id="LandWaterMaskGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+    &lt;node id="LandWaterMaskNode"&gt;
+      &lt;operator&gt;LandWaterMask&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;resolution&gt;${resolution}&lt;/resolution&gt;
+        &lt;superSamplingFactor&gt;${superSamplingFactor}&lt;/superSamplingFactor&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+<b>File = LandWaterMaskEx01.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+resolution=10000
+superSamplingFactor=3
+</pre>
+</td></tr></table>
+
+
+
+
+<br><br><br><hr>
+<a name="Example2"></a>
+<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Add Land Mask to 4km File (Simple)</p>
+<br>
+
+<p>
+    This creates a copy of a 4km resolution file, adding to it a land band, land mask, water mask and coast mask.
+</p>
+
+<p>
+    Uses graph file "LandWaterMaskSimple.xml" from example 1.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt LandWaterMaskSimple.xml -p LandWaterMaskEx02.par -Ssource=A20172132017243.L3m_MO_NSST_sst_4km.nc -t A20172132017243.L3m_MO_NSST_sst_4km_land.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = LandWaterMaskEx02.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+resolution=1000
+superSamplingFactor=6
+</pre>
+</td></tr></table>
+
+
+
+<br><br><br><hr>
+<a name="Example3"></a>
+<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Add Land Mask to 1km File (Simple)</p>
+<br>
+
+<p>
+    This creates a copy of a 1km resolution file, adding to it a land band, land mask, water mask and coast mask.
+</p>
+
+<p>
+    Uses graph file "LandWaterMaskSimple.xml" from example 1.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt LandWaterMaskSimple.xml -p LandWaterMaskEx03.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_land.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = LandWaterMaskEx03.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+resolution=1000
+superSamplingFactor=3
+</pre>
+</td></tr></table>
+
+
+
+<br><br><br><hr>
+<a name="Example4"></a>
+<p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Add Land Mask to 300m File (Simple)</p>
+<br>
+
+<p>
+    This creates a copy of a 300m resolution file, adding to it a land band, land mask, water mask and coast mask.
+</p>
+
+<p>
+    Uses graph file "LandWaterMaskSimple.xml" from example 1.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt LandWaterMaskSimple.xml -p LandWaterMaskEx04.par -Ssource=A2010283180500_subset_300m.dim -t A2010283180500_subset_300m_land.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = LandWaterMaskEx04.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+resolution=50
+superSamplingFactor=8
+</pre>
+</td></tr></table>
+
+
+
+
+<br><br><br><hr>
+<a name="Example5"></a>
+<p class="subSectionTitle2">Example 5&nbsp;&nbsp;&nbsp;&nbsp;Add Land Mask to 30m File (Simple)</p>
+<br>
+
+<p>
+    This creates a copy of a 30m resolution file, adding to it a land band, land mask, water mask and coast mask.
+</p>
+
+<p>
+    Uses graph file "LandWaterMaskSimple.xml" from example 1.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt LandWaterMaskSimple.xml -p LandWaterMaskEx05.par -Ssource=A2010283180500_subset_30m.dim -t A2010283180500_subset_30m_land.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = LandWaterMaskEx05.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+resolution=50
+superSamplingFactor=3
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example6"></a>
+<p class="subSectionTitle2">Example 6&nbsp;&nbsp;&nbsp;&nbsp;Add Land Mask to 9km File (Custom)</p>
+<br>
+
+<p>
+    This creates a copy of a 9km resolution file, adding to it a land band, land mask, water mask and coast mask.
+</p>
+
+<p>
+    This is the same as example 1 with the exception that here all parameters are being defined as variables in the par file.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt LandWaterMask.xml -p LandWaterMaskEx06.par -Ssource=A20172132017243.L3m_MO_NSST_sst_9km.nc -t A20172132017243.L3m_MO_NSST_sst_9km_land.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = LandWaterMask.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+
+<pre>
+&lt;graph id="LandWaterMaskGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+    &lt;node id="LandWaterMaskNode"&gt;
+      &lt;operator&gt;LandWaterMask&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;resolution&gt;${resolution}&lt;/resolution&gt;
+        &lt;superSamplingFactor&gt;${superSamplingFactor}&lt;/superSamplingFactor&gt;
+        &lt;copySourceFile&gt;${copySourceFile}&lt;/copySourceFile&gt;
+        &lt;coastalGridSize&gt;${coastalGridSize}&lt;/coastalGridSize&gt;
+        &lt;coastalSizeTolerance&gt;${coastalSizeTolerance}&lt;/coastalSizeTolerance&gt;
+        &lt;waterMaskColor&gt;${waterMaskColor}&lt;/waterMaskColor&gt;
+        &lt;coastalMaskColor&gt;${coastalMaskColor}&lt;/coastalMaskColor&gt;
+        &lt;landMaskColor&gt;${landMaskColor}&lt;/landMaskColor&gt;
+        &lt;includeMasks&gt;${includeMasks}&lt;/includeMasks&gt;
+        &lt;waterMaskTransparency&gt;${waterMaskTransparency}&lt;/waterMaskTransparency&gt;
+        &lt;landMaskTransparency&gt;${landMaskTransparency}&lt;/landMaskTransparency&gt;
+        &lt;coastalMaskTransparency&gt;${coastalMaskTransparency}&lt;/coastalMaskTransparency&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+    <b>File = LandWaterMaskEx06.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+resolution=10000
+superSamplingFactor=3
+copySourceFile=true
+coastalGridSize=3
+coastalSizeTolerance=50
+waterMaskColor=0,125,255
+coastalMaskColor=0,0,0
+landMaskColor=51,51,51
+includeMasks=true
+waterMaskTransparency=0.5
+landMaskTransparency=0.0
+coastalMaskTransparency=0.0
+</pre>
+</td></tr></table>
+
+
+
+
+<br><br><br><hr>
+<a name="Note1"></a>
+<p class="subSectionTitle2">Note 1&nbsp;&nbsp;&nbsp;&nbsp;Parameters: resolution and superSamplingFactor </p>
+<br>
+<p>
+    In each of these examples, the parameters "resolution" and "superSamplingFactor" have been chosen in an attempt to
+    acheive a reasonable accuracy in determining whether a pixel is to be considered land.
+    The value for the parameter "resolution" (which specifically is the resolution of the land data set) was chosen
+    such that it is comparable to that of the source file resolution.  In order to ensure that all coincident land data set
+    pixels are being used, the superSamplingFactor was determined as:
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+superSamplingFactor = (source file resolution / land data set resolution) + 2
+</pre>
+</td></tr></table>
+
+<br>
+<i>To increase processing time, another reasonable option would be:
+</i>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+superSamplingFactor = (source file resolution / land data set resolution)
+</pre>
+</td></tr></table>
+
+</p>
+
+<br><br><br><hr>
+<a name="Note2"></a>
+<p class="subSectionTitle2">Note 2&nbsp;&nbsp;&nbsp;&nbsp;Installing the 50m and 150m Land Data Set</p>
+<br>
+
+<p>
+    The 50m and 150m land data set must be installed in order for them to be used by gpt operator.  These
+    high resolution data sets do not come with the default SeaDAS installation.  You can install these data sets from within
+    the SeaDAS GUI, by going to the Coast, Land and Water tool and selecting these resolutions
+</p>
+
+
+<br><br><br>
+
+</body>
+</html>

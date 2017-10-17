@@ -10,79 +10,69 @@
 
 <div class="center">
     <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
-    <h1>The GPF Cookbook</h1>
+    <h1>The GPT Cookbook</h1>
     <p class="chapterTitle">Subset</p>
 
-    <br><br>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+        Creates a file which is subset copy of a source input file.
+            There are several dimensions in which you can subset the file:
+        </p>
+
+        <p class="i1">
+            1. You can reduce the number of raster bands, selecting only your desired bands.
+        </p>
+
+        <p class="i1">
+            2. You can do an area crop of the geometric bounds of the file, where the area crop is done in either pixel
+            space, or in geographic coordinate space.
+        </p>
+
+        <p class="i1">
+            3. You can subsample
+            the file such that you retain only every other, 3rd, 4th, etc. pixel in the raster.
+        </p>
+
+        <p class="i1">
+            4. You can retain/discard file metadata.
+        </p>
+    </td></tr></table>
+
+
+    <br>
+
+
     <table class="invisibletable">
         <tr class="invisibletable">
             <td class="invisibletable">
-                <p class="toc">1. <a href="mosaicGptExample.html#Example1" class="invisibleLink">Geographic Region Crop</a></p>
-                <p class="toc">2. <a href="mosaicGptExample.html#Example2" class="invisibleLink">Pixel Area Crop</a></p>
-                <p class="toc">3. <a href="mosaicGptExample.html#Example3" class="invisibleLink">Full Scene Subsample</a></p>
-                <p class="toc">4. <a href="mosaicGptExample.html#Example4" class="invisibleLink">Full Scene Band Subset</a></p>
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="mosaicGptExample.html#Example1" class="invisibleLink">Geographic Region Crop</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="mosaicGptExample.html#Example2" class="invisibleLink">Pixel Area Crop</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="mosaicGptExample.html#Example3" class="invisibleLink">Full Scene Subsample</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="mosaicGptExample.html#Example4" class="invisibleLink">Full Scene Band Subset</a></p>
             </td>
         </tr>
     </table>
 </div>
-
-
-<br>
-<br>
-<br>
-
-<p>
-    The GPF subset operator enables you to create a file which is subset copy of a source input file.
-</p>
-
-<p>
-    There are several dimensions in which you can subset the file.
-</p>
-
-<p class="i1">
-    1. You can reduce the number of raster bands, selecting only your desired bands.
-</p>
-
-<p class="i1">
-    2. You can do an area crop of the geometric bounds of the file, where the area crop is done in either pixel
-    space, or in geographic coordinate space.
-</p>
-
-<p class="i1">
-    3. You can subsample
-    the file such that you retain only every other, 3rd, 4th, etc. pixel in the raster.
-</p>
-
-<p class="i1">
-    4. You can retain/discard file metadata.
-</p>
-
-
-<!--<p>-->
-    <!--<i>Note: when processing large files with the Subset tool you may likely need to increase your memory-->
-    <!--allocation.  To do this edit the file gpt.sh.</i>-->
-<!--</p>-->
+<br><br><br>
 
 
 
-<br>
-<hr>
+<br><br><br><hr>
 <a name="Example1"></a>
-    <p class="subSectionTitle">1. Geographic Region Crop</p>
+    <p class="subSectionTitle2">1&nbsp;&nbsp;&nbsp;&nbsp;Geographic Region Crop</p>
 <br>
 
 <p>
     This performs an area crop in geographic coordinate space.  The bounded region is over the Gulf of Mexico.
 </p>
 
-<!--<p>-->
-    <!--A parameter properties "par" file is used to store the variables needed for the xml graph file.-->
-    <!--<i>Note: you can readily modify these parameters in this "par" file to adapt to your own specific criteria. </i>-->
-<!--</p>-->
 
+<br>
 <p>
 <b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e0e0e0">
+</p><table><tr><td bgcolor="#e9f0f0">
 <pre>
 gpt geoCrop.xml -p geoCropGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_geoCropGulfMexico.dim
 </pre>
@@ -94,7 +84,7 @@ gpt geoCrop.xml -p geoCropGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t
 <b>File = geoCrop.xml</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 
 <pre>
 &lt;graph id="GeoCropGraph"&gt;
@@ -120,7 +110,7 @@ gpt geoCrop.xml -p geoCropGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t
 <b>File = geoCropGulfMexico.par</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
 north=31.0
 south=17.5
@@ -132,10 +122,9 @@ east=-80.0
 
 
 
-<br>
-<hr>
+<br><br><br><hr>
 <a name="Example2"></a>
-    <p class="subSectionTitle">2. Pixel Area Crop</p>
+    <p class="subSectionTitle2">2&nbsp;&nbsp;&nbsp;&nbsp;Pixel Area Crop</p>
 <br>
 
 <p>
@@ -148,19 +137,16 @@ east=-80.0
     pixels from the scene.  For a standard MODIS level-2 1km LAC file, this approximates the removal of pixels
     above a 40 degree sensor zenith angle.
 
-
-
-
     The level-2 file was imaged January 23 2017 over the Gulf of Mexico by the
     MODIS Aqua instrument. </i>
 
 </p>
 
 
-
+<br>
 <p>
     <b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e0e0e0">
+</p><table><tr><td bgcolor="#e9f0f0">
 <pre>
 gpt pixelCrop.xml -p pixelCrop.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_pixelCrop.dim
 </pre>
@@ -172,7 +158,7 @@ gpt pixelCrop.xml -p pixelCrop.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017
     <b>File = pixelCrop.xml</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 
 <pre>
 &lt;graph id="PixelCropGraph"&gt;
@@ -203,7 +189,7 @@ gpt pixelCrop.xml -p pixelCrop.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017
     <b>File = pixelCrop.par</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
 x=240
 y=0
@@ -217,10 +203,9 @@ height=2030
 
 
 
-<br>
-<hr>
+<br><br><br><hr>
 <a name="Example3"></a>
-    <p class="subSectionTitle">3. Full Scene Subsample</p>
+    <p class="subSectionTitle2">3&nbsp;&nbsp;&nbsp;&nbsp;Full Scene Subsample</p>
 <br>
 
 <p>
@@ -238,9 +223,10 @@ height=2030
         define the pixel crop dimensions for the full input file as shown in this example.</i>
 </p>
 
+<br>
 <p>
     <b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e0e0e0">
+</p><table><tr><td bgcolor="#e9f0f0">
 <pre>
 gpt subsample.xml -p subsample.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_subsample.dim
 </pre>
@@ -252,7 +238,7 @@ gpt subsample.xml -p subsample.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017
     <b>File = subsample.xml</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 
 <pre>
 &lt;graph id="SubsampleGraph"&gt;
@@ -287,7 +273,7 @@ gpt subsample.xml -p subsample.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017
     <b>File = subsample.par</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
 subsampling=2
 x=0
@@ -301,10 +287,9 @@ height=2030
 
 
 
-<br>
-<hr>
+<br><br><br><hr>
 <a name="Example4"></a>
-    <p class="subSectionTitle">4. Full Scene Band Subset</p>
+    <p class="subSectionTitle2">4&nbsp;&nbsp;&nbsp;&nbsp;Full Scene Band Subset</p>
 <br>
 
 <p>
@@ -318,9 +303,10 @@ height=2030
     define the pixel crop dimensions for the full input file as shown in this example.</i>
 </p>
 
+<br>
 <p>
     <b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e0e0e0">
+</p><table><tr><td bgcolor="#e9f0f0">
 <pre>
 gpt bandSubset.xml -p bandSubset.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_bandSubset.dim
 </pre>
@@ -332,7 +318,7 @@ gpt bandSubset.xml -p bandSubset.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A20
     <b>File = bandSubset.xml</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 
 <pre>
 &lt;graph id="BandSubsetGraph"&gt;
@@ -367,7 +353,7 @@ gpt bandSubset.xml -p bandSubset.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A20
     <b>File = bandSubset.par</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
 bands=chlor_a,Kd_490,Rrs_443,Rrs_547
 x=0
@@ -380,6 +366,7 @@ height=2030
 
 
 
+<br><br><br>
 
 
 

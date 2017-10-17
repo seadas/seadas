@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>SeaDAS Example - Reproject Gpt</title>
+    <title>The GPT Cookbook: Reproject</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,51 +10,36 @@
 
 <div class="center">
     <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
-    <h2>GPT Reproject Cookbook</h2>
+    <h1>GPT Cookbook</h1>
+    <p class="chapterTitle">Reproject</p>
 
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+            Creates a file which is a mapped reprojection of an input source file.
+        </p>
+    </td></tr></table>
+
+    <br>
     <table class="invisibletable">
         <tr class="invisibletable">
             <td class="invisibletable">
-                <p>
-                    <a href="mosaicGptExample.html#Overview" class="invisibleLink">Overview</a><br>
-                    <a href="mosaicGptExample.html#Example1" class="invisibleLink">Example 1: Geographic Lat/Lon Projection</a><br>
-                    <a href="mosaicGptExample.html#Example2" class="invisibleLink">Example 2: Oblique Stereographic Projection</a><br>
-                    <a href="mosaicGptExample.html#Example3" class="invisibleLink">Example 3: Lambert Azimuthal Equal Area Projection</a><br>
-                    <a href="mosaicGptExample.html#Example4" class="invisibleLink">Example 4: Lambert Azimuthal Equal Area Projection (alternate)</a><br>
-
-
-                </p>
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="mosaicGptExample.html#Example1" class="invisibleLink">Geographic Lat/Lon Projection</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="mosaicGptExample.html#Example2" class="invisibleLink">Oblique Stereographic Projection</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="mosaicGptExample.html#Example3" class="invisibleLink">Lambert Azimuthal Equal Area Projection</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="mosaicGptExample.html#Example4" class="invisibleLink">Lambert Azimuthal Equal Area Projection (alternate)</a></p>
             </td>
         </tr>
     </table>
 </div>
-
-
-<br>
-<br>
-
-
-<hr>
-<a name="Overview"></a>
-<div class="center">
-    <p class="subSectionTitle">Overview</p>
-</div>
-<br>
-<p>
-    These are some examples of the SeaDAS Reproject tool run from the command line using GPT (graph processing tool).
-</p>
-<p>
-    <i>Note: when processing large files with the Reproject tool you may likely need to increase your memory
-    allocation.  To do this edit the file gpt.sh.</i>
-</p>
+<br><br><br>
 
 
 
-<br>
-<hr>
+<br><br><br><hr>
 <a name="Example1"></a>
 <div class="center">
-    <p class="subSectionTitle">Example 1: Geographic Lat/Lon Projection</p>
+    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Geographic Lat/Lon Projection</p>
 </div>
 <br>
 
@@ -127,13 +112,9 @@ crs=GEOGCS["WGS84(DD)", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.25722356
 
 
 
-
-<br>
-<hr>
+<br><br><br><hr>
 <a name="Example2"></a>
-<div class="center">
-    <p class="subSectionTitle">Example 2: Oblique Stereographic Projection</p>
-</div>
+    <p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Oblique Stereographic Projection</p>
 <br>
 <p>
     This is exactly the same as example 1 except that it uses a Oblique Stereographic projection.
@@ -172,13 +153,9 @@ crs=PROJCS["Oblique_Stereographic / World Geodetic System 1984",GEOGCS["World Ge
 
 
 
-
-<br>
-<hr>
+<br><br><br><hr>
 <a name="Example3"></a>
-<div class="center">
-    <p class="subSectionTitle">Example 3: Lambert Azimuthal Equal Area Projection</p>
-</div>
+    <p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Lambert Azimuthal Equal Area Projection</p>
 <br>
 <p>
     This is exactly the same as example 1 except that it uses a Lambert Azimuthal Equal-Area projection.
@@ -216,12 +193,9 @@ crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["W
 
 
 
-<br>
-<hr>
+<br><br><br><hr>
 <a name="Example4"></a>
-<div class="center">
-    <p class="subSectionTitle">Example 4: Lambert Azimuthal Equal Area Projection (alternate)</p>
-</div>
+    <p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Lambert Azimuthal Equal Area Projection (alternate)</p>
 <br>
 <p>
     This is basically the same as example 3 except that the crs if defined in the xml graph file with some added variables
@@ -319,6 +293,7 @@ resampling=Nearest
 
 
 
+<br><br><br>
 
 
 

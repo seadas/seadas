@@ -97,11 +97,21 @@ p {
                   margin-right: 6pt;
                   margin-bottom: 12pt;
                   margin-left: 6pt;
-                  color: black;
+                  color: #003366;
 
               }
 
 
+.subSectionTitle2 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 18;
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 6pt;
+    margin-left: 6pt;
+    color: #003366;
+}
 
 
 .note {
