@@ -111,7 +111,7 @@ public class OCSSWRemoteClient extends OCSSW {
             @Override
             protected Void doInBackground(ProgressMonitor pm) throws Exception {
 
-                pm.beginTask("Uploading file '" + ifileName + "' to the remote server ", 10);
+                pm.beginTask("Uploading file '" + ifileName + "' to the remote server and getting ofile name", 10);
 
                 pm.worked(1);
                 final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(ifileName));
