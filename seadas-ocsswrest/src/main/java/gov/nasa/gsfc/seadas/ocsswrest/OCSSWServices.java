@@ -272,7 +272,11 @@ public class OCSSWServices {
     @Path("/missionSuites/{missionName}/{programName}")
     @Produces(MediaType.APPLICATION_JSON)
     public String[] getL2genMissionSuites(@PathParam("missionName") String missionName, @PathParam("programName") String programName) {
-        return new MissionInfo().getMissionSuiteList(missionName, programName);
+        if ( OCSSWServerModel.isMissionDirExist(missionName)) {
+            return new MissionInfo().getMissionSuiteList(missionName, programName);
+        } else {
+            return null;
+        }
     }
 
 
