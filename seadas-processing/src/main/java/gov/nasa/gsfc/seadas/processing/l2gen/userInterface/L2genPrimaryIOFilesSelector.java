@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 
-import gov.nasa.gsfc.seadas.processing.core.L2genDataProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
 import gov.nasa.gsfc.seadas.processing.common.GridBagConstraintsCustom;
 
 import javax.swing.*;
@@ -24,15 +24,15 @@ public class L2genPrimaryIOFilesSelector {
     private L2genOfileSelector ofileSelector;
 
 
-    public L2genPrimaryIOFilesSelector(L2genDataProcessorModel l2genDataProcessorModel) {
-        ifileSelector = new L2genIfileSelector(l2genDataProcessorModel);
-        geofileSelector = new L2genGeofileSelector(l2genDataProcessorModel);
-        ofileSelector = new L2genOfileSelector(l2genDataProcessorModel);
-        createJPanel(l2genDataProcessorModel);
+    public L2genPrimaryIOFilesSelector(SeaDASProcessorModel seaDASProcessorModel) {
+        ifileSelector = new L2genIfileSelector(seaDASProcessorModel);
+        geofileSelector = new L2genGeofileSelector(seaDASProcessorModel);
+        ofileSelector = new L2genOfileSelector(seaDASProcessorModel);
+        createJPanel(seaDASProcessorModel);
     }
 
 
-    public void createJPanel(L2genDataProcessorModel l2genDataProcessorModel) {
+    public void createJPanel(SeaDASProcessorModel seaDASProcessorModel) {
         jPanel = new JPanel(new GridBagLayout());
         jPanel.setBorder(BorderFactory.createTitledBorder("Primary I/O Files"));
 
