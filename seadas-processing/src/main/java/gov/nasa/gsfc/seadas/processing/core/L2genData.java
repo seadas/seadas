@@ -1022,6 +1022,7 @@ public class L2genData implements SeaDASProcessorModel {
 
             if (paramInfo.getName().toLowerCase().equals(IFILE)) {
 
+                ocssw.setIfileName(value);
 //todo Danny is working on this in order to maintain existing params when new ifile is selected
                 String tmpParString = null;
 
