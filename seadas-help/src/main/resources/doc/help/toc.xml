@@ -60,11 +60,6 @@
 
 
         <tocitem text="Command Line Tools (GPT)">
-            <!--<tocitem text="GPF Cookbook Examples">-->
-                <!--<tocitem text="GPF Mosaic Cookbook" target="gptExampleMosaic"/>-->
-                <!--<tocitem text="GPF Reproject Cookbook" target="gptExampleReproject"/>-->
-                <!--<tocitem text="GPF Subset Cookbook" target="gptExampleSubset"/>-->
-            <!--</tocitem>-->
             <tocitem text="Cookbook" target="gptCookbook"/>
             <tocitem text="Overview" target="gpf.overview"/>
             <tocitem text="Graph Processing Tool" target="gpf.graphProcessingTool"/>

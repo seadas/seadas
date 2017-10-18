@@ -24,10 +24,10 @@
     <table class="invisibletable">
         <tr class="invisibletable">
             <td class="invisibletable">
-                <p class="toc">Example 1&nbsp;&nbsp;<a href="mosaicGptExample.html#Example1" class="invisibleLink">Geographic Lat/Lon Projection</a></p>
-                <p class="toc">Example 2&nbsp;&nbsp;<a href="mosaicGptExample.html#Example2" class="invisibleLink">Oblique Stereographic Projection</a></p>
-                <p class="toc">Example 3&nbsp;&nbsp;<a href="mosaicGptExample.html#Example3" class="invisibleLink">Lambert Azimuthal Equal Area Projection</a></p>
-                <p class="toc">Example 4&nbsp;&nbsp;<a href="mosaicGptExample.html#Example4" class="invisibleLink">Lambert Azimuthal Equal Area Projection (alternate)</a></p>
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example1" class="invisibleLink">Geographic Lat/Lon Projection</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example2" class="invisibleLink">Oblique Stereographic Projection</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example3" class="invisibleLink">Lambert Azimuthal Equal Area Projection</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example4" class="invisibleLink">Lambert Azimuthal Equal Area Projection (alternate)</a></p>
             </td>
         </tr>
     </table>
@@ -38,9 +38,7 @@
 
 <br><br><br><hr>
 <a name="Example1"></a>
-<div class="center">
     <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Geographic Lat/Lon Projection</p>
-</div>
 <br>
 
 <p>
@@ -56,9 +54,9 @@
 
 <p>
 <b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e0e0e0">
+</p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt.sh reprojectGeneral.xml -p reprojectGeoLatLonCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectGeoLatLonGulfMexico.dim
+gpt reprojectGeneral.xml -p reprojectGeoLatLonCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectGeoLatLonGulfMexico.dim
 </pre>
 </td></tr></table>
 
@@ -67,7 +65,7 @@ gpt.sh reprojectGeneral.xml -p reprojectGeoLatLonCrsGulfMexico.par -Ssource=A201
 <p>
 <b>File = reprojectGeneral.xml</b>
 </p>
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 
 <pre>
 &lt;graph id="ReprojectGraph"&gt;
@@ -101,7 +99,7 @@ gpt.sh reprojectGeneral.xml -p reprojectGeoLatLonCrsGulfMexico.par -Ssource=A201
 <b>File = reprojectGeoLatLonCrsGulfMexico.par</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
 pixelSize=0.009
 resampling=Nearest
@@ -132,9 +130,9 @@ crs=GEOGCS["WGS84(DD)", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.25722356
 <p>
     <b>Command Line Entry</b>
 </p>
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt.sh reprojectGeneral.xml -p reprojectObliqueStereoCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectObliqueStereoCrsGulfMexico.dim
+gpt reprojectGeneral.xml -p reprojectObliqueStereoCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectObliqueStereoCrsGulfMexico.dim
 </pre>
 </td></tr></table>
 
@@ -143,7 +141,7 @@ gpt.sh reprojectGeneral.xml -p reprojectObliqueStereoCrsGulfMexico.par -Ssource=
     <b>File = reprojectObliqueStereoCrsGulfMexico.par</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
 pixelSize=1000.0
 resampling=Nearest
@@ -172,9 +170,9 @@ crs=PROJCS["Oblique_Stereographic / World Geodetic System 1984",GEOGCS["World Ge
 <p>
     <b>Command Line Entry</b>
 </p>
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt.sh reprojectGeneral.xml -p reprojectLambertAzCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectLambertAzGulfMexico.dim
+gpt reprojectGeneral.xml -p reprojectLambertAzCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectLambertAzGulfMexico.dim
 </pre>
 </td></tr></table>
 
@@ -183,7 +181,7 @@ gpt.sh reprojectGeneral.xml -p reprojectLambertAzCrsGulfMexico.par -Ssource=A201
     <b>File = reprojectLambertAzCrsGulfMexico.par</b>
 </p>
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
 pixelSize=1000.0
 resampling=Nearest
@@ -209,9 +207,9 @@ crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["W
 <p>
     <b>Command Line Entry</b>
 </p>
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt.sh reprojectLambertAz.xml -p reprojectLambertAzGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectLambertAzGulfMexico.dim
+gpt reprojectLambertAz.xml -p reprojectLambertAzGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectLambertAzGulfMexico.dim
 </pre>
 </td></tr></table>
 
@@ -228,7 +226,7 @@ gpt.sh reprojectLambertAz.xml -p reprojectLambertAzGulfMexico.par -Ssource=A2017
 
 
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
 &lt;graph id="ReprojectLambertAzGraph"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
@@ -282,7 +280,7 @@ gpt.sh reprojectLambertAz.xml -p reprojectLambertAzGulfMexico.par -Ssource=A2017
 </p>
 
 
-<table><tr><td bgcolor="#e0e0e0">
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
 latitudeOfCenter=25.0
 longitudeOfCenter=-90.0
