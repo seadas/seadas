@@ -16,7 +16,7 @@
     <br>
     <table width="500"><tr><td bgcolor="#fff9e9">
         <p>
-    Creates a file which is a copy of an input source file, adding a land band, land mask, water mask and coast mask.
+          Creates a new file with math band(s) based on an input source file with the option to retain source file bands in the new file.
         </p>
     </td></tr></table>
 
@@ -25,10 +25,10 @@
         <tr class="invisibletable">
             <td class="invisibletable">
 
-                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example1" class="invisibleLink">Title</a></p>
-                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example2" class="invisibleLink">Title</a></p>
-                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example3" class="invisibleLink">Title</a></p>
-                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example4" class="invisibleLink">Title</a></p>
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example1" class="invisibleLink">Create Math Bands and Retain Source Bands</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example2" class="invisibleLink">Create Math Bands and Retain Source Bands  (Variables Option)</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example3" class="invisibleLink">Create only Math Bands</a></p>
+
             </td>
         </tr>
     </table>
@@ -38,11 +38,11 @@
 
 <br><br><br><hr>
 <a name="Example1"></a>
-    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Title</p>
+    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands</p>
 <br>
 
 <p>
-    This creates a copy of a 9km resolution file, adding to it a land band, land mask, water mask and coast mask.
+    This creates a copy of a file adding math band(s) to it.
 </p>
 
 <br>
@@ -60,30 +60,34 @@ gpt BandMaths.xml -p BandMathsEx01.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A
 <b>File = BandMaths.xml</b>
 </p>
 
+
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-  &lt;graph id="someGraphId"&gt;
-    &lt;version&gt;1.0&lt;/version&gt;
-    &lt;node id="someNodeId"&gt;
-      &lt;operator&gt;BandMaths&lt;/operator&gt;
-      &lt;sources&gt;
-        &lt;source&gt;${source}&lt;/source&gt;
-      &lt;/sources&gt;
-      &lt;parameters&gt;
-        &lt;targetBands&gt;
-          &lt;targetBand&gt;
-            &lt;name&gt;${band1Name}&lt;/name&gt;
-            &lt;type&gt;${band1Type}&lt;/type&gt;
-            &lt;expression&gt;${band1Expression}&lt;/expression&gt;
-            &lt;description&gt;${band1Description}&lt;/description&gt;
-            &lt;unit&gt;${band1Unit}&lt;/unit&gt;
-            &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
-            &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
-          &lt;/targetBand&gt;
-        &lt;/targetBands&gt;
-      &lt;/parameters&gt;
-    &lt;/node&gt;
-  &lt;/graph&gt;
+&lt;graph id="BandMathsGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="BandMathsNode"&gt;
+    &lt;operator&gt;BandMaths&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;copySourceFile&gt;${copySourceFile}&lt;copySourceFile&gt;
+      &lt;targetBands&gt;
+        &lt;targetBand&gt;
+          &lt;name&gt;${band1Name}&lt;/name&gt;
+          &lt;type&gt;${band1Type}&lt;/type&gt;
+          &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+          &lt;description&gt;${band1Description}&lt;/description&gt;
+          &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+          &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+          &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+          &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
+        &lt;/targetBand&gt;
+      &lt;/targetBands&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
 </pre>
 </td></tr></table>
 
@@ -91,20 +95,180 @@ gpt BandMaths.xml -p BandMathsEx01.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A
 
 <br>
 <p>
-<b>File = BandMathsEx01.par</b>
+    <b>File = BandMathsEx01.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
+copySourceFile=true
+band1Name=aod
+band1Type=float64
+band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
+band1Description=apparent optical depth
+band1Unit=meters
+band1ValidExpression=Kd_490 &amp;gt;= 0.01000 and Kd_490 &amp;lt;= 6.00000
+band1NoDataValue=-0.19837031
+band1SpectralWavelength=490.0
+band1SpectralBandwidth=10.0
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example2"></a>
+<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands (Variables Option)</p>
+<br>
+
+<p>
+    This creates a copy of a file adding math band(s) to it.
+</p>
+
+<p>
+    <i>This is exactly the same as example 1 except it illustrates the use of the variable options.</i>
+</p>
+
+<p>
+    <i>Note: variables only apply to parameter "expression" and not to parameter "validExpression".</i>
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt BandMathsVariables.xml -p BandMathsEx02.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMaths.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = BandMathsVariables.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="BandMathsVariablesGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="BandMathsNode"&gt;
+    &lt;operator&gt;BandMaths&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;copySourceFile&gt;${copySourceFile}&lt;copySourceFile&gt;
+      &lt;targetBands&gt;
+        &lt;targetBand&gt;
+          &lt;name&gt;${band1Name}&lt;/name&gt;
+          &lt;type&gt;${band1Type}&lt;/type&gt;
+          &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+          &lt;description&gt;${band1Description}&lt;/description&gt;
+          &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+          &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+          &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+          &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
+        &lt;/targetBand&gt;
+      &lt;/targetBands&gt;
+      &lt;variables&gt;
+        &lt;variable&gt;
+          &lt;name&gt;${var1Name}&lt;/name&gt;
+          &lt;type&gt;${var1Type}&lt;/type&gt;
+          &lt;value&gt;${var1Value}&lt;/value&gt;
+        &lt;/variable&gt;
+      &lt;/variables&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br>
+<p>
+    <b>File = BandMathsEx02.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+copySourceFile=true
+band1Name=aod
+band1Type=float64
+band1Expression=if (Kd_490 != 0) then (AOD_KD490_FACTOR/Kd_490) else NaN
+band1Description=apparent optical depth
+band1Unit=meters
+band1ValidExpression=Kd_490 &amp;gt;= 0.01000 and Kd_490 &amp;lt;= 6.00000
+band1NoDataValue=-0.19837031
+band1SpectralWavelength=490.0
+band1SpectralBandwidth=10.0
+var1Name=AOD_KD490_FACTOR
+var1Type=float64
+var1Value=1.3
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example3"></a>
+<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Create only Math Bands</p>
+<br>
+
+<p>
+    This creates a new file based off an input source file adding math band(s) to it (the bands and masks of the source
+    file are not transferred to the output file).
+</p>
+
+<p>
+    <i>This uses the graph file of example 1 and this is identical to example 1 except that the band1ValidExpression
+        does not point to the source band Kd_490 since it does not exist in the created file.</i>
+</p>
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt BandMaths.xml -p BandMathsEx03.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsOnly.dim
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = BandMathsEx03.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+copySourceFile=false
 band1Name=aod
 band1Type=float64
 band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
 band1Description=apparent optical depth
 band1Unit=meters
 band1ValidExpression=aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)
+band1NoDataValue=-0.19837031
 band1SpectralWavelength=490.0
+band1SpectralBandwidth=10.0
 </pre>
 </td></tr></table>
+
+
+
+
+
 
 
 
