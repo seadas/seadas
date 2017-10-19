@@ -1,0 +1,114 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: BandMaths</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT Cookbook</h1>
+    <p class="chapterTitle">BandMaths</p>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+    Creates a file which is a copy of an input source file, adding a land band, land mask, water mask and coast mask.
+        </p>
+    </td></tr></table>
+
+    <br>
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example1" class="invisibleLink">Title</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example2" class="invisibleLink">Title</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example3" class="invisibleLink">Title</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example4" class="invisibleLink">Title</a></p>
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
+
+
+<br><br><br><hr>
+<a name="Example1"></a>
+    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Title</p>
+<br>
+
+<p>
+    This creates a copy of a 9km resolution file, adding to it a land band, land mask, water mask and coast mask.
+</p>
+
+<br>
+<p>
+<b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt BandMaths.xml -p BandMathsEx01.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMaths.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+<b>File = BandMaths.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+  &lt;graph id="someGraphId"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="someNodeId"&gt;
+      &lt;operator&gt;BandMaths&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;targetBands&gt;
+          &lt;targetBand&gt;
+            &lt;name&gt;${band1Name}&lt;/name&gt;
+            &lt;type&gt;${band1Type}&lt;/type&gt;
+            &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+            &lt;description&gt;${band1Description}&lt;/description&gt;
+            &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+            &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+            &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+          &lt;/targetBand&gt;
+        &lt;/targetBands&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+  &lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+<b>File = BandMathsEx01.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+band1Name=aod
+band1Type=float64
+band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
+band1Description=apparent optical depth
+band1Unit=meters
+band1ValidExpression=aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)
+band1SpectralWavelength=490.0
+</pre>
+</td></tr></table>
+
+
+
+<br><br><br>
+
+</body>
+</html>
