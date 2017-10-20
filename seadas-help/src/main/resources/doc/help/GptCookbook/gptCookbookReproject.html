@@ -28,6 +28,8 @@
                 <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example2" class="invisibleLink">Oblique Stereographic Projection</a></p>
                 <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example3" class="invisibleLink">Lambert Azimuthal Equal Area Projection</a></p>
                 <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example4" class="invisibleLink">Lambert Azimuthal Equal Area Projection (alternate)</a></p>
+                <br>
+                <p class="toc">Notes 1&nbsp;&nbsp;<a href="gptCookbookReproject.html#Notes1" class="invisibleLink">Resampling Options</a></p>
             </td>
         </tr>
     </table>
@@ -286,6 +288,26 @@ latitudeOfCenter=25.0
 longitudeOfCenter=-90.0
 pixelSize=1000.0
 resampling=Nearest
+</pre>
+</td></tr></table>
+
+
+
+<br><br><br><hr>
+<a name="Notes1"></a>
+<p class="subSectionTitle2">Notes 1&nbsp;&nbsp;&nbsp;&nbsp;Resampling Options</p>
+<br>
+
+<p>
+    Here is a full list of the resampling options and their specific names as used by the Reproject operator.  Please be aware
+    that these names differ for the Collocate operator.  We will address this in a future SeaDAS release.
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+resampling=Nearest
+resampling=Bilinear
+resampling=Bicubic
 </pre>
 </td></tr></table>
 

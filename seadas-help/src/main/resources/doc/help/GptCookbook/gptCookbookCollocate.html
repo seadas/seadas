@@ -1,0 +1,273 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: Collocate</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT Cookbook</h1>
+    <p class="chapterTitle">Collocate</p>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+          Creates a new file which is a collocated joining of two input source files.
+        </p>
+    </td></tr></table>
+
+    <br>
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookCollocate.html#Example1" class="invisibleLink">Files Which Contain Unique Band Names</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookCollocate.html#Example2" class="invisibleLink">Files Which May Contain Identical Band Names</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookCollocate.html#Example3" class="invisibleLink">Use of Suffix as Parameter</a></p>
+                <br>
+                <p class="toc">Notes 1&nbsp;&nbsp;<a href="gptCookbookCollocate.html#Notes1" class="invisibleLink">Resampling Options</a></p>
+
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
+
+
+
+<br><br><br><hr>
+<a name="Example1"></a>
+<p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Files Which Contain Unique Band Names</p>
+<br>
+
+<p>
+    This creates a collocated file from two file which contain unique band names.  No band names in one input file can
+    match those in the other input file.  This is a very simple example of joining two level3 mapped files together.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt Collocate.xml -Sreference=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -Sdependent=V20172132017243.L3m_MO_SNPP_KD490_Kd_490_9km.nc -t CollocateEx01.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = Collocate.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="CollocateGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="CollocateNode"&gt;
+    &lt;operator&gt;Collocate&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;master&gt;${reference}&lt;/master&gt;
+      &lt;slave&gt;${dependent}&lt;/slave&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+        &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
+        &lt;renameMasterComponents&gt;false&lt;/renameMasterComponents&gt;
+        &lt;renameSlaveComponents&gt;false&lt;/renameSlaveComponents&gt;
+        &lt;resamplingType&gt;NEAREST_NEIGHBOUR&lt;/resamplingType&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example2"></a>
+    <p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Files Which May Contain Identical Band Names</p>
+<br>
+
+<p>
+    This creates a collocated file from two file which may contain identical band names.  To accomplish this, the original band
+    name is preserved with the addition of a suffix relating to which source file the band came from.
+</p>
+
+<br>
+<p>
+<b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt CollocatePattern.xml -Sreference=A20020012002365.L3m_YR_NSST_sst_9km.nc -Sdependent=A20160012016366.L3m_YR_NSST_sst_9km.nc -p CollocateEx02.par -t CollocateEx02.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+<b>File = CollocatePattern.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="CollocatePatternGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="CollocatePatternNode"&gt;
+    &lt;operator&gt;Collocate&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;master&gt;${reference}&lt;/master&gt;
+      &lt;slave&gt;${dependent}&lt;/slave&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+        &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
+        &lt;renameMasterComponents&gt;${renameReference}&lt;/renameMasterComponents&gt;
+        &lt;renameSlaveComponents&gt;${renameDependent}&lt;/renameSlaveComponents&gt;
+        &lt;masterComponentPattern&gt;${referenceComponentPattern}&lt;/masterComponentPattern&gt;
+        &lt;slaveComponentPattern&gt;${dependentComponentPattern}&lt;/slaveComponentPattern&gt;
+        &lt;resamplingType&gt;${resamplingType}&lt;/resamplingType&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = CollocateEx02.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+renameReference=true
+renameDependent=true
+referenceComponentPattern=${ORIGINAL_NAME}_R
+dependentComponentPattern=${ORIGINAL_NAME}_D
+resamplingType=NEAREST_NEIGHBOUR
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example3"></a>
+<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Use of Suffix as Parameter</p>
+<br>
+
+<p>
+    A slight variant on example 2 where now we pass in band names suffixes related to the actual input file names.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt CollocateAddSuffix.xml -Sreference=A20020012002365.L3m_YR_NSST_sst_9km.nc -PreferenceSuffix=2002 -Sdependent=A20160012016366.L3m_YR_NSST_sst_9km.nc -PdependentSuffix=2016 -p CollocateEx03.par -t CollocateEx03.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = CollocateAddSuffix.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="CollocateAddSuffixGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="CollocateAddSuffixNode"&gt;
+    &lt;operator&gt;Collocate&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;master&gt;${reference}&lt;/master&gt;
+      &lt;slave&gt;${dependent}&lt;/slave&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+        &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
+        &lt;renameMasterComponents&gt;${renameReference}&lt;/renameMasterComponents&gt;
+        &lt;renameSlaveComponents&gt;${renameDependent}&lt;/renameSlaveComponents&gt;
+        &lt;masterComponentPattern&gt;${ORIGINAL_NAME}_${referenceSuffix}&lt;/masterComponentPattern&gt;
+        &lt;slaveComponentPattern&gt;${ORIGINAL_NAME}_${dependentSuffix}&lt;/slaveComponentPattern&gt;
+        &lt;resamplingType&gt;${resamplingType}&lt;/resamplingType&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = CollocateEx03.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+renameReference=true
+renameDependent=true
+resamplingType=NEAREST_NEIGHBOUR
+</pre>
+</td></tr></table>
+
+
+
+
+<br><br><br><hr>
+<a name="Notes1"></a>
+<p class="subSectionTitle2">Notes 1&nbsp;&nbsp;&nbsp;&nbsp;Resampling Options</p>
+<br>
+
+<p>
+    Here is a full list of the resampling options and their specific names as used by the Collocate operator.  Please be aware
+    that these names differ for the operators Reproject and Mosaic.  We will address this in a future SeaDAS release.
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+resamplingType=NEAREST_NEIGHBOUR
+resamplingType=BILINEAR_INTERPOLATION
+resamplingType=CUBIC_CONVOLUTION
+resamplingType=BISINC_INTERPOLATION
+resamplingType=BICUBIC_INTERPOLATION
+</pre>
+</td></tr></table>
+
+
+
+<br><br><br>
+
+</body>
+</html>
