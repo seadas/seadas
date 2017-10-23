@@ -96,12 +96,20 @@
             <order>10</order>
         </option>
         <option type="boolean">
+            <name>--msi</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>install MSI files</description>
+            <order>11</order>
+        </option>
+        <option type="boolean">
             <name>--ocm1</name>
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCM1 files</description>
-            <order>11</order>
+            <order>12</order>
         </option>
         <option type="boolean">
             <name>--ocm2</name>
@@ -109,7 +117,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCM2 files</description>
-            <order>12</order>
+            <order>13</order>
         </option>
         <option type="boolean">
             <name>--ocrvc</name>
@@ -117,7 +125,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCRVC files</description>
-            <order>13</order>
+            <order>14</order>
         </option>
         <option type="boolean">
             <name>--octs</name>
@@ -125,7 +133,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCTS files</description>
-            <order>14</order>
+            <order>15</order>
         </option>
         <option type="boolean">
             <name>--oli</name>
@@ -133,7 +141,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install Landsat 8 OLI files</description>
-            <order>15</order>
+            <order>16</order>
         </option>
         <option type="boolean">
             <name>--osmi</name>
@@ -141,7 +149,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OSMI files</description>
-            <order>16</order>
+            <order>17</order>
         </option>
         <option type="boolean">
             <name>--seawifs</name>
@@ -149,7 +157,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install SeaWIFS files</description>
-            <order>17</order>
+            <order>18</order>
         </option>
         <option type="boolean">
             <name>--viirsn</name>
@@ -157,7 +165,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install VIIRSN files</description>
-            <order>18</order>
+            <order>19</order>
         </option>
         <option type="boolean">
             <name>--eval</name>
@@ -165,7 +173,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install evaluation sensor files</description>
-            <order>19</order>
+            <order>20</order>
         </option>
         <option type="boolean">
             <name>--verbose</name>
@@ -173,7 +181,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>print out verbose status</description>
-            <order>20</order>
+            <order>21</order>
         </option>
         <option type="boolean">
             <name>--clean</name>
@@ -181,7 +189,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>clean install</description>
-            <order>21</order>
+            <order>22</order>
         </option>
     </options>
 </paramInfo>

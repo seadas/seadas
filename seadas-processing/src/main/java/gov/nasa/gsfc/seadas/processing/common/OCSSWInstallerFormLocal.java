@@ -35,6 +35,7 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
         missionDataStatus.put("OLI", new File(missionDataDir + "oli").exists());
         missionDataStatus.put("OSMI", new File(missionDataDir + "osmi").exists());
         missionDataStatus.put("MOS", new File(missionDataDir + "mos").exists());
+        missionDataStatus.put("MSI", new File(missionDataDir + "msi").exists());
         missionDataStatus.put("OCM2", new File(missionDataDir + "ocm2").exists());
         missionDataStatus.put("OCM1", new File(missionDataDir + "ocm1").exists());
         missionDataStatus.put("AVHRR", new File(missionDataDir + "avhrr").exists());
