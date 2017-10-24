@@ -214,5 +214,6 @@
     <mapID target="fieldMeasurements" url="FieldMeasurements/FieldMeasurements.html"/>
     <mapID target="fieldMeasurementsFindMatchups" url="FieldMeasurements/FindMatchups.html"/>
     <mapID target="fieldMeasurementsMakeMatchups" url="FieldMeasurements/MakeMatchups.html"/>
+    <mapID target="filesAbout" url="general/Files.html"/>
 
 </map>
