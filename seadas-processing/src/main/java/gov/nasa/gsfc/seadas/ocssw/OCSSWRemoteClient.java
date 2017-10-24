@@ -93,6 +93,7 @@ public class OCSSWRemoteClient extends OCSSW {
 
     }
 
+
     private void updateProgramName(String programName) {
         this.programName = programName;
         setXmlFileName(programName + ".xml");
@@ -111,7 +112,7 @@ public class OCSSWRemoteClient extends OCSSW {
             @Override
             protected Void doInBackground(ProgressMonitor pm) throws Exception {
 
-                pm.beginTask("Uploading file '" + ifileName + "' to the remote server and getting ofile name", 10);
+                pm.beginTask("Uploading file '" + ifileName + "' to the remote server and getting ofile name", 2);
 
                 pm.worked(1);
                 final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(ifileName));
@@ -251,7 +252,9 @@ public class OCSSWRemoteClient extends OCSSW {
         }
 
 
-        this.setIfileName(ifileName);
+        if (!getIfileName().equals(ifileName)) {
+            this.setIfileName(ifileName);
+        }
 
         if (ifileUploadSuccess) {
             JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
@@ -445,7 +448,7 @@ public class OCSSWRemoteClient extends OCSSW {
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
-        Response response = target.path("ocssw").path("executeOcsswProgramSimple").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        Response response = target.path("ocssw").path("executeOcsswProgramSimple").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             setProcessExitValue(0);
         }
@@ -470,13 +473,25 @@ public class OCSSWRemoteClient extends OCSSW {
                     break;
             }
             try {
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
         }
         return seadasProcess;
+    }
+
+
+    public InputStream executeAndGetStdout(ProcessorModel processorModel) {
+        InputStream responceStream = null;
+        JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+        Response response = target.path("ocssw").path("executeOcsswProgramAndGetStdout").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            response = target.path("fileServices").path("downloadAncFileList").path(jobId).request().get(Response.class);
+            responceStream = (InputStream) response.getEntity();
+        }
+        return responceStream;
     }
 
     @Override
@@ -706,9 +721,11 @@ public class OCSSWRemoteClient extends OCSSW {
                     if (option.getType().equals(ParamInfo.Type.IFILE)) {
                         fileName = option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
                         ifileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
-                        response = ocsswClient.getServicePathForFileVerification(jobId).path(fileName).request().get();
+                        response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", option.getValue()).request().get();
                         if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
                             uploadClientFile(option.getValue());
+                        } else {
+                            ifileUploadSuccess = true;
                         }
                     }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
@@ -727,6 +744,7 @@ public class OCSSWRemoteClient extends OCSSW {
     }
 
     private void prepareToRemoteExecute() {
+        Response response;
         String fileExtensions = processorModel.getImplicitInputFileExtensions();
         if (fileExtensions != null) {
             StringTokenizer st = new StringTokenizer(fileExtensions, ",");
@@ -736,7 +754,10 @@ public class OCSSWRemoteClient extends OCSSW {
             while (st.hasMoreTokens()) {
                 fileExtension = st.nextToken().trim();
                 fileNameToUpload = ifileDir + File.separator + fileNameBase + "." + fileExtension;
-                uploadClientFile(fileNameToUpload);
+                response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName",fileNameToUpload).request().get();
+                if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
+                    uploadClientFile(fileNameToUpload);
+                }
             }
         }
     }
