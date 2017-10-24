@@ -498,7 +498,7 @@ public class OCSSWRemoteClient extends OCSSW {
     public void waitForProcess() {
         boolean serverProcessCompleted = false;
 
-        String processStatus = "-100";
+        String processStatus = PROCESS_STATUS_NONEXIST;
         while (!serverProcessCompleted) {
             switch (processStatus) {
                 case PROCESS_STATUS_NONEXIST:
@@ -523,9 +523,7 @@ public class OCSSWRemoteClient extends OCSSW {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("wait for process: status before: " + processStatus);
             processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
-            System.out.println("wait for process: status after: " + processStatus);
         }
     }
 
