@@ -321,43 +321,49 @@ public class SQLiteJDBC {
             preparedStatement.setString(3, "mos");
             preparedStatement.executeUpdate();
 
-            //9. insert octs mission info
+            //9. insert msi mission info
+            preparedStatement.setString(1, "MSI");
+            preparedStatement.setString(2, "MSI");
+            preparedStatement.setString(3, "msi");
+            preparedStatement.executeUpdate();
+
+            //10. insert octs mission info
             preparedStatement.setString(1, "OCTS");
             preparedStatement.setString(2, "OCTS");
             preparedStatement.setString(3, "octs");
             preparedStatement.executeUpdate();
 
-            //10. insert osmi mission info
+            //11. insert osmi mission info
             preparedStatement.setString(1, "OSMI");
             preparedStatement.setString(2, "OSMI");
             preparedStatement.setString(3, "osmi");
             preparedStatement.executeUpdate();
 
-            //11. insert seawifs mission info
+            //12. insert seawifs mission info
             preparedStatement.setString(1, "SEAWIFS");
             preparedStatement.setString(2, "SEAWIFS SeaWiFS");
             preparedStatement.setString(3, "seawifs");
             preparedStatement.executeUpdate();
 
-            //12. insert viirs mission info
+            //13. insert viirs mission info
             preparedStatement.setString(1, "VIIRS");
             preparedStatement.setString(2, "VIIRS VIIRSN");
             preparedStatement.setString(3, "viirsn");
             preparedStatement.executeUpdate();
 
-            //13. insert ocm1 mission info
+            //14. insert ocm1 mission info
             preparedStatement.setString(1, "OCM1");
             preparedStatement.setString(2, "OCM1");
             preparedStatement.setString(3, "ocm1");
             preparedStatement.executeUpdate();
 
-            //14. insert ocm2 mission info
+            //15. insert ocm2 mission info
             preparedStatement.setString(1, "OCM2");
             preparedStatement.setString(2, "OCM2");
             preparedStatement.setString(3, "ocm2");
             preparedStatement.executeUpdate();
 
-            //15. insert oli mission info
+            //16. insert oli mission info
             preparedStatement.setString(1, "OLI");
             preparedStatement.setString(2, "OLI");
             preparedStatement.setString(3, "oli");

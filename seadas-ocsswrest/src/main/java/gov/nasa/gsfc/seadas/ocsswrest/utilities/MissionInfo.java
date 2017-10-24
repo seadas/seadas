@@ -50,6 +50,7 @@ public class MissionInfo {
         missionDataStatus.put("OLI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "oli").exists());
         missionDataStatus.put("OSMI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "osmi").exists());
         missionDataStatus.put("MOS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "mos").exists());
+        missionDataStatus.put("MSI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "msi").exists());
         missionDataStatus.put("OCM2", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "ocm2").exists());
         missionDataStatus.put("OCM1", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "ocm1").exists());
         missionDataStatus.put("AVHRR", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "avhrr").exists());
@@ -72,6 +73,7 @@ public class MissionInfo {
                 .add("OLI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "oli").exists())
                 .add("OSMI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "osmi").exists())
                 .add("MOS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "mos").exists())
+                .add("MSI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "msi").exists())
                 .add("OCM2", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "ocm2").exists())
                 .add("OCM1", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "ocm1").exists())
                 .add("AVHRR", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "avhrr").exists())
@@ -182,6 +184,7 @@ public class MissionInfo {
         MODISA,
         MODIST,
         MOS,
+        MSI,
         OCTS,
         OSMI,
         SEAWIFS,
@@ -201,6 +204,7 @@ public class MissionInfo {
             Id.MODISA,
             Id.MODIST,
             Id.MOS,
+            Id.MSI,
             Id.OCTS,
             Id.OSMI,
             Id.SEAWIFS,
@@ -239,6 +243,9 @@ public class MissionInfo {
 
     public final static String[] MOS_NAMES = {"MOS"};
     public final static String MOS_DIRECTORY = "mos";
+
+    public final static String[] MSI_NAMES = {"MSI"};
+    public final static String MSI_DIRECTORY = "msi";
 
     public final static String[] OCM1_NAMES = {"OCM1"};
     public final static String OCM1_DIRECTORY = "ocm1";
@@ -282,6 +289,7 @@ public class MissionInfo {
         directories.put(Id.OCTS, OCTS_DIRECTORY);
         directories.put(Id.OSMI, OSMI_DIRECTORY);
         directories.put(Id.MOS, MOS_DIRECTORY);
+        directories.put(Id.MSI, MSI_DIRECTORY);
         directories.put(Id.OCM1, OCM1_DIRECTORY);
         directories.put(Id.OCM2, OCM2_DIRECTORY);
         directories.put(Id.HICO, HICO_DIRECTORY);
@@ -300,6 +308,7 @@ public class MissionInfo {
         names.put(Id.OCTS, OCTS_NAMES);
         names.put(Id.OSMI, OSMI_NAMES);
         names.put(Id.MOS, MOS_NAMES);
+        names.put(Id.MSI, MSI_NAMES);
         names.put(Id.OCM1, OCM1_NAMES);
         names.put(Id.OCM2, OCM2_NAMES);
         names.put(Id.HICO, HICO_NAMES);
