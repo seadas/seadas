@@ -2,8 +2,6 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.OCSSWInfo;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
@@ -11,7 +9,6 @@ import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.processor.MultlevelProcessorForm;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
@@ -21,7 +18,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static java.lang.System.getProperty;
+import static gov.nasa.gsfc.seadas.OCSSWInfo.OCSSW_SCRIPTS_DIR_SUFFIX;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -31,8 +28,6 @@ public class OCSSWLocal extends OCSSW {
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
-    public static String OCSSW_SCRIPTS_DIR_SUFFIX = "run" + System.getProperty("file.separator") + "scripts";
-    public static String OCSSW_DATA_DIR_SUFFIX = "run" + System.getProperty("file.separator") + "data";
 
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
@@ -107,6 +102,18 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public Process executeSimple(ProcessorModel processorModel) {
         return execute(processorModel);
+    }
+
+    @Override
+    public InputStream executeAndGetStdout(ProcessorModel processorModel) {
+
+        Process process = execute(processorModel);
+        try {
+            process.waitFor();
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
+        return process.getInputStream();
     }
 
     @Override
