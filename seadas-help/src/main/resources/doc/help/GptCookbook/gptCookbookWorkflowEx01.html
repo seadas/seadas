@@ -1,322 +1,201 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>The GPT Cookbook: BandMaths</title>
+    <title>The GPT Cookbook: Workflow Example 1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
 
-
 <div class="center">
     <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
     <h1>The GPT Cookbook</h1>
-    <p class="chapterTitle">BandMaths</p>
+    <p class="chapterTitle">Workflow Example 1</p>
 
     <br>
     <table width="500"><tr><td bgcolor="#fff9e9">
         <p>
-          Creates a new file with math band(s) based on an input source file with the option to retain source file bands in the new file.
+            Mosaic --&gt; BandMaths
         </p>
+
     </td></tr></table>
 
-    <br>
-    <table class="invisibletable">
-        <tr class="invisibletable">
-            <td class="invisibletable">
 
-                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example1" class="invisibleLink">Create Math Bands and Retain Source Bands</a></p>
-                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example2" class="invisibleLink">Create Math Bands and Retain Source Bands  (Variables Option)</a></p>
-                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example3" class="invisibleLink">Create only Math Bands</a></p>
-                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example4" class="invisibleLink">Remove the "_count" Bands from a Mosaic File (OC Level2)</a></p>
-
-            </td>
-        </tr>
-    </table>
 </div>
 <br><br><br>
 
 
-<br><br><br><hr>
-<a name="Example1"></a>
-    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands</p>
-<br>
+
+
 
 <p>
-    This creates a copy of a file adding math band(s) to it.
+    This combines the steps of Mosaic Example 5 with BandMaths Example 4. <br>
+
+    <a href="gptCookbookBandMaths.html#Example4" class="invisibleLink">Remove the "_count" Bands from a Mosaic File (OC Level2)</a><br>
+
+    <a href="gptCookbookMosaic.html#Example5" class="invisibleLink">Lambert Azimuthal Equal Area Projection of Full OC Suite L2 File</a>
+
+
 </p>
+
+
 
 <br>
 <p>
 <b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e9f0f0">
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt BandMaths.xml -p BandMathsEx01.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx01.dim
+gpt WorkflowEx01.xml -p WorkflowEx01.par A2017023193500.L2_LAC_OC.nc -t A2017023193500_WorkflowEx01.dim
 </pre>
 </td></tr></table>
 
 
+
 <br>
 <p>
-<b>File = BandMaths.xml</b>
+<b>File = WorkflowEx01.xml</b>
 </p>
-
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-&lt;graph id="BandMathsGraph"&gt;
+&lt;graph id="WorkflowEx01Graph"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
-  &lt;node id="BandMathsNode"&gt;
-    &lt;operator&gt;BandMaths&lt;/operator&gt;
+
+  &lt;node id="MosaicEx05Node"&gt;
+    &lt;operator&gt;Mosaic&lt;/operator&gt;
     &lt;sources&gt;
-      &lt;source&gt;${source}&lt;/source&gt;
+       &lt;sourceProducts&gt;${sourceProducts}&lt;/sourceProducts&gt;
     &lt;/sources&gt;
+
     &lt;parameters&gt;
-      &lt;copySourceFile&gt;${copySourceFile}&lt;/copySourceFile&gt;
-      &lt;targetBands&gt;
-        &lt;targetBand&gt;
-          &lt;name&gt;${band1Name}&lt;/name&gt;
-          &lt;type&gt;${band1Type}&lt;/type&gt;
-          &lt;expression&gt;${band1Expression}&lt;/expression&gt;
-          &lt;description&gt;${band1Description}&lt;/description&gt;
-          &lt;unit&gt;${band1Unit}&lt;/unit&gt;
-          &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
-          &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
-          &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
-          &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
-        &lt;/targetBand&gt;
-      &lt;/targetBands&gt;
+        &lt;variables&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band1Name}&lt;/name&gt;
+                &lt;expression&gt;${band1Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band2Name}&lt;/name&gt;
+                &lt;expression&gt;${band2Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band3Name}&lt;/name&gt;
+                &lt;expression&gt;${band3Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band4Name}&lt;/name&gt;
+                &lt;expression&gt;${band4Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band5Name}&lt;/name&gt;
+                &lt;expression&gt;${band5Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band6Name}&lt;/name&gt;
+                &lt;expression&gt;${band6Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band7Name}&lt;/name&gt;
+                &lt;expression&gt;${band7Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band8Name}&lt;/name&gt;
+                &lt;expression&gt;${band8Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band9Name}&lt;/name&gt;
+                &lt;expression&gt;${band9Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band10Name}&lt;/name&gt;
+                &lt;expression&gt;${band10Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band11Name}&lt;/name&gt;
+                &lt;expression&gt;${band11Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band12Name}&lt;/name&gt;
+                &lt;expression&gt;${band12Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band13Name}&lt;/name&gt;
+                &lt;expression&gt;${band13Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band14Name}&lt;/name&gt;
+                &lt;expression&gt;${band14Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band15Name}&lt;/name&gt;
+                &lt;expression&gt;${band15Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band16Name}&lt;/name&gt;
+                &lt;expression&gt;${band16Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band17Name}&lt;/name&gt;
+                &lt;expression&gt;${band17Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band18Name}&lt;/name&gt;
+                &lt;expression&gt;${band18Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band19Name}&lt;/name&gt;
+                &lt;expression&gt;${band19Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band20Name}&lt;/name&gt;
+                &lt;expression&gt;${band20Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+        &lt;/variables&gt;
+        &lt;conditions&gt;
+            &lt;condition&gt;
+                &lt;name&gt;condition_0&lt;/name&gt;
+                &lt;expression&gt;${qualityExpression}&lt;/expression&gt;
+                &lt;output&gt;false&lt;/output&gt;
+            &lt;/condition&gt;
+        &lt;/conditions&gt;
+        &lt;combine&gt;OR&lt;/combine&gt;
+        &lt;crs&gt;
+            PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",
+            GEOGCS["World Geodetic System 1984",
+            DATUM["World Geodetic System 1984",
+              SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+              AUTHORITY["EPSG","6326"]],
+            PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+            UNIT["degree", 0.017453292519943295],
+            AXIS["Geodetic longitude", EAST],
+            AXIS["Geodetic latitude", NORTH]],
+            PROJECTION["Lambert_Azimuthal_Equal_Area"],
+            PARAMETER["latitude_of_center", ${latitudeOfCenter}],
+            PARAMETER["longitude_of_center", ${longitudeOfCenter}],
+            PARAMETER["false_easting", 0.0],
+            PARAMETER["false_northing", 0.0],
+            UNIT["m", 1.0],
+            AXIS["Easting", EAST],
+            AXIS["Northing", NORTH]]
+        &lt;/crs&gt;
+        &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+        &lt;westBound&gt;${west}&lt;/westBound&gt;
+        &lt;northBound&gt;${north}&lt;/northBound&gt;
+        &lt;eastBound&gt;${east}&lt;/eastBound&gt;
+        &lt;southBound&gt;${south}&lt;/southBound&gt;
+        &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+        &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
     &lt;/parameters&gt;
+
   &lt;/node&gt;
-&lt;/graph&gt;
-</pre>
-</td></tr></table>
 
 
 
-<br>
-<p>
-    <b>File = BandMathsEx01.par</b>
-</p>
-
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-copySourceFile=true
-band1Name=aod
-band1Type=float64
-band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
-band1Description=apparent optical depth
-band1Unit=meters
-band1ValidExpression=Kd_490 &amp;gt;= 0.01000 and Kd_490 &amp;lt;= 6.00000
-band1NoDataValue=-0.19837031
-band1SpectralWavelength=490.0
-band1SpectralBandwidth=10.0
-</pre>
-</td></tr></table>
-
-
-
-
-
-<br><br><br><hr>
-<a name="Example2"></a>
-<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands (Variables Option)</p>
-<br>
-
-<p>
-    This creates a copy of a file adding math band(s) to it.
-</p>
-
-<p>
-    <i>This is exactly the same as example 1 except it illustrates the use of the variable options.</i>
-</p>
-
-<p>
-    <i>Note: variables only apply to parameter "expression" and not to parameter "validExpression".</i>
-</p>
-
-<br>
-<p>
-    <b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e9f0f0">
-<pre>
-gpt BandMathsVariables.xml -p BandMathsEx02.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx02.dim
-</pre>
-</td></tr></table>
-
-
-<br>
-<p>
-    <b>File = BandMathsVariables.xml</b>
-</p>
-
-
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-&lt;graph id="BandMathsVariablesGraph"&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
-  &lt;node id="BandMathsNode"&gt;
+  &lt;node id="BandMathsEx04Node"&gt;
     &lt;operator&gt;BandMaths&lt;/operator&gt;
     &lt;sources&gt;
-      &lt;source&gt;${source}&lt;/source&gt;
-    &lt;/sources&gt;
-    &lt;parameters&gt;
-      &lt;copySourceFile&gt;${copySourceFile}&lt;/copySourceFile&gt;
-      &lt;targetBands&gt;
-        &lt;targetBand&gt;
-          &lt;name&gt;${band1Name}&lt;/name&gt;
-          &lt;type&gt;${band1Type}&lt;/type&gt;
-          &lt;expression&gt;${band1Expression}&lt;/expression&gt;
-          &lt;description&gt;${band1Description}&lt;/description&gt;
-          &lt;unit&gt;${band1Unit}&lt;/unit&gt;
-          &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
-          &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
-          &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
-          &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
-        &lt;/targetBand&gt;
-      &lt;/targetBands&gt;
-      &lt;variables&gt;
-        &lt;variable&gt;
-          &lt;name&gt;${var1Name}&lt;/name&gt;
-          &lt;type&gt;${var1Type}&lt;/type&gt;
-          &lt;value&gt;${var1Value}&lt;/value&gt;
-        &lt;/variable&gt;
-      &lt;/variables&gt;
-    &lt;/parameters&gt;
-  &lt;/node&gt;
-&lt;/graph&gt;
-</pre>
-</td></tr></table>
-
-
-
-
-
-<br>
-<p>
-    <b>File = BandMathsEx02.par</b>
-</p>
-
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-copySourceFile=true
-band1Name=aod
-band1Type=float64
-band1Expression=if (Kd_490 != 0) then (AOD_KD490_FACTOR/Kd_490) else NaN
-band1Description=apparent optical depth
-band1Unit=meters
-band1ValidExpression=Kd_490 &amp;gt;= 0.01000 and Kd_490 &amp;lt;= 6.00000
-band1NoDataValue=-0.19837031
-band1SpectralWavelength=490.0
-band1SpectralBandwidth=10.0
-var1Name=AOD_KD490_FACTOR
-var1Type=float64
-var1Value=1.3
-</pre>
-</td></tr></table>
-
-
-
-
-
-
-<br><br><br><hr>
-<a name="Example3"></a>
-<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Create only Math Bands</p>
-<br>
-
-<p>
-    This creates a new file based off an input source file adding math band(s) to it (the bands and masks of the source
-    file are not transferred to the output file).
-</p>
-
-<p>
-    <i>This uses the graph file of example 1 and this is identical to example 1 except that the band1ValidExpression
-        does not point to the source band Kd_490 since it does not exist in the created file.</i>
-</p>
-<br>
-<p>
-    <b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e9f0f0">
-<pre>
-gpt BandMaths.xml -p BandMathsEx03.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx03.dim
-</pre>
-</td></tr></table>
-
-
-
-<br>
-<p>
-    <b>File = BandMathsEx03.par</b>
-</p>
-
-
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-copySourceFile=false
-band1Name=aod
-band1Type=float64
-band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
-band1Description=apparent optical depth
-band1Unit=meters
-band1ValidExpression=aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)
-band1NoDataValue=-0.19837031
-band1SpectralWavelength=490.0
-band1SpectralBandwidth=10.0
-</pre>
-</td></tr></table>
-
-
-
-
-<br><br><br><hr>
-<a name="Example4"></a>
-<p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Remove the "_count" Bands from a Mosaic File (OC Level2)</p>
-<br>
-
-<p>
-    For each band in a Mosaic file there is a corresponding "count" band used in its validPixelExpression (for instance the chlor_a band
-    sets it's validPixelExpression based on the chlor_a_count band: expr= chlor_a_count &gt; 0).  In this example
-    we take a Mosaic file and by using the BandMaths operator to apply the validPixelExpression, we create a new file
-    which does not contain these "count" bands.
-</p>
-
-<p>
-    This example is doing the full set of 20 bands in the OC suite (Note: this example has been prepared during the SeaDAS 7.5 release,
-    so any product changes in the future for the OC suite are not accounted for here).
-</p>
-
-<p>
-    The source file A2017023193500_MosaicEx05.dim used here was produced by
-    <a href="gptCookbookMosaic.html#Example5" class="invisibleLink">Mosaic Example 5</a>
-</p>
-
-<br>
-<p>
-    <b>Command Line Entry</b>
-
-
-</p><table><tr><td bgcolor="#e9f0f0">
-<pre>
-gpt BandMathsEx04.xml -p BandMathsEx04.par -Ssource=A2017023193500_MosaicEx05.dim -t A2017023193500_BandMathsEx04.dim
-</pre>
-</td></tr></table>
-
-
-
-<br>
-<p>
-    <b>File = BandMathsEx04.xml</b>
-</p>
-
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-&lt;graph id="BandMathsGraph"&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
-  &lt;node id="BandMathsNode"&gt;
-    &lt;operator&gt;BandMaths&lt;/operator&gt;
-    &lt;sources&gt;
-      &lt;source&gt;${source}&lt;/source&gt;
+      &lt;source&gt;MosaicEx05Node&lt;/source&gt;
     &lt;/sources&gt;
     &lt;parameters&gt;
       &lt;targetBands&gt;
@@ -529,13 +408,25 @@ gpt BandMathsEx04.xml -p BandMathsEx04.par -Ssource=A2017023193500_MosaicEx05.di
 
 
 
+
 <br>
 <p>
-    <b>File = BandMathsEx04.par</b>
+<b>File = WorkflowEx01.par</b>
 </p>
+
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
+qualityExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+latitudeOfCenter=25.0
+longitudeOfCenter=-90.0
+north=31.0
+south=17.5
+west=-98.5
+east=-80.0
+pixelSize=1000.0
+resampling=Bilinear
+
 noDataValue=NaN
 
 band1Name=aot_869
@@ -642,13 +533,8 @@ band20SpectralWavelength=0.0
 
 
 
-
-
-
-
-
-
 <br><br><br>
+
 
 </body>
 </html>

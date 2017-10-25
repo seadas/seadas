@@ -32,6 +32,7 @@
                 <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookMosaic.html#Example2" class="invisibleLink">Oblique Stereographic Projection</a></p>
                 <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookMosaic.html#Example3" class="invisibleLink">Lambert Azimuthal Equal Area Projection</a></p>
                 <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookMosaic.html#Example4" class="invisibleLink">Lambert Azimuthal Equal Area Projection (alternate)</a></p>
+                <p class="toc">Example 5&nbsp;&nbsp;<a href="gptCookbookMosaic.html#Example5" class="invisibleLink">Lambert Azimuthal Equal Area Projection of Full OC Suite L2 File</a></p>
                 <br>
                 <p class="toc">Notes 1&nbsp;&nbsp;<a href="gptCookbookMosaic.html#Notes1" class="invisibleLink">Resampling Options</a></p>
             </td>
@@ -387,6 +388,220 @@ pixelSize=1000.0
 resampling=Nearest
 </pre>
 </td></tr></table>
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example5"></a>
+<p class="subSectionTitle2">Example 5: Lambert Azimuthal Equal Area Projection of Full OC Suite L2 File</p>
+<br>
+
+<p>
+    Similar to example 3 except producing all bands of the OC suite.
+</p>
+
+
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt MosaicEx05.xml -p MosaicEx05.par A2017023193500.L2_LAC_OC.nc -t A2017023193500_MosaicEx05.dim
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = MosaicEx05.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="MosaicLambertGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+  &lt;node id="MosaicLambertNode"&gt;
+    &lt;operator&gt;Mosaic&lt;/operator&gt;
+    &lt;sources&gt;
+       &lt;sourceProducts&gt;${sourceProducts}&lt;/sourceProducts&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;variables&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band1Name}&lt;/name&gt;
+                &lt;expression&gt;${band1Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band2Name}&lt;/name&gt;
+                &lt;expression&gt;${band2Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band3Name}&lt;/name&gt;
+                &lt;expression&gt;${band3Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band4Name}&lt;/name&gt;
+                &lt;expression&gt;${band4Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band5Name}&lt;/name&gt;
+                &lt;expression&gt;${band5Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band6Name}&lt;/name&gt;
+                &lt;expression&gt;${band6Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band7Name}&lt;/name&gt;
+                &lt;expression&gt;${band7Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band8Name}&lt;/name&gt;
+                &lt;expression&gt;${band8Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band9Name}&lt;/name&gt;
+                &lt;expression&gt;${band9Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band10Name}&lt;/name&gt;
+                &lt;expression&gt;${band10Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band11Name}&lt;/name&gt;
+                &lt;expression&gt;${band11Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band12Name}&lt;/name&gt;
+                &lt;expression&gt;${band12Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band13Name}&lt;/name&gt;
+                &lt;expression&gt;${band13Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band14Name}&lt;/name&gt;
+                &lt;expression&gt;${band14Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band15Name}&lt;/name&gt;
+                &lt;expression&gt;${band15Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band16Name}&lt;/name&gt;
+                &lt;expression&gt;${band16Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band17Name}&lt;/name&gt;
+                &lt;expression&gt;${band17Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band18Name}&lt;/name&gt;
+                &lt;expression&gt;${band18Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band19Name}&lt;/name&gt;
+                &lt;expression&gt;${band19Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band20Name}&lt;/name&gt;
+                &lt;expression&gt;${band20Name}&lt;/expression&gt;
+            &lt;/variable&gt;
+        &lt;/variables&gt;
+        &lt;conditions&gt;
+            &lt;condition&gt;
+                &lt;name&gt;condition_0&lt;/name&gt;
+                &lt;expression&gt;${qualityExpression}&lt;/expression&gt;
+                &lt;output&gt;false&lt;/output&gt;
+            &lt;/condition&gt;
+        &lt;/conditions&gt;
+        &lt;combine&gt;OR&lt;/combine&gt;
+        &lt;crs&gt;
+            PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",
+            GEOGCS["World Geodetic System 1984",
+            DATUM["World Geodetic System 1984",
+              SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+              AUTHORITY["EPSG","6326"]],
+            PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+            UNIT["degree", 0.017453292519943295],
+            AXIS["Geodetic longitude", EAST],
+            AXIS["Geodetic latitude", NORTH]],
+            PROJECTION["Lambert_Azimuthal_Equal_Area"],
+            PARAMETER["latitude_of_center", ${latitudeOfCenter}],
+            PARAMETER["longitude_of_center", ${longitudeOfCenter}],
+            PARAMETER["false_easting", 0.0],
+            PARAMETER["false_northing", 0.0],
+            UNIT["m", 1.0],
+            AXIS["Easting", EAST],
+            AXIS["Northing", NORTH]]
+        &lt;/crs&gt;
+        &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+        &lt;westBound&gt;${west}&lt;/westBound&gt;
+        &lt;northBound&gt;${north}&lt;/northBound&gt;
+        &lt;eastBound&gt;${east}&lt;/eastBound&gt;
+        &lt;southBound&gt;${south}&lt;/southBound&gt;
+        &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+        &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = MosaicEx05.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+band1Name=aot_869
+band2Name=angstrom
+band3Name=chlor_a
+band4Name=chl_ocx
+band5Name=ipar
+band6Name=Kd_490
+band7Name=nflh
+band8Name=Rrs_412
+band9Name=Rrs_443
+band10Name=Rrs_469
+band11Name=Rrs_488
+band12Name=Rrs_531
+band13Name=Rrs_547
+band14Name=Rrs_555
+band15Name=Rrs_645
+band16Name=Rrs_667
+band17Name=Rrs_678
+band18Name=par
+band19Name=pic
+band20Name=poc
+
+qualityExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+latitudeOfCenter=25.0
+longitudeOfCenter=-90.0
+north=31.0
+south=17.5
+west=-98.5
+east=-80.0
+pixelSize=1000.0
+resampling=Bilinear
+</pre>
+</td></tr></table>
+
+
+
+
 
 
 
