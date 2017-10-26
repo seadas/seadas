@@ -24,11 +24,15 @@ Release Date: Month Day, Year
 
 The SeaDAS development team is pleased to announce the release of SeaDAS 7.5
 
-SeaDAS 7.5 adds processing support for Windows, significantly revises the Statistics tool, includes an extensive
-    rewrite to the Statistics and Reproject help pages and more (see below for details)
-
-
-
+Highlights of what's new to SeaDAS 7.5 
+    - OCSSW processing support for Windows
+    - Significant revision to the Statistics tool
+    - Masking capabilities added to the Reproject Tool
+    - GPT command line usage cookbook 
+    - Help menu organization and links
+    - Extensive rewrite of the Statistics and Reproject help pages 
+    - CoastLandWater tool now available in GPT
+    
 
 
 PRIMARY PACKAGE
@@ -54,17 +58,30 @@ PRIMARY PACKAGE
                 i. Percentile plot is now percentile on y-axis and data on x-axis.
                 j. Some delayed screen repaint issue have been resolved.
                 k. Preferences page has been added.
-            2. Major rewrite of the Statistics help page.
-            3. GPT version.
+            2. GPT version.
                 a. Adds the same statistics fields as the GUI (although does not add the metadata fields)
                 b. Uses bin count "numBins".  (Note: the related accuracy setting has been removed.)
+                c. Added field "calculateMedian".
 
-
+                
+                    
         - Reproject Tool
-            1. Major rewrite of the Reproject help page.
-            2. Metadata is now written to the output file (both GUI and GPT version).
-            3. Slight rewording of a few parameters and tabs of the GUI
+            1. Masking (both GUI and GPT version)
+                    Validation masking feature has been added. 
+                    Masks can now be applied to constrain which pixels of the source file are eligible for reprojection.  
+                    This feature also enables the user to deactivate the valid pixel expression of the source file and 
+                    carry the valid pixel expression over into the reprojected file.  
+            2. Metadata (both GUI and GPT version)
+                    Reproject tool specific metadata is now written to the output file.
+            3. Organization (GUI only)
+                    Minor rewording of a few parameters and tabs of the GUI
 
+
+        - Math Band Tool
+            1. Retain source data (GPT)
+                    Option to transfer data from source file to output file.  Previous version only created new bands
+                    based on the source file data but did not retain the source file data.
+                    
 
         - RGB Image Profiles
             1. A large amount of rgb configuration files (rgb_profiles) have been added.  These include true color and many
@@ -72,7 +89,12 @@ PRIMARY PACKAGE
 
         - Coast, Land, Water Tool (GPT) "LandWaterMask"
             1. This is now fully supported and works in GPT mode.
+            2. Copy source file
 
+
+        - Level 2 File reader
+            1. Mask "Quality_L3" revised
+                    "HISATZEN" has been added to this mask composite to reflect the flags used in OBPG level3 processing.
 
 
 
@@ -82,7 +104,21 @@ PRIMARY PACKAGE
 
 
     HELP PAGES
-
+                
+        - Help
+            1. Statistics Tool (major revision)
+                    The Statistics tool itself has been significantly revised and the help pages are updated accordingly
+                    with a lot more detail about this tool.
+            2. Reproject Tool (major revision)
+                    This is a major revision of this page.  The information here can also be useful in understanding some
+                    of the related map projection tools (Orthorectification, Mosaic and Collocate)
+            3. GPT Cookbook
+                    Many examples of running the most common SeaDAS tools directly from the command line.  These
+                    examples feature the command line arguments along with the full contents of the graph files 
+                    and parameters files.
+            4. Menu organization
+                    Adding a multitude of direct links to various internal help pages for ease of access within
+                    the help menu.  Added many relevant web link to the help menu.
         -   Statistics Tool help pages updates
 
 
