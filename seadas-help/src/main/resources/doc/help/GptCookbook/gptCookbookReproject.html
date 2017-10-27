@@ -220,7 +220,7 @@ gpt ReprojectGeoLatLon.xml -p ReprojectGeoLatLon.par -Ssource=A2017023193500.L2_
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-pixelSize=1000.0
+pixelSize=0.009
 resampling=Bilinear
 maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
 transferValidPixelExpression=true
@@ -466,8 +466,7 @@ gpt ReprojectLambertAz.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2
     if we are perhaps dealing with the rhos bands (surface reflectance) then we may not
     want the brightest clouds being masked out so we need to deactivate all the masking.  HISATZEN is however masked out as it can
     be a bit blurry at high sensor zenith angles.  For convenience and flexibility, the parameters are mostly hard coded
-    in the graph file with only lat, lon, and res being sent in.  In this case they are sent in directly from the command line.  Additionally
-    the command line is cleaned up by sending the input file in directly as an unpaired argument.
+    in the graph file with only lat, lon, and res being sent in.  In this case they are sent in directly from the command line.
 </p>
 
 <br>
@@ -476,7 +475,7 @@ gpt ReprojectLambertAz.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt Reproject_TC.xml A2017023193500.L2_HKM_TC.nc -Plat=25.0 -Plon=-90.0 -Pres=500.0 -t A2017023193500_L2_HKM_TC_ObStereo.dim
+gpt Reproject_TC.xml -Ssource=A2017023193500.L2_HKM_TC.nc -Plat=25.0 -Plon=-90.0 -Pres=500.0 -t A2017023193500_L2_HKM_TC_ObStereo.dim
 </pre>
 </td></tr></table>
 
@@ -504,7 +503,7 @@ gpt Reproject_TC.xml {IFILE} -Plat={LAT} -Plon={LON} -Pres={RES} -t {OFILE}
   &lt;node id="ReprojectTCNode"&gt;
     &lt;operator&gt;Reproject&lt;/operator&gt;
     &lt;sources&gt;
-       &lt;sourceProducts&gt;${sourceProducts}&lt;/sourceProducts&gt;
+       &lt;source&gt;${source}&lt;/source&gt;
     &lt;/sources&gt;
 
     &lt;parameters&gt;
