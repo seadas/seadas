@@ -119,7 +119,7 @@ level=0
 <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WriteImagePalette.xml -p WriteImageEx02.par -Ssource=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -PfilePath=WriteImageEx02.png
+gpt WriteImagePalette.xml -p WriteImageEx02.par -Phome=$HOME -Ssource=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -PfilePath=WriteImageEx02.png
 </pre>
 </td></tr></table>
 
@@ -143,7 +143,7 @@ gpt WriteImagePalette.xml -p WriteImageEx02.par -Ssource=V20172132017243.L3m_MO_
       &lt;sourceBandName&gt;${sourceBandName}&lt;/sourceBandName&gt;
       &lt;filePath&gt;${filePath}&lt;/filePath&gt;
       &lt;formatName&gt;${formatName}&lt;/formatName&gt;
-      &lt;cpdFilePath&gt;${cpdFilePath}&lt;/cpdFilePath&gt;
+      &lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;
       &lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;
       &lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;
       &lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;
@@ -166,7 +166,7 @@ gpt WriteImagePalette.xml -p WriteImageEx02.par -Ssource=V20172132017243.L3m_MO_
 <pre>
 sourceBandName=chlor_a
 formatName=png
-cpdFilePath=/accounts/knowles/.seadas/beam-ui/auxdata/color-palettes/universal_bluered.cpd
+cpdFilePath=.seadas/beam-ui/auxdata/color-palettes/universal_bluered.cpd
 cpdAutoDistribute=false
 colourScaleMin=0.01
 colourScaleMax=20.0
@@ -194,7 +194,7 @@ scaleType=log
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WriteImageMask.xml -p WriteImageEx03.par -Ssource=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -PfilePath=WriteImageEx03.png
+gpt WriteImageMask.xml -p WriteImageEx03.par -Phome=$HOME -Ssource=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -PfilePath=WriteImageEx03.png
 </pre>
 </td></tr></table>
 
@@ -220,14 +220,14 @@ gpt WriteImageMask.xml -p WriteImageEx03.par -Ssource=V20172132017243.L3m_MO_SNP
       &lt;sourceBandName&gt;${sourceBandName}&lt;/sourceBandName&gt;
       &lt;filePath&gt;${filePath}&lt;/filePath&gt;
       &lt;formatName&gt;${formatName}&lt;/formatName&gt;
-      &lt;cpdFilePath&gt;${cpdFilePath}&lt;/cpdFilePath&gt;
+      &lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;
       &lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;
       &lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;
       &lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;
       &lt;level&gt;${level}&lt;/level&gt;
       &lt;scaleType&gt;${scaleType}&lt;/scaleType&gt;
 
-      &lt;maskFilePath&gt;/accounts/knowles/Desktop/GptExamples/help/WriteImage/V20172132017243.L3m_LAND_9km.dim&lt;/maskFilePath&gt;
+      &lt;maskFilePath&gt;${home}/${maskFilePath}&lt;/maskFilePath&gt;
       &lt;maskLayer&gt;true&lt;/maskLayer&gt;
       &lt;imageMasks&gt;
         &lt;imageMask&gt;
@@ -254,11 +254,13 @@ gpt WriteImageMask.xml -p WriteImageEx03.par -Ssource=V20172132017243.L3m_MO_SNP
     <b>File = WriteImageEx03.par</b>
 </p>
 
+
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
 sourceBandName=chlor_a
 formatName=png
-cpdFilePath=/accounts/knowles/.seadas/beam-ui/auxdata/color-palettes/universal_bluered.cpd
+cpdFilePath=.seadas/beam-ui/auxdata/color-palettes/universal_bluered.cpd
+maskFilePath=Desktop/GptExamples/help/WriteImage/V20172132017243.L3m_LAND_9km.dim
 cpdAutoDistribute=false
 colourScaleMin=0.01
 colourScaleMax=20.0
@@ -266,9 +268,6 @@ level=0
 scaleType=log
 </pre>
 </td></tr></table>
-
-
-
 
 
 

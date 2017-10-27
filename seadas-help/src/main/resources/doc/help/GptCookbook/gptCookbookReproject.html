@@ -27,11 +27,10 @@
             <td class="invisibletable">
                 <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example1" class="invisibleLink">Geographic Lat/Lon Projection</a></p>
                 <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example2" class="invisibleLink">Oblique Stereographic Projection</a></p>
-                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example3" class="invisibleLink">Lambert Azimuthal Equal Area Projection</a></p>
-                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example4" class="invisibleLink">Geographic Lat/Lon Projection (alternate)</a></p>
-                <p class="toc">Example 5&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example5" class="invisibleLink">Oblique Stereographic Projection (alternate)</a></p>
-                <p class="toc">Example 6&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example6" class="invisibleLink">Lambert Azimuthal Equal Area Projection (alternate)</a></p>
-                <p class="toc">Example 7&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example7" class="invisibleLink">True Color Imagery</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example3" class="invisibleLink">Lambert Azimuthal Equal AreaProjection</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example4" class="invisibleLink">True Color Imagery</a></p>
+                <p class="toc">Example 5&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example5" class="invisibleLink">Geographic Lat/Lon Projection (alternate)</a></p>
+
                 <br>
                 <p class="toc">Notes 1&nbsp;&nbsp;<a href="gptCookbookReproject.html#Notes1" class="invisibleLink">Resampling Options</a></p>
             </td>
@@ -42,181 +41,101 @@
 
 
 
-<br><br><br><hr>
-<a name="Example1"></a>
-    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Geographic Lat/Lon Projection</p>
-<br>
+    <!---->
+    <!---->
+    <!---->
 
-<p>
-    This uses the SeaDAS Reproject tool in GPT (command line) mode to reproject a single input level-2 file into a single
-    mapped output file.  The level-2 file was imaged January 23 2017 over the Gulf of Mexico by the
-    MODIS Aqua instrument.  The projection is standard geographic lat/lon with a pixelSize=0.009 (roughly 1km resolution).
-    A parameter properties "par" file is used to store the variables needed for the xml graph file.
-    Masking (a new feature as of SeaDAS 7.5) has been added here.
-</p>
+<!--<br><br><br><hr>-->
+<!--<a name="Example2"></a>-->
+    <!--<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Oblique Stereographic Projection</p>-->
+<!--<br>-->
+<!--<p>-->
+    <!--This is exactly the same as example 1 except that it uses a Oblique Stereographic projection.-->
+    <!--(See example 1 for the files "reprojectGeneral.xml".)-->
+<!--</p>-->
 
-<p>
-    <i>Note: you can readily modify these parameters in this "par" file to adapt to your own specific criteria. </i>
-</p>
-
-<p>
-<b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e9f0f0">
-<pre>
-gpt reprojectGeneral.xml -p reprojectGeoLatLonCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectGeoLatLonGulfMexico.dim
-</pre>
-</td></tr></table>
+<!--<p>-->
+    <!--<i>Note: if you modify this to cover a different region you will also have to modify the crs value (specifically-->
+        <!--"latitude_of_origin" and "central_meridian").  Also, the pixelSize is in units of meters whereas in example 1 is was-->
+        <!--in units of degrees.</i>-->
+<!--</p>-->
 
 
-<br>
-<p>
-<b>File = reprojectGeneral.xml</b>
-</p>
-<table><tr><td bgcolor="#e9f0f0">
+<!--<br>-->
+<!--<p>-->
+    <!--<b>Command Line Entry</b>-->
+<!--</p>-->
+<!--<table><tr><td bgcolor="#e9f0f0">-->
+<!--<pre>-->
+<!--gpt reprojectGeneral.xml -p reprojectObliqueStereoCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectObliqueStereoCrsGulfMexico.dim-->
+<!--</pre>-->
+<!--</td></tr></table>-->
 
-<pre>
-&lt;graph id="ReprojectGraph"&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
+<!--<br>-->
+<!--<p>-->
+    <!--<b>File = reprojectObliqueStereoCrsGulfMexico.par</b>-->
+<!--</p>-->
 
-  &lt;node id="ReprojectNode"&gt;
-    &lt;operator&gt;Reproject&lt;/operator&gt;
-    &lt;sources&gt;
-        &lt;source&gt;${source}&lt;/source&gt;
-    &lt;/sources&gt;
-
-    &lt;parameters&gt;
-        &lt;crs&gt;${crs}&lt;/crs&gt;
-        &lt;resampling&gt;${resampling}&lt;/resampling&gt;
-        &lt;orientation&gt;0.0&lt;/orientation&gt;
-        &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
-        &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
-        &lt;orthorectify&gt;false&lt;/orthorectify&gt;
-        &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
-        &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
-        &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
-        &lt;maskExpression&gt;${maskExpression}&lt;/maskExpression&gt;
-        &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
-        &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
-    &lt;/parameters&gt;
-
-  &lt;/node&gt;
-&lt;/graph&gt;
-</pre>
-</td></tr></table>
-
-<br>
-<p>
-<b>File = reprojectGeoLatLonCrsGulfMexico.par</b>
-</p>
-
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-pixelSize=0.009
-resampling=Bilinear
-maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
-transferValidPixelExpression=true
-applyValidPixelExpression=true
-crs=GEOGCS["WGS84(DD)", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]]
-</pre>
-</td></tr></table>
+<!--<table><tr><td bgcolor="#e9f0f0">-->
+<!--<pre>-->
+<!--pixelSize=1000.0-->
+<!--resampling=Bilinear-->
+<!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
+<!--transferValidPixelExpression=true-->
+<!--applyValidPixelExpression=true-->
+<!--crs=PROJCS["Oblique_Stereographic / World Geodetic System 1984",GEOGCS["World Geodetic System 1984", DATUM["World Geodetic System 1984", SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]], AUTHORITY["EPSG","6326"]], PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]], PROJECTION["Oblique_Stereographic"], PARAMETER["central_meridian", -90.0], PARAMETER["latitude_of_origin", 25.0], PARAMETER["scale_factor", 1.0], PARAMETER["false_easting", 0.0], PARAMETER["false_northing", 0.0], UNIT["m", 1.0], AXIS["Easting", EAST], AXIS["Northing", NORTH]]-->
+<!--</pre>-->
+<!--</td></tr></table>-->
 
 
 
-    
-    
-    
+<!--<br><br><br><hr>-->
+<!--<a name="Example3"></a>-->
+    <!--<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Lambert Azimuthal Equal Area Projection</p>-->
+<!--<br>-->
+<!--<p>-->
+    <!--This is exactly the same as example 1 except that it uses a Lambert Azimuthal Equal-Area projection.-->
+    <!--(See example 1 for the files "reprojectGeneral.xml".)-->
+<!--</p>-->
 
-<br><br><br><hr>
-<a name="Example2"></a>
-    <p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Oblique Stereographic Projection</p>
-<br>
-<p>
-    This is exactly the same as example 1 except that it uses a Oblique Stereographic projection.
-    (See example 1 for the files "reprojectGeneral.xml".)
-</p>
+<!--<p>-->
+    <!--<i>Note: if you modify this to cover a different region you will also have to modify the crs value (specifically-->
+    <!--"latitude_of_center" and "longitude_of_center").  Also, the pixelSize is in units of meters whereas in example 1 is was-->
+        <!--in units of degrees.</i>-->
+<!--</p>-->
 
-<p>
-    <i>Note: if you modify this to cover a different region you will also have to modify the crs value (specifically
-        "latitude_of_origin" and "central_meridian").  Also, the pixelSize is in units of meters whereas in example 1 is was
-        in units of degrees.</i>
-</p>
+<!--<br>-->
+<!--<p>-->
+    <!--<b>Command Line Entry</b>-->
+<!--</p>-->
+<!--<table><tr><td bgcolor="#e9f0f0">-->
+<!--<pre>-->
+<!--gpt reprojectGeneral.xml -p reprojectLambertAzCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectLambertAzGulfMexico.dim-->
+<!--</pre>-->
+<!--</td></tr></table>-->
 
+<!--<br>-->
+<!--<p>-->
+    <!--<b>File = reprojectLambertAzCrsGulfMexico.par</b>-->
+<!--</p>-->
 
-<br>
-<p>
-    <b>Command Line Entry</b>
-</p>
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-gpt reprojectGeneral.xml -p reprojectObliqueStereoCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectObliqueStereoCrsGulfMexico.dim
-</pre>
-</td></tr></table>
+<!--<table><tr><td bgcolor="#e9f0f0">-->
+<!--<pre>-->
+<!--pixelSize=1000.0-->
+<!--resampling=Bilinear-->
+<!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
+<!--transferValidPixelExpression=true-->
+<!--applyValidPixelExpression=true-->
+<!--crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["World Geodetic System 1984",DATUM["World Geodetic System 1984",SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],UNIT["degree", 0.017453292519943295],AXIS["Geodetic longitude", EAST],AXIS["Geodetic latitude", NORTH]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_center", 25.0],PARAMETER["longitude_of_center", -90.0],PARAMETER["false_easting", 0.0],PARAMETER["false_northing", 0.0],UNIT["m", 1.0],AXIS["Easting", EAST],AXIS["Northing", NORTH]]-->
+<!--</pre>-->
+<!--</td></tr></table>-->
 
-<br>
-<p>
-    <b>File = reprojectObliqueStereoCrsGulfMexico.par</b>
-</p>
-
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-pixelSize=1000.0
-resampling=Bilinear
-maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
-transferValidPixelExpression=true
-applyValidPixelExpression=true
-crs=PROJCS["Oblique_Stereographic / World Geodetic System 1984",GEOGCS["World Geodetic System 1984", DATUM["World Geodetic System 1984", SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]], AUTHORITY["EPSG","6326"]], PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]], PROJECTION["Oblique_Stereographic"], PARAMETER["central_meridian", -90.0], PARAMETER["latitude_of_origin", 25.0], PARAMETER["scale_factor", 1.0], PARAMETER["false_easting", 0.0], PARAMETER["false_northing", 0.0], UNIT["m", 1.0], AXIS["Easting", EAST], AXIS["Northing", NORTH]]
-</pre>
-</td></tr></table>
-
-
-
-<br><br><br><hr>
-<a name="Example3"></a>
-    <p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Lambert Azimuthal Equal Area Projection</p>
-<br>
-<p>
-    This is exactly the same as example 1 except that it uses a Lambert Azimuthal Equal-Area projection.
-    (See example 1 for the files "reprojectGeneral.xml".)
-</p>
-
-<p>
-    <i>Note: if you modify this to cover a different region you will also have to modify the crs value (specifically
-    "latitude_of_center" and "longitude_of_center").  Also, the pixelSize is in units of meters whereas in example 1 is was
-        in units of degrees.</i>
-</p>
-
-<br>
-<p>
-    <b>Command Line Entry</b>
-</p>
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-gpt reprojectGeneral.xml -p reprojectLambertAzCrsGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectLambertAzGulfMexico.dim
-</pre>
-</td></tr></table>
-
-<br>
-<p>
-    <b>File = reprojectLambertAzCrsGulfMexico.par</b>
-</p>
-
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-pixelSize=1000.0
-resampling=Bilinear
-maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
-transferValidPixelExpression=true
-applyValidPixelExpression=true
-crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["World Geodetic System 1984",DATUM["World Geodetic System 1984",SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],UNIT["degree", 0.017453292519943295],AXIS["Geodetic longitude", EAST],AXIS["Geodetic latitude", NORTH]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_center", 25.0],PARAMETER["longitude_of_center", -90.0],PARAMETER["false_easting", 0.0],PARAMETER["false_northing", 0.0],UNIT["m", 1.0],AXIS["Easting", EAST],AXIS["Northing", NORTH]]
-</pre>
-</td></tr></table>
-
-    
-    
-    
-    
-    
-    
+    <!---->
+    <!---->
+    <!---->
+    <!---->
+    <!---->
+    <!---->
     
     
     
@@ -227,15 +146,13 @@ crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["W
   
     
 <br><br><br><hr>
-<a name="Example4"></a>
-    <p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Geographic Lat/Lon Projection (alternate)</p>
+<a name="Example1"></a>
+    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Geographic Lat/Lon Projection</p>
 <br>
+
 <p>
-    This is basically the same as example 1 except that the crs if defined in the xml graph file with some added variables
-    in order to specify the center of the scene in the "par" file.  If you are always using the same projection, but
-    for differing regions this example is a good choice.  One other difference here, to illustrate an option,
-    that the same variable is used for convenience for both the band name and the band expression.  If you are not
-    creating new bands using a mathematical expression then condensing these two variables into a single variable works.
+    This example uses a standard geographic lat/lon projection with pixel resolution of 0.009 degrees (roughly 1km resolution).
+    The CRS (coordinate reference system) is fully defined within the graph file.
 </p>
 
 <br>
@@ -244,14 +161,14 @@ crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["W
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt reprojectGeoLatLon.xml -p reprojectGeoLatLon.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectGeoLatLonGulfMexico.dim
+gpt ReprojectGeoLatLon.xml -p ReprojectGeoLatLon.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx01.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = reprojectGeoLatLon.xml</b>
+    <b>File = ReprojectGeoLatLon.xml</b>
 </p>
 
 
@@ -298,7 +215,7 @@ gpt reprojectGeoLatLon.xml -p reprojectGeoLatLon.par -Ssource=A2017023193500.L2_
 
 <br>
 <p>
-    <b>File = reprojectGeoLatLon.par</b>
+    <b>File = ReprojectGeoLatLon.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -352,15 +269,14 @@ applyValidPixelExpression=true
 
 
 <br><br><br><hr>
-<a name="Example5"></a>
-    <p class="subSectionTitle2">Example 5&nbsp;&nbsp;&nbsp;&nbsp;Oblique Stereographic Projection (alternate)</p>
+<a name="Example2"></a>
+    <p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Oblique Stereographic Projection</p>
 <br>
 <p>
-    This is basically the same as example 2 except that the crs if defined in the xml graph file with some added variables
-    in order to specify the center of the scene in the "par" file.  If you are always using the same projection, but
-    for differing regions this example is a good choice.  One other difference here, to illustrate an option,
-    that the same variable is used for convenience for both the band name and the band expression.  If you are not
-    creating new bands using a mathematical expression then condensing these two variables into a single variable works.
+    This example uses an oblique stereographic projection with pixel resolution of 1km.
+    The CRS (coordinate reference system) is defined within the graph file, but the location specific parameters
+    "central_meridian" and "latitude_of_origin" are defined for convenience within the par file for reusability
+    of the graph file.
 </p>
 
 <br>
@@ -369,14 +285,14 @@ applyValidPixelExpression=true
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt reprojectObliqueStereo.xml -p reprojectGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectObliqueStereoGulfMexico.dim
+gpt ReprojectObliqueStereo.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx02.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = reprojectObliqueStereo.xml</b>
+    <b>File = ReprojectObliqueStereo.xml</b>
 </p>
 
 
@@ -434,7 +350,7 @@ gpt reprojectObliqueStereo.xml -p reprojectGulfMexico.par -Ssource=A201702319350
 
 <br>
 <p>
-    <b>File = reprojectGulfMexico.par</b>
+    <b>File = ReprojectGulfMexico.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -453,16 +369,21 @@ applyValidPixelExpression=true
     
        
 <br><br><br><hr>
-<a name="Example6"></a>
-    <p class="subSectionTitle2">Example 6&nbsp;&nbsp;&nbsp;&nbsp;Lambert Azimuthal Equal Area Projection (alternate)</p>
+<a name="Example3"></a>
+    <p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Lambert Azimuthal Equal Area Projection</p>
 <br>
 <p>
-    This is basically the same as example 3 except that the crs if defined in the xml graph file with some added variables
-    in order to specify the center of the scene in the "par" file.  If you are always using the same projection, but
-    for differing regions this example is a good choice.  One other difference here, to illustrate an option,
-    that the same variable is used for convenience for both the band name and the band expression.  If you are not
-    creating new bands using a mathematical expression then condensing these two variables into a single variable works.
+    This example uses an Lambert azimuthal equal area projection with pixel resolution of 1km.  Similar to example 2,
+    the CRS (coordinate reference system) is defined within the graph file, but the location specific parameters
+    "longitude_of_center" and "latitude_of_center" are defined for convenience within the par file for reusability
+    of the graph file.
 </p>
+
+
+<p>
+    See Example 2 for the file "reprojectGulfMexico.par".
+</p>
+
 
 <br>
 <p>
@@ -470,14 +391,14 @@ applyValidPixelExpression=true
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt reprojectLambertAz.xml -p reprojectGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_reprojectLambertAzGulfMexico.dim
+gpt ReprojectLambertAz.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx03.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = reprojectLambertAz.xml</b>
+    <b>File = ReprojectLambertAz.xml</b>
 </p>
 
 
@@ -532,40 +453,20 @@ gpt reprojectLambertAz.xml -p reprojectGulfMexico.par -Ssource=A2017023193500.L2
 
 
 
-<br>
-<p>
-    <b>File = reprojectGulfMexico.par</b>
-</p>
 
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-lat=25.0
-lon=-90.0
-pixelSize=1000.0
-resampling=Bilinear
-maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
-transferValidPixelExpression=true
-applyValidPixelExpression=true
-</pre>
-</td></tr></table>
-
-    
-    
-    
-    
     
 
 
 <br><br><br><hr>
-<a name="Example7"></a>
-    <p class="subSectionTitle2">Example 7&nbsp;&nbsp;&nbsp;&nbsp;True Color Imagery</p>
+<a name="Example4"></a>
+    <p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;True Color Imagery</p>
 <br>
 <p>
-    This is basically the same as example 5 except refined for something like true color.  In this case
-    for instance if we are dealing with rhos bands (surface reflectance) we don't 
-    want clouds being masked out so we need to deactivate all the masking.  HISATZEN is however masked out as it can 
-    be a bit blurry at high sensor zenith angles.  The parameters are hard coded mostly in the graph file with only 
-    lat, lon, and res being sent in.  In this case they are sent in directly from the command line.  Additionally 
+    This is basically the same as example 2 except refined for something like true color.  In this case
+    if we are perhaps dealing with the rhos bands (surface reflectance) then we may not
+    want the brightest clouds being masked out so we need to deactivate all the masking.  HISATZEN is however masked out as it can
+    be a bit blurry at high sensor zenith angles.  For convenience and flexibility, the parameters are mostly hard coded
+    in the graph file with only lat, lon, and res being sent in.  In this case they are sent in directly from the command line.  Additionally
     the command line is cleaned up by sending the input file in directly as an unpaired argument.
 </p>
 
@@ -575,29 +476,24 @@ applyValidPixelExpression=true
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt reproject_TC.xml A2017023193500.L2_HKM_TC.nc -t A2017023193500_L2_HKM_TC_ObStereo.dim -Plat=25.0 -Plon=-90.0 -Pres=500.0
+gpt Reproject_TC.xml A2017023193500.L2_HKM_TC.nc -Plat=25.0 -Plon=-90.0 -Pres=500.0 -t A2017023193500_L2_HKM_TC_ObStereo.dim
 </pre>
 </td></tr></table>
 
-    <p>In generic form:</p>
+<br>
+    <p>... or in generic form ..</p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt reproject_TC.xml {IFILE} -t {OFILE} -Plat={LAT} -Plon={LON} -Pres={RES}
+gpt Reproject_TC.xml {IFILE} -Plat={LAT} -Plon={LON} -Pres={RES} -t {OFILE}
 </pre>
 </td></tr></table>
     
     
-<p>... or if you rather prefer a par file something like this ...</p>
-    
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-gpt reproject_TC.xml A2017023193500.L2_HKM_TC.nc -t A2017023193500.L2_HKM_TC_reproj.dim -p reproject_TC_500_GulfMexico.par 
-</pre>
 
     
 <br>
 <p>
-    <b>File = reproject_TC.xml</b>
+    <b>File = Reproject_TC.xml</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -650,27 +546,87 @@ gpt reproject_TC.xml A2017023193500.L2_HKM_TC.nc -t A2017023193500.L2_HKM_TC_rep
 </pre>
 </td></tr></table>
 
-    
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example5"></a>
+<p class="subSectionTitle2">Example 5&nbsp;&nbsp;&nbsp;&nbsp;Geographic Lat/Lon Projection (alternate)</p>
+<br>
+
+<p>
+This is identical to Example 1 except illustrates placing the entire CRS within the parameters file.
+</p>
+
+
+<p>
+<b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt ReprojectEx05.xml -p ReprojectEx05.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx05.dim
+</pre>
+</td></tr></table>
+
+
 <br>
 <p>
-    <b>File = reproject_TC_500_GulfMexico.par</b>
+<b>File = ReprojectEx05.xml</b>
+</p>
+<table><tr><td bgcolor="#e9f0f0">
+
+<pre>
+&lt;graph id="ReprojectGraph"&gt;
+&lt;version&gt;1.0&lt;/version&gt;
+
+&lt;node id="ReprojectNode"&gt;
+&lt;operator&gt;Reproject&lt;/operator&gt;
+&lt;sources&gt;
+&lt;source&gt;${source}&lt;/source&gt;
+&lt;/sources&gt;
+
+&lt;parameters&gt;
+&lt;crs&gt;${crs}&lt;/crs&gt;
+&lt;resampling&gt;${resampling}&lt;/resampling&gt;
+&lt;orientation&gt;0.0&lt;/orientation&gt;
+&lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+&lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+&lt;orthorectify&gt;false&lt;/orthorectify&gt;
+&lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+&lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+&lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
+&lt;maskExpression&gt;${maskExpression}&lt;/maskExpression&gt;
+&lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
+&lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
+&lt;/parameters&gt;
+
+&lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+<b>File = ReprojectEx05.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-lat=25.0
-lon=-90.0
-res=500.0
+pixelSize=0.009
+resampling=Bilinear
+maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+transferValidPixelExpression=true
+applyValidPixelExpression=true
+crs=GEOGCS["WGS84(DD)", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]]
 </pre>
 </td></tr></table>
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 
 <br><br><br><hr>
 <a name="Notes1"></a>
@@ -679,7 +635,7 @@ res=500.0
 
 <p>
     Here is a full list of the resampling options and their specific names as used by the Reproject operator.  Please be aware
-    that these names differ for the Collocate operator.  We will address this in a future SeaDAS release.
+    that these names differ for the Collocate operator.  We may address this discrepancy in a future SeaDAS release.
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">

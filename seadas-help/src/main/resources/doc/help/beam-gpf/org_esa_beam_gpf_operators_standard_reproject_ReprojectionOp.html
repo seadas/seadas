@@ -71,6 +71,9 @@
             &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
             &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
             &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
+            &lt;applyValidPixelExpression&gt;true&lt;/applyValidPixelExpression&gt;
+            &lt;transferValidPixelExpression&gt;true&lt;/transferValidPixelExpression&gt;
+            &lt;maskExpression&gt;&lt;/maskExpression&gt;
         &lt;/parameters&gt;
     &lt;/node&gt;
  </pre>
@@ -231,8 +234,32 @@
   <td>Whether to add delta longitude and latitude bands.</td>
   <td></td>
 </tr>
+
+    <tr>
+        <td><code>applyValidPixelExpression</code></td>
+        <td><code>boolean</code></td>
+        <td><code>true</code></td>
+        <td>Apply the valid pixel expression to determine whether a source pixel gets used.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><code>transferValidPixelExpression</code></td>
+        <td><code>boolean</code></td>
+        <td><code>true</code></td>
+        <td>Copy source valid pixel expression(s) to the corresponding bands of the reprojected file.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><code>maskExpression</code></td>
+        <td><code>String</code></td>
+        <td><code>""</code></td>
+        <td>Logical expression of masks and/or bands to apply to determine whether a source pixel gets used.</td>
+        <td></td>
+    </tr>
 </table>
 <hr/>
+
+
 
 <h2>Meta Data</h2>
 The GPT operator adds the same meta data to the output file as the GUI version.

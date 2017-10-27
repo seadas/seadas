@@ -691,6 +691,86 @@
 
 
 <br><br>
+<hr>
+
+
+
+<a name="ParametersMaskingTab"></a>
+
+<h4>GUI: Validation Masking Tab</h4>
+<p>
+    This is a tab of the Reproject window.
+</p>
+<br>
+
+
+<div class="center">
+    <img src="images/Reproject_GUI_06.png"><br><br>
+    <i>Figure 6. Validation Masking Tab</i>
+
+</div>
+
+<br><br>
+
+
+<p>
+    <i><b>Valid Pixel Expression</b></i><br>
+    Each band of the source file has a valid pixel expression which designates whether a pixel is valid for display
+    or some other operation.  These expressions are unique to each band.  When reprojecting a source file you want to
+    consider whether or not to allow the "invalid" pixels to be used or ignored.  The default behavior is to treat
+    these pixels as "invalid".  However, the following two parameters govern how the valid pixel expression of the source
+    bands will be treated during reprojection.
+</p>
+
+
+<p class="i1">
+    <b>Mask at source file</b><br>
+    When this is selected the pixels which are not "valid" will be ignored.  When this is deselected, the pixels which
+    are not "valid" will be used in the reprojection process.
+</p>
+
+<p class="i1">
+    <b>Transfer to output file</b><br>
+    When this is selected the logical expression itself will be copied from each source band to its corresponding
+    band in the reprojected file.  If deselected, then the valid pixel expression of the reprojected band will be empty.
+
+</p>
+
+
+
+<br>
+
+
+<p>
+    <i><b>Mask Expression</b></i><br>
+    In addition to the option of masking out invalid pixels as designated by the valid pixel expressions of the source
+    bands, you can create a custom logical expression to further constrain which pixels of the source band get used.
+</p>
+
+
+<p class="i1">
+    <b>Edit ...</b><br>
+    This accesses the Expression Editor to help you construct a logical expression.  Note that the mask expression
+    you create here is applied to each of the bands.
+</p>
+
+
+
+<br><br>
+<hr>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <a name="Metadata"></a>
