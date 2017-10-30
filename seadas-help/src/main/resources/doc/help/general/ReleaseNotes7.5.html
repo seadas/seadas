@@ -26,12 +26,11 @@ The SeaDAS development team is pleased to announce the release of SeaDAS 7.5
 
 Highlights of what's new to SeaDAS 7.5 
     - OCSSW processing support for Windows
-    - Significant revision to the Statistics tool
-    - Masking capabilities added to the Reproject Tool
-    - GPT command line usage cookbook 
-    - Help menu organization and links
-    - Extensive rewrite of the Statistics and Reproject help pages 
-    - CoastLandWater tool now available in GPT
+    - Statistics Tool: significant revision
+    - Reproject Tool: masking capabilities added
+    - CoastLandWater Tool: now available in GPT
+    - GPT Cookbook: contains command line usage examples
+    - Help: extensive rewrite of the Statistics and Reproject help pages
     
 
 
@@ -39,11 +38,14 @@ PRIMARY PACKAGE
 
     FEATURE ADDITIONS/MODIFICATIONS
 
-        - Windows Support
+        - OCSSW Processing
+            Windows Support
 
 
         - Statistics Tool
-            1. Major revision to this tool:
+            Major revision to this tool.
+
+            1.  Revision (GUI)
                 a. Can be run simultaneously for multiple bands (no longer limited to a single band)
                 b. Regional and quality masking options
                 c. Bin count, and other binning parameters can be set.  (Note: the related accuracy setting has been
@@ -58,7 +60,7 @@ PRIMARY PACKAGE
                 i. Percentile plot is now percentile on y-axis and data on x-axis.
                 j. Some delayed screen repaint issue have been resolved.
                 k. Preferences page has been added.
-            2. GPT version.
+            2.  Revision (GPT)
                 a. Adds the same statistics fields as the GUI (although does not add the metadata fields)
                 b. Uses bin count "numBins".  (Note: the related accuracy setting has been removed.)
                 c. Added field "calculateMedian".
@@ -84,13 +86,12 @@ PRIMARY PACKAGE
                     
 
         - RGB Image Profiles
-            1. A large amount of rgb configuration files (rgb_profiles) have been added.  These include true color and many
-                false color configurations.
+            1. A large amount of rgb configuration files (rgb_profiles) have been added.  These include true color
+                and many false color configurations.
 
         - Coast, Land, Water Tool (GPT) "LandWaterMask"
-            1. This is now fully supported and works in GPT mode.
-            2. Copy source file
-
+            1. This is now fully supported and works in GPT mode.  All GUI features have been added in as parameters
+                    in the operator.  Option to transfer data from source file to output file.
 
         - Level 2 File reader
             1. Mask "Quality_L3" revised
@@ -137,10 +138,9 @@ SCIENCE PROCESSING CODE
 
 NOTES
 
-    Some of the help pages internal to SeaDAS 7.4 have not been revised to match the current version so there can be
-    some wording discrepancies as well as feature description differences.  However, we regularly produce video help
-    tutorials <b>(https://seadas.gsfc.nasa.gov/tutorial)</b>.  We feel this to be the best, most functional way to
-    enable the user of SeaDAS to get the most out of the software.  In additional we regularly respond to SeaDAS issues
+    Some of the help pages internal to SeaDAS 7.5 have not yet been revised to match the current version so there can be
+    some wording discrepancies as well as feature description differences.  We also produce video help
+    tutorials <b>(https://seadas.gsfc.nasa.gov/tutorial)</b>.  In addition, we regularly respond to SeaDAS issues
     on the our user forum
     (https://oceancolor.gsfc.nasa.gov/forum/oceancolor/forum_show.pl).  Questions posted on
     the forum help aid us in determining aspects of SeaDAS which may benefit by refinement, as well as give us ideas
