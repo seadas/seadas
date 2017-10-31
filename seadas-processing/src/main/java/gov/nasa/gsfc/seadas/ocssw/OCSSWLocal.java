@@ -92,17 +92,17 @@ public class OCSSWLocal extends OCSSW {
         return execute(processorModel);
     }
 
-    @Override
-    public InputStream executeAndGetStdout(ProcessorModel processorModel) {
-
-        Process process = execute(processorModel);
-        try {
-            process.waitFor();
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
-        return process.getInputStream();
-    }
+//    @Override
+//    public InputStream executeAndGetStdout(ProcessorModel processorModel) {
+//
+//        Process process = execute(processorModel);
+//        try {
+//            process.waitFor();
+//        } catch (InterruptedException ie) {
+//            ie.printStackTrace();
+//        }
+//        return process.getInputStream();
+//    }
 
     @Override
     public Process execute(ParamList paramListl) {
