@@ -88,7 +88,7 @@ public class ORSProcessObserver {
         private void read() throws IOException {
 
             InputStream inputStream = type.equals("stdout") ? process.getInputStream() : process.getErrorStream();
-            writeProcessStreamToSocket(inputStream, type.equals("stdout") ? processInputStreamPortNumber :processErrorStreamPortNumber);
+            writeProcessStreamToSocket(inputStream, type.equals("stdout") ? processInputStreamPortNumber : processErrorStreamPortNumber);
         }
 
         private void writeProcessStreamToSocket(InputStream inputStream, int portNumber) {
@@ -104,9 +104,7 @@ public class ORSProcessObserver {
                 while ((inputLine = reader.readLine()) != null) {
                     out.println(inputLine);
                 }
-                if (type.equals(STDOUT)) {
-                    SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
-                }
+                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), new Integer(process.exitValue()).toString());
             } catch (IOException e) {
                 System.out.println("Exception caught when trying to listen on port "
                         + portNumber + " or listening for a connection");

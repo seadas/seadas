@@ -17,14 +17,19 @@ import javax.json.JsonObjectBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRECTORY_PROPERTY;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.ANC_FILE_LIST_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_ERROR_STREAM_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_INPUT_STREAM_FILE_NAME;
 
@@ -57,11 +62,12 @@ public class OCSSWServices {
     }
 
     /**
-     *ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
-     ocsswDataDirPath = ocsswRoot + File.separator +OCSSW_DATA_DIR_SUFFIX;
-     ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM;
-     ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
-     ocsswBinDirPath
+     * ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
+     * ocsswDataDirPath = ocsswRoot + File.separator +OCSSW_DATA_DIR_SUFFIX;
+     * ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM;
+     * ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
+     * ocsswBinDirPath
+     *
      * @return
      */
     @GET
@@ -91,11 +97,21 @@ public class OCSSWServices {
     @Consumes(MediaType.TEXT_PLAIN)
     public Response setClientId(@PathParam("jobId") String jobId, String clientId) {
         Response.Status respStatus = Response.Status.OK;
-        System.out.println("client : " + clientId );
+        System.out.println("client : " + clientId);
         SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.CLIENT_ID_NAME.getFieldName(), clientId);
-        //todo: working dir is set to user.home for now. Get it from the config file
-        String workingDirPath = System.getProperty("user.home") + File.separator + clientId;
+        String workingDirPath = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY) + File.separator + clientId;
         System.out.println("client and working directory: " + clientId + "   " + workingDirPath);
+        //todo cleanup client directory before starting a new set of tasks
+        try {
+            File workingDir = new File(workingDirPath);
+            if (workingDir.exists() && workingDir.isDirectory()) {
+                ServerSideFileUtilities.purgeDirectory(workingDir);
+            } else {
+                Files.createDirectories(new File(workingDirPath).toPath());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName(), workingDirPath);
         return Response.status(respStatus).build();
     }
@@ -169,11 +185,33 @@ public class OCSSWServices {
 
 
     @PUT
+    @Path("executeOcsswProgramAndGetStdout/{jobId}/{programName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response executeOcsswProgramAndGetStdout(@PathParam("jobId") String jobId,
+                                                    @PathParam("programName") String programName,
+                                                    JsonObject jsonObject)
+            throws IOException {
+
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
+        if (jsonObject == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } else {
+
+            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            InputStream processInputStream = ocsswRemote.executeProgramAndGetStdout(jobId, programName, jsonObject);
+            ServerSideFileUtilities.writeToFile(processInputStream, serverWorkingDir + File.separator + ANC_FILE_LIST_FILE_NAME);
+            return Response
+                    .ok()
+                    .build();
+        }
+    }
+
+    @PUT
     @Path("executeOcsswProgramSimple/{jobId}/{programName}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response executeOcsswProgramSimple(@PathParam("jobId") String jobId,
-                                                @PathParam("programName") String programName,
-                                                JsonObject jsonObject)
+                                              @PathParam("programName") String programName,
+                                              JsonObject jsonObject)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
         if (jsonObject == null) {
@@ -192,7 +230,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public Response uploadMLPParFile(@PathParam("jobId") String jobId,
                                      @PathParam("programName") String programName,
-                                                 File parFile)
+                                     File parFile)
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
         System.out.println("par file path: " + parFile.getAbsolutePath());
@@ -210,7 +248,7 @@ public class OCSSWServices {
     @GET
     @Path("executeMLPParFile/{jobId}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public Response executeMLPParFile(@PathParam("jobId") String jobId){
+    public Response executeMLPParFile(@PathParam("jobId") String jobId) {
         Response.Status respStatus = Response.Status.OK;
         return Response.status(respStatus).build();
     }
@@ -218,7 +256,7 @@ public class OCSSWServices {
     @GET
     @Path("getMLPOutputFiles/{jobId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject executeMLP(@PathParam("jobId") String jobId){
+    public JsonObject executeMLP(@PathParam("jobId") String jobId) {
         OCSSWRemote ocsswRemote = new OCSSWRemote();
         return ocsswRemote.getMLPOutputFilesJsonList(jobId);
     }
@@ -227,15 +265,15 @@ public class OCSSWServices {
     @GET
     @Path("processExitValue")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getProcessExitValue(@PathParam("jobId") String jobId){
+    public String getProcessExitValue(@PathParam("jobId") String jobId) {
         return SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.EXIT_VALUE_NAME.getFieldName());
     }
 
     @GET
     @Path("processStatus/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getProcessStatus(@PathParam("jobId") String jobId){
-        String processStatus =  SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName());
+    public String getProcessStatus(@PathParam("jobId") String jobId) {
+        String processStatus = SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName());
         System.out.println("process status: " + processStatus);
         return processStatus;
     }
@@ -272,7 +310,7 @@ public class OCSSWServices {
     @Path("/missionSuites/{missionName}/{programName}")
     @Produces(MediaType.APPLICATION_JSON)
     public String[] getL2genMissionSuites(@PathParam("missionName") String missionName, @PathParam("programName") String programName) {
-        if ( OCSSWServerModel.isMissionDirExist(missionName)) {
+        if (OCSSWServerModel.isMissionDirExist(missionName)) {
             return new MissionInfo().getMissionSuiteList(missionName, programName);
         } else {
             return null;
@@ -333,7 +371,7 @@ public class OCSSWServices {
     @POST
     @Path("/uploadNextLevelNameParams/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public int uploadNextLevelNameParams(@PathParam("jobId") String jobId, JsonObject jsonObject){
+    public int uploadNextLevelNameParams(@PathParam("jobId") String jobId, JsonObject jsonObject) {
         Response.Status responseStatus = Response.Status.ACCEPTED;
         OCSSWRemote ocsswRemote = new OCSSWRemote();
         ocsswRemote.getOfileName(jobId, jsonObject);
@@ -467,7 +505,6 @@ public class OCSSWServices {
     }
 
 
-
     @GET
     @Path("retrieveNextLevelFileName/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -515,7 +552,7 @@ public class OCSSWServices {
         String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String processInputStreamFileName = serverWorkingDir + File.separator + jobId + File.separator + PROCESS_INPUT_STREAM_FILE_NAME;
         String inputStreamLine = ServerSideFileUtilities.getlastLine(processInputStreamFileName);
-        System.out.println("process input stream last line = "  + inputStreamLine + "  filename = " + processInputStreamFileName);
+        System.out.println("process input stream last line = " + inputStreamLine + "  filename = " + processInputStreamFileName);
         return inputStreamLine;
     }
 
@@ -526,10 +563,9 @@ public class OCSSWServices {
         String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String processErrorStreamFileName = serverWorkingDir + File.separator + jobId + File.separator + PROCESS_ERROR_STREAM_FILE_NAME;
         String errorStreamLine = ServerSideFileUtilities.getlastLine(processErrorStreamFileName);
-        System.out.println("process error stream last line = "  + errorStreamLine + "  filename = " + processErrorStreamFileName);
+        System.out.println("process error stream last line = " + errorStreamLine + "  filename = " + processErrorStreamFileName);
         return errorStreamLine;
     }
-
 
 
     private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
