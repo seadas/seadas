@@ -2,35 +2,24 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.OCSSWInfo;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
-import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.MultiPart;
-import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import static java.nio.file.StandardCopyOption.*;
-
 /**
  * Created by aabduraz on 3/27/17.
  */
-public class OCSSWVMClient extends OCSSWRemoteClient {
+public class OCSSWVM extends OCSSWRemote {
     public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY = "ocssw.sharedDir";
     public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + "ocsswVMServerSharedDir";
 
@@ -39,7 +28,7 @@ public class OCSSWVMClient extends OCSSWRemoteClient {
 
 
 
-    public OCSSWVMClient() {
+    public OCSSWVM() {
 
         this.initialize();
 

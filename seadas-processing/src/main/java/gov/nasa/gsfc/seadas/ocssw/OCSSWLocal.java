@@ -31,8 +31,8 @@ public class OCSSWLocal extends OCSSW {
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
-    public static String OCSSW_SCRIPTS_DIR_SUFFIX = "run" + System.getProperty("file.separator") + "scripts";
-    public static String OCSSW_DATA_DIR_SUFFIX = "run" + System.getProperty("file.separator") + "data";
+    public static String OCSSW_SCRIPTS_DIR_SUFFIX = "scripts";
+    public static String OCSSW_DATA_DIR_SUFFIX = "share";
 
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
@@ -50,29 +50,12 @@ public class OCSSWLocal extends OCSSW {
     Process process;
 
     public OCSSWLocal() {
-
-        initiliaze();
+        initialize();
     }
 
-    private void initiliaze() {
-        String dirPath = RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR));
-
-        if (dirPath == null) {
-            dirPath = RuntimeContext.getConfig().getContextProperty(SEADASHOME_PROPERTY, System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw");
-        }
-        if (dirPath != null) {
-            final File dir = new File(dirPath + System.getProperty("file.separator") + OCSSW_SCRIPTS_DIR_SUFFIX);
-            if (dir.isDirectory()) {
-                initiliazeMissions();
-            }
-        }
-    }
-
-
-    private void initiliazeMissions() {
+    private void initialize() {
         missionInfo = new MissionInfo();
     }
-
 
     @Override
     public ProcessObserver getOCSSWProcessObserver(Process process, String processName, ProgressMonitor progressMonitor) {
@@ -367,7 +350,7 @@ public class OCSSWLocal extends OCSSW {
 
     public void setCommandArrayPrefix() {
 
-        if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
+        if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
             commandArrayPrefix = new String[1];
             commandArrayPrefix[0] = programName;
             if (!isOCSSWExist()) {

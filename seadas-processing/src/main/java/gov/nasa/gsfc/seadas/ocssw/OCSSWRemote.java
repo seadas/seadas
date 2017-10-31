@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by aabduraz on 3/27/17.
  */
-public class OCSSWRemoteClient extends OCSSW {
+public class OCSSWRemote extends OCSSW {
 
     public static final String OCSSW_SERVER_PORT_NUMBER = "6400";
     public static final String SEADAS_CLIENT_ID_PROPERTY = "client.id";
@@ -56,7 +56,7 @@ public class OCSSWRemoteClient extends OCSSW {
     ProcessorModel processorModel;
 
 
-    public OCSSWRemoteClient() {
+    public OCSSWRemote() {
         initialize();
     }
 
@@ -341,15 +341,6 @@ public class OCSSWRemoteClient extends OCSSW {
         }
 
         return jsonArrayBuilder.build();
-    }
-
-
-    private String getOfileName(JsonArray jsonArray) {
-        JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(OCSSWOldModel.getJobId()).request(MediaType.APPLICATION_JSON).put(Entity.entity(jsonArray, MediaType.APPLICATION_JSON), JsonObject.class);
-        String ofileName = jsonObject.getString("ofileName");
-        missionName = jsonObject.getString("missionName");
-        fileType = jsonObject.getString("fileType");
-        return ofileName;
     }
 
     @Override
@@ -887,5 +878,12 @@ public class OCSSWRemoteClient extends OCSSW {
     public void setFileType(String fileType) {
 
     }
+
+    public static void retrieveServerSharedDirName() {
+        OCSSWClient ocsswClient = new OCSSWClient();
+        WebTarget target = ocsswClient.getOcsswWebTarget();
+        OCSSW.getOCSSWInstance().setServerSharedDirName(target.path("file").path("test").request(MediaType.TEXT_PLAIN).get(String.class));
+    }
+
 }
 

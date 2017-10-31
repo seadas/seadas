@@ -8,11 +8,6 @@ import javax.ws.rs.client.WebTarget;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.TimeUnit;
-
-import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient.PROCESS_STATUS_COMPLETED;
-import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient.PROCESS_STATUS_NONEXIST;
-import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient.PROCESS_STATUS_STARTED;
 
 /**
  * Created by aabduraz on 9/12/17.

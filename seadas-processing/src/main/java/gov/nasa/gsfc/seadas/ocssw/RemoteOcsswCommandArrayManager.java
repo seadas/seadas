@@ -72,7 +72,8 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
             if ((optionType.equals(ParamInfo.Type.IFILE) || optionType.equals(ParamInfo.Type.OFILE))
                     && optionValue != null && optionValue.trim().length() > 0) {
                 //replace shared folder name for remote server
-                if (optionValue.indexOf(OCSSWOldModel.getOCSSWClientSharedDirName()) != 0) {
+                OCSSW ocssw = OCSSW.getOCSSWInstance();
+                if (optionValue.indexOf(ocssw.getOCSSWClientSharedDirName()) != 0) {
                     //save the original file location for later usage; copy file to the shared folder; change the value of "optionValue"
                     String fileName = optionValue.substring(optionValue.lastIndexOf(System.getProperty("file.separator")) + 1);
                     String dirPath = optionValue.substring(0, optionValue.lastIndexOf(System.getProperty("file.separator")));
@@ -82,9 +83,9 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
                     } else if (optionType.equals(ParamInfo.Type.IFILE)) {
                         getoFilesOriginalLocations().put(fileName, dirPath);
                     }
-                    optionValue = OCSSWOldModel.getServerSharedDirName() + System.getProperty("file.separator") + fileName;
+                    optionValue = ocssw.getServerSharedDirName() + System.getProperty("file.separator") + fileName;
                 } else {
-                    optionValue = optionValue.replace(OCSSWOldModel.getOCSSWClientSharedDirName(), OCSSWOldModel.getServerSharedDirName());
+                    optionValue = optionValue.replace(ocssw.getOCSSWClientSharedDirName(), ocssw.getServerSharedDirName());
                 }
 
             }

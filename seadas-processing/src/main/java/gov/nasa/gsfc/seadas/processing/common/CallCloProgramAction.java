@@ -7,11 +7,7 @@ import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWLocal;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWRemoteClient;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWVMClient;
 import gov.nasa.gsfc.seadas.processing.core.*;
-import gov.nasa.gsfc.seadas.ocssw.*;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.ModalDialog;
@@ -81,13 +77,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return new ExtractorUI(programName, xmlFileName, ocssw);
         } else if (programName.indexOf("modis_GEO") != -1 || programName.indexOf("modis_L1B") != -1) {
             return new ModisGEO_L1B_UI(programName, xmlFileName, ocssw);
-        } else if (programName.indexOf(ocssw.OCSSW_INSTALLER_PROGRAM) != -1) {
-            OCSSWOldModel.downloadOCSSWInstaller();
-            if (!OCSSWOldModel.isOcsswInstalScriptDownloadSuccessful()) {
+        } else if (programName.indexOf(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) != -1) {
+            ocssw.downloadOCSSWInstaller();
+            if (!ocssw.isOcsswInstalScriptDownloadSuccessful()) {
                 return null;
             }
 
-            if (RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
+            if (ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
@@ -103,13 +99,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
     public void initializeOcsswClient() {
 
         ocssw = OCSSW.getOCSSWInstance();
-//        if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
-//            ocssw = new OCSSWLocal();
-//        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
-//            ocssw = new OCSSWVMClient();
-//        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
-//            ocssw = new OCSSWRemoteClient();
-//        }
         ocssw.setProgramName(programName);
     }
 
@@ -192,7 +181,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             return;
         }
 
-        if (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM) && !OCSSWOldModel.isOcsswInstalScriptDownloadSuccessful()) {
+        if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) && !ocssw.isOcsswInstalScriptDownloadSuccessful()) {
             displayMessage(programName, "ocssw installation script does not exist." + "\n" + "Please check network connection and rerun ''Install Processor''");
             return;
         }
@@ -222,7 +211,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 }
                 final ProcessObserver processObserver = ocssw.getOCSSWProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
-                if (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM)) {
+                if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
                     processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));
                 } else {
                     processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
@@ -254,8 +243,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     ocssw.getOutputFiles(processorModel);
                     displayOutput(processorModel);
                     VisatApp.getApp().showInfoDialog(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? "" :
-                            (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM) ? "" : ("Output written to:\n" + outputFileName))), null);
-                    if (programName.equals(ocssw.OCSSW_INSTALLER_PROGRAM)) {
+                            (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) ? "" : ("Output written to:\n" + outputFileName))), null);
+                    if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
                         ocssw.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
                         if (!ocssw.isOCSSWExist()) {
                             enableProcessors();

@@ -2,8 +2,8 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.TableLayout;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.framework.ui.AppContext;
@@ -200,6 +200,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         otherPanelLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         otherPanel.setLayout(otherPanelLayout);
         otherPanel.setBorder(BorderFactory.createTitledBorder("Others"));
+        OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
 
         JScrollPane jsp = (JScrollPane) paramPanel.getComponent(0);
         JPanel panel = (JPanel) findJPanel(jsp, "param panel");
@@ -223,7 +224,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     } else {
                         if (tmpString.equals("SRC")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Source Code");
-                            if (new File(OCSSWOldModel.getOcsswEnv() + System.getProperty("file.separator") + "build").exists()) {
+                            if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") + "build").exists()) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                             }
                         } else if (tmpString.equals("EVAL")) {
@@ -245,7 +246,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     dirPanel = (JPanel) c;
 
                 }
-                if (!RuntimeContext.getConfig().getContextProperty(OCSSWOldModel.OCSSW_LOCATION_PROPERTY).equals(OCSSWOldModel.SEADAS_OCSSW_LOCATION_LOCAL)) {
+                if (! ocsswInfo.getOcsswLocation().equals(ocsswInfo.OCSSW_LOCATION_LOCAL)) {
                     //if ocssw is not local, then disable the button to choose ocssw installation directory
                     ((JLabel)dirPanel.getComponent(0)).setText("Remote install-dir");
                     dirPanel.getComponent(1).setEnabled(false);

@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
 import org.esa.beam.framework.ui.AppContext;
 
 import java.io.File;
@@ -63,17 +63,12 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
         if (new File(missionDataDir + "eval").exists()) {
             processorModel.setParamValue("--eval", "1");
         }
-        if (new File(OCSSWOldModel.getOcsswEnv() + System.getProperty("file.separator") + "build").exists()) {
+        if (new File(OCSSWInfo.getInstance().getOcsswRoot(), "build").exists()) {
             processorModel.setParamValue("--src", "1");
         }
     }
 
     String getInstallDir() {
-        String installDir = OCSSWOldModel.getOcsswEnv();
-        if (installDir != null) {
-            return installDir;
-        } else {
-            return System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw";
-        }
+        return OCSSWInfo.getInstance().getOcsswLocation();
     }
 }

@@ -36,39 +36,36 @@ public class OCSSWInfo {
     public static final String OCSSW_PROCESS_ERROR_STREAM_PORT = "ocssw.processErrorStreamPort";
     private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
-    public static String OCSSW_BIN_DIR_SUFFIX = "run" + File.separator + "bin" + File.separator + getOSName();
-    public static String OCSSW_SCRIPTS_DIR_SUFFIX = "run" + File.separator + "scripts";
-    public static String OCSSW_DATA_DIR_SUFFIX = "run" + File.separator + "data";
+    public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "scripts";
+    public static final String OCSSW_DATA_DIR_SUFFIX = "share";
+    public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
 
-    public static String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw.py";
-    public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
+    public static final String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw.py";
+    public static final String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
 
-    private  int processInputStreamPort;
+    public static final String VIRTUAL_MACHINE_SERVER_API = "localhost";
+
+    private static OCSSWInfo ocsswInfo = null;
+
+    private int processInputStreamPort;
     private int processErrorStreamPort;
 
-    private static boolean ocsswExist;
-    private static String ocsswRoot;
-    private static String ocsswDataDirPath;
-    private static String ocsswScriptsDirPath;
-    private static String ocsswInstallerScriptPath;
-    private static String ocsswRunnerScriptPath;
-    private static String ocsswBinDirPath;
+    private boolean ocsswExist;
+    private String ocsswRoot;
+    private String ocsswDataDirPath;
+    private String ocsswScriptsDirPath;
+    private String ocsswInstallerScriptPath;
+    private String ocsswRunnerScriptPath;
+    private String ocsswBinDirPath;
 
-    private static String ocsswLocation;
-    private static String resourceBaseUri;
+    private String ocsswLocation;
+    private String resourceBaseUri;
 
-    public static String getOcsswLocation() {
+    public String getOcsswLocation() {
         return ocsswLocation;
     }
 
-    public static void setOcsswLocation(String ocsswLocation) {
-        OCSSWInfo.ocsswLocation = ocsswLocation;
-    }
-
-
-    public static String VIRTUAL_MACHINE_SERVER_API = "localhost";
-
-    private static OCSSWInfo ocsswInfo = null;
+    private void setOcsswLocation(String location) { ocsswLocation = location; }
 
     private OCSSWInfo() {}
 

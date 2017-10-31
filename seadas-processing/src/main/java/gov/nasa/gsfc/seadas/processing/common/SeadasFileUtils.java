@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.common;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;

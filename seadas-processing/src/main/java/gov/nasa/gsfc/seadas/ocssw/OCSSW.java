@@ -8,28 +8,24 @@ import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.core.RemoteProcessObserver;
+import org.esa.beam.visat.VisatApp;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
+import java.net.URL;
 
 /**
  * Created by aabduraz on 3/27/17.
  */
 public abstract class OCSSW {
-    public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
 
-    public static final String OCSSW_VIRTUAL_SERVER_PORT_FORWWARD_NUMBER_FOR_CLIENT = "6400";
-
-    public static final String OCSSWROOT_PROPERTY = "ocssw.root";
-    public static final String OCSSW_SERVER_PORT_PROPERTY = "ocssw.port";
-    public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
-    public static final String SEADASHOME_PROPERTY = "home";
-
-
-    public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
-
-    public static String MLP_PAR_FILE_NAME = "mlp_par_file";
+    public static final String OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY = "ocssw.sharedDir";
+    public static final String MLP_PAR_FILE_NAME = "mlp_par_file";
+    public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
+    public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
 
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
@@ -64,13 +60,16 @@ public abstract class OCSSW {
 
     private boolean ofileNameFound;
 
+    private String serverSharedDirName = null;
+    private boolean ocsswInstalScriptDownloadSuccessful = false;
+
     public static OCSSW getOCSSWInstance() {
-        if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
+        if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
             return new OCSSWLocal();
-        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
-            return new OCSSWVMClient();
-        } else if (OCSSWInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
-            return new OCSSWRemoteClient();
+        } else if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
+            return new OCSSWVM();
+        } else if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
+            return new OCSSWRemote();
         }
         return new OCSSWLocal();
     }
@@ -254,9 +253,7 @@ public abstract class OCSSW {
         this.processExitValue = processExitValue;
     }
 
-    public void waitForProcess(){
-
-    }
+    public void waitForProcess(){ }
 
     public boolean isOfileNameFound() {
         return ofileNameFound;
@@ -265,4 +262,50 @@ public abstract class OCSSW {
     public void setOfileNameFound(boolean ofileNameFound) {
         this.ofileNameFound = ofileNameFound;
     }
+
+    public String getOCSSWClientSharedDirName() {
+        return RuntimeContext.getConfig().getContextProperty(OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY);
+    }
+
+    public void setServerSharedDirName(String name) { serverSharedDirName = name; }
+
+    public String getServerSharedDirName() { return serverSharedDirName; }
+
+    private static void handleException(String errorMessage) {
+        VisatApp.getApp().showErrorDialog(errorMessage);
+    }
+
+    public boolean isOcsswInstalScriptDownloadSuccessful() {
+        return ocsswInstalScriptDownloadSuccessful;
+    }
+
+    public boolean downloadOCSSWInstaller() {
+
+        if (isOcsswInstalScriptDownloadSuccessful()) {
+            return ocsswInstalScriptDownloadSuccessful;
+        }
+        try {
+            URL website = new URL(OCSSW_INSTALLER_URL);
+            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
+            ocsswInstalScriptDownloadSuccessful = true;
+        } catch (MalformedURLException malformedURLException) {
+            handleException("URL for downloading install_ocssw.py is not correct!");
+        } catch (FileNotFoundException fileNotFoundException) {
+            handleException("ocssw installation script failed to download. \n" +
+                    "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
+                    "possible cause of error: " + fileNotFoundException.getMessage());
+        } catch (IOException ioe) {
+            handleException("ocssw installation script failed to download. \n" +
+                    "Please check network connection or 'seadas.ocssw.root' variable in the \"seadas.config\" file. \n" +
+                    "possible cause of error: " + ioe.getLocalizedMessage());
+        } finally {
+            return ocsswInstalScriptDownloadSuccessful;
+        }
+    }
+
+
 }

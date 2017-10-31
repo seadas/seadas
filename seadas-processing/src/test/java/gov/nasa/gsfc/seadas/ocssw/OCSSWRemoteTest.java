@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class OCSSWRemoteTest {
     @Test
     public void setIfileName() throws Exception {
-        OCSSWRemoteClient ocsswRemote = new OCSSWRemoteClient();
+        OCSSWRemote ocsswRemote = new OCSSWRemote();
         boolean testFileUpload = ocsswRemote.uploadIFile("/accounts/aabduraz/Downloads/V2017060154800.L2_SNPP_OC.nc");
         assertEquals(true, testFileUpload);
     }

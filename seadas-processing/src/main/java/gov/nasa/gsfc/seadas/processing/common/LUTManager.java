@@ -1,8 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.swing.TableLayout;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWOldModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -41,7 +41,7 @@ public class LUTManager {
     }
 
     private void updateLUT() {
-        String[] lutCmdArray = {OCSSWOldModel.getOcsswRunnerScriptPath(), UPDATE_LUTS_PROCESSOR_NAME, missionName};
+        String[] lutCmdArray = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), UPDATE_LUTS_PROCESSOR_NAME, missionName};
         String[] lutCmdArrayParams = {missionName};
         Process process = ocssw.execute(lutCmdArray);
         process = ocssw.execute(UPDATE_LUTS_PROCESSOR_NAME, lutCmdArrayParams);
