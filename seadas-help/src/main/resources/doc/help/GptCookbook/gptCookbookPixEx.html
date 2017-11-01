@@ -1,0 +1,156 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: Collocate</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT PixEx</h1>
+    <p class="chapterTitle">PixEx</p>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+          Creates a text based file containing band values for single pixels or aggregate values for a grid of pixels.
+        </p>
+    </td></tr></table>
+
+    <br>
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookPixEx.html#Example1" class="invisibleLink">Matchups to In Situ Cruise Stations</a></p>
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example2"></a>
+    <p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Matchups to In Situ Cruise Stations</p>
+<br>
+
+<p>
+    This uses a data file which contains measurement time and location for an in situ cruise.  It then extracts matching
+    pixels (in the form of 5x5 mean aggregate) for an input level-2 file with criteria restrictions of a 3 hour time
+    window and several quality flags.
+</p>
+
+<br>
+<p>
+<b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt PixEx02.xml -Ssource=A2010317175500.L2_LAC_OC.nc -p PixEx02.par -Phome=$HOME -PoutputFilePrefix=CV5_A2010317175500 -PcoordinatesFile=cruiseCV5_2010317.txt
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+<b>File = PixEx02.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="PixExGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="PixExNode"&gt;
+    &lt;operator&gt;PixEx&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+      &lt;outputDir&gt;${home}/${outputDir}&lt;/outputDir&gt;:
+      &lt;outputFilePrefix&gt;${outputFilePrefix}&lt;/outputFilePrefix&gt;
+
+      &lt;coordinatesFile&gt;${home}/${coordinatesFileDir}/${coordinatesFile}&lt;/coordinatesFile&gt;
+      &lt;timeDifference&gt;${timeDifference}&lt;/timeDifference&gt;
+
+      &lt;exportBands&gt;${exportBands}&lt;/exportBands&gt;
+      &lt;exportTiePoints&gt;${exportTiePoints}&lt;/exportTiePoints&gt;
+      &lt;exportMasks&gt;${exportMasks}&lt;/exportMasks&gt;
+
+      &lt;windowSize&gt;${windowSize}&lt;/windowSize&gt;
+      &lt;aggregatorStrategyType&gt;${aggregatorStrategyType}&lt;/aggregatorStrategyType&gt;
+
+      &lt;expression&gt;${expression}&lt;/expression&gt;
+
+      &lt;exportExpressionResult&gt;false&lt;/exportExpressionResult&gt;
+
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = PixExEx02.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+#home=DEFINED_ON_COMMAND_LINE
+
+outputDir=Desktop/GptExamples/help/PixEx/
+#outputFilePrefix=DEFINED_ON_COMMAND_LINE
+
+coordinatesFileDir=Desktop/GptExamples/help/PixEx
+#coordinatesFile=DEFINED_ON_COMMAND_LINE
+
+timeDifference=3H
+
+exportBands=true
+exportTiePoints=false
+exportMasks=false
+
+windowSize=5
+aggregatorStrategyType=mean
+
+expression=!(l2_flags.HIGLINT and l2_flags.HISATZEN and l2_flags.STRAYLIGHT)
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = cruiseCV5_2010317.txt*<br>
+        * The coordinates file must be tab delimited -- exactly one tab and no character spaces between each field.</b>
+</p>
+
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre><code>
+DateTime&#9;Name&#9;Lat&#9;Lon
+2010-11-13T12:03:00&#9;52&#9;40.7537&#9;-70.7162
+2010-11-13T14:05:00&#9;53&#9;40.5477&#9;-70.5050
+2010-11-13T15:32:00&#9;53B&#9;40.3522&#9;-70.3797
+2010-11-13T18:02:00&#9;54&#9;40.0255&#9;-70.1460
+2010-11-13T20:00:00&#9;54A&#9;40.2033&#9;-70.0627
+2010-11-13T21:18:00&#9;55&#9;40.3577&#9;-69.9882</code></pre>
+</td></tr></table>
+
+
+
+<br><br><br>
+
+</body>
+</html>

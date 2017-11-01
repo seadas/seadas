@@ -30,6 +30,8 @@ class LandMasksData {
     private boolean deleteMasks = false;
 
     private int superSampling = 3;
+    private int coastalGridSize = 3;
+    private int coastalSizeTolerance = 50;
 
 
     private double landMaskTransparency = 0.0;
@@ -45,16 +47,17 @@ class LandMasksData {
     private Color coastlineMaskColor = new Color(0, 0, 0);
 
 
-    private String waterFractionBandName = "mask_data_water_fraction";
-    private String waterFractionSmoothedName = "mask_data_water_fraction_smoothed";
+    private String waterFractionBandName = "water_fraction";
+    private String waterFractionSmoothedName = "water_fraction_mean";
 
     private String landMaskName = "LandMask";
     private String landMaskMath = getWaterFractionBandName() + " == 0";
     private String landMaskDescription = "Land masked pixels";
 
 
-    private String coastlineMaskName = "CoastlineMask";
-    private String coastlineMath = getWaterFractionSmoothedName() + " > 25 and " + getWaterFractionSmoothedName() + " < 75";
+    private String coastlineMaskName = "CoastalMask";
+   // private String coastlineMath = getWaterFractionSmoothedName() + " > 25 and " + getWaterFractionSmoothedName() + " < 75";
+//    private String coastlineMath = getWaterFractionSmoothedName() + " > 0 and " + getWaterFractionSmoothedName() + " < 100";
     private String coastlineMaskDescription = "Coastline masked pixels";
 
 
@@ -84,17 +87,6 @@ class LandMasksData {
                 WatermaskClassifier.FILENAME_SRTM_GC_150m);
         getSourceFileInfos().add(sourceFileInfo);
 
-//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_250m,
-//                SourceFileInfo.Unit.METER,
-//                WatermaskClassifier.Mode.GSHHS,
-//                WatermaskClassifier.FILENAME_GSHHS_250m);
-//        getSourceFileInfos().add(sourceFileInfo);
-//
-//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_500m,
-//                SourceFileInfo.Unit.METER,
-//                WatermaskClassifier.Mode.GSHHS,
-//                WatermaskClassifier.FILENAME_GSHHS_500m);
-//        getSourceFileInfos().add(sourceFileInfo);
 
         sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_1km,
                 SourceFileInfo.Unit.METER,
@@ -109,6 +101,35 @@ class LandMasksData {
                 WatermaskClassifier.Mode.GSHHS,
                 WatermaskClassifier.FILENAME_GSHHS_10km);
         getSourceFileInfos().add(sourceFileInfo);
+
+
+//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_50m,
+//                SourceFileInfo.Unit.METER,
+//                WatermaskClassifier.Mode.DEFAULT,
+//                WatermaskClassifier.FILENAME_SRTM_GC_50m);
+//        getSourceFileInfos().add(sourceFileInfo);
+//
+//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_150m,
+//                SourceFileInfo.Unit.METER,
+//                WatermaskClassifier.Mode.DEFAULT,
+//                WatermaskClassifier.FILENAME_SRTM_GC_150m);
+//        getSourceFileInfos().add(sourceFileInfo);
+//
+//
+//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_1km,
+//                SourceFileInfo.Unit.METER,
+//                WatermaskClassifier.Mode.DEFAULT,
+//                WatermaskClassifier.FILENAME_GSHHS_1km);
+//        getSourceFileInfos().add(sourceFileInfo);
+//        // set the default
+//        this.sourceFileInfo = sourceFileInfo;
+//
+//        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_10km,
+//                SourceFileInfo.Unit.METER,
+//                WatermaskClassifier.Mode.DEFAULT,
+//                WatermaskClassifier.FILENAME_GSHHS_10km);
+//        getSourceFileInfos().add(sourceFileInfo);
+
 
         this.addPropertyChangeListener(LandMasksData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, new PropertyChangeListener() {
             @Override
@@ -228,7 +249,8 @@ class LandMasksData {
     }
 
     public String getWaterFractionSmoothedName() {
-        return waterFractionSmoothedName;
+
+        return waterFractionSmoothedName + getCoastalGridSize();
     }
 
     public void setWaterFractionSmoothedName(String waterFractionSmoothedName) {
@@ -267,13 +289,16 @@ class LandMasksData {
         this.coastlineMaskName = coastlineMaskName;
     }
 
-    public String getCoastlineMath() {
-        return coastlineMath;
+    public String getCoastalMath() {
+
+        double min = 50  - getCoastalSizeTolerance()/2;
+        double max = 50 + getCoastalSizeTolerance()/2;
+      return  getWaterFractionSmoothedName() + " > "+ Double.toString(min) + " and " + getWaterFractionSmoothedName() + " < " + Double.toString(max);
     }
 
-    public void setCoastlineMath(String coastlineMath) {
-        this.coastlineMath = coastlineMath;
-    }
+//    public void setCoastlineMath(String coastlineMath) {
+//        this.coastlineMath = coastlineMath;
+//    }
 
     public String getCoastlineMaskDescription() {
         return coastlineMaskDescription;
@@ -340,6 +365,21 @@ class LandMasksData {
     }
 
 
+    public int getCoastalGridSize() {
+        return coastalGridSize;
+    }
+
+    public void setCoastalGridSize(int coastalGridSize) {
+        this.coastalGridSize = coastalGridSize;
+    }
+
+    public int getCoastalSizeTolerance() {
+        return coastalSizeTolerance;
+    }
+
+    public void setCoastalSizeTolerance(int coastalSizeTolerance) {
+        this.coastalSizeTolerance = coastalSizeTolerance;
+    }
 }
 
 

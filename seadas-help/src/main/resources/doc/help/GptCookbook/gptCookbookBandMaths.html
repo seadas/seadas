@@ -1,0 +1,654 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: BandMaths</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT Cookbook</h1>
+    <p class="chapterTitle">BandMaths</p>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+          Creates a new file with math band(s) based on an input source file with the option to retain source file bands in the new file.
+        </p>
+    </td></tr></table>
+
+    <br>
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example1" class="invisibleLink">Create Math Bands and Retain Source Bands</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example2" class="invisibleLink">Create Math Bands and Retain Source Bands  (Variables Option)</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example3" class="invisibleLink">Create only Math Bands</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example4" class="invisibleLink">Remove the "_count" Bands from a Mosaic File (OC Level2)</a></p>
+
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
+
+
+<br><br><br><hr>
+<a name="Example1"></a>
+    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands</p>
+<br>
+
+<p>
+    This creates a copy of a file adding math band(s) to it.
+</p>
+
+<br>
+<p>
+<b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt BandMaths.xml -p BandMathsEx01.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx01.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+<b>File = BandMaths.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="BandMathsGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="BandMathsNode"&gt;
+    &lt;operator&gt;BandMaths&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;copySourceFile&gt;${copySourceFile}&lt;/copySourceFile&gt;
+      &lt;targetBands&gt;
+        &lt;targetBand&gt;
+          &lt;name&gt;${band1Name}&lt;/name&gt;
+          &lt;type&gt;${band1Type}&lt;/type&gt;
+          &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+          &lt;description&gt;${band1Description}&lt;/description&gt;
+          &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+          &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+          &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+          &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
+        &lt;/targetBand&gt;
+      &lt;/targetBands&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = BandMathsEx01.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+copySourceFile=true
+band1Name=aod
+band1Type=float64
+band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
+band1Description=apparent optical depth
+band1Unit=meters
+band1ValidExpression=Kd_490 &amp;gt;= 0.01000 and Kd_490 &amp;lt;= 6.00000
+band1NoDataValue=-0.19837031
+band1SpectralWavelength=490.0
+band1SpectralBandwidth=10.0
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example2"></a>
+<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands (Variables Option)</p>
+<br>
+
+<p>
+    This creates a copy of a file adding math band(s) to it.
+</p>
+
+<p>
+    <i>This is exactly the same as example 1 except it illustrates the use of the variable options.</i>
+</p>
+
+<p>
+    <i>Note: variables only apply to parameter "expression" and not to parameter "validExpression".</i>
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt BandMathsVariables.xml -p BandMathsEx02.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx02.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = BandMathsVariables.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="BandMathsVariablesGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="BandMathsNode"&gt;
+    &lt;operator&gt;BandMaths&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;copySourceFile&gt;${copySourceFile}&lt;/copySourceFile&gt;
+      &lt;targetBands&gt;
+        &lt;targetBand&gt;
+          &lt;name&gt;${band1Name}&lt;/name&gt;
+          &lt;type&gt;${band1Type}&lt;/type&gt;
+          &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+          &lt;description&gt;${band1Description}&lt;/description&gt;
+          &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+          &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+          &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+          &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
+        &lt;/targetBand&gt;
+      &lt;/targetBands&gt;
+      &lt;variables&gt;
+        &lt;variable&gt;
+          &lt;name&gt;${var1Name}&lt;/name&gt;
+          &lt;type&gt;${var1Type}&lt;/type&gt;
+          &lt;value&gt;${var1Value}&lt;/value&gt;
+        &lt;/variable&gt;
+      &lt;/variables&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br>
+<p>
+    <b>File = BandMathsEx02.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+copySourceFile=true
+band1Name=aod
+band1Type=float64
+band1Expression=if (Kd_490 != 0) then (AOD_KD490_FACTOR/Kd_490) else NaN
+band1Description=apparent optical depth
+band1Unit=meters
+band1ValidExpression=Kd_490 &amp;gt;= 0.01000 and Kd_490 &amp;lt;= 6.00000
+band1NoDataValue=-0.19837031
+band1SpectralWavelength=490.0
+band1SpectralBandwidth=10.0
+var1Name=AOD_KD490_FACTOR
+var1Type=float64
+var1Value=1.3
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example3"></a>
+<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Create only Math Bands</p>
+<br>
+
+<p>
+    This creates a new file based off an input source file adding math band(s) to it (the bands and masks of the source
+    file are not transferred to the output file).
+</p>
+
+<p>
+    <i>This uses the graph file of example 1 and this is identical to example 1 except that the band1ValidExpression
+        does not point to the source band Kd_490 since it does not exist in the created file.</i>
+</p>
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt BandMaths.xml -p BandMathsEx03.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx03.dim
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = BandMathsEx03.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+copySourceFile=false
+band1Name=aod
+band1Type=float64
+band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
+band1Description=apparent optical depth
+band1Unit=meters
+band1ValidExpression=aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)
+band1NoDataValue=-0.19837031
+band1SpectralWavelength=490.0
+band1SpectralBandwidth=10.0
+</pre>
+</td></tr></table>
+
+
+
+
+<br><br><br><hr>
+<a name="Example4"></a>
+<p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Remove the "_count" Bands from a Mosaic File (OC Level2)</p>
+<br>
+
+<p>
+    For each band in a Mosaic file there is a corresponding "count" band used in its validPixelExpression (for instance the chlor_a band
+    sets it's validPixelExpression based on the chlor_a_count band: expr= chlor_a_count &gt; 0).  In this example
+    we take a Mosaic file and by using the BandMaths operator to apply the validPixelExpression, we create a new file
+    which does not contain these "count" bands.
+</p>
+
+<p>
+    This example is doing the full set of 20 bands in the OC suite (Note: this example has been prepared during the SeaDAS 7.5 release,
+    so any product changes in the future for the OC suite are not accounted for here).
+</p>
+
+<p>
+    The source file A2017023193500_MosaicEx05.dim used here was produced by
+    <a href="gptCookbookMosaic.html#Example5" class="invisibleLink">Mosaic Example 5</a>
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+
+
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt BandMathsEx04.xml -p BandMathsEx04.par -Ssource=A2017023193500_MosaicEx05.dim -t A2017023193500_BandMathsEx04.dim
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = BandMathsEx04.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="BandMathsGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="BandMathsNode"&gt;
+    &lt;operator&gt;BandMaths&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;targetBands&gt;
+        &lt;targetBand&gt;
+          &lt;name&gt;${band1Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band1Name}_count &amp;gt; 0) then ${band1Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band1Description}&lt;/description&gt;
+          &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band2Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band2Name}_count &amp;gt; 0) then ${band2Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band2Description}&lt;/description&gt;
+          &lt;unit&gt;${band2Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band2SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band3Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band3Name}_count &amp;gt; 0) then ${band3Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band3Description}&lt;/description&gt;
+          &lt;unit&gt;${band3Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band3SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band4Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band4Name}_count &amp;gt; 0) then ${band4Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band4Description}&lt;/description&gt;
+          &lt;unit&gt;${band4Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band4SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band5Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band5Name}_count &amp;gt; 0) then ${band5Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band5Description}&lt;/description&gt;
+          &lt;unit&gt;${band5Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band5SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band6Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band6Name}_count &amp;gt; 0) then ${band6Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band6Description}&lt;/description&gt;
+          &lt;unit&gt;${band6Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band6SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band7Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band7Name}_count &amp;gt; 0) then ${band7Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band7Description}&lt;/description&gt;
+          &lt;unit&gt;${band7Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band7SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band8Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band8Name}_count &amp;gt; 0) then ${band8Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band8Description}&lt;/description&gt;
+          &lt;unit&gt;${band8Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band8SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band9Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band9Name}_count &amp;gt; 0) then ${band9Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band9Description}&lt;/description&gt;
+          &lt;unit&gt;${band9Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band9SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band10Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band10Name}_count &amp;gt; 0) then ${band10Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band10Description}&lt;/description&gt;
+          &lt;unit&gt;${band10Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band10SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band11Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band11Name}_count &amp;gt; 0) then ${band11Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band11Description}&lt;/description&gt;
+          &lt;unit&gt;${band11Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band11SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band12Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band12Name}_count &amp;gt; 0) then ${band12Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band12Description}&lt;/description&gt;
+          &lt;unit&gt;${band12Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band12SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band13Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band13Name}_count &amp;gt; 0) then ${band13Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band13Description}&lt;/description&gt;
+          &lt;unit&gt;${band13Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band13SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band14Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band14Name}_count &amp;gt; 0) then ${band14Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band14Description}&lt;/description&gt;
+          &lt;unit&gt;${band14Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band14SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band15Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band15Name}_count &amp;gt; 0) then ${band15Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band15Description}&lt;/description&gt;
+          &lt;unit&gt;${band15Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band15SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band16Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band16Name}_count &amp;gt; 0) then ${band16Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band16Description}&lt;/description&gt;
+          &lt;unit&gt;${band16Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band16SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band17Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band17Name}_count &amp;gt; 0) then ${band17Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band17Description}&lt;/description&gt;
+          &lt;unit&gt;${band17Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band17SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band18Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band18Name}_count &amp;gt; 0) then ${band18Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band18Description}&lt;/description&gt;
+          &lt;unit&gt;${band18Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band18SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band19Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band19Name}_count &amp;gt; 0) then ${band19Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band19Description}&lt;/description&gt;
+          &lt;unit&gt;${band19Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band19SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+        &lt;targetBand&gt;
+          &lt;name&gt;${band20Name}&lt;/name&gt;
+          &lt;type&gt;float64&lt;/type&gt;
+          &lt;expression&gt;if (${band20Name}_count &amp;gt; 0) then ${band20Name} else ${noDataValue}&lt;/expression&gt;
+          &lt;description&gt;${band20Description}&lt;/description&gt;
+          &lt;unit&gt;${band20Unit}&lt;/unit&gt;
+          &lt;noDataValue&gt;${noDataValue}&lt;/noDataValue&gt;
+          &lt;spectralWavelength&gt;${band20SpectralWavelength}&lt;/spectralWavelength&gt;
+        &lt;/targetBand&gt;
+
+      &lt;/targetBands&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = BandMathsEx04.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+noDataValue=NaN
+
+band1Name=aot_869
+band1Description=Aerosol optical thickness at 869 nm
+band1Unit=
+band1SpectralWavelength=869
+
+band2Name=angstrom
+band2Description=Aerosol Angstrom exponent, 443 to 865 nm
+band2Unit=
+band2SpectralWavelength=0.0
+
+band3Name=chlor_a
+band3Description=Chlorophyll Concentration, OCI Algorithm
+band3Unit=mg m^-3
+band3SpectralWavelength=0.0
+
+band4Name=chl_ocx
+band4Description=Chlorophyll Concentration, OC3 Algorithm
+band4Unit=mg m^-3
+band4SpectralWavelength=0.0
+
+band5Name=ipar
+band5Description=Instantaneous Photosynthetically Available Radiation
+band5Unit=einstein m^-2 s^-1
+band5SpectralWavelength=0.0
+
+band6Name=Kd_490
+band6Description=Diffuse attenuation coefficient at 490 nm, KD2 algorithm
+band6Unit=m^-1
+band6SpectralWavelength=490.0
+
+band7Name=nflh
+band7Description=Normalized Fluorescence Line Height
+band7Unit=W m^-2 um^-1 sr^-1
+band7SpectralWavelength=0.0
+
+band8Name=Rrs_412
+band8Description=Remote sensing reflectance at 412 nm
+band8Unit=sr^-1
+band8SpectralWavelength=412
+
+band9Name=Rrs_443
+band9Description=Remote sensing reflectance at 443 nm
+band9Unit=sr^-1
+band9SpectralWavelength=443
+
+band10Name=Rrs_469
+band10Description=Remote sensing reflectance at 469 nm
+band10Unit=sr^-1
+band10SpectralWavelength=469
+
+band11Name=Rrs_488
+band11Description=Remote sensing reflectance at 488 nm
+band11Unit=sr^-1
+band11SpectralWavelength=488
+
+band12Name=Rrs_531
+band12Description=Remote sensing reflectance at 531 nm
+band12Unit=sr^-1
+band12SpectralWavelength=531
+
+band13Name=Rrs_547
+band13Description=Remote sensing reflectance at 547 nm
+band13Unit=sr^-1
+band13SpectralWavelength=547
+
+band14Name=Rrs_555
+band14Description=Remote sensing reflectance at 555 nm
+band14Unit=sr^-1
+band14SpectralWavelength=555
+
+band15Name=Rrs_645
+band15Description=Remote sensing reflectance at 645 nm
+band15Unit=sr^-1
+band15SpectralWavelength=645
+
+band16Name=Rrs_667
+band16Description=Remote sensing reflectance at 667 nm
+band16Unit=sr^-1
+band16SpectralWavelength=667
+
+band17Name=Rrs_678
+band17Description=Remote sensing reflectance at 678 nm
+band17Unit=sr^-1
+band17SpectralWavelength=678
+
+band18Name=par
+band18Description=Photosynthetically Available Radiation, R. Frouin
+band18Unit=einstein m^-2 day^-1
+band18SpectralWavelength=0.0
+
+band19Name=pic
+band19Description=Calcite Concentration, Balch and Gordon
+band19Unit=mol m^-3
+band19SpectralWavelength=0.0
+
+band20Name=poc
+band20Description=Particulate Organic Carbon, D. Stramski, 2007 (443/555 version)
+band20Unit=mg m^-3
+band20SpectralWavelength=0.0
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+
+
+<br><br><br>
+
+</body>
+</html>

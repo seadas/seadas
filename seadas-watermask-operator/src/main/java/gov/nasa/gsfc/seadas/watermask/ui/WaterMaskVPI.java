@@ -6,13 +6,13 @@ import com.jidesoft.action.CommandBar;
 import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
 import org.esa.beam.framework.datamodel.*;
 import org.esa.beam.framework.gpf.GPF;
-import org.esa.beam.framework.ui.UIUtils;
 import org.esa.beam.framework.ui.command.CommandAdapter;
 import org.esa.beam.framework.ui.command.CommandEvent;
 import org.esa.beam.framework.ui.command.ExecCommand;
-import org.esa.beam.util.ResourceInstaller;
+import org.esa.beam.util.ProductUtils;
 import org.esa.beam.visat.AbstractVisatPlugIn;
 import org.esa.beam.visat.VisatApp;
+import org.esa.beam.visat.actions.imgfilter.model.Filter;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
@@ -22,9 +22,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.RenderedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -215,11 +212,15 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
 
                                     Map<String, Object> parameters = new HashMap<String, Object>();
 
-                                    parameters.put("subSamplingFactorX", new Integer(landMasksData.getSuperSampling()));
-                                    parameters.put("subSamplingFactorY", new Integer(landMasksData.getSuperSampling()));
+                                    parameters.put("superSamplingFactor", new Integer(landMasksData.getSuperSampling()));
+                                   // parameters.put("subSamplingFactorY", new Integer(landMasksData.getSuperSampling()));
                                     parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
                                     parameters.put("mode", sourceFileInfo.getMode().toString());
-                                    parameters.put("filename", sourceFileInfo.getFile().getName());
+                                    parameters.put("worldSourceDataFilename", sourceFileInfo.getFile().getName());
+                                    parameters.put("copySourceFile", "false");  // when run in GUI don't do this
+                                //    parameters.put("coastalGridSize", landMasksData.getCoastalGridSize());
+                                //    parameters.put("coastalSizeTolerance", landMasksData.getCoastalSizeTolerance());
+                                    parameters.put("includeMasks", false);  // don't create masks within the operator, do it later
                                     //                             parameters.put("sourceFileInfo", sourceFileInfo);
                                     /*
                                        Create a new product, which will contain the land_water_fraction band
@@ -229,8 +230,8 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     Product landWaterProduct = GPF.createProduct(LAND_WATER_MASK_OP_ALIAS, parameters, product);
 
 
-                                    Band waterFractionBand = landWaterProduct.getBand("land_water_fraction");
-                                    Band coastBand = landWaterProduct.getBand("coast");
+                                    Band waterFractionBand = landWaterProduct.getBand(landMasksData.getWaterFractionBandName());
+                                //    Band coastBand = landWaterProduct.getBand("coast");
 
                                     // PROBLEM WITH TILE SIZES
                                     // Example: product has tileWidth=498 and tileHeight=611
@@ -238,7 +239,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     // Why is this happening and where?
                                     // For now we change the image layout here.
                                     reformatSourceImage(waterFractionBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                    reformatSourceImage(coastBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                              //      reformatSourceImage(coastBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
 
                                     pm.worked(1);
                                     waterFractionBand.setName(landMasksData.getWaterFractionBandName());
@@ -251,18 +252,35 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     //todo replace with JAI operator "GeneralFilter" which uses a GeneralFilterFunction
 
 
-                                    final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
-                                            new double[]{
-                                                    +1, +1, +1,
-                                                    +1, +1, +1,
-                                                    +1, +1, +1,
-                                            });
+                                    int boxSize = landMasksData.getCoastalGridSize();
+                                    final Filter meanFilter = new Filter("Mean "+ Integer.toString(boxSize)+"x"+Integer.toString(boxSize), "mean"+Integer.toString(boxSize), Filter.Operation.MEAN, boxSize, boxSize);
+                                    final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
+                                            meanFilter.getKernelHeight(),
+                                            meanFilter.getKernelOffsetX(),
+                                            meanFilter.getKernelOffsetY(),
+                                            1.0 / meanFilter.getKernelQuotient(),
+                                            meanFilter.getKernelElements());
+
+
+//                                    final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
+//                                            new double[]{
+//                                                    +1, +1, +1,
+//                                                    +1, +1, +1,
+//                                                    +1, +1, +1,
+//                                            });
 //todo: 4th argument to ConvolutionFilterBand is a dummy value added to make it compile...may want to look at this...
                                     int count = 1;
-                                    final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
-                                            landMasksData.getWaterFractionSmoothedName(),
-                                            waterFractionBand,
-                                            arithmeticMean3x3Kernel, count);
+//                                    final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
+//                                            landMasksData.getWaterFractionSmoothedName(),
+//                                            waterFractionBand,
+//                                            arithmeticMean3x3Kernel, count);
+
+                                    final FilterBand filteredCoastlineBand = new GeneralFilterBand(landMasksData.getWaterFractionSmoothedName(), waterFractionBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
+                                    if (waterFractionBand instanceof Band) {
+                                        ProductUtils.copySpectralBandProperties((Band) waterFractionBand, filteredCoastlineBand);
+                                    }
+
+
 
                                     product.addBand(filteredCoastlineBand);
 
@@ -272,21 +290,10 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                             landMasksData.getCoastlineMaskDescription(),
                                             product.getSceneRasterWidth(),
                                             product.getSceneRasterHeight(),
-                                            landMasksData.getCoastlineMath(),
+                                            landMasksData.getCoastalMath(),
                                             landMasksData.getCoastlineMaskColor(),
                                             landMasksData.getCoastlineMaskTransparency());
                                     maskGroup.add(coastlineMask);
-
-
-                                    Mask waterMask = Mask.BandMathsType.create(
-                                            landMasksData.getWaterMaskName(),
-                                            landMasksData.getWaterMaskDescription(),
-                                            product.getSceneRasterWidth(),
-                                            product.getSceneRasterHeight(),
-                                            landMasksData.getWaterMaskMath(),
-                                            landMasksData.getWaterMaskColor(),
-                                            landMasksData.getWaterMaskTransparency());
-                                    maskGroup.add(waterMask);
 
 
                                     Mask landMask = Mask.BandMathsType.create(
@@ -299,6 +306,20 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                             landMasksData.getLandMaskTransparency());
 
                                     maskGroup.add(landMask);
+
+                                    
+                                    Mask waterMask = Mask.BandMathsType.create(
+                                            landMasksData.getWaterMaskName(),
+                                            landMasksData.getWaterMaskDescription(),
+                                            product.getSceneRasterWidth(),
+                                            product.getSceneRasterHeight(),
+                                            landMasksData.getWaterMaskMath(),
+                                            landMasksData.getWaterMaskColor(),
+                                            landMasksData.getWaterMaskTransparency());
+                                    maskGroup.add(waterMask);
+
+
+
 
 
                                     pm.worked(1);

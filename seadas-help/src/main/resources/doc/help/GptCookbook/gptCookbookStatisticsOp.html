@@ -1,0 +1,396 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: StatisticsOp</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT Cookbook</h1>
+    <p class="chapterTitle">StatisticsOp</p>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+    Generates statistics for an input source file and writes results to a text file.
+        </p>
+    </td></tr></table>
+
+    <br>
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookStatisticsOp.html#Example1" class="invisibleLink">Statistics for 2 Bands</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookStatisticsOp.html#Example2" class="invisibleLink">Statistics for 2 Bands with Modified Valid Pixel Expression</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookStatisticsOp.html#Example3" class="invisibleLink">Statistics for 2 Bands with Shapefile</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookStatisticsOp.html#Example4" class="invisibleLink">Statistics for 2 Bands and 2 Math Bands</a></p>
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
+
+
+
+
+<br><br><br><hr>
+<a name="Example1"></a>
+<p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Statistics for 2 Bands</p>
+<br>
+
+<p>
+    This generates statistics for two bands (chlor_a and Kd_490).
+</p>
+
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt Statistics.xml -p StatisticsEx01.par -Ssource=A2010283180500.L2_LAC_OC.nc -PoutputAsciiFile=A2010283180500.L2_LAC_OC_stats.txt
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = Statistics.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="MyGraphId"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+    &lt;node id="StatisticsOpNode"&gt;
+      &lt;operator&gt;StatisticsOp&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;bandConfigurations&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${band1}&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${band2}&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+        &lt;/bandConfigurations&gt;
+        &lt;outputAsciiFile&gt;${outputAsciiFile}&lt;/outputAsciiFile&gt;
+        &lt;percentiles&gt;${percentiles}&lt;/percentiles&gt;
+        &lt;numBins&gt;${numBins}&lt;/numBins&gt;
+        &lt;calculateMedian&gt;${calculateMedian}&lt;/calculateMedian&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = StatisticsEx01.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+band1=chlor_a
+band2=Kd_490
+percentiles=80,85,90
+numBins=1000
+calculateMedian=true
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example2"></a>
+<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Statistics for 2 Bands with Modified Valid Pixel Expression</p>
+<br>
+
+<p>
+    This generates statistics for two bands (chlor_a and Kd_490) with a custom defined valid pixel expression.</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt StatisticsValidPixel.xml -p StatisticsEx02.par -Ssource=A2010283180500.L2_LAC_OC.nc -PoutputAsciiFile=A2010283180500.L2_LAC_OC_stats.txt
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = StatisticsValidPixel.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="MyGraphId"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+    &lt;node id="StatisticsOpNode"&gt;
+      &lt;operator&gt;StatisticsOp&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;bandConfigurations&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${band1}&lt;/sourceBandName&gt;
+            &lt;validPixelExpression&gt;${band1ValidPixelExpression}&lt;/validPixelExpression&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${band2}&lt;/sourceBandName&gt;
+            &lt;validPixelExpression&gt;${band2ValidPixelExpression}&lt;/validPixelExpression&gt;
+          &lt;/bandConfiguration&gt;
+        &lt;/bandConfigurations&gt;
+        &lt;outputAsciiFile&gt;${outputAsciiFile}&lt;/outputAsciiFile&gt;
+        &lt;percentiles&gt;${percentiles}&lt;/percentiles&gt;
+        &lt;numBins&gt;${numBins}&lt;/numBins&gt;
+        &lt;calculateMedian&gt;${calculateMedian}&lt;/calculateMedian&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = StatisticsEx02.par</b>
+</p>
+
+
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+band1=chlor_a
+band1ValidPixelExpression=chlor_a &amp;gt; 0.001 and chlor_a &amp;lt; 100 and !l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+band2=Kd_490
+band2ValidPixelExpression=Kd_490 &amp;gt;= 0.01000 and Kd_490 &amp;lt;= 6.00000 and !l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+percentiles=80,85,90
+numBins=1000
+calculateMedian=true
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example3"></a>
+<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Statistics for 2 Bands with Shapefile</p>
+<br>
+
+<p>
+    This generates statistics for two bands (chlor_a and Kd_490) within a region defined by a loaded shapefile.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt StatisticsShapefile.xml -p StatisticsEx03.par -Ssource=A2010283180500.L2_LAC_OC.nc -PoutputAsciiFile=A2010283180500.L2_LAC_OC_stats.txt
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = StatisticsShapefile.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="MyGraphId"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+    &lt;node id="StatisticsOpNode"&gt;
+      &lt;operator&gt;StatisticsOp&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;shapefile&gt;${shapefile}&lt;/shapefile&gt;
+        &lt;bandConfigurations&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${band1}&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${band2}&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+        &lt;/bandConfigurations&gt;
+        &lt;outputAsciiFile&gt;${outputAsciiFile}&lt;/outputAsciiFile&gt;
+        &lt;percentiles&gt;${percentiles}&lt;/percentiles&gt;
+        &lt;numBins&gt;${numBins}&lt;/numBins&gt;
+        &lt;calculateMedian&gt;${calculateMedian}&lt;/calculateMedian&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = StatisticsEx03.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+band1=chlor_a
+band2=Kd_490
+shapefile=geometry_Polygon.shp
+percentiles=80,85,90
+numBins=1000
+calculateMedian=true
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example4"></a>
+<p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Statistics for 2 Bands and 2 Math Bands</p>
+<br>
+
+<p>
+    This generates statistics for two bands (chlor_a and Kd_490) and two Math bands:
+</p>
+
+<p class="i1first">
+    Math Band 1. apparent optical depth derived from Kd_490.
+</p>
+
+<p class="i1first">
+    Math Band 2. pic in units of kmol m^-3.
+</p>
+
+<p>
+    <i>Note: when adding a math band in the StatisticsOp, if you want a validPixelExpression you must
+        specifically define it because it is not automatically derived from the constituent source bands</i>
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt StatisticsMathBand.xml -p StatisticsEx04.par -Ssource=A2010283180500.L2_LAC_OC.nc -PoutputAsciiFile=A2010283180500.L2_LAC_OC_stats.txt
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = StatisticsMathBand.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="MyGraphId"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+    &lt;node id="StatisticsOpNode"&gt;
+      &lt;operator&gt;StatisticsOp&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;bandConfigurations&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${band1}&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${band2}&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;expression&gt;${mathBand1Expression}&lt;/expression&gt;
+            &lt;validPixelExpression&gt;${mathBand1ValidPixelExpression}&lt;/validPixelExpression&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;expression&gt;${mathBand2Expression}&lt;/expression&gt;
+            &lt;validPixelExpression&gt;${mathBand2ValidPixelExpression}&lt;/validPixelExpression&gt;
+          &lt;/bandConfiguration&gt;
+        &lt;/bandConfigurations&gt;
+        &lt;outputAsciiFile&gt;${outputAsciiFile}&lt;/outputAsciiFile&gt;
+        &lt;percentiles&gt;${percentiles}&lt;/percentiles&gt;
+        &lt;numBins&gt;${numBins}&lt;/numBins&gt;
+        &lt;calculateMedian&gt;${calculateMedian}&lt;/calculateMedian&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br>
+<p>
+    <b>File = StatisticsEx04.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+band1=chlor_a
+band2=Kd_490
+mathBand1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
+mathBand1ValidPixelExpression=Kd_490 &amp;gt;= 0.01000 and Kd_490 &amp;lt;= 6.00000
+mathBand2Expression=1000*pic
+mathBand2ValidPixelExpression=pic &amp;gt;= -0.00000 and pic &amp;lt;= 0.12500
+percentiles=80,85,90
+numBins=1000
+calculateMedian=true
+</pre>
+</td></tr></table>
+
+
+
+
+<br><br><br>
+
+</body>
+</html>

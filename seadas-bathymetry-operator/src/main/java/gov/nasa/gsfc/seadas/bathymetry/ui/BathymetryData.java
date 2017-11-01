@@ -1,8 +1,10 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -68,11 +70,12 @@ public class BathymetryData {
 
         SourceFileInfo sourceFileInfo;
 
-        File ocsswRootDir = getOcsswRoot();
-        File ocsswRunDir = new File(ocsswRootDir, "run");
-        File ocsswRunDataDir = new File(ocsswRunDir, "data");
-        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
-        File bathymetryFile = new File(ocsswRunDataCommonDir, FILENAME_BATHYMETRY);
+        File bathymetryFile = getBathymetryFile(FILENAME_BATHYMETRY);
+//        File ocsswRootDir = getOcsswRoot();
+//        File ocsswRunDir = new File(ocsswRootDir, "run");
+//        File ocsswRunDataDir = new File(ocsswRunDir, "data");
+//        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
+//        File bathymetryFile = new File(ocsswRunDataCommonDir, FILENAME_BATHYMETRY);
 
 
         sourceFileInfo = new SourceFileInfo(RESOLUTION_BATHYMETRY_FILE,
@@ -97,7 +100,12 @@ public class BathymetryData {
 
 
     public static File getOcsswRoot() {
-        return new File(RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR)));
+        String test = System.getenv(OCSSWROOT_ENVVAR);
+        if (test != null && test.length() > 1) {
+            return new File(RuntimeContext.getConfig().getContextProperty(OCSSWROOT_PROPERTY, System.getenv(OCSSWROOT_ENVVAR)));
+        }
+
+        return null;
     }
 
 
@@ -272,20 +280,40 @@ public class BathymetryData {
 
 
     static public File getBathymetryFile(String bathymetryFilename) {
-        File ocsswRootDir = getOcsswRoot();
-        File ocsswRunDir = new File(ocsswRootDir, "run");
-        File ocsswRunDataDir = new File(ocsswRunDir, "data");
-        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
-        File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
 
-        if (!bathymetryFile.exists()) {
-            File altFile = ResourceInstallationUtils.getTargetFile(bathymetryFilename);
-            if (altFile.exists()) {
-                return altFile;
+         //  File ocsswRootDir = getOcsswRoot();
+        //todo Danny commented this out to skip OCSSWROOT and use .seadas for file location until we figure this out
+        if (1 == 2) {
+            File ocsswRootDir = null;
+            try {
+                ocsswRootDir = new File(OCSSWInfo.getInstance().getOcsswRoot());
+            } catch (Exception e) {
+                SeadasLogger.getLogger().warning("ocssw root not found, will try to use alternate source for bathymetry");
+            }
+
+            if (ocsswRootDir != null && ocsswRootDir.exists()) {
+                File ocsswRunDir = new File(ocsswRootDir, "run");
+                if (ocsswRootDir.exists()) {
+                    File ocsswRunDataDir = new File(ocsswRunDir, "data");
+                    if (ocsswRunDataDir.exists()) {
+                        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
+                        if (ocsswRunDataCommonDir.exists()) {
+                            File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
+                            if (bathymetryFile.exists()) {
+                                return bathymetryFile;
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        return bathymetryFile;
+        File bathymetryFile = ResourceInstallationUtils.getTargetFile(bathymetryFilename);
+      //  if (bathymetryFile.exists()) {
+            return bathymetryFile;
+      //  }
+
+      //  return null;
     }
 
     public boolean isInstallingFile() {

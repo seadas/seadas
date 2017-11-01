@@ -1,0 +1,280 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: WriteImage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT Cookbook</h1>
+    <p class="chapterTitle">WriteImage</p>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+          Creates an image file from an input source file.
+        </p>
+    </td></tr></table>
+
+    <br>
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookWriteImage.html#Example1" class="invisibleLink">Simple Image</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookWriteImage.html#Example2" class="invisibleLink">Image with Color Palette</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookWriteImage.html#Example3" class="invisibleLink">Image with Color Palette and Land Mask</a></p>
+
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
+
+
+
+
+<br><br><br><hr>
+<a name="Example1"></a>
+<p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Simple Image</p>
+<br>
+
+<p>
+    This creates a simple image with a default color palette applied with range based on data statistics.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WriteImage.xml -p WriteImageEx01.par -Ssource=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -PfilePath=WriteImageEx01.png
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = WriteImage.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="someGraphId"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="someNodeId"&gt;
+    &lt;operator&gt;WriteImage&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;sourceBandName&gt;${sourceBandName}&lt;/sourceBandName&gt;
+      &lt;filePath&gt;${filePath}&lt;/filePath&gt;
+      &lt;formatName&gt;${formatName}&lt;/formatName&gt;
+      &lt;level&gt;${level}&lt;/level&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = WriteImageEx01.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+sourceBandName=chlor_a
+formatName=png
+level=0
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example2"></a>
+    <p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Image with Color Palette</p>
+<br>
+
+<p>
+    This creates an image with a color palette applied.
+</p>
+
+<br>
+<p>
+<b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WriteImagePalette.xml -p WriteImageEx02.par -Phome=$HOME -Ssource=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -PfilePath=WriteImageEx02.png
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+<b>File = WriteImagePalette.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="someGraphId"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="someNodeId"&gt;
+    &lt;operator&gt;WriteImage&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;sourceBandName&gt;${sourceBandName}&lt;/sourceBandName&gt;
+      &lt;filePath&gt;${filePath}&lt;/filePath&gt;
+      &lt;formatName&gt;${formatName}&lt;/formatName&gt;
+      &lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;
+      &lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;
+      &lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;
+      &lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;
+      &lt;level&gt;${level}&lt;/level&gt;
+      &lt;scaleType&gt;${scaleType}&lt;/scaleType&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = WriteImageEx02.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+sourceBandName=chlor_a
+formatName=png
+cpdFilePath=.seadas/beam-ui/auxdata/color-palettes/universal_bluered.cpd
+cpdAutoDistribute=false
+colourScaleMin=0.01
+colourScaleMax=20.0
+level=0
+scaleType=log
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example3"></a>
+<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Image with Color Palette and Land Mask</p>
+<br>
+
+<p>
+    This is a very special case example.  In the example use a separate land file in order to create a mask.  The separate
+    mask file must be the exact dimensions of the source file.  Also the source file must not already contain masks.
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WriteImageMask.xml -p WriteImageEx03.par -Phome=$HOME -Ssource=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -PfilePath=WriteImageEx03.png
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = WriteImageMask.xml</b>
+</p>
+
+
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="someGraphId"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="someNodeId"&gt;
+    &lt;operator&gt;WriteImage&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;sourceBandName&gt;${sourceBandName}&lt;/sourceBandName&gt;
+      &lt;filePath&gt;${filePath}&lt;/filePath&gt;
+      &lt;formatName&gt;${formatName}&lt;/formatName&gt;
+      &lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;
+      &lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;
+      &lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;
+      &lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;
+      &lt;level&gt;${level}&lt;/level&gt;
+      &lt;scaleType&gt;${scaleType}&lt;/scaleType&gt;
+
+      &lt;maskFilePath&gt;${home}/${maskFilePath}&lt;/maskFilePath&gt;
+      &lt;maskLayer&gt;true&lt;/maskLayer&gt;
+      &lt;imageMasks&gt;
+        &lt;imageMask&gt;
+          &lt;imageMaskSourceBandName&gt;water_fraction&lt;/imageMaskSourceBandName&gt;
+          &lt;imageMaskName&gt;LandMask&lt;/imageMaskName&gt;
+          &lt;imageMaskDescription&gt;Land Mask&lt;/imageMaskDescription&gt;
+          &lt;imageMaskExpression&gt;water_fraction == 0&lt;/imageMaskExpression&gt;
+          &lt;imageMaskColor&gt;51,51,51&lt;/imageMaskColor&gt;
+          &lt;imageMaskTransparency&gt;0.0&lt;/imageMaskTransparency&gt;
+        &lt;/imageMask&gt;
+      &lt;/imageMasks&gt;
+
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+
+<br>
+<p>
+    <b>File = WriteImageEx03.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+sourceBandName=chlor_a
+formatName=png
+cpdFilePath=.seadas/beam-ui/auxdata/color-palettes/universal_bluered.cpd
+maskFilePath=Desktop/GptExamples/help/WriteImage/V20172132017243.L3m_LAND_9km.dim
+cpdAutoDistribute=false
+colourScaleMin=0.01
+colourScaleMax=20.0
+level=0
+scaleType=log
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+<br><br><br>
+
+</body>
+</html>

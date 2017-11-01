@@ -10,11 +10,13 @@
     <mapID target="folder" url="images/HelpFolder.jpg"/>
     <mapID target="doc" url="images/HelpDoc.jpg"/>
 
+    <mapID target="gptCookbook" url="GptCookbook/gptCookbook.html"/>
     <mapID target="seadasOverview" url="general/SeaDASOverview.html"/>
     <mapID target="gbrPhoticDepthExampleTutorial" url="general/gbrPhoticDepthExampleTutorial.html"/>
     <mapID target="seadasWhatsNew" url="general/SeaDASWhatsNew.html"/>
     <mapID target="releaseNotes7.3.2" url="general/ReleaseNotes7.3.2.html"/>
     <mapID target="releaseNotes7.4" url="general/ReleaseNotes7.4.html"/>
+    <mapID target="releaseNotes7.5" url="general/ReleaseNotes7.5.html"/>
     <mapID target="releaseNotes7.3.1" url="general/ReleaseNotes7.3.1.html"/>
     <mapID target="releaseNotes7.3" url="general/ReleaseNotes7.3.html"/>
     <mapID target="releaseNotes7.2" url="general/ReleaseNotes7.2.html"/>
@@ -27,6 +29,8 @@
     <mapID target="resamplingMethods" url="general/ResamplingMethods.html"/>
     <mapID target="envisatProducts" url="general/envisat-products/index.html"/>
     <!-- todo -->
+
+
 
     <mapID target="visat" url="visat/index.html"/>
     <mapID target="mainToolbar" url="visat/Toolbars.html"/>
@@ -92,7 +96,7 @@
     <mapID target="noDataValue" url="visat/NoDataValue.html"/>
     <mapID target="informationDialog" url="visat/InformationDialog.html"/>
     <mapID target="geoCodingInfoDialog" url="visat/GeoCodingInfo.html"/>
-    <mapID target="statisticsDialog" url="visat/StatisticsDialog.html"/>
+    <mapID target="statisticsDialog" url="visat/Statistics.html"/>
     <mapID target="histogramDialog" url="visat/HistogramDialog.html"/>
     <mapID target="densityPlotDialog" url="visat/DensityPlotDialog.html"/>
     <mapID target="correlativePlotDialog" url="visat/CorrelativePlotDialog.html"/>
@@ -108,6 +112,7 @@
 
 
     <mapID target="reprojectionAction" url="visat/Reprojection.html"/>
+    <mapID target="reprojectionActionOld" url="visat/Reprojection_old.html"/>
     <mapID target="orthorectificationAction" url="visat/Orthorectification.html"/>
     <mapID target="orthorectificationAlgo" url="visat/OrthorectificationAlgo.html"/>
     <mapID target="mosaicAction" url="visat/Mosaic.html"/>
@@ -153,6 +158,8 @@
     <mapID target="l1bgen" url="seadas-processing/ProcessL1bgen.html"/>
     <mapID target="modis_L1B.py" url="seadas-processing/ProcessModis_L1B.py.html"/>
     <mapID target="modis_L1A.py" url="seadas-processing/ProcessModis_L1A.py.html"/>
+    <mapID target="geolocate_viirs" url="seadas-processing/GeoLocateViirs.html"/>
+    <mapID target="calibrate_viirs" url="seadas-processing/CalibrateViirs.html"/>
     <mapID target="l1mapgen" url="seadas-processing/ProcessL1mapgen.html"/>
     <mapID target="l1brsgen" url="seadas-processing/ProcessL1brsgen.html"/>
     <mapID target="l2extract" url="seadas-processing/ProcessL2extract.html"/>
@@ -207,5 +214,6 @@
     <mapID target="fieldMeasurements" url="FieldMeasurements/FieldMeasurements.html"/>
     <mapID target="fieldMeasurementsFindMatchups" url="FieldMeasurements/FindMatchups.html"/>
     <mapID target="fieldMeasurementsMakeMatchups" url="FieldMeasurements/MakeMatchups.html"/>
+    <mapID target="filesAbout" url="general/Files.html"/>
 
 </map>

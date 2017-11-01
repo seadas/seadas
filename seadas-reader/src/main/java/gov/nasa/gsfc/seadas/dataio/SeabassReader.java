@@ -158,7 +158,7 @@ public class SeabassReader extends LineNumberReader {
                         missingValue = Double.valueOf(value);
                         missingValueFound = true;
                     } catch (NumberFormatException e) {
-                        throw new IOException("/missing is not a valid number");
+                        throw new IOException("/missing is not a valid number", e);
                     }
                 } else if (key.equals("/fields")) {
                     fieldStr = value;
@@ -233,14 +233,14 @@ public class SeabassReader extends LineNumberReader {
             try {
                 lat = Float.parseFloat(record[latIndex]);
             } catch (Exception e) {
-                throw new IOException("lat is not a valid float on line " + getLineNumber());
+                throw new IOException("lat is not a valid float on line " + getLineNumber(), e);
             }
         } else {
             if (headerLatStr != null) {
                 try {
                     lat = Float.parseFloat(headerLatStr);
                 } catch (Exception e) {
-                    throw new IOException("lat is not a valid float in header " + getLineNumber());
+                    throw new IOException("lat is not a valid float in header " + getLineNumber(), e);
                 }
             } else {
                 throw new IOException("lat not found in header ");
@@ -252,14 +252,14 @@ public class SeabassReader extends LineNumberReader {
             try {
                 lon = Float.parseFloat(record[lonIndex]);
             } catch (Exception e) {
-                throw new IOException("lon is not a valid float on line " + getLineNumber());
+                throw new IOException("lon is not a valid float on line " + getLineNumber(), e);
             }
         } else {
             if (headerLonStr != null) {
                 try {
                     lon = Float.parseFloat(headerLonStr);
                 } catch (Exception e) {
-                    throw new IOException("lon is not a valid float in header " + getLineNumber());
+                    throw new IOException("lon is not a valid float in header " + getLineNumber(), e);
                 }
             } else {
                 throw new IOException("lon not found in header ");
@@ -295,7 +295,7 @@ public class SeabassReader extends LineNumberReader {
                             + Integer.toString(i)
                             + "("
                             + info.getName()
-                            + ")");
+                            + ")", e);
                 }
             }
         }

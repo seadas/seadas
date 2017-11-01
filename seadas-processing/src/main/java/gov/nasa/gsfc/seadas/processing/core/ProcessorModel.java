@@ -367,7 +367,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return isIfileValid;
     }
 
-
     //todo: change the path to get geo filename from ifile
     public boolean updateGeoFileInfo(String ifileName) {
         updateGeoFileStatus(ifileName);
@@ -720,6 +719,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
         }
     }
+
+    public void setCmdArrayPrefix(String[] cmdArrayPrefix) {
+        this.cmdArrayPrefix = cmdArrayPrefix;
+    }
+
 
     @Override
     public String getImplicitInputFileExtensions() {

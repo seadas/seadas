@@ -1,0 +1,436 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>SeaDAS Example - Mosaic Gpt</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h2>SeaDAS Example: Mosaic GPT</h2>
+
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <p>
+                    <a href="Statistics.html#Overview" class="invisibleLink">Overview</a><br>
+                    <a href="Statistics.html#GetData" class="invisibleLink">Get The Data</a><br>
+                    <a href="Statistics.html#DailyInGUI" class="invisibleLink">Create Daily File in GUI</a><br>
+                    <a href="Statistics.html#DailyInGPT" class="invisibleLink">Create Daily File in GPT</a><br>
+                    <a href="Statistics.html#Monthly" class="invisibleLink">Create the Monthly</a><br>
+                    <a href="Statistics.html#Script" class="invisibleLink">Scripting the Creation of the Daily Files</a><br>
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<br>
+<br>
+
+
+<hr>
+<a name="Overview"></a>
+<div class="center">
+    <p class="subSectionTitle">Overview</p>
+</div>
+<br>
+
+<p>
+    In this example you will see how to use the SeaDAS command line tool (GPT) to run the SeaDAS Mosaic tool to
+    generate a 1km Chlorophyll monthly product along with its constituent daily files. The specific projection we will
+    use will be a Lambert Equal-Area projection and the region will be the Gulf of Mexico. The sensor will be MODIS
+    Aqua and the time frame will be a January 2017 monthly. The input files will be level2 OB.DAAC files. Using this
+    example as a starting point model, you should be able to customize this to you own specific criteria
+</p>
+
+
+<br>
+<hr>
+<a name="GetData"></a>
+<div class="center">
+    <p class="subSectionTitle">Get The Data</p>
+</div>
+<br>
+<p>
+    This section illustrates how to transfer all the level2 files that will be used in this example from the OB.DAAC
+    web server to your machine.
+</p>
+<p>
+    Go to the website: https://oceancolor.gsfc.nasa.gov and navigate to Data > Level-2 Browser. Specificy MODIS Aqua
+    as the mission. Select Jan of 2017 as your time frame. In the text menu to the right select "GulfOfMexico". Now
+    select "Find Swaths".
+</p>
+
+<p>
+    The resultant page shows the 88 level2 files which matche your submitted request. You can download each file
+    individually by clicking on it, or acquire them all in a bulk order. To do the bulk order select "ORDER DATA".
+</p>
+
+<p>
+    There are a lot of options. Select "Do not extract my order for me". Select "Level 2(OC)". Now select "Review
+    order".
+</p>
+
+<p>
+    Select "Submit order" and you get a list of all about 88 files with their locations on the web. <br>
+
+    https://oceandata.sci.gsfc.nasa.gov/cgi/getfile/A2017031202500.L2_LAC_OC.nc<br>
+    https://oceandata.sci.gsfc.nasa.gov/cgi/getfile/A2017031202000.L2_LAC_OC.nc<br>
+    ...
+</p>
+
+<p>
+    Copy the list of files into a text file named "webfiles.txt".
+</p>
+
+<p>
+    <b>Linux:</b><br>
+    To transfer the files, you can use wget, at the command line:<br>
+    wget `cat webfiles.txt`
+</p>
+
+<p>
+    <b>Mac:</b><br>
+    To transfer the files, you can use curl, at the command line:<br>
+    curl.pl `cat webfiles.txt`<br>
+    (or some other script to loop through curl). See <a href="Statistics.html#Script">script curl.pl</a> for details.
+</p>
+
+<p>
+    At this point you should have all (probably 88) level2 files on your machine. Place them in a directory called
+    "level2 files".
+</p>
+
+
+<br>
+<hr>
+<a name="DailyInGUI"></a>
+<div class="center">
+    <p class="subSectionTitle">Create Daily Mosaic File in GUI</p>
+</div>
+<br>
+<p>
+    We will first use the Mosaic tool from within the SeaDAS GUI in order to help determine our desired parameter settings
+    to use when doing this from the command line.
+</p>
+
+<p>
+    1. Within the "I/O Parameters" tab of the GUI, select all level2 files for day 001, and name the
+    output file "A2017001_mosaic" (see figure 1.) <br>
+</p>
+
+<br>
+<div class="center">
+    <img src="images/GptExample01.png" border="0"> <br>
+    <i>Figure 1. <br></i>
+</div>
+<br><br>
+
+<p>
+    2. Within the "Map Projection Definition" tab of the GUI select the projection "Lambert Azimuthal Equal Area".
+    Click "CRS Parameters" and set latitude_of_center=20.0  longitude_of_center=-90.0 (this will center the CRS about
+    the Gulf of Mexico.  Set the mosaic bounds to West=-98.5 East=-80.0 North=31.0 South=17.5 (this will define the
+    region bounds of the Gulf of Mexico) (see figure 2).
+</p>
+
+<br>
+<div class="center">
+    <img src="images/GptExample02.png" border="0"> <br>
+    <i>Figure 2. <br></i>
+</div>
+<br><br>
+
+<p>
+    3. Within the "Variables & Conditions" tab of the GUI select the chlor_a product.  Also create a flagging condition:
+    with the expression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT and !l2_flags.CLDICE
+
+</p>
+
+<br>
+<div class="center">
+    <img src="images/GptExample03.png" border="0"> <br>
+    <i>Figure 3. <br></i>
+</div>
+<br><br>
+
+<p>
+    4. Still within the Mosaic GUI, go to "File > Display Parameters" (figure 4.) and this opens a view of the xml
+    parameters which can be used to run this in GPT. (see figure 5).
+</p>
+
+<br>
+<div class="center">
+    <img src="images/GptExample04.png" border="0"> <br>
+    <i>Figure 4. <br></i>
+</div>
+<br><br>
+
+
+<div class="center">
+    <img src="images/GptExample05.png" border="0"> <br>
+    <i>Figure 5. <br></i>
+</div>
+<br><br>
+
+<p>
+    Press "OK" then press "Run" and the mosaic will be generated.
+</p>
+
+
+
+
+<br>
+<hr>
+<a name="DailyInGPT"></a>
+<div class="center">
+    <p class="subSectionTitle">Create Daily Mosaic File in GPT</p>
+</div>
+<br>
+
+<p>
+    Now let's turn our attention to replicating this GUI Mosaic action from the command line.
+</p>
+
+<p>
+   1. First create an xml file which defines the processing graph to be used when running SeaDAS GPT.  Create the file
+    mosaicLambert.xml (see below).  Note that the parameters section of this file is identical to the parameters used
+    and displayed when we ran the Mosaic in the GUI.  The exception is that many specific values have been replaced by
+    variable names of the form ${variableName}.  This is not necessary, but it does enable us to reuse this xml file for
+    other scene regions, products, etc.
+</p>
+
+<b>mosaicLambert.xml</b>
+<table><tr><td bgcolor="#dddddd">
+
+<pre>
+&lt;graph id="MosaicGraphLambert"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+  &lt;node id="MosaicNodeLambert"&gt;
+    &lt;operator&gt;Mosaic&lt;/operator&gt;
+    &lt;sources&gt;
+       &lt;sourceProducts&gt;${sourceProducts}&lt;/sourceProducts&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;variables&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band}&lt;/name&gt;
+                &lt;expression&gt;${band}&lt;/expression&gt;
+            &lt;/variable&gt;
+        &lt;/variables&gt;
+        &lt;conditions&gt;
+            &lt;condition&gt;
+                &lt;name&gt;condition_0&lt;/name&gt;
+                &lt;expression&gt;${expression}&lt;/expression&gt;
+                &lt;output&gt;false&lt;/output&gt;
+            &lt;/condition&gt;
+        &lt;/conditions&gt;
+        &lt;combine&gt;OR&lt;/combine&gt;
+        &lt;crs&gt;PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",
+          GEOGCS["World Geodetic System 1984",
+            DATUM["World Geodetic System 1984",
+              SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+              AUTHORITY["EPSG","6326"]],
+            PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+            UNIT["degree", 0.017453292519943295],
+            AXIS["Geodetic longitude", EAST],
+            AXIS["Geodetic latitude", NORTH]],
+          PROJECTION["Lambert_Azimuthal_Equal_Area"],
+          PARAMETER["latitude_of_center", ${latitudeOfCenter}],
+          PARAMETER["longitude_of_center", ${longitudeOfCenter}],
+          PARAMETER["false_easting", 0.0],
+          PARAMETER["false_northing", 0.0],
+          UNIT["m", 1.0],
+          AXIS["Easting", EAST],
+          AXIS["Northing", NORTH]]&lt;/crs&gt;
+        &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+        &lt;elevationModelName&gt;GETASSE30&lt;/elevationModelName&gt;
+        &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+        &lt;westBound&gt;${west}&lt;/westBound&gt;
+        &lt;northBound&gt;${north}&lt;/northBound&gt;
+        &lt;eastBound&gt;${east}&lt;/eastBound&gt;
+        &lt;southBound&gt;${south}&lt;/southBound&gt;
+        &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+        &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+<b>mosaicGeneral.xml</b>
+<table><tr><td bgcolor="#dddddd">
+
+<pre>
+&lt;graph id="MosaicGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+  &lt;node id="MosaicNode"&gt;
+    &lt;operator&gt;Mosaic&lt;/operator&gt;
+    &lt;sources&gt;
+       &lt;sourceProducts&gt;${sourceProducts}&lt;/sourceProducts&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;variables&gt;
+            &lt;variable&gt;
+                &lt;name&gt;${band}&lt;/name&gt;
+                &lt;expression&gt;${band}&lt;/expression&gt;
+            &lt;/variable&gt;
+        &lt;/variables&gt;
+        &lt;conditions&gt;
+            &lt;condition&gt;
+                &lt;name&gt;condition_0&lt;/name&gt;
+                &lt;expression&gt;${expression}&lt;/expression&gt;
+                &lt;output&gt;false&lt;/output&gt;
+            &lt;/condition&gt;
+        &lt;/conditions&gt;
+        &lt;combine&gt;OR&lt;/combine&gt;
+        &lt;crs&gt;${crs}&lt;/crs&gt;
+        &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+        &lt;westBound&gt;${west}&lt;/westBound&gt;
+        &lt;northBound&gt;${north}&lt;/northBound&gt;
+        &lt;eastBound&gt;${east}&lt;/eastBound&gt;
+        &lt;southBound&gt;${south}&lt;/southBound&gt;
+        &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+        &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<b>mosaicGeoLatLonGulfOfMexico.par</b>
+<table><tr><td bgcolor="#dddddd">
+
+<pre>
+band=chlor_a
+expression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT and !l2_flags.CLDICE
+crs=GEOGCS["WGS84(DD)", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]]
+north=31.0
+south=17.5
+west=-98.5
+east=-80.0
+pixelSize=1000.0
+resampling=Nearest
+</pre>
+</td></tr></table>
+
+
+
+<b>mosaicLambertAzimuthalGulfOfMexico.par</b>
+<table><tr><td bgcolor="#dddddd">
+
+<pre>
+band=chlor_a
+expression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT and !l2_flags.CLDICE
+crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["World Geodetic System 1984",DATUM["World Geodetic System 1984",SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],UNIT["degree", 0.017453292519943295],AXIS["Geodetic longitude", EAST],AXIS["Geodetic latitude", NORTH]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_center", 25.0],PARAMETER["longitude_of_center", -90.0],PARAMETER["false_easting", 0.0],PARAMETER["false_northing", 0.0],UNIT["m", 1.0],AXIS["Easting", EAST],AXIS["Northing", NORTH]]
+north=31.0
+south=17.5
+west=-98.5
+east=-80.0
+pixelSize=1000.0
+resampling=Nearest
+</pre>
+</td></tr></table>
+
+<b>mosaicObliqueStereographicGulfOfMexico.par</b>
+<table><tr><td bgcolor="#dddddd">
+
+<pre>
+band=chlor_a
+expression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT and !l2_flags.CLDICE
+crs=PROJCS["Oblique_Stereographic / World Geodetic System 1984",GEOGCS["World Geodetic System 1984", DATUM["World Geodetic System 1984", SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]], AUTHORITY["EPSG","6326"]], PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]], PROJECTION["Oblique_Stereographic"], PARAMETER["central_meridian", -90.0], PARAMETER["latitude_of_origin", 25.0], PARAMETER["scale_factor", 1.0], PARAMETER["false_easting", 0.0], PARAMETER["false_northing", 0.0], UNIT["m", 1.0], AXIS["Easting", EAST], AXIS["Northing", NORTH]]
+north=31.0
+south=17.5
+west=-98.5
+east=-80.0
+pixelSize=1000.0
+resampling=Nearest
+</pre>
+</td></tr></table>
+
+<br>
+<hr>
+<a name="Script"></a>
+<div class="center">
+    <p class="subSectionTitle">Web File Transfer Script (for Mac)</p>
+</div>
+<br>
+<p>
+
+    On the Mac, curl can be used for web file transfer.  Unlike wget, curl cannot accept a list of files so what follows
+    is a sample script (in Perl) which can be used to transfer a list of files. If you have saved the
+    list of files in a text file (webfiles.txt), you can then run this script at the command line.
+    </p>
+
+<br>
+<b>Command line execution of file transfer</b>
+<table>
+    <tr>
+        <td bgcolor="#dddddd">
+    <pre>curl.pl `cat webfiles.txt`
+    </pre>
+
+        </td>
+    </tr>
+</table>
+
+
+
+<br>
+<b>File = webfiles.txt</b>
+<table>
+    <tr>
+        <td bgcolor="#dddddd">
+<pre>
+https://oceandata.sci.gsfc.nasa.gov/cgi/getfile/A2017031202500.L2_LAC_OC.nc
+https://oceandata.sci.gsfc.nasa.gov/cgi/getfile/A2017031202000.L2_LAC_OC.nc
+</pre>
+        </td>
+    </tr>
+</table>
+
+
+<br>
+<b>Script = curl.pl</b>
+<table>
+    <tr>
+        <td bgcolor="#dddddd">
+
+    <pre>
+use strict;
+
+for (@ARGV) {
+    my $inFile = $_;
+    my @parts = split(/\//, $_);
+
+    if (@parts > 0) {
+        my $outFile = $parts[$#parts];
+        if (defined $outFile && length $outFile > 0) {
+            my $command = "curl $inFile --output $outFile";
+            print "$command\n";
+            my $msg = `$command`;
+            print "$msg\n";
+        }
+    }
+}
+</pre>
+
+        </td>
+    </tr>
+</table>
+
+
+

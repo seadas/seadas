@@ -1,0 +1,376 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: Subset</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT Cookbook</h1>
+    <p class="chapterTitle">Subset</p>
+
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+        Creates a file which is subset copy of a source input file.
+            There are several dimensions in which you can subset the file:
+        </p>
+
+        <p class="i1">
+            1. You can reduce the number of raster bands, selecting only your desired bands.
+        </p>
+
+        <p class="i1">
+            2. You can do an area crop of the geometric bounds of the file, where the area crop is done in either pixel
+            space, or in geographic coordinate space.
+        </p>
+
+        <p class="i1">
+            3. You can subsample
+            the file such that you retain only every other, 3rd, 4th, etc. pixel in the raster.
+        </p>
+
+        <p class="i1">
+            4. You can retain/discard file metadata.
+        </p>
+    </td></tr></table>
+
+
+    <br>
+
+
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookSubset.html#Example1" class="invisibleLink">Geographic Region Crop</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookSubset.html#Example2" class="invisibleLink">Pixel Area Crop</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookSubset.html#Example3" class="invisibleLink">Full Scene Subsample</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookSubset.html#Example4" class="invisibleLink">Full Scene Band Subset</a></p>
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
+
+
+
+<br><br><br><hr>
+<a name="Example1"></a>
+    <p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Geographic Region Crop</p>
+<br>
+
+<p>
+    This performs an area crop in geographic coordinate space.  The bounded region is over the Gulf of Mexico.
+</p>
+
+
+<br>
+<p>
+<b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt geoCrop.xml -p geoCropGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_geoCropGulfMexico.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+<b>File = geoCrop.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+
+<pre>
+&lt;graph id="GeoCropGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+  &lt;node id="GeoCropNode"&gt;
+    &lt;operator&gt;Subset&lt;/operator&gt;
+    &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;geoRegion&gt;POLYGON((${west} ${north}, ${east} ${north}, ${east} ${south}, ${west} ${south}, ${west} ${north}))&lt;/geoRegion&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+<b>File = geoCropGulfMexico.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+north=31.0
+south=17.5
+west=-98.5
+east=-80.0
+</pre>
+</td></tr></table>
+
+
+
+
+<br><br><br><hr>
+<a name="Example2"></a>
+    <p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Pixel Area Crop</p>
+<br>
+
+<p>
+    This performs an area crop in pixel space.
+</p>
+
+<p>
+   <i> Note: Here we will crop off 240 pixels at both the beginning and end of the scan.  In other words the easternmost and
+    westernmost pixels.  One reason for doing this might be to eliminate high sensor zenith angle (low resolution)
+    pixels from the scene.  For a standard MODIS level-2 1km LAC file, this approximates the removal of pixels
+    above a 40 degree sensor zenith angle.
+
+    The level-2 file was imaged January 23 2017 over the Gulf of Mexico by the
+    MODIS Aqua instrument. </i>
+
+</p>
+
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt pixelCrop.xml -p pixelCrop.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_pixelCrop.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = pixelCrop.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+
+<pre>
+&lt;graph id="PixelCropGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+  &lt;node id="PixelCropNode"&gt;
+    &lt;operator&gt;Subset&lt;/operator&gt;
+    &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;region&gt;
+          &lt;x&gt;${x}&lt;/x&gt;
+          &lt;y&gt;${y}&lt;/y&gt;
+          &lt;width&gt;${width}&lt;/width&gt;
+          &lt;height&gt;${height}&lt;/height&gt;
+        &lt;/region&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+    <b>File = pixelCrop.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+x=240
+y=0
+width=873
+height=2030
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example3"></a>
+    <p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Full Scene Subsample</p>
+<br>
+
+<p>
+    This uses the SeaDAS Subset tool in GPT (command line) mode to generate a subsampled copy of an input file.
+    In this case, we will subsample the input file by a factor of two evenly in both the x and y direction.
+</p>
+
+<p>
+    <i> Note: this is not a statistical mean based downsampling, but an incremental walk through subsampling of the pixels,
+        throwing away the in-between skipped over pixels.</i>
+</p>
+<p>
+    <i>Caution: there is currently a bug which prevents usage of the boolean parameter "fullSwath" which would ideally
+        be used when retaining the full scene dimensions of the original file.  The workaround here is to specifically
+        define the pixel crop dimensions for the full input file as shown in this example.</i>
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt subsample.xml -p subsample.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_subsample.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = subsample.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+
+<pre>
+&lt;graph id="SubsampleGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+  &lt;node id="SubsampleNode"&gt;
+    &lt;operator&gt;Subset&lt;/operator&gt;
+    &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;region&gt;
+            &lt;x&gt;${x}&lt;/x&gt;
+            &lt;y&gt;${y}&lt;/y&gt;
+            &lt;width&gt;${width}&lt;/width&gt;
+            &lt;height&gt;${height}&lt;/height&gt;
+        &lt;/region&gt;
+        &lt;subSamplingX&gt;${subsampling}&lt;/subSamplingX&gt;
+        &lt;subSamplingY&gt;${subsampling}&lt;/subSamplingY&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = subsample.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+subsampling=2
+x=0
+y=0
+width=1354
+height=2030
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example4"></a>
+    <p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Full Scene Band Subset</p>
+<br>
+
+<p>
+    This example generates an output file which is essentially a copy of the original file, but retaining only a few
+    select bands.
+</p>
+
+<p>
+    <i>Caution: there is currently a bug which prevents usage of the boolean parameter "fullSwath" which would ideally
+    be used when retaining the full scene dimensions of the original file.  The workaround here is to specifically
+    define the pixel crop dimensions for the full input file as shown in this example.</i>
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt bandSubset.xml -p bandSubset.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_bandSubset.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = bandSubset.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+
+<pre>
+&lt;graph id="BandSubsetGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+  &lt;node id="BandSubsetNode"&gt;
+    &lt;operator&gt;Subset&lt;/operator&gt;
+    &lt;sources&gt;
+        &lt;source&gt;${source}&lt;/source&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;bandNames&gt;${bands}&lt;/bandNames&gt;
+        &lt;region&gt;
+            &lt;x&gt;${x}&lt;/x&gt;
+            &lt;y&gt;${y}&lt;/y&gt;
+            &lt;width&gt;${width}&lt;/width&gt;
+            &lt;height&gt;${height}&lt;/height&gt;
+        &lt;/region&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+
+<br>
+<p>
+    <b>File = bandSubset.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+bands=chlor_a,Kd_490,Rrs_443,Rrs_547
+x=0
+y=0
+width=1354
+height=2030
+</pre>
+</td></tr></table>
+
+
+
+
+<br><br><br>
+
+
+
+
+
+</body>
+</html>

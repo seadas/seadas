@@ -14,6 +14,7 @@
     <tocitem text="General">
 
         <tocitem text="Release Notes">
+            <tocitem text="7.5" target="releaseNotes7.5"/>
             <tocitem text="7.4" target="releaseNotes7.4"/>
             <tocitem text="7.3.2" target="releaseNotes7.3.2"/>
             <tocitem text="7.3.1" target="releaseNotes7.3.1"/>
@@ -32,7 +33,7 @@
 
         <tocitem text="Tutorials &amp; Video Help" target="tutorials"/>
 
-        <tocitem text="Universal Palettes &amp; Color Blind Configuration" target="colorBlindConfig"/>
+        <tocitem text="Universal Palettes" target="colorBlindConfig"/>
 
     </tocitem>
 
@@ -50,16 +51,6 @@
 
         </tocitem>
 
-        <tocitem text="Band Tools">
-            <tocitem text="ASAR NRCS Bands" target="createAsarNrcsBands"/>
-            <tocitem text="DEM Bands" target="createDemRelatedBands"/>
-            <tocitem text="Filtered Band" target="createFilteredBand"/>
-            <tocitem text="Math Band" target="bandArithmetic">
-                <tocitem text="Math Band" target="bandArithmetic"/>
-                <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
-            </tocitem>
-        </tocitem>
-
 
         <tocitem text="Colors">
             <tocitem text="Color Bar" target="exportLegendImageFile"/>
@@ -68,10 +59,13 @@
         </tocitem>
 
 
-        <tocitem text="Command Line Tools (GPF)">
-            <tocitem text="GPF Overview" target="gpf.overview"/>
-            <tocitem text="GPF Graph Processing Tool (gpt)" target="gpf.graphProcessingTool"/>
-            <tocitem text="GPF Operator Index" target="gpf.operatorIndex"/>
+        <tocitem text="Command Line Tools (GPT)">
+            <tocitem text="Cookbook" target="gptCookbook"/>
+            <tocitem text="Overview" target="gpf.overview"/>
+            <tocitem text="Graph Processing Tool" target="gpf.graphProcessingTool"/>
+            <tocitem text="Operators" target="gpf.operatorIndex"/>
+
+
         </tocitem>
 
         <tocitem text="File I/O &amp; Sessions">
@@ -222,7 +216,7 @@
         </tocitem>
 
 
-        <tocitem text="Processing: Data">
+        <tocitem text="OCSSW">
 
 
             <tocitem text="Introduction" target="processOverview"/>
@@ -230,6 +224,8 @@
             <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
 
             <tocitem text="l1bgen" target="l1bgen"/>
+            <tocitem text="geolocate_viirs" target="geolocate_viirs"/>
+            <tocitem text="calibrate_viirs" target="calibrate_viirs"/>
             <tocitem text="l1mapgen" target="l1mapgen"/>
             <tocitem text="l1brsgen" target="l1brsgen"/>
             <tocitem text="L2gen" target="l2gen"/>
@@ -254,7 +250,21 @@
 
         </tocitem>
 
-        <tocitem text="Processing: File">
+
+
+        <tocitem text="Raster Band Processing">
+            <tocitem text="ASAR NRCS Bands" target="createAsarNrcsBands"/>
+            <tocitem text="DEM Bands" target="createDemRelatedBands"/>
+            <tocitem text="Filtered Band" target="createFilteredBand"/>
+            <tocitem text="Math Band" target="bandArithmetic">
+                <tocitem text="Math Band" target="bandArithmetic"/>
+                <tocitem text="Math Band Expression Editor" target="expressionEditor"/>
+            </tocitem>
+        </tocitem>
+
+
+
+        <tocitem text="Raster File Processing">
             <tocitem text="Collocate" target="collocation"/>
             <tocitem text="Crop" target="subsetDialog"/>
             <tocitem text="Flip Data" target="dataFlip"/>

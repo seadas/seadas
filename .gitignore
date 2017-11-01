@@ -8,3 +8,7 @@ target/
 *~
 *.versionsBackup
 *.DS_Store
+OCSSW_LOG_install_ocssw.py.txt
+ProcessingGUI_log_aabduraz.html
+ProcessingGUI_log_aabduraz.txt
+seadas-ocsswrest/hs_err_pid43749.log

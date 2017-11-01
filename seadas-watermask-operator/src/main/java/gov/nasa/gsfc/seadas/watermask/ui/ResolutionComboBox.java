@@ -89,8 +89,8 @@ public class ResolutionComboBox {
         validSelectedIndex = jComboBox.getSelectedIndex();
 
 
-        jLabel = new JLabel("Coastline Source Dataset");
-        jLabel.setToolTipText("Determines which shoreline source dataset to use when generating the masks");
+        jLabel = new JLabel("World Source Data");
+        jLabel.setToolTipText("Determines which world source land/water data to use when generating the masks");
 
         addControlListeners();
         addEventHandlers();

@@ -33,7 +33,7 @@
     &lt;node id="reprojectNode"&gt;
         &lt;operator&gt;Reproject&lt;/operator&gt;
         &lt;sources&gt;
-            &lt;sourceProducts&gt;readNode&lt;/sourceProducts&gt;
+            &lt;source&gt;readNode&lt;/source&gt;
         &lt;/sources&gt;
         &lt;parameters&gt;
             &lt;wktFile/&gt;
@@ -71,6 +71,9 @@
             &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
             &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
             &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
+            &lt;applyValidPixelExpression&gt;true&lt;/applyValidPixelExpression&gt;
+            &lt;transferValidPixelExpression&gt;true&lt;/transferValidPixelExpression&gt;
+            &lt;maskExpression&gt;&lt;/maskExpression&gt;
         &lt;/parameters&gt;
     &lt;/node&gt;
  </pre>
@@ -81,12 +84,12 @@
   <th>Description</th>
 </tr>
 <tr>
-  <td><code>sourceProduct</code></td>
-  <td>The product which will be reprojected.</td>
+  <td><code>source</code></td>
+  <td>The source file which will be reprojected.</td>
 </tr>
 <tr>
-  <td><code>collocationProduct</code></td>
-  <td>The source product will be collocated with this product.</td>
+  <td><code>collocationWith</code></td>
+  <td>Use the exact crs and boundaries of this mapped file</td>
 </tr>
 </table>
 <h2>Parameters</h2>
@@ -231,7 +234,38 @@
   <td>Whether to add delta longitude and latitude bands.</td>
   <td></td>
 </tr>
+
+    <tr>
+        <td><code>applyValidPixelExpression</code></td>
+        <td><code>boolean</code></td>
+        <td><code>true</code></td>
+        <td>Apply the valid pixel expression to determine whether a source pixel gets used.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><code>transferValidPixelExpression</code></td>
+        <td><code>boolean</code></td>
+        <td><code>true</code></td>
+        <td>Copy source valid pixel expression(s) to the corresponding bands of the reprojected file.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><code>maskExpression</code></td>
+        <td><code>String</code></td>
+        <td><code>""</code></td>
+        <td>Logical expression of masks and/or bands to apply to determine whether a source pixel gets used.</td>
+        <td></td>
+    </tr>
 </table>
 <hr/>
+
+
+
+<h2>Meta Data</h2>
+The GPT operator adds the same meta data to the output file as the GUI version.
+<a href="../visat/Reprojection.html#Metadata" class="invisibleLink">See for details</a><br>
+
+
+</p>
 </body>
 </html>

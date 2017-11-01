@@ -4,7 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
+        <progressRegex>Calibrating scan (\d+) of (\d+)</progressRegex>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>l1bfile_mod</primaryOption>
@@ -92,6 +92,15 @@
             <description>output L1B Day Night Band filename</description>
             <usedAs>option</usedAs>
             <order>3</order>
+        </option>
+        <option type="ofile">
+            <name>l1bfile_cdg</name>
+            <value/>
+            <default></default>
+            <source>default</source>
+            <description>output L1B un-aggregated dual gain filename</description>
+            <usedAs>option</usedAs>
+            <order></order>
         </option>
         <option type="ifile">
             <name>static_lut_file</name>
@@ -190,8 +199,8 @@
         <!--</option>-->
         <option type="boolean">
             <name>verbose</name>
-            <value>false</value>
-            <default>false</default>
+            <value>true</value>
+            <default>true</default>
             <description>print status messages</description>
             <usedAs>flag</usedAs>
             <order>13</order>

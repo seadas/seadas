@@ -38,7 +38,7 @@
         <geotools.version>2.7.4</geotools.version>
         <jide.version>3.5.15</jide.version>
         <seadas.version>7.5</seadas.version>
-        <javax.ws.rs>2.0.1</javax.ws.rs>
+        <javax.ws.rs>2.1</javax.ws.rs>
         <jersey.version>2.23.2</jersey.version>
         <grizzly.version>2.3.26</grizzly.version>
         <junit.version>4.12</junit.version>
@@ -74,8 +74,6 @@
         <module>seadas-watermask-operator</module>
         <module>seadas-contour-operator</module>
         <module>seadas-bathymetry-operator</module>
-        <!--<module>os-rgbwrite</module>-->
-        <!--<module>../../beam/beam-aatsr-sst</module>-->
         <module>../beam/beam-alos-reader</module>
         <module>../beam/beam-atsr-reader</module>
         <module>../beam/beam-avhrr-reader</module>
@@ -670,7 +668,8 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>${junit.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -791,27 +790,10 @@
                 <version>${jersey.version}</version>
             </dependency>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.9</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.xerial</groupId>
                 <artifactId>sqlite-jdbc</artifactId>
                 <version>3.7.2</version>
             </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-multipart</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-multipart</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <!--<dependency>-->
         </dependencies>
 
     </dependencyManagement>

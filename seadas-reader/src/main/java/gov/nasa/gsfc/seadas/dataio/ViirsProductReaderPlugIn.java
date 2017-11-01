@@ -23,6 +23,7 @@ import org.esa.beam.util.io.BeamFileFilter;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,8 +76,14 @@ public class ViirsProductReaderPlugIn implements ProductReaderPlugIn {
                         if (dataProductList0.matches("VIIRS.*DR")
                                 || dataProductList0.matches("VIIRS.*IP")
                                 || dataProductList0.matches("VIIRS.*GEO.*")) {
-                            ncfile.close();
-                            return DecodeQualification.INTENDED;
+                            Variable firstVar = dataProduct.getGroups().get(0).getVariables().get(0);
+                            String beginningGranuleID = firstVar.findAttribute("AggregateBeginningGranuleID").getStringValue();
+                            String endingGranuleID = firstVar.findAttribute("AggregateEndingGranuleID").getStringValue();
+                            if(beginningGranuleID.equals(endingGranuleID)) {
+                                return DecodeQualification.INTENDED;
+                            } else {
+                                return DecodeQualification.UNABLE; // don't handle Aggrigated granules
+                            }
                         }
 
                     } else {

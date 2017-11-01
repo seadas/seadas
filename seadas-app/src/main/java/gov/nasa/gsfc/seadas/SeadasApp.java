@@ -15,6 +15,7 @@
  */
 package gov.nasa.gsfc.seadas;
 
+import com.bc.ceres.core.Assert;
 import com.bc.ceres.swing.actions.*;
 import com.bc.ceres.swing.selection.SelectionManager;
 import com.jidesoft.action.CommandBar;
@@ -31,6 +32,7 @@ import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 import org.esa.beam.visat.ProductsToolView;
 import org.esa.beam.visat.VisatActivator;
 import org.esa.beam.visat.VisatApp;
+import org.esa.beam.visat.VisatApplicationPage;
 import org.esa.beam.visat.toolviews.imageinfo.ColorManipulationToolView;
 import org.esa.beam.visat.toolviews.mask.MaskManagerToolView;
 import org.esa.beam.visat.toolviews.nav.NavigationToolView;
@@ -843,6 +845,30 @@ public class SeadasApp extends VisatApp {
         } finally {
             pm.done();
         }
+    }
+
+
+
+    @Override
+    protected void loadToolViews() {
+        ToolViewDescriptor[] toolViewDescriptors = VisatActivator.getInstance().getToolViewDescriptors();
+
+        for (ToolViewDescriptor toolViewDescriptor : toolViewDescriptors) {
+            if (ProductsToolView.ID.equals(toolViewDescriptor.getId())) {
+                applicationPage.addToolView(toolViewDescriptor);
+            }
+        }
+
+
+        productsToolView = (ProductsToolView) applicationPage.getToolView(ProductsToolView.ID);
+        Assert.state(productsToolView != null, "productsToolView != null");
+
+        for (ToolViewDescriptor toolViewDescriptor : toolViewDescriptors) {
+            if (!ProductsToolView.ID.equals(toolViewDescriptor.getId())) {
+                applicationPage.addToolView(toolViewDescriptor);
+            }
+        }
+
     }
 
     @Override

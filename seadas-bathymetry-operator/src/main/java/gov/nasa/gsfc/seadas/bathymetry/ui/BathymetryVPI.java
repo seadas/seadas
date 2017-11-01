@@ -44,7 +44,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
     public static final String ICON = "bathymetry.png";
 
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
-    public static final String BATHYMETRY_PRODUCT_NAME = "bathymetry";
+    public static final String BATHYMETRY_PRODUCT_NAME = "BathymetryOp";
 
 
     @Override
@@ -218,8 +218,6 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                                     if (bandCreated[0] != true) {
                                         Map<String, Object> parameters = new HashMap<String, Object>();
 
-                                        parameters.put("subSamplingFactorX", new Integer(bathymetryData.getSuperSampling()));
-                                        parameters.put("subSamplingFactorY", new Integer(bathymetryData.getSuperSampling()));
                                         parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
                                         parameters.put("filename", sourceFileInfo.getExistingFile().getName());
 

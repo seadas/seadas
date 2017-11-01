@@ -15,6 +15,7 @@ import org.esa.beam.util.ProductUtils;
 import ucar.ma2.Array;
 
 
+import javax.naming.NameNotFoundException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import java.text.MessageFormat;
  * @author Danny Knowles
  */
 @SuppressWarnings({"FieldCanBeLocal"})
-@OperatorMetadata(alias = "bathymetry",
+@OperatorMetadata(alias = "BathymetryOp",
         version = "1.0",
         internal = false,
         authors = "Danny Knowles",
@@ -57,15 +58,7 @@ public class BathymetryOp extends Operator {
             valueSet = {"ETOPO1_ocssw.nc"})
     private String filename;
 
-    @Parameter(description = "Specifies the factor between the resolution of the source product and the bathymetry in " +
-            "x direction. A value of '1' means no subsampling at all.",
-            label = "Subsampling factor x", defaultValue = "3", notNull = true)
-    private int subSamplingFactorX;
 
-    @Parameter(description = "Specifies the factor between the resolution of the source product and the bathymetry in" +
-            "y direction. A value of '1' means no subsampling at all.",
-            label = "Subsampling factor y", defaultValue = "3", notNull = true)
-    private int subSamplingFactorY;
 
 
     @TargetProduct
@@ -79,11 +72,41 @@ public class BathymetryOp extends Operator {
 
         File bathymetryFile = BathymetryData.getBathymetryFile(filename);
 
+        if (bathymetryFile != null) {
+            if (bathymetryFile.exists()) {
+                System.out.print("Reading bathymetry source file " + bathymetryFile.getAbsolutePath()+"\n");
+            } else {
+                System.out.print("Bathymetry source file does not exist " + bathymetryFile.getAbsolutePath()+"\n");
+            }
+        } else {
+            System.out.print("Reading bathymetry source file " + filename+"\n");
+        }
+
+
         try {
             bathymetryReader = new BathymetryReader(bathymetryFile);
         } catch (IOException e) {
-            //
+            if (bathymetryFile != null) {
+                if (bathymetryFile.exists()) {
+                    System.out.print("Error: Reading bathymetry source file " + bathymetryFile.getAbsolutePath()+"\n");
+                } else {
+                    System.out.print("Error: Bathymetry source file does not exist " + bathymetryFile.getAbsolutePath()+"\n");
+                }
+            } else {
+                System.out.print("Error: Reading bathymetry source file " + filename+"\n");
+            }
+
+//            if (bathymetryFile != null) {
+//                if (bathymetryFile.exists()) {
+//                    SeadasLogger.getLogger().warning("Error reading bathymetry source file '" + bathymetryFile.getAbsolutePath());
+//                } else {
+//                    SeadasLogger.getLogger().warning("Bathymetry source file does not exist '" + bathymetryFile.getAbsolutePath());
+//                }
+//            } else {
+//                SeadasLogger.getLogger().warning("Error reading bathymetry source file '" + filename);
+//            }
         }
+
 
         validateParameter();
         validateSourceProduct();
@@ -97,11 +120,6 @@ public class BathymetryOp extends Operator {
         if (resolution != BathymetryData.RESOLUTION_BATHYMETRY_FILE) {
             throw new OperatorException(String.format("Resolution needs to be %d ",
                     BathymetryData.RESOLUTION_BATHYMETRY_FILE));
-        }
-        if (subSamplingFactorX < 1) {
-            String message = MessageFormat.format(
-                    "Subsampling factor needs to be greater than or equal to 1; was: ''{0}''.", subSamplingFactorX);
-            throw new OperatorException(message);
         }
     }
 
