@@ -98,6 +98,7 @@ public abstract class OCSSW {
 
     public abstract Process execute(ProcessorModel processorModel);
     public abstract Process executeSimple(ProcessorModel processorModel);
+    public abstract InputStream executeAndGetStdout(ProcessorModel processorModel);
 
     public abstract Process execute(ParamList paramList);
 
