@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import org.esa.beam.framework.ui.AppContext;
@@ -23,6 +24,7 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
 
     OCSSWClient ocsswClient;
     WebTarget target;
+    OCSSW ocssw;
 
     OCSSWInstallerFormRemote(AppContext appContext, String programName, String xmlFileName, OCSSW ocssw) {
         super(appContext, programName, xmlFileName, ocssw);
@@ -67,8 +69,4 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
         }
     }
 
-    @Override
-    String getInstallDir() {
-        return target.path("ocssw").path("installDir").request(MediaType.TEXT_PLAIN).get(String.class);
-    }
 }

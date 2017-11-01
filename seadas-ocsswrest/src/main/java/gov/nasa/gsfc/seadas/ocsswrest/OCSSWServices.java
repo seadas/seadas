@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_API;
 import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRECTORY_PROPERTY;
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.ANC_FILE_LIST_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_ERROR_STREAM_FILE_NAME;
@@ -62,6 +63,8 @@ public class OCSSWServices {
     }
 
     /**
+     * This service empties client working directory on the server for each new connection from seadas application, then
+     * returns ocssw information.
      * ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
      * ocsswDataDirPath = ocsswRoot + File.separator +OCSSW_DATA_DIR_SUFFIX;
      * ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM;
@@ -85,6 +88,31 @@ public class OCSSWServices {
         return ocsswInstallStatus;
     }
 
+
+    /**
+     * This service manages client working directory on server.
+     * If the client working directory, "System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY) + File.separator + clientId" exists on server and
+     * the flag "keepFilesOnServer is set to "false", the client working directory is purged ;  if the flag "keepFilesOnServer is set to "true"
+     * the directory is left intact.
+     * If the client working directory doesn't exist, it will be created at this time.
+     *
+     * @return
+     */
+    @PUT
+    @Path("/manageClientWorkingDirectory/{clientId}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response manageClientWorkingDirectory(@PathParam("clientId") String clientId, String keepFilesOnServer) {
+
+        String workingDirPath = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY) + File.separator + clientId;
+        String responseMessage = ServerSideFileUtilities.manageDirectory(workingDirPath, new Boolean(keepFilesOnServer).booleanValue());
+
+        Response response = Response.status(200).type("text/plain")
+                .entity(responseMessage).build();
+
+        return response;
+    }
+
+
     /**
      * This method uploads client id and saves it in the file table. It also decides the working directory for the client and saves it in the table for later requests.
      *
@@ -95,24 +123,12 @@ public class OCSSWServices {
     @PUT
     @Path("/ocsswSetClientId/{jobId}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public Response setClientId(@PathParam("jobId") String jobId, String clientId) {
+    public Response setClientIdWithJobId(@PathParam("jobId") String jobId, String clientId) {
         Response.Status respStatus = Response.Status.OK;
-        System.out.println("client : " + clientId);
         SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.CLIENT_ID_NAME.getFieldName(), clientId);
         String workingDirPath = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY) + File.separator + clientId;
-        System.out.println("client and working directory: " + clientId + "   " + workingDirPath);
-        //todo cleanup client directory before starting a new set of tasks
-        try {
-            File workingDir = new File(workingDirPath);
-            if (workingDir.exists() && workingDir.isDirectory()) {
-                ServerSideFileUtilities.purgeDirectory(workingDir);
-            } else {
-                Files.createDirectories(new File(workingDirPath).toPath());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName(), workingDirPath);
+        ServerSideFileUtilities.createDirectory(workingDirPath + File.separator + jobId);
         return Response.status(respStatus).build();
     }
 
@@ -172,6 +188,7 @@ public class OCSSWServices {
                                                 @PathParam("programName") String programName,
                                                 JsonObject jsonObject)
             throws IOException {
+        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
         Response.Status respStatus = Response.Status.OK;
         if (jsonObject == null) {
             respStatus = Response.Status.BAD_REQUEST;
@@ -180,6 +197,9 @@ public class OCSSWServices {
             OCSSWRemote ocsswRemote = new OCSSWRemote();
             ocsswRemote.executeProgramOnDemand(jobId, programName, jsonObject);
         }
+        Response response = Response.status(200).type("text/plain")
+                .entity(SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName())).build();
+        System.out.println("process status on server = " + SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName()));
         return Response.status(respStatus).build();
     }
 

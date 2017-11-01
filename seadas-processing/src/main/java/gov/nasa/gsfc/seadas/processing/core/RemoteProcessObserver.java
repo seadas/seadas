@@ -137,7 +137,8 @@ public class RemoteProcessObserver extends ProcessObserver {
             } finally {
                 reader.close();
             }
-            setProcessExitValue(0);
+            String processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+            setProcessExitValue(new Integer(processStatus).intValue());
         }
 
 

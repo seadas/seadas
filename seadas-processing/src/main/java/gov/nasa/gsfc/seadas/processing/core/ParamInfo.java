@@ -304,6 +304,7 @@ public class ParamInfo implements Comparable, Cloneable {
                             setValidationComment("WARNING!!! File '" + filename + "' is compressed (please uncompress it)");
                         } else if (getName().equals(L2genData.GEOFILE)) {
                             if (!fileInfo.isTypeId(FileTypeInfo.Id.GEO)) {
+                                //todo check geofile validity needs to be done on the server as well
                                 setValidationComment("WARNING!!! File '" + filename + "' is not a GEO file");
                             }
                         } else if (getName().equals(L2genData.IFILE)) {

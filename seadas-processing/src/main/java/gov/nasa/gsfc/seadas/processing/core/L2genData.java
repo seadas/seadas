@@ -1466,9 +1466,8 @@ public class L2genData implements SeaDASProcessorModel {
             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
                 pm.beginTask("Retrieving ancillary files", 2);
-
                 try {
-                    Process p = ocssw.execute(processorModel.getParamList()); //processorModel.executeProcess();
+                    InputStream processInputStream = ocssw.executeAndGetStdout(processorModel); //processorModel.executeProcess();
 
                     // Determine exploded filenames
                     File runDirectoryFiles[] = processorModel.getIFileDir().listFiles();
@@ -1482,7 +1481,7 @@ public class L2genData implements SeaDASProcessorModel {
                     }
 
 
-                    BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    BufferedReader stdInput = new BufferedReader(new InputStreamReader(processInputStream));
 
                     String line = stdInput.readLine();
                     while (line != null) {

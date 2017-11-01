@@ -20,6 +20,9 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.lang.Boolean;
 
+import static gov.nasa.gsfc.seadas.processing.common.FilenamePatterns.getGeoFileInfo;
+import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Aynur Abdurazik (aabduraz)
@@ -70,6 +73,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private boolean isIfileValid = false;
     private static OCSSW ocssw;
     private String fileExtensions = null;
+
+    FileInfo inputFileInfo;
 
     public ProcessorModel(String name, OCSSW ocssw) {
 
@@ -325,18 +330,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
-    private void updateGeoFileStatus(String ifileName) {
-        setHasGeoFile(false);
-        if ((processorID == ProcessorTypeInfo.ProcessorID.L1BRSGEN
-                || processorID == ProcessorTypeInfo.ProcessorID.L1MAPGEN
-                || processorID == ProcessorTypeInfo.ProcessorID.MODIS_L1B_PY)) {
-            String missionName = ocssw.getMissionName();
-            if (missionName != null && (missionName.indexOf("MODIS") != -1 || missionName.indexOf("VIIRSN") != -1 || missionName.indexOf("VIIRS") != -1)) {
-                setHasGeoFile(true);
-            }
-        }
-    }
-
     public boolean updateIFileInfo(String ifileName) {
 
 
@@ -344,13 +337,19 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return true;
         }
 
+        File ifile = new File(ifileName);
+
+        inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
+
+
         if (programName != null && verifyIFilePath(ifileName)) {
             String ofileName = getOcssw().getOfileName(ifileName);
             SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
             if (ofileName != null) {
                 isIfileValid = true;
                 updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-                updateGeoFileInfo(ifileName);
+
+                updateGeoFileInfo(ifileName, inputFileInfo);
                 updateOFileInfo(getOFileFullPath(ofileName));
                 updateParamValues(new File(ifileName));
             }
@@ -368,13 +367,16 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     //todo: change the path to get geo filename from ifile
-    public boolean updateGeoFileInfo(String ifileName) {
-        updateGeoFileStatus(ifileName);
-        if (hasGeoFile()) {
-            updateParamInfo("geofile", SeadasFileUtils.getGeoFileNameFromIFile(ifileName));
+    public boolean updateGeoFileInfo(String ifileName, FileInfo inputFileInfo) {
+        FileInfo geoFileInfo =  getGeoFileInfo(inputFileInfo, ocssw);
+        if (geoFileInfo != null) {
+            setHasGeoFile(true);
+            updateParamInfo(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
             return true;
+        } else {
+            setHasGeoFile(false);
+            return false;
         }
-        return false;
     }
 
 
@@ -767,6 +769,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         @Override
         public boolean updateIFileInfo(String ifileName) {
+            File ifile = new File(ifileName);
+
+            inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
+
             boolean isIfileValid = false;
             if (programName != null && verifyIFilePath(ifileName)) {
                 String ofileName = getOcssw().getOfileName(ifileName);
@@ -776,7 +782,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     setParamList(ParamUtils.computeParamList(getOcssw().getXmlFileName()));
                     isIfileValid = true;
                     updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-                    updateGeoFileInfo(ifileName);
+                    updateGeoFileInfo(ifileName, inputFileInfo);
                     updateOFileInfo(getOFileFullPath(ofileName));
                     updateParamValues(new File(ifileName));
                 }
@@ -914,8 +920,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         public boolean updateIFileInfo(String ifileName) {
+            File ifile = new File(ifileName);
+
+            inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
-            updateGeoFileInfo(ifileName);
+            updateGeoFileInfo(ifileName, inputFileInfo);
             return true;
         }
     }

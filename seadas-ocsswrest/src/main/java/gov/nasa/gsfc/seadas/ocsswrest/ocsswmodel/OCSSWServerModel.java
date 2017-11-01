@@ -26,8 +26,8 @@ public class OCSSWServerModel {
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
-    public static String OCSSW_BIN_DIR_SUFFIX = "run" + File.separator + "bin" +  File.separator + getOSName();
-    public static String OCSSW_SCRIPTS_DIR_SUFFIX = "run" + File.separator + "scripts";
+    public static String OCSSW_BIN_DIR_SUFFIX = "bin" +  File.separator + getOSName();
+    public static String OCSSW_SCRIPTS_DIR_SUFFIX = "scripts";
     public static String OCSSW_DATA_DIR_SUFFIX = "run" + File.separator + "data";
 
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";

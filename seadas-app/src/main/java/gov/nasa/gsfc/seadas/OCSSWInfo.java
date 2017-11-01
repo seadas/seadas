@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import org.esa.beam.util.SystemUtils;
 import org.esa.beam.visat.VisatApp;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jsonp.JsonProcessingFeature;
@@ -10,8 +11,10 @@ import javax.json.JsonObject;
 import javax.json.stream.JsonGenerator;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.File;
 
 import java.util.regex.Pattern;
@@ -25,6 +28,8 @@ import java.util.regex.Pattern;
  */
 public class OCSSWInfo {
 
+    public static final String SEADAS_CLIENT_ID_PROPERTY = "client.id";
+    public static final String OCSSW_KEEP_FILES_ON_SERVER_PROPERTY = "ocssw.keepFilesOnServer";
     public static final String OS_64BIT_ARCHITECTURE = "_64";
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
@@ -67,6 +72,7 @@ public class OCSSWInfo {
 
     private void setOcsswLocation(String location) { ocsswLocation = location; }
 
+    String clientId;
     private OCSSWInfo() {}
 
     public static OCSSWInfo getInstance(){
@@ -163,6 +169,8 @@ public class OCSSWInfo {
     }
 
     private  boolean initializeRemoteOCSSW(String serverAPI) {
+
+
         final String BASE_URI_PORT_NUMBER_PROPERTY = "ocssw.port";
         final String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
         String baseUriPortNumber = RuntimeContext.getConfig().getContextProperty(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
@@ -176,13 +184,16 @@ public class OCSSWInfo {
         JsonObject jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         ocsswExist = jsonObject.getBoolean("ocsswExists");
         if (ocsswExist) {
+            ocsswRoot = jsonObject.getString("ocsswRoot");
             ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
             ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
             ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
             ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
 
+            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
+            String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "false");
+            Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
         }
-
         processInputStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_INPUT_STREAM_PORT)).intValue();
         processErrorStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_ERROR_STREAM_PORT)).intValue();
         return ocsswExist;

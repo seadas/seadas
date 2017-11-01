@@ -22,13 +22,14 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static gov.nasa.gsfc.seadas.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
+
 /**
  * Created by aabduraz on 3/27/17.
  */
 public class OCSSWRemote extends OCSSW {
 
     public static final String OCSSW_SERVER_PORT_NUMBER = "6400";
-    public static final String SEADAS_CLIENT_ID_PROPERTY = "client.id";
     public static final String MLP_PROGRAM_NAME = "multilevel_processor.py";
     public static final String MLP_PAR_FILE_ODIR_KEY_NAME = "odir";
 
@@ -54,6 +55,7 @@ public class OCSSWRemote extends OCSSW {
 
     ProcessorModel processorModel;
 
+    boolean serverProcessCompleted;
 
     public OCSSWRemote() {
         initialize();
@@ -64,7 +66,7 @@ public class OCSSWRemote extends OCSSW {
         target = ocsswClient.getOcsswWebTarget();
         if (ocsswInfo.isOcsswExist()) {
             jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
+            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
             target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
         }
         setOfileNameFound(false);
@@ -234,8 +236,6 @@ public class OCSSWRemote extends OCSSW {
         } else {
             return null;
         }
-
-
     }
 
 
@@ -251,7 +251,7 @@ public class OCSSWRemote extends OCSSW {
         }
 
 
-        if (!getIfileName().equals(ifileName)) {
+        if (getIfileName() == null || !getIfileName().equals(ifileName)) {
             this.setIfileName(ifileName);
         }
 
@@ -398,36 +398,41 @@ public class OCSSWRemote extends OCSSW {
                 //this is to make sure that all necessary files are uploaded to the server before execution
                 prepareToRemoteExecute();
                 Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+
                 if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                    setProcessExitValue(0);
-                }
-            }
 
-            boolean serverProcessStarted = false;
+                    boolean serverProcessStarted = false;
+                    serverProcessCompleted = false;
 
-            String processStatus = "-100";
-            while (!serverProcessStarted) {
-                switch (processStatus) {
-                    case PROCESS_STATUS_NONEXIST:
-                        serverProcessStarted = false;
-                        break;
-                    case PROCESS_STATUS_STARTED:
-                        serverProcessStarted = true;
-                        break;
-                    case PROCESS_STATUS_COMPLETED:
-                        serverProcessStarted = true;
-                        break;
-                    case PROCESS_STATUS_FAILED:
-                        setProcessExitValue(1);
-                        serverProcessStarted = true;
-                        break;
+                    String processStatus = "-100";
+                    while (!serverProcessStarted) {
+                        processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+                        switch (processStatus) {
+                            case PROCESS_STATUS_NONEXIST:
+                                serverProcessStarted = false;
+                                break;
+                            case PROCESS_STATUS_STARTED:
+                                serverProcessStarted = true;
+                                break;
+                            case PROCESS_STATUS_COMPLETED:
+                                serverProcessStarted = true;
+                                serverProcessCompleted = true;
+                                setProcessExitValue(0);
+                                break;
+                            case PROCESS_STATUS_FAILED:
+                                setProcessExitValue(1);
+                                serverProcessStarted = true;
+                                break;
+                        }
+                        try {
+                            TimeUnit.SECONDS.sleep(1);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    setProcessExitValue(1);
                 }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
             }
             return seadasProcess;
         }
@@ -443,10 +448,11 @@ public class OCSSWRemote extends OCSSW {
             setProcessExitValue(0);
         }
 
-        boolean serverProcessCompleted = false;
+        serverProcessCompleted = false;
 
         String processStatus = "-100";
         while (!serverProcessCompleted) {
+            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
             switch (processStatus) {
                 case PROCESS_STATUS_NONEXIST:
                     serverProcessCompleted = false;
@@ -456,6 +462,7 @@ public class OCSSWRemote extends OCSSW {
                     break;
                 case PROCESS_STATUS_COMPLETED:
                     serverProcessCompleted = true;
+                    setProcessExitValue(0);
                     break;
                 case PROCESS_STATUS_FAILED:
                     setProcessExitValue(1);
@@ -467,7 +474,6 @@ public class OCSSWRemote extends OCSSW {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
         }
         return seadasProcess;
     }
@@ -486,10 +492,10 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public void waitForProcess() {
-        boolean serverProcessCompleted = false;
 
         String processStatus = PROCESS_STATUS_NONEXIST;
         while (!serverProcessCompleted) {
+            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
             switch (processStatus) {
                 case PROCESS_STATUS_NONEXIST:
                     serverProcessCompleted = false;
@@ -502,8 +508,8 @@ public class OCSSWRemote extends OCSSW {
                     setProcessExitValue(0);
                     break;
                 case PROCESS_STATUS_FAILED:
-                    setProcessExitValue(1);
                     serverProcessCompleted = true;
+                    setProcessExitValue(1);
                     break;
                 default:
                     serverProcessCompleted = false;
@@ -513,7 +519,6 @@ public class OCSSWRemote extends OCSSW {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
         }
     }
 
@@ -588,6 +593,7 @@ public class OCSSWRemote extends OCSSW {
 
         String processStatus = "-100";
         while (!serverProcessStarted) {
+            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
             switch (processStatus) {
                 case PROCESS_STATUS_NONEXIST:
                     serverProcessStarted = false;
@@ -612,9 +618,6 @@ public class OCSSWRemote extends OCSSW {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("process status before: " + processStatus);
-            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
-            System.out.println("process status after: " + processStatus);
         }
         return seadasProcess;
     }

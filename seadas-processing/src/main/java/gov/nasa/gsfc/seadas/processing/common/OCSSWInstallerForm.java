@@ -40,6 +40,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     public static final String INSTALL_DIR_OPTION_NAME = "--install-dir";
 
     public String missionDataDir;
+    public OCSSW ocssw;
 
     private static final Set<String> MISSIONS = new HashSet<String>(Arrays.asList(
             new String[]{"AQUARIUS",
@@ -98,6 +99,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
     public OCSSWInstallerForm(AppContext appContext, String programName, String xmlFileName, OCSSW ocssw) {
         this.appContext = appContext;
+        this.ocssw = ocssw;
         processorModel = ProcessorModel.valueOf(programName, xmlFileName, ocssw);
         processorModel.setReadyToRun(true);
         setMissionDataDir(getInstallDir() + getMissionDataDirInterfix());
@@ -135,7 +137,9 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     abstract void updateMissionStatus();
     abstract void updateMissionValues();
 
-    abstract String getInstallDir();
+    String getInstallDir() {
+        return OCSSWInfo.getInstance().getOcsswRoot();
+    }
 
     abstract void init();
 

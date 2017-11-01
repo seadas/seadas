@@ -53,6 +53,7 @@ public class ProcessObserver {
      * streams are no longer available. If the progress monitor is cancelled, the process will be destroyed.
      */
     public void startAndWait() {
+        processExitValue = -1;
         final Thread stdoutReaderThread = new LineReaderThread(STDOUT);
         final Thread stderrReaderThread = new LineReaderThread(STDERR);
         stdoutReaderThread.start();
