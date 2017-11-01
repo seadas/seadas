@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerModelOld;
 
 import javax.json.Json;
 import javax.json.JsonObject;

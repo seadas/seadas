@@ -21,6 +21,7 @@ import java.util.StringTokenizer;
  */
 public class OCSSWVM extends OCSSWRemote {
     public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY = "ocssw.sharedDir";
+    public final static String SEADAS_CLIENT_ID_PROPERTY = "seadas.client.id";
     public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + "ocsswVMServerSharedDir";
 
     String sharedDirPath;

@@ -69,7 +69,7 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
     }
 
     String getInstallDir() {
-        String installDir = OCSSWOldModel.getOcsswEnv();
+        String installDir = OCSSWInfo.getInstance().getOcsswRoot();
         if (installDir != null) {
             return installDir;
         } else {
