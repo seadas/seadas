@@ -367,8 +367,6 @@ public class OCSSWServices {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public OCSSWInfo getOCSSWInfo() {
         OCSSWInfo ocsswInfo = new OCSSWInfo();
-        ocsswInfo.setInstalled(true);
-        ocsswInfo.setOcsswDir(System.getProperty("user.home") + "/ocssw");
         return ocsswInfo;
     }
 
