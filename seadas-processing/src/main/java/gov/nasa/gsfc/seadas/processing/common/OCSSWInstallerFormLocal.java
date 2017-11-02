@@ -67,13 +67,4 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
             processorModel.setParamValue("--src", "1");
         }
     }
-
-    String getInstallDir() {
-        String installDir = OCSSWInfo.getInstance().getOcsswRoot();
-        if (installDir != null) {
-            return installDir;
-        } else {
-            return System.getProperty("user.home") + System.getProperty("file.separator") + "ocssw";
-        }
-    }
 }
