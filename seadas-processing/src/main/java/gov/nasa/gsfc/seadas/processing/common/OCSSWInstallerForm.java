@@ -75,8 +75,8 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     static {
         MISSION_DIRECTORIES = new HashMap<String, String>();
         MISSION_DIRECTORIES.put("SEAWIFS", "seawifs");
-        MISSION_DIRECTORIES.put("AQUA", "modisa");
-        MISSION_DIRECTORIES.put("TERRA", "modist");
+        MISSION_DIRECTORIES.put("AQUA", "hmodisa");
+        MISSION_DIRECTORIES.put("TERRA", "hmodist");
         MISSION_DIRECTORIES.put("VIIRSN", "viirsn");
         MISSION_DIRECTORIES.put("MERIS", "meris");
         MISSION_DIRECTORIES.put("CZCS", "czcs");
