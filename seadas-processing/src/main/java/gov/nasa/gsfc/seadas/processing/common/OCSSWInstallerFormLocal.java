@@ -25,8 +25,8 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
     void updateMissionStatus() {
         missionDataStatus = new HashMap<String, Boolean>();
         missionDataStatus.put("SEAWIFS", new File(missionDataDir + "seawifs").exists());
-        missionDataStatus.put("AQUA", new File(missionDataDir + "modisa").exists());
-        missionDataStatus.put("TERRA", new File(missionDataDir + "modist").exists());
+        missionDataStatus.put("AQUA", new File(missionDataDir + "hmodisa").exists());
+        missionDataStatus.put("TERRA", new File(missionDataDir + "hmodist").exists());
         missionDataStatus.put("VIIRSN", new File(missionDataDir + "viirsn").exists());
         missionDataStatus.put("MERIS", new File(missionDataDir + "meris").exists());
         missionDataStatus.put("CZCS", new File(missionDataDir + "czcs").exists());
