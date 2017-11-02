@@ -80,7 +80,7 @@
             <default>OC</default>
             <description>product suite string for loading suite-specific defaults
             </description>
-            <source>$OCSSWROOT/share/modisa/msl12_defaults.par</source>
+            <source>$OCSSWROOT/share/hmodisa/msl12_defaults.par</source>
         </option>
 
         <option type="ifile">
@@ -141,7 +141,7 @@
             <type>int</type>
             <default>1</default>
             <description>start pixel number</description>
-            <source>$OCSSWROOT/share/modisa/l1img_defaults.par</source>
+            <source>$OCSSWROOT/share/hmodisa/l1img_defaults.par</source>
         </option>
         <option type="int">
             <name>epixl</name>
@@ -149,7 +149,7 @@
             <type>int</type>
             <default>-1</default>
             <description>end pixel number (-1=the last pixel)</description>
-            <source>$OCSSWROOT/share/modisa/l1img_defaults.par</source>
+            <source>$OCSSWROOT/share/hmodisa/l1img_defaults.par</source>
         </option>
         <option type="int">
             <name>sline</name>
@@ -157,7 +157,7 @@
             <type>int</type>
             <default>1</default>
             <description>start line number</description>
-            <source>$OCSSWROOT/share/modisa/l1img_defaults.par</source>
+            <source>$OCSSWROOT/share/hmodisa/l1img_defaults.par</source>
         </option>
         <option type="int">
             <name>eline</name>
@@ -165,7 +165,7 @@
             <type>int</type>
             <default>-1</default>
             <description>end line number (-1=the last line)</description>
-            <source>$OCSSWROOT/share/modisa/l1img_defaults.par</source>
+            <source>$OCSSWROOT/share/hmodisa/l1img_defaults.par</source>
         </option>
         <option type="int">
             <name>subsamp</name>
