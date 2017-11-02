@@ -10,35 +10,51 @@
 <div class="center">
     <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
     <h1>The GPT Cookbook</h1>
-    <p class="chapterTitle">Workflow Example 1<br>Compare Two Level-2 Files</p>
+    <p class="chapterTitle">Workflow Example 1<br>Hello World</p>
 
     <br>
-    <table width="500"><tr><td bgcolor="#fff9e9">
-        <p>
-            Reproject --&gt; Collocate
-        </p>
+    <table width="500">
+        <tr>
+            <td bgcolor="#fff9e9">
 
-    </td></tr></table>
+                <table class="invisibletable4">
+                    <tr class="invisibletable4">
+                        <td class="invisibletable4" nowrap="1">Read</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+
+                    </tr>
+                    <tr>
+                        <td class="invisibletable4" nowrap="1"></td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    </tr>
+
+                </table>
+
+            </td>
+
+
+        </tr>
+    </table>
 
 
 </div>
 <br><br><br>
 
 
+<p>
+    This example illustrates a gpt workflow in SeaDAS by stringing together possibly the two
+    simplest operators (Read and Write) to create multiple copies (one NetCDF-CF and one BEAM-DIMAP) of an input file
+    adding the suffix 'HelloWorld' to each output file.
+    </p>
+<p>
+    Although seemingly useless on its face, (because individual operators can read and write), one benefit to the
+    use of the read and write operator, is that you can send the source file in as a parameter to be used
+    in the formulation of both the input and output file names.  Additionally, multiple read and write nodes may
+    be used in a single graph file.
+    </p>
 
-<p>
-    This example reprojects a source file (similar to <a href="gptCookbookReproject.html#Example4" class="invisibleLink">Reproject: Example 4</a>)
-    with the main difference being that this example adds in a read node and a write node to create a multi-operator workflow.
-    </p>
-<p>
-    One benefit to the use of the read node, is that we can send the source file in as a parameter to be used
-    in the formulation of both the input and output file names.  Note: we are sending in the file parameter
-    without its extension in order to formulate both file names.
-    </p>
-<p>
-    Additionally, as will be shown in later parts of this example, multiple read and write nodes may be used in a
-    graph file.
-</p>
 
 
 
@@ -47,37 +63,27 @@
 <b>Command Line Entry</b>
 </p>
 
-<p>
-    For the daytime SST file:
-</p>
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-gpt WorkflowEx01a.xml -p WorkflowEx01a.par -Pfile=A2010283180500.L2_LAC_SST
-</pre>
-</td></tr></table>
 
-<br>
-<p>
-    For the nighttime SST file:
-</p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WorkflowEx01a.xml -p WorkflowEx01a.par -Pfile=A2010283070000.L2_LAC_SST
+gpt WorkflowEx01.xml -p WorkflowEx01.par -Pfile=A2010283180500.L2_LAC_SST -PofileSuffix='HelloWorld'
 </pre>
 </td></tr></table>
 
 
 
 
+
+
 <br>
 <p>
-<b>File = WorkflowEx01a.xml</b>
+<b>File = WorkflowEx01.xml</b>
 </p>
 
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-&lt;graph id="WorkflowEx01aGraph"&gt;
+&lt;graph id="WorkflowEx01Graph"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
 
     &lt;node id="ReadNode"&gt;
@@ -88,55 +94,29 @@ gpt WorkflowEx01a.xml -p WorkflowEx01a.par -Pfile=A2010283070000.L2_LAC_SST
       &lt;/parameters&gt;
     &lt;/node&gt;
 
-    &lt;node id="ReprojectLambertNode"&gt;
-      &lt;operator&gt;Reproject&lt;/operator&gt;
-      &lt;sources&gt;
-          &lt;source&gt;ReadNode&lt;/source&gt;
-      &lt;/sources&gt;
 
-      &lt;parameters&gt;
-          &lt;crs&gt;
-              PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",
-                     GEOGCS["World Geodetic System 1984",
-                            DATUM["World Geodetic System 1984",
-                                  SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
-                            AUTHORITY["EPSG","6326"]],
-                     PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
-                     UNIT["degree", 0.017453292519943295],
-                     AXIS["Geodetic longitude", EAST],
-                     AXIS["Geodetic latitude", NORTH]],
-              PROJECTION["Lambert_Azimuthal_Equal_Area"],
-              PARAMETER["latitude_of_center", ${lat}],
-              PARAMETER["longitude_of_center", ${lon}],
-              PARAMETER["false_easting", 0.0],
-              PARAMETER["false_northing", 0.0],
-              UNIT["m", 1.0],
-              AXIS["Easting", EAST],
-              AXIS["Northing", NORTH]]
-          &lt;/crs&gt;
-          &lt;resampling&gt;${resampling}&lt;/resampling&gt;
-          &lt;orientation&gt;0.0&lt;/orientation&gt;
-          &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
-          &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
-          &lt;orthorectify&gt;false&lt;/orthorectify&gt;
-          &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
-          &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
-          &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
-          &lt;maskExpression&gt;${maskExpression}&lt;/maskExpression&gt;
-          &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
-          &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
-      &lt;/parameters&gt;
 
-    &lt;/node&gt;
-
-    &lt;node id="WriteNode"&gt;
+    &lt;node id="WriteFile1Node"&gt;
       &lt;operator&gt;Write&lt;/operator&gt;
       &lt;sources&gt;
-        &lt;source&gt;ReprojectLambertNode&lt;/source&gt;
+        &lt;source&gt;ReadNode&lt;/source&gt;
       &lt;/sources&gt;
       &lt;parameters&gt;
-        &lt;file&gt;${file}_${ofileSuffix}.${ofileExtension}&lt;/file&gt;
-        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+        &lt;file&gt;${file}_${ofileSuffix}.${ofile1Extension}&lt;/file&gt;
+        &lt;formatName&gt;${ofile1Format}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+
+    &lt;node id="WriteFile2Node"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;ReadNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file}_${ofileSuffix}.${ofile2Extension}&lt;/file&gt;
+        &lt;formatName&gt;${ofile2Format}&lt;/formatName&gt;
       &lt;/parameters&gt;
     &lt;/node&gt;
 
@@ -146,32 +126,25 @@ gpt WorkflowEx01a.xml -p WorkflowEx01a.par -Pfile=A2010283070000.L2_LAC_SST
 </td></tr></table>
 
 
-
 <br>
 <p>
-<b>File = WorkflowEx01a.par</b>
+<b>File = WorkflowEx01.par</b>
 </p>
+
+
 
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
 ifileExtension=nc
-ofileSuffix=Reprojected
-ofileFormat=NetCDF-CF
-ofileExtension=nc
 
-lat=37.0
-lon=-76.0
-pixelSize=1000.0
-resampling=Bilinear
-maskExpression=(qual_sst == 0 or qual_sst == 1) and !l2_flags.HISATZEN
-transferValidPixelExpression=true
-applyValidPixelExpression=true
+ofile1Format=NetCDF-CF
+ofile1Extension=nc
+
+ofile2Format=BEAM-DIMAP
+ofile2Extension=dim
 </pre>
 </td></tr></table>
-
-
-
 
 
 
