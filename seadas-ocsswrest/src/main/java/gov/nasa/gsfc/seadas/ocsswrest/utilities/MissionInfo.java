@@ -40,8 +40,8 @@ public class MissionInfo {
     void updateMissionStatus() {
         missionDataStatus = new HashMap<String, Boolean>();
         missionDataStatus.put("SEAWIFS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "seawifs").exists());
-        missionDataStatus.put("AQUA", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "modisa").exists());
-        missionDataStatus.put("TERRA", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "modist").exists());
+        missionDataStatus.put("AQUA", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "hmodisa").exists());
+        missionDataStatus.put("TERRA", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "hmodist").exists());
         missionDataStatus.put("VIIRSN", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "viirsn").exists());
         missionDataStatus.put("MERIS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "meris").exists());
         missionDataStatus.put("CZCS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "czcs").exists());
@@ -57,14 +57,14 @@ public class MissionInfo {
         missionDataStatus.put("HICO", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "hico").exists());
         missionDataStatus.put("GOCI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "goci").exists());
 
-        System.out.println("aqua status: " + new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "modisa").exists());
+        System.out.println("aqua status: " + new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "hmodisa").exists());
     }
 
     public JsonObject getMissions() {
 
         JsonObject missions = Json.createObjectBuilder().add("SEAWIFS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "seawifs").exists())
-                .add("AQUA", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "modisa").exists())
-                .add("TERRA", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "modist").exists())
+                .add("AQUA", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "hmodisa").exists())
+                .add("TERRA", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "hmodist").exists())
                 .add("VIIRSN", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "viirsn").exists())
                 .add("MERIS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "meris").exists())
                 .add("CZCS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "czcs").exists())
@@ -80,7 +80,7 @@ public class MissionInfo {
                 .add("HICO", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "hico").exists())
                 .add("GOCI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "goci").exists())
                 .build();
-        System.out.println("aqua status: " + new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "modisa").exists());
+        System.out.println("aqua status: " + new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "hmodisa").exists());
         return missions;
 
     }
