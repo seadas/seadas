@@ -39,8 +39,8 @@
         <jide.version>3.5.15</jide.version>
         <seadas.version>7.5</seadas.version>
         <javax.ws.rs>2.1</javax.ws.rs>
-        <jersey.version>2.23.2</jersey.version>
-        <grizzly.version>2.3.26</grizzly.version>
+        <jersey.version>2.25</jersey.version>
+        <grizzly.version>2.3.31</grizzly.version>
         <junit.version>4.12</junit.version>
     </properties>
 
@@ -322,7 +322,7 @@
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-statistics-op</artifactId>
-                 <version>5.0.1</version>
+                 <version>7.4.1</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
@@ -373,7 +373,7 @@
             <dependency>
                 <groupId>gov.nasa.gsfc.seadas</groupId>
                 <artifactId>seadas-processing</artifactId>
-                <version>1.4</version>
+                <version>1.5</version>
             </dependency>
 
 
@@ -805,11 +805,11 @@
     </scm>
 
     <repositories>
-        <repository>
-            <id>jide</id>
-            <name>Internal JIDE repository</name>
-            <url>https://seadasdev401.domain.pub/mvn-seadas/</url>
-        </repository>
+        <!--<repository>-->
+            <!--<id>jide</id>-->
+            <!--<name>Internal JIDE repository</name>-->
+            <!--<url>https://seadasdev401.domain.pub/mvn-seadas/jide-repo.3.5.15.tgz</url>-->
+        <!--</repository>-->
         <repository>
             <id>release.maven.java.net</id>
             <name>java.net Maven Release Repository</name>
