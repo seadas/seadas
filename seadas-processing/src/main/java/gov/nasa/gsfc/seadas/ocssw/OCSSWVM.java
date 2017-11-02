@@ -16,6 +16,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import static gov.nasa.gsfc.seadas.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
+
 /**
  * Created by aabduraz on 3/27/17.
  */
