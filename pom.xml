@@ -351,7 +351,6 @@
              </dependency>
 
             <!-- SeaDAS System Level Modules -->
-
             <dependency>
                 <groupId>gov.nasa.gsfc.seadas</groupId>
                 <artifactId>seadas-app</artifactId>
