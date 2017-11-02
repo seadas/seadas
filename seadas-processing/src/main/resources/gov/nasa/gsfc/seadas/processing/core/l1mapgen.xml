@@ -148,7 +148,7 @@
             <default>OC</default>
             <description>product suite string for loading suite-specific defaults
             </description>
-            <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
+            <source>$OCSSWROOT/share/hmodisa/msl12_defaults.par</source>
             <usedAs>option</usedAs>
         </option>
 
