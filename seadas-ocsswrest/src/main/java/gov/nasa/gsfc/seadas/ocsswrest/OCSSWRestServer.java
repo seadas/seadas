@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.ocsswrest;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWConfig;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerModelOld;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ProcessMessageBodyWriter;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.filter.LoggingFilter;
