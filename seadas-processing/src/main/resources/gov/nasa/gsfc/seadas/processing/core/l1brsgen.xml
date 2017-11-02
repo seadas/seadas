@@ -80,7 +80,7 @@
             <default>OC</default>
             <description>product suite string for loading suite-specific defaults
             </description>
-            <source>/Users/Shared/ocssw/run/data/modisa/msl12_defaults.par</source>
+            <source>$OCSSWROOT/share/modisa/msl12_defaults.par</source>
         </option>
 
         <option type="ifile">
@@ -110,14 +110,6 @@
             <source>default</source>
             <alias>ofile1</alias>
         </option>
-        <!--<option type="ofile">-->
-            <!--<name>ofile[#]</name>-->
-            <!--<value/>-->
-            <!--<type>string</type>-->
-            <!--<default>output</default>-->
-            <!--<description>additional output L2 file name</description>-->
-            <!--<source>default</source>-->
-        <!--</option>-->
         <option type="int">
             <name>resolution</name>
             <value>-1</value>
@@ -149,7 +141,7 @@
             <type>int</type>
             <default>1</default>
             <description>start pixel number</description>
-            <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
+            <source>$OCSSWROOT/share/modisa/l1img_defaults.par</source>
         </option>
         <option type="int">
             <name>epixl</name>
@@ -157,7 +149,7 @@
             <type>int</type>
             <default>-1</default>
             <description>end pixel number (-1=the last pixel)</description>
-            <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
+            <source>$OCSSWROOT/share/modisa/l1img_defaults.par</source>
         </option>
         <option type="int">
             <name>sline</name>
@@ -165,7 +157,7 @@
             <type>int</type>
             <default>1</default>
             <description>start line number</description>
-            <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
+            <source>$OCSSWROOT/share/modisa/l1img_defaults.par</source>
         </option>
         <option type="int">
             <name>eline</name>
@@ -173,7 +165,7 @@
             <type>int</type>
             <default>-1</default>
             <description>end line number (-1=the last line)</description>
-            <source>/Users/Shared/ocssw/run/data/modisa/l1img_defaults.par</source>
+            <source>$OCSSWROOT/share/modisa/l1img_defaults.par</source>
         </option>
         <option type="int">
             <name>subsamp</name>
@@ -206,24 +198,14 @@
                 (default: see product_table)
             </description>
             <source>default</source>
-            <!--<validValue>-->
-            <!--<value>(default</value>-->
-            <!--<description>see product_table)</description>-->
-            <!--</validValue>-->
         </option>
         <option type="float">
             <name>datamax</name>
             <value>0.9</value>
             <type>float</type>
             <default>0.9</default>
-            <description>maximum value for data scaling
-                (default: see product_table)
-            </description>
+            <description>maximum value for data scaling (default: see product_table)</description>
             <source>default</source>
-            <!--<validValue>-->
-            <!--<value>(default</value>-->
-            <!--<description>see product_table)</description>-->
-            <!--</validValue>-->
         </option>
         <option type="int">
             <name>stype</name>
@@ -287,35 +269,5 @@
             </validValues>
             <description>output file color depth for HDF4 file</description>
         </option>
-
-        <!--<option type="string">-->
-            <!--<name>outmode</name>-->
-            <!--<value></value>-->
-            <!--<type>string</type>-->
-            <!--<default>8bit</default>-->
-            <!--<description>defines output file format</description>-->
-            <!--<source>default</source>-->
-            <!--<validValue>-->
-                <!--<value>8bit</value>-->
-                <!--<description>8 bit HDF browse file (alias 0)</description>-->
-            <!--</validValue>-->
-            <!--<validValue>-->
-                <!--<value>24bit</value>-->
-                <!--<description>24 bit HDF browse file (alias 1)</description>-->
-            <!--</validValue>-->
-            <!--<validValue>-->
-                <!--<value>ppm</value>-->
-                <!--<description>PPM color or PGM grayscale image file (alias 2)</description>-->
-            <!--</validValue>-->
-            <!--<validValue>-->
-                <!--<value>bin</value>-->
-                <!--<description>flat binary (alias 3)</description>-->
-            <!--</validValue>-->
-            <!--<validValue>-->
-                <!--<value>png</value>-->
-                <!--<description>PNG (alias 4)</description>-->
-            <!--</validValue>-->
-        <!--</option>-->
-
     </options>
 </paramInfo>
