@@ -11,10 +11,10 @@
     <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
     <h1>The GPT Cookbook</h1>
     <h1>Workflow 3</h1>
-    <p class="chapterTitle">Reproject-Collocate</p>
+    <p class="chapterTitle">Reproject-Collocate-BandMaths-Subset-LandWater</p>
 
     <br><br>
-    <table width="500">
+    <table width="800">
         <tr>
             <td bgcolor="#fff9e9">
 
@@ -26,6 +26,12 @@
                         <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                         <td class="invisibletable4" nowrap="1">--&gt; Collocate</td>
                         <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">--&gt; BandMaths</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">--&gt; Subset</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">--&gt; LandWater</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                         <td class="invisibletable4" nowrap="1">--&gt; Write</td>
                     </tr>
                     <tr>
@@ -34,6 +40,12 @@
                         <td class="invisibletable4" nowrap="1">--&gt; Reproject</td>
                         <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                         <td class="invisibletable4" nowrap="1">--&gt;</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                         <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                         <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                     </tr>
@@ -51,14 +63,21 @@
 <br><br><br>
 
 
-
 <pre class="i0">
 This example takes two input files (in this case a day and a night Level-2 SST file) then:
     1. Reprojects each file applying quality masking to a Lambert Azimuthal Equal Area projection
-    2. Writes out the reprojected files
-    3. Collocates the reprojected files (with file1 as the reference crs)
-    4  Writes out the collocated file
+    2. Collocates the reprojected files (with file1 as the reference crs)
+    3. Adds mathband (difference between two bands)
+    4  Subsets to reduce to only the two bands and the difference band
+    5. Adds land and water mask
+    6. Writes out the two reprojected files
+    7  Writes out the collocated file
+    8. Writes out the mathband file
+    9. Writes out the subset file
+    10. Writes out the landWater file
 </pre>
+
+
 
 <p><i>For more on the command line parameters used here see commented notes in "WorkflowEx03.par".</i></p>
 
@@ -75,7 +94,7 @@ done to create a more versatile example.</i></p>
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -Pfile2=A2010283070000.L2_LAC_SST.nc -Pfile1Short=A283180500 -Pfile2Short=A283070000 -Pfile1Type=L2_LAC_SST -Pfile2Type=L2_LAC_SST
+gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -Pfile2=A2010283070000.L2_LAC_SST.nc -Pfile1Short=A283180500 -Pfile2Short=A283070000 -Pfile1Type=L2_LAC_SST -Pfile2Type=L2_LAC_SST -Pfile1Band=sst -Pfile2Band=sst
 </pre>
 </td></tr></table>
 
@@ -153,6 +172,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     &lt;/node&gt;
 
 
+
     &lt;node id="ReprojectNodeFile2"&gt;
       &lt;operator&gt;Reproject&lt;/operator&gt;
       &lt;sources&gt;
@@ -212,6 +232,54 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     &lt;/node&gt;
 
 
+    &lt;node id="BandMathsNode"&gt;
+      &lt;operator&gt;BandMaths&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;CollocateNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;copySourceFile&gt;true&lt;/copySourceFile&gt;
+        &lt;targetBands&gt;
+          &lt;targetBand&gt;
+            &lt;name&gt;${file2Band}_${file2Short}_${file1Band}_${file1Short}_diff&lt;/name&gt;
+            &lt;type&gt;${diffBandType}&lt;/type&gt;
+            &lt;expression&gt;${file2Band}_${file2Short} - ${file1Band}_${file1Short}&lt;/expression&gt;
+            &lt;description&gt;${file2Band}_${file2Short} - ${file1Band}_${file1Short}&lt;/description&gt;
+            &lt;unit&gt;${diffBandUnit}&lt;/unit&gt;
+            &lt;validExpression&gt;${diffBandValidExpression}&lt;/validExpression&gt;
+            &lt;noDataValue&gt;${diffBandNoDataValue}&lt;/noDataValue&gt;
+          &lt;/targetBand&gt;
+        &lt;/targetBands&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+  &lt;node id="SubsetNode"&gt;
+    &lt;operator&gt;Subset&lt;/operator&gt;
+    &lt;sources&gt;
+        &lt;source&gt;BandMathsNode&lt;/source&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;bandNames&gt;${file1Band}_${file1Short},${file2Band}_${file2Short},${file2Band}_${file2Short}_${file1Band}_${file1Short}_diff&lt;/bandNames&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+
+
+
+  &lt;node id="LandWaterMaskNode"&gt;
+    &lt;operator&gt;LandWaterMask&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;SubsetNode&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;resolution&gt;${resolution}&lt;/resolution&gt;
+      &lt;superSamplingFactor&gt;${superSamplingFactor}&lt;/superSamplingFactor&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+
+
     &lt;node id="WriteNodeFile1"&gt;
       &lt;operator&gt;Write&lt;/operator&gt;
       &lt;sources&gt;
@@ -247,6 +315,45 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
       &lt;/parameters&gt;
     &lt;/node&gt;
 
+
+    &lt;node id="WriteNodeBandMathsFile"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;BandMathsNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+
+    &lt;node id="WriteNodeSubsetFile"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;SubsetNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+    &lt;node id="WriteLandWaterMaskNode"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;LandWaterMaskNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${landWaterFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
@@ -258,6 +365,8 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
 <p>
     <b>File = WorkflowEx03.par</b>
 </p>
+
+
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
@@ -272,6 +381,9 @@ ifileExtension=nc
 
 reprojectedFileSuffix=Reprojected
 collocatedFileSuffix=Collocated
+bandMathsFileSuffix=BandMaths
+subsetFileSuffix=Subset
+landWaterFileSuffix=LandWater
 
 ofileFormat=NetCDF-CF
 ofileExtension=nc
@@ -289,6 +401,14 @@ file2ReprojectMaskExpression=(qual_sst == 0 or qual_sst == 1) and !l2_flags.HISA
 renameReference=true
 renameDependent=true
 collocationResampling=NEAREST_NEIGHBOUR
+
+diffBandType=float64
+diffBandUnit=Celsius
+diffBandValidExpression=
+diffBandNoDataValue=NaN
+
+resolution=1000
+superSamplingFactor=3
 </pre>
 </td></tr></table>
 
