@@ -1,34 +1,18 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.regexp.internal.RE;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
-import gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver;
-import gov.nasa.gsfc.seadas.ocsswrest.process.ProcessRunner;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
 
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_API;
 import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRECTORY_PROPERTY;
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.ANC_FILE_LIST_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_ERROR_STREAM_FILE_NAME;
@@ -397,133 +381,6 @@ public class OCSSWServices {
     }
 
     @GET
-    @Path("/lonlat2pixel")
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject lonlat2pixelConverter(JsonArray jsonArray) {
-        Process process = null;
-        String programName = "lonlat2pixel";
-        HashMap<String, String> pixels = new HashMap<>();
-        String[] cmdArray = getCmdArray(jsonArray);
-        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
-        cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
-        cmdArray[1] = "--ocsswroot";
-        cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
-        process = ProcessRunner.executeCmdArray(cmdArray);
-        String jsonString = new String();
-        try {
-            int exitValue = process.waitFor();
-            if (exitValue == 0) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line = br.readLine();
-                String[] tmp;
-                while ((line = br.readLine()) != null) {
-                    if (jsonString.length() > 0) {
-                        jsonString = jsonString + ",";
-                    }
-                    if (line.indexOf("=") != -1) {
-                        tmp = line.split("=");
-                        pixels.put(tmp[0], tmp[1]);
-                        jsonString = jsonString + (jsonString.length() > 0 ? "," : "") + tmp[0] + " : " + tmp[1];
-                        jsonObjectBuilder.add(tmp[0], tmp[1]);
-                    }
-                }
-            }
-
-        } catch (IOException ioe) {
-
-        } catch (InterruptedException ie) {
-
-        }
-        JsonObject jo = jsonObjectBuilder.build();
-        return jo;
-    }
-
-    @POST
-    @Path("install")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void installOcssw() {
-
-    }
-
-    @POST
-    @Path("cmdArray")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String uploadCommandArray(JsonArray jsonArray)
-            throws IOException {
-        Response.Status respStatus = Response.Status.OK;
-        Process process = null;
-        if (jsonArray == null) {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        } else {
-            writeToFile(jsonArray.getString(0));
-            downloadOCSSWInstaller();
-
-            String[] cmdArray = getCmdArray(jsonArray);
-
-            cmdArray[0] = OCSSWServerModelOld.OCSSW_INSTALLER_FILE_LOCATION;
-
-            process = ProcessRunner.executeInstaller(cmdArray);
-        }
-        int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESS_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
-        return new Integer(exitValue).toString();
-    }
-
-    @POST
-    @Path("installOcssw")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String installOcssw(JsonArray jsonArray)
-            throws IOException {
-        Response.Status respStatus = Response.Status.OK;
-        Process process = null;
-        if (jsonArray == null) {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        } else {
-            writeToFile(jsonArray.getString(0));
-            System.out.println("download installer: ");
-            System.out.println(downloadOCSSWInstaller());
-
-            String[] cmdArray = getCmdArray(jsonArray);
-
-            cmdArray[0] = OCSSWServerModelOld.OCSSW_INSTALLER_FILE_LOCATION;
-
-            for (String str : cmdArray) {
-                System.out.println(str);
-            }
-
-            process = ProcessRunner.executeInstaller(cmdArray);
-        }
-        int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESS_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
-        return new Integer(exitValue).toString(); //Response.status(respStatus).build();
-    }
-
-    @POST
-    @Path("runOcsswProcessor")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String runOcsswProcessor(JsonArray jsonArray)
-            throws IOException {
-        Response.Status respStatus = Response.Status.OK;
-        Process process = null;
-        if (jsonArray == null) {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        } else {
-
-            String[] cmdArray = getCmdArray(jsonArray);
-
-            cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
-            cmdArray[1] = "--ocsswroot";
-            cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
-
-            process = ProcessRunner.executeInstaller(cmdArray);
-        }
-        int exitValue = process.exitValue();
-        SQLiteJDBC.updateItem("PROCESS_TABLE", OCSSWServerModelOld.getCurrentJobId(), "EXIT_VALUE", new Integer(exitValue).toString());
-        return new Integer(exitValue).toString();//Response.status(respStatus).build();
-    }
-
-
-    @GET
     @Path("retrieveNextLevelFileName/{jobId}")
     @Produces(MediaType.TEXT_PLAIN)
     public String findNextLevelFileName(@PathParam("jobId") String jobId) {
@@ -584,103 +441,4 @@ public class OCSSWServices {
         System.out.println("process error stream last line = " + errorStreamLine + "  filename = " + processErrorStreamFileName);
         return errorStreamLine;
     }
-
-
-    private static String[] getCmdArrayForNextLevelNameFinder(String ifileName, String programName) {
-        String[] cmdArray = new String[6];
-        cmdArray[0] = OCSSWServerModelOld.getOcsswScriptPath();
-        cmdArray[1] = "--ocsswroot";
-        cmdArray[2] = OCSSWServerModelOld.getOcsswEnv();
-        cmdArray[3] = NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
-        cmdArray[4] = ifileName;
-        cmdArray[5] = programName;
-        return cmdArray;
-
-    }
-
-    private String[] getCmdArray(JsonArray jsonArray) {
-        String text = "cmdArray: ";
-        String str;
-        ArrayList<String> list = new ArrayList<String>();
-        if (jsonArray != null) {
-            int len = jsonArray.size();
-            for (int i = 0; i < len; i++) {
-                str = jsonArray.get(i).toString();
-                str = str.replace('"', ' ');
-                str = str.trim();
-                list.add(str);
-                text = text + str;
-            }
-        }
-        writeToFile(text);
-
-        String[] cmdArray = list.toArray(new String[list.size()]);
-        return cmdArray;
-    }
-
-    public static boolean downloadOCSSWInstaller() {
-
-        try {
-
-            URL website = new URL(OCSSWServerModelOld.OCSSW_INSTALLER_URL);
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(OCSSWServerModelOld.OCSSW_INSTALLER_FILE_LOCATION);
-            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-            fos.close();
-            (new File(OCSSWServerModelOld.OCSSW_INSTALLER_FILE_LOCATION)).setExecutable(true);
-            ocsswInstalScriptDownloadSuccessful = true;
-        } catch (MalformedURLException malformedURLException) {
-            System.out.println("URL for downloading install_ocssw.py is not correct!");
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.out.println("ocssw installation script failed to download. \n" +
-                    "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
-                    "possible cause of error: " + fileNotFoundException.getMessage());
-        } catch (IOException ioe) {
-            System.out.println("ocssw installation script failed to download. \n" +
-                    "Please check network connection or 'seadas.ocssw.root' variable in the \"seadas.config\" file. \n" +
-                    "possible cause of error: " + ioe.getLocalizedMessage());
-        } finally {
-
-            return ocsswInstalScriptDownloadSuccessful;
-        }
-    }
-
-    private static boolean ocsswInstalScriptDownloadSuccessful = false;
-
-    private void writeToFile(String content) {
-        FileOutputStream fop = null;
-        File file;
-        try {
-
-            file = new File("/home/aynur/cmdArray.txt");
-            fop = new FileOutputStream(file);
-
-            // if file doesnt exists, then create it
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            // get the content in bytes
-            byte[] contentInBytes = content.getBytes();
-
-            fop.write(contentInBytes);
-            fop.flush();
-            fop.close();
-
-            System.out.println("Done");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fop != null) {
-                    fop.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
 }
