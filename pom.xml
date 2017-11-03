@@ -42,6 +42,7 @@
         <jersey.version>2.26</jersey.version>
         <grizzly.version>2.3.31</grizzly.version>
         <junit.version>4.12</junit.version>
+        <jackson.version>2.9.2</jackson.version>
     </properties>
 
     <modules>
@@ -411,7 +412,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.2.2</version>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
 
             <!-- GeoTools Libraries ############################################# -->
