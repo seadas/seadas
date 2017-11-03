@@ -181,7 +181,12 @@ public class OCSSWInfo {
         clientConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
         Client c = ClientBuilder.newClient(clientConfig);
         WebTarget target = c.target(resourceBaseUri);
-        JsonObject jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+        JsonObject jsonObject = null;
+        try {
+            jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
         ocsswExist = jsonObject.getBoolean("ocsswExists");
         if (ocsswExist) {
             ocsswRoot = jsonObject.getString("ocsswRoot");
