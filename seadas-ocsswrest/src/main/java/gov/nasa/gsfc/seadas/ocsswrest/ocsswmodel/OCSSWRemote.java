@@ -87,10 +87,28 @@ public class OCSSWRemote {
         return commandArrayPrefix;
     }
 
+//    public String[] getCommandArraySuffix(String programName) {
+//
+//            String[] commandArraySuffix = new String[1];
+//            String[] parts = VisatApp.getApp().getAppVersion().split("\\.");
+//            commandArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
+//
+//        if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
+//            commandArraySuffix = new String[1];
+//
+//        } else {
+//
+//        }
+//        for (String item : commandArraySuffix) {
+//            System.out.println("commandArraySuffix: " + item);
+//        }
+//        return commandArraySuffix;
+//    }
+
     public void executeProgram(String jobId, String[] commandArray) {
 
         programName = SQLiteJDBC.getProgramName(jobId);
-        executeProcess(concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
+        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
     }
 
     public void executeProgram(String jobId, JsonObject jsonObject) {
@@ -98,14 +116,14 @@ public class OCSSWRemote {
 
         String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
 
-        executeProcess(concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
+        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
     }
 
     public void executeProgramOnDemand(String jobId, String programName, JsonObject jsonObject) {
 
         String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
 
-        executeProcess(concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
+        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
     }
 
     private String[] transformCommandArray(String jobId, JsonObject jsonObject, String programName) {
@@ -115,9 +133,15 @@ public class OCSSWRemote {
 
         Object[] array = (Object[]) commandArrayKeys.toArray();
         int i = 0;
-        String[] commandArray = new String[commandArrayKeys.size() + 1];
-        commandArray[i++] = programName;
 
+        String[] commandArray;
+
+        if (!programName.equals(OCSSW_INSTALLER_PROGRAM)) {
+            commandArray = new String[commandArrayKeys.size() + 1];
+            commandArray[i++] = programName;
+        } else {
+            commandArray  = new String[commandArrayKeys.size() ];
+        }
         String commandArrayElement;
         for (Object element : array) {
             System.out.println(" element = " + element);
@@ -167,7 +191,7 @@ public class OCSSWRemote {
     public void executeProgramSimple(String jobId, String programName, JsonObject jsonObject) {
 
         String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
-        executeProcessSimple(concatAll(getCommandArrayPrefix(programName), commandArray), jobId, programName);
+        executeProcessSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), jobId, programName);
     }
 
     public void executeMLP(String jobId, File parFile) {
@@ -178,7 +202,7 @@ public class OCSSWRemote {
         String parFileContent = convertClientParFilForRemoteServer(parFile, jobId);
         ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
         String[] commandArray = {MLP_PROGRAM_NAME, parFileNewLocation};
-        execute(concatAll(getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileNewLocation).getParent(), jobId);
+        execute(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileNewLocation).getParent(), jobId);
     }
 
     public JsonObject getMLPOutputFilesList(String jobId) {
@@ -482,7 +506,7 @@ public class OCSSWRemote {
 
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
 
-        return getOfileName(concatAll(getCommandArrayPrefix(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME), commandArrayParams));
+        return getOfileName(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME), commandArrayParams));
 
 
     }
@@ -517,7 +541,7 @@ public class OCSSWRemote {
         }
 
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
-        String ofileName = getOfileName(concatAll(getCommandArrayPrefix(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME), commandArrayParams, additionalOptions));
+        String ofileName = getOfileName(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME), commandArrayParams, additionalOptions));
 
         System.out.println("ofile name = " + ofileName);
         String uploadedFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
@@ -533,7 +557,7 @@ public class OCSSWRemote {
 
         String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
 
-        Process process = executeSimple((String[]) concatAll(getCommandArrayPrefix(GET_OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
+        Process process = executeSimple((String[]) ServerSideFileUtilities.concatAll(getCommandArrayPrefix(GET_OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
 
         try {
 
@@ -638,33 +662,5 @@ public class OCSSWRemote {
             }
         }
         SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName(), programName);
-    }
-
-
-    /**
-     * Concatenating an arbitrary number of arrays
-     *
-     * @param first First array in the list of arrays
-     * @param rest  Rest of the arrays in the list to be concatenated
-     * @param <T>
-     * @return
-     */
-    public static <T> T[] concatAll(T[] first, T[]... rest) {
-        int totalLength = first.length;
-        for (T[] array : rest) {
-            if (array != null) {
-                totalLength += array.length;
-            }
-
-        }
-        T[] result = Arrays.copyOf(first, totalLength);
-        int offset = first.length;
-        for (T[] array : rest) {
-            if (array != null) {
-                System.arraycopy(array, 0, result, offset, array.length);
-                offset += array.length;
-            }
-        }
-        return result;
     }
 }
