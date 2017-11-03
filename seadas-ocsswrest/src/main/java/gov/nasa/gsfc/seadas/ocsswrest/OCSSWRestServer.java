@@ -5,7 +5,6 @@ import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWConfig;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ProcessMessageBodyWriter;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.jsonp.JsonProcessingFeature;
@@ -59,7 +58,6 @@ public class OCSSWRestServer extends ResourceConfig {
      */
     public static HttpServer startServer() {
         final ResourceConfig resourceConfig = new ResourceConfig(MultiPartResource.class);
-        resourceConfig.registerInstances(new LoggingFilter(LOGGER, true));
         resourceConfig.register(MultiPartFeature.class);
         resourceConfig.register(InputStream.class);
         resourceConfig.register(JacksonFeature.class);
