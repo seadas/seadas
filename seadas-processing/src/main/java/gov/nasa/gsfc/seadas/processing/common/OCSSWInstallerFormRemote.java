@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import org.esa.beam.framework.ui.AppContext;
@@ -47,8 +46,7 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
 
         Response response0 = target.path("file").path("test").request().get();
         response0 = target.path("ocssw").path("missions").request().get();
-        missionDataStatus = target.path("ocssw").path("missions").request(MediaType.APPLICATION_JSON)
-                                          .get(new GenericType<HashMap<String, Boolean>>() {});
+        missionDataStatus = target.path("ocssw").path("missions").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {});
         //missionDataStatus = (HashMap<String, Boolean>) response.getEntity();
         for (Map.Entry<String, Boolean> entry : missionDataStatus.entrySet()) {
             String missionName = entry.getKey();
@@ -60,11 +58,11 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
 
         }
 
-        HashMap<String, Boolean> ocsswStatus = target.path("ocssw").path("evalDirInfo").request(MediaType.APPLICATION_JSON).get(new GenericType<HashMap<String, Boolean>>() {});
-        if ( target.path("ocssw").path("evalDirInfo").request(MediaType.APPLICATION_JSON).get(new GenericType<HashMap<String, Boolean>>() {}).get("eval")) {
+        HashMap<String, Boolean> ocsswStatus = target.path("ocssw").path("evalDirInfo").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {});
+        if ( target.path("ocssw").path("evalDirInfo").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {}).get("eval")) {
             processorModel.setParamValue("--eval", "1");
         }
-        if (target.path("ocssw").path("srcDirInfo").request(MediaType.APPLICATION_JSON).get(new GenericType<HashMap<String, Boolean>>() {}).get("build")) {
+        if (target.path("ocssw").path("srcDirInfo").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {}).get("build")) {
             processorModel.setParamValue("--src", "1");
         }
     }
