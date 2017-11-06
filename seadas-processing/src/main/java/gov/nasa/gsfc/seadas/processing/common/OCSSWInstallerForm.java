@@ -102,7 +102,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         this.ocssw = ocssw;
         processorModel = ProcessorModel.valueOf(programName, xmlFileName, ocssw);
         processorModel.setReadyToRun(true);
-        setMissionDataDir(getInstallDir() + getMissionDataDirInterfix());
+        setMissionDataDir(OCSSWInfo.getInstance().getOcsswDataDirPath());
         init();
         updateMissionValues();
         createUserInterface();
@@ -110,7 +110,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         processorModel.addPropertyChangeListener(INSTALL_DIR_OPTION_NAME, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                setMissionDataDir(processorModel.getParamValue(INSTALL_DIR_OPTION_NAME) + getMissionDataDirInterfix());
+                setMissionDataDir(processorModel.getParamValue(INSTALL_DIR_OPTION_NAME) + File.separator + OCSSWInfo.OCSSW_DATA_DIR_SUFFIX);
                 updateMissionStatus();
                 updateMissionValues();
                 createUserInterface();
@@ -126,12 +126,6 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
     void setMissionDataDir(String currentMissionDataDir) {
         missionDataDir = currentMissionDataDir;
-    }
-
-    String getMissionDataDirInterfix(){
-        return System.getProperty("file.separator") + "run"
-                + System.getProperty("file.separator") + "data"
-                + System.getProperty("file.separator");
     }
 
     abstract void updateMissionStatus();
