@@ -75,9 +75,10 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public void setProgramName(String programName) {
-
-        this.programName = programName;
-        Response response = target.path("ocssw").path("ocsswSetProgramName").path(jobId).request().put(Entity.entity(programName, MediaType.TEXT_PLAIN_TYPE));
+        if (this.programName == null || !this.programName.equals(programName)) {
+            this.programName = programName;
+            Response response = target.path("ocssw").path("ocsswSetProgramName").path(jobId).request().put(Entity.entity(programName, MediaType.TEXT_PLAIN_TYPE));
+        }
     }
 
 
