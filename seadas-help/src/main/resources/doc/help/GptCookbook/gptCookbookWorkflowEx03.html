@@ -7,64 +7,86 @@
 
 <p>
 
-<div class="center">
-    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
-    <h1>The GPT Cookbook</h1>
-    <h1>Workflow 3</h1>
-    <p class="chapterTitle">Reproject-Collocate</p>
+    <div class="center">
+        <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+        <h1>The GPT Cookbook</h1>
+        <h1>Workflow 3</h1>
+<p class="chapterTitle">Reproject-Collocate-BandMaths-Subset-LandWater</p>
 
-    <br><br>
-    <table width="500">
-        <tr>
-            <td bgcolor="#fff9e9">
+<br><br>
+<table width="800">
+    <tr>
+        <td bgcolor="#fff9e9">
 
-                <table class="invisibletable4">
-                    <tr class="invisibletable4">
-                        <td class="invisibletable4" nowrap="1">Read</td>
-                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
-                        <td class="invisibletable4" nowrap="1">--&gt; Reproject</td>
-                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
-                        <td class="invisibletable4" nowrap="1">--&gt; Collocate</td>
-                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
-                        <td class="invisibletable4" nowrap="1">--&gt; Write</td>
-                    </tr>
-                    <tr>
-                        <td class="invisibletable4" nowrap="1">Read</td>
-                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
-                        <td class="invisibletable4" nowrap="1">--&gt; Reproject</td>
-                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
-                        <td class="invisibletable4" nowrap="1">--&gt;</td>
-                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
-                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
-                    </tr>
+            <table class="invisibletable4">
+                <tr class="invisibletable4">
+                    <td class="invisibletable4" nowrap="1">Read</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Reproject</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Collocate</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; BandMaths</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Subset</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; LandWater</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                </tr>
+                <tr>
+                    <td class="invisibletable4" nowrap="1">Read</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Reproject</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                </tr>
 
-                </table>
+            </table>
 
-            </td>
+        </td>
 
 
-        </tr>
-    </table>
+    </tr>
+</table>
 
 
 </div>
 <br><br><br>
 
 
-
 <pre class="i0">
 This example takes two input files (in this case a day and a night Level-2 SST file) then:
     1. Reprojects each file applying quality masking to a Lambert Azimuthal Equal Area projection
-    2. Writes out the reprojected files
-    3. Collocates the reprojected files (with file1 as the reference crs)
-    4  Writes out the collocated file
+    2. Collocates the reprojected files (with file1 as the reference crs)
+    3. Adds mathband (difference between two bands)
+    4  Subsets to reduce to only the two bands and the difference band
+    5. Adds land and water mask
+    6. Writes out the two reprojected files (NetCDF)
+    7  Writes out the collocated file (NetCDF)
+    8. Writes out the mathband file (NetCDF)
+    9. Writes out the subset file (NetCDF)
+    10. Writes out the landWater file (both NetCDF and BEAM-DIMAP*)
+
+    * Masks do not get saved when writing out in formats other than BEAM-DIMAP
 </pre>
+
+
 
 <p><i>For more on the command line parameters used here see commented notes in "WorkflowEx03.par".</i></p>
 
 <p><i>Note: Many of the parameters used in this example have the same value for each band and could each be consolidated
-into a single parameter.  The separation of these paramters (using 'file1Type' and 'file2Type' instead of 'fileType') was
-done to create a more versatile example.</i></p>
+    into a single parameter.  The separation of these parameters (using 'file1Type' and 'file2Type' instead of 'fileType') was
+    done to create a more versatile example.</i></p>
+<p><i>Note: This example could easily be adapted to compare band(s) of two OC files or two aggregate files such as level-3 or Mosaic files.</i></p>
 
 
 <br>
@@ -75,7 +97,7 @@ done to create a more versatile example.</i></p>
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -Pfile2=A2010283070000.L2_LAC_SST.nc -Pfile1Short=A283180500 -Pfile2Short=A283070000 -Pfile1Type=L2_LAC_SST -Pfile2Type=L2_LAC_SST
+gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -Pfile2=A2010283070000.L2_LAC_SST.nc -Pfile1Short=A283180500 -Pfile2Short=A283070000 -Pfile1Type=L2_LAC_SST -Pfile2Type=L2_LAC_SST -Pfile1Band=sst -Pfile2Band=sst
 </pre>
 </td></tr></table>
 
@@ -94,7 +116,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
 &lt;graph id="WorkflowEx03Graph"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
 
-    &lt;node id="ReadNodeFile1"&gt;
+    &lt;node id="ReadNode1"&gt;
       &lt;operator&gt;Read&lt;/operator&gt;
       &lt;sources/&gt;
       &lt;parameters&gt;
@@ -102,7 +124,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
       &lt;/parameters&gt;
     &lt;/node&gt;
 
-    &lt;node id="ReadNodeFile2"&gt;
+    &lt;node id="ReadNode2"&gt;
       &lt;operator&gt;Read&lt;/operator&gt;
       &lt;sources/&gt;
       &lt;parameters&gt;
@@ -111,10 +133,10 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     &lt;/node&gt;
 
 
-    &lt;node id="ReprojectNodeFile1"&gt;
+    &lt;node id="ReprojectNode1"&gt;
       &lt;operator&gt;Reproject&lt;/operator&gt;
       &lt;sources&gt;
-          &lt;source&gt;ReadNodeFile1&lt;/source&gt;
+          &lt;source&gt;ReadNode1&lt;/source&gt;
       &lt;/sources&gt;
 
       &lt;parameters&gt;
@@ -153,10 +175,11 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     &lt;/node&gt;
 
 
-    &lt;node id="ReprojectNodeFile2"&gt;
+
+    &lt;node id="ReprojectNode2"&gt;
       &lt;operator&gt;Reproject&lt;/operator&gt;
       &lt;sources&gt;
-          &lt;source&gt;ReadNodeFile2&lt;/source&gt;
+          &lt;source&gt;ReadNode2&lt;/source&gt;
       &lt;/sources&gt;
 
       &lt;parameters&gt;
@@ -198,8 +221,8 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     &lt;node id="CollocateNode"&gt;
       &lt;operator&gt;Collocate&lt;/operator&gt;
       &lt;sources&gt;
-        &lt;master&gt;ReprojectNodeFile1&lt;/master&gt;
-        &lt;slave&gt;ReprojectNodeFile2&lt;/slave&gt;
+        &lt;master&gt;ReprojectNode1&lt;/master&gt;
+        &lt;slave&gt;ReprojectNode2&lt;/slave&gt;
       &lt;/sources&gt;
       &lt;parameters&gt;
           &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
@@ -212,10 +235,58 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     &lt;/node&gt;
 
 
-    &lt;node id="WriteNodeFile1"&gt;
+    &lt;node id="BandMathsNode"&gt;
+      &lt;operator&gt;BandMaths&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;CollocateNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;copySourceFile&gt;true&lt;/copySourceFile&gt;
+        &lt;targetBands&gt;
+          &lt;targetBand&gt;
+            &lt;name&gt;${file2Band}_${file2Short}_${file1Band}_${file1Short}_diff&lt;/name&gt;
+            &lt;type&gt;${diffBandType}&lt;/type&gt;
+            &lt;expression&gt;${file2Band}_${file2Short} - ${file1Band}_${file1Short}&lt;/expression&gt;
+            &lt;description&gt;${file2Band}_${file2Short} - ${file1Band}_${file1Short}&lt;/description&gt;
+            &lt;unit&gt;${diffBandUnit}&lt;/unit&gt;
+            &lt;validExpression&gt;${diffBandValidExpression}&lt;/validExpression&gt;
+            &lt;noDataValue&gt;${diffBandNoDataValue}&lt;/noDataValue&gt;
+          &lt;/targetBand&gt;
+        &lt;/targetBands&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+  &lt;node id="SubsetNode"&gt;
+    &lt;operator&gt;Subset&lt;/operator&gt;
+    &lt;sources&gt;
+        &lt;source&gt;BandMathsNode&lt;/source&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;bandNames&gt;${file1Band}_${file1Short},${file2Band}_${file2Short},${file2Band}_${file2Short}_${file1Band}_${file1Short}_diff&lt;/bandNames&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+
+
+
+  &lt;node id="LandWaterMaskNode"&gt;
+    &lt;operator&gt;LandWaterMask&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;SubsetNode&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;resolution&gt;${resolution}&lt;/resolution&gt;
+      &lt;superSamplingFactor&gt;${superSamplingFactor}&lt;/superSamplingFactor&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+
+
+    &lt;node id="WriteReprojectNode1"&gt;
       &lt;operator&gt;Write&lt;/operator&gt;
       &lt;sources&gt;
-        &lt;source&gt;ReprojectNodeFile1&lt;/source&gt;
+        &lt;source&gt;ReprojectNode1&lt;/source&gt;
       &lt;/sources&gt;
       &lt;parameters&gt;
         &lt;file&gt;${file1Short}_${file1Type}_${reprojectedFileSuffix}.${ofileExtension}&lt;/file&gt;
@@ -224,10 +295,10 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     &lt;/node&gt;
 
 
-    &lt;node id="WriteNodeFile2"&gt;
+    &lt;node id="WriteReprojectNode2"&gt;
       &lt;operator&gt;Write&lt;/operator&gt;
       &lt;sources&gt;
-        &lt;source&gt;ReprojectNodeFile2&lt;/source&gt;
+        &lt;source&gt;ReprojectNode2&lt;/source&gt;
       &lt;/sources&gt;
       &lt;parameters&gt;
         &lt;file&gt;${file2Short}_${file2Type}_${reprojectedFileSuffix}.${ofileExtension}&lt;/file&gt;
@@ -236,7 +307,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     &lt;/node&gt;
 
 
-    &lt;node id="WriteNodeCollocatedFile"&gt;
+    &lt;node id="WriteCollocateNode"&gt;
       &lt;operator&gt;Write&lt;/operator&gt;
       &lt;sources&gt;
         &lt;source&gt;CollocateNode&lt;/source&gt;
@@ -246,6 +317,55 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
         &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
       &lt;/parameters&gt;
     &lt;/node&gt;
+
+
+    &lt;node id="WriteBandMathsNode"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;BandMathsNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+
+    &lt;node id="WriteSubsetNode"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;SubsetNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+    &lt;node id="WriteLandWaterMaskNode"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;LandWaterMaskNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${landWaterFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+        &lt;node id="WriteLandWaterMaskNodeFormat2"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;LandWaterMaskNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${landWaterFileSuffix}.${ofileExtension2}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat2}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
 
 &lt;/graph&gt;
 </pre>
@@ -259,23 +379,34 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     <b>File = WorkflowEx03.par</b>
 </p>
 
+
+
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
+# Read operator parameters (commented out parameters are optionally being sent in at command line)
 # file1=A2010283180500.L2_LAC_SST.nc  -- this is the input file which will act as the reference/master in the collocation step
 # file2=A2010283070000.L2_LAC_SST.nc  -- this input file will act as the dependent/slave in the collocation step
+ifileExtension=nc
+
+
+# Write operator parameters (commented out parameters are optionally being sent in at command line)
 # file1Short=A283180500  -- this name gets used as the suffix for the bands collocated from file1, and for constructing the collocated output file name
 # file2Short=A283070000  -- this name gets used as the suffix for the bands collocated from file2, and for constructing the collocated output file name
 # file1Type=L2_LAC_SST  -- this is used in constructing the output file names
 # file2Type=L2_LAC_SST  -- this is used in constructing the output file names
-
-ifileExtension=nc
-
 reprojectedFileSuffix=Reprojected
 collocatedFileSuffix=Collocated
+bandMathsFileSuffix=BandMaths
+subsetFileSuffix=Subset
+landWaterFileSuffix=LandWater
 
 ofileFormat=NetCDF-CF
 ofileExtension=nc
+ofileFormat2=BEAM-DIMAP
+ofileExtension2=dim
 
+
+# Reproject operator parameters
 lat=37.0
 lon=-76.0
 pixelSize=1000.0
@@ -283,12 +414,27 @@ reprojectionResampling=Bilinear
 transferValidPixelExpression=true
 applyValidPixelExpression=true
 
+# The reprojectMaskExpression is unique to SST products and flags.  To compare OC or IOP files you would need to alter this expression
 file1ReprojectMaskExpression=(qual_sst == 0 or qual_sst == 1) and !l2_flags.HISATZEN
 file2ReprojectMaskExpression=(qual_sst == 0 or qual_sst == 1) and !l2_flags.HISATZEN
 
+
+# Collocate operator parameters
 renameReference=true
 renameDependent=true
 collocationResampling=NEAREST_NEIGHBOUR
+
+
+# BandMaths operator parameters
+diffBandType=float64
+diffBandUnit=Celsius
+diffBandValidExpression=
+diffBandNoDataValue=NaN
+
+
+# LandWaterMask operator parameters
+resolution=1000
+superSamplingFactor=3
 </pre>
 </td></tr></table>
 
