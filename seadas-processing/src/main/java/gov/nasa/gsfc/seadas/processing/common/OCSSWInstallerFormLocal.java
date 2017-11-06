@@ -24,23 +24,23 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
 
     void updateMissionStatus() {
         missionDataStatus = new HashMap<String, Boolean>();
-        missionDataStatus.put("SEAWIFS", new File(missionDataDir + "seawifs").exists());
-        missionDataStatus.put("AQUA", new File(missionDataDir + "hmodisa").exists());
-        missionDataStatus.put("TERRA", new File(missionDataDir + "hmodist").exists());
-        missionDataStatus.put("VIIRSN", new File(missionDataDir + "viirsn").exists());
-        missionDataStatus.put("MERIS", new File(missionDataDir + "meris").exists());
-        missionDataStatus.put("CZCS", new File(missionDataDir + "czcs").exists());
-        missionDataStatus.put("AQUARIUS", new File(missionDataDir + "aquarius").exists());
-        missionDataStatus.put("OCTS", new File(missionDataDir + "octs").exists());
-        missionDataStatus.put("OLI", new File(missionDataDir + "oli").exists());
-        missionDataStatus.put("OSMI", new File(missionDataDir + "osmi").exists());
-        missionDataStatus.put("MOS", new File(missionDataDir + "mos").exists());
-        missionDataStatus.put("MSI", new File(missionDataDir + "msi").exists());
-        missionDataStatus.put("OCM2", new File(missionDataDir + "ocm2").exists());
-        missionDataStatus.put("OCM1", new File(missionDataDir + "ocm1").exists());
-        missionDataStatus.put("AVHRR", new File(missionDataDir + "avhrr").exists());
-        missionDataStatus.put("HICO", new File(missionDataDir + "hico").exists());
-        missionDataStatus.put("GOCI", new File(missionDataDir + "goci").exists());
+        missionDataStatus.put("SEAWIFS", new File(missionDataDir + File.separator + "seawifs").exists());
+        missionDataStatus.put("AQUA", new File(missionDataDir + File.separator + "hmodisa").exists());
+        missionDataStatus.put("TERRA", new File(missionDataDir + File.separator + "hmodist").exists());
+        missionDataStatus.put("VIIRSN", new File(missionDataDir + File.separator + "viirsn").exists());
+        missionDataStatus.put("MERIS", new File(missionDataDir + File.separator + "meris").exists());
+        missionDataStatus.put("CZCS", new File(missionDataDir + File.separator + "czcs").exists());
+        missionDataStatus.put("AQUARIUS", new File(missionDataDir + File.separator + "aquarius").exists());
+        missionDataStatus.put("OCTS", new File(missionDataDir + File.separator + "octs").exists());
+        missionDataStatus.put("OLI", new File(missionDataDir + File.separator + "oli").exists());
+        missionDataStatus.put("OSMI", new File(missionDataDir + File.separator + "osmi").exists());
+        missionDataStatus.put("MOS", new File(missionDataDir + File.separator + "mos").exists());
+        missionDataStatus.put("MSI", new File(missionDataDir + File.separator + "msi").exists());
+        missionDataStatus.put("OCM2", new File(missionDataDir + File.separator + "ocm2").exists());
+        missionDataStatus.put("OCM1", new File(missionDataDir + File.separator + "ocm1").exists());
+        missionDataStatus.put("AVHRR", new File(missionDataDir + File.separator + "avhrr").exists());
+        missionDataStatus.put("HICO", new File(missionDataDir + File.separator + "hico").exists());
+        missionDataStatus.put("GOCI", new File(missionDataDir + File.separator + "goci").exists());
     }
 
     void init(){
