@@ -56,10 +56,10 @@ public class OCSSWLocal extends OCSSW {
         return new ProcessObserver(process, processName, progressMonitor);
     }
 
+    @Override
     public boolean isMissionDirExist(String missionName) {
-        String missionDir = ocsswInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory();
-        return new File(missionDir).exists();
-    }
+        return missionInfo.getDirectory().exists();
+      }
 
     @Override
     public int getProcessExitValue(){
