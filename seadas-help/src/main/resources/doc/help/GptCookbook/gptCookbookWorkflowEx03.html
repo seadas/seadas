@@ -11,7 +11,7 @@
         <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
         <h1>The GPT Cookbook</h1>
         <h1>Workflow 3</h1>
-<p class="chapterTitle">Reproject-Collocate-BandMaths-Subset-LandWater</p>
+<p class="chapterTitle">Reproject-Collocate-BandMaths<br>Subset-LandWater-StatisticsOp</p>
 
 <br><br>
 <table width="800">
@@ -19,6 +19,21 @@
         <td bgcolor="#fff9e9">
 
             <table class="invisibletable4">
+                <tr>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                </tr>
                 <tr class="invisibletable4">
                     <td class="invisibletable4" nowrap="1">Read</td>
                     <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
@@ -32,7 +47,7 @@
                     <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                     <td class="invisibletable4" nowrap="1">--&gt; LandWater</td>
                     <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
-                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; WriteImage</td>
                 </tr>
                 <tr>
                     <td class="invisibletable4" nowrap="1">Read</td>
@@ -49,6 +64,21 @@
                     <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                     <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                 </tr>
+                <tr>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; StatisticsOp</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                </tr>
 
             </table>
 
@@ -62,19 +92,23 @@
 </div>
 <br><br><br>
 
+<p>
+    This is a large example using a multitude of operators.  It enables a comparison of two distinct level2 files.
+</p>
 
 <pre class="i0">
-This example takes two input files (in this case a day and a night Level-2 SST file) then:
+This example takes two input level2 files then:
     1. Reprojects each file applying quality masking to a Lambert Azimuthal Equal Area projection
     2. Collocates the reprojected files (with file1 as the reference crs)
-    3. Adds mathband (difference between two bands)
-    4  Subsets to reduce to only the two bands and the difference band
+    3. Adds mathband (difference band and ratio band of two bands)
+    4  Subsets to reduce to only the two bands, the difference band and ratio band
     5. Adds land and water mask
-    6. Writes out the two reprojected files (NetCDF)
-    7  Writes out the collocated file (NetCDF)
-    8. Writes out the mathband file (NetCDF)
-    9. Writes out the subset file (NetCDF)
-    10. Writes out the landWater file (both NetCDF and BEAM-DIMAP*)
+    6. Statistics on the two bands, the difference band and ratio band
+    7. Writes out the two reprojected files (NetCDF)
+    8  Writes out the collocated file (NetCDF)
+    9. Writes out the mathband file (NetCDF)
+    10. Writes out the subset file (NetCDF)
+    11. Writes out the landWater file (both NetCDF and BEAM-DIMAP*)
 
     * Masks do not get saved when writing out in formats other than BEAM-DIMAP
 </pre>
@@ -86,7 +120,7 @@ This example takes two input files (in this case a day and a night Level-2 SST f
 <p><i>Note: Many of the parameters used in this example have the same value for each band and could each be consolidated
     into a single parameter.  The separation of these parameters (using 'file1Type' and 'file2Type' instead of 'fileType') was
     done to create a more versatile example.</i></p>
-<p><i>Note: This example could easily be adapted to compare band(s) of two OC files or two aggregate files such as level-3 or Mosaic files.</i></p>
+<p><i>Note: This example could easily be adapted to compare aggregate files such as level-3 or Mosaic files.</i></p>
 
 
 <br>
@@ -94,15 +128,37 @@ This example takes two input files (in this case a day and a night Level-2 SST f
     <b>Command Line Entry</b>
 </p>
 
+<p>
+    For a comparison of sst within two distinct SST suite level2 files (a day and a night file).
+</p>
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -Pfile2=A2010283070000.L2_LAC_SST.nc -Pfile1Short=A283180500 -Pfile2Short=A283070000 -Pfile1Type=L2_LAC_SST -Pfile2Type=L2_LAC_SST -Pfile1Band=sst -Pfile2Band=sst
+gpt WorkflowEx03.xml -p WorkflowEx03_SST.par -Pfile1=A2010283180500.L2_LAC_SST.nc -Pfile2=A2010283070000.L2_LAC_SST.nc -Pfile1Short=A20102831805 -Pfile2Short=A20102830700 -Pfile1Band=sst -Pfile2Band=sst
 </pre>
 </td></tr></table>
 
 
+<p>
+    ... or for a comparison of chlor_a within two distinct OC suite level2 files.
+</p>
 
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc -Pfile2=T2010282154500.L2_LAC_OC.nc -Pfile1Short=A20102831805 -Pfile2Short=T20102821545 -Pfile1Band=chlor_a -Pfile2Band=chlor_a
+</pre>
+</td></tr></table>
+
+
+<p>
+    ... or similarly for a comparison of Kd_490 within two distinct OC suite level2 files.
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc -Pfile2=T2010282154500.L2_LAC_OC.nc -Pfile1Short=A20102831805 -Pfile2Short=T20102821545 -Pfile1Band=Kd_490 -Pfile2Band=Kd_490
+</pre>
+</td></tr></table>
 
 
 <br>
@@ -243,18 +299,31 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
       &lt;parameters&gt;
         &lt;copySourceFile&gt;true&lt;/copySourceFile&gt;
         &lt;targetBands&gt;
+
           &lt;targetBand&gt;
-            &lt;name&gt;${file2Band}_${file2Short}_${file1Band}_${file1Short}_diff&lt;/name&gt;
+            &lt;name&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff&lt;/name&gt;
             &lt;type&gt;${diffBandType}&lt;/type&gt;
-            &lt;expression&gt;${file2Band}_${file2Short} - ${file1Band}_${file1Short}&lt;/expression&gt;
-            &lt;description&gt;${file2Band}_${file2Short} - ${file1Band}_${file1Short}&lt;/description&gt;
+            &lt;expression&gt;${file1Band}_${file1Short} - ${file2Band}_${file2Short}&lt;/expression&gt;
+            &lt;description&gt;${file1Band}_${file1Short} - ${file2Band}_${file2Short}&lt;/description&gt;
             &lt;unit&gt;${diffBandUnit}&lt;/unit&gt;
             &lt;validExpression&gt;${diffBandValidExpression}&lt;/validExpression&gt;
             &lt;noDataValue&gt;${diffBandNoDataValue}&lt;/noDataValue&gt;
           &lt;/targetBand&gt;
+
+          &lt;targetBand&gt;
+            &lt;name&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_ratio&lt;/name&gt;
+            &lt;type&gt;${diffBandType}&lt;/type&gt;
+            &lt;expression&gt;if (${file2Band}_${file2Short} != 0) then (${file1Band}_${file1Short} / ${file2Band}_${file2Short}) else NaN&lt;/expression&gt;
+            &lt;description&gt;if (${file2Band}_${file2Short} != 0) then (${file1Band}_${file1Short} / ${file2Band}_${file2Short}) else NaN&lt;/description&gt;
+            &lt;unit&gt;${diffBandUnit}&lt;/unit&gt;
+            &lt;validExpression&gt;${diffBandValidExpression}&lt;/validExpression&gt;
+            &lt;noDataValue&gt;${diffBandNoDataValue}&lt;/noDataValue&gt;
+          &lt;/targetBand&gt;
+
         &lt;/targetBands&gt;
       &lt;/parameters&gt;
     &lt;/node&gt;
+
 
 
   &lt;node id="SubsetNode"&gt;
@@ -264,7 +333,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
     &lt;/sources&gt;
 
     &lt;parameters&gt;
-        &lt;bandNames&gt;${file1Band}_${file1Short},${file2Band}_${file2Short},${file2Band}_${file2Short}_${file1Band}_${file1Short}_diff&lt;/bandNames&gt;
+        &lt;bandNames&gt;${file1Band}_${file1Short},${file2Band}_${file2Short},${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff,${file1Band}_${file1Short}_${file2Band}_${file2Short}_ratio&lt;/bandNames&gt;
     &lt;/parameters&gt;
 
   &lt;/node&gt;
@@ -281,6 +350,37 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
       &lt;superSamplingFactor&gt;${superSamplingFactor}&lt;/superSamplingFactor&gt;
     &lt;/parameters&gt;
   &lt;/node&gt;
+
+
+    &lt;node id="StatisticsOpNode"&gt;
+      &lt;operator&gt;StatisticsOp&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;SubsetNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;bandConfigurations&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${file1Band}_${file1Short}&lt;/sourceBandName&gt;
+            &lt;validPixelExpression&gt;!nan(${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff)&lt;/validPixelExpression&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${file2Band}_${file2Short}&lt;/sourceBandName&gt;
+            &lt;validPixelExpression&gt;!nan(${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff)&lt;/validPixelExpression&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_ratio&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+        &lt;/bandConfigurations&gt;
+        &lt;outputAsciiFile&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${statisticsFileSuffix}.txt&lt;/outputAsciiFile&gt;
+        &lt;percentiles&gt;${percentiles}&lt;/percentiles&gt;
+        &lt;numBins&gt;${numBins}&lt;/numBins&gt;
+        &lt;calculateMedian&gt;${calculateMedian}&lt;/calculateMedian&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
 
 
     &lt;node id="WriteReprojectNode1"&gt;
@@ -376,7 +476,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03.par -Pfile1=A2010283180500.L2_LAC_SST.nc -P
 
 <br>
 <p>
-    <b>File = WorkflowEx03.par</b>
+    <b>File = WorkflowEx03_SST.par</b>
 </p>
 
 
@@ -392,8 +492,13 @@ ifileExtension=nc
 # Write operator parameters (commented out parameters are optionally being sent in at command line)
 # file1Short=A283180500  -- this name gets used as the suffix for the bands collocated from file1, and for constructing the collocated output file name
 # file2Short=A283070000  -- this name gets used as the suffix for the bands collocated from file2, and for constructing the collocated output file name
-# file1Type=L2_LAC_SST  -- this is used in constructing the output file names
-# file2Type=L2_LAC_SST  -- this is used in constructing the output file names
+# file1Type and file2Type is used in constructing the output file names
+# These 4 parameters are unique to SST products.  To compare OC or IOP files you would need to alter these 4 parameters
+file1Type=L2_LAC_SST
+file2Type=L2_LAC_SST
+#file1Band=sst
+#file2Band=sst
+
 reprojectedFileSuffix=Reprojected
 collocatedFileSuffix=Collocated
 bandMathsFileSuffix=BandMaths
@@ -435,8 +540,96 @@ diffBandNoDataValue=NaN
 # LandWaterMask operator parameters
 resolution=1000
 superSamplingFactor=3
+
+
+# StatisticsOp operator parameters
+percentiles=80,85,90
+numBins=1000
+calculateMedian=true
+statisticsFileSuffix=Statistics
 </pre>
 </td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = WorkflowEx03_OC.par</b>
+</p>
+
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+# Read operator parameters (commented out parameters are optionally being sent in at command line)
+# file1=A2010283180500.L2_LAC_SST.nc  -- this is the input file which will act as the reference/master in the collocation step
+# file2=A2010283070000.L2_LAC_SST.nc  -- this input file will act as the dependent/slave in the collocation step
+ifileExtension=nc
+
+
+# Write operator parameters (commented out parameters are optionally being sent in at command line)
+# file1Short=A283180500  -- this name gets used as the suffix for the bands collocated from file1, and for constructing the collocated output file name
+# file2Short=A283070000  -- this name gets used as the suffix for the bands collocated from file2, and for constructing the collocated output file name
+# file1Type and file2Type is used in constructing the output file names
+# These 4 parameters are unique to OC products.  To compare SST or IOP files you would need to alter these 4 parameters
+file1Type=L2_LAC_OC
+file2Type=L2_LAC_OC
+#file1Band=chlor_a
+#file2Band=chlor_a
+
+reprojectedFileSuffix=Reprojected
+collocatedFileSuffix=Collocated
+bandMathsFileSuffix=BandMaths
+subsetFileSuffix=Subset
+landWaterFileSuffix=LandWater
+
+ofileFormat=NetCDF-CF
+ofileExtension=nc
+ofileFormat2=BEAM-DIMAP
+ofileExtension2=dim
+
+
+# Reproject operator parameters
+lat=37.0
+lon=-76.0
+pixelSize=1000.0
+reprojectionResampling=Bilinear
+transferValidPixelExpression=true
+applyValidPixelExpression=true
+
+# The reprojectMaskExpression is unique to OC products and flags.  To compare SST files you would need to alter this expression
+file1ReprojectMaskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+file2ReprojectMaskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+
+
+# Collocate operator parameters
+renameReference=true
+renameDependent=true
+collocationResampling=NEAREST_NEIGHBOUR
+
+
+# BandMaths operator parameters
+diffBandType=float64
+diffBandUnit=Celsius
+diffBandValidExpression=
+diffBandNoDataValue=NaN
+
+
+# LandWaterMask operator parameters
+resolution=1000
+superSamplingFactor=3
+
+
+# StatisticsOp operator parameters
+percentiles=80,85,90
+numBins=1000
+calculateMedian=true
+statisticsFileSuffix=Statistics
+</pre>
+</td></tr></table>
+
+
+
 
 
 <br><br><br>
