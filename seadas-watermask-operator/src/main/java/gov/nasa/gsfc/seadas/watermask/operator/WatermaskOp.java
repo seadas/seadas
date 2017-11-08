@@ -18,10 +18,7 @@ package gov.nasa.gsfc.seadas.watermask.operator;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.gpf.Operator;
-import org.esa.beam.framework.gpf.OperatorException;
-import org.esa.beam.framework.gpf.OperatorSpi;
-import org.esa.beam.framework.gpf.Tile;
+import org.esa.beam.framework.gpf.*;
 import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
 import org.esa.beam.framework.gpf.annotations.Parameter;
 import org.esa.beam.framework.gpf.annotations.SourceProduct;
@@ -32,6 +29,7 @@ import org.esa.beam.visat.actions.imgfilter.model.Filter;
 import java.awt.*;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.HashMap;
 
 /**
  * The watermask operator is a GPF-Operator. It takes the geographic bounds of the input product and creates a new
@@ -223,9 +221,23 @@ public class WatermaskOp extends Operator {
         }
     }
 
+    private void copySourceToTarget() {
+        final HashMap<String, Object> subsetParameters = new HashMap<String, Object>();
+        subsetParameters.put("x", 0);
+        subsetParameters.put("y", 0);
+        subsetParameters.put("width", sourceProduct.getSceneRasterWidth());
+        subsetParameters.put("height", sourceProduct.getSceneRasterHeight());
+
+        HashMap<String, Product> projProducts = new HashMap<String, Product>();
+        projProducts.put("source", sourceProduct);
+        targetProduct = GPF.createProduct("Subset", subsetParameters, projProducts);
+    }
+
     private void initTargetProduct() {
         if (copySourceFile) {
-            targetProduct = sourceProduct;
+            copySourceToTarget();
+
+         //   targetProduct = sourceProduct;
         } else {
             targetProduct = new Product("LW-Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
                     sourceProduct.getSceneRasterHeight());
