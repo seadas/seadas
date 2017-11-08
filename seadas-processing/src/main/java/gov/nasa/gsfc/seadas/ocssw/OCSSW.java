@@ -43,6 +43,7 @@ public abstract class OCSSW {
     String programName;
     private String xmlFileName;
     String ifileName;
+    File ifileDir;
     public String missionName;
     public String fileType;
 
@@ -224,6 +225,7 @@ public abstract class OCSSW {
 
     public void setIfileName(String ifileName) {
         this.ifileName = ifileName;
+        ifileDir = new File(ifileName).getParentFile();
     }
 
     public String getXmlFileName() {
@@ -242,9 +244,7 @@ public abstract class OCSSW {
         monitorProgress = mProgress;
     }
 
-    public HashMap<String, String> computePixelsFromLonLat() {
-        return null;
-    }
+    public abstract HashMap<String, String> computePixelsFromLonLat(ProcessorModel processorModel);
 
     public int getProcessExitValue() {
         return processExitValue;

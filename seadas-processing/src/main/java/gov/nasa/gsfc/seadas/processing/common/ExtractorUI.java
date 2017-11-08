@@ -20,6 +20,11 @@ import java.util.HashMap;
  */
 public class ExtractorUI extends ProgramUIFactory {
 
+    public static final String START_LINE_PARAM_NAME = "sline";
+    public static final String END_LINE_PARAM_NAME = "eline";
+    public static final String START_PIXEL_PARAM_NAME = "spixl";
+    public static final String END_PIXEL_PARAM_NAME = "epixl";
+
     private ProcessorModel lonlat2pixline;
     private JPanel pixelPanel;
     private JPanel newsPanel;
@@ -29,26 +34,26 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private boolean initiliazed = false;
 
-    OCSSW ocssw;
+    //OCSSW ocssw;
 
     public ExtractorUI(String programName, String xmlFileName, OCSSW ocssw) {
         super(programName, xmlFileName, ocssw);
         paramCounter = new HashMap();
         initiliazed = true;
-        this.ocssw = ocssw;
+        //this.ocssw = ocssw;
     }
 
     private void initLonLatProcessor() {
         lonlat2pixline = ProcessorModel.valueOf("lonlat2pixline", "lonlat2pixline.xml", ocssw);
-//        lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                processorModel.updateParamInfo(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.START_PIXEL_PARAM_NAME));
-//                processorModel.updateParamInfo(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.END_PIXEL_PARAM_NAME));
-//                processorModel.updateParamInfo(LonLat2PixlineConverter.START_LINE_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.START_LINE_PARAM_NAME));
-//                processorModel.updateParamInfo(LonLat2PixlineConverter.END_LINE_PARAM_NAME, lonlat2pixline.getParamValue(LonLat2PixlineConverter.END_LINE_PARAM_NAME));
-//            }
-//        });
+        lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                processorModel.updateParamInfo(START_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(START_PIXEL_PARAM_NAME));
+                processorModel.updateParamInfo(END_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(END_PIXEL_PARAM_NAME));
+                processorModel.updateParamInfo(START_LINE_PARAM_NAME, lonlat2pixline.getParamValue(START_LINE_PARAM_NAME));
+                processorModel.updateParamInfo(END_LINE_PARAM_NAME, lonlat2pixline.getParamValue(END_LINE_PARAM_NAME));
+            }
+        });
 
         processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override

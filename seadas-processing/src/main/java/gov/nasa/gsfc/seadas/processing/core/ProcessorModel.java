@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.lang.Boolean;
 
+import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
 import static gov.nasa.gsfc.seadas.processing.common.FilenamePatterns.getGeoFileInfo;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
 
@@ -844,11 +845,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         static final String _NElat = "NElat";
 
         public static String LON_LAT_2_PIXEL_PROGRAM_NAME = "lonlat2pixel";
-        public static final String START_LINE_PARAM_NAME = "sline";
-        public static final String END_LINE_PARAM_NAME = "eline";
-        public static final String START_PIXEL_PARAM_NAME = "spixl";
-        public static final String END_PIXEL_PARAM_NAME = "epixl";
-
 
         LonLat2Pixels_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
@@ -900,7 +896,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     (valueOfSWlat != null && valueOfSWlat.trim().length() > 0) &&
                     (valueOfNElon != null && valueOfNElon.trim().length() > 0) &&
                     (valueOfNElat != null && valueOfNElat.trim().length() > 0)) {
-                HashMap<String, String> lonlats = ocssw.computePixelsFromLonLat();
+                HashMap<String, String> lonlats = ocssw.computePixelsFromLonLat(this);
                 if (lonlats != null) {
                     updateParamInfo(START_PIXEL_PARAM_NAME, lonlats.get(START_PIXEL_PARAM_NAME));
                     updateParamInfo(END_PIXEL_PARAM_NAME, lonlats.get(END_PIXEL_PARAM_NAME));

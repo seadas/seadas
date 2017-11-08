@@ -116,7 +116,7 @@ public class OCSSWLocal extends OCSSW {
     public String[] getProgramCommandArray(ProcessorModel processorModel) {
 
         String[] cmdArray;
-        String[] programNameArray = {programName};
+        String[] programNameArray = {processorModel.getProgramName()};
         String[] cmdArrayForParams;
 
         ParFileManager parFileManager = new ParFileManager(processorModel);
@@ -147,6 +147,13 @@ public class OCSSWLocal extends OCSSW {
     public Process execute(String[] commandArray) {
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+
+
+        if (ifileDir != null) {
+            processBuilder.directory(ifileDir);
+        } else {
+            processBuilder.directory(new File(System.getProperty("user.home")));
+        }
 
         process = null;
         try {
@@ -409,6 +416,31 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public void setCommandArraySuffix() {
 
+    }
+
+    @Override
+    public HashMap<String, String> computePixelsFromLonLat(ProcessorModel processorModel) {
+
+        String[] commandArray = getProgramCommandArray(processorModel);
+        HashMap<String, String> pixels = new HashMap();
+        try {
+
+            Process process = execute(commandArray);
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            String[] tmp;
+            while ((line = stdInput.readLine()) != null) {
+                if (line.indexOf("=") != -1) {
+                    tmp = line.split("=");
+                    pixels.put(tmp[0], tmp[1]);
+                }
+            }
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return pixels;
     }
 
 }

@@ -95,6 +95,10 @@ public class OCSSWRemote extends OCSSW {
 
     }
 
+    @Override
+    public HashMap<String, String> computePixelsFromLonLat(ProcessorModel processorModel) {
+        return null;
+    }
 
     private void updateProgramName(String programName) {
         this.programName = programName;

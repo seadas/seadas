@@ -28,8 +28,10 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
     private ParFileUI parFileUI;
     private JPanel paramPanel;
+    OCSSW ocssw;
 
     public ProgramUIFactory(String programName, String xmlFileName, OCSSW ocssw) {
+        this.ocssw = ocssw;
         processorModel = ProcessorModel.valueOf(programName, xmlFileName, ocssw);
         parFileUI = new ParFileUI(processorModel);
         ioFilesSelector = new L2genPrimaryIOFilesSelector(processorModel);
