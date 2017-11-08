@@ -221,23 +221,32 @@ public class WatermaskOp extends Operator {
         }
     }
 
-    private void copySourceToTarget() {
-        final HashMap<String, Object> subsetParameters = new HashMap<String, Object>();
-        subsetParameters.put("x", 0);
-        subsetParameters.put("y", 0);
-        subsetParameters.put("width", sourceProduct.getSceneRasterWidth());
-        subsetParameters.put("height", sourceProduct.getSceneRasterHeight());
+//    private void copySourceToTarget() {
+//        final HashMap<String, Object> subsetParameters = new HashMap<String, Object>();
+//        subsetParameters.put("x", 0);
+//        subsetParameters.put("y", 0);
+//        subsetParameters.put("width", sourceProduct.getSceneRasterWidth());
+//        subsetParameters.put("height", sourceProduct.getSceneRasterHeight());
+//
+//        HashMap<String, Product> projProducts = new HashMap<String, Product>();
+//        projProducts.put("source", sourceProduct);
+//        targetProduct = GPF.createProduct("Subset", subsetParameters, projProducts);
+//    }
 
-        HashMap<String, Product> projProducts = new HashMap<String, Product>();
-        projProducts.put("source", sourceProduct);
-        targetProduct = GPF.createProduct("Subset", subsetParameters, projProducts);
+
+    private void copySourceToTarget() {
+        final HashMap<String, Object> copyOpParameters = new HashMap<String, Object>();
+
+
+        HashMap<String, Product> copyOpProducts = new HashMap<String, Product>();
+        copyOpProducts.put("source", sourceProduct);
+        targetProduct = GPF.createProduct("Copy", copyOpParameters, copyOpProducts);
     }
+
 
     private void initTargetProduct() {
         if (copySourceFile) {
             copySourceToTarget();
-
-         //   targetProduct = sourceProduct;
         } else {
             targetProduct = new Product("LW-Mask", ProductData.TYPESTRING_UINT8, sourceProduct.getSceneRasterWidth(),
                     sourceProduct.getSceneRasterHeight());
