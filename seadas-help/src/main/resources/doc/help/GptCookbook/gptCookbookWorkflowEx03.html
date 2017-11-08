@@ -134,7 +134,7 @@ This example takes two input level2 files then:
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WorkflowEx03.xml -p WorkflowEx03_SST.par -Pfile1=A2010283180500.L2_LAC_SST.nc -Pfile2=A2010283070000.L2_LAC_SST.nc -Pfile1Short=A20102831805 -Pfile2Short=A20102830700 -Pfile1Band=sst -Pfile2Band=sst
+gpt WorkflowEx03.xml -p WorkflowEx03_SST.par -Pfile1=A2010283180500.L2_LAC_SST.nc -Pfile2=A2010283070000.L2_LAC_SST.nc -Pfile1Short=A20102831805 -Pfile2Short=A20102830700 -Pfile1Band=sst -Pfile2Band=sst -Phome=$HOME
 </pre>
 </td></tr></table>
 
@@ -145,7 +145,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03_SST.par -Pfile1=A2010283180500.L2_LAC_SST.n
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc -Pfile2=T2010282154500.L2_LAC_OC.nc -Pfile1Short=A20102831805 -Pfile2Short=T20102821545 -Pfile1Band=chlor_a -Pfile2Band=chlor_a
+gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc -Pfile2=T2010282154500.L2_LAC_OC.nc -Pfile1Short=A20102831805 -Pfile2Short=T20102821545 -Pfile1Band=chlor_a -Pfile2Band=chlor_a -Phome=$HOME
 </pre>
 </td></tr></table>
 
@@ -156,7 +156,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc 
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc -Pfile2=T2010282154500.L2_LAC_OC.nc -Pfile1Short=A20102831805 -Pfile2Short=T20102821545 -Pfile1Band=Kd_490 -Pfile2Band=Kd_490
+gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc -Pfile2=T2010282154500.L2_LAC_OC.nc -Pfile1Short=A20102831805 -Pfile2Short=T20102821545 -Pfile1Band=Kd_490 -Pfile2Band=Kd_490 -Phome=$HOME
 </pre>
 </td></tr></table>
 
@@ -467,10 +467,48 @@ gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc 
     &lt;/node&gt;
 
 
+  &lt;node id="WriteImageNode"&gt;
+    &lt;operator&gt;WriteImage&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;LandWaterMaskNode&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;sourceBandName&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff&lt;/sourceBandName&gt;
+      &lt;filePath&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${landWaterFileSuffix}.${writeImageFormat}&lt;/filePath&gt;
+      &lt;formatName&gt;${writeImageFormat}&lt;/formatName&gt;
+      &lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;
+      &lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;
+      &lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;
+      &lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;
+      &lt;level&gt;${level}&lt;/level&gt;
+      &lt;scaleType&gt;${scaleType}&lt;/scaleType&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+
+
+
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
 
+
+<!--&lt;node id="WriteImageNodeTest"&gt;-->
+<!--&lt;operator&gt;WriteImage&lt;/operator&gt;-->
+<!--&lt;sources&gt;-->
+<!--&lt;source&gt;SubsetNode&lt;/source&gt;-->
+<!--&lt;/sources&gt;-->
+<!--&lt;parameters&gt;-->
+<!--&lt;sourceBandName&gt;${file1Band}_${file1Short}&lt;/sourceBandName&gt;-->
+<!--&lt;filePath&gt;${file1Band}_${file1Short}_WriteImage.${writeImageFormat}&lt;/filePath&gt;-->
+<!--&lt;formatName&gt;${writeImageFormat}&lt;/formatName&gt;-->
+<!--&lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;-->
+<!--&lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;-->
+<!--&lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;-->
+<!--&lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;-->
+<!--&lt;level&gt;${level}&lt;/level&gt;-->
+<!--&lt;scaleType&gt;${scaleType}&lt;/scaleType&gt;-->
+<!--&lt;/parameters&gt;-->
+<!--&lt;/node&gt;-->
 
 
 
@@ -478,7 +516,6 @@ gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc 
 <p>
     <b>File = WorkflowEx03_SST.par</b>
 </p>
-
 
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -547,9 +584,18 @@ percentiles=80,85,90
 numBins=1000
 calculateMedian=true
 statisticsFileSuffix=Statistics
+
+
+# WriteImage operator parameters
+writeImageFormat=png
+cpdFilePath=.seadas/beam-ui/auxdata/color-palettes/anomalies1_universal.cpd
+cpdAutoDistribute=false
+colourScaleMin=-4.0
+colourScaleMax=4.0
+level=0
+scaleType=linear
 </pre>
 </td></tr></table>
-
 
 
 <br>
@@ -625,6 +671,16 @@ percentiles=80,85,90
 numBins=1000
 calculateMedian=true
 statisticsFileSuffix=Statistics
+
+
+# WriteImage operator parameters
+writeImageFormat=png
+cpdFilePath=.seadas/beam-ui/auxdata/color-palettes/anomalies1_universal.cpd
+cpdAutoDistribute=false
+colourScaleMin=-4.0
+colourScaleMax=4.0
+level=0
+scaleType=linear
 </pre>
 </td></tr></table>
 
