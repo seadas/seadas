@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 
 /**
  * An observer that notifies its {@link Handler handlers} about lines of characters that have been written
@@ -144,7 +145,11 @@ public class ProcessObserver {
             } finally {
                 reader.close();
             }
-            processExitValue = process.exitValue();
+            try {
+                processExitValue = process.waitFor();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
         }
 
         private void fireLineRead(String line) {
