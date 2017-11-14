@@ -336,7 +336,6 @@ public class CallCloProgramAction extends AbstractVisatAction {
                 lastScan = scan;
                 currentText = line;
             }
-            System.out.println("handleLineOnStdoutRead ..."  + line);
             progressMonitor.setTaskName(programName);
             progressMonitor.setSubTaskName(line);
         }
