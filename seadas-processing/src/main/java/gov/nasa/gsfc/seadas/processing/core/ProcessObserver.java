@@ -132,16 +132,13 @@ public class ProcessObserver {
         }
 
         private void read() throws IOException {
-            System.out.println("reading from process input stream ...");
             final InputStream inputStream = type.equals("stdout") ? process.getInputStream() : process.getErrorStream();
             final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(" in progress monitor: " + type + "  " +line);
                     fireLineRead(line);
                 }
-                System.out.println("process completed!");
             } finally {
                 reader.close();
             }
