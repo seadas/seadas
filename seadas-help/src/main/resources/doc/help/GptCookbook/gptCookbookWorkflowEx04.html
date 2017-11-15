@@ -29,11 +29,15 @@
 
 
 <p>
+    This example "mosaics" together a set of (OC suite) level-2 files and then uses "BandMaths" to remove the {BAND}_count bands.
+
     This combines the steps of Mosaic Example 5 with BandMaths Example 4. <br>
+
+    <a href="gptCookbookMosaic.html#Example5" class="invisibleLink">Lambert Azimuthal Equal Area Projection of Full OC Suite L2 File</a>
+
 
     <a href="gptCookbookBandMaths.html#Example4" class="invisibleLink">Remove the "_count" Bands from a Mosaic File (OC Level2)</a><br>
 
-    <a href="gptCookbookMosaic.html#Example5" class="invisibleLink">Lambert Azimuthal Equal Area Projection of Full OC Suite L2 File</a>
 
 
 </p>
@@ -47,7 +51,7 @@
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt WorkflowEx03.xml -p WorkflowEx03.par A2017023193500.L2_LAC_OC.nc -t A2017023193500_WorkflowEx03.dim
+gpt WorkflowEx03.xml -p WorkflowEx03.par `cat level2Files.txt` -t WorkflowEx03.dim
 </pre>
 </td></tr></table>
 

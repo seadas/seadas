@@ -47,7 +47,7 @@
                     <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                     <td class="invisibletable4" nowrap="1">--&gt; LandWater</td>
                     <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
-                    <td class="invisibletable4" nowrap="1">--&gt; WriteImage</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
                 </tr>
                 <tr>
                     <td class="invisibletable4" nowrap="1">Read</td>
@@ -98,12 +98,12 @@
 
 <pre class="i0">
 This example takes two input level2 files then:
-    1. Reprojects each file applying quality masking to a Lambert Azimuthal Equal Area projection
-    2. Collocates the reprojected files (with file1 as the reference crs)
-    3. Adds mathband (difference band and ratio band of two bands)
-    4  Subsets to reduce to only the two bands, the difference band and ratio band
+    1. Reprojects each file applying quality masking and uses a Lambert Azimuthal Equal Area projection
+    2. Collocates the reprojected files (with file1 treated as the reference crs)
+    3. Adds two math bands (a difference band and ratio band of two desired primary bands)
+    4  Subsets to reduce to only the two primary bands, plus the difference band and ratio band
     5. Adds land and water mask
-    6. Statistics on the two bands, the difference band and ratio band
+    6. Statistics on the two bands, plus the difference band and ratio band
     7. Writes out the two reprojected files (NetCDF)
     8  Writes out the collocated file (NetCDF)
     9. Writes out the mathband file (NetCDF)
@@ -466,30 +466,31 @@ gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc 
       &lt;/parameters&gt;
     &lt;/node&gt;
 
-
-  &lt;node id="WriteImageNode"&gt;
-    &lt;operator&gt;WriteImage&lt;/operator&gt;
-    &lt;sources&gt;
-      &lt;source&gt;LandWaterMaskNode&lt;/source&gt;
-    &lt;/sources&gt;
-    &lt;parameters&gt;
-      &lt;sourceBandName&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff&lt;/sourceBandName&gt;
-      &lt;filePath&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${landWaterFileSuffix}.${writeImageFormat}&lt;/filePath&gt;
-      &lt;formatName&gt;${writeImageFormat}&lt;/formatName&gt;
-      &lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;
-      &lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;
-      &lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;
-      &lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;
-      &lt;level&gt;${level}&lt;/level&gt;
-      &lt;scaleType&gt;${scaleType}&lt;/scaleType&gt;
-    &lt;/parameters&gt;
-  &lt;/node&gt;
-
-
-
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
+
+
+
+<!--&lt;node id="WriteImageNode"&gt;-->
+<!--&lt;operator&gt;WriteImage&lt;/operator&gt;-->
+<!--&lt;sources&gt;-->
+<!--&lt;source&gt;LandWaterMaskNode&lt;/source&gt;-->
+<!--&lt;/sources&gt;-->
+<!--&lt;parameters&gt;-->
+<!--&lt;sourceBandName&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff&lt;/sourceBandName&gt;-->
+<!--&lt;filePath&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${landWaterFileSuffix}.${writeImageFormat}&lt;/filePath&gt;-->
+<!--&lt;formatName&gt;${writeImageFormat}&lt;/formatName&gt;-->
+<!--&lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;-->
+<!--&lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;-->
+<!--&lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;-->
+<!--&lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;-->
+<!--&lt;level&gt;${level}&lt;/level&gt;-->
+<!--&lt;scaleType&gt;${scaleType}&lt;/scaleType&gt;-->
+<!--&lt;/parameters&gt;-->
+<!--&lt;/node&gt;-->
+
+
 
 
 <!--&lt;node id="WriteImageNodeTest"&gt;-->
