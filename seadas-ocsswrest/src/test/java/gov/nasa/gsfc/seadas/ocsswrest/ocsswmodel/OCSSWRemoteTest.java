@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import java.text.NumberFormat;
 import java.util.Date;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.MLP_PROGRAM_NAME;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.concatAll;
 import static org.junit.Assert.*;
 
 /**
@@ -32,7 +32,7 @@ public class OCSSWRemoteTest {
         String[] commandArray = {MLP_PROGRAM_NAME,  parFileLocation};;
         OCSSWRemote ocsswRemote = new OCSSWRemote();
         final long startTime = System.nanoTime();
-        ocsswRemote.execute(concatAll(ocsswRemote.getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileLocation).getParent(), "1234");
+        ocsswRemote.execute(ServerSideFileUtilities.concatAll(ocsswRemote.getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileLocation).getParent(), "1234");
         final long duration = System.nanoTime() - startTime;
         long start = System.currentTimeMillis();
 

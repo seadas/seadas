@@ -64,11 +64,9 @@ public class OCSSWRemote extends OCSSW {
     private void initialize() {
         ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
-        if (ocsswInfo.isOcsswExist()) {
-            jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
-            target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
-        }
+        jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
+        target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
         setOfileNameFound(false);
     }
 
@@ -750,7 +748,7 @@ public class OCSSWRemote extends OCSSW {
             while (st.hasMoreTokens()) {
                 fileExtension = st.nextToken().trim();
                 fileNameToUpload = ifileDir + File.separator + fileNameBase + "." + fileExtension;
-                response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName",fileNameToUpload).request().get();
+                response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileNameToUpload).request().get();
                 if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
                     uploadClientFile(fileNameToUpload);
                 }

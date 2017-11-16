@@ -61,14 +61,19 @@ public class OCSSWServices {
     @Path("/ocsswInfo")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getOcsswInfo() {
-        JsonObject ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
-                .add("ocsswRoot", OCSSWServerModel.getOcsswRoot())
-                .add("ocsswScriptsDirPath", OCSSWServerModel.getOcsswScriptsDirPath())
-                .add("ocsswDataDirPath", OCSSWServerModel.getOcsswDataDirPath())
-                .add("ocsswInstallerScriptPath", OCSSWServerModel.getOcsswInstallerScriptPath())
-                .add("ocsswRunnerScriptPath", OCSSWServerModel.getOcsswRunnerScriptPath())
-                .add("ocsswBinDirPath", OCSSWServerModel.getOcsswBinDirPath())
-                .build();
+        JsonObject ocsswInstallStatus = null;
+        try {
+             ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
+                    .add("ocsswRoot", OCSSWServerModel.getOcsswRoot())
+                    .add("ocsswScriptsDirPath", OCSSWServerModel.getOcsswScriptsDirPath())
+                    .add("ocsswDataDirPath", OCSSWServerModel.getOcsswDataDirPath())
+                    .add("ocsswInstallerScriptPath", OCSSWServerModel.getOcsswInstallerScriptPath())
+                    .add("ocsswRunnerScriptPath", OCSSWServerModel.getOcsswRunnerScriptPath())
+                    .add("ocsswBinDirPath", OCSSWServerModel.getOcsswBinDirPath())
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return ocsswInstallStatus;
     }
 

@@ -9,6 +9,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import javax.json.JsonObject;
 import javax.json.stream.JsonGenerator;
+import javax.swing.*;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -34,9 +35,9 @@ public class OCSSWInfo {
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
     public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
-    public static final String OCSSW_LOCATION_LOCAL ="local";
-    public static final String OCSSW_LOCATION_VIRTUAL_MACHINE ="virtualMachine";
-    public static final String OCSSW_LOCATION_REMOTE_SERVER ="remoteServer";
+    public static final String OCSSW_LOCATION_LOCAL = "local";
+    public static final String OCSSW_LOCATION_VIRTUAL_MACHINE = "virtualMachine";
+    public static final String OCSSW_LOCATION_REMOTE_SERVER = "remoteServer";
     public static final String OCSSW_PROCESS_INPUT_STREAM_PORT = "ocssw.processInputStreamPort";
     public static final String OCSSW_PROCESS_ERROR_STREAM_PORT = "ocssw.processErrorStreamPort";
     private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
@@ -70,12 +71,16 @@ public class OCSSWInfo {
         return ocsswLocation;
     }
 
-    private void setOcsswLocation(String location) { ocsswLocation = location; }
+    private void setOcsswLocation(String location) {
+        ocsswLocation = location;
+    }
 
     String clientId;
-    private OCSSWInfo() {}
 
-    public static OCSSWInfo getInstance(){
+    private OCSSWInfo() {
+    }
+
+    public static OCSSWInfo getInstance() {
         if (ocsswInfo == null) {
             ocsswInfo = new OCSSWInfo();
             ocsswInfo.detectOcssw();
@@ -84,27 +89,27 @@ public class OCSSWInfo {
         return ocsswInfo;
     }
 
-    public  int getProcessInputStreamPort() {
+    public int getProcessInputStreamPort() {
         return processInputStreamPort;
     }
 
-    public  void setProcessInputStreamPort(int processInputStreamPort) {
+    public void setProcessInputStreamPort(int processInputStreamPort) {
         processInputStreamPort = processInputStreamPort;
     }
 
-    public  int getProcessErrorStreamPort() {
+    public int getProcessErrorStreamPort() {
         return processErrorStreamPort;
     }
 
-    public  void setProcessErrorStreamPort(int processErrorStreamPort) {
+    public void setProcessErrorStreamPort(int processErrorStreamPort) {
         processErrorStreamPort = processErrorStreamPort;
     }
 
-    public  boolean isOCSSWExist() {
+    public boolean isOCSSWExist() {
         return ocsswExist;
     }
 
-    public  void detectOcssw() {
+    public void detectOcssw() {
         String ocsswLocationPropertyValue = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY);
 
         setOcsswLocation(null);
@@ -112,7 +117,7 @@ public class OCSSWInfo {
         boolean isValidOcsswPropertyValue = isValidOcsswLocationProperty(ocsswLocationPropertyValue);
 
         if ((ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_LOCAL) && OsUtils.getOperatingSystemType() != OsUtils.OSType.Windows)
-             || (!isValidOcsswPropertyValue && (OsUtils.getOperatingSystemType() == OsUtils.OSType.Linux || OsUtils.getOperatingSystemType() == OsUtils.OSType.MacOS)) ) {
+                || (!isValidOcsswPropertyValue && (OsUtils.getOperatingSystemType() == OsUtils.OSType.Linux || OsUtils.getOperatingSystemType() == OsUtils.OSType.MacOS))) {
             setOcsswLocation(OCSSW_LOCATION_LOCAL);
             initializeLocalOCSSW();
         } else {
@@ -134,16 +139,18 @@ public class OCSSWInfo {
 
     /**
      * OCSSW_LOCATION_PROPERTY takes only one of the following three values: local, virtualMachine, IP address of a remote server
+     *
      * @return
      */
-    private  boolean isValidOcsswLocationProperty(String ocsswLocationPropertyValue){
-        if( ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_LOCAL)
+    private boolean isValidOcsswLocationProperty(String ocsswLocationPropertyValue) {
+        if (ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_LOCAL)
                 || ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_VIRTUAL_MACHINE)
                 || validate(ocsswLocationPropertyValue)) {
             return true;
         }
         return false;
     }
+
     public boolean validate(final String ip) {
         return PATTERN.matcher(ip).matches();
     }
@@ -168,7 +175,7 @@ public class OCSSWInfo {
         }
     }
 
-    private  boolean initializeRemoteOCSSW(String serverAPI) {
+    private boolean initializeRemoteOCSSW(String serverAPI) {
 
 
         final String BASE_URI_PORT_NUMBER_PROPERTY = "ocssw.port";
@@ -184,21 +191,27 @@ public class OCSSWInfo {
         JsonObject jsonObject = null;
         try {
             jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+        } catch (javax.ws.rs.ProcessingException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(new JOptionPane(), "Remote server is down. OCSSW is not accessible. Please restart SeaDAS when  OCSSW is accessible.",
+                    "OCSSW Initialization Warning",
+                    JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(new JOptionPane(), "OCSSW is not accessible.",
+                    "OCSSW Initialization Warning",
+                    JOptionPane.WARNING_MESSAGE);
         }
         ocsswExist = jsonObject.getBoolean("ocsswExists");
-        if (ocsswExist) {
-            ocsswRoot = jsonObject.getString("ocsswRoot");
-            ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
-            ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
-            ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
-            ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
+        ocsswRoot = jsonObject.getString("ocsswRoot");
+        ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
+        ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
+        ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
+        ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
 
-            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
-            String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "false");
-            Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
-        }
+        clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
+        String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "false");
+        Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
         processInputStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_INPUT_STREAM_PORT)).intValue();
         processErrorStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_ERROR_STREAM_PORT)).intValue();
         return ocsswExist;
@@ -213,31 +226,31 @@ public class OCSSWInfo {
         }
     }
 
-    public  String getResourceBaseUri() {
+    public String getResourceBaseUri() {
         return resourceBaseUri;
     }
 
-    private String getServerAPI(){
+    private String getServerAPI() {
         return null;
     }
 
-    public  boolean isOcsswExist() {
+    public boolean isOcsswExist() {
         return ocsswExist;
     }
 
-    public  String getOcsswRoot() {
+    public String getOcsswRoot() {
         return ocsswRoot;
     }
 
-    public  void setOcsswRoot(String ocsswRootNewValue) {
-         ocsswRoot = ocsswRootNewValue;
+    public void setOcsswRoot(String ocsswRootNewValue) {
+        ocsswRoot = ocsswRootNewValue;
     }
 
-    public  String getOcsswDataDirPath() {
+    public String getOcsswDataDirPath() {
         return ocsswDataDirPath;
     }
 
-    public  String getOcsswScriptsDirPath() {
+    public String getOcsswScriptsDirPath() {
         return ocsswScriptsDirPath;
     }
 
@@ -245,7 +258,7 @@ public class OCSSWInfo {
         return ocsswInstallerScriptPath;
     }
 
-    public  String getOcsswRunnerScriptPath() {
+    public String getOcsswRunnerScriptPath() {
         return ocsswRunnerScriptPath;
     }
 

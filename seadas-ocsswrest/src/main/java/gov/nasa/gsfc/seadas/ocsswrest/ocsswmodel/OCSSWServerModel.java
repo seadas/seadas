@@ -50,7 +50,7 @@ public class OCSSWServerModel {
         return ocsswBinDirPath;
     }
 
-    public enum ExtractorPrograms{
+    public enum ExtractorPrograms {
         L1AEXTRACT_MODIS("l1aextract_modis"),
         L1AEXTRACT_SEAWIFS("l1extract_seawifs"),
         L1AEXTRACT__VIIRS("l1aextract_viirs"),
@@ -62,7 +62,7 @@ public class OCSSWServerModel {
             extractorProgramName = programName;
         }
 
-        public String getExtractorProgramName(){
+        public String getExtractorProgramName() {
             return extractorProgramName;
         }
     }
@@ -88,49 +88,51 @@ public class OCSSWServerModel {
     static boolean isProgramValid;
 
 
-    public OCSSWServerModel(){
+    public OCSSWServerModel() {
 
         initiliaze();
         ocsswExist = isOCSSWExist();
 
     }
 
-    public static void initiliaze(){
+    public static void initiliaze() {
         String ocsswRootPath = System.getProperty("ocsswroot");
         if (ocsswRootPath != null) {
             final File dir = new File(ocsswRootPath + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX);
             System.out.println("server ocssw root path: " + dir.getAbsoluteFile());
             if (dir.isDirectory()) {
                 ocsswExist = true;
-                ocsswRoot = ocsswRootPath;
-                ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
-                ocsswDataDirPath = ocsswRoot + File.separator + OCSSW_DATA_DIR_SUFFIX;
-                ocsswBinDirPath = ocsswRoot + File.separator + OCSSW_BIN_DIR_SUFFIX;
-                ocsswInstallerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_INSTALLER_PROGRAM;
-                ocsswRunnerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_RUNNER_SCRIPT;
+            } else {
+                ocsswExist = false;
             }
+            ocsswRoot = ocsswRootPath;
+            ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
+            ocsswDataDirPath = ocsswRoot + File.separator + OCSSW_DATA_DIR_SUFFIX;
+            ocsswBinDirPath = ocsswRoot + File.separator + OCSSW_BIN_DIR_SUFFIX;
+            ocsswInstallerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_INSTALLER_PROGRAM;
+            ocsswRunnerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_RUNNER_SCRIPT;
         }
     }
 
 
     public static boolean isMissionDirExist(String missionName) {
         missionName = SQLiteJDBC.retrieveMissionDir(missionName);
-        System.out.println("mission dir = " +  ocsswDataDirPath + File.separator + missionName);
+        System.out.println("mission dir = " + ocsswDataDirPath + File.separator + missionName);
         return new File(ocsswDataDirPath + File.separator + missionName).exists();
     }
 
-    public static boolean isOCSSWExist(){
+    public static boolean isOCSSWExist() {
         return ocsswExist;
     }
 
-    public static String getOcsswRoot(){
+    public static String getOcsswRoot() {
         return ocsswRoot;
     }
 
 
-
     /**
      * This method will validate the program name. Only programs exist in $OCSSWROOT/run/scripts and $OSSWROOT/run/bin/"os_name" can be executed on the server side.
+     *
      * @param programName
      * @return true if programName is found in the $OCSSWROOT/run/scripts or $OSSWROOT/run/bin/"os_name" directories. Otherwise return false.
      */
@@ -147,7 +149,7 @@ public class OCSSWServerModel {
 
         File[] executablePrograms = ServerSideFileUtilities.concatAll(listOfPrograms, listOfScripts);
 
-        for (File file:executablePrograms) {
+        for (File file : executablePrograms) {
             if (file.isFile() && programName.equals(file.getName())) {
                 isProgramValid = true;
                 break;

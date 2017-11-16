@@ -8,7 +8,8 @@ import static org.junit.Assert.*;
 /**
  * Created by aabduraz on 8/25/17.
  */
-public class OCSSWConfigTest {    @Before
+public class OCSSWConfigTest {
+    @Before
 public void setUp() throws Exception {
 
 
