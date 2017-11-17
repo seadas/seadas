@@ -1,0 +1,182 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: Workflow Example 1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The GPT Cookbook</h1>
+    <p class="chapterTitle">Workflow Example 1<br>Hello World</p>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+            Read --&gt; Reproject --&gt; Write
+        </p>
+
+    </td></tr></table>
+
+
+</div>
+<br><br><br>
+
+
+
+<p>
+    This example reprojects a source file (similar to <a href="gptCookbookReproject.html#Example4" class="invisibleLink">Reproject: Example 4</a>)
+    with the difference being that this example adds in a read node and a write node to create a multi-operator workflow.
+    </p>
+<p>
+    One benefit to the use of the read node, is that we can send the source file in as a parameter to be used
+    in the formulation of both the input and output file names.  Note: we are sending in the file parameter
+    without its extension in order to formulate both file names.
+    </p>
+<p>
+    Additionally, as will be shown in other examples, multiple read and write nodes may be used in a
+    single graph file.
+</p>
+
+
+
+<br>
+<p>
+<b>Command Line Entry</b>
+</p>
+
+<p>
+    For the daytime SST file:
+</p>
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WorkflowEx01.xml -p WorkflowEx01.par -Pfile=A2010283180500.L2_LAC_SST
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+    For the nighttime SST file:
+</p>
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WorkflowEx01.xml -p WorkflowEx01.par -Pfile=A2010283070000.L2_LAC_SST
+</pre>
+</td></tr></table>
+
+
+
+
+<br>
+<p>
+<b>File = WorkflowEx01.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="WorkflowEx01aGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+    &lt;node id="ReadNode"&gt;
+      &lt;operator&gt;Read&lt;/operator&gt;
+      &lt;sources/&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file}.${ifileExtension}&lt;/file&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+    &lt;node id="ReprojectLambertNode"&gt;
+      &lt;operator&gt;Reproject&lt;/operator&gt;
+      &lt;sources&gt;
+          &lt;source&gt;ReadNode&lt;/source&gt;
+      &lt;/sources&gt;
+
+      &lt;parameters&gt;
+          &lt;crs&gt;
+              PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",
+                     GEOGCS["World Geodetic System 1984",
+                            DATUM["World Geodetic System 1984",
+                                  SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+                            AUTHORITY["EPSG","6326"]],
+                     PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+                     UNIT["degree", 0.017453292519943295],
+                     AXIS["Geodetic longitude", EAST],
+                     AXIS["Geodetic latitude", NORTH]],
+              PROJECTION["Lambert_Azimuthal_Equal_Area"],
+              PARAMETER["latitude_of_center", ${lat}],
+              PARAMETER["longitude_of_center", ${lon}],
+              PARAMETER["false_easting", 0.0],
+              PARAMETER["false_northing", 0.0],
+              UNIT["m", 1.0],
+              AXIS["Easting", EAST],
+              AXIS["Northing", NORTH]]
+          &lt;/crs&gt;
+          &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+          &lt;orientation&gt;0.0&lt;/orientation&gt;
+          &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+          &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+          &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+          &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+          &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+          &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
+          &lt;maskExpression&gt;${maskExpression}&lt;/maskExpression&gt;
+          &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
+          &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
+      &lt;/parameters&gt;
+
+    &lt;/node&gt;
+
+    &lt;node id="WriteNode"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;ReprojectLambertNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file}_${ofileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+<b>File = WorkflowEx01.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+ifileExtension=nc
+ofileSuffix=Reprojected
+ofileFormat=NetCDF-CF
+ofileExtension=nc
+
+lat=37.0
+lon=-76.0
+pixelSize=1000.0
+resampling=Bilinear
+maskExpression=(qual_sst == 0 or qual_sst == 1) and !l2_flags.HISATZEN
+transferValidPixelExpression=true
+applyValidPixelExpression=true
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+<br><br><br>
+
+
+</body>
+</html>

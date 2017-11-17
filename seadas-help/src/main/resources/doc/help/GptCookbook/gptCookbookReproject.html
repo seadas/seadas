@@ -28,8 +28,9 @@
                 <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example1" class="invisibleLink">Geographic Lat/Lon Projection</a></p>
                 <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example2" class="invisibleLink">Oblique Stereographic Projection</a></p>
                 <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example3" class="invisibleLink">Lambert Azimuthal Equal AreaProjection</a></p>
-                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example4" class="invisibleLink">True Color Imagery</a></p>
-                <p class="toc">Example 5&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example5" class="invisibleLink">Geographic Lat/Lon Projection (alternate)</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example4" class="invisibleLink">Lambert Azimuthal Equal Area Projection (SST)</a></p>
+                <p class="toc">Example 5&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example5" class="invisibleLink">True Color Imagery</a></p>
+                <p class="toc">Example 6&nbsp;&nbsp;<a href="gptCookbookReproject.html#Example6" class="invisibleLink">Geographic Lat/Lon Projection (alternate)</a></p>
 
                 <br>
                 <p class="toc">Notes 1&nbsp;&nbsp;<a href="gptCookbookReproject.html#Notes1" class="invisibleLink">Resampling Options</a></p>
@@ -454,12 +455,84 @@ gpt ReprojectLambertAz.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2
 
 
 
-    
 
 
 <br><br><br><hr>
 <a name="Example4"></a>
-    <p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;True Color Imagery</p>
+<p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Lambert Azimuthal Equal Area Projection (SST)</p>
+<br>
+<p>
+    Same as example 3 except for SST file.
+</p>
+
+
+<p>
+    See Example 3 for the file "ReprojectLambertAz.xml".
+</p>
+
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p>
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt ReprojectLambertAz.xml -p ReprojectUSMidAtlantic.par -Ssource=A2010283180500.L2_LAC_SST.nc -t ReprojectEx04.nc
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = ReprojectUSMidAtlantic.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+lat=37.0
+lon=-76.0
+pixelSize=1000.0
+resampling=Bilinear
+maskExpression=qual_sst == 0 or  qual_sst == 1
+transferValidPixelExpression=true
+applyValidPixelExpression=true
+</pre>
+</td></tr></table>
+
+
+<p>
+    Note: the SeaDAS reader for level2 SST creates quality masks.  An alternate way to formulate the expression
+    in ReprojectUSMidAtlantic.par would be:
+</p>
+<br>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+lat=37.0
+lon=-76.0
+pixelSize=1000.0
+resampling=Bilinear
+maskExpression='Best (SST)' or 'Good (SST)'
+transferValidPixelExpression=true
+applyValidPixelExpression=true
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example5"></a>
+    <p class="subSectionTitle2">Example 5&nbsp;&nbsp;&nbsp;&nbsp;True Color Imagery</p>
 <br>
 <p>
     This is basically the same as example 2 except refined for something like true color.  In this case
@@ -551,8 +624,8 @@ gpt Reproject_TC.xml {IFILE} -Plat={LAT} -Plon={LON} -Pres={RES} -t {OFILE}
 
 
 <br><br><br><hr>
-<a name="Example5"></a>
-<p class="subSectionTitle2">Example 5&nbsp;&nbsp;&nbsp;&nbsp;Geographic Lat/Lon Projection (alternate)</p>
+<a name="Example6"></a>
+<p class="subSectionTitle2">Example 6&nbsp;&nbsp;&nbsp;&nbsp;Geographic Lat/Lon Projection (alternate)</p>
 <br>
 
 <p>
@@ -564,14 +637,14 @@ This is identical to Example 1 except illustrates placing the entire CRS within 
 <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt ReprojectEx05.xml -p ReprojectEx05.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx05.dim
+gpt ReprojectEx06.xml -p ReprojectEx06.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx06.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-<b>File = ReprojectEx05.xml</b>
+<b>File = ReprojectEx06.xml</b>
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 
@@ -607,7 +680,7 @@ gpt ReprojectEx05.xml -p ReprojectEx05.par -Ssource=A2017023193500.L2_LAC_OC.nc 
 
 <br>
 <p>
-<b>File = ReprojectEx05.par</b>
+<b>File = ReprojectEx06.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">

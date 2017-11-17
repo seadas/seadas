@@ -1,0 +1,696 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The GPT Cookbook: Workflow Example 2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<p>
+
+    <div class="center">
+        <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+        <h1>The GPT Cookbook</h1>
+        <h1>Workflow 3</h1>
+<p class="chapterTitle">Reproject-Collocate-BandMaths<br>Subset-LandWater-StatisticsOp</p>
+
+<br><br>
+<table width="800">
+    <tr>
+        <td bgcolor="#fff9e9">
+
+            <table class="invisibletable4">
+                <tr>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                </tr>
+                <tr class="invisibletable4">
+                    <td class="invisibletable4" nowrap="1">Read</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Reproject</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Collocate</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; BandMaths</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Subset</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; LandWater</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="invisibletable4" nowrap="1">Read</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Reproject</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">--&gt; StatisticsOp</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                    <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                </tr>
+
+            </table>
+
+        </td>
+
+
+    </tr>
+</table>
+
+
+</div>
+<br><br><br>
+
+<p>
+    This is a large example using a multitude of operators.  It enables a comparison of two distinct level2 files.
+</p>
+
+<pre class="i0">
+This example takes two input level2 files then:
+    1. Reprojects each file applying quality masking and uses a Lambert Azimuthal Equal Area projection
+    2. Collocates the reprojected files (with file1 treated as the reference crs)
+    3. Adds two math bands (a difference band and ratio band of two desired primary bands)
+    4  Subsets to reduce to only the two primary bands, plus the difference band and ratio band
+    5. Adds land and water mask
+    6. Statistics on the two bands, plus the difference band and ratio band
+    7. Writes out the two reprojected files (NetCDF)
+    8  Writes out the collocated file (NetCDF)
+    9. Writes out the mathband file (NetCDF)
+    10. Writes out the subset file (NetCDF)
+    11. Writes out the landWater file (both NetCDF and BEAM-DIMAP*)
+
+    * Masks do not get saved when writing out in formats other than BEAM-DIMAP
+</pre>
+
+
+
+<p><i>For more on the command line parameters used here see commented notes in "WorkflowEx03.par".</i></p>
+
+<p><i>Note: Many of the parameters used in this example have the same value for each band and could each be consolidated
+    into a single parameter.  The separation of these parameters (using 'file1Type' and 'file2Type' instead of 'fileType') was
+    done to create a more versatile example.</i></p>
+<p><i>Note: This example could easily be adapted to compare aggregate files such as level-3 or Mosaic files.</i></p>
+
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p>
+
+<p>
+    For a comparison of sst within two distinct SST suite level2 files (a day and a night file).
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WorkflowEx03.xml -p WorkflowEx03_SST.par -Pfile1=A2010283180500.L2_LAC_SST.nc -Pfile2=A2010283070000.L2_LAC_SST.nc -Pfile1Short=A20102831805 -Pfile2Short=A20102830700 -Pfile1Band=sst -Pfile2Band=sst -Phome=$HOME
+</pre>
+</td></tr></table>
+
+
+<p>
+    ... or for a comparison of chlor_a within two distinct OC suite level2 files.
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc -Pfile2=T2010282154500.L2_LAC_OC.nc -Pfile1Short=A20102831805 -Pfile2Short=T20102821545 -Pfile1Band=chlor_a -Pfile2Band=chlor_a -Phome=$HOME
+</pre>
+</td></tr></table>
+
+
+<p>
+    ... or similarly for a comparison of Kd_490 within two distinct OC suite level2 files.
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc -Pfile2=T2010282154500.L2_LAC_OC.nc -Pfile1Short=A20102831805 -Pfile2Short=T20102821545 -Pfile1Band=Kd_490 -Pfile2Band=Kd_490 -Phome=$HOME
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = WorkflowEx03.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="WorkflowEx03Graph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+    &lt;node id="ReadNode1"&gt;
+      &lt;operator&gt;Read&lt;/operator&gt;
+      &lt;sources/&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1}&lt;/file&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+    &lt;node id="ReadNode2"&gt;
+      &lt;operator&gt;Read&lt;/operator&gt;
+      &lt;sources/&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file2}&lt;/file&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+    &lt;node id="ReprojectNode1"&gt;
+      &lt;operator&gt;Reproject&lt;/operator&gt;
+      &lt;sources&gt;
+          &lt;source&gt;ReadNode1&lt;/source&gt;
+      &lt;/sources&gt;
+
+      &lt;parameters&gt;
+          &lt;crs&gt;
+              PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",
+                     GEOGCS["World Geodetic System 1984",
+                            DATUM["World Geodetic System 1984",
+                                  SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+                            AUTHORITY["EPSG","6326"]],
+                     PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+                     UNIT["degree", 0.017453292519943295],
+                     AXIS["Geodetic longitude", EAST],
+                     AXIS["Geodetic latitude", NORTH]],
+              PROJECTION["Lambert_Azimuthal_Equal_Area"],
+              PARAMETER["latitude_of_center", ${lat}],
+              PARAMETER["longitude_of_center", ${lon}],
+              PARAMETER["false_easting", 0.0],
+              PARAMETER["false_northing", 0.0],
+              UNIT["m", 1.0],
+              AXIS["Easting", EAST],
+              AXIS["Northing", NORTH]]
+          &lt;/crs&gt;
+          &lt;resampling&gt;${reprojectionResampling}&lt;/resampling&gt;
+          &lt;orientation&gt;0.0&lt;/orientation&gt;
+          &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+          &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+          &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+          &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+          &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+          &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
+          &lt;maskExpression&gt;${file1ReprojectMaskExpression}&lt;/maskExpression&gt;
+          &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
+          &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
+      &lt;/parameters&gt;
+
+    &lt;/node&gt;
+
+
+
+    &lt;node id="ReprojectNode2"&gt;
+      &lt;operator&gt;Reproject&lt;/operator&gt;
+      &lt;sources&gt;
+          &lt;source&gt;ReadNode2&lt;/source&gt;
+      &lt;/sources&gt;
+
+      &lt;parameters&gt;
+          &lt;crs&gt;
+              PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",
+                     GEOGCS["World Geodetic System 1984",
+                            DATUM["World Geodetic System 1984",
+                                  SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+                            AUTHORITY["EPSG","6326"]],
+                     PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+                     UNIT["degree", 0.017453292519943295],
+                     AXIS["Geodetic longitude", EAST],
+                     AXIS["Geodetic latitude", NORTH]],
+              PROJECTION["Lambert_Azimuthal_Equal_Area"],
+              PARAMETER["latitude_of_center", ${lat}],
+              PARAMETER["longitude_of_center", ${lon}],
+              PARAMETER["false_easting", 0.0],
+              PARAMETER["false_northing", 0.0],
+              UNIT["m", 1.0],
+              AXIS["Easting", EAST],
+              AXIS["Northing", NORTH]]
+          &lt;/crs&gt;
+          &lt;resampling&gt;${reprojectionResampling}&lt;/resampling&gt;
+          &lt;orientation&gt;0.0&lt;/orientation&gt;
+          &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+          &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+          &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+          &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+          &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+          &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
+          &lt;maskExpression&gt;${file2ReprojectMaskExpression}&lt;/maskExpression&gt;
+          &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
+          &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
+      &lt;/parameters&gt;
+
+    &lt;/node&gt;
+
+
+    &lt;node id="CollocateNode"&gt;
+      &lt;operator&gt;Collocate&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;master&gt;ReprojectNode1&lt;/master&gt;
+        &lt;slave&gt;ReprojectNode2&lt;/slave&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+          &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
+          &lt;renameMasterComponents&gt;${renameReference}&lt;/renameMasterComponents&gt;
+          &lt;renameSlaveComponents&gt;${renameDependent}&lt;/renameSlaveComponents&gt;
+          &lt;masterComponentPattern&gt;${ORIGINAL_NAME}_${file1Short}&lt;/masterComponentPattern&gt;
+          &lt;slaveComponentPattern&gt;${ORIGINAL_NAME}_${file2Short}&lt;/slaveComponentPattern&gt;
+          &lt;resamplingType&gt;${collocationResampling}&lt;/resamplingType&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+    &lt;node id="BandMathsNode"&gt;
+      &lt;operator&gt;BandMaths&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;CollocateNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;copySourceFile&gt;true&lt;/copySourceFile&gt;
+        &lt;targetBands&gt;
+
+          &lt;targetBand&gt;
+            &lt;name&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff&lt;/name&gt;
+            &lt;type&gt;${diffBandType}&lt;/type&gt;
+            &lt;expression&gt;${file1Band}_${file1Short} - ${file2Band}_${file2Short}&lt;/expression&gt;
+            &lt;description&gt;${file1Band}_${file1Short} - ${file2Band}_${file2Short}&lt;/description&gt;
+            &lt;unit&gt;${diffBandUnit}&lt;/unit&gt;
+            &lt;validExpression&gt;${diffBandValidExpression}&lt;/validExpression&gt;
+            &lt;noDataValue&gt;${diffBandNoDataValue}&lt;/noDataValue&gt;
+          &lt;/targetBand&gt;
+
+          &lt;targetBand&gt;
+            &lt;name&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_ratio&lt;/name&gt;
+            &lt;type&gt;${diffBandType}&lt;/type&gt;
+            &lt;expression&gt;if (${file2Band}_${file2Short} != 0) then (${file1Band}_${file1Short} / ${file2Band}_${file2Short}) else NaN&lt;/expression&gt;
+            &lt;description&gt;if (${file2Band}_${file2Short} != 0) then (${file1Band}_${file1Short} / ${file2Band}_${file2Short}) else NaN&lt;/description&gt;
+            &lt;unit&gt;${diffBandUnit}&lt;/unit&gt;
+            &lt;validExpression&gt;${diffBandValidExpression}&lt;/validExpression&gt;
+            &lt;noDataValue&gt;${diffBandNoDataValue}&lt;/noDataValue&gt;
+          &lt;/targetBand&gt;
+
+        &lt;/targetBands&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+
+  &lt;node id="SubsetNode"&gt;
+    &lt;operator&gt;Subset&lt;/operator&gt;
+    &lt;sources&gt;
+        &lt;source&gt;BandMathsNode&lt;/source&gt;
+    &lt;/sources&gt;
+
+    &lt;parameters&gt;
+        &lt;bandNames&gt;${file1Band}_${file1Short},${file2Band}_${file2Short},${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff,${file1Band}_${file1Short}_${file2Band}_${file2Short}_ratio&lt;/bandNames&gt;
+    &lt;/parameters&gt;
+
+  &lt;/node&gt;
+
+
+
+  &lt;node id="LandWaterMaskNode"&gt;
+    &lt;operator&gt;LandWaterMask&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;source&gt;SubsetNode&lt;/source&gt;
+    &lt;/sources&gt;
+    &lt;parameters&gt;
+      &lt;resolution&gt;${resolution}&lt;/resolution&gt;
+      &lt;superSamplingFactor&gt;${superSamplingFactor}&lt;/superSamplingFactor&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+
+
+    &lt;node id="StatisticsOpNode"&gt;
+      &lt;operator&gt;StatisticsOp&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;SubsetNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;bandConfigurations&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${file1Band}_${file1Short}&lt;/sourceBandName&gt;
+            &lt;validPixelExpression&gt;!nan(${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff)&lt;/validPixelExpression&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${file2Band}_${file2Short}&lt;/sourceBandName&gt;
+            &lt;validPixelExpression&gt;!nan(${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff)&lt;/validPixelExpression&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+          &lt;bandConfiguration&gt;
+            &lt;sourceBandName&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_ratio&lt;/sourceBandName&gt;
+          &lt;/bandConfiguration&gt;
+        &lt;/bandConfigurations&gt;
+        &lt;outputAsciiFile&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${statisticsFileSuffix}.txt&lt;/outputAsciiFile&gt;
+        &lt;percentiles&gt;${percentiles}&lt;/percentiles&gt;
+        &lt;numBins&gt;${numBins}&lt;/numBins&gt;
+        &lt;calculateMedian&gt;${calculateMedian}&lt;/calculateMedian&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+
+    &lt;node id="WriteReprojectNode1"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;ReprojectNode1&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${reprojectedFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+    &lt;node id="WriteReprojectNode2"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;ReprojectNode2&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file2Short}_${file2Type}_${reprojectedFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+    &lt;node id="WriteCollocateNode"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;CollocateNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+    &lt;node id="WriteBandMathsNode"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;BandMathsNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+
+    &lt;node id="WriteSubsetNode"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;SubsetNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+    &lt;node id="WriteLandWaterMaskNode"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;LandWaterMaskNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${landWaterFileSuffix}.${ofileExtension}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+        &lt;node id="WriteLandWaterMaskNodeFormat2"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;LandWaterMaskNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${landWaterFileSuffix}.${ofileExtension2}&lt;/file&gt;
+        &lt;formatName&gt;${ofileFormat2}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<!--&lt;node id="WriteImageNode"&gt;-->
+<!--&lt;operator&gt;WriteImage&lt;/operator&gt;-->
+<!--&lt;sources&gt;-->
+<!--&lt;source&gt;LandWaterMaskNode&lt;/source&gt;-->
+<!--&lt;/sources&gt;-->
+<!--&lt;parameters&gt;-->
+<!--&lt;sourceBandName&gt;${file1Band}_${file1Short}_${file2Band}_${file2Short}_diff&lt;/sourceBandName&gt;-->
+<!--&lt;filePath&gt;${file1Short}_${file1Type}_${file2Short}_${file2Type}_${collocatedFileSuffix}_${bandMathsFileSuffix}_${subsetFileSuffix}_${landWaterFileSuffix}.${writeImageFormat}&lt;/filePath&gt;-->
+<!--&lt;formatName&gt;${writeImageFormat}&lt;/formatName&gt;-->
+<!--&lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;-->
+<!--&lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;-->
+<!--&lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;-->
+<!--&lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;-->
+<!--&lt;level&gt;${level}&lt;/level&gt;-->
+<!--&lt;scaleType&gt;${scaleType}&lt;/scaleType&gt;-->
+<!--&lt;/parameters&gt;-->
+<!--&lt;/node&gt;-->
+
+
+
+
+<!--&lt;node id="WriteImageNodeTest"&gt;-->
+<!--&lt;operator&gt;WriteImage&lt;/operator&gt;-->
+<!--&lt;sources&gt;-->
+<!--&lt;source&gt;SubsetNode&lt;/source&gt;-->
+<!--&lt;/sources&gt;-->
+<!--&lt;parameters&gt;-->
+<!--&lt;sourceBandName&gt;${file1Band}_${file1Short}&lt;/sourceBandName&gt;-->
+<!--&lt;filePath&gt;${file1Band}_${file1Short}_WriteImage.${writeImageFormat}&lt;/filePath&gt;-->
+<!--&lt;formatName&gt;${writeImageFormat}&lt;/formatName&gt;-->
+<!--&lt;cpdFilePath&gt;${home}/${cpdFilePath}&lt;/cpdFilePath&gt;-->
+<!--&lt;cpdAutoDistribute&gt;${cpdAutoDistribute}&lt;/cpdAutoDistribute&gt;-->
+<!--&lt;colourScaleMin&gt;${colourScaleMin}&lt;/colourScaleMin&gt;-->
+<!--&lt;colourScaleMax&gt;${colourScaleMax}&lt;/colourScaleMax&gt;-->
+<!--&lt;level&gt;${level}&lt;/level&gt;-->
+<!--&lt;scaleType&gt;${scaleType}&lt;/scaleType&gt;-->
+<!--&lt;/parameters&gt;-->
+<!--&lt;/node&gt;-->
+
+
+
+<br>
+<p>
+    <b>File = WorkflowEx03_SST.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+# Read operator parameters (commented out parameters are optionally being sent in at command line)
+# file1=A2010283180500.L2_LAC_SST.nc  -- this is the input file which will act as the reference/master in the collocation step
+# file2=A2010283070000.L2_LAC_SST.nc  -- this input file will act as the dependent/slave in the collocation step
+ifileExtension=nc
+
+
+# Write operator parameters (commented out parameters are optionally being sent in at command line)
+# file1Short=A283180500  -- this name gets used as the suffix for the bands collocated from file1, and for constructing the collocated output file name
+# file2Short=A283070000  -- this name gets used as the suffix for the bands collocated from file2, and for constructing the collocated output file name
+# file1Type and file2Type is used in constructing the output file names
+# These 4 parameters are unique to SST products.  To compare OC or IOP files you would need to alter these 4 parameters
+file1Type=L2_LAC_SST
+file2Type=L2_LAC_SST
+#file1Band=sst
+#file2Band=sst
+
+reprojectedFileSuffix=Reprojected
+collocatedFileSuffix=Collocated
+bandMathsFileSuffix=BandMaths
+subsetFileSuffix=Subset
+landWaterFileSuffix=LandWater
+
+ofileFormat=NetCDF-CF
+ofileExtension=nc
+ofileFormat2=BEAM-DIMAP
+ofileExtension2=dim
+
+
+# Reproject operator parameters
+lat=37.0
+lon=-76.0
+pixelSize=1000.0
+reprojectionResampling=Bilinear
+transferValidPixelExpression=true
+applyValidPixelExpression=true
+
+# The reprojectMaskExpression is unique to SST products and flags.  To compare OC or IOP files you would need to alter this expression
+file1ReprojectMaskExpression=(qual_sst == 0 or qual_sst == 1) and !l2_flags.HISATZEN
+file2ReprojectMaskExpression=(qual_sst == 0 or qual_sst == 1) and !l2_flags.HISATZEN
+
+
+# Collocate operator parameters
+renameReference=true
+renameDependent=true
+collocationResampling=NEAREST_NEIGHBOUR
+
+
+# BandMaths operator parameters
+diffBandType=float64
+diffBandUnit=Celsius
+diffBandValidExpression=
+diffBandNoDataValue=NaN
+
+
+# LandWaterMask operator parameters
+resolution=1000
+superSamplingFactor=3
+
+
+# StatisticsOp operator parameters
+percentiles=80,85,90
+numBins=1000
+calculateMedian=true
+statisticsFileSuffix=Statistics
+
+
+# WriteImage operator parameters
+writeImageFormat=png
+cpdFilePath=.seadas/beam-ui/auxdata/color-palettes/anomalies1_universal.cpd
+cpdAutoDistribute=false
+colourScaleMin=-4.0
+colourScaleMax=4.0
+level=0
+scaleType=linear
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = WorkflowEx03_OC.par</b>
+</p>
+
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+# Read operator parameters (commented out parameters are optionally being sent in at command line)
+# file1=A2010283180500.L2_LAC_SST.nc  -- this is the input file which will act as the reference/master in the collocation step
+# file2=A2010283070000.L2_LAC_SST.nc  -- this input file will act as the dependent/slave in the collocation step
+ifileExtension=nc
+
+
+# Write operator parameters (commented out parameters are optionally being sent in at command line)
+# file1Short=A283180500  -- this name gets used as the suffix for the bands collocated from file1, and for constructing the collocated output file name
+# file2Short=A283070000  -- this name gets used as the suffix for the bands collocated from file2, and for constructing the collocated output file name
+# file1Type and file2Type is used in constructing the output file names
+# These 4 parameters are unique to OC products.  To compare SST or IOP files you would need to alter these 4 parameters
+file1Type=L2_LAC_OC
+file2Type=L2_LAC_OC
+#file1Band=chlor_a
+#file2Band=chlor_a
+
+reprojectedFileSuffix=Reprojected
+collocatedFileSuffix=Collocated
+bandMathsFileSuffix=BandMaths
+subsetFileSuffix=Subset
+landWaterFileSuffix=LandWater
+
+ofileFormat=NetCDF-CF
+ofileExtension=nc
+ofileFormat2=BEAM-DIMAP
+ofileExtension2=dim
+
+
+# Reproject operator parameters
+lat=37.0
+lon=-76.0
+pixelSize=1000.0
+reprojectionResampling=Bilinear
+transferValidPixelExpression=true
+applyValidPixelExpression=true
+
+# The reprojectMaskExpression is unique to OC products and flags.  To compare SST files you would need to alter this expression
+file1ReprojectMaskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+file2ReprojectMaskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+
+
+# Collocate operator parameters
+renameReference=true
+renameDependent=true
+collocationResampling=NEAREST_NEIGHBOUR
+
+
+# BandMaths operator parameters
+diffBandType=float64
+diffBandUnit=Celsius
+diffBandValidExpression=
+diffBandNoDataValue=NaN
+
+
+# LandWaterMask operator parameters
+resolution=1000
+superSamplingFactor=3
+
+
+# StatisticsOp operator parameters
+percentiles=80,85,90
+numBins=1000
+calculateMedian=true
+statisticsFileSuffix=Statistics
+
+
+# WriteImage operator parameters
+writeImageFormat=png
+cpdFilePath=.seadas/beam-ui/auxdata/color-palettes/anomalies1_universal.cpd
+cpdAutoDistribute=false
+colourScaleMin=-4.0
+colourScaleMax=4.0
+level=0
+scaleType=linear
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br><br><br>
+
+
+</body>
+</html>

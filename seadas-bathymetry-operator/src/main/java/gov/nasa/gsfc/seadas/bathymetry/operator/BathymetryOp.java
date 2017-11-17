@@ -35,7 +35,7 @@ import java.text.MessageFormat;
 @SuppressWarnings({"FieldCanBeLocal"})
 @OperatorMetadata(alias = "BathymetryOp",
         version = "1.0",
-        internal = false,
+        internal = true,
         authors = "Danny Knowles",
         copyright = "",
         description = "Operator creating a bathymetry band, elevation band, topography band and bathymetry mask")
