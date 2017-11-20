@@ -323,7 +323,7 @@
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-statistics-op</artifactId>
-                 <version>7.4.1</version>
+                 <version>7.5</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
@@ -352,6 +352,7 @@
              </dependency>
 
             <!-- SeaDAS System Level Modules -->
+
             <dependency>
                 <groupId>gov.nasa.gsfc.seadas</groupId>
                 <artifactId>seadas-app</artifactId>
@@ -810,6 +811,11 @@
     </scm>
 
     <repositories>
+        <repository>
+            <id>jide</id>
+            <name>Internal JIDE repository</name>
+            <url>https://mvnrepository.com/artifact/</url>
+        </repository>
         <!--<repository>-->
             <!--<id>jide</id>-->
             <!--<name>Internal JIDE repository</name>-->
