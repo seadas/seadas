@@ -322,7 +322,7 @@
             <dependency>
                  <groupId>org.esa.beam</groupId>
                  <artifactId>beam-statistics-op</artifactId>
-                 <version>${beam.versionRange}</version>
+                 <version>7.5</version>
              </dependency>
             <dependency>
                  <groupId>org.esa.beam</groupId>
@@ -808,8 +808,13 @@
         <repository>
             <id>jide</id>
             <name>Internal JIDE repository</name>
-            <url>https://seadasdev401.domain.pub/mvn-seadas/</url>
+            <url>https://mvnrepository.com/artifact/</url>
         </repository>
+        <!--<repository>-->
+            <!--<id>jide</id>-->
+            <!--<name>Internal JIDE repository</name>-->
+            <!--<url>https://seadasdev401.domain.pub/mvn-seadas/</url>-->
+        <!--</repository>-->
         <repository>
             <id>release.maven.java.net</id>
             <name>java.net Maven Release Repository</name>
