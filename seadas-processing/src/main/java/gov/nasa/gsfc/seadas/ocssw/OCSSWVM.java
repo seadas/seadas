@@ -23,12 +23,10 @@ import static gov.nasa.gsfc.seadas.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
  */
 public class OCSSWVM extends OCSSWRemote {
     public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY = "ocssw.sharedDir";
-    public final static String SEADAS_CLIENT_ID_PROPERTY = "seadas.client.id";
     public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + "ocsswVMServerSharedDir";
 
     String sharedDirPath;
     String workingDir;
-
 
 
     public OCSSWVM() {
@@ -37,18 +35,15 @@ public class OCSSWVM extends OCSSWRemote {
 
     }
 
-    private void initialize() {
+    @Override
+    public void initialize() {
         sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY, OCSSW_VM_SERVER_SHARED_DIR_PROPERTY_DEFAULT_VALUE);
-//        String remoteServerIPAddress = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY, "localhost");
-//        String remoteServerPortNumber = RuntimeContext.getConfig().getContextProperty(OCSSW_SERVER_PORT_PROPERTY, OCSSW_VIRTUAL_SERVER_PORT_FORWWARD_NUMBER_FOR_CLIENT);
         OCSSWClient ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
-        if (ocsswInfo.isOcsswExist()) {
-            jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
-            target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
-            workingDir = sharedDirPath + File.separator + clientId + File.separator + jobId + File.separator;
-        }
+        jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+        clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
+        target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
+        workingDir = sharedDirPath + File.separator + clientId + File.separator + jobId + File.separator;
     }
 
     public boolean uploadIFile(String ifileName) {
@@ -75,6 +70,7 @@ public class OCSSWVM extends OCSSWRemote {
         ProgressMonitor pm = null;
 
         try {
+            copyFile(fileName);
             String fileTypeString = Files.probeContentType(new File(fileName).toPath());
             if (fileTypeString.equals(MediaType.TEXT_PLAIN)) {
                 String listOfFiles = uploadListedFiles(pm, fileName);
@@ -163,6 +159,7 @@ public class OCSSWVM extends OCSSWRemote {
      */
     @Override
     public Process execute(ProcessorModel processorModel) {
+        this.processorModel = processorModel;
         Process Process = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = null;
