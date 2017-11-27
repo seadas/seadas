@@ -222,11 +222,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
                 int exitCode = processObserver.getProcessExitValue();
 
-                pm.done();
-                SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",
-                        "Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + processorModel.getExecutionLogMessage());
-
-                if (exitCode != 0)
+                if (exitCode == 0) {
+                    pm.done();
+                    SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",
+                            "Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + processorModel.getExecutionLogMessage());
+                } else
                 {
                    throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
