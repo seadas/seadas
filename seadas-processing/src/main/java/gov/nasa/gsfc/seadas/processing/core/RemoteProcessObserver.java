@@ -143,17 +143,19 @@ public class RemoteProcessObserver extends ProcessObserver {
 
 
         private InputStream readProcessStream(int portNumber) {
-            String hostName = null;
+            String hostName = "0.0.0.0";
             InputStream inputStream = null;
             try {
                 Socket echoSocket = new Socket(hostName, portNumber);
                 inputStream = echoSocket.getInputStream();
             } catch (UnknownHostException e) {
                 System.err.println("Don't know about host " + hostName);
+                e.printStackTrace();
                 System.exit(1);
             } catch (IOException e) {
                 System.err.println("Couldn't get I/O for the connection to " +
-                        hostName);
+                        hostName + " at port number " + portNumber);
+                e.printStackTrace();
                 System.exit(1);
             }
             return inputStream;
