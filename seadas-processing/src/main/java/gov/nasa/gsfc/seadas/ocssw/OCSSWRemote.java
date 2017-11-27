@@ -61,7 +61,7 @@ public class OCSSWRemote extends OCSSW {
         initialize();
     }
 
-    private void initialize() {
+    public void initialize() {
         ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
         jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
