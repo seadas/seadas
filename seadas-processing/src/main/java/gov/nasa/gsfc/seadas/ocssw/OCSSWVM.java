@@ -2,9 +2,11 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
@@ -15,8 +17,6 @@ import java.nio.file.Files;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.StringTokenizer;
-
-import static gov.nasa.gsfc.seadas.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -30,29 +30,38 @@ public class OCSSWVM extends OCSSWRemote {
 
 
     public OCSSWVM() {
-
-        this.initialize();
-
-    }
-
-    @Override
-    public void initialize() {
+        super();
         sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY, OCSSW_VM_SERVER_SHARED_DIR_PROPERTY_DEFAULT_VALUE);
-        OCSSWClient ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
-        target = ocsswClient.getOcsswWebTarget();
-        jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-        clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.home"));
-        target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
         workingDir = sharedDirPath + File.separator + clientId + File.separator + jobId + File.separator;
     }
 
+    @Override
     public boolean uploadIFile(String ifileName) {
 
-        if (true) {
-            return true;
-        } else {
-            return false;
-        }
+        ifileUploadSuccess = false;
+
+        VisatApp visatApp = VisatApp.getApp();
+
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                "OCSSW Remote Server File Upload") {
+
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
+
+                pm.beginTask("Copying file '" + ifileName + "' to the remote server and getting ofile name", 2);
+
+                pm.worked(1);
+                try {
+                    copyFile(ifileName);
+                    ifileUploadSuccess = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        pmSwingWorker.executeWithBlocking();
+        return ifileUploadSuccess;
     }
 
     /**
@@ -66,7 +75,6 @@ public class OCSSWVM extends OCSSWRemote {
 
     public boolean uploadClientFile(String fileName) {
 
-        copyFile(fileName);
         ProgressMonitor pm = null;
 
         try {
@@ -116,6 +124,12 @@ public class OCSSWVM extends OCSSWRemote {
         }
 
 
+    }
+
+    @Override
+    public JsonObject getFindOfileJsonObject(String ifileName){
+
+        return target.path("ocssw").path("getOfileName").path(ifileName).path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
     }
 
     private void copyFile(String sourceFilePath) {

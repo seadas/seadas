@@ -58,10 +58,6 @@ public class OCSSWRemote extends OCSSW {
     boolean serverProcessCompleted;
 
     public OCSSWRemote() {
-        initialize();
-    }
-
-    public void initialize() {
         ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
         jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
@@ -69,7 +65,6 @@ public class OCSSWRemote extends OCSSW {
         target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
         setOfileNameFound(false);
     }
-
 
     @Override
     public void setProgramName(String programName) {
@@ -259,7 +254,7 @@ public class OCSSWRemote extends OCSSW {
         }
 
         if (ifileUploadSuccess) {
-            JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            JsonObject jsonObject = getFindOfileJsonObject(ifileName.substring(ifileName.lastIndexOf(File.separator) +1 ));
             ofileName = jsonObject.getString("ofileName");
             missionName = jsonObject.getString("missionName");
             fileType = jsonObject.getString("fileType");
@@ -276,6 +271,10 @@ public class OCSSWRemote extends OCSSW {
             return null;
         }
 
+    }
+
+    public JsonObject getFindOfileJsonObject(String ifileName){
+        return target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
     }
 
     @Override
