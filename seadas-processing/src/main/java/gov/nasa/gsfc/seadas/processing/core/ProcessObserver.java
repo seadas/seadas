@@ -71,6 +71,7 @@ public class ProcessObserver {
                 //      * 1. just leave, and let the process be unattended (current impl.)
                 //        2. destroy the process
                 //        3. throw a checked ProgressObserverException
+                e.printStackTrace();
                 return;
             }
             if (progressMonitor.isCanceled()) {
