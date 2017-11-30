@@ -9,6 +9,9 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemote.PROCESS_STATUS_NONEXIST;
+import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemote.PROCESS_STATUS_STARTED;
+
 /**
  * Created by aabduraz on 9/12/17.
  */
@@ -58,6 +61,7 @@ public class RemoteProcessObserver extends ProcessObserver {
                 //      * 1. just leave, and let the process be unattended (current impl.)
                 //        2. destroy the process
                 //        3. throw a checked ProgressObserverException
+                e.printStackTrace();
                 return;
             }
             if (progressMonitor.isCanceled()) {
@@ -145,18 +149,24 @@ public class RemoteProcessObserver extends ProcessObserver {
         private InputStream readProcessStream(int portNumber) {
             String hostName = "0.0.0.0";
             InputStream inputStream = null;
+            boolean serverProcessStarted = false;
             try {
+                String processStatus = "-100";
+                while (!serverProcessStarted) {
+                    processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+                    if ( ! processStatus.equals(PROCESS_STATUS_NONEXIST ) ) {
+                        serverProcessStarted = true;
+                    }
+                }
                 Socket echoSocket = new Socket(hostName, portNumber);
                 inputStream = echoSocket.getInputStream();
             } catch (UnknownHostException e) {
-                System.err.println("Don't know about host " + hostName);
+                System.err.println("Unknown host " + hostName);
                 e.printStackTrace();
-                System.exit(1);
             } catch (IOException e) {
                 System.err.println("Couldn't get I/O for the connection to " +
                         hostName + " at port number " + portNumber);
                 e.printStackTrace();
-                System.exit(1);
             }
             return inputStream;
         }
