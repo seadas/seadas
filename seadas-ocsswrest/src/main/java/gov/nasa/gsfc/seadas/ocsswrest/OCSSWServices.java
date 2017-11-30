@@ -153,6 +153,35 @@ public class OCSSWServices {
         return fileInfo;
     }
 
+    @GET
+    @Path("/getOfileName/{ifileName}/{jobId}")
+    @Consumes(MediaType.TEXT_XML)
+    public JsonObject getOfileNameFromIfile(@PathParam("ifileName") String ifileName,
+                                            @PathParam("jobId") String jobId) {
+        String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
+        String ifileFullPathName = currentWorkingDir + File.separator + ifileName;
+        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
+        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
+        SQLiteJDBC.updateInputFilesList(jobId, ifileFullPathName);
+        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, currentWorkingDir + File.separator + ofileName);
+        System.out.println("ofile name = " + ofileName);
+        String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getFieldName());
+        String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName());
+        String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName());
+        ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
+        System.out.println("ofile name = " + ofileName);
+        ofileName = ofileName.substring(ofileName.lastIndexOf(File.separator) + 1);
+        System.out.println("ofile name = " + ofileName);
+        JsonObject fileInfo = Json.createObjectBuilder().add("missionName", missionName)
+                .add("fileType", fileType)
+                .add("programName", programName)
+                .add("ofileName", ofileName)
+                .build();
+        return fileInfo;
+    }
+
+
     @PUT
     @Path("executeOcsswProgram/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
