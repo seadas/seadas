@@ -390,6 +390,8 @@ public class WriteImageOp extends Operator {
             }
         }
 
+        getColorBarLayer(productSceneView);
+
         write3(imageFormat, productSceneView, entireImageSelected, file);
         System.out.println(debug.toString());
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -585,6 +587,10 @@ public class WriteImageOp extends Operator {
                 return layer.getLayerType() instanceof ColorBarLayerType;
             }
         });
+
+        if (colorBarLayer != null) {
+            colorBarLayer.setVisible(true);
+        }
 
         return colorBarLayer;
     }
