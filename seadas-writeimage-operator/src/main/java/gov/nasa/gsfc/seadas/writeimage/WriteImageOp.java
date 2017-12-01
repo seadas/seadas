@@ -334,7 +334,7 @@ public class WriteImageOp extends Operator {
 
         boolean entireImageSelected = true;
         final File file = new File(filePath);
-        String imageFormat = "PNG";
+        String imageFormat = formatName;//"PNG";
 
         if (textAnnotationLayer) {
             if (textAnnotations.length > 0) {
@@ -576,7 +576,7 @@ public class WriteImageOp extends Operator {
     private Layer getColorBarLayer(ProductSceneView productSceneView) {
 
         ShowColorBarOverlayAction showColorBarOverlayAction = new ShowColorBarOverlayAction();
-        RenderedImage colorBarImage = createImage("PNG", productSceneView);
+        RenderedImage colorBarImage = createImage(formatName, productSceneView);//createImage("PNG", productSceneView);
         showColorBarOverlayAction.setColorBarImage(colorBarImage);
         showColorBarOverlayAction.actionPerformed(null);
 
