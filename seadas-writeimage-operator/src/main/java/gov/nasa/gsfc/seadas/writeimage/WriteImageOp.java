@@ -154,7 +154,7 @@ public class WriteImageOp extends Operator {
     @Parameter(description = "Color palette definition file", defaultValue = "nofile.cpd")
     private String cpdFilePath;
 
-    @Parameter(description = "Auto distribute points between min/max", defaultValue = "false")
+    @Parameter(description = "Auto distribute points between min/max", defaultValue = "true")
     private boolean cpdAutoDistribute;
 
     @Parameter(description = "Minimum value of colour scale. Used only if colour palette definition not present.", defaultValue = "0.01")
