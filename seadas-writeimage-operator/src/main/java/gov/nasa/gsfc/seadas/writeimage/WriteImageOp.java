@@ -152,9 +152,6 @@ public class WriteImageOp extends Operator {
     @Parameter(description = "Output image format", defaultValue = "png")
     private String formatName;
 
-    @Parameter(description = "The file to which the color bar image is written.")
-    private String colorbarFilePath;
-
     @Parameter(description = "Color palette definition file", defaultValue = "nofile.cpd")
     private String cpdFilePath;
 
@@ -584,8 +581,6 @@ public class WriteImageOp extends Operator {
         ShowColorBarOverlayAction showColorBarOverlayAction = new ShowColorBarOverlayAction();
         RenderedImage colorBarImage = createImage(formatName, productSceneView);//createImage("PNG", productSceneView);
 
-        final File file = new File(colorbarFilePath);
-        writeColorBar("PNG", colorBarImage, file);
         showColorBarOverlayAction.setColorBarImage(colorBarImage);
         showColorBarOverlayAction.actionPerformed(null);
 
@@ -602,26 +597,6 @@ public class WriteImageOp extends Operator {
         return colorBarLayer;
     }
 
-
-    private void writeColorBar(String imageFormat, RenderedImage image, File file) {
-
-        try {
-
-                if ("JPEG".equalsIgnoreCase(imageFormat)) {
-                    image = BandSelectDescriptor.create(image, new int[]{0, 1, 2}, null);
-                }
-                final OutputStream stream = new FileOutputStream(file);
-                try {
-                    ImageEncoder encoder = ImageCodec.createImageEncoder(imageFormat, stream, null);
-                    encoder.encode(image);
-                } finally {
-                    stream.close();
-                }
-
-        } catch (IOException ioe) {
-
-        }
-    }
 
 
     /**
