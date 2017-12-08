@@ -707,7 +707,11 @@ public class OCSSWRemote extends OCSSW {
                         commandItem = option.getValue();
                     }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
-                    commandItem = option.getName() + "=" + option.getValue();
+                    if (option.getType().equals(ParamInfo.Type.IFILE) || option.getType().equals(ParamInfo.Type.OFILE) ) {
+                        commandItem = option.getName() + "=" + option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
+                    } else {
+                        commandItem = option.getName() + "=" + option.getValue();
+                    }
                     if (option.getType().equals(ParamInfo.Type.OFILE)) {
                         ofileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
                     }
