@@ -146,6 +146,7 @@ public class WriteImageOp extends Operator {
     @Parameter(description = "Add tick to the graticule lat/lon labels.", defaultValue = "true")
     private boolean graticuleLayerTickEnabled;
 
+
     @Parameter(description = "The file to which the image is written.")
     private String filePath;
     @Parameter(description = "Output image format", defaultValue = "png")
@@ -154,7 +155,7 @@ public class WriteImageOp extends Operator {
     @Parameter(description = "Color palette definition file", defaultValue = "nofile.cpd")
     private String cpdFilePath;
 
-    @Parameter(description = "Auto distribute points between min/max", defaultValue = "false")
+    @Parameter(description = "Auto distribute points between min/max", defaultValue = "true")
     private boolean cpdAutoDistribute;
 
     @Parameter(description = "Minimum value of colour scale. Used only if colour palette definition not present.", defaultValue = "0.01")
@@ -577,6 +578,7 @@ public class WriteImageOp extends Operator {
 
         ShowColorBarOverlayAction showColorBarOverlayAction = new ShowColorBarOverlayAction();
         RenderedImage colorBarImage = createImage(formatName, productSceneView);//createImage("PNG", productSceneView);
+
         showColorBarOverlayAction.setColorBarImage(colorBarImage);
         showColorBarOverlayAction.actionPerformed(null);
 
@@ -588,6 +590,8 @@ public class WriteImageOp extends Operator {
 
         return colorBarLayer;
     }
+
+
 
     /**
      * If a mask value is provided, creates and applies a Mask to the
