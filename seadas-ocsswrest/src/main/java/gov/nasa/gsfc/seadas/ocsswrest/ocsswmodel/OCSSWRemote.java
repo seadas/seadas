@@ -11,6 +11,10 @@ import javax.swing.*;
 import javax.ws.rs.core.MediaType;
 import java.io.*;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,6 +22,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.*;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.OCSSW_INSTALLER_URL;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTALLER;
 
 /**
  * Created by aabduraz on 5/15/17.
@@ -140,7 +146,7 @@ public class OCSSWRemote {
             commandArray = new String[commandArrayKeys.size() + 1];
             commandArray[i++] = programName;
         } else {
-            commandArray  = new String[commandArrayKeys.size() ];
+            commandArray = new String[commandArrayKeys.size()];
         }
         String commandArrayElement;
         for (Object element : array) {
@@ -349,17 +355,17 @@ public class OCSSWRemote {
 
     public void executeProcess(String[] commandArray, String jobId) {
 
+
+        System.out.println("command array content: ");
+        for (int j = 0; j < commandArray.length; j++) {
+            System.out.print(commandArray[j]);
+        }
+        System.out.println("\n" + "command array content ended ");
+
         SwingWorker swingWorker = new SwingWorker() {
 
             @Override
             protected Object doInBackground() throws Exception {
-                StringBuilder sb = new StringBuilder();
-                for (String item : commandArray) {
-                    sb.append(item + " ");
-                }
-
-                System.out.println("command array content: " + sb.toString());
-
                 ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
                 Process process = null;
                 try {
@@ -376,7 +382,7 @@ public class OCSSWRemote {
                     final ORSProcessObserver processObserver = new ORSProcessObserver(process, programName, jobId);
                     processObserver.startAndWait();
                 } else {
-                    if (process.exitValue() == 0 ) {
+                    if (process.exitValue() == 0) {
                         SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
                     } else {
                         SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.FAILED.getValue());
