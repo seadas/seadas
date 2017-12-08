@@ -111,7 +111,6 @@ public class OCSSWServerModel {
                 ocsswExist = true;
             } else {
                 ocsswExist = false;
-                downloadOCSSWInstaller();
             }
             ocsswRoot = ocsswRootPath;
             ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
@@ -119,6 +118,7 @@ public class OCSSWServerModel {
             ocsswBinDirPath = ocsswRoot + File.separator + OCSSW_BIN_DIR_SUFFIX;
             ocsswInstallerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_INSTALLER_PROGRAM;
             ocsswRunnerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_RUNNER_SCRIPT;
+            downloadOCSSWInstaller();
         }
     }
 
