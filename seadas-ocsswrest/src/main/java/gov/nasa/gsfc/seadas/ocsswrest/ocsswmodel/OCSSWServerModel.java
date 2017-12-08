@@ -5,7 +5,14 @@ import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
+
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.OCSSW_INSTALLER_URL;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTALLER;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -104,6 +111,7 @@ public class OCSSWServerModel {
                 ocsswExist = true;
             } else {
                 ocsswExist = false;
+                downloadOCSSWInstaller();
             }
             ocsswRoot = ocsswRootPath;
             ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
@@ -156,6 +164,32 @@ public class OCSSWServerModel {
             }
         }
         return isProgramValid;
+    }
+
+
+    public static  boolean downloadOCSSWInstaller() {
+        boolean ocsswInstalScriptDownloadSuccessful = false;
+        try {
+            URL website = new URL(OCSSW_INSTALLER_URL);
+            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
+            ocsswInstalScriptDownloadSuccessful = true;
+        } catch (MalformedURLException malformedURLException) {
+            System.out.println("URL for downloading install_ocssw.py is not correct!");
+        } catch (FileNotFoundException fileNotFoundException) {
+            System.out.println("ocssw installation script failed to download. \n" +
+                    "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
+                    "possible cause of error: " + fileNotFoundException.getMessage());
+        } catch (IOException ioe) {
+            System.out.println("ocssw installation script failed to download. \n" +
+                    "Please check network connection or 'seadas.ocssw.root' variable in the \"seadas.config\" file. \n" +
+                    "possible cause of error: " + ioe.getLocalizedMessage());
+        } finally {
+            return ocsswInstalScriptDownloadSuccessful;
+        }
     }
 }
 
