@@ -108,6 +108,7 @@ public class ORSProcessObserver {
                 int processStatus = process.waitFor();
                 System.out.println("final process status: " + processStatus);
                 SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), new Integer(process.exitValue()).toString());
+                serverSocket.setReuseAddress(true);
             } catch (IOException e) {
                 System.out.println("Exception caught when trying to listen on port "
                         + portNumber + " or listening for a connection");
