@@ -11,6 +11,7 @@
     <mapID target="doc" url="images/HelpDoc.jpg"/>
 
     <mapID target="gptCookbook" url="GptCookbook/gptCookbook.html"/>
+    <mapID target="ocsswCookbook" url="OcsswCookbook/ocsswCookbook.html"/>
     <mapID target="seadasOverview" url="general/SeaDASOverview.html"/>
     <mapID target="gbrPhoticDepthExampleTutorial" url="general/gbrPhoticDepthExampleTutorial.html"/>
     <mapID target="seadasWhatsNew" url="general/SeaDASWhatsNew.html"/>

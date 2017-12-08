@@ -220,6 +220,8 @@
 
 
             <tocitem text="Introduction" target="processOverview"/>
+            <tocitem text="Cookbook" target="ocsswCookbook"/>
+
             <tocitem text="install_ocssw.py" target="install_ocssw.py"/>
             <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
 

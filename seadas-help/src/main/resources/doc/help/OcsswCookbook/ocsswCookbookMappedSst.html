@@ -1,0 +1,432 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>The OCSSW Cookbook: Binning and Mapping</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<div class="center">
+    <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
+    <h1>The OCSSW Cookbook</h1>
+    <p class="chapterTitle">Binning and Mapping<br>Create SST mapped image from a VIIRS level-2 file</p>
+
+    <br>
+    <table width="500"><tr><td bgcolor="#fff9e9">
+        <p>
+            Create SST mapped image from a VIIRS level-2 file.
+        </p>
+    </td></tr></table>
+
+    <br>
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookMappedSst.html#Example1" class="invisibleLink">SST Mapped Best Quality</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookMappedSst.html#Example2" class="invisibleLink">SST Mapped Standard Quality</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookMappedSst.html#Example3" class="invisibleLink">SST Mapped Average Quality</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookMappedSst.html#Example4" class="invisibleLink">SST Mapped Poor Quality</a></p>
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
+
+
+<div class="center">
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <img src="images/best2.png" border="0"> <br>
+                <i>Example 1: Best<br><br></i>
+            </td>
+            <td class="invisibletable">
+                <img src="images/std2.png" border="0"> <br>
+                <i>Example 2: Standard<br><br></i>
+            </td>
+        </tr>
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <img src="images/avg2.png" border="0"> <br>
+                <i>Example 3: Average<br><br></i>
+            </td>
+            <td class="invisibletable">
+                <img src="images/poor2.png" border="0"> <br>
+                <i>Example 4: Poor<br><br></i>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+
+
+
+<br><br><br><hr>
+<a name="Overview"></a>
+<p class="subSectionTitle2">Overview - DRAFT/NOTES</p>
+<br>
+
+
+<p>
+    This creates a mapped SST file using default setting of the quality flags anc OC masks for masking in the binning process.
+</p>
+
+<p>Resolution: With a goal of producing a 750m resolution mapped SST file, these examples bin at 1km resolution and then map at 750m resolution.
+<b>l2bin</b>In general you want to pick a bin resolution lower than the source resolution.  This is because each source pixel gets
+    put into precisely one bin.  Consequently, having your bin resolution higher than your source resolution will likely result in a peppering
+    of missing data.  Alse, keep in mind that satellite specifications refer to nadir resolution so likely many of your source pixels
+    are actually of a lower resolution than the nadir specification value.<br>
+    <b>l3mapgen</b>The mapping process differs from the strict rules of the binning process.  When mapping, you
+    can increase the resolution of the mapped image through an area interpolation process.
+</p>
+
+<p>
+    <i>Note: Fields in some of these par files such as 'flaguse', and 'qual_prod' are being explicitly set with their default value
+        so you are aware of the actual setting being used.  You could also just not include these particular fields and they will get
+    set with the default from the configurations your particular ocssw mission config directory.  Later examples on this page will show some
+    affects achieved when altering a few of these values.</i>
+</p>
+
+<br>
+
+
+
+
+
+
+
+
+<p>
+    Perhaps you want an image of SST which contains more data, and you don't want those big blocky patches of
+    straylight determined pixels being removed from your image.  This example shows settings to do this in the binning step.
+</p>
+
+<p>
+    Change field qual_max: if you go with the default value qual_max=2, amongst other things, this will have a straylight
+    masking impact.  If you change to qual_max=3 this will not mask the straylight (and will have no quality masking through
+    this particular algorithm)
+</p>
+
+<p>
+    Change field flaguse: With qual_max=3, then the flaguse field is the only field actually doing the masking.  Because the VIIRS
+    SST file is a daytime file, we can take advantage of the existence of the standard OC level2 flags.  This example
+    uses all the standard OC flag defaults, but does not include STRAYLIGHT and COCCOLITH.
+</p>
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example1"></a>
+<p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;SST Mapped Best Quality</p>
+<br>
+
+<p>
+    Applies the highest degree of masking for best quality results
+</p>
+<br>
+
+<p>
+    <b>Command Line Entry</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+l2bin ifile=V2015045190600.L2_SNPP_SST.nc ofile=V2015045190600.L3b_SST_BestQual_1km.nc par=l2bin_SST_BestQual.par
+</pre>
+</td></tr></table>
+
+<br>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+l3mapgen ifile=V2015045190600.L3b_SST_BestQual_1km.nc ofile=V2015045190600.L3m_SST_BestQual_750m.nc par=l3mapgen.par
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = l2bin_SST_BestQual.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+prodtype=regional
+resolution=1
+qual_prod=qual_sst
+qual_max=0
+l3bprod=sst
+flaguse=LAND,HISOLZEN
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = l3mapgen.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+product=sst
+resolution=750
+interp=area
+oformat=netCDF4
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example2"></a>
+<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;SST Mapped Standard Quality</p>
+<br>
+
+<p>
+    This is the standard masking level.
+</p>
+<br>
+
+<p>
+    <b>Command Line Entry</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+l2bin ifile=V2015045190600.L2_SNPP_SST.nc ofile=V2015045190600.L3b_SST_StdQual_1km.nc par=l2bin_SST_StdQual.par
+</pre>
+</td></tr></table>
+
+<br>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+l3mapgen ifile=V2015045190600.L3b_SST_StdQual_1km.nc ofile=V2015045190600.L3m_SST_StdQual_750m.nc par=l3mapgen.par
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = l2bin_SST_StdQual.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+prodtype=regional
+resolution=1
+qual_prod=qual_sst
+qual_max=2
+l3bprod=sst
+flaguse=LAND,HISOLZEN
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = l3mapgen.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+product=sst
+resolution=750
+interp=area
+oformat=netCDF4
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example3"></a>
+<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;SST Mapped Average Quality</p>
+<br>
+
+<p>
+    This only uses a limited amount of the OC level2 flag masking (consequentally only useful for daytime SST).
+</p>
+<br>
+
+<p>
+    <b>Command Line Entry</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+l2bin ifile=V2015045190600.L2_SNPP_SST.nc ofile=V2015045190600.L3b_SST_AvgQual_1km.nc par=l2bin_SST_AvgQual.par
+</pre>
+</td></tr></table>
+
+<br>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+l3mapgen ifile=V2015045190600.L3b_SST_AvgQual_1km.nc ofile=V2015045190600.L3m_SST_AvgQual_750m.nc par=l3mapgen.par
+</pre>
+</td></tr></table>
+
+
+
+<br>
+<p>
+    <b>File = l2bin_SST_AvgQual.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+prodtype=regional
+resolution=1
+qual_prod=qual_sst
+qual_max=3
+l3bprod=sst
+flaguse=ATMFAIL,LAND,HISATZEN,CLDICE,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,HIGLINT
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+    <b>File = l3mapgen.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+product=sst
+resolution=750
+interp=area
+oformat=netCDF4
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Example4"></a>
+<p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;SST Mapped Poor Quality</p>
+<br>
+
+<p>
+    This is the lowest possible level of masking without including bad-determined data
+</p>
+<br>
+
+<p>
+    <b>Command Line Entry</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+l2bin ifile=V2015045190600.L2_SNPP_SST.nc ofile=V2015045190600.L3b_SST_PoorQual_1km.nc par=l2bin_SST_PoorQual.par
+</pre>
+</td></tr></table>
+
+<br>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+l3mapgen ifile=V2015045190600.L3b_SST_PoorQual_1km.nc ofile=V2015045190600.L3m_SST_PoorQual_750m.nc par=l3mapgen.par
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = l2bin_SST_PoorQual.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+prodtype=regional
+resolution=1
+qual_prod=qual_sst
+qual_max=3
+l3bprod=sst
+flaguse=LAND,HISOLZEN
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = l3mapgen.par</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+product=sst
+resolution=750
+interp=area
+oformat=netCDF4
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br>
+
+</body>
+</html>
