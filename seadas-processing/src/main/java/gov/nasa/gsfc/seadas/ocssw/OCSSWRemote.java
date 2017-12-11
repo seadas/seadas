@@ -551,7 +551,7 @@ public class OCSSWRemote extends OCSSW {
     }
 
 
-    private void downloadCommonFiles(JsonObject paramJsonObject) {
+    public void downloadCommonFiles(JsonObject paramJsonObject) {
         Set commandArrayKeys = paramJsonObject.keySet();
         String param;
         String ofileFullPathName, ofileName;
@@ -576,7 +576,7 @@ public class OCSSWRemote extends OCSSW {
                     ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
                     Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
-                    SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
+                    SeadasFileUtils.writeToFile(responceStream, ofileDir + File.separator + ofileFullPathName);
                 }
             }
         } catch (Exception e) {
