@@ -145,6 +145,7 @@ public class OCSSWVM extends OCSSWRemote {
         }
     }
 
+
     private void copyMLPFiles(String sourceFilePath) {
         File sourceFile = new File(sourceFilePath);
         String targetFilePathName = workingDir + sourceFilePath.substring(sourceFilePath.lastIndexOf(File.separator) + 1);
@@ -187,12 +188,12 @@ public class OCSSWVM extends OCSSWRemote {
             //copyMLPFiles(parFile.getAbsolutePath());
             //target.path("ocssw").path("executeMLPParFile").path(jobId).request().get(String.class);
             JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
-            downloadFiles(outputFilesList);
+            downloadCommonFiles(outputFilesList);
         } else {
             commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
             Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
             if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                downloadFiles(commandArrayJsonObject);
+                downloadCommonFiles(commandArrayJsonObject);
             }
         }
 
@@ -200,9 +201,20 @@ public class OCSSWVM extends OCSSWRemote {
         return Process;
     }
 
+    private void copyFileFromServerToClient(String sourceFilePathName, String targetFilePathName) {
+        File sourceFile = new File(sourceFilePathName);
+        File targetFile = new File(targetFilePathName);
+        targetFile.getParentFile().mkdirs();
+        try {
+            SeadasFileUtils.copyFileUsingStream(sourceFile, targetFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    //to do: change to copy files instead of uploading
-    private void downloadFiles(JsonObject paramJsonObject) {
+
+    @Override
+    public void downloadCommonFiles(JsonObject paramJsonObject) {
         Set commandArrayKeys = paramJsonObject.keySet();
         String param;
         String ofileFullPathName, ofileName;
@@ -224,10 +236,11 @@ public class OCSSWVM extends OCSSWRemote {
                     } else {
                         ofileFullPathName = param;
                     }
-                    ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
-                    Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
-                    InputStream responceStream = (InputStream) response.getEntity();
-                    SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
+                    ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1 );
+                    copyFileFromServerToClient(workingDir + File.separator + ofileName, ofileDir + File.separator + ofileName);
+                    //Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
+                    //InputStream responceStream = (InputStream) response.getEntity();
+                    //SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
                 }
             }
         } catch (Exception e) {
