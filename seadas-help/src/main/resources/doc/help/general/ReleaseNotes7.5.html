@@ -30,6 +30,7 @@ Highlights of what's new to SeaDAS 7.5
     - Reproject Tool: masking capabilities added
     - CoastLandWater Tool: now available in GPT
     - GPT Cookbook: contains command line usage examples
+    - OCSSW Cookbook: contains command line usage examples (new, so very few entries)
     - Help: extensive rewrite of the Statistics and Reproject help pages
     
 
@@ -65,10 +66,9 @@ PRIMARY PACKAGE
                 b. Uses bin count "numBins".  (Note: the related accuracy setting has been removed.)
                 c. Added field "calculateMedian".
 
-                
-                    
+
         - Reproject Tool
-            1. Masking (both GUI and GPT version)
+            1. Masking (both GUI and GPT)
                     Validation masking feature has been added. 
                     Masks can now be applied to constrain which pixels of the source file are eligible for reprojection.  
                     This feature also enables the user to deactivate the valid pixel expression of the source file and 
@@ -78,6 +78,10 @@ PRIMARY PACKAGE
             3. Organization (GUI only)
                     Minor rewording of a few parameters and tabs of the GUI
 
+        - Navigation Tool Window (GUI)
+            1. Zoom all now behaves as a toggle between 100% zoom and 116% zoom for convenience of displaying gridlines
+               labels which are outside of the data window.
+
 
         - Math Band Tool
             1. Retain source data (GPT)
@@ -85,7 +89,7 @@ PRIMARY PACKAGE
                     based on the source file data but did not retain the source file data.
                     
 
-        - RGB Image Profiles
+        - RGB Image Profiles (GUI)
             1. A large amount of rgb configuration files (rgb_profiles) have been added.  These include true color
                 and many false color configurations.
 
@@ -117,10 +121,11 @@ PRIMARY PACKAGE
                     Many examples of running the most common SeaDAS tools directly from the command line.  These
                     examples feature the command line arguments along with the full contents of the graph files 
                     and parameters files.
-            4. Menu organization
-                    Adding a multitude of direct links to various internal help pages for ease of access within
-                    the help menu.  Added many relevant web link to the help menu.
-        -   Statistics Tool help pages updates
+            4. OCSSW Cookbook
+                    Very new, so very few entries this release.
+            5. Menu organization
+                    Adds a multitude of direct links to various internal help pages for ease of access within
+                    the help menu.  Adds many relevant web link to the help menu.
 
 
 

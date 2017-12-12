@@ -11,12 +11,13 @@
 <div class="center">
     <a href="index.html"><img src="../images/SeaDASHeader.png" border="0"></a><br>
     <h1>The OCSSW Cookbook</h1>
-    <p class="chapterTitle">Binning and Mapping<br>Create SST mapped image from a VIIRS level-2 file</p>
+    <p class="chapterTitle">Binning &amp; Mapping<br>SST mapped image (VIIRS)</p>
 
     <br>
     <table width="500"><tr><td bgcolor="#fff9e9">
         <p>
-            Create SST mapped image from a VIIRS level-2 file.
+            This set of examples uses l2bin and l3mapgen to create SST mapped images from source VIIRS level-2 files.
+            Each example illustrates a different masking level.
         </p>
     </td></tr></table>
 
@@ -25,10 +26,10 @@
         <tr class="invisibletable">
             <td class="invisibletable">
 
-                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookMappedSst.html#Example1" class="invisibleLink">SST Mapped Best Quality</a></p>
-                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookMappedSst.html#Example2" class="invisibleLink">SST Mapped Standard Quality</a></p>
-                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookMappedSst.html#Example3" class="invisibleLink">SST Mapped Average Quality</a></p>
-                <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookMappedSst.html#Example4" class="invisibleLink">SST Mapped Poor Quality</a></p>
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="ocsswCookbookMappedSst.html#Example1" class="invisibleLink">Best Quality</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="ocsswCookbookMappedSst.html#Example2" class="invisibleLink">Science Quality</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="ocsswCookbookMappedSst.html#Example3" class="invisibleLink">Imagery Quality (Higher Retrievals - DAY only)</a></p>
+                <p class="toc">Example 4&nbsp;&nbsp;<a href="ocsswCookbookMappedSst.html#Example4" class="invisibleLink">No Quality Restrictions</a></p>
             </td>
         </tr>
     </table>
@@ -41,107 +42,38 @@
         <tr class="invisibletable">
             <td class="invisibletable">
                 <img src="images/best2.png" border="0"> <br>
-                <i>Example 1: Best<br><br></i>
+                <i>Example 1: <b>Best Quality</b><br>
+                    qual_max=0<br>
+                    flaguse=LAND,HISOLZEN<br><br>
+                </i>
             </td>
             <td class="invisibletable">
                 <img src="images/std2.png" border="0"> <br>
-                <i>Example 2: Standard<br><br></i>
+                <i>Example 2: <b>Science Quality</b><br>
+                    qual_max=2<br>
+                    flaguse=LAND,HISOLZEN<br><br>
+                </i>
             </td>
         </tr>
         <tr class="invisibletable">
             <td class="invisibletable">
                 <img src="images/avg2.png" border="0"> <br>
-                <i>Example 3: Average<br><br></i>
+                <i>Example 3: <b>Imagery Quality (Higher Retrievals - DAY only)</b><br>
+                    qual_max=3<br>
+                    flaguse=ATMFAIL,LAND,HISATZEN,CLDICE,NAVWARN,<br>
+                    MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,HIGLINT<br></i>
             </td>
             <td class="invisibletable">
                 <img src="images/poor2.png" border="0"> <br>
-                <i>Example 4: Poor<br><br></i>
+                <i>Example 4: <b>No Quality Restrictions</b><br>
+                    qual_max=3<br>
+                    flaguse=LAND,HISOLZEN<br><br>
+                </i>
             </td>
         </tr>
     </table>
 
 </div>
-
-
-
-
-<br><br><br><hr>
-<a name="Overview"></a>
-<p class="subSectionTitle2">Overview - DRAFT/NOTES</p>
-<br>
-
-
-<p>
-    This creates a mapped SST file using default setting of the quality flags anc OC masks for masking in the binning process.
-</p>
-
-<p>Resolution: With a goal of producing a 750m resolution mapped SST file, these examples bin at 1km resolution and then map at 750m resolution.
-<b>l2bin</b>In general you want to pick a bin resolution lower than the source resolution.  This is because each source pixel gets
-    put into precisely one bin.  Consequently, having your bin resolution higher than your source resolution will likely result in a peppering
-    of missing data.  Alse, keep in mind that satellite specifications refer to nadir resolution so likely many of your source pixels
-    are actually of a lower resolution than the nadir specification value.<br>
-    <b>l3mapgen</b>The mapping process differs from the strict rules of the binning process.  When mapping, you
-    can increase the resolution of the mapped image through an area interpolation process.
-</p>
-
-<p>
-    <i>Note: Fields in some of these par files such as 'flaguse', and 'qual_prod' are being explicitly set with their default value
-        so you are aware of the actual setting being used.  You could also just not include these particular fields and they will get
-    set with the default from the configurations your particular ocssw mission config directory.  Later examples on this page will show some
-    affects achieved when altering a few of these values.</i>
-</p>
-
-<br>
-
-
-
-
-
-
-
-
-<p>
-    Perhaps you want an image of SST which contains more data, and you don't want those big blocky patches of
-    straylight determined pixels being removed from your image.  This example shows settings to do this in the binning step.
-</p>
-
-<p>
-    Change field qual_max: if you go with the default value qual_max=2, amongst other things, this will have a straylight
-    masking impact.  If you change to qual_max=3 this will not mask the straylight (and will have no quality masking through
-    this particular algorithm)
-</p>
-
-<p>
-    Change field flaguse: With qual_max=3, then the flaguse field is the only field actually doing the masking.  Because the VIIRS
-    SST file is a daytime file, we can take advantage of the existence of the standard OC level2 flags.  This example
-    uses all the standard OC flag defaults, but does not include STRAYLIGHT and COCCOLITH.
-</p>
-
-<br>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -154,11 +86,11 @@
 
 <br><br><br><hr>
 <a name="Example1"></a>
-<p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;SST Mapped Best Quality</p>
+<p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Best Quality</p>
 <br>
 
 <p>
-    Applies the highest degree of masking for best quality results
+    Applies the highest degree of sst quality masking for best quality results (though lowest pixel retrieval count).
 </p>
 <br>
 
@@ -220,11 +152,12 @@ oformat=netCDF4
 
 <br><br><br><hr>
 <a name="Example2"></a>
-<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;SST Mapped Standard Quality</p>
+<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Science Quality</p>
 <br>
 
 <p>
-    This is the standard masking level.
+    This is the standard masking level used for science quality results.  There will be some
+    blockiness of missing data caused by straylight and non-uniformity algorithms.
 </p>
 <br>
 
@@ -285,11 +218,19 @@ oformat=netCDF4
 
 <br><br><br><hr>
 <a name="Example3"></a>
-<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;SST Mapped Average Quality</p>
+<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Imagery Quality (Higher Retrievals - DAY only)</p>
 <br>
 
 <p>
-    This only uses a limited amount of the OC level2 flag masking (consequentally only useful for daytime SST).
+    This illustrates an approach for producing imagery with more sst pixels retrieved than when using the standard
+    quality, and without all the blockiness of missing data caused by straylight and non-uniformity algorithms.
+    This can only be done on daytime sst file because it uses many level2 flags which are only available from visible
+    band daytime measurements.
+</p>
+
+<p>
+    <i>Note: The naming "Imagery Quality" is not official, but just used here for illustrative purposes related to this
+        set of cookbook examples.</i>
 </p>
 <br>
 
@@ -350,11 +291,12 @@ oformat=netCDF4
 
 <br><br><br><hr>
 <a name="Example4"></a>
-<p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;SST Mapped Poor Quality</p>
+<p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;No Quality Restrictions</p>
 <br>
 
 <p>
-    This is the lowest possible level of masking without including bad-determined data
+    This is the lowest possible level of masking without including "really, really bad" data.  You can expect clouds,
+    ice and just about anything present to return a sst value, which may or may not have any valid temperature meaning.
 </p>
 <br>
 
@@ -407,6 +349,54 @@ interp=area
 oformat=netCDF4
 </pre>
 </td></tr></table>
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Overview"></a>
+<p class="subSectionTitle2">NOTES</p>
+<br>
+
+<p>Resolution: With a goal of producing a 750m resolution mapped SST file, these examples bin at 1km resolution and then map at 750m resolution.<br><br>
+<b>l2bin:</b> In general you want to pick a bin resolution lower than the source resolution.  This is because each source pixel gets
+    put into precisely one bin.  Consequently, having your bin resolution higher than your source resolution will likely result in a peppering
+    of missing data.  Alse, keep in mind that satellite specifications refer to nadir resolution so likely many of your source pixels
+    are actually of a lower resolution than the nadir specification value.<br><br>
+    <b>l3mapgen:</b> The mapping process differs from the strict rules of the binning process.  When mapping, you
+    can increase the resolution of the mapped image through an area interpolation process.
+</p>
+
+<br>
+<p>
+    Defaults: Fields in some of these par files such as 'flaguse', and 'qual_prod' are being explicitly set with their default value
+        so you are aware of the actual setting being used.  You could also just not include these particular fields and they will get
+    set with the default from the configurations your particular ocssw mission config directory.
+</p>
+
+<br>
+<!--
+
+<p>
+    Change field qual_max: if you go with the default value qual_max=2, amongst other things, this will have a straylight
+    masking impact.  If you change to qual_max=3 this will not mask the straylight (and will have no quality masking through
+    this particular algorithm)
+</p>
+
+<p>
+    Change field flaguse: With qual_max=3, then the flaguse field is the only field actually doing the masking.  Because the VIIRS
+    SST file is a daytime file, we can take advantage of the existence of the standard OC level2 flags.  This example
+    uses all the standard OC flag defaults, but does not include STRAYLIGHT and COCCOLITH.
+</p>
+
+<br>
+
+
+
+-->
 
 
 
