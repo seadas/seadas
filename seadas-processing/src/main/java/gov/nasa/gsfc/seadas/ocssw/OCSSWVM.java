@@ -32,7 +32,7 @@ public class OCSSWVM extends OCSSWRemote {
     public OCSSWVM() {
         super();
         sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY, OCSSW_VM_SERVER_SHARED_DIR_PROPERTY_DEFAULT_VALUE);
-        workingDir = sharedDirPath + File.separator + clientId + File.separator + jobId + File.separator;
+        workingDir = sharedDirPath + File.separator + clientId + File.separator + jobId;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class OCSSWVM extends OCSSWRemote {
 
                 pm.worked(1);
                 try {
-                    copyFile(ifileName);
+                    copyFileC2S(ifileName);
                     ifileUploadSuccess = true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -68,23 +68,23 @@ public class OCSSWVM extends OCSSWRemote {
      * This method copies the client file into the shared directory between the host and the virtual machine.
      * The shared directory is specified in the seadas.config file.
      *
-     * @param fileName
+     * @param sourceFilePathName
      * @return
      */
     @Override
 
-    public boolean uploadClientFile(String fileName) {
+    public boolean uploadClientFile(String sourceFilePathName) {
 
         ProgressMonitor pm = null;
-
         try {
-            copyFile(fileName);
-            String fileTypeString = Files.probeContentType(new File(fileName).toPath());
+            copyFileC2S(sourceFilePathName);
+            String fileTypeString = Files.probeContentType(new File(sourceFilePathName).toPath());
             if (fileTypeString.equals(MediaType.TEXT_PLAIN)) {
-                String listOfFiles = uploadListedFiles(pm, fileName);
+                String listOfFiles = uploadListedFiles(pm, sourceFilePathName);
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
         return true;
     }
@@ -112,7 +112,7 @@ public class OCSSWVM extends OCSSWRemote {
 
         while (input.hasNext()) {
             nextFileName = input.nextLine();
-            copyFile(nextFileName);
+            copyFileC2S(nextFileName);
         }
         String fileNames = sb.toString();
 
@@ -127,28 +127,30 @@ public class OCSSWVM extends OCSSWRemote {
     }
 
     @Override
-    public JsonObject getFindOfileJsonObject(String ifileName){
-
+    public JsonObject getFindOfileJsonObject(String ifileName) {
+        if (!fileExistsOnServer(ifileName)) {
+            ifileUploadSuccess = uploadClientFile(ifileName);
+        }
         return target.path("ocssw").path("getOfileName").path(ifileName).path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
     }
 
-    private void copyFile(String sourceFilePath) {
-        File sourceFile = new File(sourceFilePath);
-        String targetFilePathName = workingDir + sourceFilePath.substring(sourceFilePath.lastIndexOf(File.separator) + 1);
-        File targetFile = new File(targetFilePathName);
-        targetFile.getParentFile().mkdirs();
-
+    private void copyFileC2S(String sourceFilePathName) {
+        String targetFilePathName = workingDir + File.separator + sourceFilePathName.substring(sourceFilePathName.lastIndexOf(File.separator) + 1);
         try {
-            SeadasFileUtils.copyFileUsingStream(sourceFile, targetFile);
+            if (!sourceFilePathName.equals(targetFilePathName)) {
+                SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
+                ifileUploadSuccess = true;
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
+            ifileUploadSuccess = false;
         }
     }
-
 
     private void copyMLPFiles(String sourceFilePath) {
         File sourceFile = new File(sourceFilePath);
-        String targetFilePathName = workingDir + sourceFilePath.substring(sourceFilePath.lastIndexOf(File.separator) + 1);
+        String targetFilePathName = workingDir + File.separator + sourceFilePath.substring(sourceFilePath.lastIndexOf(File.separator) + 1);
         File targetFile = new File(targetFilePathName);
         targetFile.getParentFile().mkdirs();
 
@@ -158,11 +160,6 @@ public class OCSSWVM extends OCSSWRemote {
             e.printStackTrace();
         }
     }
-
-    private void copyOutputFiles(String outputFilesList) {
-
-    }
-
 
     /**
      * this method returns a command array for execution.
@@ -201,18 +198,6 @@ public class OCSSWVM extends OCSSWRemote {
         return Process;
     }
 
-    private void copyFileFromServerToClient(String sourceFilePathName, String targetFilePathName) {
-        File sourceFile = new File(sourceFilePathName);
-        File targetFile = new File(targetFilePathName);
-        targetFile.getParentFile().mkdirs();
-        try {
-            SeadasFileUtils.copyFileUsingStream(sourceFile, targetFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     @Override
     public void downloadCommonFiles(JsonObject paramJsonObject) {
         Set commandArrayKeys = paramJsonObject.keySet();
@@ -236,8 +221,13 @@ public class OCSSWVM extends OCSSWRemote {
                     } else {
                         ofileFullPathName = param;
                     }
-                    ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1 );
-                    copyFileFromServerToClient(workingDir + File.separator + ofileName, ofileDir + File.separator + ofileName);
+                    ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
+                    if (!workingDir.equals(ofileDir)) {
+                        String sourceFilePathName = workingDir + File.separator + ofileName;
+                        String targetFilePathName = ofileDir + File.separator + ofileName;
+                        SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
+                    }
+                    //copyFileFromServerToClient(workingDir + File.separator + ofileName, ofileDir + File.separator + ofileName);
                     //Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
                     //InputStream responceStream = (InputStream) response.getEntity();
                     //SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);

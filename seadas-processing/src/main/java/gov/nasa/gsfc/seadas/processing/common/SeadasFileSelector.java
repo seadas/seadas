@@ -230,7 +230,7 @@ public class SeadasFileSelector {
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
     }
 
-    private JPanel createFilterPane() {
+    private JPanel createFilterPanel() {
 
         filterRegexField = new JTextField("123456789 ");
         filterRegexField.setPreferredSize(filterRegexField.getPreferredSize());
@@ -264,30 +264,31 @@ public class SeadasFileSelector {
         private FileChooserAction() {
             super("...");
             fileChooser = new BeamFileChooser();
-            JPanel filterPanel = createFilterPane();
-            JPanel filePanel = (JPanel) fileChooser.getComponent(1);
-            filePanel.add(filterPanel, BorderLayout.CENTER, 0);
-
-            final Vector<RegexFileFilter> regexFilters = new Vector<RegexFileFilter>();
-
-            final JTextField filterRegexField = (JTextField) filterPanel.getComponent(1);
-
-            filterRegexField.getDocument().addDocumentListener(new DocumentListener() {
-                @Override
-                public void insertUpdate(DocumentEvent documentEvent) {
-                    updateFileFilter();
-                }
-
-                @Override
-                public void removeUpdate(DocumentEvent documentEvent) {
-                    updateFileFilter();
-                }
-
-                @Override
-                public void changedUpdate(DocumentEvent documentEvent) {
-                    updateFileFilter();
-                }
-            });
+            //REmoved filter panel as it causes problem in the windows machine
+//            JPanel filterPanel = createFilterPanel();
+//            JPanel filePanel = (JPanel) fileChooser.getComponent(1);
+//            filePanel.add(filterPanel, BorderLayout.CENTER, 0);
+//
+//            final Vector<RegexFileFilter> regexFilters = new Vector<RegexFileFilter>();
+//
+//            //final JTextField filterRegexField = (JTextField) filterPanel.getComponent(1);
+//
+//            filterRegexField.getDocument().addDocumentListener(new DocumentListener() {
+//                @Override
+//                public void insertUpdate(DocumentEvent documentEvent) {
+//                    updateFileFilter();
+//                }
+//
+//                @Override
+//                public void removeUpdate(DocumentEvent documentEvent) {
+//                    updateFileFilter();
+//                }
+//
+//                @Override
+//                public void changedUpdate(DocumentEvent documentEvent) {
+//                    updateFileFilter();
+//                }
+//            });
 
             fileChooser.setMultiSelectionEnabled(selectMultipleIFiles);
             fileChooser.setDialogTitle("Select Input File");

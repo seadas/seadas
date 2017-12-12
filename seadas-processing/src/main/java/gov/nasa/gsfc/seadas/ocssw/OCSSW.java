@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.ocssw;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.Mission;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
@@ -110,6 +111,8 @@ public abstract class OCSSW {
     public void getOutputFiles(ProcessorModel processorModel) {
 
     }
+
+    public abstract void findFileInfo(String fileName, FileInfoFinder fileInfoFinder);
 
     public abstract String getOfileName(String ifileName);
 

@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
+import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
@@ -171,6 +172,11 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public Process execute(String programName, String[] commandArrayParams) {
         return null;
+    }
+
+    @Override
+    public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
+
     }
 
     @Override

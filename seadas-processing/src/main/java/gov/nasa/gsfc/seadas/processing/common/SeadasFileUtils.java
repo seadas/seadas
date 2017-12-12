@@ -16,11 +16,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.lang.reflect.Field;
+import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.nio.file.Files.copy;
+import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * Created by IntelliJ IDEA.
@@ -121,6 +126,16 @@ public class SeadasFileUtils {
 
             e.printStackTrace();
         }
+    }
+
+    public static void copyFile(String from, String to) throws IOException{
+        Path src = Paths.get(from);
+        Path dest = Paths.get(to);
+        CopyOption[] options = new CopyOption[]{
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.COPY_ATTRIBUTES
+        };
+        Files.copy(src, dest, options);
     }
 
 

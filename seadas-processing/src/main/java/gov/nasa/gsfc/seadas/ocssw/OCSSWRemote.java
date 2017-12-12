@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.ocssw;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
@@ -173,6 +174,16 @@ public class OCSSWRemote extends OCSSW {
 
     }
 
+    public boolean fileExistsOnServer(String fileName) {
+
+        Response response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", ifileName).request().get();
+        if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     /**
      * This method uploads list of files provided in the text file.
      *
@@ -240,6 +251,8 @@ public class OCSSWRemote extends OCSSW {
     @Override
     public String getOfileName(String ifileName) {
 
+        if (this.ifileName == null )
+
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
         }
@@ -251,6 +264,10 @@ public class OCSSWRemote extends OCSSW {
 
         if (getIfileName() == null || !getIfileName().equals(ifileName)) {
             this.setIfileName(ifileName);
+        }
+
+        if ( !fileExistsOnServer(ifileName) ) {
+            uploadClientFile(ifileName);
         }
 
         if (ifileUploadSuccess) {
@@ -548,6 +565,28 @@ public class OCSSWRemote extends OCSSW {
             }
         };
         pmSwingWorker.executeWithBlocking();
+    }
+
+    @Override
+    public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
+
+                ofileName =  ifileName + ".xml";
+
+        if (getIfileName() == null || !getIfileName().equals(ifileName)) {
+            this.setIfileName(ifileName);
+        }
+
+            JsonObject jsonObject = getFindOfileJsonObject(ifileName.substring(ifileName.lastIndexOf(File.separator) +1 ));
+            ofileName = jsonObject.getString("ofileName");
+            missionName = jsonObject.getString("missionName");
+            fileType = jsonObject.getString("fileType");
+            updateProgramName(jsonObject.getString("programName"));
+            ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
+            if (ofileName == null || missionName == null || fileType == null) {
+                setOfileNameFound(false);
+            }
+            setOfileNameFound(true);
+
     }
 
 
