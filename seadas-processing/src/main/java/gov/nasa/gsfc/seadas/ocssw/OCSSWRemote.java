@@ -176,7 +176,7 @@ public class OCSSWRemote extends OCSSW {
 
     public boolean fileExistsOnServer(String fileName) {
 
-        Response response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", ifileName).request().get();
+        Response response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileName).request().get();
         if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
             return false;
         } else {
@@ -757,7 +757,7 @@ public class OCSSWRemote extends OCSSW {
                     if (option.getType().equals(ParamInfo.Type.IFILE)) {
                         fileName = option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
                         ifileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
-                        response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", option.getValue()).request().get();
+                        response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileName).request().get();
                         if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
                             uploadClientFile(option.getValue());
                         } else {
@@ -790,7 +790,7 @@ public class OCSSWRemote extends OCSSW {
             while (st.hasMoreTokens()) {
                 fileExtension = st.nextToken().trim();
                 fileNameToUpload = ifileDir + File.separator + fileNameBase + "." + fileExtension;
-                response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileNameToUpload).request().get();
+                response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileNameBase).request().get();
                 if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
                     uploadClientFile(fileNameToUpload);
                 }
