@@ -54,6 +54,7 @@ public class OCSSWVM extends OCSSWRemote {
                 try {
                     copyFileC2S(ifileName);
                     ifileUploadSuccess = true;
+                    pm.worked(2);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -193,12 +194,21 @@ public class OCSSWVM extends OCSSWRemote {
                 downloadCommonFiles(commandArrayJsonObject);
             }
         }
-
-
         return Process;
     }
 
-    @Override
+    private void copyFileFromServerToClient(String sourceFilePathName, String targetFilePathName) {
+        File sourceFile = new File(sourceFilePathName);
+        File targetFile = new File(targetFilePathName);
+        targetFile.getParentFile().mkdirs();
+        try {
+            SeadasFileUtils.copyFileUsingStream(sourceFile, targetFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+  @Override
     public void downloadCommonFiles(JsonObject paramJsonObject) {
         Set commandArrayKeys = paramJsonObject.keySet();
         String param;
