@@ -6,6 +6,7 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.apache.tika.Tika;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
@@ -35,8 +36,16 @@ public class OCSSWVM extends OCSSWRemote {
         workingDir = sharedDirPath + File.separator + clientId + File.separator + jobId;
     }
 
+    /**
+     * This method copies the client file into the shared directory between the host and the virtual machine.
+     * The shared directory is specified in the seadas.config file.
+     *
+     * @param sourceFilePathName
+     * @return
+     */
     @Override
-    public boolean uploadIFile(String ifileName) {
+
+    public boolean uploadClientFile(String sourceFilePathName) {
 
         ifileUploadSuccess = false;
 
@@ -51,43 +60,21 @@ public class OCSSWVM extends OCSSWRemote {
                 pm.beginTask("Copying file '" + ifileName + "' to the remote server and getting ofile name", 2);
 
                 pm.worked(1);
-                try {
-                    copyFileC2S(ifileName);
-                    ifileUploadSuccess = true;
-                    pm.worked(2);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            copyFileC2S(sourceFilePathName);
+            if ( SeadasFileUtils.isTextFile(sourceFilePathName) ) {
+                String listOfFiles = uploadListedFiles(pm, sourceFilePathName);
+            }
+            ifileUploadSuccess = true;
+            pm.worked(2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
                 return null;
             }
         };
         pmSwingWorker.executeWithBlocking();
         return ifileUploadSuccess;
-    }
-
-    /**
-     * This method copies the client file into the shared directory between the host and the virtual machine.
-     * The shared directory is specified in the seadas.config file.
-     *
-     * @param sourceFilePathName
-     * @return
-     */
-    @Override
-
-    public boolean uploadClientFile(String sourceFilePathName) {
-
-        ProgressMonitor pm = null;
-        try {
-            copyFileC2S(sourceFilePathName);
-            String fileTypeString = Files.probeContentType(new File(sourceFilePathName).toPath());
-            if (fileTypeString.equals(MediaType.TEXT_PLAIN)) {
-                String listOfFiles = uploadListedFiles(pm, sourceFilePathName);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
     /**
