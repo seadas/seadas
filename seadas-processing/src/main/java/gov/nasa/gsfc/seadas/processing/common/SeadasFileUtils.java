@@ -4,6 +4,7 @@ import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.tika.Tika;
 import org.esa.beam.util.Debug;
 import org.esa.beam.visat.VisatApp;
 
@@ -108,7 +109,7 @@ public class SeadasFileUtils {
     }
 
     public static void writeToFile(InputStream downloadedInputStream,
-                             String downloadedFileLocation) {
+                                   String downloadedFileLocation) {
 
         try {
             File file = new File(downloadedFileLocation);
@@ -128,7 +129,7 @@ public class SeadasFileUtils {
         }
     }
 
-    public static void copyFile(String from, String to) throws IOException{
+    public static void copyFile(String from, String to) throws IOException {
         Path src = Paths.get(from);
         Path dest = Paths.get(to);
         CopyOption[] options = new CopyOption[]{
@@ -136,6 +137,43 @@ public class SeadasFileUtils {
                 StandardCopyOption.COPY_ATTRIBUTES
         };
         Files.copy(src, dest, options);
+    }
+
+    /**
+     * Guess whether given file is binary. Just checks for anything under 0x09.
+     */
+    public static boolean isBinaryFile(File f) throws FileNotFoundException, IOException {
+        FileInputStream in = new FileInputStream(f);
+        int size = in.available();
+        if (size > 1024) size = 1024;
+        byte[] data = new byte[size];
+        in.read(data);
+        in.close();
+
+        int ascii = 0;
+        int other = 0;
+
+        for (int i = 0; i < data.length; i++) {
+            byte b = data[i];
+            if (b < 0x09) return true;
+
+            if (b == 0x09 || b == 0x0A || b == 0x0C || b == 0x0D) ascii++;
+            else if (b >= 0x20 && b <= 0x7E) ascii++;
+            else other++;
+        }
+
+        if (other == 0) return false;
+
+        return 100 * other / (ascii + other) > 95;
+    }
+
+    public static boolean isTextFile(String fileName) {
+        try {
+            return !isBinaryFile(new File(fileName));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 
@@ -243,43 +281,43 @@ public class SeadasFileUtils {
         }
     }
 
-    public String tail( File file ) {
+    public String tail(File file) {
         RandomAccessFile fileHandler = null;
         try {
-            fileHandler = new RandomAccessFile( file, "r" );
+            fileHandler = new RandomAccessFile(file, "r");
             long fileLength = fileHandler.length() - 1;
             StringBuilder sb = new StringBuilder();
 
-            for(long filePointer = fileLength; filePointer != -1; filePointer--){
-                fileHandler.seek( filePointer );
+            for (long filePointer = fileLength; filePointer != -1; filePointer--) {
+                fileHandler.seek(filePointer);
                 int readByte = fileHandler.readByte();
 
-                if( readByte == 0xA ) {
-                    if( filePointer == fileLength ) {
+                if (readByte == 0xA) {
+                    if (filePointer == fileLength) {
                         continue;
                     }
                     break;
 
-                } else if( readByte == 0xD ) {
-                    if( filePointer == fileLength - 1 ) {
+                } else if (readByte == 0xD) {
+                    if (filePointer == fileLength - 1) {
                         continue;
                     }
                     break;
                 }
 
-                sb.append( ( char ) readByte );
+                sb.append((char) readByte);
             }
 
             String lastLine = sb.reverse().toString();
             return lastLine;
-        } catch( java.io.FileNotFoundException e ) {
+        } catch (java.io.FileNotFoundException e) {
             e.printStackTrace();
             return null;
-        } catch( java.io.IOException e ) {
+        } catch (java.io.IOException e) {
             e.printStackTrace();
             return null;
         } finally {
-            if (fileHandler != null )
+            if (fileHandler != null)
                 try {
                     fileHandler.close();
                 } catch (IOException e) {
@@ -288,49 +326,48 @@ public class SeadasFileUtils {
         }
     }
 
-    public String tail2( File file, int lines) {
+    public String tail2(File file, int lines) {
         java.io.RandomAccessFile fileHandler = null;
         try {
             fileHandler =
-                    new java.io.RandomAccessFile( file, "r" );
+                    new java.io.RandomAccessFile(file, "r");
             long fileLength = fileHandler.length() - 1;
             StringBuilder sb = new StringBuilder();
             int line = 0;
 
-            for(long filePointer = fileLength; filePointer != -1; filePointer--){
-                fileHandler.seek( filePointer );
+            for (long filePointer = fileLength; filePointer != -1; filePointer--) {
+                fileHandler.seek(filePointer);
                 int readByte = fileHandler.readByte();
 
-                if( readByte == 0xA ) {
+                if (readByte == 0xA) {
                     if (filePointer < fileLength) {
                         line = line + 1;
                     }
-                } else if( readByte == 0xD ) {
-                    if (filePointer < fileLength-1) {
+                } else if (readByte == 0xD) {
+                    if (filePointer < fileLength - 1) {
                         line = line + 1;
                     }
                 }
                 if (line >= lines) {
                     break;
                 }
-                sb.append( ( char ) readByte );
+                sb.append((char) readByte);
             }
 
             String lastLine = sb.reverse().toString();
             return lastLine;
-        } catch( java.io.FileNotFoundException e ) {
+        } catch (java.io.FileNotFoundException e) {
             e.printStackTrace();
             return null;
-        } catch( java.io.IOException e ) {
+        } catch (java.io.IOException e) {
             e.printStackTrace();
             return null;
-        }
-        finally {
-            if (fileHandler != null )
+        } finally {
+            if (fileHandler != null)
                 try {
                     fileHandler.close();
                 } catch (IOException e) {
                 }
         }
     }
- }
+}
