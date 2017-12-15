@@ -11,7 +11,7 @@ public class OCSSWRemoteTest {
     @Test
     public void setIfileName() throws Exception {
         OCSSWRemote ocsswRemote = new OCSSWRemote();
-        boolean testFileUpload = ocsswRemote.uploadIFile("/accounts/aabduraz/Downloads/V2017060154800.L2_SNPP_OC.nc");
+        boolean testFileUpload = ocsswRemote.uploadClientFile("/accounts/aabduraz/Downloads/V2017060154800.L2_SNPP_OC.nc");
         assertEquals(true, testFileUpload);
     }
 
