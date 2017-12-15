@@ -2,20 +2,11 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.*;
-import gov.nasa.gsfc.seadas.ocssw.*;
-
-import java.util.HashMap;
 
 /**
  * Created by aabduraz on 8/21/15.
  */
 public class FileInfoFinder {
-
-    public static final String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type.py";
-    public static final String FILE_TYPE_ID_STRING = "fileType";
-    public static final String MISSION_NAME_ID_STRING = "missionName";
-    public static final String MISSION_DIR_NAME_ID_STRING = "missionDirName";
 
     private String fileType;
     private String missionName;
