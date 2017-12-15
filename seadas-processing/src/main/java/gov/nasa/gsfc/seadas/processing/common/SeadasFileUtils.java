@@ -1,32 +1,13 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.processing.core.*;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.tika.Tika;
-import org.esa.beam.util.Debug;
-import org.esa.beam.visat.VisatApp;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import gov.nasa.gsfc.seadas.processing.core.*;
+import org.esa.beam.visat.VisatApp;
 import java.io.*;
-import java.lang.reflect.Field;
 import java.nio.file.*;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.nio.file.Files.copy;
-import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,8 +19,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class SeadasFileUtils {
 
     private static boolean debug = false;
-    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
-    private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
 
     public static File createFile(String parent, String fileName) {
         File pFile;
@@ -142,7 +121,7 @@ public class SeadasFileUtils {
     /**
      * Guess whether given file is binary. Just checks for anything under 0x09.
      */
-    public static boolean isBinaryFile(File f) throws FileNotFoundException, IOException {
+    public static boolean isBinaryFile(File f) throws IOException {
         FileInputStream in = new FileInputStream(f);
         int size = in.available();
         if (size > 1024) size = 1024;
