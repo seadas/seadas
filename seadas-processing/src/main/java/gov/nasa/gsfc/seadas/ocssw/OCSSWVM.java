@@ -6,7 +6,6 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.apache.tika.Tika;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
@@ -14,7 +13,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
-import java.nio.file.Files;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.StringTokenizer;
