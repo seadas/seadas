@@ -166,7 +166,7 @@ public class OCSSWServices {
     @Consumes(MediaType.TEXT_XML)
     public JsonObject getOfileNameFromIfile(@PathParam("ifileName") String ifileName,
                                             @PathParam("jobId") String jobId) {
-        String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
+        String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String ifileFullPathName = currentWorkingDir + File.separator + ifileName;
         OCSSWRemote ocsswRemote = new OCSSWRemote();
         String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
