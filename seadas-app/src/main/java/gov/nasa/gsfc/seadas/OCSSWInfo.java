@@ -18,6 +18,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -29,6 +35,7 @@ import java.util.regex.Pattern;
  */
 public class OCSSWInfo {
 
+    public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY = "ocssw.sharedDir";
     public static final String SEADAS_CLIENT_ID_PROPERTY = "client.id";
     public static final String OCSSW_KEEP_FILES_ON_SERVER_PROPERTY = "ocssw.keepFilesOnServer";
     public static final String OS_64BIT_ARCHITECTURE = "_64";
@@ -51,7 +58,13 @@ public class OCSSWInfo {
 
     public static final String VIRTUAL_MACHINE_SERVER_API = "localhost";
 
+    private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
+
     private static OCSSWInfo ocsswInfo = null;
+
+    private static String sessionId = null;
 
     private int processInputStreamPort;
     private int processErrorStreamPort;
@@ -67,6 +80,14 @@ public class OCSSWInfo {
     private String ocsswLocation;
     private String resourceBaseUri;
 
+    public static String getSessionId() {
+        return sessionId;
+    }
+
+    public static void setSessionId(String sessionId) {
+        OCSSWInfo.sessionId = sessionId;
+    }
+
     public String getOcsswLocation() {
         return ocsswLocation;
     }
@@ -76,6 +97,7 @@ public class OCSSWInfo {
     }
 
     String clientId;
+    String sharedDirPath;
 
     private OCSSWInfo() {
     }
@@ -110,6 +132,13 @@ public class OCSSWInfo {
     }
 
     public void detectOcssw() {
+
+        int unique_id= (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+
+        Date date = new Date();
+        System.out.println(sdf.format(date));
+        sessionId = date.toString();
+
         String ocsswLocationPropertyValue = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY);
 
         setOcsswLocation(null);
@@ -203,15 +232,20 @@ public class OCSSWInfo {
                     JOptionPane.WARNING_MESSAGE);
         }
         ocsswExist = jsonObject.getBoolean("ocsswExists");
+        if (ocsswExist) {
+
+        }
         ocsswRoot = jsonObject.getString("ocsswRoot");
         ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
         ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
         ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
         ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
-
-        clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
-        String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "false");
-        Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
+        sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY);
+        if ( sharedDirPath == null ) {
+            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
+            String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "false");
+            Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
+        }
         processInputStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_INPUT_STREAM_PORT)).intValue();
         processErrorStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_ERROR_STREAM_PORT)).intValue();
         return ocsswExist;
