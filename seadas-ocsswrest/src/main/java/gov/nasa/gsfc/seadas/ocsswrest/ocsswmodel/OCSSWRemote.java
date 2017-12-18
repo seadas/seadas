@@ -134,7 +134,7 @@ public class OCSSWRemote {
 
     private String[] transformCommandArray(String jobId, JsonObject jsonObject, String programName) {
 
-        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         Set commandArrayKeys = jsonObject.keySet();
 
         Object[] array = (Object[]) commandArrayKeys.toArray();
@@ -203,7 +203,7 @@ public class OCSSWRemote {
     public void executeMLP(String jobId, File parFile) {
         System.out.println("par file path: " + parFile.getAbsolutePath());
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String parFileNewLocation = workingFileDir + File.separator + jobId + File.separator + MLP_PAR_FILE_NAME;
+        String parFileNewLocation = workingFileDir +  File.separator + MLP_PAR_FILE_NAME;
         System.out.println("par file new path: " + parFileNewLocation);
         String parFileContent = convertClientParFilForRemoteServer(parFile, jobId);
         ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
@@ -213,7 +213,7 @@ public class OCSSWRemote {
 
     public JsonObject getMLPOutputFilesList(String jobId) {
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String mlpDir = workingFileDir + File.separator + jobId;
+        String mlpDir = workingFileDir;
         Collection<String> filesInMLPDir = ServerSideFileUtilities.getFilesList(mlpDir);
         Collection<String> inputFiles = SQLiteJDBC.getInputFilesList(jobId);
         filesInMLPDir.removeAll(inputFiles);
@@ -226,8 +226,7 @@ public class OCSSWRemote {
     }
 
     public InputStream getProcessStdoutFile(String jobId) {
-        String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String workingDir = workingFileDir + File.separator + jobId;
+        String workingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String processStdoutFileName = workingDir + File.separator + programName + PROCESS_STDOUT_FILE_NAME_EXTENSION;
         if (programName.equals(MLP_PROGRAM_NAME)) {
             processStdoutFileName = ServerSideFileUtilities.getLogFileName(workingDir);
@@ -245,7 +244,7 @@ public class OCSSWRemote {
 
     public JsonObject getMLPOutputFilesJsonList(String jobId) {
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String mlpOutputDir = workingFileDir + File.separator + jobId + File.separator + MLP_OUTPUT_DIR_NAME;
+        String mlpOutputDir = workingFileDir + File.separator + MLP_OUTPUT_DIR_NAME;
         Collection<String> filesInMLPDir = ServerSideFileUtilities.getFilesList(mlpOutputDir);
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
         Iterator itr = filesInMLPDir.iterator();
@@ -269,8 +268,8 @@ public class OCSSWRemote {
         int odirStringPositioninParFile = 6;
 
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String mlpDir = workingFileDir + File.separator + jobId;
-        String mlpOutputDir = mlpDir + File.separator + MLP_OUTPUT_DIR_NAME;
+        String mlpDir = workingFileDir;
+        String mlpOutputDir = workingFileDir + File.separator + MLP_OUTPUT_DIR_NAME;
 
         while (st1.hasMoreTokens()) {
             token = st1.nextToken();

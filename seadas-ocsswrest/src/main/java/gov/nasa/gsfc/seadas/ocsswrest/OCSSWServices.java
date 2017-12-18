@@ -35,6 +35,7 @@ public class OCSSWServices {
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     private static String FILE_TABLE_NAME = "FILE_TABLE";
     private static String MISSION_TABLE_NAME = "MISSION_TABLE";
+    final static String CLIENT_SERVER_SHARED_DIR_PROPERTY = "clientServerSharedDir";
 
     private HashMap<String, Boolean> missionDataStatus;
 
@@ -115,9 +116,17 @@ public class OCSSWServices {
     public Response setClientIdWithJobId(@PathParam("jobId") String jobId, String clientId) {
         Response.Status respStatus = Response.Status.OK;
         SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.CLIENT_ID_NAME.getFieldName(), clientId);
-        String workingDirPath = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY) + File.separator + clientId;
+
+        String workingDirPath;
+
+        boolean isClientServerSharedDir =  new Boolean(System.getProperty(CLIENT_SERVER_SHARED_DIR_PROPERTY)).booleanValue();
+        if (isClientServerSharedDir) {
+            workingDirPath = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY);
+        } else {
+            workingDirPath = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY) + File.separator + clientId;
+            //ServerSideFileUtilities.createDirectory(workingDirPath + File.separator + jobId);
+        }
         SQLiteJDBC.updateItem(FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName(), workingDirPath);
-        ServerSideFileUtilities.createDirectory(workingDirPath + File.separator + jobId);
         return Response.status(respStatus).build();
     }
 
@@ -139,7 +148,6 @@ public class OCSSWServices {
     @Path("/getOfileName/{jobId}")
     @Consumes(MediaType.TEXT_XML)
     public JsonObject getOfileName(@PathParam("jobId") String jobId) {
-
         String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getFieldName());
         String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName());
         String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName());
@@ -165,14 +173,11 @@ public class OCSSWServices {
         SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
         SQLiteJDBC.updateInputFilesList(jobId, ifileFullPathName);
         SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, currentWorkingDir + File.separator + ofileName);
-        System.out.println("ofile name = " + ofileName);
         String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getFieldName());
         String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName());
         String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName());
         ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
-        System.out.println("ofile name = " + ofileName);
         ofileName = ofileName.substring(ofileName.lastIndexOf(File.separator) + 1);
-        System.out.println("ofile name = " + ofileName);
         JsonObject fileInfo = Json.createObjectBuilder().add("missionName", missionName)
                 .add("fileType", fileType)
                 .add("programName", programName)
@@ -230,7 +235,7 @@ public class OCSSWServices {
                                                     JsonObject jsonObject)
             throws IOException {
 
-        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         if (jsonObject == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } else {

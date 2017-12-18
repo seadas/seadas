@@ -63,7 +63,7 @@ public class OCSSWFileServices {
 
         String fileNameWithoutPath = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String fileNameOnServer = workingFileDir + File.separator + jobId + File.separator + fileNameWithoutPath;
+        String fileNameOnServer = workingFileDir + File.separator + fileNameWithoutPath;
         path1 = Paths.get(fileNameOnServer);
         path2 = Paths.get(fileName);
 
@@ -165,7 +165,7 @@ public class OCSSWFileServices {
         if (fileName == null) {
             respStatus = Response.Status.INTERNAL_SERVER_ERROR;
         } else {
-            String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
+            String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
             System.out.println("current working directory " + " is  " + currentWorkingDir);
             File newFile = new File(currentWorkingDir);
             Files.createDirectories(newFile.toPath());
@@ -186,41 +186,41 @@ public class OCSSWFileServices {
         return Response.status(respStatus).build();
     }
 
-    @POST
-    @Path("/upload/{clientId}/{processorId}/{jobId}/{fileName}")
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public Response largeFileUpload(
-            @PathParam("clientId") String clientId,
-            @PathParam("processorId") String processorId,
-            @PathParam("jobId") String jobId,
-            @PathParam("fileName") String fileName,
-            InputStream uploadedInputStream)
-            throws IOException {
-        Response.Status respStatus = Response.Status.OK;
-        if (fileName == null) {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        } else {
-
-            String uploadedFileDir = FILE_UPLOAD_PATH + File.separator + clientId + File.separator + processorId + File.separator + jobId;
-            File newFile = new File(uploadedFileDir);
-            Files.createDirectories(newFile.toPath());
-
-            boolean isDirCreated = new File(uploadedFileDir).isDirectory();
-            String uploadedFileLocation = uploadedFileDir + File.separator + fileName;
-
-            System.out.println(uploadedFileLocation + " is created " + isDirCreated);
-            System.out.println(System.getProperty("user.home"));
-            System.out.println(new File(uploadedFileDir).getAbsolutePath());
-            try {
-                ServerSideFileUtilities.writeToFile(uploadedInputStream, uploadedFileLocation);
-                //getFileInfo();
-            } catch (Exception e) {
-                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-                e.printStackTrace();
-            }
-        }
-        return Response.status(respStatus).build();
-    }
+//    @POST
+//    @Path("/upload/{clientId}/{processorId}/{jobId}/{fileName}")
+//    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+//    public Response largeFileUpload(
+//            @PathParam("clientId") String clientId,
+//            @PathParam("processorId") String processorId,
+//            @PathParam("jobId") String jobId,
+//            @PathParam("fileName") String fileName,
+//            InputStream uploadedInputStream)
+//            throws IOException {
+//        Response.Status respStatus = Response.Status.OK;
+//        if (fileName == null) {
+//            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+//        } else {
+//
+//            String uploadedFileDir = FILE_UPLOAD_PATH + File.separator + clientId + File.separator + processorId + File.separator + jobId;
+//            File newFile = new File(uploadedFileDir);
+//            Files.createDirectories(newFile.toPath());
+//
+//            boolean isDirCreated = new File(uploadedFileDir).isDirectory();
+//            String uploadedFileLocation = uploadedFileDir + File.separator + fileName;
+//
+//            System.out.println(uploadedFileLocation + " is created " + isDirCreated);
+//            System.out.println(System.getProperty("user.home"));
+//            System.out.println(new File(uploadedFileDir).getAbsolutePath());
+//            try {
+//                ServerSideFileUtilities.writeToFile(uploadedInputStream, uploadedFileLocation);
+//                //getFileInfo();
+//            } catch (Exception e) {
+//                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+//                e.printStackTrace();
+//            }
+//        }
+//        return Response.status(respStatus).build();
+//    }
 
     @GET
     @Path("/downloadFile/{jobId}")
@@ -278,8 +278,7 @@ public class OCSSWFileServices {
     @Path("/downloadLogFile/{jobId}/{programName}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response downloadLogFile(@PathParam("jobId") String jobId, @PathParam("programName") String programName) {
-        String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String workingDir = workingFileDir + File.separator + jobId;
+        String workingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String processStdoutFileName = workingDir + File.separator + programName + PROCESS_STDOUT_FILE_NAME_EXTENSION;
         if (programName.equals(MLP_PROGRAM_NAME)) {
             processStdoutFileName = ServerSideFileUtilities.getLogFileName(workingDir);
@@ -310,7 +309,7 @@ public class OCSSWFileServices {
     public Response downloadMLPOutputFile(@PathParam("jobId") String jobId,
                                           @PathParam("ofileName") String clientOfileName) {
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String mlpOutputDir = workingFileDir + File.separator + jobId + File.separator + MLP_OUTPUT_DIR_NAME;
+        String mlpOutputDir = workingFileDir + File.separator + MLP_OUTPUT_DIR_NAME;
         String ofileName = mlpOutputDir + File.separator + clientOfileName;
         File file = new File(ofileName);
         if (file.exists()) {
@@ -346,7 +345,7 @@ public class OCSSWFileServices {
     public Response downloadFileOnDemand(@PathParam("jobId") String jobId,
                                          @PathParam("ofileName") String clientOfileName) {
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String ofileName = workingFileDir + File.separator + jobId + File.separator + clientOfileName;
+        String ofileName = workingFileDir + File.separator + clientOfileName;
         StreamingOutput fileStream = new StreamingOutput() {
             @Override
             public void write(OutputStream outputStream) throws IOException, WebApplicationException {

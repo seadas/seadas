@@ -30,7 +30,7 @@ public class OCSSWRestServer extends ResourceConfig {
     final static String BASE_URI_PORT_NUMBER_PROPERTY = "baseUriPortNumber";
     final static String OCSSW_ROOT_PROPERTY ="ocsswroot";
     final static String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
-    final static String SERVER_WORKING_DIRECTORY_PROPERTY = "serverWorkingDirectory";
+    public final static String SERVER_WORKING_DIRECTORY_PROPERTY = "serverWorkingDirectory";
     final static String KEEP_INTERMEDIATE_FILES_ON_SERVER_PROPERTY ="keepIntermediateFilesOnServer";
     final static String SERVER_API="0.0.0.0";
 
