@@ -565,7 +565,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
      String getOFileFullPath(String fileName) {
-        if (fileName.indexOf(File.separator) == 0 && new File(fileName).getParentFile().exists()) {
+        if ( new File(fileName).getParentFile().exists()) {
             return fileName;
         } else if (new File(getIfileDirString(), fileName).getParentFile().exists()) {
             return getIfileDirString() + File.separator + fileName;
