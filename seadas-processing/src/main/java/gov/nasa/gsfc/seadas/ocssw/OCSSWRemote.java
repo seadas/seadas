@@ -175,8 +175,8 @@ public class OCSSWRemote extends OCSSW {
     }
 
     public boolean fileExistsOnServer(String fileName) {
-
-        Response response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileName).request().get();
+        String fileNameWithoutPath = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
+        Response response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileNameWithoutPath).request().get();
         if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
             return false;
         } else {
@@ -742,7 +742,9 @@ public class OCSSWRemote extends OCSSW {
             commandItem = null;
             if (option.getType() != ParamInfo.Type.HELP) {
                 if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
-                    if (option.getValue() != null && option.getValue().length() > 0) {
+                    if (option.getType().equals(ParamInfo.Type.IFILE) || option.getType().equals(ParamInfo.Type.OFILE)) {
+                        commandItem = option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
+                    } else if (option.getValue() != null && option.getValue().length() > 0) {
                         commandItem = option.getValue();
                     }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
