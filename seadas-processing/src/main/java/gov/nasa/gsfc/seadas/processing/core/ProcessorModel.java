@@ -556,7 +556,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     public File getIFileDir() {
-
         if (new File(getIfileDirString()).isDirectory()) {
             return new File(getIfileDirString());
         } else {
