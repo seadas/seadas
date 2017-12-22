@@ -1,0 +1,43 @@
+
+l1brsgen command examples
+
+Aqua:
+
+l1brsgen ifile=A2010283180500.L1B_LAC.nc geofile=A2010283180500.GEO.nc ofile=A2010283180500_l1brsgen_default.png oformat=png
+
+l1brsgen ifile=A2010283180500.L1B_LAC.nc geofile=A2010283180500.GEO.nc ofile=A2010283180500_l1brsgen_full.png oformat=png subsamp=1 atmocor=1
+
+l1brsgen ifile=A2010283180500.L1B_LAC.nc geofile=A2010283180500.GEO.nc ofile=A2010283180500_l1brsgen_crop.png oformat=png subsamp=1 atmocor=1 spixl=625 epixl=950 sline=1000 eline=1375
+
+l1brsgen ifile=A2010283180500.L1B_LAC.nc geofile=A2010283180500.GEO.nc ofile=A2010283180500_l1brsgen_crop_500m.png oformat=png subsamp=1 atmocor=1 spixl=1250 epixl=1900 sline=2000 eline=2750 resolution=500
+
+l1brsgen ifile=A2010283180500.L1B_LAC.nc geofile=A2010283180500.GEO.nc ofile=A2010283180500_l1brsgen_crop_250m.png oformat=png subsamp=1 atmocor=1 spixl=2500 epixl=3800 sline=4000 eline=5500 resolution=250
+
+l1brsgen ifile=A2010283180500.L1B_LAC.nc geofile=A2010283180500.GEO.nc ofile=A2010283180500_l1brsgen_crop_RGBveg_Log_250m.png oformat=png subsamp=1 atmocor=1 spixl=2500 epixl=3800 sline=4000 eline=5500 resolution=250 rgb=[859,645,555]
+
+l1brsgen ifile=A2010283180500.L1B_LAC.nc geofile=A2010283180500.GEO.nc ofile=A2010283180500_l1brsgen_crop_RGBveg_Linear_0.3max_250m.png oformat=png subsamp=1 atmocor=1 spixl=2500 epixl=3800 sline=4000 eline=5500 resolution=250 rgb=[859,645,555] stype=1 datamin=0.0 datamax=0.3
+
+
+VIIRS:
+
+l1brsgen ifile=V2015045190600.L1A_SNPP.nc geofile=V2015045190600.GEO-M_SNPP.nc ofile=V2015045190600_l1brsgen_default.png oformat=png
+
+l1brsgen ifile=V2015045190600.L1A_SNPP.nc geofile=V2015045190600.GEO-M_SNPP.nc ofile=V2015045190600_l1brsgen_full.png oformat=png subsamp=1 atmocor=1
+
+l1brsgen ifile=V2015045190600.L1A_SNPP.nc geofile=V2015045190600.GEO-M_SNPP.nc ofile=V2015045190600_l1brsgen_crop.png oformat=png subsamp=1 atmocor=1 spixl=1300 epixl=2150 sline=900 eline=1700
+
+l1brsgen ifile=V2015045190600.L1A_SNPP.nc geofile=V2015045190600.GEO-M_SNPP.nc ofile=V2015045190600_l1brsgen_crop_RGBveg_Log.png oformat=png subsamp=1 atmocor=1 spixl=1300 epixl=2150 sline=900 eline=1700 rgb=[862,671,551]
+
+l1brsgen ifile=V2015045190600.L1A_SNPP.nc geofile=V2015045190600.GEO-M_SNPP.nc ofile=V2015045190600_l1brsgen_crop_RGBveg_Linear_0.3max.png oformat=png subsamp=1 atmocor=1 spixl=1300 epixl=2150 sline=900 eline=1700 rgb=[862,671,551] stype=1 datamin=0.0 datamax=0.3
+
+
+GOCI:
+
+l1brsgen ifile=COMS_GOCI_L1B_GA_20161202031640.he5 ofile=G2016337031640_l1brsgen_default.png oformat=png
+
+l1brsgen ifile=COMS_GOCI_L1B_GA_20161202031640.he5 ofile=G2016337031640_l1brsgen_full.png oformat=png subsamp=1
+
+l1brsgen ifile=COMS_GOCI_L1B_GA_20161202031640.he5 ofile=G2016337031640_l1brsgen_crop.png oformat=png subsamp=1 atmocor=1 spixl=1693 epixl=2816 sline=1965 eline=3246
+
+l1brsgen ifile=COMS_GOCI_L1B_GA_20161202031640.he5 ofile=G2016337031640_l1brsgen_crop_RGBveg_Log.png oformat=png subsamp=1 atmocor=1 spixl=1693 epixl=2816 sline=1965 eline=3246 rgb=[865,660,555]
+
