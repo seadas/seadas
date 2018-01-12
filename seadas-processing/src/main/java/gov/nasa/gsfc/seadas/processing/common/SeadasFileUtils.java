@@ -4,7 +4,10 @@ package gov.nasa.gsfc.seadas.processing.common;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.visat.VisatApp;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -347,6 +350,28 @@ public class SeadasFileUtils {
                     fileHandler.close();
                 } catch (IOException e) {
                 }
+        }
+    }
+    public static File writeStringToFile(String fileContent, String fileLocation) {
+
+        try {
+
+            final File parFile = new File(fileLocation);
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter(parFile);
+                fileWriter.write(fileContent);
+            } finally {
+                if (fileWriter != null) {
+
+                    fileWriter.close();
+                }
+            }
+            return parFile;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

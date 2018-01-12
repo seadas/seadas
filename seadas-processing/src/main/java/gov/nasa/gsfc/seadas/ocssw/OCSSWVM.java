@@ -57,10 +57,12 @@ public class OCSSWVM extends OCSSWRemote {
 
                 pm.worked(1);
         try {
-            copyFileC2S(sourceFilePathName);
+
             if ( SeadasFileUtils.isTextFile(sourceFilePathName) ) {
                 String listOfFiles = uploadListedFiles(pm, sourceFilePathName);
             }
+            updateFileListFileContent(sourceFilePathName);
+            copyFileC2S(sourceFilePathName);
             ifileUploadSuccess = true;
             pm.worked(2);
         } catch (Exception e) {
@@ -123,6 +125,8 @@ public class OCSSWVM extends OCSSWRemote {
         try {
             if (!sourceFilePathName.equals(targetFilePathName)) {
                 SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
+                ifileUploadSuccess = true;
+            } else {
                 ifileUploadSuccess = true;
             }
 

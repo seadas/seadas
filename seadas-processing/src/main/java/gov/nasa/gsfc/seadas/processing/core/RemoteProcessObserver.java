@@ -147,7 +147,7 @@ public class RemoteProcessObserver extends ProcessObserver {
 
 
         private InputStream readProcessStream(int portNumber) {
-            String hostName = "0.0.0.0";
+            String hostName = "127.0.0.1";
             InputStream inputStream = null;
             boolean serverProcessStarted = false;
             try {

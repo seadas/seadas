@@ -19,7 +19,9 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -74,7 +76,6 @@ public class OCSSWRemote extends OCSSW {
             Response response = target.path("ocssw").path("ocsswSetProgramName").path(jobId).request().put(Entity.entity(programName, MediaType.TEXT_PLAIN_TYPE));
         }
     }
-
 
     @Override
     public void setIfileName(String ifileName) {
@@ -147,21 +148,23 @@ public class OCSSWRemote extends OCSSW {
                 pm.beginTask("Uploading file '" + fileName + "' to the remote server ", 10);
 
                 pm.worked(1);
-                final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(fileName));
-                final MultiPart multiPart = new FormDataMultiPart()
-                        //.field("ifileName", ifileName)
-                        .bodyPart(fileDataBodyPart);
-                Response response = target.path("fileServices").path("uploadClientFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
                 try {
                     if (SeadasFileUtils.isTextFile(fileName)) {
                         uploadListedFiles(pm, fileName);
                     }
-                } catch (Exception e) {
+                 } catch (Exception e) {
                     e.printStackTrace();
                     pm.done();
                 } finally {
                     pm.done();
                 }
+                updateFileListFileContent(fileName);
+                final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(fileName));
+                final MultiPart multiPart = new FormDataMultiPart()
+                        //.field("ifileName", ifileName)
+                        .bodyPart(fileDataBodyPart);
+                Response response = target.path("fileServices").path("uploadClientFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
+
                 if (response.getStatus() == Response.ok().build().getStatus()) {
                     ifileUploadSuccess = true;
                 }
@@ -177,6 +180,8 @@ public class OCSSWRemote extends OCSSW {
     public boolean fileExistsOnServer(String fileName) {
         String fileNameWithoutPath = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
         Response response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileNameWithoutPath).request().get();
+        int responseCode = response.getStatus();
+        int responseFound = Response.Status.FOUND.getStatusCode();
         if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
             return false;
         } else {
@@ -248,6 +253,30 @@ public class OCSSWRemote extends OCSSW {
     }
 
 
+
+    public void updateFileListFileContent(String fileListFileName) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(fileListFileName), StandardCharsets.UTF_8);
+
+            Iterator<String> itr = lines.iterator();
+            String fileName;
+            while (itr.hasNext()) {
+                fileName = itr.next();
+                if (fileName.trim().length() > 0) {
+                    System.out.println("file name in the file list: " + fileName);
+                    fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
+                    stringBuilder.append( fileName + "\n");
+                }
+            }
+            String fileContent = stringBuilder.toString();
+            System.out.println(fileContent);
+            SeadasFileUtils.writeStringToFile(fileContent, fileListFileName);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
     @Override
     public String getOfileName(String ifileName) {
 

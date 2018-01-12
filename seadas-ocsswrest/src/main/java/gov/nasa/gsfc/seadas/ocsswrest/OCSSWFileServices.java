@@ -171,7 +171,6 @@ public class OCSSWFileServices {
             Files.createDirectories(newFile.toPath());
             boolean isDirCreated = new File(currentWorkingDir).isDirectory();
             String clientfileFullPathName = currentWorkingDir + File.separator + fileName;
-
             System.out.println(clientfileFullPathName + " is created " + isDirCreated);
             System.out.println(System.getProperty("user.home"));
             System.out.println(new File(currentWorkingDir).getAbsolutePath());
