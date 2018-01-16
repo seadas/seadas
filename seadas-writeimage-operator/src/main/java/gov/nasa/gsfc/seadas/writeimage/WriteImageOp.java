@@ -149,6 +149,7 @@ public class WriteImageOp extends Operator {
 
     @Parameter(description = "The file to which the image is written.")
     private String filePath;
+
     @Parameter(description = "Output image format", defaultValue = "png")
     private String formatName;
 
