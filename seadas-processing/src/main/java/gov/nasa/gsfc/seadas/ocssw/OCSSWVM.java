@@ -56,18 +56,18 @@ public class OCSSWVM extends OCSSWRemote {
                 pm.beginTask("Copying file '" + ifileName + "' to the remote server and getting ofile name", 2);
 
                 pm.worked(1);
-        try {
+                try {
 
-            if ( SeadasFileUtils.isTextFile(sourceFilePathName) ) {
-                String listOfFiles = uploadListedFiles(pm, sourceFilePathName);
-            }
-            updateFileListFileContent(sourceFilePathName);
-            copyFileC2S(sourceFilePathName);
-            ifileUploadSuccess = true;
-            pm.worked(2);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                    if (SeadasFileUtils.isTextFile(sourceFilePathName)) {
+                        String listOfFiles = uploadListedFiles(pm, sourceFilePathName);
+                        updateFileListFileContent(sourceFilePathName);
+                    }
+                    copyFileC2S(sourceFilePathName);
+                    ifileUploadSuccess = true;
+                    pm.worked(2);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         };
@@ -98,7 +98,9 @@ public class OCSSWVM extends OCSSWRemote {
 
         while (input.hasNext()) {
             nextFileName = input.nextLine();
-            copyFileC2S(nextFileName);
+            if (!fileExistsOnServer(nextFileName)) {
+                copyFileC2S(nextFileName);
+            }
         }
         String fileNames = sb.toString();
 
@@ -123,7 +125,7 @@ public class OCSSWVM extends OCSSWRemote {
     private void copyFileC2S(String sourceFilePathName) {
         String targetFilePathName = workingDir + File.separator + sourceFilePathName.substring(sourceFilePathName.lastIndexOf(File.separator) + 1);
         try {
-            if (!sourceFilePathName.equals(targetFilePathName)) {
+            if (!sourceFilePathName.equals(targetFilePathName) && !fileExistsOnServer(sourceFilePathName)) {
                 SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
                 ifileUploadSuccess = true;
             } else {
@@ -133,6 +135,17 @@ public class OCSSWVM extends OCSSWRemote {
         } catch (IOException e) {
             e.printStackTrace();
             ifileUploadSuccess = false;
+        }
+    }
+
+    private void copyFileS2C(String fileName) {
+        String sourceFilePathName = workingDir + File.separator + fileName.substring(fileName.lastIndexOf(File.separator) + 1);
+        try {
+            if (!sourceFilePathName.equals(fileName)) {
+                SeadasFileUtils.copyFile(sourceFilePathName, fileName);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -195,7 +208,33 @@ public class OCSSWVM extends OCSSWRemote {
         }
     }
 
-  @Override
+    @Override
+    public void getOutputFiles(String outputFileNames) {
+
+        VisatApp visatApp = VisatApp.getApp();
+
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                "OCSSW Remote Server File Download") {
+
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
+
+                JsonObject commandArrayJsonObject = null;
+
+                StringTokenizer st = new StringTokenizer(outputFileNames, "\n");
+                String fileName;
+                while (st.hasMoreTokens()) {
+                    fileName = st.nextToken();
+                    copyFileS2C(fileName);
+                }
+                return null;
+            }
+        };
+        pmSwingWorker.execute();
+    }
+
+
+    @Override
     public void downloadCommonFiles(JsonObject paramJsonObject) {
         Set commandArrayKeys = paramJsonObject.keySet();
         String param;
