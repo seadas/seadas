@@ -6,6 +6,7 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.beam.util.SystemUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
@@ -191,7 +192,10 @@ public class OCSSWVM extends OCSSWRemote {
             commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
             Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
             if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                downloadCommonFiles(commandArrayJsonObject);
+                String processStatus  = response.readEntity(String.class);
+                if (processStatus.equals(PROCESS_STATUS_COMPLETED)) {
+                    downloadCommonFiles(commandArrayJsonObject);
+                }
             }
         }
         return Process;
