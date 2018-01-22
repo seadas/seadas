@@ -357,7 +357,7 @@ public class OCSSWRemote {
 
         System.out.println("command array content: ");
         for (int j = 0; j < commandArray.length; j++) {
-            System.out.print(commandArray[j]);
+            System.out.print(commandArray[j] + " ");
         }
         System.out.println("\n" + "command array content ended ");
 
