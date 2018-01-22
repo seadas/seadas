@@ -307,14 +307,14 @@ public class CallCloProgramAction extends AbstractVisatAction {
     /**
      * Handler that tries to extract progress from stdout of ocssw processor
      */
-    private static class ProgressHandler implements ProcessObserver.Handler {
+    public static class ProgressHandler implements ProcessObserver.Handler {
         private boolean progressSeen;
         private int lastScan = 0;
         private String programName;
         private Pattern progressPattern;
         protected String currentText = "Part 1 - ";
 
-        ProgressHandler(String programName, Pattern progressPattern) {
+        public ProgressHandler(String programName, Pattern progressPattern) {
             this.programName = programName;
             this.progressPattern = progressPattern;
         }
@@ -345,13 +345,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
     }
 
-    private static class ConsoleHandler implements ProcessObserver.Handler {
+    public static class ConsoleHandler implements ProcessObserver.Handler {
 
         String programName;
 
         private String executionErrorLog = "";
 
-        ConsoleHandler(String programName) {
+        public ConsoleHandler(String programName) {
             this.programName = programName;
         }
 
@@ -392,9 +392,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
     /**
      * Handler that tries to extract progress from stderr of ocssw_installer.py
      */
-    private static class InstallerHandler extends ProgressHandler {
+    public static class InstallerHandler extends ProgressHandler {
 
-        InstallerHandler(String programName, Pattern progressPattern) {
+        public InstallerHandler(String programName, Pattern progressPattern) {
             super(programName, progressPattern);
         }
 
