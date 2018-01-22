@@ -220,10 +220,10 @@ public class OCSSWServices {
             OCSSWRemote ocsswRemote = new OCSSWRemote();
             ocsswRemote.executeProgramOnDemand(jobId, programName, jsonObject);
         }
-        Response response = Response.status(200).type("text/plain")
-                .entity(SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName())).build();
+        Response response = Response.status(respStatus).type("text/plain").entity(SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName())).build();
         System.out.println("process status on server = " + SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName()));
-        return Response.status(respStatus).build();
+       return response;
+       // return Response.status(respStatus).build();
     }
 
 
