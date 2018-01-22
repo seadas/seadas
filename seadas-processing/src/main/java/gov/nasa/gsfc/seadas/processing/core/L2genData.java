@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWExecutionMonitor;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.*;
@@ -1405,13 +1406,15 @@ public class L2genData implements SeaDASProcessorModel {
 
         processorModel.addParamInfo("mission", missionName, ParamInfo.Type.STRING, 0);
 
+        OCSSWExecutionMonitor ocsswExecutionMonitor = new OCSSWExecutionMonitor();
         try {
+            ocsswExecutionMonitor.executeWithProgressMonitor(processorModel, ocssw, UPDATE_LUTS_SCRIPT);
             Process p = ocssw.execute(processorModel.getParamList()); //processorModel.executeProcess();
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//
+//            String line = stdInput.readLine();
 
-            String line = stdInput.readLine();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("ERROR - Problem running " + UPDATE_LUTS_SCRIPT);
             System.out.println(e.getMessage());
             return;
