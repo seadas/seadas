@@ -256,7 +256,7 @@ public class OCSSWRemote extends OCSSW {
                 return ifileName + ".xml";
             }
 
-        if (isOfileNameFound()) {
+        if (isOfileNameFound() && this.ifileName.equals(ifileName)) {
             return ofileName;
         }
 
