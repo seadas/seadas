@@ -100,7 +100,7 @@ public class OCSSWRemote extends OCSSW {
 
     public boolean uploadClientFile(String fileName) {
 
-        if ( !SeadasFileUtils.isTextFile(fileName) && fileExistsOnServer(fileName)) {
+        if (!SeadasFileUtils.isTextFile(fileName) && fileExistsOnServer(fileName)) {
             return ifileUploadSuccess = true;
         }
         ifileUploadSuccess = false;
@@ -121,7 +121,7 @@ public class OCSSWRemote extends OCSSW {
                         uploadListedFiles(pm, fileName);
                         updateFileListFileContent(fileName);
                     }
-                 } catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     pm.done();
                 } finally {
@@ -194,7 +194,7 @@ public class OCSSWRemote extends OCSSW {
         int numberOfTasksWorked = 1;
 
         for (String nextFileName : fileList) {
-            if ( !fileExistsOnServer(nextFileName) ) {
+            if (!fileExistsOnServer(nextFileName)) {
 
                 pm.setSubTaskName("Uploading " + nextFileName + " to the remote server ...");
 
@@ -223,7 +223,6 @@ public class OCSSWRemote extends OCSSW {
     }
 
 
-
     public void updateFileListFileContent(String fileListFileName) {
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -237,7 +236,7 @@ public class OCSSWRemote extends OCSSW {
                 if (fileName.trim().length() > 0) {
                     System.out.println("file name in the file list: " + fileName);
                     fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
-                    stringBuilder.append( fileName + "\n");
+                    stringBuilder.append(fileName + "\n");
                 }
             }
             String fileContent = stringBuilder.toString();
@@ -247,6 +246,7 @@ public class OCSSWRemote extends OCSSW {
             ioe.printStackTrace();
         }
     }
+
     @Override
     public String getOfileName(String ifileName) {
 
@@ -567,6 +567,31 @@ public class OCSSWRemote extends OCSSW {
 //        pmSwingWorker.execute();
     }
 
+
+    public void getIntermediateOutputFiles(ProcessorModel processorModel) {
+
+        VisatApp visatApp = VisatApp.getApp();
+
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                "OCSSW Remote Server File Download") {
+
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
+
+                JsonObject commandArrayJsonObject = null;
+
+                if (programName.equals(MLP_PROGRAM_NAME)) {
+                    JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
+                    downloadMLPOutputFiles(outputFilesList, pm);
+                } else {
+                    commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+                    downloadCommonFiles(commandArrayJsonObject);
+                }
+                return null;
+            }
+        };
+        pmSwingWorker.execute();
+}
 
     //todo: implement download files using output file names from processModel object
     public void getOutputFiles(String outputFileNames) {

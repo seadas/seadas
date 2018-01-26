@@ -244,7 +244,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     displayOutput(processorModel);
                     VisatApp.getApp().showInfoDialog(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? "" :
                             (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) ? "" : ("Output written to:\n" + outputFileName))), null);
-                    if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
+                    if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) && ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                         ocssw.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
                         if (!ocssw.isOCSSWExist()) {
                             enableProcessors();

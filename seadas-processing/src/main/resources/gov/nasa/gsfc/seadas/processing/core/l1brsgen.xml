@@ -169,9 +169,9 @@
         </option>
         <option type="int">
             <name>subsamp</name>
-            <value></value>
+            <value>10</value>
             <type>int</type>
-            <default>10</default>
+            <default>/default>
             <description>sub-sampling interval</description>
             <source></source>
         </option>
@@ -184,9 +184,9 @@
         </option>
         <option type="boolean">
             <name>atmocor</name>
-            <value>false</value>
+            <value>true</value>
             <type>boolean</type>
-            <default>false</default>
+            <default></default>
             <description>toggle atmospheric correction</description>
         </option>
         <option type="float">

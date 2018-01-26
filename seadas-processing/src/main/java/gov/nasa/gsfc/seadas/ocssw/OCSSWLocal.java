@@ -175,6 +175,16 @@ public class OCSSWLocal extends OCSSW {
     }
 
     @Override
+    public void getOutputFiles(ProcessorModel processorModel) {
+
+    }
+
+    @Override
+    public void getIntermediateOutputFiles(ProcessorModel processorModel) {
+
+    }
+
+    @Override
     public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
 
     }

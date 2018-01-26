@@ -163,43 +163,43 @@ public class OCSSWVM extends OCSSWRemote {
         }
     }
 
-    /**
-     * this method returns a command array for execution.
-     * the array is constructed using the paramList data and input/output files.
-     * the command array structure is: full pathname of the program to be executed, input file name, params in the required order and finally the output file name.
-     * assumption: order starts with 1
-     *
-     * @return
-     */
-    @Override
-    public Process execute(ProcessorModel processorModel) {
-        this.processorModel = processorModel;
-        Process Process = new SeadasProcess(ocsswInfo, jobId);
-
-        JsonObject commandArrayJsonObject = null;
-
-        String programName = processorModel.getProgramName();
-
-        if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
-            String parString = processorModel.getParamList().getParamString("\n");
-            File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
-            target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
-            //copyMLPFiles(parFile.getAbsolutePath());
-            //target.path("ocssw").path("executeMLPParFile").path(jobId).request().get(String.class);
-            JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
-            downloadCommonFiles(outputFilesList);
-        } else {
-            commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
-            Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
-            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                String processStatus  = response.readEntity(String.class);
-                if (processStatus.equals(PROCESS_STATUS_COMPLETED)) {
-                    downloadCommonFiles(commandArrayJsonObject);
-                }
-            }
-        }
-        return Process;
-    }
+//    /**
+//     * this method returns a command array for execution.
+//     * the array is constructed using the paramList data and input/output files.
+//     * the command array structure is: full pathname of the program to be executed, input file name, params in the required order and finally the output file name.
+//     * assumption: order starts with 1
+//     *
+//     * @return
+//     */
+//    @Override
+//    public Process execute(ProcessorModel processorModel) {
+//        this.processorModel = processorModel;
+//        Process Process = new SeadasProcess(ocsswInfo, jobId);
+//
+//        JsonObject commandArrayJsonObject = null;
+//
+//        String programName = processorModel.getProgramName();
+//
+//        if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
+//            String parString = processorModel.getParamList().getParamString("\n");
+//            File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
+//            target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+//            //copyMLPFiles(parFile.getAbsolutePath());
+//            //target.path("ocssw").path("executeMLPParFile").path(jobId).request().get(String.class);
+//            JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
+//            downloadCommonFiles(outputFilesList);
+//        } else {
+//            commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+//            Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+//            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+//                String processStatus  = response.readEntity(String.class);
+//                if (processStatus.equals(PROCESS_STATUS_COMPLETED)) {
+//                    downloadCommonFiles(commandArrayJsonObject);
+//                }
+//            }
+//        }
+//        return Process;
+//    }
 
     private void copyFileFromServerToClient(String sourceFilePathName, String targetFilePathName) {
         File sourceFile = new File(sourceFilePathName);

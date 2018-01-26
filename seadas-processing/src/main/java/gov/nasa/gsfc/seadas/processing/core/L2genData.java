@@ -1679,7 +1679,7 @@ public class L2genData implements SeaDASProcessorModel {
                     if (ocssw.getProcessExitValue() != 0) {
                         throw new IOException(getGuiName() + " returned nonzero exitvalue");
                     }
-                    ocssw.getOutputFiles(processorModel);
+                    ocssw.getIntermediateOutputFiles(processorModel);
 
                     if (!xmlFile.exists()) {
                         return null;
@@ -1753,7 +1753,7 @@ public class L2genData implements SeaDASProcessorModel {
                 throw new IOException("l2gen failed to run");
             }
 
-            ocssw.getOutputFiles(processorModel);
+            ocssw.getIntermediateOutputFiles(processorModel);
 
             if (!xmlFile.exists()) {
                 return null;
