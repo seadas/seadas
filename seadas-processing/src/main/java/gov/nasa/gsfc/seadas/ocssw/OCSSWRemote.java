@@ -85,12 +85,23 @@ public class OCSSWRemote extends OCSSW {
         } else {
             ifileUploadSuccess = false;
         }
-
     }
 
     @Override
     public HashMap<String, String> computePixelsFromLonLat(ProcessorModel processorModel) {
-        return null;
+       HashMap<String, String> pixels = new HashMap();
+        JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+        Response response = target.path("ocssw").path("convertLonLat2Pixels").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            JsonObject jsonObject = target.path("ocssw").path("getConvertedPixels").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            if (jsonObject != null) {
+                pixels.put(ParamUtils.SLINE, jsonObject.getString(ParamUtils.SLINE));
+                pixels.put(ParamUtils.ELINE, jsonObject.getString(ParamUtils.ELINE));
+                pixels.put(ParamUtils.SPIXL, jsonObject.getString(ParamUtils.SPIXL));
+                pixels.put(ParamUtils.EPIXL, jsonObject.getString(ParamUtils.EPIXL));
+            }
+        }
+        return pixels;
     }
 
     private void updateProgramName(String programName) {

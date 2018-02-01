@@ -28,7 +28,7 @@ import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTA
 /**
  * Created by aabduraz on 5/15/17.
  */
-public class OCSSWRemote {
+public class OCSSWRemoteImpl {
 
     final static String OCSSW_ROOT_PROPERTY = "ocsswroot";
     final static String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
@@ -480,6 +480,34 @@ public class OCSSWRemote {
             }
         };
         swingWorker.execute();
+    }
+
+    public HashMap<String, String> computePixelsFromLonLat(String jobId, String programName, JsonObject jsonObject) {
+
+        HashMap<String, String> pixels = new HashMap();
+        try {
+            String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
+            Process process = executeSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray));
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            String[] tmp;
+            while ((line = stdInput.readLine()) != null) {
+                if (line.indexOf("=") != -1) {
+                    tmp = line.split("=");
+                    pixels.put(tmp[0], tmp[1]);
+                    SQLiteJDBC.updateItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, tmp[0], tmp[1]);
+                    System.out.println("pixels are not null: " + tmp[0] + "=" + tmp[1]);
+                }
+            }
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("pixels =" +  pixels==null);
+        return pixels;
     }
 
     /**

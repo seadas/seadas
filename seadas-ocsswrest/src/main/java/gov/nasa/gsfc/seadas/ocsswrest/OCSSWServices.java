@@ -1,20 +1,23 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
-import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote;
+import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRECTORY_PROPERTY;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.ANC_FILE_LIST_FILE_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.ANC_FILE_LIST_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_ERROR_STREAM_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_INPUT_STREAM_FILE_NAME;
 
@@ -64,7 +67,7 @@ public class OCSSWServices {
     public JsonObject getOcsswInfo() {
         JsonObject ocsswInstallStatus = null;
         try {
-             ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
+            ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
                     .add("ocsswRoot", OCSSWServerModel.getOcsswRoot())
                     .add("ocsswScriptsDirPath", OCSSWServerModel.getOcsswScriptsDirPath())
                     .add("ocsswDataDirPath", OCSSWServerModel.getOcsswDataDirPath())
@@ -119,7 +122,7 @@ public class OCSSWServices {
 
         String workingDirPath;
 
-        boolean isClientServerSharedDir =  new Boolean(System.getProperty(CLIENT_SERVER_SHARED_DIR_PROPERTY)).booleanValue();
+        boolean isClientServerSharedDir = new Boolean(System.getProperty(CLIENT_SERVER_SHARED_DIR_PROPERTY)).booleanValue();
         if (isClientServerSharedDir) {
             workingDirPath = System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY);
         } else {
@@ -168,7 +171,7 @@ public class OCSSWServices {
                                             @PathParam("jobId") String jobId) {
         String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String ifileFullPathName = currentWorkingDir + File.separator + ifileName;
-        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
         SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
         SQLiteJDBC.updateInputFilesList(jobId, ifileFullPathName);
@@ -198,7 +201,7 @@ public class OCSSWServices {
             respStatus = Response.Status.BAD_REQUEST;
         } else {
 
-            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
             ocsswRemote.executeProgram(jobId, jsonObject);
         }
         return Response.status(respStatus).build();
@@ -217,13 +220,13 @@ public class OCSSWServices {
             respStatus = Response.Status.BAD_REQUEST;
         } else {
 
-            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
             ocsswRemote.executeProgramOnDemand(jobId, programName, jsonObject);
         }
         Response response = Response.status(respStatus).type("text/plain").entity(SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName())).build();
         System.out.println("process status on server = " + SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName()));
-       return response;
-       // return Response.status(respStatus).build();
+        return response;
+        // return Response.status(respStatus).build();
     }
 
 
@@ -240,7 +243,7 @@ public class OCSSWServices {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } else {
 
-            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
             InputStream processInputStream = ocsswRemote.executeProgramAndGetStdout(jobId, programName, jsonObject);
             ServerSideFileUtilities.writeToFile(processInputStream, serverWorkingDir + File.separator + ANC_FILE_LIST_FILE_NAME);
             return Response
@@ -261,12 +264,59 @@ public class OCSSWServices {
             respStatus = Response.Status.BAD_REQUEST;
         } else {
 
-            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
             ocsswRemote.executeProgramSimple(jobId, programName, jsonObject);
         }
         return Response.status(respStatus).build();
     }
 
+    @PUT
+    @Path("convertLonLat2Pixels/{jobId}/{programName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response convertLonLat2Pixels(@PathParam("jobId") String jobId,
+                                         @PathParam("programName") String programName,
+                                         JsonObject jsonObject)
+            throws IOException {
+        Response.Status respStatus = Response.Status.OK;
+        HashMap<String, String> pixels = new HashMap();
+        JsonObject pixelsJson = null;
+        if (jsonObject == null) {
+            respStatus = Response.Status.BAD_REQUEST;
+        } else {
+            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+            pixels = ocsswRemote.computePixelsFromLonLat(jobId, programName, jsonObject);
+            if (pixels != null) {
+                respStatus = Response.Status.OK;
+
+            } else {
+                respStatus = Response.Status.EXPECTATION_FAILED;
+            }
+        }
+        return Response.status(respStatus).build();
+    }
+
+    @GET
+    @Path("getConvertedPixels/{jobId}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public JsonObject getConvertedPixels(@PathParam("jobId") String jobId)
+            throws IOException {
+        Response.Status respStatus = Response.Status.OK;
+        try {
+            JsonObject pixelsJsonObject = Json.createObjectBuilder()
+                    .add(SQLiteJDBC.LonLatTableFields.SLINE_FIELD_NAME.getValue(), SQLiteJDBC.retrieveItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, SQLiteJDBC.LonLatTableFields.SLINE_FIELD_NAME.getValue()))
+                    .add(SQLiteJDBC.LonLatTableFields.ELINE_FIELD_NAME.getValue(), SQLiteJDBC.retrieveItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, SQLiteJDBC.LonLatTableFields.ELINE_FIELD_NAME.getValue()))
+                    .add(SQLiteJDBC.LonLatTableFields.SPIXL_FIELD_NAME.getValue(), SQLiteJDBC.retrieveItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, SQLiteJDBC.LonLatTableFields.SPIXL_FIELD_NAME.getValue()))
+                    .add(SQLiteJDBC.LonLatTableFields.EPIXL_FIELD_NAME.getValue(), SQLiteJDBC.retrieveItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, SQLiteJDBC.LonLatTableFields.EPIXL_FIELD_NAME.getValue()))
+                    .build();
+            //return Response.ok(pixelsJsonObject, MediaType.APPLICATION_JSON).build();
+            return pixelsJsonObject;
+        } catch (Exception e) {
+            e.printStackTrace();
+            //return Response.status(Response.Status.EXPECTATION_FAILED).build();
+            return null;
+        }
+
+    }
 
     @PUT
     @Path("uploadMLPParFile/{jobId}")
@@ -282,7 +332,7 @@ public class OCSSWServices {
         } else {
 
             SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
-            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
             ocsswRemote.executeMLP(jobId, parFile);
         }
         return Response.status(respStatus).build();
@@ -300,7 +350,7 @@ public class OCSSWServices {
     @Path("getMLPOutputFiles/{jobId}")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject executeMLP(@PathParam("jobId") String jobId) {
-        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         return ocsswRemote.getMLPOutputFilesJsonList(jobId);
     }
 
@@ -414,7 +464,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public int uploadNextLevelNameParams(@PathParam("jobId") String jobId, JsonObject jsonObject) {
         Response.Status responseStatus = Response.Status.ACCEPTED;
-        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         ocsswRemote.getOfileName(jobId, jsonObject);
         return responseStatus.getStatusCode();
     }
@@ -453,7 +503,7 @@ public class OCSSWServices {
     @Path("retrieveProcessStdoutFile/{jobId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream retrieveProcessStdoutFile(@PathParam("jobId") String jobId) {
-        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         InputStream inputStream1 = ocsswRemote.getProcessStdoutFile(jobId);
         InputStream inputStream = SQLiteJDBC.retrieveInputStreamItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STD_OUT_NAME.getFieldName());
         return inputStream;

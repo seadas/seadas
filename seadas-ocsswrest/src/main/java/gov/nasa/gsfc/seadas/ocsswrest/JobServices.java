@@ -28,6 +28,7 @@ public class JobServices {
         SQLiteJDBC.insertItem("FILE_TABLE", "JOB_ID", newJobId);
         SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, newJobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
         SQLiteJDBC.insertItem("PROCESS_TABLE", "JOB_ID", newJobId);
+        SQLiteJDBC.insertItem(SQLiteJDBC.LONLAT_TABLE_NAME, "JOB_ID", newJobId);
         return newJobId;
     }
 

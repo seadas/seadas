@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.ocsswrest;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
-import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote;
+import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerPropertyValues;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -13,18 +13,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
 import java.io.*;
-import java.lang.annotation.Annotation;
-import java.net.URI;
 import java.nio.file.*;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.OCSSW_ROOT_PROPERTY;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.MLP_OUTPUT_DIR_NAME;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.MLP_PROGRAM_NAME;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.PROCESS_STDOUT_FILE_NAME_EXTENSION;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.MLP_OUTPUT_DIR_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.MLP_PROGRAM_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.PROCESS_STDOUT_FILE_NAME_EXTENSION;
 
 /**
  * Created by IntelliJ IDEA.
@@ -127,7 +121,7 @@ public class OCSSWFileServices {
             System.out.println(System.getProperty("user.home"));
             System.out.println(new File(currentWorkingDir).getAbsolutePath());
 
-            OCSSWRemote ocsswRemote = new OCSSWRemote();
+            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
             try {
                 ServerSideFileUtilities.writeToFile(uploadedInputStream, ifileFullPathName);
                 SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
@@ -252,7 +246,7 @@ public class OCSSWFileServices {
             throws IOException {
 
         String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
-        String fileToDownload = serverWorkingDir + File.separator + OCSSWRemote.ANC_FILE_LIST_FILE_NAME;
+        String fileToDownload = serverWorkingDir + File.separator + OCSSWRemoteImpl.ANC_FILE_LIST_FILE_NAME;
         StreamingOutput fileStream = new StreamingOutput() {
             @Override
             public void write(OutputStream outputStream) throws IOException, WebApplicationException {

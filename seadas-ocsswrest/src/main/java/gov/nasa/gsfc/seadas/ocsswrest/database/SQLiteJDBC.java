@@ -29,6 +29,7 @@ public class SQLiteJDBC {
     public static final String FILE_TABLE_NAME = "FILE_TABLE";
     public static final String MISSION_TABLE_NAME = "MISSION_TABLE";
     public static final String PROCESS_TABLE_NAME = "PROCESS_TABLE";
+    public static final String LONLAT_TABLE_NAME = "LONLAT_2_PIXEL_TABLE";
     public static final String PROCESS_MONITOR_STDOUT_TABLE_NAME = "PROCESS_MONITOR_STDOUT_TABLE";
     public static final String PROCESS_MONITOR_STDERR_TABLE_NAME = "PROCESS_MONITOR_STDERR_TABLE";
     public static final String INPUT_FILES_LIST_TABLE_NAME = "INPUT_FILES_LIST_TABLE";
@@ -99,6 +100,23 @@ public class SQLiteJDBC {
         }
         public String getFieldName() {
             return fieldName;
+        }
+    }
+
+    public enum LonLatTableFields{
+        SLINE_FIELD_NAME("sline"),
+        ELINE_FIELD_NAME("eline"),
+        SPIXL_FIELD_NAME("spixl"),
+        EPIXL_FIELD_NAME("epixl");
+
+        String value;
+
+        LonLatTableFields(String value) {
+            this.value = value;
+        }
+
+        public String getValue(){
+            return value;
         }
     }
 
@@ -178,6 +196,15 @@ public class SQLiteJDBC {
                     "PRIMARY KEY (FILE_ID)," +
                     "FOREIGN KEY (JOB_ID) REFERENCES FILE_TABLE(JOB_ID)" +
                     " );";
+//
+//            String lonlat_table_sql = "CREATE TABLE IF NOT EXISTS LONLAT2PIXEL_TABLE " +
+//                    "(LONLAT_ID INTEGER   NOT NULL , " +
+//                    "JOB_ID CHAR(50)   NOT NULL, " +
+//                    "FILENAME       STRING," +
+//                    "PRIMARY KEY (FILE_ID)," +
+//                    "FOREIGN KEY (JOB_ID) REFERENCES FILE_TABLE(JOB_ID)" +
+//                    " );";
+
 
             //execute create_table statements
             stmt.executeUpdate(processor_table_sql);
