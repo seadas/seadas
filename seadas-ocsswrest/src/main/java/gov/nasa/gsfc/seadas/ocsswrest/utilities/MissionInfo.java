@@ -48,6 +48,7 @@ public class MissionInfo {
         missionDataStatus.put("AQUARIUS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "aquarius").exists());
         missionDataStatus.put("OCTS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "octs").exists());
         missionDataStatus.put("OLI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "oli").exists());
+        missionDataStatus.put("OLCI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "olci").exists());
         missionDataStatus.put("OSMI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "osmi").exists());
         missionDataStatus.put("MOS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "mos").exists());
         missionDataStatus.put("MSI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "msi").exists());
@@ -71,6 +72,7 @@ public class MissionInfo {
                 .add("AQUARIUS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "aquarius").exists())
                 .add("OCTS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "octs").exists())
                 .add("OLI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "oli").exists())
+                .add("OLCI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "olci").exists())
                 .add("OSMI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "osmi").exists())
                 .add("MOS", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "mos").exists())
                 .add("MSI", new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + "msi").exists())
@@ -192,6 +194,7 @@ public class MissionInfo {
         OCM1,
         OCM2,
         OLI,
+        OLCI,
         UNKNOWN
     }
 
@@ -211,7 +214,8 @@ public class MissionInfo {
             Id.VIIRS,
             Id.OCM1,
             Id.OCM2,
-            Id.OLI
+            Id.OLI,
+            Id.OLCI
     };
 
     public final static String[] SEAWIFS_NAMES = {"SeaWiFS"};
@@ -262,6 +266,9 @@ public class MissionInfo {
     public final static String[] OLI_NAMES = {"OLI"};
     public final static String OLI_DIRECTORY = "oli";
 
+    public final static String[] OLCI_NAMES = {"OLCI"};
+    public final static String OLCI_DIRECTORY = "olci";
+
     private final HashMap<Id, String[]> names = new HashMap<>();
     private final HashMap<Id, String> directories = new HashMap<>();
 
@@ -295,6 +302,7 @@ public class MissionInfo {
         directories.put(Id.HICO, HICO_DIRECTORY);
         directories.put(Id.GOCI, GOCI_DIRECTORY);
         directories.put(Id.OLI, OLI_DIRECTORY);
+        directories.put(Id.OLCI, OLCI_DIRECTORY);
     }
 
     private void initNamesHashMap() {
@@ -314,6 +322,7 @@ public class MissionInfo {
         names.put(Id.HICO, HICO_NAMES);
         names.put(Id.GOCI, GOCI_NAMES);
         names.put(Id.OLI, OLI_NAMES);
+        names.put(Id.OLCI, OLCI_NAMES);
     }
 
     public Id getId() {

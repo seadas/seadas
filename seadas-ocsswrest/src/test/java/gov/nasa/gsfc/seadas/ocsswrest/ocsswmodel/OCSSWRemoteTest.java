@@ -13,8 +13,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemote.MLP_PROGRAM_NAME;
-import static org.junit.Assert.*;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.MLP_PROGRAM_NAME;
 
 /**
  * Created by aabduraz on 6/2/17.
@@ -22,7 +21,7 @@ import static org.junit.Assert.*;
 public class OCSSWRemoteTest {
     @Test
     public void executeMLP() throws Exception {
-        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         ocsswRemote.executeMLP("65c5712c21bb142bdeaa174920669eff", new File("/accounts/aabduraz/aynur/65c5712c21bb142bdeaa174920669eff/multilevel_processor_parFile.txt"));
     }
 
@@ -30,7 +29,7 @@ public class OCSSWRemoteTest {
     public void execute() throws Exception {
         String parFileLocation = "/accounts/aabduraz/aynur/65c5712c21bb142bdeaa174920669eff/multilevel_processor_parFile.txt";
         String[] commandArray = {MLP_PROGRAM_NAME,  parFileLocation};;
-        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         final long startTime = System.nanoTime();
         ocsswRemote.execute(ServerSideFileUtilities.concatAll(ocsswRemote.getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileLocation).getParent(), "1234");
         final long duration = System.nanoTime() - startTime;
@@ -70,7 +69,7 @@ public class OCSSWRemoteTest {
 
     @Test
     public void extractFileInfo() throws Exception {
-        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
 
         ocsswRemote.extractFileInfo("/accounts/aabduraz/Downloads/A2011199230500.L1A_LAC", "1");
 
@@ -78,7 +77,7 @@ public class OCSSWRemoteTest {
 
     @Test
     public void executeProgram() throws Exception {
-        OCSSWRemote ocsswRemote = new OCSSWRemote();
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         JsonObject jsonObject = Json.createObjectBuilder().add("file_IFILE", "/accounts/aabduraz/test.dir/A2011199230500.L1A_LAC")
                 .add("--output_OFILE","--output=/accounts/aabduraz/test.dir/A2011199230500.GEO")
                 .add("--verbose_BOOLEAN","--verbose")

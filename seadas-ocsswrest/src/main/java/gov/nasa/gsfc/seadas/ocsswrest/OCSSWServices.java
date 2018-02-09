@@ -235,8 +235,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response executeOcsswProgramAndGetStdout(@PathParam("jobId") String jobId,
                                                     @PathParam("programName") String programName,
-                                                    JsonObject jsonObject)
-            throws IOException {
+                                                    JsonObject jsonObject)            throws IOException {
 
         String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         if (jsonObject == null) {

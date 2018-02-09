@@ -323,6 +323,12 @@ public class SQLiteJDBC {
             preparedStatement.setString(3, "oli");
             preparedStatement.executeUpdate();
 
+            //16. insert olci mission info
+            preparedStatement.setString(1, "OLCI");
+            preparedStatement.setString(2, "OLCI");
+            preparedStatement.setString(3, "olci");
+            preparedStatement.executeUpdate();
+
             stmt.close();
             preparedStatement.close();
             connection.close();
