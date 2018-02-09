@@ -32,6 +32,7 @@ public class MissionInfo {
         OCM1,
         OCM2,
         OLI,
+        OLCI,
         UNKNOWN
     }
 
@@ -50,7 +51,8 @@ public class MissionInfo {
         Id.VIIRS,
         Id.OCM1,
         Id.OCM2,
-        Id.OLI
+        Id.OLI,
+        Id.OLCI
     };
 
     public final static String[] SEAWIFS_NAMES = {"SeaWiFS"};
@@ -98,6 +100,9 @@ public class MissionInfo {
     public final static String[] OLI_NAMES = {"OLI"};
     public final static String OLI_DIRECTORY = "oli";
 
+    public final static String[] OLCI_NAMES = {"OLCI"};
+    public final static String OLCI_DIRECTORY = "olci";
+
     private final HashMap<Id, String[]> names = new HashMap<>();
     private final HashMap<Id, String> directories = new HashMap<>();
 
@@ -140,6 +145,7 @@ public class MissionInfo {
         directories.put(Id.HICO, HICO_DIRECTORY);
         directories.put(Id.GOCI, GOCI_DIRECTORY);
         directories.put(Id.OLI, OLI_DIRECTORY);
+        directories.put(Id.OLCI, OLCI_DIRECTORY);
     }
 
     private void initNamesHashMap() {
@@ -158,6 +164,7 @@ public class MissionInfo {
         names.put(Id.HICO, HICO_NAMES);
         names.put(Id.GOCI, GOCI_NAMES);
         names.put(Id.OLI, OLI_NAMES);
+        names.put(Id.OLCI, OLCI_NAMES);
     }
 
     public Id getId() {
