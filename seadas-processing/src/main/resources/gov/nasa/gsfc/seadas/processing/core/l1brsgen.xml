@@ -171,7 +171,7 @@
             <name>subsamp</name>
             <value>10</value>
             <type>int</type>
-            <default>/default>
+            <default>-1</default>
             <description>sub-sampling interval</description>
             <source></source>
         </option>
