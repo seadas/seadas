@@ -151,7 +151,7 @@ public class OCSSWLocal extends OCSSW {
 
 
         if (ifileDir != null) {
-            processBuilder.directory(ifileDir);
+            processBuilder.directory(new File(ifileDir));
         } else {
             processBuilder.directory(new File(System.getProperty("user.home")));
         }
@@ -187,10 +187,47 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
 
+        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
+
+        process = execute((String[]) ArrayUtils.addAll(commandArrayPrefix, fileTypeCommandArrayParams));
+
+        try {
+
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line = stdInput.readLine();
+            if (line != null) {
+                String splitLine[] = line.split(":");
+                if (splitLine.length == 3) {
+                    String missionName = splitLine[1].toString().trim();
+                    String fileType = splitLine[2].toString().trim();
+
+                    if (fileType.length() > 0) {
+                        fileInfoFinder.setFileType(fileType);
+                    }
+
+                    if (missionName.length() > 0) {
+                        fileInfoFinder.setMissionName(missionName);
+                    }
+                }
+            }
+        } catch (IOException ioe) {
+
+            VisatApp.getApp().showErrorDialog(ioe.getMessage());
+        }
     }
 
     @Override
     public String getOfileName(String ifileName) {
+
+        if (isOfileNameFound() && this.ifileName.equals(ifileName)) {
+            return ofileName;
+        }
+
+
+        if (getIfileName() == null || !getIfileName().equals(ifileName)) {
+            this.setIfileName(ifileName);
+        }
 
         this.setIfileName(ifileName);
         extractFileInfo(ifileName);
@@ -208,8 +245,9 @@ public class OCSSWLocal extends OCSSW {
         }
 
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
-
-        return getOfileName(SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams));
+        ofileName = getOfileName(SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams));
+        setOfileNameFound(true);
+        return ofileName;
 
 
     }
@@ -268,7 +306,7 @@ public class OCSSWLocal extends OCSSW {
         return defaultsFilePrefix;
     }
 
-    private void extractFileInfo(String ifileName) {
+    public void extractFileInfo(String ifileName) {
 
         String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
 

@@ -49,9 +49,7 @@ public class OCSSWRemote extends OCSSW {
     String jobId;
     String clientId;
     boolean ifileUploadSuccess;
-    String ofileName;
-    String ofileDir;
-    String ifileDir;
+
 
     ProcessorModel processorModel;
 
@@ -79,7 +77,6 @@ public class OCSSWRemote extends OCSSW {
         this.ifileName = ifileName;
         setOfileNameFound(false);
         ofileName = null;
-        // if (uploadIFile(ifileName)) {
         if (uploadClientFile(ifileName)) {
             ifileUploadSuccess = true;
         } else {

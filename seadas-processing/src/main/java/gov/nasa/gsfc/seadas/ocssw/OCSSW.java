@@ -44,7 +44,7 @@ public abstract class OCSSW {
     String programName;
     private String xmlFileName;
     String ifileName;
-    File ifileDir;
+    //File ifileDir;
     public String missionName;
     public String fileType;
 
@@ -61,6 +61,10 @@ public abstract class OCSSW {
     private int processExitValue;
 
     private boolean ofileNameFound;
+
+    String ofileName;
+    String ofileDir;
+    String ifileDir;
 
     private String serverSharedDirName = null;
     private boolean ocsswInstalScriptDownloadSuccessful = false;
@@ -228,7 +232,9 @@ public abstract class OCSSW {
 
     public void setIfileName(String ifileName) {
         this.ifileName = ifileName;
-        ifileDir = new File(ifileName).getParentFile();
+        ifileDir = new File(ifileName).getParent();
+        setOfileNameFound(false);
+        ofileName = null;
     }
 
     public String getXmlFileName() {

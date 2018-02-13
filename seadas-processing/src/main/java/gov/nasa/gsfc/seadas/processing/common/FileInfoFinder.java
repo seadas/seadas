@@ -17,9 +17,10 @@ public class FileInfoFinder {
 
     public FileInfoFinder(String fileName, OCSSW ocssw){
         this.ocssw = ocssw;
-        ocssw.getOfileName(fileName);
-        setMissionName(ocssw.getMissionName());
-        setFileType(ocssw.getFileType());
+        ocssw.findFileInfo(fileName, this);
+//        ocssw.getOfileName(fileName);
+//        setMissionName(ocssw.getMissionName());
+//        setFileType(ocssw.getFileType());
         setMissionDirName(OCSSWInfo.getInstance().getOcsswDataDirPath());
     }
 
