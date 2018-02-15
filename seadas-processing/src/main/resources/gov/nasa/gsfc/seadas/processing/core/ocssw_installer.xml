@@ -143,14 +143,14 @@
             <description>install Landsat 8 OLI files</description>
             <order>16</order>
         </option>
-        <option type="boolean">
-            <name>--olci</name>
-            <value>false</value>
-            <default>false</default>
-            <usedAs>flag</usedAs>
-            <description>install Sentinel-3A OLCI files</description>
-            <order>16</order>
-        </option>
+        <!--<option type="boolean">-->
+            <!--<name>&#45;&#45;olci</name>-->
+            <!--<value>false</value>-->
+            <!--<default>false</default>-->
+            <!--<usedAs>flag</usedAs>-->
+            <!--<description>install Sentinel-3A OLCI files</description>-->
+            <!--<order>16</order>-->
+        <!--</option>-->
         <option type="boolean">
             <name>--osmi</name>
             <value>false</value>
