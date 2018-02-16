@@ -50,6 +50,7 @@ public class OCSSWLocal extends OCSSW {
 
     private void initialize() {
         missionInfo = new MissionInfo();
+
     }
 
     @Override
@@ -209,6 +210,7 @@ public class OCSSWLocal extends OCSSW {
 
                     if (missionName.length() > 0) {
                         fileInfoFinder.setMissionName(missionName);
+                        setMissionName(missionName);
                     }
                 }
             }
