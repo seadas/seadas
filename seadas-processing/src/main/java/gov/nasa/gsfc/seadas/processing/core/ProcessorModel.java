@@ -342,14 +342,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
 
-
         if (programName != null && verifyIFilePath(ifileName)) {
             String ofileName = getOcssw().getOfileName(ifileName);
             SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
             if (ofileName != null) {
                 isIfileValid = true;
                 updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-
                 updateGeoFileInfo(ifileName, inputFileInfo);
                 updateOFileInfo(getOFileFullPath(ofileName));
                 updateParamValues(new File(ifileName));
@@ -383,8 +381,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public boolean updateOFileInfo(String newValue) {
         if (newValue != null && newValue.trim().length() > 0) {
-            String ofile = getOFileFullPath(newValue);
-            updateParamInfo(getPrimaryOutputFileOptionName(), ofile + "\n");
+            //String ofile = getOFileFullPath(newValue);
+            updateParamInfo(getPrimaryOutputFileOptionName(), newValue + "\n");
             setReadyToRun(newValue.trim().length() == 0 ? false : true);
             return true;
         }
@@ -772,17 +770,17 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             File ifile = new File(ifileName);
 
             inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
-
+            selectExtractorProgram();
             boolean isIfileValid = false;
             if (programName != null && verifyIFilePath(ifileName)) {
                 String ofileName = getOcssw().getOfileName(ifileName);
                 SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
                 if (ofileName != null) {
-                    programName = getOcssw().getProgramName();
+                    //programName = getOcssw().getProgramName();
                     setParamList(ParamUtils.computeParamList(getOcssw().getXmlFileName()));
                     isIfileValid = true;
                     updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-                    updateGeoFileInfo(ifileName, inputFileInfo);
+                    //updateGeoFileInfo(ifileName, inputFileInfo);
                     updateOFileInfo(getOFileFullPath(ofileName));
                     updateParamValues(new File(ifileName));
                 }
@@ -798,6 +796,30 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
             return isIfileValid;
         }
+
+        void selectExtractorProgram() {
+            String missionName = inputFileInfo.getMissionName();
+            String fileType = inputFileInfo.getFileTypeName();
+            if (missionName != null && fileType != null) {
+                if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
+                    programName = L1AEXTRACT_MODIS;
+                    ocssw.setXmlFileName(L1AEXTRACT_MODIS_XML_FILE);
+                } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
+                    programName = L1AEXTRACT_SEAWIFS;
+                    ocssw.setXmlFileName(L1AEXTRACT_SEAWIFS_XML_FILE);
+                } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
+                    programName = L1AEXTRACT_VIIRS;
+                    ocssw.setXmlFileName(L1AEXTRACT_VIIRS_XML_FILE);
+                } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
+                        (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
+                    programName = L2EXTRACT;
+                    ocssw.setXmlFileName(L2EXTRACT_XML_FILE);
+                }
+            }
+            setProgramName(programName);
+            ocssw.setProgramName(programName);
+        }
+
     }
 
     private static class Modis_L1B_Processor extends ProcessorModel {
@@ -915,11 +937,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         public boolean updateIFileInfo(String ifileName) {
-            File ifile = new File(ifileName);
-
-            inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
+            //File ifile = new File(ifileName);
+            //inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
-            updateGeoFileInfo(ifileName, inputFileInfo);
+            //updateGeoFileInfo(ifileName, inputFileInfo);
             return true;
         }
     }

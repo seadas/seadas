@@ -124,27 +124,6 @@ public abstract class OCSSW {
 
     public abstract String getOfileName(String ifileName, String programName, String suiteValue);
 
-    void selectExtractorProgram() {
-        if (missionName != null && fileType != null) {
-            if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
-                programName = L1AEXTRACT_MODIS;
-                setXmlFileName(L1AEXTRACT_MODIS_XML_FILE);
-            } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
-                programName = L1AEXTRACT_SEAWIFS;
-                setXmlFileName(L1AEXTRACT_SEAWIFS_XML_FILE);
-            } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
-                programName = L1AEXTRACT_VIIRS;
-                setXmlFileName(L1AEXTRACT_VIIRS_XML_FILE);
-            } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
-                    (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
-                programName = L2EXTRACT;
-                setXmlFileName(L2EXTRACT_XML_FILE);
-            }
-        }
-        setProgramName(programName);
-    }
-
-
     public String getProgramName() {
         return programName;
     }

@@ -92,7 +92,7 @@ public class FileInfo {
         return fileTypeInfo.getId();
     }
 
-    public String getTypeName() {
+    public String getFileTypeName() {
         return fileTypeInfo.getName();
     }
 

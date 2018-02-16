@@ -60,15 +60,15 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public boolean isMissionDirExist(String missionName) {
         return missionInfo.getDirectory().exists();
-      }
+    }
 
     @Override
-    public int getProcessExitValue(){
+    public int getProcessExitValue() {
         return process.exitValue();
     }
 
     @Override
-    public void waitForProcess(){
+    public void waitForProcess() {
         try {
             process.waitFor();
         } catch (InterruptedException ie) {
@@ -187,7 +187,8 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
 
-        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
+        setIfileName(fileName);
+        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, fileName};
 
         process = execute((String[]) ArrayUtils.addAll(commandArrayPrefix, fileTypeCommandArrayParams));
 
@@ -224,32 +225,36 @@ public class OCSSWLocal extends OCSSW {
             return ofileName;
         }
 
-
-        if (getIfileName() == null || !getIfileName().equals(ifileName)) {
-            this.setIfileName(ifileName);
-        }
-
-        this.setIfileName(ifileName);
-        extractFileInfo(ifileName);
-        if (programName.equals("extractor")) {
-            selectExtractorProgram();
-        }
-
         if (ifileName == null || programName == null) {
             return null;
         }
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
-        } else if (programName.equals("extractor")) {
-
         }
-
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
         ofileName = getOfileName(SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams));
         setOfileNameFound(true);
         return ofileName;
+    }
 
-
+    void selectExtractorProgram() {
+        if (missionName != null && fileType != null) {
+            if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
+                programName = L1AEXTRACT_MODIS;
+                setXmlFileName(L1AEXTRACT_MODIS_XML_FILE);
+            } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
+                programName = L1AEXTRACT_SEAWIFS;
+                setXmlFileName(L1AEXTRACT_SEAWIFS_XML_FILE);
+            } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
+                programName = L1AEXTRACT_VIIRS;
+                setXmlFileName(L1AEXTRACT_VIIRS_XML_FILE);
+            } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
+                    (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
+                programName = L2EXTRACT;
+                setXmlFileName(L2EXTRACT_XML_FILE);
+            }
+        }
+        setProgramName(programName);
     }
 
     public String[] getMissionSuites(String missionName, String programName) {
@@ -304,38 +309,6 @@ public class OCSSWLocal extends OCSSW {
             defaultsFilePrefix = AQUARIUS_DEFAULTS_FILE_PREFIX;
         }
         return defaultsFilePrefix;
-    }
-
-    public void extractFileInfo(String ifileName) {
-
-        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
-
-        process = execute((String[]) ArrayUtils.addAll(commandArrayPrefix, fileTypeCommandArrayParams));
-
-        try {
-
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            String line = stdInput.readLine();
-            if (line != null) {
-                String splitLine[] = line.split(":");
-                if (splitLine.length == 3) {
-                    String missionName = splitLine[1].toString().trim();
-                    String fileType = splitLine[2].toString().trim();
-
-                    if (fileType.length() > 0) {
-                        setFileType(fileType);
-                    }
-
-                    if (missionName.length() > 0) {
-                        setMissionName(missionName);
-                    }
-                }
-            }
-        } catch (IOException ioe) {
-
-            VisatApp.getApp().showErrorDialog(ioe.getMessage());
-        }
     }
 
     @Override
@@ -402,16 +375,17 @@ public class OCSSWLocal extends OCSSW {
                     }
                     line = br.readLine();
                 }
-
             } else {
+                String line = br.readLine();
+                while (line != null) {
+                    System.out.println("error stream: " + line);
+                    line = br.readLine();
+                }
                 Debug.trace("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
             }
-
         } catch (IOException ioe) {
-
             VisatApp.getApp().showErrorDialog(ioe.getMessage());
         }
-
         return null;
     }
 
