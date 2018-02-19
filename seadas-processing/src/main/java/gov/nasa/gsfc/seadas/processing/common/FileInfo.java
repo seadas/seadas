@@ -54,9 +54,9 @@ public class FileInfo {
 
     private void initMissionAndFileTypeInfos() {
         FileInfoFinder fileInfoFinder = new FileInfoFinder(file.getAbsolutePath(), ocssw);
-
         fileTypeInfo.setName(fileInfoFinder.getFileType());
         missionInfo.setName(fileInfoFinder.getMissionName());
+
     }
 
 

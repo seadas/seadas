@@ -299,7 +299,6 @@ public class ParamInfo implements Comparable, Cloneable {
                                 isCompressedFile = true;
                             }
                         }
-
                         if (isCompressedFile) {
                             setValidationComment("WARNING!!! File '" + filename + "' is compressed (please uncompress it)");
                         } else if (getName().equals(L2genData.GEOFILE)) {
@@ -310,15 +309,12 @@ public class ParamInfo implements Comparable, Cloneable {
                         } else if (getName().equals(L2genData.IFILE)) {
                             if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
                                 setValidationComment("# WARNING!!! file " + filename + " is not a valid input mission" + ": Mission="+ fileInfo.getMissionName() + "\n");
-
                             } else if (!fileInfo.isMissionDirExist()) {
                                 if (fileInfo.getMissionDirectory() != null) {
                                     setValidationComment("WARNING!!! Mission directory '" + fileInfo.getMissionDirectory().getAbsolutePath() + "' does not exist");
                                 } else {
-
                                     setValidationComment("WARNING!!! Mission directory does not exist");
                                 }
-
                             } else if (!SeadasProcessorInfo.isValidFileType(fileInfo, processorInfoId)) {
                                 setValidationComment("# WARNING!!! file " + filename + " is not a valid input file type" + "\n");
                             }
@@ -326,7 +322,6 @@ public class ParamInfo implements Comparable, Cloneable {
                     } else {
                         setValidationComment("WARNING!!! File'" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
                     }
-
                 } else {
                     setValidationComment("WARNING!!! File'" + getValue() + "' does not exist");
                 }

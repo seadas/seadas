@@ -343,6 +343,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
 
         if (programName != null && verifyIFilePath(ifileName)) {
+            ocssw.setIfileName(ifileName);
             String ofileName = getOcssw().getOfileName(ifileName);
             SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
             if (ofileName != null) {
@@ -773,6 +774,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             selectExtractorProgram();
             boolean isIfileValid = false;
             if (programName != null && verifyIFilePath(ifileName)) {
+                ocssw.setIfileName(ifileName);
                 String ofileName = getOcssw().getOfileName(ifileName);
                 SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
                 if (ofileName != null) {
@@ -937,10 +939,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         public boolean updateIFileInfo(String ifileName) {
-            //File ifile = new File(ifileName);
-            //inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
-            //updateGeoFileInfo(ifileName, inputFileInfo);
+            ocssw.setIfileName(ifileName);
             return true;
         }
     }

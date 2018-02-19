@@ -268,11 +268,6 @@ public class OCSSWRemote extends OCSSW {
             return ofileName;
         }
 
-
-        if (getIfileName() == null || !getIfileName().equals(ifileName)) {
-            this.setIfileName(ifileName);
-        }
-
         if (!fileExistsOnServer(ifileName)) {
             uploadClientFile(ifileName);
         }
@@ -311,8 +306,6 @@ public class OCSSWRemote extends OCSSW {
         if (isOfileNameFound()) {
             return ofileName;
         }
-
-        this.setIfileName(ifileName);
 
         if (ifileUploadSuccess) {
             JsonObject jsonObjectForUpload = getNextLevelNameJsonObject(ifileName, options);
@@ -631,19 +624,15 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
-
         ofileName = ifileName + ".xml";
-
-        if (getIfileName() == null || !getIfileName().equals(ifileName)) {
-            this.setIfileName(ifileName);
-        }
-
-        JsonObject jsonObject = getFindOfileJsonObject(ifileName.substring(ifileName.lastIndexOf(File.separator) + 1));
+        JsonObject jsonObject = getFindOfileJsonObject(fileName.substring(fileName.lastIndexOf(File.separator) + 1));
         ofileName = jsonObject.getString("ofileName");
         missionName = jsonObject.getString("missionName");
         fileType = jsonObject.getString("fileType");
+        fileInfoFinder.setFileType(fileType);
+        fileInfoFinder.setMissionName(missionName);
         updateProgramName(jsonObject.getString("programName"));
-        ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
+        ofileName = fileName.substring(0, fileName.lastIndexOf(File.separator) + 1) + ofileName;
         if (ofileName == null || missionName == null || fileType == null) {
             setOfileNameFound(false);
         }
