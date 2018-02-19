@@ -4,9 +4,8 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
-import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.esa.beam.util.SystemUtils;
+import gov.nasa.gsfc.seadas.processing.utilities.FileCompare;
+import org.apache.commons.io.FileUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
@@ -46,33 +45,14 @@ public class OCSSWVM extends OCSSWRemote {
 
         ifileUploadSuccess = false;
 
-        VisatApp visatApp = VisatApp.getApp();
-
-        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                "OCSSW Remote Server File Upload") {
-
-            @Override
-            protected Void doInBackground(ProgressMonitor pm) throws Exception {
-
-                pm.beginTask("Copying file '" + ifileName + "' to the remote server and getting ofile name", 2);
-
-                pm.worked(1);
-                try {
 
                     if (SeadasFileUtils.isTextFile(sourceFilePathName)) {
-                        String listOfFiles = uploadListedFiles(pm, sourceFilePathName);
+                        String listOfFiles = uploadListedFiles(null, sourceFilePathName);
                         updateFileListFileContent(sourceFilePathName);
                     }
                     copyFileC2S(sourceFilePathName);
-                    ifileUploadSuccess = true;
-                    pm.worked(2);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-        pmSwingWorker.executeWithBlocking();
+
+
         return ifileUploadSuccess;
     }
 
@@ -126,17 +106,37 @@ public class OCSSWVM extends OCSSWRemote {
     private void copyFileC2S(String sourceFilePathName) {
         String targetFilePathName = workingDir + File.separator + sourceFilePathName.substring(sourceFilePathName.lastIndexOf(File.separator) + 1);
         try {
-            if (!sourceFilePathName.equals(targetFilePathName) && !fileExistsOnServer(sourceFilePathName)) {
+            boolean isTwoEqual = compareFileContents(sourceFilePathName, targetFilePathName);
+            System.out.println("two file is equal: " + isTwoEqual);
+            if (!isTwoEqual) {
+                //if (!sourceFilePathName.equals(targetFilePathName) && !fileExistsOnServer(sourceFilePathName)) {
                 SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
                 ifileUploadSuccess = true;
             } else {
                 ifileUploadSuccess = true;
             }
-
         } catch (IOException e) {
             e.printStackTrace();
             ifileUploadSuccess = false;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    private boolean compareFileContents(String file1Path, String file2Path) {
+        String file1HashValue;
+        String file2HashValue;
+        boolean isTwoEqual = false;
+        try {
+            System.out.println("two file is equal: " + isTwoEqual);
+            file1HashValue = FileCompare.MD5HashFile(file1Path);
+            file2HashValue = FileCompare.MD5HashFile(file2Path);
+            isTwoEqual = file1HashValue.equals(file2HashValue);
+        } catch (Exception ioe) {
+            System.out.println("exception in comparing two files");
+            ioe.printStackTrace();
+        }
+        return isTwoEqual;
     }
 
     private void copyFileS2C(String fileName) {
@@ -265,7 +265,8 @@ public class OCSSWVM extends OCSSWRemote {
                     if (!workingDir.equals(ofileDir)) {
                         String sourceFilePathName = workingDir + File.separator + ofileName;
                         String targetFilePathName = ofileDir + File.separator + ofileName;
-                        SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
+                        FileUtils.copyFileToDirectory(new File(sourceFilePathName), new File(ofileDir));
+                        //SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
                     }
                     //copyFileFromServerToClient(workingDir + File.separator + ofileName, ofileDir + File.separator + ofileName);
                     //Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
