@@ -175,21 +175,30 @@ public class OCSSWRemoteImpl {
 
     public InputStream executeProgramAndGetStdout(String jobId, String programName, JsonObject jsonObject) {
 
-        String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
+        String[] commandArray = ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), transformCommandArray(jobId, jsonObject, programName));
 
-        Process process;
+        System.out.println("command array content to get stdout: ");
+        for (int j = 0; j < commandArray.length; j++) {
+            System.out.print(commandArray[j] + " ");
+        }
+
+        Process process = null;
         InputStream processInputStream = null;
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
             process = processBuilder.start();
             process.waitFor();
             processInputStream = process.getInputStream();
-
         } catch (IOException ioe) {
             ioe.printStackTrace();
 
         } catch (InterruptedException ie) {
             ie.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        if (process == null) {
+            System.out.println(programName + " failed to create process.");
         }
         return processInputStream;
     }

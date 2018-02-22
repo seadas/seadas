@@ -4,8 +4,8 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.FileCompare;
-import org.apache.commons.io.FileUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
@@ -265,8 +265,8 @@ public class OCSSWVM extends OCSSWRemote {
                     if (!workingDir.equals(ofileDir)) {
                         String sourceFilePathName = workingDir + File.separator + ofileName;
                         String targetFilePathName = ofileDir + File.separator + ofileName;
-                        FileUtils.copyFileToDirectory(new File(sourceFilePathName), new File(ofileDir));
-                        //SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
+                        //leUtils.copyFileToDirectory(new File(sourceFilePathName), new File(ofileDir));
+                        SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
                     }
                     //copyFileFromServerToClient(workingDir + File.separator + ofileName, ofileDir + File.separator + ofileName);
                     //Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);

@@ -245,12 +245,13 @@ public class OCSSWFileServices {
     public Response downloadAncFileList(@PathParam("jobId") String jobId)
             throws IOException {
 
-        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
+        String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String fileToDownload = serverWorkingDir + File.separator + OCSSWRemoteImpl.ANC_FILE_LIST_FILE_NAME;
         StreamingOutput fileStream = new StreamingOutput() {
             @Override
             public void write(OutputStream outputStream) throws IOException, WebApplicationException {
                 try {
+                    System.out.println("anc file name = " + fileToDownload);
                     java.nio.file.Path path = Paths.get(fileToDownload);
                     byte[] data = Files.readAllBytes(path);
                     outputStream.write(data);

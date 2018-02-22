@@ -1048,7 +1048,7 @@ public class L2genData implements SeaDASProcessorModel {
 
                     paramInfo.setValue(value);
 
-                    if (paramInfo.getType() == ParamInfo.Type.IFILE) {
+                    if (paramInfo.getType() == ParamInfo.Type.IFILE && !isAncFile(paramInfo.getValue())) {
                         paramInfo.validateIfileValue(iFileInfo.getFile().getParent(), processorId, ocssw);
                     }
                     setConflictingParams(paramInfo.getName());
@@ -1062,6 +1062,10 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
 
+    private boolean isAncFile(String fileName){
+        boolean isAncFile = fileName.contains("/var/anc/");
+        return isAncFile;
+    }
     public void setParamValue(String name, String value) {
         setParamValue(getParamInfo(name), value);
     }

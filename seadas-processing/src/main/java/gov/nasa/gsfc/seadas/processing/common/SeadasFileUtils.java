@@ -3,7 +3,9 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.visat.VisatApp;
+
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.Iterator;
@@ -119,6 +121,31 @@ public class SeadasFileUtils {
                 StandardCopyOption.COPY_ATTRIBUTES
         };
         Files.copy(src, dest, options);
+    }
+
+    public static void fileCopy(File in, File out) {
+        try {
+            FileChannel inChannel = new FileInputStream(in).getChannel();
+            FileChannel outChannel = new FileOutputStream(out).getChannel();
+            // Try to change this but this is the number I tried.. for Windows, 64Mb - 32Kb)
+            int maxCount = (64 * 1024 * 1024) - (32 * 1024);
+            long size = inChannel.size();
+            long position = 0;
+            while (position < size) {
+                position += inChannel.transferTo(position, maxCount, outChannel);
+            }
+            if (inChannel != null) {
+                inChannel.close();
+            }
+            if (outChannel != null) {
+                outChannel.close();
+            }
+            System.out.println("File Successfully Copied..");
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
     }
 
     /**
@@ -352,6 +379,7 @@ public class SeadasFileUtils {
                 }
         }
     }
+
     public static File writeStringToFile(String fileContent, String fileLocation) {
 
         try {
