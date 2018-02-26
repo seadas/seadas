@@ -785,7 +785,7 @@ public class OCSSWRemote extends OCSSW {
                     if (option.getType().equals(ParamInfo.Type.OFILE)) {
                         ofileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
                     }
-                    if (option.getType().equals(ParamInfo.Type.IFILE) ) {
+                    if (option.getType().equals(ParamInfo.Type.IFILE)  && !isAncFile(option.getValue()) ) {
                         fileName = option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
                         if (fileName.length() > 0 ) {
                             ifileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
