@@ -544,28 +544,6 @@ public class OCSSWRemote extends OCSSW {
     @Override
     public void getOutputFiles(ProcessorModel processorModel) {
         getOutputFiles(processorModel.getOfileName());
-
-//        VisatApp visatApp = VisatApp.getApp();
-//
-//        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-//                "OCSSW Remote Server File Download") {
-//
-//            @Override
-//            protected Void doInBackground(ProgressMonitor pm) throws Exception {
-//
-//                JsonObject commandArrayJsonObject = null;
-//
-//                if (programName.equals(MLP_PROGRAM_NAME)) {
-//                    JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
-//                    downloadMLPOutputFiles(outputFilesList, pm);
-//                } else {
-//                    commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
-//                    downloadCommonFiles(commandArrayJsonObject);
-//                }
-//                return null;
-//            }
-//        };
-//        pmSwingWorker.execute();
     }
 
 
@@ -799,7 +777,7 @@ public class OCSSWRemote extends OCSSW {
                         commandItem = option.getValue();
                     }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue()) && !option.getValue().trim().isEmpty()) {
-                    if (option.getType().equals(ParamInfo.Type.IFILE) || option.getType().equals(ParamInfo.Type.OFILE)) {
+                    if ((option.getType().equals(ParamInfo.Type.IFILE) && !isAncFile(option.getValue())) || option.getType().equals(ParamInfo.Type.OFILE)) {
                         commandItem = option.getName() + "=" + option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
                     } else {
                         commandItem = option.getName() + "=" + option.getValue();
@@ -807,9 +785,9 @@ public class OCSSWRemote extends OCSSW {
                     if (option.getType().equals(ParamInfo.Type.OFILE)) {
                         ofileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
                     }
-                    if (option.getType().equals(ParamInfo.Type.IFILE)) {
+                    if (option.getType().equals(ParamInfo.Type.IFILE) ) {
                         fileName = option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
-                        if (fileName.length() > 0) {
+                        if (fileName.length() > 0 ) {
                             ifileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
                             response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileName).request().get();
                             if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
@@ -832,6 +810,11 @@ public class OCSSWRemote extends OCSSW {
 
         }
         return jsonObjectBuilder.build();
+    }
+
+     boolean isAncFile(String fileName){
+        boolean isAncFile = fileName.contains("/var/anc/");
+        return isAncFile;
     }
 
     private void prepareToRemoteExecute() {

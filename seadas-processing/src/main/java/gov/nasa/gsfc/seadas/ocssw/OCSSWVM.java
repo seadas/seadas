@@ -45,14 +45,15 @@ public class OCSSWVM extends OCSSWRemote {
 
         ifileUploadSuccess = false;
 
-
-                    if (SeadasFileUtils.isTextFile(sourceFilePathName)) {
-                        String listOfFiles = uploadListedFiles(null, sourceFilePathName);
-                        updateFileListFileContent(sourceFilePathName);
-                    }
-                    copyFileC2S(sourceFilePathName);
-
-
+        if (!isAncFile(sourceFilePathName)) {
+            if ( SeadasFileUtils.isTextFile(sourceFilePathName)) {
+                String listOfFiles = uploadListedFiles(null, sourceFilePathName);
+                updateFileListFileContent(sourceFilePathName);
+            }
+            copyFileC2S(sourceFilePathName);
+        } else {
+            ifileUploadSuccess = true;
+        }
         return ifileUploadSuccess;
     }
 
