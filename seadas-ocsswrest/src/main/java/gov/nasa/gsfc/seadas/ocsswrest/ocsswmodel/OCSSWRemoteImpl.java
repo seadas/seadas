@@ -153,7 +153,7 @@ public class OCSSWRemoteImpl {
             System.out.println(" element = " + element);
             String elementName = (String) element;
             commandArrayElement = jsonObject.getString((String) element);
-            if (elementName.contains("IFILE") || elementName.contains("OFILE")) {
+            if ( (elementName.contains("IFILE") && !isAncFile(commandArrayElement)) || elementName.contains("OFILE")) {
 
                 if (!(commandArrayElement.contains(System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY)) || commandArrayElement.contains(System.getProperty(OCSSW_ROOT_PROPERTY)))) {
                     if (commandArrayElement.indexOf("=") != -1) {
@@ -171,6 +171,11 @@ public class OCSSWRemoteImpl {
             commandArray[i++] = commandArrayElement;
         }
         return commandArray;
+    }
+
+    private boolean isAncFile(String fileName){
+        boolean isAncFile = fileName.contains("/var/anc/");
+        return isAncFile;
     }
 
     public InputStream executeProgramAndGetStdout(String jobId, String programName, JsonObject jsonObject) {
