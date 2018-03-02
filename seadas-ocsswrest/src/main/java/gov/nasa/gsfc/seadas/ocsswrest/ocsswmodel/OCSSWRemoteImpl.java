@@ -48,6 +48,9 @@ public class OCSSWRemoteImpl {
     public static String ANC_FILE_LIST_FILE_NAME = "anc_file_list.txt";
 
 
+    public static final String FILE_TYPE_VAR_NAME = "fileType";
+    public static final String MISSION_NAME_VAR_NAME = "missionName";
+
     public static String PROCESS_STDOUT_FILE_NAME_EXTENSION = ".log";
 
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
@@ -539,7 +542,6 @@ public class OCSSWRemoteImpl {
         extractFileInfo(ifileName, jobId);
         if (programName.equals("extractor")) {
             selectExtractorProgram(jobId);
-
         }
 
         if (ifileName == null || programName == null) {
@@ -633,6 +635,35 @@ public class OCSSWRemoteImpl {
 
             ioe.printStackTrace();
         }
+    }
+
+
+    public HashMap<String, String> getFileInfo(String ifileName, String jobId) {
+
+        HashMap<String, String> fileInfoMap = new HashMap<>();
+        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
+        Process process = executeSimple((String[]) ServerSideFileUtilities.concatAll(getCommandArrayPrefix(GET_OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
+        try {
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = stdInput.readLine();
+            if (line != null) {
+                String splitLine[] = line.split(":");
+                if (splitLine.length == 3) {
+                    String missionName = splitLine[1].toString().trim();
+                    String fileType = splitLine[2].toString().trim();
+                    if (fileType.length() > 0) {
+                        fileInfoMap.put(FILE_TYPE_VAR_NAME, fileType);
+                    }
+                    if (missionName.length() > 0) {
+                        fileInfoMap.put(MISSION_NAME_VAR_NAME, missionName);
+                    }
+                }
+            }
+        } catch (IOException ioe) {
+
+            ioe.printStackTrace();
+        }
+        return fileInfoMap;
     }
 
     private String getOfileName(String[] commandArray) {
