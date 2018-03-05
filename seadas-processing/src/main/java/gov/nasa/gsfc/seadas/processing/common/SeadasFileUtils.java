@@ -6,11 +6,6 @@ import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.visat.VisatApp;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -112,44 +107,6 @@ public class SeadasFileUtils {
 
             e.printStackTrace();
         }
-    }
-
-    public static void copyFile(String from, String to) throws IOException {
-        Path src = Paths.get(from);
-        Path dest = Paths.get(to);
-        CopyOption[] options = new CopyOption[]{
-                StandardCopyOption.REPLACE_EXISTING,
-                StandardCopyOption.COPY_ATTRIBUTES
-        };
-        Files.copy(src, dest, options);
-    }
-
-    public static void fileCopy(String inputFilePath, String outputFilePath) {
-        File inputFile = new File(inputFilePath);
-        File outputFile = new File(outputFilePath);
-
-        try {
-            FileChannel inChannel = new FileInputStream(inputFile).getChannel();
-            FileChannel outChannel = new FileOutputStream(outputFile).getChannel();
-            // Try to change this but this is the number I tried.. for Windows, 64Mb - 32Kb)
-            int maxCount = (64 * 1024 * 1024) - (32 * 1024);
-            long size = inChannel.size();
-            long position = 0;
-            while (position < size) {
-                position += inChannel.transferTo(position, maxCount, outChannel);
-            }
-            if (inChannel != null) {
-                inChannel.close();
-            }
-            if (outChannel != null) {
-                outChannel.close();
-            }
-            System.out.println("File Successfully Copied..");
-
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
     }
 
     public static Process cloFileCopy(String sourceFilePathName, String targetFilePathName) {
