@@ -39,4 +39,12 @@ public final class OsUtils {
         }
         return detectedOS;
     }
+    public static String getCopyCommandSyntax(){
+        String copyCommandSyntax = "cp";
+        String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+        if (OS.indexOf("win") >= 0) {
+            copyCommandSyntax = "copy";
+        }
+        return  copyCommandSyntax;
+    }
 }
