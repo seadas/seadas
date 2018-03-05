@@ -4,14 +4,10 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.FileCompare;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.Scanner;
 import java.util.Set;
@@ -136,9 +132,9 @@ public class OCSSWVM extends OCSSWRemote {
         try {
             boolean isTwoEqual = compareFileContents(sourceFilePathName, fileName);
             if (!isTwoEqual) {
-                SeadasFileUtils.copyFile(sourceFilePathName, fileName);
+                SeadasFileUtils.cloFileCopy(sourceFilePathName, fileName);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -220,13 +216,8 @@ public class OCSSWVM extends OCSSWRemote {
                     if (!workingDir.equals(ofileDir)) {
                         String sourceFilePathName = workingDir + File.separator + ofileName;
                         String targetFilePathName = ofileDir + File.separator + ofileName;
-                        //leUtils.copyFileToDirectory(new File(sourceFilePathName), new File(ofileDir));
-                        SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
+                        SeadasFileUtils.cloFileCopy(sourceFilePathName, targetFilePathName);
                     }
-                    //copyFileFromServerToClient(workingDir + File.separator + ofileName, ofileDir + File.separator + ofileName);
-                    //Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
-                    //InputStream responceStream = (InputStream) response.getEntity();
-                    //SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
                 }
             }
         } catch (Exception e) {
