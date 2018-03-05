@@ -156,8 +156,8 @@ public class SQLiteJDBC {
                     " OUTPUT_STREAM BLOB )";
 
             //string for creating FILE_TABLE
-            String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
-                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+            String file_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE ( " +
+                    "JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
                     " CLIENT_ID_NAME       CHAR(100)  , " +
                     " WORKING_DIR_PATH       CHAR(100)  , " +
                     " PROGRAM_NAME  CHAR(25)   , " +
@@ -165,17 +165,21 @@ public class SQLiteJDBC {
                     "I_FILE_TYPE      CHAR(50) ,    " +
                     "O_FILE_NAME      CHAR(100) , " +
                     "MISSION_NAME  CHAR(50), " +
-                    "MISSION_DIR  CHAR(50) )";
+                    "MISSION_DIR  CHAR(50) " +
+                    ")";
 
             //string for creating NEXT_LEVELE_FILE_NAME_TABLE
-            String next_level_file_name_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
-                    "(JOB_ID CHAR(50) PRIMARY KEY     NOT NULL, " +
+            String file_info_table_sql = "CREATE TABLE IF NOT EXISTS FILE_TABLE " +
+                    "(JOB_ID CHAR(50)    NOT NULL, " +
                     " CLIENT_ID_NAME       CHAR(100)  , " +
                     " WORKING_DIR_PATH       CHAR(100)  , " +
                     " PROGRAM_NAME  CHAR(25)   , " +
-                    " I_FILE_NAME       CHAR(100)  , " +
-                    "O_FILE_NAME      CHAR(100) , " +
-                    "OPTIONS        CHAR(150) )";
+                    " I_FILE_NAME       CHAR(100) NOT NULL , " +
+                    " I_FILE_TYPE      CHAR(50) ,    " +
+                    " O_FILE_NAME      CHAR(100) ,  " +
+                    " MISSION_NAME  CHAR(50),  " +
+                    " PRIMARY KEY(JOB_ID, I_FILE_NAME)"  +
+                    " );";
 
 
             //string for creating LONLAT_2_PIXEL_TABLE
@@ -209,7 +213,7 @@ public class SQLiteJDBC {
             //execute create_table statements
             stmt.executeUpdate(processor_table_sql);
             stmt.executeUpdate(file_table_sql);
-            stmt.executeUpdate(next_level_file_name_table_sql);
+            stmt.executeUpdate(file_info_table_sql);
             stmt.executeUpdate(lonlat_2_pixel_table_sql);
             stmt.executeUpdate(input_files_list_table_sql);
 
@@ -421,6 +425,70 @@ public class SQLiteJDBC {
 
             preparedStatement.setString(1, itemValue);
             preparedStatement.setString(2, jobID);
+            int exitCode = preparedStatement.executeUpdate();
+            connection.commit();
+
+            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " updated on " + tableName + " table!");
+            System.out.println(itemName + " = "  + itemValue);
+            preparedStatement.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(" in update item : " + e.getClass().getName() + ": " + e.getMessage());
+            //System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+
+        return retrievedItem;
+    }
+
+    public static void insertItemWithDoubleKey(String tableName, String key1, String value1, String key2, String value2) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String commonInsertString = "INSERT INTO " + tableName + " (" + key1 + "," + key2 + ") VALUES ( ?, ? );";
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement(commonInsertString);
+            preparedStatement.setString(1, value1);
+            preparedStatement.setString(2, value2);
+            // execute insert SQL stetement
+            int exitCode = preparedStatement.executeUpdate();
+
+            connection.commit();
+
+            System.out.println(key1 + " is " + (exitCode == 1 ? "" : "not") + " inserted into " + tableName + " table!");
+            preparedStatement.close();
+            connection.close();
+
+        } catch (Exception e) {
+            System.err.println(" in inserting item : " + e.getClass().getName() + ": " + e.getMessage());
+            //System.exit(0);
+        }
+        System.out.println("Inserted " + key1 + "and " + key2 + " successfully");
+    }
+
+
+    public static String updateItemWithDoubleKey(String tableName, String key1, String keyValue1, String key2, String keyValue2, String itemName, String itemValue) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String commonUpdateString = "UPDATE " + tableName + " SET " + itemName + " = ?  WHERE " + key1 + " = ? AND " + key2 + "=?";
+        String retrievedItem = null;
+
+        try {
+            Class.forName(DB_CLASS_FOR_NAME);
+            connection = DriverManager.getConnection(JOB_DB_URL);
+            connection.setAutoCommit(false);
+            System.out.println("Operating on table " + tableName);
+
+            preparedStatement = connection.prepareStatement(commonUpdateString);
+
+            preparedStatement.setString(1, itemValue);
+            preparedStatement.setString(2, keyValue1);
+            preparedStatement.setString(3, keyValue2);
             int exitCode = preparedStatement.executeUpdate();
             connection.commit();
 

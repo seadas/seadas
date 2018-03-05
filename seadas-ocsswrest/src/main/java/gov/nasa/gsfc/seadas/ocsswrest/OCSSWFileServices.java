@@ -92,50 +92,50 @@ public class OCSSWFileServices {
         }
     }
 
-    /**
-     * Method for uploading a file.
-     * handling HTTP POST requests.      *
-     *
-     * @return String that will be returned as a text/plain response.
-     */
-    @POST
-    @Path("/uploadFile/{jobId}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response fileUpload(
-            @PathParam("jobId") String jobId,
-            @FormDataParam("file") InputStream uploadedInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileInfo)
-            throws IOException {
-        Response.Status respStatus = Response.Status.OK;
-        String fileName = fileInfo.getFileName();
-        if (fileName == null) {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        } else {
-            String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
-            File newFile = new File(currentWorkingDir);
-            Files.createDirectories(newFile.toPath());
-            boolean isDirCreated = new File(currentWorkingDir).isDirectory();
-            String ifileFullPathName = currentWorkingDir + File.separator + fileName;
-
-            System.out.println(ifileFullPathName + " is created " + isDirCreated);
-            System.out.println(System.getProperty("user.home"));
-            System.out.println(new File(currentWorkingDir).getAbsolutePath());
-
-            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
-            try {
-                ServerSideFileUtilities.writeToFile(uploadedInputStream, ifileFullPathName);
-                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
-                SQLiteJDBC.updateInputFilesList(jobId, ifileFullPathName);
-                String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
-                System.out.println("ofile name = " + ofileName);
-                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, currentWorkingDir + File.separator + ofileName);
-            } catch (Exception e) {
-                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-                e.printStackTrace();
-            }
-        }
-        return Response.status(respStatus).build();
-    }
+//    /**
+//     * Method for uploading a file.
+//     * handling HTTP POST requests.      *
+//     *
+//     * @return String that will be returned as a text/plain response.
+//     */
+//    @POST
+//    @Path("/uploadFile/{jobId}")
+//    @Consumes(MediaType.MULTIPART_FORM_DATA)
+//    public Response fileUpload(
+//            @PathParam("jobId") String jobId,
+//            @FormDataParam("file") InputStream uploadedInputStream,
+//            @FormDataParam("file") FormDataContentDisposition fileInfo)
+//            throws IOException {
+//        Response.Status respStatus = Response.Status.OK;
+//        String fileName = fileInfo.getFileName();
+//        if (fileName == null) {
+//            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+//        } else {
+//            String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName()) + File.separator + jobId;
+//            File newFile = new File(currentWorkingDir);
+//            Files.createDirectories(newFile.toPath());
+//            boolean isDirCreated = new File(currentWorkingDir).isDirectory();
+//            String ifileFullPathName = currentWorkingDir + File.separator + fileName;
+//
+//            System.out.println(ifileFullPathName + " is created " + isDirCreated);
+//            System.out.println(System.getProperty("user.home"));
+//            System.out.println(new File(currentWorkingDir).getAbsolutePath());
+//
+//            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+//            try {
+//                ServerSideFileUtilities.writeToFile(uploadedInputStream, ifileFullPathName);
+//                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
+//                SQLiteJDBC.updateInputFilesList(jobId, ifileFullPathName);
+//                String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
+//                System.out.println("ofile name = " + ofileName);
+//                SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, currentWorkingDir + File.separator + ofileName);
+//            } catch (Exception e) {
+//                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+//                e.printStackTrace();
+//            }
+//        }
+//        return Response.status(respStatus).build();
+//    }
 
     /**
      * Method for uploading a file.
@@ -178,42 +178,6 @@ public class OCSSWFileServices {
         }
         return Response.status(respStatus).build();
     }
-
-//    @POST
-//    @Path("/upload/{clientId}/{processorId}/{jobId}/{fileName}")
-//    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-//    public Response largeFileUpload(
-//            @PathParam("clientId") String clientId,
-//            @PathParam("processorId") String processorId,
-//            @PathParam("jobId") String jobId,
-//            @PathParam("fileName") String fileName,
-//            InputStream uploadedInputStream)
-//            throws IOException {
-//        Response.Status respStatus = Response.Status.OK;
-//        if (fileName == null) {
-//            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-//        } else {
-//
-//            String uploadedFileDir = FILE_UPLOAD_PATH + File.separator + clientId + File.separator + processorId + File.separator + jobId;
-//            File newFile = new File(uploadedFileDir);
-//            Files.createDirectories(newFile.toPath());
-//
-//            boolean isDirCreated = new File(uploadedFileDir).isDirectory();
-//            String uploadedFileLocation = uploadedFileDir + File.separator + fileName;
-//
-//            System.out.println(uploadedFileLocation + " is created " + isDirCreated);
-//            System.out.println(System.getProperty("user.home"));
-//            System.out.println(new File(uploadedFileDir).getAbsolutePath());
-//            try {
-//                ServerSideFileUtilities.writeToFile(uploadedInputStream, uploadedFileLocation);
-//                //getFileInfo();
-//            } catch (Exception e) {
-//                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-//                e.printStackTrace();
-//            }
-//        }
-//        return Response.status(respStatus).build();
-//    }
 
     @GET
     @Path("/downloadFile/{jobId}")

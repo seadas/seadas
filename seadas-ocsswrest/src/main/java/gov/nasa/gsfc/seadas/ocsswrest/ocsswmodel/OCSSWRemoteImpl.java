@@ -96,30 +96,6 @@ public class OCSSWRemoteImpl {
         return commandArrayPrefix;
     }
 
-//    public String[] getCommandArraySuffix(String programName) {
-//
-//            String[] commandArraySuffix = new String[1];
-//            String[] parts = VisatApp.getApp().getAppVersion().split("\\.");
-//            commandArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
-//
-//        if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
-//            commandArraySuffix = new String[1];
-//
-//        } else {
-//
-//        }
-//        for (String item : commandArraySuffix) {
-//            System.out.println("commandArraySuffix: " + item);
-//        }
-//        return commandArraySuffix;
-//    }
-
-    public void executeProgram(String jobId, String[] commandArray) {
-
-        programName = SQLiteJDBC.getProgramName(jobId);
-        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
-    }
-
     public void executeProgram(String jobId, JsonObject jsonObject) {
         programName = SQLiteJDBC.getProgramName(jobId);
 
@@ -537,7 +513,7 @@ public class OCSSWRemoteImpl {
      * @return ofilename
      */
 
-    public String getOfileName(String ifileName, String jobId) {
+    public String getOfileNameOld(String ifileName, String jobId) {
         programName = SQLiteJDBC.getProgramName(jobId);
         extractFileInfo(ifileName, jobId);
         if (programName.equals("extractor")) {
@@ -560,45 +536,59 @@ public class OCSSWRemoteImpl {
 
     }
 
-    public String getOfileName(String jobId, JsonObject jsonObject) {
-        String ifileName = jsonObject.getString("ifileName");
-        String programName = jsonObject.getString("programName");
-        String additionalOptionsString = jsonObject.getString("additionalOptionsString");
-
-        StringTokenizer st = new StringTokenizer(additionalOptionsString, ";");
-        int i = 0;
-        String[] additionalOptions = new String[st.countTokens()];
-
-        while (st.hasMoreTokens()) {
-            additionalOptions[i++] = (String) st.nextToken();
-        }
-
-        System.out.println("finding ofile name for  " + programName + " with input file " + ifileName);
-        extractFileInfo(ifileName, jobId);
-        if (programName.equals("extractor")) {
-            selectExtractorProgram(jobId);
-
-        }
+    public String getOfileName(String jobId, String ifileName, String programName) {
 
         if (ifileName == null || programName == null) {
             return null;
         }
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
-        } else if (programName.equals("extractor")) {
-
         }
 
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
-        String ofileName = getOfileName(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME), commandArrayParams, additionalOptions));
 
-        System.out.println("ofile name = " + ofileName);
-        String uploadedFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, uploadedFileDir + File.separator + ofileName);
+        return getOfileName(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME), commandArrayParams));
 
-        return ofileName;
+    }
 
+    public String getOfileName(String jobId, JsonObject jsonObject) {
+        System.out.println("jobId = " + jobId );
+        try {
+            String ifileName = jsonObject.getString("ifileName");
+            String programName = jsonObject.getString("programName");
+            String additionalOptionsString = jsonObject.getString("additionalOptions");
+            String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
 
+            String ifileNameWithFullPath = serverWorkingDir + File.separator + ifileName;
+
+            System.out.println("finding ofile name for  " + programName + " with input file " + ifileNameWithFullPath);
+
+            if (ifileName == null || programName == null) {
+                return null;
+            }
+            if (programName.equals("l3bindump")) {
+                return ifileName + ".xml";
+            }
+
+            StringTokenizer st = new StringTokenizer(additionalOptionsString, ";");
+            int i = 0;
+            String[] additionalOptions = new String[st.countTokens()];
+
+            while (st.hasMoreTokens()) {
+                additionalOptions[i++] = (String) st.nextToken();
+            }
+
+            String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileNameWithFullPath, programName};
+            String ofileName = getOfileName(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME), commandArrayParams, additionalOptions));
+
+            SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, ofileName);
+
+            return ofileName;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 

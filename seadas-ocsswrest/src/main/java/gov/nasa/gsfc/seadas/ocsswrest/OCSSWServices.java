@@ -18,6 +18,8 @@ import java.util.Set;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRECTORY_PROPERTY;
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.ANC_FILE_LIST_FILE_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.FILE_TYPE_VAR_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.MISSION_NAME_VAR_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_ERROR_STREAM_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_INPUT_STREAM_FILE_NAME;
 
@@ -150,46 +152,65 @@ public class OCSSWServices {
     @GET
     @Path("/getOfileName/{jobId}")
     @Consumes(MediaType.TEXT_XML)
-    public JsonObject getOfileName(@PathParam("jobId") String jobId) {
-        String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getFieldName());
-        String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName());
-        String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName());
+    public String getOfileName(@PathParam("jobId") String jobId) {
         String ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
-        ofileName = ofileName.substring(ofileName.lastIndexOf(File.separator) + 1);
-        JsonObject fileInfo = Json.createObjectBuilder().add("missionName", missionName)
-                .add("fileType", fileType)
-                .add("programName", programName)
-                .add("ofileName", ofileName)
+        System.out.println("Ofile name = " + ofileName);
+        return ofileName;
+    }
+
+    @GET
+    @Path("/getFileInfo/{jobId}/{ifileName}")
+    @Consumes(MediaType.TEXT_XML)
+    public JsonObject getFileInfo(@PathParam("jobId") String jobId, @PathParam("ifileName") String ifileName) {
+        String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        String ifileFullPathName = currentWorkingDir + File.separator + ifileName;
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+        HashMap<String, String> fileInfoMap = ocsswRemote.getFileInfo(ifileFullPathName, jobId);
+        JsonObject fileInfo = Json.createObjectBuilder().add(MISSION_NAME_VAR_NAME, fileInfoMap.get(MISSION_NAME_VAR_NAME))
+                .add(FILE_TYPE_VAR_NAME, fileInfoMap.get(FILE_TYPE_VAR_NAME))
                 .build();
         return fileInfo;
     }
 
     @GET
-    @Path("/getOfileName/{ifileName}/{jobId}")
+    @Path("/getOfileName/{jobId}/{ifileName}/{programName}")
     @Consumes(MediaType.TEXT_XML)
-    public JsonObject getOfileNameFromIfile(@PathParam("ifileName") String ifileName,
-                                            @PathParam("jobId") String jobId) {
+    public String getOfileNameWithIfileAndProgramNameParams(@PathParam("jobId") String jobId,
+                                                            @PathParam("ifileName") String ifileName,
+                                                            @PathParam("programName") String programName) {
+
         String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String ifileFullPathName = currentWorkingDir + File.separator + ifileName;
         OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
-        String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
-        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
-        SQLiteJDBC.updateInputFilesList(jobId, ifileFullPathName);
-        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, currentWorkingDir + File.separator + ofileName);
-        String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getFieldName());
-        String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName());
-        String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName());
-        ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
-        ofileName = ofileName.substring(ofileName.lastIndexOf(File.separator) + 1);
-        JsonObject fileInfo = Json.createObjectBuilder().add("missionName", missionName)
-                .add("fileType", fileType)
-                .add("programName", programName)
-                .add("ofileName", ofileName)
-                .build();
-        return fileInfo;
+        String ofileName = ocsswRemote.getOfileName(jobId, ifileFullPathName, programName);
+        return ofileName;
     }
 
 
+    //    @GET
+//    @Path("/getOfileName/{jobId}/{ifileName}/{programName}")
+//    @Consumes(MediaType.TEXT_XML)
+//    public JsonObject getOfileNameFromIfile(@PathParam("ifileName") String ifileName,
+//                                            @PathParam("jobId") String jobId) {
+//        String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+//        String ifileFullPathName = currentWorkingDir + File.separator + ifileName;
+//        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+//        String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
+//        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
+//        SQLiteJDBC.updateInputFilesList(jobId, ifileFullPathName);
+//        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, currentWorkingDir + File.separator + ofileName);
+//        String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getFieldName());
+//        String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName());
+//        String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName());
+//        ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
+//        ofileName = ofileName.substring(ofileName.lastIndexOf(File.separator) + 1);
+//        JsonObject fileInfo = Json.createObjectBuilder().add("missionName", missionName)
+//                .add("fileType", fileType)
+//                .add("programName", programName)
+//                .add("ofileName", ofileName)
+//                .build();
+//        return fileInfo;
+//    }
     @PUT
     @Path("executeOcsswProgram/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -235,7 +256,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response executeOcsswProgramAndGetStdout(@PathParam("jobId") String jobId,
                                                     @PathParam("programName") String programName,
-                                                    JsonObject jsonObject)            throws IOException {
+                                                    JsonObject jsonObject) throws IOException {
 
         String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         if (jsonObject == null) {
@@ -461,11 +482,13 @@ public class OCSSWServices {
     @POST
     @Path("/uploadNextLevelNameParams/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public int uploadNextLevelNameParams(@PathParam("jobId") String jobId, JsonObject jsonObject) {
+    public Response uploadNextLevelNameParams(@PathParam("jobId") String jobId, JsonObject jsonObject) {
         Response.Status responseStatus = Response.Status.ACCEPTED;
+        System.out.println("params uploaded!");
         OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
-        ocsswRemote.getOfileName(jobId, jsonObject);
-        return responseStatus.getStatusCode();
+        String ofileName = ocsswRemote.getOfileName(jobId, jsonObject);
+        System.out.println("ofileName = " + ofileName);
+        return Response.ok(ofileName).build();
     }
 
     @GET
