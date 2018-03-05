@@ -8,19 +8,14 @@ import gov.nasa.gsfc.seadas.ocssw.OCSSW;
  */
 public class FileInfoFinder {
 
+    public static final String FILE_TYPE_VAR_NAME = "fileType";
+    public static final String MISSION_NAME_VAR_NAME = "missionName";
     private String fileType;
     private String missionName;
     private String missionDirName;
 
-
-    OCSSW ocssw;
-
     public FileInfoFinder(String fileName, OCSSW ocssw){
-        this.ocssw = ocssw;
         ocssw.findFileInfo(fileName, this);
-//        ocssw.getOfileName(fileName);
-//        setMissionName(ocssw.getMissionName());
-//        setFileType(ocssw.getFileType());
         setMissionDirName(OCSSWInfo.getInstance().getOcsswDataDirPath());
     }
 

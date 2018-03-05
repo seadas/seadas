@@ -86,7 +86,7 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public HashMap<String, String> computePixelsFromLonLat(ProcessorModel processorModel) {
-       HashMap<String, String> pixels = new HashMap();
+        HashMap<String, String> pixels = new HashMap();
         JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
         Response response = target.path("ocssw").path("convertLonLat2Pixels").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
@@ -258,14 +258,8 @@ public class OCSSWRemote extends OCSSW {
     @Override
     public String getOfileName(String ifileName) {
 
-        if (this.ifileName == null)
-
-            if (programName.equals("l3bindump")) {
-                return ifileName + ".xml";
-            }
-
-        if (isOfileNameFound() && this.ifileName.equals(ifileName)) {
-            return ofileName;
+        if (programName.equals("l3bindump")) {
+            return ifileName + ".xml";
         }
 
         if (!fileExistsOnServer(ifileName)) {
@@ -273,27 +267,47 @@ public class OCSSWRemote extends OCSSW {
         }
 
         if (ifileUploadSuccess) {
-            JsonObject jsonObject = getFindOfileJsonObject(ifileName.substring(ifileName.lastIndexOf(File.separator) + 1));
-            ofileName = jsonObject.getString("ofileName");
-            missionName = jsonObject.getString("missionName");
-            fileType = jsonObject.getString("fileType");
-            updateProgramName(jsonObject.getString("programName"));
+            ofileName = getFindOfileJsonObject(ifileName.substring(ifileName.lastIndexOf(File.separator) + 1), programName);
             ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
-            if (ofileName == null || missionName == null || fileType == null) {
-                setOfileNameFound(false);
-                return null;
+            if (ofileName != null) {
+                setOfileNameFound(true);
+                return ofileName;
             }
-            setOfileNameFound(true);
-            return ofileName;
-        } else {
-            setOfileNameFound(false);
-            return null;
         }
-
+        setOfileNameFound(false);
+        return null;
     }
 
-    public JsonObject getFindOfileJsonObject(String ifileName) {
-        return target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+    @Override
+    public String getOfileName(String ifileName, String programName) {
+        if (programName.equals("l3bindump")) {
+            return ifileName + ".xml";
+        }
+
+        if (!fileExistsOnServer(ifileName)) {
+            uploadClientFile(ifileName);
+        }
+
+        String ifileNameWithoutFullPath = ifileName.substring(ifileName.lastIndexOf(File.separator) + 1);
+
+        if (ifileUploadSuccess) {
+            ofileName = getFindOfileJsonObject(ifileNameWithoutFullPath, programName);
+            ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
+            if (ofileName != null) {
+                setOfileNameFound(true);
+                return ofileName;
+            }
+        }
+        setOfileNameFound(false);
+        return null;
+    }
+
+    public String getFindOfileJsonObject(String ifileName, String programName) {
+        return target.path("ocssw").path("getOfileName").path(jobId).path(ifileName).path(programName).request().get(String.class);
+    }
+
+    public JsonObject getFindFileInfoJsonObject(String ifileName) {
+        return target.path("ocssw").path("getFileInfo").path(jobId).path(ifileName).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
     }
 
     @Override
@@ -303,30 +317,17 @@ public class OCSSWRemote extends OCSSW {
             return ifileName + ".xml";
         }
 
-        if (isOfileNameFound()) {
-            return ofileName;
-        }
-
         if (ifileUploadSuccess) {
             JsonObject jsonObjectForUpload = getNextLevelNameJsonObject(ifileName, options);
-            target.path("ocssw").path("uploadNextLevelNameParams").path(jobId).request().post(Entity.entity(jsonObjectForUpload, MediaType.APPLICATION_JSON_TYPE));
-            JsonObject jsonObject = target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-            ofileName = jsonObject.getString("ofileName");
-            missionName = jsonObject.getString("missionName");
-            fileType = jsonObject.getString("fileType");
-            updateProgramName(jsonObject.getString("programName"));
-            ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
-
-            if (ofileName == null || missionName == null || fileType == null) {
-                setOfileNameFound(false);
-                return null;
+            Response response = target.path("ocssw").path("uploadNextLevelNameParams").path(jobId).request().post(Entity.entity(jsonObjectForUpload, MediaType.APPLICATION_JSON_TYPE));
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                ofileName = target.path("ocssw").path("getOfileName").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(String.class);
             }
-            setOfileNameFound(true);
-            return ofileName;
-        } else {
-            setOfileNameFound(false);
-            return null;
+            if (ofileName != null) {
+                ofileName = ifileName.substring(0, ifileName.lastIndexOf(File.separator) + 1) + ofileName;
+            }
         }
+        return ofileName;
     }
 
     @Override
@@ -342,11 +343,12 @@ public class OCSSWRemote extends OCSSW {
     }
 
     private JsonObject getNextLevelNameJsonObject(String ifileName, String[] additionalOptions) {
+        String ifileNameWithoutFullPath = ifileName.substring(ifileName.lastIndexOf(File.separator) + 1);
         String additionalOptionsString = "";
         for (String s : additionalOptions) {
             additionalOptionsString = additionalOptionsString + s + " ; ";
         }
-        JsonObject jsonObject = Json.createObjectBuilder().add("ifileName", ifileName)
+        JsonObject jsonObject = Json.createObjectBuilder().add("ifileName", ifileNameWithoutFullPath)
                 .add("programName", programName)
                 .add("additionalOptions", additionalOptionsString)
                 .build();
@@ -570,7 +572,7 @@ public class OCSSWRemote extends OCSSW {
             }
         };
         pmSwingWorker.execute();
-}
+    }
 
     //todo: implement download files using output file names from processModel object
     public void getOutputFiles(String outputFileNames) {
@@ -588,7 +590,7 @@ public class OCSSWRemote extends OCSSW {
                 StringTokenizer st = new StringTokenizer(outputFileNames, "\n");
                 String fileNameWithFullPath, fileNameWithoutPath;
                 while (st.hasMoreTokens()) {
-                    fileNameWithFullPath =st.nextToken();
+                    fileNameWithFullPath = st.nextToken();
                     fileNameWithoutPath = fileNameWithFullPath.substring(fileNameWithFullPath.lastIndexOf(File.separator) + 1);
                     Response response = target.path("fileServices").path("downloadFile").path(jobId).path(fileNameWithoutPath).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
@@ -602,20 +604,12 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
-        ofileName = ifileName + ".xml";
-        JsonObject jsonObject = getFindOfileJsonObject(fileName.substring(fileName.lastIndexOf(File.separator) + 1));
-        ofileName = jsonObject.getString("ofileName");
-        missionName = jsonObject.getString("missionName");
-        fileType = jsonObject.getString("fileType");
-        fileInfoFinder.setFileType(fileType);
-        fileInfoFinder.setMissionName(missionName);
-        updateProgramName(jsonObject.getString("programName"));
-        ofileName = fileName.substring(0, fileName.lastIndexOf(File.separator) + 1) + ofileName;
-        if (ofileName == null || missionName == null || fileType == null) {
-            setOfileNameFound(false);
+        if (!fileExistsOnServer(fileName)) {
+            uploadClientFile(fileName);
         }
-        setOfileNameFound(true);
-
+        JsonObject jsonObject = getFindFileInfoJsonObject(fileName.substring(fileName.lastIndexOf(File.separator) + 1));
+        fileInfoFinder.setFileType(jsonObject.getString(FileInfoFinder.FILE_TYPE_VAR_NAME));
+        fileInfoFinder.setMissionName(jsonObject.getString(FileInfoFinder.MISSION_NAME_VAR_NAME));
     }
 
 
@@ -785,9 +779,9 @@ public class OCSSWRemote extends OCSSW {
                     if (option.getType().equals(ParamInfo.Type.OFILE)) {
                         ofileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
                     }
-                    if (option.getType().equals(ParamInfo.Type.IFILE)  && !isAncFile(option.getValue()) ) {
+                    if (option.getType().equals(ParamInfo.Type.IFILE) && !isAncFile(option.getValue())) {
                         fileName = option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
-                        if (fileName.length() > 0 ) {
+                        if (fileName.length() > 0) {
                             ifileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
                             response = ocsswClient.getServicePathForFileVerification(jobId).queryParam("fileName", fileName).request().get();
                             if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
@@ -812,7 +806,7 @@ public class OCSSWRemote extends OCSSW {
         return jsonObjectBuilder.build();
     }
 
-     boolean isAncFile(String fileName){
+    boolean isAncFile(String fileName) {
         boolean isAncFile = fileName.contains("/var/anc/");
         return isAncFile;
     }

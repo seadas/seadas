@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 
+import gov.nasa.gsfc.seadas.OsUtils;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.visat.VisatApp;
 
@@ -123,10 +124,13 @@ public class SeadasFileUtils {
         Files.copy(src, dest, options);
     }
 
-    public static void fileCopy(File in, File out) {
+    public static void fileCopy(String inputFilePath, String outputFilePath) {
+        File inputFile = new File(inputFilePath);
+        File outputFile = new File(outputFilePath);
+
         try {
-            FileChannel inChannel = new FileInputStream(in).getChannel();
-            FileChannel outChannel = new FileOutputStream(out).getChannel();
+            FileChannel inChannel = new FileInputStream(inputFile).getChannel();
+            FileChannel outChannel = new FileOutputStream(outputFile).getChannel();
             // Try to change this but this is the number I tried.. for Windows, 64Mb - 32Kb)
             int maxCount = (64 * 1024 * 1024) - (32 * 1024);
             long size = inChannel.size();
@@ -147,6 +151,29 @@ public class SeadasFileUtils {
         }
 
     }
+
+    public static Process cloFileCopy(String sourceFilePathName, String targetFilePathName) {
+
+        String[] commandArray = new String[3];
+        commandArray[0] = OsUtils.getCopyCommandSyntax();
+        commandArray[1] = sourceFilePathName;
+        commandArray[2] = targetFilePathName;
+        StringBuilder sb = new StringBuilder();
+        for (String item : commandArray) {
+            sb.append(item + " ");
+        }
+        System.out.println("command array content: " + sb.toString());
+
+        ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+        Process process = null;
+        try {
+            process = processBuilder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return process;
+    }
+
 
     /**
      * Guess whether given file is binary. Just checks for anything under 0x09.

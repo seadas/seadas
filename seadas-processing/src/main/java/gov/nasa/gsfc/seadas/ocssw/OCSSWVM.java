@@ -42,18 +42,14 @@ public class OCSSWVM extends OCSSWRemote {
     @Override
 
     public boolean uploadClientFile(String sourceFilePathName) {
-
         ifileUploadSuccess = false;
-
-        if (!isAncFile(sourceFilePathName)) {
-            if ( SeadasFileUtils.isTextFile(sourceFilePathName)) {
-                String listOfFiles = uploadListedFiles(null, sourceFilePathName);
+        if (!isAncFile(sourceFilePathName) && !fileExistsOnServer(sourceFilePathName)) {
+            if (SeadasFileUtils.isTextFile(sourceFilePathName)) {
                 updateFileListFileContent(sourceFilePathName);
             }
             copyFileC2S(sourceFilePathName);
-        } else {
-            ifileUploadSuccess = true;
         }
+            ifileUploadSuccess = true;
         return ifileUploadSuccess;
     }
 
@@ -96,31 +92,26 @@ public class OCSSWVM extends OCSSWRemote {
 
     }
 
-    @Override
-    public JsonObject getFindOfileJsonObject(String ifileName) {
-        if (!fileExistsOnServer(ifileName)) {
-            ifileUploadSuccess = uploadClientFile(ifileName);
-        }
-        return target.path("ocssw").path("getOfileName").path(ifileName).path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-    }
-
     private void copyFileC2S(String sourceFilePathName) {
         String targetFilePathName = workingDir + File.separator + sourceFilePathName.substring(sourceFilePathName.lastIndexOf(File.separator) + 1);
         try {
-            boolean isTwoEqual = compareFileContents(sourceFilePathName, targetFilePathName);
-            System.out.println("two file is equal: " + isTwoEqual);
-            if (!isTwoEqual) {
-                //if (!sourceFilePathName.equals(targetFilePathName) && !fileExistsOnServer(sourceFilePathName)) {
-                SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
-                ifileUploadSuccess = true;
-            } else {
-                ifileUploadSuccess = true;
-            }
-        } catch (IOException e) {
+            //SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
+            SeadasFileUtils.cloFileCopy(sourceFilePathName, targetFilePathName);
+            ifileUploadSuccess = true;
+        }  catch (Exception e) {
             e.printStackTrace();
-            ifileUploadSuccess = false;
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean fileExistsOnServer(String fileName) {
+        String sourceFileDir = fileName.substring(0, fileName.lastIndexOf(File.separator));
+        String fileNameOnServer = workingDir + File.separator + fileName.substring(fileName.lastIndexOf(File.separator) +1);
+        if (sourceFileDir.equals(workingDir) || new File(fileNameOnServer).exists()) {
+            ifileUploadSuccess = true;
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -143,7 +134,8 @@ public class OCSSWVM extends OCSSWRemote {
     private void copyFileS2C(String fileName) {
         String sourceFilePathName = workingDir + File.separator + fileName.substring(fileName.lastIndexOf(File.separator) + 1);
         try {
-            if (!sourceFilePathName.equals(fileName)) {
+            boolean isTwoEqual = compareFileContents(sourceFilePathName, fileName);
+            if (!isTwoEqual) {
                 SeadasFileUtils.copyFile(sourceFilePathName, fileName);
             }
         } catch (IOException e) {
@@ -163,44 +155,6 @@ public class OCSSWVM extends OCSSWRemote {
             e.printStackTrace();
         }
     }
-
-//    /**
-//     * this method returns a command array for execution.
-//     * the array is constructed using the paramList data and input/output files.
-//     * the command array structure is: full pathname of the program to be executed, input file name, params in the required order and finally the output file name.
-//     * assumption: order starts with 1
-//     *
-//     * @return
-//     */
-//    @Override
-//    public Process execute(ProcessorModel processorModel) {
-//        this.processorModel = processorModel;
-//        Process Process = new SeadasProcess(ocsswInfo, jobId);
-//
-//        JsonObject commandArrayJsonObject = null;
-//
-//        String programName = processorModel.getProgramName();
-//
-//        if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
-//            String parString = processorModel.getParamList().getParamString("\n");
-//            File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
-//            target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
-//            //copyMLPFiles(parFile.getAbsolutePath());
-//            //target.path("ocssw").path("executeMLPParFile").path(jobId).request().get(String.class);
-//            JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
-//            downloadCommonFiles(outputFilesList);
-//        } else {
-//            commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
-//            Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
-//            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-//                String processStatus  = response.readEntity(String.class);
-//                if (processStatus.equals(PROCESS_STATUS_COMPLETED)) {
-//                    downloadCommonFiles(commandArrayJsonObject);
-//                }
-//            }
-//        }
-//        return Process;
-//    }
 
     private void copyFileFromServerToClient(String sourceFilePathName, String targetFilePathName) {
         File sourceFile = new File(sourceFilePathName);

@@ -45,11 +45,8 @@ public class L2genIfileSelector {
             public void selectionChanged(SelectionChangeEvent event) {
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
-                    disableEventHandler();
-                    if (isControlHandlerEnabled()) {
-                        //seaDASProcessorModel.updateParamValues(fileSelector.getSelectedFile());
-                        seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
-                    }
+                    disableControlHandler();
+                    seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
                     enableEventHandler();
                 }
             }
@@ -58,22 +55,22 @@ public class L2genIfileSelector {
 
     private void addEventListeners() {
         seaDASProcessorModel.addPropertyChangeListener(seaDASProcessorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                String ifileName = seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName());
-                System.out.println("processor model property changed! ifileName in file selector "  + ifileName);
-                File iFile = new File(ifileName);
-                disableControlHandler();
-                if (isEventHandlerEnabled() || ifileName.isEmpty()) {
-                    if (iFile.exists()) {
-                        fileSelector.setSelectedFile(iFile);
-                    } else {
-                        fileSelector.setSelectedFile(null);
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        String ifileName = seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName());
+                        System.out.println("processor model property changed! ifileName in file selector " + ifileName);
+                        File iFile = new File(ifileName);
+                        if (isEventHandlerEnabled() || ifileName.isEmpty()) {
+                            disableEventHandler();
+                            if (iFile.exists()) {
+                                fileSelector.setSelectedFile(iFile);
+                            } else {
+                                fileSelector.setSelectedFile(null);
+                            }
+                        }
+                        enableControlHandler();
                     }
                 }
-                enableControlHandler();
-            }
-        }
         );
         seaDASProcessorModel.addPropertyChangeListener("cancel", new PropertyChangeListener() {
             @Override
@@ -118,8 +115,9 @@ public class L2genIfileSelector {
     }
 
     /**
-     *  This method derives uncompressed file name in case the product is compressed.
-     * @return  Selected product file name   after uncompressed.
+     * This method derives uncompressed file name in case the product is compressed.
+     *
+     * @return Selected product file name   after uncompressed.
      */
     public String getSelectedIFileName() {
         if (fileSelector == null) {
@@ -130,7 +128,6 @@ public class L2genIfileSelector {
         }
         return fileSelector.getSelectedFile().toString();
     }
-
 
 
     public JPanel getJPanel() {

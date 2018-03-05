@@ -774,7 +774,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             selectExtractorProgram();
             boolean isIfileValid = false;
             if (programName != null && verifyIFilePath(ifileName)) {
-                ocssw.setIfileName(ifileName);
+                //ocssw.setIfileName(ifileName);
                 String ofileName = getOcssw().getOfileName(ifileName);
                 SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
                 if (ofileName != null) {
