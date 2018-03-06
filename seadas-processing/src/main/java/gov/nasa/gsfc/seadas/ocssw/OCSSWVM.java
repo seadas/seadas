@@ -45,7 +45,7 @@ public class OCSSWVM extends OCSSWRemote {
             }
             copyFileC2S(sourceFilePathName);
         }
-            ifileUploadSuccess = true;
+        ifileUploadSuccess = true;
         return ifileUploadSuccess;
     }
 
@@ -94,7 +94,7 @@ public class OCSSWVM extends OCSSWRemote {
             //SeadasFileUtils.copyFile(sourceFilePathName, targetFilePathName);
             SeadasFileUtils.cloFileCopy(sourceFilePathName, targetFilePathName);
             ifileUploadSuccess = true;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -102,7 +102,7 @@ public class OCSSWVM extends OCSSWRemote {
     @Override
     public boolean fileExistsOnServer(String fileName) {
         String sourceFileDir = fileName.substring(0, fileName.lastIndexOf(File.separator));
-        String fileNameOnServer = workingDir + File.separator + fileName.substring(fileName.lastIndexOf(File.separator) +1);
+        String fileNameOnServer = workingDir + File.separator + fileName.substring(fileName.lastIndexOf(File.separator) + 1);
         if (sourceFileDir.equals(workingDir) || new File(fileNameOnServer).exists()) {
             ifileUploadSuccess = true;
             return true;
@@ -130,10 +130,7 @@ public class OCSSWVM extends OCSSWRemote {
     private void copyFileS2C(String fileName) {
         String sourceFilePathName = workingDir + File.separator + fileName.substring(fileName.lastIndexOf(File.separator) + 1);
         try {
-            boolean isTwoEqual = compareFileContents(sourceFilePathName, fileName);
-            if (!isTwoEqual) {
-                SeadasFileUtils.cloFileCopy(sourceFilePathName, fileName);
-            }
+            SeadasFileUtils.cloFileCopy(sourceFilePathName, fileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
