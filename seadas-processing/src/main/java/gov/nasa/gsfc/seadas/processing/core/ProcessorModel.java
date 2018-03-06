@@ -343,8 +343,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
 
         if (programName != null && verifyIFilePath(ifileName)) {
-            ocssw.setIfileName(ifileName);
-            String ofileName = getOcssw().getOfileName(ifileName);
+            //ocssw.setIfileName(ifileName);
+            String ofileName = getOcssw().getOfileName(ifileName, programName);
             SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
             if (ofileName != null) {
                 isIfileValid = true;
@@ -368,7 +368,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     //todo: change the path to get geo filename from ifile
     public boolean updateGeoFileInfo(String ifileName, FileInfo inputFileInfo) {
-        FileInfo geoFileInfo =  getGeoFileInfo(inputFileInfo, ocssw);
+        FileInfo geoFileInfo = getGeoFileInfo(inputFileInfo, ocssw);
         if (geoFileInfo != null) {
             setHasGeoFile(true);
             updateParamInfo(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
@@ -562,14 +562,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
-     String getOFileFullPath(String fileName) {
-        if ( new File(fileName).exists() && new File(fileName).getParentFile().exists()) {
+    String getOFileFullPath(String fileName) {
+        if (new File(fileName).getParentFile().exists()) {
             return fileName;
-        } else if (new File(getIfileDirString(), fileName).getParentFile().exists()) {
-            return getIfileDirString() + File.separator + fileName;
-
         } else {
-            return null;
+            String ofileNameWithoutPath = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
+            return getIfileDirString() + File.separator + ofileNameWithoutPath;
         }
     }
 
@@ -1129,7 +1127,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
                     String newResolutionValue = (String) propertyChangeEvent.getNewValue();
                     String suite = getParamValue("prod");
-                    if (suite==null || suite.trim().length()==0) {
+                    if (suite == null || suite.trim().length() == 0) {
                         suite = "all";
                     }
                     String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite};
@@ -1170,7 +1168,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
                     String newResolutionValue = (String) propertyChangeEvent.getNewValue();
                     String suite = getParamValue("product");
-                    if (suite==null || suite.trim().length()==0) {
+                    if (suite == null || suite.trim().length() == 0) {
                         suite = "all";
                     }
                     String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite, "--oformat=" + getParamValue("oformat")};
@@ -1187,7 +1185,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String oldFormatValue = (String) propertyChangeEvent.getOldValue();
                     String newFormatValue = (String) propertyChangeEvent.getNewValue();
                     String suite = getParamValue("product");
-                    if (suite==null || suite.trim().length()==0) {
+                    if (suite == null || suite.trim().length() == 0) {
                         suite = "all";
                     }
                     String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite, "--oformat=" + newFormatValue};
