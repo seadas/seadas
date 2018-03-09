@@ -236,7 +236,6 @@ public class OCSSWRemote extends OCSSW {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             List<String> lines = Files.readAllLines(Paths.get(fileListFileName), StandardCharsets.UTF_8);
-
             Iterator<String> itr = lines.iterator();
             String fileName;
             while (itr.hasNext()) {

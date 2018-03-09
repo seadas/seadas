@@ -9,9 +9,10 @@ import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
 import java.io.*;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -41,6 +42,7 @@ public class OCSSWVM extends OCSSWRemote {
         ifileUploadSuccess = false;
         if (!isAncFile(sourceFilePathName) && !fileExistsOnServer(sourceFilePathName)) {
             if (SeadasFileUtils.isTextFile(sourceFilePathName)) {
+                uploadListedFiles(null, sourceFilePathName);
                 updateFileListFileContent(sourceFilePathName);
             }
             copyFileC2S(sourceFilePathName);
@@ -88,6 +90,30 @@ public class OCSSWVM extends OCSSWRemote {
 
     }
 
+
+    @Override
+    public void updateFileListFileContent(String fileListFileName) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(fileListFileName), StandardCharsets.UTF_8);
+            Iterator<String> itr = lines.iterator();
+            String fileName;
+            while (itr.hasNext()) {
+                fileName = itr.next();
+                if (fileName.trim().length() > 0) {
+                    System.out.println("file name in the file list: " + fileName);
+                    fileName = workingDir + File.separator + fileName.substring(fileName.lastIndexOf(File.separator) + 1);
+                    stringBuilder.append(fileName + "\n");
+                }
+            }
+            String fileContent = stringBuilder.toString();
+            System.out.println(fileContent);
+            SeadasFileUtils.writeStringToFile(fileContent, fileListFileName);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
     private void copyFileC2S(String sourceFilePathName) {
         String targetFilePathName = workingDir + File.separator + sourceFilePathName.substring(sourceFilePathName.lastIndexOf(File.separator) + 1);
         try {

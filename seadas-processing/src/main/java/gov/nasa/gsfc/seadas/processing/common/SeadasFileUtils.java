@@ -5,10 +5,17 @@ import gov.nasa.gsfc.seadas.OsUtils;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.visat.VisatApp;
 
+import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.System.out;
 
 /**
  * Created by IntelliJ IDEA.
@@ -119,7 +126,7 @@ public class SeadasFileUtils {
         for (String item : commandArray) {
             sb.append(item + " ");
         }
-        System.out.println("command array content: " + sb.toString());
+        out.println("command array content: " + sb.toString());
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
         Process process = null;
@@ -160,13 +167,162 @@ public class SeadasFileUtils {
         return 100 * other / (ascii + other) > 95;
     }
 
-    public static boolean isTextFile(String fileName) {
+    public static boolean isTextFileOld(String fileName) {
         try {
             return !isBinaryFile(new File(fileName));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static boolean isTextFile(String fileName){
+        String fileType = identifyFileTypeUsingFilesProbeContentType(fileName);
+        fileType = identifyFileTypeUsingMimetypesFileTypeMap(fileName);
+        fileType =  identifyFileTypeUsingUrlConnectionGetContentType(fileName);
+        fileType = identifyFileTypeUsingUrlConnectionGuessContentTypeFromName(fileName);
+        if (fileType.startsWith("text")) {
+           return true;
+        }  else {
+            //type isn't text or type couldn't be determined, assume binary
+            return false;
+        }
+    }
+
+    /**
+
+     * Identify file type of file with provided path and name
+
+     * using JDK 7's Files.probeContentType(Path).
+
+     *
+
+     * @param fileName Name of file whose type is desired.
+
+     * @return String representing identified type of file with provided name.
+
+     */
+
+    public static String identifyFileTypeUsingFilesProbeContentType(final String fileName)
+
+    {
+
+        String fileType = "Undetermined";
+        final File file = new File(fileName);
+        try
+        {
+            fileType = Files.probeContentType(file.toPath());
+        }
+        catch (IOException ioException)
+        {
+            out.println(
+
+                    "ERROR: Unable to determine file type for " + fileName
+
+                            + " due to exception " + ioException);
+        }
+        return fileType;
+    }
+
+    /**
+
+     * Identify file type of file with provided name using
+
+     * JDK 6's MimetypesFileTypeMap.
+
+     *
+
+     * See Javadoc documentation for MimetypesFileTypeMap class
+
+     * (http://docs.oracle.com/javase/8/docs/api/javax/activation/MimetypesFileTypeMap.html)
+
+     * for details on how to configure mapping of file types or extensions.
+
+     */
+
+    public static String identifyFileTypeUsingMimetypesFileTypeMap(final String fileName)
+
+    {
+
+        final MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
+
+        return fileTypeMap.getContentType(fileName);
+
+    }
+
+    /**
+
+     * Identify file type of file with provided path and name
+
+     * using JDK's URLConnection.getContentType().
+
+     *
+
+     * @param fileName Name of file whose type is desired.
+
+     * @return Type of file for which name was provided.
+
+     */
+
+    public static String identifyFileTypeUsingUrlConnectionGetContentType(final String fileName)
+
+    {
+
+        String fileType = "Undetermined";
+
+        try
+
+        {
+
+            final URL url = new URL("file://" + fileName);
+
+            final URLConnection connection = url.openConnection();
+
+            fileType = connection.getContentType();
+
+        }
+
+        catch (MalformedURLException badUrlEx)
+
+        {
+
+            out.println("ERROR: Bad URL - " + badUrlEx);
+
+        }
+
+        catch (IOException ioEx)
+
+        {
+
+            out.println("Cannot access URLConnection - " + ioEx);
+
+        }
+
+        return fileType;
+
+    }
+
+
+    /**
+
+     * Identify file type of file with provided path and name
+
+     * using JDK's URLConnection.guessContentTypeFromName(String).
+
+     *
+
+     * @param fileName Name of file whose type is desired.
+
+     * @return Type of file for which name was provided.
+
+     */
+
+    public static String identifyFileTypeUsingUrlConnectionGuessContentTypeFromName(final String fileName)
+
+    {
+
+        return URLConnection.guessContentTypeFromName(fileName);
+
     }
 
 
@@ -258,7 +414,7 @@ public class SeadasFileUtils {
 
     public static void debug(String message) {
         if (debug) {
-            System.out.println("Debugging: " + message);
+            out.println("Debugging: " + message);
         }
     }
 
