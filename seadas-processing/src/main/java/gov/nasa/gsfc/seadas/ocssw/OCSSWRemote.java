@@ -39,9 +39,14 @@ public class OCSSWRemote extends OCSSW {
     public static final String PROCESS_STATUS_COMPLETED = "0";
     public static final String PROCESS_STATUS_FAILED = "1";
 
+    public static final String US_ASCII_CHAR_SET = "us-ascii";
+
+    public static final String PROGRAM_NAMES_FOR_TEXT_INPUT_FILES = "l2bin, l3bin, multilevel_processor.py";
+
     public static final String PROGRAMS_NEED_ADDITIONAL_FILES = "l2gen,l3gen,l2gen_aquarius";
 
     public static final String ADDITIONAL_FILE_EXTENSIONS = "L1B_HKM, L1B_QKM, L1B_LAC.anc";
+
 
     OCSSWClient ocsswClient;
     WebTarget target;
@@ -108,7 +113,7 @@ public class OCSSWRemote extends OCSSW {
 
     public boolean uploadClientFile(String fileName) {
 
-        if (!SeadasFileUtils.isTextFile(fileName) && fileExistsOnServer(fileName)) {
+        if (fileExistsOnServer(fileName) && !needToUplaodFileContent(programName, fileName)) {
             return ifileUploadSuccess = true;
         }
         ifileUploadSuccess = false;
@@ -125,7 +130,7 @@ public class OCSSWRemote extends OCSSW {
 
                 pm.worked(1);
                 try {
-                    if (SeadasFileUtils.isTextFile(fileName)) {
+                    if (needToUplaodFileContent(programName, fileName)) {
                         uploadListedFiles(pm, fileName);
                         updateFileListFileContent(fileName);
                     }
@@ -151,6 +156,58 @@ public class OCSSWRemote extends OCSSW {
         System.out.println("upload process is done: " + pmSwingWorker.isDone());
         return ifileUploadSuccess;
 
+    }
+
+    public boolean isTextFile(String fileName){
+        if (!fileExistsOnServer(fileName)) {
+            VisatApp visatApp = VisatApp.getApp();
+
+            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                    "OCSSW Remote Server File Upload") {
+
+                @Override
+                protected Void doInBackground(ProgressMonitor pm) throws Exception {
+
+                    pm.beginTask("Uploading file '" + fileName + "' to the remote server ", 10);
+
+                    pm.worked(1);
+                    final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(fileName));
+                    final MultiPart multiPart = new FormDataMultiPart()
+                            //.field("ifileName", ifileName)
+                            .bodyPart(fileDataBodyPart);
+                    Response response = target.path("fileServices").path("uploadClientFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
+
+                    if (response.getStatus() == Response.ok().build().getStatus()) {
+                        ifileUploadSuccess = true;
+                    }
+                    return null;
+                }
+            };
+            pmSwingWorker.executeWithBlocking();
+            System.out.println("upload process is done: " + pmSwingWorker.isDone());
+        }
+        String fileNameWithoutPath = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
+        String charSet = ocsswClient.getServicePathForFileCharSet(jobId).path(fileNameWithoutPath).request().get(String.class);
+
+        if (charSet.trim().equals(US_ASCII_CHAR_SET)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isTextFileValidInput(String programName){
+        StringTokenizer st = new StringTokenizer(PROGRAM_NAMES_FOR_TEXT_INPUT_FILES, ",");
+        while (st.hasMoreTokens()) {
+            if (programName.trim().equals(st.nextToken().trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean needToUplaodFileContent(String programName, String fileName){
+        return isTextFileValidInput(programName) && isTextFile(fileName);
     }
 
     public boolean fileExistsOnServer(String fileName) {
@@ -403,7 +460,7 @@ public class OCSSWRemote extends OCSSW {
 
         JsonObject commandArrayJsonObject = null;
 
-        String programName = processorModel.getProgramName();
+        programName = processorModel.getProgramName();
 
         if (programName.equals(MLP_PROGRAM_NAME)) {
             return executeMLP(processorModel);
@@ -648,6 +705,7 @@ public class OCSSWRemote extends OCSSW {
     private Process executeMLP(ProcessorModel processorModel) {
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
         String parString = processorModel.getParamList().getParamString("\n");
+        programName = processorModel.getProgramName();
         File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
         target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
 

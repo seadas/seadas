@@ -60,6 +60,10 @@ public class OCSSWClient {
         return target.path("fileServices").path("fileVerification").path(jobId);
     }
 
+    public WebTarget getServicePathForFileCharSet(String jobId){
+        return target.path("ocssw").path("getFileCharSet").path(jobId);
+    }
+
     private String getResourceBaseUri(String serverIPAddress, String portNumber){
         String resourceBaseUri = "http://" + serverIPAddress + ":" + portNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         return  resourceBaseUri;

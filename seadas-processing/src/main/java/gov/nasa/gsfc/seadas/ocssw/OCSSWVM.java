@@ -41,7 +41,7 @@ public class OCSSWVM extends OCSSWRemote {
     public boolean uploadClientFile(String sourceFilePathName) {
         ifileUploadSuccess = false;
         if (!isAncFile(sourceFilePathName) && !fileExistsOnServer(sourceFilePathName)) {
-            if (SeadasFileUtils.isTextFile(sourceFilePathName)) {
+            if (needToUplaodFileContent(programName, sourceFilePathName)) {
                 uploadListedFiles(null, sourceFilePathName);
                 updateFileListFileContent(sourceFilePathName);
             }
