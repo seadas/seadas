@@ -11,10 +11,6 @@ import javax.swing.*;
 import javax.ws.rs.core.MediaType;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -22,8 +18,6 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.*;
-import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.OCSSW_INSTALLER_URL;
-import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTALLER;
 
 /**
  * Created by aabduraz on 5/15/17.
@@ -31,12 +25,7 @@ import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTA
 public class OCSSWRemoteImpl {
 
     final static String OCSSW_ROOT_PROPERTY = "ocsswroot";
-    final static String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
     final static String SERVER_WORKING_DIRECTORY_PROPERTY = "serverWorkingDirectory";
-    final static String KEEP_INTERMEDIATE_FILES_ON_SERVER_PROPERTY = "keepIntermediateFilesOnServer";
-
-    final static String DEFAULT_OCSSW_ROOT = System.getProperty("user.home") + System.getProperty("file.seperator") + "ocssw";
-    final static String DEFAULT_WORKING_DIR = System.getProperty("user.home") + System.getProperty("file.seperator") + "clientFiles";
 
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
@@ -47,21 +36,10 @@ public class OCSSWRemoteImpl {
     public static String MLP_OUTPUT_DIR_NAME = "mlpOutputDir";
     public static String ANC_FILE_LIST_FILE_NAME = "anc_file_list.txt";
 
-
     public static final String FILE_TYPE_VAR_NAME = "fileType";
     public static final String MISSION_NAME_VAR_NAME = "missionName";
 
     public static String PROCESS_STDOUT_FILE_NAME_EXTENSION = ".log";
-
-    final String L1AEXTRACT_MODIS = "l1aextract_modis",
-            L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
-            L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
-            L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
-            L1AEXTRACT_VIIRS = "l1aextract_viirs",
-            L1AEXTRACT_VIIRS_XML_FILE = "l1aextract_viirs.xml",
-            L2EXTRACT = "l2extract",
-            L2EXTRACT_XML_FILE = "l2extract.xml";
-
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
@@ -69,11 +47,6 @@ public class OCSSWRemoteImpl {
     String missionName;
     String fileType;
     String xmlFileName;
-
-    public void fileOp() {
-
-    }
-
 
     public String[] getCommandArrayPrefix(String programName) {
         String[] commandArrayPrefix;
@@ -132,7 +105,7 @@ public class OCSSWRemoteImpl {
             System.out.println(" element = " + element);
             String elementName = (String) element;
             commandArrayElement = jsonObject.getString((String) element);
-            if ( (elementName.contains("IFILE") && !isAncFile(commandArrayElement)) || elementName.contains("OFILE")) {
+            if ((elementName.contains("IFILE") && !isAncFile(commandArrayElement)) || elementName.contains("OFILE")) {
 
                 if (!(commandArrayElement.contains(System.getProperty(SERVER_WORKING_DIRECTORY_PROPERTY)) || commandArrayElement.contains(System.getProperty(OCSSW_ROOT_PROPERTY)))) {
                     if (commandArrayElement.indexOf("=") != -1) {
@@ -152,7 +125,7 @@ public class OCSSWRemoteImpl {
         return commandArray;
     }
 
-    private boolean isAncFile(String fileName){
+    private boolean isAncFile(String fileName) {
         boolean isAncFile = fileName.contains("/var/anc/");
         return isAncFile;
     }
@@ -178,7 +151,7 @@ public class OCSSWRemoteImpl {
 
         } catch (InterruptedException ie) {
             ie.printStackTrace();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (process == null) {
@@ -196,7 +169,7 @@ public class OCSSWRemoteImpl {
     public void executeMLP(String jobId, File parFile) {
         System.out.println("par file path: " + parFile.getAbsolutePath());
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String parFileNewLocation = workingFileDir +  File.separator + MLP_PAR_FILE_NAME;
+        String parFileNewLocation = workingFileDir + File.separator + MLP_PAR_FILE_NAME;
         System.out.println("par file new path: " + parFileNewLocation);
         String parFileContent = convertClientParFilForRemoteServer(parFile, jobId);
         ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
@@ -496,47 +469,14 @@ public class OCSSWRemoteImpl {
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("pixels =" +  pixels==null);
+        System.out.println("pixels =" + pixels == null);
         return pixels;
     }
 
-    /**
-     * For a given input file, this method finds the file type and mission name before it applies the output file naming convention to compute an output file name.
-     * For the generic "extractor" program, it will identify the actual extractor program to be used.
-     * The intermediate findings, fileType, missionName, and programName, are saved in the database for future use.
-     *
-     * @param ifileName
-     * @param jobId
-     * @return ofilename
-     */
-
-    public String getOfileNameOld(String ifileName, String jobId) {
-        programName = SQLiteJDBC.getProgramName(jobId);
-        extractFileInfo(ifileName, jobId);
-        if (programName.equals("extractor")) {
-            selectExtractorProgram(jobId);
-        }
-
-        if (ifileName == null || programName == null) {
-            return null;
-        }
-        if (programName.equals("l3bindump")) {
-            return ifileName + ".xml";
-        } else if (programName.equals("extractor")) {
-
-        }
-
-        String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
-
-        return getOfileName(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME), commandArrayParams));
-
-
-    }
-
-    public String getOfileName(String jobId, String ifileName, String programName) {
+   public String getOfileName(String jobId, String ifileName, String programName) {
 
         if (ifileName == null || programName == null) {
             return null;
@@ -552,7 +492,7 @@ public class OCSSWRemoteImpl {
     }
 
     public String getOfileName(String jobId, JsonObject jsonObject) {
-        System.out.println("jobId = " + jobId );
+        System.out.println("jobId = " + jobId);
         try {
             String ifileName = jsonObject.getString("ifileName");
             String programName = jsonObject.getString("programName");
@@ -584,7 +524,7 @@ public class OCSSWRemoteImpl {
             SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, ofileName);
 
             return ofileName;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -656,6 +596,26 @@ public class OCSSWRemoteImpl {
         return fileInfoMap;
     }
 
+    public String getFileCharset(String fileName) {
+        String charset = null;
+        String charSetKeyword = "charset";
+        String[] systemFileTypeCommandArraysParams = {"file", "-i", fileName};
+        Process process = executeSimple(systemFileTypeCommandArraysParams);
+
+        try {
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = stdInput.readLine();
+            if (line != null && line.indexOf(charSetKeyword) != -1) {
+                charset = line.substring(line.lastIndexOf("=") + 1).trim();
+            }
+        } catch (IOException ioe) {
+
+            ioe.printStackTrace();
+        }
+        System.out.println("system file type = " + charset);
+        return charset;
+    }
+
     private String getOfileName(String[] commandArray) {
 
         Process process = executeSimple(commandArray);
@@ -709,26 +669,5 @@ public class OCSSWRemoteImpl {
         }
 
         return null;
-    }
-
-
-    private void selectExtractorProgram(String jobId) {
-        if (missionName != null && fileType != null) {
-            if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
-                programName = ExtractorPrograms.L1AEXTRACT_MODIS.getExtractorProgramName();
-                xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
-            } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
-                programName = L1AEXTRACT_SEAWIFS;
-                xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
-            } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
-                programName = L1AEXTRACT_VIIRS;
-                xmlFileName = L1AEXTRACT_VIIRS_XML_FILE;
-            } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
-                    (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
-                programName = L2EXTRACT;
-                xmlFileName = L2EXTRACT_XML_FILE;
-            }
-        }
-        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName(), programName);
     }
 }
