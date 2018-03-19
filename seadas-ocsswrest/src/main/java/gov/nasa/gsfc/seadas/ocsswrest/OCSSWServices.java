@@ -172,6 +172,18 @@ public class OCSSWServices {
         return fileInfo;
     }
 
+
+    @GET
+    @Path("/getFileCharSet/{jobId}/{fileName}")
+    @Consumes(MediaType.TEXT_XML)
+    public String getFileCharSet(@PathParam("jobId") String jobId, @PathParam("fileName") String fileName) {
+        String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        String ifileFullPathName = currentWorkingDir + File.separator + fileName;
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+        String fileCarSet = ocsswRemote.getFileCharset(ifileFullPathName);
+        return fileCarSet;
+    }
+
     @GET
     @Path("/getOfileName/{jobId}/{ifileName}/{programName}")
     @Consumes(MediaType.TEXT_XML)
