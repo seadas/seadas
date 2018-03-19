@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.OsUtils;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.esa.beam.visat.VisatApp;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -118,17 +119,19 @@ public class SeadasFileUtils {
 
     public static Process cloFileCopy(String sourceFilePathName, String targetFilePathName) {
 
-        String[] commandArray = new String[3];
-        commandArray[0] = OsUtils.getCopyCommandSyntax();
-        commandArray[1] = sourceFilePathName;
-        commandArray[2] = targetFilePathName;
+        String[] commandArrayParams = new String[2];
+        commandArrayParams[0] = sourceFilePathName;
+        commandArrayParams[1] = targetFilePathName;
+
+        String[] copyCommandArray = SeadasArrayUtils.concatAll(OsUtils.getCopyCommandSyntax(), commandArrayParams);
+
         StringBuilder sb = new StringBuilder();
-        for (String item : commandArray) {
+        for (String item : copyCommandArray) {
             sb.append(item + " ");
         }
         out.println("command array content: " + sb.toString());
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+        ProcessBuilder processBuilder = new ProcessBuilder(copyCommandArray);
         Process process = null;
         try {
             process = processBuilder.start();
@@ -177,10 +180,7 @@ public class SeadasFileUtils {
     }
 
     public static boolean isTextFile(String fileName){
-        String fileType = identifyFileTypeUsingFilesProbeContentType(fileName);
-        fileType = identifyFileTypeUsingMimetypesFileTypeMap(fileName);
-        fileType =  identifyFileTypeUsingUrlConnectionGetContentType(fileName);
-        fileType = identifyFileTypeUsingUrlConnectionGuessContentTypeFromName(fileName);
+        String fileType = identifyFileTypeUsingMimetypesFileTypeMap(fileName);
         if (fileType.startsWith("text")) {
            return true;
         }  else {
