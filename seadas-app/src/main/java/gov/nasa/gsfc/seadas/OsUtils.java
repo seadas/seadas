@@ -39,12 +39,15 @@ public final class OsUtils {
         }
         return detectedOS;
     }
-    public static String getCopyCommandSyntax(){
-        String copyCommandSyntax = "cp";
+    public static String[] getCopyCommandSyntax(){
+        String[] copyCommandSyntaxArray = {"cp"};
         String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
         if (OS.indexOf("win") >= 0) {
-            copyCommandSyntax = "copy";
+            copyCommandSyntaxArray = new String[1];
+            copyCommandSyntaxArray[0] = "cmd.exe";
+            copyCommandSyntaxArray[1] = "/C";
+            copyCommandSyntaxArray[2] = "copy";
         }
-        return  copyCommandSyntax;
+        return  copyCommandSyntaxArray;
     }
 }
