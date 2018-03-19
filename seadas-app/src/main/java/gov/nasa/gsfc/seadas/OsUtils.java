@@ -43,7 +43,7 @@ public final class OsUtils {
         String[] copyCommandSyntaxArray = {"cp"};
         String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
         if (OS.indexOf("win") >= 0) {
-            copyCommandSyntaxArray = new String[1];
+            copyCommandSyntaxArray = new String[3];
             copyCommandSyntaxArray[0] = "cmd.exe";
             copyCommandSyntaxArray[1] = "/C";
             copyCommandSyntaxArray[2] = "copy";
