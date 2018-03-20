@@ -459,4 +459,28 @@ public class OCSSWLocal extends OCSSW {
         return pixels;
     }
 
+
+    @Override
+    public ArrayList<String> readSensorFileIntoArrayList(File file) {
+        String lineData;
+        ArrayList<String> fileContents = new ArrayList<String>();
+        BufferedReader moFile = null;
+        try {
+            moFile = new BufferedReader(new FileReader(file));
+            while ((lineData = moFile.readLine()) != null) {
+
+                fileContents.add(lineData);
+            }
+        } catch (IOException e) {
+            ;
+        } finally {
+            try {
+                moFile.close();
+            } catch (Exception e) {
+                //Ignore
+            }
+        }
+        return fileContents;
+    }
+
 }

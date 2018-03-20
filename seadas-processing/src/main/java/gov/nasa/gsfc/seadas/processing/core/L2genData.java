@@ -145,7 +145,7 @@ public class L2genData implements SeaDASProcessorModel {
     private String guiName;
     private String defaultSuite;
     private boolean dirty = false;
-    public final OCSSW ocssw;
+    public OCSSW ocssw;
 
 
     public final ArrayList<L2genWavelengthInfo> waveLimiterInfos = new ArrayList<L2genWavelengthInfo>();
@@ -199,6 +199,10 @@ public class L2genData implements SeaDASProcessorModel {
     private L2genData(Mode mode, OCSSW ocssw) {
         this.ocssw = ocssw;
         setMode(mode);
+    }
+
+    public OCSSW getOcssw(){
+        return ocssw;
     }
 
     public Mode getMode() {

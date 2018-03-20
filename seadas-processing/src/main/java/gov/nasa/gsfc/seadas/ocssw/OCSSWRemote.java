@@ -158,7 +158,7 @@ public class OCSSWRemote extends OCSSW {
 
     }
 
-    public boolean isTextFile(String fileName){
+    public boolean isTextFile(String fileName) {
         if (!fileExistsOnServer(fileName)) {
             VisatApp visatApp = VisatApp.getApp();
 
@@ -196,7 +196,7 @@ public class OCSSWRemote extends OCSSW {
         }
     }
 
-    public boolean isTextFileValidInput(String programName){
+    public boolean isTextFileValidInput(String programName) {
         StringTokenizer st = new StringTokenizer(PROGRAM_NAMES_FOR_TEXT_INPUT_FILES, ",");
         while (st.hasMoreTokens()) {
             if (programName.trim().equals(st.nextToken().trim())) {
@@ -206,7 +206,7 @@ public class OCSSWRemote extends OCSSW {
         return false;
     }
 
-    public boolean needToUplaodFileContent(String programName, String fileName){
+    public boolean needToUplaodFileContent(String programName, String fileName) {
         return isTextFileValidInput(programName) && isTextFile(fileName);
     }
 
@@ -440,6 +440,7 @@ public class OCSSWRemote extends OCSSW {
         if (missionName == null) {
             return null;
         }
+        this.missionName = missionName;
         return target.path("ocssw").path("missionSuites").path(missionName).path(programName).request(MediaType.APPLICATION_JSON_TYPE).get(String[].class);
     }
 
@@ -979,6 +980,24 @@ public class OCSSWRemote extends OCSSW {
         }
     }
 
+    @Override
+    /**
+     *
+     */
+    public ArrayList<String> readSensorFileIntoArrayList(File file) {
+        JsonObject jsonObject = target.path("ocssw").path("getSensorInfoFileContent").path(jobId).path(missionName).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+        Iterator<String> keys = jsonObject.keySet().iterator();
+        ArrayList<String> fileContents = new ArrayList<>();
+        String sensorFileLine;
+        while (keys.hasNext()){
+            sensorFileLine = String.valueOf(jsonObject.get(keys.next()));
+            sensorFileLine = sensorFileLine.substring(1, sensorFileLine.length()-1);
+            fileContents.add(sensorFileLine);
+        }
+        return fileContents;
+    }
+
+
     protected File writeMLPParFile(String parString) {
 
         try {
@@ -1026,7 +1045,7 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public void setMissionName(String missionName) {
-
+        this.missionName = missionName;
     }
 
     @Override
@@ -1039,6 +1058,8 @@ public class OCSSWRemote extends OCSSW {
         WebTarget target = ocsswClient.getOcsswWebTarget();
         OCSSW.getOCSSWInstance().setServerSharedDirName(target.path("file").path("test").request(MediaType.TEXT_PLAIN).get(String.class));
     }
+
+    String missionName;
 
 }
 

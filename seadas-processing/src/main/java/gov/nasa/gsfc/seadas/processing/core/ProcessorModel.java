@@ -769,6 +769,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             File ifile = new File(ifileName);
 
             inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
+            if (inputFileInfo.getTypeId() == FileTypeInfo.Id.UNKNOWN) {
+
+            }
             selectExtractorProgram();
             boolean isIfileValid = false;
             if (programName != null && verifyIFilePath(ifileName)) {

@@ -173,7 +173,7 @@ public class L2genReader {
                             !name.equals(l2genData.OFILE) &&
                             !name.equals(l2genData.GEOFILE) &&
                             !name.equals(l2genData.SUITE) &&
-                            !name.equals(l2genData.PAR) ) {
+                            !name.equals(l2genData.PAR)) {
                         l2genData.setParamValueAndDefault(name, value);
                     }
                 }
@@ -440,25 +440,6 @@ public class L2genReader {
     }
 
     public ArrayList<String> readFileIntoArrayList(File file) {
-        String lineData;
-        ArrayList<String> fileContents = new ArrayList<String>();
-        BufferedReader moFile = null;
-        try {
-            moFile = new BufferedReader(new FileReader(file));
-            while ((lineData = moFile.readLine()) != null) {
-
-                fileContents.add(lineData);
-            }
-        } catch (IOException e) {
-            ;
-        } finally {
-            try {
-                moFile.close();
-            } catch (Exception e) {
-                //Ignore
-            }
-        }
-        return fileContents;
+        return l2genData.getOcssw().readSensorFileIntoArrayList(file);
     }
-
 }

@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver;
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
 import javax.json.Json;
@@ -567,6 +568,33 @@ public class OCSSWRemoteImpl {
         }
     }
 
+
+    public JsonObject getSensorFileIntoArrayList(String missionName) {
+
+        MissionInfo missionInfo = new MissionInfo();
+        missionInfo.setName(missionName);
+        File file = new File(missionInfo.getDirectory(), "msl12_sensor_info.dat");
+        System.out.println("mission sensor file path : " + file.getAbsolutePath());
+        String lineData;
+        BufferedReader moFile = null;
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+        int i = 0;
+        try {
+            moFile = new BufferedReader(new FileReader(file));
+            while ((lineData = moFile.readLine()) != null) {
+                jsonObjectBuilder.add("sensorInfo" + i++, lineData);
+            }
+        } catch (IOException e) {
+            ;
+        } finally {
+            try {
+                moFile.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonObjectBuilder.build();
+    }
 
     public HashMap<String, String> getFileInfo(String ifileName, String jobId) {
 

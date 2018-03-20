@@ -12,6 +12,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -136,7 +137,7 @@ public class OCSSWServices {
     }
 
     @PUT
-    @Path("/ocsswSetProgramName/{jobId}")
+    @Path("/ocsswSetProgramName/{jobId}/{programName}")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response setOCSSWProgramName(@PathParam("jobId") String jobId, String programName) {
         Response.Status respStatus = Response.Status.OK;
@@ -332,7 +333,6 @@ public class OCSSWServices {
     @Consumes(MediaType.TEXT_PLAIN)
     public JsonObject getConvertedPixels(@PathParam("jobId") String jobId)
             throws IOException {
-        Response.Status respStatus = Response.Status.OK;
         try {
             JsonObject pixelsJsonObject = Json.createObjectBuilder()
                     .add(SQLiteJDBC.LonLatTableFields.SLINE_FIELD_NAME.getValue(), SQLiteJDBC.retrieveItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, SQLiteJDBC.LonLatTableFields.SLINE_FIELD_NAME.getValue()))
@@ -340,15 +340,25 @@ public class OCSSWServices {
                     .add(SQLiteJDBC.LonLatTableFields.SPIXL_FIELD_NAME.getValue(), SQLiteJDBC.retrieveItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, SQLiteJDBC.LonLatTableFields.SPIXL_FIELD_NAME.getValue()))
                     .add(SQLiteJDBC.LonLatTableFields.EPIXL_FIELD_NAME.getValue(), SQLiteJDBC.retrieveItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, SQLiteJDBC.LonLatTableFields.EPIXL_FIELD_NAME.getValue()))
                     .build();
-            //return Response.ok(pixelsJsonObject, MediaType.APPLICATION_JSON).build();
             return pixelsJsonObject;
         } catch (Exception e) {
             e.printStackTrace();
-            //return Response.status(Response.Status.EXPECTATION_FAILED).build();
             return null;
         }
 
     }
+
+    @GET
+    @Path("/getSensorInfoFileContent/{jobId}/{missionName}")
+    @Consumes(MediaType.TEXT_XML)
+    public JsonObject getSensorInfoFileContent(@PathParam("jobId") String jobId, @PathParam("missionName") String missionName) {
+
+        System.out.println("missionName = " + missionName);
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+        JsonObject fileContents = ocsswRemote.getSensorFileIntoArrayList(missionName);
+        return fileContents;
+    }
+
 
     @PUT
     @Path("uploadMLPParFile/{jobId}")

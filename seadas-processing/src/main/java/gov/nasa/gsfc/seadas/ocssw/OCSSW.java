@@ -15,6 +15,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.net.URL;
 
@@ -101,6 +102,8 @@ public abstract class OCSSW {
     }
 
     public abstract String[] getMissionSuites(String missionName, String programName);
+
+    public abstract ArrayList<String> readSensorFileIntoArrayList(File file);
 
     public abstract Process execute(ProcessorModel processorModel);
     public abstract Process executeSimple(ProcessorModel processorModel);

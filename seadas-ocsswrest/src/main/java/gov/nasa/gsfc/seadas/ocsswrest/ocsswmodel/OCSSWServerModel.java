@@ -85,7 +85,7 @@ public class OCSSWServerModel {
 
     private static boolean ocsswExist;
     private static String ocsswRoot;
-    private static String ocsswDataDirPath;
+    static String ocsswDataDirPath;
     private static String ocsswScriptsDirPath;
     private static String ocsswInstallerScriptPath;
     private static String ocsswRunnerScriptPath;
