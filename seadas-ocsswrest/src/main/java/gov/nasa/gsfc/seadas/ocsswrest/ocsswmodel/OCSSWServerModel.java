@@ -57,6 +57,14 @@ public class OCSSWServerModel {
         return ocsswBinDirPath;
     }
 
+    public static String getSeadasVersion() {
+        return seadasVersion;
+    }
+
+    public static void setSeadasVersion(String seadasVersion) {
+        OCSSWServerModel.seadasVersion = seadasVersion;
+    }
+
     public enum ExtractorPrograms {
         L1AEXTRACT_MODIS("l1aextract_modis"),
         L1AEXTRACT_SEAWIFS("l1extract_seawifs"),
@@ -91,6 +99,8 @@ public class OCSSWServerModel {
     private static String ocsswRunnerScriptPath;
     private static String ocsswBinDirPath;
 
+
+    private static String seadasVersion;
 
     static boolean isProgramValid;
 
