@@ -45,7 +45,8 @@ public class L2genIfileSelector {
             public void selectionChanged(SelectionChangeEvent event) {
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
-                    disableControlHandler();
+                    //disableControlHandler();
+                    disableEventHandler();
                     seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
                     enableEventHandler();
                 }
@@ -61,14 +62,15 @@ public class L2genIfileSelector {
                         System.out.println("processor model property changed! ifileName in file selector " + ifileName);
                         File iFile = new File(ifileName);
                         if (isEventHandlerEnabled() || ifileName.isEmpty()) {
-                            disableEventHandler();
+                            //disableEventHandler();
+                            disableControlHandler();
                             if (iFile.exists()) {
                                 fileSelector.setSelectedFile(iFile);
                             } else {
                                 fileSelector.setSelectedFile(null);
                             }
+                            enableControlHandler();
                         }
-                        enableControlHandler();
                     }
                 }
         );
