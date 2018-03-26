@@ -70,19 +70,32 @@ public class OCSSWRemoteImpl {
         return commandArrayPrefix;
     }
 
+    public String[] getCommandArraySuffix(String programName) {
+        String[] commandArraySuffix = null;
+        if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
+            commandArraySuffix = new String[1];
+            String[] parts = OCSSWServerModel.getSeadasVersion().split("\\.");
+            commandArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
+        }
+        for (String item : commandArraySuffix) {
+            System.out.println("commandArraySuffix " + item);
+        }
+        return commandArraySuffix;
+    }
+
     public void executeProgram(String jobId, JsonObject jsonObject) {
         programName = SQLiteJDBC.getProgramName(jobId);
 
         String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
 
-        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
+        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray, getCommandArraySuffix(programName)), jobId);
     }
 
     public void executeProgramOnDemand(String jobId, String programName, JsonObject jsonObject) {
 
         String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
 
-        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), jobId);
+        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray, getCommandArraySuffix(programName)), jobId);
     }
 
     private String[] transformCommandArray(String jobId, JsonObject jsonObject, String programName) {
@@ -164,7 +177,7 @@ public class OCSSWRemoteImpl {
     public void executeProgramSimple(String jobId, String programName, JsonObject jsonObject) {
 
         String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
-        executeProcessSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), jobId, programName);
+        executeProcessSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray, getCommandArraySuffix(programName)), jobId, programName);
     }
 
     public void executeMLP(String jobId, File parFile) {
