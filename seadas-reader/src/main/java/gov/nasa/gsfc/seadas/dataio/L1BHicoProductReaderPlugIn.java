@@ -74,16 +74,12 @@ public class L1BHicoProductReaderPlugIn implements ProductReaderPlugIn {
         try {
             ncfile = NetcdfFileOpener.open(file.getPath());
             if (ncfile != null) {
-                Attribute instrumentName = ncfile.findGlobalAttribute("metadata_FGDC_Instrument_Information_Instrument_Name");
-
-                //metadata/FGDC/Instrument_Information/Instrument_Name = "Hyperspectral Imager for Coastal Oceans"
-
+                Attribute instrumentName = ncfile.findGlobalAttribute("metadata_FGDC_Identification_Information_Platform_and_Instrument_Identification_Instrument_Short_Name");
                 if (instrumentName != null) {
-                    if (instrumentName.toString().contains("Hyperspectral Imager for Coastal Oceans")) {
+                    if (instrumentName.toString().contains("hico")) {
                         if (DEBUG) {
                             System.out.println(file);
                         }
-                        ncfile.close();
                         return DecodeQualification.INTENDED;
                     } else {
                         if (DEBUG) {
