@@ -218,8 +218,9 @@ public class OCSSWInfo {
         Client c = ClientBuilder.newClient(clientConfig);
         WebTarget target = c.target(resourceBaseUri);
         JsonObject jsonObject = null;
+        String seadasVersion = VisatApp.getApp().getAppVersion();
         try {
-            jsonObject = target.path("ocssw").path("ocsswInfo").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            jsonObject = target.path("ocssw").path("ocsswInfo").path(seadasVersion).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         } catch (javax.ws.rs.ProcessingException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(new JOptionPane(), "Remote server is down. OCSSW is not accessible. Please restart SeaDAS when  OCSSW is accessible.",
