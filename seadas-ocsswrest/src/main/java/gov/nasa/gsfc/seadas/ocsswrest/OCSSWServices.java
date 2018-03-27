@@ -206,17 +206,17 @@ public class OCSSWServices {
 //    @Consumes(MediaType.TEXT_XML)
 //    public JsonObject getOfileNameFromIfile(@PathParam("ifileName") String ifileName,
 //                                            @PathParam("jobId") String jobId) {
-//        String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+//        String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getMissionName());
 //        String ifileFullPathName = currentWorkingDir + File.separator + ifileName;
 //        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
 //        String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
 //        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
 //        SQLiteJDBC.updateInputFilesList(jobId, ifileFullPathName);
 //        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, currentWorkingDir + File.separator + ofileName);
-//        String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getFieldName());
-//        String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName());
-//        String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getFieldName());
-//        ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
+//        String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getMissionName());
+//        String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getMissionName());
+//        String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getMissionName());
+//        ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getMissionName());
 //        ofileName = ofileName.substring(ofileName.lastIndexOf(File.separator) + 1);
 //        JsonObject fileInfo = Json.createObjectBuilder().add("missionName", missionName)
 //                .add("fileType", fileType)
@@ -418,7 +418,7 @@ public class OCSSWServices {
     @Path("missions")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getMissionDataStatus() {
-        return new MissionInfo().getMissions();
+        return new MissionInfoFinder().getMissions();
     }
 
     @GET
@@ -439,7 +439,7 @@ public class OCSSWServices {
     @Path("/l2bin_suites/{missionName}")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getMissionSuites(@PathParam("missionName") String missionName) {
-        return new MissionInfo().getL2BinSuites(missionName);
+        return new MissionInfoFinder().getL2BinSuites(missionName);
     }
 
     @GET
@@ -447,7 +447,7 @@ public class OCSSWServices {
     @Produces(MediaType.APPLICATION_JSON)
     public String[] getL2genMissionSuites(@PathParam("missionName") String missionName, @PathParam("programName") String programName) {
         if (OCSSWServerModel.isMissionDirExist(missionName)) {
-            return new MissionInfo().getMissionSuiteList(missionName, programName);
+            return new MissionInfoFinder().getMissionSuiteList(missionName, programName);
         } else {
             return null;
         }

@@ -264,13 +264,13 @@ public class SQLiteJDBC {
             //6. insert modis aqua mission info
             preparedStatement.setString(1, "MODISA");
             preparedStatement.setString(2, "MODIS Aqua AQUA MODISA");
-            preparedStatement.setString(3, "hmodisa");
+            preparedStatement.setString(3, "modis/aqua");
             preparedStatement.executeUpdate();
 
             //7. insert modis terra mission info
             preparedStatement.setString(1, "MODIST");
             preparedStatement.setString(2, "MODIS Terra TERRA MODIST");
-            preparedStatement.setString(3, "hmodist");
+            preparedStatement.setString(3, "modis/terra");
             preparedStatement.executeUpdate();
 
             //8. insert mos mission info
@@ -306,7 +306,7 @@ public class SQLiteJDBC {
             //13. insert viirs mission info
             preparedStatement.setString(1, "VIIRS");
             preparedStatement.setString(2, "VIIRS VIIRSN");
-            preparedStatement.setString(3, "viirsn");
+            preparedStatement.setString(3, "viirs/npp");
             preparedStatement.executeUpdate();
 
             //14. insert ocm1 mission info

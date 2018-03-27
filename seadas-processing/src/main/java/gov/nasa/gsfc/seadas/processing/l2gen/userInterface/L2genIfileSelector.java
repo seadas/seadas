@@ -45,8 +45,8 @@ public class L2genIfileSelector {
             public void selectionChanged(SelectionChangeEvent event) {
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
-                    //disableControlHandler();
                     disableEventHandler();
+                    //disableControlHandler();
                     seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
                     enableEventHandler();
                 }

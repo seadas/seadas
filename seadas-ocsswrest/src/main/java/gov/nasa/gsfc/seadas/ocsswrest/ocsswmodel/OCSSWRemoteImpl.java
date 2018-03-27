@@ -2,7 +2,7 @@ package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfoFinder;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
 import javax.json.Json;
@@ -77,8 +77,10 @@ public class OCSSWRemoteImpl {
             String[] parts = OCSSWServerModel.getSeadasVersion().split("\\.");
             commandArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
         }
-        for (String item : commandArraySuffix) {
-            System.out.println("commandArraySuffix " + item);
+        if (commandArraySuffix != null) {
+            for (String item : commandArraySuffix) {
+                System.out.println("commandArraySuffix " + item);
+            }
         }
         return commandArraySuffix;
     }
@@ -102,6 +104,8 @@ public class OCSSWRemoteImpl {
 
         String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         Set commandArrayKeys = jsonObject.keySet();
+
+        System.out.println(" programName = " + programName);
 
         Object[] array = (Object[]) commandArrayKeys.toArray();
         int i = 0;
@@ -584,7 +588,7 @@ public class OCSSWRemoteImpl {
 
     public JsonObject getSensorFileIntoArrayList(String missionName) {
 
-        MissionInfo missionInfo = new MissionInfo();
+        MissionInfoFinder missionInfo = new MissionInfoFinder();
         missionInfo.setName(missionName);
         File file = new File(missionInfo.getDirectory(), "msl12_sensor_info.dat");
         System.out.println("mission sensor file path : " + file.getAbsolutePath());
