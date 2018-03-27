@@ -79,6 +79,7 @@ public class OCSSWInfo {
 
     private String ocsswLocation;
     private String resourceBaseUri;
+    private String seadasVersion;
 
     public static String getSessionId() {
         return sessionId;
@@ -218,7 +219,10 @@ public class OCSSWInfo {
         Client c = ClientBuilder.newClient(clientConfig);
         WebTarget target = c.target(resourceBaseUri);
         JsonObject jsonObject = null;
-        String seadasVersion = VisatApp.getApp().getAppVersion();
+        final String versionKey = SystemUtils.getApplicationContextId() + ".version";
+        if (seadasVersion == null || String.format("${%s}", versionKey).equals(seadasVersion)) {
+            seadasVersion = System.getProperty(versionKey);
+        }
         try {
             jsonObject = target.path("ocssw").path("ocsswInfo").path(seadasVersion).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         } catch (javax.ws.rs.ProcessingException e) {
