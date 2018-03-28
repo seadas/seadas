@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.*;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities.debug;
 
 /**
  * Created by aabduraz on 5/15/17.
@@ -65,7 +66,7 @@ public class OCSSWRemoteImpl {
             commandArrayPrefix[2] = getOcsswRoot();
         }
         for (String item : commandArrayPrefix) {
-            System.out.println("commandArrayPrefix: " + item);
+            debug("commandArrayPrefix: " + item);
         }
         return commandArrayPrefix;
     }
@@ -79,7 +80,7 @@ public class OCSSWRemoteImpl {
         }
         if (commandArraySuffix != null) {
             for (String item : commandArraySuffix) {
-                System.out.println("commandArraySuffix " + item);
+                debug("commandArraySuffix " + item);
             }
         }
         return commandArraySuffix;
@@ -105,7 +106,7 @@ public class OCSSWRemoteImpl {
         String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         Set commandArrayKeys = jsonObject.keySet();
 
-        System.out.println(" programName = " + programName);
+        debug(" programName = " + programName);
 
         Object[] array = (Object[]) commandArrayKeys.toArray();
         int i = 0;
@@ -120,7 +121,7 @@ public class OCSSWRemoteImpl {
         }
         String commandArrayElement;
         for (Object element : array) {
-            System.out.println(" element = " + element);
+            debug(" element = " + element);
             String elementName = (String) element;
             commandArrayElement = jsonObject.getString((String) element);
             if ((elementName.contains("IFILE") && !isAncFile(commandArrayElement)) || elementName.contains("OFILE")) {
@@ -137,7 +138,7 @@ public class OCSSWRemoteImpl {
                     }
                 }
             }
-            System.out.println("command array element = " + commandArrayElement);
+            debug("command array element = " + commandArrayElement);
             commandArray[i++] = commandArrayElement;
         }
         return commandArray;
@@ -152,7 +153,7 @@ public class OCSSWRemoteImpl {
 
         String[] commandArray = ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), transformCommandArray(jobId, jsonObject, programName));
 
-        System.out.println("command array content to get stdout: ");
+        debug("command array content to get stdout: ");
         for (int j = 0; j < commandArray.length; j++) {
             System.out.print(commandArray[j] + " ");
         }
@@ -173,7 +174,7 @@ public class OCSSWRemoteImpl {
             e.printStackTrace();
         }
         if (process == null) {
-            System.out.println(programName + " failed to create process.");
+            debug(programName + " failed to create process.");
         }
         return processInputStream;
     }
@@ -186,10 +187,10 @@ public class OCSSWRemoteImpl {
 
     public void executeMLP(String jobId, File parFile) {
         try {
-            System.out.println("par file path: " + parFile.getAbsolutePath());
+            debug("par file path: " + parFile.getAbsolutePath());
             String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
             String parFileNewLocation = workingFileDir + File.separator + MLP_PAR_FILE_NAME;
-            System.out.println("par file new path: " + parFileNewLocation);
+            debug("par file new path: " + parFileNewLocation);
             String parFileContent = convertClientParFilForRemoteServer(parFile, jobId);
             ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
             String[] commandArray = {MLP_PROGRAM_NAME, parFileNewLocation};
@@ -266,10 +267,11 @@ public class OCSSWRemoteImpl {
                 value = st2.nextToken();
                 if (new File(mlpDir + File.separator + value).exists()) {
                     value = mlpDir + File.separator + value;
-                    System.out.println("mlp file: " + value);
+                    debug("mlp file: " + value);
                     isOdirdefined = false;
                     try {
                         if(isTextFile(value)) {
+                            debug("File is a text file. Need to upload the content.");
                             updateFileListFileContent(value, mlpDir);
                         }
                     } catch (Exception e) {
@@ -326,13 +328,13 @@ public class OCSSWRemoteImpl {
             while (itr.hasNext()) {
                 fileName = itr.next();
                 if (fileName.trim().length() > 0) {
-                    System.out.println("file name in the file list: " + fileName);
+                    debug("file name in the file list: " + fileName);
                     fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
                     stringBuilder.append(mlpDir + File.separator + fileName + "\n");
                 }
             }
             String fileContent = stringBuilder.toString();
-            System.out.println(fileContent);
+            debug(fileContent);
             ServerSideFileUtilities.writeStringToFile(fileContent, fileListFileName);
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -342,11 +344,11 @@ public class OCSSWRemoteImpl {
     public void executeProcess(String[] commandArray, String jobId) {
 
 
-        System.out.println("command array content: ");
+        debug("command array content: ");
         for (int j = 0; j < commandArray.length; j++) {
             System.out.print(commandArray[j] + " ");
         }
-        System.out.println("\n" + "command array content ended ");
+        debug("\n" + "command array content ended ");
 
         SwingWorker swingWorker = new SwingWorker() {
 
@@ -364,7 +366,7 @@ public class OCSSWRemoteImpl {
                     throw new IOException(programName + " failed to create process.");
                 }
                 if (process.isAlive()) {
-                    System.out.println("process is alive: ");
+                    debug("process is alive: ");
                     final ORSProcessObserver processObserver = new ORSProcessObserver(process, programName, jobId);
                     processObserver.startAndWait();
                 } else {
@@ -388,7 +390,7 @@ public class OCSSWRemoteImpl {
             sb.append(item + " ");
         }
 
-        System.out.println("command array content: " + sb.toString());
+        debug("command array content: " + sb.toString());
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
         Process process = null;
@@ -408,8 +410,8 @@ public class OCSSWRemoteImpl {
             e.printStackTrace();
         }
 
-        System.out.println("process exited! exit value = " + process.exitValue());
-        System.out.println(process.getInputStream().toString());
+        debug("process exited! exit value = " + process.exitValue());
+        debug(process.getInputStream().toString());
     }
 
     public Process executeSimple(String[] commandArray) {
@@ -418,14 +420,14 @@ public class OCSSWRemoteImpl {
         for (String item : commandArray) {
             sb.append(item + " ");
         }
-        System.out.println("command array content: " + sb.toString());
+        debug("command array content: " + sb.toString());
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
         Process process = null;
         try {
             process = processBuilder.start();
             if (process != null) {
-                ServerSideFileUtilities.debug("Running the program " + sb.toString());
+                debug("Running the program " + sb.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -446,7 +448,7 @@ public class OCSSWRemoteImpl {
                     sb.append(item + " ");
                 }
 
-                System.out.println("command array: " + sb.toString());
+                debug("command array: " + sb.toString());
                 ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
                 Map<String, String> env = processBuilder.environment();
 
@@ -483,7 +485,7 @@ public class OCSSWRemoteImpl {
                     tmp = line.split("=");
                     pixels.put(tmp[0], tmp[1]);
                     SQLiteJDBC.updateItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, tmp[0], tmp[1]);
-                    System.out.println("pixels are not null: " + tmp[0] + "=" + tmp[1]);
+                    debug("pixels are not null: " + tmp[0] + "=" + tmp[1]);
                 }
             }
 
@@ -492,7 +494,6 @@ public class OCSSWRemoteImpl {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("pixels =" + pixels == null);
         return pixels;
     }
 
@@ -512,7 +513,7 @@ public class OCSSWRemoteImpl {
     }
 
     public String getOfileName(String jobId, JsonObject jsonObject) {
-        System.out.println("jobId = " + jobId);
+        debug("jobId = " + jobId);
         try {
             String ifileName = jsonObject.getString("ifileName");
             String programName = jsonObject.getString("programName");
@@ -521,7 +522,7 @@ public class OCSSWRemoteImpl {
 
             String ifileNameWithFullPath = serverWorkingDir + File.separator + ifileName;
 
-            System.out.println("finding ofile name for  " + programName + " with input file " + ifileNameWithFullPath);
+            debug("finding ofile name for  " + programName + " with input file " + ifileNameWithFullPath);
 
             if (ifileName == null || programName == null) {
                 return null;
@@ -562,14 +563,14 @@ public class OCSSWRemoteImpl {
 
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line = stdInput.readLine();
-            System.out.println("line : " + line);
+            debug("line : " + line);
             if (line != null) {
                 String splitLine[] = line.split(":");
                 if (splitLine.length == 3) {
                     String missionName = splitLine[1].toString().trim();
                     String fileType = splitLine[2].toString().trim();
-                    System.out.println("mission name : " + missionName);
-                    System.out.println("file type : " + fileType);
+                    debug("mission name : " + missionName);
+                    debug("file type : " + fileType);
                     if (fileType.length() > 0) {
                         SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getFieldName(), fileType);
                         this.fileType = fileType;
@@ -593,7 +594,7 @@ public class OCSSWRemoteImpl {
         MissionInfoFinder missionInfo = new MissionInfoFinder();
         missionInfo.setName(missionName);
         File file = new File(missionInfo.getDirectory(), "msl12_sensor_info.dat");
-        System.out.println("mission sensor file path : " + file.getAbsolutePath());
+        debug("mission sensor file path : " + file.getAbsolutePath());
         String lineData;
         BufferedReader moFile = null;
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
@@ -659,7 +660,7 @@ public class OCSSWRemoteImpl {
 
             ioe.printStackTrace();
         }
-        System.out.println("system file type = " + charset);
+        debug("system file type = " + charset);
         return charset;
     }
 
@@ -667,6 +668,7 @@ public class OCSSWRemoteImpl {
     public boolean isTextFile(String fileName) {
 
         String charSet = getFileCharset(fileName);
+        debug("file type is: " + charSet);
 
         if (charSet.trim().equals(US_ASCII_CHAR_SET)) {
             return true;
@@ -718,7 +720,7 @@ public class OCSSWRemoteImpl {
                 }
 
             } else {
-                ServerSideFileUtilities.debug("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
+                debug("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
             }
 
         } catch (IOException ioe) {
