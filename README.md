@@ -28,11 +28,6 @@ Installation Guide
         cd $SEADAS/ceres
         mvn install -DskipTests=true
 
-1.  Build BEAM from source and install in local Maven repository:
-
-        cd $SEADAS/beam
-        mvn install -DskipTests=true
-
 1.  Build SeaDAS from source and install in local Maven repository:
 
         cd $SEADAS/seadas
