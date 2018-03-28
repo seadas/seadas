@@ -185,14 +185,18 @@ public class OCSSWRemoteImpl {
     }
 
     public void executeMLP(String jobId, File parFile) {
-        System.out.println("par file path: " + parFile.getAbsolutePath());
-        String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String parFileNewLocation = workingFileDir + File.separator + MLP_PAR_FILE_NAME;
-        System.out.println("par file new path: " + parFileNewLocation);
-        String parFileContent = convertClientParFilForRemoteServer(parFile, jobId);
-        ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
-        String[] commandArray = {MLP_PROGRAM_NAME, parFileNewLocation};
-        execute(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileNewLocation).getParent(), jobId);
+        try {
+            System.out.println("par file path: " + parFile.getAbsolutePath());
+            String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+            String parFileNewLocation = workingFileDir + File.separator + MLP_PAR_FILE_NAME;
+            System.out.println("par file new path: " + parFileNewLocation);
+            String parFileContent = convertClientParFilForRemoteServer(parFile, jobId);
+            ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
+            String[] commandArray = {MLP_PROGRAM_NAME, parFileNewLocation};
+            execute(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileNewLocation).getParent(), jobId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public JsonObject getMLPOutputFilesList(String jobId) {
