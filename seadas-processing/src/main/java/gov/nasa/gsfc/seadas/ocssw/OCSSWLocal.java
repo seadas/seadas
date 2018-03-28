@@ -205,23 +205,28 @@ public class OCSSWLocal extends OCSSW {
 
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
+            File f = new File(fileName);
             String line = stdInput.readLine();
-            if (line != null) {
-                String splitLine[] = line.split(":");
-                if (splitLine.length == 3) {
-                    String missionName = splitLine[1].toString().trim();
-                    String fileType = splitLine[2].toString().trim();
+            while (line != null) {
+                if(line.startsWith(f.getName())) {
+                    String splitLine[] = line.split(":");
+                    if (splitLine.length == 3) {
+                        String missionName = splitLine[1].toString().trim();
+                        String fileType = splitLine[2].toString().trim();
 
-                    if (fileType.length() > 0) {
-                        fileInfoFinder.setFileType(fileType);
-                    }
+                        if (fileType.length() > 0) {
+                            fileInfoFinder.setFileType(fileType);
+                        }
 
-                    if (missionName.length() > 0) {
-                        fileInfoFinder.setMissionName(missionName);
-                        setMissionName(missionName);
+                        if (missionName.length() > 0) {
+                            fileInfoFinder.setMissionName(missionName);
+                            setMissionName(missionName);
+                        }
+                        break;
                     }
                 }
-            }
+                line = stdInput.readLine();
+            } // while lines
         } catch (IOException ioe) {
 
             VisatApp.getApp().showErrorDialog(ioe.getMessage());
