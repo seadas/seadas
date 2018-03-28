@@ -69,6 +69,7 @@ public class OCSSWServices {
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getOcsswInfo(@PathParam("seadasVersion") String seadasVersion) {
         OCSSWServerModel.setSeadasVersion(seadasVersion);
+        OCSSWServerModel.initiliaze();
         JsonObject ocsswInstallStatus = null;
         try {
             ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
