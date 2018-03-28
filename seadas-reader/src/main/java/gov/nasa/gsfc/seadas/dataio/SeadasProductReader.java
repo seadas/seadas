@@ -264,9 +264,16 @@ public class SeadasProductReader extends AbstractProductReader {
         }
         return ProductType.UNKNOWN;
     }
+
     private boolean checkHicoL1B() {
-        Attribute hicol1bName = ncfile.findGlobalAttribute("metadata_FGDC_Instrument_Information_Instrument_Name");
-        return hicol1bName != null;
+        Attribute hicol1bName = ncfile.findGlobalAttribute("metadata_FGDC_Identification_Information_Platform_and_Instrument_Identification_Instrument_Short_Name");
+        if(hicol1bName != null && hicol1bName.getStringValue(0).equals("hico")) {
+            Attribute level = ncfile.findGlobalAttribute("metadata_FGDC_Identification_Information_Processing_Level_Processing_Level_Identifier");
+            if(level != null && level.getStringValue(0).equals("Level-1B")) {
+                return true;
+            }
+        }
+        return false;
     }    
     
     private ProductType checkViirsL1B() {
