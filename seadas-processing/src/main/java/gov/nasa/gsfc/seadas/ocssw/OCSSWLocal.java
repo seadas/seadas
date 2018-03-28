@@ -18,6 +18,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
 import static java.lang.System.getProperty;
 
 /**
@@ -130,6 +131,7 @@ public class OCSSWLocal extends OCSSW {
             cmdArrayForParams = getCommandArrayParam(processorModel.getParamList());
         }
 
+        commandArraySuffix = processorModel.getCmdArraySuffix();
         //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
         cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, cmdArrayForParams, commandArraySuffix);
 
@@ -148,8 +150,15 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public Process execute(String[] commandArray) {
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
 
+        StringBuilder sb = new StringBuilder();
+        for (String item : commandArray) {
+            sb.append(item + " ");
+        }
+
+        debug("command array content: " + sb.toString());
+
+        ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
 
         if (ifileDir != null) {
             processBuilder.directory(new File(ifileDir));
@@ -161,7 +170,7 @@ public class OCSSWLocal extends OCSSW {
         try {
             process = (Process) processBuilder.start();
             if (process != null) {
-                SeadasFileUtils.debug("Running the program " + commandArray.toString());
+                debug("Running the program " + commandArray.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();

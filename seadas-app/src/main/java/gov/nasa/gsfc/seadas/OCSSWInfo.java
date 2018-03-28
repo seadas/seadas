@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 
+import java.io.FileWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -232,9 +233,18 @@ public class OCSSWInfo {
                     JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(new JOptionPane(), "OCSSW is not accessible.",
-                    "OCSSW Initialization Warning",
-                    JOptionPane.WARNING_MESSAGE);
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter(new File(this.getClass().getName()+"_exception.log"));
+                fileWriter.write(e.getMessage());
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            }catch (Exception exc) {
+                JOptionPane.showMessageDialog(new JOptionPane(), "OCSSW is not accessible.",
+                        "OCSSW Initialization Warning",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
         ocsswExist = jsonObject.getBoolean("ocsswExists");
         if (ocsswExist) {
