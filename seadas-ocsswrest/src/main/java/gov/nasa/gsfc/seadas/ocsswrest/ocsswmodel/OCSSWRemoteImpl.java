@@ -9,7 +9,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.swing.*;
-import javax.ws.rs.core.MediaType;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -40,6 +39,8 @@ public class OCSSWRemoteImpl {
     public static final String FILE_TYPE_VAR_NAME = "fileType";
     public static final String MISSION_NAME_VAR_NAME = "missionName";
 
+    public static final String US_ASCII_CHAR_SET = "us-ascii";
+
     public static String PROCESS_STDOUT_FILE_NAME_EXTENSION = ".log";
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
@@ -47,7 +48,6 @@ public class OCSSWRemoteImpl {
     String programName;
     String missionName;
     String fileType;
-    String xmlFileName;
 
     public String[] getCommandArrayPrefix(String programName) {
         String[] commandArrayPrefix;
@@ -250,7 +250,6 @@ public class OCSSWRemoteImpl {
         StringBuilder stringBuilder = new StringBuilder();
         String token;
         String key, value;
-        String fileTypeString;
         boolean isOdirdefined = true;
 
         int odirStringPositioninParFile = 6;
@@ -270,11 +269,10 @@ public class OCSSWRemoteImpl {
                     System.out.println("mlp file: " + value);
                     isOdirdefined = false;
                     try {
-                        fileTypeString = Files.probeContentType(new File(value).toPath());
-                        if (fileTypeString.equals(MediaType.TEXT_PLAIN)) {
+                        if(isTextFile(value)) {
                             updateFileListFileContent(value, mlpDir);
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     // make sure the par file contains "odir=mlpOutputDir" element.
@@ -452,7 +450,6 @@ public class OCSSWRemoteImpl {
                 ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
                 Map<String, String> env = processBuilder.environment();
 
-                String originalPWD = env.get("PWD");
                 env.put("PWD", workingDir);
 
                 processBuilder.directory(new File(workingDir));
@@ -666,6 +663,17 @@ public class OCSSWRemoteImpl {
         return charset;
     }
 
+
+    public boolean isTextFile(String fileName) {
+
+        String charSet = getFileCharset(fileName);
+
+        if (charSet.trim().equals(US_ASCII_CHAR_SET)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     private String getOfileName(String[] commandArray) {
 
         Process process = executeSimple(commandArray);
