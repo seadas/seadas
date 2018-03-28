@@ -267,6 +267,7 @@ public class OCSSWRemoteImpl {
                 value = st2.nextToken();
                 if (new File(mlpDir + File.separator + value).exists()) {
                     value = mlpDir + File.separator + value;
+                    System.out.println("mlp file: " + value);
                     isOdirdefined = false;
                     try {
                         fileTypeString = Files.probeContentType(new File(value).toPath());
