@@ -4,6 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
+        <progressRegex>Processing scan .+?\((\d+) of (\d+)\)</progressRegex>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>
