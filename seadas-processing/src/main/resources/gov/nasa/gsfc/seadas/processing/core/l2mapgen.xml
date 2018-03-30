@@ -217,7 +217,7 @@
         </option>
         <option type="string">
             <name>outmode</name>
-            <value></value>
+            <value>ppm</value>
             <type>string</type>
             <default>ppm</default>
             <description>format of the output file</description>
