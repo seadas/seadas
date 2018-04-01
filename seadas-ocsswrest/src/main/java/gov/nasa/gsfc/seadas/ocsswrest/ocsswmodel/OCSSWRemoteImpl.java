@@ -592,6 +592,7 @@ public class OCSSWRemoteImpl {
     public JsonObject getSensorFileIntoArrayList(String missionName) {
 
         MissionInfoFinder missionInfo = new MissionInfoFinder();
+        debug("mission name: " + missionName);
         missionInfo.setName(missionName);
         File file = new File(missionInfo.getDirectory(), "msl12_sensor_info.dat");
         debug("mission sensor file path : " + file.getAbsolutePath());

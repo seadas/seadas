@@ -441,6 +441,7 @@ public class OCSSWRemote extends OCSSW {
             return null;
         }
         this.missionName = missionName;
+        missionName.replaceAll(" ", "_");
         return target.path("ocssw").path("missionSuites").path(missionName).path(programName).request(MediaType.APPLICATION_JSON_TYPE).get(String[].class);
     }
 

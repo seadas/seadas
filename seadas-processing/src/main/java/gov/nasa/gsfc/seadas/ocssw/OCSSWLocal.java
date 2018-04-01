@@ -264,7 +264,7 @@ public class OCSSWLocal extends OCSSW {
 
         missionInfo.setName(missionName);
 
-        File missionDir = new File(ocsswInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory());
+        File missionDir = missionInfo.getDirectory();
 
         System.out.println("mission directory: " + missionDir);
 
