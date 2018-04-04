@@ -148,7 +148,7 @@ public class FilenamePatterns {
             for (File possibleGeoFile : possibleGeoFiles) {
                 if (possibleGeoFile.exists()) {
                     geoFile = possibleGeoFile;
-                    continue;
+                    break;
                 }
             }
 
