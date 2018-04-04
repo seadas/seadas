@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities.debug;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Aynur Abdurazik (aabduraz)
@@ -164,6 +166,8 @@ public class MissionInfoFinder {
             for (File file : missionDirectoryFiles) {
                 String filename = file.getName();
 
+                debug("fileName: " + filename);
+
                 if (filename.startsWith(getDefaultsFilePrefix(mode)) && filename.endsWith(".par")) {
                     String filenameTrimmed = filename.replaceFirst(getDefaultsFilePrefix(mode), "");
                     filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
@@ -176,11 +180,14 @@ public class MissionInfoFinder {
             int i = 0;
             for (String suite : suitesArrayList) {
                 suitesArray[i] = suite;
+                debug("suite " + suite);
                 i++;
             }
 
             java.util.Arrays.sort(suitesArray);
-            System.out.println("mission suite: " + suitesArray[0] + suitesArray[1] + suitesArray);
+            if(suitesArray.length > 0) {
+                debug("mission suite: " + suitesArray[0] + suitesArray[1] + suitesArray);
+            }
 
             return suitesArray;
 
@@ -264,13 +271,13 @@ public class MissionInfoFinder {
     public final static String SEAWIFS_DIRECTORY = "seawifs";
 
     public final static String[] MODISA_NAMES = {"MODIS Aqua", "Aqua", "MODISA"};
-    public final static String MODISA_DIRECTORY = "hmodisa";
+    public final static String MODISA_DIRECTORY = "modis/aqua";
 
     public final static String[] MODIST_NAMES = {"MODIS Terra", "TERRA", "MODIST"};
-    public final static String MODIST_DIRECTORY = "hmodist";
+    public final static String MODIST_DIRECTORY = "modis/terrra";
 
     public final static String[] VIIRS_NAMES = {"VIIRSN", "VIIRS"};
-    public final static String VIIRS_DIRECTORY = "viirsn";
+    public final static String VIIRS_DIRECTORY = "viirs/npp";
 
     public final static String[] MERIS_NAMES = {"MERIS"};
     public final static String MERIS_DIRECTORY = "meris";

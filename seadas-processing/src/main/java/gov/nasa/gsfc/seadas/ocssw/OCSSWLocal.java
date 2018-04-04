@@ -18,6 +18,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
 import static java.lang.System.getProperty;
 
 /**
@@ -138,6 +139,7 @@ public class OCSSWLocal extends OCSSW {
             cmdArrayForParams = getCommandArrayParam(processorModel.getParamList());
         }
 
+        commandArraySuffix = processorModel.getCmdArraySuffix();
         //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
         cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, cmdArrayForParams, commandArraySuffix);
 
@@ -156,8 +158,15 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public Process execute(String[] commandArray) {
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
 
+        StringBuilder sb = new StringBuilder();
+        for (String item : commandArray) {
+            sb.append(item + " ");
+        }
+
+        debug("command array content: " + sb.toString());
+
+        ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
 
         if (ifileDir != null) {
             processBuilder.directory(new File(ifileDir));
@@ -169,7 +178,7 @@ public class OCSSWLocal extends OCSSW {
         try {
             process = (Process) processBuilder.start();
             if (process != null) {
-                SeadasFileUtils.debug("Running the program " + commandArray.toString());
+                debug("Running the program " + commandArray.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,8 +213,10 @@ public class OCSSWLocal extends OCSSW {
 
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
+            File f = new File(fileName);
             String line = stdInput.readLine();
-            if (line != null) {
+            while (line != null) {
+                if(line.startsWith(f.getName())) {
                 String splitLine[] = line.split(":");
                 if (splitLine.length == 3) {
                     String missionName = splitLine[1].toString().trim();
@@ -219,8 +230,11 @@ public class OCSSWLocal extends OCSSW {
                         fileInfoFinder.setMissionName(missionName);
                         setMissionName(missionName);
                     }
+                        break;
                 }
             }
+                line = stdInput.readLine();
+            } // while lines
         } catch (IOException ioe) {
 
             VisatApp.getApp().showErrorDialog(ioe.getMessage());

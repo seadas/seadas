@@ -27,7 +27,7 @@ import static java.lang.System.out;
  */
 public class SeadasFileUtils {
 
-    private static boolean debug = false;
+    private static boolean debug = true;
 
     public static File createFile(String parent, String fileName) {
         File pFile;

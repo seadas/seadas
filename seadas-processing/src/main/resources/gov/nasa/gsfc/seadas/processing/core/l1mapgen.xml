@@ -253,8 +253,8 @@
         </option>
         <option type="string">
             <name>oformat</name>
-            <value>png</value>
-            <default>png</default>
+            <value>ppm</value>
+            <default>ppm</default>
             <source>/Users/Shared/ocssw/run/data/common/msl12_defaults.par</source>
             <validValues>
                 <validValue>

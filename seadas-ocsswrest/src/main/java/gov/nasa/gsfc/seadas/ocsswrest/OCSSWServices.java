@@ -69,6 +69,7 @@ public class OCSSWServices {
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getOcsswInfo(@PathParam("seadasVersion") String seadasVersion) {
         OCSSWServerModel.setSeadasVersion(seadasVersion);
+        OCSSWServerModel.initiliaze();
         JsonObject ocsswInstallStatus = null;
         try {
             ocsswInstallStatus = Json.createObjectBuilder().add("ocsswExists", OCSSWServerModel.isOCSSWExist())
@@ -446,11 +447,17 @@ public class OCSSWServices {
     @Path("/missionSuites/{missionName}/{programName}")
     @Produces(MediaType.APPLICATION_JSON)
     public String[] getL2genMissionSuites(@PathParam("missionName") String missionName, @PathParam("programName") String programName) {
-        if (OCSSWServerModel.isMissionDirExist(missionName)) {
-            return new MissionInfoFinder().getMissionSuiteList(missionName, programName);
-        } else {
-            return null;
+        try {
+            missionName.replaceAll("_", " ");
+            if (OCSSWServerModel.isMissionDirExist(missionName)) {
+                return new MissionInfoFinder().getMissionSuiteList(missionName, programName);
+            } else {
+                return null;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
 
