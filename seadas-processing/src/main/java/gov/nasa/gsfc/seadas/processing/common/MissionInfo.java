@@ -1,11 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.OCSSWInfo;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -16,8 +13,8 @@ import java.util.Iterator;
 public class MissionInfo {
 
     public static enum Id {
-
         AQUARIUS,
+        AVHRR,
         CZCS,
         HICO,
         GOCI,
@@ -35,25 +32,6 @@ public class MissionInfo {
         OLCI,
         UNKNOWN
     }
-
-    public final static Id[] SUPPORTED_IDS = {
-        Id.AQUARIUS,
-        Id.CZCS,
-        Id.HICO,
-        Id.GOCI,
-        Id.MERIS,
-        Id.MODISA,
-        Id.MODIST,
-        Id.MOS,
-        Id.OCTS,
-        Id.OSMI,
-        Id.SEAWIFS,
-        Id.VIIRS,
-        Id.OCM1,
-        Id.OCM2,
-        Id.OLI,
-        Id.OLCI
-    };
 
     public final static String[] SEAWIFS_NAMES = {"SeaWiFS"};
     public final static String SEAWIFS_DIRECTORY = "seawifs";
@@ -75,6 +53,9 @@ public class MissionInfo {
 
     public final static String[] AQUARIUS_NAMES = {"AQUARIUS"};
     public final static String AQUARIUS_DIRECTORY = "aquarius";
+
+    public final static String[] AVHRR_NAMES = {"AVHRR"};
+    public final static String AVHRR_DIRECTORY = "avhrr";
 
     public final static String[] OCTS_NAMES = {"OCTS"};
     public final static String OCTS_DIRECTORY = "octs";
@@ -110,8 +91,7 @@ public class MissionInfo {
 
     private boolean geofileRequired;
     private File directory;
-
-    private String[] suites;
+    private File subsensorDirectory;
 
     public MissionInfo() {
         initDirectoriesHashMap();
@@ -123,10 +103,16 @@ public class MissionInfo {
         setId(id);
     }
 
+    public MissionInfo(String name) {
+        this();
+        setName(name);
+    }
+
     public void clear() {
         id = null;
         geofileRequired = false;
         directory = null;
+        subsensorDirectory = null;
     }
 
     private void initDirectoriesHashMap() {
@@ -137,6 +123,7 @@ public class MissionInfo {
         directories.put(Id.MERIS, MERIS_DIRECTORY);
         directories.put(Id.CZCS, CZCS_DIRECTORY);
         directories.put(Id.AQUARIUS, AQUARIUS_DIRECTORY);
+        directories.put(Id.AVHRR, AVHRR_DIRECTORY);
         directories.put(Id.OCTS, OCTS_DIRECTORY);
         directories.put(Id.OSMI, OSMI_DIRECTORY);
         directories.put(Id.MOS, MOS_DIRECTORY);
@@ -156,6 +143,7 @@ public class MissionInfo {
         names.put(Id.MERIS, MERIS_NAMES);
         names.put(Id.CZCS, CZCS_NAMES);
         names.put(Id.AQUARIUS, AQUARIUS_NAMES);
+        names.put(Id.AVHRR, AVHRR_NAMES);
         names.put(Id.OCTS, OCTS_NAMES);
         names.put(Id.OSMI, OSMI_NAMES);
         names.put(Id.MOS, MOS_NAMES);
@@ -245,104 +233,48 @@ public class MissionInfo {
     private void setMissionDirectoryName() {
         if (directories.containsKey(id)) {
             String missionPiece = directories.get(id);
+            String[] words = missionPiece.split("/");
             try {
-                setDirectory(new File(OCSSWInfo.getInstance().getOcsswDataDirPath(), missionPiece));
-            } catch (Exception e) {
-                setDirectory(null);
-            }
-        } else {
-            setDirectory(null);
+                if(words.length == 2) {
+                    setDirectory(new File(OCSSWInfo.getInstance().getOcsswDataDirPath(), words[0]));
+                    setSubsensorDirectory(new File(OCSSWInfo.getInstance().getOcsswDataDirPath(), missionPiece));
+                    return;
+                } else {
+                    setDirectory(new File(OCSSWInfo.getInstance().getOcsswDataDirPath(), missionPiece));
+                    setSubsensorDirectory(null);
+                    return;
+                }
+            } catch (Exception e) { }
         }
+
+        setDirectory(null);
+        setSubsensorDirectory(null);
     }
 
     public File getDirectory() {
         return directory;
     }
 
-    public void setDirectory(File directory) {
+    private void setDirectory(File directory) {
         this.directory = directory;
+    }
+
+    public File getSubsensorDirectory() {
+        return subsensorDirectory;
+    }
+
+    private void setSubsensorDirectory(File directory) {
+        this.subsensorDirectory = directory;
     }
 
     public boolean isSupported() {
         if (id == null) {
             return false;
         }
-        for (Id supportedId : SUPPORTED_IDS) {
-            if (supportedId == this.id) {
-                return true;
-            }
+        if(id == Id.UNKNOWN) {
+            return false;
         }
-        return false;
+        return true;
     }
-
-    public String[] getSuites() {
-        return suites;
-    }
-
-    public void setSuites(String[] suites) {
-        this.suites = suites;
-    }
-
-    public String[] getMissionSuiteList(String missionName, String programName) {
-
-        setName(missionName);
-
-        File missionDir = directory;
-
-        System.out.println("mission directory: " + missionDir);
-
-        if (missionDir.exists()) {
-
-            ArrayList<String> suitesArrayList = new ArrayList<String>();
-
-            File missionDirectoryFiles[] = missionDir.listFiles();
-
-            for (File file : missionDirectoryFiles) {
-                String filename = file.getName();
-
-                if (filename.startsWith(getDefaultsFilePrefix(programName)) && filename.endsWith(".par")) {
-                    String filenameTrimmed = filename.replaceFirst(getDefaultsFilePrefix(programName), "");
-                    filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
-                    suitesArrayList.add(filenameTrimmed);
-                }
-            }
-
-            final String[] suitesArray = new String[suitesArrayList.size()];
-
-            int i = 0;
-            for (String suite : suitesArrayList) {
-                suitesArray[i] = suite;
-                i++;
-            }
-
-            java.util.Arrays.sort(suitesArray);
-
-            return suitesArray;
-
-        } else {
-            return null;
-        }
-    }
-
-    public String getDefaultsFilePrefix(String programName) {
-
-        defaultsFilePrefix = DEFAULTS_FILE_PREFIX;
-
-        if (programName.equals(L3GEN_PROGRAM_NAME)) {
-            defaultsFilePrefix = L3GEN_DEFAULTS_FILE_PREFIX;
-        } else if (programName.equals(AQUARIUS_PROGRAM_NAME)) {
-            defaultsFilePrefix = AQUARIUS_DEFAULTS_FILE_PREFIX;
-        }
-        return defaultsFilePrefix;
-    }
-
-    private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
-            AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
-            L3GEN_DEFAULTS_FILE_PREFIX = "msl12_defaults_";
-    private String defaultsFilePrefix;
-
-    private final static String L2GEN_PROGRAM_NAME = "l2gen",
-            AQUARIUS_PROGRAM_NAME = "l2gen_aquarius",
-            L3GEN_PROGRAM_NAME = "l3gen";
 
 }

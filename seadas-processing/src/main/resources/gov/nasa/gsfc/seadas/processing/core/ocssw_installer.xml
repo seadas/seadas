@@ -96,14 +96,6 @@
             <order>10</order>
         </option>
         <option type="boolean">
-            <name>--msi</name>
-            <value>false</value>
-            <default>false</default>
-            <usedAs>flag</usedAs>
-            <description>install MSI files</description>
-            <order>11</order>
-        </option>
-        <option type="boolean">
             <name>--ocm1</name>
             <value>false</value>
             <default>false</default>
@@ -176,20 +168,12 @@
             <order>19</order>
         </option>
         <option type="boolean">
-            <name>--eval</name>
-            <value>false</value>
-            <default>false</default>
-            <usedAs>flag</usedAs>
-            <description>install evaluation sensor files</description>
-            <order>20</order>
-        </option>
-        <option type="boolean">
             <name>--verbose</name>
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>print out verbose status</description>
-            <order>21</order>
+            <order>20</order>
         </option>
         <option type="boolean">
             <name>--clean</name>
@@ -197,7 +181,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>clean install</description>
-            <order>22</order>
+            <order>21</order>
         </option>
     </options>
 </paramInfo>

@@ -49,7 +49,7 @@ public class OCSSWLocal extends OCSSW {
     }
 
     private void initialize() {
-        missionInfo = new MissionInfo();
+        //missionInfo = new MissionInfo();
 
     }
 
@@ -60,7 +60,15 @@ public class OCSSWLocal extends OCSSW {
 
     @Override
     public boolean isMissionDirExist(String missionName) {
-        return missionInfo.getDirectory().exists();
+        MissionInfo missionInfo = new MissionInfo(missionName);
+        File dir = missionInfo.getSubsensorDirectory();
+        if(dir == null) {
+            dir = missionInfo.getDirectory();
+        }
+        if(dir != null) {
+            return dir.isDirectory();
+        }
+        return false;
     }
 
     @Override
@@ -245,30 +253,38 @@ public class OCSSWLocal extends OCSSW {
         return ofileName;
     }
 
-    public String[] getMissionSuites(String missionName, String programName) {
-        MissionInfo missionInfo = new MissionInfo();
-
-        missionInfo.setName(missionName);
-
-        File missionDir = new File(ocsswInfo.getOcsswDataDirPath() + File.separator + missionInfo.getDirectory());
-
-        System.out.println("mission directory: " + missionDir);
-
-        if (missionDir.exists()) {
-
-            ArrayList<String> suitesArrayList = new ArrayList<String>();
-
-            File missionDirectoryFiles[] = missionDir.listFiles();
-
-            for (File file : missionDirectoryFiles) {
+    private void addSuites(ArrayList<String> suites, File dir, String prefix) {
+        if (dir != null && dir.isDirectory()) {
+            for (File file : dir.listFiles()) {
                 String filename = file.getName();
 
-                if (filename.startsWith(getDefaultsFilePrefix(programName)) && filename.endsWith(".par")) {
-                    String filenameTrimmed = filename.replaceFirst(getDefaultsFilePrefix(programName), "");
-                    filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
-                    suitesArrayList.add(filenameTrimmed);
+                if (filename.startsWith(prefix) && filename.endsWith(".par")) {
+                    String suiteName = filename.substring(prefix.length(), filename.length() - 4);
+                    if(!suites.contains(suiteName)) {
+                        suites.add(suiteName);
+                    }
                 }
             }
+
+        }
+    }
+
+    public String[] getMissionSuites(String missionName, String programName) {
+        ArrayList<String> suitesArrayList = new ArrayList<String>();
+        MissionInfo missionInfo = new MissionInfo(missionName);
+        String prefix = getDefaultsFilePrefix(programName);
+
+        // first look in the common directory
+        File dir = new File(ocsswInfo.getOcsswDataDirPath(), "common");
+        addSuites(suitesArrayList, dir, prefix);
+
+        // look in sensor dir
+        addSuites(suitesArrayList, missionInfo.getDirectory(), prefix);
+
+        // look in subsensor dir
+        addSuites(suitesArrayList, missionInfo.getSubsensorDirectory(), prefix);
+
+        if(suitesArrayList.size() > 0) {
 
             final String[] suitesArray = new String[suitesArrayList.size()];
 

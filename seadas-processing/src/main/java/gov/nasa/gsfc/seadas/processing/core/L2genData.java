@@ -1160,54 +1160,22 @@ public class L2genData implements SeaDASProcessorModel {
 
 
     private File getSensorInfoFilename() {
-
-        getSuiteList();
-
-        if (iFileInfo != null && iFileInfo.getMissionDirectory() != null) {
-            // determine the filename which contains the wavelengths
-            File filename = new File(iFileInfo.getMissionDirectory().getAbsolutePath(), "msl12_sensor_info.dat");
-            return filename;
-
-        } else {
-            return null;
+        if (iFileInfo != null) {
+            // determine the filename which contains the wavelength
+            File dir = iFileInfo.getSubsensorDirectory();
+            if(dir == null) {
+                dir = iFileInfo.getMissionDirectory();
+            }
+            if(dir != null) {
+                File filename = new File(dir.getAbsolutePath(), "msl12_sensor_info.dat");
+                return filename;
+            }
         }
+        return null;
     }
 
 
     public String[] getSuiteList() {
-
-//        if (iFileInfo != null && iFileInfo.isMissionDirExist()) {
-//
-//            ArrayList<String> suitesArrayList = new ArrayList<String>();
-//
-//            File missionDirectoryFiles[] = iFileInfo.getMissionDirectory().listFiles();
-//
-//            for (File file : missionDirectoryFiles) {
-//                String filename = file.getName();
-//
-//                if (filename.startsWith(getDefaultsFilePrefix()) && filename.endsWith(".par")) {
-//                    String filenameTrimmed = filename.replaceFirst(getDefaultsFilePrefix(), "");
-//                    filenameTrimmed = filenameTrimmed.replaceAll("[\\.][p][a][r]$", "");
-//                    suitesArrayList.add(filenameTrimmed);
-//                }
-//            }
-//
-//            final String[] suitesArray = new String[suitesArrayList.size()];
-//
-//            int i = 0;
-//            for (String suite : suitesArrayList) {
-//                suitesArray[i] = suite;
-//                i++;
-//            }
-//
-//            java.util.Arrays.sort(suitesArray);
-//
-//            return suitesArray;
-//
-//        } else {
-//            return null;
-//        }
-
         return ocssw.getMissionSuites(iFileInfo.getMissionName(), getGuiName());
     }
 
@@ -1346,7 +1314,7 @@ public class L2genData implements SeaDASProcessorModel {
 
 
             if (iFileInfo.getMissionId() == MissionInfo.Id.AQUARIUS || iFileInfo.getMissionId() == MissionInfo.Id.VIIRS) {
-                updateLuts(iFileInfo.getMissionDirectory().getAbsolutePath());
+                updateLuts(iFileInfo.getMissionName());
             }
 
             resetWaveLimiter();

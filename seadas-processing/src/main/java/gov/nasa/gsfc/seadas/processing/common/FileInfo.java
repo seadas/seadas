@@ -74,7 +74,11 @@ public class FileInfo {
         return missionInfo.getDirectory();
     }
 
-    public boolean isMissionDirExist(){
+    public File getSubsensorDirectory() {
+        return missionInfo.getSubsensorDirectory();
+    }
+
+    public boolean isMissionDirExist() {
         return ocssw.isMissionDirExist(getMissionName());
     }
 

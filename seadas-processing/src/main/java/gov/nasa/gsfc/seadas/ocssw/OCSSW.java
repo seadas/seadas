@@ -4,8 +4,6 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
-import gov.nasa.gsfc.seadas.processing.common.Mission;
-import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
@@ -46,16 +44,14 @@ public abstract class OCSSW {
     private String xmlFileName;
     String ifileName;
     //File ifileDir;
-    public String missionName;
-    public String fileType;
-
-    public MissionInfo missionInfo;
+    private String missionName;
+    private String fileType;
 
     String[] commandArrayPrefix;
     String[] commandArraySuffix;
     String[] commandArray;
 
-    HashMap<String, Mission> missions;
+    //HashMap<String, Mission> missions;
 
     OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
 
@@ -93,13 +89,7 @@ public abstract class OCSSW {
         return true;
     }
 
-    public boolean isMissionDirExist(String missionName) {
-        return missions.get(missionName).isMissionExist();
-    }
-
-    public String[] getMissionSuites(String missionName) {
-        return missions.get(missionName).getMissionSuites();
-    }
+    public abstract boolean isMissionDirExist(String missionName);
 
     public abstract String[] getMissionSuites(String missionName, String programName);
 
@@ -149,8 +139,6 @@ public abstract class OCSSW {
 
     public void setMissionName(String missionName) {
         this.missionName = missionName;
-        missionInfo.setName(missionName);
-
     }
 
     public String getFileType() {

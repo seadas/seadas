@@ -666,7 +666,9 @@ public class OCSSWRemote extends OCSSW {
         }
         JsonObject jsonObject = getFindFileInfoJsonObject(fileName.substring(fileName.lastIndexOf(File.separator) + 1));
         fileInfoFinder.setFileType(jsonObject.getString(FileInfoFinder.FILE_TYPE_VAR_NAME));
-        fileInfoFinder.setMissionName(jsonObject.getString(FileInfoFinder.MISSION_NAME_VAR_NAME));
+        String mission = jsonObject.getString(FileInfoFinder.MISSION_NAME_VAR_NAME);
+        fileInfoFinder.setMissionName(mission);
+        setMissionName(mission);
     }
 
 

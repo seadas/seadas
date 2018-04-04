@@ -52,13 +52,11 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     "AQUA",
                     "TERRA",
                     "MOS",
-                    "MSI",
                     "OCM1",
                     "OCM2",
                     "OCRVC",
                     "OCTS",
                     "OLI",
-                    "OLCI",
                     "OSMI",
                     "SEAWIFS",
                     "VIIRSN"}
@@ -71,30 +69,6 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
             }
     ));
 
-    private static final HashMap<String, String> MISSION_DIRECTORIES;
-
-    static {
-        MISSION_DIRECTORIES = new HashMap<String, String>();
-        MISSION_DIRECTORIES.put("SEAWIFS", "seawifs");
-        MISSION_DIRECTORIES.put("AQUA", "hmodisa");
-        MISSION_DIRECTORIES.put("TERRA", "hmodist");
-        MISSION_DIRECTORIES.put("VIIRSN", "viirsn");
-        MISSION_DIRECTORIES.put("MERIS", "meris");
-        MISSION_DIRECTORIES.put("CZCS", "czcs");
-        MISSION_DIRECTORIES.put("AQUARIUS", "aquarius");
-        MISSION_DIRECTORIES.put("OCTS", "octs");
-        MISSION_DIRECTORIES.put("OLI", "oli");
-        MISSION_DIRECTORIES.put("OLCI", "olci");
-        MISSION_DIRECTORIES.put("OSMI", "osmi");
-        MISSION_DIRECTORIES.put("MOS", "mos");
-        MISSION_DIRECTORIES.put("MSI", "msi");
-        MISSION_DIRECTORIES.put("OCM2", "ocm2");
-        MISSION_DIRECTORIES.put("OCM1", "ocm1");
-        MISSION_DIRECTORIES.put("AVHRR", "avhrr");
-        MISSION_DIRECTORIES.put("HICO", "hico");
-        MISSION_DIRECTORIES.put("GOCI", "goci");
-
-    }
 
     HashMap<String, Boolean> missionDataStatus;
 
@@ -213,7 +187,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     tmpString = ParamUtils.removePreceedingDashes(c.getName()).toUpperCase();
                     if (MISSIONS.contains(tmpString)) {
                         if (!DEFAULT_MISSIONS.contains(tmpString)) {
-                            if (new File(missionDataDir + MISSION_DIRECTORIES.get(tmpString)).exists() ||
+                            if (ocssw.isMissionDirExist(tmpString) ||
                                     missionDataStatus.get(tmpString)) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                             } else {
@@ -224,12 +198,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     } else {
                         if (tmpString.equals("SRC")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Source Code");
-                            if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") + "build").exists()) {
-                                ((JPanel) c).getComponents()[0].setEnabled(false);
-                            }
-                        } else if (tmpString.equals("EVAL")) {
-                            ((JLabel) ((JPanel) c).getComponent(0)).setText("Evaluation Data Files");
-                            if (new File(missionDataDir + "eval").exists()) {
+                            if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") + "ocssw-src").exists()) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                             }
                         } else if (tmpString.equals("CLEAN")) {

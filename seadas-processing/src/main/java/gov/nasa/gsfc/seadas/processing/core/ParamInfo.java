@@ -310,8 +310,12 @@ public class ParamInfo implements Comparable, Cloneable {
                             if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
                                 setValidationComment("# WARNING!!! file " + filename + " is not a valid input mission" + ": Mission="+ fileInfo.getMissionName() + "\n");
                             } else if (!fileInfo.isMissionDirExist()) {
-                                if (fileInfo.getMissionDirectory() != null) {
-                                    setValidationComment("WARNING!!! Mission directory '" + fileInfo.getMissionDirectory().getAbsolutePath() + "' does not exist");
+                                File dir = fileInfo.getSubsensorDirectory();
+                                if(dir == null) {
+                                    dir = fileInfo.getMissionDirectory();
+                                }
+                                if (dir != null) {
+                                    setValidationComment("WARNING!!! Mission directory '" + dir.getAbsolutePath() + "' does not exist");
                                 } else {
                                     setValidationComment("WARNING!!! Mission directory does not exist");
                                 }
