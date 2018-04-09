@@ -325,6 +325,8 @@ public class MissionInfoFinder {
 
     private boolean geofileRequired;
     private File directory;
+    private File subsensorDirectory;
+
 
     private String[] suites;
 
@@ -332,6 +334,7 @@ public class MissionInfoFinder {
         id = null;
         geofileRequired = false;
         directory = null;
+        subsensorDirectory = null;
     }
 
     private void initDirectoriesHashMap() {
@@ -452,11 +455,32 @@ public class MissionInfoFinder {
     private void setMissionDirectoryName() {
         if (directories.containsKey(id)) {
             String missionPiece = directories.get(id);
-            setDirectory(new File(OCSSWServerModel.getOcsswDataDirPath(), missionPiece));
-        } else {
-            setDirectory(null);
+            String[] words = missionPiece.split("/");
+            try {
+                if(words.length == 2) {
+                    setDirectory(new File(OCSSWServerModel.getOcsswDataDirPath(), words[0]));
+                    setSubsensorDirectory(new File(OCSSWServerModel.getOcsswDataDirPath(), missionPiece));
+                    return;
+                } else {
+                    setDirectory(new File(OCSSWServerModel.getOcsswDataDirPath(), missionPiece));
+                    setSubsensorDirectory(null);
+                    return;
+                }
+            } catch (Exception e) { }
         }
+
+        setDirectory(null);
+        setSubsensorDirectory(null);
     }
+
+//    private void setMissionDirectoryName() {
+//        if (directories.containsKey(id)) {
+//            String missionPiece = directories.get(id);
+//            setDirectory(new File(OCSSWServerModel.getOcsswDataDirPath(), missionPiece));
+//        } else {
+//            setDirectory(null);
+//        }
+//    }
 
     public File getDirectory() {
         return directory;
@@ -478,11 +502,12 @@ public class MissionInfoFinder {
         return false;
     }
 
-    public String[] getSuites() {
-        return suites;
+    public File getSubsensorDirectory() {
+        return subsensorDirectory;
     }
 
-    public void setSuites(String[] suites) {
-        this.suites = suites;
+    private void setSubsensorDirectory(File directory) {
+        this.subsensorDirectory = directory;
     }
+
 }

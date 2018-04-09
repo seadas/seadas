@@ -446,20 +446,10 @@ public class OCSSWServices {
     @GET
     @Path("/missionSuites/{missionName}/{programName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String[] getL2genMissionSuites(@PathParam("missionName") String missionName, @PathParam("programName") String programName) {
-        try {
-            missionName.replaceAll("_", " ");
-            if (OCSSWServerModel.isMissionDirExist(missionName)) {
-                return new MissionInfoFinder().getMissionSuiteList(missionName, programName);
-            } else {
-                return null;
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public String[] getMissionSuites(@PathParam("missionName") String missionName, @PathParam("programName") String programName) {
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+        return ocsswRemote.getMissionSuites(missionName, programName);
     }
-
 
     @GET
     @Path("downloadInstaller")

@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver;
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfoFinder;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
@@ -45,6 +46,17 @@ public class OCSSWRemoteImpl {
     public static String PROCESS_STDOUT_FILE_NAME_EXTENSION = ".log";
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+
+    private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
+            AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
+            L3GEN_DEFAULTS_FILE_PREFIX = "msl12_defaults_";
+
+    private String defaultsFilePrefix;
+
+    private final static String L2GEN_PROGRAM_NAME = "l2gen",
+            AQUARIUS_PROGRAM_NAME = "l2gen_aquarius",
+            L3GEN_PROGRAM_NAME = "l3gen";
+
 
     String programName;
     String missionName;
@@ -343,7 +355,6 @@ public class OCSSWRemoteImpl {
 
     public void executeProcess(String[] commandArray, String jobId) {
 
-
         debug("command array content: ");
         for (int j = 0; j < commandArray.length; j++) {
             System.out.print(commandArray[j] + " ");
@@ -496,6 +507,69 @@ public class OCSSWRemoteImpl {
         }
         return pixels;
     }
+
+    public String getDefaultsFilePrefix(String programName) {
+
+        defaultsFilePrefix = DEFAULTS_FILE_PREFIX;
+
+        if (programName.equals(L3GEN_PROGRAM_NAME)) {
+            defaultsFilePrefix = L3GEN_DEFAULTS_FILE_PREFIX;
+        } else if (programName.equals(AQUARIUS_PROGRAM_NAME)) {
+            defaultsFilePrefix = AQUARIUS_DEFAULTS_FILE_PREFIX;
+        }
+        return defaultsFilePrefix;
+    }
+
+    private void addSuites(ArrayList<String> suites, File dir, String prefix) {
+        if (dir != null && dir.isDirectory()) {
+            for (File file : dir.listFiles()) {
+                String filename = file.getName();
+
+                if (filename.startsWith(prefix) && filename.endsWith(".par")) {
+                    String suiteName = filename.substring(prefix.length(), filename.length() - 4);
+                    if(!suites.contains(suiteName)) {
+                        suites.add(suiteName);
+                    }
+                }
+            }
+
+        }
+    }
+
+    public String[] getMissionSuites(String missionName, String programName) {
+        ArrayList<String> suitesArrayList = new ArrayList<String>();
+        MissionInfo missionInfo = new MissionInfo(missionName);
+        String prefix = getDefaultsFilePrefix(programName);
+
+        // first look in the common directory
+        File dir = new File(OCSSWServerModel.getOcsswDataDirPath(), "common");
+        addSuites(suitesArrayList, dir, prefix);
+
+        // look in sensor dir
+        addSuites(suitesArrayList, missionInfo.getDirectory(), prefix);
+
+        // look in subsensor dir
+        addSuites(suitesArrayList, missionInfo.getSubsensorDirectory(), prefix);
+
+        if(suitesArrayList.size() > 0) {
+
+            final String[] suitesArray = new String[suitesArrayList.size()];
+
+            int i = 0;
+            for (String suite : suitesArrayList) {
+                suitesArray[i] = suite;
+                i++;
+            }
+
+            java.util.Arrays.sort(suitesArray);
+
+            return suitesArray;
+
+        } else {
+            return null;
+        }
+    }
+
 
    public String getOfileName(String jobId, String ifileName, String programName) {
 

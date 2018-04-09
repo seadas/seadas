@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
+import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfoFinder;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
 import java.io.*;
@@ -133,10 +135,22 @@ public class OCSSWServerModel {
     }
 
 
+//    public static boolean isMissionDirExist(String missionName) {
+//        missionName = SQLiteJDBC.retrieveMissionDir(missionName);
+//        System.out.println("mission dir = " + ocsswDataDirPath + File.separator + missionName);
+//        return new File(ocsswDataDirPath + File.separator + missionName).exists();
+//    }
+
     public static boolean isMissionDirExist(String missionName) {
-        missionName = SQLiteJDBC.retrieveMissionDir(missionName);
-        System.out.println("mission dir = " + ocsswDataDirPath + File.separator + missionName);
-        return new File(ocsswDataDirPath + File.separator + missionName).exists();
+        MissionInfo missionInfo = new MissionInfo(missionName);
+        File dir = missionInfo.getSubsensorDirectory();
+        if(dir == null) {
+            dir = missionInfo.getDirectory();
+        }
+        if(dir != null) {
+            return dir.isDirectory();
+        }
+        return false;
     }
 
     public static boolean isOCSSWExist() {
