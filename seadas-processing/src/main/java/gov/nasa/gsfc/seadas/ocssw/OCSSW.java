@@ -203,7 +203,9 @@ public abstract class OCSSW {
 
     public void setIfileName(String ifileName) {
         this.ifileName = ifileName;
-        ifileDir = new File(ifileName).getParent();
+        if (ifileName != null) {
+            ifileDir = new File(ifileName).getParent();
+        }
         setOfileNameFound(false);
         ofileName = null;
     }
