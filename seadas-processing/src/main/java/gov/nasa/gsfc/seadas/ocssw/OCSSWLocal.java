@@ -4,7 +4,6 @@ import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
-import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
@@ -89,6 +88,7 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public Process execute(ProcessorModel processorModel) {
         setProgramName(processorModel.getProgramName());
+        setIfileName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
         return execute(getProgramCommandArray(processorModel));
     }
 
@@ -168,15 +168,16 @@ public class OCSSWLocal extends OCSSW {
 
         ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
 
-        if (ifileDir != null) {
-            processBuilder.directory(new File(ifileDir));
-        } else {
-            processBuilder.directory(new File(System.getProperty("user.home")));
-        }
+
+        Map<String, String> env = processBuilder.environment();
+
+        env.put("PWD",ifileDir);
+
+        processBuilder.directory(new File(ifileDir));
 
         process = null;
         try {
-            process = (Process) processBuilder.start();
+            process =  processBuilder.start();
             if (process != null) {
                 debug("Running the program " + commandArray.toString());
             }
@@ -255,7 +256,7 @@ public class OCSSWLocal extends OCSSW {
             return ifileName + ".xml";
         }
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
-        ofileName = getOfileName(SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams));
+        ofileName = findOfileName(ifileName, SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams));
         setOfileNameFound(true);
         return ofileName;
     }
@@ -263,7 +264,7 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public String getOfileName(String ifileName, String programName) {
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
-        ofileName = getOfileName(SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams));
+        ofileName = findOfileName(ifileName, SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams));
         return ofileName;
     }
 
@@ -340,7 +341,7 @@ public class OCSSWLocal extends OCSSW {
 
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
 
-        return getOfileName(SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams, options));
+        return findOfileName(ifileName, SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams, options));
     }
 
     @Override
@@ -351,8 +352,8 @@ public class OCSSWLocal extends OCSSW {
     }
 
 
-    private String getOfileName(String[] commandArray) {
-
+    private String findOfileName(String ifileName, String[] commandArray) {
+        setIfileName(ifileName);
         process = execute(commandArray);
 
         if (process == null) {

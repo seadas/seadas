@@ -252,6 +252,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
+                        ocssw.setIfileName(secondaryProcessor.getParamValue(secondaryProcessor.getPrimaryInputFileOptionName()));
                         int exitCode = ocssw.execute(secondaryProcessor.getParamList()).exitValue();
                         if (exitCode == 0) {
                             VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),

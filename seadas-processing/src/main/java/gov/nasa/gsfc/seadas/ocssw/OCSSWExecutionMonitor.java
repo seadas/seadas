@@ -27,6 +27,7 @@ public class OCSSWExecutionMonitor {
             protected String doInBackground(ProgressMonitor pm) throws Exception {
 
                 ocssw.setMonitorProgress(true);
+                ocssw.setIfileName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 final Process process = ocssw.execute(processorModel.getParamList());//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
