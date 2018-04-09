@@ -171,9 +171,10 @@ public class OCSSWLocal extends OCSSW {
 
         Map<String, String> env = processBuilder.environment();
 
-        env.put("PWD",ifileDir);
-
-        processBuilder.directory(new File(ifileDir));
+        if( ifileDir != null ) {
+            env.put("PWD", ifileDir);
+            processBuilder.directory(new File(ifileDir));
+        }
 
         process = null;
         try {
