@@ -310,6 +310,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
      */
     public static class ProgressHandler implements ProcessObserver.Handler {
         private boolean progressSeen;
+        private boolean stdoutOn;
         private int lastScan = 0;
         private String programName;
         private Pattern progressPattern;
@@ -324,6 +325,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
             if (!progressSeen) {
                 progressSeen = true;
+                stdoutOn = true;
                 progressMonitor.beginTask(programName, 1000);
             }
 
@@ -343,23 +345,25 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
-            if (!progressSeen) {
-                progressSeen = true;
-                progressMonitor.beginTask(programName, 1000);
-            }
+            if( !stdoutOn ) {
+                if (!progressSeen) {
+                    progressSeen = true;
+                    progressMonitor.beginTask(programName, 1000);
+                }
 
-            Matcher matcher = progressPattern.matcher(line);
-            if (matcher.find()) {
-                int scan = Integer.parseInt(matcher.group(1));
-                int numScans = Integer.parseInt(matcher.group(2));
+                Matcher matcher = progressPattern.matcher(line);
+                if (matcher.find()) {
+                    int scan = Integer.parseInt(matcher.group(1));
+                    int numScans = Integer.parseInt(matcher.group(2));
 
-                scan = (scan * 1000) / numScans;
-                progressMonitor.worked(scan - lastScan);
-                lastScan = scan;
-                currentText = line;
+                    scan = (scan * 1000) / numScans;
+                    progressMonitor.worked(scan - lastScan);
+                    lastScan = scan;
+                    currentText = line;
+                }
+                progressMonitor.setTaskName(programName);
+                progressMonitor.setSubTaskName(line);
             }
-            progressMonitor.setTaskName(programName);
-            progressMonitor.setSubTaskName(line);
         }
     }
 
