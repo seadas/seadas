@@ -529,6 +529,7 @@ public class OCSSWRemoteImpl {
                     String suiteName = filename.substring(prefix.length(), filename.length() - 4);
                     if(!suites.contains(suiteName)) {
                         suites.add(suiteName);
+                        debug("mission suite name: " + suiteName);
                     }
                 }
             }
@@ -543,6 +544,7 @@ public class OCSSWRemoteImpl {
 
         // first look in the common directory
         File dir = new File(OCSSWServerModel.getOcsswDataDirPath(), "common");
+        debug("mission suites dir: " + dir.getAbsolutePath());
         addSuites(suitesArrayList, dir, prefix);
 
         // look in sensor dir
@@ -665,10 +667,10 @@ public class OCSSWRemoteImpl {
 
     public JsonObject getSensorFileIntoArrayList(String missionName) {
 
-        MissionInfoFinder missionInfo = new MissionInfoFinder();
+        MissionInfo missionInfo = new MissionInfo(missionName);
         debug("mission name: " + missionName);
-        missionInfo.setName(missionName);
-        File file = new File(missionInfo.getDirectory(), "msl12_sensor_info.dat");
+        //missionInfo.setName(missionName);
+        File file = getSensorInfoFilename(missionInfo);
         debug("mission sensor file path : " + file.getAbsolutePath());
         String lineData;
         BufferedReader moFile = null;
@@ -689,6 +691,21 @@ public class OCSSWRemoteImpl {
             }
         }
         return jsonObjectBuilder.build();
+    }
+
+    private File getSensorInfoFilename(MissionInfo missionInfo) {
+        if (missionInfo != null) {
+            // determine the filename which contains the wavelength
+            File dir = missionInfo.getSubsensorDirectory();
+            if(dir == null) {
+                dir = missionInfo.getDirectory();
+            }
+            if(dir != null) {
+                File filename = new File(dir.getAbsolutePath(), "msl12_sensor_info.dat");
+                return filename;
+            }
+        }
+        return null;
     }
 
     public HashMap<String, String> getFileInfo(String ifileName, String jobId) {
