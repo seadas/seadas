@@ -323,9 +323,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
+            stdoutOn = true;
             if (!progressSeen) {
                 progressSeen = true;
-                stdoutOn = true;
                 progressMonitor.beginTask(programName, 1000);
             }
 
