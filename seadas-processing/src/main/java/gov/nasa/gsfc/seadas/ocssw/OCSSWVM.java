@@ -213,7 +213,7 @@ public class OCSSWVM extends OCSSWRemote {
 
 
     @Override
-    public void downloadCommonFiles(JsonObject paramJsonObject) {
+    public boolean downloadCommonFiles(JsonObject paramJsonObject) {
         Set commandArrayKeys = paramJsonObject.keySet();
         String param;
         String ofileFullPathName, ofileName;
@@ -243,8 +243,10 @@ public class OCSSWVM extends OCSSWRemote {
                     }
                 }
             }
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

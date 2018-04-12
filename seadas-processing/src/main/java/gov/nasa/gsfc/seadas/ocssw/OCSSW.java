@@ -107,7 +107,7 @@ public abstract class OCSSW {
 
     public abstract void getOutputFiles(ProcessorModel processorModel);
 
-    public abstract void getIntermediateOutputFiles(ProcessorModel processorModel);
+    public abstract boolean getIntermediateOutputFiles(ProcessorModel processorModel);
 
     public abstract void findFileInfo(String fileName, FileInfoFinder fileInfoFinder);
 

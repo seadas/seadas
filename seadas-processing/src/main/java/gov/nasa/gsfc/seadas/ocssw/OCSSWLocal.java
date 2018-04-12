@@ -200,8 +200,8 @@ public class OCSSWLocal extends OCSSW {
     }
 
     @Override
-    public void getIntermediateOutputFiles(ProcessorModel processorModel) {
-
+    public boolean getIntermediateOutputFiles(ProcessorModel processorModel) {
+        return true;
     }
 
     @Override

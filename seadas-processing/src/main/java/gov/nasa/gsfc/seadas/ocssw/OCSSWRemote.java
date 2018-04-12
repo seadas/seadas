@@ -475,7 +475,7 @@ public class OCSSWRemote extends OCSSW {
             } else {
                 commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
                 //this is to make sure that all necessary files are uploaded to the server before execution
-                prepareToRemoteExecute();
+                prepareToRemoteExecute(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
 
                 if (response.getStatus() == Response.Status.OK.getStatusCode()) {
@@ -606,30 +606,13 @@ public class OCSSWRemote extends OCSSW {
         getOutputFiles(processorModel.getOfileName());
     }
 
+    public boolean getIntermediateOutputFiles(ProcessorModel processorModel) {
 
-    public void getIntermediateOutputFiles(ProcessorModel processorModel) {
-
-        VisatApp visatApp = VisatApp.getApp();
-
-        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
-                "OCSSW Remote Server File Download") {
-
-            @Override
-            protected Void doInBackground(ProgressMonitor pm) throws Exception {
-
-                JsonObject commandArrayJsonObject = null;
-
-                if (programName.equals(MLP_PROGRAM_NAME)) {
-                    JsonObject outputFilesList = target.path("ocssw").path("getMLPOutputFiles").path(jobId).request().get(JsonObject.class);
-                    downloadMLPOutputFiles(outputFilesList, pm);
-                } else {
-                    commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
-                    downloadCommonFiles(commandArrayJsonObject);
-                }
-                return null;
-            }
-        };
-        pmSwingWorker.execute();
+        boolean downloadSuccessful = false;
+        JsonObject commandArrayJsonObject = null;
+        commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+        downloadSuccessful = downloadCommonFiles(commandArrayJsonObject);
+        return downloadSuccessful;
     }
 
     //todo: implement download files using output file names from processModel object
@@ -673,7 +656,7 @@ public class OCSSWRemote extends OCSSW {
     }
 
 
-    public void downloadCommonFiles(JsonObject paramJsonObject) {
+    public boolean downloadCommonFiles(JsonObject paramJsonObject) {
         Set commandArrayKeys = paramJsonObject.keySet();
         String param;
         String ofileFullPathName, ofileName;
@@ -699,10 +682,13 @@ public class OCSSWRemote extends OCSSW {
                     Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
                     SeadasFileUtils.writeToFile(responceStream, ofileDir + File.separator + ofileFullPathName);
+
                 }
             }
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -747,7 +733,7 @@ public class OCSSWRemote extends OCSSW {
         return seadasProcess;
     }
 
-    private void downloadMLPOutputFiles(JsonObject paramJsonObject, ProgressMonitor pm) {
+    private boolean downloadMLPOutputFiles(JsonObject paramJsonObject, ProgressMonitor pm) {
 
         if (ofileDir == null) {
             ofileDir = ifileDir;
@@ -791,8 +777,10 @@ public class OCSSWRemote extends OCSSW {
                     pm.worked(numberOfTasksWorked++);
                 }
             }
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -872,7 +860,7 @@ public class OCSSWRemote extends OCSSW {
         return isAncFile;
     }
 
-    private void prepareToRemoteExecute() {
+    private void prepareToRemoteExecute(String ifileName) {
         Response response;
         String fileExtensions = processorModel.getImplicitInputFileExtensions();
         if (fileExtensions != null) {
@@ -992,9 +980,9 @@ public class OCSSWRemote extends OCSSW {
         Iterator<String> keys = jsonObject.keySet().iterator();
         ArrayList<String> fileContents = new ArrayList<>();
         String sensorFileLine;
-        while (keys.hasNext()){
+        while (keys.hasNext()) {
             sensorFileLine = String.valueOf(jsonObject.get(keys.next()));
-            sensorFileLine = sensorFileLine.substring(1, sensorFileLine.length()-1);
+            sensorFileLine = sensorFileLine.substring(1, sensorFileLine.length() - 1);
             fileContents.add(sensorFileLine);
         }
         return fileContents;

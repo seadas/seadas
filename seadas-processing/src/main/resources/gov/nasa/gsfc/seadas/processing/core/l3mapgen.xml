@@ -319,7 +319,7 @@
             <usedAs>option</usedAs>
             <order>14</order>
         </option>
-        <option type="ifile">
+        <option type="string">
             <name>palfile</name>
             <value/>
             <source>default</source>
@@ -327,7 +327,7 @@
             <usedAs>option</usedAs>
             <order>15</order>
         </option>
-        <option type="dir">
+        <option type="string">
             <name>palette_dir</name>
             <value>$OCDATAROOT/common/palette</value>
             <default>$OCDATAROOT/common/palette</default>

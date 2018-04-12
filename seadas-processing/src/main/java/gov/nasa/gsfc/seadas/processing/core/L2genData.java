@@ -1652,7 +1652,7 @@ public class L2genData implements SeaDASProcessorModel {
                     if (ocssw.getProcessExitValue() != 0) {
                         throw new IOException(getGuiName() + " returned nonzero exitvalue");
                     }
-                    ocssw.getIntermediateOutputFiles(processorModel);
+                    boolean downloadSuccessful = ocssw.getIntermediateOutputFiles(processorModel);
 
                     if (!xmlFile.exists()) {
                         return null;
