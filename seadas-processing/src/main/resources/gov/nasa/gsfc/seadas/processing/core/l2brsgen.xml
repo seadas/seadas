@@ -193,7 +193,7 @@
             <source>default</source>
             <usedAs>option</usedAs>
         </option>
-        <option type="ifile">
+        <option type="string">
             <name>palfile</name>
             <value></value>
             <type>string</type>
@@ -204,7 +204,7 @@
             <source>default</source>
             <usedAs>option</usedAs>
         </option>
-        <option type="dir">
+        <option type="string">
             <name>palette_dir</name>
             <value></value>
             <type>string</type>

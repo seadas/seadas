@@ -53,7 +53,7 @@
                 <value>F</value>
             </validValue>
         </option>
-        <option type="ifile">
+        <option type="string">
             <name>palfile</name>
             <value/>
             <type>string</type>

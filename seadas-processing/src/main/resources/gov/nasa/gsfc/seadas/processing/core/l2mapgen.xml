@@ -48,7 +48,7 @@
             <usedAs>option</usedAs>
             <order>9</order>
         </option>
-        <option type="ifile">
+        <option type="string">
             <name>palfile</name>
             <value></value>
             <type>string</type>
@@ -58,7 +58,7 @@
             <usedAs>option</usedAs>
             <order>10</order>
         </option>
-        <option type="dir">
+        <option type="string">
             <name>palette_dir</name>
             <value></value>
             <type>string</type>
