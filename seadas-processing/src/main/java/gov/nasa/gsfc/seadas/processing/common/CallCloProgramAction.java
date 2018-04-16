@@ -280,7 +280,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
             StringTokenizer st = new StringTokenizer(ofileName);
             while (st.hasMoreTokens()) {
-                File ofile = SeadasFileUtils.createFile(ifileDir, st.nextToken());
+                File ofile = SeadasFileUtils.createFile(ocssw.getOfileDir(), st.nextToken());
                 getAppContext().getProductManager().addProduct(ProductIO.readProduct(ofile));
             }
         }

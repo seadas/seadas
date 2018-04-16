@@ -111,6 +111,7 @@ public abstract class OCSSW {
 
     public abstract void findFileInfo(String fileName, FileInfoFinder fileInfoFinder);
 
+    public abstract String getOfileDir();
     public abstract String getOfileName(String ifileName);
     public abstract String getOfileName(String ifileName, String programName);
 

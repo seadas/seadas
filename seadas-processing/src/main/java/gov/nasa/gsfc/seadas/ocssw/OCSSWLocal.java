@@ -244,6 +244,11 @@ public class OCSSWLocal extends OCSSW {
     }
 
     @Override
+    public String getOfileDir() {
+        return ofileDir;
+    }
+
+    @Override
     public String getOfileName(String ifileName) {
 
         if (isOfileNameFound() && this.ifileName.equals(ifileName)) {

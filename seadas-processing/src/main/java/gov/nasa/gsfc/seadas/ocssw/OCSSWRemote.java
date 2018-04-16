@@ -655,6 +655,11 @@ public class OCSSWRemote extends OCSSW {
         setMissionName(mission);
     }
 
+    @Override
+    public String getOfileDir() {
+        return ofileDir;
+    }
+
 
     public boolean downloadCommonFiles(JsonObject paramJsonObject) {
         Set commandArrayKeys = paramJsonObject.keySet();
