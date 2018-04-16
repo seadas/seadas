@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
@@ -46,6 +47,17 @@ public class OCSSWConfig {
         if (inputStream != null) {
             try {
                 properties.load(inputStream);
+                String key, value;
+                Set<Object> keys = properties.keySet();
+                Iterator itr = keys.iterator();
+                while (itr.hasNext()) {
+                    key = (String) itr.next();
+                    value = properties.getProperty(key);
+                    if (value.startsWith("$")) {
+                        value = System.getProperty(value.substring(value.indexOf("{") + 1, value.indexOf("}"))) + value.substring(value.indexOf("}") + 1);
+                        properties.setProperty(key, value);
+                    }
+                }
                 // set the system properties
                 System.setProperties(properties);
                 // display new properties
