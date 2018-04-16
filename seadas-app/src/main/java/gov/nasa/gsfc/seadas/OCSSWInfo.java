@@ -135,7 +135,7 @@ public class OCSSWInfo {
 
     public void detectOcssw() {
 
-        int unique_id= (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        int unique_id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
 
         Date date = new Date();
         System.out.println(sdf.format(date));
@@ -235,32 +235,32 @@ public class OCSSWInfo {
             e.printStackTrace();
             FileWriter fileWriter = null;
             try {
-                fileWriter = new FileWriter(new File(this.getClass().getName()+"_exception.log"));
+                fileWriter = new FileWriter(new File(this.getClass().getName() + "_exception.log"));
                 fileWriter.write(e.getMessage());
                 if (fileWriter != null) {
                     fileWriter.close();
                 }
-            }catch (Exception exc) {
+            } catch (Exception exc) {
                 JOptionPane.showMessageDialog(new JOptionPane(), "OCSSW is not accessible.",
                         "OCSSW Initialization Warning",
                         JOptionPane.WARNING_MESSAGE);
             }
         }
         ocsswExist = jsonObject.getBoolean("ocsswExists");
-        if (ocsswExist) {
-
-        }
+//        if (ocsswExist) {
+//            //target.path("ocssw").path("manageClientWorkingDirectory").path(clientId)
+//        }
         ocsswRoot = jsonObject.getString("ocsswRoot");
         ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
         ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
         ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
         ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
         sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY);
-        if ( sharedDirPath == null ) {
-            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
-            String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "false");
-            Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
-        }
+        //if ( sharedDirPath == null ) {
+        clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
+        String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "true");
+        Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
+        // }
         processInputStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_INPUT_STREAM_PORT)).intValue();
         processErrorStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_ERROR_STREAM_PORT)).intValue();
         return ocsswExist;
