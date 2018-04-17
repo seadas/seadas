@@ -21,17 +21,10 @@ import javax.ws.rs.core.Application;
 @ApplicationPath("ocssw")
 public class OCSSWConfig {
 
-    private static final String OCSSW_PROCESSING_DIR = "ocsswfiles";
-    private static final String FILE_UPLOAD_PATH = System.getProperty("user.home") + System.getProperty("file.separator") + OCSSW_PROCESSING_DIR + System.getProperty("file.separator") + "ifiles";
-    private static final String FILE_DOWNLOAD_PATH = System.getProperty("user.home") + System.getProperty("file.separator") + OCSSW_PROCESSING_DIR + System.getProperty("file.separator") + "ofiles";
-    private static final String FILE_DIR = System.getProperty("user.dir") + System.getProperty("file.separator") + "files";
-    private static final String OCSSW_OUTPUT_COMPRESSED_FILE_NAME = "ocssw_output.zip";
 
     public final static String OCSSW_PROCESS_INPUTSTREAM_SOCKET_PORT_NUMBER_PROPERTY = "processInputStreamPortNumber";
     public final static String OCSSW_PROCESS_ERRORSTREAM_SOCKET_PORT_NUMBER_PROPERTY = "processErrorStreamPortNumber";
 
-    //    public static String configFilePath="ocsswservertest.config";
-//    public static final String PROPERTIES_FILE = "ocsswserver.config";
     public static Properties properties = new Properties(System.getProperties());
     private ResourceLoader rl;
 
