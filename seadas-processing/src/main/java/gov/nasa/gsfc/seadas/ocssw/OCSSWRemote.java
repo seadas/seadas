@@ -32,6 +32,7 @@ public class OCSSWRemote extends OCSSW {
     public static final String OCSSW_SERVER_PORT_NUMBER = "6400";
     public static final String MLP_PROGRAM_NAME = "multilevel_processor.py";
     public static final String MLP_PAR_FILE_ODIR_KEY_NAME = "odir";
+    public static String MLP_OUTPUT_DIR_NAME = "mlpOutputDir";
 
 
     public static final String PROCESS_STATUS_NONEXIST = "-100";
@@ -603,7 +604,11 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public void getOutputFiles(ProcessorModel processorModel) {
-        getOutputFiles(processorModel.getOfileName());
+        if (processorModel.getProgramName() == MLP_PROGRAM_NAME) {
+            downloadMLPOutputFiles(processorModel);
+        } else {
+            getOutputFiles(processorModel.getOfileName());
+        }
     }
 
     public boolean getIntermediateOutputFiles(ProcessorModel processorModel) {
@@ -738,55 +743,42 @@ public class OCSSWRemote extends OCSSW {
         return seadasProcess;
     }
 
-    private boolean downloadMLPOutputFiles(JsonObject paramJsonObject, ProgressMonitor pm) {
+    protected void downloadMLPOutputFiles(ProcessorModel processorModel) {
+        String mlpOdir =  processorModel.getParamValue(MLP_PAR_FILE_ODIR_KEY_NAME);
+        final String ofileDir = mlpOdir == null ? ifileDir : mlpOdir;
 
-        if (ofileDir == null) {
-            ofileDir = ifileDir;
-        }
+        VisatApp visatApp = VisatApp.getApp();
 
-        pm.beginTask("Downloading output files from the remote server to " + ofileDir, paramJsonObject.size());
-        pm.worked(1);
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                "OCSSW Remote Server File Download") {
 
-        Set commandArrayKeys = paramJsonObject.keySet();
-        String param;
-        String ofileFullPathName, ofileName;
-        try {
-            Object[] array = (Object[]) commandArrayKeys.toArray();
-            int i = 0;
-            String[] commandArray = new String[commandArrayKeys.size() + 1];
-            commandArray[i++] = programName;
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
 
-            int numberOfTasksWorked = 1;
+                JsonObject mlpOfilesJsonObject = target.path("fileServices").path("downloadMLPOutputFilesList").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+                Set fileSetKeys = mlpOfilesJsonObject.keySet();
+                Object[] fileArray = (Object[]) fileSetKeys.toArray();
 
-            for (Object element : array) {
-                String elementName = (String) element;
-                param = paramJsonObject.getString((String) element);
-                if (elementName.contains("OFILE")) {
-                    if (param.indexOf("=") != -1) {
-                        StringTokenizer st = new StringTokenizer(param, "=");
-                        String paramName = st.nextToken();
-                        String paramValue = st.nextToken();
-                        ofileFullPathName = paramValue;
+                pm.beginTask("Downloading output files from the remote server to " + ofileDir, 10);
+                pm.worked(1);
 
-                    } else {
-                        ofileFullPathName = param;
-                    }
-                    ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
+                String ofileName, ofileFullPathName;
+                int numberOfTasksWorked = 1;
+                for (Object fileNameKey : fileArray) {
+                    ofileName = mlpOfilesJsonObject.getString((String) fileNameKey);
 
                     pm.setSubTaskName("Downloading file '" + ofileName + " to " + ofileDir);
 
-                    Response response = target.path("fileServices").path("downloadMLPOutputFile").path(jobId).path(ofileName).request().get(Response.class);
+                    Response response = target.path("fileServices").path("getMLPOutputFiles").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
                     ofileFullPathName = ofileDir + File.separator + ofileName;
                     SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
                     pm.worked(numberOfTasksWorked++);
                 }
+                return null;
             }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        };
+        pmSwingWorker.executeWithBlocking();
     }
 
     @Override
