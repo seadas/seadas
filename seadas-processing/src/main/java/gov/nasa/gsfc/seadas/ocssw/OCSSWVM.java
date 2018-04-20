@@ -4,10 +4,13 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.FileCompare;
 import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -114,6 +117,7 @@ public class OCSSWVM extends OCSSWRemote {
             ioe.printStackTrace();
         }
     }
+
     private void copyFileC2S(String sourceFilePathName) {
         String targetFilePathName = workingDir + File.separator + sourceFilePathName.substring(sourceFilePathName.lastIndexOf(File.separator) + 1);
         try {
@@ -247,6 +251,49 @@ public class OCSSWVM extends OCSSWRemote {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @Override
+    protected void downloadMLPOutputFiles(ProcessorModel processorModel) {
+
+        String mlpOdir = processorModel.getParamValue(MLP_PAR_FILE_ODIR_KEY_NAME);
+        final String ofileDir = mlpOdir == null ? ifileDir : mlpOdir;
+
+        if (!workingDir.equals(ofileDir)) {
+
+            VisatApp visatApp = VisatApp.getApp();
+
+            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                    "OCSSW Remote Server File Upload") {
+
+                @Override
+                protected Void doInBackground(ProgressMonitor pm) throws Exception {
+
+                    JsonObject mlpOfilesJsonObject = target.path("fileServices").path("getMLPOutputFiles").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+                    Set fileSetKeys = mlpOfilesJsonObject.keySet();
+                    Object[] fileArray = (Object[]) fileSetKeys.toArray();
+
+                    pm.beginTask("Downloading output files from the remote server to " + ofileDir, 10);
+                    pm.worked(1);
+
+                    String ofileName, ofileFullPathName;
+                    int numberOfTasksWorked = 1;
+
+                    String sourceFilePathName, targetFilePathName;
+                    for (Object fileNameKey : fileArray) {
+                        ofileName = mlpOfilesJsonObject.getString((String) fileNameKey);
+
+                        pm.setSubTaskName("Copying file '" + ofileName + " to " + ofileDir);
+                        sourceFilePathName = workingDir + File.separator + MLP_OUTPUT_DIR_NAME + File.separator + ofileName;
+                        targetFilePathName = ofileDir + File.separator + ofileName;
+                        SeadasFileUtils.cloFileCopy(sourceFilePathName, targetFilePathName);
+                        pm.worked(numberOfTasksWorked++);
+                    }
+                    return null;
+                }
+            };
+            pmSwingWorker.executeWithBlocking();
         }
     }
 }
