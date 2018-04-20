@@ -755,11 +755,11 @@ public class OCSSWRemote extends OCSSW {
             @Override
             protected Void doInBackground(ProgressMonitor pm) throws Exception {
 
-                JsonObject mlpOfilesJsonObject = target.path("fileServices").path("downloadMLPOutputFilesList").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+                JsonObject mlpOfilesJsonObject = target.path("fileServices").path("getMLPOutputFilesList").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
                 Set fileSetKeys = mlpOfilesJsonObject.keySet();
                 Object[] fileArray = (Object[]) fileSetKeys.toArray();
 
-                pm.beginTask("Downloading output files from the remote server to " + ofileDir, 10);
+                pm.beginTask("Downloading output files from the remote server to " + ofileDir, fileArray.length);
                 pm.worked(1);
 
                 String ofileName, ofileFullPathName;
@@ -769,7 +769,7 @@ public class OCSSWRemote extends OCSSW {
 
                     pm.setSubTaskName("Downloading file '" + ofileName + " to " + ofileDir);
 
-                    Response response = target.path("fileServices").path("getMLPOutputFiles").path(jobId).path(ofileName).request().get(Response.class);
+                    Response response = target.path("fileServices").path("downloadMLPOutputFile").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
                     ofileFullPathName = ofileDir + File.separator + ofileName;
                     SeadasFileUtils.writeToFile(responceStream, ofileFullPathName);
