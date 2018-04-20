@@ -203,7 +203,7 @@ public class OCSSWRemoteImpl {
             String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
             String parFileNewLocation = workingFileDir + File.separator + MLP_PAR_FILE_NAME;
             debug("par file new path: " + parFileNewLocation);
-            String parFileContent = convertClientParFilForRemoteServer(parFile, jobId);
+            String parFileContent = convertClientMLPParFilForRemoteServer(parFile, jobId);
             ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
             String[] commandArray = {MLP_PROGRAM_NAME, parFileNewLocation};
             execute(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileNewLocation).getParent(), jobId);
@@ -256,7 +256,7 @@ public class OCSSWRemoteImpl {
         return jsonObjectBuilder.build();
     }
 
-    private String convertClientParFilForRemoteServer(File parFile, String jobId) {
+    private String convertClientMLPParFilForRemoteServer(File parFile, String jobId) {
         String parString = readFile(parFile.getAbsolutePath(), StandardCharsets.UTF_8);
         StringTokenizer st1 = new StringTokenizer(parString, "\n");
         StringTokenizer st2;
@@ -270,6 +270,9 @@ public class OCSSWRemoteImpl {
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String mlpDir = workingFileDir;
         String mlpOutputDir = workingFileDir + File.separator + MLP_OUTPUT_DIR_NAME;
+
+        //delete files from the MLP_OUTPUT_DIR_NAME before executing new mlp command.
+        ServerSideFileUtilities.purgeDirectory(new File(mlpOutputDir));
 
         while (st1.hasMoreTokens()) {
             token = st1.nextToken();
