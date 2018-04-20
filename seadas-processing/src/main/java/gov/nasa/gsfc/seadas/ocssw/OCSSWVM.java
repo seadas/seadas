@@ -270,11 +270,11 @@ public class OCSSWVM extends OCSSWRemote {
                 @Override
                 protected Void doInBackground(ProgressMonitor pm) throws Exception {
 
-                    JsonObject mlpOfilesJsonObject = target.path("fileServices").path("getMLPOutputFiles").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+                    JsonObject mlpOfilesJsonObject = target.path("fileServices").path("getMLPOutputFilesList").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
                     Set fileSetKeys = mlpOfilesJsonObject.keySet();
                     Object[] fileArray = (Object[]) fileSetKeys.toArray();
 
-                    pm.beginTask("Downloading output files from the remote server to " + ofileDir, 10);
+                    pm.beginTask("Copying output files from the shared folder " + workingDir + " to " + ofileDir, fileArray.length);
                     pm.worked(1);
 
                     String ofileName, ofileFullPathName;
