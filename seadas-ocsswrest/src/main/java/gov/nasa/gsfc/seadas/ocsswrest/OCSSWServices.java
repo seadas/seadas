@@ -391,15 +391,6 @@ public class OCSSWServices {
     }
 
     @GET
-    @Path("getMLPOutputFiles/{jobId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject executeMLP(@PathParam("jobId") String jobId) {
-        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
-        return ocsswRemote.getMLPOutputFilesJsonList(jobId);
-    }
-
-
-    @GET
     @Path("processExitValue")
     @Produces(MediaType.TEXT_PLAIN)
     public String getProcessExitValue(@PathParam("jobId") String jobId) {

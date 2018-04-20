@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.ocsswrest;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl;
+import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerPropertyValues;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -186,6 +187,14 @@ public class OCSSWFileServices {
                 .build();
     }
 
+
+    @GET
+    @Path("getMLPOutputFilesList/{jobId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject getMLPOutputFilesList(@PathParam("jobId") String jobId) {
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+        return ocsswRemote.getMLPOutputFilesJsonList(jobId);
+    }
 
     @GET
     @Path("/downloadLogFile/{jobId}/{programName}")
