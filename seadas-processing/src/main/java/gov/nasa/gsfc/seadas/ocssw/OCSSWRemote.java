@@ -706,6 +706,8 @@ public class OCSSWRemote extends OCSSW {
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
         String parString = processorModel.getParamList().getParamString("\n");
         programName = processorModel.getProgramName();
+        ifileName = processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName());
+        ifileDir = new File(ifileName).getParent();
         File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
         target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
 
@@ -743,9 +745,18 @@ public class OCSSWRemote extends OCSSW {
         return seadasProcess;
     }
 
+    protected boolean isMLPOdirValid(String mlpOdir){
+        if (mlpOdir == null || mlpOdir.trim().isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     protected void downloadMLPOutputFiles(ProcessorModel processorModel) {
         String mlpOdir =  processorModel.getParamValue(MLP_PAR_FILE_ODIR_KEY_NAME);
-        final String ofileDir = mlpOdir == null ? ifileDir : mlpOdir;
+        final String ofileDir = isMLPOdirValid(mlpOdir) ?  mlpOdir : ifileDir;
+
 
         VisatApp visatApp = VisatApp.getApp();
 

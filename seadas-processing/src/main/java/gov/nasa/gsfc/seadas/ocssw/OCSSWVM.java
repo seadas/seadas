@@ -257,10 +257,11 @@ public class OCSSWVM extends OCSSWRemote {
     @Override
     protected void downloadMLPOutputFiles(ProcessorModel processorModel) {
 
+        String mlpWorkingDir =  workingDir + File.separator + MLP_OUTPUT_DIR_NAME;
         String mlpOdir = processorModel.getParamValue(MLP_PAR_FILE_ODIR_KEY_NAME);
-        final String ofileDir = mlpOdir == null ? ifileDir : mlpOdir;
+        final String ofileDir = isMLPOdirValid(mlpOdir) ?  mlpOdir : ifileDir;
 
-        if (!workingDir.equals(ofileDir)) {
+        if (!mlpWorkingDir.equals(ofileDir)) {
 
             VisatApp visatApp = VisatApp.getApp();
 
@@ -285,7 +286,7 @@ public class OCSSWVM extends OCSSWRemote {
                         ofileName = mlpOfilesJsonObject.getString((String) fileNameKey);
 
                         pm.setSubTaskName("Copying file '" + ofileName + " to " + ofileDir);
-                        sourceFilePathName = workingDir + File.separator + MLP_OUTPUT_DIR_NAME + File.separator + ofileName;
+                        sourceFilePathName = mlpWorkingDir + File.separator + ofileName;
                         targetFilePathName = ofileDir + File.separator + ofileName;
                         SeadasFileUtils.cloFileCopy(sourceFilePathName, targetFilePathName);
                         pm.worked(numberOfTasksWorked++);
@@ -296,4 +297,6 @@ public class OCSSWVM extends OCSSWRemote {
             pmSwingWorker.executeWithBlocking();
         }
     }
+
+
 }
