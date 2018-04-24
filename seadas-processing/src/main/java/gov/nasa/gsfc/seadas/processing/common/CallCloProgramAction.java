@@ -224,7 +224,11 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
                 if (exitCode == 0) {
                     pm.done();
-                    SeadasFileUtils.writeToDisk(processorModel.getIFileDir() + System.getProperty("file.separator") + "OCSSW_LOG_" + programName + ".txt",
+                    String oDir = ocssw.getOfileDir();
+                    if ( new File(oDir).canWrite()) {
+                       oDir = System.getProperty("user.dir");
+                    }
+                    SeadasFileUtils.writeToDisk(oDir + File.separator + "OCSSW_LOG_" + programName + ".txt",
                             "Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + processorModel.getExecutionLogMessage());
                 } else
                 {
