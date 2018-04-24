@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.visat.VisatApp;
 import org.glassfish.jersey.client.ClientConfig;
@@ -70,7 +71,8 @@ public class OCSSWInfo {
     private int processInputStreamPort;
     private int processErrorStreamPort;
 
-    private boolean ocsswExist;
+    private static boolean ocsswServerUp;
+    private static boolean ocsswExist;
     private String ocsswRoot;
     private String ocsswDataDirPath;
     private String ocsswScriptsDirPath;
@@ -88,6 +90,14 @@ public class OCSSWInfo {
 
     public static void setSessionId(String sessionId) {
         OCSSWInfo.sessionId = sessionId;
+    }
+
+    public boolean isOcsswServerUp() {
+        return ocsswServerUp;
+    }
+
+    public void setOcsswServerUp(boolean ocsswServerUp) {
+        OCSSWInfo.ocsswServerUp = ocsswServerUp;
     }
 
     public String getOcsswLocation() {
@@ -110,6 +120,12 @@ public class OCSSWInfo {
             ocsswInfo.detectOcssw();
         }
 
+        return ocsswInfo;
+    }
+
+    public static OCSSWInfo updateOCSSWInfo() {
+        ocsswInfo = new OCSSWInfo();
+        ocsswInfo.detectOcssw();
         return ocsswInfo;
     }
 
@@ -187,6 +203,7 @@ public class OCSSWInfo {
     }
 
     public void initializeLocalOCSSW() {
+        ocsswServerUp = true;
         String ocsswRootPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));
         if (ocsswRootPath == null) {
             ocsswRootPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + File.separator + "ocssw");
@@ -207,8 +224,7 @@ public class OCSSWInfo {
     }
 
     private boolean initializeRemoteOCSSW(String serverAPI) {
-
-
+        ocsswServerUp = false;
         final String BASE_URI_PORT_NUMBER_PROPERTY = "ocssw.port";
         final String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
         String baseUriPortNumber = RuntimeContext.getConfig().getContextProperty(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
@@ -228,9 +244,10 @@ public class OCSSWInfo {
             jsonObject = target.path("ocssw").path("ocsswInfo").path(seadasVersion).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         } catch (javax.ws.rs.ProcessingException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(new JOptionPane(), "Remote server is down. OCSSW is not accessible. Please restart SeaDAS when  OCSSW is accessible.",
+            JOptionPane.showMessageDialog(new JOptionPane(), "Remote server is down. OCSSW is not accessible. Please start OCSSW remote server.",
                     "OCSSW Initialization Warning",
                     JOptionPane.WARNING_MESSAGE);
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             FileWriter fileWriter = null;
@@ -245,24 +262,25 @@ public class OCSSWInfo {
                         "OCSSW Initialization Warning",
                         JOptionPane.WARNING_MESSAGE);
             }
+            return false;
         }
-        ocsswExist = jsonObject.getBoolean("ocsswExists");
-//        if (ocsswExist) {
-//            //target.path("ocssw").path("manageClientWorkingDirectory").path(clientId)
-//        }
-        ocsswRoot = jsonObject.getString("ocsswRoot");
-        ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
-        ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
-        ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
-        ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
-        sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY);
-        //if ( sharedDirPath == null ) {
-        clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
-        String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "true");
-        Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
-        // }
-        processInputStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_INPUT_STREAM_PORT)).intValue();
-        processErrorStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_ERROR_STREAM_PORT)).intValue();
+        if ( jsonObject != null ) {
+            ocsswServerUp = true;
+            ocsswExist = jsonObject.getBoolean("ocsswExists");
+            ocsswRoot = jsonObject.getString("ocsswRoot");
+            ocsswDataDirPath = jsonObject.getString("ocsswDataDirPath");
+            ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
+            ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
+            ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
+            sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY);
+            //if ( sharedDirPath == null ) {
+            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
+            String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "true");
+            Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
+            // }
+            processInputStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_INPUT_STREAM_PORT)).intValue();
+            processErrorStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_ERROR_STREAM_PORT)).intValue();
+        }
         return ocsswExist;
     }
 
@@ -281,10 +299,6 @@ public class OCSSWInfo {
 
     private String getServerAPI() {
         return null;
-    }
-
-    public boolean isOcsswExist() {
-        return ocsswExist;
     }
 
     public String getOcsswRoot() {

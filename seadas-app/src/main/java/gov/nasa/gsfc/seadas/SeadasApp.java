@@ -27,6 +27,7 @@ import org.esa.beam.framework.datamodel.PlacemarkDescriptorRegistry;
 import org.esa.beam.framework.ui.application.ApplicationDescriptor;
 import org.esa.beam.framework.ui.application.ToolViewDescriptor;
 import org.esa.beam.framework.ui.command.Command;
+import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.framework.ui.command.ToolCommand;
 import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 import org.esa.beam.visat.ProductsToolView;
@@ -45,6 +46,8 @@ import org.esa.beam.visat.toolviews.stat.*;
 import org.esa.beam.visat.toolviews.worldmap.WorldMapToolView;
 
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -565,7 +568,29 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("vector", "Vector ", 'c'));
         menuBar.add(createJMenu("processing", "Raster ", 'r'));
         if (!System.getProperty("os.name").startsWith("Windows")) {
-            menuBar.add(createJMenu("ocprocessing", "OCSSW ", 'O'));
+            JMenu ocsswMenu = createJMenu("ocprocessing", "OCSSW ", 'O');
+            ocsswMenu.addMenuListener(new MenuListener() {
+                @Override
+                public void menuSelected(MenuEvent e) {
+                    if (!OCSSWInfo.getInstance().isOCSSWExist()) {
+                        OCSSWInfo.updateOCSSWInfo();
+                        if( OCSSWInfo.getInstance().isOCSSWExist()) {
+                            enableProcessors();
+                        }
+                   }
+                }
+
+                @Override
+                public void menuDeselected(MenuEvent e) {
+
+                }
+
+                @Override
+                public void menuCanceled(MenuEvent e) {
+
+                }
+            });
+            menuBar.add(ocsswMenu);
         }
         menuBar.add(createJMenu("tools", "Tools ", 'T'));
         menuBar.add(createJMenu("analysis", "Analysis ", 'A'));
@@ -573,6 +598,20 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("help", "Help ", 'H'));
 
         return menuBar;
+    }
+
+    private void enableProcessors() {
+
+        CommandManager commandManager = getCommandManager();
+        String namesToExclude = ProcessorTypeInfo.getExcludedProcessorNames();
+        for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
+            if (!namesToExclude.contains(processorName)) {
+                if (commandManager.getCommand(processorName) != null) {
+                    commandManager.getCommand(processorName).setEnabled(true);
+                }
+            }
+        }
+        commandManager.getCommand("install_ocssw.py").setText("Update Data Processors");
     }
 
 

@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.processing.common;
+package gov.nasa.gsfc.seadas;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +108,7 @@ public class ProcessorTypeInfo {
 
     }};
 
-    protected static String getExcludedProcessorNames() {
+    public static String getExcludedProcessorNames() {
        return     "multilevel_processor" +
                   "smitoppm" +
                   "l1aextract_modis" +
@@ -120,7 +120,7 @@ public class ProcessorTypeInfo {
     }
 
 
-    protected static Set<String> getProcessorNames() {
+    public static Set<String> getProcessorNames() {
         return processorHashMap.keySet();
     }
 

@@ -106,7 +106,6 @@ public class OCSSWServices {
 
         Response response = Response.status(200).type("text/plain")
                 .entity(responseMessage).build();
-
         return response;
     }
 

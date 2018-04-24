@@ -6,6 +6,7 @@ import com.bc.ceres.core.runtime.ConfigurationElement;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
+import gov.nasa.gsfc.seadas.ProcessorTypeInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.framework.dataio.ProductIO;
@@ -62,10 +63,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
         super.configure(config);
-//        if (programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
-//            OCSSWInfo.detectOcssw();
-//        }
-        super.setEnabled(programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME) || ocsswInfo.isOCSSWExist());
+        super.setEnabled(programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME) && ocsswInfo.isOcsswServerUp() || ocsswInfo.isOCSSWExist());
     }
 
     public String getXmlFileName() {
