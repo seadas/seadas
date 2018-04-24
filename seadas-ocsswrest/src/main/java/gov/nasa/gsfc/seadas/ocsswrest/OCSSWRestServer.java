@@ -86,9 +86,9 @@ public class OCSSWRestServer extends ResourceConfig {
         System.out.println(String.format("ORS is starting at ", BASE_URI));
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey new app started with WADL available at "
-                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
-        System.in.read();
-        server.shutdown();
+                + "%sapplication.wadl\nPress 'Ctrl' + 'C'  to stop it...", BASE_URI));
+       // System.in.read();
+       //server.shutdown();
     }
 }
 
