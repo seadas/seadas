@@ -795,6 +795,7 @@ public class OCSSWRemote extends OCSSW {
     @Override
     public Process execute(ParamList paramListl) {
         JsonObject commandArrayJsonObject = getJsonFromParamList(paramListl);
+        setCommandArray((String[])commandArrayJsonObject.asJsonArray().toArray());
         Response response = target.path("ocssw").path("executeOcsswProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             Response output = target.path("fileServices").path("downloadFile").path(jobId).request().get(Response.class);
@@ -916,6 +917,7 @@ public class OCSSWRemote extends OCSSW {
     }
 
     protected String convertParStringForRemoteServer(String parString) {
+        setCommandArray(new String[]{parString});
         StringTokenizer st1 = new StringTokenizer(parString, "\n");
         StringTokenizer st2;
         StringBuilder stringBuilder = new StringBuilder();

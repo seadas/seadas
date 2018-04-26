@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import org.esa.beam.framework.ui.command.CommandManager;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.visat.VisatApp;
 import org.glassfish.jersey.client.ClientConfig;
@@ -20,11 +19,12 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -43,6 +43,7 @@ public class OCSSWInfo {
     public static final String OS_64BIT_ARCHITECTURE = "_64";
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
+    public static final String SEADAS_LOG_DIR_PROPERTY = "log.dir";
     public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
     public static final String OCSSW_LOCATION_LOCAL = "local";
     public static final String OCSSW_LOCATION_VIRTUAL_MACHINE = "virtualMachine";
@@ -81,6 +82,7 @@ public class OCSSWInfo {
     private String ocsswBinDirPath;
 
     private String ocsswLocation;
+    private String logDirPath;
     private String resourceBaseUri;
     private String seadasVersion;
 
@@ -112,6 +114,18 @@ public class OCSSWInfo {
     String sharedDirPath;
 
     private OCSSWInfo() {
+        logDirPath = RuntimeContext.getConfig().getContextProperty(SEADAS_LOG_DIR_PROPERTY);
+        if (logDirPath == null) {
+            System.getProperty("user.dir");
+        }
+        File logDir = new File(getLogDirPath());
+        if (!logDir.exists()) {
+            try {
+                Files.createDirectory(Paths.get(logDirPath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static OCSSWInfo getInstance() {
@@ -225,6 +239,7 @@ public class OCSSWInfo {
 
     private boolean initializeRemoteOCSSW(String serverAPI) {
         ocsswServerUp = false;
+        ocsswExist = false;
         final String BASE_URI_PORT_NUMBER_PROPERTY = "ocssw.port";
         final String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
         String baseUriPortNumber = RuntimeContext.getConfig().getContextProperty(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
@@ -242,29 +257,11 @@ public class OCSSWInfo {
         }
         try {
             jsonObject = target.path("ocssw").path("ocsswInfo").path(seadasVersion).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-        } catch (javax.ws.rs.ProcessingException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(new JOptionPane(), "Remote server is down. OCSSW is not accessible. Please start OCSSW remote server.",
-                    "OCSSW Initialization Warning",
-                    JOptionPane.WARNING_MESSAGE);
-            return false;
         } catch (Exception e) {
-            e.printStackTrace();
-            FileWriter fileWriter = null;
-            try {
-                fileWriter = new FileWriter(new File(this.getClass().getName() + "_exception.log"));
-                fileWriter.write(e.getMessage());
-                if (fileWriter != null) {
-                    fileWriter.close();
-                }
-            } catch (Exception exc) {
-                JOptionPane.showMessageDialog(new JOptionPane(), "OCSSW is not accessible.",
-                        "OCSSW Initialization Warning",
-                        JOptionPane.WARNING_MESSAGE);
-            }
+            writeException(e);
             return false;
         }
-        if ( jsonObject != null ) {
+        if (jsonObject != null) {
             ocsswServerUp = true;
             ocsswExist = jsonObject.getBoolean("ocsswExists");
             ocsswRoot = jsonObject.getString("ocsswRoot");
@@ -282,6 +279,22 @@ public class OCSSWInfo {
             processErrorStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_ERROR_STREAM_PORT)).intValue();
         }
         return ocsswExist;
+    }
+
+    private void writeException(Exception e) {
+        FileWriter fileWriter = null;
+        try {
+
+            fileWriter = new FileWriter(new File(logDirPath + File.separator + this.getClass().getName() + "_" + e.getClass().getName() + ".log"));
+            fileWriter.write(e.getMessage());
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        } catch (Exception exc) {
+            JOptionPane.showMessageDialog(new JOptionPane(), "Log file directory is not accessible to write.",
+                    "OCSSW Initialization Warning",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     public static String getOSName() {
@@ -327,5 +340,13 @@ public class OCSSWInfo {
 
     public String getOcsswBinDirPath() {
         return ocsswBinDirPath;
+    }
+
+    public String getLogDirPath() {
+        return logDirPath;
+    }
+
+    public void setLogDirPath(String logDirPath) {
+        this.logDirPath = logDirPath;
     }
 }

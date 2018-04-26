@@ -116,7 +116,6 @@ public class SeadasApp extends VisatApp {
     }
 
 
-
 //    protected CommandBar createSeadasFileToolBar() {
 //        final CommandBar toolBar = createToolBar(SEADAS_FILE_TOOL_BAR_ID, "File");
 //        addCommandsToToolBar(toolBar, new String[]{
@@ -269,9 +268,6 @@ public class SeadasApp extends VisatApp {
     }
 
 
-
-
-
     protected CommandBar createSeadasFieldMeasurmentsToolBar() {
         //      final CommandBar toolBar = super.createInteractionsToolBar();
 
@@ -375,7 +371,6 @@ public class SeadasApp extends VisatApp {
     }
 
 
-
 //    protected void addCommandsToToolBar(final CommandBar toolBar, final int width, final String[] commandIDs) {
 //        for (final String commandID : commandIDs) {
 //            if (commandID == null) {
@@ -471,9 +466,6 @@ public class SeadasApp extends VisatApp {
     }
 
 
-
-
-
     protected CommandBar createSeadasAnalysisToolBar() {
         final CommandBar toolBar = createToolBar(SEADAS_ANALYSIS_TOOL_BAR_ID, "Analysis");
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
@@ -488,7 +480,6 @@ public class SeadasApp extends VisatApp {
 //        toolBar.add(Box.createHorizontalStrut(PADDING));
         return toolBar;
     }
-
 
 
 //
@@ -531,7 +522,7 @@ public class SeadasApp extends VisatApp {
                 SEADAS_STANDARD_LAYERS_TOOL_BAR_ID,
                 SEADAS_FIELD_MEASUREMENTS_TOOL_BAR_ID,
                 SEADAS_BLANK_TOOL_BAR_ID};
-      //  SEADAS_TEXT_ANNOATATION_TOOL_BAR_ID,
+        //  SEADAS_TEXT_ANNOATATION_TOOL_BAR_ID,
 
         List<String> allDockableBarNames = getMainFrame().getDockableBarManager().getAllDockableBarNames();
 
@@ -560,7 +551,7 @@ public class SeadasApp extends VisatApp {
         //  menuBar.setOpaque(false);
 
 
-        menuBar.add(createJMenu("seadas", "SeaDAS ",'s'));
+        menuBar.add(createJMenu("seadas", "SeaDAS ", 's'));
         menuBar.add(createJMenu("file", "File ", 'F'));
         menuBar.add(createJMenu("edit", "Edit ", 'E'));
         menuBar.add(createJMenu("view", "View ", 'V'));
@@ -572,12 +563,13 @@ public class SeadasApp extends VisatApp {
             ocsswMenu.addMenuListener(new MenuListener() {
                 @Override
                 public void menuSelected(MenuEvent e) {
-                    if (!OCSSWInfo.getInstance().isOCSSWExist()) {
-                        OCSSWInfo.updateOCSSWInfo();
-                        if( OCSSWInfo.getInstance().isOCSSWExist()) {
-                            enableProcessors();
-                        }
-                   }
+                    OCSSWInfo.updateOCSSWInfo();
+                    if (!OCSSWInfo.getInstance().isOcsswServerUp()) {
+                        JOptionPane.showMessageDialog(new JOptionPane(), "Remote server is down. OCSSW is not accessible. Please start OCSSW remote server.",
+                                "OCSSW Initialization Warning",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+                    enableProcessors(OCSSWInfo.getInstance().isOCSSWExist());
                 }
 
                 @Override
@@ -600,14 +592,14 @@ public class SeadasApp extends VisatApp {
         return menuBar;
     }
 
-    private void enableProcessors() {
+    private void enableProcessors(boolean enableCommand) {
 
         CommandManager commandManager = getCommandManager();
         String namesToExclude = ProcessorTypeInfo.getExcludedProcessorNames();
         for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
             if (!namesToExclude.contains(processorName)) {
                 if (commandManager.getCommand(processorName) != null) {
-                    commandManager.getCommand(processorName).setEnabled(true);
+                    commandManager.getCommand(processorName).setEnabled(enableCommand);
                 }
             }
         }
@@ -677,8 +669,6 @@ public class SeadasApp extends VisatApp {
             getMainFrame().getDockableBarManager().setRearrangable(true);
 
 
-
-
             CommandBar seadasBandToolsToolBar = createSeadasBandToolsToolBar();
             seadasBandToolsToolBar.getContext().setInitSide(DockableBarContext.DOCK_SIDE_NORTH);
             seadasBandToolsToolBar.getContext().setInitIndex(2);
@@ -706,8 +696,6 @@ public class SeadasApp extends VisatApp {
             seadasDeluxeToolsToolBar.getContext().setInitIndex(2);
             getMainFrame().getDockableBarManager().addDockableBar(seadasDeluxeToolsToolBar);
             pm.worked(1);
-
-
 
 
             CommandBar seadasVectorLayersToolBar = createSeadasVectorLayersToolBar();
@@ -829,10 +817,6 @@ public class SeadasApp extends VisatApp {
             pm.worked(1);
 
 
-
-
-
-
             for (CommandBar viewToolBar : viewToolBars) {
                 if (VIEWS_TOOL_BAR_ID.equals(viewToolBar.getName())) {
                     viewToolBar.setTitle("BEAM: Views");
@@ -885,7 +869,6 @@ public class SeadasApp extends VisatApp {
             pm.done();
         }
     }
-
 
 
     @Override
