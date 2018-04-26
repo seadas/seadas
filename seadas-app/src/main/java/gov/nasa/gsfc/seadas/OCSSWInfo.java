@@ -116,7 +116,7 @@ public class OCSSWInfo {
     private OCSSWInfo() {
         logDirPath = RuntimeContext.getConfig().getContextProperty(SEADAS_LOG_DIR_PROPERTY);
         if (logDirPath == null) {
-            System.getProperty("user.dir");
+            System.getProperty("user.home");
         }
         File logDir = new File(getLogDirPath());
         if (!logDir.exists()) {
