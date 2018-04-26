@@ -558,38 +558,40 @@ public class SeadasApp extends VisatApp {
         menuBar.add(createJMenu("layers", "Layer ", 'L'));
         menuBar.add(createJMenu("vector", "Vector ", 'c'));
         menuBar.add(createJMenu("processing", "Raster ", 'r'));
-        if (!System.getProperty("os.name").startsWith("Windows")) {
-            JMenu ocsswMenu = createJMenu("ocprocessing", "OCSSW ", 'O');
-            ocsswMenu.addMenuListener(new MenuListener() {
-                @Override
-                public void menuSelected(MenuEvent e) {
-                    OCSSWInfo.updateOCSSWInfo();
-                    if (!OCSSWInfo.getInstance().isOcsswServerUp()) {
-                        JOptionPane.showMessageDialog(new JOptionPane(), "Remote server is down. OCSSW is not accessible. Please start OCSSW remote server.",
-                                "OCSSW Initialization Warning",
-                                JOptionPane.WARNING_MESSAGE);
-                    }
-                    enableProcessors(OCSSWInfo.getInstance().isOCSSWExist());
-                }
-
-                @Override
-                public void menuDeselected(MenuEvent e) {
-
-                }
-
-                @Override
-                public void menuCanceled(MenuEvent e) {
-
-                }
-            });
-            menuBar.add(ocsswMenu);
-        }
+        menuBar.add(getOCSSWMenu());
         menuBar.add(createJMenu("tools", "Tools ", 'T'));
         menuBar.add(createJMenu("analysis", "Analysis ", 'A'));
         menuBar.add(createJMenu("window", "Window ", 'W'));
         menuBar.add(createJMenu("help", "Help ", 'H'));
 
         return menuBar;
+    }
+
+    private JMenu getOCSSWMenu(){
+        JMenu ocsswMenu = createJMenu("ocprocessing", "OCSSW ", 'O');
+        ocsswMenu.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                OCSSWInfo.updateOCSSWInfo();
+                if (!OCSSWInfo.getInstance().isOcsswServerUp()) {
+                    JOptionPane.showMessageDialog(new JOptionPane(), "Remote server is down. OCSSW is not accessible. Please start OCSSW remote server.",
+                            "OCSSW Initialization Warning",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+                enableProcessors(OCSSWInfo.getInstance().isOCSSWExist());
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+
+            }
+        });
+        return ocsswMenu;
     }
 
     private void enableProcessors(boolean enableCommand) {
