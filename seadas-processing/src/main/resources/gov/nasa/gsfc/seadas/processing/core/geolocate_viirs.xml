@@ -155,21 +155,13 @@
         </option>
         <option type="ifile">
             <name>polar_wander_file</name>
-            <value>$OCVARROOT/viirsn/polar_wander.h5</value>
+            <value></value>
             <type>string</type>
-            <default>$OCVARROOT/viirsn/polar_wander.h5</default>
+            <default></default>
             <description> polar wander filename</description>
             <source>default</source>
             <usedAs>option</usedAs>
             <order>10</order>
-        </option>
-        <option type="string">
-            <name>leapsec_path</name>
-            <value>$OCVARROOT/viirsn/</value>
-            <default>$OCVARROOT/viirsn/</default>
-            <description>path to the leap second file</description>
-            <usedAs>option</usedAs>
-            <order>11</order>
         </option>
         <option type="string">
             <name>terrain_path</name>
@@ -177,7 +169,7 @@
             <default></default>
             <description>path to the terrain height files directory </description>
             <usedAs>option</usedAs>
-            <order>12</order>
+            <order>11</order>
         </option>
         <option type="string">
             <name>land_water_mask_path</name>
@@ -185,7 +177,7 @@
             <default></default>
             <description> path to the land/water mask file directory</description>
             <usedAs>option</usedAs>
-            <order>13</order>
+            <order>12</order>
         </option>
         <option type="boolean">
             <name>verbose</name>
@@ -193,7 +185,7 @@
             <default>true</default>
             <description>print status messages</description>
             <usedAs>flag</usedAs>
-            <order>14</order>
+            <order>13</order>
         </option>
         <option type="string">
             <name>pversion</name>
@@ -202,7 +194,7 @@
             <description>processing version string</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>15</order>
+            <order>14</order>
         </option>
     </options>
 </paramInfo>
