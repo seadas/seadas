@@ -219,6 +219,9 @@ public class OCSSWInfo {
     public void initializeLocalOCSSW() {
         ocsswServerUp = true;
         String ocsswRootPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));
+        if (ocsswRootPath.startsWith("$")) {
+            ocsswRootPath = System.getProperty(ocsswRootPath.substring(ocsswRootPath.indexOf("{") + 1, ocsswRootPath.indexOf("}"))) + ocsswRootPath.substring(ocsswRootPath.indexOf("}") + 1);
+        }
         if (ocsswRootPath == null) {
             ocsswRootPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + File.separator + "ocssw");
         }

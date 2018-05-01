@@ -54,6 +54,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import static gov.nasa.gsfc.seadas.OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME;
+
 /**
  * The <code>SeadasApp</code> class represents the SeaDAS UI application.
  *
@@ -567,7 +569,7 @@ public class SeadasApp extends VisatApp {
         return menuBar;
     }
 
-    private JMenu getOCSSWMenu(){
+    private JMenu getOCSSWMenu() {
         JMenu ocsswMenu = createJMenu("ocprocessing", "OCSSW ", 'O');
         ocsswMenu.addMenuListener(new MenuListener() {
             @Override
@@ -578,7 +580,7 @@ public class SeadasApp extends VisatApp {
                             "OCSSW Initialization Warning",
                             JOptionPane.WARNING_MESSAGE);
                 }
-                enableProcessors(OCSSWInfo.getInstance().isOCSSWExist());
+                enableProcessors(OCSSWInfo.getInstance().isOcsswServerUp(), OCSSWInfo.getInstance().isOCSSWExist());
             }
 
             @Override
@@ -594,18 +596,25 @@ public class SeadasApp extends VisatApp {
         return ocsswMenu;
     }
 
-    private void enableProcessors(boolean enableCommand) {
+    private void enableProcessors(boolean isOcsswServerUp, boolean isOcsswExist) {
 
         CommandManager commandManager = getCommandManager();
         String namesToExclude = ProcessorTypeInfo.getExcludedProcessorNames();
         for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
             if (!namesToExclude.contains(processorName)) {
                 if (commandManager.getCommand(processorName) != null) {
-                    commandManager.getCommand(processorName).setEnabled(enableCommand);
+                    commandManager.getCommand(processorName).setEnabled(isOcsswExist);
                 }
             }
         }
-        commandManager.getCommand("install_ocssw.py").setText("Update Data Processors");
+        if (isOcsswExist) {
+            commandManager.getCommand(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME).setText("Update Data Processors");
+        } else {
+            if( isOcsswServerUp ) {
+                commandManager.getCommand(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME).setEnabled(true);
+                commandManager.getCommand(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME).setText("Install Data Processors");
+            }
+        }
     }
 
 
