@@ -21,7 +21,7 @@ import java.util.logging.*;
  */
 public class SeadasLogger {
 
-    private static boolean log = false;
+    private static boolean log = true;
 
     private static Logger logger; // Logger.getLogger(ProcessorModel.class.getName());
 
