@@ -30,7 +30,7 @@ Highlights of what's new to SeaDAS 7.5
     - Reproject Tool: masking capabilities added
     - CoastLandWater Tool: now available in GPT
     - GPT Cookbook: contains command line usage examples
-    - OCSSW Cookbook: contains command line usage examples (new, so very few entries)
+    - OCSSW Cookbook: contains command line usage examples (new so only contains 1 entry)
     - Help: extensive rewrite of the Statistics and Reproject help pages
     
 
@@ -138,6 +138,11 @@ SCIENCE PROCESSING CODE
 
     BUG FIXES
         -
+        
+    KNOWN ISSUES
+        * If only VIIRS is installed then you need to either install MODIS Aqua or Terra (downloads a Gig of data)
+          or from command line do "update_luts.py aqua" or "update_luts.py terra".  
+
 
 
 
