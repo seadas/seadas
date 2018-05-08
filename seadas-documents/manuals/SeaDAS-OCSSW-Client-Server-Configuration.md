@@ -5,13 +5,13 @@
 ##Introduction
 
 The SeaDAS processing components (aka OCSSW) can only be installed on Linux or MacOSX (Intel, not PowerPC) systems. For this reason,
-it has been difficult for Windows users to use OCSSW in an efficient way. SeaDAS 7.5 introduces OCSSW server, which enables 
+it has been difficult for Windows users to use OCSSW in an efficient way. SeaDAS 7.5 introduces the OCSSW server, which enables 
 the pyhsical decoupling of the SeaDAS GUI application and the OCSSW package.
 
 
 ## OCSSW Server Configuration
 
-OCSSW server provides access to OCSSW programs through web services. 
+The OCSSW server provides access to OCSSW programs through web services. 
  The web services are packaged as an independent jar file and it can be deployed
  on a machine capable of running OCSSW programs. With this new capacity,
   we have three additional settings that enable SeaDAS access to OCSSW programs. 
