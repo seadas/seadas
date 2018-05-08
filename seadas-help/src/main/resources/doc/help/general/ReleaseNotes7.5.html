@@ -23,24 +23,23 @@ SeaDAS 7.5 Release Notes
 Release Date: Month Day, Year
 
 The SeaDAS development team is pleased to announce the release of SeaDAS 7.5
-
-Highlights of what's new to SeaDAS 7.5 
-    - OCSSW processing support for Windows
-    - Statistics Tool: significant revision
-    - Reproject Tool: masking capabilities added
-    - CoastLandWater Tool: now available in GPT
-    - GPT Cookbook: contains command line usage examples
-    - OCSSW Cookbook: contains command line usage examples (new so only contains 1 entry)
-    - Help: extensive rewrite of the Statistics and Reproject help pages
     
 
 
-PRIMARY PACKAGE
+PRIMARY PACKAGE 
+
+    Highlights of what's new to SeaDAS 7.5 (GUI/GPT Aspect):
+        - OCSSW GUI processing support for Windows
+        - Statistics Tool: significant revision
+        - Reproject Tool: masking capabilities added
+        - CoastLandWater Tool: now available in GPT
+        - GPT Cookbook: contains command line usage examples
+        - Help: extensive rewrite of the Statistics and Reproject help pages
 
     FEATURE ADDITIONS/MODIFICATIONS
 
         - OCSSW Processing
-            Windows Support
+            Windows Support for the GUI.
 
 
         - Statistics Tool
@@ -130,18 +129,46 @@ PRIMARY PACKAGE
 
 
 
-SCIENCE PROCESSING CODE
+OBPG SCIENCE PROCESSING CODE
+    Since the v7.4 release there have been significant changes to the science processing code (OCSSW).  Most of 
+    these changes were centered around code restructuring and a reorganization of the static data directory.  
+    There were also numerous minor bug fixes.  In all, over 1700 commits were made to the development code repository!
 
-    FEATURES ADDITIONS/MODIFICATIONS
+    Several key programs also had significant feature additions, including (but not limited to):
 
-        -
+    l2bin
+    ------
+        - changed latbin to a double to increase precision
+        - changed the "100m" resolution to a more appropriate "HQ"
+        - Add composite_scheme parameter to allow compositing by more than simple averages
+        - resolved a nagging memory issue related to an HDF5 compression leak
+ 
+    l3mapgen
+    --------
+        - added suite parameter
+        - Allow input of product to use for quality factor processing
+        - Additional GeoTIFF-capable projections
+        - Area weighting for Proj4 projections
+        - Apply fudge "factor" only when standard data point lookup fails
+        - Implemented LZW GeoTIFF compression
+        - added trimNSEW option to fill output when mapping non-rectangular projections
+        - reports an error for no pixels filled
+ 
+    l2gen
+    -----
+        - added support for Sentinel-2(A & B) MSI instrument
+        - added support for Landsat-8/OLI Collection 1 formatted data
+        - improved support for generic L1B input files
+        - removed terrain correction for OLCI files as geolocation data are already terrain corrected
+        - implemented a "smile" correction for OLCI
 
-    BUG FIXES
-        -
+
         
-    KNOWN ISSUES
-        * If only VIIRS is installed then you need to either install MODIS Aqua or Terra (downloads a Gig of data)
-          or from command line do "update_luts.py aqua" or "update_luts.py terra".  
+KNOWN ISSUES
+    - If only VIIRS is installed then you need to either install MODIS Aqua or Terra (downloads a Gig of data)
+      or from command line do "update_luts.py aqua" or "update_luts.py terra".  
+      
+    - Multilevel_processor does not support: GOCI, OLI, and MERIS
 
 
 
