@@ -137,8 +137,14 @@ To stop the OCSSW server, press 'Ctrl' + 'C'.
 
   1. Install WSL and a supported Linux distribution (Ubuntu was used during testing) following the instructions available from the Microsoft website: https://docs.microsoft.com/en-us/windows/wsl/install-win10
   1. Continue with steps #5 - #7 under "Creating and Preparing the Virtual Machine" above
+  1. Deploy the OCSSW Web Services Package as above
   
 ## 3. Installing an OCSSW Server on a Remote Machine
+
+  1. Obtain a suitable networked Linux server :)
+  1. Continue with steps #5 - #7 under "Creating and Preparing the Virtual Machine" above
+  1. Deploy the OCSSW Web Services Package as above
+  1. set clientServerSharedDir=false and keepIntermediateFilesOnServer=true
 
 ## SeaDAS Client Configuration
 
