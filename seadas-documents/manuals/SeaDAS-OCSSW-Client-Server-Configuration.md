@@ -1,6 +1,6 @@
 
 
-#SeaDAS Client Server for OBPG Processing Components
+#SeaDAS-OCSSW Client Server Configuration
 
 ##Introduction
 
