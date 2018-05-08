@@ -13,12 +13,18 @@ the pyhsical decoupling of the SeaDAS GUI application and the OCSSW package.
 
 OCSSW server provides access to OCSSW programs through web services. 
  The web services are packaged as an independent jar file and it can be deployed
- on a machine capable of running OCSSW programs. With the introduction of OCSSW web services,
-  we have three additional settings that enable SeaDAS access to OCSSW programs.
+ on a machine capable of running OCSSW programs. With this new capacity,
+  we have three additional settings that enable SeaDAS access to OCSSW programs. 
+  
+  One way is to install a Linux virtual machine on a VirtualBox on the same Windows machine that has SeaDAS installed. Another way is to use
+  the Windows Subsystem for Linux. Finally, the web services package can be deployed on any Linux machine that provides network access to other
+  computers. In this manual, we explain how to configure the OCSSW server and the SeaDAS client in each setting.
+  
  
-### 1. Installing an OCSSW Server on a Guest Virtual Machine
+## 1. Installing an OCSSW Server on a Guest Virtual Machine
 
 
+### Creating and Preparing a Virtual Machine
 1. Install Oracle Virtualbox from https://www.virtualbox.org/ 
 
 2. Create a Linux Ubuntu guest virtual machine. For SeaDAS 7.5, we used Ubuntu 16.04 LTS.
@@ -59,12 +65,12 @@ OCSSW server provides access to OCSSW programs through web services.
    $ sudo apt install git
 
 
-### 2. Configuring the Virtual Machine
+###  Configuring the Virtual Machine
 
-Since SeaDAS resides on the host machine and the OCSSW resides on a guest machine, they  need to
+Since the SeaDAS client and the OCSSW server reside on two seperate machines, they  need to
 share files and folders over a network, in other words, there is a necessity to access remote files.
-For virtual machines, the network between host and guest is virtual since they are on the same real machine. By sharing folders, the host
-and the guest can access each other's files.
+For virtual machines, the network between host and guest is virtual since they are on the same real machine. By sharing folders, we eliminate 
+the need for file transfer over the network.
 
 ###### Before sharing folders, you must install Guest Additions. 
 
@@ -92,7 +98,7 @@ sudo mount -t vboxsf -o uid=$UID,gid=$(id -g) ocssw_shared ~/seadasClientServerS
 
 If you experience any problem with setting up a shared folder, please visit https://help.ubuntu.com/community/VirtualBox/SharedFolders.
 
-### 3. Deploying the OCSSW Web Services Package
+###  Deploying the OCSSW Web Services Package
 
 The OCSSW Web Services Package consisted of a jar file (seadas-ocsswserver-jar-with-dependencies.jar) and 
 a configuration file (ocsswserver.config). They can be downloaded from https://seadas.gsfc.nasa.gov/downloads/ into a designated folder on
@@ -100,7 +106,7 @@ the virtual machine.
 
 While the jar file contains a self-contained webserver and multiple 
 web services for accessing various OCSSW programs, the configuration file provides crucial information for 
-establishing successful communication between the server and the SeaDAS that resides on the host.
+establishing successful communication between the OCSSW server and the SeaDAS client.
  
 Here is the content of the config file:
 
@@ -114,10 +120,11 @@ Here is the content of the config file:
     processErrorStreamPortNumber=6403
 
 The config file properties related to port numbers and the folders are essential and should be set correctly matching the values in the client
-configuration, which will be discussed in the "Client Configuration" section of this document.
+configuration.  Please see the "SeaDAS Client Configuration" section of this document for the corresponding 
+client configuration properties and their values.
 
 
-### 4.  Starting and Stopping the OCSSW Server
+###  Starting and Stopping the OCSSW Server
 
 To start the OCSSW server, execute the following command:
 
@@ -125,9 +132,14 @@ To start the OCSSW server, execute the following command:
 
 To stop the OCSSW server, press 'Ctrl' + 'C'.
 
+## 2. Installing an OCSSW Server on a Windows Subsystem Linux
+
+## 3. Installing an OCSSW Server on a Remote Machine
+
 ## SeaDAS Client Configuration
 
-On the client side, there are two tasks that are specific to SeaDAS communicating with the OCSSW server.
+On the client side, there are two tasks that are instrumental in establishing successful communication 
+ between the SeaDAS client and the OCSSW server.
 
 1. Creating a shared folder, which is already covered above. In our example, we created a directory C:\Users\${username}\seadasClientServerShared 
 to be shared with the OCSSW Server residing on the virtual machine.
@@ -136,7 +148,7 @@ to be shared with the OCSSW Server residing on the virtual machine.
 
        seadas.ocssw.location = virtualMachine
        seadas.ocssw.port=6400
-       seadas.ocssw.sharedDir=${user.dir}/seadasClientServerShared
+       seadas.ocssw.sharedDir=${user.dir}/seadasClientServerShared   # this name has to match the folder name actually shared with the virtual machine.
        seadas.client.id=${usreName}  #this is optional
        seadas.ocssw.keepFilesOnServer=false
        seadas.ocssw.processInputStreamPort=6402
