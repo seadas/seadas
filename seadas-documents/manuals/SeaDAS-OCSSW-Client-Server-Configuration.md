@@ -185,7 +185,7 @@ Edit the following lines in the seadas.config file:
 
 #### Example for Remote Machine:
 
-       seadas.ocssw.location=remote
+       seadas.ocssw.location=remote server IP addess
        seadas.ocssw.port=6400
        seadas.client.id=${user.name}
        seadas.ocssw.keepFilesOnServer=false
