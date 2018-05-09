@@ -122,7 +122,7 @@ server and the SeaDAS client.
     ocsswrest.version=1.0
     baseUriPortNumber=6400
     ocsswroot=${user.home}/ocssw
-    serverWorkingDirectory=${user.home}/seadasClientServerShared
+    serverWorkingDirectory=/mnt/c/Users/${user.name}/seadasClientServerShared
     clientServerSharedDir=true
     keepIntermediateFilesOnServer=false
     processInputStreamPortNumber=6402
@@ -177,7 +177,7 @@ Edit the following lines in the seadas.config file:
 
        seadas.ocssw.location=virtualMachine
        seadas.ocssw.port=6400
-       seadas.ocssw.sharedDir=/mnt/c/Users/${user.name}/seadasClientServerShared
+       seadas.ocssw.sharedDir=${user.dir}/seadasClientServerShared
        seadas.client.id=${user.name}
        seadas.ocssw.keepFilesOnServer=false
        seadas.ocssw.processInputStreamPort=6402
